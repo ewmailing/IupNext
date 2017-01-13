@@ -9,6 +9,166 @@
 
 /********************************** Utilities *****************************************/
 
+void toggleMarker(Ihandle *ih, int lin)
+{
+  long int value = IupGetIntId(ih, "MARKERGET", lin);
+
+  value = value & 0x000001;
+
+  if (value)
+    IupSetIntId(ih, "MARKERDELETE", lin, 0);
+  else
+    IupSetIntId(ih, "MARKERADD", lin, 0);
+}
+
+long int setMarkerMask(int markNumber)
+{
+  long int mask = 0x000000;
+  long int mark = 0x00001 << markNumber;
+  return mask | mark;
+}
+
+void copyMarkedLines(Ihandle *multitext)
+{
+  int size;
+  char *buffer = iupStrGetLargeMem(&size);
+  buffer[0] = 0;
+  char *text;
+  int lin = 0;
+
+  while (lin >= 0)
+  {
+    IupSetIntId(multitext, "MARKERNEXT", lin, setMarkerMask(0));
+    lin = IupGetInt(multitext, "LASTMARKERFOUND");
+    if (lin >= 0)
+    {
+      text = IupGetAttributeId(multitext, "LINE", lin);
+      strcat(buffer, text);  size -= (int)strlen(text);
+      lin++;
+    }
+  }
+
+  if (strlen(buffer) > 0)
+  {
+    Ihandle *clipboard = IupClipboard();
+    IupSetAttribute(clipboard, "TEXT", buffer);
+    IupDestroy(clipboard);
+  }
+}
+
+void cutMarkedLines(Ihandle *multitext)
+{
+  int size, pos;
+  char *buffer = iupStrGetLargeMem(&size);
+  buffer[0] = 0;
+  char *text;
+  int lin = 0;
+
+  while (lin >= 0 && size)
+  {
+    IupSetIntId(multitext, "MARKERNEXT", lin, setMarkerMask(0));
+    lin = IupGetInt(multitext, "LASTMARKERFOUND");
+    if (lin >= 0)
+    {
+      text = IupGetAttributeId(multitext, "LINE", lin);
+      int len = (int)strlen(text);
+      IupTextConvertLinColToPos(multitext, lin, 0, &pos);
+      IupSetStrf(multitext, "DELETERANGE", "%d,%d", pos, len);
+      strcat(buffer, text);  size -= len;
+      IupSetIntId(multitext, "MARKERDELETE", lin, 0);
+      lin--;
+    }
+  }
+
+  if (strlen(buffer) > 0)
+  {
+    Ihandle *clipboard = IupClipboard();
+    IupSetAttribute(clipboard, "TEXT", buffer);
+    IupDestroy(clipboard);
+  }
+}
+
+void pasteToMarkedLines(Ihandle *multitext)
+{
+  char *text;
+  int lin = 0, pos;
+
+  while (lin >= 0)
+  {
+    IupSetIntId(multitext, "MARKERNEXT", lin, setMarkerMask(0));
+    lin = IupGetInt(multitext, "LASTMARKERFOUND");
+    if (lin >= 0)
+    {
+      text = IupGetAttributeId(multitext, "LINE", lin);
+      int len = (int)strlen(text);
+      IupTextConvertLinColToPos(multitext, lin, 0, &pos);
+      IupSetStrf(multitext, "DELETERANGE", "%d,%d", pos, len);
+      IupSetIntId(multitext, "MARKERDELETE", lin, 0);
+      Ihandle *clipboard = IupClipboard();
+      IupSetAttributeId(multitext, "INSERT", pos, IupGetAttribute(clipboard, "TEXT"));
+      IupDestroy(clipboard);
+      lin--;
+    }
+  }
+}
+
+void invertMarkedLines(Ihandle *multitext)
+{
+  for (int lin = 0; lin < IupGetInt(multitext, "LINECOUNT"); lin++)
+  {
+    toggleMarker(multitext, lin);
+  }
+}
+
+void removeMarkedLines(Ihandle *multitext)
+{
+  char *text;
+  int lin = 0, pos;
+
+  while (lin >= 0)
+  {
+    IupSetIntId(multitext, "MARKERNEXT", lin, setMarkerMask(0));
+    lin = IupGetInt(multitext, "LASTMARKERFOUND");
+    if (lin >= 0)
+    {
+      text = IupGetAttributeId(multitext, "LINE", lin);
+      int len = (int)strlen(text);
+      IupTextConvertLinColToPos(multitext, lin, 0, &pos);
+      IupSetStrf(multitext, "DELETERANGE", "%d,%d", pos, len);
+      IupSetIntId(multitext, "MARKERDELETE", lin, 0);
+      lin--;
+    }
+  }
+}
+
+void removeUnmarkedLines(Ihandle *multitext)
+{
+  char *text;
+  int start = IupGetInt(multitext, "LINECOUNT") - 1, end, posStart, posEnd;
+
+  while (start >= 0)
+  {
+    text = IupGetAttributeId(multitext, "LINE", start);
+    int len = (int)strlen(text);
+    IupSetIntId(multitext, "MARKERPREVIOUS", start, setMarkerMask(0));
+    end = IupGetInt(multitext, "LASTMARKERFOUND");
+    IupTextConvertLinColToPos(multitext, start, len+1, &posEnd);
+    if (end >= 0)
+    {
+      text = IupGetAttributeId(multitext, "LINE", end);
+      len = (int)strlen(text);
+      IupTextConvertLinColToPos(multitext, end, len+1, &posStart);
+    }
+    else
+    {
+      posStart = 0;
+      posEnd++;
+    }
+    IupSetStrf(multitext, "DELETERANGE", "%d,%d", posStart, posEnd - posStart);
+    end--;
+    start = end;
+  }
+}
 
 const char* str_filetitle(const char *filename)
 {
@@ -209,6 +369,18 @@ int dropfiles_cb(Ihandle* ih, const char* filename)
 {
   if (save_check(ih))
     open_file(ih, filename);
+
+  return IUP_DEFAULT;
+}
+
+int marginclick_cb(Ihandle* ih, int margin, int lin, char *status)
+{
+  (void)status;
+
+  if (margin != 1)
+    return IUP_IGNORE;
+
+  toggleMarker(ih, lin);
 
   return IUP_DEFAULT;
 }
@@ -501,6 +673,127 @@ int item_gotombrace_action_cb(Ihandle* ih)
   }
 
   return IUP_IGNORE;
+}
+
+int item_togglemark_action_cb(Ihandle* ih)
+{
+  Ihandle* multitext = IupGetDialogChild(ih, "MULTITEXT");
+
+  int pos = IupGetInt(multitext, "CARETPOS");
+
+  int lin, col;
+  IupTextConvertPosToLinCol(multitext, pos, &lin, &col);
+
+  toggleMarker(multitext, lin);
+
+  return IUP_IGNORE;
+}
+
+int item_nextmark_action_cb(Ihandle* ih)
+{
+  Ihandle* multitext = IupGetDialogChild(ih, "MULTITEXT");
+
+  int pos = IupGetInt(multitext, "CARETPOS");
+
+  int lin, col;
+  IupTextConvertPosToLinCol(multitext, pos, &lin, &col);
+
+  IupSetIntId(multitext, "MARKERNEXT", lin + 1, setMarkerMask(0));
+
+  lin = IupGetInt(multitext, "LASTMARKERFOUND");
+
+  if (lin == -1)
+    return IUP_IGNORE;
+
+  IupTextConvertLinColToPos(multitext, lin, 0, &pos);
+
+  IupSetInt(multitext, "CARETPOS", pos);
+
+  return IUP_DEFAULT;
+}
+
+int item_previousmark_action_cb(Ihandle* ih)
+{
+  Ihandle* multitext = IupGetDialogChild(ih, "MULTITEXT");
+
+  int pos = IupGetInt(multitext, "CARETPOS");
+
+  int lin, col;
+  IupTextConvertPosToLinCol(multitext, pos, &lin, &col);
+
+  IupSetIntId(multitext, "MARKERPREVIOUS", lin - 1, setMarkerMask(0));
+
+  lin = IupGetInt(multitext, "LASTMARKERFOUND");
+
+  if (lin == -1)
+    return IUP_IGNORE;
+
+  IupTextConvertLinColToPos(multitext, lin, 0, &pos);
+
+  IupSetInt(multitext, "CARETPOS", pos);
+
+  return IUP_DEFAULT;
+}
+
+int item_clearmarks_action_cb(Ihandle* ih)
+{
+  Ihandle* multitext = IupGetDialogChild(ih, "MULTITEXT");
+  IupSetInt(multitext, "MARKERDELETEALL", 0);
+  return IUP_DEFAULT;
+}
+
+int item_copymarked_action_cb(Ihandle* ih)
+{
+  Ihandle* multitext = IupGetDialogChild(ih, "MULTITEXT");
+
+  copyMarkedLines(multitext);
+
+  return IUP_DEFAULT;
+}
+
+int item_cutmarked_action_cb(Ihandle* ih)
+{
+  Ihandle* multitext = IupGetDialogChild(ih, "MULTITEXT");
+
+  cutMarkedLines(multitext);
+
+  return IUP_DEFAULT;
+}
+
+int item_pastetomarked_action_cb(Ihandle* ih)
+{
+  Ihandle* multitext = IupGetDialogChild(ih, "MULTITEXT");
+
+  pasteToMarkedLines(multitext);
+
+  return IUP_DEFAULT;
+}
+
+int item_removemarked_action_cb(Ihandle* ih)
+{
+  Ihandle* multitext = IupGetDialogChild(ih, "MULTITEXT");
+
+  removeMarkedLines(multitext);
+
+  return IUP_DEFAULT;
+}
+
+int item_removeunmarked_action_cb(Ihandle* ih)
+{
+  Ihandle* multitext = IupGetDialogChild(ih, "MULTITEXT");
+
+  removeUnmarkedLines(multitext);
+
+  return IUP_DEFAULT;
+}
+
+int item_invertmarks_action_cb(Ihandle* ih)
+{
+  Ihandle* multitext = IupGetDialogChild(ih, "MULTITEXT");
+
+  invertMarkedLines(multitext);
+
+  return IUP_DEFAULT;
 }
 
 int find_next_action_cb(Ihandle* ih)
@@ -852,7 +1145,7 @@ int item_select_all_action_cb(Ihandle* item_select_all)
   Ihandle* multitext = IupGetDialogChild(item_select_all, "MULTITEXT");
   IupSetFocus(multitext);
   int count = IupGetInt(multitext, "COUNT");
-  IupSetStrf(multitext, "SELECTIONPOS", "%d:%d", 0, count-1);
+  IupSetStrf(multitext, "SELECTIONPOS", "%d:%d", 0, count - 1);
   return IUP_DEFAULT;
 }
 
@@ -988,6 +1281,18 @@ int item_restorezoom_action_cb(Ihandle* item_toolbar)
   return IUP_DEFAULT;
 }
 
+int item_wordwrap_action_cb(Ihandle* item_wordwrap)
+{
+  Ihandle* multitext = IupGetDialogChild(item_wordwrap, "MULTITEXT");
+
+  if (IupGetInt(item_wordwrap, "VALUE"))
+    IupSetAttribute(multitext, "WORDWRAP", "WORD");
+  else
+    IupSetAttribute(multitext, "WORDWRAP", "NONE");
+
+  return IUP_DEFAULT;
+}
+
 int item_toolbar_action_cb(Ihandle* item_toolbar)
 {
   Ihandle* multitext = IupGetDialogChild(item_toolbar, "MULTITEXT");
@@ -1033,6 +1338,8 @@ Ihandle* create_main_dialog(Ihandle *config)
   Ihandle *dlg, *vbox, *multitext, *menu;
   Ihandle *sub_menu_file, *file_menu, *item_exit, *item_new, *item_open, *item_save, *item_saveas, *item_revert;
   Ihandle *sub_menu_edit, *edit_menu, *item_find, *item_find_next, *item_goto, *item_gotombrace, *item_copy, *item_paste, *item_cut, *item_delete, *item_select_all;
+  Ihandle *item_togglemark, *item_nextmark, *item_previousmark, *item_clearmarks, *item_cutmarked, *item_copymarked, *item_pastetomarked, *item_removemarked,
+    *item_removeunmarked, *item_invertmarks;
   Ihandle *item_undo, *item_redo;
   Ihandle *case_menu, *item_uppercase, *item_lowercase;
   Ihandle *btn_cut, *btn_copy, *btn_paste, *btn_find, *btn_new, *btn_open, *btn_save;
@@ -1041,6 +1348,7 @@ Ihandle* create_main_dialog(Ihandle *config)
   Ihandle *sub_menu_view, *view_menu, *item_toolbar, *item_statusbar;
   Ihandle *zoom_menu, *item_zoomin, *item_zoomout, *item_restorezoom;
   Ihandle *lbl_statusbar, *toolbar_hb, *recent_menu;
+  Ihandle *item_wordwrap;
   const char* font;
 
   multitext = IupScintilla();
@@ -1051,9 +1359,13 @@ Ihandle* create_main_dialog(Ihandle *config)
   IupSetCallback(multitext, "CARET_CB", (Icallback)multitext_caret_cb);
   IupSetCallback(multitext, "VALUECHANGED_CB", (Icallback)multitext_valuechanged_cb);
   IupSetCallback(multitext, "DROPFILES_CB", (Icallback)dropfiles_cb);
+  IupSetCallback(multitext, "MARGINCLICK_CB", (Icallback)marginclick_cb);
 
   IupSetAttribute(multitext, "STYLEFGCOLOR34", "255 0 0");
   IupSetInt(multitext, "MARGINWIDTH0", 50);
+  IupSetAttribute(multitext, "MARGINTYPE1", "SYMBOL");
+  IupSetAttribute(multitext, "MARGINSENSITIVE1", "YES");
+  IupSetAttribute(multitext, "MARGINMASKFOLDERS1", "NO");
 
   lbl_statusbar = IupLabel("Lin 1, Col 1");
   IupSetAttribute(lbl_statusbar, "NAME", "STATUSBAR");
@@ -1178,6 +1490,36 @@ Ihandle* create_main_dialog(Ihandle *config)
   item_gotombrace = IupItem("Go To Matching Brace\tCtrl+B", NULL);
   IupSetCallback(item_gotombrace, "ACTION", (Icallback)item_gotombrace_action_cb);
 
+  item_togglemark = IupItem("Toggle Bookmark\tCtrl+F2", NULL);
+  IupSetCallback(item_togglemark, "ACTION", (Icallback)item_togglemark_action_cb);
+
+  item_nextmark = IupItem("Next Bookmark\tF2", NULL);
+  IupSetCallback(item_nextmark, "ACTION", (Icallback)item_nextmark_action_cb);
+
+  item_previousmark = IupItem("Previous Bookmark\tShift+F2", NULL);
+  IupSetCallback(item_previousmark, "ACTION", (Icallback)item_previousmark_action_cb);
+
+  item_clearmarks = IupItem("Clear All Bookmarks", NULL);
+  IupSetCallback(item_clearmarks, "ACTION", (Icallback)item_clearmarks_action_cb);
+
+  item_copymarked = IupItem("Copy Bookmarked Lines", NULL);
+  IupSetCallback(item_copymarked, "ACTION", (Icallback)item_copymarked_action_cb);
+
+  item_cutmarked = IupItem("Cut Bookmarked Lines", NULL);
+  IupSetCallback(item_cutmarked, "ACTION", (Icallback)item_cutmarked_action_cb);
+
+  item_pastetomarked = IupItem("Paste to (Replace) Bookmarked Lines", NULL);
+  IupSetCallback(item_pastetomarked, "ACTION", (Icallback)item_pastetomarked_action_cb);
+
+  item_removemarked = IupItem("Remove Bookmarked Lines", NULL);
+  IupSetCallback(item_removemarked, "ACTION", (Icallback)item_removemarked_action_cb);
+
+  item_removeunmarked = IupItem("Remove unmarked Lines", NULL);
+  IupSetCallback(item_removeunmarked, "ACTION", (Icallback)item_removeunmarked_action_cb);
+
+  item_invertmarks = IupItem("Inverse Bookmark", NULL);
+  IupSetCallback(item_invertmarks, "ACTION", (Icallback)item_invertmarks_action_cb);
+
   item_zoomin = IupItem("Zoom In\tCtrl_Num +", NULL);
   IupSetCallback(item_zoomin, "ACTION", (Icallback)item_zoomin_action_cb);
 
@@ -1186,6 +1528,10 @@ Ihandle* create_main_dialog(Ihandle *config)
 
   item_restorezoom = IupItem("Restore Default Zoom\tCtrl_Num /", NULL);
   IupSetCallback(item_restorezoom, "ACTION", (Icallback)item_restorezoom_action_cb);
+
+  item_wordwrap = IupItem("Word Wrap", NULL);
+  IupSetCallback(item_wordwrap, "ACTION", (Icallback)item_wordwrap_action_cb);
+  IupSetAttribute(item_wordwrap, "AUTOTOGGLE", "YES");
 
   item_toolbar = IupItem("&Toobar", NULL);
   IupSetCallback(item_toolbar, "ACTION", (Icallback)item_toolbar_action_cb);
@@ -1230,6 +1576,17 @@ Ihandle* create_main_dialog(Ihandle *config)
     item_replace,
     item_goto,
     item_gotombrace,
+    IupSubmenu("Bookmarks", IupMenu(item_togglemark,
+    item_nextmark,
+    item_previousmark,
+    item_clearmarks,
+    item_cutmarked,
+    item_copymarked,
+    item_pastetomarked,
+    item_removemarked,
+    item_removeunmarked,
+    item_invertmarks,
+    NULL)),
     IupSeparator(),
     item_select_all,
     IupSeparator(),
@@ -1247,6 +1604,7 @@ Ihandle* create_main_dialog(Ihandle *config)
     item_zoomout,
     item_restorezoom,
     NULL)),
+    item_wordwrap,
     IupSeparator(),
     item_toolbar,
     item_statusbar,
@@ -1306,6 +1664,9 @@ Ihandle* create_main_dialog(Ihandle *config)
   IupSetCallback(dlg, "K_cH", (Icallback)item_replace_action_cb);  /* replace system processing */
   IupSetCallback(dlg, "K_cG", (Icallback)item_goto_action_cb);
   IupSetCallback(dlg, "K_cB", (Icallback)item_gotombrace_action_cb);
+  IupSetCallback(dlg, "K_cF2", (Icallback)item_togglemark_action_cb);
+  IupSetCallback(dlg, "K_F2", (Icallback)item_nextmark_action_cb);
+  IupSetCallback(dlg, "K_sF2", (Icallback)item_previousmark_action_cb);
   IupSetCallback(dlg, "K_F3", (Icallback)find_next_action_cb);
   IupSetCallback(dlg, "K_cF3", (Icallback)selection_find_next_action_cb);
   IupSetCallback(dlg, "K_cV", (Icallback)item_paste_action_cb);  /* replace system processing */
@@ -1325,6 +1686,8 @@ Ihandle* create_main_dialog(Ihandle *config)
   font = IupConfigGetVariableStr(config, "MainWindow", "Font");
   if (font)
     IupSetStrAttribute(multitext, "FONT", font);
+
+  IupSetAttribute(multitext, "WORDWRAPVISUALFLAGS", "MARGIN");
 
   if (!IupConfigGetVariableIntDef(config, "MainWindow", "Toolbar", 1))
   {
@@ -1385,10 +1748,8 @@ int main(int argc, char **argv)
 /* If instead of using IupText we use IupScintilla, then we can add:
    - show white spaces
    - margins
-   - word wrap
    - tab size
    - auto replace tabs by spaces
-   - markers
    - line numbers
    and much more.
    */
