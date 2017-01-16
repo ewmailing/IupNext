@@ -54,7 +54,7 @@ flattabs(<strong>child</strong>, ...) [in LED]</pre>
   <u>Returns:</u> the identifier of the created element, or NULL if an error 
 	occurs.</p>
 
-<h3><a name="Attributes">Attributes</a></h3>
+<h3><a name="Attributes">Attributes</a> (<font SIZE="3">non inheritable</font>)</h3>
 
 
 
@@ -63,46 +63,58 @@ but redefines a few attributes. CANFOCUS, BORDER and SCROLLBAR are always NO.</p
 
 
   <p>
-<a href="../attrib/iup_bgcolor.html">BGCOLOR</a>: In Windows and in GTK when in 
-Windows, the tab buttons background it will be always defined by the system. In 
-Windows the default background is different from the dialog background. Default: 
-the global attribute DLGBGCOLOR.</p>
+<a href="../attrib/iup_bgcolor.html">BGCOLOR</a>:&nbsp; background color for the 
+  current Tab and the children. Default: 
+  &quot;255 255 255&quot;. The only attribute that is inheritable.</p>
 <p>
-FORECOLOR:</p>
+<strong>FORECOLOR</strong>: text color for the current Tab. Default: 
+&quot;50 150 255&quot;.</p>
 <p>
-HIGHCOLOR</p>
+<strong>HIGHCOLOR</strong>: text color for the highlighted Tab. The current Tab 
+is never highlighted, so it affects only the other tabs. If not defined 
+FORECOLOR will be used.</p>
 <p><strong>CHILDOFFSET</strong>: Allow to specify a position offset for the 
 child. Available for native containers only. It will not affect the natural 
 size, and allows to position controls outside the client area. Format &quot;<em>dx</em>x<em>dy</em>&quot;,
   where <em>dx</em> and <em>dy</em> are integer values corresponding to the 
 horizontal and vertical offsets, respectively, in pixels. Default: 0x0.</p>
 
-<p><b>COUNT</b> (read-only) (<font SIZE="3">non inheritable</font>)<b>:</b> 
+<p><b>COUNT</b> (read-only)<b>:</b> 
 returns the number of tabs. Same value returned by <strong>IupGetChildCount</strong>.</p>
-<p><a href="../attrib/iup_expand.html">EXPAND</a> (<font SIZE="3">non 
-inheritable</font>): The default value is &quot;YES&quot;.</p>
-<p>EXTRABOX</p>
-<p>EXTRABOX_HANDLE</p>
-<p><a href="../attrib/iup_fgcolor.html">FGCOLOR</a>: Tabs title color. Default: 
-the global attribute DLGFGCOLOR.</p>
-<p>FIXEDWIDTH</p>
-<p><b>SHOWCLOSE</b> (<font SIZE="3">non 
-inheritable</font>): <span id="result_box1" class="short_text" lang="en">
+<p><a href="../attrib/iup_expand.html">EXPAND</a>: The default value is &quot;YES&quot;.</p>
+<p><strong>EXTRABOX</strong> (read-only)<b>:</b> 
+returns the extra box name so it can be used to add extra controls to the free 
+area. Use <a href="../func/iupsethandle.html">
+IupSetHandle</a> or <a href="../func/iupsetattributehandle.html">
+IupSetAttributeHandle</a> to associate a child to a name. In Lua you can also 
+use the element reference directly. The extra box is a IupHbox that is usually 
+empty.</p>
+<p><strong>EXTRABOX_HANDLE</strong> (read-only)<b>:</b> 
+returns the handle of the extra box. </p>
+<p><strong>FIXEDWIDTH</strong>: forces all tabs to use the same width. Default: 
+No.</p>
+<p><b>SHOWCLOSE</b>: <span id="result_box1" class="short_text" lang="en">
 <span class="hps">enables</span> <span class="hps">the close button on each</span>
 <span class="hps">tab.</span></span><span id="result_box0" class="" lang="en"><span class="">
 </span></span>Default value: &quot;NO&quot;. By default when closed the tab is hidden. 
 To change that behavior use the TABCLOSE_CB callback.</p>
-<p>CLOSEIMAGE</p>
-<p>CLOSEIMAGEHIGH</p>
-<p>CLOSEIMAGEPRESS</p>
-<p>CLOSEHIGHCOLOR</p>
-<p><a href="../attrib/iup_size.html">SIZE</a> (<font SIZE="3">non inheritable</font>): 
+<p><strong>CLOSEIMAGE</strong>: image name to be used in the close button. Use <a href="../func/iupsethandle.html">
+	IupSetHandle</a> or
+	<a href="../func/iupsetattributehandle.html">IupSetAttributeHandle</a> to 
+	associate an image to a name. n starts at 0. See also <a href="iupimage.html">IupImage</a>. 
+Default: &quot;IMGFLATCLOSE&quot;.</p>
+<p><strong>CLOSEIMAGEHIGH</strong>: image name to be used in the close button in 
+highlight state. Default: &quot;IMGFLATCLOSEHIGH&quot;.</p>
+<p><strong>CLOSEIMAGEPRESS</strong>: image name to be used in the close button 
+in pressed state. Default: &quot;IMGFLATCLOSEPRESS&quot;.</p>
+<p><strong>CLOSEHIGHCOLOR</strong>: background color of the close button in 
+highlight state. Default: &quot;200 220 245&quot;.</p>
+<p><a href="../attrib/iup_size.html">SIZE</a>: 
 	The default size is the smallest size that fits its largest child. All child 
 	elements are considered even invisible ones.</p>
-  <p><b>TABSPADDING</b> (<font SIZE="3">non 
-inheritable</font>): internal margin of the tab title. Works just like the 
+  <p><b>TABSPADDING</b>: internal margin of the tab title. Works just like the 
 	MARGIN attribute of the IupHbox and IupVbox containers, but uses a different 
-  name to avoid inheritance problems. Default value: &quot;0x0&quot;.</p>
+  name to avoid inheritance problems. Default value: &quot;10x10&quot;.</p>
 <p>TABSFORECOLOR</p>
 <p>TABSBACKCOLOR</p>
 <p>TABSHIGHCOLOR</p>
@@ -121,9 +133,7 @@ inheritable</font>): internal margin of the tab title. Works just like the
 	IupSetHandle</a> or
 	<a href="../func/iupsetattributehandle.html">IupSetAttributeHandle</a> to 
 	associate an image to a name. n starts at 0. See also <a href="iupimage.html">IupImage</a>. 
-	In Motif, the image is shown only if <strong>TABTITLEn</strong> is NULL. In 
-  Windows and Motif set the BGCOLOR attribute before setting the image. When set 
-  after map will update the TABIMAGE attribute on the respective child.</p>
+  When set after map will update the TABIMAGE attribute on the respective child.</p>
 
 
 <p><strong>TABVISIBLEn</strong>: Allows to hide a tab. n starts at 0. When a tab 
