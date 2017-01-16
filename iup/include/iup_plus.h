@@ -632,6 +632,16 @@ namespace Iup
     Tabs(const Tabs& tabs) : Container(tabs.GetHandle()) {}
     Tabs(Ihandle* _ih) : Container(_ih) {}
   };
+  class FlatTabs : public Container
+  {
+  public:
+    FlatTabs() : Container(IupFlatTabs(0)) {}
+    FlatTabs(Control child0, Control child1 = (Ihandle*)0, Control child2 = (Ihandle*)0, Control child3 = (Ihandle*)0, Control child4 = (Ihandle*)0, Control child5 = (Ihandle*)0, Control child6 = (Ihandle*)0, Control child7 = (Ihandle*)0, Control child8 = (Ihandle*)0, Control child9 = (Ihandle*)0)
+      : Container(IupFlatTabs(0), child0, child1, child2, child3, child4, child5, child6, child7, child8, child9) {}
+    FlatTabs(const Control *child_array, int count) : Container(IupFlatTabs(0), child_array, count) {}
+    FlatTabs(const FlatTabs& tabs) : Container(tabs.GetHandle()) {}
+    FlatTabs(Ihandle* _ih) : Container(_ih) {}
+  };
   class GridBox : public Container
   {
   public:

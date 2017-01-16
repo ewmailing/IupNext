@@ -43,6 +43,7 @@ int iupsplitlua_open (lua_State * L);
 int iupgclua_open (lua_State * L);
 int iupvallua_open (lua_State * L);
 int iuptabslua_open (lua_State * L);
+int iupflattabslua_open(lua_State * L);
 int iupfontdlglua_open(lua_State * L);
 int iupmessagedlglua_open(lua_State * L);
 int iupcolordlglua_open(lua_State * L);
