@@ -1249,6 +1249,10 @@ Iclass* iupFlatTabsNewClass(void)
   iupClassRegisterCallback(ic, "RIGHTCLICK_CB", "i");
   iupClassRegisterCallback(ic, "TABCLOSE_CB", "i");
 
+  iupClassRegisterCallback(ic, "FLAT_BUTTON_CB", "iiiis");
+  iupClassRegisterCallback(ic, "FLAT_MOTION_CB", "iis");
+  iupClassRegisterCallback(ic, "FLAT_LEAVEWINDOW_CB", "");
+
   /* Base Container */
   iupClassRegisterAttribute(ic, "EXPAND", iupBaseContainerGetExpandAttrib, NULL, IUPAF_SAMEASSYSTEM, "YES", IUPAF_NOT_MAPPED | IUPAF_NO_INHERIT);
   iupClassRegisterAttribute(ic, "CLIENTOFFSET", iupBaseGetClientOffsetAttrib, NULL, NULL, NULL, IUPAF_NOT_MAPPED | IUPAF_READONLY | IUPAF_NO_INHERIT);

@@ -82,25 +82,14 @@ inheritable</font>): <span id="result_box1" class="short_text" lang="en">
 <span class="hps">tab.</span></span><span id="result_box0" class="" lang="en"><span class="">
 </span></span>Default value: &quot;NO&quot;. In Windows the close button imply 
 the classic visual for the control. By default when closed the tab is hidden. 
-The change that behavior use the TABCLOSE_CB callback. (since 3.10)</p>
+To change that behavior use the TABCLOSE_CB callback. (since 3.10)</p>
 
 
   <p><a href="../attrib/iup_size.html">SIZE</a> (<font SIZE="3">non inheritable</font>): 
 	The default size is the smallest size that fits its largest child. All child 
 	elements are considered even invisible ones.</p>
 
-  <p><strong>TABIMAGEn </strong>(<font SIZE="3">non inheritable</font>): image 
-	name to be used in the respective tab. Use <a href="../func/iupsethandle.html">
-	IupSetHandle</a> or
-	<a href="../func/iupsetattributehandle.html">IupSetAttributeHandle</a> to 
-	associate an image to a name. n starts at 0. See also <a href="iupimage.html">IupImage</a>. 
-	In Motif, the image is shown only if <strong>TABTITLEn</strong> is NULL. In 
-	Windows and Motif set the BGCOLOR attribute before setting the image. When 
-  set after map will update the TABIMAGE attribute on the respective child 
-  (since 3.10). (since 
-	3.0)</p>
-
-<p><strong>TABORIENTATION </strong>(<font SIZE="3">non inheritable</font>): 
+  <p><strong>TABORIENTATION </strong>(<font SIZE="3">non inheritable</font>): 
 Indicates the orientation of tab text, which can be &quot;HORIZONTAL&quot; or &quot;VERTICAL&quot;. 
 Default is &quot;HORIZONTAL&quot;. VERTICAL is supported only in GTK and in Windows. In 
 Windows, it can NOT be set, it is dependent on the TABTYPE attribute, if 
@@ -114,6 +103,27 @@ inheritable</font>): internal margin of the tab title. Works just like the
   (renamed in 3.19 to avoid conflict with PADDING)</p>
 
 
+<p><strong>TABTYPE </strong>(<font SIZE="3">non inheritable</font>) (creation 
+only in Windows): Indicates the type of tab, which can be &quot;TOP&quot;, &quot;BOTTOM&quot;, 
+&quot;LEFT&quot; or &quot;RIGHT&quot;. Default is &quot;TOP&quot;. In Windows, if LEFT or RIGHT then 
+MULTILINE=YES and TABORIENTATION<strong>=</strong>VERTICAL are set, if TOP or 
+BOTTOM then 
+TABORIENTATION<strong>=</strong>HORIZONTAL is set. In Windows, 
+when not TOP, then visual style is removed from tabs.</p>
+<h4>Tab Attributes</h4>
+
+  <p><strong>TABIMAGEn </strong>(<font SIZE="3">non inheritable</font>): image 
+	name to be used in the respective tab. Use <a href="../func/iupsethandle.html">
+	IupSetHandle</a> or
+	<a href="../func/iupsetattributehandle.html">IupSetAttributeHandle</a> to 
+	associate an image to a name. n starts at 0. See also <a href="iupimage.html">IupImage</a>. 
+	In Motif, the image is shown only if <strong>TABTITLEn</strong> is NULL. In 
+	Windows and Motif set the BGCOLOR attribute before setting the image. When 
+  set after map will update the TABIMAGE attribute on the respective child 
+  (since 3.10). (since 
+	3.0)</p>
+
+
 <p><strong>TABVISIBLEn </strong>(<font SIZE="3">non inheritable</font>): Allows 
 to hide a tab. n starts at 0. When a tab is hidden the tabs indices are not 
 changed. Can be Yes or No. Default: Yes. (since 3.8)</p>
@@ -125,13 +135,7 @@ defining a mnemonic. The button can be activated from any control in the dialog
 using the &quot;Alt+key" combination. (mnemonic support since 3.3). When set 
 after map will update the TABTITLE attribute on the respective child (since 
 3.10). (since 3.0)</p>
-<p><strong>TABTYPE </strong>(<font SIZE="3">non inheritable</font>) (creation 
-only in Windows): Indicates the type of tab, which can be &quot;TOP&quot;, &quot;BOTTOM&quot;, 
-&quot;LEFT&quot; or &quot;RIGHT&quot;. Default is &quot;TOP&quot;. In Windows, if LEFT or RIGHT then 
-MULTILINE=YES and TABORIENTATION<strong>=</strong>VERTICAL are set, if TOP or 
-BOTTOM then 
-TABORIENTATION<strong>=</strong>HORIZONTAL is set. In Windows, 
-when not TOP, then visual style is removed from tabs.</p>
+<h4>Current Tab</h4>
 <p><strong>VALUE </strong>(<font SIZE="3">non inheritable</font>): Changes the 
 current tab by its name. The value passed must be the name of one of the elements 
 contained in the tabs. Use <a href="../func/iupsethandle.html">

@@ -1192,6 +1192,10 @@ wb_usr.tree =
               link= "elem/iuptabs.html"
             },
             {
+              name= {nl= "IupFlatTabs"},
+              link= "elem/iupflattabs.html"
+            },
+            {
               name= {nl= "IupBackgroundBox"},
               link= "elem/iupbackgroundbox.html"
             },
