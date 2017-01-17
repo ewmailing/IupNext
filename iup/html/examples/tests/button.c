@@ -281,7 +281,7 @@ static int show_cb(Ihandle *ih, int state)
 void ButtonTest(void)
 {
   Ihandle *dlg, *button, *label, *image1, *image1i, *image1p, *image2, *image3, 
-          *box1, *box2;
+    *box1, *box2, *text;
 
   box1 = IupVbox(NULL);
   IupSetAttribute(box1, "MARGIN", "5x5");
@@ -434,6 +434,10 @@ void ButtonTest(void)
   IupSetAttribute(label, "SEPARATOR", "VERTICAL");
   IupSetHandle("seplabel", label);
 
+  text = IupText(NULL);
+  IupSetHandle("text", text);
+  IupAppend(box2, text);
+
   dlg = IupDialog(IupHbox(box1, label, box2, NULL));
   IupSetAttribute(dlg, "TITLE", "IupButton Test");
 //  IupSetAttribute(box1, "BGCOLOR", "128 0 0");
@@ -443,6 +447,8 @@ void ButtonTest(void)
 //  IupSetAttribute(dlg, "BGCOLOR", "173 177 194");  // Motif BGCOLOR for documentation
 //  IupSetAttribute(dlg, "SAVEUNDER", "NO");
   IupSetAttribute(dlg, "PARENTDIALOG", "BIGTEST");
+  IupSetAttributeHandle(dlg, "DEFAULTENTER", IupGetDialogChild(dlg, "button1"));
+  IupSetAttributeHandle(dlg, "DEFAULTESC", IupGetDialogChild(dlg, "button6"));
 
   IupSetAttributeHandle(dlg, "STARTFOCUS", button);
 
