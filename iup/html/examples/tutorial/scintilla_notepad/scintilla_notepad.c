@@ -2153,9 +2153,3 @@ int main(int argc, char **argv)
   IupClose();
   return EXIT_SUCCESS;
 }
-
-/* If instead of using IupText we use IupScintilla, then we can add:
-   - margins - desligar
-   - overwrite
-   and much more.
-   */
