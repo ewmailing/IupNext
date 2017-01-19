@@ -1044,14 +1044,14 @@ static void iGridBoxSetChildrenPositionMethod(Ihandle* ih, int x, int y)
   for (col=0; col<ih->data->num_col; col++)
   {
     if (ih->data->homogeneous_width)
-      col_width[col] = ih->data->homogeneous_width + ih->data->gap_col;
+      col_width[col] = ih->data->homogeneous_width;
     else
-      col_width[col] = iGridBoxGetColWidth(ih, child_array, col) + ih->data->gap_col;
+      col_width[col] = iGridBoxGetColWidth(ih, child_array, col);
 
     if (col==0)
       col_pos[col] = ih->data->margin_x;
     else
-      col_pos[col] = col_pos[col-1] + col_width[col-1];
+      col_pos[col] = col_pos[col - 1] + col_width[col - 1] + ih->data->gap_col;
 
     alignment_col[col] = iGridBoxGetAlignmentCol(ih, col);
   }
@@ -1059,14 +1059,14 @@ static void iGridBoxSetChildrenPositionMethod(Ihandle* ih, int x, int y)
   for (lin=0; lin<ih->data->num_lin; lin++)
   {
     if (ih->data->homogeneous_height)
-      lin_height[lin] = ih->data->homogeneous_height + ih->data->gap_lin;
+      lin_height[lin] = ih->data->homogeneous_height;
     else
-      lin_height[lin] = iGridBoxGetLinHeight(ih, child_array, lin) + ih->data->gap_lin;
+      lin_height[lin] = iGridBoxGetLinHeight(ih, child_array, lin);
 
     if (lin == 0)
       line_pos[lin] = ih->data->margin_y;
     else
-      line_pos[lin] = line_pos[lin-1] + lin_height[lin-1];
+      line_pos[lin] = line_pos[lin - 1] + lin_height[lin - 1] + ih->data->gap_lin;
 
     alignment_lin[lin] = iGridBoxGetAlignmentLin(ih, lin);
   }

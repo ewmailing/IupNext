@@ -67,12 +67,14 @@ int main(int argc, char **argv)
 // IupSetAttribute(gbox,"SIZECOL","2");
  IupSetAttribute(gbox, "SIZELIN", "-1");
  IupSetAttribute(gbox, "SIZECOL", "-1");
- IupSetAttribute(gbox, "MARGIN", "50x50");
- IupSetAttribute(gbox,"GAPCOL","50");
- IupSetAttribute(gbox,"GAPLIN","50");
+ IupSetAttribute(gbox, "MARGIN", "30x30");
+ IupSetAttribute(gbox,"GAPCOL","30");
+ IupSetAttribute(gbox,"GAPLIN","30");
  IupSetAttribute(gbox,"ALIGNMENTLIN","ACENTER");
  IupSetAttribute(gbox,"ALIGNMENTCOL","ARIGHT");
- 
+// IupSetAttribute(gbox, "ALIGNMENTLIN", "ATOP");
+// IupSetAttribute(gbox, "ALIGNMENTCOL", "ALEFT");
+
  dlg = IupDialog(gbox);
  IupSetAttribute(dlg,"TITLE","Hello World");
  IupShowXY(dlg,IUP_CENTER,IUP_CENTER);
