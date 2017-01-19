@@ -616,7 +616,7 @@ static void iGridBoxComputeNaturalSizeMethod(Ihandle* ih, int *w, int *h, int *c
       }
       else if (ih->data->size_col < 0)
       {
-        lin_height[lin] += child->naturalheight;
+        lin_height[lin] = iupMAX(lin_height[lin], child->naturalheight);
         children_natural_maxheight = iupMAX(children_natural_maxheight, child->naturalheight);
       }
 
@@ -627,7 +627,7 @@ static void iGridBoxComputeNaturalSizeMethod(Ihandle* ih, int *w, int *h, int *c
       }
       else if (ih->data->size_lin < 0)
       {
-        col_width[col] += child->naturalwidth;
+        col_width[col] = iupMAX(col_width[col], child->naturalwidth);
         children_natural_maxwidth = iupMAX(children_natural_maxwidth, child->naturalwidth);
       }
 
@@ -639,7 +639,7 @@ static void iGridBoxComputeNaturalSizeMethod(Ihandle* ih, int *w, int *h, int *c
   {
     int col;
     for (col = 0; col < num_col; col++)
-      children_natural_width = iupMAX(children_natural_width, col_width[col]);
+      children_natural_width += col_width[col];
 
     free(col_width);
   }
@@ -647,7 +647,7 @@ static void iGridBoxComputeNaturalSizeMethod(Ihandle* ih, int *w, int *h, int *c
   {
     int lin;
     for (lin = 0; lin < num_lin; lin++)
-      children_natural_height = iupMAX(children_natural_height, lin_height[lin]);
+      children_natural_height += lin_height[lin];
 
     free(lin_height);
   }
