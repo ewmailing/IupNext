@@ -1090,7 +1090,7 @@ static void iGridBoxSetChildrenPositionMethod(Ihandle* ih, int x, int y)
         dx = (col_width[col] - child->currentwidth)/2;
       else if (alignment_col[col] == IUP_ALIGN_ARIGHT)
         dx = col_width[col] - child->currentwidth;
-      else  /* IUP_ALIGN_ALEFT */
+      else  /* IUP_ALIGN_ALEFT */     
         dx = 0;
       if (dx<0) dx = 0;
 

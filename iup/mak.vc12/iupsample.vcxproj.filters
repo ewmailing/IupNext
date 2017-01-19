@@ -411,6 +411,9 @@
     <ClCompile Include="..\html\examples\CPP\val.cpp">
       <Filter>CPP</Filter>
     </ClCompile>
+    <ClCompile Include="..\html\examples\C\gridbox2.c">
+      <Filter>C</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <None Include="..\html\examples\Lua\alarm.wlua">
