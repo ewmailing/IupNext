@@ -150,12 +150,14 @@ controls the distribution of the children in lines or in columns. Can be:
 HORIZONTAL or VERTICAL. Default: HORIZONTAL. </p>
 <p><strong>SIZECOL</strong> (<font SIZE="3">non inheritable</font>): index of 
 the column that will be used as reference when calculating the height of the 
-lines. Default: 0.</p>
+lines. Default: 0. If set to -1 all columns will contribute for the line height, 
+the highest cell of the line will be the line height (since 3.21).</p>
 
 
 <p><strong>SIZELIN</strong> (<font SIZE="3">non inheritable</font>): index of 
 the line that will be used as reference when calculating the width of the 
-columns. Default: 0.</p>
+columns. Default: 0. If set to -1 all lines will contribute for the column 
+width, the wideest cell of the column will be the column width (since 3.21).</p>
 
 
   <p><b>WID</b> (read-only): returns -1 if mapped.</p>
