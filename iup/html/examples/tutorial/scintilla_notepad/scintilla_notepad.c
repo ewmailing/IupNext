@@ -30,8 +30,8 @@ long int setMarkerMask(int markNumber)
 
 void copyMarkedLines(Ihandle *multitext)
 {
-  int size;
-  char *buffer = iupStrGetLargeMem(&size);
+  int size = IupGetInt(multitext, "COUNT");
+  char *buffer = (char *) malloc(size);
   buffer[0] = 0;
   char *text;
   int lin = 0;
@@ -54,15 +54,17 @@ void copyMarkedLines(Ihandle *multitext)
     IupSetAttribute(clipboard, "TEXT", buffer);
     IupDestroy(clipboard);
   }
+
+  free(buffer);
 }
 
 void cutMarkedLines(Ihandle *multitext)
 {
-  int size, pos;
-  char *buffer = iupStrGetLargeMem(&size);
+  int size = IupGetInt(multitext, "COUNT");
+  char *buffer = (char *)malloc(size);
   buffer[0] = 0;
   char *text;
-  int lin = 0;
+  int lin = 0, pos;
 
   while (lin >= 0 && size)
   {
@@ -86,6 +88,8 @@ void cutMarkedLines(Ihandle *multitext)
     IupSetAttribute(clipboard, "TEXT", buffer);
     IupDestroy(clipboard);
   }
+
+  free(buffer);
 }
 
 void pasteToMarkedLines(Ihandle *multitext)
@@ -152,12 +156,12 @@ void removeUnmarkedLines(Ihandle *multitext)
     int len = (int)strlen(text);
     IupSetIntId(multitext, "MARKERPREVIOUS", start, setMarkerMask(0));
     end = IupGetInt(multitext, "LASTMARKERFOUND");
-    IupTextConvertLinColToPos(multitext, start, len+1, &posEnd);
+    IupTextConvertLinColToPos(multitext, start, len + 1, &posEnd);
     if (end >= 0)
     {
       text = IupGetAttributeId(multitext, "LINE", end);
       len = (int)strlen(text);
-      IupTextConvertLinColToPos(multitext, end, len+1, &posStart);
+      IupTextConvertLinColToPos(multitext, end, len + 1, &posStart);
     }
     else
     {
@@ -167,6 +171,174 @@ void removeUnmarkedLines(Ihandle *multitext)
     IupSetStrf(multitext, "DELETERANGE", "%d,%d", posStart, posEnd - posStart);
     end--;
     start = end;
+  }
+}
+
+void changeTabsToSpaces(Ihandle *multitext)
+{
+  char *text = IupGetAttribute(multitext, "VALUE");
+  int count = IupGetInt(multitext, "COUNT");
+  int tabSize = IupGetInt(multitext, "TABSIZE");
+  int lin, col;
+
+  for (int i = count - 1; i >= 0; i--)
+  {
+    char c = text[i];
+
+    if (c != '\t')
+      continue;
+
+    IupTextConvertPosToLinCol(multitext, i, &lin, &col);
+
+    int spacesToNextTab = tabSize - (col + 1) % tabSize + 1;
+
+    IupSetStrf(multitext, "DELETERANGE", "%d,%d", i, 1);
+
+    for (int j = 0; j < spacesToNextTab; j++)
+      IupSetAttributeId(multitext, "INSERT", i + j, " ");
+  }
+}
+
+void changeSpacesToTabs(Ihandle *multitext)
+{
+  char *text = IupGetAttribute(multitext, "VALUE");
+  int count = IupGetInt(multitext, "COUNT");
+  int tabSize = IupGetInt(multitext, "TABSIZE");
+  int lin, col;
+
+  for (int i = count - 1; i >= 0; i--)
+  {
+    char c = text[i];
+
+    IupTextConvertPosToLinCol(multitext, i, &lin, &col);
+
+    int tabStop = (col + 1) % tabSize == tabSize - 1 ? 1 : 0;
+
+    if (!tabStop || c != ' ')
+      continue;
+
+    IupSetStrf(multitext, "DELETERANGE", "%d,%d", i + 1, 1);
+    IupSetAttributeId(multitext, "INSERT", i + 1, "\t");
+
+    int nSpaces = 0;
+
+    while (text[i - nSpaces] == ' ' && nSpaces < tabSize - 1)
+      nSpaces++;
+
+    if (nSpaces == 0)
+      continue;
+
+    i -= nSpaces;
+
+    IupSetStrf(multitext, "DELETERANGE", "%d,%d", i + 1, nSpaces);
+  }
+}
+
+void changeLeadingSpacesToTabs(Ihandle *multitext)
+{
+  int lineCount = IupGetInt(multitext, "LINECOUNT");
+  int tabSize = IupGetInt(multitext, "TABSIZE");
+  int pos;
+
+  for (int i = 0; i < lineCount; i++)
+  {
+    char *text = IupGetAttributeId(multitext, "LINE", i);
+
+    int len = (int)strspn(text, " \t");
+    if (len == 0)
+      continue;
+
+    int tabCount = 0;
+    int spaceCount = 0;
+    for (int j = 0; j < len; j++)
+    {
+      if (text[j] == '\t')
+      {
+        tabCount++;
+        spaceCount = 0;
+      }
+      else
+        spaceCount++;
+
+      if (spaceCount == tabSize)
+      {
+        tabCount++;
+        spaceCount = 0;
+      }
+    }
+    IupTextConvertLinColToPos(multitext, i, 0, &pos);
+    IupSetStrf(multitext, "DELETERANGE", "%d,%d", pos, len);
+    for (int j = 0; j < spaceCount; j++)
+      IupSetAttributeId(multitext, "INSERT", pos, " ");
+    for (int j = 0; j < tabCount; j++)
+      IupSetAttributeId(multitext, "INSERT", pos, "\t");
+  }
+}
+
+void removeLeadingSpaces(Ihandle *multitext)
+{
+  int lineCount = IupGetInt(multitext, "LINECOUNT");
+  int pos;
+
+  for (int i = 0; i < lineCount; i++)
+  {
+    char *text = IupGetAttributeId(multitext, "LINE", i);
+
+    int len = (int)strspn(text, " \t");
+    if (len == 0)
+      continue;
+
+    IupTextConvertLinColToPos(multitext, i, 0, &pos);
+    IupSetStrf(multitext, "DELETERANGE", "%d,%d", pos, len);
+  }
+}
+
+void removeTrailingSpaces(Ihandle *multitext)
+{
+  int lineCount = IupGetInt(multitext, "LINECOUNT");
+  int pos;
+
+  for (int i = 0; i < lineCount; i++)
+  {
+    char *text = IupGetAttributeId(multitext, "LINE", i);
+
+    int len = (int)strlen(text);
+    if (len == 0)
+      continue;
+
+    if (text[len - 1] == '\n')
+      len--;
+
+    int count = 0;
+    for (int j = len - 1; j >= 0; j--)
+    {
+      if (text[j] != ' ' && text[j] != '\t')
+        break;
+      count++;
+    }
+
+    if (count == 0)
+      continue;
+
+    IupTextConvertLinColToPos(multitext, i, len - count, &pos);
+    IupSetStrf(multitext, "DELETERANGE", "%d,%d", pos, count);
+  }
+}
+
+void changeEolToSpace(Ihandle *multitext)
+{
+  while (1)
+  {
+    char *text = IupGetAttribute(multitext, "VALUE");
+
+    char *c = strchr(text, '\n');
+    if (c==NULL)
+      break;
+
+    int pos = (int)(c - text);
+
+    IupSetStrf(multitext, "DELETERANGE", "%d,%d", pos, 1);
+    IupSetAttributeId(multitext, "INSERT", pos, " ");
   }
 }
 
@@ -796,6 +968,118 @@ int item_invertmarks_action_cb(Ihandle* ih)
   return IUP_DEFAULT;
 }
 
+int item_eoltospace_action_cb(Ihandle* ih)
+{
+  Ihandle* multitext = IupGetDialogChild(ih, "MULTITEXT");
+
+  IupSetAttribute(multitext, "UNDOACTION", "BEGIN");
+
+  changeEolToSpace(multitext);
+
+  IupSetAttribute(multitext, "UNDOACTION", "END");
+
+  return IUP_DEFAULT;
+}
+
+int item_removespaceeol_action_cb(Ihandle* ih)
+{
+  Ihandle* multitext = IupGetDialogChild(ih, "MULTITEXT");
+
+  IupSetAttribute(multitext, "UNDOACTION", "BEGIN");
+
+  removeTrailingSpaces(multitext);
+
+  removeLeadingSpaces(multitext);
+
+  changeEolToSpace(multitext);
+
+  IupSetAttribute(multitext, "UNDOACTION", "END");
+
+  return IUP_DEFAULT;
+}
+
+int item_trimtrailing_action_cb(Ihandle* ih)
+{
+  Ihandle* multitext = IupGetDialogChild(ih, "MULTITEXT");
+
+  IupSetAttribute(multitext, "UNDOACTION", "BEGIN");
+
+  removeTrailingSpaces(multitext);
+
+  IupSetAttribute(multitext, "UNDOACTION", "END");
+
+  return IUP_DEFAULT;
+}
+
+int item_trimleading_action_cb(Ihandle* ih)
+{
+  Ihandle* multitext = IupGetDialogChild(ih, "MULTITEXT");
+
+  IupSetAttribute(multitext, "UNDOACTION", "BEGIN");
+
+  removeLeadingSpaces(multitext);
+
+  IupSetAttribute(multitext, "UNDOACTION", "END");
+
+  return IUP_DEFAULT;
+}
+
+int item_trimtraillead_action_cb(Ihandle* ih)
+{
+  Ihandle* multitext = IupGetDialogChild(ih, "MULTITEXT");
+
+  IupSetAttribute(multitext, "UNDOACTION", "BEGIN");
+
+  removeTrailingSpaces(multitext);
+
+  removeLeadingSpaces(multitext);
+
+  IupSetAttribute(multitext, "UNDOACTION", "END");
+
+  return IUP_DEFAULT;
+}
+
+int item_tabtospace_action_cb(Ihandle* ih)
+{
+  Ihandle* multitext = IupGetDialogChild(ih, "MULTITEXT");
+
+  IupSetAttribute(multitext, "UNDOACTION", "BEGIN");
+
+  changeTabsToSpaces(multitext);
+
+  IupSetAttribute(multitext, "UNDOACTION", "END");
+
+  return IUP_DEFAULT;
+}
+
+int item_allspacetotab_action_cb(Ihandle* ih)
+{
+  Ihandle* multitext = IupGetDialogChild(ih, "MULTITEXT");
+
+  IupSetAttribute(multitext, "UNDOACTION", "BEGIN");
+
+  changeTabsToSpaces(multitext);
+
+  changeSpacesToTabs(multitext);
+
+  IupSetAttribute(multitext, "UNDOACTION", "END");
+
+  return IUP_DEFAULT;
+}
+
+int item_leadingspacetotab_action_cb(Ihandle* ih)
+{
+  Ihandle* multitext = IupGetDialogChild(ih, "MULTITEXT");
+
+  IupSetAttribute(multitext, "UNDOACTION", "BEGIN");
+
+  changeLeadingSpacesToTabs(multitext);
+
+  IupSetAttribute(multitext, "UNDOACTION", "END");
+
+  return IUP_DEFAULT;
+}
+
 int find_next_action_cb(Ihandle* ih)
 {
   /* this callback can be called from the main dialog also */
@@ -1254,6 +1538,25 @@ int item_font_action_cb(Ihandle* item_font)
   return IUP_DEFAULT;
 }
 
+int item_tab_action_cb(Ihandle* item_font)
+{
+  Ihandle* multitext = IupGetDialogChild(item_font, "MULTITEXT");
+
+  int replaceBySpace = !IupGetInt(multitext, "USETABS");
+  int tabSize = IupGetInt(multitext, "TABSIZE");
+
+  if (!IupGetParam("Tab Settings", NULL,
+    0,
+    "Size: %i\n"
+    "Replace by Whitespace: %b\n", &tabSize, &replaceBySpace))
+    return IUP_IGNORE;
+
+  IupSetInt(multitext, "TABSIZE", tabSize);
+  IupSetInt(multitext, "USETABS", !replaceBySpace);
+
+  return IUP_DEFAULT;
+}
+
 int item_zoomin_action_cb(Ihandle* item_toolbar)
 {
   Ihandle* multitext = IupGetDialogChild(item_toolbar, "MULTITEXT");
@@ -1293,6 +1596,18 @@ int item_wordwrap_action_cb(Ihandle* item_wordwrap)
   return IUP_DEFAULT;
 }
 
+int item_showwhite_action_cb(Ihandle* item_showwhite)
+{
+  Ihandle* multitext = IupGetDialogChild(item_showwhite, "MULTITEXT");
+
+  if (IupGetInt(item_showwhite, "VALUE"))
+    IupSetAttribute(multitext, "WHITESPACEVIEW", "VISIBLEALWAYS");
+  else
+    IupSetAttribute(multitext, "WHITESPACEVIEW", "INVISIBLE");
+
+  return IUP_DEFAULT;
+}
+
 int item_toolbar_action_cb(Ihandle* item_toolbar)
 {
   Ihandle* multitext = IupGetDialogChild(item_toolbar, "MULTITEXT");
@@ -1314,6 +1629,42 @@ int item_statusbar_action_cb(Ihandle* item_statusbar)
   toggle_bar_visibility(item_statusbar, statusbar);
 
   IupConfigSetVariableStr(config, "MainWindow", "Statusbar", IupGetAttribute(item_statusbar, "VALUE"));
+  return IUP_DEFAULT;
+}
+
+int item_linenumber_action_cb(Ihandle* item_linenumber)
+{
+  Ihandle* multitext = IupGetDialogChild(item_linenumber, "MULTITEXT");
+
+  if (IupGetInt(item_linenumber, "VALUE"))
+  {
+    IupSetInt(multitext, "MARGINWIDTH0", 0);
+    IupSetAttribute(item_linenumber, "VALUE", "OFF");
+  }
+  else
+  {
+    IupSetInt(multitext, "MARGINWIDTH0", 50);
+    IupSetAttribute(item_linenumber, "VALUE", "ON");
+  }
+
+  return IUP_DEFAULT;
+}
+
+int item_bookmark_action_cb(Ihandle* item_bookmark)
+{
+  Ihandle* multitext = IupGetDialogChild(item_bookmark, "MULTITEXT");
+
+  if (IupGetInt(item_bookmark, "VALUE"))
+  {
+    IupSetInt(multitext, "MARGINWIDTH1", 0);
+    IupSetAttribute(item_bookmark, "VALUE", "OFF");
+  }
+  else
+  {
+    IupSetInt(multitext, "MARGINWIDTH1", 20);
+    IupSetAttribute(item_bookmark, "VALUE", "ON");
+  }
+
   return IUP_DEFAULT;
 }
 
@@ -1339,16 +1690,17 @@ Ihandle* create_main_dialog(Ihandle *config)
   Ihandle *sub_menu_file, *file_menu, *item_exit, *item_new, *item_open, *item_save, *item_saveas, *item_revert;
   Ihandle *sub_menu_edit, *edit_menu, *item_find, *item_find_next, *item_goto, *item_gotombrace, *item_copy, *item_paste, *item_cut, *item_delete, *item_select_all;
   Ihandle *item_togglemark, *item_nextmark, *item_previousmark, *item_clearmarks, *item_cutmarked, *item_copymarked, *item_pastetomarked, *item_removemarked,
-    *item_removeunmarked, *item_invertmarks;
+    *item_removeunmarked, *item_invertmarks, *item_tabtospace, *item_allspacetotab, *item_leadingspacetotab;
+  Ihandle *item_trimleading, *item_trimtrailing, *item_trimtraillead, *item_eoltospace, *item_removespaceeol;
   Ihandle *item_undo, *item_redo;
   Ihandle *case_menu, *item_uppercase, *item_lowercase;
   Ihandle *btn_cut, *btn_copy, *btn_paste, *btn_find, *btn_new, *btn_open, *btn_save;
-  Ihandle *sub_menu_format, *format_menu, *item_font, *item_replace;
+  Ihandle *sub_menu_format, *format_menu, *item_font, *item_tab, *item_replace;
   Ihandle *sub_menu_help, *help_menu, *item_help, *item_about;
-  Ihandle *sub_menu_view, *view_menu, *item_toolbar, *item_statusbar;
+  Ihandle *sub_menu_view, *view_menu, *item_toolbar, *item_statusbar, *item_linenumber, *item_bookmark;
   Ihandle *zoom_menu, *item_zoomin, *item_zoomout, *item_restorezoom;
   Ihandle *lbl_statusbar, *toolbar_hb, *recent_menu;
-  Ihandle *item_wordwrap;
+  Ihandle *item_wordwrap, *item_showwhite;
   const char* font;
 
   multitext = IupScintilla();
@@ -1363,6 +1715,7 @@ Ihandle* create_main_dialog(Ihandle *config)
 
   IupSetAttribute(multitext, "STYLEFGCOLOR34", "255 0 0");
   IupSetInt(multitext, "MARGINWIDTH0", 50);
+  IupSetInt(multitext, "MARGINWIDTH1", 20);
   IupSetAttribute(multitext, "MARGINTYPE1", "SYMBOL");
   IupSetAttribute(multitext, "MARGINSENSITIVE1", "YES");
   IupSetAttribute(multitext, "MARGINMASKFOLDERS1", "NO");
@@ -1520,6 +1873,30 @@ Ihandle* create_main_dialog(Ihandle *config)
   item_invertmarks = IupItem("Inverse Bookmark", NULL);
   IupSetCallback(item_invertmarks, "ACTION", (Icallback)item_invertmarks_action_cb);
 
+  item_trimtrailing = IupItem("Trim Trailing Space", NULL);
+  IupSetCallback(item_trimtrailing, "ACTION", (Icallback)item_trimtrailing_action_cb);
+
+  item_trimtraillead = IupItem("Trim Trailing and Leading Space", NULL);
+  IupSetCallback(item_trimtraillead, "ACTION", (Icallback)item_trimtraillead_action_cb);
+
+  item_eoltospace = IupItem("EOL to Space", NULL);
+  IupSetCallback(item_eoltospace, "ACTION", (Icallback)item_eoltospace_action_cb);
+
+  item_removespaceeol = IupItem("Remove Unnecessary Blanks and EOL", NULL);
+  IupSetCallback(item_removespaceeol, "ACTION", (Icallback)item_removespaceeol_action_cb);
+
+  item_trimleading = IupItem("Trim Leading Space", NULL);
+  IupSetCallback(item_trimleading, "ACTION", (Icallback)item_trimleading_action_cb);
+
+  item_tabtospace = IupItem("TAB to Space", NULL);
+  IupSetCallback(item_tabtospace, "ACTION", (Icallback)item_tabtospace_action_cb);
+
+  item_allspacetotab = IupItem("Space to TAB (All)", NULL);
+  IupSetCallback(item_allspacetotab, "ACTION", (Icallback)item_allspacetotab_action_cb);
+
+  item_leadingspacetotab = IupItem("Space to TAB (Leading)", NULL);
+  IupSetCallback(item_leadingspacetotab, "ACTION", (Icallback)item_leadingspacetotab_action_cb);
+
   item_zoomin = IupItem("Zoom In\tCtrl_Num +", NULL);
   IupSetCallback(item_zoomin, "ACTION", (Icallback)item_zoomin_action_cb);
 
@@ -1533,6 +1910,10 @@ Ihandle* create_main_dialog(Ihandle *config)
   IupSetCallback(item_wordwrap, "ACTION", (Icallback)item_wordwrap_action_cb);
   IupSetAttribute(item_wordwrap, "AUTOTOGGLE", "YES");
 
+  item_showwhite = IupItem("Show White Spaces", NULL);
+  IupSetCallback(item_showwhite, "ACTION", (Icallback)item_showwhite_action_cb);
+  IupSetAttribute(item_showwhite, "AUTOTOGGLE", "YES");
+
   item_toolbar = IupItem("&Toobar", NULL);
   IupSetCallback(item_toolbar, "ACTION", (Icallback)item_toolbar_action_cb);
   IupSetAttribute(item_toolbar, "VALUE", "ON");
@@ -1541,8 +1922,19 @@ Ihandle* create_main_dialog(Ihandle *config)
   IupSetCallback(item_statusbar, "ACTION", (Icallback)item_statusbar_action_cb);
   IupSetAttribute(item_statusbar, "VALUE", "ON");
 
+  item_linenumber = IupItem("Display Line Numbers", NULL);
+  IupSetCallback(item_linenumber, "ACTION", (Icallback)item_linenumber_action_cb);
+  IupSetAttribute(item_linenumber, "VALUE", "ON");
+
+  item_bookmark = IupItem("Display Bookmarks", NULL);
+  IupSetCallback(item_bookmark, "ACTION", (Icallback)item_bookmark_action_cb);
+  IupSetAttribute(item_bookmark, "VALUE", "ON");
+
   item_font = IupItem("&Font...", NULL);
   IupSetCallback(item_font, "ACTION", (Icallback)item_font_action_cb);
+
+  item_tab = IupItem("Tab...", NULL);
+  IupSetCallback(item_tab, "ACTION", (Icallback)item_tab_action_cb);
 
   item_help = IupItem("&Help...", NULL);
   IupSetCallback(item_help, "ACTION", (Icallback)item_help_action_cb);
@@ -1587,6 +1979,17 @@ Ihandle* create_main_dialog(Ihandle *config)
     item_removeunmarked,
     item_invertmarks,
     NULL)),
+    IupSubmenu("Blank Operations", IupMenu(
+    item_trimtrailing,
+    item_trimleading,
+    item_trimtraillead,
+    item_eoltospace,
+    item_removespaceeol,
+    IupSeparator(),
+    item_tabtospace,
+    item_allspacetotab,
+    item_leadingspacetotab,
+    NULL)),
     IupSeparator(),
     item_select_all,
     IupSeparator(),
@@ -1597,6 +2000,7 @@ Ihandle* create_main_dialog(Ihandle *config)
     NULL);
   format_menu = IupMenu(
     item_font,
+    item_tab,
     NULL);
   view_menu = IupMenu(
     IupSubmenu("Zoom", zoom_menu = IupMenu(
@@ -1605,9 +2009,12 @@ Ihandle* create_main_dialog(Ihandle *config)
     item_restorezoom,
     NULL)),
     item_wordwrap,
+    item_showwhite,
     IupSeparator(),
     item_toolbar,
     item_statusbar,
+    item_linenumber,
+    item_bookmark,
     NULL);
   help_menu = IupMenu(
     item_help,
@@ -1688,6 +2095,8 @@ Ihandle* create_main_dialog(Ihandle *config)
     IupSetStrAttribute(multitext, "FONT", font);
 
   IupSetAttribute(multitext, "WORDWRAPVISUALFLAGS", "MARGIN");
+  IupSetAttributeId(multitext, "MARKERFGCOLOR", 0, "255 0 0");
+  IupSetAttributeId(multitext, "MARKERALPHA", 0, "80");
 
   if (!IupConfigGetVariableIntDef(config, "MainWindow", "Toolbar", 1))
   {
@@ -1746,10 +2155,7 @@ int main(int argc, char **argv)
 }
 
 /* If instead of using IupText we use IupScintilla, then we can add:
-   - show white spaces
-   - margins
-   - tab size
-   - auto replace tabs by spaces
-   - line numbers
+   - margins - desligar
+   - overwrite
    and much more.
    */
