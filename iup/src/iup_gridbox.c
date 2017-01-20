@@ -704,11 +704,11 @@ static int iGridBoxCalcEmptyWidth(Ihandle *ih, int expand)
   Ihandle* child;
   int empty_width;
   int *col_expand = NULL;
+  int expand_count = 0, i = 0;
 
   if (ih->data->size_lin < 0)
     col_expand = (int*)calloc(ih->data->num_col, sizeof(int));
 
-  int expand_count=0, i=0;
   for (child = ih->firstchild; child; child = child->brother)
   {
     if (!(child->flags & IUP_FLOATING))
@@ -757,11 +757,11 @@ static int iGridBoxCalcEmptyHeight(Ihandle *ih, int expand)
   Ihandle* child;
   int empty_height;
   int *lin_expand = NULL;
+  int expand_count = 0, i = 0;
 
   if (ih->data->size_col < 0)
     lin_expand = (int*)calloc(ih->data->num_lin, sizeof(int));
 
-  int expand_count=0, i=0;
   for (child = ih->firstchild; child; child = child->brother)
   {
     if (!(child->flags & IUP_FLOATING))
