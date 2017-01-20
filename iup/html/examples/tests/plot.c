@@ -560,9 +560,9 @@ static void InitPlots(void)
   IupSetAttribute(plot[9], "AXS_YAUTOMIN", "NO");
   IupSetAttribute(plot[9], "AXS_YAUTOMAX", "NO");
 
-  const double kLables[4] = { 2013, 2014, 2015, 2016 };
   {
     const double kData[4] = { 1000, 1170, 660, 1030 };
+    const double kLables[4] = { 2013, 2014, 2015, 2016 };
     IupPlotBegin(plot[9], 0);
     for (theI = 0; theI < 4; theI++)
       IupPlotAdd(plot[9], kLables[theI], kData[theI]);
@@ -575,6 +575,7 @@ static void InitPlots(void)
 
   {
     const double kData[4] = { 400, 460, 1120, 540 };
+    const double kLables[4] = { 2013, 2014, 2015, 2016 };
     IupPlotBegin(plot[9], 0);
     for (theI = 0; theI < 4; theI++)
       IupPlotAdd(plot[9], kLables[theI], kData[theI]);
