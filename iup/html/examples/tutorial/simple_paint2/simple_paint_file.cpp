@@ -5,6 +5,7 @@
 #include <iup.h>
 #include <im_convert.h>
 #include <im_process.h>
+#include <im_lib.h>
 
 
 void SimplePaintFile::Close()
@@ -106,7 +107,11 @@ bool SimplePaintFile::SaveAsFile(const char* new_filename)
 
 static void image_fill_white(imImage* image)
 {
+#if IM_VERSION_NUMBER > 312000
   double color[3];
+#else
+  float color[3];
+#endif
 
   color[0] = 255;
   color[1] = 255;

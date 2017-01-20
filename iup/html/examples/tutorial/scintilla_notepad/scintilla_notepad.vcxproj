@@ -19,7 +19,7 @@
     </ProjectConfiguration>
   </ItemGroup>
   <PropertyGroup Label="Globals">
-    <ProjectGuid>{C0E4757A-8A78-48C1-B507-E2A95AA18B25}</ProjectGuid>
+    <ProjectGuid>{E1563874-0732-46F5-BC4F-F373CF0652BA}</ProjectGuid>
     <RootNamespace>scintilla_notepad</RootNamespace>
     <Keyword>Win32Proj</Keyword>
   </PropertyGroup>
