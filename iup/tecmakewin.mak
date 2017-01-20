@@ -364,6 +364,10 @@ else
   GTK ?= x:/lng/gtk
 endif
 
+ifdef USE_IUPWEB
+  override USE_ATL = Yes
+endif
+
 GLUT ?= x:/lng/glut
 GLUT_LIB ?= $(GLUT)/lib
 GLUT_INC ?= $(GLUT)/include
