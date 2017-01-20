@@ -516,16 +516,25 @@ static void InitPlots(void)
   //IupSetAttribute(plot[9], "DS_PIESTARTANGLE", "90");
   IupSetAttribute(plot[9], "DS_PIECONTOUR", "YES");
   IupSetAttribute(plot[9], "HIGHLIGHTMODE", "SAMPLE");
-  //  IupSetAttribute(plot[9], "DS_PIERADIUS", "0.9");
-  IupSetAttribute(plot[9], "DS_PIEHOLE", "0.3"); // factor of radius
   IupSetAttribute(plot[9], "DS_PIESLICELABEL", "X");
-//  IupSetAttribute(plot[9], "DS_PIESLICELABEL", "PERCENT");
-//  IupSetAttribute(plot[9], "DS_PIESLICELABELPOS", "-1");
-  IupSetAttribute(plot[9], "AXS_YFONTSIZE", "12"); // label font
-  IupSetAttribute(plot[9], "AXS_YCOLOR", "255 255 255"); // label color
-  IupSetAttribute(plot[9], "DS_LINEWIDTH", "3"); // contour line width
-//  IupSetAttribute(plot[9], "DS_COLOR", "100 100 200"); // contour color
-  IupSetAttribute(plot[9], "DS_COLOR", "255 255 255"); // contour color
+  //IupSetAttribute(plot[9], "DS_PIESLICELABEL", "PERCENT");
+  IupSetAttribute(plot[9], "AXS_YFONTSIZE", "10"); // label font
+  if (1)
+  {
+    IupSetAttribute(plot[9], "AXS_YCOLOR", "255 255 255"); // label color
+    IupSetAttribute(plot[9], "DS_PIEHOLE", "0.3"); // factor of radius
+    IupSetAttribute(plot[9], "DS_COLOR", "255 255 255"); // contour color
+    IupSetAttribute(plot[9], "DS_LINEWIDTH", "3");
+  }
+  else
+  {
+    IupSetAttribute(plot[9], "DS_PIERADIUS", "0.8");
+    IupSetAttribute(plot[9], "DS_PIESLICELABELPOS", "-1");
+    IupSetAttribute(plot[9], "AXS_YCOLOR", "0 0 0"); // label color
+    IupSetAttribute(plot[9], "DS_LINEWIDTH", "1"); // contour line width
+    IupSetAttribute(plot[9], "DS_COLOR", "0 0 0"); // contour color
+  }
+
   IupSetAttribute(plot[9], "DS_MODE", "PIE");
 //  IupSetAttribute(plot[9], "GRAPHICSMODE", "OPENGL");
   //IupSetAttribute(plot[9], "GRAPHICSMODE", "NATIVE");
