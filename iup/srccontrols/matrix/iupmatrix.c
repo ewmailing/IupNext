@@ -1282,7 +1282,7 @@ static int iMatrixSetFontSizeAttrib(Ihandle* ih, int lin, int col, const char* v
   if (!iupGetFontInfo(font, typeface, &size, &is_bold, &is_italic, &is_underline, &is_strikeout))
     return 0;
 
-  IupSetfAttributeId2(ih, "FONT", lin, col, "%s, %s %d", typeface, is_bold ? "Bold " : "", is_italic ? "Italic " : "", is_underline ? "Underline " : "", is_strikeout ? "Strikeout " : "", value);
+  IupSetfAttributeId2(ih, "FONT", lin, col, "%s, %s%s%s%s %s", typeface, is_bold ? "Bold " : "", is_italic ? "Italic " : "", is_underline ? "Underline " : "", is_strikeout ? "Strikeout " : "", value);
 
   return 0;
 }
