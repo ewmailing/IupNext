@@ -317,6 +317,7 @@ namespace Iup
 
     im::Image GetImage(void) { return im::Image(IupGetNativeHandleImage(GetUserData("NATIVEIMAGE"))); }
   };
+  //TODO imImage* IupImageToImImage(Ihandle* iup_image)
 #endif
   class User : public Element
   {

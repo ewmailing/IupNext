@@ -10,6 +10,7 @@
 #include <im_util.h>
 #include <im_image.h>
 #include <im_raw.h>
+#include <im_palette.h>
 
 #include "iup.h"
 #include "iupim.h"
@@ -336,10 +337,9 @@ load_raw_finish:
 
 int IupSaveImage(Ihandle* ih, const char* file_name, const char* format)
 {
-  int width, height, i, bpp;
+  int width, height, bpp;
   unsigned char* data;
   int error;
-  long palette[256];
   imFile* ifile;
 
   iupASSERT(iupObjectCheck(ih));
@@ -374,7 +374,10 @@ int IupSaveImage(Ihandle* ih, const char* file_name, const char* format)
     error = imFileWriteImageInfo(ifile, width, height, IM_RGB|IM_TOPDOWN|IM_PACKED|IM_ALPHA, IM_BYTE);
   else /* bpp == 8 */
   {
-    for(i = 0; i < 256; i++)
+    long palette[256];
+    int i;
+
+    for (i = 0; i < 256; i++)
     {
       char* color = IupGetAttributeId(ih, "", i);
       if (!color)
@@ -455,7 +458,7 @@ imImage* IupGetNativeHandleImage(void* handle)
 
       if (bpp<=8 && colors_count)
       {
-        long* palette = (long*)malloc(256*sizeof(long));
+        long* palette = imPaletteNew(256);
         iInitPalette(palette, colors_count, colors);
         imImageSetPalette(image, palette, colors_count);
       }
@@ -550,4 +553,78 @@ Ihandle* IupImageFromImImage(const imImage* image)
   }
 
   return iup_image;
+}
+
+imImage* IupImageToImImage(Ihandle* iup_image)
+{
+  int width, height, bpp;
+  imImage* image = NULL;
+
+  unsigned char* image_data = (unsigned char*)IupGetAttribute(iup_image, "WID");
+  if (!image_data)
+    return NULL;
+
+  width = IupGetInt(iup_image, "WIDTH");
+  height = IupGetInt(iup_image, "HEIGHT");
+  bpp = IupGetInt(iup_image, "BPP");
+
+  if (bpp == 24 || bpp == 32)
+  {
+    int color_mode = IM_RGB;
+    int depth = 3;
+
+    if (bpp == 32)
+    {
+      color_mode |= IM_ALPHA;
+      depth++;
+    }
+
+    image = imImageCreate(width, height, color_mode, IM_BYTE);
+    if (!image)
+      return NULL;
+
+    /* imImage is always unpacked, IUP is always packed */
+    imConvertPacking(image_data, image->data[0], width, height, depth, depth, IM_BYTE, 1);
+
+    /* imImage is always bottom top, IUP is always top bottom */
+    iFlipData(image->data[0], image->width, image->height, depth);
+  }
+  else
+  {
+    long* palette = imPaletteNew(256);
+    int i;
+
+    image = imImageCreate(width, height, IM_MAP, IM_BYTE);
+    if (!image)
+      return NULL;
+
+    memcpy(image->data[0], image_data, image->size);
+
+    /* imImage is always bottom top, IUP is always top bottom */
+    iFlipData(image->data[0], image->width, image->height, 1);
+
+    for (i = 0; i < 256; i++)
+    {
+      char* color = IupGetAttributeId(iup_image, "", i);
+      if (!color)
+        break;
+
+      if (iupStrEqualNoCase(color, "BGCOLOR"))
+      {
+        unsigned char transp_index = (unsigned char)i;
+        imImageSetAttribute(image, "TransparencyIndex", IM_BYTE, 1, &transp_index);
+        palette[i] = imColorEncode(0, 0, 0);
+      }
+      else
+      {
+        unsigned char r, g, b;
+        iupStrToRGB(color, &r, &g, &b);
+        palette[i] = imColorEncode(r, g, b);
+      }
+    }
+
+    imImageSetPalette(image, palette, i);
+  }
+
+  return image;
 }
