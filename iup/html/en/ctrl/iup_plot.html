@@ -521,6 +521,11 @@ scale. (since 3.13)</p>
 <p><strong>BACKIMAGE_XMIN, BACKIMAGE_XMAX, BACKIMAGE_YMIN, BACKIMAGE_YMAX</strong>: 
 coordinates in plot scale to position the background image. The anchors in the 
 image are the left-bottom and the top-right corners. (since 3.13) </p>
+<p><strong>DATASETCLIPPING</strong>: controls the clipping the dataset drawing. 
+Can be: NONE, AREA or AREAOFFSET. Default: AREA. When AREA clipping is set to 
+the regular dataset area. When AREAOFFSET clipping area is extended by a 2% 
+offset or at least 10 pixels, but only when not in zoom. When NONE area is 
+extended up to the plot limits. (since 3.22)</p>
 <h4>Title Configuration </h4>
 <p><b>TITLE:</b> the title. If NULL will not be displayed.</p>
 <p><b>TITLECOLOR</b>: title color. Default: FGCOLOR.</p>

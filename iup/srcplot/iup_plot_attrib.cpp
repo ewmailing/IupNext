@@ -1319,6 +1319,24 @@ static char* iPlotGetGraphicsModeAttrib(Ihandle* ih)
   return graphics_mode_str[ih->data->graphics_mode];
 }
 
+static int iPlotSetDataSetClippingAttrib(Ihandle* ih, const char* value)
+{
+  if (iupStrEqualNoCase(value, "AREAOFFSET"))
+    ih->data->current_plot->mDataSetClipping = IUP_PLOT_CLIPAREAOFFSET;
+  else if (iupStrEqualNoCase(value, "NONE"))
+    ih->data->current_plot->mDataSetClipping = IUP_PLOT_CLIPNONE;
+  else
+    ih->data->current_plot->mDataSetClipping = IUP_PLOT_CLIPAREA;
+
+  return 0;
+}
+
+static char* iPlotGetDataSetClippingAttrib(Ihandle* ih)
+{
+  char* dataset_clipping_str[] = { "NONE", "AREA", "AREAOFFSET" };
+  return dataset_clipping_str[ih->data->current_plot->mDataSetClipping];
+}
+
 static int iPlotSetUseImageRGBAttrib(Ihandle* ih, const char* value)
 {
   if (iupStrBoolean(value))
@@ -3456,6 +3474,7 @@ void iupPlotRegisterAttributes(Iclass* ic)
   iupClassRegisterAttribute(ic, "TIPFORMAT", NULL, NULL, IUPAF_SAMEASSYSTEM, "%s (%s, %s)", IUPAF_NOT_MAPPED | IUPAF_NO_INHERIT);
   iupClassRegisterAttribute(ic, "ZOOM", NULL, iPlotSetZoomAttrib, NULL, NULL, IUPAF_WRITEONLY | IUPAF_NOT_MAPPED | IUPAF_NO_INHERIT);
   iupClassRegisterAttribute(ic, "EDITABLEVALUES", NULL, NULL, NULL, NULL, IUPAF_NOT_MAPPED | IUPAF_NO_INHERIT);
+  iupClassRegisterAttribute(ic, "DATASETCLIPPING", iPlotGetDataSetClippingAttrib, iPlotSetDataSetClippingAttrib, IUPAF_SAMEASSYSTEM, "AREA", IUPAF_NOT_MAPPED | IUPAF_NO_INHERIT);
 
   iupClassRegisterAttribute(ic, "MARGINLEFTAUTO", iPlotGetMarginLeftAutoAttrib, iPlotSetMarginLeftAutoAttrib, IUPAF_SAMEASSYSTEM, "Yes", IUPAF_NOT_MAPPED | IUPAF_NO_INHERIT);
   iupClassRegisterAttribute(ic, "MARGINRIGHTAUTO", iPlotGetMarginRightAutoAttrib, iPlotSetMarginRightAutoAttrib, IUPAF_SAMEASSYSTEM, "Yes", IUPAF_NOT_MAPPED | IUPAF_NO_INHERIT);
