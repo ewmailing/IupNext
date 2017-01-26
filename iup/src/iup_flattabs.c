@@ -416,6 +416,26 @@ static int iFlatTabsRedraw_CB(Ihandle* ih)
   return IUP_DEFAULT;
 }
 
+static int iFlatTabsCallTabChange(Ihandle* ih, Ihandle* prev_child, int prev_pos, Ihandle* child)
+{
+  IFnnn cb = (IFnnn)IupGetCallback(ih, "TABCHANGE_CB");
+  int ret = IUP_DEFAULT;
+
+  if (cb)
+    ret = cb(ih, child, prev_child);
+  else
+  {
+    IFnii cb2 = (IFnii)IupGetCallback(ih, "TABCHANGEPOS_CB");
+    if (cb2)
+    {
+      int pos = IupGetChildPos(ih, child);
+      ret = cb2(ih, pos, prev_pos);
+    }
+  }
+
+  return ret;
+}
+
 static void iFlatTabsCheckCurrentTab(Ihandle* ih, Ihandle* check_child, int pos, int removed)
 {
   Ihandle* current_child = iFlatTabsGetCurrentTab(ih);
@@ -438,6 +458,9 @@ static void iFlatTabsCheckCurrentTab(Ihandle* ih, Ihandle* check_child, int pos,
     {
       if (p != pos && iupAttribGetBooleanId(ih, "TABVISIBLE", p))
       {
+        if (iupAttribGetBoolean(ih, "TABCHANGEONCHECK"))
+          iFlatTabsCallTabChange(ih, current_child, pos, child); /* ignore return value */
+
         iFlatTabsSetCurrentTab(ih, child);
         return;
       }
@@ -541,22 +564,8 @@ static int iFlatTabsButton_CB(Ihandle* ih, int button, int pressed, int x, int y
         Ihandle* prev_child = iFlatTabsGetCurrentTab(ih);
         if (prev_child != child)
         {
-          IFnnn cb = (IFnnn)IupGetCallback(ih, "TABCHANGE_CB");
-          int ret = IUP_DEFAULT;
-
-          if (cb)
-            ret = cb(ih, child, prev_child);
-          else
-          {
-            IFnii cb2 = (IFnii)IupGetCallback(ih, "TABCHANGEPOS_CB");
-            if (cb2)
-            {
-              int pos = tab_found;
-              int prev_pos = IupGetChildPos(ih, prev_child);
-              ret = cb2(ih, pos, prev_pos);
-            }
-          }
-
+          int prev_pos = IupGetChildPos(ih, prev_child);
+          int ret = iFlatTabsCallTabChange(ih, prev_child, prev_pos, child);
           if (ret == IUP_DEFAULT)
             iFlatTabsSetCurrentTab(ih, child);
         }
@@ -1278,6 +1287,7 @@ Iclass* iupFlatTabsNewClass(void)
   iupClassRegisterAttribute(ic, "FIXEDWIDTH", NULL, iFlatTabsUpdateSetAttrib, NULL, NULL, IUPAF_NO_INHERIT);
   iupClassRegisterAttribute(ic, "EXTRABOX", iFlatTabsGetExtraBoxAttrib, NULL, NULL, NULL, IUPAF_IHANDLENAME | IUPAF_READONLY | IUPAF_NOT_MAPPED | IUPAF_NO_INHERIT);
   iupClassRegisterAttribute(ic, "EXTRABOX_HANDLE", iFlatTabsGetExtraBoxHandleAttrib, NULL, NULL, NULL, IUPAF_IHANDLE | IUPAF_READONLY | IUPAF_NOT_MAPPED | IUPAF_NO_INHERIT);
+  iupClassRegisterAttribute(ic, "TABCHANGEONCHECK", NULL, NULL, NULL, NULL, IUPAF_NO_INHERIT);
 
   /* IupFlatTabs Child only */
   iupClassRegisterAttributeId(ic, "TABTITLE", NULL, (IattribSetIdFunc)iFlatTabsUpdateSetAttrib, IUPAF_NO_DEFAULTVALUE | IUPAF_NO_INHERIT);
