@@ -428,7 +428,7 @@ static Ihandle* CreateTabs(int tab)
   IupSetAttribute(tabs, "TABACTIVE3", "NO");
 
   /* like Office 2016 */
-  if (1)
+  if (0)
   {
     IupSetAttribute(tabs, "FORECOLOR", "192 0 0");
     IupSetAttribute(tabs, "TABSBACKCOLOR", "192 0 0");
@@ -438,7 +438,7 @@ static Ihandle* CreateTabs(int tab)
     IupSetAttribute(tabs, "SHOWLINES", "NO");
   }
 
-//  IupSetAttribute(tabs, "SHOWCLOSE", "yes");
+  IupSetAttribute(tabs, "SHOWCLOSE", "yes");
 //  IupSetAttribute(tabs, "TABSPADDING", "10x50");
 //  IupSetAttribute(tabs, "TABSFONTSIZE", "36");
 

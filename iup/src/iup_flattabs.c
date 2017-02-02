@@ -79,7 +79,8 @@ static void iFlatTabsSetCurrentTab(Ihandle* ih, Ihandle* child)
     IupSetAttribute(current_child, "VISIBLE", "No");
 
   iupAttribSet(ih, "_IUPFTABS_VALUE_HANDLE", (char*)child);
-  IupSetAttribute(child, "VISIBLE", "Yes");
+  if (child)
+    IupSetAttribute(child, "VISIBLE", "Yes");
 
   IupUpdate(ih);
 }
@@ -441,7 +442,7 @@ static void iFlatTabsCheckCurrentTab(Ihandle* ih, Ihandle* check_child, int pos,
   Ihandle* current_child = iFlatTabsGetCurrentTab(ih);
   if (current_child == check_child)
   {
-    int p;
+    int p, v = 0;
     Ihandle* child;
 
     /* if given tab is the current tab,
@@ -456,18 +457,29 @@ static void iFlatTabsCheckCurrentTab(Ihandle* ih, Ihandle* check_child, int pos,
 
     for (child = ih->firstchild; child; child = child->brother)
     {
-      if (p != pos && iupAttribGetBooleanId(ih, "TABVISIBLE", p))
+      if (iupAttribGetBooleanId(ih, "TABVISIBLE", p))
       {
-        if (iupAttribGetBoolean(ih, "TABCHANGEONCHECK"))
-          iFlatTabsCallTabChange(ih, current_child, pos, child); /* ignore return value */
+        v++;
 
-        iFlatTabsSetCurrentTab(ih, child);
-        return;
+        if (p != pos)
+        {
+          if (iupAttribGetBoolean(ih, "TABCHANGEONCHECK"))
+            iFlatTabsCallTabChange(ih, current_child, pos, child); /* ignore return value */
+
+          iFlatTabsSetCurrentTab(ih, child);
+          return;
+        }
       }
 
       p++;
       if (removed && p == pos)
         p++;  /* increment twice to compensate for child already removed */
+    }
+
+    if (v == 0 && ih->firstchild) /* all invisible but has at least 1 tab */
+    {
+      /* make sure to hide the current child */
+      iFlatTabsSetCurrentTab(ih, NULL);
     }
   }
 }
@@ -817,7 +829,10 @@ static int iFlatTabsSetTabVisibleAttrib(Ihandle* ih, int pos, const char* value)
   if (child)
   {
     if (!iupStrBoolean(value))
+    {
+      iupAttribSetStrId(ih, "TABVISIBLE", pos, value);
       iFlatTabsCheckCurrentTab(ih, child, pos, 0);
+    }
   }
 
   IupUpdate(ih);
