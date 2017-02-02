@@ -261,9 +261,9 @@ static int cbInsertTab(Ihandle* ih)
 static int cbRemoveTab(Ihandle* ih)
 {
   Ihandle* tabs = (Ihandle*)IupGetAttribute(ih, "APP_TABS");
-  Ihandle* vbox = IupGetHandle(IupGetAttribute(tabs, "VALUE"));
+  Ihandle* child = IupGetHandle(IupGetAttribute(tabs, "VALUE"));
 
-  IupDestroy(vbox);
+  IupDestroy(child);
 
   IupRefresh(tabs); /* update children layout */
 
@@ -382,7 +382,7 @@ static Ihandle* CreateTabs(int tab)
 //  if (tab)  // to test Tabs inside Tabs
   //  vboxA = IupVbox(CreateTabs(0), NULL);
 //  else
-  vboxA = IupBackgroundBox(IupVbox(IupFill(), IupLabel("Label AAA"), IupButton("Button AAA", "cbChildButton"), //NULL));
+  vboxA = IupBackgroundBox(IupVbox(IupFill(), IupSetAttributes(IupLabel("Label AAA"), "EXPAND=HORIZONTAL"), IupButton("Button AAA", "cbChildButton"), //NULL));
                              text, IupToggle("Button TTTT", "cbChildButton"), 
                              IupVal(NULL), IupSetAttributes(IupProgressBar(), "VALUE=0.5"), NULL));
   vboxB = IupBackgroundBox(IupVbox(IupLabel("Label BBB"), IupButton("Button BBB", "cbChildButton"), NULL));

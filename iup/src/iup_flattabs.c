@@ -437,7 +437,7 @@ static int iFlatTabsCallTabChange(Ihandle* ih, Ihandle* prev_child, int prev_pos
   return ret;
 }
 
-static void iFlatTabsCheckCurrentTab(Ihandle* ih, Ihandle* check_child, int pos, int removed)
+static int iFlatTabsCheckCurrentTab(Ihandle* ih, Ihandle* check_child, int pos, int removed)
 {
   Ihandle* current_child = iFlatTabsGetCurrentTab(ih);
   if (current_child == check_child)
@@ -453,7 +453,7 @@ static void iFlatTabsCheckCurrentTab(Ihandle* ih, Ihandle* check_child, int pos,
 
     p = 0;
     if (removed && p == pos)
-      p++;
+      p++;  /* increment twice to compensate for child already removed */
 
     for (child = ih->firstchild; child; child = child->brother)
     {
@@ -467,7 +467,7 @@ static void iFlatTabsCheckCurrentTab(Ihandle* ih, Ihandle* check_child, int pos,
             iFlatTabsCallTabChange(ih, current_child, pos, child); /* ignore return value */
 
           iFlatTabsSetCurrentTab(ih, child);
-          return;
+          return 1;
         }
       }
 
@@ -480,8 +480,11 @@ static void iFlatTabsCheckCurrentTab(Ihandle* ih, Ihandle* check_child, int pos,
     {
       /* make sure to hide the current child */
       iFlatTabsSetCurrentTab(ih, NULL);
+      return 1;
     }
   }
+
+  return 0;
 }
 
 static int iFlatTabsFindTab(Ihandle* ih, int cur_x, int cur_y, int show_close, int *inside_close)
@@ -825,17 +828,21 @@ static char* iFlatTabsGetExtraBoxAttrib(Ihandle* ih)
 
 static int iFlatTabsSetTabVisibleAttrib(Ihandle* ih, int pos, const char* value)
 {
+  int updated = 0;
+
   Ihandle* child = IupGetChild(ih, pos);
   if (child)
   {
     if (!iupStrBoolean(value))
     {
       iupAttribSetStrId(ih, "TABVISIBLE", pos, value);
-      iFlatTabsCheckCurrentTab(ih, child, pos, 0);
+      updated = iFlatTabsCheckCurrentTab(ih, child, pos, 0);
     }
   }
 
-  IupUpdate(ih);
+  if (!updated)
+    IupUpdate(ih);
+
   return 1;
 }
 
@@ -1072,34 +1079,48 @@ static int iFlatTabsSetTabsFontAttrib(Ihandle* ih, const char* value)
 
 /*********************************************************************************/
 
+#define ATTRIB_ID_COUNT 8
+const static char* attrib_id[ATTRIB_ID_COUNT] = {
+  "TABTITLE",
+  "TABIMAGE",
+  "TABVISIBLE",
+  "TABACTIVE",
+  "TABFORECOLOR",
+  "TABBACKCOLOR",
+  "TABHIGHCOLOR",
+  "TABFONT"
+};
 
 static void iFlatTabsChildAddedMethod(Ihandle* ih, Ihandle* child)
 {
-#define CHILD_ATTRIB_COUNT 7
-  const char* child_attrib[CHILD_ATTRIB_COUNT] = {
-    "TABTITLE",
-    "TABIMAGE",
-    "TABVISIBLE",
-    "TABACTIVE",
-    "TABFORECOLOR",
-    "TABBACKCOLOR",
-    "TABFONT"
-  };
   Ihandle* current_child;
   char* bgcolor;
+  int i, p, count, pos;
+    
+  pos = IupGetChildPos(ih, child);
+  count = IupGetChildCount(ih);
 
-  int i, pos = IupGetChildPos(ih, child);
-
-  for (i = 0; i < CHILD_ATTRIB_COUNT; i++)
+  /* if inserted before last tab, must update Id based attributes */
+  for (p = count - 1; p > pos; p--)
   {
-    if (!iupAttribGetId(ih, child_attrib[i], pos))
+    for (i = 0; i < ATTRIB_ID_COUNT; i++)
     {
-      /* transfer form child to Id based attribute */
-      char* value = iupAttribGet(child, child_attrib[i]);
+      char* value = iupAttribGetId(ih, attrib_id[i], p - 1);
+      iupAttribSetStrId(ih, attrib_id[i], p, value);
+      iupAttribSetStrId(ih, attrib_id[i], p - 1, NULL);
+    }
+  }
+
+  /* transfer form child to Id based attribute */
+  for (i = 0; i < ATTRIB_ID_COUNT; i++)
+  {
+    if (!iupAttribGetId(ih, attrib_id[i], pos))
+    {
+      char* value = iupAttribGet(child, attrib_id[i]);
       if (value)
-        iupAttribSetStrId(ih, child_attrib[i], pos, value);
-      else if (iupStrEqual(child_attrib[i], "TABVISIBLE") || iupStrEqual(child_attrib[i], "TABACTIVE")) 
-        iupAttribSetStrId(ih, child_attrib[i], pos, "Yes");  /* ensure a default value */
+        iupAttribSetStrId(ih, attrib_id[i], pos, value);
+      else if (iupStrEqual(attrib_id[i], "TABVISIBLE") || iupStrEqual(attrib_id[i], "TABACTIVE")) 
+        iupAttribSetStrId(ih, attrib_id[i], pos, "Yes");  /* ensure a default value */
     }
   }
 
@@ -1114,12 +1135,32 @@ static void iFlatTabsChildAddedMethod(Ihandle* ih, Ihandle* child)
   if (!current_child)
     iFlatTabsSetCurrentTab(ih, child);
   else
+  {
     IupSetAttribute(child, "VISIBLE", "No");
+    IupUpdate(ih);
+  }
 }
 
 static void iFlatTabsChildRemovedMethod(Ihandle* ih, Ihandle* child, int pos)
 {
+  int p, i, count;
+
   iFlatTabsCheckCurrentTab(ih, child, pos, 1);
+
+  count = IupGetChildCount(ih);
+
+  /* if removed before last tab, must update Id based attributes */
+  for (p = pos; p < count; p++)
+  {
+    for (i = 0; i < ATTRIB_ID_COUNT; i++)
+    {
+      char* value = iupAttribGetId(ih, attrib_id[i], p + 1);
+      iupAttribSetStrId(ih, attrib_id[i], p, value);
+      iupAttribSetStrId(ih, attrib_id[i], p + 1, NULL);
+    }
+  }
+
+  IupUpdate(ih);
 }
 
 static void iFlatTabsComputeNaturalSizeMethod(Ihandle* ih, int *w, int *h, int *children_expand)
@@ -1313,6 +1354,7 @@ Iclass* iupFlatTabsNewClass(void)
   iupClassRegisterAttributeId(ic, "TABBACKCOLOR", NULL, (IattribSetIdFunc)iFlatTabsUpdateSetAttrib, IUPAF_NO_DEFAULTVALUE | IUPAF_NO_INHERIT);
   iupClassRegisterAttributeId(ic, "TABHIGHCOLOR", NULL, NULL, IUPAF_NO_DEFAULTVALUE | IUPAF_NO_INHERIT);
   iupClassRegisterAttributeId(ic, "TABFONT", NULL, (IattribSetIdFunc)iFlatTabsUpdateSetAttrib, IUPAF_NO_DEFAULTVALUE | IUPAF_NO_INHERIT);
+
   iupClassRegisterAttributeId(ic, "TABFONTSTYLE", iFlatTabsGetTabFontStyleAttrib, iFlatTabsSetTabFontStyleAttrib, IUPAF_NO_INHERIT);
   iupClassRegisterAttributeId(ic, "TABFONTSIZE", iFlatTabsGetTabFontSizeAttrib, iFlatTabsSetTabFontSizeAttrib, IUPAF_NO_INHERIT);
 
