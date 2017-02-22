@@ -733,6 +733,14 @@ static void winCanvasRegisterClass(void)
   RegisterClass(&wndclass);
 }
 
+static void winCanvasRelease(Iclass* ic)
+{
+  (void)ic;
+
+  if (iupwinClassExist(TEXT("IupCanvas")))
+    UnregisterClass(TEXT("IupCanvas"), iupwin_hinstance);
+}
+
 void iupdrvCanvasInitClass(Iclass* ic)
 {
   if (!iupwinClassExist(TEXT("IupCanvas")))
@@ -741,6 +749,7 @@ void iupdrvCanvasInitClass(Iclass* ic)
   /* Driver Dependent Class functions */
   ic->Map = winCanvasMapMethod;
   ic->UnMap = winCanvasUnMapMethod;
+  ic->Release = winCanvasRelease;
 
   /* Driver Dependent Attribute functions */
 

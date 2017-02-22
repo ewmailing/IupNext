@@ -991,6 +991,21 @@ static void winDialogRegisterClass(int type)
   RegisterClass(&wndclass); 
 }
 
+static void winDialogRelease(Iclass* ic)
+{
+  (void)ic;
+
+  if (iupwinClassExist(TEXT("IupDialog")))
+  {
+    UnregisterClass(TEXT("IupDialogMDIChild"), iupwin_hinstance);
+    UnregisterClass(TEXT("IupDialogMDIFrame"), iupwin_hinstance);
+    UnregisterClass(TEXT("IupDialogControl"), iupwin_hinstance);
+    UnregisterClass(TEXT("IupDialogNoSaveBits"), iupwin_hinstance);
+    UnregisterClass(TEXT("IupDialog"), iupwin_hinstance);
+  }
+}
+
+
 /****************************************************************
                      dialog class functions
 ****************************************************************/
@@ -1796,6 +1811,7 @@ void iupdrvDialogInitClass(Iclass* ic)
   ic->Map = winDialogMapMethod;
   ic->UnMap = winDialogUnMapMethod;
   ic->LayoutUpdate = winDialogLayoutUpdateMethod;
+  ic->Release = winDialogRelease;
 
   /* Callback Windows Only*/
   iupClassRegisterCallback(ic, "MDIACTIVATE_CB", "");

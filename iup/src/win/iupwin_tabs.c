@@ -1414,6 +1414,14 @@ static void winTabsRegisterClass(void)
   RegisterClass(&wndclass);
 }
 
+static void winTabsRelease(Iclass* ic)
+{
+  (void)ic;
+
+  if (iupwinClassExist(TEXT("IupTabsPage")))
+    UnregisterClass(TEXT("IupTabsPage"), iupwin_hinstance);
+}
+
 void iupdrvTabsInitClass(Iclass* ic)
 {
   if (!iupwinClassExist(TEXT("IupTabsPage")))
@@ -1424,6 +1432,7 @@ void iupdrvTabsInitClass(Iclass* ic)
   ic->UnMap = winTabsUnMapMethod;
   ic->ChildAdded     = winTabsChildAddedMethod;
   ic->ChildRemoved   = winTabsChildRemovedMethod;
+  ic->Release = winTabsRelease;
 
   /* Driver Dependent Attribute functions */
 
