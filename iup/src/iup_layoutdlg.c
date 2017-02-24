@@ -1362,7 +1362,7 @@ static void iLayoutDrawElement(IdrawCanvas* dc, Ihandle* ih, int marked, int nat
       iupStrNextLine(title, &len);  /* get the size of the first line */
       r = fr, g = fg, b = fb;
       iupStrToRGB(IupGetAttribute(ih, "FGCOLOR"), &r, &g, &b);
-      iupdrvDrawText(dc, title, len, x + 1, y + 1, r, g, b, IupGetAttribute(ih, "FONT"));
+      iupdrvDrawText(dc, title, len, x + 1, y + 1, w, h, r, g, b, IupGetAttribute(ih, "FONT"), IUP_ALIGN_ALEFT);
     }
 
     if (ih->iclass->childtype == IUP_CHILDNONE &&

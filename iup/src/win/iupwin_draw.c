@@ -652,14 +652,32 @@ void iupdrvDrawResetClip(IdrawCanvas* dc)
   SelectClipRgn(dc->hBitmapDC, NULL);
 }
 
-void iupdrvDrawText(IdrawCanvas* dc, const char* text, int len, int x, int y, unsigned char r, unsigned char g, unsigned char b, const char* font)
+void iupdrvDrawText(IdrawCanvas* dc, const char* text, int len, int x, int y, int w, int h, unsigned char r, unsigned char g, unsigned char b, const char* font, int align)
 {
-  int num_line;
+  RECT rect;
+  TCHAR* wtext;
+  UINT uFormat = DT_LEFT;
+
   HFONT hOldFont, hFont = (HFONT)iupwinGetHFont(font);
   SetTextColor(dc->hBitmapDC, RGB(r, g, b));
   hOldFont = SelectObject(dc->hBitmapDC, hFont);
 
-  num_line = iupStrLineCount(text);
+  rect.left = x;
+  rect.right = x + w;
+  rect.top = y;
+  rect.bottom = y + h;
+
+  wtext = iupwinStrToSystemLen(text, &len);
+
+  if (align == IUP_ALIGN_ARIGHT)
+    uFormat = DT_RIGHT;
+  else if (align == IUP_ALIGN_ACENTER)
+    uFormat = DT_CENTER;
+
+  DrawText(dc->hBitmapDC, wtext, len, &rect, uFormat);
+
+#if 0
+  int num_line = iupStrLineCount(text);
 
   if (num_line == 1)
   {
@@ -697,6 +715,7 @@ void iupdrvDrawText(IdrawCanvas* dc, const char* text, int len, int x, int y, un
       y += line_height;
     }
   }
+#endif
 
   SelectObject(dc->hBitmapDC, hOldFont);
 }

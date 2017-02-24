@@ -192,14 +192,27 @@ void iupdrvDrawResetClip(IdrawCanvas* dc)
   gdk_gc_set_clip_region(dc->pixmap_gc, NULL);
 }
 
-void iupdrvDrawText(IdrawCanvas* dc, const char* text, int len, int x, int y, unsigned char r, unsigned char g, unsigned char b, const char* font)
+void iupdrvDrawText(IdrawCanvas* dc, const char* text, int len, int x, int y, int w, int h, unsigned char r, unsigned char g, unsigned char b, const char* font, int align)
 {
   PangoLayout* fontlayout = (PangoLayout*)iupgtkGetPangoLayout(font);
+  PangoAlignment alignment = PANGO_ALIGN_LEFT;
   GdkColor color;
+  (void)w; /* unused */
+  (void)h; /* unused */
+
   iupgdkColorSet(&color, r, g, b);
   gdk_gc_set_rgb_fg_color(dc->pixmap_gc, &color);
+
   text = iupgtkStrConvertToSystemLen(text, &len);
   pango_layout_set_text(fontlayout, text, len);
+
+  if (align == IUP_ALIGN_ARIGHT)
+    alignment = PANGO_ALIGN_RIGHT;
+  else if (align == IUP_ALIGN_ACENTER)
+    alignment = PANGO_ALIGN_CENTER;
+
+  pango_layout_set_alignment(fontlayout, alignment);
+
   gdk_draw_layout(dc->pixmap, dc->pixmap_gc, x, y, fontlayout);
 }
 

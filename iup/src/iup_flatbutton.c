@@ -106,6 +106,7 @@ static int iFlatButtonRedraw_CB(Ihandle* ih)
   char* bgcolor = iupAttribGetStr(ih, "BGCOLOR");
   char* bgimage = iupAttribGet(ih, "BACKIMAGE");
   char* fgimage = iupAttribGet(ih, "FRONTIMAGE");
+  char* text_align = iupAttribGetStr(ih, "TEXTALIGNMENT");
   int border_width = ih->data->border_width;
   int draw_border = 0;
   int old_pressed = ih->data->pressed;
@@ -171,7 +172,7 @@ static int iFlatButtonRedraw_CB(Ihandle* ih)
   iupFlatDrawIcon(ih, dc, border_width, border_width,
                   ih->currentwidth - 2 * border_width, ih->currentheight - 2 * border_width,
                   ih->data->img_position, ih->data->spacing, ih->data->horiz_alignment, ih->data->vert_alignment, ih->data->horiz_padding, ih->data->vert_padding,
-                  iFlatButtonGetImageName(ih, "IMAGE", image, active, &make_inactive), make_inactive, title, fgcolor, bgcolor, active);
+                  iFlatButtonGetImageName(ih, "IMAGE", image, active, &make_inactive), make_inactive, title, text_align, fgcolor, bgcolor, active);
 
   if (fgimage)
     iFlatButtonDrawImage(ih, dc, border_width, border_width, "FRONTIMAGE", fgimage, active);
@@ -698,6 +699,7 @@ Iclass* iupFlatButtonNewClass(void)
   iupClassRegisterAttribute(ic, "IMAGEINACTIVE", NULL, NULL, NULL, NULL, IUPAF_IHANDLENAME | IUPAF_NO_DEFAULTVALUE | IUPAF_NO_INHERIT);
   
   iupClassRegisterAttribute(ic, "IMAGEPOSITION", iFlatButtonGetImagePositionAttrib, iFlatButtonSetImagePositionAttrib, IUPAF_SAMEASSYSTEM, "LEFT", IUPAF_NOT_MAPPED | IUPAF_NO_INHERIT);
+  iupClassRegisterAttribute(ic, "TEXTALIGNMENT", NULL, NULL, IUPAF_SAMEASSYSTEM, "ALEFT", IUPAF_NOT_MAPPED | IUPAF_NO_INHERIT);
 
   iupClassRegisterAttribute(ic, "BACKIMAGE", NULL, NULL, NULL, NULL, IUPAF_IHANDLENAME | IUPAF_NO_DEFAULTVALUE | IUPAF_NO_INHERIT);
   iupClassRegisterAttribute(ic, "BACKIMAGEPRESS", NULL, NULL, NULL, NULL, IUPAF_IHANDLENAME | IUPAF_NO_DEFAULTVALUE | IUPAF_NO_INHERIT);

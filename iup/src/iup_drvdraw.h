@@ -70,7 +70,7 @@ void iupdrvDrawPolygon(IdrawCanvas* dc, int* points, int count, unsigned char r,
 /** Draws a text.
  * x,y is at left,top corner of the text.
  * \ingroup draw */
-void iupdrvDrawText(IdrawCanvas* dc, const char* text, int len, int x, int y, unsigned char r, unsigned char g, unsigned char b, const char* font);
+void iupdrvDrawText(IdrawCanvas* dc, const char* text, int len, int x, int y, int w, int h, unsigned char r, unsigned char g, unsigned char b, const char* font, int align);
 
 /** Draws an image.
  * x,y is at left,top corner of the image.
@@ -108,7 +108,7 @@ void iupFlatDrawBox(IdrawCanvas* dc, int xmin, int xmax, int ymin, int ymax, con
 
 void iupFlatDrawIcon(Ihandle* ih, IdrawCanvas* dc, int icon_x, int icon_y, int icon_width, int icon_height,
                      int img_position, int spacing, int horiz_alignment, int vert_alignment, int horiz_padding, int vert_padding,
-                     const char* imagename, int make_inactive, const char* title, const char* fgcolor, const char* bgcolor, int active);
+                     const char* imagename, int make_inactive, const char* title, const char* text_align, const char* fgcolor, const char* bgcolor, int active);
 
 
 #ifdef __cplusplus

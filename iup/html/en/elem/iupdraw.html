@@ -84,7 +84,10 @@ iup.Draw<span class="auto-style2">Text(</span><strong>ih</strong>: ihandle<span 
 <p>Draws a text in the given position using the current
 <a href="../attrib/iup_font.html">FONT</a>. The size of the string is used only 
 in C. Can be 0 so <strong>strlen</strong> is used internally. The coordinates 
-are relative the top-left corner of the text.</p>
+are relative the top-left corner of the text. Strings with multiple line are 
+accepted using '\n&quot; as line separator. Horizontal text alignment for multiple 
+lines can be controlled using TEXTALIGNMENT attribute: ALEFT (default), ARIGHT 
+and ACENTER options (since 3.22).</p>
 <pre>void IupDrawImage(Ihandle* <strong>ih</strong>, const char* <strong>name</strong>, int <strong>make_inactive</strong>, int <strong>x</strong>, int <strong>y</strong>); [in C]
 iup.Draw<span class="auto-style2">Image(</span><strong>ih</strong>: ihandle<span class="auto-style2"><strong>, name</strong>: string or <strong>image</strong>: ihandle, <strong>make_inactive, x</strong>, <strong>y</strong>: number)</span> [in Lua]
 <strong>ih</strong>:DrawImage(<strong>name</strong><span class="auto-style2">: string or <strong>image</strong>: ihandle, <strong>make_inactive, x</strong>, <strong>y</strong>: number</span>) [in Lua]</pre>

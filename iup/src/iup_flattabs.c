@@ -229,6 +229,7 @@ static int iFlatTabsRedraw_CB(Ihandle* ih)
   char* tabs_forecolor = iupAttribGetStr(ih, "TABSFORECOLOR");
   char* tabs_highcolor = iupAttribGetStr(ih, "TABSHIGHCOLOR");
   int img_position = iupFlatGetImagePosition(iupAttribGetStr(ih, "TABSIMAGEPOSITION"));
+  char* text_align = iupAttribGetStr(ih, "TABSTEXTALIGNMENT");
   int active = IupGetInt(ih, "ACTIVE");  /* native implementation */
   int spacing = iupAttribGetInt(ih, "TABSIMAGESPACING");
   int horiz_padding, vert_padding;
@@ -350,7 +351,7 @@ static int iFlatTabsRedraw_CB(Ihandle* ih)
       iupFlatDrawIcon(ih, dc, x, 0,
                       icon_width, title_height,
                       img_position, spacing, horiz_alignment, vert_alignment, horiz_padding, vert_padding,
-                      tab_image, 0, tab_title, foreground_color, background_color, tab_active);
+                      tab_image, 0, tab_title, text_align, foreground_color, background_color, tab_active);
 
       iFlatTabsResetTabFont(ih);
 
@@ -1378,6 +1379,7 @@ Iclass* iupFlatTabsNewClass(void)
   iupClassRegisterAttribute(ic, "TABSIMAGESPACING", NULL, iFlatTabsUpdateSetAttrib, IUPAF_SAMEASSYSTEM, "2", IUPAF_NOT_MAPPED | IUPAF_NO_INHERIT);
   iupClassRegisterAttribute(ic, "TABSALIGNMENT", NULL, iFlatTabsUpdateSetAttrib, "ACENTER:ACENTER", NULL, IUPAF_NOT_MAPPED | IUPAF_NO_INHERIT);
   iupClassRegisterAttribute(ic, "TABSPADDING", NULL, iFlatTabsUpdateSetAttrib, IUPAF_SAMEASSYSTEM, "10x10", IUPAF_NOT_MAPPED | IUPAF_NO_INHERIT);
+  iupClassRegisterAttribute(ic, "TABSTEXTALIGNMENT", NULL, NULL, IUPAF_SAMEASSYSTEM, "ALEFT", IUPAF_NOT_MAPPED | IUPAF_NO_INHERIT);
 
   iupClassRegisterAttribute(ic, "SHOWCLOSE", NULL, NULL, NULL, NULL, IUPAF_NO_INHERIT);
   iupClassRegisterAttribute(ic, "CLOSEIMAGE", NULL, iFlatTabsUpdateSetAttrib, IUPAF_SAMEASSYSTEM, "IMGFLATCLOSE", IUPAF_IHANDLENAME | IUPAF_NO_DEFAULTVALUE | IUPAF_NOT_MAPPED | IUPAF_NO_INHERIT);
