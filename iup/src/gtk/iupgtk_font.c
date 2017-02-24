@@ -113,7 +113,7 @@ static IgtkFont* gtkFindFont(const char *font)
         double res = ((double)gdk_screen_get_width(gdk_screen_get_default()) / (double)gdk_screen_get_width_mm(gdk_screen_get_default())); /* pixels/mm */
         /* 1 point = 1/72 inch     1 inch = 25.4 mm */
         /* pixel = ((point/72)*25.4)*pixel/mm */
-        size = (int)((-size/res)*2.83464567 + 0.5); /* from pixels to points */
+        size = iupRound((-size / res)*2.83464567); /* from pixels to points */
       }
 
       sprintf(new_font, "%s, %s%s%d", typeface, is_bold?"Bold ":"", is_italic?"Italic ":"", size);

@@ -129,9 +129,9 @@ char* iupMenuProcessTitle(Ihandle* ih, const char* title)
   str = strchr(title, (int)(*key));
   if (str)
   {
-    int len = strlen(title);
+    int len = (int)strlen(title);
     char *new_title = malloc(len+1+1);
-    int pos = str-title;
+    int pos = (int)(str - title);
     memcpy(new_title, title, pos);
     new_title[pos] = '&';
     memcpy(new_title+pos+1, title+pos, len-pos+1);

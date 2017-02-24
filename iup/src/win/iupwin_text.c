@@ -324,27 +324,27 @@ static void winTextParseCharacterFormat(Ihandle* formattag, CHARFORMAT2 *charfor
   format = iupAttribGet(formattag, "FONTSCALE");
   if (format && charformat->yHeight != 0)
   {
-    float fval = 0;
+    double fval = 0;
     if (iupStrEqualNoCase(format, "XX-SMALL"))
-      fval = 0.5787037037037f;
+      fval = 0.5787037037037;
     else if (iupStrEqualNoCase(format, "X-SMALL"))
-      fval = 0.6444444444444f;
+      fval = 0.6444444444444;
     else if (iupStrEqualNoCase(format, "SMALL"))
-      fval = 0.8333333333333f;
+      fval = 0.8333333333333;
     else if (iupStrEqualNoCase(format, "MEDIUM"))
-      fval = 1.0f;
+      fval = 1.0;
     else if (iupStrEqualNoCase(format, "LARGE"))
-      fval = 1.2f;
+      fval = 1.2;
     else if (iupStrEqualNoCase(format, "X-LARGE"))
-      fval = 1.4399999999999f;
+      fval = 1.4399999999999;
     else if (iupStrEqualNoCase(format, "XX-LARGE"))
-      fval = 1.728f;
+      fval = 1.728;
     else 
-      iupStrToFloat(format, &fval);
+      iupStrToDouble(format, &fval);
 
     if (fval > 0)
     {
-      fval = ((float)charformat->yHeight)*fval;
+      fval = charformat->yHeight * fval;
       charformat->yHeight = iupROUND(fval);
     }
   }

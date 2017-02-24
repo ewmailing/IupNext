@@ -198,7 +198,7 @@ static int iParamTextAction_CB(Ihandle *self, int c, char *after)
       double min = iupAttribGetDouble(param, "MIN");
       double step = iupAttribGetDouble(self, "_IUPGP_INCSTEP");
       double val = iupAttribGetDouble(param, "VALUE");
-      IupSetInt(self, "SPINVALUE", (int)((val-min)/step + 0.5));
+      IupSetInt(self, "SPINVALUE", iupRound((val - min) / step));
     }
     else
     {
@@ -289,7 +289,7 @@ static int iParamValAction_CB(Ihandle *self)
       double min = iupAttribGetDouble(param, "MIN");
       double step = iupAttribGetDouble(ctrl, "_IUPGP_INCSTEP");
       double val = iupAttribGetDouble(param, "VALUE");
-      IupSetInt(ctrl, "SPINVALUE", (int)((val - min) / step + 0.5));
+      IupSetInt(ctrl, "SPINVALUE", iupRound((val - min) / step));
     }
     else
     {
@@ -838,8 +838,8 @@ static Ihandle* iParamCreateCtrlBox(Ihandle* param, const char *type)
         IupAppend(box, ctrl);
         IupSetCallback(ctrl, "SPIN_CB", (Icallback)iParamSpinReal_CB);
         /* SPINMIN=0 and SPININC=1 */
-        IupSetInt(ctrl, "SPINMAX", (int)((max-min)/step + 0.5));
-        IupSetInt(ctrl, "SPINVALUE", (int)((val-min)/step + 0.5));
+        IupSetInt(ctrl, "SPINMAX", iupRound((max - min) / step));
+        IupSetInt(ctrl, "SPINVALUE", iupRound((val - min) / step));
 
         iupAttribSetDouble(ctrl, "_IUPGP_INCSTEP", step);
         iupAttribSet(ctrl, "_IUPGP_SPINREAL", "1");

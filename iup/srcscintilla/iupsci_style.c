@@ -177,17 +177,17 @@ static char* iScintillaGetFontSizeFracStyleAttrib(Ihandle* ih, int style)
 
   size = IupScintillaSendMessage(ih, SCI_STYLESETSIZEFRACTIONAL, style, 0);
 
-  return iupStrReturnFloat((float)size/(float)SC_FONT_SIZE_MULTIPLIER);
+  return iupStrReturnDouble((double)size / (double)SC_FONT_SIZE_MULTIPLIER);
 }
 
 static int iScintillaSetFontSizeFracStyleAttrib(Ihandle* ih, int style, const char* value)
 {
-  float size;
+  double size;
 
   if(style == IUP_INVALID_ID)
     style = 0;  /* Lexer style default */
 
-  iupStrToFloat(value, &size);
+  iupStrToDouble(value, &size);
 
   IupScintillaSendMessage(ih, SCI_STYLESETSIZEFRACTIONAL, style, (int)(size*SC_FONT_SIZE_MULTIPLIER));
 

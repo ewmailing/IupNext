@@ -155,7 +155,7 @@ void iupMatrixAuxAdjustFirstFromScrollPos(ImatLinColData* p, int scroll_pos)
 */
 void iupMatrixAuxUpdateScrollPos(Ihandle* ih, int m)
 {
-  float pos;
+  double pos;
   int i, sb, scroll_pos;
   char* POS;
   ImatLinColData *p;
@@ -203,14 +203,14 @@ void iupMatrixAuxUpdateScrollPos(Ihandle* ih, int m)
     iupMatrixAuxAdjustFirstFromScrollPos(p, scroll_pos);
   }
 
-  pos = (float)scroll_pos/(float)p->total_visible_size;
+  pos = (double)scroll_pos / (double)p->total_visible_size;
 
   /* update last */
   iupMatrixAuxUpdateLast(p);
 
   /* update scroll pos */
   if (ih->data->canvas.sb & sb)
-    IupSetFloat(ih, POS, pos);
+    IupSetDouble(ih, POS, pos);
 }
 
 /* Calculate which is the last visible column/line of the matrix. 
@@ -330,7 +330,7 @@ static void iMatrixAuxUpdateVisibleSize(Ihandle* ih, int m)
         p->current_visible_size = p->total_visible_size;
     }
 
-    IupSetFloat(ih, D, (float)p->current_visible_size/(float)p->total_visible_size);
+    IupSetDouble(ih, D, (double)p->current_visible_size / (double)p->total_visible_size);
   }
 }
 

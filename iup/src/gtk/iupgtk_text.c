@@ -229,26 +229,26 @@ static void gtkTextParseCharacterFormat(Ihandle* formattag, GtkTextTag* tag)
   format = iupAttribGet(formattag, "FONTSCALE");
   if (format)
   {
-    float fval = 0;
+    double fval = 0;
     if (iupStrEqualNoCase(format, "XX-SMALL"))
-      fval = (float)PANGO_SCALE_XX_SMALL;
+      fval = PANGO_SCALE_XX_SMALL;
     else if (iupStrEqualNoCase(format, "X-SMALL"))
-      fval = (float)PANGO_SCALE_X_SMALL;
+      fval = PANGO_SCALE_X_SMALL;
     else if (iupStrEqualNoCase(format, "SMALL"))
-      fval = (float)PANGO_SCALE_SMALL;
+      fval = PANGO_SCALE_SMALL;
     else if (iupStrEqualNoCase(format, "MEDIUM"))
-      fval = (float)PANGO_SCALE_MEDIUM;
+      fval = PANGO_SCALE_MEDIUM;
     else if (iupStrEqualNoCase(format, "LARGE"))
-      fval = (float)PANGO_SCALE_LARGE;
+      fval = PANGO_SCALE_LARGE;
     else if (iupStrEqualNoCase(format, "X-LARGE"))
-      fval = (float)PANGO_SCALE_X_LARGE;
+      fval = PANGO_SCALE_X_LARGE;
     else if (iupStrEqualNoCase(format, "XX-LARGE"))
-      fval = (float)PANGO_SCALE_XX_LARGE;
+      fval = PANGO_SCALE_XX_LARGE;
     else 
-      iupStrToFloat(format, &fval);
+      iupStrToDouble(format, &fval);
 
     if (fval > 0)
-      g_object_set(G_OBJECT(tag), "scale", (double)fval, NULL);
+      g_object_set(G_OBJECT(tag), "scale", fval, NULL);
   }
 
   format = iupAttribGet(formattag, "FONTFACE");
@@ -969,7 +969,7 @@ static int gtkTextSetAppendAttrib(Ihandle* ih, const char* value)
 
 static int gtkTextSetAlignmentAttrib(Ihandle* ih, const char* value)
 {
-  float xalign;
+  gfloat xalign;
   GtkJustification justification;
 
   if (iupStrEqualNoCase(value, "ARIGHT"))

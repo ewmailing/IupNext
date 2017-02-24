@@ -16,18 +16,18 @@ int  iupMatrixScroll_CB(Ihandle* ih, int action, float posx, float posy);
 
 void iupMatrixScrollToVisible(Ihandle* ih, int lin, int col);
 
-typedef void (*iupMatrixScrollMoveFunc)(Ihandle* ih, int mode, float pos, int m);
-void  iupMatrixScrollMove(iupMatrixScrollMoveFunc func, Ihandle* ih, int mode, float pos, int m);
+typedef void(*iupMatrixScrollMoveFunc)(Ihandle* ih, int mode, double pos, int m);
+void  iupMatrixScrollMove(iupMatrixScrollMoveFunc func, Ihandle* ih, int mode, double pos, int m);
 
 /* Used only by the macros below */
-void iupMatrixScrollHomeFunc       (Ihandle* ih, int, float, int);
-void iupMatrixScrollEndFunc        (Ihandle* ih, int, float, int);
-void iupMatrixScrollLeftUpFunc     (Ihandle* ih, int, float, int);
-void iupMatrixScrollRightDownFunc  (Ihandle* ih, int, float, int);
-void iupMatrixScrollPgLeftUpFunc   (Ihandle* ih, int, float, int);
-void iupMatrixScrollPgRightDownFunc(Ihandle* ih, int, float, int);
-void iupMatrixScrollPosFunc        (Ihandle* ih, int, float, int);
-void iupMatrixScrollCrFunc         (Ihandle* ih, int, float, int);
+void iupMatrixScrollHomeFunc       (Ihandle* ih, int, double, int);
+void iupMatrixScrollEndFunc(Ihandle* ih, int, double, int);
+void iupMatrixScrollLeftUpFunc(Ihandle* ih, int, double, int);
+void iupMatrixScrollRightDownFunc(Ihandle* ih, int, double, int);
+void iupMatrixScrollPgLeftUpFunc(Ihandle* ih, int, double, int);
+void iupMatrixScrollPgRightDownFunc(Ihandle* ih, int, double, int);
+void iupMatrixScrollPosFunc(Ihandle* ih, int, double, int);
+void iupMatrixScrollCrFunc(Ihandle* ih, int, double, int);
 
 /* Mode used to "walk" inside the matrix.
    It shows if the movement request was from the scrollbar or from a key.

@@ -430,7 +430,7 @@ static IglFont* iGLFindFont(Ihandle* ih, Ihandle* gl_parent, const char *font)
   iGLGetFontFilename(filename, typeface, is_bold, is_italic);
 
   if (size < 0)
-    size = (int)((-size*72.0) / res + 0.5);  /* convert to points */
+    size = iupRound((-size*72.0) / res);  /* convert to points */
 
   /* Check if the filename already exists in cache */
   fonts = (IglFont*)iupArrayGetData(gl_fonts);

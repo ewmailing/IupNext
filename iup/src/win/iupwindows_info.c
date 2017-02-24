@@ -64,11 +64,11 @@ int iupdrvGetScreenDepth(void)
   return bpp;
 }
 
-float iupdrvGetScreenDpi(void)
+double iupdrvGetScreenDpi(void)
 {
-  float dpi;
+  double dpi;
   HDC hDCDisplay = GetDC(NULL);
-  dpi = (float)GetDeviceCaps(hDCDisplay, LOGPIXELSY);
+  dpi = (double)GetDeviceCaps(hDCDisplay, LOGPIXELSY);
   ReleaseDC(NULL, hDCDisplay);
   return dpi;
 }

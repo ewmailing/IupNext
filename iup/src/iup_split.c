@@ -94,7 +94,7 @@ static int iSplitGetWidth1(Ihandle* ih)
 {
   /* This is the space available for the child,
      It does NOT depends on the child. */
-  int width1 = (int)(((ih->currentwidth-ih->data->barsize)*ih->data->val)/1000.0 + 0.5);
+  int width1 = iupRound(((ih->currentwidth - ih->data->barsize)*ih->data->val) / 1000.0);
   if (width1 < 0) width1 = 0;
   return width1;
 }
@@ -112,7 +112,7 @@ static int iSplitGetHeight1(Ihandle* ih)
 {
   /* This is the space available for the child,
      It does NOT depends on the child. */
-  int height1 = (int)(((ih->currentheight-ih->data->barsize)*ih->data->val)/1000.0 + 0.5);
+  int height1 = iupRound(((ih->currentheight - ih->data->barsize)*ih->data->val) / 1000.0);
   if (height1 < 0) height1 = 0;
   return height1;
 }

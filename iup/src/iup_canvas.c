@@ -55,12 +55,12 @@ void iupCanvasCalcScrollRealPos(double min, double max, double *pos,
 
 char* iupCanvasGetPosXAttrib(Ihandle* ih)
 {
-  return iupStrReturnFloat(ih->data->posx);
+  return iupStrReturnDouble(ih->data->posx);
 }
 
 char* iupCanvasGetPosYAttrib(Ihandle* ih)
 {
-  return iupStrReturnFloat(ih->data->posy);
+  return iupStrReturnDouble(ih->data->posy);
 }
 
 static int iCanvasCreateMethod(Ihandle* ih, void** params)

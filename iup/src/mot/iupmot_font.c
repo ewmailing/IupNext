@@ -104,7 +104,7 @@ static XFontStruct* motLoadFont(const char* foundry, const char *typeface, int s
     double res = ((double)DisplayWidth(iupmot_display, iupmot_screen) / (double)DisplayWidthMM(iupmot_display, iupmot_screen)); /* pixels/mm */
     /* 1 point = 1/72 inch     1 inch = 25.4 mm */
     /* pixel = ((point/72)*25.4)*pixel/mm */
-    size = (int)((-size/res)*2.83464567 + 0.5); /* from pixels to points */
+    size = iupRound((-size / res)*2.83464567); /* from pixels to points */
   }
 
   size *= 10; /* convert to deci-points */

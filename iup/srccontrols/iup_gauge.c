@@ -34,8 +34,6 @@
 #define IGAUGE_DASHED_GAP     3
 #define IGAUGE_DASHED_BLOCKS 20
 
-#define gaugeround(_) ((int)((_)+.5))
-
 
 struct _IcontrolData
 {
@@ -134,25 +132,25 @@ static void iGaugeDrawGauge(Ihandle* ih)
 
   if (ih->data->dashed)
   {
-    float step = (xend - xstart + 1) / (float)IGAUGE_DASHED_BLOCKS;
-    float boxw = step - IGAUGE_DASHED_GAP;
-    float vx   = (float)((xend-xstart + 1) * (ih->data->value - ih->data->vmin) / (ih->data->vmax - ih->data->vmin));
+    double step = (double)(xend - xstart + 1) / (double)IGAUGE_DASHED_BLOCKS;
+    double boxw = step - IGAUGE_DASHED_GAP;
+    double vx = (double)((xend - xstart + 1) * (ih->data->value - ih->data->vmin) / (ih->data->vmax - ih->data->vmin));
     int intvx  = (int)(100 * vx);
-    float i = 0;
+    double i = 0;
 
     if(ih->data->value == ih->data->vmin)
       return;
 
-    while(gaugeround(100*(i + boxw)) <= intvx)
+    while(iupRound(100*(i + boxw)) <= intvx)
     {
-      cdCanvasBox(ih->data->cd_canvas, xstart + gaugeround(i),
-                                       xstart + gaugeround(i + boxw) - 1, ystart, yend);
+      cdCanvasBox(ih->data->cd_canvas, xstart + iupRound(i),
+                                       xstart + iupRound(i + boxw) - 1, ystart, yend);
       i += step;
     }
   }
   else
   {
-    int xmid = xstart + gaugeround((xend-xstart + 1) * (ih->data->value - ih->data->vmin) / (ih->data->vmax - ih->data->vmin));
+    int xmid = xstart + iupRound((xend-xstart + 1) * (ih->data->value - ih->data->vmin) / (ih->data->vmax - ih->data->vmin));
 
     if(ih->data->value != ih->data->vmin)
       cdCanvasBox(ih->data->cd_canvas, xstart, xmid, ystart, yend );

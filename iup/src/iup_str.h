@@ -228,7 +228,7 @@ int iupStrToRGB(const char *str, unsigned char *r, unsigned char *g, unsigned ch
 int iupStrToRGBA(const char *str, unsigned char *r, unsigned char *g, unsigned char *b, unsigned char *a);
 
 /** Converts the string to an int. The string must contains only the integer value.
- * Returns a a non zero value if sucessfull.
+ * Returns a a non zero value if successful.
  * \ingroup str */
 int iupStrToInt(const char *str, int *i);
 
@@ -240,20 +240,20 @@ int iupStrToInt(const char *str, int *i);
 int iupStrToIntInt(const char *str, int *i1, int *i2, char sep);
 
 /** Converts the string to a float. The string must contains only the real value.
- * Returns a a non zero value if sucessfull.
+ * Returns a a non zero value if successful.
  * \ingroup str */
 int iupStrToFloat(const char *str, float *f);
 int iupStrToFloatDef(const char *str, float *f, float def);
 
 /** Converts the string to a double. The string must contains only the real value.
- * Returns a a non zero value if sucessfull.
+ * Returns a a non zero value if successful.
  * \ingroup str */
 int iupStrToDouble(const char *str, double *d);
 int iupStrToDoubleDef(const char *str, double *d, double def);
 
 /** Converts the string to a double using the given decimal symbol. 
  * The string must contains only the real value.
- * Returns a a non zero value if sucessfull. Returns 2 if a locale was set.
+ * Returns a a non zero value if successful. Returns 2 if a locale was set.
  * \ingroup str */
 int iupStrToDoubleLocale(const char *str, double *d, const char* decimal_symbol);
 

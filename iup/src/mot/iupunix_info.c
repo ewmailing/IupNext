@@ -148,13 +148,13 @@ int iupdrvGetScreenDepth(void)
   return bpp;
 }
 
-float iupdrvGetScreenDpi(void)
+double iupdrvGetScreenDpi(void)
 {
-  float dpi;
+  double dpi;
   Display* drv_display = (Display*)iupdrvGetDisplay();
   int screen = XDefaultScreen(drv_display);
-  dpi = ((float)DisplayHeight(drv_display, screen) / (float)DisplayHeightMM(drv_display, screen));
-  return dpi * 25.4f;  /* mm to inch */
+  dpi = ((double)DisplayHeight(drv_display, screen) / (double)DisplayHeightMM(drv_display, screen));
+  return dpi * 25.4;  /* mm to inch */
 }
 
 void iupdrvGetCursorPos(int *x, int *y)

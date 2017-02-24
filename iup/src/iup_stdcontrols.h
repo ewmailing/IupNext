@@ -84,7 +84,7 @@ Iclass* iupBackgroundBoxNewBaseClass(const char* name, const char* base_name);
 /* Common definition of the canvas class */
 typedef struct _iupCanvas {
   int sb;    /* scrollbar configuration, valid only after map, use iupBaseGetScrollbar before map */
-  float posx, posy;
+  double posx, posy;
   int inside_resize;
 } iupCanvas;
 

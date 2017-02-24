@@ -1374,8 +1374,8 @@ static void iMatrixDrawMatrix(Ihandle* ih)
     /* if vertical scrollbar is visible */
     if (!iupAttribGetBoolean(ih, "YHIDDEN"))
     {
-      float posy = IupGetFloat(ih, "POSY");
-      float dy = IupGetFloat(ih, "DY");
+      double posy = IupGetDouble(ih, "POSY");
+      double dy = IupGetDouble(ih, "DY");
       int width = ih->data->w;
       if (width > ih->data->columns.total_size)
         width = ih->data->columns.total_size;
@@ -1385,15 +1385,15 @@ static void iMatrixDrawMatrix(Ihandle* ih)
         iupMATRIX_LINE(ih, 0, 0, width - 1, 0);  /* top horizontal line */
 
       /* if scrollbar at bottom, bottom line is not necessary */
-      if (posy < 1.0f - dy)
+      if (posy < 1.0 - dy)
         iupMATRIX_LINE(ih, 0, ih->data->h - 1, width - 1, ih->data->h - 1);  /* bottom horizontal line */
     }
 
     /* if horizontal scrollbar is visible */
     if (!iupAttribGetBoolean(ih, "XHIDDEN"))
     {
-      float posx = IupGetFloat(ih, "POSX");
-      float dx = IupGetFloat(ih, "DX");
+      double posx = IupGetDouble(ih, "POSX");
+      double dx = IupGetDouble(ih, "DX");
       int height = ih->data->h;
       if (height > ih->data->lines.total_size)
         height = ih->data->lines.total_size;
@@ -1403,7 +1403,7 @@ static void iMatrixDrawMatrix(Ihandle* ih)
         iupMATRIX_LINE(ih, 0, 0, 0, height - 1);  /* left vertical line */
 
       /* if scrollbar at right, right line is not necessary */
-      if (posx < 1.0f - dx)
+      if (posx < 1.0 - dx)
         iupMATRIX_LINE(ih, ih->data->w - 1, 0, ih->data->w - 1, height - 1);  /* right vertical line */
     }
   }

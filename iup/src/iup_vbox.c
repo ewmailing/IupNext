@@ -214,8 +214,8 @@ static void iVboxSetChildrenCurrentSizeMethod(Ihandle* ih, int shrink)
         char* weight_str = iupAttribGet(child, "EXPANDWEIGHT");
         if (weight_str)
         {
-          float weight; 
-          if (iupStrToFloat(weight_str, &weight))
+          double weight; 
+          if (iupStrToDouble(weight_str, &weight))
             empty = iupRound(empty * weight);
         }
         iupBaseSetCurrentSize(child, client_width, child->naturalheight+empty, shrink);

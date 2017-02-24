@@ -179,7 +179,7 @@ static Ihandle* iParseControl(Iclass *ic)
     Ihandle *new_control;
     void** params;
     int i, alloc_arg, num_arg,
-        num_format = strlen(format);
+      num_format = (int)strlen(format);
                       
     num_arg = num_format;
     alloc_arg = num_arg+20;
