@@ -176,12 +176,20 @@ wb_usr.tree =
               link= "ide_guide/codeblocks.html"
             },
             {
+              name= {nl= "CodeLite"},
+              link= "ide_guide/codelite.html"
+            },
+            {
               name= {nl= "Dev-C++"},
               link= "ide_guide/dev-cpp.html"
             },
             {
               name= {nl= "Eclipse for C++"},
               link= "ide_guide/eclipse.html"
+            },
+            {
+              name= {nl= "NetBeans"},
+              link= "ide_guide/netbeans.html"
             },
             {
               name= {nl= "Open Watcom C++"},
