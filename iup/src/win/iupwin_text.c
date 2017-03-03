@@ -820,7 +820,10 @@ static int winTextSetSelectedTextAttrib(Ihandle* ih, const char* value)
       return 0;
 
     str = winTextStrConvertToSystem(ih, value);
+
+    ih->data->disable_callbacks = 1;
     SendMessage(ih->handle, EM_REPLACESEL, (WPARAM)TRUE, (LPARAM)str);
+    ih->data->disable_callbacks = 0;
   }
   return 0;
 }
@@ -1018,7 +1021,11 @@ static int winTextSetInsertAttrib(Ihandle* ih, const char* value)
   if (!ih->handle)  /* do not do the action before map */
     return 0;
   if (value)
+  {
+    ih->data->disable_callbacks = 1;
     SendMessage(ih->handle, EM_REPLACESEL, (WPARAM)TRUE, (LPARAM)winTextStrConvertToSystem(ih, value));
+    ih->data->disable_callbacks = 0;
+  }
   return 0;
 }
 
@@ -1036,7 +1043,9 @@ static int winTextSetAppendAttrib(Ihandle* ih, const char* value)
   wpos = GetWindowTextLength(ih->handle)+1;
   SendMessage(ih->handle, EM_SETSEL, (WPARAM)wpos, (LPARAM)wpos);
 
-  if (ih->data->is_multiline && ih->data->append_newline && wpos!=1)
+  ih->data->disable_callbacks = 1;
+
+  if (ih->data->is_multiline && ih->data->append_newline && wpos != 1)
   {
     if (ih->data->has_formatting)
       SendMessage(ih->handle, EM_REPLACESEL, (WPARAM)FALSE, (LPARAM)TEXT("\r"));
@@ -1044,6 +1053,8 @@ static int winTextSetAppendAttrib(Ihandle* ih, const char* value)
       SendMessage(ih->handle, EM_REPLACESEL, (WPARAM)FALSE, (LPARAM)TEXT("\r\n"));
   }
   SendMessage(ih->handle, EM_REPLACESEL, (WPARAM)TRUE, (LPARAM)str);
+
+  ih->data->disable_callbacks = 0;
 
   return 0;
 }
