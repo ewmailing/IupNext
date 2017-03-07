@@ -1218,6 +1218,26 @@ static int iMatrixSetTypeAttrib(Ihandle* ih, int lin, int col, const char* value
   return iMatrixSetFlagsAttrib(ih, lin, col, value, IMAT_HAS_TYPE);
 }
 
+static char* iMatrixGetFontAttribute(Ihandle* ih, int lin, int col)
+{
+  char* font;
+
+  if (ih->handle)
+    font = iupMatrixGetFont(ih, lin, col);
+  else
+  {
+    font = IupGetAttributeId2(ih, "FONT", lin, col);
+    if (!font)
+      font = IupGetAttributeId2(ih, "FONT", lin, IUP_INVALID_ID);
+    if (!font)
+      font = IupGetAttributeId2(ih, "FONT", IUP_INVALID_ID, col);
+    if (!font)
+      font = IupGetAttribute(ih, "FONT");
+  }
+
+  return font;
+}
+
 static int iMatrixSetFontStyleAttrib(Ihandle* ih, int lin, int col, const char* value)
 {
   int size = 0;
@@ -1231,7 +1251,7 @@ static int iMatrixSetFontStyleAttrib(Ihandle* ih, int lin, int col, const char* 
   if (!value)
     return 0;
 
-  font = IupGetAttributeId2(ih, "FONT", lin, col);
+  font = iMatrixGetFontAttribute(ih, lin, col);
   if (!font)
     return 0;
 
@@ -1252,7 +1272,7 @@ static char* iMatrixGetFontStyleAttrib(Ihandle* ih, int lin, int col)
     is_strikeout = 0;
   char typeface[1024];
 
-  char* font = IupGetAttributeId2(ih, "FONT", lin, col);
+  char* font = iMatrixGetFontAttribute(ih, lin, col);
   if (!font)
     return NULL;
 
@@ -1275,7 +1295,7 @@ static int iMatrixSetFontSizeAttrib(Ihandle* ih, int lin, int col, const char* v
   if (!value)
     return 0;
 
-  font = IupGetAttributeId2(ih, "FONT", lin, col);
+  font = iMatrixGetFontAttribute(ih, lin, col);
   if (!font)
     return 0;
 
@@ -1296,7 +1316,7 @@ static char* iMatrixGetFontSizeAttrib(Ihandle* ih, int lin, int col)
     is_strikeout = 0;
   char typeface[1024];
 
-  char* font = IupGetAttributeId2(ih, "FONT", lin, col);
+  char* font = iMatrixGetFontAttribute(ih, lin, col);
   if (!font)
     return NULL;
 

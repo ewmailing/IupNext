@@ -154,6 +154,8 @@ static Ihandle* create_matrix(void)
 //  IupSetAttribute(mat, "EXPAND", "NO");
 //  IupSetAttribute(mat, "ALIGNMENT", "ALEFT");
 
+  IupSetAttribute(mat, "FONTSTYLE0:1", "Bold");
+
 //  IupSetAttribute(mat, "MASK1:3", IUP_MASK_FLOAT);
 //  IupSetAttribute(mat, "MASK1:3", "[a-zA-Z][0-9a-zA-Z_]*");
 //  IupSetAttribute(mat, "MASKFLOAT1:3", "0.0:10.0");
@@ -254,6 +256,7 @@ void MatrixTest(void)
 
 //        IupSetAttribute(mat, "ADDLIN", "1");
 //        IupSetAttribute(mat,"4:0","Teste");
+//        IupSetAttribute(mat, "FONTSTYLE0:1", "Bold");
 //        IupSetAttribute(mat, "REDRAW", "ALL");
 }
 
