@@ -207,7 +207,7 @@ static void iScrollBoxComputeNaturalSizeMethod(Ihandle* ih, int *w, int *h, int 
   *children_expand = ih->expand;
 }
 
-static void iScrollBoxUpdateVisibleArea(Ihandle* ih, int xmax, int ymax)
+static void iScrollBoxUpdateVisibleScrollArea(Ihandle* ih, int xmax, int ymax)
 {
   int width = ih->currentwidth,
     height = ih->currentheight;
@@ -235,6 +235,24 @@ static void iScrollBoxUpdateVisibleArea(Ihandle* ih, int xmax, int ymax)
   IupSetInt(ih, "DY", height);
 }
 
+static int iScrollBoxHasHorizScroll(Ihandle* ih)
+{
+  char* value = IupGetAttribute(ih, "SCROLLBAR");
+  if (iupStrEqualNoCase(value, "YES") || iupStrEqualNoCase(value, "HORIZONTAL"))
+    return 1;
+  else
+    return 0;
+}
+
+static int iScrollBoxHasVertScroll(Ihandle* ih)
+{
+  char* value = IupGetAttribute(ih, "SCROLLBAR");
+  if (iupStrEqualNoCase(value, "YES") || iupStrEqualNoCase(value, "VERTICAL"))
+    return 1;
+  else
+    return 0;
+}
+
 static void iScrollBoxSetChildrenCurrentSizeMethod(Ihandle* ih, int shrink)
 {
   Ihandle* child = ih->firstchild;
@@ -251,7 +269,9 @@ static void iScrollBoxSetChildrenCurrentSizeMethod(Ihandle* ih, int shrink)
     if (child->naturalwidth > ih->currentwidth)
     {
       w = child->naturalwidth;
-      has_sb_horiz = 1;
+
+      if (iScrollBoxHasHorizScroll(ih))
+        has_sb_horiz = 1;
     }
     else
       w = ih->currentwidth;  /* expand space */
@@ -259,7 +279,9 @@ static void iScrollBoxSetChildrenCurrentSizeMethod(Ihandle* ih, int shrink)
     if (child->naturalheight > ih->currentheight)
     {
       h = child->naturalheight;
-      has_sb_vert = 1;
+
+      if (iScrollBoxHasVertScroll(ih))
+        has_sb_vert = 1;
     }
     else
       h = ih->currentheight; /* expand space */
@@ -277,8 +299,8 @@ static void iScrollBoxSetChildrenCurrentSizeMethod(Ihandle* ih, int shrink)
     IupSetInt(ih, "XMAX", child->currentwidth);
     IupSetInt(ih, "YMAX", child->currentheight);
 
-    /* Finally update the visible area */
-    iScrollBoxUpdateVisibleArea(ih, child->currentwidth, child->currentheight);
+    /* Finally update the visible scroll area */
+    iScrollBoxUpdateVisibleScrollArea(ih, child->currentwidth, child->currentheight);
   }
   else
   {

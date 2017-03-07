@@ -63,6 +63,21 @@ char* iupCanvasGetPosYAttrib(Ihandle* ih)
   return iupStrReturnDouble(ih->data->posy);
 }
 
+static char* iCanvasGetScrollbarAttrib(Ihandle* ih)
+{
+  if (!ih->handle)
+    return NULL; /* get from the hash table */
+
+  if (ih->data->sb & IUP_SB_HORIZ && ih->data->sb & IUP_SB_VERT)
+    return "YES";
+  else if (ih->data->sb & IUP_SB_HORIZ)
+    return "HORIZONTAL";
+  else if (ih->data->sb & IUP_SB_VERT)
+    return "VERTICAL";
+  else
+    return "NO";
+}
+
 static int iCanvasCreateMethod(Ihandle* ih, void** params)
 {
   if (params && params[0])
@@ -160,7 +175,7 @@ Iclass* iupCanvasNewClass(void)
   iupClassRegisterAttribute(ic, "XHIDDEN", NULL, NULL, NULL, NULL, IUPAF_NO_INHERIT);
   iupClassRegisterAttribute(ic, "YHIDDEN", NULL, NULL, NULL, NULL, IUPAF_NO_INHERIT);
   iupClassRegisterAttribute(ic, "BORDER", NULL, NULL, IUPAF_SAMEASSYSTEM, "YES", IUPAF_DEFAULT);
-  iupClassRegisterAttribute(ic, "SCROLLBAR", NULL, NULL, NULL, NULL, IUPAF_NO_INHERIT);
+  iupClassRegisterAttribute(ic, "SCROLLBAR", iCanvasGetScrollbarAttrib, NULL, NULL, NULL, IUPAF_NOT_MAPPED | IUPAF_NO_INHERIT);
   iupClassRegisterAttribute(ic, "DRAWCOLOR", NULL, NULL, NULL, NULL, IUPAF_NO_INHERIT);
   iupClassRegisterAttribute(ic, "DRAWSTYLE", NULL, NULL, NULL, NULL, IUPAF_NO_INHERIT);
 
