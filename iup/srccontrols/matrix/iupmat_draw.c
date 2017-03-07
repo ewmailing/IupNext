@@ -326,7 +326,7 @@ static int iMatrixDrawGetFrameHorizColor(Ihandle* ih, int lin, int col, long *fr
       color = iupAttribGetId2(ih, "FRAMEHORIZCOLOR", lin, IUP_INVALID_ID);
     if (iupStrEqual(color, "BGCOLOR"))
       return 1;
-    if (framecolor && iupStrToRGB(color, &r, &g, &b))
+    if (iupStrToRGB(color, &r, &g, &b))
       *framecolor = cdEncodeColor(r, g, b);
   }
 
