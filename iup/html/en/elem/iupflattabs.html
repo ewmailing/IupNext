@@ -17,6 +17,9 @@
 .auto-style1 {
 	color: #FF0000;
 }
+.auto-style2 {
+	text-align: center;
+}
 </style>
 </head>
 <body>
@@ -332,59 +335,21 @@ not need to parse the attribute name string and the application does not need to
 concatenate the attribute name with the id.</p>
 <h3><a name="Examples">Examples</a></h3>
 <p><a href="../../examples/">Browse for Example Files</a></p>
-<p>In Windows, the Visual Styles work only when TABTYPE is TOP.</p>
-
-<table align="center">
-	<tr>
-		<th>Windows <br>
-		Classic</th>
-		<th>Windows <br>
-		w/ Styles</th>
-	</tr>
-	<tr>
-		<td class="bg_win2k"><img src="images/iuptabs_win2k_top.png"></td>
-		<td class="bg_winxp"><img src="images/iuptabs_winxp_top.png"></td>
-	</tr>
-	<tr>
-		<td class="bg_win2k"><img src="images/iuptabs_win2k_left.png"></td>
-		<td class="bg_winxp"><img src="images/iuptabs_winxp_left.png"></td>
-	</tr>
-	<tr>
-		<td class="bg_win2k"><img src="images/iuptabs_win2k_top_multi.png"></td>
-		<td class="bg_winxp"><img src="images/iuptabs_winxp_top_multi.png"></td>
-	</tr>
-</table>
-
-<p>GTK is the only one that supports vertical text in the TOP configuration, but 
-does not supports multiple lines of tab buttons.</p>
-
-<table align="center">
-	<tr>
-		<th colspan="2">GTK</th>
-	</tr>
-	<tr>
-		<td class="bg_gtk"><img src="images/iuptabs_gtk_top.png"></td>
-		<td class="bg_gtk"><img src="images/iuptabs_gtk_left.png"></td>
-	</tr>
-	<tr>
-		<td class="bg_gtk"><img src="images/iuptabs_gtk_top_vert.png"></td>
-		<td class="bg_gtk"><img src="images/iuptabs_gtk_left_vert.png"></td>
-	</tr>
-</table>
-
-<p>Motif does not supports vertical text.</p>
-
-<table align="center">
-	<tr>
-		<th>Motif</th>
-	</tr>
-	<tr>
-		<td class="bg_mot"><img src="images/iuptabs_mot_top.png"></td>
-	</tr>
-	<tr>
-		<td class="bg_mot"><img src="images/iuptabs_mot_left.png"></td>
-	</tr>
-</table>
+<pre> IupSetAttribute(ih, &quot;TABVISIBLE2&quot;, &quot;NO&quot;);
+IupSetAttribute(ih, &quot;TABACTIVE3&quot;, &quot;NO&quot;);
+IupSetAttribute(ih, &quot;SHOWCLOSE&quot;, &quot;Yes&quot;);
+IupSetAttribute(ih, &quot;TABFONTSTYLE4&quot;, &quot;Bold&quot;);</pre>
+<p class="auto-style2">
+<img height="421" src="images/iupflattabs1.png" width="582"></p>
+<pre> IupSetAttribute(ih, &quot;FORECOLOR&quot;, &quot;192 0 0&quot;);
+IupSetAttribute(ih, &quot;TABSBACKCOLOR&quot;, &quot;192 0 0&quot;);
+IupSetAttribute(ih, &quot;HIGHCOLOR&quot;, &quot;255 128 128&quot;);
+IupSetAttribute(ih, &quot;CLOSEHIGHCOLOR&quot;, &quot;255 128 128&quot;);
+IupSetAttribute(ih, &quot;TABSFORECOLOR&quot;, &quot;255 255 255&quot;);
+IupSetAttribute(ih, &quot;SHOWLINES&quot;, &quot;NO&quot;);
+IupSetAttribute(ih, &quot;SHOWCLOSE&quot;, &quot;NO&quot;);</pre>
+<p class="auto-style2">
+<img height="371" src="images/iupflattabs2.png" width="567"></p>
 
 </body>
 
