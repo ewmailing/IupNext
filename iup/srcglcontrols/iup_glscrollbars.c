@@ -1,5 +1,5 @@
 /** \file
- * \brief GL Scrollars base functions.
+ * \brief GL Scrollbars base functions.
  *
  * See Copyright Notice in "iup.h"
  */
