@@ -98,26 +98,27 @@ static void iGLScrollBoxComputeNaturalSizeMethod(Ihandle* ih, int *w, int *h, in
   *children_expand = ih->expand;
 }
 
-static void iGLScrollBoxUpdateVisibleArea(Ihandle* ih, int xmax, int ymax)
+static void iGLScrollBoxUpdateVisibleScrollArea(Ihandle* ih, int xmax, int ymax)
 {
   int width = ih->currentwidth,
     height = ih->currentheight;
+  int sb_size = iupGLScrollbarsGetSize(ih);
 
   /* if child is greater than scrollbox in one direction,
   then it has scrollbars
   but this affects the opposite direction */
 
   if (xmax > ih->currentwidth)
-    height -= iupGLScrollbarsGetSize(ih);
+    height -= sb_size;
 
   if (ymax > ih->currentheight)
-    width -= iupGLScrollbarsGetSize(ih);
+    width -= sb_size;
 
   if (xmax <= ih->currentwidth && xmax > width)
-    height -= iupGLScrollbarsGetSize(ih);
+    height -= sb_size;
 
   if (ymax <= ih->currentheight && ymax > height)
-    width -= iupGLScrollbarsGetSize(ih);
+    width -= sb_size;
 
   if (width < 0) width = 0;
   if (height < 0) height = 0;
@@ -129,6 +130,24 @@ static void iGLScrollBoxUpdateVisibleArea(Ihandle* ih, int xmax, int ymax)
   iupGLScrollbarsCheckPosY(ih);
 }
 
+static int iGLScrollBoxHasHorizScroll(Ihandle* ih)
+{
+  char* value = IupGetAttribute(ih, "SCROLLBAR");
+  if (iupStrEqualNoCase(value, "YES") || iupStrEqualNoCase(value, "HORIZONTAL"))
+    return 1;
+  else
+    return 0;
+}
+
+static int iGLScrollBoxHasVertScroll(Ihandle* ih)
+{
+  char* value = IupGetAttribute(ih, "SCROLLBAR");
+  if (iupStrEqualNoCase(value, "YES") || iupStrEqualNoCase(value, "VERTICAL"))
+    return 1;
+  else
+    return 0;
+}
+
 static void iGLScrollBoxSetChildrenCurrentSizeMethod(Ihandle* ih, int shrink)
 {
   Ihandle* child = ih->firstchild;
@@ -136,6 +155,7 @@ static void iGLScrollBoxSetChildrenCurrentSizeMethod(Ihandle* ih, int shrink)
   if (child)
   {
     int w, h, has_sb_horiz=0, has_sb_vert=0;
+    int sb_size = iupGLScrollbarsGetSize(ih);
 
     /* If child is greater than scrollbox area, use child natural size,
        else use current scrollbox size;
@@ -145,7 +165,9 @@ static void iGLScrollBoxSetChildrenCurrentSizeMethod(Ihandle* ih, int shrink)
     if (child->naturalwidth > ih->currentwidth)
     {
       w = child->naturalwidth;
-      has_sb_horiz = 1;
+
+      if (iGLScrollBoxHasHorizScroll(ih))
+        has_sb_horiz = 1;
     }
     else
       w = ih->currentwidth;  /* expand space */
@@ -153,16 +175,18 @@ static void iGLScrollBoxSetChildrenCurrentSizeMethod(Ihandle* ih, int shrink)
     if (child->naturalheight > ih->currentheight)
     {
       h = child->naturalheight;
-      has_sb_vert = 1;
+
+      if (iGLScrollBoxHasVertScroll(ih))
+        has_sb_vert = 1;
     }
     else
       h = ih->currentheight; /* expand space */
 
     if (!has_sb_horiz && has_sb_vert)
-      w -= iupGLScrollbarsGetSize(ih);  /* reduce expand space */
+      w -= sb_size;  /* reduce expand space */
 
     if (has_sb_horiz && !has_sb_vert)
-      h -= iupGLScrollbarsGetSize(ih);  /* reduce expand space */
+      h -= sb_size;  /* reduce expand space */
 
     /* Now w and h is a possible child size */
     iupBaseSetCurrentSize(child, w, h, shrink);
@@ -172,7 +196,7 @@ static void iGLScrollBoxSetChildrenCurrentSizeMethod(Ihandle* ih, int shrink)
     iupAttribSetInt(ih, "YMAX", child->currentheight);
 
     /* Finally update the visible area */
-    iGLScrollBoxUpdateVisibleArea(ih, child->currentwidth, child->currentheight);
+    iGLScrollBoxUpdateVisibleScrollArea(ih, child->currentwidth, child->currentheight);
   }
   else
   {

@@ -32,6 +32,7 @@ static int iScrollBoxScroll_CB(Ihandle *ih, int op, float posx, float posy)
   if (ih->firstchild)
   {
     int x, y;
+    int sb_size = iupdrvGetScrollbarSize();
 
     char* offset = iupAttribGet(ih, "CHILDOFFSET");
 
@@ -44,9 +45,9 @@ static int iScrollBoxScroll_CB(Ihandle *ih, int op, float posx, float posy)
 
     if (offset) iupStrToIntInt(offset, &x, &y, 'x');
 
-    if (IupGetInt(ih, "DX") > IupGetInt(ih, "XMAX")-iupdrvGetScrollbarSize())
+    if (IupGetInt(ih, "DX") > IupGetInt(ih, "XMAX") - sb_size)
       posx = 0;
-    if (IupGetInt(ih, "DY") > IupGetInt(ih, "YMAX")-iupdrvGetScrollbarSize())
+    if (IupGetInt(ih, "DY") > IupGetInt(ih, "YMAX") - sb_size)
       posy = 0;
 
     x -= (int)posx;
@@ -210,22 +211,23 @@ static void iScrollBoxUpdateVisibleScrollArea(Ihandle* ih, int xmax, int ymax)
 {
   int width = ih->currentwidth,
     height = ih->currentheight;
+  int sb_size = iupdrvGetScrollbarSize();
 
   /* if child is greater than scrollbox in one direction,
   then it has scrollbars
   but this affects the opposite direction */
 
   if (xmax > ih->currentwidth)
-    height -= iupdrvGetScrollbarSize();
+    height -= sb_size;
 
   if (ymax > ih->currentheight)
-    width -= iupdrvGetScrollbarSize();
+    width -= sb_size;
 
   if (xmax <= ih->currentwidth && xmax > width)
-    height -= iupdrvGetScrollbarSize();
+    height -= sb_size;
 
   if (ymax <= ih->currentheight && ymax > height)
-    width -= iupdrvGetScrollbarSize();
+    width -= sb_size;
 
   if (width < 0) width = 0;
   if (height < 0) height = 0;
@@ -258,6 +260,7 @@ static void iScrollBoxSetChildrenCurrentSizeMethod(Ihandle* ih, int shrink)
   if (child)
   {
     int w, h, has_sb_horiz=0, has_sb_vert=0;
+    int sb_size = iupdrvGetScrollbarSize();
 
     /* If child is greater than scrollbox area, use child natural size,
        else use current scrollbox size;
@@ -285,10 +288,10 @@ static void iScrollBoxSetChildrenCurrentSizeMethod(Ihandle* ih, int shrink)
       h = ih->currentheight; /* expand space */
 
     if (!has_sb_horiz && has_sb_vert)
-      w -= iupdrvGetScrollbarSize();  /* reduce expand space */
+      w -= sb_size;  /* reduce expand space */
 
     if (has_sb_horiz && !has_sb_vert)
-      h -= iupdrvGetScrollbarSize();  /* reduce expand space */
+      h -= sb_size;  /* reduce expand space */
 
     /* Now w and h is a possible child size */
     iupBaseSetCurrentSize(child, w, h, shrink);
