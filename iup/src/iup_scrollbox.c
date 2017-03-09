@@ -55,7 +55,6 @@ static int iScrollBoxScroll_CB(Ihandle *ih, int op, float posx, float posy)
     iupBaseSetPosition(ih->firstchild, x, y);
     iupLayoutUpdate(ih->firstchild);
   }
-  (void)op;
   return IUP_DEFAULT;
 }
 
@@ -256,7 +255,6 @@ static int iScrollBoxHasVertScroll(Ihandle* ih)
 static void iScrollBoxSetChildrenCurrentSizeMethod(Ihandle* ih, int shrink)
 {
   Ihandle* child = ih->firstchild;
-
   if (child)
   {
     int w, h, has_sb_horiz=0, has_sb_vert=0;
