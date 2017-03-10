@@ -207,33 +207,32 @@ static void iScrollBoxComputeNaturalSizeMethod(Ihandle* ih, int *w, int *h, int 
   *children_expand = ih->expand;
 }
 
-static void iScrollBoxUpdateVisibleScrollArea(Ihandle* ih, int xmax, int ymax)
+static void iScrollBoxUpdateVisibleScrollArea(Ihandle* ih, int view_width, int view_height)
 {
-  int width = ih->currentwidth,
-    height = ih->currentheight;
+  /* this is available drawing size not considering the scrollbars (BORDER=NO) */
+  int canvas_width = ih->currentwidth,
+    canvas_height = ih->currentheight;
   int sb_size = iupdrvGetScrollbarSize();
 
   /* if child is greater than scrollbox in one direction,
   then it has scrollbars
   but this affects the opposite direction */
 
-  if (xmax > ih->currentwidth)
-    height -= sb_size;
+  if (view_width > ih->currentwidth)  /* check for horizontal scrollbar */
+    canvas_height -= sb_size;                /* affect vertical size */
+  if (view_height > ih->currentheight)
+    canvas_width -= sb_size;
 
-  if (ymax > ih->currentheight)
-    width -= sb_size;
+  if (view_width <= ih->currentwidth && view_width > canvas_width)
+    canvas_height -= sb_size;
+  if (view_height <= ih->currentheight && view_height > canvas_height)
+    canvas_width -= sb_size;
 
-  if (xmax <= ih->currentwidth && xmax > width)
-    height -= sb_size;
+  if (canvas_width < 0) canvas_width = 0;
+  if (canvas_height < 0) canvas_height = 0;
 
-  if (ymax <= ih->currentheight && ymax > height)
-    width -= sb_size;
-
-  if (width < 0) width = 0;
-  if (height < 0) height = 0;
-
-  IupSetInt(ih, "DX", width);
-  IupSetInt(ih, "DY", height);
+  IupSetInt(ih, "DX", canvas_width);
+  IupSetInt(ih, "DY", canvas_height);
 }
 
 static int iScrollBoxHasHorizScroll(Ihandle* ih)

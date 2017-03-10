@@ -34,18 +34,18 @@ static int iabs(int x)
 
 
 /* extracted from the SCROLLBAR attribute documentation */
-static void scroll_update(Ihandle* ih, int view_width, int view_height)
+static void scroll_update(Ihandle* ih, int view_width, int view_height)  /* view_width and view_height is the virtual space size */
 {
-  /* view_width and view_height is the virtual space size */
-  /* here we assume XMIN=0, XMAX=1, YMIN=0, YMAX=1 */
+  /* here we assume *MIN=0, *MAX=1, *AUTOHIDE=Yes, SCROLLBAR=Yes */
   int elem_width, elem_height;
   int canvas_width, canvas_height;
-  int scrollbar_size = IupGetInt(NULL, "SCROLLBARSIZE");
+  int sb_size = IupGetInt(NULL, "SCROLLBARSIZE");
   int border = IupGetInt(ih, "BORDER");
 
   IupGetIntInt(ih, "RASTERSIZE", &elem_width, &elem_height);
 
   /* remove BORDER (always size=1) */
+  /* this is available drawing size not considering the scrollbars*/
   elem_width -= 2 * border;
   elem_height -= 2 * border;
   canvas_width = elem_width;
@@ -56,14 +56,14 @@ static void scroll_update(Ihandle* ih, int view_width, int view_height)
   but this affects the opposite direction */
 
   if (view_width > elem_width)  /* check for horizontal scrollbar */
-    canvas_height -= scrollbar_size;  /* affect vertical size */
+    canvas_height -= sb_size;  /* affect vertical size */
   if (view_height > elem_height)
-    canvas_width -= scrollbar_size;
+    canvas_width -= sb_size;
 
-  if (view_width <= elem_width && view_width > canvas_width)  /* check if still has horizontal scrollbar */
-    canvas_height -= scrollbar_size;
+  if (view_width <= elem_width && view_width > canvas_width)  /* check again for horizontal scrollbar */
+    canvas_height -= sb_size;
   if (view_height <= elem_height && view_height > canvas_height)
-    canvas_width -= scrollbar_size;
+    canvas_width -= sb_size;
 
   if (canvas_width < 0) canvas_width = 0;
   if (canvas_height < 0) canvas_height = 0;

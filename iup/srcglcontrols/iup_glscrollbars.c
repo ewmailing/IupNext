@@ -623,7 +623,9 @@ void iupGLScrollbarsRegisterAttrib(Iclass* ic)
   iupClassRegisterAttribute(ic, "DY", NULL, NULL, "10", NULL, IUPAF_NO_INHERIT);
 
   iupClassRegisterAttribute(ic, "SCROLLBARSIZE", NULL, NULL, IUPAF_SAMEASSYSTEM, "11", IUPAF_NO_INHERIT);
-  iupClassRegisterAttribute(ic, "SCROLLBAR", NULL, NULL, IUPAF_SAMEASSYSTEM, "Yes", IUPAF_NO_INHERIT);
+
+  /* AUTOHIDE is always Yes */
+  /* SCROLLBAR is always Yes */
 
   iupClassRegisterAttribute(ic, "HIGHCOLOR", NULL, NULL, IUPAF_SAMEASSYSTEM, "90 190 255", IUPAF_NO_INHERIT);
   iupClassRegisterAttribute(ic, "FORECOLOR", NULL, NULL, IUPAF_SAMEASSYSTEM, "110 210 230", IUPAF_NO_INHERIT);
