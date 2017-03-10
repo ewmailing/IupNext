@@ -45,21 +45,26 @@ static void scroll_update(Ihandle* ih, int view_width, int view_height)
 
   IupGetIntInt(ih, "RASTERSIZE", &elem_width, &elem_height);
 
-  /* if view is greater than canvas in one direction,
-  then it has scrollbars,
-  but this affects the opposite direction */
-  elem_width -= 2 * border;  /* remove BORDER (always size=1) */
+  /* remove BORDER (always size=1) */
+  elem_width -= 2 * border;
   elem_height -= 2 * border;
   canvas_width = elem_width;
   canvas_height = elem_height;
+
+  /* if view is greater than canvas in one direction,
+  then it has scrollbars,
+  but this affects the opposite direction */
+
   if (view_width > elem_width)  /* check for horizontal scrollbar */
     canvas_height -= scrollbar_size;  /* affect vertical size */
   if (view_height > elem_height)
     canvas_width -= scrollbar_size;
+
   if (view_width <= elem_width && view_width > canvas_width)  /* check if still has horizontal scrollbar */
     canvas_height -= scrollbar_size;
   if (view_height <= elem_height && view_height > canvas_height)
     canvas_width -= scrollbar_size;
+
   if (canvas_width < 0) canvas_width = 0;
   if (canvas_height < 0) canvas_height = 0;
 
