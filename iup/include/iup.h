@@ -205,6 +205,7 @@ Ihandle*  IupCboxv      (Ihandle* *children);
 Ihandle*  IupSbox       (Ihandle* child);
 Ihandle*  IupSplit      (Ihandle* child1, Ihandle* child2);
 Ihandle*  IupScrollBox  (Ihandle* child);
+Ihandle*  IupFlatScrollBox(Ihandle* child);
 Ihandle*  IupGridBox    (Ihandle* child, ...);
 Ihandle*  IupGridBoxv   (Ihandle* *children);
 Ihandle*  IupExpander   (Ihandle* child);

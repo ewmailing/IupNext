@@ -516,6 +516,14 @@ namespace Iup
     ScrollBox(const ScrollBox& container) : Container(container.GetHandle()) {}
     ScrollBox(Ihandle* _ih) : Container(_ih) {}
   };
+  class FlatScrollBox : public Container
+  {
+  public:
+    FlatScrollBox() : Container(IupFlatScrollBox(0)) {}
+    FlatScrollBox(Control child) : Container(IupFlatScrollBox(child.GetHandle())) {}
+    FlatScrollBox(const FlatScrollBox& container) : Container(container.GetHandle()) {}
+    FlatScrollBox(Ihandle* _ih) : Container(_ih) {}
+  };
   class Expander : public Container
   {
   public:

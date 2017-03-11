@@ -98,82 +98,64 @@ enum {
 
 static int iFlatScrollbarsGetHandler(Ihandle* ih, int x, int y)
 {
-  int has_vert_scroll = 0;
-  int has_horiz_scroll = 0;
   int sb_size = iupAttribGetInt(ih->parent, "SCROLLBARSIZE");
-  int width = ih->currentwidth,
-    height = ih->currentheight;
-  int sb_xmax = iupAttribGetInt(ih->parent, "XMAX");
-  int sb_ymax = iupAttribGetInt(ih->parent, "YMAX");
-  int sb_dy = iupAttribGetInt(ih->parent, "DY");
-  int sb_dx = iupAttribGetInt(ih->parent, "DX");
+  int xmax = iupAttribGetInt(ih->parent, "XMAX");
+  int ymax = iupAttribGetInt(ih->parent, "YMAX");
+  int dy = iupAttribGetInt(ih->parent, "DY");
+  int dx = iupAttribGetInt(ih->parent, "DX");
+  int is_vert_scrollbar = 0;
+  int range, d, pos;
 
-  if (sb_xmax > sb_dx)  /* has horizontal scrollbar */
+  if (ih->currentwidth == sb_size)
+    is_vert_scrollbar = 1;
+
+  if (is_vert_scrollbar)
   {
-    has_horiz_scroll = 1;
-    height -= sb_size;
+    int posy = iupAttribGetInt(ih->parent, "POSY");
+
+    int height = ih->currentheight;
+    if (xmax > dx)  /* has horizontal scrollbar */
+      height -= sb_size;
+
+    range = height - 1 - 2 * sb_size;
+    d = (dy * range) / ymax;
+    pos = ((posy)* range) / ymax;
+    pos += sb_size;
+
+    if (y < sb_size)
+      return SB_DEC_Y;
+    else if (y < pos)
+      return SB_PAGEDEC_Y;
+    else if (y < pos + d)
+      return SB_DRAG_Y;
+    else if (y < height - sb_size)
+      return SB_PAGEINC_Y;
+    else if (y < height)
+      return SB_INC_Y;
   }
-
-  if (sb_ymax > sb_dy)  /* has vertical scrollbar */
+  else
   {
-    has_vert_scroll = 1;
-    width -= sb_size;
-  }
+    int posx = iupAttribGetInt(ih->parent, "POSX");
 
-  if (has_vert_scroll)
-  {
-    if (x >= ih->currentwidth - sb_size && x < ih->currentwidth)
-    {
-      int sb_posy = iupAttribGetInt(ih->parent, "POSY");
-      int ymin = 0;
-      int ymax = height - 1;
-      int range = ymax - ymin - 2 * sb_size;
-      int sb_range = sb_ymax;
-      int dy = (sb_dy * range) / sb_range;
-      int posy = ((sb_posy) * range) / sb_range;
-      posy += ymin + sb_size;
+    int width = ih->currentwidth;
+    if (ymax > dy)  /* has vertical scrollbar */
+      width -= sb_size;
 
-      if (y < sb_size)
-        return SB_DEC_Y;
-      else if (y < posy)
-        return SB_PAGEDEC_Y;
-      else if (y < posy + dy)
-        return SB_DRAG_Y;
-      else if (y < height - sb_size)
-        return SB_PAGEINC_Y;
-      else if (y < height)
-        return SB_INC_Y;
+    range = width - 1 - 2 * sb_size;
+    d = (dx * range) / xmax;
+    pos = ((posx)* range) / xmax;
+    pos += sb_size;
 
-      return SB_NONE;
-    }
-  }
-
-  if (has_horiz_scroll)
-  {
-    if (y >= ih->currentheight - sb_size && y < ih->currentheight)
-    {
-      int sb_posx = iupAttribGetInt(ih->parent, "POSX");
-      int xmin = 0;
-      int xmax = width - 1;
-      int sb_range = sb_xmax;
-      int range = xmax - xmin - 2 * sb_size;
-      int dx = (sb_dx * range) / sb_range;
-      int posx = ((sb_posx) * range) / sb_range;
-      posx += xmin + sb_size;
-
-      if (x < sb_size)
-        return SB_DEC_X;
-      else if (x < posx)
-        return SB_PAGEDEC_X;
-      else if (x < posx + dx)
-        return SB_DRAG_X;
-      else if (x < width - sb_size)
-        return SB_PAGEINC_X;
-      else if (x < width)
-        return SB_INC_X;
-
-      return SB_NONE;
-    }
+    if (x < sb_size)
+      return SB_DEC_X;
+    else if (x < pos)
+      return SB_PAGEDEC_X;
+    else if (x < pos + d)
+      return SB_DRAG_X;
+    else if (x < width - sb_size)
+      return SB_PAGEINC_X;
+    else if (x < width)
+      return SB_INC_X;
   }
 
   return SB_NONE;
@@ -210,7 +192,6 @@ static void iFlatScrollbarsPressX(Ihandle* ih, int handler)
     posx = xmax - dx;
 
   iupAttribSetInt(ih->parent, "POSX", posx);
-  IupUpdate(ih);
 }
 
 static void iFlatScrollbarsPressY(Ihandle* ih, int handler)
@@ -244,7 +225,6 @@ static void iFlatScrollbarsPressY(Ihandle* ih, int handler)
     posy = ymax - dy;
 
   iupAttribSetInt(ih->parent, "POSY", posy);
-  IupUpdate(ih);
 }
 
 static int iFlatScrollbarsMoveX(Ihandle* ih, int diff, int start_pos)
@@ -253,22 +233,22 @@ static int iFlatScrollbarsMoveX(Ihandle* ih, int diff, int start_pos)
   int ymax = iupAttribGetInt(ih->parent, "YMAX");
   int dx = iupAttribGetInt(ih->parent, "DX");
   int dy = iupAttribGetInt(ih->parent, "DY");
-  int size = iupAttribGetInt(ih->parent, "SCROLLBARSIZE");
+  int sb_size = iupAttribGetInt(ih->parent, "SCROLLBARSIZE");
   int range;
   int pos, posx;
   int width = ih->currentwidth;
 
   if (ymax > dy)  /* has vertical scrollbar */
-    width -= size;
+    width -= sb_size;
 
-  range = width - 1 - 2 * size;
+  range = width - 1 - 2 * sb_size;
 
   pos = ((start_pos)* range) / xmax;
-  pos += size;
+  pos += sb_size;
 
   pos += diff;
 
-  pos -= size;
+  pos -= sb_size;
   posx = (pos * xmax) / range;
 
   if (posx < 0)
@@ -291,22 +271,22 @@ static int iFlatScrollbarsMoveY(Ihandle* ih, int diff, int start_pos)
   int ymax = iupAttribGetInt(ih->parent, "YMAX");
   int dx = iupAttribGetInt(ih->parent, "DX");
   int dy = iupAttribGetInt(ih->parent, "DY");
-  int size = iupAttribGetInt(ih->parent, "SCROLLBARSIZE");
+  int sb_size = iupAttribGetInt(ih->parent, "SCROLLBARSIZE");
   int range;
   int pos, posy;
   int height = ih->currentheight;
 
   if (xmax > dx)  /* has horizontal scrollbar */
-    height -= size;
+    height -= sb_size;
 
-  range = height - 1 - 2 * size;
+  range = height - 1 - 2 * sb_size;
 
   pos = ((start_pos)* range) / ymax;
-  pos += size;
+  pos += sb_size;
 
   pos += diff;
 
-  pos -= size;
+  pos -= sb_size;
   posy = (pos * ymax) / range;
 
   if (posy < 0)
@@ -595,6 +575,8 @@ static int iFlatScrollBoxSetDXAttrib(Ihandle* ih, const char *value)
 
       iFlatScrollBoxRedrawHorizScrollbar(ih);  /* force a redraw if it is already visible */
     }
+
+    iFlatScrollBoxRedrawVertScrollbar(ih);  /* force a redraw of the other scrollbar */
   }
 
   return 1;
@@ -623,6 +605,8 @@ static int iFlatScrollBoxSetDYAttrib(Ihandle* ih, const char *value)
 
       iFlatScrollBoxRedrawVertScrollbar(ih);  /* force a redraw if it is already visible */
     }
+
+    iFlatScrollBoxRedrawHorizScrollbar(ih);  /* force a redraw of the other scrollbar */
   }
 
   return 1;
@@ -738,11 +722,11 @@ static void iFlatScrollBoxSetChildrenCurrentSizeMethod(Ihandle* ih, int shrink)
   Ihandle* child = iFlatScrollBoxGetChild(ih);
   Ihandle* sb_vert = iFlatScrollBoxGetVertScrollbar(ih);
   Ihandle* sb_horiz = iFlatScrollBoxGetHorizScrollbar(ih);
+  int sb_size = iupAttribGetInt(ih, "SCROLLBARSIZE");
 
   if (child)
   {
     int w, h, has_sb_horiz=0, has_sb_vert=0;
-    int sb_size = iupAttribGetInt(ih, "SCROLLBARSIZE");
 
     /* If child is greater than scrollbox area, use child natural size,
        else use current scrollbox size;
@@ -791,6 +775,9 @@ static void iFlatScrollBoxSetChildrenCurrentSizeMethod(Ihandle* ih, int shrink)
     IupSetAttribute(sb_vert, "VISIBLE", "NO");
     IupSetAttribute(sb_horiz, "VISIBLE", "NO");
   }
+
+  iupBaseSetCurrentSize(sb_vert, sb_size, ih->currentheight, shrink);
+  iupBaseSetCurrentSize(sb_horiz, ih->currentwidth, sb_size, shrink);
 }
 
 static void iFlatScrollBoxSetChildrenPositionMethod(Ihandle* ih, int x, int y)
@@ -819,6 +806,9 @@ static void iFlatScrollBoxSetChildrenPositionMethod(Ihandle* ih, int x, int y)
 
   iupBaseSetPosition(sb_vert, ih->currentwidth-1 - sb_size, 0);
   iupBaseSetPosition(sb_horiz, 0, ih->currentheight - 1 - sb_size);
+
+  IupSetAttribute(sb_vert, "ZORDER", "TOP");
+  IupSetAttribute(sb_horiz, "ZORDER", "TOP");
 }
 
 
@@ -831,6 +821,7 @@ static int iFlatScrollBoxCreateMethod(Ihandle* ih, void** params)
 
   sb_vert = IupCanvas(NULL);
   IupSetAttribute(sb_vert, "BORDER", "NO");
+  IupSetAttribute(sb_vert, "ZORDER", "TOP");
   iupChildTreeAppend(ih, sb_vert);  /* sb_vert will always be the firstchild */
   sb_vert->flags |= IUP_INTERNAL;
   //  IupSetCallback(sb_vert, "ACTION", (Icallback)iFlatScrollBarAction_CB);
@@ -841,6 +832,7 @@ static int iFlatScrollBoxCreateMethod(Ihandle* ih, void** params)
 
   sb_horiz = IupCanvas(NULL);
   IupSetAttribute(sb_horiz, "BORDER", "NO");
+  IupSetAttribute(sb_horiz, "ZORDER", "TOP");
   iupChildTreeAppend(ih, sb_horiz);  /* sb_vert will always be the firstchild->brother */
   sb_horiz->flags |= IUP_INTERNAL;
 //  IupSetCallback(sb_horiz, "ACTION", (Icallback)iFlatScrollBarAction_CB);

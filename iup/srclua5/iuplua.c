@@ -1343,6 +1343,7 @@ int iuplua_open(lua_State * L)
   iupcalendarlua_open(L);
   iupdatepicklua_open(L);
   iupflattabslua_open(L);
+  iupflatscrollboxlua_open(L);
 
   return 0; /* nothing in stack */
 }

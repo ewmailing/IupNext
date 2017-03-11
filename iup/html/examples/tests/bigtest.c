@@ -75,6 +75,7 @@ void ZboxTest(void);
 void ScanfTest(void);
 void SboxTest(void);
 void ScrollBoxTest(void);
+void FlatScrollBoxTest(void);
 void SplitTest(void);
 void ClipboardTest(void);
 void CharacTest(void);
@@ -174,7 +175,8 @@ static TestItems test_list[] = {
   {"Sbox", SboxTest},
   { "Scintilla", ScintillaTest },
   {"ScrollBox", ScrollBoxTest},
-  {"Split", SplitTest},
+  { "FlatScrollBox", FlatScrollBoxTest },
+  { "Split", SplitTest },
   {"Scanf", ScanfTest},
   {"Spin", SpinTest},
   {"SysInfo", SysInfoTest},
