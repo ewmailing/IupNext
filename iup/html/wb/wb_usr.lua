@@ -1211,6 +1211,10 @@ wb_usr.tree =
               name= {nl= "IupScrollBox"},
               link= "elem/iupscrollbox.html"
             },
+            {
+              name= {nl= "IupFlatScrollBox"},
+              link= "elem/iupflatscrollbox.html"
+            },
             { link= "", name= {en= "" } },
             {
               name= {nl= "IupDetachBox"},
