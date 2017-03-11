@@ -20,6 +20,7 @@
 #include "iup_stdcontrols.h"
 #include "iup_layout.h"
 #include "iup_drv.h"
+#include "iup_drvdraw.h"
 #include "iup_childtree.h"
 
 
@@ -96,7 +97,175 @@ enum {
 };
 
 
-static int iFlatScrollbarsGetHandler(Ihandle* ih, int x, int y)
+static void iFlatScrollBarDrawVertical(Ihandle* ih, IdrawCanvas* dc, int active, const char* fgcolor, const char* bgcolor, int pressed,
+                                       int highlight, int sb_ymin, int sb_ymax, int sb_dy, int sb_size, int has_horiz_scroll)
+{
+  int height = ih->currentheight;
+  int xmax, ymax, posy, dy, sb_range, range;
+  int sb_posy = iupAttribGetInt(ih->parent, "POSY");
+  const char *fgcolor_inc = fgcolor,
+    *fgcolor_dec = fgcolor,
+    *fgcolor_drag = fgcolor;
+
+  if (pressed)
+  {
+    char* presscolor = iupAttribGetStr(ih->parent, "PRESSCOLOR");
+    if (presscolor)
+    {
+      if (pressed == SB_INC_Y)
+        fgcolor_inc = presscolor;
+      else if (pressed == SB_DEC_Y)
+        fgcolor_dec = presscolor;
+      else if (pressed == SB_DRAG_Y)
+        fgcolor_drag = presscolor;
+    }
+  }
+  else if (highlight)
+  {
+    char* hlcolor = iupAttribGetStr(ih->parent, "HIGHCOLOR");
+    if (hlcolor)
+    {
+      if (highlight == SB_INC_Y)
+        fgcolor_inc = hlcolor;
+      else if (highlight == SB_DEC_Y)
+        fgcolor_dec = hlcolor;
+      else if (highlight == SB_DRAG_Y)
+        fgcolor_drag = hlcolor;
+    }
+  }
+
+  if (has_horiz_scroll)
+    height -= sb_size;
+
+  xmax = sb_size - 1;
+  ymax = height - 1;
+  range = ymax - 2 * sb_size;
+  sb_range = sb_ymax - sb_ymin;
+
+  dy = (sb_dy * range) / sb_range;
+  posy = ((sb_posy - sb_ymin) * range) / sb_range;
+  posy += sb_size;
+
+  /* draw background */
+  iupFlatDrawBox(dc, 0, xmax,
+                     0, ymax, bgcolor, NULL, 1);
+
+  /* draw arrows */
+  iupFlatDrawArrow(dc, 2, 2, sb_size - 5, fgcolor_dec, bgcolor, active, IUPDRAW_ARROW_TOP);
+  iupFlatDrawArrow(dc, 2, ymax - sb_size + 3, sb_size - 5, fgcolor_inc, bgcolor, active, IUPDRAW_ARROW_BOTTOM);
+
+  /* draw handler */
+  iupFlatDrawBox(dc, 2, xmax - 2, posy, posy + dy, fgcolor_drag, bgcolor, active);
+}
+
+static void iFlatScrollBarDrawHorizontal(Ihandle* ih, IdrawCanvas* dc, int active, const char* fgcolor, const char* bgcolor, int pressed,
+                                         int highlight, int sb_xmin, int sb_xmax, int sb_dx, int sb_size, int has_vert_scroll)
+{
+  int width = ih->currentwidth;
+  int xmax, ymax, posx, dx, sb_range, range;
+  int sb_posx = iupAttribGetInt(ih->parent, "POSX");
+  const char *fgcolor_inc = fgcolor,
+    *fgcolor_dec = fgcolor,
+    *fgcolor_drag = fgcolor;
+
+  if (pressed)
+  {
+    char* presscolor = iupAttribGetStr(ih->parent, "PRESSCOLOR");
+    if (presscolor)
+    {
+      if (pressed == SB_INC_X)
+        fgcolor_inc = presscolor;
+      else if (pressed == SB_DEC_X)
+        fgcolor_dec = presscolor;
+      else if (pressed == SB_DRAG_X)
+        fgcolor_drag = presscolor;
+    }
+  }
+  else if (highlight)
+  {
+    char* hlcolor = iupAttribGetStr(ih->parent, "HIGHCOLOR");
+    if (hlcolor)
+    {
+      if (highlight == SB_INC_X)
+        fgcolor_inc = hlcolor;
+      else if (highlight == SB_DEC_X)
+        fgcolor_dec = hlcolor;
+      else if (highlight == SB_DRAG_X)
+        fgcolor_drag = hlcolor;
+    }
+  }
+
+  if (has_vert_scroll)
+    width -= sb_size;
+
+  xmax = width - 1;
+  ymax = sb_size - 1;
+  sb_range = sb_xmax - sb_xmin;
+  range = xmax - 2 * sb_size;
+
+  dx = (sb_dx * range) / sb_range;
+  posx = ((sb_posx - sb_xmin) * range) / sb_range;
+  posx += sb_size;
+
+  /* draw background */
+  iupFlatDrawBox(dc, 0, xmax, 0, ymax, bgcolor, NULL, 1);
+
+  /* draw arrows */
+  iupFlatDrawArrow(dc, 2, 2, sb_size - 5, fgcolor_dec, bgcolor, active, IUPDRAW_ARROW_LEFT);
+  iupFlatDrawArrow(dc, xmax - sb_size + 3, 2, sb_size - 5, fgcolor_inc, bgcolor, active, IUPDRAW_ARROW_RIGHT);
+
+  /* draw handler */
+  iupFlatDrawBox(dc, posx, posx + dx, 2, ymax - 2, fgcolor_drag, bgcolor, active);
+}
+
+static int iFlatScrollBarAction_CB(Ihandle* ih)
+{
+  int sb_size = iupAttribGetInt(ih->parent, "SCROLLBARSIZE");
+  int sb_xmin = iupAttribGetInt(ih->parent, "XMIN");
+  int sb_xmax = iupAttribGetInt(ih->parent, "XMAX");
+  int sb_ymin = iupAttribGetInt(ih->parent, "YMIN");
+  int sb_ymax = iupAttribGetInt(ih->parent, "YMAX");
+  int sb_dx = iupAttribGetInt(ih->parent, "DX");
+  int sb_dy = iupAttribGetInt(ih->parent, "DY");
+  char* fgcolor = iupAttribGetStr(ih->parent, "FORECOLOR");
+  char* bgcolor = iupAttribGetStr(ih->parent, "BACKCOLOR");
+  int highlight = iupAttribGetInt(ih, "_IUP_HIGHLIGHT_HANDLER");
+  int pressed = iupAttribGetInt(ih, "_IUP_PRESSED_HANDLER");
+  int active = IupGetInt(ih->parent, "ACTIVE");
+  int is_vert_scrollbar = 0;
+  int has_vert_scroll = 0;
+  int has_horiz_scroll = 0;
+
+  IdrawCanvas* dc = iupdrvDrawCreateCanvas(ih);
+
+  //TODO ????
+  iupdrvDrawParentBackground(dc);
+
+  if (!bgcolor)
+    bgcolor = iupBaseNativeParentGetBgColorAttrib(ih);
+
+  if (ih->currentwidth == sb_size)
+    is_vert_scrollbar = 1;
+
+  if (sb_xmax - sb_xmin > sb_dx)  /* has horizontal scrollbar */
+    has_horiz_scroll = 1;
+
+  if (sb_ymax - sb_ymin > sb_dy)  /* has vertical scrollbar */
+    has_vert_scroll = 1;
+
+  if (is_vert_scrollbar)
+    iFlatScrollBarDrawVertical(ih, dc, active, fgcolor, bgcolor, pressed, highlight, sb_ymin, sb_ymax, sb_dy, sb_size, has_horiz_scroll);
+  else
+    iFlatScrollBarDrawHorizontal(ih, dc, active, fgcolor, bgcolor, pressed, highlight, sb_xmin, sb_xmax, sb_dx, sb_size, has_vert_scroll);
+
+  iupdrvDrawFlush(dc);
+
+  iupdrvDrawKillCanvas(dc);
+
+  return IUP_DEFAULT;
+}
+
+static int iFlatScrollBarGetHandler(Ihandle* ih, int x, int y)
 {
   int sb_size = iupAttribGetInt(ih->parent, "SCROLLBARSIZE");
   int xmax = iupAttribGetInt(ih->parent, "XMAX");
@@ -161,7 +330,7 @@ static int iFlatScrollbarsGetHandler(Ihandle* ih, int x, int y)
   return SB_NONE;
 }
 
-static void iFlatScrollbarsPressX(Ihandle* ih, int handler)
+static void iFlatScrollBarPressX(Ihandle* ih, int handler)
 {
   int xmax = iupAttribGetInt(ih->parent, "XMAX");
   int dx = iupAttribGetInt(ih->parent, "DX");
@@ -194,7 +363,7 @@ static void iFlatScrollbarsPressX(Ihandle* ih, int handler)
   iupAttribSetInt(ih->parent, "POSX", posx);
 }
 
-static void iFlatScrollbarsPressY(Ihandle* ih, int handler)
+static void iFlatScrollBarPressY(Ihandle* ih, int handler)
 {
   int ymax = iupAttribGetInt(ih->parent, "YMAX");
   int dy = iupAttribGetInt(ih->parent, "DY");
@@ -227,7 +396,7 @@ static void iFlatScrollbarsPressY(Ihandle* ih, int handler)
   iupAttribSetInt(ih->parent, "POSY", posy);
 }
 
-static int iFlatScrollbarsMoveX(Ihandle* ih, int diff, int start_pos)
+static int iFlatScrollBarMoveX(Ihandle* ih, int diff, int start_pos)
 {
   int xmax = iupAttribGetInt(ih->parent, "XMAX");
   int ymax = iupAttribGetInt(ih->parent, "YMAX");
@@ -265,7 +434,7 @@ static int iFlatScrollbarsMoveX(Ihandle* ih, int diff, int start_pos)
   return 0;
 }
 
-static int iFlatScrollbarsMoveY(Ihandle* ih, int diff, int start_pos)
+static int iFlatScrollBarMoveY(Ihandle* ih, int diff, int start_pos)
 {
   int xmax = iupAttribGetInt(ih->parent, "XMAX");
   int ymax = iupAttribGetInt(ih->parent, "YMAX");
@@ -310,7 +479,7 @@ static int iFlatScrollBarButton_CB(Ihandle *ih, int button, int pressed, int x, 
 
   if (pressed)
   {
-    int handler = iFlatScrollbarsGetHandler(ih, x, y);
+    int handler = iFlatScrollBarGetHandler(ih, x, y);
     iupAttribSetInt(ih, "_IUP_PRESSED_HANDLER", handler);
 
     if (handler == SB_DRAG_X || handler == SB_DRAG_Y)
@@ -333,18 +502,18 @@ static int iFlatScrollBarButton_CB(Ihandle *ih, int button, int pressed, int x, 
   else
   {
     int press_handler = iupAttribGetInt(ih, "_IUP_PRESSED_HANDLER");
-    int handler = iFlatScrollbarsGetHandler(ih, x, y);
+    int handler = iFlatScrollBarGetHandler(ih, x, y);
 
     if (handler != SB_NONE && handler != SB_DRAG_X && handler != SB_DRAG_Y &&
         handler == press_handler)
     {
       if (handler == SB_INC_X || handler == SB_PAGEINC_X ||
           handler == SB_DEC_X || handler == SB_PAGEDEC_X)
-        iFlatScrollbarsPressX(ih, handler);
+        iFlatScrollBarPressX(ih, handler);
 
       if (handler == SB_INC_Y || handler == SB_PAGEINC_Y ||
           handler == SB_DEC_Y || handler == SB_PAGEDEC_Y)
-        iFlatScrollbarsPressY(ih, handler);
+        iFlatScrollBarPressY(ih, handler);
 
       iFlatScrollBoxUpdateChildPos(ih->parent, 0);
     }
@@ -363,7 +532,7 @@ static int iFlatScrollBarButton_CB(Ihandle *ih, int button, int pressed, int x, 
 static int iFlatScrollBarMotion_CB(Ihandle *ih, int x, int y)
 {
   int redraw = 0;
-  int handler = iFlatScrollbarsGetHandler(ih, x, y);
+  int handler = iFlatScrollBarGetHandler(ih, x, y);
 
   /* special highlight processing for scrollbar area */
   int old_handler = iupAttribGetInt(ih, "_IUP_HIGHLIGHT_HANDLER");
@@ -379,7 +548,7 @@ static int iFlatScrollBarMotion_CB(Ihandle *ih, int x, int y)
     int start_x = iupAttribGetInt(ih, "_IUP_START_X");
     int start_pos = iupAttribGetInt(ih, "_IUP_START_POS");
 
-    if (x != start_x && iFlatScrollbarsMoveX(ih, x - start_x, start_pos))
+    if (x != start_x && iFlatScrollBarMoveX(ih, x - start_x, start_pos))
     {
       iFlatScrollBoxUpdateChildPos(ih->parent, 1);
       redraw = 1;
@@ -390,7 +559,7 @@ static int iFlatScrollBarMotion_CB(Ihandle *ih, int x, int y)
     int start_y = iupAttribGetInt(ih, "_IUP_START_Y");
     int start_pos = iupAttribGetInt(ih, "_IUP_START_POS");
 
-    if (y != start_y && iFlatScrollbarsMoveY(ih, y - start_y, start_pos))
+    if (y != start_y && iFlatScrollBarMoveY(ih, y - start_y, start_pos))
     {
       iFlatScrollBoxUpdateChildPos(ih->parent, 1);
       redraw = 1;
@@ -824,7 +993,7 @@ static int iFlatScrollBoxCreateMethod(Ihandle* ih, void** params)
   IupSetAttribute(sb_vert, "ZORDER", "TOP");
   iupChildTreeAppend(ih, sb_vert);  /* sb_vert will always be the firstchild */
   sb_vert->flags |= IUP_INTERNAL;
-  //  IupSetCallback(sb_vert, "ACTION", (Icallback)iFlatScrollBarAction_CB);
+  IupSetCallback(sb_vert, "ACTION", (Icallback)iFlatScrollBarAction_CB);
   IupSetCallback(sb_vert, "BUTTON_CB", (Icallback)iFlatScrollBarButton_CB);
   IupSetCallback(sb_vert, "MOTION_CB", (Icallback)iFlatScrollBarMotion_CB);
   IupSetCallback(sb_vert, "LEAVEWINDOW_CB", (Icallback)iFlatScrollBarLeaveWindow_CB);
@@ -835,7 +1004,7 @@ static int iFlatScrollBoxCreateMethod(Ihandle* ih, void** params)
   IupSetAttribute(sb_horiz, "ZORDER", "TOP");
   iupChildTreeAppend(ih, sb_horiz);  /* sb_vert will always be the firstchild->brother */
   sb_horiz->flags |= IUP_INTERNAL;
-//  IupSetCallback(sb_horiz, "ACTION", (Icallback)iFlatScrollBarAction_CB);
+  IupSetCallback(sb_horiz, "ACTION", (Icallback)iFlatScrollBarAction_CB);
   IupSetCallback(sb_horiz, "BUTTON_CB", (Icallback)iFlatScrollBarButton_CB);
   IupSetCallback(sb_horiz, "MOTION_CB", (Icallback)iFlatScrollBarMotion_CB);
   IupSetCallback(sb_horiz, "LEAVEWINDOW_CB", (Icallback)iFlatScrollBarLeaveWindow_CB);
@@ -911,6 +1080,10 @@ Iclass* iupFlatScrollBoxNewClass(void)
   iupClassRegisterAttribute(ic, "POSY", NULL, iFlatScrollBoxSetPosYAttrib, "0", NULL, IUPAF_NO_INHERIT);
 
   iupClassRegisterAttribute(ic, "SCROLLBARSIZE", NULL, NULL, IUPAF_SAMEASSYSTEM, "11", IUPAF_NO_INHERIT);
+  iupClassRegisterAttribute(ic, "HIGHCOLOR", NULL, NULL, IUPAF_SAMEASSYSTEM, "90 190 255", IUPAF_NO_INHERIT);
+  iupClassRegisterAttribute(ic, "FORECOLOR", NULL, NULL, IUPAF_SAMEASSYSTEM, "110 210 230", IUPAF_NO_INHERIT);
+  iupClassRegisterAttribute(ic, "PRESSCOLOR", NULL, NULL, IUPAF_SAMEASSYSTEM, "50 150 255", IUPAF_NO_INHERIT);
+  iupClassRegisterAttribute(ic, "BACKCOLOR", NULL, NULL, NULL, NULL, IUPAF_NO_INHERIT);
 
   return ic;
 }

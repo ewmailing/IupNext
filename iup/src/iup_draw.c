@@ -296,7 +296,7 @@ void IupDrawFocusRect(Ihandle* ih, int x1, int y1, int x2, int y2)
 /***********************************************************************************************/
 
 
-void iupFlatDrawBorder(IdrawCanvas* dc, int xmin, int xmax, int ymin, int ymax, int border_width, const char* color, char* bgcolor, int active)
+void iupFlatDrawBorder(IdrawCanvas* dc, int xmin, int xmax, int ymin, int ymax, int border_width, const char* color, const char* bgcolor, int active)
 {
   unsigned char r = 0, g = 0, b = 0;
 
@@ -325,7 +325,7 @@ void iupFlatDrawBorder(IdrawCanvas* dc, int xmin, int xmax, int ymin, int ymax, 
   }
 }
 
-void iupFlatDrawBox(IdrawCanvas* dc, int xmin, int xmax, int ymin, int ymax, const char* color, char* bgcolor, int active)
+void iupFlatDrawBox(IdrawCanvas* dc, int xmin, int xmax, int ymin, int ymax, const char* color, const char* bgcolor, int active)
 {
   unsigned char r = 0, g = 0, b = 0;
 
@@ -353,7 +353,6 @@ static void iFlatDrawText(Ihandle* ih, IdrawCanvas* dc, int x, int y, int w, int
 
   if (!color || !str || str[0] == 0)
     return;
-
 
   iupStrToRGB(color, &r, &g, &b);
   if (!active)
@@ -537,5 +536,63 @@ int iupFlatGetImagePosition(const char* value)
   else if (iupStrEqualNoCase(value, "TOP"))
     img_position = IUP_IMGPOS_TOP;
   return img_position;
+}
+
+void iupFlatDrawArrow(IdrawCanvas* dc, int x, int y, int size, const char* color, const char* bgcolor, int active, int dir)
+{
+  int points[6];
+
+  int off1 = iupRound((double)size * 0.13);
+  int off2 = iupRound((double)size * 0.87);
+  int half = size / 2;
+
+  unsigned char r = 0, g = 0, b = 0;
+
+  iupStrToRGB(color, &r, &g, &b);
+  if (!active)
+  {
+    unsigned char bg_r = 0, bg_g = 0, bg_b = 0;
+    iupStrToRGB(bgcolor, &bg_r, &bg_g, &bg_b);
+    iupImageColorMakeInactive(&r, &g, &b, bg_r, bg_g, bg_b);
+  }
+
+  switch (dir)
+  {
+  case IUPDRAW_ARROW_LEFT:  /* arrow points left */
+    points[0] = x + off2;
+    points[1] = y;
+    points[2] = x + off2;
+    points[3] = y + size;
+    points[4] = x + off1;
+    points[5] = y + half;
+    break;
+  case IUPDRAW_ARROW_TOP:    /* arrow points top */
+    points[0] = x;
+    points[1] = y + off2;
+    points[2] = x + size;
+    points[3] = y + off2;
+    points[4] = x + half;
+    points[5] = y + off1;
+    break;
+  case IUPDRAW_ARROW_RIGHT:  /* arrow points right */
+    points[0] = x + off1;
+    points[1] = y;
+    points[2] = x + off1;
+    points[3] = y + size;
+    points[4] = x + size - off1;
+    points[5] = y + half;
+    break;
+  case IUPDRAW_ARROW_BOTTOM:  /* arrow points bottom */
+    points[0] = x;
+    points[1] = y + off1;
+    points[2] = x + size;
+    points[3] = y + off1;
+    points[4] = x + half;
+    points[5] = y + size - off1;
+    break;
+  }
+
+  iupdrvDrawPolygon(dc, points, 3, r, g, b, IUP_DRAW_FILL);
+  iupdrvDrawPolygon(dc, points, 3, r, g, b, IUP_DRAW_STROKE);
 }
 
