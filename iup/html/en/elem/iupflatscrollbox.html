@@ -45,7 +45,7 @@ flatscrollbox(<strong>child</strong>) [in LED]</pre>
 <p>Inherits all attributes and callbacks of the <a href="../elem/iupcanvas.html">IupCanvas</a>, 
 but redefines a few attributes.</p>
 <p><a href="../attrib/iup_bgcolor.html">BGCOLOR</a>: will always use the background 
-color of the native parent.</p>
+color of the native parent. It will be used in the children area.</p>
 
 <p><b>BORDER </b>(creation only):
   
@@ -70,8 +70,6 @@ set to NO then the layout will be updated only when the mouse drag is released.<
 <p><a href="../attrib/iup_scrollbar.html">SCROLLBAR</a> (read-only): the 
 default value is "NO". So the IupCanvas scrollbars are hidden, but it will 
 behave as always Yes. YAUTOHIDE and XAUTOHIDE will be always Yes.</p>
-<p><strong>SCROLLBARSIZE</strong>: scrollbar size, i.e. the width of the 
-vertical scrollbar or the height of the horizontal scrollbar. Default: 11</p>
 <p>
 <font SIZE="3">
 	<strong>SCROLLTO</strong> (write-only): position the scroll at the given x,y 
@@ -91,9 +89,28 @@ but directly using the child handle.</font></p>
 <p>
 <strong style="color: rgb(0, 0, 0); font-family: tahoma, verdana, arial, helvetica, geneva, sans-serif; font-size: medium; font-style: normal; font-variant: normal; letter-spacing: normal; line-height: 20.799999237060547px; orphans: auto; text-align: start; text-indent: 0px; text-transform: none; white-space: normal; widows: auto; word-spacing: 0px; -webkit-text-stroke-width: 0px; background-color: rgb(255, 255, 255);">
 CANFOCUS</strong><span style="color: rgb(0, 0, 0); font-family: tahoma, verdana, arial, helvetica, geneva, sans-serif; font-size: medium; font-style: normal; font-variant: normal; letter-spacing: normal; line-height: 20.799999237060547px; orphans: auto; text-align: start; text-indent: 0px; text-transform: none; white-space: normal; widows: auto; word-spacing: 0px; -webkit-text-stroke-width: 0px; background-color: rgb(255, 255, 255);">: 
-is set to NO.</p>
+is set to NO.</span></p>
+<h3>Scrollbars Appearance Attributes (<font size="3">non inheritable</font>)</h3>
 
-  </span>
+  <p>
+  <strong>BACKCOLOR</strong> (<font SIZE="3">non inheritable</font>): color 
+  used as background for the scrollbar. By default it will inherit from BGCOLOR.</p>
+<p><strong>FORECOLOR</strong> (<font SIZE="3">non inheritable</font>): handler 
+and arrow 
+color. Default: &quot;220 220 220&quot;. Used instead of 
+FGCOLOR to avoid inheritance problems. </p>
+
+
+  <p><strong>HIGHCOLOR</strong> (<font SIZE="3">non inheritable</font>): handler 
+  and arrow color when highlight. Default: 
+  &quot;132 132 132&quot;.</p>
+
+
+  <p><strong>PRESSCOLOR</strong> (<font SIZE="3">non inheritable</font>): 
+  handler and arrow color when pressed. Default: 
+  &quot;96 96 96&quot;.</p>
+<p><strong>SCROLLBARSIZE</strong> (<font SIZE="3">non inheritable</font>): The width of the vertical scrollbar or the 
+height of the horizontal scrollbar. Default: 15.</p>
 
   <blockquote>
     <hr>
