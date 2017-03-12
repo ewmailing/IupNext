@@ -52,6 +52,29 @@ static void iFlatScrollBoxRedrawHorizScrollbar(Ihandle* ih)
   IupUpdate(sb_horiz);
 }
 
+static void iFlatScrollBoxNormalizePos(int *pos, int max, int d)
+{
+  if (*pos < 0) *pos = 0;
+  if (*pos > max - d) *pos = max - d;
+
+}
+
+static int iFlatScrollBoxGetLineY(Ihandle* ih, int dy)
+{
+  int liney = dy / 10;
+  char* liney_str = iupAttribGet(ih, "LINEY");
+  if (liney_str) iupStrToInt(liney_str, &liney);
+  return liney;
+}
+
+static int iFlatScrollBoxGetLineX(Ihandle* ih, int dx)
+{
+  int linex = dx / 10;
+  char* linex_str = iupAttribGet(ih, "LINEX");
+  if (linex_str) iupStrToInt(linex_str, &linex);
+  return linex;
+}
+
 static void iFlatScrollBoxUpdateChildPos(Ihandle *ih, int drag)
 {
   Ihandle* child = iFlatScrollBoxGetChild(ih);
@@ -331,27 +354,20 @@ static void iFlatScrollBarPressX(Ihandle* ih, int handler)
 
   if (handler == SB_INC_X)
   {
-    int linex = dx / 10;
-    char* linex_str = iupAttribGet(ih->parent, "LINEX");
-    if (linex_str) iupStrToInt(linex_str, &linex);
+    int linex = iFlatScrollBoxGetLineX(ih->parent, dx);
     posx += linex;
   }
   else if (handler == SB_PAGEINC_X)
     posx += dx;
   if (handler == SB_DEC_X)
   {
-    int linex = dx / 10;
-    char* linex_str = iupAttribGet(ih->parent, "LINEX");
-    if (linex_str) iupStrToInt(linex_str, &linex);
+    int linex = iFlatScrollBoxGetLineX(ih->parent, dx);
     posx -= linex;
   }
   else if (handler == SB_PAGEDEC_X)
     posx -= dx;
 
-  if (posx < 0)
-    posx = 0;
-  if (posx > xmax - dx)
-    posx = xmax - dx;
+  iFlatScrollBoxNormalizePos(&posx, xmax, dx);
 
   iupAttribSetInt(ih->parent, "POSX", posx);
 }
@@ -364,27 +380,20 @@ static void iFlatScrollBarPressY(Ihandle* ih, int handler)
 
   if (handler == SB_INC_Y)
   {
-    int liney = dy / 10;
-    char* liney_str = iupAttribGet(ih->parent, "LINEY");
-    if (liney_str) iupStrToInt(liney_str, &liney);
+    int liney = iFlatScrollBoxGetLineY(ih->parent, dy);
     posy += liney;
   }
   else if (handler == SB_PAGEINC_Y)
     posy += dy;
   if (handler == SB_DEC_Y)
   {
-    int liney = dy / 10;
-    char* liney_str = iupAttribGet(ih->parent, "LINEY");
-    if (liney_str) iupStrToInt(liney_str, &liney);
+    int liney = iFlatScrollBoxGetLineY(ih->parent, dy);
     posy -= liney;
   }
   else if (handler == SB_PAGEDEC_Y)
     posy -= dy;
 
-  if (posy < 0)
-    posy = 0;
-  if (posy > ymax - dy)
-    posy = ymax - dy;
+  iFlatScrollBoxNormalizePos(&posy, ymax, dy);
 
   iupAttribSetInt(ih->parent, "POSY", posy);
 }
@@ -413,10 +422,7 @@ static int iFlatScrollBarMoveX(Ihandle* ih, int diff, int start_pos)
   pos -= sb_size;
   posx = (pos * xmax) / range;
 
-  if (posx < 0)
-    posx = 0;
-  if (posx > xmax - dx)
-    posx = xmax - dx;
+  iFlatScrollBoxNormalizePos(&posx, xmax, dx);
 
   if (posx != start_pos)
   {
@@ -451,10 +457,7 @@ static int iFlatScrollBarMoveY(Ihandle* ih, int diff, int start_pos)
   pos -= sb_size;
   posy = (pos * ymax) / range;
 
-  if (posy < 0)
-    posy = 0;
-  if (posy > ymax - dy)
-    posy = ymax - dy;
+  iFlatScrollBoxNormalizePos(&posy, ymax, dy);
 
   if (posy != start_pos)
   {
@@ -573,6 +576,19 @@ static int iFlatScrollBarLeaveWindow_CB(Ihandle* ih)
   return IUP_DEFAULT;
 }
 
+static int iFlatScrollBarWheel_CB(Ihandle* ih, float delta)
+{
+  int posy = iupAttribGetInt(ih->parent, "POSY");
+  int dy = iupAttribGetInt(ih->parent, "DY");
+  int liney = iFlatScrollBoxGetLineY(ih->parent, dy);
+  posy -= (int)(delta * liney);
+  iFlatScrollBoxNormalizePos(&posy, iupAttribGetInt(ih->parent, "YMAX"), dy);
+  iupAttribSetInt(ih->parent, "POSY", posy);
+  iFlatScrollBoxRedrawVertScrollbar(ih->parent);
+  iFlatScrollBoxUpdateChildPos(ih->parent, 0);
+  return IUP_DEFAULT;
+}
+
 
 /*****************************************************************************/
 
@@ -603,14 +619,33 @@ static int iFlatScrollBoxMotion_CB(Ihandle *ih, int x, int y, char* status)
     int dy = y - start_y;
     int posx = iupAttribGetInt(ih, "_IUP_START_POSX");
     int posy = iupAttribGetInt(ih, "_IUP_START_POSY");
-    iupAttribSetInt(ih, "POSX", posx - dx);  /* drag direction is opposite to scrollbar */
-    iupAttribSetInt(ih, "POSY", posy - dy);
+    posx -= dx;  /* drag direction is opposite to scrollbar */
+    posy -= dy;
+
+    iFlatScrollBoxNormalizePos(&posx, iupAttribGetInt(ih, "XMAX"), dx);
+    iFlatScrollBoxNormalizePos(&posy, iupAttribGetInt(ih, "YMAX"), dy);
+
+    iupAttribSetInt(ih, "POSX", posx);  
+    iupAttribSetInt(ih, "POSY", posy);
 
     iFlatScrollBoxRedrawVertScrollbar(ih);
     iFlatScrollBoxRedrawHorizScrollbar(ih);
 
     iFlatScrollBoxUpdateChildPos(ih, 0);
   }
+  return IUP_DEFAULT;
+}
+
+static int iFlatScrollBoxWheel_CB(Ihandle* ih, float delta)
+{
+  int posy = iupAttribGetInt(ih, "POSY");
+  int dy = iupAttribGetInt(ih, "DY");
+  int liney = iFlatScrollBoxGetLineY(ih, dy);
+  posy -= (int)(delta * liney);
+  iFlatScrollBoxNormalizePos(&posy, iupAttribGetInt(ih, "YMAX"), dy);
+  iupAttribSetInt(ih, "POSY", posy);
+  iFlatScrollBoxRedrawVertScrollbar(ih);
+  iFlatScrollBoxUpdateChildPos(ih, 0);
   return IUP_DEFAULT;
 }
 
@@ -642,6 +677,9 @@ static int iFlatScrollBoxSetScrollToChildHandleAttrib(Ihandle* ih, const char* v
     int posx = 0, posy = 0;
     if (iFlatScrollBoxGetChildPosition(ih, child, &posx, &posy))
     {
+      iFlatScrollBoxNormalizePos(&posx, iupAttribGetInt(ih, "XMAX"), iupAttribGetInt(ih, "DX"));
+      iFlatScrollBoxNormalizePos(&posy, iupAttribGetInt(ih, "YMAX"), iupAttribGetInt(ih, "DY"));
+
       iupAttribSetInt(ih, "POSX", posx);
       iupAttribSetInt(ih, "POSY", posy);
 
@@ -686,6 +724,9 @@ static int iFlatScrollBoxSetScrollToAttrib(Ihandle* ih, const char* value)
     int posx, posy;
     if (iupStrToIntInt(value, &posx, &posy, ',') == 2)
     {
+      iFlatScrollBoxNormalizePos(&posx, iupAttribGetInt(ih, "XMAX"), iupAttribGetInt(ih, "DX"));
+      iFlatScrollBoxNormalizePos(&posy, iupAttribGetInt(ih, "YMAX"), iupAttribGetInt(ih, "DY"));
+
       iupAttribSetInt(ih, "POSX", posx);
       iupAttribSetInt(ih, "POSY", posy);
 
@@ -785,7 +826,7 @@ static int iFlatScrollBoxSetPosXAttrib(Ihandle* ih, const char *value)
   xmax = iupAttribGetInt(ih, "XMAX");
   dx = iupAttribGetInt(ih, "DX");
 
-  if (posx > xmax - dx) posx = xmax - dx;
+  iFlatScrollBoxNormalizePos(&posx, xmax, dx);
 
   iupAttribSetInt(ih, "POSX", posx);
 
@@ -807,7 +848,7 @@ static int iFlatScrollBoxSetPosYAttrib(Ihandle* ih, const char *value)
   ymax = iupAttribGetInt(ih, "YMAY");
   dy = iupAttribGetInt(ih, "DY");
 
-  if (posy > ymax - dy) posy = ymax - dy;
+  iFlatScrollBoxNormalizePos(&posy, ymax, dy);
 
   iupAttribSetInt(ih, "POSY", posy);
 
@@ -990,7 +1031,7 @@ static int iFlatScrollBoxCreateMethod(Ihandle* ih, void** params)
   IupSetCallback(sb_vert, "BUTTON_CB", (Icallback)iFlatScrollBarButton_CB);
   IupSetCallback(sb_vert, "MOTION_CB", (Icallback)iFlatScrollBarMotion_CB);
   IupSetCallback(sb_vert, "LEAVEWINDOW_CB", (Icallback)iFlatScrollBarLeaveWindow_CB);
-  //TODO WHEEL_CB
+  IupSetCallback(sb_vert, "WHEEL_CB", (Icallback)iFlatScrollBarWheel_CB);
 
   sb_horiz = IupCanvas(NULL);
   IupSetAttribute(sb_horiz, "BORDER", "NO");
@@ -1001,12 +1042,12 @@ static int iFlatScrollBoxCreateMethod(Ihandle* ih, void** params)
   IupSetCallback(sb_horiz, "BUTTON_CB", (Icallback)iFlatScrollBarButton_CB);
   IupSetCallback(sb_horiz, "MOTION_CB", (Icallback)iFlatScrollBarMotion_CB);
   IupSetCallback(sb_horiz, "LEAVEWINDOW_CB", (Icallback)iFlatScrollBarLeaveWindow_CB);
-  //TODO WHEEL_CB
+  IupSetCallback(sb_horiz, "WHEEL_CB", (Icallback)iFlatScrollBarWheel_CB);
 
   /* Setting callbacks */
   IupSetCallback(ih, "BUTTON_CB", (Icallback)iFlatScrollBoxButton_CB);
   IupSetCallback(ih, "MOTION_CB", (Icallback)iFlatScrollBoxMotion_CB);
-  //TODO WHEEL_CB
+  IupSetCallback(ih, "WHEEL_CB", (Icallback)iFlatScrollBoxWheel_CB);
 
   IupSetAttribute(ih, "CANFOCUS", "NO");
 
@@ -1074,7 +1115,7 @@ Iclass* iupFlatScrollBoxNewClass(void)
 
   iupClassRegisterAttribute(ic, "SCROLLBARSIZE", NULL, NULL, IUPAF_SAMEASSYSTEM, "15", IUPAF_NO_INHERIT);
   iupClassRegisterAttribute(ic, "HIGHCOLOR", NULL, NULL, IUPAF_SAMEASSYSTEM, "132 132 132", IUPAF_NO_INHERIT);
-  iupClassRegisterAttribute(ic, "FORECOLOR", NULL, NULL, IUPAF_SAMEASSYSTEM, "220 220 230", IUPAF_NO_INHERIT);
+  iupClassRegisterAttribute(ic, "FORECOLOR", NULL, NULL, IUPAF_SAMEASSYSTEM, "220 220 220", IUPAF_NO_INHERIT);
   iupClassRegisterAttribute(ic, "PRESSCOLOR", NULL, NULL, IUPAF_SAMEASSYSTEM, "96 96 96", IUPAF_NO_INHERIT);
   iupClassRegisterAttribute(ic, "BACKCOLOR", NULL, NULL, NULL, NULL, IUPAF_NO_INHERIT);
 
