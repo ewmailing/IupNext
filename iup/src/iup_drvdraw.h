@@ -46,7 +46,7 @@ void iupdrvDrawUpdateSize(IdrawCanvas* dc);
  * \ingroup draw */
 void iupdrvDrawGetSize(IdrawCanvas* dc, int *w, int *h);
 
-/** Draws the parent background.
+/** Draws a filled rectangle with the parent background color.
  * \ingroup draw */
 void iupdrvDrawParentBackground(IdrawCanvas* dc);
 

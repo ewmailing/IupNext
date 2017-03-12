@@ -146,10 +146,6 @@ static void iFlatScrollBarDrawVertical(Ihandle* ih, IdrawCanvas* dc, int active,
   posy = ((sb_posy - sb_ymin) * range) / sb_range;
   posy += sb_size;
 
-  /* draw background */
-  iupFlatDrawBox(dc, 0, xmax,
-                     0, ymax, bgcolor, NULL, 1);
-
   /* draw arrows */
   iupFlatDrawArrow(dc, 2, 2, sb_size - 5, fgcolor_dec, bgcolor, active, IUPDRAW_ARROW_TOP);
   iupFlatDrawArrow(dc, 2, ymax - sb_size + 3, sb_size - 5, fgcolor_inc, bgcolor, active, IUPDRAW_ARROW_BOTTOM);
@@ -207,9 +203,6 @@ static void iFlatScrollBarDrawHorizontal(Ihandle* ih, IdrawCanvas* dc, int activ
   posx = ((sb_posx - sb_xmin) * range) / sb_range;
   posx += sb_size;
 
-  /* draw background */
-  iupFlatDrawBox(dc, 0, xmax, 0, ymax, bgcolor, NULL, 1);
-
   /* draw arrows */
   iupFlatDrawArrow(dc, 2, 2, sb_size - 5, fgcolor_dec, bgcolor, active, IUPDRAW_ARROW_LEFT);
   iupFlatDrawArrow(dc, xmax - sb_size + 3, 2, sb_size - 5, fgcolor_inc, bgcolor, active, IUPDRAW_ARROW_RIGHT);
@@ -238,9 +231,6 @@ static int iFlatScrollBarAction_CB(Ihandle* ih)
 
   IdrawCanvas* dc = iupdrvDrawCreateCanvas(ih);
 
-  //TODO ????
-  iupdrvDrawParentBackground(dc);
-
   if (!bgcolor)
     bgcolor = iupBaseNativeParentGetBgColorAttrib(ih);
 
@@ -252,6 +242,9 @@ static int iFlatScrollBarAction_CB(Ihandle* ih)
 
   if (sb_ymax - sb_ymin > sb_dy)  /* has vertical scrollbar */
     has_vert_scroll = 1;
+
+  /* draw background */
+  iupFlatDrawBox(dc, 0, ih->currentwidth - 1, 0, ih->currentheight - 1, bgcolor, NULL, 1);
 
   if (is_vert_scrollbar)
     iFlatScrollBarDrawVertical(ih, dc, active, fgcolor, bgcolor, pressed, highlight, sb_ymin, sb_ymax, sb_dy, sb_size, has_horiz_scroll);
@@ -973,8 +966,8 @@ static void iFlatScrollBoxSetChildrenPositionMethod(Ihandle* ih, int x, int y)
     iupBaseSetPosition(child, x, y);
   }
 
-  iupBaseSetPosition(sb_vert, ih->currentwidth-1 - sb_size, 0);
-  iupBaseSetPosition(sb_horiz, 0, ih->currentheight - 1 - sb_size);
+  iupBaseSetPosition(sb_vert, ih->currentwidth - sb_size, 0);
+  iupBaseSetPosition(sb_horiz, 0, ih->currentheight - sb_size);
 
   IupSetAttribute(sb_vert, "ZORDER", "TOP");
   IupSetAttribute(sb_horiz, "ZORDER", "TOP");
@@ -1079,10 +1072,10 @@ Iclass* iupFlatScrollBoxNewClass(void)
   iupClassRegisterAttribute(ic, "POSX", NULL, iFlatScrollBoxSetPosXAttrib, "0", NULL, IUPAF_NO_INHERIT);
   iupClassRegisterAttribute(ic, "POSY", NULL, iFlatScrollBoxSetPosYAttrib, "0", NULL, IUPAF_NO_INHERIT);
 
-  iupClassRegisterAttribute(ic, "SCROLLBARSIZE", NULL, NULL, IUPAF_SAMEASSYSTEM, "11", IUPAF_NO_INHERIT);
-  iupClassRegisterAttribute(ic, "HIGHCOLOR", NULL, NULL, IUPAF_SAMEASSYSTEM, "90 190 255", IUPAF_NO_INHERIT);
-  iupClassRegisterAttribute(ic, "FORECOLOR", NULL, NULL, IUPAF_SAMEASSYSTEM, "110 210 230", IUPAF_NO_INHERIT);
-  iupClassRegisterAttribute(ic, "PRESSCOLOR", NULL, NULL, IUPAF_SAMEASSYSTEM, "50 150 255", IUPAF_NO_INHERIT);
+  iupClassRegisterAttribute(ic, "SCROLLBARSIZE", NULL, NULL, IUPAF_SAMEASSYSTEM, "15", IUPAF_NO_INHERIT);
+  iupClassRegisterAttribute(ic, "HIGHCOLOR", NULL, NULL, IUPAF_SAMEASSYSTEM, "132 132 132", IUPAF_NO_INHERIT);
+  iupClassRegisterAttribute(ic, "FORECOLOR", NULL, NULL, IUPAF_SAMEASSYSTEM, "220 220 230", IUPAF_NO_INHERIT);
+  iupClassRegisterAttribute(ic, "PRESSCOLOR", NULL, NULL, IUPAF_SAMEASSYSTEM, "96 96 96", IUPAF_NO_INHERIT);
   iupClassRegisterAttribute(ic, "BACKCOLOR", NULL, NULL, NULL, NULL, IUPAF_NO_INHERIT);
 
   return ic;
