@@ -638,15 +638,15 @@ static int iFlatScrollBoxMotion_CB(Ihandle *ih, int x, int y, char* status)
   {
     int start_x = iupAttribGetInt(ih, "_IUP_START_X");
     int start_y = iupAttribGetInt(ih, "_IUP_START_Y");
-    int dx = x - start_x;
-    int dy = y - start_y;
+    int off_x = x - start_x;
+    int off_y = y - start_y;
     int posx = iupAttribGetInt(ih, "_IUP_START_POSX");
     int posy = iupAttribGetInt(ih, "_IUP_START_POSY");
-    posx -= dx;  /* drag direction is opposite to scrollbar */
-    posy -= dy;
+    posx -= off_x;  /* drag direction is opposite to scrollbar */
+    posy -= off_y;
 
-    iFlatScrollBoxNormalizePos(&posx, iupAttribGetInt(ih, "XMAX"), dx);
-    iFlatScrollBoxNormalizePos(&posy, iupAttribGetInt(ih, "YMAX"), dy);
+    iFlatScrollBoxNormalizePos(&posx, iupAttribGetInt(ih, "XMAX"), iupAttribGetInt(ih, "DX"));
+    iFlatScrollBoxNormalizePos(&posy, iupAttribGetInt(ih, "YMAX"), iupAttribGetInt(ih, "DY"));
 
     iupAttribSetInt(ih, "POSX", posx);  
     iupAttribSetInt(ih, "POSY", posy);
