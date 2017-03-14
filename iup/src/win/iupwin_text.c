@@ -1823,7 +1823,7 @@ static int winTextMsgProc(Ihandle* ih, UINT msg, WPARAM wp, LPARAM lp, LRESULT *
         return 1;
       }
       else
-        return 0;  /* already processed at the begining of this function */
+        return 0;  /* already processed at the beginning of this function */
     }
   case WM_KEYUP:
     {

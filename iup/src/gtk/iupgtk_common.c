@@ -773,7 +773,7 @@ gboolean iupgtkButtonEvent(GtkWidget *widget, GdkEventButton *evt, Ihandle *ih)
     if (doubleclick)
     {
       /* Must compensate the fact that in GTK there is an extra button press event 
-         when occours a double click, we compensate that completing the event 
+         when occurs a double click, we compensate that completing the event 
          with a button release before the double click. */
 
       status[5] = ' '; /* clear double click */
