@@ -118,6 +118,43 @@ enum {
 };
 
 
+static char* iFlatScrollBarMakeImageName(Ihandle* ih, const char* baseattrib, const char* state)
+{
+  char attrib[1024];
+  strcpy(attrib, baseattrib);
+  strcat(attrib, state);
+  return iupAttribGet(ih, attrib);
+}
+
+static const char* iFlatScrollBarGetImageName(Ihandle* ih, const char* baseattrib, int pressed, int highlighted, int active, int *make_inactive)
+{
+  const char* new_imagename = NULL;
+
+  *make_inactive = 0;
+
+  if (active)
+  {
+    if (pressed)
+      new_imagename = iFlatScrollBarMakeImageName(ih, baseattrib, "PRESS");
+    else
+    {
+      if (highlighted)
+        new_imagename = iFlatScrollBarMakeImageName(ih, baseattrib, "HIGHLIGHT");
+    }
+  }
+  else
+  {
+    new_imagename = iFlatScrollBarMakeImageName(ih, baseattrib, "INACTIVE");
+    if (!new_imagename)
+      *make_inactive = 1;
+  }
+
+  if (new_imagename)
+    return new_imagename;
+  else
+    return baseattrib;
+}
+
 static void iFlatScrollBarDrawVertical(Ihandle* ih, IdrawCanvas* dc, int active, const char* fgcolor, const char* bgcolor, int pressed,
                                        int highlight, int ymax, int dy, int sb_size, int has_horiz_scroll)
 {
@@ -173,8 +210,23 @@ static void iFlatScrollBarDrawVertical(Ihandle* ih, IdrawCanvas* dc, int active,
   /* draw arrows */
   if (show_arrows)
   {
-    iupFlatDrawArrow(dc, 2, 2, arrow_size - 5, fgcolor_dec, bgcolor, active, IUPDRAW_ARROW_TOP);
-    iupFlatDrawArrow(dc, 2, height - 1 - arrow_size + 3, arrow_size - 5, fgcolor_inc, bgcolor, active, IUPDRAW_ARROW_BOTTOM);
+    int arrow_images = iupAttribGetInt(ih->parent, "ARROWIMAGES");
+    if (arrow_images)
+    {
+      int make_inactive;
+      const char* image;
+
+      image = iFlatScrollBarGetImageName(ih->parent, "IMAGETOP", pressed, highlight, active, &make_inactive);
+      iupdrvDrawImage(dc, image, make_inactive, 0, 0);
+
+      image = iFlatScrollBarGetImageName(ih->parent, "IMAGEBOTTOM", pressed, highlight, active, &make_inactive);
+      iupdrvDrawImage(dc, image, make_inactive, height - 1 - arrow_size, 0);
+    }
+    else
+    {
+      iupFlatDrawArrow(dc, 2, 2, arrow_size - 5, fgcolor_dec, bgcolor, active, IUPDRAW_ARROW_TOP);
+      iupFlatDrawArrow(dc, 2, height - 1 - arrow_size + 3, arrow_size - 5, fgcolor_inc, bgcolor, active, IUPDRAW_ARROW_BOTTOM);
+    }
   }
 
   /* draw handler */
@@ -236,8 +288,23 @@ static void iFlatScrollBarDrawHorizontal(Ihandle* ih, IdrawCanvas* dc, int activ
   /* draw arrows */
   if (show_arrows)
   {
-    iupFlatDrawArrow(dc, 2, 2, arrow_size - 5, fgcolor_dec, bgcolor, active, IUPDRAW_ARROW_LEFT);
-    iupFlatDrawArrow(dc, width - 1 - arrow_size + 3, 2, arrow_size - 5, fgcolor_inc, bgcolor, active, IUPDRAW_ARROW_RIGHT);
+    int arrow_images = iupAttribGetInt(ih->parent, "ARROWIMAGES");
+    if (arrow_images)
+    {
+      int make_inactive;
+      const char* image;
+      
+      image = iFlatScrollBarGetImageName(ih->parent, "IMAGELEFT", pressed, highlight, active, &make_inactive);
+      iupdrvDrawImage(dc, image, make_inactive, 0, 0);
+
+      image = iFlatScrollBarGetImageName(ih->parent, "IMAGERIGHT", pressed, highlight, active, &make_inactive);
+      iupdrvDrawImage(dc, image, make_inactive, width - 1 - arrow_size, 0);
+    }
+    else
+    {
+      iupFlatDrawArrow(dc, 2, 2, arrow_size - 5, fgcolor_dec, bgcolor, active, IUPDRAW_ARROW_LEFT);
+      iupFlatDrawArrow(dc, width - 1 - arrow_size + 3, 2, arrow_size - 5, fgcolor_inc, bgcolor, active, IUPDRAW_ARROW_RIGHT);
+    }
   }
 
   /* draw handler */
@@ -1092,6 +1159,7 @@ static int iFlatScrollBoxCreateMethod(Ihandle* ih, void** params)
   IupSetCallback(sb_vert, "MOTION_CB", (Icallback)iFlatScrollBarMotion_CB);
   IupSetCallback(sb_vert, "LEAVEWINDOW_CB", (Icallback)iFlatScrollBarLeaveWindow_CB);
   IupSetCallback(sb_vert, "WHEEL_CB", (Icallback)iFlatScrollBarWheel_CB);
+  IupSetAttribute(sb_vert, "CANFOCUS", "NO");
 
   sb_horiz = IupCanvas(NULL);
   IupSetAttribute(sb_horiz, "BORDER", "NO");
@@ -1103,13 +1171,13 @@ static int iFlatScrollBoxCreateMethod(Ihandle* ih, void** params)
   IupSetCallback(sb_horiz, "MOTION_CB", (Icallback)iFlatScrollBarMotion_CB);
   IupSetCallback(sb_horiz, "LEAVEWINDOW_CB", (Icallback)iFlatScrollBarLeaveWindow_CB);
   IupSetCallback(sb_horiz, "WHEEL_CB", (Icallback)iFlatScrollBarWheel_CB);
+  IupSetAttribute(sb_horiz, "CANFOCUS", "NO");
 
   /* Setting callbacks */
   IupSetCallback(ih, "BUTTON_CB", (Icallback)iFlatScrollBoxButton_CB);
   IupSetCallback(ih, "MOTION_CB", (Icallback)iFlatScrollBoxMotion_CB);
   IupSetCallback(ih, "WHEEL_CB", (Icallback)iFlatScrollBoxWheel_CB);
   IupSetCallback(ih, "ACTION", (Icallback)iFlatScrollBoxAction_CB);
-
   IupSetAttribute(ih, "CANFOCUS", "NO");
 
   if (params)
@@ -1180,6 +1248,28 @@ Iclass* iupFlatScrollBoxNewClass(void)
   iupClassRegisterAttribute(ic, "PRESSCOLOR", NULL, NULL, IUPAF_SAMEASSYSTEM, "96 96 96", IUPAF_NO_INHERIT);
   iupClassRegisterAttribute(ic, "BACKCOLOR", NULL, NULL, NULL, NULL, IUPAF_NO_INHERIT);
   iupClassRegisterAttribute(ic, "SHOWARROWS", NULL, NULL, IUPAF_SAMEASSYSTEM, "Yes", IUPAF_NO_INHERIT);
+
+  iupClassRegisterAttribute(ic, "ARROWIMAGES", NULL, NULL, NULL, NULL, IUPAF_NO_INHERIT);
+
+  iupClassRegisterAttribute(ic, "IMAGELEFT", NULL, NULL, NULL, NULL, IUPAF_IHANDLENAME | IUPAF_NO_DEFAULTVALUE | IUPAF_NO_INHERIT);
+  iupClassRegisterAttribute(ic, "IMAGELEFTPRESS", NULL, NULL, NULL, NULL, IUPAF_IHANDLENAME | IUPAF_NO_DEFAULTVALUE | IUPAF_NO_INHERIT);
+  iupClassRegisterAttribute(ic, "IMAGELEFTHIGHLIGHT", NULL, NULL, NULL, NULL, IUPAF_IHANDLENAME | IUPAF_NO_DEFAULTVALUE | IUPAF_NO_INHERIT);
+  iupClassRegisterAttribute(ic, "IMAGELEFTINACTIVE", NULL, NULL, NULL, NULL, IUPAF_IHANDLENAME | IUPAF_NO_DEFAULTVALUE | IUPAF_NO_INHERIT);
+
+  iupClassRegisterAttribute(ic, "IMAGERIGHT", NULL, NULL, NULL, NULL, IUPAF_IHANDLENAME | IUPAF_NO_DEFAULTVALUE | IUPAF_NO_INHERIT);
+  iupClassRegisterAttribute(ic, "IMAGERIGHTPRESS", NULL, NULL, NULL, NULL, IUPAF_IHANDLENAME | IUPAF_NO_DEFAULTVALUE | IUPAF_NO_INHERIT);
+  iupClassRegisterAttribute(ic, "IMAGERIGHTHIGHLIGHT", NULL, NULL, NULL, NULL, IUPAF_IHANDLENAME | IUPAF_NO_DEFAULTVALUE | IUPAF_NO_INHERIT);
+  iupClassRegisterAttribute(ic, "IMAGERIGHTINACTIVE", NULL, NULL, NULL, NULL, IUPAF_IHANDLENAME | IUPAF_NO_DEFAULTVALUE | IUPAF_NO_INHERIT);
+
+  iupClassRegisterAttribute(ic, "IMAGETOP", NULL, NULL, NULL, NULL, IUPAF_IHANDLENAME | IUPAF_NO_DEFAULTVALUE | IUPAF_NO_INHERIT);
+  iupClassRegisterAttribute(ic, "IMAGETOPPRESS", NULL, NULL, NULL, NULL, IUPAF_IHANDLENAME | IUPAF_NO_DEFAULTVALUE | IUPAF_NO_INHERIT);
+  iupClassRegisterAttribute(ic, "IMAGETOPHIGHLIGHT", NULL, NULL, NULL, NULL, IUPAF_IHANDLENAME | IUPAF_NO_DEFAULTVALUE | IUPAF_NO_INHERIT);
+  iupClassRegisterAttribute(ic, "IMAGETOPINACTIVE", NULL, NULL, NULL, NULL, IUPAF_IHANDLENAME | IUPAF_NO_DEFAULTVALUE | IUPAF_NO_INHERIT);
+
+  iupClassRegisterAttribute(ic, "IMAGEBOTTOM", NULL, NULL, NULL, NULL, IUPAF_IHANDLENAME | IUPAF_NO_DEFAULTVALUE | IUPAF_NO_INHERIT);
+  iupClassRegisterAttribute(ic, "IMAGEBOTTOMPRESS", NULL, NULL, NULL, NULL, IUPAF_IHANDLENAME | IUPAF_NO_DEFAULTVALUE | IUPAF_NO_INHERIT);
+  iupClassRegisterAttribute(ic, "IMAGEBOTTOMHIGHLIGHT", NULL, NULL, NULL, NULL, IUPAF_IHANDLENAME | IUPAF_NO_DEFAULTVALUE | IUPAF_NO_INHERIT);
+  iupClassRegisterAttribute(ic, "IMAGEBOTTOMINACTIVE", NULL, NULL, NULL, NULL, IUPAF_IHANDLENAME | IUPAF_NO_DEFAULTVALUE | IUPAF_NO_INHERIT);
 
   return ic;
 }
