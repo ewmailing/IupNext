@@ -249,12 +249,34 @@ static gboolean gtkCanvasButtonEvent(GtkWidget *widget, GdkEventButton *evt, Iha
 {
   if (evt->type == GDK_BUTTON_PRESS)
   {
+    gtk_grab_add(widget);
+
     /* Force focus on canvas click */
     if (iupAttribGetBoolean(ih, "CANFOCUS"))
       gtk_widget_grab_focus(ih->handle);
   }
+  else  /* GDK_BUTTON_RELEASE */
+  {
+    gtk_grab_remove(widget);
+  }
 
-  return iupgtkButtonEvent(widget, evt, ih);
+  iupgtkButtonEvent(widget, evt, ih);
+
+  return TRUE; /* stop other handlers from being invoked */
+}
+
+static gboolean gtkCanvasMotionNotifyEvent(GtkWidget *widget, GdkEventMotion *evt, Ihandle *ih)
+{
+  iupgtkMotionNotifyEvent(widget, evt, ih);
+  return TRUE; /* stop other handlers from being invoked */
+}
+
+gboolean gtkCanvasFocusOutEvent(GtkWidget *widget, GdkEventFocus *evt, Ihandle *ih)
+{
+  if (widget == gtk_grab_get_current())
+    gtk_grab_remove(widget);
+
+  return iupgtkFocusInOutEvent(widget, evt, ih);
 }
 
 static int gtkCanvasSetBgColorAttrib(Ihandle* ih, const char* value);
@@ -713,7 +735,7 @@ static int gtkCanvasMapMethod(Ihandle* ih)
   iupgtkAddToParent(ih);
 
   g_signal_connect(G_OBJECT(ih->handle), "focus-in-event",     G_CALLBACK(iupgtkFocusInOutEvent), ih);
-  g_signal_connect(G_OBJECT(ih->handle), "focus-out-event",    G_CALLBACK(iupgtkFocusInOutEvent), ih);
+  g_signal_connect(G_OBJECT(ih->handle), "focus-out-event",    G_CALLBACK(gtkCanvasFocusOutEvent), ih);
   g_signal_connect(G_OBJECT(ih->handle), "key-press-event",    G_CALLBACK(iupgtkKeyPressEvent),   ih);
   g_signal_connect(G_OBJECT(ih->handle), "key-release-event",  G_CALLBACK(iupgtkKeyReleaseEvent), ih);
   g_signal_connect(G_OBJECT(ih->handle), "enter-notify-event", G_CALLBACK(iupgtkEnterLeaveEvent), ih);
@@ -727,7 +749,7 @@ static int gtkCanvasMapMethod(Ihandle* ih)
 #endif
   g_signal_connect(G_OBJECT(ih->handle), "button-press-event", G_CALLBACK(gtkCanvasButtonEvent), ih);
   g_signal_connect(G_OBJECT(ih->handle), "button-release-event",G_CALLBACK(gtkCanvasButtonEvent), ih);
-  g_signal_connect(G_OBJECT(ih->handle), "motion-notify-event",G_CALLBACK(iupgtkMotionNotifyEvent), ih);
+  g_signal_connect(G_OBJECT(ih->handle), "motion-notify-event", G_CALLBACK(gtkCanvasMotionNotifyEvent), ih);
   g_signal_connect(G_OBJECT(ih->handle), "scroll-event",G_CALLBACK(gtkCanvasScrollEvent), ih);
 
   g_signal_connect(G_OBJECT(ih->handle), "size-allocate", G_CALLBACK(gtkCanvasSizeAllocate), ih);
