@@ -24,7 +24,6 @@
 #include "iup_childtree.h"
 
 
-
 static Ihandle* iFlatScrollBoxGetVertScrollbar(Ihandle *ih)
 {
   return ih->firstchild;
@@ -658,9 +657,12 @@ static int iFlatScrollBarMotion_CB(Ihandle *ih, int x, int y)
 
 static int iFlatScrollBarLeaveWindow_CB(Ihandle* ih)
 {
-  iupAttribSet(ih, "_IUP_HIGHLIGHT_HANDLER", NULL);
-  iupAttribSet(ih, "_IUP_PRESSED_HANDLER", NULL);
-  IupUpdate(ih);
+  int handler = iupAttribGetInt(ih, "_IUP_HIGHLIGHT_HANDLER");
+  if (handler != SB_NONE)
+  {
+    iupAttribSet(ih, "_IUP_HIGHLIGHT_HANDLER", NULL);
+    IupUpdate(ih);
+  }
   return IUP_DEFAULT;
 }
 

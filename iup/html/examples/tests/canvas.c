@@ -359,8 +359,10 @@ void CanvasTest(void)
   //IupSetAttribute (image, "HOTSPOT", "7:7");
 
   box = IupVbox(NULL);
+//  box = IupBackgroundBox(NULL);
   IupSetAttribute(box, "MARGIN", "5x5");
 //  IupSetAttribute(box, "CMARGIN", "30x30");
+//  IupSetAttribute(box, "RASTERSIZE", "150x100");
 
   canvas = IupCanvas(NULL);
   IupAppend(box, canvas);
