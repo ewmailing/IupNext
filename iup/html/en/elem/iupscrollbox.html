@@ -117,6 +117,11 @@ wheel scrolls the contents vertically.</p>
 <p>The box can be created with no elements and be dynamic filled using
   <a href="../func/iupappend.html">IupAppend</a> or
 <a href="../func/iupinsert.html">IupInsert</a>.</p>
+<p>Notice that it is possible to use the <strong>IupScrollBox</strong> to 
+overcome the internal scrollbars of another control like <strong>IupMatrix</strong> 
+by making all cells visible, but this will force all cells to be drawn all the 
+time even when not visible at the scroll box, which is much slower than the 
+internal <strong>IupMatrix</strong> optimization.</p>
 
 
 <h3><a name="Examples">Examples</a></h3>
