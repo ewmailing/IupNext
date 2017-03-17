@@ -689,11 +689,11 @@ void SampleTest(void)
 //  IupSetAttribute(dlg, "RESIZE", "NO");
   IupSetCallback(dlg, "FOCUS_CB", (Icallback)focus_cb);
 
-#if 0
+#if 1
   {
     Ihandle* label;
     Ihandle* caption_bar = IupSetAttributes(IupBackgroundBox(IupHbox(
-      label = IupSetAttributes(IupLabel("Custom Dialog Title"), "EXPAND=HORIZONTAL, HTTRANSPARENT=Yes"), 
+      label = IupSetAttributes(IupLabel("Custom Dialog Title"), "EXPAND=HORIZONTAL, HTTRANSPARENT=Yes"),
       IupSetCallbacks(IupSetAttributes(IupButton("_", NULL), "RASTERSIZE=50, FLAT=Yes, CANFOCUS=NO, FONTSTYLE=Bold"), "ACTION", dialog_minimize, NULL),
       IupSetCallbacks(IupSetAttributes(IupButton("Max", NULL), "RASTERSIZE=50"), "ACTION", dialog_maximize, NULL),
       IupSetCallbacks(IupSetAttributes(IupButton(" X ", NULL), "RASTERSIZE=50"), "ACTION", dialog_close, NULL),
@@ -704,9 +704,28 @@ void SampleTest(void)
     IupSetAttribute(dlg, "CUSTOMFRAMEEX", "YES");
     IupSetAttribute(dlg, "CUSTOMFRAMECAPTIONLIMITS", "0:150");
 #else
-    IupSetCallbacks(label, "BUTTON_CB", dialog_move_button, "MOTION_CB", dialog_move_motion, NULL);
-//    IupSetAttribute(dlg, "MENUBOX", "NO");
-    IupSetAttribute(dlg, "HIDETITLEBAR", "Yes");
+    IupSetCallbacks(label, "BUTTON_CB", dialog_move_button, 
+                    "MOTION_CB", dialog_move_motion, 
+                    NULL);
+
+    {
+      char* version = IupGetGlobal("GTKVERSION");
+      int major, minor, bugfix;
+      sscanf(version, "%d.%d.%d", &major, &minor, &bugfix);
+      printf("GTK version=%d.%d\n", major, minor);
+
+      if (major < 3 || minor < 10)
+      {
+        IupSetAttribute(dlg, "RESIZE", "NO");
+        IupSetAttribute(dlg, "MENUBOX", "NO");
+        IupSetAttribute(dlg, "MAXBOX", "NO");
+        IupSetAttribute(dlg, "MINBOX", "NO");
+        IupSetAttribute(dlg, "BORDER", "NO");
+        IupSetAttribute(dlg, "TITLE", NULL);
+      }
+      else
+        IupSetAttribute(dlg, "HIDETITLEBAR", "Yes");  /* GTK 3.10 only */
+    }
 #endif
   }
 #endif
@@ -729,7 +748,7 @@ void SampleTest(void)
 //  IupSetAttribute(dlg,"RASTERSIZE","1000x800");
 //  IupSetAttribute(dlg,"RASTERSIZE","600x500");
 
-  IupSetCallback(dlg, "COPYDATA_CB", (Icallback)copydata_cb);
+//  IupSetCallback(dlg, "COPYDATA_CB", (Icallback)copydata_cb);
 
   //IupSetGlobal("INPUTCALLBACKS", "Yes");
   //IupSetFunction("GLOBALKEYPRESS_CB", (Icallback)globalkeypress_cb);
