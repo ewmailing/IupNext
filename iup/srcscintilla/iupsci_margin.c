@@ -35,8 +35,8 @@ SCI_SETMARGINLEFT(<unused>, int pixels)
 SCI_GETMARGINLEFT
 SCI_SETMARGINRIGHT(<unused>, int pixels)
 SCI_GETMARGINRIGHT
---SCI_SETFOLDMARGINCOLOUR(bool useSetting, int colour)
---SCI_SETFOLDMARGINHICOLOUR(bool useSetting, int colour)
+SCI_SETFOLDMARGINCOLOUR(bool useSetting, int colour)
+SCI_SETFOLDMARGINHICOLOUR(bool useSetting, int colour)
 SCI_MARGINSETTEXT(int line, char *text)
 SCI_MARGINGETTEXT(int line, char *text)
 SCI_MARGINSETSTYLE(int line, int style)
@@ -221,8 +221,44 @@ static int iScintillaSetMarginCursorAttribId(Ihandle* ih, int margin, const char
   return 0;
 }
 
+static int iScintillaSetFoldMarginColorAttrib(Ihandle* ih, const char* value)
+{
+  if (!value)
+    IupScintillaSendMessage(ih, SCI_SETFOLDMARGINCOLOUR, 0, 0);
+  else
+  {
+    unsigned char r, g, b;
+
+    if (!iupStrToRGB(value, &r, &g, &b))
+      return 0;
+
+    IupScintillaSendMessage(ih, SCI_SETFOLDMARGINCOLOUR, 1, iupScintillaEncodeColor(r, g, b));
+  }
+  return 0;
+}
+
+static int iScintillaSetFoldMarginHiColorAttrib(Ihandle* ih, const char* value)
+{
+  if (!value)
+    IupScintillaSendMessage(ih, SCI_SETFOLDMARGINHICOLOUR, 0, 0);
+  else
+  {
+    unsigned char r, g, b;
+
+    if (!iupStrToRGB(value, &r, &g, &b))
+      return 0;
+
+    IupScintillaSendMessage(ih, SCI_SETFOLDMARGINHICOLOUR, 1, iupScintillaEncodeColor(r, g, b));
+  }
+  return 0;
+}
+
+
 void iupScintillaRegisterMargin(Iclass* ic)
 {
+  iupClassRegisterAttribute(ic, "FOLDMARGINCOLOR", NULL, iScintillaSetFoldMarginColorAttrib, NULL, NULL, IUPAF_WRITEONLY|IUPAF_NO_INHERIT);
+  iupClassRegisterAttribute(ic, "FOLDMARGINHICOLOR", NULL, iScintillaSetFoldMarginHiColorAttrib, NULL, NULL, IUPAF_WRITEONLY | IUPAF_NO_INHERIT);
+ 
   iupClassRegisterAttributeId(ic, "MARGINTYPE", iScintillaGetMarginTypeAttribId, iScintillaSetMarginTypeAttribId, IUPAF_NO_INHERIT);
   iupClassRegisterAttributeId(ic, "MARGINWIDTH", iScintillaGetMarginWidthAttribId, iScintillaSetMarginWidthAttribId, IUPAF_NO_INHERIT);
   iupClassRegisterAttributeId(ic, "MARGINMASKFOLDERS", iScintillaGetMarginMaskFoldersAttribId, iScintillaSetMarginMaskFoldersAttribId, IUPAF_NO_INHERIT);

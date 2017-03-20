@@ -454,6 +454,12 @@ clear all text and styles of a text margin.</p>
 <p><b>MARGINCURSOR<em>id</em> </b>(<font size="3">non inheritable</font>): 
 set and get the arrow cursor normally shown over margins. Can be: &quot;REVERSEARROW&quot; 
 (default) or &quot;ARROW&quot;.</p>
+<p><strong>FOLDMARGINCOLOR</strong>&nbsp;(non inheritable, write-only): changes the 
+color of the fold margin. Values in RGB format (<span style="color: rgb(0, 0, 0); font-family: tahoma, verdana, arial, helvetica, geneva, sans-serif; font-size: medium; font-style: normal; font-variant: normal; font-weight: normal; letter-spacing: normal; line-height: 20px; orphans: auto; text-align: start; text-indent: 0px; text-transform: none; white-space: normal; widows: auto; word-spacing: 0px; -webkit-text-size-adjust: auto; -webkit-text-stroke-width: 0px; background-color: rgb(255, 255, 255); display: inline !important; float: none;">&quot;r 
+g b&quot;)</span>. If set to NULL reset to internal default values. (since 3.22)</p>
+<p><strong>FOLDMARGINHICOLOR</strong>&nbsp;(non inheritable, write-only): changes the 
+color of the fold margin highlight. Values in RGB format (<span style="color: rgb(0, 0, 0); font-family: tahoma, verdana, arial, helvetica, geneva, sans-serif; font-size: medium; font-style: normal; font-variant: normal; font-weight: normal; letter-spacing: normal; line-height: 20px; orphans: auto; text-align: start; text-indent: 0px; text-transform: none; white-space: normal; widows: auto; word-spacing: 0px; -webkit-text-size-adjust: auto; -webkit-text-stroke-width: 0px; background-color: rgb(255, 255, 255); display: inline !important; float: none;">&quot;r 
+g b&quot;)</span>. If set to NULL reset to internal default values. (since 3.22)</p>
 <h4>Markers</h4>
 <p><strong>MARKERDEFINE</strong> (<font size="3">non inheritable, write-only</font>): 
 Defines a marker using its number and its symbol. Format: &quot;number=symbol&quot;. </p>
@@ -481,7 +487,7 @@ g b&quot;)</span>.</p>
 only</font>): defines the background color of a marker number (id). Values in RGB format (<span style="color: rgb(0, 0, 0); font-family: tahoma, verdana, arial, helvetica, geneva, sans-serif; font-size: medium; font-style: normal; font-variant: normal; font-weight: normal; letter-spacing: normal; line-height: 20px; orphans: auto; text-align: start; text-indent: 0px; text-transform: none; white-space: normal; widows: auto; word-spacing: 0px; -webkit-text-size-adjust: auto; -webkit-text-stroke-width: 0px; background-color: rgb(255, 255, 255); display: inline !important; float: none;">&quot;r 
 g b&quot;)</span>.</p>
 <p><strong>MARKERBGCOLORSEL<em>id</em></strong> (<font size="3">non inheritable, write 
-only</font>): defines the highlight background colour of a marker number (id) 
+only</font>): defines the highlight background color of a marker number (id) 
 when its folding block is selected. Values in RGB format (<span style="color: rgb(0, 0, 0); font-family: tahoma, verdana, arial, helvetica, geneva, sans-serif; font-size: medium; font-style: normal; font-variant: normal; font-weight: normal; letter-spacing: normal; line-height: 20px; orphans: auto; text-align: start; text-indent: 0px; text-transform: none; white-space: normal; widows: auto; word-spacing: 0px; -webkit-text-size-adjust: auto; -webkit-text-stroke-width: 0px; background-color: rgb(255, 255, 255); display: inline !important; float: none;">&quot;r 
 g b&quot;)</span>.</p>
 <p><strong>MARKERALPHA<em>id</em> </strong>(<font size="3">non inheritable, write 
