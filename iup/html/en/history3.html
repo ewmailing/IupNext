@@ -47,6 +47,9 @@
   .style7 {
 	color: #FF0000;
 }
+  .auto-style1 {
+	color: rgb(0, 0, 0);
+}
   </style>
 </head>
 
@@ -123,6 +126,17 @@ version 3.x.</p>
 	and
 	<strong>
 	IupMatrix</strong> from float to double.</span></font></li>
+	<li>
+	<font SIZE="3">
+	<span class="hist_changed" style="color: rgb(0, 128, 0); font-weight: bold;">
+	<strong>Changed: </strong></span>
+	<span class="auto-style1">
+	several attributes relative to CUSTOMFRAME in <strong>IupDialog</strong> to 
+	unify behaviors in GTK and Windows. </span>CUSTOMFRAMECAPTION renamed to CUSTOMFRAMECAPTIONHEIGHT. CUSTOMFRAME 
+	renamed to CUSTOMFRAMEDRAW. CUSTOMFRAMEEX renamed to CUSTOMFRAME. 
+	CUSTOMFRAME_CB callback renamed to CUSTOMFRAMEDRAW_CB. CUSTOMFRAMEDRAW and CUSTOMFRAMECAPTION 
+	works only in Windows. CUSTOMFRAME works also in GTK, it is used to replace 
+	the native dialog frame by IUP controls.</font></li>
 	<li>
 	<font SIZE="3"><span style="color: #008000">
 	<span

@@ -156,9 +156,16 @@ static void winDialogGetWindowDecor(Ihandle* ih, int *border, int *caption, int 
 
   *border = wi.cxWindowBorders;
 
-  *caption = iupAttribGetInt(ih, "CUSTOMFRAMECAPTION");
+  *caption = iupAttribGetInt(ih, "CUSTOMFRAMECAPTIONHEIGHT");
   if (*caption == 0)
   {
+    Ihandle* ih_caption = IupGetDialogChild(ih, "CUSTOMFRAMECAPTION");
+    if (ih_caption)
+    {
+      *caption = ih_caption->currentheight;
+      return;
+    }
+
     if (wi.rcClient.bottom == wi.rcClient.top ||
         wi.rcClient.top > wi.rcWindow.bottom ||
         wi.rcClient.bottom > wi.rcWindow.bottom ||
@@ -204,13 +211,19 @@ void iupdrvDialogGetDecoration(Ihandle* ih, int *border, int *caption, int *menu
     *caption = 0;
     if (has_titlebar)
     {
-      *caption = iupAttribGetInt(ih, "CUSTOMFRAMECAPTION");
+      *caption = iupAttribGetInt(ih, "CUSTOMFRAMECAPTIONHEIGHT");
       if (*caption == 0)
       {
-        if (iupAttribGetBoolean(ih, "TOOLBOX") && iupAttribGet(ih, "PARENTDIALOG"))
-          *caption = GetSystemMetrics(SM_CYSMCAPTION); /* tool window */
+        Ihandle* ih_caption = IupGetDialogChild(ih, "CUSTOMFRAMECAPTION");
+        if (ih_caption)
+          *caption = ih_caption->currentheight;
         else
-          *caption = GetSystemMetrics(SM_CYCAPTION);   /* normal window */
+        {
+          if (iupAttribGetBoolean(ih, "TOOLBOX") && iupAttribGet(ih, "PARENTDIALOG"))
+            *caption = GetSystemMetrics(SM_CYSMCAPTION); /* tool window */
+          else
+            *caption = GetSystemMetrics(SM_CYCAPTION);   /* normal window */
+        }
       }
 
       padded_border = GetSystemMetrics(SM_CXPADDEDBORDER);
@@ -389,7 +402,18 @@ static void winDialogResize(Ihandle* ih, int width, int height)
   }
 }
 
-static void winDialogHitTestCustomFrame(Ihandle* ih, LPARAM lp, LRESULT *result)
+static int winDialogGetChildPosX(Ihandle* child)
+{
+  int caption_x = 0;
+  while (child)
+  {
+    caption_x += child->x;
+    child = child->parent;
+  }
+  return caption_x;
+}
+
+static void winDialogCustomFrameHitTest(Ihandle* ih, LPARAM lp, LRESULT *result)
 {
   RECT rcWindow;
   int x = GET_X_LPARAM(lp);
@@ -434,7 +458,19 @@ static void winDialogHitTestCustomFrame(Ihandle* ih, LPARAM lp, LRESULT *result)
     {
       int caption_left = 0, caption_right = 0;
       char* value = iupAttribGet(ih, "CUSTOMFRAMECAPTIONLIMITS");
-      if (value) iupStrToIntInt(value, &caption_left, &caption_right, ':');
+      if (value) 
+        iupStrToIntInt(value, &caption_left, &caption_right, ':');
+      else
+      {
+        Ihandle* ih_caption = IupGetDialogChild(ih, "CUSTOMFRAMECAPTION");
+        if (ih_caption)
+        {
+          int caption_x = winDialogGetChildPosX(ih_caption);
+          if (x >= caption_x && x <= caption_x + ih_caption->currentwidth)
+            *result = HTCAPTION;
+          return;
+        }
+      }
 
       if (x >= border + caption_left && x <= w - border - caption_right)
         *result = HTCAPTION;
@@ -450,7 +486,7 @@ static int winDialogCustomFrameProc(Ihandle* ih, UINT msg, WPARAM wp, LPARAM lp,
   {
   case WM_PAINT:
     {
-      IFn cb = (IFn)IupGetCallback(ih, "CUSTOMFRAME_CB");
+      IFn cb = (IFn)IupGetCallback(ih, "CUSTOMFRAMEDRAW_CB");
       if (cb)
       {
         PAINTSTRUCT ps;
@@ -482,7 +518,7 @@ static int winDialogCustomFrameProc(Ihandle* ih, UINT msg, WPARAM wp, LPARAM lp,
     }
   case WM_NCHITTEST:
     {
-      winDialogHitTestCustomFrame(ih, lp, result);
+      winDialogCustomFrameHitTest(ih, lp, result);
 
       if (*result != 0)
         return 1;
@@ -547,7 +583,7 @@ static int winDialogCustomFrameProc(Ihandle* ih, UINT msg, WPARAM wp, LPARAM lp,
 
 static int winDialogBaseProc(Ihandle* ih, UINT msg, WPARAM wp, LPARAM lp, LRESULT *result)
 {
-  if (iupAttribGetBoolean(ih, "CUSTOMFRAME") || iupAttribGetBoolean(ih, "CUSTOMFRAMEEX"))
+  if (iupAttribGetBoolean(ih, "CUSTOMFRAMEDRAW") || iupAttribGetBoolean(ih, "CUSTOMFRAME"))
   {
     if (winDialogCustomFrameProc(ih, msg, wp, lp, result))
       return 1;
@@ -750,7 +786,7 @@ static int winDialogBaseProc(Ihandle* ih, UINT msg, WPARAM wp, LPARAM lp, LRESUL
     }
   case WM_ERASEBKGND:
     {
-      IFn cb = (IFn)IupGetCallback(ih, "CUSTOMFRAME_CB");
+      IFn cb = (IFn)IupGetCallback(ih, "CUSTOMFRAMEDRAW_CB");
       if (cb)
       {
         InvalidateRect(ih->handle, NULL, FALSE);
@@ -1279,7 +1315,7 @@ static char* winDialogGetClientOffsetAttrib(Ihandle *ih)
 {
   (void)ih;
 
-  if (iupAttribGetBoolean(ih, "CUSTOMFRAME"))
+  if (iupAttribGetBoolean(ih, "CUSTOMFRAMEDRAW"))
   {
     int x, y;
     int border, caption, menu;
@@ -1299,7 +1335,7 @@ static char* winDialogGetClientSizeAttrib(Ihandle* ih)
   RECT rect;
   GetClientRect(ih->handle, &rect);
 
-  if (iupAttribGetBoolean(ih, "CUSTOMFRAME"))
+  if (iupAttribGetBoolean(ih, "CUSTOMFRAMEDRAW"))
   {
     int border, caption, menu;
     iupdrvDialogGetDecoration(ih, &border, &caption, &menu);
@@ -1815,7 +1851,7 @@ void iupdrvDialogInitClass(Iclass* ic)
 
   /* Callback Windows Only*/
   iupClassRegisterCallback(ic, "MDIACTIVATE_CB", "");
-  iupClassRegisterCallback(ic, "CUSTOMFRAME_CB", "");
+  iupClassRegisterCallback(ic, "CUSTOMFRAMEDRAW_CB", "");
 
   /* Callback Windows and GTK Only */
   iupClassRegisterCallback(ic, "TRAYCLICK_CB", "iii");
@@ -1873,6 +1909,7 @@ void iupdrvDialogInitClass(Iclass* ic)
   iupClassRegisterAttribute(ic, "TRAY", NULL, winDialogSetTrayAttrib, NULL, NULL, IUPAF_NO_INHERIT);
   iupClassRegisterAttribute(ic, "TRAYIMAGE", NULL, winDialogSetTrayImageAttrib, NULL, NULL, IUPAF_NO_INHERIT);
   iupClassRegisterAttribute(ic, "TRAYTIP", NULL, winDialogSetTrayTipAttrib, NULL, NULL, IUPAF_NO_INHERIT);
+  iupClassRegisterAttribute(ic, "CUSTOMFRAME", NULL, NULL, IUPAF_SAMEASSYSTEM, NULL, IUPAF_NOT_MAPPED);
 
   /* IupDialog Windows Only */
   iupClassRegisterAttribute(ic, "TRAYTIPDELAY", NULL, NULL, IUPAF_SAMEASSYSTEM, NULL, IUPAF_NOT_MAPPED);
@@ -1880,11 +1917,9 @@ void iupdrvDialogInitClass(Iclass* ic)
   iupClassRegisterAttribute(ic, "TRAYTIPBALLOONTITLE", NULL, NULL, IUPAF_SAMEASSYSTEM, NULL, IUPAF_NOT_MAPPED);
   iupClassRegisterAttribute(ic, "TRAYTIPBALLOONTITLEICON", NULL, NULL, IUPAF_SAMEASSYSTEM, NULL, IUPAF_NOT_MAPPED);
 
-  iupClassRegisterAttribute(ic, "CUSTOMFRAME", NULL, NULL, IUPAF_SAMEASSYSTEM, NULL, IUPAF_NOT_MAPPED);
-  iupClassRegisterAttribute(ic, "CUSTOMFRAMEEX", NULL, NULL, IUPAF_SAMEASSYSTEM, NULL, IUPAF_NOT_MAPPED);
-  iupClassRegisterAttribute(ic, "CUSTOMFRAMECAPTION", NULL, NULL, IUPAF_SAMEASSYSTEM, NULL, IUPAF_NOT_MAPPED);
+  iupClassRegisterAttribute(ic, "CUSTOMFRAMEDRAW", NULL, NULL, IUPAF_SAMEASSYSTEM, NULL, IUPAF_NOT_MAPPED);
+  iupClassRegisterAttribute(ic, "CUSTOMFRAMECAPTIONHEIGHT", NULL, NULL, IUPAF_SAMEASSYSTEM, NULL, IUPAF_NOT_MAPPED);
   iupClassRegisterAttribute(ic, "CUSTOMFRAMECAPTIONLIMITS", NULL, NULL, IUPAF_SAMEASSYSTEM, NULL, IUPAF_NOT_MAPPED);
-
 
 #ifdef __ITaskbarList3_FWD_DEFINED__
   iupClassRegisterAttribute(ic, "TASKBARPROGRESS", NULL, NULL, NULL, NULL, IUPAF_NOT_MAPPED | IUPAF_NO_INHERIT);

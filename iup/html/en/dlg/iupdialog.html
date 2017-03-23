@@ -244,6 +244,19 @@ Motif driver or in the GTK driver in UNIX.</p>
 the dialog is the active window (the window with focus). Can be Yes or No. 
 (since 3.4)</p>
 
+<p><font SIZE="3">
+	<strong>CUSTOMFRAME</strong> [Windows and GTK Only] (non inheritable): 
+allows the application to customize the dialog frame elements (the title and its 
+buttons) by using IUP controls for its elements like caption, minimize button, 
+maximize button, and close buttons. The application is responsible for leaving 
+space for the borders. One drawback is that menu bars will not work. For the 
+dialog to be able to be moved an <strong>IupLabel</strong> or an <strong>
+IupCanvas</strong> must be at the top of the dialog and must have the NAME 
+attribute set to CUSTOMFRAMECAPTION (since 3.22). Custom frames are supported 
+only in GTK version 3.10, so for older GTK versions we have to simulate the 
+support by removing all dialog decorations. (since 3.18) (renamed in 3.22) (GTK 
+support since 3.22)</font></p>
+
 <p><strong>DROPFILESTARGET</strong> [Windows and GTK Only] (<font SIZE="3">non inheritable</font>): 
 Enable or disable the drop of files. Default: NO, but if DROPFILES_CB is 
 defined when the element is mapped then it will be automatically enabled.</p>
@@ -278,29 +291,27 @@ In Windows Vista it is NOT working as expected.</p>
 only): Embeds the dialog inside another window.</p>
 <p>
 <font SIZE="3">
-	<strong>CUSTOMFRAME</strong> [Windows Only] (non 
-inheritable): allows the application to customize the frame elements by drawing 
-them with the CUSTOMFRAME_CB callback. Can be Yes or No. The Window client area 
+	<strong>CUSTOMFRAMEDRAW</strong> [Windows Only] (non 
+inheritable): allows the application to customize the dialog frame elements (the 
+title and its buttons) by drawing 
+them with the CUSTOMFRAMEDRAW_CB callback. Can be Yes or No. The Window client area 
 is expanded to include the whole window. Notice that the dialog attributes like 
 BORDER, RESIZE, MAXBOX, MINBOX and TITLE must still be defined. But maximize, 
-minimize and close buttons must be manually implemented. One drawback is that 
-menu bars will not work. (since 3.18)</font></p>
+minimize and close buttons must be manually implemented in the BUTTON_CB 
+callback. One drawback is that 
+menu bars will not work. (since 3.18) (renamed in 3.22)</font></p>
 <p><font SIZE="3">
-	<strong>CUSTOMFRAMEEX</strong> [Windows Only] (non 
-inheritable): Same as CUSTOMFRAME but used when the application use controls for 
-frame elements like caption, minimize button, maximize button, and close 
-buttons. The application is responsible for leaving space for the borders. The 
-CUSTOMFRAME_CB callback will also work. (since 3.18)</font></p>
-<p><font SIZE="3">
-	<strong>CUSTOMFRAMECAPTION</strong> [Windows Only] (non 
+	<strong>CUSTOMFRAMECAPTIONHEIGHT</strong> [Windows Only] (non 
 inheritable): height of the caption area. If not defined it will use the system 
-size. (since 3.18)</font></p>
+size. (since 3.18) (renamed in 3.22)</font></p>
 <p><font SIZE="3">
 	<strong>CUSTOMFRAMECAPTIONLIMITS</strong> [Windows Only] (non 
 inheritable): limits of the caption area at left and at right. The caption area 
 is always expanded inside the limits when the dialog is resized. Format is &quot;left:right&quot; 
 or in C &quot;%d:%d&quot;. Default: &quot;0:0&quot;. This will allow the dialog to be moved by the 
-system when the user click and drag the caption area. (since 3.18)</font></p>
+system when the user click and drag the caption area. If not defined but 
+CUSTOMFRAMECAPTION is defined, then it will use the caption element horizontal 
+position and size for the limits (since 3.22). (since 3.18)</font></p>
 <p><strong>HELPBUTTON</strong> [Windows Only] (creation only): Inserts a help 
 button in the same place of the maximize button. It can only be used for dialogs 
 without the minimize and maximize buttons, and with the menu box. For the next 
