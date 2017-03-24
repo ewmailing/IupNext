@@ -118,6 +118,22 @@ static int iScintillaSetMarginMaskFoldersAttribId(Ihandle* ih, int margin, const
   return 0;
 }
 
+static char* iScintillaGetMarginMaskAttribId(Ihandle* ih, int margin)
+{
+  int mask = IupScintillaSendMessage(ih, SCI_GETMARGINMASKN, margin, 0);
+  return iupStrReturnInt(mask);
+}
+
+static int iScintillaSetMarginMaskAttribId(Ihandle* ih, int margin, const char* value)
+{
+  int mask;
+
+  if (iupStrToInt(value, &mask))
+    IupScintillaSendMessage(ih, SCI_SETMARGINMASKN, margin, mask);
+
+  return 0;
+}
+
 static char* iScintillaGetMarginSensitiveAttribId(Ihandle* ih, int margin)
 {
   return iupStrReturnBoolean(IupScintillaSendMessage(ih, SCI_SETMARGINSENSITIVEN, margin, 0)); 
@@ -196,9 +212,8 @@ static int iScintillaSetMarginTextStyleAttribId(Ihandle* ih, int line, const cha
 {
   int style;
 
-  iupStrToInt(value, &style);
-  
-  IupScintillaSendMessage(ih, SCI_MARGINSETSTYLE, line, style);
+  if (iupStrToInt(value, &style))
+    IupScintillaSendMessage(ih, SCI_MARGINSETSTYLE, line, style);
 
   return 0;
 }
@@ -262,6 +277,7 @@ void iupScintillaRegisterMargin(Iclass* ic)
   iupClassRegisterAttributeId(ic, "MARGINTYPE", iScintillaGetMarginTypeAttribId, iScintillaSetMarginTypeAttribId, IUPAF_NO_INHERIT);
   iupClassRegisterAttributeId(ic, "MARGINWIDTH", iScintillaGetMarginWidthAttribId, iScintillaSetMarginWidthAttribId, IUPAF_NO_INHERIT);
   iupClassRegisterAttributeId(ic, "MARGINMASKFOLDERS", iScintillaGetMarginMaskFoldersAttribId, iScintillaSetMarginMaskFoldersAttribId, IUPAF_NO_INHERIT);
+  iupClassRegisterAttributeId(ic, "MARGINMASK", iScintillaGetMarginMaskAttribId, iScintillaSetMarginMaskAttribId, IUPAF_NO_INHERIT);
   iupClassRegisterAttributeId(ic, "MARGINSENSITIVE", iScintillaGetMarginSensitiveAttribId, iScintillaSetMarginSensitiveAttribId, IUPAF_NO_INHERIT);
   iupClassRegisterAttribute(ic,   "MARGINLEFT", iScintillaGetMarginLeftAttrib, iScintillaSetMarginLeftAttrib, IUPAF_SAMEASSYSTEM, "1", IUPAF_NO_INHERIT);
   iupClassRegisterAttribute(ic,   "MARGINRIGHT", iScintillaGetMarginRightAttrib, iScintillaSetMarginRightAttrib, IUPAF_SAMEASSYSTEM, "1", IUPAF_NO_INHERIT);
