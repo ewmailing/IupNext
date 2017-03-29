@@ -420,30 +420,30 @@ int iupMatrixEditShowXY(Ihandle* ih, int x, int y)
   iupMatrixPrepareDrawData(ih);
   IupStoreAttribute(ih->data->datah, "BGCOLOR", iupMatrixGetBgColorStr(ih, ih->data->edit_lin, ih->data->edit_col));
   IupStoreAttribute(ih->data->datah, "FGCOLOR", iupMatrixGetFgColorStr(ih, ih->data->edit_lin, ih->data->edit_col));
-  IupSetAttribute(ih->data->datah, "FONT", iupMatrixGetFont(ih, ih->data->edit_lin, ih->data->edit_col));
+  IupStoreAttribute(ih->data->datah, "FONT", iupMatrixGetFont(ih, ih->data->edit_lin, ih->data->edit_col));
 
   mask = iupMatrixGetMaskStr(ih, "MASK", ih->data->edit_lin, ih->data->edit_col);
   if (mask)
   {
-    IupSetAttribute(ih->data->datah, "MASKCASEI", iupMatrixGetMaskStr(ih, "MASKCASEI", ih->data->edit_lin, ih->data->edit_col));
-    IupSetAttribute(ih->data->datah, "MASKNOEMPTY", iupMatrixGetMaskStr(ih, "MASKNOEMPTY", ih->data->edit_lin, ih->data->edit_col));
-    IupSetAttribute(ih->data->datah, "MASK", mask);
+    IupStoreAttribute(ih->data->datah, "MASKCASEI", iupMatrixGetMaskStr(ih, "MASKCASEI", ih->data->edit_lin, ih->data->edit_col));
+    IupStoreAttribute(ih->data->datah, "MASKNOEMPTY", iupMatrixGetMaskStr(ih, "MASKNOEMPTY", ih->data->edit_lin, ih->data->edit_col));
+    IupStoreAttribute(ih->data->datah, "MASK", mask);
   }
   else
   {
     mask = iupMatrixGetMaskStr(ih, "MASKINT", ih->data->edit_lin, ih->data->edit_col);
     if (mask)
     {
-      IupSetAttribute(ih->data->datah, "MASKNOEMPTY", iupMatrixGetMaskStr(ih, "MASKNOEMPTY", ih->data->edit_lin, ih->data->edit_col));
-      IupSetAttribute(ih->data->datah, "MASKINT", mask);
+      IupStoreAttribute(ih->data->datah, "MASKNOEMPTY", iupMatrixGetMaskStr(ih, "MASKNOEMPTY", ih->data->edit_lin, ih->data->edit_col));
+      IupStoreAttribute(ih->data->datah, "MASKINT", mask);
     }
     else
     {
       mask = iupMatrixGetMaskStr(ih, "MASKFLOAT", ih->data->edit_lin, ih->data->edit_col);
       if (mask)
       {
-        IupSetAttribute(ih->data->datah, "MASKNOEMPTY", iupMatrixGetMaskStr(ih, "MASKNOEMPTY", ih->data->edit_lin, ih->data->edit_col));
-        IupSetAttribute(ih->data->datah, "MASKFLOAT", mask);
+        IupStoreAttribute(ih->data->datah, "MASKNOEMPTY", iupMatrixGetMaskStr(ih, "MASKNOEMPTY", ih->data->edit_lin, ih->data->edit_col));
+        IupStoreAttribute(ih->data->datah, "MASKFLOAT", mask);
       }
       else
         IupSetAttribute(ih->data->datah, "MASK", NULL);
