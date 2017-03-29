@@ -27,36 +27,34 @@
 |* Canvas Callbacks                                                          *|
 \*****************************************************************************/
 
-static int iScrollBoxScroll_CB(Ihandle *ih, int op, float posx, float posy)
+static void iScrollBoxUpdateChildPos(Ihandle *ih)
 {
   if (ih->firstchild)
   {
-    int x, y;
-    int sb_size = iupdrvGetScrollbarSize();
+    ih->iclass->SetChildrenPosition(ih, 0, 0);
 
-    char* offset = iupAttribGet(ih, "CHILDOFFSET");
-
-    if ((op == IUP_SBDRAGH || op == IUP_SBDRAGV) && !iupAttribGetBoolean(ih, "LAYOUTDRAG"))
-      return IUP_DEFAULT;
-
-    /* Native container, position is reset */
-    x = 0;
-    y = 0;
-
-    if (offset) iupStrToIntInt(offset, &x, &y, 'x');
-
-    if (IupGetInt(ih, "DX") > IupGetInt(ih, "XMAX") - sb_size)
-      posx = 0;
-    if (IupGetInt(ih, "DY") > IupGetInt(ih, "YMAX") - sb_size)
-      posy = 0;
-
-    x -= (int)posx;
-    y -= (int)posy;
-
-    iupBaseSetPosition(ih->firstchild, x, y);
     iupLayoutUpdate(ih->firstchild);
   }
+}
+
+static int iScrollBoxScroll_CB(Ihandle *ih, int op, float posx, float posy)
+{
+  if ((op == IUP_SBDRAGH || op == IUP_SBDRAGV) && !iupAttribGetBoolean(ih, "LAYOUTDRAG"))
+    return IUP_DEFAULT;
+
+  iScrollBoxUpdateChildPos(ih);
+
+  (void)posx;
+  (void)posy;
   return IUP_DEFAULT;
+}
+
+static void iScrollBoxSetPos(Ihandle *ih, int posx, int posy)
+{
+  IupSetInt(ih, "POSX", posx);
+  IupSetInt(ih, "POSY", posy);
+
+  iScrollBoxUpdateChildPos(ih);
 }
 
 static int iScrollBoxButton_CB(Ihandle *ih, int but, int pressed, int x, int y, char* status)
@@ -85,17 +83,17 @@ static int iScrollBoxMotion_CB(Ihandle *ih, int x, int y, char* status)
     int dy = y - start_y;
     int posx = iupAttribGetInt(ih, "_IUP_START_POSX");
     int posy = iupAttribGetInt(ih, "_IUP_START_POSY");
-    IupSetInt(ih, "POSX", posx-dx);  /* drag direction is opposite to scrollbar */
-    IupSetInt(ih, "POSY", posy-dy);
+    posx -= dx;  /* drag direction is opposite to scrollbar */
+    posy -= dy;
 
-    iScrollBoxScroll_CB(ih, 0, IupGetFloat(ih, "POSX"), IupGetFloat(ih, "POSY"));
+    iScrollBoxSetPos(ih, posx, posy);
   }
   return IUP_DEFAULT;
 }
 
 
 /*****************************************************************************\
-|* Methods                                                                   *|
+|* Atributes                                                                 *|
 \*****************************************************************************/
 
 
@@ -122,11 +120,7 @@ static int iScrollBoxSetScrollToChildHandleAttrib(Ihandle* ih, const char* value
   {
     int posx = 0, posy = 0;
     if (iScrollBoxGetChildPosition(ih, child, &posx, &posy))
-    {
-      IupSetInt(ih, "POSX", posx);
-      IupSetInt(ih, "POSY", posy);
-      iScrollBoxScroll_CB(ih, 0, IupGetFloat(ih, "POSX"), IupGetFloat(ih, "POSY"));
-    }
+      iScrollBoxSetPos(ih, posx, posy);
   }
   return 0;
 }
@@ -139,26 +133,14 @@ static int iScrollBoxSetScrollToChildAttrib(Ihandle* ih, const char* value)
 static int iScrollBoxSetScrollToAttrib(Ihandle* ih, const char* value)
 {
   if (iupStrEqualNoCase(value, "TOP"))
-  {
-    IupSetInt(ih, "POSX", 0);
-    IupSetInt(ih, "POSY", 0);
-    iScrollBoxScroll_CB(ih, 0, IupGetFloat(ih, "POSX"), IupGetFloat(ih, "POSY"));
-  }
+    iScrollBoxSetPos(ih, 0, 0);
   else if (iupStrEqualNoCase(value, "BOTTOM"))
-  {
-    IupSetInt(ih, "POSX", 0);
-    IupSetInt(ih, "POSY", IupGetInt(ih, "YMAX") - IupGetInt(ih, "DY"));
-    iScrollBoxScroll_CB(ih, 0, IupGetFloat(ih, "POSX"), IupGetFloat(ih, "POSY"));
-  }
+    iScrollBoxSetPos(ih, 0, IupGetInt(ih, "YMAX") - IupGetInt(ih, "DY"));
   else
   {
     int posx, posy;
     if (iupStrToIntInt(value, &posx, &posy, ',') == 2)
-    {
-      IupSetInt(ih, "POSX", posx);
-      IupSetInt(ih, "POSY", posy);
-      iScrollBoxScroll_CB(ih, 0, IupGetFloat(ih, "POSX"), IupGetFloat(ih, "POSY"));
-    }
+      iScrollBoxSetPos(ih, posx, posy);
   }
   return 0;
 }
@@ -178,6 +160,12 @@ static int iScrollBoxSetExpandAttrib(Ihandle* ih, const char* value)
   else
     return 1;  /* store on the hash table */
 }
+
+
+/*****************************************************************************\
+|* Methods                                                                   *|
+\*****************************************************************************/
+
 
 static void iScrollBoxComputeNaturalSizeMethod(Ihandle* ih, int *w, int *h, int *children_expand)
 {
@@ -306,6 +294,7 @@ static void iScrollBoxSetChildrenCurrentSizeMethod(Ihandle* ih, int shrink)
   {
     IupSetAttribute(ih, "XMAX", "0");
     IupSetAttribute(ih, "YMAX", "0");
+
     IupSetAttribute(ih, "DX", "0");
     IupSetAttribute(ih, "DY", "0");
   }
@@ -315,7 +304,10 @@ static void iScrollBoxSetChildrenPositionMethod(Ihandle* ih, int x, int y)
 {
   if (ih->firstchild)
   {
+    int sb_size = iupdrvGetScrollbarSize();
     char* offset = iupAttribGet(ih, "CHILDOFFSET");
+    int posx = IupGetInt(ih, "POSX");
+    int posy = IupGetInt(ih, "POSY");
 
     /* Native container, position is reset */
     x = 0;
@@ -323,8 +315,13 @@ static void iScrollBoxSetChildrenPositionMethod(Ihandle* ih, int x, int y)
 
     if (offset) iupStrToIntInt(offset, &x, &y, 'x');
 
-    x -= IupGetInt(ih, "POSX");
-    y -= IupGetInt(ih, "POSY");
+    if (IupGetInt(ih, "DX") > IupGetInt(ih, "XMAX") - sb_size)
+      posx = 0;
+    if (IupGetInt(ih, "DY") > IupGetInt(ih, "YMAX") - sb_size)
+      posy = 0;
+
+    x -= posx;
+    y -= posy;
 
     /* Child coordinates are relative to client left-top corner. */
     iupBaseSetPosition(ih->firstchild, x, y);

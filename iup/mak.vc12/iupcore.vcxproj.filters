@@ -268,6 +268,9 @@
     <ClCompile Include="..\src\iup_flatscrollbox.c">
       <Filter>src_controls</Filter>
     </ClCompile>
+    <ClCompile Include="..\src\iup_flatscrollbar.c">
+      <Filter>src_controls</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="..\src\iup_array.h">
@@ -431,6 +434,9 @@
     </ClInclude>
     <ClInclude Include="..\src\iup_drvdraw.h">
       <Filter>inc</Filter>
+    </ClInclude>
+    <ClInclude Include="..\src\iup_flatscrollbar.h">
+      <Filter>inc_controls</Filter>
     </ClInclude>
   </ItemGroup>
 </Project>
