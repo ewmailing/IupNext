@@ -1080,6 +1080,8 @@ int main (int argc, char **argv)
     IupSetGlobal("IMAGESTOCKSIZE", STOCK_TEST);
 #endif
 
+    IupSetGlobal("GLOBALLAYOUTDLGKEY", "Yes");
+
     mainUpdateInternals();
 
     main_dialog = mainDialog();
