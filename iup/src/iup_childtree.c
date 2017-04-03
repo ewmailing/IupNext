@@ -337,6 +337,11 @@ int IupReparent(Ihandle* child, Ihandle* parent, Ihandle* ref_child)
       return IUP_ERROR;
   }
 
+  /* can not be at the same place */
+  if (parent == child->parent && (ref_child == child || ref_child == NULL && child->brother == NULL))
+    return IUP_ERROR;
+
+
   if (parent->iclass->childtype == IUP_CHILDNONE)
     return IUP_ERROR;
   if (parent->iclass->childtype > IUP_CHILDMANY && 

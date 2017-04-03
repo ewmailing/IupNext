@@ -2721,6 +2721,12 @@ static int iLayoutTreeDragDrop_CB(Ihandle* tree, int drag_id, int drop_id, int i
         ref_child = drop_elem->firstchild->brother;
     }
 
+    if (drop_elem == drag_elem->parent && ref_child == drag_elem)
+    {
+      /* dropped at the same place, just ignore it */
+      return IUP_IGNORE;
+    }
+
     /* If the drop node is a branch and it is expanded, */
     /* add as first child */
     error = IupReparent(drag_elem, drop_elem, ref_child);  /* add before the reference */
@@ -2730,6 +2736,12 @@ static int iLayoutTreeDragDrop_CB(Ihandle* tree, int drag_id, int drop_id, int i
     if (!drop_elem->parent)
     {
       IupMessage("Error", "Can NOT drop here as brother.");
+      return IUP_IGNORE;
+    }
+
+    if (drop_elem->parent == drag_elem->parent && drop_elem->brother == drag_elem)
+    {
+      /* dropped at the same place, just ignore it */
       return IUP_IGNORE;
     }
 
