@@ -222,6 +222,8 @@ static Ihandle* create_matrix(void)
 
 //  IupSetAttribute(mat, "FRAMEBORDER", "Yes");
 
+  IupSetAttribute(mat, "FLATSCROLLBAR", "Yes");
+
   /* test for custom matrix attributes */
   //{
   //  char* v;

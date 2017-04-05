@@ -1213,7 +1213,14 @@ wb_usr.tree =
             },
             {
               name= {nl= "IupFlatScrollBox"},
-              link= "elem/iupflatscrollbox.html"
+              link= "elem/iupflatscrollbox.html",
+              folder=
+              {
+                {
+                  name= {nl= "FLATSCROLLBAR"},
+                  link= "attrib/iup_flatscrollbar.html"
+                },
+              }
             },
             { link= "", name= {en= "" } },
             {

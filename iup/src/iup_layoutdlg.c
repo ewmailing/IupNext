@@ -229,7 +229,7 @@ static Ihandle* iLayoutCreateFindDialog(iLayoutDialog* layoutdlg, Ihandle *ih)
   return find_dlg;
 }
 
-static char* iLayoutGetTitle(Ihandle* ih)
+static char* iLayoutGetElementTreeTitle(Ihandle* ih)
 {
   char* title = iupAttribGetLocal(ih, "TITLE");
   char* name = IupGetName(ih);
@@ -340,7 +340,7 @@ static char* iLayoutGetName(Ihandle* ih)
 
 /***************************************************************************
                           Tree Utilities
-                          ***************************************************************************/
+***************************************************************************/
 
 
 static void iLayoutTreeSetNodeColor(Ihandle* tree, int id, Ihandle* ih)
@@ -353,7 +353,7 @@ static void iLayoutTreeSetNodeColor(Ihandle* tree, int id, Ihandle* ih)
 
 static void iLayoutTreeSetNodeInfo(Ihandle* tree, int id, Ihandle* ih)
 {
-  IupSetAttributeId(tree, "TITLE", id, iLayoutGetTitle(ih));
+  IupSetAttributeId(tree, "TITLE", id, iLayoutGetElementTreeTitle(ih));
   iLayoutTreeSetNodeColor(tree, id, ih);
   IupTreeSetUserId(tree, id, ih);
 }
@@ -398,10 +398,13 @@ static void iLayoutTreeAddChildren(Ihandle* tree, int parent_id, Ihandle* parent
 
   for (child = parent->firstchild; child; child = child->brother)
   {
-    last_child_id = iLayoutTreeAddNode(tree, last_child_id, child);
+    if (!(child->flags & IUP_INTERNAL))
+    {
+      last_child_id = iLayoutTreeAddNode(tree, last_child_id, child);
 
-    if (child->iclass->childtype != IUP_CHILDNONE)
-      iLayoutTreeAddChildren(tree, last_child_id, child);
+      if (child->iclass->childtype != IUP_CHILDNONE)
+        iLayoutTreeAddChildren(tree, last_child_id, child);
+    }
   }
 }
 
@@ -441,7 +444,7 @@ static void iLayoutTreeRebuild(iLayoutDialog* layoutdlg)
 
 /***************************************************************************
                          Layout Export
-                         ***************************************************************************/
+***************************************************************************/
 
 
 static void iLayoutExportCountContainersRec(Ihandle* ih, int *index)
@@ -931,7 +934,7 @@ static int iLayoutGetExportFile(Ihandle* parent, char* filename)
 
 /***************************************************************************
                              Layout Dialog Menus
-                             ***************************************************************************/
+***************************************************************************/
 
 
 static int iLayoutMenuNew_CB(Ihandle* ih)
@@ -1153,7 +1156,7 @@ static void iLayoutDialogLoad(Ihandle* parent_dlg, iLayoutDialog* layoutdlg, int
         (dlg->handle && IupGetInt(dlg, "VISIBLE")))
     {
       dlg_list[i] = dlg;
-      dlg_list_str[i] = iupStrDup(iLayoutGetTitle(dlg));
+      dlg_list_str[i] = iupStrDup(iLayoutGetElementTreeTitle(dlg));
       i++;
     }
   }
@@ -1226,7 +1229,7 @@ static int iLayoutMenuLoadVisible_CB(Ihandle* ih)
 
 /***************************************************************************
                                Canvas Drawing
-                               ***************************************************************************/
+***************************************************************************/
 
 
 static void iLayoutDrawElement(IdrawCanvas* dc, Ihandle* ih, int marked, int native_parent_x, int native_parent_y)
@@ -1472,7 +1475,8 @@ static void iLayoutDrawElementTree(IdrawCanvas* dc, int showhidden, int dlgvisib
     /* draw its children */
     for (child = ih->firstchild; child; child = child->brother)
     {
-      iLayoutDrawElementTree(dc, showhidden, dlgvisible, shownotmapped, mark, child, native_parent_x, native_parent_y);
+      if (!(child->flags & IUP_INTERNAL))
+        iLayoutDrawElementTree(dc, showhidden, dlgvisible, shownotmapped, mark, child, native_parent_x, native_parent_y);
     }
   }
 }
@@ -1520,7 +1524,7 @@ static int iLayoutCanvas_CB(Ihandle* canvas, float fposx, float fposy)
 
 /***************************************************************************
                         Element Properties Dialog
-                        ***************************************************************************/
+***************************************************************************/
 
 
 static void iLayoutPropertiesUpdate(Ihandle* properties, Ihandle* ih)
@@ -1570,7 +1574,7 @@ static void iLayoutPropertiesUpdate(Ihandle* properties, Ihandle* ih)
 
   iupAttribSet(properties, "_IUP_PROPELEMENT", (char*)ih);
 
-  IupStoreAttribute(IupGetDialogChild(properties, "ELEMTITLE"), "TITLE", iLayoutGetTitle(ih));
+  IupStoreAttribute(IupGetDialogChild(properties, "ELEMTITLE"), "TITLE", iLayoutGetElementTreeTitle(ih));
 
   free(attr_names);
 }
@@ -2143,7 +2147,7 @@ Ihandle* IupElementPropertiesDialog(Ihandle* elem)
 
 /***************************************************************************
                           Context Menu
-                          ***************************************************************************/
+***************************************************************************/
 
 
 static int iLayoutContextMenuProperties_CB(Ihandle* menu)
@@ -2500,7 +2504,7 @@ static void iLayoutContextMenu(iLayoutDialog* layoutdlg, Ihandle* ih, Ihandle* d
 
 /***************************************************************************
                        Layout Canvas Interaction
-                       ***************************************************************************/
+***************************************************************************/
 
 
 static void iLayoutBlink(Ihandle* ih)
@@ -2668,7 +2672,7 @@ static int iLayoutCanvasResize_CB(Ihandle* canvas, int canvas_w, int canvas_h)
 
 /***************************************************************************
                               Layout Tree
-                              ***************************************************************************/
+***************************************************************************/
 
 
 static int iLayoutTreeExecuteLeaf_CB(Ihandle* tree, int id)
@@ -2785,7 +2789,7 @@ static int iLayoutTreeSelection_CB(Ihandle* tree, int id, int status)
 
 /***************************************************************************
                             Layout Dialog Callbacks
-                            ***************************************************************************/
+***************************************************************************/
 
 
 static int iLayoutDialogKAny_CB(Ihandle* dlg, int key)

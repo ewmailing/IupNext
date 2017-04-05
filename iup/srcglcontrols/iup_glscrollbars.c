@@ -507,7 +507,7 @@ static int iGLScrollbarsSetPosYAttrib(Ihandle *ih, const char *value)
     return 0;
 
   ymin = iupAttribGetInt(ih, "YMIN");
-  ymax = iupAttribGetInt(ih, "YMAY");
+  ymax = iupAttribGetInt(ih, "YMAX");
   dy = iupAttribGetInt(ih, "DY");
 
   if (posy < ymin) posy = ymin;

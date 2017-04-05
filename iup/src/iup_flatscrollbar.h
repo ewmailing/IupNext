@@ -12,13 +12,15 @@ extern "C" {
 #endif
 
 
-void iupFlatScrollBarCreate(Ihandle* ih);
+int iupFlatScrollBarCreate(Ihandle* ih);
 void iupFlatScrollBarRegister(Iclass* ic);
 
 void iupFlatScrollBarSetChildrenCurrentSize(Ihandle* ih, int shrink);
 void iupFlatScrollBarSetChildrenPosition(Ihandle* ih);
 
 void iupFlatScrollBarWheelUpdate(Ihandle* ih, float delta);
+
+/* used only in IupFlatScrollBox */
 void iupFlatScrollBarSetPos(Ihandle *ih, int posx, int posy);
 
 

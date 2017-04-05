@@ -166,7 +166,7 @@ void iupMatrixScrollToVisible(Ihandle* ih, int lin, int col)
   }
 }
 
-void iupMatrixScrollMove(iupMatrixScrollMoveFunc func, Ihandle* ih, int mode, double pos, int m)
+void iupMatrixScrollMove(iupMatrixScrollMoveFunc func, Ihandle* ih, int mode, int m)
 {
   int old_lines_first = ih->data->lines.first;
   int old_columns_first = ih->data->columns.first;
@@ -180,7 +180,7 @@ void iupMatrixScrollMove(iupMatrixScrollMoveFunc func, Ihandle* ih, int mode, do
     ih->data->edit_hidden_byfocus = 0;
   }
 
-  func(ih, mode, pos, m);
+  func(ih, mode, m);
 
   if (ih->data->lines.first != old_lines_first || ih->data->lines.first_offset != old_lines_first_offset ||
       ih->data->columns.first != old_columns_first || ih->data->columns.first_offset != old_columns_first_offset)
@@ -209,11 +209,10 @@ void iupMatrixScrollMove(iupMatrixScrollMoveFunc func, Ihandle* ih, int mode, do
    In the third time, go to the beginning of the matrix.
    -> mode and pos : DO NOT USED.
 */
-void iupMatrixScrollHomeFunc(Ihandle* ih, int unused_mode, double unused_pos, int unused_m)
+void iupMatrixScrollHomeFunc(Ihandle* ih, int unused_mode, int unused_m)
 {
   (void)unused_m;
   (void)unused_mode;
-  (void)unused_pos;
 
   /* called only for mode==IMAT_SCROLLKEY */
   /* moving focus and eventually scrolling */
@@ -241,11 +240,10 @@ void iupMatrixScrollHomeFunc(Ihandle* ih, int unused_mode, double unused_pos, in
    In the third time, go to the end of the matrix.
    -> mode and pos : DO NOT USED.
 */
-void iupMatrixScrollEndFunc(Ihandle* ih, int unused_mode, double unused_pos, int unused_m)
+void iupMatrixScrollEndFunc(Ihandle* ih, int unused_mode, int unused_m)
 {
   (void)unused_m;
   (void)unused_mode;
-  (void)unused_pos;
 
   /* called only for mode==IMAT_SCROLLKEY */
   /* moving focus and eventually scrolling */
@@ -273,10 +271,9 @@ void iupMatrixScrollEndFunc(Ihandle* ih, int unused_mode, double unused_pos, int
    -> pos  : DO NOT USED
    -> m    : define the mode of operation: lines or columns [IMAT_PROCESS_LIN|IMAT_PROCESS_COL]
 */
-void iupMatrixScrollLeftUpFunc(Ihandle* ih, int mode, double pos, int m)
+void iupMatrixScrollLeftUpFunc(Ihandle* ih, int mode, int m)
 {
   ImatLinColData* p;
-  (void)pos;
 
   if(m == IMAT_PROCESS_LIN)
     p = &(ih->data->lines);
@@ -303,10 +300,9 @@ void iupMatrixScrollLeftUpFunc(Ihandle* ih, int mode, double pos, int m)
    -> pos  : DO NOT USED
    -> m    : define the mode of operation: lines or columns [IMAT_PROCESS_LIN|IMAT_PROCESS_COL]
 */
-void iupMatrixScrollRightDownFunc(Ihandle* ih, int mode, double pos, int m)
+void iupMatrixScrollRightDownFunc(Ihandle* ih, int mode, int m)
 {
   ImatLinColData* p;
-  (void)pos;
 
   if(m == IMAT_PROCESS_LIN)
     p = &(ih->data->lines);
@@ -333,10 +329,9 @@ void iupMatrixScrollRightDownFunc(Ihandle* ih, int mode, double pos, int m)
    -> pos  : DO NOT USED
    -> m    : define the mode of operation: lines (PgLeft) or columns (PgUp) [IMAT_PROCESS_LIN|IMAT_PROCESS_COL]
 */
-void iupMatrixScrollPgLeftUpFunc(Ihandle* ih, int mode, double pos, int m)
+void iupMatrixScrollPgLeftUpFunc(Ihandle* ih, int mode, int m)
 {
   ImatLinColData* p;
-  (void)pos;
 
   if(m == IMAT_PROCESS_LIN)
     p = &(ih->data->lines);
@@ -363,10 +358,9 @@ void iupMatrixScrollPgLeftUpFunc(Ihandle* ih, int mode, double pos, int m)
    -> pos  : DO NOT USED
    -> m    : define the mode of operation: lines (PgDown) or columns (PgRight) [IMAT_PROCESS_LIN|IMAT_PROCESS_COL]
 */
-void iupMatrixScrollPgRightDownFunc(Ihandle* ih, int mode, double pos, int m)
+void iupMatrixScrollPgRightDownFunc(Ihandle* ih, int mode, int m)
 {
   ImatLinColData* p;
-  (void)pos;
 
   if(m == IMAT_PROCESS_LIN)
     p = &(ih->data->lines);
@@ -387,14 +381,13 @@ void iupMatrixScrollPgRightDownFunc(Ihandle* ih, int mode, double pos, int m)
   }
 }
 
-void iupMatrixScrollCrFunc(Ihandle* ih, int unused_mode, double unused_pos, int unused_m)
+void iupMatrixScrollCrFunc(Ihandle* ih, int unused_mode, int unused_m)
 {
   int m;
   int oldlin = ih->data->lines.focus_cell;
   int oldcol = ih->data->columns.focus_cell;
   (void)unused_m;
   (void)unused_mode;
-  (void)unused_pos;
 
   /* called only for mode==IMAT_SCROLLKEY */
 
@@ -405,7 +398,7 @@ void iupMatrixScrollCrFunc(Ihandle* ih, int unused_mode, double unused_pos, int 
     m = IMAT_PROCESS_COL;
 
   /* try the normal processing of next cell down (next line/next column) */
-  iupMatrixScrollRightDownFunc(ih, IMAT_SCROLLKEY, 0, m);
+  iupMatrixScrollRightDownFunc(ih, IMAT_SCROLLKEY, m);
 
   if(ih->data->lines.focus_cell == oldlin && ih->data->columns.focus_cell == oldcol)
   {
@@ -415,15 +408,15 @@ void iupMatrixScrollCrFunc(Ihandle* ih, int unused_mode, double unused_pos, int 
     {
     case IMAT_EDITNEXT_LIN:
       /* next col, same line (stay at the last line) */
-      iupMatrixScrollRightDownFunc(ih, IMAT_SCROLLKEY, 0, IMAT_PROCESS_COL);
+      iupMatrixScrollRightDownFunc(ih, IMAT_SCROLLKEY, IMAT_PROCESS_COL);
       break;
     case IMAT_EDITNEXT_COL: 
       /* next line, same col (stay at the last col) */
-      iupMatrixScrollRightDownFunc(ih, IMAT_SCROLLKEY, 0, IMAT_PROCESS_LIN);
+      iupMatrixScrollRightDownFunc(ih, IMAT_SCROLLKEY, IMAT_PROCESS_LIN);
       break;
     case IMAT_EDITNEXT_LINCR: 
       /* next col */
-      iupMatrixScrollRightDownFunc(ih, IMAT_SCROLLKEY, 0, IMAT_PROCESS_COL);
+      iupMatrixScrollRightDownFunc(ih, IMAT_SCROLLKEY, IMAT_PROCESS_COL);
 
       /* if successfully changed the col, then go to first line */
       if (ih->data->columns.focus_cell != oldcol)
@@ -434,7 +427,7 @@ void iupMatrixScrollCrFunc(Ihandle* ih, int unused_mode, double unused_pos, int 
       break;
     case IMAT_EDITNEXT_COLCR: 
       /* next line */
-      iupMatrixScrollRightDownFunc(ih, IMAT_SCROLLKEY, 0, IMAT_PROCESS_LIN);
+      iupMatrixScrollRightDownFunc(ih, IMAT_SCROLLKEY, IMAT_PROCESS_LIN);
 
       /* if successfully changed the line, then go to first col */
       if (ih->data->lines.focus_cell != oldlin)
@@ -455,16 +448,22 @@ void iupMatrixScrollCrFunc(Ihandle* ih, int unused_mode, double unused_pos, int 
    -> mode : DO NOT USED
    -> m    : define the mode of operation: lines or columns [IMAT_PROCESS_LIN|IMAT_PROCESS_COL]
 */
-void iupMatrixScrollPosFunc(Ihandle* ih, int mode, double pos, int m)
+void iupMatrixScrollPosFunc(Ihandle* ih, int mode, int m)
 {
   int scroll_pos;
   ImatLinColData* p;
   (void)mode;
 
   if (m == IMAT_PROCESS_LIN)
+  {
     p = &(ih->data->lines);
+    scroll_pos = IupGetInt(ih, "POSY");
+  }
   else
+  {
     p = &(ih->data->columns);
+    scroll_pos = IupGetInt(ih, "POSX");
+  }
 
   if (p->num == p->num_noscroll)
   {
@@ -472,8 +471,6 @@ void iupMatrixScrollPosFunc(Ihandle* ih, int mode, double pos, int m)
     p->first_offset = 0;
     return;
   }
-
-  scroll_pos = iupRound(pos * p->total_visible_size);  /* round */
 
   /* position first and first_offset, according to scroll pos */
   iupMatrixAuxAdjustFirstFromScrollPos(p, scroll_pos);
@@ -483,6 +480,9 @@ void iupMatrixScrollPosFunc(Ihandle* ih, int mode, double pos, int m)
 
 int iupMatrixScroll_CB(Ihandle* ih, int action, float posx, float posy)
 {
+  (void)posx;
+  (void)posy;
+
   if (!iupMatrixIsValid(ih, 0))
     return IUP_DEFAULT;
 

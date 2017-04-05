@@ -177,6 +177,8 @@ void iupMatrixRegisterEx(Iclass* ic);
 #define iupMATRIX_CHECK_COL(_ih, _col) ((_col >= 0) && (_col < (_ih)->data->columns.num))
 #define iupMATRIX_CHECK_LIN(_ih, _lin) ((_lin >= 0) && (_lin < (_ih)->data->lines.num))
 
+int iupMatrixGetScrollbar(Ihandle* ih);
+
 
 #ifdef __cplusplus
 }
