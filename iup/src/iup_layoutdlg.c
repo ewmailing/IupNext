@@ -358,11 +358,21 @@ static void iLayoutTreeSetNodeInfo(Ihandle* tree, int id, Ihandle* ih)
   IupTreeSetUserId(tree, id, ih);
 }
 
+static Ihandle* iLayoutTreeGetFirstChild(Ihandle* ih)
+{
+  Ihandle* firstchild = ih->parent->firstchild;
+
+  while (firstchild && firstchild->flags & IUP_INTERNAL)
+    firstchild = firstchild->brother;
+
+  return firstchild;
+}
+
 static int iLayoutTreeAddNode(Ihandle* tree, int id, Ihandle* ih)
 {
   if (ih->iclass->childtype != IUP_CHILDNONE)
   {
-    if (!ih->parent || ih == ih->parent->firstchild)
+    if (!ih->parent || ih == iLayoutTreeGetFirstChild(ih))
     {
       IupSetAttributeId(tree, "ADDBRANCH", id, "");
       id++;
@@ -375,7 +385,7 @@ static int iLayoutTreeAddNode(Ihandle* tree, int id, Ihandle* ih)
   }
   else
   {
-    if (!ih->parent || ih == ih->parent->firstchild)
+    if (!ih->parent || ih == iLayoutTreeGetFirstChild(ih))
     {
       IupSetAttributeId(tree, "ADDLEAF", id, "");
       id++;
