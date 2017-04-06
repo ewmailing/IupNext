@@ -1115,14 +1115,16 @@ static int iLayoutMenuOpacity_CB(Ihandle* ih)
   if (opacity == 0)
     opacity = 255;
 
-  IupGetParam("Dialog Layout", iLayoutGetParamOpacity_CB, dlg,
-              "Opacity: %i[0,255]\n",
-              &opacity, NULL);
+  if (IupGetParam("Dialog Layout", iLayoutGetParamOpacity_CB, dlg,
+                  "Opacity: %i[0,255]\n",
+                  &opacity, NULL))
+  {
 
-  if (opacity == 0 || opacity == 255)
-    IupSetAttribute(dlg, "OPACITY", NULL);
-  else
-    IupSetInt(dlg, "OPACITY", opacity);
+    if (opacity == 0 || opacity == 255)
+      IupSetAttribute(dlg, "OPACITY", NULL);
+    else
+      IupSetInt(dlg, "OPACITY", opacity);
+  }
 
   return IUP_DEFAULT;
 }
@@ -2107,58 +2109,58 @@ static Ihandle* iLayoutPropertiesCreateDialog(iLayoutDialog* layoutdlg, Ihandle*
   IupSetAttribute(box22, "MARGIN", "0x0");
   IupSetAttribute(box22, "GAP", "0");
 
-  box33 = IupVbox(
-    IupLabel("Value:"),
-    IupFrame(IupSetAttributes(IupLabel(""), "SIZE=x20, ALIGNMENT=ALEFT:ATOP, EXPAND=HORIZONTAL, NAME=VALUE3")),
-    NULL);
-  IupSetAttribute(box33, "MARGIN", "0x0");
-  IupSetAttribute(box33, "GAP", "0");
+box33 = IupVbox(
+  IupLabel("Value:"),
+  IupFrame(IupSetAttributes(IupLabel(""), "SIZE=x20, ALIGNMENT=ALEFT:ATOP, EXPAND=HORIZONTAL, NAME=VALUE3")),
+  NULL);
+IupSetAttribute(box33, "MARGIN", "0x0");
+IupSetAttribute(box33, "GAP", "0");
 
-  box1 = IupHbox(IupSetAttributes(IupVbox(IupLabel("Name:"), list1, NULL), "MARGIN=0x0, GAP=0"), box11, NULL);
-  box2 = IupHbox(IupSetAttributes(IupVbox(IupLabel("Name:"), list2, NULL), "MARGIN=0x0, GAP=0"), box22, NULL);
-  box3 = IupHbox(IupSetAttributes(IupVbox(IupLabel("Name:"), list3, NULL), "MARGIN=0x0, GAP=0"), box33, NULL);
+box1 = IupHbox(IupSetAttributes(IupVbox(IupLabel("Name:"), list1, NULL), "MARGIN=0x0, GAP=0"), box11, NULL);
+box2 = IupHbox(IupSetAttributes(IupVbox(IupLabel("Name:"), list2, NULL), "MARGIN=0x0, GAP=0"), box22, NULL);
+box3 = IupHbox(IupSetAttributes(IupVbox(IupLabel("Name:"), list3, NULL), "MARGIN=0x0, GAP=0"), box33, NULL);
 
-  box2 = IupSetAttributes(IupVbox(
-    box2,
-    IupSetAttributes(IupFrame(IupSetAttributes(IupHbox(IupSetAttributes(IupVbox(IupLabel("Name:"), IupSetAttributes(IupText(NULL), "VISIBLECOLUMNS=9, NAME=NAME22"), NULL), "GAP=0"),
-    IupSetAttributes(IupVbox(IupLabel("Value:"), IupSetAttributes(IupText(NULL), "EXPAND=HORIZONTAL, NAME=VALUE22"), NULL), "GAP=0"),
-    IupSetAttributes(IupVbox(IupLabel(""), IupSetCallbacks(IupSetAttributes(IupButton("Set", NULL), "PADDING=3x0"), "ACTION", iLayoutPropertiesSetStr_CB, NULL), NULL), "GAP=0"),
-    NULL), "ALIGNMENT=ACENTER, NMARGIN=5x5")), "TITLE=\"New Attribute:\""),
-    NULL), "NMARGIN=0x0");
+box2 = IupSetAttributes(IupVbox(
+  box2,
+  IupSetAttributes(IupFrame(IupSetAttributes(IupHbox(IupSetAttributes(IupVbox(IupLabel("Name:"), IupSetAttributes(IupText(NULL), "VISIBLECOLUMNS=9, NAME=NAME22"), NULL), "GAP=0"),
+  IupSetAttributes(IupVbox(IupLabel("Value:"), IupSetAttributes(IupText(NULL), "EXPAND=HORIZONTAL, NAME=VALUE22"), NULL), "GAP=0"),
+  IupSetAttributes(IupVbox(IupLabel(""), IupSetCallbacks(IupSetAttributes(IupButton("Set", NULL), "PADDING=3x0"), "ACTION", iLayoutPropertiesSetStr_CB, NULL), NULL), "GAP=0"),
+  NULL), "ALIGNMENT=ACENTER, NMARGIN=5x5")), "TITLE=\"New Attribute:\""),
+  NULL), "NMARGIN=0x0");
 
-  tabs = IupTabs(box1, box2, box3, NULL);
-  IupSetAttribute(tabs, "TABTITLE0", "Registered Attributes");
-  IupSetAttribute(tabs, "TABTITLE1", "Hash Table Only");
-  IupSetAttribute(tabs, "TABTITLE2", "Callbacks");
-  IupSetCallback(tabs, "TABCHANGEPOS_CB", (Icallback)iLayoutPropertiesTabChangePos_CB);
-  iLayoutPropertiesTabChangePos_CB(tabs, 0, 0);
+tabs = IupTabs(box1, box2, box3, NULL);
+IupSetAttribute(tabs, "TABTITLE0", "Registered Attributes");
+IupSetAttribute(tabs, "TABTITLE1", "Hash Table Only");
+IupSetAttribute(tabs, "TABTITLE2", "Callbacks");
+IupSetCallback(tabs, "TABCHANGEPOS_CB", (Icallback)iLayoutPropertiesTabChangePos_CB);
+iLayoutPropertiesTabChangePos_CB(tabs, 0, 0);
 
-  dlg_box = IupVbox(
-    IupSetAttributes(IupLabel(""), "EXPAND=HORIZONTAL, NAME=ELEMTITLE"),
-    tabs,
-    button_box,
-    NULL);
+dlg_box = IupVbox(
+  IupSetAttributes(IupLabel(""), "EXPAND=HORIZONTAL, NAME=ELEMTITLE"),
+  tabs,
+  button_box,
+  NULL);
 
-  IupSetAttribute(dlg_box, "MARGIN", "10x10");
-  IupSetAttribute(dlg_box, "GAP", "10");
+IupSetAttribute(dlg_box, "MARGIN", "10x10");
+IupSetAttribute(dlg_box, "GAP", "10");
 
-  dlg = IupDialog(dlg_box);
-  IupSetAttribute(dlg, "TITLE", "Element Properties");
-  IupSetAttribute(dlg, "MINBOX", "NO");
-  IupSetAttribute(dlg, "MAXBOX", "NO");
-  IupSetAttributeHandle(dlg, "DEFAULTENTER", close);
-  IupSetAttributeHandle(dlg, "DEFAULTESC", close);
-  IupSetAttributeHandle(dlg, "PARENTDIALOG", parent);
-  IupSetAttribute(dlg, "ICON", IupGetGlobal("ICON"));
-  iupAttribSet(dlg, "_IUP_PROPLIST1", (char*)list1);
-  iupAttribSet(dlg, "_IUP_PROPLIST2", (char*)list2);
-  iupAttribSet(dlg, "_IUP_PROPLIST3", (char*)list3);
-  iupAttribSet(dlg, "_IUP_LAYOUTDIALOG", (char*)layoutdlg);
+dlg = IupDialog(dlg_box);
+IupSetAttribute(dlg, "TITLE", "Element Properties");
+IupSetAttribute(dlg, "MINBOX", "NO");
+IupSetAttribute(dlg, "MAXBOX", "NO");
+IupSetAttributeHandle(dlg, "DEFAULTENTER", close);
+IupSetAttributeHandle(dlg, "DEFAULTESC", close);
+IupSetAttributeHandle(dlg, "PARENTDIALOG", parent);
+IupSetAttribute(dlg, "ICON", IupGetGlobal("ICON"));
+iupAttribSet(dlg, "_IUP_PROPLIST1", (char*)list1);
+iupAttribSet(dlg, "_IUP_PROPLIST2", (char*)list2);
+iupAttribSet(dlg, "_IUP_PROPLIST3", (char*)list3);
+iupAttribSet(dlg, "_IUP_LAYOUTDIALOG", (char*)layoutdlg);
 
-  if (layoutdlg)
-    layoutdlg->properties = dlg;
+if (layoutdlg)
+layoutdlg->properties = dlg;
 
-  return dlg;
+return dlg;
 }
 
 Ihandle* IupElementPropertiesDialog(Ihandle* elem)
@@ -2186,6 +2188,44 @@ static int iLayoutContextMenuProperties_CB(Ihandle* menu)
   iLayoutPropertiesUpdate(layoutdlg->properties, elem);
 
   IupShow(layoutdlg->properties);
+
+  return IUP_DEFAULT;
+}
+
+static void iLayoutTreeUpdateTitle(iLayoutDialog* layoutdlg, Ihandle* ih)
+{
+  int id = IupTreeGetId(layoutdlg->tree, ih);
+  IupSetAttributeId(layoutdlg->tree, "TITLE", id, iLayoutGetElementTreeTitle(ih));
+}
+
+static int iLayoutContextMenuHandleName_CB(Ihandle* menu)
+{
+  iLayoutDialog* layoutdlg = (iLayoutDialog*)iupAttribGetInherit(menu, "_IUP_LAYOUTDIALOG");
+  Ihandle* elem = (Ihandle*)iupAttribGetInherit(menu, "_IUP_LAYOUTCONTEXTELEMENT");
+  char name[256] = "";
+
+  char* elem_name = IupGetName(elem);
+  if (elem_name)
+    strcpy(name, elem_name);
+
+  if (IupGetParam("Handle Name", NULL, NULL,
+                  "Name: %s\n",
+                  name, NULL))
+  {
+    if (name[0] == 0 || name[0] == ' ')
+    {
+      if (elem_name)
+      {
+        IupSetHandle(elem_name, NULL);
+        iLayoutTreeUpdateTitle(layoutdlg, elem);
+      }
+    }
+    else
+    {
+      IupSetHandle(name, elem);
+      iLayoutTreeUpdateTitle(layoutdlg, elem);
+    }
+  }
 
   return IUP_DEFAULT;
 }
@@ -2502,6 +2542,7 @@ static void iLayoutContextMenu(iLayoutDialog* layoutdlg, Ihandle* ih, Ihandle* d
 
   menu = IupMenu(
     IupSetCallbacks(IupItem("Properties...", NULL), "ACTION", iLayoutContextMenuProperties_CB, NULL),
+    IupSetCallbacks(IupItem("Handle Name...", NULL), "ACTION", iLayoutContextMenuHandleName_CB, NULL),
     IupSetCallbacks(IupSetAttributes(IupItem("Map", NULL), can_map ? "ACTIVE=Yes" : "ACTIVE=No"), "ACTION", iLayoutContextMenuMap_CB, NULL),
     IupSetCallbacks(IupSetAttributes(IupItem("Unmap", NULL), can_unmap ? "ACTIVE=Yes" : "ACTIVE=No"), "ACTION", iLayoutContextMenuUnmap_CB, NULL),
     IupSetCallbacks(IupItem("Refresh Children", NULL), "ACTION", iLayoutContextMenuRefreshChildren_CB, NULL),
