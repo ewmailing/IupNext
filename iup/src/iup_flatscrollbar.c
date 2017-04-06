@@ -914,6 +914,8 @@ int iupFlatScrollBarCreate(Ihandle* ih)
   IupSetAttribute(sb_horiz, "CANFOCUS", "NO");
   iupAttribSetInt(sb_horiz, "_IUP_PRESSED_HANDLER", SB_NONE);
   iupAttribSetInt(sb_horiz, "_IUP_HIGHLIGHT_HANDLER", SB_NONE);
+  IupSetAttribute(sb_horiz, "VISIBLE", "NO");
+  iupAttribSet(ih, "XHIDDEN", "YES");
 
   sb_vert = IupCanvas(NULL);
   IupSetAttribute(sb_vert, "BORDER", "NO");
@@ -929,6 +931,8 @@ int iupFlatScrollBarCreate(Ihandle* ih)
   IupSetAttribute(sb_vert, "CANFOCUS", "NO");
   iupAttribSetInt(sb_vert, "_IUP_PRESSED_HANDLER", SB_NONE);
   iupAttribSetInt(sb_vert, "_IUP_HIGHLIGHT_HANDLER", SB_NONE);
+  IupSetAttribute(sb_vert, "VISIBLE", "NO");
+  iupAttribSet(ih, "YHIDDEN", "YES");
 
   return 1;
 }
