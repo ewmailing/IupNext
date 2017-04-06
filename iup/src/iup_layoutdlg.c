@@ -362,7 +362,7 @@ static Ihandle* iLayoutTreeGetFirstChild(Ihandle* ih)
 {
   Ihandle* firstchild = ih->parent->firstchild;
 
-  while (firstchild && firstchild->flags & IUP_INTERNAL)
+  while (firstchild && firstchild->flags & IUP_INTERNAL) //
     firstchild = firstchild->brother;
 
   return firstchild;
@@ -408,7 +408,7 @@ static void iLayoutTreeAddChildren(Ihandle* tree, int parent_id, Ihandle* parent
 
   for (child = parent->firstchild; child; child = child->brother)
   {
-    if (!(child->flags & IUP_INTERNAL))
+    if (!(child->flags & IUP_INTERNAL)) //
     {
       last_child_id = iLayoutTreeAddNode(tree, last_child_id, child);
 
@@ -766,7 +766,7 @@ static void iLayoutExportElementLED(FILE* file, Ihandle* ih, const char* name, i
   char classname[100];
   char indent[300] = "";
 
-  /* constructor identation */
+  /* constructor indentation */
   if (indent_level)
   {
     indent_count = indent_level * 4;
@@ -780,7 +780,7 @@ static void iLayoutExportElementLED(FILE* file, Ihandle* ih, const char* name, i
   else
     fprintf(file, "%s%s[\n", indent, classname);
 
-  /* attributes identation */
+  /* attributes indentation */
   for (i = indent_count; i < indent_count + 2; i++)
     indent[i] = ' ';
   indent_count += 2;
@@ -798,7 +798,7 @@ static void iLayoutExportElementLED(FILE* file, Ihandle* ih, const char* name, i
 
       fprintf(file, "(\n");
 
-      /* children identation */
+      /* children indentation */
       for (i = indent_count; i < indent_count + 2; i++)
         indent[i] = ' ';
       indent_count += 2;
@@ -1050,6 +1050,19 @@ static int iLayoutMenuShowHidden_CB(Ihandle* ih)
     iupAttribSet(dlg, "SHOWHIDDEN", "No");
   else
     iupAttribSet(dlg, "SHOWHIDDEN", "Yes");
+  /* redraw canvas */
+  IupUpdate(IupGetBrother(layoutdlg->tree));
+  return IUP_DEFAULT;
+}
+
+static int iLayoutMenuShowInternal_CB(Ihandle* ih)
+{
+  Ihandle* dlg = IupGetDialog(ih);
+  iLayoutDialog* layoutdlg = (iLayoutDialog*)iupAttribGet(dlg, "_IUP_LAYOUTDIALOG");
+  if (IupGetInt(dlg, "SHOWINTERNAL"))
+    iupAttribSet(dlg, "SHOWINTERNAL", "No");
+  else
+    iupAttribSet(dlg, "SHOWINTERNAL", "Yes");
   /* redraw canvas */
   IupUpdate(IupGetBrother(layoutdlg->tree));
   return IUP_DEFAULT;
@@ -1450,7 +1463,7 @@ static int iLayoutElementIsVisible(Ihandle* ih, int dlgvisible)
   }
 }
 
-static void iLayoutDrawElementTree(IdrawCanvas* dc, int showhidden, int dlgvisible, int shownotmapped, Ihandle* mark, Ihandle* ih, int native_parent_x, int native_parent_y)
+static void iLayoutDrawElementTree(IdrawCanvas* dc, int showhidden, int dlgvisible, int shownotmapped, int showinternal, Ihandle* mark, Ihandle* ih, int native_parent_x, int native_parent_y)
 {
   Ihandle *child;
   int dx, dy;
@@ -1476,7 +1489,7 @@ static void iLayoutDrawElementTree(IdrawCanvas* dc, int showhidden, int dlgvisib
         {
           child = (Ihandle*)IupGetAttribute(ih, "VALUE_HANDLE");
           if (child)
-            iLayoutDrawElementTree(dc, showhidden, dlgvisible, shownotmapped, mark, child, native_parent_x, native_parent_y);
+            iLayoutDrawElementTree(dc, showhidden, dlgvisible, shownotmapped, showinternal, mark, child, native_parent_x, native_parent_y);
           return;
         }
       }
@@ -1485,13 +1498,13 @@ static void iLayoutDrawElementTree(IdrawCanvas* dc, int showhidden, int dlgvisib
     /* draw its children */
     for (child = ih->firstchild; child; child = child->brother)
     {
-      if (!(child->flags & IUP_INTERNAL))
-        iLayoutDrawElementTree(dc, showhidden, dlgvisible, shownotmapped, mark, child, native_parent_x, native_parent_y);
+      if (!(child->flags & IUP_INTERNAL) || showinternal)
+        iLayoutDrawElementTree(dc, showhidden, dlgvisible, shownotmapped, showinternal, mark, child, native_parent_x, native_parent_y);
     }
   }
 }
 
-static void iLayoutDrawDialog(iLayoutDialog* layoutdlg, int showhidden, IdrawCanvas* dc, Ihandle* mark, int posx, int posy)
+static void iLayoutDrawDialog(iLayoutDialog* layoutdlg, int showhidden, int showinternal, IdrawCanvas* dc, Ihandle* mark, int posx, int posy)
 {
   int w, h;
 
@@ -1510,7 +1523,7 @@ static void iLayoutDrawDialog(iLayoutDialog* layoutdlg, int showhidden, IdrawCan
     IupGetIntInt(layoutdlg->dialog, "CLIENTOFFSET", &native_parent_x, &native_parent_y);
     native_parent_x -= posx;
     native_parent_y -= posy;
-    iLayoutDrawElementTree(dc, showhidden, dlgvisible, shownotmapped, mark, layoutdlg->dialog->firstchild, native_parent_x, native_parent_y);
+    iLayoutDrawElementTree(dc, showhidden, dlgvisible, shownotmapped, showinternal, mark, layoutdlg->dialog->firstchild, native_parent_x, native_parent_y);
   }
 }
 
@@ -1520,9 +1533,10 @@ static int iLayoutCanvas_CB(Ihandle* canvas, float fposx, float fposy)
   iLayoutDialog* layoutdlg = (iLayoutDialog*)iupAttribGet(dlg, "_IUP_LAYOUTDIALOG");
   IdrawCanvas* dc = iupdrvDrawCreateCanvas(canvas);
   int showhidden = IupGetInt(dlg, "SHOWHIDDEN");
+  int showinternal = IupGetInt(dlg, "SHOWINTERNAL");
   Ihandle* mark = (Ihandle*)iupAttribGet(dlg, "_IUPLAYOUT_MARK");
 
-  iLayoutDrawDialog(layoutdlg, showhidden, dc, mark, (int)fposx, (int)fposy);
+  iLayoutDrawDialog(layoutdlg, showhidden, showinternal, dc, mark, (int)fposx, (int)fposy);
 
   iupdrvDrawFlush(dc);
 
@@ -2948,6 +2962,7 @@ Ihandle* IupLayoutDialog(Ihandle* dialog)
     IupSetCallbacks(IupItem("Update\tF5", NULL), "ACTION", iLayoutMenuUpdate_CB, NULL),
     IupSetCallbacks(IupSetAttributes(IupItem("Auto Update", NULL), "AUTOTOGGLE=YES, VALUE=OFF"), "ACTION", iLayoutMenuAutoUpdate_CB, NULL),
     IupSetCallbacks(IupSetAttributes(IupItem("Show Hidden", NULL), "AUTOTOGGLE=YES, VALUE=OFF"), "ACTION", iLayoutMenuShowHidden_CB, NULL),
+    IupSetCallbacks(IupSetAttributes(IupItem("Show Internal", NULL), "AUTOTOGGLE=YES, VALUE=OFF"), "ACTION", iLayoutMenuShowInternal_CB, NULL),
     IupSeparator(),
     IupSetCallbacks(IupItem("Opacity\tCtrl+/Ctrl-", NULL), "ACTION", iLayoutMenuOpacity_CB, NULL),
     IupSeparator(),
