@@ -116,7 +116,7 @@ struct _IcontrolData
 
   /* State */
   int has_focus;
-  int w, h;         /* canvas size */
+  int old_w, old_h;
   int callback_mode;
   int need_calcsize;
   int need_redraw;
@@ -178,6 +178,8 @@ void iupMatrixRegisterEx(Iclass* ic);
 #define iupMATRIX_CHECK_LIN(_ih, _lin) ((_lin >= 0) && (_lin < (_ih)->data->lines.num))
 
 int iupMatrixGetScrollbar(Ihandle* ih);
+int iupMatrixGetWidth(Ihandle* ih);
+int iupMatrixGetHeight(Ihandle* ih);
 
 
 #ifdef __cplusplus

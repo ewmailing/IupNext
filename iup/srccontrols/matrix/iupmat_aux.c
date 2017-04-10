@@ -295,7 +295,7 @@ static void iMatrixAuxUpdateVisibleSize(Ihandle* ih, int m)
     SB = IUP_SB_HORIZ;
 
     p = &(ih->data->lines);
-    canvas_size = ih->data->h;
+    canvas_size = iupMatrixGetHeight(ih);
   }
   else
   {
@@ -307,7 +307,7 @@ static void iMatrixAuxUpdateVisibleSize(Ihandle* ih, int m)
     SB = IUP_SB_VERT;
 
     p = &(ih->data->columns);
-    canvas_size = ih->data->w;
+    canvas_size = iupMatrixGetWidth(ih);
   }
 
   fixed_size = 0;

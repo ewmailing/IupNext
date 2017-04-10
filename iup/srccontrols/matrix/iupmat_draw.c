@@ -1006,7 +1006,7 @@ void iupMatrixDrawTitleLines(Ihandle* ih, int lin1, int lin2)
   x1 = 0;
   x2 = ih->data->columns.dt[0].size;
 
-  iupMATRIX_CLIPAREA(ih, x1, x2, y1, ih->data->h-1);
+  iupMATRIX_CLIPAREA(ih, x1, x2, y1, iupMatrixGetHeight(ih) - 1);
   cdCanvasClip(ih->data->cd_canvas, CD_CLIPAREA);
 
   /* Find the initial position of the first line */
@@ -1090,7 +1090,7 @@ void iupMatrixDrawTitleColumns(Ihandle* ih, int col1, int col2)
   y1 = 0;
   y2 = ih->data->lines.dt[0].size;
 
-  iupMATRIX_CLIPAREA(ih, x1, ih->data->w-1, y1, y2);
+  iupMATRIX_CLIPAREA(ih, x1, iupMatrixGetWidth(ih) - 1, y1, y2);
   cdCanvasClip(ih->data->cd_canvas, CD_CLIPAREA);
 
   /* Find the initial position of the first column */
@@ -1150,8 +1150,8 @@ void iupMatrixDrawCells(Ihandle* ih, int lin1, int col1, int lin2, int col2)
   IFnii dropcheck_cb;
   IFniiiiiiC draw_cb;
 
-  x2 = ih->data->w-1;
-  y2 = ih->data->h-1;
+  x2 = iupMatrixGetWidth(ih) - 1;
+  y2 = iupMatrixGetHeight(ih) - 1;
 
   old_x2 = x2;
   old_y1 = 0;
@@ -1377,8 +1377,9 @@ static void iMatrixDrawMatrix(Ihandle* ih)
       int posy = IupGetInt(ih, "POSY");
       int dy = IupGetInt(ih, "DY");
       int ymax = IupGetInt(ih, "YMAX");
+      int height = iupMatrixGetHeight(ih);
 
-      int width = ih->data->w;
+      int width = iupMatrixGetWidth(ih);
       if (width > ih->data->columns.total_size)
         width = ih->data->columns.total_size;
 
@@ -1388,7 +1389,7 @@ static void iMatrixDrawMatrix(Ihandle* ih)
 
       /* if scrollbar at bottom, bottom line is not necessary */
       if (posy < ymax - dy)
-        iupMATRIX_LINE(ih, 0, ih->data->h - 1, width - 1, ih->data->h - 1);  /* bottom horizontal line */
+        iupMATRIX_LINE(ih, 0, height - 1, width - 1, height - 1);  /* bottom horizontal line */
     }
 
     /* if horizontal scrollbar is visible */
@@ -1397,8 +1398,9 @@ static void iMatrixDrawMatrix(Ihandle* ih)
       int posx = IupGetInt(ih, "POSX");
       int dx = IupGetInt(ih, "DX");
       int xmax = IupGetInt(ih, "XMAX");
+      int width = iupMatrixGetWidth(ih);
 
-      int height = ih->data->h;
+      int height = iupMatrixGetHeight(ih);
       if (height > ih->data->lines.total_size)
         height = ih->data->lines.total_size;
 
@@ -1408,7 +1410,7 @@ static void iMatrixDrawMatrix(Ihandle* ih)
 
       /* if scrollbar at right, right line is not necessary */
       if (posx < xmax - dx)
-        iupMATRIX_LINE(ih, ih->data->w - 1, 0, ih->data->w - 1, height - 1);  /* right vertical line */
+        iupMATRIX_LINE(ih, width - 1, 0, width - 1, height - 1);  /* right vertical line */
     }
   }
 }

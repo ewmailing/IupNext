@@ -318,12 +318,12 @@ int iupMatrixMouseMove_CB(Ihandle* ih, int x, int y, char *status)
   {
     if ((x < ih->data->columns.dt[0].size || x < IMAT_DRAG_SCROLL_DELTA) && (ih->data->columns.first > ih->data->columns.num_noscroll))
       iupMATRIX_ScrollLeft(ih);
-    else if ((x > ih->data->w - IMAT_DRAG_SCROLL_DELTA) && (ih->data->columns.last < ih->data->columns.num-1))
+    else if ((x > iupMatrixGetWidth(ih) - IMAT_DRAG_SCROLL_DELTA) && (ih->data->columns.last < ih->data->columns.num - 1))
       iupMATRIX_ScrollRight(ih);
 
     if ((y < ih->data->lines.dt[0].size || y < IMAT_DRAG_SCROLL_DELTA) && (ih->data->lines.first > ih->data->lines.num_noscroll))
       iupMATRIX_ScrollUp(ih);
-    else if ((y > ih->data->h - IMAT_DRAG_SCROLL_DELTA) && (ih->data->lines.last < ih->data->lines.num-1))
+    else if ((y > iupMatrixGetHeight(ih) - IMAT_DRAG_SCROLL_DELTA) && (ih->data->lines.last < ih->data->lines.num - 1))
       iupMATRIX_ScrollDown(ih);
 
     if (has_lincol)
