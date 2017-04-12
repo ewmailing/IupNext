@@ -920,7 +920,7 @@ static int iMatrixSetNeedRedraw(Ihandle* ih)
   return 1;
 }
 
-static void iMatrixClearAttrib(Ihandle* ih, unsigned char *flags, int lin, int col)
+static void iMatrixClearAttribFlags(Ihandle* ih, unsigned char *flags, int lin, int col)
 {
   int is_marked = (*flags) & IMAT_IS_MARKED;
 
@@ -962,17 +962,17 @@ static int iMatrixSetClearAttribAttrib(Ihandle* ih, int lin, int col, const char
         for (lin=0; lin<ih->data->lines.num; lin++)
         {
           for (col=0; col<ih->data->columns.num; col++)
-            iMatrixClearAttrib(ih, &(ih->data->cells[lin][col].flags), lin, col);
+            iMatrixClearAttribFlags(ih, &(ih->data->cells[lin][col].flags), lin, col);
         }
       }
 
       /* all line attributes */
       for (lin=0; lin<ih->data->lines.num; lin++)
-        iMatrixClearAttrib(ih, &(ih->data->lines.dt[lin].flags), lin, IUP_INVALID_ID);
+        iMatrixClearAttribFlags(ih, &(ih->data->lines.dt[lin].flags), lin, IUP_INVALID_ID);
 
       /* all column attributes */
       for (col=0; col<ih->data->columns.num; col++)
-        iMatrixClearAttrib(ih, &(ih->data->columns.dt[col].flags), IUP_INVALID_ID, col);
+        iMatrixClearAttribFlags(ih, &(ih->data->columns.dt[col].flags), IUP_INVALID_ID, col);
     }
     else if (iupStrEqualNoCase(value, "CONTENTS"))
     {
@@ -981,7 +981,7 @@ static int iMatrixSetClearAttribAttrib(Ihandle* ih, int lin, int col, const char
         for (lin=1; lin<ih->data->lines.num; lin++)
         {
           for (col=1; col<ih->data->columns.num; col++)
-            iMatrixClearAttrib(ih, &(ih->data->cells[lin][col].flags), lin, col);
+            iMatrixClearAttribFlags(ih, &(ih->data->cells[lin][col].flags), lin, col);
         }
       }
     }
@@ -996,7 +996,7 @@ static int iMatrixSetClearAttribAttrib(Ihandle* ih, int lin, int col, const char
           for (col=1; col<ih->data->columns.num; col++)
           {
             if (iupMatrixMarkCellGet(ih, lin, col, mark_cb))
-              iMatrixClearAttrib(ih, &(ih->data->cells[lin][col].flags), lin, col);
+              iMatrixClearAttribFlags(ih, &(ih->data->cells[lin][col].flags), lin, col);
           }
         }
       }
@@ -1016,12 +1016,12 @@ static int iMatrixSetClearAttribAttrib(Ihandle* ih, int lin, int col, const char
         return 0;
 
       if (lin1==0 && lin2==ih->data->lines.num-1)
-        iMatrixClearAttrib(ih, &(ih->data->columns.dt[col].flags), IUP_INVALID_ID, col);
+        iMatrixClearAttribFlags(ih, &(ih->data->columns.dt[col].flags), IUP_INVALID_ID, col);
 
       if (!ih->data->callback_mode)
       {
         for (lin=lin1; lin<=lin2; lin++)
-          iMatrixClearAttrib(ih, &(ih->data->cells[lin][col].flags), lin, col);
+          iMatrixClearAttribFlags(ih, &(ih->data->cells[lin][col].flags), lin, col);
       }
     }
     else if (col==IUP_INVALID_ID)
@@ -1036,12 +1036,12 @@ static int iMatrixSetClearAttribAttrib(Ihandle* ih, int lin, int col, const char
         return 0;
 
       if (col1==0 && col2==ih->data->columns.num-1)
-        iMatrixClearAttrib(ih, &(ih->data->lines.dt[lin].flags), lin, IUP_INVALID_ID);
+        iMatrixClearAttribFlags(ih, &(ih->data->lines.dt[lin].flags), lin, IUP_INVALID_ID);
 
       if (!ih->data->callback_mode)
       {
         for (col=col1; col<=col2; col++)
-          iMatrixClearAttrib(ih, &(ih->data->cells[lin][col].flags), lin, col);
+          iMatrixClearAttribFlags(ih, &(ih->data->cells[lin][col].flags), lin, col);
       }
     }
     else
@@ -1059,13 +1059,13 @@ static int iMatrixSetClearAttribAttrib(Ihandle* ih, int lin, int col, const char
       if (lin1==0 && lin2==ih->data->lines.num-1)
       {
         for (col=0; col<ih->data->columns.num; col++)
-          iMatrixClearAttrib(ih, &(ih->data->columns.dt[col].flags), IUP_INVALID_ID, col);
+          iMatrixClearAttribFlags(ih, &(ih->data->columns.dt[col].flags), IUP_INVALID_ID, col);
       }
 
       if (col1==0 && col2==ih->data->columns.num-1)
       {
         for (lin=0; lin<ih->data->lines.num; lin++)
-          iMatrixClearAttrib(ih, &(ih->data->lines.dt[lin].flags), lin, IUP_INVALID_ID);
+          iMatrixClearAttribFlags(ih, &(ih->data->lines.dt[lin].flags), lin, IUP_INVALID_ID);
       }
 
       if (!ih->data->callback_mode)
@@ -1073,7 +1073,7 @@ static int iMatrixSetClearAttribAttrib(Ihandle* ih, int lin, int col, const char
         for (lin=lin1; lin<=lin2; lin++)
         {
           for (col=col1; col<=col2; col++)
-            iMatrixClearAttrib(ih, &(ih->data->cells[lin][col].flags), lin, col);
+            iMatrixClearAttribFlags(ih, &(ih->data->cells[lin][col].flags), lin, col);
         }
       }
     }
@@ -1193,7 +1193,7 @@ static char* iMatrixGetShowFillValueAttrib(Ihandle* ih)
   return iupStrReturnBoolean(ih->data->show_fill_value); 
 }
 
-static int iMatrixSetFlagsAttrib(Ihandle* ih, int lin, int col, const char* value, unsigned char attr)
+static int iMatrixSetAttribFlags(Ihandle* ih, int lin, int col, const char* value, unsigned char attr)
 {
   if (lin >= 0 || col >= 0)
   {
@@ -1205,35 +1205,31 @@ static int iMatrixSetFlagsAttrib(Ihandle* ih, int lin, int col, const char* valu
 
 static int iMatrixSetBgColorAttrib(Ihandle* ih, int lin, int col, const char* value)
 {
-  return iMatrixSetFlagsAttrib(ih, lin, col, value, IMAT_HAS_BGCOLOR);
+  return iMatrixSetAttribFlags(ih, lin, col, value, IMAT_HAS_BGCOLOR);
 }
 
 static int iMatrixSetFgColorAttrib(Ihandle* ih, int lin, int col, const char* value)
 {
-  return iMatrixSetFlagsAttrib(ih, lin, col, value, IMAT_HAS_FGCOLOR);
+  return iMatrixSetAttribFlags(ih, lin, col, value, IMAT_HAS_FGCOLOR);
 }
 
 static int iMatrixSetTypeAttrib(Ihandle* ih, int lin, int col, const char* value)
 {
-  return iMatrixSetFlagsAttrib(ih, lin, col, value, IMAT_HAS_TYPE);
+  return iMatrixSetAttribFlags(ih, lin, col, value, IMAT_HAS_TYPE);
 }
 
 static char* iMatrixGetFontAttribute(Ihandle* ih, int lin, int col)
 {
-  char* font;
+  char* font = NULL;
 
-  if (ih->handle)
-    font = iupMatrixGetFont(ih, lin, col);
-  else
-  {
-    font = IupGetAttributeId2(ih, "FONT", lin, col);
-    if (!font)
-      font = IupGetAttributeId2(ih, "FONT", lin, IUP_INVALID_ID);
-    if (!font)
-      font = IupGetAttributeId2(ih, "FONT", IUP_INVALID_ID, col);
-    if (!font)
-      font = IupGetAttribute(ih, "FONT");
-  }
+  if (lin != IUP_INVALID_ID && col != IUP_INVALID_ID)
+    font = iupAttribGetId2(ih, "FONT", lin, col);
+  if (!font && lin != IUP_INVALID_ID)
+    font = iupAttribGetId2(ih, "FONT", lin, IUP_INVALID_ID);
+  if (!font && col != IUP_INVALID_ID)
+    font = iupAttribGetId2(ih, "FONT", IUP_INVALID_ID, col);
+  if (!font)
+    font = IupGetAttribute(ih, "FONT");
 
   return font;
 }
@@ -1337,7 +1333,7 @@ static int iMatrixSetFontAttrib(Ihandle* ih, int lin, int col, const char* value
     return 1;
   }
 
-  return iMatrixSetFlagsAttrib(ih, lin, col, value, IMAT_HAS_FONT);
+  return iMatrixSetAttribFlags(ih, lin, col, value, IMAT_HAS_FONT);
 }
 
 static char* iMatrixGetFontAttrib(Ihandle* ih, int lin, int col)
@@ -1357,14 +1353,14 @@ static int iMatrixSetFrameHorizColorAttrib(Ihandle* ih, int lin, int col, const 
 {
   if (value)
     ih->data->checkframecolor = 1;
-  return iMatrixSetFlagsAttrib(ih, lin, col, value, IMAT_HAS_FRAMEHORIZCOLOR);
+  return iMatrixSetAttribFlags(ih, lin, col, value, IMAT_HAS_FRAMEHORIZCOLOR);
 }
 
 static int iMatrixSetFrameVertColorAttrib(Ihandle* ih, int lin, int col, const char* value)
 {
   if (value)
     ih->data->checkframecolor = 1;
-  return iMatrixSetFlagsAttrib(ih, lin, col, value, IMAT_HAS_FRAMEVERTCOLOR);
+  return iMatrixSetAttribFlags(ih, lin, col, value, IMAT_HAS_FRAMEVERTCOLOR);
 }
 
 static char* iMatrixGetBgColorAttrib(Ihandle* ih, int lin, int col)
