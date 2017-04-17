@@ -55,8 +55,9 @@ static int iLayoutFindItemMatch(Ihandle *ih, const char *str, int searchType)
   else if (searchType == FIND_ATTRIBUTE)
   {
     char att[80], val[80];
+    char *attVal;
     iupStrToStrStr(str, att, val, '=');
-    char *attVal = iupAttribGetLocal(ih, att);
+    attVal = iupAttribGetLocal(ih, att);
     if (attVal == NULL)
       return 0;
     if (iupStrEqualNoCase(val, attVal))

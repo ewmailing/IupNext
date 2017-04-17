@@ -465,6 +465,7 @@ iupBaseGetClientOffsetAttrib
 iupBackgroundBoxNewBaseClass
 iupFlatScrollBarCreate
 iupFlatScrollBarRegister
+iupFlatScrollBarGet
 iupFlatScrollBarSetChildrenCurrentSize
 iupFlatScrollBarSetChildrenPosition
 iupFlatScrollBarWheelUpdate

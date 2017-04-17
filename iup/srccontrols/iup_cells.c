@@ -675,6 +675,7 @@ static int iCellsButton_CB(Ihandle* ih, int b, int m, int x, int y, char* r)
 static int iCellsMotion_CB(Ihandle* ih, int x, int y, char* r)
 {
   int i, j;
+  IFniiiis cb;
 
   y = cdIupInvertYAxis(y, ih->data->h);
 
@@ -682,7 +683,7 @@ static int iCellsMotion_CB(Ihandle* ih, int x, int y, char* r)
   * has set one, it will be called now. However, before calling the
   * callback, we need to find out which cell is under the mouse
   * position. */
-  IFniiiis cb = (IFniiiis)IupGetCallback(ih, "MOUSEMOTION_CB");
+  cb = (IFniiiis)IupGetCallback(ih, "MOUSEMOTION_CB");
   if (!cb)
     return IUP_DEFAULT;
 
