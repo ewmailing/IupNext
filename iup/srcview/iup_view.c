@@ -1081,6 +1081,7 @@ int main (int argc, char **argv)
 #endif
 
     IupSetGlobal("GLOBALLAYOUTDLGKEY", "Yes");
+/*    IupSetGlobal("UTF8MODE", "YES"); */
 
     mainUpdateInternals();
 
