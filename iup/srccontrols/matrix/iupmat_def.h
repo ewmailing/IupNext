@@ -178,6 +178,7 @@ void iupMatrixRegisterEx(Iclass* ic);
 #define iupMATRIX_CHECK_LIN(_ih, _lin) ((_lin >= 0) && (_lin < (_ih)->data->lines.num))
 
 int iupMatrixGetScrollbar(Ihandle* ih);
+int iupMatrixGetScrollbarSize(Ihandle* ih);
 int iupMatrixGetWidth(Ihandle* ih);
 int iupMatrixGetHeight(Ihandle* ih);
 

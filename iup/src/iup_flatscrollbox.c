@@ -307,7 +307,9 @@ static void iFlatScrollBoxSetChildrenCurrentSizeMethod(Ihandle* ih, int shrink)
     if (child->naturalwidth > ih->currentwidth)
     {
       w = child->naturalwidth;
-      has_sb_horiz = 1;
+
+      if (iupFlatScrollBarGet(ih) & IUP_SB_HORIZ)
+        has_sb_horiz = 1;
     }
     else
       w = ih->currentwidth;  /* expand space */
@@ -315,7 +317,9 @@ static void iFlatScrollBoxSetChildrenCurrentSizeMethod(Ihandle* ih, int shrink)
     if (child->naturalheight > ih->currentheight)
     {
       h = child->naturalheight;
-      has_sb_vert = 1;
+
+      if (iupFlatScrollBarGet(ih) & IUP_SB_VERT)
+        has_sb_vert = 1;
     }
     else
       h = ih->currentheight; /* expand space */
@@ -437,7 +441,7 @@ Iclass* iupFlatScrollBoxNewClass(void)
   /* Flat Scrollbar */
   iupFlatScrollBarRegister(ic);
 
-  iupClassRegisterAttribute(ic, "FLATSCROLLBAR", NULL, NULL, IUPAF_SAMEASSYSTEM, "YES", IUPAF_READONLY | IUPAF_NOT_MAPPED | IUPAF_NO_INHERIT);  /* will be always Yes */
+  iupClassRegisterAttribute(ic, "FLATSCROLLBAR", NULL, NULL, IUPAF_SAMEASSYSTEM, "YES", IUPAF_NOT_MAPPED | IUPAF_NO_INHERIT);
 
   return ic;
 }

@@ -15,6 +15,8 @@ extern "C" {
 int iupFlatScrollBarCreate(Ihandle* ih);
 void iupFlatScrollBarRegister(Iclass* ic);
 
+int iupFlatScrollBarGet(Ihandle* ih);
+                                               
 void iupFlatScrollBarSetChildrenCurrentSize(Ihandle* ih, int shrink);
 void iupFlatScrollBarSetChildrenPosition(Ihandle* ih);
 

@@ -586,7 +586,7 @@ static int iMatrixSetFitToSizeAttrib(Ihandle* ih, const char* value)
   /* add scrollbar */
   if (sb)
   {
-    int sb_size = iupdrvGetScrollbarSize();
+    int sb_size = iupMatrixGetScrollbarSize(ih);
     if (sb & IUP_SB_HORIZ)
       sb_h += sb_size;  /* sb horizontal affects vertical size */
     if (sb & IUP_SB_VERT)
@@ -1470,7 +1470,11 @@ static int iMatrixWheel_CB(Ihandle* ih, float delta)
 
 static int iMatrixSetFlatScrollbarAttrib(Ihandle* ih, const char* value)
 {
-  if (iupStrBoolean(value))
+  /* can only be set before map */
+  if (ih->handle)
+    return IUP_DEFAULT;
+
+  if (value && !iupStrEqualNoCase(value, "NO"))
   {
     if (iupFlatScrollBarCreate(ih))
     {
@@ -1478,9 +1482,10 @@ static int iMatrixSetFlatScrollbarAttrib(Ihandle* ih, const char* value)
       IupSetCallback(ih, "WHEEL_CB", (Icallback)iMatrixWheel_CB);
 /*    IupSetCallback(ih, "FLATSCROLL_CB", (Icallback)iMatrixFlatScroll_CB);  -- unused */
     }
+    return 1;
   }
-  
-  return 1;
+  else
+    return 0;
 }
 
 /*****************************************************************************/
@@ -1729,7 +1734,7 @@ int iupMatrixGetWidth(Ihandle* ih)
   int w;
   cdCanvasGetSize(ih->data->cd_canvas, &w, NULL, NULL, NULL);
 
-  if (iupAttribGetBoolean(ih, "FLATSCROLLBAR") && !iupAttribGetBoolean(ih, "YHIDDEN"))
+  if (iupFlatScrollBarGet(ih) & IUP_SB_VERT && !iupAttribGetBoolean(ih, "YHIDDEN"))
   {
     int sb_size = iupAttribGetInt(ih, "SCROLLBARSIZE");
     w -= sb_size;
@@ -1743,7 +1748,7 @@ int iupMatrixGetHeight(Ihandle* ih)
   int h;
   cdCanvasGetSize(ih->data->cd_canvas, NULL, &h, NULL, NULL);
 
-  if (iupAttribGetBoolean(ih, "FLATSCROLLBAR") && !iupAttribGetBoolean(ih, "XHIDDEN"))
+  if (iupFlatScrollBarGet(ih) & IUP_SB_HORIZ && !iupAttribGetBoolean(ih, "XHIDDEN"))
   {
     int sb_size = iupAttribGetInt(ih, "SCROLLBARSIZE");
     h -= sb_size;
@@ -1754,10 +1759,9 @@ int iupMatrixGetHeight(Ihandle* ih)
 
 int iupMatrixGetScrollbar(Ihandle* ih)
 {
-  if (iupAttribGetBoolean(ih, "FLATSCROLLBAR"))
-  {
-    return IUP_SB_HORIZ | IUP_SB_VERT;
-  }
+  int flat = iupFlatScrollBarGet(ih);
+  if (flat != IUP_SB_NONE)
+    return flat;
   else
   {
     if (!ih->handle)
@@ -1765,6 +1769,14 @@ int iupMatrixGetScrollbar(Ihandle* ih)
 
     return ih->data->canvas.sb;
   }
+}
+
+int iupMatrixGetScrollbarSize(Ihandle* ih)
+{
+  if (iupFlatScrollBarGet(ih) != IUP_SB_NONE)
+    return iupAttribGetInt(ih, "SCROLLBARSIZE");
+  else
+    return iupdrvGetScrollbarSize();
 }
 
 static void iMatrixComputeNaturalSizeMethod(Ihandle* ih, int *w, int *h, int *children_expand)
@@ -1777,7 +1789,7 @@ static void iMatrixComputeNaturalSizeMethod(Ihandle* ih, int *w, int *h, int *ch
   /* add scrollbar */
   if (sb)
   {
-    int sb_size = iupdrvGetScrollbarSize();
+    int sb_size = iupMatrixGetScrollbarSize(ih);
     if (sb & IUP_SB_HORIZ)
       sb_h += sb_size;  /* sb horizontal affects vertical size */
     if (sb & IUP_SB_VERT)
@@ -1814,13 +1826,13 @@ static void iMatrixComputeNaturalSizeMethod(Ihandle* ih, int *w, int *h, int *ch
 
 static void iMatrixSetChildrenCurrentSizeMethod(Ihandle* ih, int shrink)
 {
-  if (iupAttribGetBoolean(ih, "FLATSCROLLBAR"))
+  if (iupFlatScrollBarGet(ih) != IUP_SB_NONE)
     iupFlatScrollBarSetChildrenCurrentSize(ih, shrink);
 }
 
 static void iMatrixSetChildrenPositionMethod(Ihandle* ih, int x, int y)
 {
-  if (iupAttribGetBoolean(ih, "FLATSCROLLBAR"))
+  if (iupFlatScrollBarGet(ih) != IUP_SB_NONE)
     iupFlatScrollBarSetChildrenPosition(ih);
 
   (void)x;

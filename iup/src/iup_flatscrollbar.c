@@ -699,7 +699,7 @@ static IattribGetFunc iupCanvasGetPosYAttrib = NULL;
 
 static int iFlatScrollBarSetDXAttrib(Ihandle* ih, const char *value)
 {
-  if (iupAttribGetBoolean(ih, "FLATSCROLLBAR"))
+  if (iupFlatScrollBarGet(ih) & IUP_SB_HORIZ)
   {
     int dx;
     if (iupStrToInt(value, &dx))
@@ -738,7 +738,7 @@ static int iFlatScrollBarSetDXAttrib(Ihandle* ih, const char *value)
 
 static int iFlatScrollBarSetDYAttrib(Ihandle* ih, const char *value)
 {
-  if (iupAttribGetBoolean(ih, "FLATSCROLLBAR"))
+  if (iupFlatScrollBarGet(ih) & IUP_SB_VERT)
   {
     int dy;
     if (iupStrToInt(value, &dy))
@@ -777,7 +777,7 @@ static int iFlatScrollBarSetDYAttrib(Ihandle* ih, const char *value)
 
 static int iFlatScrollBarSetPosXAttrib(Ihandle* ih, const char *value)
 {
-  if (iupAttribGetBoolean(ih, "FLATSCROLLBAR"))
+  if (iupFlatScrollBarGet(ih) & IUP_SB_HORIZ)
   {
     int xmax, dx;
     int posx;
@@ -804,7 +804,7 @@ static int iFlatScrollBarSetPosXAttrib(Ihandle* ih, const char *value)
 
 static int iFlatScrollBarSetPosYAttrib(Ihandle* ih, const char *value)
 {
-  if (iupAttribGetBoolean(ih, "FLATSCROLLBAR"))
+  if (iupFlatScrollBarGet(ih) & IUP_SB_VERT)
   {
     int ymax, dy;
     int posy;
@@ -831,7 +831,7 @@ static int iFlatScrollBarSetPosYAttrib(Ihandle* ih, const char *value)
 
 static char* iFlatScrollBarGetPosYAttrib(Ihandle* ih)
 {
-  if (iupAttribGetBoolean(ih, "FLATSCROLLBAR"))
+  if (iupFlatScrollBarGet(ih) & IUP_SB_VERT)
     return NULL;
   else
     return iupCanvasGetPosYAttrib(ih);
@@ -839,7 +839,7 @@ static char* iFlatScrollBarGetPosYAttrib(Ihandle* ih)
 
 static char* iFlatScrollBarGetPosXAttrib(Ihandle* ih)
 {
-  if (iupAttribGetBoolean(ih, "FLATSCROLLBAR"))
+  if (iupFlatScrollBarGet(ih) & IUP_SB_HORIZ)
     return NULL;
   else
     return iupCanvasGetPosXAttrib(ih);
@@ -877,6 +877,22 @@ void iupFlatScrollBarSetChildrenPosition(Ihandle* ih)
 
 /******************************************************************************/
 
+
+int iupFlatScrollBarGet(Ihandle* ih)
+{
+  int sb = IUP_SB_NONE;  /* NO scrollbar by default */
+  char* value = iupAttribGet(ih, "FLATSCROLLBAR");
+  if (value)
+  {
+    if (iupStrEqualNoCase(value, "YES"))
+      sb = IUP_SB_HORIZ | IUP_SB_VERT;
+    else if (iupStrEqualNoCase(value, "HORIZONTAL"))
+      sb = IUP_SB_HORIZ;
+    else if (iupStrEqualNoCase(value, "VERTICAL"))
+      sb = IUP_SB_VERT;
+  }
+  return sb;
+}
 
 static void iChildTreeInsertFirst(Ihandle* ih, Ihandle* child)
 {

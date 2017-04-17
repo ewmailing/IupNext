@@ -330,7 +330,7 @@ static void iMatrixAuxUpdateVisibleSize(Ihandle* ih, int m)
     if (ih->data->limit_expand && (sb & SB) && iupAttribGetBoolean(ih, AUTOHIDE))
     {
       /* Must perform an extra check or the scrollbar will be always visible */
-      int sb_size = iupdrvGetScrollbarSize();
+      int sb_size = iupMatrixGetScrollbarSize(ih);
       if (p->current_visible_size + sb_size == p->total_visible_size)
         p->current_visible_size = p->total_visible_size;
     }
