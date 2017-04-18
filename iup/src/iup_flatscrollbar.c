@@ -424,6 +424,17 @@ static int iFlatScrollBarGetHandler(Ihandle* sb_ih, int x, int y)
   return SB_NONE;
 }
 
+static void iFlatScrollBarUpdateInteractive(Ihandle* ih)
+{
+  if (iupAttribGetBoolean(ih, "SHOWFLOATING"))
+  {
+    /* restart the timer */
+    Ihandle* timer = (Ihandle*)iupAttribGet(ih, "_IUP_FLOATTIMER");
+    IupSetAttribute(timer, "RUN", "NO");
+    IupSetAttribute(timer, "RUN", "YES");
+  }
+}
+
 static void iFlatScrollBarPressX(Ihandle* sb_ih, int handler)
 {
   int xmax = iupAttribGetInt(sb_ih->parent, "XMAX");
@@ -556,6 +567,8 @@ static int iFlatScrollBarMoveY(Ihandle* sb_ih, int diff, int start_posy)
 
 static int iFlatScrollBarButton_CB(Ihandle* sb_ih, int button, int press, int x, int y)
 {
+  iFlatScrollBarUpdateInteractive(sb_ih->parent);
+
   if (button != IUP_BUTTON1)
     return IUP_DEFAULT;
 
@@ -618,6 +631,8 @@ static int iFlatScrollBarMotion_CB(Ihandle *sb_ih, int x, int y)
   int redraw = 0;
   int handler = iFlatScrollBarGetHandler(sb_ih, x, y);
 
+  iFlatScrollBarUpdateInteractive(sb_ih->parent);
+
   /* special highlight processing for scrollbar area */
   int old_handler = iupAttribGetInt(sb_ih, "_IUP_HIGHLIGHT_HANDLER");
   if (old_handler != handler)
@@ -677,6 +692,18 @@ void iupFlatScrollBarWheelUpdate(Ihandle* ih, float delta)
   iupAttribSetInt(ih, "POSY", posy);
   iFlatScrollBarRedrawVertical(ih);
   iFlatScrollBarNotify(ih, delta>0 ? IUP_SBUP: IUP_SBDN);
+
+  if (iupAttribGetBoolean(ih, "SHOWFLOATING"))
+  {
+    if (iupFlatScrollBarGet(ih) & IUP_SB_VERT)
+    {
+      if (!iupAttribGetBoolean(ih, "YHIDDEN"))
+      {
+        Ihandle* sb_vert = iFlatScrollBarGetVertical(ih);
+        IupSetAttribute(sb_vert, "VISIBLE", "Yes");
+      }
+    }
+  }
 }
 
 static int iFlatScrollBarWheel_CB(Ihandle* sb_ih, float delta)
@@ -685,10 +712,23 @@ static int iFlatScrollBarWheel_CB(Ihandle* sb_ih, float delta)
   return IUP_DEFAULT;
 }
 
+static int iFlatScrollBarFloatTimer_CB(Ihandle* timer)
+{
+  Ihandle* ih = (Ihandle*)iupAttribGet(timer, "_IUP_FLATSCROLLBAR");
+  Ihandle* sb_vert = iFlatScrollBarGetVertical(ih);
+  Ihandle* sb_horiz = iFlatScrollBarGetHorizontal(ih);
 
+  IupSetAttribute(sb_vert, "VISIBLE", "NO");
+  IupSetAttribute(sb_horiz, "VISIBLE", "NO");
+
+  IupSetAttribute(timer, "RUN", "NO");
+
+  return IUP_DEFAULT;
+}
 
 
 /*****************************************************************************/
+
 
 static IattribSetFunc iupCanvasSetDXAttrib = NULL;
 static IattribSetFunc iupCanvasSetDYAttrib = NULL;
@@ -719,7 +759,9 @@ static int iFlatScrollBarSetDXAttrib(Ihandle* ih, const char *value)
         if (posx > xmax - dx)
           iupAttribSetInt(ih, "POSX", xmax - dx);
 
-        IupSetAttribute(sb_horiz, "VISIBLE", "Yes");
+        if (!iupAttribGetBoolean(ih, "SHOWFLOATING"))
+          IupSetAttribute(sb_horiz, "VISIBLE", "Yes");
+
         iupAttribSet(ih, "XHIDDEN", "NO");
 
         iFlatScrollBarRedrawHorizontal(ih);  /* force a redraw if it is already visible */
@@ -758,7 +800,9 @@ static int iFlatScrollBarSetDYAttrib(Ihandle* ih, const char *value)
         if (posy > ymax - dy)
           iupAttribSetInt(ih, "POSY", ymax - dy);
 
-        IupSetAttribute(sb_vert, "VISIBLE", "Yes");
+        if (!iupAttribGetBoolean(ih, "SHOWFLOATING"))
+          IupSetAttribute(sb_vert, "VISIBLE", "Yes");
+
         iupAttribSet(ih, "YHIDDEN", "NO");
 
         iFlatScrollBarRedrawVertical(ih);  /* force a redraw if it is already visible */
@@ -845,6 +889,31 @@ static char* iFlatScrollBarGetPosXAttrib(Ihandle* ih)
     return iupCanvasGetPosXAttrib(ih);
 }
 
+static int iFlatScrollBarSetShowFloatingAttrib(Ihandle* ih, const char *value)
+{
+  if (iupStrBoolean(value))
+  {
+    Ihandle* timer = (Ihandle*)iupAttribGet(ih, "_IUP_FLOATTIMER");
+    Ihandle* sb_vert = iFlatScrollBarGetVertical(ih);
+    Ihandle* sb_horiz = iFlatScrollBarGetHorizontal(ih);
+
+    IupSetAttribute(sb_vert, "VISIBLE", "NO");
+    IupSetAttribute(sb_horiz, "VISIBLE", "NO");
+
+    if (!timer)
+    {
+      timer = IupTimer();
+      IupSetCallback(timer, "ACTION_CB", iFlatScrollBarFloatTimer_CB);
+      iupAttribSet(timer, "_IUP_FLATSCROLLBAR", (char*)ih);
+      iupAttribSet(ih, "_IUP_FLOATTIMER", (char*)timer);
+    }
+
+    IupSetStrAttribute(timer, "TIME", iupAttribGetStr(ih, "FLOATINGDELAY"));
+  }
+
+  return 1;
+}
+
 
 /*******************************************************************************************************/
 
@@ -874,6 +943,39 @@ void iupFlatScrollBarSetChildrenPosition(Ihandle* ih)
     IupSetAttribute(sb_horiz, "ZORDER", "TOP");
 }
 
+void iupFlatScrollBarMotionUpdate(Ihandle* ih, int x, int y)
+{
+  if (iupAttribGetBoolean(ih, "SHOWFLOATING"))
+  {
+    int sb_size = iupAttribGetInt(ih, "SCROLLBARSIZE");
+    int sb = iupFlatScrollBarGet(ih);
+
+    if (sb & IUP_SB_VERT)
+    {
+      if (x > ih->currentwidth - sb_size)
+      {
+        if (!iupAttribGetBoolean(ih, "YHIDDEN"))
+        {
+          Ihandle* sb_vert = iFlatScrollBarGetVertical(ih);
+          IupSetAttribute(sb_vert, "VISIBLE", "Yes");
+        }
+      }
+    }
+
+    if (sb & IUP_SB_HORIZ)
+    {
+      if (y > ih->currentheight - sb_size)
+      {
+        if (!iupAttribGetBoolean(ih, "XHIDDEN"))
+        {
+          Ihandle* sb_horiz = iFlatScrollBarGetHorizontal(ih);
+          IupSetAttribute(sb_horiz, "VISIBLE", "Yes");
+        }
+      }
+    }
+  }
+}
+
 
 /******************************************************************************/
 
@@ -881,7 +983,7 @@ void iupFlatScrollBarSetChildrenPosition(Ihandle* ih)
 int iupFlatScrollBarGet(Ihandle* ih)
 {
   int sb = IUP_SB_NONE;  /* NO scrollbar by default */
-  char* value = iupAttribGet(ih, "FLATSCROLLBAR");
+  char* value = iupAttribGetStr(ih, "FLATSCROLLBAR");
   if (value)
   {
     if (iupStrEqualNoCase(value, "YES"))
@@ -966,6 +1068,9 @@ void iupFlatScrollBarRegister(Iclass* ic)
   iupClassRegisterAttribute(ic, "DY", NULL, iFlatScrollBarSetDYAttrib, NULL, NULL, IUPAF_NO_INHERIT);
   iupClassRegisterAttribute(ic, "POSX", iFlatScrollBarGetPosXAttrib, iFlatScrollBarSetPosXAttrib, "0", NULL, IUPAF_NO_INHERIT);
   iupClassRegisterAttribute(ic, "POSY", iFlatScrollBarGetPosYAttrib, iFlatScrollBarSetPosYAttrib, "0", NULL, IUPAF_NO_INHERIT);
+
+  iupClassRegisterAttribute(ic, "SHOWFLOATING", NULL, iFlatScrollBarSetShowFloatingAttrib, NULL, NULL, IUPAF_NO_INHERIT);
+  iupClassRegisterAttribute(ic, "FLOATINGDELAY", NULL, NULL, IUPAF_SAMEASSYSTEM, "2000", IUPAF_NO_INHERIT);
 
   iupClassRegisterAttribute(ic, "SCROLLBARSIZE", NULL, NULL, IUPAF_SAMEASSYSTEM, "15", IUPAF_NO_INHERIT);
   iupClassRegisterAttribute(ic, "HIGHCOLOR", NULL, NULL, IUPAF_SAMEASSYSTEM, "132 132 132", IUPAF_NO_INHERIT);

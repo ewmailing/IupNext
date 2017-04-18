@@ -21,6 +21,7 @@ void iupFlatScrollBarSetChildrenCurrentSize(Ihandle* ih, int shrink);
 void iupFlatScrollBarSetChildrenPosition(Ihandle* ih);
 
 void iupFlatScrollBarWheelUpdate(Ihandle* ih, float delta);
+void iupFlatScrollBarMotionUpdate(Ihandle* ih, int x, int y);
 
 /* used only in IupFlatScrollBox */
 void iupFlatScrollBarSetPos(Ihandle *ih, int posx, int posy);

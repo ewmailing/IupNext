@@ -23,7 +23,7 @@
 <p>Complementary attributes when a flat scrollbar is used (a drawn scrollbar). </p>
 <p>Used in <a href="../elem/iupflatscrollbox.html">IupFlatScrollBox</a>, and in
 <a href="../ctrl/iupmatrix.html">IupMatrix</a> when FLATSCROLLBAR is defined.</p>
-<h3>Appearance Attributes (<font size="3">non inheritable</font>)</h3>
+<h3>Attributes (<font size="3">non inheritable</font>)</h3>
 
   <p>
   <strong>BACKCOLOR</strong> (<font SIZE="3">non inheritable</font>): color 
@@ -46,6 +46,12 @@ FGCOLOR to avoid inheritance problems. </p>
 height of the horizontal scrollbar. Default: 15.</p>
 <p><strong>SHOWARROWS</strong> (<font SIZE="3">non inheritable</font>): Allow to 
 show or hide the arrows. Default: Yes.</p>
+<p><strong>SHOWFLOATING</strong> (<font SIZE="3">non inheritable</font>): the 
+scrollbar is shown only when used. Move mouse over scrollbar area to show the 
+scrollbars. Automatically hidden after not being used by the time defined in 
+FLOATINGDELAY.</p>
+<p><strong>FLOATINGDELAY</strong> (<font SIZE="3">non inheritable</font>): time 
+to hide the scrollbar when SHOWFLOATING=Yes in miliseconds. Default: 2000.</p>
 <p><strong>ARROWIMAGES</strong> (<font SIZE="3">non inheritable</font>): replace 
 the drawn arrows by the following images. Default: No.</p>
 <p><strong>IMAGELEFT, IMAGERIGHT, IMAGETOP, IMAGEBOTTOM</strong> (<font SIZE="3">non inheritable</font>):

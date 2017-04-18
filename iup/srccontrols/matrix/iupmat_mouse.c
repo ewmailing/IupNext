@@ -21,6 +21,7 @@
 #include "iup_attrib.h"
 #include "iup_str.h"
 #include "iup_stdcontrols.h"
+#include "iup_flatscrollbar.h"
 
 #include "iupmat_def.h"
 #include "iupmat_colres.h"
@@ -311,6 +312,8 @@ int iupMatrixMouseMove_CB(Ihandle* ih, int x, int y, char *status)
 
   if (!iupMatrixIsValid(ih, 0))
     return IUP_DEFAULT;
+
+  iupFlatScrollBarMotionUpdate(ih, x, y);
 
   has_lincol = iupMatrixGetCellFromXY(ih, x, y, &lin, &col);
 

@@ -1736,8 +1736,11 @@ int iupMatrixGetWidth(Ihandle* ih)
 
   if (iupFlatScrollBarGet(ih) & IUP_SB_VERT && !iupAttribGetBoolean(ih, "YHIDDEN"))
   {
-    int sb_size = iupAttribGetInt(ih, "SCROLLBARSIZE");
-    w -= sb_size;
+    if (!iupAttribGetBoolean(ih, "SHOWFLOATING"))
+    {
+      int sb_size = iupAttribGetInt(ih, "SCROLLBARSIZE");
+      w -= sb_size;
+    }
   }
 
   return w;
@@ -1750,8 +1753,11 @@ int iupMatrixGetHeight(Ihandle* ih)
 
   if (iupFlatScrollBarGet(ih) & IUP_SB_HORIZ && !iupAttribGetBoolean(ih, "XHIDDEN"))
   {
-    int sb_size = iupAttribGetInt(ih, "SCROLLBARSIZE");
-    h -= sb_size;
+    if (!iupAttribGetBoolean(ih, "SHOWFLOATING"))
+    {
+      int sb_size = iupAttribGetInt(ih, "SCROLLBARSIZE");
+      h -= sb_size;
+    }
   }
 
   return h;
@@ -1774,7 +1780,12 @@ int iupMatrixGetScrollbar(Ihandle* ih)
 int iupMatrixGetScrollbarSize(Ihandle* ih)
 {
   if (iupFlatScrollBarGet(ih) != IUP_SB_NONE)
-    return iupAttribGetInt(ih, "SCROLLBARSIZE");
+  {
+    if (iupAttribGetBoolean(ih, "SHOWFLOATING"))
+      return 0;
+    else
+      return iupAttribGetInt(ih, "SCROLLBARSIZE");
+  }
   else
     return iupdrvGetScrollbarSize();
 }

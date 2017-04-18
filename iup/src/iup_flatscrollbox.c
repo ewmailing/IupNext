@@ -39,6 +39,9 @@ static void iFlatScrollBoxUpdateChildPos(Ihandle *ih, Ihandle* child)
   char* offset = iupAttribGet(ih, "CHILDOFFSET");
   int sb_size = iupAttribGetInt(ih, "SCROLLBARSIZE");
 
+  if (iupAttribGetBoolean(ih, "SHOWFLOATING"))
+    sb_size = 0;
+
   /* Native container, position is reset */
   int x = 0;
   int y = 0;
@@ -138,6 +141,8 @@ static int iFlatScrollBoxButton_CB(Ihandle *ih, int but, int pressed, int x, int
 
 static int iFlatScrollBoxMotion_CB(Ihandle *ih, int x, int y, char* status)
 {
+  iupFlatScrollBarMotionUpdate(ih, x, y);
+
   if (iup_isbutton1(status) && iupAttribGet(ih, "_IUP_DRAG_SB"))
   {
     int start_x = iupAttribGetInt(ih, "_IUP_START_X");
@@ -268,21 +273,25 @@ static void iFlatScrollBoxUpdateVisibleScrollArea(Ihandle* ih, int view_width, i
   /* this is available drawing size not considering the scrollbars (BORDER=NO) */
   int canvas_width = ih->currentwidth,
     canvas_height = ih->currentheight;
-  int sb_size = iupAttribGetInt(ih, "SCROLLBARSIZE");
 
-  /* if child is greater than scrollbox in one direction,
-  then it has scrollbars
-  but this affects the opposite direction */
+  if (!iupAttribGetBoolean(ih, "SHOWFLOATING"))
+  {
+    int sb_size = iupAttribGetInt(ih, "SCROLLBARSIZE");
 
-  if (view_width > ih->currentwidth)  /* check for horizontal scrollbar */
-    canvas_height -= sb_size;                /* affect vertical size */
-  if (view_height > ih->currentheight)
-    canvas_width -= sb_size;
+    /* if child is greater than scrollbox in one direction,
+    then it has scrollbars
+    but this affects the opposite direction */
 
-  if (view_width <= ih->currentwidth && view_width > canvas_width)
-    canvas_height -= sb_size;
-  if (view_height <= ih->currentheight && view_height > canvas_height)
-    canvas_width -= sb_size;
+    if (view_width > ih->currentwidth)  /* check for horizontal scrollbar */
+      canvas_height -= sb_size;                /* affect vertical size */
+    if (view_height > ih->currentheight)
+      canvas_width -= sb_size;
+
+    if (view_width <= ih->currentwidth && view_width > canvas_width)
+      canvas_height -= sb_size;
+    if (view_height <= ih->currentheight && view_height > canvas_height)
+      canvas_width -= sb_size;
+  }
 
   if (canvas_width < 0) canvas_width = 0;
   if (canvas_height < 0) canvas_height = 0;
@@ -297,7 +306,6 @@ static void iFlatScrollBoxSetChildrenCurrentSizeMethod(Ihandle* ih, int shrink)
   if (child)
   {
     int w, h, has_sb_horiz=0, has_sb_vert=0;
-    int sb_size = iupAttribGetInt(ih, "SCROLLBARSIZE");
 
     /* If child is greater than scrollbox area, use child natural size,
        else use current scrollbox size;
@@ -324,11 +332,16 @@ static void iFlatScrollBoxSetChildrenCurrentSizeMethod(Ihandle* ih, int shrink)
     else
       h = ih->currentheight; /* expand space */
 
-    if (!has_sb_horiz && has_sb_vert)
-      w -= sb_size;  /* reduce expand space */
+    if (!iupAttribGetBoolean(ih, "SHOWFLOATING"))
+    {
+      int sb_size = iupAttribGetInt(ih, "SCROLLBARSIZE");
 
-    if (has_sb_horiz && !has_sb_vert)
-      h -= sb_size;  /* reduce expand space */
+      if (!has_sb_horiz && has_sb_vert)
+        w -= sb_size;  /* reduce expand space */
+
+      if (has_sb_horiz && !has_sb_vert)
+        h -= sb_size;  /* reduce expand space */
+    }
 
     /* Now w and h is a possible child size */
     iupBaseSetCurrentSize(child, w, h, shrink);

@@ -469,6 +469,7 @@ iupFlatScrollBarGet
 iupFlatScrollBarSetChildrenCurrentSize
 iupFlatScrollBarSetChildrenPosition
 iupFlatScrollBarWheelUpdate
+iupFlatScrollBarMotionUpdate
 iupFlatScrollBarSetPos
 
 iupAttribSetClassObject
