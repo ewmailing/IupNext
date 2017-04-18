@@ -15,17 +15,13 @@
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="iupluascripter.c" />
-    <ClCompile Include="lconsole.c" />
     <ClCompile Include="utl_button_images.c" />
-    <ClCompile Include="utl_dlist.c" />
   </ItemGroup>
   <ItemGroup>
-    <ClInclude Include="lconsole.h" />
     <ClInclude Include="utl_button_images.h" />
-    <ClInclude Include="utl_dlist.h" />
   </ItemGroup>
   <ItemGroup>
-    <ResourceCompile Include="..\..\..\etc\iup.rc" />
+    <ResourceCompile Include="..\..\..\..\etc\iup.rc" />
   </ItemGroup>
   <PropertyGroup Label="Globals">
     <ProjectGuid>{4094BDD7-82B1-4754-A86B-C7D893F8CEE3}</ProjectGuid>
@@ -58,10 +54,10 @@
   <PropertyGroup Label="UserMacros" />
   <PropertyGroup>
     <_ProjectFileVersion>10.0.40219.1</_ProjectFileVersion>
-    <OutDir Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">..\..\..\bin\Debug\Lua$(LUASFX)\</OutDir>
-    <OutDir Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">..\..\..\bin\Debug_64\Lua$(LUASFX)\</OutDir>
-    <IntDir Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">..\..\..\obj\Debug\$(ProjectName)\Lua$(LUASFX)\</IntDir>
-    <IntDir Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">..\..\..\obj\Debug_64\$(ProjectName)\Lua$(LUASFX)\</IntDir>
+    <OutDir Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">..\..\..\..\bin\Debug\Lua$(LUASFX)\</OutDir>
+    <OutDir Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">..\..\bin\Debug_64\Lua$(LUASFX)\</OutDir>
+    <IntDir Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">..\..\..\..\obj\Debug\$(ProjectName)\Lua$(LUASFX)\</IntDir>
+    <IntDir Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">..\..\obj\Debug_64\$(ProjectName)\Lua$(LUASFX)\</IntDir>
     <LinkIncremental Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">false</LinkIncremental>
     <LinkIncremental Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">false</LinkIncremental>
     <GenerateManifest Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">false</GenerateManifest>
@@ -72,7 +68,7 @@
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">
     <ClCompile>
       <Optimization>Disabled</Optimization>
-      <AdditionalIncludeDirectories>..\..\..\include;..\..\..\..\lua$(LUA_SUFFIX)\include;..\..\..\..\cd\include;..\..\..\..\im\include;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <AdditionalIncludeDirectories>..\..\..\..\include;..\..\..\..\srclua5;..\..\..\..\srcconsole\lh;..\..\..\..\..\lua$(LUA_SUFFIX)\include;..\..\..\..\..\cd\include;..\..\..\..\..\im\include;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
       <PreprocessorDefinitions>WIN32;_DEBUG;_CRT_SECURE_NO_DEPRECATE;IUPLUA_IMGLIB;IUPLUA_SCINTILLA;USE_STATIC;IUPLUA_USELH;IUPLUA_WEB;%(PreprocessorDefinitions)</PreprocessorDefinitions>
       <BasicRuntimeChecks>EnableFastChecks</BasicRuntimeChecks>
       <RuntimeLibrary>MultiThreadedDebug</RuntimeLibrary>
@@ -89,13 +85,13 @@
       <PreprocessorDefinitions>_DEBUG;%(PreprocessorDefinitions)</PreprocessorDefinitions>
       <Culture>
       </Culture>
-      <AdditionalIncludeDirectories>..\..\..\etc;</AdditionalIncludeDirectories>
+      <AdditionalIncludeDirectories>..\..\..\..\etc;</AdditionalIncludeDirectories>
     </ResourceCompile>
     <Link>
       <AdditionalDependencies>iup.lib;comctl32.lib;ws2_32.lib;winmm.lib;iupcontrols.lib;iupmatrixex.lib;iupimglib.lib;cd.lib;iupcd.lib;freetype6.lib;zlib1.lib;lua$(LUA_SUFFIX).lib;iuplua$(LUASFX).lib;iupluaimglib$(LUASFX).lib;iupluacontrols$(LUASFX).lib;iupluamatrixex$(LUASFX).lib;im.lib;iup_scintilla.lib;iuplua_scintilla$(LUASFX).lib;imm32.lib;%(AdditionalDependencies)</AdditionalDependencies>
       <OutputFile>$(OutDir)iupluascripter$(LUASFX).exe</OutputFile>
       <SuppressStartupBanner>true</SuppressStartupBanner>
-      <AdditionalLibraryDirectories>..\..\..\..\im\lib\Debug;..\..\..\..\cd\lib\Debug;..\..\..\..\freetype\lib\Debug;..\..\..\..\ftgl\lib\Debug;..\..\..\..\zlib\lib\Debug;..\..\..\lib\Debug;..\..\..\..\im\lib\Debug\Lua$(LUASFX);..\..\..\..\cd\lib\Debug\Lua$(LUASFX);..\..\..\lib\Debug\Lua$(LUASFX);..\..\..\..\lua$(LUA_SUFFIX)\lib\vc12;%(AdditionalLibraryDirectories)</AdditionalLibraryDirectories>
+      <AdditionalLibraryDirectories>..\..\..\..\..\im\lib\Debug;..\..\..\..\..\cd\lib\Debug;..\..\..\..\freetype\lib\Debug;..\..\..\..\ftgl\lib\Debug;..\..\..\..\zlib\lib\Debug;..\..\..\..\lib\Debug;..\..\..\..\..\im\lib\Debug\Lua$(LUASFX);..\..\..\..\..\cd\lib\Debug\Lua$(LUASFX);..\..\..\..\lib\Debug\Lua$(LUASFX);..\..\..\..\..\lua$(LUA_SUFFIX)\lib\vc12;%(AdditionalLibraryDirectories)</AdditionalLibraryDirectories>
       <GenerateDebugInformation>true</GenerateDebugInformation>
       <SubSystem>Console</SubSystem>
     </Link>
@@ -103,7 +99,7 @@
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">
     <ClCompile>
       <Optimization>Disabled</Optimization>
-      <AdditionalIncludeDirectories>..\..\..\include;..\..\..\..\lua$(LUA_SUFFIX)\include;..\..\..\..\cd\include;..\..\..\..\im\include;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <AdditionalIncludeDirectories>..\..\include;..\..\srclua5;..\..\srcconsole\lh;..\..\..\lua$(LUA_SUFFIX)\include;..\..\..\cd\include;..\..\..\im\include;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
       <PreprocessorDefinitions>WIN32;_DEBUG;_CRT_SECURE_NO_DEPRECATE;IUPLUA_IMGLIB;IUPLUA_SCINTILLA;USE_STATIC;IUPLUA_USELH;IUPLUA_WEB;USE_LUAGL;%(PreprocessorDefinitions)</PreprocessorDefinitions>
       <BasicRuntimeChecks>EnableFastChecks</BasicRuntimeChecks>
       <RuntimeLibrary>MultiThreadedDebug</RuntimeLibrary>
@@ -120,13 +116,13 @@
       <PreprocessorDefinitions>TEC_64;_DEBUG;%(PreprocessorDefinitions)</PreprocessorDefinitions>
       <Culture>
       </Culture>
-      <AdditionalIncludeDirectories>..\..\..\etc;</AdditionalIncludeDirectories>
+      <AdditionalIncludeDirectories>..\..\etc;</AdditionalIncludeDirectories>
     </ResourceCompile>
     <Link>
       <AdditionalDependencies>iup.lib;comctl32.lib;ws2_32.lib;winmm.lib;iupcontrols.lib;iupmatrixex.lib;iupimglib.lib;cd.lib;iupcd.lib;freetype6.lib;zlib1.lib;lua$(LUA_SUFFIX).lib;iuplua$(LUASFX).lib;iupluaimglib$(LUASFX).lib;iupluacontrols$(LUASFX).lib;iupluamatrixex$(LUASFX).lib;im.lib;iup_scintilla.lib;iuplua_scintilla$(LUASFX).lib;imm32.lib;%(AdditionalDependencies)</AdditionalDependencies>
       <OutputFile>$(OutDir)iupluascripter$(LUASFX).exe</OutputFile>
       <SuppressStartupBanner>true</SuppressStartupBanner>
-      <AdditionalLibraryDirectories>..\..\..\..\im\lib\Debug_64;..\..\..\..\cd\lib\Debug_64;..\..\..\lib\Debug_64;..\..\..\..\freetype\lib\Debug_64;..\..\..\..\zlib\lib\Debug_64;..\..\..\..\im\lib\Debug_64\Lua$(LUASFX);..\..\..\..\cd\lib\Debug_64\Lua$(LUASFX);..\..\..\lib\Debug_64\Lua$(LUASFX);..\..\..\..\lua$(LUA_SUFFIX)\lib\vc12_64;%(AdditionalLibraryDirectories)</AdditionalLibraryDirectories>
+      <AdditionalLibraryDirectories>..\..\..\im\lib\Debug_64;..\..\..\cd\lib\Debug_64;..\..\lib\Debug_64;..\..\..\freetype\lib\Debug_64;..\..\..\zlib\lib\Debug_64;..\..\..\im\lib\Debug_64\Lua$(LUASFX);..\..\..\cd\lib\Debug_64\Lua$(LUASFX);..\..\lib\Debug_64\Lua$(LUASFX);..\..\..\lua$(LUA_SUFFIX)\lib\vc12_64;%(AdditionalLibraryDirectories)</AdditionalLibraryDirectories>
       <GenerateDebugInformation>true</GenerateDebugInformation>
       <SubSystem>Console</SubSystem>
     </Link>

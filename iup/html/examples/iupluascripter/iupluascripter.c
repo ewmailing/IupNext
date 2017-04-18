@@ -8,7 +8,6 @@
 #include <lua.h>
 #include <iuplua.h>
 #include <lauxlib.h>
-#include <lualib.h>
 
 #include "utl_button_images.h"
 
@@ -124,10 +123,10 @@ char *filterList(char *text, char *list)
 
   int len;
   char *lastValue = list;
-  const char *nextValue = strNextValue(list, strlen(list), &len, ' ');
+  char *nextValue = strNextValue(list, strlen(list), &len, ' ');
   while (len != 0)
   {
-    if ((int)strlen(text) <= len && strEqualPartial(lastValue, text))
+    if (strlen(text) <= len && strEqualPartial(lastValue, text))
     {
       char *value = malloc(80);
 
@@ -2014,16 +2013,40 @@ int item_curlinebreak_action_cb(void)
 
 int txt_cmdline_cb(Ihandle *ih, int c)
 {
+  switch (c)
+  {
+    case K_CR: // enter
+      lua_getfield(lcmd_state, LUA_GLOBALSINDEX, "consoleEnterCommand");
+      lua_call(lcmd_state, 0, 0);
+      break;
+    case K_ESC:
+      IupSetAttribute(ih, IUP_VALUE, "");
+      break;
+    case K_UP:
+      lua_getfield(lcmd_state, LUA_GLOBALSINDEX, "consoleKeyUpCommand");
+      lua_call(lcmd_state, 0, 0);
+      break;
+    case K_DOWN:
+      lua_getfield(lcmd_state, LUA_GLOBALSINDEX, "consoleKeyDownCommand");
+      lua_call(lcmd_state, 0, 0);
+      break;
+  }
   return IUP_CONTINUE;
 }
 
 int btn_listfunc_cb(Ihandle *ih)
 {
+  lua_getfield(lcmd_state, LUA_GLOBALSINDEX, "consoleListFuncAction");
+  lua_call(lcmd_state, 0, 0);
+
   return IUP_DEFAULT;
 }
 
 int btn_listvar_cb(Ihandle *ih)
 {
+  lua_getfield(lcmd_state, LUA_GLOBALSINDEX, "consoleListVarAction");
+  lua_call(lcmd_state, 0, 0);
+
   return IUP_DEFAULT;
 }
 
@@ -2044,6 +2067,15 @@ int but_printlocal_cb(Ihandle *ih)
 
 int but_setlocal_cb(Ihandle *ih)
 {
+  int value = IupGetInt(IupGetDialogChild(ih, "LIST_LOCAL"), "VALUE");
+
+  if (value == 0)
+    return IUP_DEFAULT;
+
+  lua_getfield(lcmd_state, LUA_GLOBALSINDEX, "SetLocal");
+  lua_pushinteger(lcmd_state, value);
+  lua_call(lcmd_state, 1, 0);
+
   return IUP_DEFAULT;
 }
 
@@ -2110,14 +2142,19 @@ Ihandle *buildTabOutput()
 {
   Ihandle *txt_cmdLine = IupText(NULL);
   IupSetAttribute(txt_cmdLine, "EXPAND", "HORIZONTAL");
+  IupSetAttribute(txt_cmdLine, "NAME", "TXT_CMDLINE");
   Ihandle *btn_listfunc = IupButton("List Funcs", NULL);
   IupSetAttribute(btn_listfunc, "EXPAND", "NO");
+  IupSetAttribute(btn_listfunc, "NAME", "BTN_LISTFUNC");
   Ihandle *btn_listvar = IupButton("List Vars", NULL);
   IupSetAttribute(btn_listvar, "EXPAND", "NO");
+  IupSetAttribute(btn_listvar, "NAME", "BTN_LISTVAR");
   Ihandle *btn_clear = IupButton("Clear", NULL);
   IupSetAttribute(btn_clear, "EXPAND", "NO");
+  IupSetAttribute(btn_clear, "NAME", "BTN_CLEAR");
   Ihandle *btn_buffsize = IupButton("Buffer Size...", NULL);
   IupSetAttribute(btn_buffsize, "EXPAND", "NO");
+  IupSetAttribute(btn_buffsize, "NAME", "BTN_BUFSIZE");
 
   Ihandle *console_bts = IupHbox(txt_cmdLine, btn_listfunc, btn_listvar, btn_clear, btn_buffsize, NULL);
   IupSetAttribute(console_bts, "EXPAND", "HORIZONTAL");
@@ -2129,6 +2166,7 @@ Ihandle *buildTabOutput()
   IupSetAttribute(frm_consolebts, "TITLE", "Command Line:");
 
   Ihandle *ml_output = IupMultiLine(NULL);
+  IupSetAttribute(ml_output, "NAME", "MTL_OUTPUT");
   IupSetAttribute(ml_output, "EXPAND", "YES");
   IupSetAttribute(ml_output, "RASTERSIZE", "x250");
   IupSetAttribute(ml_output, "READONLY", "YES");
@@ -2139,6 +2177,7 @@ Ihandle *buildTabOutput()
   IupSetAttribute(output, "MARGIN", "0x0");
   IupSetAttribute(output, "GAP", "4");
   IupSetAttribute(output, "TABTITLE", "Output");
+  IupSetAttribute(output, "NAME", "OUTPUT");
 
   IupSetHandle("tabOutput", output);
 
@@ -2163,7 +2202,7 @@ Ihandle *buildTabLocals()
   IupSetAttribute(button_printLocal, "NAME", "PRINT_LOCAL");
 
   Ihandle *button_setLocal = IupButton("Set...", NULL);
-  IupSetAttribute(button_setLocal, "ACTIVE", "NO");
+  IupSetAttribute(button_setLocal, "ACTIVE", "YES");
   IupSetAttribute(button_setLocal, "SIZE", "35x");
   IupSetAttribute(button_setLocal, "NAME", "SET_LOCAL");
 
@@ -2277,6 +2316,12 @@ static void set_attribs(Ihandle *multitext)
   IupSetAttribute(multitext, "STYLEBOLD10", "YES");
 }
 
+void showVersionInfo()
+{
+  lua_getfield(lcmd_state, LUA_GLOBALSINDEX, "showVersionInfo");
+  lua_call(lcmd_state, 0, 0);
+}
+
 Ihandle* create_main_dialog(Ihandle *config)
 {
   Ihandle *dlg, *vbox, *multitext, *menu;
@@ -2312,12 +2357,12 @@ Ihandle* create_main_dialog(Ihandle *config)
   IupSetAttribute(multitext, "AUTOCOMPLETION", "ON");
 
   IupSetAttribute(multitext, "STYLEFGCOLOR34", "255 0 0");
-  IupSetInt(multitext, "MARGINWIDTH0", 50);
-  IupSetInt(multitext, "MARGINWIDTH1", 20);
+  IupSetInt(multitext, "MARGINWIDTH0", 30);
+  IupSetInt(multitext, "MARGINWIDTH1", 15);
   IupSetAttribute(multitext, "MARGINTYPE1", "SYMBOL");
   IupSetAttribute(multitext, "MARGINSENSITIVE1", "YES");
   IupSetAttribute(multitext, "MARGINMASKFOLDERS1", "NO");
-  IupSetInt(multitext, "MARGINWIDTH2", 20);
+  IupSetInt(multitext, "MARGINWIDTH2", 15);
   IupSetAttribute(multitext, "MARGINTYPE2", "TEXT");
   IupSetAttribute(multitext, "MARGINSENSITIVE2", "YES");
   IupSetAttribute(multitext, "MARGINMASKFOLDERS2", "NO");
@@ -2555,6 +2600,7 @@ Ihandle* create_main_dialog(Ihandle *config)
   IupSetCallback(item_tab, "ACTION", (Icallback)item_tab_action_cb);
 
   item_debug = IupItem("&Debug\tF5", NULL);
+  IupSetAttribute(item_debug, "NAME", "ITM_DEBUG");
   IupSetCallback(item_debug, "ACTION", (Icallback)item_debug_action_cb);
   btn_debug = IupButton(NULL, NULL);
   IupSetAttribute(btn_debug, "NAME", "BTN_DEBUG");
@@ -2566,6 +2612,7 @@ Ihandle* create_main_dialog(Ihandle *config)
   IupSetAttribute(btn_debug, "CANFOCUS", "No");
 
   item_run = IupItem("&Run\tCtrl+F5", NULL);
+  IupSetAttribute(item_run, "NAME", "ITM_RUN");
   IupSetCallback(item_run, "ACTION", (Icallback)item_run_action_cb);
   btn_run = IupButton(NULL, NULL);
   IupSetAttribute(btn_run, "NAME", "BTN_RUN");
@@ -2628,7 +2675,7 @@ Ihandle* create_main_dialog(Ihandle *config)
   IupSetAttribute(btn_stepinto, "IMAGE", "utlStepIntoButton");
   IupSetAttribute(btn_stepinto, "FLAT", "Yes");
   IupSetCallback(btn_stepinto, "ACTION", (Icallback)item_stepinto_action_cb);
-  IupSetAttribute(btn_stepinto, "TIP", "Stop (Shift+F5)");
+  IupSetAttribute(btn_stepinto, "TIP", "Executes one step into the execution.");
   IupSetAttribute(btn_stepinto, "CANFOCUS", "No");
 
   item_stepover = IupItem("Step &Over\tF10", NULL);
@@ -2641,7 +2688,7 @@ Ihandle* create_main_dialog(Ihandle *config)
   IupSetAttribute(btn_stepover, "IMAGE", "utlStepOverButton");
   IupSetAttribute(btn_stepover, "FLAT", "Yes");
   IupSetCallback(btn_stepover, "ACTION", (Icallback)item_stepover_action_cb);
-  IupSetAttribute(btn_stepover, "TIP", "Stop (Shift+F5)");
+  IupSetAttribute(btn_stepover, "TIP", "Executes one step over the execution.");
   IupSetAttribute(btn_stepover, "CANFOCUS", "No");
 
   item_stepout = IupItem("Step Ou&t\tShift+F11", NULL);
@@ -2654,7 +2701,7 @@ Ihandle* create_main_dialog(Ihandle *config)
   IupSetAttribute(btn_stepout, "IMAGE", "utlStepOutButton");
   IupSetAttribute(btn_stepout, "FLAT", "Yes");
   IupSetCallback(btn_stepout, "ACTION", (Icallback)item_stepout_action_cb);
-  IupSetAttribute(btn_stepout, "TIP", "Stop (Shift+F5)");
+  IupSetAttribute(btn_stepout, "TIP", "Executes one step out of the execution.");
   IupSetAttribute(btn_stepout, "CANFOCUS", "No");
 
   item_resetluastate = IupItem("&Reset Lua State", NULL);
@@ -2831,7 +2878,7 @@ Ihandle* create_main_dialog(Ihandle *config)
   IupSetAttribute(debugTabs, "MARGIN", "0x0");
   IupSetAttribute(debugTabs, "GAP", "4");
   IupSetAttribute(debugTabs, "TABTYPE", "BOTTOM");
-  IupSetAttribute(debugTabs, "NAME", "debugTabs");
+  IupSetAttribute(debugTabs, "NAME", "TBS_DEBUG");
 
   Ihandle *stabs = IupSbox(debugTabs);
   IupSetAttribute(stabs, "EXPAND", "YES");
@@ -2894,13 +2941,15 @@ Ihandle* create_main_dialog(Ihandle *config)
     IupSetStrAttribute(multitext, "FONT", font);
 
   IupSetAttribute(multitext, "WORDWRAPVISUALFLAGS", "MARGIN");
-  IupSetAttributeId(multitext, "MARKERFGCOLOR", 0, "255 0 0");
+  IupSetAttributeId(multitext, "MARKERFGCOLOR", 0, "0 0 255");
+  IupSetAttributeId(multitext, "MARKERBGCOLOR", 0, "0 0 255");
   IupSetAttributeId(multitext, "MARKERALPHA", 0, "80");
   IupSetAttributeId(multitext, "MARKERSYMBOL", 0, "CIRCLE");
   IupSetIntId(multitext, "MARGINMASK", 1, 0x000005);
-  IupSetAttributeId(multitext, "MARKERFGCOLOR", 1, "0 255 0");
+  IupSetAttributeId(multitext, "MARKERFGCOLOR", 1, "255 0 0");
+  IupSetAttributeId(multitext, "MARKERBGCOLOR", 1, "255 0 0");
   IupSetAttributeId(multitext, "MARKERALPHA", 1, "80");
-  IupSetAttributeId(multitext, "MARKERSYMBOL", 1, "CHARACTERb");
+  IupSetAttributeId(multitext, "MARKERSYMBOL", 1, "CIRCLE");
   IupSetIntId(multitext, "MARGINMASK", 2, 0x000002);
   IupSetAttributeId(multitext, "MARKERBGCOLOR", 2, "0 255 0");
   IupSetAttributeId(multitext, "MARKERALPHA", 2, "80");
@@ -2950,7 +2999,6 @@ void initDebugStates(lua_State *l)
 int main(int argc, char **argv)
 {
   Ihandle *config;
-  int error;
 
   IupOpen(&argc, &argv);
   IupImageLibOpen();
@@ -2974,12 +3022,14 @@ int main(int argc, char **argv)
 
   lua_register(lcmd_state, "read_file", lua_read_file);
 
-  error = luaL_dofile(lcmd_state, "D:\\tecgraf\\iup\\html\\examples\\iupluascripter\\debugger.lua");
+  int error = luaL_dofile(lcmd_state, "D:\\tecgraf\\iup\\html\\examples\\tutorial\\iupluascripter\\debugger.lua");
+  error = luaL_dofile(lcmd_state, "D:\\tecgraf\\iup\\html\\examples\\tutorial\\iupluascripter\\console.lua");
 
   initDebugStates(lcmd_state);
 
   /* show the dialog at the last position, with the last size */
   IupConfigDialogShow(config, main_dialog, "MainWindow");
+  showVersionInfo();
 
   set_attribs(IupGetDialogChild(main_dialog, "MULTITEXT"));
 

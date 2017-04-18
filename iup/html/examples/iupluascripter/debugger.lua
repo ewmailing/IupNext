@@ -7,11 +7,50 @@ DEBUG_STEP_OUT = 6
 DEBUG_PAUSED = 7
 DEBUG_STOPPED = 8
 
+FUNC_INSIDE = 1
+FUNC_OUTSIDE = 2
+
+LUA_COPYRIGHT = "Copyright (C) 1994-2008 Lua.org, PUC-Rio"
+LUA_AUTHORS = "R. Ierusalimschy, L. H. de Figueiredo & W. Celes"
+
+--dofile("D:\\tecgraf\\iup\\html\\examples\\tutorial\\iupluascripter\\console.lua")
+
 local debug_state = DEBUG_INACTIVE
 
 local breakpoints = {}
 
-local setpFuncLevel = 0
+local initialStackLevel = 2
+
+local stepFuncLevel = 0
+local stepFuncState = 0
+
+function showVersionInfo()
+  consoleEnterMessagef("IupLuaScripter 0.0\n"..
+   "%s  %s\n"..
+   "  (written by %s)\n"..
+   "IUP %s\n"..
+   "  (copyright (c) 1995-2008 Tecgraf/PUC-Rio - Petrobrás)\n\n",
+   _VERSION, LUA_COPYRIGHT, LUA_AUTHORS, iup.GetGlobal("VERSION")
+  )
+  iup.SetAttribute(console.tbsDebug, "VALUE", iup.GetHandle("tabOutput"))
+  iup.SetFocus(console.txtCmdLine)
+end
+
+function consoleListFuncAction()
+
+	consoleEnterCommandStr("consoleListFunc()")
+	
+	consoleListFunc()
+	
+end
+
+function consoleListVarAction()
+
+	consoleEnterCommandStr("consoleListVar()")
+	
+	consoleListVar()
+	
+end
 
 function removeAllBreakpoints()
 	local multitext = iup.GetDialogChild(main_dialog, "MULTITEXT")
@@ -67,6 +106,15 @@ function debug_set_state(st)
 		stop = "NO"
 		step = "NO"
 		contin = "NO"
+		run = "NO"
+		pause = "NO"
+		curline = "NO"
+	elseif st == DEBUG_INACTIVE then
+		iup.SetAttribute(iup.GetDialogChild(main_dialog, "ZBOX_DEBUG_CONTINUE"), "VALUE", "BTN_DEBUG")
+		stop = "NO"
+		step = "NO"
+		contin = "NO"
+		run = "YES"
 		pause = "NO"
 		curline = "NO"
 	elseif st == DEBUG_ACTIVE or
@@ -78,28 +126,41 @@ function debug_set_state(st)
 		 stop = "YES"
 		 step = "NO"
 		 contin = "NO"
+		 run = "NO"
 		 pause = "YES"
 		 curline = "NO"
+		 if st == DEBUG_STEP_OUT then
+			stepFuncLevel = getDebugLevel(5)
+			stepFuncState = FUNC_INSIDE
+		 else
+			stepFuncLevel = 0
+			stepFuncState = FUNC_OUTSIDE
+		 end
 	elseif st == DEBUG_PAUSED then
 		iup.SetAttribute(iup.GetDialogChild(main_dialog, "ZBOX_DEBUG_CONTINUE"), "VALUE", "BTN_CONTINUE")
 		stop = "YES"
 		step = "YES"
 		contin = "YES"
+		run = "NO"
 		pause = "NO"
 		curline = "YES"
 	end
 	  
 	debug_state = st;
 
+	iup.SetAttribute(iup.GetDialogChild(main_dialog, "MULTITEXT"), "MARKERDELETEALL", 2)
+
 	iup.SetAttribute(iup.GetDialogChild(main_dialog, "ITM_STOP"), "ACTIVE", stop)
 	iup.SetAttribute(iup.GetDialogChild(main_dialog, "ITM_PAUSE"), "ACTIVE", pause)
 	iup.SetAttribute(iup.GetDialogChild(main_dialog, "ITM_CONTINUE"), "ACTIVE", contin)
+	iup.SetAttribute(iup.GetDialogChild(main_dialog, "ITM_DEBUG"), "ACTIVE", dbg)
 	iup.SetAttribute(iup.GetDialogChild(main_dialog, "ITM_STEPINTO"), "ACTIVE", step)
 	iup.SetAttribute(iup.GetDialogChild(main_dialog, "ITM_STEPOVER"), "ACTIVE", step)
 	iup.SetAttribute(iup.GetDialogChild(main_dialog, "ITM_STEPOUT"), "ACTIVE", step)
 	iup.SetAttribute(iup.GetDialogChild(main_dialog, "BTN_STOP"), "ACTIVE", stop)
 	iup.SetAttribute(iup.GetDialogChild(main_dialog, "BTN_PAUSE"), "ACTIVE", pause)
 	iup.SetAttribute(iup.GetDialogChild(main_dialog, "BTN_CONTINUE"), "ACTIVE", contin)
+	iup.SetAttribute(iup.GetDialogChild(main_dialog, "BTN_DEBUG"), "ACTIVE", dbg)
 	iup.SetAttribute(iup.GetDialogChild(main_dialog, "BTN_STEPINTO"), "ACTIVE", step)
 	iup.SetAttribute(iup.GetDialogChild(main_dialog, "BTN_STEPOVER"), "ACTIVE", step)
 	iup.SetAttribute(iup.GetDialogChild(main_dialog, "BTN_STEPOUT"), "ACTIVE", step)
@@ -178,14 +239,14 @@ end
 
 function clearLocal()
 	iup.SetAttribute(iup.GetDialogChild(main_dialog, "PRINT_LOCAL"), "ACTIVE", "NO");
-	iup.SetAttribute(iup.GetDialogChild(main_dialog, "SET_LOCAL"), "ACTIVE", "NO");
+	--iup.SetAttribute(iup.GetDialogChild(main_dialog, "SET_LOCAL"), "ACTIVE", "NO");
 	iup.SetAttribute(iup.GetDialogChild(main_dialog, "LIST_LOCAL"), "1", nil);
 end
 
 function clearStack()
 	clearLocal()
 	iup.SetAttribute(iup.GetDialogChild(main_dialog, "PRINT_LEVEL"), "ACTIVE", "NO");
-	iup.SetAttribute(iup.GetDialogChild(main_dialog, "PRINT_STACK"), "ACTIVE", "NO");
+	--iup.SetAttribute(iup.GetDialogChild(main_dialog, "PRINT_STACK"), "ACTIVE", "NO");
 	iup.SetAttribute(iup.GetDialogChild(main_dialog, "LIST_STACK"), "1", nil);
 end
 
@@ -205,6 +266,20 @@ function getObject(name)
 	return "<unknown>"
 end
 
+function SetLocal(index)
+
+	local level = iup.GetAttribute(iup.GetDialogChild(main_dialog, "LIST_LOCAL"), "LEVEL"..index)
+	local pos = iup.GetAttribute(iup.GetDialogChild(main_dialog, "LIST_LOCAL"), "POS"..index)
+	
+	local name, value = debug.getlocal(level, pos)
+	
+	local state, newValue = iup.GetParam("Set Local", nil, name.." = ".."%s\n", value)
+
+	debug.setlocal(level, pos, newValue)
+	
+	updateLocal(level)
+end
+
 function updateLocal(level)
 	local name, value
 	local pos = 1
@@ -214,6 +289,8 @@ function updateLocal(level)
 	while name ~= nil do
 		if string.sub(name, 1, 1) ~= "(" then
 			iup.SetAttribute(iup.GetDialogChild(main_dialog, "LIST_LOCAL"), val_key, name.." = "..getObject(value))
+			iup.SetAttribute(iup.GetDialogChild(main_dialog, "LIST_LOCAL"), "POS"..val_key, pos)
+			iup.SetAttribute(iup.GetDialogChild(main_dialog, "LIST_LOCAL"), "LEVEL"..val_key, level+1)
 			val_key = val_key + 1
 		end
 		pos = pos + 1
@@ -247,7 +324,7 @@ function updateStack()
 	
 	level = level-1
 	
-	if level> 3 then
+	if level> initialStackLevel then
 		iup.SetAttribute(iup.GetDialogChild(main_dialog, "PRINT_LEVEL"), "ACTIVE", "YES")
 		iup.SetAttribute(iup.GetDialogChild(main_dialog, "PRINT_STACK"), "ACTIVE", "YES")
 		iup.SetAttribute(iup.GetDialogChild(main_dialog, "LIST_STACK"), "VALUE", "1")
@@ -256,26 +333,58 @@ function updateStack()
 	
 end
 
-function hookFunction(event, line)
+function getDebugLevel(offset)
 
+	local level = -1
+	
+	repeat 
+		level = level+1
+	until debug.getinfo(level, "Snl") == nil
+	
+	return level - offset
+end
+
+function updateState(line)
+
+	if debug_state == DEBUG_STEP_OUT then
+		if stepFuncState == FUNC_OUTSIDE then
+			local level = getDebugLevel(4)
+			
+			debug_set_state(DEBUG_PAUSED)
+			
+			stepFuncState = FUNC_OUTSIDE
+			stepFuncLevel = level
+		end
+	elseif debug_state == DEBUG_STEP_INTO or
+			(debug_state == DEBUG_STEP_OVER and stepFuncState == FUNC_OUTSIDE) or
+			(debug_state ~= DEBUG_PAUSED and hasLineBreak(currentFile, line)) then
+			debug_set_state(DEBUG_PAUSED)
+	end
+
+end
+
+function hookFunction(event, line)
+   
+	local info = debug.getinfo(initialStackLevel, "Snl")
+	
 	if debug_state ~= DEBUG_INACTIVE then
-		if event == "line" then
-			lineHook(event, line)
+		if event == "call" then
+			callHook(info)
+		elseif event == "return" then
+			returnHook(info)
+		elseif event == "line" then
+			lineHook(info, line)
 		end
 	end
 
 end
 
-function lineHook(event, line)
+function lineHook(info, line)
 
-	if hasLineBreak(currentFile, line) then
-		debug_set_state(DEBUG_PAUSED);
-	end
+	updateState(line)
 	
-    if debug_state == DEBUG_PAUSED then
-    
-		local info = debug.getinfo(3, "Snl")
-		
+	if debug_state == DEBUG_PAUSED then
+ 		
 		updateSourceLine(info)
 		
 		updateStack()
@@ -286,9 +395,43 @@ function lineHook(event, line)
 			iup.LoopStep()
 		end
 		
-		print("PORRA")
-		debug.sethook(hookFunction, "l")
+		debug.sethook(hookFunction, "lcr")
+		
+	elseif iup.LoopStep() == IUP_CLOSE then
+		debug_set_state(DEBUG_STOPPED)
+	end
 	
+	if debug_state == DEBUG_STOPPED then
+		debug_set_state(DEBUG_ACTIVE)
+		debug.sethook()
+		error("debug: Last command interrupted!", 0)
+	end
+end
+
+function callHook(info)
+
+	local level = getDebugLevel(3)
+
+	if debug_state == DEBUG_STEP_OVER then
+		if stepFuncLevel == 0 then
+			stepFuncState = FUNC_INSIDE
+			stepFuncLevel = level
+		end
+	end
+	
+end
+
+function returnHook(info)
+
+	local level = getDebugLevel(3)
+
+	if level == 0 and info.what == "main" then
+		debug_set_state(DEBUG_INACTIVE)
+	elseif debug_state == DEBUG_STEP_OUT or debug_state == DEBUG_STEP_OVER then
+		if stepFuncLevel == level then
+			stepFuncState = FUNC_OUTSIDE
+			stepFuncLevel = 0
+		end
 	end
 	
 end
@@ -303,7 +446,13 @@ function startDebug()
 		return
 	end
 	
-	debug.sethook(hookFunction, "l")
+	debug.sethook(hookFunction, "lcr")
 	
-	dofile(currentFile)
+	local ok, msg = pcall(dofile, currentFile)
+	
+	debug_set_state(DEBUG_INACTIVE)
+	
+	if ok==false then
+		print(msg)
+	end
 end
