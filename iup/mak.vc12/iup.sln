@@ -41,7 +41,7 @@ Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "iupim", "iupim.vcxproj", "{
 EndProject
 Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "iuplua", "iuplua\iuplua.vcxproj", "{1EBC7A53-4677-4C3A-8D4A-49D301F17D85}"
 EndProject
-Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "iupluaexe", "iuplua\iupluaexe.vcxproj", "{A60D658D-766C-40DB-BAE4-59AB884D86FB}"
+Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "iupluaconsole", "iuplua\iupluaconsole.vcxproj", "{A60D658D-766C-40DB-BAE4-59AB884D86FB}"
 	ProjectSection(ProjectDependencies) = postProject
 		{8B2E140D-E759-441F-B2BC-B9FE61CDF741} = {8B2E140D-E759-441F-B2BC-B9FE61CDF741}
 		{01FC1249-3B24-4DA4-87BA-BF6EA8ED6731} = {01FC1249-3B24-4DA4-87BA-BF6EA8ED6731}
@@ -91,7 +91,7 @@ Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "iupsamplegtk", "iupsamplegt
 EndProject
 Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "iupviewgtk", "iupviewgtk.vcxproj", "{E7D19356-B0AB-44AD-ACCB-5FFFCC4837BE}"
 EndProject
-Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "iupluagtk_exe", "iuplua\iupluaexegtk.vcxproj", "{389DF3C9-A628-4F6D-8C52-8924FA01DE66}"
+Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "iupluagtk_exe", "iuplua\iupluaconsolegtk.vcxproj", "{389DF3C9-A628-4F6D-8C52-8924FA01DE66}"
 EndProject
 Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "iuptuio", "iuptuio.vcxproj", "{E251B414-01CA-482B-12F6-DD34ADAAB6AA}"
 EndProject
@@ -156,7 +156,7 @@ Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "iup_plot", "iup_plot.vcxpro
 EndProject
 Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "iuplua_plot", "iuplua\iuplua_plot.vcxproj", "{8B2E140D-E759-441F-B2BC-B9FE61CDF741}"
 EndProject
-Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "iupluagtk3_exe", "iuplua\iupluaexegtk3.vcxproj", "{C063C5F8-3688-4EC3-B7CC-78D58533B6BC}"
+Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "iupluagtk3_exe", "iuplua\iupluaconsolegtk3.vcxproj", "{C063C5F8-3688-4EC3-B7CC-78D58533B6BC}"
 EndProject
 Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "iupviewgtk3", "iupviewgtk3.vcxproj", "{710DA52B-3657-467E-A619-BE40A7D1B7A9}"
 EndProject
