@@ -54,7 +54,7 @@
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">
     <ClCompile>
       <Optimization>Disabled</Optimization>
-      <AdditionalIncludeDirectories>..\..\include;..\..\srclua5;..\..\srcconsole\lh;..\..\..\lua$(LUA_SUFFIX)\include;..\..\..\cd\include;..\..\..\im\include;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <AdditionalIncludeDirectories>..\..\include;..\..\srclua5;..\..\srcluaconsole\lh;..\..\..\lua$(LUA_SUFFIX)\include;..\..\..\cd\include;..\..\..\im\include;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
       <PreprocessorDefinitions>WIN32;_DEBUG;_CRT_SECURE_NO_DEPRECATE;IUPLUA_IMGLIB;USE_STATIC;IUPLUA_USELH;%(PreprocessorDefinitions)</PreprocessorDefinitions>
       <BasicRuntimeChecks>EnableFastChecks</BasicRuntimeChecks>
       <RuntimeLibrary>MultiThreadedDebug</RuntimeLibrary>
@@ -83,7 +83,7 @@
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">
     <ClCompile>
       <Optimization>Disabled</Optimization>
-      <AdditionalIncludeDirectories>..\..\include;..\..\srclua5;..\..\srcconsole\lh;..\..\..\lua$(LUA_SUFFIX)\include;..\..\..\cd\include;..\..\..\im\include;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <AdditionalIncludeDirectories>..\..\include;..\..\srclua5;..\..\srcluaconsole\lh;..\..\..\lua$(LUA_SUFFIX)\include;..\..\..\cd\include;..\..\..\im\include;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
       <PreprocessorDefinitions>WIN32;_DEBUG;_CRT_SECURE_NO_DEPRECATE;IUPLUA_IMGLIB;USE_STATIC;IUPLUA_USELH;%(PreprocessorDefinitions)</PreprocessorDefinitions>
       <BasicRuntimeChecks>EnableFastChecks</BasicRuntimeChecks>
       <RuntimeLibrary>MultiThreadedDebug</RuntimeLibrary>
@@ -110,10 +110,10 @@
     </Link>
   </ItemDefinitionGroup>
   <ItemGroup>
-    <None Include="..\..\srcconsole\console5.lua" />
+    <None Include="..\..\srcluaconsole\console5.lua" />
   </ItemGroup>
   <ItemGroup>
-    <ClCompile Include="..\..\srcconsole\iup_lua$(LUASFX).c" />
+    <ClCompile Include="..\..\srcluaconsole\iup_lua$(LUASFX).c" />
   </ItemGroup>
   <ItemGroup>
     <ProjectReference Include="..\iupcd.vcxproj">
