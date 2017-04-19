@@ -164,6 +164,8 @@ Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "simple_paint", "..\html\exa
 EndProject
 Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "scintilla_notepad", "..\html\examples\tutorial\scintilla_notepad\scintilla_notepad.vcxproj", "{E1563874-0732-46F5-BC4F-F373CF0652BA}"
 EndProject
+Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "iupluascripter", "iuplua\iupluascripter.vcxproj", "{4094BDD7-82B1-4754-A86B-C7D893F8CEE3}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Win32 = Debug|Win32
@@ -540,6 +542,14 @@ Global
 		{E1563874-0732-46F5-BC4F-F373CF0652BA}.Release|Win32.Build.0 = Release|Win32
 		{E1563874-0732-46F5-BC4F-F373CF0652BA}.Release|x64.ActiveCfg = Release|x64
 		{E1563874-0732-46F5-BC4F-F373CF0652BA}.Release|x64.Build.0 = Release|x64
+		{4094BDD7-82B1-4754-A86B-C7D893F8CEE3}.Debug|Win32.ActiveCfg = Debug|Win32
+		{4094BDD7-82B1-4754-A86B-C7D893F8CEE3}.Debug|Win32.Build.0 = Debug|Win32
+		{4094BDD7-82B1-4754-A86B-C7D893F8CEE3}.Debug|x64.ActiveCfg = Debug|x64
+		{4094BDD7-82B1-4754-A86B-C7D893F8CEE3}.Debug|x64.Build.0 = Debug|x64
+		{4094BDD7-82B1-4754-A86B-C7D893F8CEE3}.Release|Win32.ActiveCfg = Debug|Win32
+		{4094BDD7-82B1-4754-A86B-C7D893F8CEE3}.Release|Win32.Build.0 = Debug|Win32
+		{4094BDD7-82B1-4754-A86B-C7D893F8CEE3}.Release|x64.ActiveCfg = Debug|x64
+		{4094BDD7-82B1-4754-A86B-C7D893F8CEE3}.Release|x64.Build.0 = Debug|x64
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
@@ -584,6 +594,7 @@ Global
 		{710DA52B-3657-467E-A619-BE40A7D1B7A9} = {B24D8E0A-2EB5-4C49-A146-C0AABEF81788}
 		{C0E4757A-8A78-48C1-B507-E2A95AA18B25} = {FC52B7B5-744E-45D6-815C-3502F9D965E7}
 		{E1563874-0732-46F5-BC4F-F373CF0652BA} = {FC52B7B5-744E-45D6-815C-3502F9D965E7}
+		{4094BDD7-82B1-4754-A86B-C7D893F8CEE3} = {B24D8E0A-2EB5-4C49-A146-C0AABEF81788}
 	EndGlobalSection
 	GlobalSection(DevPartner) = postSolution
 	EndGlobalSection
