@@ -47,11 +47,12 @@ height of the horizontal scrollbar. Default: 15.</p>
 <p><strong>SHOWARROWS</strong> (<font SIZE="3">non inheritable</font>): Allow to 
 show or hide the arrows. Default: Yes.</p>
 <p><strong>SHOWFLOATING</strong> (<font SIZE="3">non inheritable</font>): the 
-scrollbar is shown only when used. Move mouse over scrollbar area to show the 
-scrollbars. Automatically hidden after not being used by the time defined in 
+scrollbar is shown only when used, over the space it occupied. Move the mouse over 
+the scrollbar area to show the 
+scrollbars. They are automatically hidden after not being used by the time defined in 
 FLOATINGDELAY.</p>
 <p><strong>FLOATINGDELAY</strong> (<font SIZE="3">non inheritable</font>): time 
-to hide the scrollbar when SHOWFLOATING=Yes in miliseconds. Default: 2000.</p>
+to hide the scrollbar when SHOWFLOATING=Yes in milliseconds. Default: 2000.</p>
 <p><strong>ARROWIMAGES</strong> (<font SIZE="3">non inheritable</font>): replace 
 the drawn arrows by the following images. Default: No.</p>
 <p><strong>IMAGELEFT, IMAGERIGHT, IMAGETOP, IMAGEBOTTOM</strong> (<font SIZE="3">non inheritable</font>):
@@ -77,6 +78,10 @@ used.</p>
   <h3>Affects</h3>
 <p><a href="../elem/iupflatscrollbox.html">IupFlatScrollBox</a>,
 <a href="../ctrl/iupmatrix.html">IupMatrix</a></p>
+
+<h3>Notes</h3>
+<p>When SHOWFLOATING=Yes the natural size of the <strong>IupMatrix</strong> is 
+reduced because it will not include the scrollbars area. </p>
 <h3>See Also</h3>
 <p><a href="iup_scrollbar.html">SCROLLBAR</a>, <a href="iup_posx.html">POSX</a>,
 <a href="iup_xmin.html">XMIN</a>, <a href="iup_xmax.html">XMAX</a>,
