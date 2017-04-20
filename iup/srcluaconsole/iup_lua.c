@@ -1,10 +1,9 @@
 
 #include <stdlib.h>
 
-#include "lua.h"
-
-#include "lauxlib.h"
-#include "lualib.h"
+#include <lua.h>
+#include <lauxlib.h>
+#include <lualib.h>
 
 #include "iup.h"
 #include "iuplua.h"

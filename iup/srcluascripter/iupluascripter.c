@@ -2,14 +2,19 @@
 #include <stdlib.h>
 #include <string.h>
 #include <ctype.h>
+
 #include <iup.h>
 #include <iup_scintilla.h>
 #include <iup_config.h>
+
 #include <lua.h>
-#include <iuplua.h>
 #include <lauxlib.h>
+#include <lualib.h>
+
+#include <iuplua.h>
 
 #include "utl_button_images.h"
+
 
 int DEBUG_INACTIVE;
 int DEBUG_ACTIVE;
@@ -592,7 +597,7 @@ void new_file(Ihandle* ih)
   Ihandle* dlg = IupGetDialog(ih);
   Ihandle* multitext = IupGetDialogChild(dlg, "MULTITEXT");
 
-  IupSetAttribute(dlg, "TITLE", "Untitled - Scintilla Notepad");
+  IupSetAttribute(dlg, "TITLE", "Untitled - IupLua Scripter");
   IupSetAttribute(multitext, "FILENAME", NULL);
   IupSetAttribute(multitext, "DIRTY", "NO");
   IupSetAttribute(multitext, "VALUE", "");
@@ -607,7 +612,7 @@ void open_file(Ihandle* ih, const char* filename)
     Ihandle* multitext = IupGetDialogChild(dlg, "MULTITEXT");
     Ihandle* config = (Ihandle*)IupGetAttribute(multitext, "CONFIG");
 
-    IupSetfAttribute(dlg, "TITLE", "%s - Scintilla Notepad", str_filetitle(filename));
+    IupSetfAttribute(dlg, "TITLE", "%s - IupLua Scripter", str_filetitle(filename));
     IupSetStrAttribute(multitext, "FILENAME", filename);
     IupSetAttribute(multitext, "DIRTY", "NO");
     IupSetStrAttribute(multitext, "VALUE", str);
@@ -635,7 +640,7 @@ void saveas_file(Ihandle* multitext, const char* filename)
   {
     Ihandle* config = (Ihandle*)IupGetAttribute(multitext, "CONFIG");
 
-    IupSetfAttribute(IupGetDialog(multitext), "TITLE", "%s - Scintilla Notepad", str_filetitle(filename));
+    IupSetfAttribute(IupGetDialog(multitext), "TITLE", "%s - IupLua Scripter", str_filetitle(filename));
     IupSetStrAttribute(multitext, "FILENAME", filename);
     IupSetAttribute(multitext, "DIRTY", "NO");
 
@@ -726,7 +731,6 @@ int dropfiles_cb(Ihandle* ih, const char* filename)
 
 int marginclick_cb(Ihandle* ih, int margin, int lin, char *status)
 {
-  Ihandle* multitext = IupGetDialogChild(ih, "MULTITEXT");
   (void)status;
 
   if (margin < 1 || margin > 2)
@@ -942,7 +946,7 @@ int item_close_action_cb(Ihandle* item_close)
   char* filename = IupGetAttribute(multitext, "FILENAME");
   if (save_check(item_close))
   {
-    IupSetfAttribute(IupGetDialog(multitext), "TITLE", "Untitled - Scintilla Notepad");
+    IupSetfAttribute(IupGetDialog(multitext), "TITLE", "Untitled - IupLua Scripter");
     IupSetStrAttribute(multitext, "FILENAME", NULL);
     IupSetAttribute(multitext, "DIRTY", "NO");
     IupSetStrAttribute(multitext, "VALUE", "");
@@ -1997,7 +2001,7 @@ int item_help_action_cb(void)
 
 int item_about_action_cb(void)
 {
-  IupMessage("About", "   Scintilla Notepad\n\nAutors:\n   Camilo Freire\n   Antonio Scuri");
+  IupMessage("About", "   IupLua Scripter\n\nAutors:\n   Camilo Freire\n   Antonio Scuri");
   return IUP_DEFAULT;
 }
 
@@ -2979,26 +2983,27 @@ Ihandle* create_main_dialog(Ihandle *config)
 void initDebugStates(lua_State *l)
 {
   lua_getglobal(l, "DEBUG_INACTIVE");
-  DEBUG_INACTIVE = lua_tointeger(l, -1);
+  DEBUG_INACTIVE = (int)lua_tointeger(l, -1);
   lua_getglobal(l, "DEBUG_ACTIVE");
-  DEBUG_ACTIVE = lua_tointeger(l, -1);
+  DEBUG_ACTIVE = (int)lua_tointeger(l, -1);
   lua_getglobal(l, "DEBUG_RUN");
-  DEBUG_RUN = lua_tointeger(l, -1);
+  DEBUG_RUN = (int)lua_tointeger(l, -1);
   lua_getglobal(l, "DEBUG_STEP_INTO");
-  DEBUG_STEP_INTO = lua_tointeger(l, -1);
+  DEBUG_STEP_INTO = (int)lua_tointeger(l, -1);
   lua_getglobal(l, "DEBUG_STEP_OVER");
-  DEBUG_STEP_OVER = lua_tointeger(l, -1);
+  DEBUG_STEP_OVER = (int)lua_tointeger(l, -1);
   lua_getglobal(l, "DEBUG_STEP_OUT");
-  DEBUG_STEP_OUT = lua_tointeger(l, -1);
+  DEBUG_STEP_OUT = (int)lua_tointeger(l, -1);
   lua_getglobal(l, "DEBUG_PAUSED");
-  DEBUG_PAUSED = lua_tointeger(l, -1);
+  DEBUG_PAUSED = (int)lua_tointeger(l, -1);
   lua_getglobal(l, "DEBUG_STOPPED");
-  DEBUG_STOPPED = lua_tointeger(l, -1);
+  DEBUG_STOPPED = (int)lua_tointeger(l, -1);
 }
 
 int main(int argc, char **argv)
 {
   Ihandle *config;
+  lua_State *L;
 
   IupOpen(&argc, &argv);
   IupImageLibOpen();
@@ -3006,13 +3011,13 @@ int main(int argc, char **argv)
 
   IupScintillaOpen();
 
-  lcmd_state = lua_open();
+  L = lcmd_state = lua_open();
   luaL_openlibs(lcmd_state);
 
   iuplua_open(lcmd_state);
 
   config = IupConfig();
-  IupSetAttribute(config, "APP_NAME", "scintilla_notepad");
+  IupSetAttribute(config, "APP_NAME", "iupluascripter");
   IupConfigLoad(config);
 
   main_dialog = create_main_dialog(config);
@@ -3022,8 +3027,18 @@ int main(int argc, char **argv)
 
   lua_register(lcmd_state, "read_file", lua_read_file);
 
-  int error = luaL_dofile(lcmd_state, "D:\\tecgraf\\iup\\html\\examples\\tutorial\\iupluascripter\\debugger.lua");
-  error = luaL_dofile(lcmd_state, "D:\\tecgraf\\iup\\html\\examples\\tutorial\\iupluascripter\\console.lua");
+#ifdef IUPLUA_USELOH
+#include "debugger.loh"
+#include "console.loh"
+#else
+#ifdef IUPLUA_USELH
+#include "debugger.lh"
+#include "console.lh"
+#else
+  iuplua_dofile(L, "debugger.lua");
+  iuplua_dofile(L, "console.lua");
+#endif
+#endif
 
   initDebugStates(lcmd_state);
 
