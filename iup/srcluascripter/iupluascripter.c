@@ -31,7 +31,7 @@ Ihandle *main_dialog;
 
 /********************************** Utilities *****************************************/
 
-static char* getKeywords(void)
+char* getLuaKeywords(void)
 {
   return "and break do else elseif end false for function if in local nil not or repeat return then true until while "
     "_VERSION assert collectgarbage dofile error gcinfo loadfile loadstring print rawget rawset require tonumber tostring type unpack "
@@ -68,7 +68,7 @@ if (*str1 == *str2) return 1;        \
 
 char *getLastNonAlphaNumeric(char *text)
 {
-  int len = strlen(text);
+  int len = (int)strlen(text);
   char *c = text + len - 1;
   if (*c == '\n')
     c -= 1;
@@ -127,11 +127,11 @@ char *filterList(char *text, char *list)
   int count = 0;
 
   int len;
-  char *lastValue = list;
-  char *nextValue = strNextValue(list, strlen(list), &len, ' ');
+  const char *lastValue = list;
+  const char *nextValue = strNextValue(list, (int)strlen(list), &len, ' ');
   while (len != 0)
   {
-    if (strlen(text) <= len && strEqualPartial(lastValue, text))
+    if ((int)strlen(text) <= len && strEqualPartial(lastValue, text))
     {
       char *value = malloc(80);
 
@@ -140,7 +140,7 @@ char *filterList(char *text, char *list)
       filteredList[count++] = value;
     }
     lastValue = nextValue;
-    nextValue = strNextValue(nextValue, strlen(nextValue), &len, ' ');
+    nextValue = strNextValue(nextValue, (int)strlen(nextValue), &len, ' ');
   }
 
   retList = malloc(1024);
@@ -164,8 +164,6 @@ char *filterList(char *text, char *list)
 
   return retList;
 }
-
-
 
 void toggleMarker(Ihandle *ih, int lin, int margin)
 {
@@ -567,7 +565,7 @@ char* read_file(const char* filename)
 
 int lua_read_file(lua_State *L)
 {
-  char *filename = lua_tostring(L, 1);
+  const char *filename = lua_tostring(L, 1);
 
   lua_pushstring(L, read_file(filename));
 
@@ -741,13 +739,16 @@ int marginclick_cb(Ihandle* ih, int margin, int lin, char *status)
   return IUP_DEFAULT;
 }
 
-static int k_any(Ihandle *ih, int c)
+int k_any(Ihandle *ih, int c)
 {
   Ihandle* multitext = IupGetDialogChild(ih, "MULTITEXT");
+
   if (!IupGetInt(multitext, "AUTOCOMPLETION"))
     return IUP_CONTINUE;
+
   if (c == K_ESC && IupGetInt(multitext, "AUTOCACTIVE"))
     IupSetAttribute(multitext, "AUTOCCANCEL", "YES");
+
   return IUP_CONTINUE;
 }
 
@@ -764,9 +765,9 @@ int multitext_valuechanged_cb(Ihandle* multitext)
   char *t = getLastNonAlphaNumeric(text);
   if (t != NULL && *t != '\n' && *t != 0)
   {
-    char *fList = filterList(t, getKeywords());
+    char *fList = filterList(t, getLuaKeywords());
     if (strlen(fList) > 0)
-      IupSetAttributeId(multitext, "AUTOCSHOW", strlen(t) - 1, fList);
+      IupSetAttributeId(multitext, "AUTOCSHOW", (int)strlen(t) - 1, fList);
     free(fList);
   }
 
@@ -940,20 +941,6 @@ int item_save_action_cb(Ihandle* item_save)
   return IUP_DEFAULT;
 }
 
-int item_close_action_cb(Ihandle* item_close)
-{
-  Ihandle* multitext = IupGetDialogChild(item_close, "MULTITEXT");
-  char* filename = IupGetAttribute(multitext, "FILENAME");
-  if (save_check(item_close))
-  {
-    IupSetfAttribute(IupGetDialog(multitext), "TITLE", "Untitled - IupLua Scripter");
-    IupSetStrAttribute(multitext, "FILENAME", NULL);
-    IupSetAttribute(multitext, "DIRTY", "NO");
-    IupSetStrAttribute(multitext, "VALUE", "");
-  }
-  return IUP_DEFAULT;
-}
-
 int item_revert_action_cb(Ihandle* item_revert)
 {
   Ihandle* multitext = IupGetDialogChild(item_revert, "MULTITEXT");
@@ -1077,13 +1064,11 @@ int item_autocomplete_action_cb(Ihandle* ih)
 
   if (IupGetInt(ih, "VALUE"))
   {
-    IupSetInt(multitext, "MARGINWIDTH1", 0);
     IupSetAttribute(ih, "VALUE", "OFF");
     IupSetAttribute(multitext, "AUTOCOMPLETION", "OFF");
   }
   else
   {
-    IupSetInt(multitext, "MARGINWIDTH1", 20);
     IupSetAttribute(ih, "VALUE", "ON");
     IupSetAttribute(multitext, "AUTOCOMPLETION", "ON");
   }
@@ -1943,19 +1928,19 @@ int item_stop_action_cb(Ihandle *item)
   return IUP_DEFAULT;
 }
 
+int item_pause_action_cb(Ihandle *item)
+{
+  debug_set_state(lcmd_state, DEBUG_PAUSED);
+
+  return IUP_DEFAULT;
+}
+
 int pause_action_cb(Ihandle* item)
 {
   char* mod = IupGetGlobal("MODKEYSTATE");
 
   if (mod[1] == 'C' && mod[2] == 'A')
     item_pause_action_cb(item);
-
-  return IUP_DEFAULT;
-}
-
-int item_pause_action_cb(Ihandle *item)
-{
-  debug_set_state(lcmd_state, DEBUG_PAUSED);
 
   return IUP_DEFAULT;
 }
@@ -2298,12 +2283,12 @@ Ihandle *buildTabBreaks()
   return vbox;
 }
 
-static void set_attribs(Ihandle *multitext)
+void set_attribs(Ihandle *multitext)
 {
   IupSetAttribute(multitext, "CLEARALL", "");
   IupSetAttribute(multitext, "LEXERLANGUAGE", "lua");
 
-  IupSetAttribute(multitext, "KEYWORDS0", getKeywords());
+  IupSetAttribute(multitext, "KEYWORDS0", getLuaKeywords());
 
   IupSetAttribute(multitext, "STYLEFONT32", "Consolas");
   IupSetAttribute(multitext, "STYLEFONTSIZE32", "11");
@@ -2329,14 +2314,14 @@ void showVersionInfo()
 Ihandle* create_main_dialog(Ihandle *config)
 {
   Ihandle *dlg, *vbox, *multitext, *menu;
-  Ihandle *sub_menu_file, *file_menu, *item_exit, *item_new, *item_open, *item_save, *item_saveas, *item_close, *item_revert;
+  Ihandle *sub_menu_file, *file_menu, *item_exit, *item_new, *item_open, *item_save, *item_saveas, *item_revert;
   Ihandle *sub_menu_edit, *edit_menu, *item_find, *item_find_next, *item_goto, *item_gotombrace, *item_autocomplete, *item_copy, *item_paste, *item_cut, *item_delete, *item_select_all;
   Ihandle *item_togglemark, *item_nextmark, *item_previousmark, *item_clearmarks, *item_cutmarked, *item_copymarked, *item_pastetomarked, *item_removemarked,
     *item_removeunmarked, *item_invertmarks, *item_tabtospace, *item_allspacetotab, *item_leadingspacetotab;
   Ihandle *item_trimleading, *item_trimtrailing, *item_trimtraillead, *item_eoltospace, *item_removespaceeol;
   Ihandle *item_undo, *item_redo;
   Ihandle *case_menu, *item_uppercase, *item_lowercase;
-  Ihandle *btn_cut, *btn_copy, *btn_paste, *btn_find, *btn_new, *btn_open, *btn_save, *btn_close;
+  Ihandle *btn_cut, *btn_copy, *btn_paste, *btn_find, *btn_new, *btn_open, *btn_save;
   Ihandle *sub_menu_format, *format_menu, *item_font, *item_tab, *item_replace;
   Ihandle *sub_menu_help, *help_menu, *item_help, *item_about;
   Ihandle *sub_menu_view, *view_menu, *item_toolbar, *item_statusbar, *item_linenumber, *item_bookmark;
@@ -2361,16 +2346,19 @@ Ihandle* create_main_dialog(Ihandle *config)
   IupSetAttribute(multitext, "AUTOCOMPLETION", "ON");
 
   IupSetAttribute(multitext, "STYLEFGCOLOR34", "255 0 0");
+  /* line numbers */
   IupSetInt(multitext, "MARGINWIDTH0", 30);
+  IupSetAttribute(multitext, "MARGINSENSITIVE0", "YES");
+  /* bookmarks */
   IupSetInt(multitext, "MARGINWIDTH1", 15);
   IupSetAttribute(multitext, "MARGINTYPE1", "SYMBOL");
   IupSetAttribute(multitext, "MARGINSENSITIVE1", "YES");
   IupSetAttribute(multitext, "MARGINMASKFOLDERS1", "NO");
+  /* breakpoints */
   IupSetInt(multitext, "MARGINWIDTH2", 15);
   IupSetAttribute(multitext, "MARGINTYPE2", "TEXT");
   IupSetAttribute(multitext, "MARGINSENSITIVE2", "YES");
   IupSetAttribute(multitext, "MARGINMASKFOLDERS2", "NO");
-  IupSetAttribute(multitext, "MARGINSENSITIVE0", "YES");
 
   lbl_statusbar = IupLabel("Lin 1, Col 1");
   IupSetAttribute(lbl_statusbar, "NAME", "STATUSBAR");
@@ -2407,17 +2395,6 @@ Ihandle* create_main_dialog(Ihandle *config)
   IupSetCallback(btn_save, "ACTION", (Icallback)item_save_action_cb);
   IupSetAttribute(btn_save, "TIP", "Save (Ctrl+S)");
   IupSetAttribute(btn_save, "CANFOCUS", "No");
-
-  item_close = IupItem("&Close\tCtrl+W", NULL);
-  IupSetAttribute(item_close, "NAME", "ITEM_CLOSE");
-  IupSetAttribute(item_close, "IMAGE", "IUP_FileClose");
-  IupSetCallback(item_close, "ACTION", (Icallback)item_close_action_cb);
-  btn_close = IupButton(NULL, NULL);
-  IupSetAttribute(btn_close, "IMAGE", "IUP_FileClose");
-  IupSetAttribute(btn_close, "FLAT", "Yes");
-  IupSetCallback(btn_close, "ACTION", (Icallback)item_close_action_cb);
-  IupSetAttribute(btn_close, "TIP", "Close (Ctrl+W)");
-  IupSetAttribute(btn_close, "CANFOCUS", "No");
 
   item_saveas = IupItem("Save &As...", NULL);
   IupSetAttribute(item_saveas, "NAME", "ITEM_SAVEAS");
@@ -2506,7 +2483,7 @@ Ihandle* create_main_dialog(Ihandle *config)
   item_gotombrace = IupItem("Go To Matching Brace\tCtrl+B", NULL);
   IupSetCallback(item_gotombrace, "ACTION", (Icallback)item_gotombrace_action_cb);
 
-  item_autocomplete = IupItem("Auto Completion", NULL);
+  item_autocomplete = IupItem("Lua Auto Completion", NULL);
   IupSetCallback(item_autocomplete, "ACTION", (Icallback)item_autocomplete_action_cb);
   IupSetAttribute(item_autocomplete, "VALUE", "ON");
 
@@ -2740,7 +2717,6 @@ Ihandle* create_main_dialog(Ihandle *config)
     item_open,
     item_save,
     item_saveas,
-    item_close,
     item_revert,
     IupSeparator(),
     IupSubmenu("Recent &Files", recent_menu),
@@ -2848,7 +2824,6 @@ Ihandle* create_main_dialog(Ihandle *config)
     btn_new,
     btn_open,
     btn_save,
-    btn_close,
     IupSetAttributes(IupLabel(NULL), "SEPARATOR=VERTICAL"),
     btn_cut,
     btn_copy,
@@ -2906,7 +2881,6 @@ Ihandle* create_main_dialog(Ihandle *config)
   IupSetCallback(dlg, "K_cN", (Icallback)item_new_action_cb);
   IupSetCallback(dlg, "K_cO", (Icallback)item_open_action_cb);
   IupSetCallback(dlg, "K_cS", (Icallback)item_save_action_cb);
-  IupSetCallback(dlg, "K_cW", (Icallback)item_close_action_cb);
   IupSetCallback(dlg, "K_cF", (Icallback)item_find_action_cb);
   IupSetCallback(dlg, "K_cH", (Icallback)item_replace_action_cb);  /* replace system processing */
   IupSetCallback(dlg, "K_cG", (Icallback)item_goto_action_cb);
@@ -2945,15 +2919,18 @@ Ihandle* create_main_dialog(Ihandle *config)
     IupSetStrAttribute(multitext, "FONT", font);
 
   IupSetAttribute(multitext, "WORDWRAPVISUALFLAGS", "MARGIN");
+  /* line numbers */
   IupSetAttributeId(multitext, "MARKERFGCOLOR", 0, "0 0 255");
   IupSetAttributeId(multitext, "MARKERBGCOLOR", 0, "0 0 255");
   IupSetAttributeId(multitext, "MARKERALPHA", 0, "80");
   IupSetAttributeId(multitext, "MARKERSYMBOL", 0, "CIRCLE");
+  /* bookmarks */
   IupSetIntId(multitext, "MARGINMASK", 1, 0x000005);
   IupSetAttributeId(multitext, "MARKERFGCOLOR", 1, "255 0 0");
   IupSetAttributeId(multitext, "MARKERBGCOLOR", 1, "255 0 0");
   IupSetAttributeId(multitext, "MARKERALPHA", 1, "80");
   IupSetAttributeId(multitext, "MARKERSYMBOL", 1, "CIRCLE");
+  /* breakpoints */
   IupSetIntId(multitext, "MARGINMASK", 2, 0x000002);
   IupSetAttributeId(multitext, "MARKERBGCOLOR", 2, "0 255 0");
   IupSetAttributeId(multitext, "MARKERALPHA", 2, "80");
