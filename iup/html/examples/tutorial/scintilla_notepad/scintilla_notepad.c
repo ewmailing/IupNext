@@ -9,140 +9,6 @@
 
 /********************************** Utilities *****************************************/
 
-char* getLuaKeywords(void)
-{
-  return "and break do else elseif end false for function if in local nil not or repeat return then true until while "
-    "_VERSION assert collectgarbage dofile error gcinfo loadfile loadstring print rawget rawset require tonumber tostring type unpack "
-    "_ALERT _ERRORMESSAGE _INPUT _PROMPT _OUTPUT _STDERR _STDIN _STDOUT call dostring foreach foreachi getn globals newtype sort tinsert tremove "
-    "abs acos asin atan atan2 ceil cos deg exp floor format frexp gsub ldexp log log10 max min mod rad random randomseed sin sqrt strbyte strchar strfind strlen strlower strrep strsub strupper tan "
-    "openfile closefile readfrom writeto appendto remove rename flush seek tmpfile tmpname read write clock date difftime execute exit getenv setlocale time "
-    "_G getfenv getmetatable ipairs loadlib next pairs pcall rawequal setfenv setmetatable xpcall string table math coroutine io os debug load module select "
-    "string.byte string.char string.dump string.find string.len string.lower string.rep string.sub string.upper string.format string.gfind string.gsub table.concat table.foreach table.foreachi table.getn table.sort table.insert table.remove table.setn math.abs math.acos math.asin math.atan math.atan2 math.ceil math.cos math.deg math.exp math.floor math.frexp math.ldexp math.log math.log10 math.max math.min math.mod math.pi math.pow math.rad math.random math.randomseed math.sin math.sqrt math.tan string.gmatch string.match string.reverse table.maxn math.cosh math.fmod math.modf math.sinh math.tanh math.huge "
-    "coroutine.create coroutine.resume coroutine.status coroutine.wrap coroutine.yield io.close io.flush io.input io.lines io.open io.output io.read io.tmpfile io.type io.write io.stdin io.stdout io.stderr os.clock os.date os.difftime os.execute os.exit os.getenv os.remove os.rename os.setlocale os.time os.tmpname coroutine.running package.cpath package.loaded package.loadlib package.path package.preload package.seeall io.popen";
-}
-
-
-#define IUP_STR_EQUAL(str1, str2)      \
-{                                      \
-if (str1 == str2)                    \
-  return 1;                          \
-  \
-if (!str1 || !str2)                  \
-  return 0;                          \
-  \
-  while (*str1 && *str2 &&              \
-  SF(*str1) == SF(*str2))        \
-  {                                    \
-  EXTRAINC(str1);                    \
-  EXTRAINC(str2);                    \
-  str1++;                            \
-  str2++;                            \
-  }                                    \
-  \
-  /* check also for terminator */      \
-if (*str1 == *str2) return 1;        \
-}
-
-
-char *getLastNonAlphaNumeric(char *text)
-{
-  int len = (int)strlen(text);
-  char *c = text + len - 1;
-  if (*c == '\n')
-    c -= 1;
-  for (c; c != text; c--)
-  {
-    if (*c < 48 || (*c > 57 && *c < 65) || (*c > 90 && *c < 97) || *c > 122)
-      return c + 1;
-  }
-  return NULL;
-}
-
-const char* strNextValue(const char* str, int str_len, int *len, char sep)
-{
-  int ignore_sep = 0;
-
-  *len = 0;
-
-  if (!str) return NULL;
-
-  while (*str != 0 && (*str != sep || ignore_sep) && *len < str_len)
-  {
-    if (*str == '\"')
-    {
-      if (ignore_sep)
-        ignore_sep = 0;
-      else
-        ignore_sep = 1;
-    }
-
-    (*len)++;
-    str++;
-  }
-
-  if (*str == sep)
-    return str + 1;
-  else
-    return str;  /* no next value */
-}
-
-int strEqualPartial(const char* str1, const char* str2)
-{
-#define EXTRAINC(_x) (void)(_x)
-#define SF(_x) (_x)
-  IUP_STR_EQUAL(str1, str2);
-#undef SF
-#undef EXTRAINC
-  if (*str2 == 0)
-    return 1;  /* if second string is at terminator, then it is partially equal */
-  return 0;
-}
-
-char *filterList(char *text, char *list)
-{
-  char *filteredList[1024];
-  char *retList;
-  int count = 0;
-
-  int len;
-  const char *lastValue = list;
-  const char *nextValue = strNextValue(list, (int)strlen(list), &len, ' ');
-  while (len != 0)
-  {
-    if ((int)strlen(text) <= len && strEqualPartial(lastValue, text))
-    {
-      char *value = malloc(80);
-
-      strncpy(value, lastValue, len);
-      value[len] = 0;
-      filteredList[count++] = value;
-    }
-    lastValue = nextValue;
-    nextValue = strNextValue(nextValue, (int)strlen(nextValue), &len, ' ');
-  }
-
-  retList = malloc(1024);
-  retList[0] = 0;
-  for (int i = 0; i < count; i++)
-  {
-    if (i == 0)
-    {
-      strcpy(retList, filteredList[i]);
-      strcat(retList, " ");
-    }
-    else
-    {
-      strcat(retList, filteredList[i]);
-      strcat(retList, " ");
-    }
-  }
-
-  for (int i = 0; i < count; i++)
-    free(filteredList[i]);
-
-  return retList;
-}
-
 void toggleMarker(Ihandle *ih, int lin, int margin)
 {
   long int value = IupGetIntId(ih, "MARKERGET", lin);
@@ -694,38 +560,9 @@ int marginclick_cb(Ihandle* ih, int margin, int lin, char *status)
   return IUP_DEFAULT;
 }
 
-int k_any(Ihandle *ih, int c)
-{
-  Ihandle* multitext = IupGetDialogChild(ih, "MULTITEXT");
-
-  if (!IupGetInt(multitext, "AUTOCOMPLETION"))
-    return IUP_CONTINUE;
-
-  if (c == K_ESC && IupGetInt(multitext, "AUTOCACTIVE"))
-    IupSetAttribute(multitext, "AUTOCCANCEL", "YES");
-
-  return IUP_CONTINUE;
-}
-
 int multitext_valuechanged_cb(Ihandle* multitext)
 {
   IupSetAttribute(multitext, "DIRTY", "YES");
-
-  if (!IupGetInt(multitext, "AUTOCOMPLETION"))
-    return IUP_CONTINUE;
-
-  int pos = IupGetInt(multitext, "CARETPOS");
-  char *text = IupGetAttribute(multitext, "VALUE");
-  text[pos + 1] = '\0';
-  char *t = getLastNonAlphaNumeric(text);
-  if (t != NULL && *t != '\n' && *t != 0)
-  {
-    char *fList = filterList(t, getLuaKeywords());
-    if (strlen(fList) > 0)
-      IupSetAttributeId(multitext, "AUTOCSHOW", (int)strlen(t) - 1, fList);
-    free(fList);
-  }
-
   return IUP_DEFAULT;
 }
 
@@ -1011,24 +848,6 @@ int item_gotombrace_action_cb(Ihandle* ih)
   }
 
   return IUP_IGNORE;
-}
-
-int item_autocomplete_action_cb(Ihandle* ih)
-{
-  Ihandle* multitext = IupGetDialogChild(ih, "MULTITEXT");
-
-  if (IupGetInt(ih, "VALUE"))
-  {
-    IupSetAttribute(ih, "VALUE", "OFF");
-    IupSetAttribute(multitext, "AUTOCOMPLETION", "OFF");
-  }
-  else
-  {
-    IupSetAttribute(ih, "VALUE", "ON");
-    IupSetAttribute(multitext, "AUTOCOMPLETION", "ON");
-  }
-
-  return IUP_DEFAULT;
 }
 
 int item_togglemark_action_cb(Ihandle* ih)
@@ -1872,7 +1691,7 @@ Ihandle* create_main_dialog(Ihandle *config)
 {
   Ihandle *dlg, *vbox, *multitext, *menu;
   Ihandle *sub_menu_file, *file_menu, *item_exit, *item_new, *item_open, *item_save, *item_saveas, *item_revert;
-  Ihandle *sub_menu_edit, *edit_menu, *item_find, *item_find_next, *item_goto, *item_gotombrace, *item_autocomplete, *item_copy, *item_paste, *item_cut, *item_delete, *item_select_all;
+  Ihandle *sub_menu_edit, *edit_menu, *item_find, *item_find_next, *item_goto, *item_gotombrace, *item_copy, *item_paste, *item_cut, *item_delete, *item_select_all;
   Ihandle *item_togglemark, *item_nextmark, *item_previousmark, *item_clearmarks, *item_cutmarked, *item_copymarked, *item_pastetomarked, *item_removemarked,
     *item_removeunmarked, *item_invertmarks, *item_tabtospace, *item_allspacetotab, *item_leadingspacetotab;
   Ihandle *item_trimleading, *item_trimtrailing, *item_trimtraillead, *item_eoltospace, *item_removespaceeol;
@@ -1896,8 +1715,6 @@ Ihandle* create_main_dialog(Ihandle *config)
   IupSetCallback(multitext, "VALUECHANGED_CB", (Icallback)multitext_valuechanged_cb);
   IupSetCallback(multitext, "DROPFILES_CB", (Icallback)dropfiles_cb);
   IupSetCallback(multitext, "MARGINCLICK_CB", (Icallback)marginclick_cb);
-
-  IupSetAttribute(multitext, "AUTOCOMPLETION", "OFF");
 
   IupSetAttribute(multitext, "STYLEFGCOLOR34", "255 0 0");
   /* line numbers */
@@ -2032,9 +1849,6 @@ Ihandle* create_main_dialog(Ihandle *config)
   item_gotombrace = IupItem("Go To Matching Brace\tCtrl+B", NULL);
   IupSetCallback(item_gotombrace, "ACTION", (Icallback)item_gotombrace_action_cb);
 
-  item_autocomplete = IupItem("Lua Auto Completion", NULL);
-  IupSetCallback(item_autocomplete, "ACTION", (Icallback)item_autocomplete_action_cb);
-
   item_togglemark = IupItem("Toggle Bookmark\tCtrl+F2", NULL);
   IupSetCallback(item_togglemark, "ACTION", (Icallback)item_togglemark_action_cb);
 
@@ -2160,36 +1974,35 @@ Ihandle* create_main_dialog(Ihandle *config)
     item_replace,
     item_goto,
     item_gotombrace,
-    item_autocomplete,
-    IupSubmenu("Bookmarks", IupMenu(item_togglemark,
-    item_nextmark,
-    item_previousmark,
-    item_clearmarks,
-    item_cutmarked,
-    item_copymarked,
-    item_pastetomarked,
-    item_removemarked,
-    item_removeunmarked,
-    item_invertmarks,
-    NULL)),
-    IupSubmenu("Blank Operations", IupMenu(
-    item_trimtrailing,
-    item_trimleading,
-    item_trimtraillead,
-    item_eoltospace,
-    item_removespaceeol,
     IupSeparator(),
-    item_tabtospace,
-    item_allspacetotab,
-    item_leadingspacetotab,
-    NULL)),
+    IupSubmenu("Bookmarks", IupMenu(item_togglemark,
+      item_nextmark,
+      item_previousmark,
+      item_clearmarks,
+      item_cutmarked,
+      item_copymarked,
+      item_pastetomarked,
+      item_removemarked,
+      item_removeunmarked,
+      item_invertmarks,
+      NULL)),
+    IupSubmenu("Blank Operations", IupMenu(
+      item_trimtrailing,
+      item_trimleading,
+      item_trimtraillead,
+      item_eoltospace,
+      item_removespaceeol,
+      IupSeparator(),
+      item_tabtospace,
+      item_allspacetotab,
+      item_leadingspacetotab,
+      NULL)),
+    IupSubmenu("Convert Case to", case_menu = IupMenu(
+      item_uppercase,
+      item_lowercase,
+      NULL)),
     IupSeparator(),
     item_select_all,
-    IupSeparator(),
-    IupSubmenu("Convert Case to", case_menu = IupMenu(
-    item_uppercase,
-    item_lowercase,
-    NULL)),
     NULL);
   format_menu = IupMenu(
     item_font,
@@ -2275,8 +2088,6 @@ Ihandle* create_main_dialog(Ihandle *config)
   IupSetCallback(dlg, "K_c/", (Icallback)item_restorezoom_action_cb);
   IupSetCallback(dlg, "K_cU", (Icallback)item_case_action_cb);
   /* Ctrl+C, Ctrl+X, Ctrl+A, Del, already implemented inside IupText */
-
-  IupSetCallback(dlg, "K_ANY", (Icallback)k_any);
 
   /* parent for pre-defined dialogs in closed functions (IupMessage and IupAlarm) */
   IupSetAttributeHandle(NULL, "PARENTDIALOG", dlg);
