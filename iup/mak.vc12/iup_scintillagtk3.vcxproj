@@ -103,7 +103,7 @@
     <ClCompile Include="..\srcscintilla\gtk\PlatGTK.cxx" />
     <ClCompile Include="..\srcscintilla\gtk\scintilla-marshal.c" />
     <ClCompile Include="..\srcscintilla\gtk\ScintillaGTK.cxx" />
-    <ClCompile Include="..\srcscintilla\iup_scintilla.cpp" />
+    <ClCompile Include="..\srcscintilla\iup_scintilla.c" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="..\srcscintilla\include\ScintillaWidget.h" />

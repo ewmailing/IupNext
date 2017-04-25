@@ -97,10 +97,7 @@
     <CustomBuildStep Include="..\include\iup_scintilla.h" />
   </ItemGroup>
   <ItemGroup>
-    <ClCompile Include="..\srcscintilla\iup_scintilla.cpp">
-      <CompileAs Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">Default</CompileAs>
-      <CompileAs Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">Default</CompileAs>
-    </ClCompile>
+    <ClCompile Include="..\srcscintilla\iup_scintilla.c" />
     <ClCompile Include="..\srcscintilla\win32\HanjaDic.cxx" />
     <ClCompile Include="..\srcscintilla\win32\PlatWin.cxx" />
     <ClCompile Include="..\srcscintilla\win32\ScintillaWin.cxx" />

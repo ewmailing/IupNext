@@ -708,6 +708,12 @@ namespace Iup
   public:
     ProgressDlg() : Dialog(IupProgressDlg()) {}
   };
+  class ScintillaDlg : public Dialog
+  {
+  public:
+    ScintillaDlg() : Dialog(IupScintillaDlg()) {}
+  };
+
   class GLCanvas : public Control
   {
   public:

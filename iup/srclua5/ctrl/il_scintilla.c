@@ -111,6 +111,8 @@ int iupscintillalua_open(lua_State * L)
 }
 
  
+int iupscintilladlglua_open(lua_State * L);
+
 int iup_scintillalua_open(lua_State* L)
 {
   if (iuplua_opencall_internal(L))
@@ -118,6 +120,7 @@ int iup_scintillalua_open(lua_State* L)
     
   iuplua_get_env(L);
   iupscintillalua_open(L);
+  iupscintilladlglua_open(L);
   return 0;
 }
 

@@ -2465,6 +2465,9 @@ static int iLayoutContextMenuRemove_CB(Ihandle* menu)
 
     iLayoutUpdateLayout(layoutdlg);
   }
+
+  IupDestroy(msg_dlg);
+
   return IUP_DEFAULT;
 }
 

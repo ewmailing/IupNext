@@ -44,6 +44,7 @@
 
 #include "iupsci.h"
 
+
 #ifndef GTK
 #define WM_IUPCARET WM_APP+1   /* Custom IUP message */
 #endif
@@ -76,13 +77,13 @@ void iupScintillaDecodeColor(long color, unsigned char *r, unsigned char *g, uns
 
 void iupScintillaConvertLinColToPos(Ihandle* ih, int lin, int col, int *pos)
 {
-  *pos = IupScintillaSendMessage(ih, SCI_POSITIONFROMLINE, lin, 0);
+  *pos = (int)IupScintillaSendMessage(ih, SCI_POSITIONFROMLINE, lin, 0);
     
   if(*pos != -1)
   {
     /* length of the line not including any end of line characters */
-    int line_length = IupScintillaSendMessage(ih, SCI_GETLINEENDPOSITION, lin, 0) - 
-                      IupScintillaSendMessage(ih, SCI_POSITIONFROMLINE, lin, 0);
+    int line_length = (int)IupScintillaSendMessage(ih, SCI_GETLINEENDPOSITION, lin, 0) -
+                      (int)IupScintillaSendMessage(ih, SCI_POSITIONFROMLINE, lin, 0);
 
     if (col <= line_length)
       *pos += col;
@@ -92,20 +93,20 @@ void iupScintillaConvertLinColToPos(Ihandle* ih, int lin, int col, int *pos)
   else
   {
     /* "lin" is greater than the lines in the document */
-    lin = IupScintillaSendMessage(ih, SCI_GETLINECOUNT, 0, 0);
-    *pos = IupScintillaSendMessage(ih, SCI_POSITIONFROMLINE, lin, 0);
+    lin = (int)IupScintillaSendMessage(ih, SCI_GETLINECOUNT, 0, 0);
+    *pos = (int)IupScintillaSendMessage(ih, SCI_POSITIONFROMLINE, lin, 0);
   }
 }
 
 void iupScintillaConvertPosToLinCol(Ihandle* ih, int pos, int *lin, int *col)
 {
-  *lin = IupScintillaSendMessage(ih, SCI_LINEFROMPOSITION, pos, 0);
-  *col = IupScintillaSendMessage(ih, SCI_GETCOLUMN, pos, 0);
+  *lin = (int)IupScintillaSendMessage(ih, SCI_LINEFROMPOSITION, pos, 0);
+  *col = (int)IupScintillaSendMessage(ih, SCI_GETCOLUMN, pos, 0);
 }
 
 static int iScintillaConvertXYToPos(Ihandle* ih, int x, int y)
 {
-  return IupScintillaSendMessage(ih, SCI_POSITIONFROMPOINT, x, y);
+  return (int)IupScintillaSendMessage(ih, SCI_POSITIONFROMPOINT, x, y);
 }
 
 
@@ -140,10 +141,10 @@ static void iScintillaKeySetStatus(int state, char* status, int doubleclick)
     iupKEY_SETDOUBLE(status);
 }
 
-static void iScintillaNotify(Ihandle *ih, struct Scintilla::SCNotification* pMsg)
+static void iScintillaNotify(Ihandle *ih, SCNotification* pMsg)
 {
-  int lin = IupScintillaSendMessage(ih, SCI_LINEFROMPOSITION, pMsg->position, 0);
-  int col = IupScintillaSendMessage(ih, SCI_GETCOLUMN, pMsg->position, 0);
+  int lin = (int)IupScintillaSendMessage(ih, SCI_LINEFROMPOSITION, pMsg->position, 0);
+  int col = (int)IupScintillaSendMessage(ih, SCI_GETCOLUMN, pMsg->position, 0);
 
   switch(pMsg->nmhdr.code)
   {
@@ -186,7 +187,7 @@ static void iScintillaNotify(Ihandle *ih, struct Scintilla::SCNotification* pMsg
       IFni cb = (IFni)IupGetCallback(ih, "ZOOM_CB");
       if (cb)
       {
-        int points = IupScintillaSendMessage(ih, SCI_GETZOOM, 0, 0);
+        int points = (int)IupScintillaSendMessage(ih, SCI_GETZOOM, 0, 0);
         cb(ih, points);
       }
 
@@ -270,7 +271,7 @@ static void iScintillaCallCaretCb(Ihandle* ih)
   if (!cb)
     return;
 
-  pos = IupScintillaSendMessage(ih, SCI_GETCURRENTPOS, 0, 0);
+  pos = (int)IupScintillaSendMessage(ih, SCI_GETCURRENTPOS, 0, 0);
 
   if (pos != ih->data->last_caret_pos)
   {
@@ -312,7 +313,7 @@ static gboolean gtkScintillaButtonEvent(GtkWidget *widget, GdkEventButton *evt, 
 
 static int winScintillaWmNotify(Ihandle* ih, NMHDR* msg_info, int *result)
 {
-  struct Scintilla::SCNotification *pMsg = (struct Scintilla::SCNotification*)msg_info;
+  SCNotification *pMsg = (SCNotification*)msg_info;
 
   iScintillaNotify(ih, pMsg);
 
@@ -626,11 +627,14 @@ static Iclass* iupScintillaNewClass(void)
   return ic;
 }
 
+Iclass* iupScintillaDlgNewClass(void);
+
 void IupScintillaOpen(void)
 {
   if (!IupGetGlobal("_IUP_SCINTILLA_OPEN"))
   {
     iupRegisterClass(iupScintillaNewClass());
+    iupRegisterClass(iupScintillaDlgNewClass());
     IupSetGlobal("_IUP_SCINTILLA_OPEN", "1");
 
 #ifndef GTK

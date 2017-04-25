@@ -163,6 +163,9 @@ EndProject
 Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "simple_paint", "..\html\examples\tutorial\simple_paint2\simple_paint.vcxproj", "{C0E4757A-8A78-48C1-B507-E2A95AA18B25}"
 EndProject
 Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "scintilla_notepad", "..\html\examples\tutorial\scintilla_notepad\scintilla_notepad.vcxproj", "{E1563874-0732-46F5-BC4F-F373CF0652BA}"
+	ProjectSection(ProjectDependencies) = postProject
+		{22AD4898-1301-4EE3-A505-1F17F12638B2} = {22AD4898-1301-4EE3-A505-1F17F12638B2}
+	EndProjectSection
 EndProject
 Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "iupluascripter", "iuplua\iupluascripter.vcxproj", "{4094BDD7-82B1-4754-A86B-C7D893F8CEE3}"
 EndProject
