@@ -1981,6 +1981,8 @@ Iclass* iupMatrixNewClass(void)
   iupClassRegisterAttributeId2(ic, "FONTSIZE", iMatrixGetFontSizeAttrib, iMatrixSetFontSizeAttrib, IUPAF_NOT_MAPPED);
   iupClassRegisterAttributeId2(ic, "FRAMEHORIZCOLOR", NULL, iMatrixSetFrameHorizColorAttrib, IUPAF_NOT_MAPPED);
   iupClassRegisterAttributeId2(ic, "FRAMEVERTCOLOR", NULL, iMatrixSetFrameVertColorAttrib, IUPAF_NOT_MAPPED);
+  iupClassRegisterAttributeId2(ic, "FRAMETITLEHORIZCOLOR", NULL, iMatrixSetFrameHorizColorAttrib, IUPAF_NOT_MAPPED);
+  iupClassRegisterAttributeId2(ic, "FRAMETITLEVERTCOLOR", NULL, iMatrixSetFrameVertColorAttrib, IUPAF_NOT_MAPPED);
   iupClassRegisterAttribute(ic, "FRAMECOLOR", NULL, (IattribSetFunc)iMatrixSetNeedRedraw, IUPAF_SAMEASSYSTEM, "100 100 100", IUPAF_NO_INHERIT);
   iupClassRegisterAttribute(ic, "FRAMETITLEHIGHLIGHT", NULL, (IattribSetFunc)iMatrixSetNeedRedraw, IUPAF_SAMEASSYSTEM, "Yes", IUPAF_NO_INHERIT);
   iupClassRegisterAttribute(ic, "FRAMEBORDER", NULL, (IattribSetFunc)iMatrixSetNeedRedraw, NULL, NULL, IUPAF_NO_INHERIT);

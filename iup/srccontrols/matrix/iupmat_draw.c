@@ -313,15 +313,22 @@ static unsigned long iMatrixDrawSetTypeColor(Ihandle* ih, const char* color, int
   return cdCanvasForeground(ih->data->cd_canvas, cdEncodeColor(r, g, b));
 }
 
-static int iMatrixDrawGetFrameHorizColor(Ihandle* ih, int lin, int col, long *framecolor)
+static int iMatrixDrawGetFrameHorizColor(Ihandle* ih, int lin, int col, long *framecolor, int title)
 {
   if (ih->data->checkframecolor && (ih->data->callback_mode || 
                                     ih->data->cells[lin][col].flags & IMAT_HAS_FRAMEHORIZCOLOR ||
                                     ih->data->lines.dt[lin].flags & IMAT_HAS_FRAMEHORIZCOLOR))
   {
-    char* color;
+    char* color = NULL;
     unsigned char r,g,b;
-    color = iupAttribGetId2(ih, "FRAMEHORIZCOLOR", lin, col);
+    if (title)
+    {
+      color = iupAttribGetId2(ih, "FRAMETITLEHORIZCOLOR", lin, col);
+      if (!color)
+        color = iupAttribGetId2(ih, "FRAMETITLEHORIZCOLOR", lin, IUP_INVALID_ID);
+    }
+    if (!color)
+      color = iupAttribGetId2(ih, "FRAMEHORIZCOLOR", lin, col);
     if (!color)
       color = iupAttribGetId2(ih, "FRAMEHORIZCOLOR", lin, IUP_INVALID_ID);
     if (iupStrEqual(color, "BGCOLOR"))
@@ -333,15 +340,22 @@ static int iMatrixDrawGetFrameHorizColor(Ihandle* ih, int lin, int col, long *fr
   return 0;
 }
 
-static int iMatrixDrawGetFrameVertColor(Ihandle* ih, int lin, int col, long *framecolor)
+static int iMatrixDrawGetFrameVertColor(Ihandle* ih, int lin, int col, long *framecolor, int title)
 {
   if (ih->data->checkframecolor && (ih->data->callback_mode || 
                                     ih->data->cells[lin][col].flags & IMAT_HAS_FRAMEVERTCOLOR ||
                                     ih->data->columns.dt[col].flags & IMAT_HAS_FRAMEVERTCOLOR))
   {
-    char* color;
+    char* color = NULL;
     unsigned char r,g,b;
-    color = iupAttribGetId2(ih, "FRAMEVERTCOLOR", lin, col);
+    if (title)
+    {
+      color = iupAttribGetId2(ih, "FRAMETITLEVERTCOLOR", lin, col);
+      if (!color)
+        color = iupAttribGetId2(ih, "FRAMETITLEVERTCOLOR", IUP_INVALID_ID, col);
+    }
+    if (!color)
+      color = iupAttribGetId2(ih, "FRAMEVERTCOLOR", lin, col);
     if (!color)
       color = iupAttribGetId2(ih, "FRAMEVERTCOLOR", IUP_INVALID_ID, col);
     if (iupStrEqual(color, "BGCOLOR"))
@@ -357,7 +371,7 @@ static int iMatrixDrawFrameVertLineHighlight(Ihandle* ih, int lin, int col, int 
 {
   if (col > 0)
   {
-    int transp = iMatrixDrawGetFrameVertColor(ih, lin, col-1, &framecolor);
+    int transp = iMatrixDrawGetFrameVertColor(ih, lin, col - 1, &framecolor, 0); /* framecolor is ignored here */
     if (transp)
       return 1;
   }
@@ -368,11 +382,11 @@ static int iMatrixDrawFrameVertLineHighlight(Ihandle* ih, int lin, int col, int 
   return 0;
 }
 
-static int iMatrixDrawFrameHorizLineHighlight(Ihandle* ih, int lin, int col, int x1, int x2, int y, long framecolor)
+static int iMatrixDrawFrameHorizLineTitleHighlight(Ihandle* ih, int lin, int col, int x1, int x2, int y, long framecolor)
 {
   if (lin > 0)
   {
-    int transp = iMatrixDrawGetFrameHorizColor(ih, lin-1, col, &framecolor);
+    int transp = iMatrixDrawGetFrameHorizColor(ih, lin - 1, col, &framecolor, 0); /* framecolor is ignored here */
     if (transp)
       return 1;
   }
@@ -385,23 +399,45 @@ static int iMatrixDrawFrameHorizLineHighlight(Ihandle* ih, int lin, int col, int
 
 static int iMatrixDrawFrameHorizLineCell(Ihandle* ih, int lin, int col, int x1, int x2, int y, long framecolor)
 {
-  int transp = iMatrixDrawGetFrameHorizColor(ih, lin, col, &framecolor);
+  int transp = iMatrixDrawGetFrameHorizColor(ih, lin, col, &framecolor, 0);
   if (transp)
     return 1;
 
   cdCanvasForeground(ih->data->cd_canvas, framecolor);
-  iupMATRIX_LINE(ih, x1, y, x2, y);   /* bottom horizontal line */
+  iupMATRIX_LINE(ih, x1, y, x2, y);   /* horizontal line */
+  return 0;
+}
+
+static int iMatrixDrawFrameHorizLineTitle(Ihandle* ih, int lin, int col, int x1, int x2, int y, long framecolor)
+{
+  int transp = iMatrixDrawGetFrameHorizColor(ih, lin, col, &framecolor, 1);
+  if (transp)
+    return 1;
+
+  cdCanvasForeground(ih->data->cd_canvas, framecolor);
+  iupMATRIX_LINE(ih, x1, y, x2, y);   /* horizontal line */
+  return 0;
+}
+
+static int iMatrixDrawFrameVertLineTitle(Ihandle* ih, int lin, int col, int x, int y1, int y2, long framecolor)
+{
+  int transp = iMatrixDrawGetFrameVertColor(ih, lin, col, &framecolor, 1);
+  if (transp)
+    return 1;
+
+  cdCanvasForeground(ih->data->cd_canvas, framecolor);
+  iupMATRIX_LINE(ih, x, y1, x, y2);    /* vertical line */
   return 0;
 }
 
 static int iMatrixDrawFrameVertLineCell(Ihandle* ih, int lin, int col, int x, int y1, int y2, long framecolor)
 {
-  int transp = iMatrixDrawGetFrameVertColor(ih, lin, col, &framecolor);
+  int transp = iMatrixDrawGetFrameVertColor(ih, lin, col, &framecolor, 0);
   if (transp)
     return 1;
 
   cdCanvasForeground(ih->data->cd_canvas, framecolor);
-  iupMATRIX_LINE(ih, x, y1, x, y2);    /* right vertical line */
+  iupMATRIX_LINE(ih, x, y1, x, y2);    /* vertical line */
   return 0;
 }
 
@@ -420,7 +456,7 @@ static void iMatrixDrawFrameRectTitle(Ihandle* ih, int lin, int col, int x1, int
   if (col==0)
   {
     /* left vertical line */
-    iMatrixDrawFrameVertLineCell(ih, lin, col, x1, y1, y2, framecolor);  
+    iMatrixDrawFrameVertLineTitle(ih, lin, col, x1, y1, y2, framecolor);  
     x1++;
   }
   else if (col==1 && ih->data->columns.dt[0].size == 0)
@@ -443,7 +479,7 @@ static void iMatrixDrawFrameRectTitle(Ihandle* ih, int lin, int col, int x1, int
   if (lin==0)
   {
     /* top horizontal line */
-    iMatrixDrawFrameHorizLineCell(ih, lin, col, x1, x2, y1, framecolor);  
+    iMatrixDrawFrameHorizLineTitle(ih, lin, col, x1, x2, y1, framecolor);  
     y1++;
   }
   else if (lin==1 && ih->data->lines.dt[0].size == 0)
@@ -455,7 +491,7 @@ static void iMatrixDrawFrameRectTitle(Ihandle* ih, int lin, int col, int x1, int
 
   /* Titles have a bright horizontal line near the frame, at top */
   if (framehighlight)
-    iMatrixDrawFrameHorizLineHighlight(ih, lin, col, x1, x2-1, y1, framecolor);
+    iMatrixDrawFrameHorizLineTitleHighlight(ih, lin, col, x1, x2-1, y1, framecolor);
 }
 
 static void iMatrixDrawFrameRectCell(Ihandle* ih, int lin, int col, int x1, int x2, int y1, int y2, long framecolor)
