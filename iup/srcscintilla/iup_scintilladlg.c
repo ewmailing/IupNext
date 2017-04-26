@@ -2194,6 +2194,7 @@ Ihandle *IupScintillaDlg(void)
 }
 
 /* TO DO:
+- Printing
 - multi-language (portuguese)
 - multiple files (IupFlatTabs)
 */
