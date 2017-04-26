@@ -984,6 +984,10 @@ wb_usr.tree =
               name= {nl= "IupProgressDlg"},
               link= "dlg/iupprogressdlg.html"
             },
+            {
+              name= {nl= "IupScintillaDlg"},
+              link= "dlg/iupscintilladlg.html"
+            },
             { link= "", name= {en= "" } },
             {
               name= {nl= "IupAlarm"},

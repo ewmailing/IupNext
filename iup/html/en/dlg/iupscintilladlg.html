@@ -1,0 +1,168 @@
+﻿<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.0 Strict//EN">
+<html>
+<head>
+<meta http-equiv="Content-Language" content="en-us">
+<title>IupProgressDlg</title>
+<link rel="stylesheet" type="text/css" href="../../style.css">
+<style type="text/css">
+.style1 {
+	border-width: 0;
+}
+</style>
+</head>
+<body>
+<div id="navigation">
+  <ul>
+    <li><a href="#Creation">Creation</a></li>
+    <li><a href="#Attributes">Attributes</a></li>
+    <li><a href="#Callbacks">Callbacks</a></li>
+    <li><a href="#Notes">Notes</a></li>
+    <li><a href="#Examples">Examples</a></li>
+    <li><a href="#SeeAlso">See Also</a></li>
+  </ul>
+</div>
+
+<h2>IupScintillaDlg<font size="4"> (since 3.22)</font></h2>
+<p>Creates a notepad dialog using the <a href="../ctrl/iup_scintilla.html">
+IupScintilla</a> control. It is a predefined dialog for 
+  a text notepad. The dialog can be shown with <strong>IupShow</strong>, <strong>IupShowXY</strong> 
+or <strong>IupPopup</strong>.</p>
+<h3><a name="Creation">Creation</a></h3>
+<pre>Ihandle* IupScintillaDlg(void); [in C]
+iup.scintilladlg{} -&gt; (<strong>elem</strong>: ihandle) [in Lua]
+scintilladlg() [in LED]</pre>
+<p><u>Returns:</u> the identifier of the 
+  created element, or NULL if an error occurs.</p>
+
+<h3><a name="Attributes">Attributes</a></h3>
+<p>Supports all the <a href="iupdialog.html#Attributes">IupDialog</a> attributes. 
+But some attributes where changed to configure the dialog and the dialog has 
+innumerous children to compose the notepad.</p>
+<hr>
+<p>New attributes. All non inheritable.</p>
+<p><strong>SUBTITLE</strong>: partial title to be used in dialog title along 
+with the current file name title.</p>
+<p><strong>CONFIG</strong>: name of a <a href="../func/iupconfig.html">IupConfig</a> resource to 
+be used for persistency of menu options and recent file list. Must be set before 
+map.</p>
+<p><strong>CONFIG_HANDLE</strong>: Ihandle of the IupConfig resource.</p>
+<p><strong>NEWFILE</strong> (write-only): clear the text contents and initialize 
+a new file.</p>
+<p><strong>OPENFILE</strong> (write-only): opens a file using the value as 
+filename.</p>
+<h3><a name="Callbacks">Callbacks</a></h3>
+<p>Supports all the <a href="iupdialog.html#Callbacks">IupDialog</a> callbacks.</p>
+
+
+<hr>
+
+<!--
+<p>New callbacks.</p>
+<p><strong>CANCEL_CB</strong>:
+  Action generated when the user clicked on the Cancel button.</p>
+
+  
+    
+<pre>int function(Ihandle*<strong> ih</strong>); [in C]<br><strong>elem</strong>:cancel_cb() -&gt; (<strong>ret</strong>: number) [in Lua]</pre>
+
+    
+<p class="info"><strong>ih</strong>:
+  identifier of the element that activated the 
+  event.</p>
+
+<p class="info"><u>Returns</u>: if different from IUP_CONTINUE then STATE will 
+be changed to ABORTED, same behavior as if the callback does not exist. The 
+returned value will also be returned in the "Cancel" button callback (since 
+3.21).</p>
+-->
+  
+<h3><a name="Notes">Notes</a></h3>
+<p>The dialog can be freely customized to incorporate other menu items or 
+controls. </p>
+<p>The dialog explores many <strong>IupScintilla</strong> features and made them 
+available through the menus. The screenshots bellow illustrates some of them.</p>
+<h3><a name="Examples">Examples</a></h3>
+<pre>static int item_help_action_cb(void)
+{
+  IupHelp("http://www.tecgraf.puc-rio.br/iup");
+  return IUP_DEFAULT;
+}
+
+static int item_about_action_cb(void)
+{
+  IupMessage("About", "   Scintilla Notepad\n\nAutors:\n   Camilo Freire\n   Antonio Scuri");
+  return IUP_DEFAULT;
+}
+
+int main(int argc, char **argv)
+{
+  Ihandle *main_dialog;
+  Ihandle *config;
+  Ihandle *menu;
+
+  IupOpen(&argc, &argv);
+  IupImageLibOpen();
+
+  IupScintillaOpen();
+
+  config = IupConfig();
+  IupSetAttribute(config, "APP_NAME", "scintilla_notepad");
+  IupConfigLoad(config);
+
+  main_dialog = IupScintillaDlg();
+
+  IupSetAttributeHandle(main_dialog, "CONFIG", config);
+  IupSetAttribute(main_dialog, "SUBTITLE", "Scintilla Notepad");
+
+  menu = IupGetAttributeHandle(main_dialog, "MENU");
+  IupAppend(menu, IupSubmenu("&Help", IupMenu(
+    IupSetCallbacks(IupItem("&Help...", NULL), "ACTION", (Icallback)item_help_action_cb, NULL),
+    IupSetCallbacks(IupItem("&About...", NULL), "ACTION", (Icallback)item_about_action_cb, NULL),
+    NULL)));
+
+  /* show the dialog at the last position, with the last size */
+  IupConfigDialogShow(config, main_dialog, "MainWindow");
+
+  /* initialize the current file */
+  IupSetAttribute(main_dialog, "NEWFILE", NULL);
+
+  /* open a file from the command line (allow file association in Windows) */
+  if (argc > 1 && argv[1])
+  {
+    const char* filename = argv[1];
+    IupSetStrAttribute(main_dialog, "OPENFILE", filename);
+  }
+
+  IupMainLoop();
+
+  IupClose();
+  return EXIT_SUCCESS;
+}
+</pre>
+<div align="center">
+  <center>
+  <table border="0" cellpadding="5" cellspacing="0" style="border-collapse: collapse" bordercolor="#111111" id="AutoNumber1">
+    <tr>
+      <td  align="center" class="style1"><img border="0" src="images/scintilladlg.png"><br>
+	  View menu and dialog overview<br></td>
+    </tr>
+    <tr>
+      <td  align="center" class="style1"><img border="0" src="images/scintilladlg1.png"><br>
+	  Edit menu<br></td>
+    </tr>
+    <tr>
+      <td  align="center" class="style1"><img border="0" src="images/scintilladlg2.png"><br>
+	  Blank Operations</td>
+    </tr>
+  </table>
+  </center>
+</div>
+<h3><a name="SeeAlso">See Also</a></h3>
+<p>
+<a href="../ctrl/iup_scintilla.html">
+IupScintilla</a>,
+<a href="iupdialog.html">IupDialog</a></p>
+
+</body>
+
+</html>
