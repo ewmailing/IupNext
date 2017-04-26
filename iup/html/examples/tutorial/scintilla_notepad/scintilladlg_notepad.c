@@ -6,10 +6,23 @@
 #include <iup_config.h>
 
 
+static int item_help_action_cb(void)
+{
+  IupHelp("http://www.tecgraf.puc-rio.br/iup");
+  return IUP_DEFAULT;
+}
+
+static int item_about_action_cb(void)
+{
+  IupMessage("About", "   Scintilla Notepad\n\nAutors:\n   Camilo Freire\n   Antonio Scuri");
+  return IUP_DEFAULT;
+}
+
 int main(int argc, char **argv)
 {
   Ihandle *main_dialog;
   Ihandle *config;
+  Ihandle *menu;
 
   IupOpen(&argc, &argv);
   IupImageLibOpen();
@@ -24,6 +37,12 @@ int main(int argc, char **argv)
 
   IupSetAttributeHandle(main_dialog, "CONFIG", config);
   IupSetAttribute(main_dialog, "SUBTITLE", "Scintilla Notepad");
+
+  menu = IupGetAttributeHandle(main_dialog, "MENU");
+  IupAppend(menu, IupSubmenu("&Help", IupMenu(
+    IupSetCallbacks(IupItem("&Help...", NULL), "ACTION", (Icallback)item_help_action_cb, NULL),
+    IupSetCallbacks(IupItem("&About...", NULL), "ACTION", (Icallback)item_about_action_cb, NULL),
+    NULL)));
 
   /* show the dialog at the last position, with the last size */
   IupConfigDialogShow(config, main_dialog, "MainWindow");

@@ -436,14 +436,14 @@ static void update_title(Ihandle* ih, const char* filename, int is_dirty)
 
 static void new_file(Ihandle* ih_item)
 {
-  Ihandle* dlg = IupGetDialog(ih_item);
-  Ihandle* multitext = IupGetDialogChild(dlg, "MULTITEXT");
+  Ihandle* ih = IupGetDialog(ih_item);
+  Ihandle* multitext = IupGetDialogChild(ih, "MULTITEXT");
 
   IupSetAttribute(multitext, "FILENAME", NULL);
   IupSetAttribute(multitext, "DIRTY", "NO");
   IupSetAttribute(multitext, "VALUE", "");
 
-  update_title(dlg, NULL, 0);
+  update_title(ih, NULL, 0);
 }
 
 static void open_file(Ihandle* ih_item, const char* filename)
@@ -451,15 +451,15 @@ static void open_file(Ihandle* ih_item, const char* filename)
   char* str = read_file(filename);
   if (str)
   {
-    Ihandle* dlg = IupGetDialog(ih_item);
-    Ihandle* multitext = IupGetDialogChild(dlg, "MULTITEXT");
+    Ihandle* ih = IupGetDialog(ih_item);
+    Ihandle* multitext = IupGetDialogChild(ih, "MULTITEXT");
     Ihandle* config = IupGetAttributeHandle(multitext, "CONFIG");
 
     IupSetStrAttribute(multitext, "FILENAME", filename);
     IupSetAttribute(multitext, "DIRTY", "NO");
     IupSetStrAttribute(multitext, "VALUE", str);
 
-    update_title(dlg, filename, 0);
+    update_title(ih, filename, 0);
 
     if (config)
       IupConfigRecentUpdate(config, filename);
@@ -790,15 +790,15 @@ static int item_revert_action_cb(Ihandle* item_revert)
 
 static int item_exit_action_cb(Ihandle* item_exit)
 {
-  Ihandle* dlg = IupGetDialog(item_exit);
-  Ihandle* config = IupGetAttributeHandle(dlg, "CONFIG");
+  Ihandle* ih = IupGetDialog(item_exit);
+  Ihandle* config = IupGetAttributeHandle(ih, "CONFIG");
 
   if (!save_check(item_exit))
     return IUP_IGNORE;  /* to abort the CLOSE_CB callback */
 
   if (config)
   {
-    IupConfigDialogClosed(config, dlg, "MainWindow");
+    IupConfigDialogClosed(config, ih, "MainWindow");
     IupConfigSave(config);
     IupDestroy(config);
   }
@@ -1147,90 +1147,85 @@ static int find_next_action_cb(Ihandle* ih_item)
     Ihandle* txt = IupGetDialogChild(find_dlg, "FIND_TEXT");
     char* str_to_find = IupGetAttribute(txt, "VALUE");
 
-    Ihandle* wrapHnd = IupGetDialogChild(find_dlg, "WRAP");
-    int wrap = IupGetInt(wrapHnd, "VALUE");
-
-    Ihandle* downHnd = IupGetDialogChild(find_dlg, "DOWN");
-    int down = IupGetInt(downHnd, "VALUE");
-
-    Ihandle* findHnd = IupGetDialogChild(find_dlg, "FIND_CASE");
-    int casesensitive = IupGetInt(findHnd, "VALUE");
-    Ihandle* wholeHnd = IupGetDialogChild(find_dlg, "WHOLE_WORD");
-    int whole_word = IupGetInt(wholeHnd, "VALUE");
-    Ihandle* wordHnd = IupGetDialogChild(find_dlg, "WORD_START");
-    int word_start = IupGetInt(wordHnd, "VALUE");
-    Ihandle* regexpHnd = IupGetDialogChild(find_dlg, "REGEXP");
-    int regexp = IupGetInt(regexpHnd, "VALUE");
-    Ihandle* posixHnd = IupGetDialogChild(find_dlg, "POSIX");
-    int posix = IupGetInt(posixHnd, "VALUE");
-
-    char flags[80];
-    flags[0] = 0;
-    IupSetAttribute(multitext, "SEARCHFLAGS", NULL);
-    if (casesensitive)
-      strcpy(flags, "MATCHCASE");
-    if (whole_word)
-      strcat((flags[0] != 0 ? strcat(flags, " | ") : flags), "WHOLEWORD");
-    if (word_start)
-      strcat((flags[0] != 0 ? strcat(flags, " | ") : flags), "WORDSTART");
-    if (regexp)
-      strcat((flags[0] != 0 ? strcat(flags, " | ") : flags), "REGEXP");
-    if (posix)
-      strcat((flags[0] != 0 ? strcat(flags, " | ") : flags), "POSIX");
-
-    if (flags[0] != 0)
-      IupSetAttribute(multitext, "SEARCHFLAGS", flags);
-
     /* test again, because it can be called from the hot key */
-    if (!str_to_find || str_to_find[0] == 0)
-      return IUP_DEFAULT;
-
-    char *sel;
-    int find_pos = IupGetInt(multitext, "CARETPOS");
-    sel = IupGetAttribute(multitext, "SELECTIONPOS");
-
-    if (!down && sel)
+    if (str_to_find && str_to_find[0] != 0)
     {
-      int st, ed;
-      IupGetIntInt(multitext, "SELECTIONPOS", &st, &ed);
-      find_pos = st;
-    }
+      int wrap = IupGetInt(IupGetDialogChild(find_dlg, "WRAP"), "VALUE");
+      int down = IupGetInt(IupGetDialogChild(find_dlg, "DOWN"), "VALUE");
+      int casesensitive = IupGetInt(IupGetDialogChild(find_dlg, "FIND_CASE"), "VALUE");
+      int whole_word = IupGetInt(IupGetDialogChild(find_dlg, "WHOLE_WORD"), "VALUE");
+      int word_start = IupGetInt(IupGetDialogChild(find_dlg, "WORD_START"), "VALUE");
+      int regexp = IupGetInt(IupGetDialogChild(find_dlg, "REGEXP"), "VALUE");
+      int posix = IupGetInt(IupGetDialogChild(find_dlg, "POSIX"), "VALUE");
 
-    IupSetInt(multitext, "TARGETSTART", find_pos);
-    IupSetInt(multitext, "TARGETEND", down ? IupGetInt(multitext, "COUNT") - 1 : 1);
+      char *sel;
+      char flags[80];
+      int find_pos;
 
-    IupSetAttribute(multitext, "SEARCHINTARGET", str_to_find);
+      flags[0] = 0;
+      IupSetAttribute(multitext, "SEARCHFLAGS", NULL);
+      if (casesensitive)
+        strcpy(flags, "MATCHCASE");
+      if (whole_word)
+        strcat((flags[0] != 0 ? strcat(flags, " | ") : flags), "WHOLEWORD");
+      if (word_start)
+        strcat((flags[0] != 0 ? strcat(flags, " | ") : flags), "WORDSTART");
+      if (regexp)
+        strcat((flags[0] != 0 ? strcat(flags, " | ") : flags), "REGEXP");
+      if (posix)
+        strcat((flags[0] != 0 ? strcat(flags, " | ") : flags), "POSIX");
 
-    pos = IupGetInt(multitext, "TARGETSTART");
+      if (flags[0] != 0)
+        IupSetAttribute(multitext, "SEARCHFLAGS", flags);
 
-    if (pos == find_pos && wrap)
-    {
-      IupSetInt(multitext, "TARGETSTART", down ? 1 : IupGetInt(multitext, "COUNT") - 1);
-      IupSetInt(multitext, "TARGETEND", find_pos);
+      find_pos = IupGetInt(multitext, "CARETPOS");
+      sel = IupGetAttribute(multitext, "SELECTIONPOS");
+
+      if (!down && sel)
+      {
+        int st, ed;
+        IupGetIntInt(multitext, "SELECTIONPOS", &st, &ed);
+        find_pos = st;
+      }
+
+      IupSetInt(multitext, "TARGETSTART", find_pos);
+      IupSetInt(multitext, "TARGETEND", down ? IupGetInt(multitext, "COUNT") - 1 : 1);
 
       IupSetAttribute(multitext, "SEARCHINTARGET", str_to_find);
 
       pos = IupGetInt(multitext, "TARGETSTART");
+
+      if (pos == find_pos && wrap)
+      {
+        /* if not found and wrap search again in the complementary region */
+        IupSetInt(multitext, "TARGETSTART", down ? 1 : IupGetInt(multitext, "COUNT") - 1);
+        IupSetInt(multitext, "TARGETEND", find_pos);
+
+        IupSetAttribute(multitext, "SEARCHINTARGET", str_to_find);
+
+        pos = IupGetInt(multitext, "TARGETSTART");
+      }
+
+      if (pos != find_pos)
+      {
+        int lin, col;
+
+        int end_pos = IupGetInt(multitext, "TARGETEND");
+
+        IupSetFocus(multitext);
+        IupSetfAttribute(multitext, "SELECTIONPOS", "%d:%d", pos, end_pos);
+
+        /* update statusbar */
+        IupTextConvertPosToLinCol(multitext, end_pos, &lin, &col);
+        multitext_caret_cb(multitext, lin, col);
+      }
+      else
+      {
+        /* update statusbar */
+        Ihandle *lbl_statusbar = IupGetDialogChild(multitext, "STATUSBAR");
+        IupSetfAttribute(lbl_statusbar, "TITLE", "Text \"%s\" not found.", str_to_find);
+      }
     }
-
-    if (pos != find_pos)
-    {
-      int lin, col, end_pos, start_pos;
-
-      start_pos = IupGetInt(multitext, "TARGETSTART");
-      end_pos = IupGetInt(multitext, "TARGETEND");
-
-      IupSetFocus(multitext);
-      IupSetfAttribute(multitext, "SELECTIONPOS", "%d:%d", pos, end_pos);
-
-      //IupSetInt(multitext, "TARGETSTART", down ? end_pos : start_pos);
-      //IupSetInt(multitext, "TARGETEND", down ? IupGetInt(multitext, "COUNT") - 1 : end_pos);
-
-      IupTextConvertPosToLinCol(multitext, end_pos, &lin, &col);
-      multitext_caret_cb(multitext, lin, col);
-    }
-    else
-      IupMessage("Warning", "Text not found.");
   }
 
   return IUP_DEFAULT;
@@ -1707,17 +1702,6 @@ static int item_bookmark_action_cb(Ihandle* item_bookmark)
   return IUP_DEFAULT;
 }
 
-static int item_help_action_cb(void)
-{
-  IupHelp("http://www.tecgraf.puc-rio.br/iup");
-  return IUP_DEFAULT;
-}
-
-static int item_about_action_cb(void)
-{
-  IupMessage("About", "   Scintilla Notepad\n\nAutors:\n   Camilo Freire\n   Antonio Scuri");
-  return IUP_DEFAULT;
-}
 
 
 /********************************** Attributes *****************************************/
@@ -1784,7 +1768,6 @@ static int iScintillaDlgCreateMethod(Ihandle* ih, void** params)
   Ihandle *case_menu, *item_uppercase, *item_lowercase;
   Ihandle *btn_cut, *btn_copy, *btn_paste, *btn_find, *btn_new, *btn_open, *btn_save;
   Ihandle *sub_menu_format, *format_menu, *item_font, *item_tab, *item_replace;
-  Ihandle *sub_menu_help, *help_menu, *item_help, *item_about;
   Ihandle *sub_menu_view, *view_menu, *item_toolbar, *item_statusbar, *item_linenumber, *item_bookmark;
   Ihandle *zoom_menu, *item_zoomin, *item_zoomout, *item_restorezoom;
   Ihandle *lbl_statusbar, *toolbar_hb, *recent_menu;
@@ -2004,7 +1987,7 @@ static int iScintillaDlgCreateMethod(Ihandle* ih, void** params)
   IupSetCallback(item_showwhite, "ACTION", (Icallback)item_showwhite_action_cb);
   IupSetAttribute(item_showwhite, "AUTOTOGGLE", "YES");
 
-  item_toolbar = IupItem("&Toobar", NULL);
+  item_toolbar = IupItem("&Toolbar", NULL);
   IupSetCallback(item_toolbar, "ACTION", (Icallback)item_toolbar_action_cb);
   IupSetAttribute(item_toolbar, "VALUE", "ON");
 
@@ -2025,12 +2008,6 @@ static int iScintillaDlgCreateMethod(Ihandle* ih, void** params)
 
   item_tab = IupItem("Tab...", NULL);
   IupSetCallback(item_tab, "ACTION", (Icallback)item_tab_action_cb);
-
-  item_help = IupItem("&Help...", NULL);
-  IupSetCallback(item_help, "ACTION", (Icallback)item_help_action_cb);
-
-  item_about = IupItem("&About...", NULL);
-  IupSetCallback(item_about, "ACTION", (Icallback)item_about_action_cb);
 
   recent_menu = IupMenu(NULL);
   iupAttribSet(ih, "_IUP_RECENTMENU", (char*)recent_menu);
@@ -2107,10 +2084,6 @@ static int iScintillaDlgCreateMethod(Ihandle* ih, void** params)
     item_linenumber,
     item_bookmark,
     NULL);
-  help_menu = IupMenu(
-    item_help,
-    item_about,
-    NULL);
 
   IupSetCallback(file_menu, "OPEN_CB", (Icallback)file_menu_open_cb);
   IupSetCallback(edit_menu, "OPEN_CB", (Icallback)edit_menu_open_cb);
@@ -2119,14 +2092,12 @@ static int iScintillaDlgCreateMethod(Ihandle* ih, void** params)
   sub_menu_edit = IupSubmenu("&Edit", edit_menu);
   sub_menu_format = IupSubmenu("F&ormat", format_menu);
   sub_menu_view = IupSubmenu("&View", view_menu);
-  sub_menu_help = IupSubmenu("&Help", help_menu);
 
   menu = IupMenu(
     sub_menu_file,
     sub_menu_edit,
     sub_menu_format,
     sub_menu_view,
-    sub_menu_help,
     NULL);
 
   toolbar_hb = IupHbox(
