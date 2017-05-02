@@ -44,10 +44,10 @@ static void copyMarkedLines(Ihandle *multitext)
 {
   int size = IupGetInt(multitext, "COUNT");
   char *buffer = (char *) malloc(size);
-  buffer[0] = 0;
   char *text;
   int lin = 0;
 
+  buffer[0] = 0;
   while (lin >= 0)
   {
     IupSetIntId(multitext, "MARKERNEXT", lin, setMarkerMask(0));
@@ -74,10 +74,10 @@ static void cutMarkedLines(Ihandle *multitext)
 {
   int size = IupGetInt(multitext, "COUNT");
   char *buffer = (char *)malloc(size);
-  buffer[0] = 0;
   char *text;
-  int lin = 0, pos;
+  int lin = 0, pos, len;
 
+  buffer[0] = 0;
   while (lin >= 0 && size)
   {
     IupSetIntId(multitext, "MARKERNEXT", lin, setMarkerMask(0));
@@ -85,7 +85,7 @@ static void cutMarkedLines(Ihandle *multitext)
     if (lin >= 0)
     {
       text = IupGetAttributeId(multitext, "LINE", lin);
-      int len = (int)strlen(text);
+      len = (int)strlen(text);
       IupTextConvertLinColToPos(multitext, lin, 0, &pos);
       IupSetStrf(multitext, "DELETERANGE", "%d,%d", pos, len);
       strcat(buffer, text);  size -= len;
@@ -107,7 +107,7 @@ static void cutMarkedLines(Ihandle *multitext)
 static void pasteToMarkedLines(Ihandle *multitext)
 {
   char *text;
-  int lin = 0, pos;
+  int lin = 0, pos, len;
 
   while (lin >= 0)
   {
@@ -115,12 +115,14 @@ static void pasteToMarkedLines(Ihandle *multitext)
     lin = IupGetInt(multitext, "LASTMARKERFOUND");
     if (lin >= 0)
     {
+      Ihandle *clipboard;
+
       text = IupGetAttributeId(multitext, "LINE", lin);
-      int len = (int)strlen(text);
+      len = (int)strlen(text);
       IupTextConvertLinColToPos(multitext, lin, 0, &pos);
       IupSetStrf(multitext, "DELETERANGE", "%d,%d", pos, len);
       IupSetIntId(multitext, "MARKERDELETE", lin, 0);
-      Ihandle *clipboard = IupClipboard();
+      clipboard = IupClipboard();
       IupSetAttributeId(multitext, "INSERT", pos, IupGetAttribute(clipboard, "TEXT"));
       IupDestroy(clipboard);
       lin--;
@@ -130,7 +132,8 @@ static void pasteToMarkedLines(Ihandle *multitext)
 
 static void invertMarkedLines(Ihandle *multitext)
 {
-  for (int lin = 0; lin < IupGetInt(multitext, "LINECOUNT"); lin++)
+  int lin;
+  for (lin = 0; lin < IupGetInt(multitext, "LINECOUNT"); lin++)
   {
     toggleMarker(multitext, lin, 1);
   }
@@ -139,7 +142,7 @@ static void invertMarkedLines(Ihandle *multitext)
 static void removeMarkedLines(Ihandle *multitext)
 {
   char *text;
-  int lin = 0, pos;
+  int lin = 0, pos, len;
 
   while (lin >= 0)
   {
@@ -148,7 +151,7 @@ static void removeMarkedLines(Ihandle *multitext)
     if (lin >= 0)
     {
       text = IupGetAttributeId(multitext, "LINE", lin);
-      int len = (int)strlen(text);
+      len = (int)strlen(text);
       IupTextConvertLinColToPos(multitext, lin, 0, &pos);
       IupSetStrf(multitext, "DELETERANGE", "%d,%d", pos, len);
       IupSetIntId(multitext, "MARKERDELETE", lin, 0);
@@ -160,12 +163,13 @@ static void removeMarkedLines(Ihandle *multitext)
 static void removeUnmarkedLines(Ihandle *multitext)
 {
   char *text;
-  int start = IupGetInt(multitext, "LINECOUNT") - 1, end, posStart, posEnd;
+  int len, start = IupGetInt(multitext, "LINECOUNT") - 1, end, posStart, posEnd;
 
   while (start >= 0)
   {
+
     text = IupGetAttributeId(multitext, "LINE", start);
-    int len = (int)strlen(text);
+    len = (int)strlen(text);
     IupSetIntId(multitext, "MARKERPREVIOUS", start, setMarkerMask(0));
     end = IupGetInt(multitext, "LASTMARKERFOUND");
     IupTextConvertLinColToPos(multitext, start, len + 1, &posEnd);
@@ -191,10 +195,11 @@ static void changeTabsToSpaces(Ihandle *multitext)
   char *text = IupGetAttribute(multitext, "VALUE");
   int count = IupGetInt(multitext, "COUNT");
   int tabSize = IupGetInt(multitext, "TABSIZE");
-  int lin, col;
+  int lin, col, i, j;
 
-  for (int i = count - 1; i >= 0; i--)
+  for (i = count - 1; i >= 0; i--)
   {
+    int spacesToNextTab;
     char c = text[i];
 
     if (c != '\t')
@@ -202,11 +207,11 @@ static void changeTabsToSpaces(Ihandle *multitext)
 
     IupTextConvertPosToLinCol(multitext, i, &lin, &col);
 
-    int spacesToNextTab = tabSize - (col + 1) % tabSize + 1;
+    spacesToNextTab = tabSize - (col + 1) % tabSize + 1;
 
     IupSetStrf(multitext, "DELETERANGE", "%d,%d", i, 1);
 
-    for (int j = 0; j < spacesToNextTab; j++)
+    for (j = 0; j < spacesToNextTab; j++)
       IupSetAttributeId(multitext, "INSERT", i + j, " ");
   }
 }
@@ -216,15 +221,16 @@ static void changeSpacesToTabs(Ihandle *multitext)
   char *text = IupGetAttribute(multitext, "VALUE");
   int count = IupGetInt(multitext, "COUNT");
   int tabSize = IupGetInt(multitext, "TABSIZE");
-  int lin, col;
+  int lin, col, i;
 
-  for (int i = count - 1; i >= 0; i--)
+  for (i = count - 1; i >= 0; i--)
   {
+    int nSpaces, tabStop;
     char c = text[i];
 
     IupTextConvertPosToLinCol(multitext, i, &lin, &col);
 
-    int tabStop = (col + 1) % tabSize == tabSize - 1 ? 1 : 0;
+    tabStop = (col + 1) % tabSize == tabSize - 1 ? 1 : 0;
 
     if (!tabStop || c != ' ')
       continue;
@@ -232,7 +238,7 @@ static void changeSpacesToTabs(Ihandle *multitext)
     IupSetStrf(multitext, "DELETERANGE", "%d,%d", i + 1, 1);
     IupSetAttributeId(multitext, "INSERT", i + 1, "\t");
 
-    int nSpaces = 0;
+    nSpaces = 0;
 
     while (text[i - nSpaces] == ' ' && nSpaces < tabSize - 1)
       nSpaces++;
@@ -250,19 +256,19 @@ static void changeLeadingSpacesToTabs(Ihandle *multitext)
 {
   int lineCount = IupGetInt(multitext, "LINECOUNT");
   int tabSize = IupGetInt(multitext, "TABSIZE");
-  int pos;
+  int pos, i, j;
 
-  for (int i = 0; i < lineCount; i++)
+  for (i = 0; i < lineCount; i++)
   {
+    int tabCount = 0;
+    int spaceCount = 0;
     char *text = IupGetAttributeId(multitext, "LINE", i);
 
     int len = (int)strspn(text, " \t");
     if (len == 0)
       continue;
 
-    int tabCount = 0;
-    int spaceCount = 0;
-    for (int j = 0; j < len; j++)
+    for (j = 0; j < len; j++)
     {
       if (text[j] == '\t')
       {
@@ -280,9 +286,9 @@ static void changeLeadingSpacesToTabs(Ihandle *multitext)
     }
     IupTextConvertLinColToPos(multitext, i, 0, &pos);
     IupSetStrf(multitext, "DELETERANGE", "%d,%d", pos, len);
-    for (int j = 0; j < spaceCount; j++)
+    for (j = 0; j < spaceCount; j++)
       IupSetAttributeId(multitext, "INSERT", pos, " ");
-    for (int j = 0; j < tabCount; j++)
+    for (j = 0; j < tabCount; j++)
       IupSetAttributeId(multitext, "INSERT", pos, "\t");
   }
 }
@@ -290,9 +296,9 @@ static void changeLeadingSpacesToTabs(Ihandle *multitext)
 static void removeLeadingSpaces(Ihandle *multitext)
 {
   int lineCount = IupGetInt(multitext, "LINECOUNT");
-  int pos;
+  int pos, i;
 
-  for (int i = 0; i < lineCount; i++)
+  for (i = 0; i < lineCount; i++)
   {
     char *text = IupGetAttributeId(multitext, "LINE", i);
 
@@ -308,10 +314,11 @@ static void removeLeadingSpaces(Ihandle *multitext)
 static void removeTrailingSpaces(Ihandle *multitext)
 {
   int lineCount = IupGetInt(multitext, "LINECOUNT");
-  int pos;
+  int pos, i, j;
 
-  for (int i = 0; i < lineCount; i++)
+  for (i = 0; i < lineCount; i++)
   {
+    int count = 0;
     char *text = IupGetAttributeId(multitext, "LINE", i);
 
     int len = (int)strlen(text);
@@ -321,8 +328,7 @@ static void removeTrailingSpaces(Ihandle *multitext)
     if (text[len - 1] == '\n')
       len--;
 
-    int count = 0;
-    for (int j = len - 1; j >= 0; j--)
+    for (j = len - 1; j >= 0; j--)
     {
       if (text[j] != ' ' && text[j] != '\t')
         break;
@@ -1139,13 +1145,13 @@ static int find_next_action_cb(Ihandle* ih_item)
   Ihandle* find_dlg = (Ihandle*)IupGetAttribute(ih_item, "FIND_DIALOG");
   if (find_dlg)
   {
-    char* str;
+    char* str_to_find;
     int pos;
+    Ihandle* txt;
     Ihandle* multitext = (Ihandle*)IupGetAttribute(find_dlg, "MULTITEXT");
-    str = IupGetAttribute(multitext, "VALUE");
 
-    Ihandle* txt = IupGetDialogChild(find_dlg, "FIND_TEXT");
-    char* str_to_find = IupGetAttribute(txt, "VALUE");
+    txt = IupGetDialogChild(find_dlg, "FIND_TEXT");
+    str_to_find = IupGetAttribute(txt, "VALUE");
 
     /* test again, because it can be called from the hot key */
     if (str_to_find && str_to_find[0] != 0)
@@ -1482,9 +1488,10 @@ static int item_delete_action_cb(Ihandle* item_delete)
 
 static int item_select_all_action_cb(Ihandle* item_select_all)
 {
+  int count;
   Ihandle* multitext = IupGetDialogChild(item_select_all, "MULTITEXT");
   IupSetFocus(multitext);
-  int count = IupGetInt(multitext, "COUNT");
+  count = IupGetInt(multitext, "COUNT");
   IupSetStrf(multitext, "SELECTIONPOS", "%d:%d", 0, count - 1);
   return IUP_DEFAULT;
 }

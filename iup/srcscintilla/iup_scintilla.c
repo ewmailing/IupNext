@@ -287,7 +287,7 @@ static void iScintillaCallCaretCb(Ihandle* ih)
 #ifdef GTK
 static void gtkScintillaNotify(GtkWidget *w, gint wp, gpointer lp, Ihandle *ih)
 {
-  struct Scintilla::SCNotification *pMsg =(struct Scintilla::SCNotification *)lp;
+  SCNotification *pMsg =(SCNotification*)lp;
 
   iScintillaNotify(ih, pMsg);
 
