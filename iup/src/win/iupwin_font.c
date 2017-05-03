@@ -230,7 +230,7 @@ static HDC winFontGetDC(Ihandle* ih)
 
 static void winFontReleaseDC(Ihandle* ih, HDC hdc)
 {
-  if (ih->iclass->nativetype == IUP_TYPEVOID)
+  if (!ih || ih->iclass->nativetype == IUP_TYPEVOID)
     ReleaseDC(NULL, hdc);
   else
     ReleaseDC(ih->handle, hdc);  /* handle can be NULL here */
