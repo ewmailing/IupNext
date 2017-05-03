@@ -20,7 +20,8 @@ LIBS = iup
 DEFINES += STATIC_BUILD SCI_LEXER SCI_NAMESPACE
 
 # Used only in Linux
-LINKER = g++
+LINKER = $(CPPC)
+LD = $(CPPC)
 
 # Supported only in Windows and GTK
 
