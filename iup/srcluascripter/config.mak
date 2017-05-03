@@ -58,6 +58,7 @@ endif
 INCLUDES = ../include
 
 USE_IUP = Yes
+USE_IUPLUA = Yes
 
 IUP = ..
 
@@ -69,7 +70,7 @@ ifdef DBG_DIR
 endif
 
 ifneq ($(findstring Win, $(TEC_SYSNAME)), )
-  LIBS += iupimglib iup_scintilla
+  LIBS += iupimglib iup_scintilla imm32
 else
   SLIB += $(IUP)/lib/$(TEC_UNAME)$(SFX)/libiup_scintilla.a \
           $(IUP)/lib/$(TEC_UNAME)$(SFX)/libiupimglib.a
