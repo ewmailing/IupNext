@@ -1157,6 +1157,20 @@ int iupAttribGetInt(Ihandle* ih, const char* name)
   return i;
 }
 
+int iupAttribGetIntInt(Ihandle *ih, const char* name, int *i1, int *i2, char sep)
+{
+  int _i1 = 0, _i2 = 0;
+  char *value = iupAttribGetStr(ih, name);
+  if (value)
+  {
+    int count = iupStrToIntInt(value, &_i1, &_i2, sep);
+    if (i1) *i1 = _i1;
+    if (i2) *i2 = _i2;
+    return count;
+  }
+  return 0;
+}
+
 float iupAttribGetFloat(Ihandle* ih, const char* name)
 {
   float f = 0;
