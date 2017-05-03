@@ -970,7 +970,8 @@ static int iFlatTabsSetActiveAttrib(Ihandle* ih, const char* value)
 static int iFlatTabsUpdateSetAttrib(Ihandle* ih, const char* value)
 {
   (void)value;
-  iupdrvPostRedraw(ih);
+  if (ih->handle)
+    iupdrvPostRedraw(ih);
   return 1;
 }
 
