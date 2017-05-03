@@ -85,7 +85,8 @@ static void iFlatTabsSetCurrentTab(Ihandle* ih, Ihandle* child)
   if (child)
     IupSetAttribute(child, "VISIBLE", "Yes");
 
-  iupdrvPostRedraw(ih);
+  if (ih->handle)
+    iupdrvPostRedraw(ih);
 }
 
 static void iFlatTabsGetIconSize(Ihandle* ih, int pos, int *w, int *h)
@@ -927,7 +928,7 @@ static int iFlatTabsSetTabVisibleAttrib(Ihandle* ih, int pos, const char* value)
     }
   }
 
-  if (redraw)
+  if (redraw && ih->handle)
     iupdrvPostRedraw(ih);
 
   return 1;
@@ -1224,7 +1225,8 @@ static void iFlatTabsChildAddedMethod(Ihandle* ih, Ihandle* child)
   else
   {
     IupSetAttribute(child, "VISIBLE", "No");
-    iupdrvPostRedraw(ih);
+    if (ih->handle)
+      iupdrvPostRedraw(ih);
   }
 }
 
@@ -1247,7 +1249,8 @@ static void iFlatTabsChildRemovedMethod(Ihandle* ih, Ihandle* child, int pos)
     }
   }
 
-  iupdrvPostRedraw(ih);
+  if (ih->handle)
+    iupdrvPostRedraw(ih);
 }
 
 static void iFlatTabsComputeNaturalSizeMethod(Ihandle* ih, int *w, int *h, int *children_expand)
