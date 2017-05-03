@@ -504,6 +504,7 @@ iupAttribGetInheritNativeParent
 iupAttribGetStr
 iupAttribGetLocal
 iupAttribGetInt
+iupAttribGetIntInt
 iupAttribGetBoolean
 iupAttribGetFloat
 iupAttribGetDouble
