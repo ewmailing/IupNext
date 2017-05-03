@@ -262,6 +262,7 @@ iupdrvGetCursorPos
 iupdrvGetComputerName
 iupdrvFontGetStringWidth
 iupdrvFontGetMultiLineStringSize
+iupdrvFontGetTextSize
 iupdrvFontGetCharSize
 iupdrvPaintFocusRect
 iupdrvPostRedraw
