@@ -180,6 +180,7 @@ Iclass* iupCanvasNewClass(void)
 
   iupClassRegisterAttribute(ic, "BORDER", NULL, NULL, IUPAF_SAMEASSYSTEM, "YES", IUPAF_DEFAULT);
 
+  iupClassRegisterAttribute(ic, "DRAWFONT", NULL, NULL, NULL, NULL, IUPAF_NO_INHERIT);
   iupClassRegisterAttribute(ic, "DRAWCOLOR", NULL, NULL, NULL, NULL, IUPAF_NO_INHERIT);
   iupClassRegisterAttribute(ic, "DRAWSTYLE", NULL, NULL, NULL, NULL, IUPAF_NO_INHERIT);
 

@@ -192,24 +192,32 @@ void IupDrawText(Ihandle* ih, const char* text, int len, int x, int y)
   if (!dc)
     return;
 
-  font = IupGetAttribute(ih, "FONT");
+  font = IupGetAttribute(ih, "DRAWFONT");
+  if (!font)
+    font = IupGetAttribute(ih, "FONT");
 
   IupGetRGB(ih, "DRAWCOLOR", &r, &g, &b);
 
   align = iupFlatGetHorizontalAlignment(IupGetAttribute(ih, "TEXTALIGNMENT"));
 
-  iupdrvFontGetMultiLineStringSize(ih, text, &w, &h);
+  iupdrvFontGetTextSize(font, text, &w, &h);
 
   iupdrvDrawText(dc, text, len, x, y, w, h, r, g, b, font, align);
 }
 
 void IupDrawGetTextSize(Ihandle* ih, const char* str, int *w, int *h)
 {
+  char* font;
+
   iupASSERT(iupObjectCheck(ih));
   if (!iupObjectCheck(ih))
     return;
 
-  iupdrvFontGetMultiLineStringSize(ih, str, w, h);
+  font = IupGetAttribute(ih, "DRAWFONT");
+  if (!font)
+    font = IupGetAttribute(ih, "FONT");
+
+  iupdrvFontGetTextSize(font, str, w, h);
 }
 
 void IupDrawGetImageInfo(const char* name, int *w, int *h, int *bpp)
@@ -346,7 +354,7 @@ void iupFlatDrawBox(IdrawCanvas* dc, int xmin, int xmax, int ymin, int ymax, con
   iupdrvDrawRectangle(dc, xmin, ymin, xmax, ymax, r, g, b, IUP_DRAW_FILL);
 }
 
-static void iFlatDrawText(Ihandle* ih, IdrawCanvas* dc, int x, int y, int w, int h, const char* str, const char* text_align, const char* color, const char* bgcolor, int active)
+static void iFlatDrawText(IdrawCanvas* dc, int x, int y, int w, int h, const char* str, const char* font, const char* text_align, const char* color, const char* bgcolor, int active)
 {
   unsigned char r = 0, g = 0, b = 0;
   int align = iupFlatGetHorizontalAlignment(text_align);
@@ -362,7 +370,7 @@ static void iFlatDrawText(Ihandle* ih, IdrawCanvas* dc, int x, int y, int w, int
     iupImageColorMakeInactive(&r, &g, &b, bg_r, bg_g, bg_b);
   }
 
-  iupdrvDrawText(dc, str, (int)strlen(str), x, y, w, h, r, g, b, IupGetAttribute(ih, "FONT"), align);
+  iupdrvDrawText(dc, str, (int)strlen(str), x, y, w, h, r, g, b, font, align);
 }
 
 static void iFlatGetIconPosition(int icon_width, int icon_height, int *x, int *y, int width, int height, int horiz_alignment, int vert_alignment, int horiz_padding, int vert_padding)
@@ -455,6 +463,7 @@ void iupFlatDrawIcon(Ihandle* ih, IdrawCanvas* dc, int icon_x, int icon_y, int i
                      const char* imagename, int make_inactive, const char* title, const char* text_align, const char* fgcolor, const char* bgcolor, int active)
 {
   int x, y, width, height;
+  char* font;
 
   if (imagename)
   {
@@ -464,7 +473,11 @@ void iupFlatDrawIcon(Ihandle* ih, IdrawCanvas* dc, int icon_x, int icon_y, int i
       int txt_width, txt_height;
       int img_width, img_height;
 
-      iupdrvFontGetMultiLineStringSize(ih, title, &txt_width, &txt_height);
+      font = IupGetAttribute(ih, "DRAWFONT");
+      if (!font)
+        font = IupGetAttribute(ih, "FONT");
+
+      iupdrvFontGetTextSize(font, title, &txt_width, &txt_height);
       iupImageGetInfo(imagename, &img_width, &img_height, NULL);
 
       if (img_position == IUP_IMGPOS_RIGHT || img_position == IUP_IMGPOS_LEFT)
@@ -485,7 +498,7 @@ void iupFlatDrawIcon(Ihandle* ih, IdrawCanvas* dc, int icon_x, int icon_y, int i
                                   &img_x, &img_y, &txt_x, &txt_y);
 
       iupdrvDrawImage(dc, imagename, make_inactive, img_x + icon_x, img_y + icon_y);
-      iFlatDrawText(ih, dc, txt_x + icon_x, txt_y + icon_y, txt_width, txt_height, title, text_align, fgcolor, bgcolor, active);
+      iFlatDrawText(dc, txt_x + icon_x, txt_y + icon_y, txt_width, txt_height, title, font, text_align, fgcolor, bgcolor, active);
     }
     else
     {
@@ -498,11 +511,15 @@ void iupFlatDrawIcon(Ihandle* ih, IdrawCanvas* dc, int icon_x, int icon_y, int i
   }
   else if (title)
   {
-    iupdrvFontGetMultiLineStringSize(ih, title, &width, &height);
+    font = IupGetAttribute(ih, "DRAWFONT");
+    if (!font)
+      font = IupGetAttribute(ih, "FONT");
+
+    iupdrvFontGetTextSize(font, title, &width, &height);
 
     iFlatGetIconPosition(icon_width, icon_height, &x, &y, width, height, horiz_alignment, vert_alignment, horiz_padding, vert_padding);
 
-    iFlatDrawText(ih, dc, x + icon_x, y + icon_y, width, height, title, text_align, fgcolor, bgcolor, active);
+    iFlatDrawText(dc, x + icon_x, y + icon_y, width, height, title, font, text_align, fgcolor, bgcolor, active);
   }
 }
 

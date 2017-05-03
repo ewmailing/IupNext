@@ -81,7 +81,8 @@ x2, y2, ...</p>
 <pre>void IupDrawText(Ihandle* <strong>ih</strong>, const char* <strong>str</strong>, int <strong>len</strong>, int <strong>x</strong>, int <strong>y</strong>); [in C]
 iup.Draw<span class="auto-style2">Text(</span><strong>ih</strong>: ihandle<span class="auto-style2"><strong>, str</strong>: string</span><span class="auto-style2">, <strong>x</strong>, <strong>y</strong>: number)</span> [in Lua]
 <strong>ih</strong>:DrawText(<span class="auto-style2"><strong>str</strong>: string, <strong>x</strong>, <strong>y</strong>: number</span>) [in Lua]</pre>
-<p>Draws a text in the given position using the current
+<p>Draws a text in the given position using the font defined by DRAWFONT (since 
+3.22), if not defined then use
 <a href="../attrib/iup_font.html">FONT</a>. The size of the string is used only 
 in C. Can be 0 so <strong>strlen</strong> is used internally. The coordinates 
 are relative the top-left corner of the text. Strings with multiple line are 
@@ -115,7 +116,8 @@ iup.DrawGetSize<span class="auto-style2">(</span><strong>ih</strong>: ihandle<sp
 <pre>void IupDrawGetTextSize(Ihandle* <strong>ih</strong>, const char* <strong>str</strong>, int *<strong>w</strong>, int *<strong>h</strong>); [in C]
 iup.DrawGetTextSize<span class="auto-style2">(</span><strong>ih</strong>: ihandle<span class="auto-style2">, <strong>str</strong>: string) -&gt; <strong>w</strong>, <strong>h</strong>: number</span> [in Lua]
 <strong>ih</strong>:DrawGetTextSize(<span class="auto-style2"><strong>str</strong>: string</span>)<span class="auto-style2"> -&gt; <strong>w</strong>, <strong>h</strong>: number</span> [in Lua]</pre>
-<p>Returns the given text size using the current
+<p>Returns the given text size using the font defined by DRAWFONT, if not 
+defined then use
 <a href="../attrib/iup_font.html">FONT</a>.&nbsp; In C unwanted values can be 
 NULL.</p>
 <pre>void IupDrawGetImageInfo(const char* <strong>name</strong>, int *<strong>w</strong>, int *<strong>h</strong>, int *<strong>bpp</strong>); [in C]
