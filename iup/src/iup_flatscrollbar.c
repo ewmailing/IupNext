@@ -343,9 +343,15 @@ static int iFlatScrollBarAction_CB(Ihandle* sb_ih)
   iupFlatDrawBox(dc, 0, sb_ih->currentwidth - 1, 0, sb_ih->currentheight - 1, bgcolor, NULL, 1);
 
   if (is_vert_scrollbar)
-    iFlatScrollBarDrawVertical(sb_ih, dc, active, fgcolor, bgcolor, pressed, highlight, ymax, dy, sb_size, has_horiz_scroll);
+  {
+    if (has_vert_scroll)
+      iFlatScrollBarDrawVertical(sb_ih, dc, active, fgcolor, bgcolor, pressed, highlight, ymax, dy, sb_size, has_horiz_scroll);
+  }
   else
-    iFlatScrollBarDrawHorizontal(sb_ih, dc, active, fgcolor, bgcolor, pressed, highlight, xmax, dx, sb_size, has_vert_scroll);
+  {
+    if (has_horiz_scroll)
+      iFlatScrollBarDrawHorizontal(sb_ih, dc, active, fgcolor, bgcolor, pressed, highlight, xmax, dx, sb_size, has_vert_scroll);
+  }
 
   iupdrvDrawFlush(dc);
 
@@ -380,6 +386,9 @@ static int iFlatScrollBarGetHandler(Ihandle* sb_ih, int x, int y)
     if (xmax > dx)  /* has horizontal scrollbar */
       height -= sb_size;
 
+    if (ymax == 0)
+      return SB_NONE;
+
     range = height - 1 - 2 * arrow_size;
     d = (dy * range) / ymax;
     pos = (posy * range) / ymax;
@@ -403,6 +412,9 @@ static int iFlatScrollBarGetHandler(Ihandle* sb_ih, int x, int y)
     int width = sb_ih->currentwidth;
     if (ymax > dy)  /* has vertical scrollbar */
       width -= sb_size;
+
+    if (xmax == 0)
+      return SB_NONE;
 
     range = width - 1 - 2 * arrow_size;
     d = (dx * range) / xmax;
