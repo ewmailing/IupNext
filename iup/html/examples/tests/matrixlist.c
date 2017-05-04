@@ -90,6 +90,8 @@ void MatrixListTest(void)
   IupSetAttribute(mlist, "IMAGEVALUE2", "ON");
   IupSetAttribute(mlist, "IMAGEVALUE3", "ON");
 
+//  IupSetAttribute(mlist, "FLATSCROLLBAR", "VERTICAL");
+
   dlg = IupDialog(IupVbox(mlist, NULL));
   IupSetAttribute(dlg, "TITLE", "IupMatrixList");
   IupSetAttribute(dlg, "MARGIN", "10x10");
