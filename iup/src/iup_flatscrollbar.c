@@ -511,6 +511,9 @@ static int iFlatScrollBarMoveX(Ihandle* sb_ih, int diff, int start_posx)
   int show_arrows = iupAttribGetInt(sb_ih->parent, "SHOWARROWS");
   int arrow_size = sb_size;
 
+  if (xmax == 0)
+    return 0;
+
   if (!show_arrows)
     arrow_size = 0;
 
@@ -549,6 +552,9 @@ static int iFlatScrollBarMoveY(Ihandle* sb_ih, int diff, int start_posy)
   int height = sb_ih->currentheight;
   int show_arrows = iupAttribGetInt(sb_ih->parent, "SHOWARROWS");
   int arrow_size = sb_size;
+
+  if (ymax == 0)
+    return 0;
 
   if (!show_arrows)
     arrow_size = 0;
