@@ -4,6 +4,7 @@
 #include <stdarg.h>
 
 #include "iup.h"
+#include "iupcbs.h"
 #include "iup_scintilla.h"
 #include "iup_config.h"
 
@@ -21,6 +22,8 @@
 static void toggleMarker(Ihandle* multitext, int lin, int margin)
 {
   long int value = IupGetIntId(multitext, "MARKERGET", lin);
+  Ihandle* ih = IupGetDialog(multitext);
+  IFniii cb;
 
   if (margin == 1)
     value = value & 0x000001;
@@ -31,6 +34,10 @@ static void toggleMarker(Ihandle* multitext, int lin, int margin)
     IupSetIntId(multitext, "MARKERDELETE", lin, margin - 1);
   else
     IupSetIntId(multitext, "MARKERADD", lin, margin - 1);
+
+  cb = (IFniii)IupGetCallback(ih, "MARKERCHANGED_CB");
+  if (cb)
+    cb(ih, lin, margin, value == 0);
 }
 
 static long int setMarkerMask(int markNumber)
@@ -2183,6 +2190,8 @@ Iclass* iupScintillaDlgNewClass(void)
   ic->nativetype = IUP_TYPEDIALOG;
   ic->is_interactive = 1;
   ic->childtype = IUP_CHILDNONE;
+
+  iupClassRegisterCallback(ic, "MARKERCHANGED_CB", "iii");
 
   iupClassRegisterAttribute(ic, "SUBTITLE", NULL, NULL, IUPAF_SAMEASSYSTEM, "Notepad", IUPAF_NOT_MAPPED | IUPAF_NO_INHERIT);
   iupClassRegisterAttribute(ic, "CONFIG", NULL, NULL, NULL, NULL, IUPAF_IHANDLENAME | IUPAF_NOT_MAPPED | IUPAF_NO_INHERIT);

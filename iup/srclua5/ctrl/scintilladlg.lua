@@ -7,7 +7,7 @@ local ctrl = {
   subdir = "ctrl",
   creation = "",
   callback = {
-    --cancel_cb = "",
+    markerchanged_cb = "nnn",
   },
   include = "iup_scintilla.h",
   funcname = "ScintillaDlg",
