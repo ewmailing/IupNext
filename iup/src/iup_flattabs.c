@@ -903,17 +903,6 @@ static char* iFlatTabsGetValueAttrib(Ihandle* ih)
   return IupGetName(child);
 }
 
-static char* iFlatTabsGetExtraBoxHandleAttrib(Ihandle* ih)
-{
-  return iupAttribGet(ih, "_IUPFTABS_EXTRABOX");
-}
-
-static char* iFlatTabsGetExtraBoxAttrib(Ihandle* ih)
-{
-  Ihandle* child = (Ihandle*)iFlatTabsGetExtraBoxHandleAttrib(ih);
-  return IupGetName(child);
-}
-
 static int iFlatTabsSetTabVisibleAttrib(Ihandle* ih, int pos, const char* value)
 {
   int redraw = 0;
@@ -1256,7 +1245,7 @@ static void iFlatTabsChildRemovedMethod(Ihandle* ih, Ihandle* child, int pos)
 
 static void iFlatTabsComputeNaturalSizeMethod(Ihandle* ih, int *w, int *h, int *children_expand)
 {
-  Ihandle* child, *extra_box;
+  Ihandle* child;
   int children_naturalwidth, children_naturalheight;
 
   /* calculate total children natural size (even for hidden children) */
@@ -1281,15 +1270,11 @@ static void iFlatTabsComputeNaturalSizeMethod(Ihandle* ih, int *w, int *h, int *
     *h += 1;
     *w += 2;
   }
-
-  /* computed but not included in natural size */
-  extra_box = (Ihandle*)iupAttribGet(ih, "_IUPFTABS_EXTRABOX");
-  iupBaseComputeNaturalSize(extra_box);
 }
 
 static void iFlatTabsSetChildrenCurrentSizeMethod(Ihandle* ih, int shrink)
 {
-  Ihandle* child, *extra_box;
+  Ihandle* child;
   int title_width;
   int title_height = iFlatTabsGetTitleHeight(ih, &title_width, 0);
   int width = ih->currentwidth;
@@ -1312,19 +1297,13 @@ static void iFlatTabsSetChildrenCurrentSizeMethod(Ihandle* ih, int shrink)
     if (child->firstchild)
       iupClassObjectSetChildrenCurrentSize(child, shrink);
   }
-
-  extra_box = (Ihandle*)iupAttribGet(ih, "_IUPFTABS_EXTRABOX");
-  width = ih->currentwidth - title_width;
-  if (width < 0) width = 0;
-  height = title_height;
-  iupBaseSetCurrentSize(extra_box, width, height, shrink);
 }
 
 static void iFlatTabsSetChildrenPositionMethod(Ihandle* ih, int x, int y)
 {
   /* In all systems, each tab is a native window covering the client area.
      Child coordinates are relative to client left-top corner of the tab page. */
-  Ihandle* child, *extra_box;
+  Ihandle* child;
   char* offset = iupAttribGet(ih, "CHILDOFFSET");
   int title_width;
 
@@ -1341,15 +1320,10 @@ static void iFlatTabsSetChildrenPositionMethod(Ihandle* ih, int x, int y)
 
   for (child = ih->firstchild; child; child = child->brother)
     iupBaseSetPosition(child, x, y);
-
-  extra_box = (Ihandle*)iupAttribGet(ih, "_IUPFTABS_EXTRABOX");
-  iupBaseSetPosition(extra_box, title_width, 0);
 }
 
 static int iFlatTabsCreateMethod(Ihandle* ih, void **params)
 {
-  Ihandle* extra_box;
-
   /* add children */
   if (params)
   {
@@ -1370,10 +1344,6 @@ static int iFlatTabsCreateMethod(Ihandle* ih, void **params)
   IupSetCallback(ih, "MOTION_CB", (Icallback)iFlatTabsMotion_CB);
   IupSetCallback(ih, "LEAVEWINDOW_CB", (Icallback)iFlatTabsLeaveWindow_CB);
   IupSetCallback(ih, "RESIZE_CB", (Icallback)iFlatTabsResize_CB);
-
-  extra_box = IupHbox(NULL);
-  iupAttribSet(ih, "_IUPFTABS_EXTRABOX", (char*)extra_box);
-  iupAttribSetHandleName(extra_box);
 
   return IUP_NOERROR;
 }
@@ -1432,8 +1402,6 @@ Iclass* iupFlatTabsNewClass(void)
   iupClassRegisterAttribute(ic, "VALUE_HANDLE", iFlatTabsGetValueHandleAttrib, iFlatTabsSetValueHandleAttrib, NULL, NULL, IUPAF_NOT_MAPPED | IUPAF_NO_INHERIT | IUPAF_IHANDLE | IUPAF_NO_STRING);
   iupClassRegisterAttribute(ic, "COUNT", iFlatTabsGetCountAttrib, NULL, NULL, NULL, IUPAF_READONLY | IUPAF_NOT_MAPPED | IUPAF_NO_INHERIT);
   iupClassRegisterAttribute(ic, "FIXEDWIDTH", NULL, iFlatTabsUpdateSetAttrib, NULL, NULL, IUPAF_NO_INHERIT);
-  iupClassRegisterAttribute(ic, "EXTRABOX", iFlatTabsGetExtraBoxAttrib, NULL, NULL, NULL, IUPAF_IHANDLENAME | IUPAF_READONLY | IUPAF_NOT_MAPPED | IUPAF_NO_INHERIT);
-  iupClassRegisterAttribute(ic, "EXTRABOX_HANDLE", iFlatTabsGetExtraBoxHandleAttrib, NULL, NULL, NULL, IUPAF_IHANDLE | IUPAF_READONLY | IUPAF_NOT_MAPPED | IUPAF_NO_INHERIT);
   iupClassRegisterAttribute(ic, "TABCHANGEONCHECK", NULL, NULL, NULL, NULL, IUPAF_NO_INHERIT);
 
   /* IupFlatTabs Child only */
