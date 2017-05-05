@@ -56,25 +56,21 @@ filename.</p>
 
 <hr>
 
-<!--
 <p>New callbacks.</p>
-<p><strong>CANCEL_CB</strong>:
-  Action generated when the user clicked on the Cancel button.</p>
+<p><strong>MARKERCHANGED_CB</strong>:
+  Action generated when a marker is changed.</p>
 
   
     
-<pre>int function(Ihandle*<strong> ih</strong>); [in C]<br><strong>elem</strong>:cancel_cb() -&gt; (<strong>ret</strong>: number) [in Lua]</pre>
+<pre>int function(Ihandle*<strong> ih</strong>, int <strong>lin</strong>, int <strong>margin</strong>, int <strong>added</strong>); [in C]<br><strong>elem</strong>:markerchanged_cb(<strong>lin</strong>, <strong>margin</strong>, <strong>added</strong>: number) -&gt; (<strong>ret</strong>: number) [in Lua]</pre>
 
     
 <p class="info"><strong>ih</strong>:
   identifier of the element that activated the 
-  event.</p>
+  event.<br><strong>lin</strong>: line number where the marker was changed.<br>
+<strong>margin</strong>: which margin was affected.<br><strong>added</strong>: 
+flag indicating if the marker was added or removed.</p>
 
-<p class="info"><u>Returns</u>: if different from IUP_CONTINUE then STATE will 
-be changed to ABORTED, same behavior as if the callback does not exist. The 
-returned value will also be returned in the "Cancel" button callback (since 
-3.21).</p>
--->
   
 <h3><a name="Notes">Notes</a></h3>
 <p>The dialog can be freely customized to incorporate other menu items or 
