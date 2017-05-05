@@ -1744,6 +1744,17 @@ static int iScintillaDlgSetOpenFileAttrib(Ihandle* ih, const char* value)
   return 0;
 }
 
+static int iScintillaDlgSetToggleMarkerAttribId(Ihandle* ih, int id, const char* value)
+{
+  int margin;
+  if (iupStrToInt(value, &margin))
+  {
+    Ihandle* multitext = IupGetDialogChild(ih, "MULTITEXT");
+    toggleMarker(multitext, id, margin);
+  }
+  return 0;
+}
+
 
 /********************************** Main *****************************************/
 
@@ -2162,17 +2173,11 @@ static int iScintillaDlgCreateMethod(Ihandle* ih, void** params)
   /* Ctrl+C, Ctrl+X, Ctrl+A, Del, already implemented inside IupText */
 
   IupSetAttribute(multitext, "WORDWRAPVISUALFLAGS", "MARGIN");
-  /* line numbers */
+  /* bookmarks */
   IupSetAttributeId(multitext, "MARKERFGCOLOR", 0, "0 0 255");
   IupSetAttributeId(multitext, "MARKERBGCOLOR", 0, "0 0 255");
   IupSetAttributeId(multitext, "MARKERALPHA", 0, "80");
   IupSetAttributeId(multitext, "MARKERSYMBOL", 0, "CIRCLE");
-  /* bookmarks */
-  IupSetIntId(multitext, "MARGINMASK", 1, 0x000005);
-  IupSetAttributeId(multitext, "MARKERFGCOLOR", 1, "255 0 0");
-  IupSetAttributeId(multitext, "MARKERBGCOLOR", 1, "255 0 0");
-  IupSetAttributeId(multitext, "MARKERALPHA", 1, "80");
-  IupSetAttributeId(multitext, "MARKERSYMBOL", 1, "CIRCLE");
 
   (void)params;
   return IUP_NOERROR;
@@ -2190,6 +2195,7 @@ Iclass* iupScintillaDlgNewClass(void)
   ic->nativetype = IUP_TYPEDIALOG;
   ic->is_interactive = 1;
   ic->childtype = IUP_CHILDNONE;
+  ic->has_attrib_id = 1;   /* has attributes with IDs that must be parsed */
 
   iupClassRegisterCallback(ic, "MARKERCHANGED_CB", "iii");
 
@@ -2198,6 +2204,7 @@ Iclass* iupScintillaDlgNewClass(void)
   iupClassRegisterAttribute(ic, "CONFIG_HANDLE", NULL, iScintillaDlgSetConfigHandleAttrib, NULL, NULL, IUPAF_IHANDLE | IUPAF_NOT_MAPPED | IUPAF_NO_INHERIT);
   iupClassRegisterAttribute(ic, "NEWFILE", NULL, iScintillaDlgSetOpenFileAttrib, NULL, NULL, IUPAF_WRITEONLY | IUPAF_NOT_MAPPED | IUPAF_NO_INHERIT);
   iupClassRegisterAttribute(ic, "OPENFILE", NULL, iScintillaDlgSetOpenFileAttrib, NULL, NULL, IUPAF_WRITEONLY | IUPAF_NOT_MAPPED | IUPAF_NO_INHERIT);
+  iupClassRegisterAttributeId(ic, "TOGGLEMARKER", NULL, iScintillaDlgSetToggleMarkerAttribId, IUPAF_WRITEONLY | IUPAF_NOT_MAPPED | IUPAF_NO_INHERIT);
 
   return ic;
 }
