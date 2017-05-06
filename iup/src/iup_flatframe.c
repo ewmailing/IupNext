@@ -114,10 +114,19 @@ static int iFlatFrameRedraw_CB(Ihandle* ih)
     int img_position = iupFlatGetImagePosition(iupAttribGetStr(ih, "TITLEIMAGEPOSITION"));
     int spacing = iupAttribGetInt(ih, "TITLEIMAGESPACING");
     int horiz_padding, vert_padding;
+    int active = IupGetInt(ih, "ACTIVE");
+    int make_inactive = 0;
 
     int title_line = 0;
     if (iupAttribGetBoolean(ih, "TITLELINE"))
       title_line = iupAttribGetInt(ih, "TITLELINEWIDTH");
+
+    if (!active && titleimage)
+    {
+      char* titleimage_inactive = iupAttribGet(ih, "TITLEIMAGEINACTIVE");
+      if (!titleimage_inactive)
+        make_inactive = 1;
+    }
     
     IupGetIntInt(ih, "TITLEPADDING", &horiz_padding, &vert_padding);
 
@@ -141,7 +150,7 @@ static int iFlatFrameRedraw_CB(Ihandle* ih)
     iupFlatDrawIcon(ih, dc, frame_width, frame_width,
                     ih->currentwidth - 2 * frame_width, title_height - title_line,
                     img_position, spacing, title_alignment, IUP_ALIGN_ATOP, horiz_padding, vert_padding,
-                    titleimage, 0, title, text_align, titlecolor, NULL, 1);
+                    titleimage, make_inactive, title, text_align, titlecolor, NULL, active);
   }
 
   iupdrvDrawFlush(dc);
