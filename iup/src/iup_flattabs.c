@@ -1384,6 +1384,7 @@ Iclass* iupFlatTabsNewClass(void)
   iupClassRegisterCallback(ic, "TABCHANGEPOS_CB", "ii");
   iupClassRegisterCallback(ic, "RIGHTCLICK_CB", "i");
   iupClassRegisterCallback(ic, "TABCLOSE_CB", "i");
+  iupClassRegisterCallback(ic, "TABEXTRA_CB", "i");
 
   iupClassRegisterCallback(ic, "FLAT_BUTTON_CB", "iiiis");
   iupClassRegisterCallback(ic, "FLAT_MOTION_CB", "iis");
@@ -1456,6 +1457,7 @@ Iclass* iupFlatTabsNewClass(void)
   iupClassRegisterAttribute(ic, "CLOSEPRESSCOLOR", NULL, NULL, IUPAF_SAMEASSYSTEM, "80 180 245", IUPAF_NO_INHERIT);
   iupClassRegisterAttribute(ic, "CLOSEHIGHCOLOR", NULL, NULL, IUPAF_SAMEASSYSTEM, "200 220 245", IUPAF_NO_INHERIT);
 
+  iupClassRegisterAttribute(ic, "EXTRABUTTONS", NULL, NULL, NULL, NULL, IUPAF_NO_INHERIT);
   iupClassRegisterAttributeId(ic, "EXTRATITLE", NULL, (IattribSetIdFunc)iFlatTabsUpdateSetAttrib, IUPAF_NO_INHERIT);
   iupClassRegisterAttributeId(ic, "EXTRAACTIVE", NULL, (IattribSetIdFunc)iFlatTabsUpdateSetAttrib, IUPAF_NO_INHERIT);
   iupClassRegisterAttributeId(ic, "EXTRAFORECOLOR", NULL, (IattribSetIdFunc)iFlatTabsUpdateSetAttrib, IUPAF_NO_INHERIT);
