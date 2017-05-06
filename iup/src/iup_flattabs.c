@@ -285,7 +285,7 @@ static int iFlatTabsRedraw_CB(Ihandle* ih)
       int tab_w, tab_h, tab_active;
       char* background_color;
       char* foreground_color;
-      int icon_width;
+      int icon_width, make_inactive = 0;
 
       if (!active)
         tab_active = active;
@@ -328,6 +328,26 @@ static int iFlatTabsRedraw_CB(Ihandle* ih)
         }
       }
 
+      if (tab_image)
+      {
+        make_inactive = 0;
+
+        if (!tab_active)
+        {
+          char* tab_image_inative = iupAttribGetId(ih, "TABIMAGEINACTIVE", pos);
+          if (!tab_image_inative)
+            make_inactive = 1;
+          else
+            tab_image = tab_image_inative;
+        }
+        else if (pos == tab_highlighted)
+        {
+          char* tab_image_highlight = iupAttribGetId(ih, "TABIMAGEHIGHLIGHT", pos);
+          if (tab_image_highlight)
+            tab_image = tab_image_highlight;
+        }
+      }
+
       /* draw title background */
       iupFlatDrawBox(dc, tab_x, tab_x + tab_w, 0, title_height, background_color, NULL, 1);
 
@@ -359,7 +379,6 @@ static int iFlatTabsRedraw_CB(Ihandle* ih)
         const char* imagename;
         int tab_close_high = iupAttribGetInt(ih, "_IUPFTABS_CLOSEHIGH");
         int tab_close_press = iupAttribGetInt(ih, "_IUPFTABS_CLOSEPRESS");
-        int make_inactive;
 
         if (pos == tab_close_press)
         {
@@ -372,7 +391,7 @@ static int iFlatTabsRedraw_CB(Ihandle* ih)
           iupFlatDrawBox(dc, close_x - ITABS_CLOSE_BORDER, close_x + ITABS_CLOSE_SIZE + ITABS_CLOSE_BORDER, close_y - ITABS_CLOSE_BORDER, close_y + ITABS_CLOSE_SIZE + ITABS_CLOSE_BORDER, background_color, NULL, 1);
         }
 
-        imagename = iupFlatDrawGetImageName(ih, "CLOSEIMAGE", NULL, pos == tab_close_press, pos == tab_close_high, active, &make_inactive);
+        imagename = iupFlatDrawGetImageName(ih, "CLOSEIMAGE", NULL, pos == tab_close_press, pos == tab_close_high, tab_active, &make_inactive);
         iupdrvDrawImage(dc, imagename, make_inactive, close_x, close_y);
       }
 
