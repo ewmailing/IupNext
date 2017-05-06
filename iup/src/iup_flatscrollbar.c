@@ -116,43 +116,6 @@ void iupFlatScrollBarSetPos(Ihandle *ih, int posx, int posy)
 /*************************************************************************/
 
 
-static char* iFlatScrollBarMakeImageName(Ihandle* ih, const char* baseattrib, const char* state)
-{
-  char attrib[1024];
-  strcpy(attrib, baseattrib);
-  strcat(attrib, state);
-  return iupAttribGet(ih, attrib);
-}
-
-static const char* iFlatScrollBarGetImageName(Ihandle* ih, const char* baseattrib, int pressed, int highlight, int active, int *make_inactive)
-{
-  const char* new_imagename = NULL;
-
-  *make_inactive = 0;
-
-  if (active)
-  {
-    if (pressed != SB_NONE)
-      new_imagename = iFlatScrollBarMakeImageName(ih, baseattrib, "PRESS");
-    else
-    {
-      if (highlight != SB_NONE)
-        new_imagename = iFlatScrollBarMakeImageName(ih, baseattrib, "HIGHLIGHT");
-    }
-  }
-  else
-  {
-    new_imagename = iFlatScrollBarMakeImageName(ih, baseattrib, "INACTIVE");
-    if (!new_imagename)
-      *make_inactive = 1;
-  }
-
-  if (new_imagename)
-    return new_imagename;
-  else
-    return baseattrib;
-}
-
 static void iFlatScrollBarDrawVertical(Ihandle* sb_ih, IdrawCanvas* dc, int active, const char* fgcolor, const char* bgcolor, int pressed,
                                        int highlight, int ymax, int dy, int sb_size, int has_horiz_scroll)
 {
@@ -214,10 +177,10 @@ static void iFlatScrollBarDrawVertical(Ihandle* sb_ih, IdrawCanvas* dc, int acti
       int make_inactive;
       const char* image;
 
-      image = iFlatScrollBarGetImageName(sb_ih->parent, "IMAGETOP", pressed, highlight, active, &make_inactive);
+      image = iupFlatDrawGetImageName(sb_ih->parent, "IMAGETOP", NULL, pressed != SB_NONE, highlight != SB_NONE, active, &make_inactive);
       iupdrvDrawImage(dc, image, make_inactive, 0, 0);
 
-      image = iFlatScrollBarGetImageName(sb_ih->parent, "IMAGEBOTTOM", pressed, highlight, active, &make_inactive);
+      image = iupFlatDrawGetImageName(sb_ih->parent, "IMAGEBOTTOM", NULL, pressed != SB_NONE, highlight != SB_NONE, active, &make_inactive);
       iupdrvDrawImage(dc, image, make_inactive, height - 1 - arrow_size, 0);
     }
     else
@@ -292,10 +255,10 @@ static void iFlatScrollBarDrawHorizontal(Ihandle* sb_ih, IdrawCanvas* dc, int ac
       int make_inactive;
       const char* image;
       
-      image = iFlatScrollBarGetImageName(sb_ih->parent, "IMAGELEFT", pressed, highlight, active, &make_inactive);
+      image = iupFlatDrawGetImageName(sb_ih->parent, "IMAGELEFT", NULL, pressed != SB_NONE, highlight != SB_NONE, active, &make_inactive);
       iupdrvDrawImage(dc, image, make_inactive, 0, 0);
 
-      image = iFlatScrollBarGetImageName(sb_ih->parent, "IMAGERIGHT", pressed, highlight, active, &make_inactive);
+      image = iupFlatDrawGetImageName(sb_ih->parent, "IMAGERIGHT", NULL, pressed != SB_NONE, highlight != SB_NONE, active, &make_inactive);
       iupdrvDrawImage(dc, image, make_inactive, width - 1 - arrow_size, 0);
     }
     else

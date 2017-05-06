@@ -97,10 +97,16 @@ To change that behavior use the TABCLOSE_CB callback.</p>
 	<a href="../func/iupsetattributehandle.html">IupSetAttributeHandle</a> to 
 	associate an image to a name. n starts at 0. See also <a href="iupimage.html">IupImage</a>. 
 Default: &quot;IMGFLATCLOSE&quot;.</p>
-<p><strong>CLOSEIMAGEHIGH</strong>: image name to be used in the close button in 
-highlight state. Default: &quot;IMGFLATCLOSEHIGH&quot;.</p>
 <p><strong>CLOSEIMAGEPRESS</strong>: image name to be used in the close button 
 in pressed state. Default: &quot;IMGFLATCLOSEPRESS&quot;.</p>
+<p><strong>CLOSEIMAGEHIGHLIGHT</strong>: image name to be used in the close 
+button in highlight state. </p>
+<p><strong>CLOSEIMAGEINACTIVE</strong>: image name to be used in the close button 
+in inactive state. If it is not defined then the CLOSEIMAGE is used and its 
+colors will be replaced by a modified version creating the disabled effect. 
+(since 3.22)</p>
+<p><strong>CLOSEPRESSCOLOR</strong>: background color of the close button in 
+pressed state. Default: &quot;80 180 245&quot;. (since 3.22)</p>
 <p><strong>CLOSEHIGHCOLOR</strong>: background color of the close button in 
 highlight state. Default: &quot;200 220 245&quot;.</p>
 <p><a href="../attrib/iup_size.html">SIZE</a>: 

@@ -613,3 +613,45 @@ void iupFlatDrawArrow(IdrawCanvas* dc, int x, int y, int size, const char* color
   iupdrvDrawPolygon(dc, points, 3, r, g, b, IUP_DRAW_STROKE);
 }
 
+static char* iFlatDrawGetImageName(Ihandle* ih, const char* baseattrib, const char* state)
+{
+  char attrib[1024];
+  strcpy(attrib, baseattrib);
+  strcat(attrib, state);
+  return iupAttribGetStr(ih, attrib);
+}
+
+const char* iupFlatDrawGetImageName(Ihandle* ih, const char* baseattrib, const char* basevalue, int press, int highlight, int active, int *make_inactive)
+{
+  const char* imagename = NULL;
+
+  *make_inactive = 0;
+
+  if (active)
+  {
+    if (press)
+      imagename = iFlatDrawGetImageName(ih, baseattrib, "PRESS");
+    else
+    {
+      if (highlight)
+        imagename = iFlatDrawGetImageName(ih, baseattrib, "HIGHLIGHT");
+    }
+  }
+  else
+  {
+    imagename = iFlatDrawGetImageName(ih, baseattrib, "INACTIVE");
+    if (!imagename)
+      *make_inactive = 1;
+  }
+
+  if (!imagename)
+  {
+    if (!basevalue)
+      basevalue = iupAttribGetStr(ih, baseattrib);
+
+    imagename = basevalue;
+  }
+
+  return imagename;
+}
+

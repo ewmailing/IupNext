@@ -49,53 +49,6 @@ struct _IcontrolData
 /****************************************************************/
 
 
-static char* iFlatButtonMakeImageName(Ihandle* ih, const char* baseattrib, const char* state)
-{
-  char attrib[1024];
-  strcpy(attrib, baseattrib);
-  strcat(attrib, state);
-  return iupAttribGet(ih, attrib);
-}
-
-static const char* iFlatButtonGetImageName(Ihandle* ih, const char* baseattrib, const char* imagename, int active, int *make_inactive)
-{
-  const char* new_imagename = NULL;
-
-  *make_inactive = 0;
-
-  if (baseattrib)
-  {
-    if (active)
-    {
-      if (ih->data->pressed)
-        new_imagename = iFlatButtonMakeImageName(ih, baseattrib, "PRESS");
-      else
-      {
-        if (ih->data->highlighted)
-          new_imagename = iFlatButtonMakeImageName(ih, baseattrib, "HIGHLIGHT");
-      }
-    }
-    else
-    {
-      new_imagename = iFlatButtonMakeImageName(ih, baseattrib, "INACTIVE");
-      if (!new_imagename)
-        *make_inactive = 1;
-    }
-  }
-
-  if (new_imagename)
-    return new_imagename;
-  else
-    return imagename;
-}
-
-static void iFlatButtonDrawImage(Ihandle* ih, IdrawCanvas* dc, int x, int y, const char* baseattrib, const char* imagename, int active)
-{
-  int make_inactive;
-  const char* name = iFlatButtonGetImageName(ih, baseattrib, imagename, active, &make_inactive);
-  iupdrvDrawImage(dc, name, make_inactive, x, y);
-}
-
 static int iFlatButtonRedraw_CB(Ihandle* ih)
 {
   char *image = iupAttribGet(ih, "IMAGE");
@@ -164,21 +117,26 @@ static int iFlatButtonRedraw_CB(Ihandle* ih)
 
   /* draw background */
   if (bgimage)
-    iFlatButtonDrawImage(ih, dc, border_width, border_width, "BACKIMAGE", bgimage, active);
+  {
+    draw_image = iupFlatDrawGetImageName(ih, "BACKIMAGE", bgimage, ih->data->pressed, ih->data->highlighted, active, &make_inactive);
+    iupdrvDrawImage(dc, draw_image, make_inactive, border_width, border_width);
+  }
   else
     iupFlatDrawBox(dc, border_width, ih->currentwidth - 1 - border_width,
                            border_width, ih->currentheight - 1 - border_width,
                            bgcolor, NULL, 1);  /* always active */
 
-  draw_image = iFlatButtonGetImageName(ih, "IMAGE", image, active, &make_inactive);
-
+  draw_image = iupFlatDrawGetImageName(ih, "IMAGE", image, ih->data->pressed, ih->data->highlighted, active, &make_inactive);
   iupFlatDrawIcon(ih, dc, border_width, border_width,
                   ih->currentwidth - 2 * border_width, ih->currentheight - 2 * border_width,
                   ih->data->img_position, ih->data->spacing, ih->data->horiz_alignment, ih->data->vert_alignment, ih->data->horiz_padding, ih->data->vert_padding,
                   draw_image, make_inactive, title, text_align, fgcolor, bgcolor, active);
 
   if (fgimage)
-    iFlatButtonDrawImage(ih, dc, border_width, border_width, "FRONTIMAGE", fgimage, active);
+  {
+    draw_image = iupFlatDrawGetImageName(ih, "FRONTIMAGE", fgimage, ih->data->pressed, ih->data->highlighted, active, &make_inactive);
+    iupdrvDrawImage(dc, draw_image, make_inactive, border_width, border_width);
+  }
   else if (!image && !title)
   {
     int space = border_width + 2;

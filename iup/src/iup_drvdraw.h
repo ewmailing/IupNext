@@ -102,6 +102,8 @@ int iupFlatGetHorizontalAlignment(const char* value);
 int iupFlatGetVerticalAlignment(const char* value);
 int iupFlatGetImagePosition(const char* value);
 
+const char* iupFlatDrawGetImageName(Ihandle* ih, const char* baseattrib, const char* basevalue, int press, int highlight, int active, int *make_inactive);
+
 void iupFlatDrawBorder(IdrawCanvas* dc, int xmin, int xmax, int ymin, int ymax, int border_width, const char* color, const char* bgcolor, int active);
 
 void iupFlatDrawBox(IdrawCanvas* dc, int xmin, int xmax, int ymin, int ymax, const char* color, const char* bgcolor, int active);
