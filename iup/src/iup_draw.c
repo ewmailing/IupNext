@@ -177,6 +177,17 @@ void IupDrawPolygon(Ihandle* ih, int* points, int count)
   iupdrvDrawPolygon(dc, points, count, r, g, b, style);
 }
 
+char* iupFlatGetTextSize(Ihandle* ih, const char* str, int *w, int *h)
+{
+  char*font = IupGetAttribute(ih, "DRAWFONT");
+  if (!font)
+    font = IupGetAttribute(ih, "FONT");
+
+  iupdrvFontGetTextSize(font, str, w, h);
+
+  return font;
+}
+
 void IupDrawText(Ihandle* ih, const char* text, int len, int x, int y)
 {
   IdrawCanvas* dc;
@@ -192,32 +203,22 @@ void IupDrawText(Ihandle* ih, const char* text, int len, int x, int y)
   if (!dc)
     return;
 
-  font = IupGetAttribute(ih, "DRAWFONT");
-  if (!font)
-    font = IupGetAttribute(ih, "FONT");
-
   IupGetRGB(ih, "DRAWCOLOR", &r, &g, &b);
 
   align = iupFlatGetHorizontalAlignment(IupGetAttribute(ih, "TEXTALIGNMENT"));
 
-  iupdrvFontGetTextSize(font, text, &w, &h);
+  font = iupFlatGetTextSize(ih, text, &w, &h);
 
   iupdrvDrawText(dc, text, len, x, y, w, h, r, g, b, font, align);
 }
 
 void IupDrawGetTextSize(Ihandle* ih, const char* str, int *w, int *h)
 {
-  char* font;
-
   iupASSERT(iupObjectCheck(ih));
   if (!iupObjectCheck(ih))
     return;
 
-  font = IupGetAttribute(ih, "DRAWFONT");
-  if (!font)
-    font = IupGetAttribute(ih, "FONT");
-
-  iupdrvFontGetTextSize(font, str, w, h);
+  iupFlatGetTextSize(ih, str, w, h);
 }
 
 void IupDrawGetImageInfo(const char* name, int *w, int *h, int *bpp)
@@ -473,11 +474,8 @@ void iupFlatDrawIcon(Ihandle* ih, IdrawCanvas* dc, int icon_x, int icon_y, int i
       int txt_width, txt_height;
       int img_width, img_height;
 
-      font = IupGetAttribute(ih, "DRAWFONT");
-      if (!font)
-        font = IupGetAttribute(ih, "FONT");
+      font = iupFlatGetTextSize(ih, title, &txt_width, &txt_height);
 
-      iupdrvFontGetTextSize(font, title, &txt_width, &txt_height);
       iupImageGetInfo(imagename, &img_width, &img_height, NULL);
 
       if (img_position == IUP_IMGPOS_RIGHT || img_position == IUP_IMGPOS_LEFT)
@@ -511,11 +509,7 @@ void iupFlatDrawIcon(Ihandle* ih, IdrawCanvas* dc, int icon_x, int icon_y, int i
   }
   else if (title)
   {
-    font = IupGetAttribute(ih, "DRAWFONT");
-    if (!font)
-      font = IupGetAttribute(ih, "FONT");
-
-    iupdrvFontGetTextSize(font, title, &width, &height);
+    font = iupFlatGetTextSize(ih, title, &width, &height);
 
     iFlatGetIconPosition(icon_width, icon_height, &x, &y, width, height, horiz_alignment, vert_alignment, horiz_padding, vert_padding);
 
@@ -621,7 +615,7 @@ static char* iFlatDrawGetImageName(Ihandle* ih, const char* baseattrib, const ch
   return iupAttribGetStr(ih, attrib);
 }
 
-const char* iupFlatDrawGetImageName(Ihandle* ih, const char* baseattrib, const char* basevalue, int press, int highlight, int active, int *make_inactive)
+const char* iupFlatGetImageName(Ihandle* ih, const char* baseattrib, const char* basevalue, int press, int highlight, int active, int *make_inactive)
 {
   const char* imagename = NULL;
 
