@@ -194,6 +194,11 @@ static Ihandle* create_matrix(void)
   IupSetAttribute(mat,"FRAMEVERTCOLOR*:4","0 255 0");
   IupSetAttribute(mat,"FRAMEVERTCOLOR*:5","BGCOLOR");
 
+//  IupSetAttribute(mat, "FRAMETITLEVERTCOLOR*:0", "0 255 0");
+//  IupSetAttribute(mat, "FRAMETITLEHORIZCOLOR0:4", "0 255 0");
+//  IupSetAttribute(mat, "FRAMEHORIZCOLOR0:4", "255 0 0");
+//  IupSetAttribute(mat, "FRAMETITLEHORIZCOLOR0:*", "0 255 0");
+
 //  IupSetAttribute(mat,"MARKMODE","LINCOL");
 
   //IupSetAttribute(mat, "NUMCOL_VISIBLE_LAST", "YES");

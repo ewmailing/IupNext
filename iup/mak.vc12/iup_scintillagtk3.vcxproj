@@ -103,7 +103,10 @@
     <ClCompile Include="..\srcscintilla\gtk\PlatGTK.cxx" />
     <ClCompile Include="..\srcscintilla\gtk\scintilla-marshal.c" />
     <ClCompile Include="..\srcscintilla\gtk\ScintillaGTK.cxx" />
-    <ClCompile Include="..\srcscintilla\iup_scintilla.c" />
+    <ClCompile Include="..\srcscintilla\iup_scintilla.c">
+      <CompileAs Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">Default</CompileAs>
+      <CompileAs Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">Default</CompileAs>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="..\srcscintilla\include\ScintillaWidget.h" />
