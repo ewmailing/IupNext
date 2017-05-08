@@ -649,3 +649,44 @@ const char* iupFlatGetImageName(Ihandle* ih, const char* baseattrib, const char*
   return imagename;
 }
 
+static char* iFlatDrawGetImageNameId(Ihandle* ih, const char* baseattrib, const char* state, int id)
+{
+  char attrib[1024];
+  strcpy(attrib, baseattrib);
+  strcat(attrib, state);
+  return iupAttribGetId(ih, attrib, id);
+}
+
+const char* iupFlatGetImageNameId(Ihandle* ih, const char* baseattrib, int id, const char* basevalue, int press, int highlight, int active, int *make_inactive)
+{
+  const char* imagename = NULL;
+
+  *make_inactive = 0;
+
+  if (active)
+  {
+    if (press == id)
+      imagename = iFlatDrawGetImageNameId(ih, baseattrib, "PRESS", id);
+    else
+    {
+      if (highlight == id)
+        imagename = iFlatDrawGetImageNameId(ih, baseattrib, "HIGHLIGHT", id);
+    }
+  }
+  else
+  {
+    imagename = iFlatDrawGetImageNameId(ih, baseattrib, "INACTIVE", id);
+    if (!imagename)
+      *make_inactive = 1;
+  }
+
+  if (!imagename)
+  {
+    if (!basevalue)
+      basevalue = iupAttribGetId(ih, baseattrib, id);
+
+    imagename = basevalue;
+  }
+
+  return imagename;
+}

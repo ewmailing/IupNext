@@ -105,6 +105,7 @@ int iupFlatGetImagePosition(const char* value);
 char* iupFlatGetTextSize(Ihandle* ih, const char* str, int *w, int *h);
 
 const char* iupFlatGetImageName(Ihandle* ih, const char* baseattrib, const char* basevalue, int press, int highlight, int active, int *make_inactive);
+const char* iupFlatGetImageNameId(Ihandle* ih, const char* baseattrib, int id, const char* basevalue, int press, int highlight, int active, int *make_inactive);
 
 void iupFlatDrawBorder(IdrawCanvas* dc, int xmin, int xmax, int ymin, int ymax, int border_width, const char* color, const char* bgcolor, int active);
 
