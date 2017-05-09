@@ -186,9 +186,9 @@ static int iFlatTabsGetTitleHeight(Ihandle* ih, int *title_width, int scrolled_w
   return title_height;
 }
 
-static void iFlatTabsSetExtraFont(Ihandle* ih)
+static void iFlatTabsSetExtraFont(Ihandle* ih, int id)
 {
-  char* font = iupAttribGet(ih, "EXTRAFONT");
+  char* font = iupAttribGetId(ih, "EXTRAFONT", id);
   if (font)
     iupAttribSetStr(ih, "DRAWFONT", font);
   else
@@ -204,6 +204,8 @@ static int iFlatTabsGetExtraWidthId(Ihandle* ih, int i, int img_position, int ho
   char* title = iupAttribGetId(ih, "EXTRATITLE", i);
 
   int w = 0;
+
+  iFlatTabsSetExtraFont(ih, i);
 
   if (image)
   {
@@ -237,8 +239,6 @@ static int iFlatTabsGetExtraWidth(Ihandle* ih, int extra_buttons, int img_positi
 
   if (extra_buttons == 0)
     return 0;
-
-  iFlatTabsSetExtraFont(ih);
 
   for (i = 1; i <= extra_buttons; i++)
   {
@@ -369,7 +369,7 @@ static int iFlatTabsRedraw_CB(Ihandle* ih)
       else
         tab_active = iupAttribGetBooleanId(ih, "TABACTIVE", pos);
 
-      iFlatTabsGetTabSize(ih, fixedwidth, horiz_padding, vert_padding, show_close, pos, &tab_w, &tab_h);
+      iFlatTabsGetTabSize(ih, fixedwidth, horiz_padding, vert_padding, show_close, pos, &tab_w, &tab_h);  /* this will also set any id based font */
 
       if (current_child == child)
       {
@@ -425,6 +425,12 @@ static int iFlatTabsRedraw_CB(Ihandle* ih)
         }
       }
 
+      if (tab_x + tab_w > ih->currentwidth - extra_width)
+      {
+        int scroll_width = title_height / 2;
+        iupdrvDrawSetClipRect(dc, tab_x, 0, ih->currentwidth - extra_width - scroll_width, title_height);
+      }
+
       /* draw title background */
       iupFlatDrawBox(dc, tab_x, tab_x + tab_w, 0, title_height, background_color, NULL, 1);
 
@@ -475,8 +481,11 @@ static int iFlatTabsRedraw_CB(Ihandle* ih)
       /* goto next tab area */
       tab_x += tab_w;
 
-      if (tab_x > ih->currentwidth)
+      if (tab_x > ih->currentwidth - extra_width)
+      {
+        iupdrvDrawResetClip(dc);
         break;
+      }
     }
   }
 
@@ -516,7 +525,6 @@ static int iFlatTabsRedraw_CB(Ihandle* ih)
   {
     iupFlatDrawBox(dc, tab_x, ih->currentwidth - 1, 0, title_height, tabs_bgcolor, NULL, 1);
 
-    /* free area bottom line */
     if (show_lines)
       iupdrvDrawLine(dc, tab_x, title_height - 1, ih->currentwidth - 1, title_height - 1, line_r, line_g, line_b, IUP_DRAW_STROKE);
   }
@@ -554,14 +562,14 @@ static int iFlatTabsRedraw_CB(Ihandle* ih)
           extra_forecolor = forecolor;
       }
 
-      w = iFlatTabsGetExtraWidthId(ih, i, img_position, horiz_padding);
+      w = iFlatTabsGetExtraWidthId(ih, i, img_position, horiz_padding);  /* this will also set any id based font */
 
       extra_x = ih->currentwidth - right_extra_width - w;
 
       extra_image = iupFlatGetImageNameId(ih, "EXTRAIMAGE", i, extra_image, extra_press == extra_id, tab_highlighted == extra_id, extra_active, &make_inactive);
 
       iupFlatDrawIcon(ih, dc, extra_x, 0,
-                      w, title_height,
+                      w, title_height - 1,
                       img_position, spacing, horiz_alignment, vert_alignment, horiz_padding, vert_padding,
                       extra_image, make_inactive, extra_title, text_align, extra_forecolor, tabs_bgcolor, extra_active);
 
