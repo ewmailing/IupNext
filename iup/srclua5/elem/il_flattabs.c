@@ -12,13 +12,6 @@
 #include "il.h"
 
 
-static int flattabs_tabextra_cb(Ihandle *self, int p0)
-{
-  lua_State *L = iuplua_call_start(self, "tabextra_cb");
-  lua_pushinteger(L, p0);
-  return iuplua_call(L, 1);
-}
-
 static int FlatTabs(lua_State *L)
 {
   Ihandle *ih = IupFlatTabs(NULL);
@@ -31,7 +24,6 @@ int iupflattabslua_open(lua_State * L)
 {
   iuplua_register(L, FlatTabs, "FlatTabs");
 
-  iuplua_register_cb(L, "TABEXTRA_CB", (lua_CFunction)flattabs_tabextra_cb, NULL);
 
 #ifdef IUPLUA_USELOH
 #include "flattabs.loh"
