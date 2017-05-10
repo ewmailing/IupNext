@@ -11,7 +11,7 @@ local ctrl = {
     --tabchange_cb = "ii", -- already implemented in IupTabs, same definition
     --tabchangepos_cb = "nn", -- already implemented in IupTabs, same definition
     --tabclose_cb = "n", -- already implemented in IupTabs, same definition
-    tabextra_cb = "n",
+    --extrabutton_cb = "nn", -- already implemented in IupExpander, same definition
     --rightclick_cb = "n", -- already implemented in IupTree, same definition
   },
 }

@@ -368,6 +368,12 @@ static int enterwindow_cb(Ihandle *ih)
   return IUP_DEFAULT;
 }
 
+static int extrabutton_cb(Ihandle *ih, int button, int press)
+{
+  printf("EXTRABUTTON_CB(%d, %d)\n", button, press);
+  return IUP_DEFAULT;
+}
+
 static Ihandle* CreateTabs(int tab)
 {
   Ihandle *vboxA, *vboxB, *vboxG, *text, *button,
@@ -442,8 +448,8 @@ static Ihandle* CreateTabs(int tab)
   IupSetAttribute(tabs, "EXTRABUTTONS", "3");
   IupSetAttribute(tabs, "EXTRATITLE1", "Button1");
   IupSetAttribute(tabs, "EXTRATITLE2", "But2");
-  IupSetAttribute(tabs, "EXTRATITLE3", "3");
-//  IupSetStrAttribute(tabs, "EXTRAIMAGE3", IupGetAttribute(tabs, "TABIMAGE1"));
+//  IupSetAttribute(tabs, "EXTRATITLE3", "3");
+  IupSetStrAttribute(tabs, "EXTRAIMAGE3", IupGetAttribute(tabs, "TABIMAGE1"));
 
   IupSetAttribute(tabs, "SHOWCLOSE", "yes");
 //  IupSetAttribute(tabs, "TABSPADDING", "10x50");
@@ -472,6 +478,7 @@ static Ihandle* CreateTabs(int tab)
   //IupSetCallback(tabs, "KILLFOCUS_CB", (Icallback)killfocus_cb);
   //IupSetCallback(tabs, "ENTERWINDOW_CB", (Icallback)enterwindow_cb);
   //IupSetCallback(tabs, "LEAVEWINDOW_CB", (Icallback)leavewindow_cb);
+  IupSetCallback(tabs, "EXTRABUTTON_CB", (Icallback)extrabutton_cb);
 
   return tabs;
 }

@@ -151,8 +151,7 @@ from the current alignment. </p>
 	name to be used in the respective tab. Use <a href="../func/iupsethandle.html">
 	IupSetHandle</a> or
 	<a href="../func/iupsetattributehandle.html">IupSetAttributeHandle</a> to 
-	associate an image to a name. n starts at 0. See also <a href="iupimage.html">IupImage</a>. 
-  When set after map will update the TABIMAGE attribute on the respective child.</p>
+	associate an image to a name. n starts at 0. See also <a href="iupimage.html">IupImage</a>. </p>
 <p><strong>TABIMAGEHIGHTLIGHTn</strong>: same as TABIMAGEn when in highlight 
 state. If not defined TABIMAGEn is used. (since 3.22)</p>
 <p><strong>TABIMAGEINACTIVEn</strong>: same as TABIMAGEn when in inactive state. 
@@ -163,15 +162,14 @@ version creating the disabled effect. (since 3.22)</p>
 <p><strong>TABVISIBLEn</strong>: Allows to hide a tab. n starts at 0. When a tab 
 is hidden the tabs indices are not changed. Can be Yes or No. Default: Yes.</p>
 <p><strong>TABTITLEn</strong>: Contains the text to be shown in the respective 
-tab title. n starts at 0. If this value is NULL, it will remain empty. When set 
-after map will update the TABTITLE attribute on the respective child.</p>
+tab title. n starts at 0. If this value is NULL, it will remain empty. </p>
 <p><strong>TABACTIVEn</strong>: active state of the tab.&nbsp; Can be Yes or No. 
 Default: Yes.</p>
-<p><strong>TABFORECOLORn</strong>: text color of the tab. When not defined TABSFORECOLOR 
+<p><strong>TABFORECOLORn</strong>: text color of the tab title. When not defined TABSFORECOLOR 
 is used.</p>
 <p><strong>TABBACKCOLORn</strong>: background color of the tab. When not defined TABSBACKCOLOR 
 is used.</p>
-<p><strong>TABHIGHCOLORn</strong>: highlight color of the tab. When not defined TABSHIGHCOLOR 
+<p><strong>TABHIGHCOLORn</strong>: highlight color of the tab title. When not defined TABSHIGHCOLOR 
 is used.</p>
 <p><strong>TABFONTn</strong>: text font of the tab. When not defined TABSFONT is 
 used.</p>
@@ -179,6 +177,41 @@ used.</p>
 set TABFONTn. </p>
 <p><strong>TABFONTSIZEn</strong>: text font size. When change will actually set 
 TABFONTn. </p>
+<h4>Extra Buttons (<font SIZE="3">non inheritable</font>) (since 3.22)</h4>
+<p><strong>EXTRABUTTONS</strong>: sets 
+the number of extra image buttons at right in the free space area. There can be 
+any number of buttons. See the EXTRABUTTON_CB callback. Default: 0.</p>
+<p class="info">Button id starts at 1, and are positioned from right to left. 
+Just like the tabs they do not affect natural width. But they also don't affect 
+the tabs title height, if button title or image are larger than the tabs title 
+height they will be cropped.</p>
+<p><strong>EXTRATITLE</strong><em><strong>id</strong></em>: text of the 
+respective button</p>
+<p><strong>EXTRAACTIVE</strong><em><strong>id</strong></em>: active state of the 
+button. Can be Yes or No. When not defined works as &quot;Yes&quot;.</p>
+<p><strong>EXTRAFORECOLOR</strong><em><strong>id</strong></em>: text color of 
+the button title. When not defined TABSFORECOLOR 
+is used.</p>
+<p><strong>EXTRAHIGHCOLOR</strong><em><strong>id</strong></em>: highlight color 
+of the button title. When not defined HIGHCOLOR 
+is used.</p>
+<p><strong>EXTRAFONT</strong><em><strong>id</strong></em>: text font of the 
+button. When not defined TABSFONT is used.</p>
+<p><strong>EXTRAIMAGE</strong><em><strong>id</strong></em>: image name to be 
+used in the respective button. Use <a href="../func/iupsethandle.html">
+	IupSetHandle</a> or
+	<a href="../func/iupsetattributehandle.html">IupSetAttributeHandle</a> to 
+	associate an image to a name. n starts at 0. See also <a href="iupimage.html">IupImage</a>. </p>
+<p><strong>EXTRAIMAGEPRESS</strong><em><strong>id</strong></em>: same as 
+EXTRAIMAGE<em>id</em> when in pressed 
+state. If not defined EXTRAIMAGE<em>id</em> is used.</p>
+<p><strong>EXTRAIMAGEHIGHLIGHT</strong><em><strong>id</strong></em>: same as 
+EXTRAIMAGE<em>id</em> when in highlight 
+state. If not defined EXTRAIMAGE<em>id</em> is used.</p>
+<p><strong>EXTRAIMAGEINACTIVE</strong><em><strong>id</strong></em>: same as 
+EXTRAIMAGE<em>id</em> when in inactive 
+state. If not defined EXTRAIMAGE<em>id</em> is used and its colors will be 
+replaced by a modified version creating the disabled effect.</p>
 <h4>Current Tab (<font SIZE="3">non inheritable</font>)</h4>
 <p><strong>VALUE</strong>: Changes the 
 current tab by its name. The value passed must be the name of one of the elements 
@@ -213,11 +246,13 @@ VISIBLE</a>: also accepted.</p>
 
 <h3>Attributes (at Children)</h3>
 <p><strong>TABTITLE </strong>(<font SIZE="3">non inheritable</font>) <strong>(at 
-children only)</strong>: Same as <strong>TABTITLEn</strong> but set in each 
-child. Works only if set before the child is added to the tabs.</p>
+children only)</strong>: Same as TABTITLEn but set in each 
+child. Works only if set before the child is added to the tabs. Is not updated 
+if TABTITLEn is changed.</p>
 <p><strong>TABIMAGE </strong>(<font SIZE="3">non inheritable</font>) <strong>(at 
 children only)</strong>: Same as <strong>TABIMAGEn</strong> but set in each 
-child. Works only if set before the child is added to the tabs.</p>
+child. Works only if set before the child is added to the tabs. Is not updated 
+if TABIMAGEn is changed.</p>
 
 <h3><a name="Callbacks">Callbacks</a></h3>
 
@@ -275,9 +310,18 @@ tab using the right mouse button.</p>
 <p class="info"><strong>ih</strong>: identifier of the element that activated 
 the event.<br>
     <strong>pos</strong>: the tab position</p>
-  <blockquote>
-  <hr>
-</blockquote>
+  <p><strong>EXTRABUTTON_CB</strong>:
+  Action generated when any mouse button is 
+  pressed or released. (since 3.22)</p>
+<pre>int function(Ihandle* <strong>ih</strong>, int <strong>button</strong>, int <strong>pressed</strong>); [in C]
+<strong>ih</strong>:extrabutton_cb(<strong>button</strong>, <strong>pressed</strong>: number) -&gt; (<strong>ret</strong>: number) [in Lua]</pre>
+<p class="info"><strong>ih</strong>:
+  identifies the element that activated the 
+  event.<br><strong>button</strong>: identifies the extra button. Can be 1, 2, 3, 
+4, and so on. (this is 
+not the same as BUTTON_CB)<br><strong>pressed</strong>:
+  indicates the state of the button (1=pressed, 0=released)</p>
+<hr>
 
 <p><a href="../call/iup_map_cb.html">MAP_CB</a>, 
 <a href="../call/iup_unmap_cb.html">UNMAP_CB</a>, 

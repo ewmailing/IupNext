@@ -503,7 +503,10 @@ static int iFlatTabsRedraw_CB(Ihandle* ih)
     iFlatTabsDrawScrollLeftButton(dc, tabs_bgcolor, foreground_color, active, title_height);
 
     if (show_lines)
-      iupdrvDrawLine(dc, 0, title_height - 1, title_height / 2 - 1, title_height - 1, line_r, line_g, line_b, IUP_DRAW_STROKE); /* left arrow bottom horizontal */
+    {
+      int scroll_width = title_height / 2;
+      iupdrvDrawLine(dc, 0, title_height - 1, scroll_width - 1, title_height - 1, line_r, line_g, line_b, IUP_DRAW_STROKE); /* left arrow bottom horizontal */
+    }
   }
 
   if (title_width > ih->currentwidth - extra_width)
@@ -518,6 +521,12 @@ static int iFlatTabsRedraw_CB(Ihandle* ih)
     }
 
     iFlatTabsDrawScrollRightButton(dc, tabs_bgcolor, foreground_color, active, title_height, ih->currentwidth - extra_width);
+
+    if (show_lines)
+    {
+      int scroll_width = title_height / 2;
+      iupdrvDrawLine(dc, ih->currentwidth - extra_width - scroll_width, title_height - 1, ih->currentwidth - 1, title_height - 1, line_r, line_g, line_b, IUP_DRAW_STROKE); /* right arrow bottom horizontal */
+    }
   }
 
   /* draw title free background */
@@ -801,6 +810,9 @@ static int iFlatTabsButton_CB(Ihandle* ih, int button, int pressed, int x, int y
       {
         Ihandle* child = IupGetChild(ih, tab_found);
         Ihandle* prev_child = iFlatTabsGetCurrentTab(ih);
+
+        iupAttribSetInt(ih, "_IUPFTABS_CLOSEPRESS", ITABS_NONE);
+
         if (prev_child != child)
         {
           int prev_pos = IupGetChildPos(ih, prev_child);
@@ -808,8 +820,6 @@ static int iFlatTabsButton_CB(Ihandle* ih, int button, int pressed, int x, int y
           if (ret == IUP_DEFAULT)
             iFlatTabsSetCurrentTab(ih, child);
         }
-
-        iupAttribSetInt(ih, "_IUPFTABS_CLOSEPRESS", ITABS_NONE);
       }
     }
     else if (tab_found == ITABS_SB_LEFT)
@@ -839,6 +849,10 @@ static int iFlatTabsButton_CB(Ihandle* ih, int button, int pressed, int x, int y
     }
     else if (tab_found <= ITABS_EXTRABUTTTON1)
     {
+      IFnii cb = (IFnii)IupGetCallback(ih, "EXTRABUTTON_CB");
+      if (cb)
+        cb(ih, ITABS_EXTRABUTTTON1 - tab_found + 1, 1);
+
       iupAttribSetInt(ih, "_IUPFTABS_EXTRAPRESS", tab_found);
       iupdrvPostRedraw(ih);
     }
@@ -871,10 +885,11 @@ static int iFlatTabsButton_CB(Ihandle* ih, int button, int pressed, int x, int y
           {
             IupDestroy(child);
             IupRefreshChildren(ih);
-            iupdrvPostRedraw(ih);
           }
           else if (ret == IUP_DEFAULT) /* hide tab and children */
             IupSetAttributeId(ih, "TABVISIBLE", tab_found, "No");
+          else
+            iupdrvPostRedraw(ih);
         }
       }
     }
@@ -891,9 +906,11 @@ static int iFlatTabsButton_CB(Ihandle* ih, int button, int pressed, int x, int y
 
       if (tab_found <= ITABS_EXTRABUTTTON1 && iFlatTabsGetExtraActive(ih, tab_found) && extra_press == tab_found)
       {
-        IFni cb = (IFni)IupGetCallback(ih, "TABEXTRA_CB");
+        IFnii cb = (IFnii)IupGetCallback(ih, "EXTRABUTTON_CB");
         if (cb)
-          cb(ih, ITABS_EXTRABUTTTON1 - tab_found + 1);
+          cb(ih, ITABS_EXTRABUTTTON1 - tab_found + 1, 0);
+
+        iupdrvPostRedraw(ih);
       }
     }
   }
@@ -1563,7 +1580,7 @@ Iclass* iupFlatTabsNewClass(void)
   iupClassRegisterCallback(ic, "TABCHANGEPOS_CB", "ii");
   iupClassRegisterCallback(ic, "RIGHTCLICK_CB", "i");
   iupClassRegisterCallback(ic, "TABCLOSE_CB", "i");
-  iupClassRegisterCallback(ic, "TABEXTRA_CB", "i");
+  iupClassRegisterCallback(ic, "EXTRABUTTON_CB", "ii");
 
   iupClassRegisterCallback(ic, "FLAT_BUTTON_CB", "iiiis");
   iupClassRegisterCallback(ic, "FLAT_MOTION_CB", "iis");
