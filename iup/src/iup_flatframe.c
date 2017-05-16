@@ -76,14 +76,12 @@ static int iFlatFrameGetTitleHeight(Ihandle* ih)
 
 static int iFlatFrameRedraw_CB(Ihandle* ih)
 {
-  char* backcolor = iupAttribGetStr(ih, "BGCOLOR");
+  char* backcolor = iupAttribGet(ih, "BGCOLOR");
   int frame_width = iupAttribGetInt(ih, "FRAMEWIDTH");
   int frame = iupAttribGetBoolean(ih, "FRAME");
   IdrawCanvas* dc = iupdrvDrawCreateCanvas(ih);
   int title_height = iFlatFrameGetTitleHeight(ih);
   char* text_align = iupAttribGetStr(ih, "TITLETEXTALIGNMENT");
-
-  iupdrvDrawParentBackground(dc);
 
   if (!backcolor)
     backcolor = iupBaseNativeParentGetBgColorAttrib(ih);
@@ -237,9 +235,7 @@ Iclass* iupFlatFrameNewClass(void)
   iupClassRegisterAttribute(ic, "DECORSIZE", iFlatFrameGetDecorSizeAttrib, NULL, NULL, NULL, IUPAF_NOT_MAPPED | IUPAF_READONLY | IUPAF_NO_INHERIT);
   iupClassRegisterAttribute(ic, "DECOROFFSET", iFlatFrameGetDecorOffsetAttrib, NULL, NULL, NULL, IUPAF_NOT_MAPPED | IUPAF_READONLY | IUPAF_NO_INHERIT);
 
-  /* Special */
-  iupClassRegisterAttribute(ic, "BGCOLOR", NULL, NULL, IUPAF_SAMEASSYSTEM, "DLGBGCOLOR", IUPAF_DEFAULT);
-
+  /* FlatFrame */
   iupClassRegisterAttribute(ic, "TITLE", NULL, NULL, NULL, NULL, IUPAF_NO_DEFAULTVALUE | IUPAF_NO_INHERIT);
   iupClassRegisterAttribute(ic, "TITLECOLOR", NULL, NULL, IUPAF_SAMEASSYSTEM, "DLGFGCOLOR", IUPAF_NO_INHERIT);
   iupClassRegisterAttribute(ic, "TITLEBGCOLOR", NULL, NULL, IUPAF_SAMEASSYSTEM, "DLGBGCOLOR", IUPAF_NO_INHERIT);
