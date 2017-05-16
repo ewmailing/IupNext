@@ -44,8 +44,8 @@ flatscrollbox(<strong>child</strong>) [in LED]</pre>
 
 <p>Inherits all attributes and callbacks of the <a href="../elem/iupcanvas.html">IupCanvas</a>, 
 but redefines a few attributes.</p>
-<p><a href="../attrib/iup_bgcolor.html">BGCOLOR</a>: will always use the background 
-color of the native parent. It will be used in the children area.</p>
+<p><a href="../attrib/iup_bgcolor.html">BGCOLOR</a>: will always use the 
+background color of the native parent.</p>
 
 <p><b>BORDER </b>(creation only):
   
@@ -72,9 +72,8 @@ horizontal and vertical offsets, respectively, in pixels. Default: 0x0.</p>
 <p><strong>LAYOUTDRAG</strong> (<font SIZE="3">non inheritable</font>): When the 
 scrollbar is moved automatically update the children layout. Default: YES. If 
 set to NO then the layout will be updated only when the mouse drag is released.</p>
-<p><a href="../attrib/iup_scrollbar.html">SCROLLBAR</a> (read-only): the 
-default value is "NO". So the IupCanvas scrollbars are hidden, but it will 
-behave as always Yes. YAUTOHIDE and XAUTOHIDE will be always Yes.</p>
+<p><a href="../attrib/iup_scrollbar.html">SCROLLBAR</a> (read-only): is always "NO". So the IupCanvas 
+native scrollbars are hidden. See the FLATSCROLLBAR attribute bellow. YAUTOHIDE and XAUTOHIDE will be always Yes.</p>
 <p>
 <font SIZE="3">
 	<strong>SCROLLTO</strong> (write-only): position the scroll at the given x,y 
@@ -91,7 +90,6 @@ hierarchy.</font></p>
 <p><font SIZE="3">
 	<strong>SCROLLTOCHILD_HANDLE</strong> (write-only): same as SCROLLTOCHILD 
 but directly using the child handle.</font></p>
-<p>SCROLLBAR is always NO.</p>
 <p> <a href="../attrib/iup_flatscrollbar.html">FLATSCROLLBAR</a>: Can be Yes, 
 Vertical or Horizontal. Can be set only before map. Default: Yes. </p>
 <h3>Scrollbars Appearance Attributes</h3>

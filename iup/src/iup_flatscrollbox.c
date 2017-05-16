@@ -99,28 +99,6 @@ static int iFlatScrollBoxFlatScroll_CB(Ihandle *ih)
 /*****************************************************************************/
 
 
-static int iFlatScrollBoxAction_CB(Ihandle* ih)
-{
-  char* bgcolor = iupAttribGetStr(ih, "BGCOLOR");
-
-  IdrawCanvas* dc = iupdrvDrawCreateCanvas(ih);
-
-  iupdrvDrawParentBackground(dc);
-
-  if (!bgcolor)
-    bgcolor = iupBaseNativeParentGetBgColorAttrib(ih);
-
-  /* draw child area background */
-  iupFlatDrawBox(dc, 0, ih->currentwidth - 1,
-                     0, ih->currentheight - 1, bgcolor, NULL, 1);
-
-  iupdrvDrawFlush(dc);
-
-  iupdrvDrawKillCanvas(dc);
-
-  return IUP_DEFAULT;
-}
-
 static int iFlatScrollBoxButton_CB(Ihandle *ih, int but, int pressed, int x, int y, char* status)
 {
   if (but == IUP_BUTTON1 && pressed)
@@ -387,12 +365,12 @@ static int iFlatScrollBoxCreateMethod(Ihandle* ih, void** params)
   iupFlatScrollBarCreate(ih);
 
   /* Setting callbacks */
-  IupSetCallback(ih, "SCROLL_CB", (Icallback)iFlatScrollBoxScroll_CB);
   IupSetCallback(ih, "FLATSCROLL_CB", (Icallback)iFlatScrollBoxFlatScroll_CB);
+  IupSetCallback(ih, "SCROLL_CB", (Icallback)iFlatScrollBoxScroll_CB);
   IupSetCallback(ih, "BUTTON_CB", (Icallback)iFlatScrollBoxButton_CB);
   IupSetCallback(ih, "MOTION_CB", (Icallback)iFlatScrollBoxMotion_CB);
   IupSetCallback(ih, "WHEEL_CB", (Icallback)iFlatScrollBoxWheel_CB);
-  IupSetCallback(ih, "ACTION", (Icallback)iFlatScrollBoxAction_CB);
+
   IupSetAttribute(ih, "CANFOCUS", "NO");
 
   if (params)
