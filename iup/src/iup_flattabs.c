@@ -276,8 +276,6 @@ static void iFlatTabsDrawScrollLeftButton(IdrawCanvas* dc, const char *tabs_bgco
   int x = (scroll_width - arrow_size) / 2;
   int y = (title_height - arrow_size) / 2;
 
-  iupFlatDrawBox(dc, 0, scroll_width - 1, 0, title_height - 2, tabs_bgcolor, NULL, 1);
-
   iupFlatDrawArrow(dc, x, y, arrow_size, tabs_forecolor, tabs_bgcolor, active, IUPDRAW_ARROW_LEFT);
 }
 
@@ -289,8 +287,6 @@ static void iFlatTabsDrawScrollRightButton(IdrawCanvas* dc, const char *tabs_bgc
   int x = width - 1 - scroll_width + (scroll_width - arrow_size) / 2;
   int y = (title_height - arrow_size) / 2;
 
-  iupFlatDrawBox(dc, width - 1 - scroll_width, width - 1, 0, title_height - 2, tabs_bgcolor, NULL, 1);
-
   iupFlatDrawArrow(dc, x, y, arrow_size, tabs_forecolor, tabs_bgcolor, active, IUPDRAW_ARROW_RIGHT);
 }
 
@@ -300,7 +296,7 @@ static int iFlatTabsRedraw_CB(Ihandle* ih)
   char* bgcolor = iupAttribGetStr(ih, "BGCOLOR");
   char* forecolor = iupAttribGetStr(ih, "FORECOLOR");
   char* highcolor = iupAttribGetStr(ih, "HIGHCOLOR");
-  char* tabs_bgcolor = iupAttribGetStr(ih, "TABSBACKCOLOR");
+  char* tabs_bgcolor = iupAttribGet(ih, "TABSBACKCOLOR");
   char* tabs_forecolor = iupAttribGetStr(ih, "TABSFORECOLOR");
   char* tabs_highcolor = iupAttribGetStr(ih, "TABSHIGHCOLOR");
   int img_position = iupFlatGetImagePosition(iupAttribGetStr(ih, "TABSIMAGEPOSITION"));
@@ -322,11 +318,14 @@ static int iFlatTabsRedraw_CB(Ihandle* ih)
 
   IdrawCanvas* dc = iupdrvDrawCreateCanvas(ih);
 
-  iupdrvDrawParentBackground(dc);
+  if (!tabs_bgcolor)
+    tabs_bgcolor = iupBaseNativeParentGetBgColorAttrib(ih);
 
   /* draw child area background */
-  iupFlatDrawBox(dc, 0, ih->currentwidth - 1,
-                 title_height, ih->currentheight - 1, bgcolor, NULL, 1);
+  iupFlatDrawBox(dc, 0, ih->currentwidth - 1, title_height, ih->currentheight - 1, bgcolor, NULL, 1);
+
+  /* title area background */
+  iupFlatDrawBox(dc, 0, ih->currentwidth - 1, 0, title_height - 1, tabs_bgcolor, NULL, 1);
 
   iupAttribGetIntInt(ih, "TABSPADDING", &horiz_padding, &vert_padding, 'x');
   iFlatTabsGetAlignment(ih, &horiz_alignment, &vert_alignment);
@@ -336,6 +335,9 @@ static int iFlatTabsRedraw_CB(Ihandle* ih)
   {
     char* title_line_color = iupAttribGetStr(ih, "TABSLINECOLOR");
     iupStrToRGB(title_line_color, &line_r, &line_g, &line_b);
+
+    /* tab bottom horizontal and top children horizontal */
+    iupdrvDrawLine(dc, 0, title_height - 1, ih->currentwidth - 1, title_height - 1, line_r, line_g, line_b, IUP_DRAW_STROKE);
   }
 
   scroll_pos = iupAttribGetInt(ih, "_IUPFTABS_SCROLLPOS");
@@ -359,8 +361,8 @@ static int iFlatTabsRedraw_CB(Ihandle* ih)
       char* tab_backcolor = iupAttribGetId(ih, "TABBACKCOLOR", pos);
       char* tab_forecolor = iupAttribGetId(ih, "TABFORECOLOR", pos);
       char* tab_highcolor = iupAttribGetId(ih, "TABHIGHCOLOR", pos);
+      char* background_color = NULL;
       int tab_w, tab_h, tab_active;
-      char* background_color;
       char* foreground_color;
       int icon_width, make_inactive = 0;
 
@@ -380,7 +382,6 @@ static int iFlatTabsRedraw_CB(Ihandle* ih)
       else
       {
         /* other tabs are drawn with these colors */
-        background_color = tabs_bgcolor;
         if (tab_backcolor)
           background_color = tab_backcolor;
 
@@ -431,19 +432,17 @@ static int iFlatTabsRedraw_CB(Ihandle* ih)
         iupdrvDrawSetClipRect(dc, tab_x, 0, ih->currentwidth - extra_width - scroll_width, title_height);
       }
 
-      /* draw title background */
-      iupFlatDrawBox(dc, tab_x, tab_x + tab_w, 0, title_height, background_color, NULL, 1);
+      /* draw tab title background */
+      if (background_color)
+        iupFlatDrawBox(dc, tab_x, tab_x + tab_w, 0, title_height - 1, background_color, NULL, 1);
+      else
+        background_color = tabs_bgcolor;
 
-      if (show_lines)
+      if (show_lines && current_child == child)
       {
-        if (current_child == child)
-        {
-          iupdrvDrawLine(dc, tab_x, 0, tab_x + tab_w - 1, 0, line_r, line_g, line_b, IUP_DRAW_STROKE); /* tab top horizontal */
-          iupdrvDrawLine(dc, tab_x, 0, tab_x, title_height - 1, line_r, line_g, line_b, IUP_DRAW_STROKE); /* tab left vertical */
-          iupdrvDrawLine(dc, tab_x + tab_w - 1, 0, tab_x + tab_w - 1, title_height - 1, line_r, line_g, line_b, IUP_DRAW_STROKE); /* tab right vertical */
-        }
-        else
-          iupdrvDrawLine(dc, tab_x, title_height - 1, tab_x + tab_w - 1, title_height - 1, line_r, line_g, line_b, IUP_DRAW_STROKE); /* tab bottom horizontal */
+        iupdrvDrawLine(dc, tab_x, 0, tab_x + tab_w - 1, 0, line_r, line_g, line_b, IUP_DRAW_STROKE); /* tab top horizontal */
+        iupdrvDrawLine(dc, tab_x, 0, tab_x, title_height - 1, line_r, line_g, line_b, IUP_DRAW_STROKE); /* tab left vertical */
+        iupdrvDrawLine(dc, tab_x + tab_w - 1, 0, tab_x + tab_w - 1, title_height - 1, line_r, line_g, line_b, IUP_DRAW_STROKE); /* tab right vertical */
       }
 
       icon_width = tab_w;
@@ -501,12 +500,6 @@ static int iFlatTabsRedraw_CB(Ihandle* ih)
     }
 
     iFlatTabsDrawScrollLeftButton(dc, tabs_bgcolor, foreground_color, active, title_height);
-
-    if (show_lines)
-    {
-      int scroll_width = title_height / 2;
-      iupdrvDrawLine(dc, 0, title_height - 1, scroll_width - 1, title_height - 1, line_r, line_g, line_b, IUP_DRAW_STROKE); /* left arrow bottom horizontal */
-    }
   }
 
   if (title_width > ih->currentwidth - extra_width)
@@ -521,21 +514,6 @@ static int iFlatTabsRedraw_CB(Ihandle* ih)
     }
 
     iFlatTabsDrawScrollRightButton(dc, tabs_bgcolor, foreground_color, active, title_height, ih->currentwidth - extra_width);
-
-    if (show_lines)
-    {
-      int scroll_width = title_height / 2;
-      iupdrvDrawLine(dc, ih->currentwidth - extra_width - scroll_width, title_height - 1, ih->currentwidth - 1, title_height - 1, line_r, line_g, line_b, IUP_DRAW_STROKE); /* right arrow bottom horizontal */
-    }
-  }
-
-  /* draw title free background */
-  if (tab_x < ih->currentwidth)
-  {
-    iupFlatDrawBox(dc, tab_x, ih->currentwidth - 1, 0, title_height, tabs_bgcolor, NULL, 1);
-
-    if (show_lines)
-      iupdrvDrawLine(dc, tab_x, title_height - 1, ih->currentwidth - 1, title_height - 1, line_r, line_g, line_b, IUP_DRAW_STROKE);
   }
 
   if (extra_buttons)
@@ -589,9 +567,9 @@ static int iFlatTabsRedraw_CB(Ihandle* ih)
   /* lines around children */
   if (show_lines)
   {
-    iupdrvDrawLine(dc, 0, title_height, 0, ih->currentheight - 1, line_r, line_g, line_b, IUP_DRAW_STROKE); /* left vertical */
-    iupdrvDrawLine(dc, ih->currentwidth - 1, title_height, ih->currentwidth - 1, ih->currentheight - 1, line_r, line_g, line_b, IUP_DRAW_STROKE); /* right vertical */
-    iupdrvDrawLine(dc, 0, ih->currentheight - 1, ih->currentwidth - 1, ih->currentheight - 1, line_r, line_g, line_b, IUP_DRAW_STROKE); /* bottom horizontal */
+    iupdrvDrawLine(dc, 0, title_height, 0, ih->currentheight - 1, line_r, line_g, line_b, IUP_DRAW_STROKE); /* left children vertical */
+    iupdrvDrawLine(dc, ih->currentwidth - 1, title_height, ih->currentwidth - 1, ih->currentheight - 1, line_r, line_g, line_b, IUP_DRAW_STROKE); /* right children vertical */
+    iupdrvDrawLine(dc, 0, ih->currentheight - 1, ih->currentwidth - 1, ih->currentheight - 1, line_r, line_g, line_b, IUP_DRAW_STROKE); /* bottom children horizontal */
   }
 
   iupdrvDrawFlush(dc);
@@ -1628,11 +1606,12 @@ Iclass* iupFlatTabsNewClass(void)
   iupClassRegisterAttribute(ic, "FORECOLOR", NULL, iFlatTabsUpdateSetAttrib, IUPAF_SAMEASSYSTEM, "50 150 255", IUPAF_NO_INHERIT);
   iupClassRegisterAttribute(ic, "HIGHCOLOR", NULL, NULL, NULL, NULL, IUPAF_NO_INHERIT);
 
-  /* Visual for other TABS */
+  /* Visual for the other TABS */
   iupClassRegisterAttribute(ic, "TABSFORECOLOR", NULL, iFlatTabsUpdateSetAttrib, IUPAF_SAMEASSYSTEM, "DLGFGCOLOR", IUPAF_NO_INHERIT);
   iupClassRegisterAttribute(ic, "TABSBACKCOLOR", NULL, iFlatTabsUpdateSetAttrib, IUPAF_SAMEASSYSTEM, "DLGBGCOLOR", IUPAF_NO_INHERIT);
   iupClassRegisterAttribute(ic, "TABSHIGHCOLOR", NULL, NULL, NULL, NULL, IUPAF_NO_INHERIT);
 
+  /* Visual for all TABS */
   iupClassRegisterAttribute(ic, "TABSFONT", NULL, iFlatTabsSetTabsFontAttrib, NULL, NULL, IUPAF_NO_INHERIT);
   iupClassRegisterAttribute(ic, "TABSFONTSTYLE", iFlatTabsGetTabsFontStyleAttrib, iFlatTabsSetTabsFontStyleAttrib, NULL, NULL, IUPAF_NO_SAVE | IUPAF_NOT_MAPPED | IUPAF_NO_INHERIT);
   iupClassRegisterAttribute(ic, "TABSFONTSIZE", iFlatTabsGetTabsFontSizeAttrib, iFlatTabsSetTabsFontSizeAttrib, NULL, NULL, IUPAF_NO_SAVE | IUPAF_NOT_MAPPED | IUPAF_NO_INHERIT);
@@ -1653,6 +1632,7 @@ Iclass* iupFlatTabsNewClass(void)
   iupClassRegisterAttribute(ic, "CLOSEPRESSCOLOR", NULL, NULL, IUPAF_SAMEASSYSTEM, "80 180 245", IUPAF_NO_INHERIT);
   iupClassRegisterAttribute(ic, "CLOSEHIGHCOLOR", NULL, NULL, IUPAF_SAMEASSYSTEM, "200 220 245", IUPAF_NO_INHERIT);
 
+  /* Extra Buttons */
   iupClassRegisterAttribute(ic, "EXTRABUTTONS", NULL, NULL, NULL, NULL, IUPAF_NO_INHERIT);
   iupClassRegisterAttributeId(ic, "EXTRATITLE", NULL, (IattribSetIdFunc)iFlatTabsUpdateSetAttrib, IUPAF_NO_INHERIT);
   iupClassRegisterAttributeId(ic, "EXTRAACTIVE", NULL, (IattribSetIdFunc)iFlatTabsUpdateSetAttrib, IUPAF_NO_INHERIT);
