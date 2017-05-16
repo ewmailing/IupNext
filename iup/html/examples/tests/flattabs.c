@@ -435,7 +435,7 @@ static Ihandle* CreateTabs(int tab)
 //  IupSetAttribute(tabs, "TABSHIGHCOLOR", "192 0 0");
 
   /* like Office 2016 */
-  if (1)
+  if (0)
   {
     IupSetAttribute(tabs, "FORECOLOR", "192 0 0");
     IupSetAttribute(tabs, "TABSBACKCOLOR", "192 0 0");
