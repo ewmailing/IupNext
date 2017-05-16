@@ -253,7 +253,7 @@ static int iDetachBoxAction_CB(Ihandle* bar)
   Ihandle* ih = bar->parent;
   IdrawCanvas* dc = iupdrvDrawCreateCanvas(bar);
 
-  iupdrvDrawParentBackground(dc);
+  iupdrvDrawParentBackground(dc, ih);
 
   if (ih->data->showgrip)
   {

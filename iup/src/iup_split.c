@@ -245,7 +245,7 @@ static int iSplitAction_CB(Ihandle* bar)
 
   dc = iupdrvDrawCreateCanvas(bar);
 
-  iupdrvDrawParentBackground(dc);
+  iupdrvDrawParentBackground(dc, ih);
 
   if (ih->data->showgrip)
   {

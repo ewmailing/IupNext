@@ -46,10 +46,6 @@ void iupdrvDrawUpdateSize(IdrawCanvas* dc);
  * \ingroup draw */
 void iupdrvDrawGetSize(IdrawCanvas* dc, int *w, int *h);
 
-/** Draws a filled rectangle with the parent background color.
- * \ingroup draw */
-void iupdrvDrawParentBackground(IdrawCanvas* dc);
-
 /** Draws a line.
  * \ingroup draw */
 void iupdrvDrawLine(IdrawCanvas* dc, int x1, int y1, int x2, int y2, unsigned char r, unsigned char g, unsigned char b, int style);
@@ -92,6 +88,10 @@ void iupdrvDrawSelectRect(IdrawCanvas* dc, int x1, int y1, int x2, int y2);
 /** Draws a focus rectangle.
  * \ingroup draw */
 void iupdrvDrawFocusRect(IdrawCanvas* dc, int x1, int y1, int x2, int y2);
+
+/** Draws a filled rectangle with the parent background color.
+* \ingroup draw */
+void iupdrvDrawParentBackground(IdrawCanvas* dc, Ihandle* ih);
 
 
 /**********************************************************************************************************/

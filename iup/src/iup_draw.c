@@ -77,7 +77,7 @@ void IupDrawParentBackground(Ihandle* ih)
   if (!dc)
     return;
 
-  iupdrvDrawParentBackground(dc);
+  iupdrvDrawParentBackground(dc, ih);
 }
 
 static int iDrawGetStyle(Ihandle* ih)
@@ -299,6 +299,16 @@ void IupDrawFocusRect(Ihandle* ih, int x1, int y1, int x2, int y2)
     return;
 
   iupdrvDrawFocusRect(dc, x1, y1, x2, y2);
+}
+
+void iupdrvDrawParentBackground(IdrawCanvas* dc, Ihandle* ih)
+{
+  unsigned char r = 0, g = 0, b = 0;
+  int w, h;
+  char* color = iupBaseNativeParentGetBgColorAttrib(ih);
+  iupStrToRGB(color, &r, &g, &b);
+  iupdrvDrawGetSize(dc, &w, &h);
+  iupdrvDrawRectangle(dc, 0, 0, w - 1, h - 1, r, g, b, IUP_DRAW_FILL);
 }
 
 
