@@ -92,23 +92,8 @@ No.</p>
 <span class="hps">tab.</span></span><span id="result_box0" class="" lang="en"><span class="">
 </span></span>Default value: &quot;NO&quot;. By default when closed the tab is hidden. 
 To change that behavior use the TABCLOSE_CB callback.</p>
-<p><strong>CLOSEIMAGE</strong>: image name to be used in the close button. Use <a href="../func/iupsethandle.html">
-	IupSetHandle</a> or
-	<a href="../func/iupsetattributehandle.html">IupSetAttributeHandle</a> to 
-	associate an image to a name. n starts at 0. See also <a href="iupimage.html">IupImage</a>. 
-Default: &quot;IMGFLATCLOSE&quot;.</p>
-<p><strong>CLOSEIMAGEPRESS</strong>: image name to be used in the close button 
-in pressed state. Default: &quot;IMGFLATCLOSEPRESS&quot;.</p>
-<p><strong>CLOSEIMAGEHIGHLIGHT</strong>: image name to be used in the close 
-button in highlight state. </p>
-<p><strong>CLOSEIMAGEINACTIVE</strong>: image name to be used in the close button 
-in inactive state. If it is not defined then the CLOSEIMAGE is used and its 
-colors will be replaced by a modified version creating the disabled effect. 
-(since 3.22)</p>
-<p><strong>CLOSEPRESSCOLOR</strong>: background color of the close button in 
-pressed state. Default: &quot;80 180 245&quot;. (since 3.22)</p>
-<p><strong>CLOSEHIGHCOLOR</strong>: background color of the close button in 
-highlight state. Default: &quot;200 220 245&quot;.</p>
+<p><strong>SHOWLINES</strong>: when enabled the current tab will be separated of 
+the other tabs by a line. Can be Yes or No. Default: Yes.</p>
 <p><a href="../attrib/iup_size.html">SIZE</a>: 
 	The default size is the smallest size that fits its largest child. All child 
 	elements are considered even invisible ones.</p>
@@ -132,8 +117,6 @@ TABSFONT.</p>
 <p><strong>TABSTEXTALIGNMENT </strong>(<font size="3">non inheritable</font>): 
 Horizontal text alignment for multiple lines. Can be: ALEFT, ARIGHT or ACENTER. 
 Default: ALEFT. (since 3.22)</p>
-<p><strong>SHOWLINES</strong>: when enabled the current tab will be separated of 
-the other tabs by a line. Can be Yes or No. Default: Yes.</p>
 <p><strong>TABSLINECOLOR</strong>: color of the separator line. Default: &quot;180 
 180 180&quot;</p>
 <p><strong>TABSIMAGEPOSITION</strong>: position of the image relative to the 
@@ -177,7 +160,25 @@ used.</p>
 set TABFONTn. </p>
 <p><strong>TABFONTSIZEn</strong>: text font size. When change will actually set 
 TABFONTn. </p>
-<h4>Extra Buttons (<font SIZE="3">non inheritable</font>) (since 3.22)</h4>
+<h4>Tab Close Button Attributes</h4>
+<p><strong>CLOSEIMAGE</strong>: image name to be used in the close button. Use <a href="../func/iupsethandle.html">
+	IupSetHandle</a> or
+	<a href="../func/iupsetattributehandle.html">IupSetAttributeHandle</a> to 
+	associate an image to a name. n starts at 0. See also <a href="iupimage.html">IupImage</a>. 
+Default: &quot;IMGFLATCLOSE&quot;.</p>
+<p><strong>CLOSEIMAGEPRESS</strong>: image name to be used in the close button 
+in pressed state. Default: &quot;IMGFLATCLOSEPRESS&quot;.</p>
+<p><strong>CLOSEIMAGEHIGHLIGHT</strong>: image name to be used in the close 
+button in highlight state. </p>
+<p><strong>CLOSEIMAGEINACTIVE</strong>: image name to be used in the close button 
+in inactive state. If it is not defined then the CLOSEIMAGE is used and its 
+colors will be replaced by a modified version creating the disabled effect. 
+(since 3.22)</p>
+<p><strong>CLOSEPRESSCOLOR</strong>: background color of the close button in 
+pressed state. Default: &quot;80 180 245&quot;. (since 3.22)</p>
+<p><strong>CLOSEHIGHCOLOR</strong>: background color of the close button in 
+highlight state. Default: &quot;200 220 245&quot;.</p>
+<h4>Extra Buttons Attributes (<font SIZE="3">non inheritable</font>) (since 3.22)</h4>
 <p><strong>EXTRABUTTONS</strong>: sets 
 the number of extra image buttons at right in the free space area. There can be 
 any number of buttons. See the EXTRABUTTON_CB callback. Default: 0.</p>
@@ -192,8 +193,11 @@ button. Can be Yes or No. When not defined works as &quot;Yes&quot;.</p>
 <p><strong>EXTRAFORECOLOR</strong><em><strong>id</strong></em>: text color of 
 the button title. When not defined TABSFORECOLOR 
 is used.</p>
-<p><strong>EXTRAHIGHCOLOR</strong><em><strong>id</strong></em>: highlight color 
-of the button title. When not defined HIGHCOLOR 
+<p><strong>EXTRAPRESSCOLOR</strong><em><strong>id</strong></em>: background color 
+of the button in pressed state. When not defined CLOSEPRESSCOLOR 
+is used. (since 3.22)</p>
+<p><strong>EXTRAHIGHCOLOR</strong><em><strong>id</strong></em>: background color 
+of the button in highlight state. When not defined CLOSEHIGHCOLOR 
 is used.</p>
 <p><strong>EXTRAFONT</strong><em><strong>id</strong></em>: text font of the 
 button. When not defined TABSFONT is used.</p>

@@ -432,9 +432,10 @@ static Ihandle* CreateTabs(int tab)
 
   IupSetAttribute(tabs, "TABVISIBLE2", "NO");
   IupSetAttribute(tabs, "TABACTIVE3", "NO");
+//  IupSetAttribute(tabs, "TABSHIGHCOLOR", "192 0 0");
 
   /* like Office 2016 */
-  if (0)
+  if (1)
   {
     IupSetAttribute(tabs, "FORECOLOR", "192 0 0");
     IupSetAttribute(tabs, "TABSBACKCOLOR", "192 0 0");
@@ -443,7 +444,6 @@ static Ihandle* CreateTabs(int tab)
     IupSetAttribute(tabs, "TABSFORECOLOR", "255 255 255");
     IupSetAttribute(tabs, "SHOWLINES", "NO");
   }
-
   
   IupSetAttribute(tabs, "EXTRABUTTONS", "3");
   IupSetAttribute(tabs, "EXTRATITLE1", "Button1");

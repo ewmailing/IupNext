@@ -519,14 +519,13 @@ static int iFlatTabsRedraw_CB(Ihandle* ih)
   if (extra_buttons)
   {
     int i, right_extra_width = 0, extra_id;
-    int w, extra_active, make_inactive, extra_x;
+    int extra_active, make_inactive, extra_x, extra_w;
 
     for (i = 1; i <= extra_buttons; i++)
     {
       const char* extra_image = iupAttribGetId(ih, "EXTRAIMAGE", i);
       char* extra_title = iupAttribGetId(ih, "EXTRATITLE", i);
       char* extra_forecolor = iupAttribGetId(ih, "EXTRAFORECOLOR", i);
-      char* extra_highcolor = iupAttribGetId(ih, "EXTRAHIGHCOLOR", i);
       int extra_press = iupAttribGetInt(ih, "_IUPFTABS_EXTRAPRESS");
 
       if (!active)
@@ -539,28 +538,35 @@ static int iFlatTabsRedraw_CB(Ihandle* ih)
 
       extra_id = ITABS_EXTRABUTTTON1 - i + 1;
 
-      if (tab_highlighted == extra_id)
+      extra_w = iFlatTabsGetExtraWidthId(ih, i, img_position, horiz_padding);  /* this will also set any id based font */
+
+      extra_x = ih->currentwidth - right_extra_width - extra_w;
+
+      if (extra_press == extra_id)
       {
-        if (extra_highcolor)
-          extra_forecolor = extra_highcolor;
-        else if (highcolor)
-          extra_forecolor = highcolor;
-        else
-          extra_forecolor = forecolor;
+        char* extra_presscolor = iupAttribGetId(ih, "EXTRAPRESSCOLOR", i);
+        if (!extra_presscolor)
+          extra_presscolor = iupAttribGetStr(ih, "CLOSEPRESSCOLOR");
+
+        iupFlatDrawBox(dc, extra_x + horiz_padding / 2, extra_x + extra_w - horiz_padding / 2, vert_padding / 2, title_height - 1 - vert_padding / 2, extra_presscolor, NULL, 1);
       }
+      else if (tab_highlighted == extra_id)
+      {
+        char* extra_highcolor = iupAttribGetId(ih, "EXTRAHIGHCOLOR", i);
+        if (!extra_highcolor)
+          extra_highcolor = iupAttribGetStr(ih, "CLOSEHIGHCOLOR");
 
-      w = iFlatTabsGetExtraWidthId(ih, i, img_position, horiz_padding);  /* this will also set any id based font */
-
-      extra_x = ih->currentwidth - right_extra_width - w;
+        iupFlatDrawBox(dc, extra_x + horiz_padding / 2, extra_x + extra_w - horiz_padding / 2, vert_padding / 2, title_height - 1 - vert_padding / 2, extra_highcolor, NULL, 1);
+      }
 
       extra_image = iupFlatGetImageNameId(ih, "EXTRAIMAGE", i, extra_image, extra_press == extra_id, tab_highlighted == extra_id, extra_active, &make_inactive);
 
       iupFlatDrawIcon(ih, dc, extra_x, 0,
-                      w, title_height - 1,
+                      extra_w, title_height - 1,
                       img_position, spacing, horiz_alignment, vert_alignment, horiz_padding, vert_padding,
                       extra_image, make_inactive, extra_title, text_align, extra_forecolor, tabs_bgcolor, extra_active);
 
-      right_extra_width += w;
+      right_extra_width += extra_w;
     }
   }
 
@@ -1637,6 +1643,7 @@ Iclass* iupFlatTabsNewClass(void)
   iupClassRegisterAttributeId(ic, "EXTRATITLE", NULL, (IattribSetIdFunc)iFlatTabsUpdateSetAttrib, IUPAF_NO_INHERIT);
   iupClassRegisterAttributeId(ic, "EXTRAACTIVE", NULL, (IattribSetIdFunc)iFlatTabsUpdateSetAttrib, IUPAF_NO_INHERIT);
   iupClassRegisterAttributeId(ic, "EXTRAFORECOLOR", NULL, (IattribSetIdFunc)iFlatTabsUpdateSetAttrib, IUPAF_NO_INHERIT);
+  iupClassRegisterAttributeId(ic, "EXTRAPRESSCOLOR", NULL, NULL, IUPAF_NO_INHERIT);
   iupClassRegisterAttributeId(ic, "EXTRAHIGHCOLOR", NULL, NULL, IUPAF_NO_INHERIT);
   iupClassRegisterAttributeId(ic, "EXTRAFONT", NULL, (IattribSetIdFunc)iFlatTabsUpdateSetAttrib, IUPAF_NO_INHERIT);
   iupClassRegisterAttributeId(ic, "EXTRAIMAGE", NULL, (IattribSetIdFunc)iFlatTabsUpdateSetAttrib, IUPAF_IHANDLENAME | IUPAF_NO_INHERIT);
