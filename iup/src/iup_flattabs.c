@@ -148,7 +148,7 @@ static void iFlatTabsGetTabSize(Ihandle* ih, int fixedwidth, int horiz_padding, 
   (*tab_h) += 2 * vert_padding;
 
   if (show_close)
-    (*tab_w) += ITABS_CLOSE_SIZE + ITABS_CLOSE_SPACING + ITABS_CLOSE_BORDER;
+    (*tab_w) += ITABS_CLOSE_SPACING + ITABS_CLOSE_SIZE + ITABS_CLOSE_BORDER;
 }
 
 static int iFlatTabsGetTitleHeight(Ihandle* ih, int *title_width, int scrolled_width)
@@ -362,7 +362,7 @@ static int iFlatTabsRedraw_CB(Ihandle* ih)
       char* tab_forecolor = iupAttribGetId(ih, "TABFORECOLOR", pos);
       char* tab_highcolor = iupAttribGetId(ih, "TABHIGHCOLOR", pos);
       char* background_color = NULL;
-      int tab_w, tab_h, tab_active;
+      int tab_w, tab_h, tab_active, reset_clip;
       char* foreground_color;
       int icon_width, make_inactive = 0;
 
@@ -426,10 +426,15 @@ static int iFlatTabsRedraw_CB(Ihandle* ih)
         }
       }
 
-      if (tab_x + tab_w > ih->currentwidth - extra_width)
+      reset_clip = 0;
+      if (title_width > ih->currentwidth - extra_width) /* has right scroll button */
       {
         int scroll_width = title_height / 2;
-        iupdrvDrawSetClipRect(dc, tab_x, 0, ih->currentwidth - extra_width - scroll_width, title_height);
+        if (tab_x + tab_w > ih->currentwidth - extra_width - scroll_width)
+        {
+          iupdrvDrawSetClipRect(dc, tab_x, 0, ih->currentwidth - extra_width - scroll_width, title_height);
+          reset_clip = 1;
+        }
       }
 
       /* draw tab title background */
@@ -447,7 +452,7 @@ static int iFlatTabsRedraw_CB(Ihandle* ih)
 
       icon_width = tab_w;
       if (show_close)
-        icon_width -= ITABS_CLOSE_SIZE + ITABS_CLOSE_SPACING + ITABS_CLOSE_BORDER;
+        icon_width -= ITABS_CLOSE_SPACING + ITABS_CLOSE_SIZE + ITABS_CLOSE_BORDER;
 
       iupFlatDrawIcon(ih, dc, tab_x, 0,
                       icon_width, title_height,
@@ -480,7 +485,7 @@ static int iFlatTabsRedraw_CB(Ihandle* ih)
       /* goto next tab area */
       tab_x += tab_w;
 
-      if (tab_x > ih->currentwidth - extra_width)
+      if (reset_clip)
       {
         iupdrvDrawResetClip(dc);
         break;
