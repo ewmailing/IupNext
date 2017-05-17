@@ -433,6 +433,7 @@ static Ihandle* CreateTabs(int tab)
   IupSetAttribute(tabs, "TABVISIBLE2", "NO");
   IupSetAttribute(tabs, "TABACTIVE3", "NO");
 //  IupSetAttribute(tabs, "TABSHIGHCOLOR", "192 0 0");
+  IupSetAttribute(tabs, "TABTIP4", "Tip Tab4");
 
   /* like Office 2016 */
   if (0)
@@ -448,7 +449,8 @@ static Ihandle* CreateTabs(int tab)
   IupSetAttribute(tabs, "EXTRABUTTONS", "3");
   IupSetAttribute(tabs, "EXTRATITLE1", "Button1");
   IupSetAttribute(tabs, "EXTRATITLE2", "But2");
-//  IupSetAttribute(tabs, "EXTRATITLE3", "3");
+  IupSetAttribute(tabs, "EXTRATIP2", "Tip But2");
+  //  IupSetAttribute(tabs, "EXTRATITLE3", "3");
   IupSetStrAttribute(tabs, "EXTRAIMAGE3", IupGetAttribute(tabs, "TABIMAGE1"));
 
   IupSetAttribute(tabs, "SHOWCLOSE", "yes");
@@ -462,7 +464,7 @@ static Ihandle* CreateTabs(int tab)
 //  IupSetAttribute(tabs, "FGCOLOR", "250 0 0");
 //  IupSetAttribute(tabs, "FONT", "Helvetica, Italic 16");
 
-  IupSetAttribute(tabs, "TIP", "IupFlatTabs Tip");
+//  IupSetAttribute(tabs, "TIP", "IupFlatTabs Tip");
 //  IupSetAttribute(tabs, "TIPFONT", "SYSTEM");
 //  IupSetAttribute(tabs, "TIPBGCOLOR", "255 128 128");
 //  IupSetAttribute(tabs, "TIPFGCOLOR", "0 92 255");

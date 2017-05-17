@@ -31,8 +31,10 @@
 #define ITABS_NONE -1
 #define ITABS_SB_LEFT -2
 #define ITABS_SB_RIGHT -3
-#define ITABS_EXTRABUTTTON1 -4
+#define ITABS_EXTRABUTTON1 -4
 
+#define ITABS_TABID2EXTRABUT(_id) (ITABS_EXTRABUTTON1 - _id + 1)
+#define ITABS_EXTRABUT2TABID(_id) (ITABS_EXTRABUTTON1 - _id + 1) /* equal to the above, the conversion is symmetric */
 
 static void iFlatTabsInitializeCloseImage(void)
 {
@@ -541,7 +543,7 @@ static int iFlatTabsRedraw_CB(Ihandle* ih)
       if (!extra_forecolor)
         extra_forecolor = tabs_forecolor;
 
-      extra_id = ITABS_EXTRABUTTTON1 - i + 1;
+      extra_id = ITABS_EXTRABUT2TABID(i);
 
       extra_w = iFlatTabsGetExtraWidthId(ih, i, img_position, horiz_padding);  /* this will also set any id based font */
 
@@ -727,7 +729,7 @@ static int iFlatTabsFindTab(Ihandle* ih, int cur_x, int cur_y, int show_close, i
         int w = iFlatTabsGetExtraWidthId(ih, i, img_position, horiz_padding);
 
         if (cur_x > ih->currentwidth - right_extra_width - w && cur_x < ih->currentwidth - right_extra_width)
-          return ITABS_EXTRABUTTTON1 - i + 1;
+          return ITABS_EXTRABUT2TABID(i);
 
         right_extra_width += w;
       }
@@ -836,11 +838,11 @@ static int iFlatTabsButton_CB(Ihandle* ih, int button, int pressed, int x, int y
       iupAttribSetInt(ih, "_IUPFTABS_SCROLLPOS", pos);
       iupdrvPostRedraw(ih);
     }
-    else if (tab_found <= ITABS_EXTRABUTTTON1)
+    else if (tab_found <= ITABS_EXTRABUTTON1)
     {
       IFnii cb = (IFnii)IupGetCallback(ih, "EXTRABUTTON_CB");
       if (cb)
-        cb(ih, ITABS_EXTRABUTTTON1 - tab_found + 1, 1);
+        cb(ih, ITABS_TABID2EXTRABUT(tab_found), 1);
 
       iupAttribSetInt(ih, "_IUPFTABS_EXTRAPRESS", tab_found);
       iupdrvPostRedraw(ih);
@@ -893,11 +895,11 @@ static int iFlatTabsButton_CB(Ihandle* ih, int button, int pressed, int x, int y
 
       iupAttribSetInt(ih, "_IUPFTABS_EXTRAPRESS", ITABS_NONE);
 
-      if (tab_found <= ITABS_EXTRABUTTTON1 && iFlatTabsGetExtraActive(ih, tab_found) && extra_press == tab_found)
+      if (tab_found <= ITABS_EXTRABUTTON1 && iFlatTabsGetExtraActive(ih, tab_found) && extra_press == tab_found)
       {
         IFnii cb = (IFnii)IupGetCallback(ih, "EXTRABUTTON_CB");
         if (cb)
-          cb(ih, ITABS_EXTRABUTTTON1 - tab_found + 1, 0);
+          cb(ih, ITABS_TABID2EXTRABUT(tab_found), 0);
 
         iupdrvPostRedraw(ih);
       }
@@ -919,6 +921,61 @@ static int iFlatTabsButton_CB(Ihandle* ih, int button, int pressed, int x, int y
   return IUP_DEFAULT;
 }
 
+static void iFlatTabsSetTipAttrib(Ihandle* ih, const char* tip)
+{
+  int visible = IupGetInt(ih, "TIPVISIBLE");
+
+  IupSetStrAttribute(ih, "TIP", tip);
+
+  if (visible)
+  {
+    IupSetAttribute(ih, "TIPVISIBLE", "No");
+    if (tip)
+      IupSetAttribute(ih, "TIPVISIBLE", "Yes");
+  }
+}
+
+static void iFlatTabsResetTip(Ihandle* ih)
+{
+  char* tip = iupAttribGet(ih, "_IUPFTABS_TIP");
+  if (tip)
+  {
+    iFlatTabsSetTipAttrib(ih, tip);  /* restore general attribute */
+    iupAttribSet(ih, "_IUPFTABS_TIP", NULL);
+  }
+  else if (iupAttribGet(ih, "_IUPFTABS_NEWTIP"))
+    iFlatTabsSetTipAttrib(ih, NULL);  /* restore general attribute */
+
+  iupAttribSet(ih, "_IUPFTABS_NEWTIP", NULL);
+}
+
+static void iFlatTabsSetTip(Ihandle *ih, const char* new_tip, int tab_found)
+{
+  char* tip = iupAttribGet(ih, "_IUPFTABS_TIP");
+  if (!tip)
+  {
+    /* save the general attribute */
+    tip = IupGetAttribute(ih, "TIP");
+    if (tip)
+      iupAttribSetStr(ih, "_IUPFTABS_TIP", tip);
+  }
+
+  if (iupAttribGet(ih, "_IUPFTABS_NEWTIP"))
+  {
+    int old_tab_found = iupAttribGetInt(ih, "_IUPFTABS_NEWTIP");
+    if (old_tab_found != tab_found)
+    {
+      iFlatTabsSetTipAttrib(ih, new_tip);
+      iupAttribSetInt(ih, "_IUPFTABS_NEWTIP", tab_found);
+    }
+  }
+  else
+  {
+    iFlatTabsSetTipAttrib(ih, new_tip);
+    iupAttribSetInt(ih, "_IUPFTABS_NEWTIP", tab_found);
+  }
+}
+
 static int iFlatTabsMotion_CB(Ihandle *ih, int x, int y, char *status)
 {
   int tab_found, tab_highlighted, redraw = 0;
@@ -934,6 +991,28 @@ static int iFlatTabsMotion_CB(Ihandle *ih, int x, int y, char *status)
   show_close = iupAttribGetBoolean(ih, "SHOWCLOSE");
   tab_highlighted = iupAttribGetInt(ih, "_IUPFTABS_HIGHLIGHTED");
   tab_found = iFlatTabsFindTab(ih, x, y, show_close, &inside_close);
+
+  if (tab_found == ITABS_NONE)
+    iFlatTabsResetTip(ih);
+  else
+  {
+    if (tab_found > ITABS_NONE)
+    {
+      char* tab_tip = iupAttribGetId(ih, "TABTIP", tab_found);
+      if (tab_tip)
+        iFlatTabsSetTip(ih, tab_tip, tab_found);
+      else
+        iFlatTabsResetTip(ih);
+    }
+    else
+    {
+      char* extra_tip = iupAttribGetId(ih, "EXTRATIP", ITABS_TABID2EXTRABUT(tab_found));
+      if (extra_tip)
+        iFlatTabsSetTip(ih, extra_tip, tab_found);
+      else
+        iFlatTabsResetTip(ih);
+    }
+  }
 
   tab_active = 1;
   if (tab_found > ITABS_NONE)
@@ -1009,6 +1088,8 @@ static int iFlatTabsLeaveWindow_CB(Ihandle* ih)
     iupAttribSetInt(ih, "_IUPFTABS_CLOSEHIGH", ITABS_NONE);
     redraw = 1;
   }
+
+  iFlatTabsResetTip(ih);
 
   if (redraw)
     iupdrvPostRedraw(ih);
@@ -1608,6 +1689,7 @@ Iclass* iupFlatTabsNewClass(void)
   iupClassRegisterAttributeId(ic, "TABBACKCOLOR", NULL, (IattribSetIdFunc)iFlatTabsUpdateSetAttrib, IUPAF_NO_INHERIT);
   iupClassRegisterAttributeId(ic, "TABHIGHCOLOR", NULL, NULL, IUPAF_NO_INHERIT);
   iupClassRegisterAttributeId(ic, "TABFONT", NULL, (IattribSetIdFunc)iFlatTabsUpdateSetAttrib, IUPAF_NO_INHERIT);
+  iupClassRegisterAttributeId(ic, "TABTIP", NULL, NULL, IUPAF_NO_INHERIT);
 
   iupClassRegisterAttributeId(ic, "TABFONTSTYLE", iFlatTabsGetTabFontStyleAttrib, iFlatTabsSetTabFontStyleAttrib, IUPAF_NO_INHERIT);
   iupClassRegisterAttributeId(ic, "TABFONTSIZE", iFlatTabsGetTabFontSizeAttrib, iFlatTabsSetTabFontSizeAttrib, IUPAF_NO_INHERIT);
@@ -1655,6 +1737,7 @@ Iclass* iupFlatTabsNewClass(void)
   iupClassRegisterAttributeId(ic, "EXTRAIMAGEPRESS", NULL, (IattribSetIdFunc)iFlatTabsUpdateSetAttrib, IUPAF_IHANDLENAME | IUPAF_NO_INHERIT);
   iupClassRegisterAttributeId(ic, "EXTRAIMAGEHIGHLIGHT", NULL, NULL, IUPAF_IHANDLENAME | IUPAF_NO_INHERIT);
   iupClassRegisterAttributeId(ic, "EXTRAIMAGEINACTIVE", NULL, (IattribSetIdFunc)iFlatTabsUpdateSetAttrib, IUPAF_IHANDLENAME | IUPAF_NO_INHERIT);
+  iupClassRegisterAttributeId(ic, "EXTRATIP", NULL, NULL, IUPAF_NO_INHERIT);
 
   /* Default node images */
   if (!IupGetHandle("IMGFLATCLOSE"))
