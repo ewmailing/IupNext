@@ -464,7 +464,7 @@ static Ihandle* CreateTabs(int tab)
 //  IupSetAttribute(tabs, "FGCOLOR", "250 0 0");
 //  IupSetAttribute(tabs, "FONT", "Helvetica, Italic 16");
 
-//  IupSetAttribute(tabs, "TIP", "IupFlatTabs Tip");
+  IupSetAttribute(tabs, "TIP", "IupFlatTabs Tip");
 //  IupSetAttribute(tabs, "TIPFONT", "SYSTEM");
 //  IupSetAttribute(tabs, "TIPBGCOLOR", "255 128 128");
 //  IupSetAttribute(tabs, "TIPFGCOLOR", "0 92 255");
