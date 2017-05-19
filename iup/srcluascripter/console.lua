@@ -44,7 +44,7 @@ function consolePrint(...)
 			buffer = buffer.."<unknown>"
 		end
 	end
-	consoleEnterMessage(buffer, 0);
+	consoleEnterMessage(buffer, 1)
 end
 
 function utlIndent()
@@ -162,7 +162,7 @@ function consoleEnterMessage(text, insert_new_line)
 
 	local value  = iup.GetAttribute(console.mtlOutput, "VALUE")
 	value = value..text
-	if insert_new_line then
+	if insert_new_line == 1 then
 		value = value.."\n"
 	end
 	iup.SetAttribute(console.mtlOutput, "VALUE", value)
@@ -184,7 +184,7 @@ function consoleEnterCommand()
 		return
 	end
 
-	local holdCaret = console.holdCaret;
+	local holdCaret = console.holdCaret
 
 	if holdCaret==false then
 		consoleHoldCaret(true)
@@ -235,9 +235,9 @@ function consolePrintResult(result)
   for i = 1, #result do
     if type(result[i]) ~= "nil" then
 		local buf
-      buf = string.format("<%dº return>", i);
-      console.ind_level = 0;
-      consolePrintObject(buf, result[i]);
+      buf = string.format("<%dº return>", i)
+      console.ind_level = 0
+      consolePrintObject(buf, result[i])
     end
   end
 end
@@ -250,7 +250,7 @@ function consolePrintExpression(command)
 		local result = {f()}
 		consolePrintResult(result)
 	else
-		consoleEnterMessagef("lua: %s\n", "Invalid Expression");
+		consoleEnterMessagef("lua: %s\n", "Invalid Expression")
 	end
 
 end
@@ -273,11 +273,11 @@ local name
 	if table_flag == nil then
 		name = string.format("%s", tostring(var))
 	elseif type(var) == "string" then
-		name = string.format("[\"%s\"]", tostring(var));
+		name = string.format("[\"%s\"]", tostring(var))
 	else
 		name = string.format("[%s]", tostring(var))
 	end
-	consolePrintObject(name, value);
+	consolePrintObject(name, value)
 end
 
 function consolePrintVarType(index, value, tableFlag)

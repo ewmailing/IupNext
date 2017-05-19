@@ -13,16 +13,76 @@ FUNC_OUTSIDE = 2
 LUA_COPYRIGHT = "Copyright (C) 1994-2008 Lua.org, PUC-Rio"
 LUA_AUTHORS = "R. Ierusalimschy, L. H. de Figueiredo & W. Celes"
 
---dofile("D:\\tecgraf\\iup\\html\\examples\\tutorial\\iupluascripter\\console.lua")
-
 local debug_state = DEBUG_INACTIVE
 
 local breakpoints = {}
 
 local initialStackLevel = 2
 
+local currentFuncLevel = 0
 local stepFuncLevel = 0
 local stepFuncState = 0
+
+function readFile(filename)
+
+	local s = string.sub(filename, 1, 1)
+	
+	if s ~= "@" then
+		return nil
+	end
+
+	local f = io.open(string.sub(filename, 2), "r")
+	if f == nil then
+		return nil
+	end
+	local t = f:read("*a")
+	f:close()
+	
+	return t
+end
+
+function update_title(multitext, filename, is_dirty)
+
+	local subtitle = iup.GetAttribute(multitext, "SUBTITLE")
+	 local dirty_sign = ""
+
+	if is_dirty then
+		dirty_sign = "*"
+	end
+
+	if filename == nil then filename = "Untitled" end
+
+	--iup.SetAttribute(multitext, "TITLE", string.format("%s%s - %s", str_filetitle(filename), dirty_sign, subtitle))
+end
+
+function reloadFile(filename)
+
+	  local str = readFile(filename)
+	  if (str) then
+		local multitext = iup.GetDialogChild(main_dialog, "MULTITEXT")
+		
+		local fname = string.sub(filename, 2)
+
+		iup.SetAttribute(multitext, "FILENAME", fname)
+		iup.SetAttribute(multitext, "DIRTY", "NO")
+		iup.SetAttribute(multitext, "VALUE", str)
+
+		update_title(multitext, fname, 0)
+		
+		setCurrentFile(fname)
+		
+		iup.SetAttribute(multitext, "MARKERDELETEALL", -1)
+
+		for i = 1, #breakpoints do
+			local item = breakpoints[i]
+			if item.filename == fname then
+				iup.SetAttribute(main_dialog, "DONTTOGGLE", 1)
+				iup.SetAttributeId(main_dialog, "TOGGLEMARKER", item.line-1, 2)
+				iup.SetAttribute(main_dialog, "DONTTOGGLE", 0)
+			end
+		end
+	end
+end
 
 function showVersionInfo()
   consoleEnterMessagef("IupLuaScripter 0.0\n"..
@@ -52,6 +112,12 @@ function consoleListVarAction()
 	
 end
 
+function consoleClearAction()
+
+  iup.SetAttribute(console.mtlOutput, "VALUE", "")
+	
+end
+
 function removeAllBreakpoints()
 	local multitext = iup.GetDialogChild(main_dialog, "MULTITEXT")
 	
@@ -73,13 +139,15 @@ end
 function toggleBreakpoint(line, mark, value)
 
 	local multitext = iup.GetDialogChild(main_dialog, "MULTITEXT")
+	
+	if iup.GetAttribute(main_dialog, "DONTTOGGLE") then
+		return
+	end
 
 	if value > 0 then
-		iup.SetAttributeId(multitext, "MARKERDELETE", line-1, mark)
-		removeBreakpoint(iup.GetAttribute(multitext, "FILENAME"), line)
-	else
-		iup.SetAttributeId(multitext, "MARKERADD", line-1, mark)
 		insertBreakpoint(iup.GetAttribute(multitext, "FILENAME"), line)
+	else
+		removeBreakpoint(iup.GetAttribute(multitext, "FILENAME"), line)
 	end
 	
 	--for i, k in pairs(breakpoints) do
@@ -130,7 +198,8 @@ function debug_set_state(st)
 		 pause = "YES"
 		 curline = "NO"
 		 if st == DEBUG_STEP_OUT then
-			stepFuncLevel = getDebugLevel(5)
+			--stepFuncLevel = getDebugLevel(0)
+			stepFuncLevel = currentFuncLevel
 			stepFuncState = FUNC_INSIDE
 		 else
 			stepFuncLevel = 0
@@ -138,6 +207,7 @@ function debug_set_state(st)
 		 end
 	elseif st == DEBUG_PAUSED then
 		iup.SetAttribute(iup.GetDialogChild(main_dialog, "ZBOX_DEBUG_CONTINUE"), "VALUE", "BTN_CONTINUE")
+		breakAtCaret = nil
 		stop = "YES"
 		step = "YES"
 		contin = "YES"
@@ -146,7 +216,7 @@ function debug_set_state(st)
 		curline = "YES"
 	end
 	  
-	debug_state = st;
+	debug_state = st
 
 	iup.SetAttribute(iup.GetDialogChild(main_dialog, "MULTITEXT"), "MARKERDELETEALL", 2)
 
@@ -182,7 +252,8 @@ function removeBreakpointFromList(index)
 	local item = breakpoints[index]
 	
 	if iup.GetAttribute(iup.GetDialogChild(main_dialog, "MULTITEXT"), "FILENAME") == item.filename then
-		toggleBreakpoint(item.line, 1, 2)
+		--toggleBreakpoint(item.line, 1, 2)
+		iup.SetAttributeId(iup.GetDialogChild(main_dialog, "MULTITEXT"), "TOGGLEMARKER", item.line, 2)
 	else
 		removeBreakpoint(item.filename, item.line)
 	end
@@ -211,21 +282,32 @@ function highlightLine(multitext, line)
    iup.SetAttributeId(multitext, "MARKERADD", line, 2)
 end
 
+function updateSource(filename)
+
+	reloadFile(filename)
+	
+end
+
 function updateSourceLine(info)
 
   local multitext = iup.GetDialogChild(main_dialog, "MULTITEXT")
-
+  
 	if info.currentline == nil or info.currentline <= 0 then
 		return
 	end
 
 	iup.SetAttribute(multitext, "CARET", string.format("%d,7", info.currentline))
-	iup.SetAttribute(multitext, "SELECTION", string.format("%d,1:%d,7", info.currentline, info.currentline))
+	--iup.SetAttribute(multitext, "SELECTION", string.format("%d,1:%d,7", info.currentline, info.currentline))
 	highlightLine(multitext, info.currentline-1)
 
 end
 
 function hasLineBreak(filename, line)
+
+	if breakAtCaret and breakAtCaret == line then
+		breakAtCaret = nil
+		return true
+	end
 
 	for i = 1, #breakpoints do
 		local item = breakpoints[i]
@@ -238,16 +320,16 @@ function hasLineBreak(filename, line)
 end
 
 function clearLocal()
-	iup.SetAttribute(iup.GetDialogChild(main_dialog, "PRINT_LOCAL"), "ACTIVE", "NO");
-	--iup.SetAttribute(iup.GetDialogChild(main_dialog, "SET_LOCAL"), "ACTIVE", "NO");
-	iup.SetAttribute(iup.GetDialogChild(main_dialog, "LIST_LOCAL"), "1", nil);
+	iup.SetAttribute(iup.GetDialogChild(main_dialog, "PRINT_LOCAL"), "ACTIVE", "NO")
+	--iup.SetAttribute(iup.GetDialogChild(main_dialog, "SET_LOCAL"), "ACTIVE", "NO")
+	iup.SetAttribute(iup.GetDialogChild(main_dialog, "LIST_LOCAL"), "1", nil)
 end
 
 function clearStack()
 	clearLocal()
-	iup.SetAttribute(iup.GetDialogChild(main_dialog, "PRINT_LEVEL"), "ACTIVE", "NO");
-	--iup.SetAttribute(iup.GetDialogChild(main_dialog, "PRINT_STACK"), "ACTIVE", "NO");
-	iup.SetAttribute(iup.GetDialogChild(main_dialog, "LIST_STACK"), "1", nil);
+	iup.SetAttribute(iup.GetDialogChild(main_dialog, "PRINT_LEVEL"), "ACTIVE", "NO")
+	--iup.SetAttribute(iup.GetDialogChild(main_dialog, "PRINT_STACK"), "ACTIVE", "NO")
+	iup.SetAttribute(iup.GetDialogChild(main_dialog, "LIST_STACK"), "1", nil)
 end
 
 function getObject(name)
@@ -301,7 +383,7 @@ end
 function updateStack()
 
 	local info, name
-	local level = 4;
+	local level = 4
 	
 	clearStack()
 	
@@ -344,20 +426,20 @@ function getDebugLevel(offset)
 	return level - offset
 end
 
-function updateState(line)
+function updateState(filename, line)
 
 	if debug_state == DEBUG_STEP_OUT then
 		if stepFuncState == FUNC_OUTSIDE then
-			local level = getDebugLevel(4)
+			local level = getDebugLevel(0)
 			
 			debug_set_state(DEBUG_PAUSED)
 			
 			stepFuncState = FUNC_OUTSIDE
-			stepFuncLevel = level
+			stepFuncLevel = currentFuncLevel
 		end
 	elseif debug_state == DEBUG_STEP_INTO or
 			(debug_state == DEBUG_STEP_OVER and stepFuncState == FUNC_OUTSIDE) or
-			(debug_state ~= DEBUG_PAUSED and hasLineBreak(currentFile, line)) then
+			(debug_state ~= DEBUG_PAUSED and hasLineBreak(filename, line)) then
 			debug_set_state(DEBUG_PAUSED)
 	end
 
@@ -366,6 +448,11 @@ end
 function hookFunction(event, line)
    
 	local info = debug.getinfo(initialStackLevel, "Snl")
+	
+		local s = string.sub(info.source, 1, 1)
+		if s ~= "@" then
+			return
+		end
 	
 	if debug_state ~= DEBUG_INACTIVE then
 		if event == "call" then
@@ -381,10 +468,16 @@ end
 
 function lineHook(info, line)
 
-	updateState(line)
+	currentFuncLevel = getDebugLevel(0)
+
+	updateState(string.sub(info.source, 2), line)
 	
 	if debug_state == DEBUG_PAUSED then
- 		
+	
+		if currentFile ~= string.sub(info.source, 2) then
+			updateSource(info.source)
+		end
+	
 		updateSourceLine(info)
 		
 		updateStack()
@@ -410,7 +503,7 @@ end
 
 function callHook(info)
 
-	local level = getDebugLevel(3)
+	local level = getDebugLevel(0)
 
 	if debug_state == DEBUG_STEP_OVER then
 		if stepFuncLevel == 0 then
@@ -423,9 +516,9 @@ end
 
 function returnHook(info)
 
-	local level = getDebugLevel(3)
+	local level = getDebugLevel(0)
 
-	if level == 0 and info.what == "main" then
+	if level == startLevel+1 and info.what == "main" then
 		debug_set_state(DEBUG_INACTIVE)
 	elseif debug_state == DEBUG_STEP_OUT or debug_state == DEBUG_STEP_OVER then
 		if stepFuncLevel == level then
@@ -440,13 +533,15 @@ function setCurrentFile(filename)
 	currentFile = filename
 end
 
-function startDebug()
+function startDebug(filename, runMode)
 
-	if  currentFile == nil then
-		return
-	end
+	currentFile = filename
 	
-	debug.sethook(hookFunction, "lcr")
+	startLevel = getDebugLevel(0)
+	
+	if runMode == false or runMode == nil then
+		debug.sethook(hookFunction, "lcr")
+	end
 	
 	local ok, msg = pcall(dofile, currentFile)
 	
