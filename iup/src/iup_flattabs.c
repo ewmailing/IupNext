@@ -36,9 +36,57 @@
 #define ITABS_TABID2EXTRABUT(_id) (ITABS_EXTRABUTTON1 - _id + 1)
 #define ITABS_EXTRABUT2TABID(_id) (ITABS_EXTRABUTTON1 - _id + 1) /* equal to the above, the conversion is symmetric */
 
-static void iFlatTabsInitializeCloseImage(void)
+static Ihandle* load_image_expand_down(void)
 {
-  Ihandle *image_close;
+  unsigned char imgdata[] = {
+    0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0,
+    0, 0, 0, 0, 0, 0, 0, 5, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 5, 0, 0, 0, 0,
+    0, 0, 0, 8, 0, 0, 0, 48, 0, 0, 0, 21, 0, 0, 0, 2, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 2, 0, 0, 0, 21, 0, 0, 0, 48, 0, 0, 0, 8,
+    0, 0, 0, 45, 0, 0, 0, 109, 0, 0, 0, 93, 0, 0, 0, 24, 0, 0, 0, 2, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 2, 0, 0, 0, 24, 0, 0, 0, 93, 0, 0, 0, 109, 0, 0, 0, 45,
+    0, 0, 0, 17, 0, 0, 0, 94, 0, 0, 0, 119, 0, 0, 0, 93, 0, 0, 0, 24, 0, 0, 0, 2, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 2, 0, 0, 0, 24, 0, 0, 0, 93, 0, 0, 0, 119, 0, 0, 0, 93, 0, 0, 0, 16,
+    0, 0, 0, 1, 0, 0, 0, 24, 0, 0, 0, 93, 0, 0, 0, 118, 0, 0, 0, 92, 0, 0, 0, 25, 0, 0, 0, 4, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 4, 0, 0, 0, 25, 0, 0, 0, 92, 0, 0, 0, 118, 0, 0, 0, 93, 0, 0, 0, 24, 0, 0, 0, 1,
+    0, 0, 0, 0, 0, 0, 0, 1, 0, 0, 0, 24, 0, 0, 0, 92, 0, 0, 0, 118, 0, 0, 0, 92, 0, 0, 0, 25, 0, 0, 0, 4, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 4, 0, 0, 0, 25, 0, 0, 0, 92, 0, 0, 0, 118, 0, 0, 0, 92, 0, 0, 0, 24, 0, 0, 0, 1, 0, 0, 0, 0,
+    0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 2, 0, 0, 0, 24, 0, 0, 0, 92, 0, 0, 0, 117, 0, 0, 0, 90, 0, 0, 0, 26, 0, 0, 0, 2, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 2, 0, 0, 0, 26, 0, 0, 0, 90, 0, 0, 0, 117, 0, 0, 0, 92, 0, 0, 0, 24, 0, 0, 0, 2, 0, 0, 0, 0, 0, 0, 0, 0,
+    0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 2, 0, 0, 0, 25, 0, 0, 0, 90, 0, 0, 0, 117, 0, 0, 0, 90, 0, 0, 0, 26, 0, 0, 0, 4, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 4, 0, 0, 0, 26, 0, 0, 0, 90, 0, 0, 0, 117, 0, 0, 0, 90, 0, 0, 0, 25, 0, 0, 0, 2, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0,
+    0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 2, 0, 0, 0, 25, 0, 0, 0, 92, 0, 0, 0, 116, 0, 0, 0, 90, 0, 0, 0, 28, 0, 0, 0, 4, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 2, 0, 0, 0, 28, 0, 0, 0, 90, 0, 0, 0, 116, 0, 0, 0, 92, 0, 0, 0, 25, 0, 0, 0, 2, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0,
+    0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 2, 0, 0, 0, 25, 0, 0, 0, 90, 0, 0, 0, 116, 0, 0, 0, 90, 0, 0, 0, 28, 0, 0, 0, 4, 0, 0, 0, 2, 0, 0, 0, 26, 0, 0, 0, 90, 0, 0, 0, 116, 0, 0, 0, 90, 0, 0, 0, 25, 0, 0, 0, 2, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0,
+    0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 2, 0, 0, 0, 25, 0, 0, 0, 92, 0, 0, 0, 116, 0, 0, 0, 90, 0, 0, 0, 30, 0, 0, 0, 29, 0, 0, 0, 90, 0, 0, 0, 116, 0, 0, 0, 92, 0, 0, 0, 25, 0, 0, 0, 2, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0,
+    0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 2, 0, 0, 0, 26, 0, 0, 0, 90, 0, 0, 0, 116, 0, 0, 0, 101, 0, 0, 0, 101, 0, 0, 0, 116, 0, 0, 0, 90, 0, 0, 0, 26, 0, 0, 0, 2, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0,
+    0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 2, 0, 0, 0, 25, 0, 0, 0, 90, 0, 0, 0, 120, 0, 0, 0, 120, 0, 0, 0, 90, 0, 0, 0, 25, 0, 0, 0, 2, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0,
+    0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 2, 0, 0, 0, 26, 0, 0, 0, 89, 0, 0, 0, 89, 0, 0, 0, 26, 0, 0, 0, 2, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0,
+    0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 2, 0, 0, 0, 16, 0, 0, 0, 16, 0, 0, 0, 2, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0 };
+
+  Ihandle* image = IupImageRGBA(24, 16, imgdata);
+  return image;
+}
+
+static Ihandle* load_image_expand_up(void)
+{
+  unsigned char imgdata[] = {
+    0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 2, 0, 0, 0, 16, 0, 0, 0, 16, 0, 0, 0, 2, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0,
+    0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 2, 0, 0, 0, 26, 0, 0, 0, 88, 0, 0, 0, 88, 0, 0, 0, 26, 0, 0, 0, 2, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0,
+    0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 2, 0, 0, 0, 26, 0, 0, 0, 92, 0, 0, 0, 119, 0, 0, 0, 119, 0, 0, 0, 92, 0, 0, 0, 26, 0, 0, 0, 2, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0,
+    0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 2, 0, 0, 0, 26, 0, 0, 0, 90, 0, 0, 0, 116, 0, 0, 0, 100, 0, 0, 0, 100, 0, 0, 0, 114, 0, 0, 0, 90, 0, 0, 0, 26, 0, 0, 0, 2, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0,
+    0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 2, 0, 0, 0, 25, 0, 0, 0, 90, 0, 0, 0, 117, 0, 0, 0, 90, 0, 0, 0, 31, 0, 0, 0, 30, 0, 0, 0, 90, 0, 0, 0, 117, 0, 0, 0, 90, 0, 0, 0, 25, 0, 0, 0, 2, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0,
+    0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 2, 0, 0, 0, 26, 0, 0, 0, 90, 0, 0, 0, 117, 0, 0, 0, 90, 0, 0, 0, 28, 0, 0, 0, 4, 0, 0, 0, 4, 0, 0, 0, 26, 0, 0, 0, 90, 0, 0, 0, 117, 0, 0, 0, 90, 0, 0, 0, 26, 0, 0, 0, 2, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0,
+    0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 2, 0, 0, 0, 26, 0, 0, 0, 90, 0, 0, 0, 116, 0, 0, 0, 90, 0, 0, 0, 26, 0, 0, 0, 2, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 2, 0, 0, 0, 26, 0, 0, 0, 90, 0, 0, 0, 116, 0, 0, 0, 90, 0, 0, 0, 26, 0, 0, 0, 2, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0,
+    0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 2, 0, 0, 0, 25, 0, 0, 0, 92, 0, 0, 0, 117, 0, 0, 0, 92, 0, 0, 0, 26, 0, 0, 0, 4, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 4, 0, 0, 0, 26, 0, 0, 0, 92, 0, 0, 0, 117, 0, 0, 0, 92, 0, 0, 0, 25, 0, 0, 0, 2, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0,
+    0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 2, 0, 0, 0, 24, 0, 0, 0, 92, 0, 0, 0, 117, 0, 0, 0, 92, 0, 0, 0, 26, 0, 0, 0, 2, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 2, 0, 0, 0, 26, 0, 0, 0, 92, 0, 0, 0, 117, 0, 0, 0, 92, 0, 0, 0, 24, 0, 0, 0, 2, 0, 0, 0, 0, 0, 0, 0, 0,
+    0, 0, 0, 0, 0, 0, 0, 1, 0, 0, 0, 24, 0, 0, 0, 93, 0, 0, 0, 117, 0, 0, 0, 92, 0, 0, 0, 25, 0, 0, 0, 2, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 2, 0, 0, 0, 25, 0, 0, 0, 92, 0, 0, 0, 117, 0, 0, 0, 93, 0, 0, 0, 24, 0, 0, 0, 1, 0, 0, 0, 0,
+    0, 0, 0, 1, 0, 0, 0, 24, 0, 0, 0, 93, 0, 0, 0, 118, 0, 0, 0, 93, 0, 0, 0, 25, 0, 0, 0, 2, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 2, 0, 0, 0, 25, 0, 0, 0, 93, 0, 0, 0, 118, 0, 0, 0, 93, 0, 0, 0, 23, 0, 0, 0, 1,
+    0, 0, 0, 17, 0, 0, 0, 94, 0, 0, 0, 119, 0, 0, 0, 93, 0, 0, 0, 24, 0, 0, 0, 2, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 2, 0, 0, 0, 24, 0, 0, 0, 93, 0, 0, 0, 119, 0, 0, 0, 94, 0, 0, 0, 16,
+    0, 0, 0, 46, 0, 0, 0, 111, 0, 0, 0, 94, 0, 0, 0, 24, 0, 0, 0, 1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1, 0, 0, 0, 24, 0, 0, 0, 94, 0, 0, 0, 111, 0, 0, 0, 46,
+    0, 0, 0, 7, 0, 0, 0, 48, 0, 0, 0, 20, 0, 0, 0, 2, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 2, 0, 0, 0, 20, 0, 0, 0, 48, 0, 0, 0, 7,
+    0, 0, 0, 0, 0, 0, 0, 4, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 4, 0, 0, 0, 0,
+    0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0 };
+
+  Ihandle* image = IupImageRGBA(24, 16, imgdata);
+  return image;
+}
+
+static void iFlatTabsInitializeImages(void)
+{
+  Ihandle *image;
 
   unsigned char img_close[ITABS_CLOSE_SIZE * ITABS_CLOSE_SIZE] =
   {
@@ -57,15 +105,21 @@ static void iFlatTabsInitializeCloseImage(void)
     1, 1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1, 1,
   };
 
-  image_close = IupImage(ITABS_CLOSE_SIZE, ITABS_CLOSE_SIZE, img_close);
-  IupSetAttribute(image_close, "0", "BGCOLOR");
-  IupSetAttribute(image_close, "1", "0 0 0");
-  IupSetHandle("IMGFLATCLOSE", image_close);
+  image = IupImage(ITABS_CLOSE_SIZE, ITABS_CLOSE_SIZE, img_close);
+  IupSetAttribute(image, "0", "BGCOLOR");
+  IupSetAttribute(image, "1", "0 0 0");
+  IupSetHandle("IMGFLATCLOSE", image);
 
-  image_close = IupImage(ITABS_CLOSE_SIZE, ITABS_CLOSE_SIZE, img_close);
-  IupSetAttribute(image_close, "0", "BGCOLOR");
-  IupSetAttribute(image_close, "1", "255 255 255");
-  IupSetHandle("IMGFLATCLOSEPRESS", image_close);
+  image = IupImage(ITABS_CLOSE_SIZE, ITABS_CLOSE_SIZE, img_close);
+  IupSetAttribute(image, "0", "BGCOLOR");
+  IupSetAttribute(image, "1", "255 255 255");
+  IupSetHandle("IMGFLATCLOSEPRESS", image);
+
+  image = load_image_expand_down();
+  IupSetHandle("IupFlatExpandDown", image);
+
+  image = load_image_expand_up();
+  IupSetHandle("IupFlatExpandUp", image);
 }
 
 
@@ -259,12 +313,14 @@ static int iFlatTabsGetExtraActive(Ihandle* ih, int id)
   return iupAttribGetBooleanId(ih, "EXTRAACTIVE", id);
 }
 
-static void iFlatTabsGetAlignment(Ihandle* ih, int *horiz_alignment, int *vert_alignment)
+static void iFlatTabsGetAlignment(const char* alignment, int *horiz_alignment, int *vert_alignment)
 {
-  char* value = iupAttribGetStr(ih, "TABSALIGNMENT");
   char value1[30], value2[30];
 
-  iupStrToStrStr(value, value1, value2, ':');
+  if (!alignment)
+    return;
+
+  iupStrToStrStr(alignment, value1, value2, ':');
 
   *horiz_alignment = iupFlatGetHorizontalAlignment(value1);
   *vert_alignment = iupFlatGetVerticalAlignment(value2);
@@ -302,6 +358,7 @@ static int iFlatTabsRedraw_CB(Ihandle* ih)
   char* tabs_forecolor = iupAttribGetStr(ih, "TABSFORECOLOR");
   char* tabs_highcolor = iupAttribGetStr(ih, "TABSHIGHCOLOR");
   int img_position = iupFlatGetImagePosition(iupAttribGetStr(ih, "TABSIMAGEPOSITION"));
+  char* alignment = iupAttribGetStr(ih, "TABSALIGNMENT");
   char* text_align = iupAttribGetStr(ih, "TABSTEXTALIGNMENT");
   int active = IupGetInt(ih, "ACTIVE");  /* native implementation */
   int spacing = iupAttribGetInt(ih, "TABSIMAGESPACING");
@@ -330,7 +387,7 @@ static int iFlatTabsRedraw_CB(Ihandle* ih)
   iupFlatDrawBox(dc, 0, ih->currentwidth - 1, 0, title_height - 1, tabs_bgcolor, NULL, 1);
 
   iupAttribGetIntInt(ih, "TABSPADDING", &horiz_padding, &vert_padding, 'x');
-  iFlatTabsGetAlignment(ih, &horiz_alignment, &vert_alignment);
+  iFlatTabsGetAlignment(alignment, &horiz_alignment, &vert_alignment);
   extra_width = iFlatTabsGetExtraWidth(ih, extra_buttons, img_position, horiz_padding);
 
   if (show_lines)
@@ -527,13 +584,19 @@ static int iFlatTabsRedraw_CB(Ihandle* ih)
   {
     int i, right_extra_width = 0, extra_id;
     int extra_active, make_inactive, extra_x, extra_w;
+    int extra_horiz_alignment, extra_vert_alignment;
 
     for (i = 1; i <= extra_buttons; i++)
     {
       const char* extra_image = iupAttribGetId(ih, "EXTRAIMAGE", i);
       char* extra_title = iupAttribGetId(ih, "EXTRATITLE", i);
+      char* extra_alignment = iupAttribGetId(ih, "EXTRAALIGNMENT", i);
       char* extra_forecolor = iupAttribGetId(ih, "EXTRAFORECOLOR", i);
       int extra_press = iupAttribGetInt(ih, "_IUPFTABS_EXTRAPRESS");
+
+      extra_horiz_alignment = horiz_alignment; 
+      extra_vert_alignment = vert_alignment;
+      iFlatTabsGetAlignment(extra_alignment, &extra_horiz_alignment, &extra_vert_alignment);
 
       if (!active)
         extra_active = active;
@@ -570,7 +633,7 @@ static int iFlatTabsRedraw_CB(Ihandle* ih)
 
       iupFlatDrawIcon(ih, dc, extra_x, 0,
                       extra_w, title_height - 1,
-                      img_position, spacing, horiz_alignment, vert_alignment, horiz_padding, vert_padding,
+                      img_position, spacing, extra_horiz_alignment, extra_vert_alignment, horiz_padding, vert_padding,
                       extra_image, make_inactive, extra_title, text_align, extra_forecolor, tabs_bgcolor, extra_active);
 
       right_extra_width += extra_w;
@@ -775,6 +838,26 @@ static int iFlatTabsFindTab(Ihandle* ih, int cur_x, int cur_y, int show_close, i
 
 /*****************************************************************************************/
 
+static void iFlatTabsToggleExpand(Ihandle* ih)
+{
+  int expand_pos = iupAttribGetInt(ih, "EXPANDBUTTONPOS");
+  int expand_state = iupAttribGetBoolean(ih, "EXPANDBUTTONSTATE");
+  if (expand_state)
+  {
+    int title_height = iFlatTabsGetTitleHeight(ih, NULL, 0);
+    iupAttribSetId(ih, "EXTRAIMAGE", expand_pos, "IupFlatExpandDown");
+    iupAttribSet(ih, "EXPANDBUTTONSTATE", "No");
+    IupSetStrf(ih, "MAXSIZE", "x%d", title_height);
+    IupRefresh(ih);
+  }
+  else
+  {
+    iupAttribSetId(ih, "EXTRAIMAGE", expand_pos, "IupFlatExpandUp");
+    iupAttribSet(ih, "EXPANDBUTTONSTATE", "Yes");
+    IupSetAttribute(ih, "MAXSIZE", NULL);
+    IupRefresh(ih);
+  }
+}
 
 static int iFlatTabsButton_CB(Ihandle* ih, int button, int pressed, int x, int y, char* status)
 {
@@ -900,6 +983,9 @@ static int iFlatTabsButton_CB(Ihandle* ih, int button, int pressed, int x, int y
         IFnii cb = (IFnii)IupGetCallback(ih, "EXTRABUTTON_CB");
         if (cb)
           cb(ih, ITABS_TABID2EXTRABUT(tab_found), 0);
+
+        if (iupAttribGetBoolean(ih, "EXPANDBUTTON") && ITABS_TABID2EXTRABUT(tab_found) == iupAttribGetInt(ih, "EXPANDBUTTONPOS"))
+          iFlatTabsToggleExpand(ih);
 
         iupdrvPostRedraw(ih);
       }
@@ -1417,6 +1503,40 @@ static int iFlatTabsSetTabsFontAttrib(Ihandle* ih, const char* value)
   return 1;
 }
 
+static int iFlatTabsSetExpandButtonAttrib(Ihandle* ih, const char* value)
+{
+  if (iupStrBoolean(value) && !iupAttribGetBoolean(ih, "EXPANDBUTTON"))
+  {
+    int extra_buttons = iupAttribGetInt(ih, "EXTRABUTTONS");
+    extra_buttons++;
+    iupAttribSetInt(ih, "EXTRABUTTONS", extra_buttons);
+    iupAttribSetInt(ih, "EXPANDBUTTONPOS", extra_buttons);
+
+    iupAttribSetId(ih, "EXTRAIMAGE", extra_buttons, "IupFlatExpandUp");
+    iupAttribSetId(ih, "EXTRAALIGNMENT", extra_buttons, "ACENTER:ABOTTOM");
+  }
+
+  return 1;
+}
+
+static int iFlatTabsSetExpandButtonStateAttrib(Ihandle* ih, const char* value)
+{
+  if (iupAttribGetBoolean(ih, "EXPANDBUTTON"))
+  {
+    int expand_state = iupAttribGetBoolean(ih, "EXPANDBUTTONSTATE");
+    if (iupStrBoolean(value))
+    {
+      if (!expand_state)
+        iFlatTabsToggleExpand(ih);
+    }
+    else
+    {
+      if (expand_state)
+        iFlatTabsToggleExpand(ih);
+    }
+  }
+  return 1;
+}
 
 
 /*********************************************************************************/
@@ -1682,8 +1802,8 @@ Iclass* iupFlatTabsNewClass(void)
   iupClassRegisterAttributeId(ic, "TABFONT", NULL, (IattribSetIdFunc)iFlatTabsUpdateSetAttrib, IUPAF_NO_INHERIT);
   iupClassRegisterAttributeId(ic, "TABTIP", NULL, NULL, IUPAF_NO_INHERIT);
 
-  iupClassRegisterAttributeId(ic, "TABFONTSTYLE", iFlatTabsGetTabFontStyleAttrib, iFlatTabsSetTabFontStyleAttrib, IUPAF_NO_INHERIT);
-  iupClassRegisterAttributeId(ic, "TABFONTSIZE", iFlatTabsGetTabFontSizeAttrib, iFlatTabsSetTabFontSizeAttrib, IUPAF_NO_INHERIT);
+  iupClassRegisterAttributeId(ic, "TABFONTSTYLE", iFlatTabsGetTabFontStyleAttrib, iFlatTabsSetTabFontStyleAttrib, IUPAF_NO_SAVE | IUPAF_NOT_MAPPED | IUPAF_NO_INHERIT);
+  iupClassRegisterAttributeId(ic, "TABFONTSIZE", iFlatTabsGetTabFontSizeAttrib, iFlatTabsSetTabFontSizeAttrib, IUPAF_NO_SAVE | IUPAF_NOT_MAPPED | IUPAF_NO_INHERIT);
 
   /* Visual for current TAB */
   iupClassRegisterAttribute(ic, "BGCOLOR", iFlatTabsGetBgColorAttrib, iFlatTabsUpdateSetAttrib, IUPAF_SAMEASSYSTEM, "255 255 255", IUPAF_DEFAULT);   /* inherited */
@@ -1724,15 +1844,21 @@ Iclass* iupFlatTabsNewClass(void)
   iupClassRegisterAttributeId(ic, "EXTRAPRESSCOLOR", NULL, NULL, IUPAF_NO_INHERIT);
   iupClassRegisterAttributeId(ic, "EXTRAHIGHCOLOR", NULL, NULL, IUPAF_NO_INHERIT);
   iupClassRegisterAttributeId(ic, "EXTRAFONT", NULL, (IattribSetIdFunc)iFlatTabsUpdateSetAttrib, IUPAF_NO_INHERIT);
+  iupClassRegisterAttributeId(ic, "EXTRAALIGNMENT", NULL, (IattribSetIdFunc)iFlatTabsUpdateSetAttrib, IUPAF_NO_INHERIT);
   iupClassRegisterAttributeId(ic, "EXTRAIMAGE", NULL, (IattribSetIdFunc)iFlatTabsUpdateSetAttrib, IUPAF_IHANDLENAME | IUPAF_NO_INHERIT);
   iupClassRegisterAttributeId(ic, "EXTRAIMAGEPRESS", NULL, (IattribSetIdFunc)iFlatTabsUpdateSetAttrib, IUPAF_IHANDLENAME | IUPAF_NO_INHERIT);
   iupClassRegisterAttributeId(ic, "EXTRAIMAGEHIGHLIGHT", NULL, NULL, IUPAF_IHANDLENAME | IUPAF_NO_INHERIT);
   iupClassRegisterAttributeId(ic, "EXTRAIMAGEINACTIVE", NULL, (IattribSetIdFunc)iFlatTabsUpdateSetAttrib, IUPAF_IHANDLENAME | IUPAF_NO_INHERIT);
   iupClassRegisterAttributeId(ic, "EXTRATIP", NULL, NULL, IUPAF_NO_INHERIT);
 
+  iupClassRegisterAttribute(ic, "EXPANDBUTTON", NULL, iFlatTabsSetExpandButtonAttrib, NULL, NULL, IUPAF_NOT_MAPPED | IUPAF_NO_INHERIT);
+  iupClassRegisterAttribute(ic, "EXPANDBUTTONPOS", NULL, NULL, NULL, NULL, IUPAF_NO_INHERIT);
+  iupClassRegisterAttribute(ic, "EXPANDBUTTONSTATE", NULL, iFlatTabsSetExpandButtonStateAttrib, IUPAF_SAMEASSYSTEM, "Yes", IUPAF_NOT_MAPPED | IUPAF_NO_INHERIT);
+  
+
   /* Default node images */
   if (!IupGetHandle("IMGFLATCLOSE"))
-    iFlatTabsInitializeCloseImage();
+    iFlatTabsInitializeImages();
 
   return ic;
 }
