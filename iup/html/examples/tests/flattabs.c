@@ -453,9 +453,9 @@ static Ihandle* CreateTabs(int tab)
   //  IupSetAttribute(tabs, "EXTRATITLE3", "3");
 //  IupSetStrAttribute(tabs, "EXTRAIMAGE3", IupGetAttribute(tabs, "TABIMAGE1"));
 
-  IupSetAttribute(tabs, "EXPANDBUTTON", "Yes");
+//  IupSetAttribute(tabs, "EXPANDBUTTON", "Yes");
 
-  IupSetAttribute(tabs, "SHOWCLOSE", "yes");
+//  IupSetAttribute(tabs, "SHOWCLOSE", "yes");
 //  IupSetAttribute(tabs, "TABSPADDING", "10x50");
 //  IupSetAttribute(tabs, "TABSFONTSIZE", "36");
 

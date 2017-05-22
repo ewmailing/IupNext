@@ -848,6 +848,7 @@ static void iFlatTabsToggleExpand(Ihandle* ih)
     iupAttribSetId(ih, "EXTRAIMAGE", expand_pos, "IupFlatExpandDown");
     iupAttribSet(ih, "EXPANDBUTTONSTATE", "No");
     IupSetStrf(ih, "MAXSIZE", "x%d", title_height);
+    iupAttribSetInt(ih, "_IUP_FULLHEIGHT", ih->currentheight);
     IupRefresh(ih);
   }
   else
@@ -855,8 +856,17 @@ static void iFlatTabsToggleExpand(Ihandle* ih)
     iupAttribSetId(ih, "EXTRAIMAGE", expand_pos, "IupFlatExpandUp");
     iupAttribSet(ih, "EXPANDBUTTONSTATE", "Yes");
     IupSetAttribute(ih, "MAXSIZE", NULL);
+    iupAttribSet(ih, "_IUP_FULLHEIGHT", NULL);
     IupRefresh(ih);
   }
+}
+
+static int iFlatTabsKillFocus_CB(Ihandle* ih)
+{
+  ih->currentheight = IupGetInt2(ih, "MAXSIZE");
+  iupLayoutUpdate(ih);
+  IupSetCallback(ih, "KILLFOCUS_CB", NULL);
+  return IUP_DEFAULT;
 }
 
 static int iFlatTabsButton_CB(Ihandle* ih, int button, int pressed, int x, int y, char* status)
@@ -893,6 +903,14 @@ static int iFlatTabsButton_CB(Ihandle* ih, int button, int pressed, int x, int y
           int ret = iFlatTabsCallTabChange(ih, prev_child, prev_pos, child);
           if (ret == IUP_DEFAULT)
             iFlatTabsSetCurrentTab(ih, child);
+        }
+
+        if (iupAttribGetBoolean(ih, "EXPANDBUTTON") && !iupAttribGetBoolean(ih, "EXPANDBUTTONSTATE"))
+        {
+          ih->currentheight = iupAttribGetInt(ih, "_IUP_FULLHEIGHT");
+          IupSetAttribute(ih, "ZORDER", "TOP");
+          iupLayoutUpdate(ih);
+          IupSetCallback(ih, "KILLFOCUS_CB", (Icallback)iFlatTabsKillFocus_CB);
         }
       }
     }
@@ -1778,7 +1796,6 @@ Iclass* iupFlatTabsNewClass(void)
   iupClassRegisterReplaceAttribDef(ic, "BORDER", "NO", NULL);
   iupClassRegisterReplaceAttribFlags(ic, "BORDER", IUPAF_READONLY | IUPAF_NO_INHERIT);
   iupClassRegisterReplaceAttribFlags(ic, "SCROLLBAR", IUPAF_READONLY | IUPAF_NO_INHERIT);
-  iupClassRegisterAttribute(ic, "CANFOCUS", NULL, NULL, IUPAF_SAMEASSYSTEM, "NO", IUPAF_NO_INHERIT);
 
   iupClassRegisterReplaceAttribFunc(ic, "ACTIVE", NULL, iFlatTabsSetActiveAttrib);
   iupClassRegisterAttribute(ic, "TIP", NULL, iFlatTabsSetTipAttrib, NULL, NULL, IUPAF_NO_DEFAULTVALUE | IUPAF_NO_INHERIT);

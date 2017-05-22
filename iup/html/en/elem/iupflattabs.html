@@ -188,7 +188,7 @@ Just like the tabs they do not affect natural width. But they also don't affect
 the tabs title height, if button title or image are larger than the tabs title 
 height they will be cropped.</p>
 <p><strong>EXTRATITLE</strong><em><strong>id</strong></em>: text of the 
-respective button</p>
+respective button.</p>
 <p><strong>EXTRAACTIVE</strong><em><strong>id</strong></em>: active state of the 
 button. Can be Yes or No. When not defined works as &quot;Yes&quot;.</p>
 <p><strong>EXTRAFORECOLOR</strong><em><strong>id</strong></em>: text color of 
@@ -217,6 +217,15 @@ EXTRAIMAGE<em>id</em> when in inactive
 state. If not defined EXTRAIMAGE<em>id</em> is used and its colors will be 
 replaced by a modified version creating the disabled effect.</p>
 <p><strong>EXTRATIP<em>id</em></strong>: TIP of the button.</p>
+<h4>Expand Button Attributes (<font SIZE="3">non inheritable</font>) (since 3.22)</h4>
+<p><strong>EXPANDBUTTON</strong>: uses the next free extra button to configure 
+an expand button. The button allows to dynamically expand and collapse the tabs 
+contents. When collapsed a click on a tab causes that tab to be temporarily 
+expanded until it looses the focus.</p>
+<p><strong>EXPANDBUTTONPOS</strong> (read-only): position of the expand button 
+in the extra buttons.</p>
+<p><strong>EXPANDBUTTONSTATE</strong>: The expand button is on expand state. Can 
+be Yes or No. Default: Yes.</p>
 <h4>Current Tab (<font SIZE="3">non inheritable</font>)</h4>
 <p><strong>VALUE</strong>: Changes the 
 current tab by its name. The value passed must be the name of one of the elements 
@@ -389,16 +398,17 @@ IupSetAttribute(ih, &quot;TABACTIVE3&quot;, &quot;NO&quot;);
 IupSetAttribute(ih, &quot;SHOWCLOSE&quot;, &quot;Yes&quot;);
 IupSetAttribute(ih, &quot;TABFONTSTYLE4&quot;, &quot;Bold&quot;);</pre>
 <p class="auto-style2">
-<img height="421" src="images/iupflattabs1.png" width="582"></p>
+<img src="images/iupflattabs1.png"></p>
 <pre> IupSetAttribute(ih, &quot;FORECOLOR&quot;, &quot;192 0 0&quot;);
 IupSetAttribute(ih, &quot;TABSBACKCOLOR&quot;, &quot;192 0 0&quot;);
 IupSetAttribute(ih, &quot;HIGHCOLOR&quot;, &quot;255 128 128&quot;);
 IupSetAttribute(ih, &quot;CLOSEHIGHCOLOR&quot;, &quot;255 128 128&quot;);
 IupSetAttribute(ih, &quot;TABSFORECOLOR&quot;, &quot;255 255 255&quot;);
 IupSetAttribute(ih, &quot;SHOWLINES&quot;, &quot;NO&quot;);
-IupSetAttribute(ih, &quot;SHOWCLOSE&quot;, &quot;NO&quot;);</pre>
+IupSetAttribute(ih, &quot;SHOWCLOSE&quot;, &quot;NO&quot;);
+IupSetAttribute(ih, &quot;EXPANDBUTTON&quot;, &quot;Yes&quot;);</pre>
 <p class="auto-style2">
-<img height="371" src="images/iupflattabs2.png" width="567"></p>
+<img src="images/iupflattabs2.png"></p>
 
 </body>
 
