@@ -983,6 +983,7 @@ int main(int argc, char **argv)
 
   IupSetAttributeHandle(main_dialog, "CONFIG", config);
   IupSetAttribute(main_dialog, "SUBTITLE", "IupLuaScriter");
+  IupSetAttribute(main_dialog, "EXTRAFILTERS", "Lua Files|*.lua|");
 
   iuplua_pushihandle(lcmd_state, main_dialog);
   lua_setglobal(lcmd_state, "main_dialog");

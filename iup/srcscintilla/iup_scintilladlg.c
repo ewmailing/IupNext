@@ -709,9 +709,11 @@ static int item_new_action_cb(Ihandle* item_new)
 
 static int item_open_action_cb(Ihandle* item_open)
 {
+  Ihandle* ih = IupGetDialog(item_open);
   Ihandle *filedlg;
   Ihandle* config;
   const char* dir = NULL;
+  char* extra_filters = IupGetAttribute(ih, "EXTRAFILTERS");
 
   if (!save_check(item_open))
     return IUP_DEFAULT;
@@ -722,8 +724,11 @@ static int item_open_action_cb(Ihandle* item_open)
 
   filedlg = IupFileDlg();
   IupSetAttribute(filedlg, "DIALOGTYPE", "OPEN");
-  IupSetAttribute(filedlg, "EXTFILTER", "Text Files|*.txt|All Files|*.*|");
-  IupSetAttributeHandle(filedlg, "PARENTDIALOG", IupGetDialog(item_open));
+  if (extra_filters)
+    IupSetStrf(filedlg, "EXTFILTER", "%sText Files|*.txt|All Files|*.*|", extra_filters);
+  else
+    IupSetAttribute(filedlg, "EXTFILTER", "Text Files|*.txt|All Files|*.*|");
+  IupSetAttributeHandle(filedlg, "PARENTDIALOG", ih);
   IupSetStrAttribute(filedlg, "DIRECTORY", dir);
 
   IupPopup(filedlg, IUP_CENTERPARENT, IUP_CENTERPARENT);
@@ -745,17 +750,22 @@ static int item_open_action_cb(Ihandle* item_open)
 
 static int item_saveas_action_cb(Ihandle* item_saveas)
 {
+  Ihandle* ih = IupGetDialog(item_saveas);
   const char* dir = NULL;
   Ihandle* multitext = IupGetDialogChild(item_saveas, "MULTITEXT");
   Ihandle* config = IupGetAttributeHandle(multitext, "CONFIG");
   Ihandle *filedlg = IupFileDlg();
+  char* extra_filters = IupGetAttribute(ih, "EXTRAFILTERS");
 
   if (config)
     dir = IupConfigGetVariableStr(config, "MainWindow", "LastDirectory");
 
   IupSetAttribute(filedlg, "DIALOGTYPE", "SAVE");
-  IupSetAttribute(filedlg, "EXTFILTER", "Text Files|*.txt|All Files|*.*|");
-  IupSetAttributeHandle(filedlg, "PARENTDIALOG", IupGetDialog(item_saveas));
+  if (extra_filters)
+    IupSetStrf(filedlg, "EXTFILTER", "%sText Files|*.txt|All Files|*.*|", extra_filters);
+  else
+    IupSetAttribute(filedlg, "EXTFILTER", "Text Files|*.txt|All Files|*.*|");
+  IupSetAttributeHandle(filedlg, "PARENTDIALOG", ih);
   IupSetStrAttribute(filedlg, "FILE", IupGetAttribute(multitext, "FILENAME"));
   IupSetStrAttribute(filedlg, "DIRECTORY", dir);
 
@@ -2204,6 +2214,7 @@ Iclass* iupScintillaDlgNewClass(void)
   iupClassRegisterAttribute(ic, "CONFIG_HANDLE", NULL, iScintillaDlgSetConfigHandleAttrib, NULL, NULL, IUPAF_IHANDLE | IUPAF_NOT_MAPPED | IUPAF_NO_INHERIT);
   iupClassRegisterAttribute(ic, "NEWFILE", NULL, iScintillaDlgSetOpenFileAttrib, NULL, NULL, IUPAF_WRITEONLY | IUPAF_NOT_MAPPED | IUPAF_NO_INHERIT);
   iupClassRegisterAttribute(ic, "OPENFILE", NULL, iScintillaDlgSetOpenFileAttrib, NULL, NULL, IUPAF_WRITEONLY | IUPAF_NOT_MAPPED | IUPAF_NO_INHERIT);
+  iupClassRegisterAttribute(ic, "EXTRAFILTERS", NULL, NULL, NULL, NULL, IUPAF_NOT_MAPPED | IUPAF_NO_INHERIT);
   iupClassRegisterAttributeId(ic, "TOGGLEMARKER", NULL, iScintillaDlgSetToggleMarkerAttribId, IUPAF_WRITEONLY | IUPAF_NOT_MAPPED | IUPAF_NO_INHERIT);
 
   return ic;
