@@ -16,17 +16,7 @@
 #include "utl_button_images.h"
 
 
-int DEBUG_INACTIVE;
-int DEBUG_ACTIVE;
-int DEBUG_RUN;
-int DEBUG_STEP_INTO;
-int DEBUG_STEP_OVER;
-int DEBUG_STEP_OUT;
-int DEBUG_PAUSED;
-int DEBUG_STOPPED;
-
 lua_State *lcmd_state;
-Ihandle *main_dialog;
 
 static char* read_file(const char* filename)
 {
@@ -195,18 +185,10 @@ char *filterList(char *text, char *list)
   return retList;
 }
 
-#if 0
-int lua_read_file(lua_State *L)
-{
-  const char *filename = lua_tostring(L, 1);
-
-  lua_pushstring(L, read_file(filename));
-
-  return 1;
-}
-#endif
 
 /********************************** Callbacks *****************************************/
+
+
 int marker_changed_cb(Ihandle *ih, int lin, int margin, int value)
 {
   if (margin == 2)
@@ -277,10 +259,15 @@ int item_autocomplete_action_cb(Ihandle* ih)
   return IUP_DEFAULT;
 }
 
-void debug_set_state(lua_State *l, int state)
+void debug_set_state(lua_State *l, const char* state)
 {
+  int st;
+
+  lua_getglobal(l, state);
+  st = (int)lua_tointeger(l, -1);
+
   lua_getfield(l, LUA_GLOBALSINDEX, "debug_set_state");
-  lua_pushinteger(l, state);
+  lua_pushinteger(l, st);
   lua_call(l, 1, 0);
 }
 
@@ -293,7 +280,7 @@ int item_debug_action_cb(Ihandle *item)
   if (filename == NULL || strcmp(filename, "") == 0)
     return IUP_DEFAULT;
 
-  debug_set_state(lcmd_state, DEBUG_ACTIVE);
+  debug_set_state(lcmd_state, "DEBUG_ACTIVE");
 
   lua_getfield(lcmd_state, LUA_GLOBALSINDEX, "startDebug");
   lua_pushstring(lcmd_state, filename);
@@ -311,7 +298,7 @@ int item_run_action_cb(Ihandle *item)
   if (filename == NULL || strcmp(filename, "") == 0)
     return IUP_DEFAULT;
 
-  debug_set_state(lcmd_state, DEBUG_ACTIVE);
+  debug_set_state(lcmd_state, "DEBUG_ACTIVE");
 
   lua_getfield(lcmd_state, LUA_GLOBALSINDEX, "startDebug");
   lua_pushstring(lcmd_state, filename);
@@ -323,14 +310,14 @@ int item_run_action_cb(Ihandle *item)
 
 int item_stop_action_cb(Ihandle *item)
 {
-  debug_set_state(lcmd_state, DEBUG_STOPPED);
+  debug_set_state(lcmd_state, "DEBUG_STOPPED");
 
   return IUP_DEFAULT;
 }
 
 int item_pause_action_cb(Ihandle *item)
 {
-  debug_set_state(lcmd_state, DEBUG_PAUSED);
+  debug_set_state(lcmd_state, "DEBUG_PAUSED");
 
   return IUP_DEFAULT;
 }
@@ -347,28 +334,28 @@ int pause_action_cb(Ihandle* item)
 
 int item_continue_action_cb(Ihandle *item)
 {
-  debug_set_state(lcmd_state, DEBUG_ACTIVE);
+  debug_set_state(lcmd_state, "DEBUG_ACTIVE");
 
   return IUP_DEFAULT;
 }
 
 int item_stepinto_action_cb(Ihandle *item)
 {
-  debug_set_state(lcmd_state, DEBUG_STEP_INTO);
+  debug_set_state(lcmd_state, "DEBUG_STEP_INTO");
 
   return IUP_DEFAULT;
 }
 
 int item_stepover_action_cb(Ihandle *item)
 {
-  debug_set_state(lcmd_state, DEBUG_STEP_OVER);
+  debug_set_state(lcmd_state, "DEBUG_STEP_OVER");
 
   return IUP_DEFAULT;
 }
 
 int item_stepout_action_cb(Ihandle *item)
 {
-  debug_set_state(lcmd_state, DEBUG_STEP_OUT);
+  debug_set_state(lcmd_state, "DEBUG_STEP_OUT");
 
   return IUP_DEFAULT;
 }
@@ -390,16 +377,16 @@ int item_about_action_cb(void)
   return IUP_DEFAULT;
 }
 
-int item_curline_action_cb(void)
+int item_curline_action_cb(Ihandle* ih)
 {
   int lin, col;
-  Ihandle* multitext = IupGetDialogChild(main_dialog, "MULTITEXT");
+  Ihandle* multitext = IupGetDialogChild(ih, "MULTITEXT");
   int pos = IupGetInt(multitext, "CARETPOS");
   IupTextConvertPosToLinCol(multitext, pos, &lin, &col);
   lua_pushinteger(lcmd_state, lin + 1);
   lua_setglobal(lcmd_state, "breakAtCaret");
 
-  debug_set_state(lcmd_state, DEBUG_ACTIVE);
+  debug_set_state(lcmd_state, "DEBUG_ACTIVE");
 
   return IUP_DEFAULT;
 }
@@ -413,7 +400,7 @@ int txt_cmdline_cb(Ihandle *ih, int c)
 {
   switch (c)
   {
-    case K_CR: // enter
+    case K_CR:
       lua_getfield(lcmd_state, LUA_GLOBALSINDEX, "consoleEnterCommand");
       lua_call(lcmd_state, 0, 0);
       break;
@@ -508,7 +495,7 @@ int but_addbreak_cb(Ihandle *ih)
   int pos = IupGetInt(multitext, "CARETPOS");
   IupTextConvertPosToLinCol(multitext, pos, &lin, &col);
 
-  IupSetAttributeId(main_dialog, "TOGGLEMARKER", lin, "2");
+  IupSetAttributeId(IupGetDialog(ih), "TOGGLEMARKER", lin, "2");
 
   return IUP_DEFAULT;
 }
@@ -713,14 +700,14 @@ void set_attribs(Ihandle *multitext)
   IupSetAttribute(multitext, "STYLEFONTSIZE32", "11");
   IupSetAttribute(multitext, "STYLECLEARALL", "Yes");  /* sets all styles to have the same attributes as 32 */
 
-  IupSetAttribute(multitext, "STYLEFGCOLOR1", "0 128 0");    // 1-Lua comment 
-  IupSetAttribute(multitext, "STYLEFGCOLOR2", "0 128 0");    // 2-Lua comment line 
-  IupSetAttribute(multitext, "STYLEFGCOLOR4", "255 128 0");    // 4-Number 
-  IupSetAttribute(multitext, "STYLEFGCOLOR5", "0 0 255");    // 5-Keyword 
-  IupSetAttribute(multitext, "STYLEFGCOLOR6", "171 0 149");  // 6-String 
-  IupSetAttribute(multitext, "STYLEFGCOLOR7", "171 0 149");    // 7-Character 
-  IupSetAttribute(multitext, "STYLEFGCOLOR9", "0 0 255");    // 9-Preprocessor block 
-  IupSetAttribute(multitext, "STYLEFGCOLOR10", "0 0 0"); // 10-Operator 
+  IupSetAttribute(multitext, "STYLEFGCOLOR1", "0 128 0");    /* 1-Lua comment */
+  IupSetAttribute(multitext, "STYLEFGCOLOR2", "0 128 0");    /* 2-Lua comment line  */
+  IupSetAttribute(multitext, "STYLEFGCOLOR4", "255 128 0");  /* 4-Number  */
+  IupSetAttribute(multitext, "STYLEFGCOLOR5", "0 0 255");    /* 5-Keyword  */
+  IupSetAttribute(multitext, "STYLEFGCOLOR6", "171 0 149");  /* 6-String  */
+  IupSetAttribute(multitext, "STYLEFGCOLOR7", "171 0 149");  /* 7-Character  */
+  IupSetAttribute(multitext, "STYLEFGCOLOR9", "0 0 255");    /* 9-Preprocessor block  */
+  IupSetAttribute(multitext, "STYLEFGCOLOR10", "0 0 0");     /* 10-Operator  */
   IupSetAttribute(multitext, "STYLEBOLD10", "YES");
 }
 
@@ -905,32 +892,13 @@ void appendDebugMenuItens(Ihandle *menu)
   IupAppend(menu, subMenuDebug);
 }
 
-void initDebugStates(lua_State *l)
-{
-  lua_getglobal(l, "DEBUG_INACTIVE");
-  DEBUG_INACTIVE = (int)lua_tointeger(l, -1);
-  lua_getglobal(l, "DEBUG_ACTIVE");
-  DEBUG_ACTIVE = (int)lua_tointeger(l, -1);
-  lua_getglobal(l, "DEBUG_RUN");
-  DEBUG_RUN = (int)lua_tointeger(l, -1);
-  lua_getglobal(l, "DEBUG_STEP_INTO");
-  DEBUG_STEP_INTO = (int)lua_tointeger(l, -1);
-  lua_getglobal(l, "DEBUG_STEP_OVER");
-  DEBUG_STEP_OVER = (int)lua_tointeger(l, -1);
-  lua_getglobal(l, "DEBUG_STEP_OUT");
-  DEBUG_STEP_OUT = (int)lua_tointeger(l, -1);
-  lua_getglobal(l, "DEBUG_PAUSED");
-  DEBUG_PAUSED = (int)lua_tointeger(l, -1);
-  lua_getglobal(l, "DEBUG_STOPPED");
-  DEBUG_STOPPED = (int)lua_tointeger(l, -1);
-}
-
 int main(int argc, char **argv)
 {
   Ihandle *config;
   lua_State *L;
   Ihandle *multitext, *menu, *stabs, *box, *statusBar;
   Ihandle *tabConsole, *tabLocals, *tabBreaks, *debugTabs;
+  Ihandle *main_dialog;
 
   IupOpen(&argc, &argv);
   IupImageLibOpen();
@@ -1019,8 +987,6 @@ int main(int argc, char **argv)
   iuplua_pushihandle(lcmd_state, main_dialog);
   lua_setglobal(lcmd_state, "main_dialog");
 
-  //lua_register(lcmd_state, "read_file", lua_read_file);
-
 #ifdef IUPLUA_USELOH
 #include "debugger.loh"
 #include "console.loh"
@@ -1034,13 +1000,8 @@ int main(int argc, char **argv)
 #endif
 #endif
 
-  initDebugStates(lcmd_state);
-
   /* show the dialog at the last position, with the last size */
   IupConfigDialogShow(config, main_dialog, "MainWindow");
-
-  IupSetAttributeHandle(main_dialog, "CONFIG", config);
-  IupSetAttribute(main_dialog, "SUBTITLE", "Scintilla Notepad");
 
   /* initialize the current file */
   IupSetAttribute(main_dialog, "NEWFILE", NULL);

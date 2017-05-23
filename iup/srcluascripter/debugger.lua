@@ -85,11 +85,11 @@ function reloadFile(filename)
 end
 
 function showVersionInfo()
-  consoleEnterMessagef("IupLuaScripter 0.0\n"..
+  consoleEnterMessagef("IupLuaScripter 1.0\n"..
    "%s  %s\n"..
    "  (written by %s)\n"..
    "IUP %s\n"..
-   "  (copyright (c) 1995-2008 Tecgraf/PUC-Rio - Petrobrás)\n\n",
+   "  (copyright (c) 1995-2017 Tecgraf/PUC-Rio)\n\n",
    _VERSION, LUA_COPYRIGHT, LUA_AUTHORS, iup.GetGlobal("VERSION")
   )
   iup.SetAttribute(console.tbsDebug, "VALUE", iup.GetHandle("tabOutput"))
