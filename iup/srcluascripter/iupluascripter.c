@@ -732,9 +732,12 @@ void showVersionInfo()
 
 void appendDebugButtons(Ihandle *dialog)
 {
-  Ihandle *toolbar = IupGetChild(IupGetChild(dialog, 0), 0);
+  Ihandle *toolbar, *btn_debug, *btn_run, *btn_stop, *btn_pause, *btn_continue, *btn_curlinebreak;
+  Ihandle *zbox_debug_continue, *btn_stepinto, *btn_stepover, *btn_stepout, *btn_curline;
 
-  Ihandle *btn_debug = IupButton(NULL, NULL);
+  toolbar = IupGetChild(IupGetChild(dialog, 0), 0);
+
+  btn_debug = IupButton(NULL, NULL);
   IupSetAttribute(btn_debug, "NAME", "BTN_DEBUG");
   IupSetHandle("BTN_DEBUG", btn_debug);
   IupSetAttribute(btn_debug, "IMAGE", "utlDebugButton");
@@ -743,7 +746,7 @@ void appendDebugButtons(Ihandle *dialog)
   IupSetAttribute(btn_debug, "TIP", "Debug (F5)");
   IupSetAttribute(btn_debug, "CANFOCUS", "No");
 
-  Ihandle *btn_run = IupButton(NULL, NULL);
+  btn_run = IupButton(NULL, NULL);
   IupSetAttribute(btn_run, "NAME", "BTN_RUN");
   IupSetAttribute(btn_run, "IMAGE", "utlRunButton");
   IupSetAttribute(btn_run, "FLAT", "Yes");
@@ -751,7 +754,7 @@ void appendDebugButtons(Ihandle *dialog)
   IupSetAttribute(btn_run, "TIP", "Run (Ctrl+F5)");
   IupSetAttribute(btn_run, "CANFOCUS", "No");
 
-  Ihandle *btn_stop = IupButton(NULL, NULL);
+  btn_stop = IupButton(NULL, NULL);
   IupSetAttribute(btn_stop, "NAME", "BTN_STOP");
   IupSetAttribute(btn_stop, "ACTIVE", "NO");
   IupSetAttribute(btn_stop, "IMAGE", "utlStopButton");
@@ -760,7 +763,7 @@ void appendDebugButtons(Ihandle *dialog)
   IupSetAttribute(btn_stop, "TIP", "Stop (Shift+F5)");
   IupSetAttribute(btn_stop, "CANFOCUS", "No");
 
-  Ihandle *btn_pause = IupButton(NULL, NULL);
+  btn_pause = IupButton(NULL, NULL);
   IupSetAttribute(btn_pause, "NAME", "BTN_PAUSE");
   IupSetAttribute(btn_pause, "ACTIVE", "NO");
   IupSetAttribute(btn_pause, "IMAGE", "utlPauseButton");
@@ -769,7 +772,7 @@ void appendDebugButtons(Ihandle *dialog)
   IupSetAttribute(btn_pause, "TIP", "Debug (F5)");
   IupSetAttribute(btn_pause, "CANFOCUS", "No");
 
-  Ihandle *btn_continue = IupButton(NULL, NULL);
+  btn_continue = IupButton(NULL, NULL);
   IupSetAttribute(btn_continue, "NAME", "BTN_CONTINUE");
   IupSetHandle("BTN_CONTINUE", btn_continue);
   IupSetAttribute(btn_continue, "ACTIVE", "NO");
@@ -779,10 +782,10 @@ void appendDebugButtons(Ihandle *dialog)
   IupSetAttribute(btn_continue, "TIP", "Continue (F5)");
   IupSetAttribute(btn_continue, "CANFOCUS", "No");
 
-  Ihandle *zbox_debug_continue = IupZbox(btn_debug, btn_continue, NULL);
+  zbox_debug_continue = IupZbox(btn_debug, btn_continue, NULL);
   IupSetAttribute(zbox_debug_continue, "NAME", "ZBOX_DEBUG_CONTINUE");
 
-  Ihandle *btn_stepinto = IupButton(NULL, NULL);
+  btn_stepinto = IupButton(NULL, NULL);
   IupSetAttribute(btn_stepinto, "NAME", "BTN_STEPINTO");
   IupSetAttribute(btn_stepinto, "ACTIVE", "NO");
   IupSetAttribute(btn_stepinto, "IMAGE", "utlStepIntoButton");
@@ -791,7 +794,7 @@ void appendDebugButtons(Ihandle *dialog)
   IupSetAttribute(btn_stepinto, "TIP", "Executes one step into the execution.");
   IupSetAttribute(btn_stepinto, "CANFOCUS", "No");
 
-  Ihandle *btn_stepover = IupButton(NULL, NULL);
+  btn_stepover = IupButton(NULL, NULL);
   IupSetAttribute(btn_stepover, "NAME", "BTN_STEPOVER");
   IupSetAttribute(btn_stepover, "ACTIVE", "NO");
   IupSetAttribute(btn_stepover, "IMAGE", "utlStepOverButton");
@@ -800,7 +803,7 @@ void appendDebugButtons(Ihandle *dialog)
   IupSetAttribute(btn_stepover, "TIP", "Executes one step over the execution.");
   IupSetAttribute(btn_stepover, "CANFOCUS", "No");
 
-  Ihandle *btn_stepout = IupButton(NULL, NULL);
+  btn_stepout = IupButton(NULL, NULL);
   IupSetAttribute(btn_stepout, "NAME", "BTN_STEPOUT");
   IupSetAttribute(btn_stepout, "ACTIVE", "NO");
   IupSetAttribute(btn_stepout, "IMAGE", "utlStepOutButton");
@@ -809,7 +812,7 @@ void appendDebugButtons(Ihandle *dialog)
   IupSetAttribute(btn_stepout, "TIP", "Executes one step out of the execution.");
   IupSetAttribute(btn_stepout, "CANFOCUS", "No");
 
-  Ihandle *btn_curline = IupButton("->", NULL);
+  btn_curline = IupButton("->", NULL);
   IupSetAttribute(btn_curline, "NAME", "BTN_CURLINE");
   IupSetAttribute(btn_curline, "ACTIVE", "NO");
   IupSetAttribute(btn_curline, "FLAT", "Yes");
@@ -817,7 +820,7 @@ void appendDebugButtons(Ihandle *dialog)
   IupSetAttribute(btn_curline, "TIP", "Shows the current line (Ctrl+L)");
   IupSetAttribute(btn_curline, "CANFOCUS", "No");
 
-  Ihandle *btn_curlinebreak = IupButton("B", NULL);
+  btn_curlinebreak = IupButton("B", NULL);
   IupSetAttribute(btn_curlinebreak, "NAME", "BTN_CURLINEBREAK");
   IupSetAttribute(btn_curlinebreak, "ACTIVE", "NO");
   IupSetAttribute(btn_curlinebreak, "FLAT", "Yes");
@@ -841,49 +844,51 @@ void appendDebugButtons(Ihandle *dialog)
 
 void appendDebugMenuItens(Ihandle *menu)
 {
+  Ihandle *item_debug, *item_run, *item_stop, *item_pause, *item_continue, *item_stepinto,
+          *item_stepover, *item_stepout, *item_resetluastate, *debugMneu, *subMenuDebug;
 
-  Ihandle *item_debug = IupItem("&Debug\tF5", NULL);
+  item_debug = IupItem("&Debug\tF5", NULL);
   IupSetAttribute(item_debug, "NAME", "ITM_DEBUG");
   IupSetCallback(item_debug, "ACTION", (Icallback)item_debug_action_cb);
 
-  Ihandle *item_run = IupItem("&Run\tCtrl+F5", NULL);
+  item_run = IupItem("&Run\tCtrl+F5", NULL);
   IupSetAttribute(item_run, "NAME", "ITM_RUN");
   IupSetCallback(item_run, "ACTION", (Icallback)item_run_action_cb);
 
-  Ihandle *item_stop = IupItem("&Stop\tShift+F5", NULL);
+  item_stop = IupItem("&Stop\tShift+F5", NULL);
   IupSetAttribute(item_stop, "NAME", "ITM_STOP");
   IupSetCallback(item_stop, "ACTION", (Icallback)item_stop_action_cb);
   IupSetAttribute(item_stop, "ACTIVE", "NO");
 
-  Ihandle *item_pause = IupItem("&Pause\tCtrl+Alt+Break", NULL);
+  item_pause = IupItem("&Pause\tCtrl+Alt+Break", NULL);
   IupSetAttribute(item_pause, "NAME", "ITM_PAUSE");
   IupSetCallback(item_pause, "ACTION", (Icallback)item_pause_action_cb);
   IupSetAttribute(item_pause, "ACTIVE", "NO");
 
-  Ihandle *item_continue = IupItem("&Continue\tF5", NULL);
+  item_continue = IupItem("&Continue\tF5", NULL);
   IupSetAttribute(item_continue, "NAME", "ITM_CONTINUE");
   IupSetCallback(item_continue, "ACTION", (Icallback)item_continue_action_cb);
   IupSetAttribute(item_continue, "ACTIVE", "NO");
 
-  Ihandle *item_stepinto = IupItem("Step &Into\tF11", NULL);
+  item_stepinto = IupItem("Step &Into\tF11", NULL);
   IupSetAttribute(item_stepinto, "NAME", "ITM_STEPINTO");
   IupSetCallback(item_stepinto, "ACTION", (Icallback)item_stepinto_action_cb);
   IupSetAttribute(item_stepinto, "ACTIVE", "NO");
 
-  Ihandle *item_stepover = IupItem("Step &Over\tF10", NULL);
+  item_stepover = IupItem("Step &Over\tF10", NULL);
   IupSetAttribute(item_stepover, "NAME", "ITM_STEPOVER");
   IupSetCallback(item_stepover, "ACTION", (Icallback)item_stepover_action_cb);
   IupSetAttribute(item_stepover, "ACTIVE", "NO");
 
-  Ihandle *item_stepout = IupItem("Step Ou&t\tShift+F11", NULL);
+  item_stepout = IupItem("Step Ou&t\tShift+F11", NULL);
   IupSetAttribute(item_stepout, "NAME", "ITM_STEPOUT");
   IupSetCallback(item_stepout, "ACTION", (Icallback)item_stepout_action_cb);
   IupSetAttribute(item_stepout, "ACTIVE", "NO");
 
-  Ihandle *item_resetluastate = IupItem("&Reset Lua State", NULL);
+  item_resetluastate = IupItem("&Reset Lua State", NULL);
   IupSetCallback(item_resetluastate, "ACTION", (Icallback)item_resetluastate_action_cb);
 
-  Ihandle *debugMneu = IupMenu(
+  debugMneu = IupMenu(
     item_debug,
     item_run,
     item_stop,
@@ -895,7 +900,7 @@ void appendDebugMenuItens(Ihandle *menu)
     item_resetluastate,
     NULL);
 
-  Ihandle *subMenuDebug = IupSubmenu("&Lua", debugMneu);
+  subMenuDebug = IupSubmenu("&Lua", debugMneu);
 
   IupAppend(menu, subMenuDebug);
 }
@@ -924,7 +929,8 @@ int main(int argc, char **argv)
 {
   Ihandle *config;
   lua_State *L;
-  Ihandle *multitext;
+  Ihandle *multitext, *menu, *stabs, *box, *statusBar;
+  Ihandle *tabConsole, *tabLocals, *tabBreaks, *debugTabs;
 
   IupOpen(&argc, &argv);
   IupImageLibOpen();
@@ -975,7 +981,7 @@ int main(int argc, char **argv)
 
   IupSetCallback(main_dialog, "MARKERCHANGED_CB", (Icallback)marker_changed_cb);
 
-  Ihandle *menu = IupGetAttributeHandle(main_dialog, "MENU");
+  menu = IupGetAttributeHandle(main_dialog, "MENU");
 
   appendDebugMenuItens(menu);
 
@@ -984,27 +990,27 @@ int main(int argc, char **argv)
     IupSetCallbacks(IupItem("&About...", NULL), "ACTION", (Icallback)item_about_action_cb, NULL),
     NULL)));
 
-  Ihandle *tabConsole = buildTabOutput();
+  tabConsole = buildTabOutput();
 
-  Ihandle *tabLocals = buildTabLocals();
+  tabLocals = buildTabLocals();
 
-  Ihandle *tabBreaks = buildTabBreaks();
+  tabBreaks = buildTabBreaks();
 
-  Ihandle *debugTabs = IupTabs(tabConsole, tabLocals, tabBreaks, NULL);
+  debugTabs = IupTabs(tabConsole, tabLocals, tabBreaks, NULL);
   IupSetAttribute(debugTabs, "EXPAND", "YES");
   IupSetAttribute(debugTabs, "MARGIN", "0x0");
   IupSetAttribute(debugTabs, "GAP", "4");
   IupSetAttribute(debugTabs, "TABTYPE", "BOTTOM");
   IupSetAttribute(debugTabs, "NAME", "TBS_DEBUG");
 
-  Ihandle *stabs = IupSbox(debugTabs);
+  stabs = IupSbox(debugTabs);
   IupSetAttribute(stabs, "EXPAND", "YES");
   IupSetAttribute(stabs, "DIRECTION", "NORTH");
   IupSetAttribute(stabs, "MARGIN", "0x0");
   IupSetAttribute(stabs, "GAP", "4");
 
-  Ihandle *box = IupGetChild(main_dialog, 0);
-  Ihandle *statusBar = IupGetDialogChild(main_dialog, "STATUSBAR");
+  box = IupGetChild(main_dialog, 0);
+  statusBar = IupGetDialogChild(main_dialog, "STATUSBAR");
   IupInsert(box, statusBar, stabs);
 
   IupSetAttributeHandle(main_dialog, "CONFIG", config);
