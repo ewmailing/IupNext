@@ -62,7 +62,7 @@ USE_IUPLUA = Yes
 
 IUP = ..
 
-SRC = iupluascripter.c utl_button_images.c
+SRC = iupluascripter.c step_images.c
 SRCLUA = console.lua debugger.lua
 
 ifdef DBG_DIR

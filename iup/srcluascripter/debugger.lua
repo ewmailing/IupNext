@@ -207,7 +207,6 @@ function debug_set_state(st)
 		 end
 	elseif st == DEBUG_PAUSED then
 		iup.SetAttribute(iup.GetDialogChild(main_dialog, "ZBOX_DEBUG_CONTINUE"), "VALUE", "BTN_CONTINUE")
-		breakAtCaret = nil
 		stop = "YES"
 		step = "YES"
 		contin = "YES"
@@ -234,8 +233,6 @@ function debug_set_state(st)
 	iup.SetAttribute(iup.GetDialogChild(main_dialog, "BTN_STEPINTO"), "ACTIVE", step)
 	iup.SetAttribute(iup.GetDialogChild(main_dialog, "BTN_STEPOVER"), "ACTIVE", step)
 	iup.SetAttribute(iup.GetDialogChild(main_dialog, "BTN_STEPOUT"), "ACTIVE", step)
-	iup.SetAttribute(iup.GetDialogChild(main_dialog, "BTN_CURLINE"), "ACTIVE", curline)
-	iup.SetAttribute(iup.GetDialogChild(main_dialog, "BTN_CURLINEBREAK"), "ACTIVE", curline)
 end                   
 
 function insertBreakpoint(filename, line)
@@ -304,11 +301,6 @@ end
 
 function hasLineBreak(filename, line)
 
-	if breakAtCaret and breakAtCaret == line then
-		breakAtCaret = nil
-		return true
-	end
-
 	for i = 1, #breakpoints do
 		local item = breakpoints[i]
 		if item.filename == filename and item.line == line then
@@ -316,7 +308,7 @@ function hasLineBreak(filename, line)
 		end
 	end
     
-    return false
+  return false
 end
 
 function clearLocal()

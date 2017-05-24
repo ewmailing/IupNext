@@ -13,7 +13,7 @@
 
 #include <iuplua.h>
 
-#include "utl_button_images.h"
+void load_all_images_step_images(void);
 
 
 lua_State *lcmd_state;
@@ -377,25 +377,6 @@ int item_about_action_cb(void)
   return IUP_DEFAULT;
 }
 
-int item_curline_action_cb(Ihandle* ih)
-{
-  int lin, col;
-  Ihandle* multitext = IupGetDialogChild(ih, "MULTITEXT");
-  int pos = IupGetInt(multitext, "CARETPOS");
-  IupTextConvertPosToLinCol(multitext, pos, &lin, &col);
-  lua_pushinteger(lcmd_state, lin + 1);
-  lua_setglobal(lcmd_state, "breakAtCaret");
-
-  debug_set_state(lcmd_state, "DEBUG_ACTIVE");
-
-  return IUP_DEFAULT;
-}
-
-int item_curlinebreak_action_cb(void)
-{
-  return IUP_DEFAULT;
-}
-
 int txt_cmdline_cb(Ihandle *ih, int c)
 {
   switch (c)
@@ -660,12 +641,15 @@ Ihandle *buildTabBreaks(void)
 
   button_addbreak = IupButton("Toggle Breakpoint", NULL);
   IupSetAttribute(button_addbreak, "TIP", "Toggle breakpoint at the current line. Ctrl+B");
+  IupSetCallback(button_addbreak, "ACTION", (Icallback)but_addbreak_cb);
 
   button_removebreak = IupButton("Remove", NULL);
   IupSetAttribute(button_removebreak, "TIP", "Removes the selected breakpoint at the list.");
+  IupSetCallback(button_removebreak, "ACTION", (Icallback)but_removebreak_cb);
 
   button_removeallbreaks = IupButton("Remove All", NULL);
   IupSetAttribute(button_removeallbreaks, "TIP", "Removes all breakpoints.");
+  IupSetCallback(button_removeallbreaks, "ACTION", (Icallback)but_removeallbreaks_cb);
 
   hbox = IupHbox(button_addbreak, button_removebreak, button_removeallbreaks, NULL);
   IupSetAttribute(hbox, "EXPAND", "NO");
@@ -681,10 +665,6 @@ Ihandle *buildTabBreaks(void)
   IupSetAttribute(vbox, "MARGIN", "0x0");
   IupSetAttribute(vbox, "GAP", "4");
   IupSetAttribute(vbox, "TABTITLE", "Breakpoints");
-
-  IupSetCallback(button_addbreak, "ACTION", (Icallback)but_addbreak_cb);
-  IupSetCallback(button_removebreak, "ACTION", (Icallback)but_removebreak_cb);
-  IupSetCallback(button_removeallbreaks, "ACTION", (Icallback)but_removeallbreaks_cb);
 
   return vbox;
 }
@@ -719,15 +699,15 @@ void showVersionInfo()
 
 void appendDebugButtons(Ihandle *dialog)
 {
-  Ihandle *toolbar, *btn_debug, *btn_run, *btn_stop, *btn_pause, *btn_continue, *btn_curlinebreak;
-  Ihandle *zbox_debug_continue, *btn_stepinto, *btn_stepover, *btn_stepout, *btn_curline;
+  Ihandle *toolbar, *btn_debug, *btn_run, *btn_stop, *btn_pause, *btn_continue;
+  Ihandle *zbox_debug_continue, *btn_stepinto, *btn_stepover, *btn_stepout;
 
   toolbar = IupGetChild(IupGetChild(dialog, 0), 0);
 
   btn_debug = IupButton(NULL, NULL);
   IupSetAttribute(btn_debug, "NAME", "BTN_DEBUG");
   IupSetHandle("BTN_DEBUG", btn_debug);
-  IupSetAttribute(btn_debug, "IMAGE", "utlDebugButton");
+  IupSetAttribute(btn_debug, "IMAGE", "IUP_MediaGoToEnd");
   IupSetAttribute(btn_debug, "FLAT", "Yes");
   IupSetCallback(btn_debug, "ACTION", (Icallback)item_debug_action_cb);
   IupSetAttribute(btn_debug, "TIP", "Debug (F5)");
@@ -735,7 +715,7 @@ void appendDebugButtons(Ihandle *dialog)
 
   btn_run = IupButton(NULL, NULL);
   IupSetAttribute(btn_run, "NAME", "BTN_RUN");
-  IupSetAttribute(btn_run, "IMAGE", "utlRunButton");
+  IupSetAttribute(btn_run, "IMAGE", "IUP_MediaPlay");
   IupSetAttribute(btn_run, "FLAT", "Yes");
   IupSetCallback(btn_run, "ACTION", (Icallback)item_run_action_cb);
   IupSetAttribute(btn_run, "TIP", "Run (Ctrl+F5)");
@@ -744,7 +724,7 @@ void appendDebugButtons(Ihandle *dialog)
   btn_stop = IupButton(NULL, NULL);
   IupSetAttribute(btn_stop, "NAME", "BTN_STOP");
   IupSetAttribute(btn_stop, "ACTIVE", "NO");
-  IupSetAttribute(btn_stop, "IMAGE", "utlStopButton");
+  IupSetAttribute(btn_stop, "IMAGE", "IUP_MediaStop");
   IupSetAttribute(btn_stop, "FLAT", "Yes");
   IupSetCallback(btn_stop, "ACTION", (Icallback)item_stop_action_cb);
   IupSetAttribute(btn_stop, "TIP", "Stop (Shift+F5)");
@@ -753,7 +733,7 @@ void appendDebugButtons(Ihandle *dialog)
   btn_pause = IupButton(NULL, NULL);
   IupSetAttribute(btn_pause, "NAME", "BTN_PAUSE");
   IupSetAttribute(btn_pause, "ACTIVE", "NO");
-  IupSetAttribute(btn_pause, "IMAGE", "utlPauseButton");
+  IupSetAttribute(btn_pause, "IMAGE", "IUP_MediaPause");
   IupSetAttribute(btn_pause, "FLAT", "Yes");
   IupSetCallback(btn_pause, "ACTION", (Icallback)item_pause_action_cb);
   IupSetAttribute(btn_pause, "TIP", "Debug (F5)");
@@ -763,7 +743,7 @@ void appendDebugButtons(Ihandle *dialog)
   IupSetAttribute(btn_continue, "NAME", "BTN_CONTINUE");
   IupSetHandle("BTN_CONTINUE", btn_continue);
   IupSetAttribute(btn_continue, "ACTIVE", "NO");
-  IupSetAttribute(btn_continue, "IMAGE", "utlDebugButton");
+  IupSetAttribute(btn_continue, "IMAGE", "IUP_MediaGoToEnd");
   IupSetAttribute(btn_continue, "FLAT", "Yes");
   IupSetCallback(btn_continue, "ACTION", (Icallback)item_continue_action_cb);
   IupSetAttribute(btn_continue, "TIP", "Continue (F5)");
@@ -775,7 +755,7 @@ void appendDebugButtons(Ihandle *dialog)
   btn_stepinto = IupButton(NULL, NULL);
   IupSetAttribute(btn_stepinto, "NAME", "BTN_STEPINTO");
   IupSetAttribute(btn_stepinto, "ACTIVE", "NO");
-  IupSetAttribute(btn_stepinto, "IMAGE", "utlStepIntoButton");
+  IupSetAttribute(btn_stepinto, "IMAGE", "IUP_stepinto");
   IupSetAttribute(btn_stepinto, "FLAT", "Yes");
   IupSetCallback(btn_stepinto, "ACTION", (Icallback)item_stepinto_action_cb);
   IupSetAttribute(btn_stepinto, "TIP", "Executes one step into the execution.");
@@ -784,7 +764,7 @@ void appendDebugButtons(Ihandle *dialog)
   btn_stepover = IupButton(NULL, NULL);
   IupSetAttribute(btn_stepover, "NAME", "BTN_STEPOVER");
   IupSetAttribute(btn_stepover, "ACTIVE", "NO");
-  IupSetAttribute(btn_stepover, "IMAGE", "utlStepOverButton");
+  IupSetAttribute(btn_stepover, "IMAGE", "IUP_stepover");
   IupSetAttribute(btn_stepover, "FLAT", "Yes");
   IupSetCallback(btn_stepover, "ACTION", (Icallback)item_stepover_action_cb);
   IupSetAttribute(btn_stepover, "TIP", "Executes one step over the execution.");
@@ -793,40 +773,20 @@ void appendDebugButtons(Ihandle *dialog)
   btn_stepout = IupButton(NULL, NULL);
   IupSetAttribute(btn_stepout, "NAME", "BTN_STEPOUT");
   IupSetAttribute(btn_stepout, "ACTIVE", "NO");
-  IupSetAttribute(btn_stepout, "IMAGE", "utlStepOutButton");
+  IupSetAttribute(btn_stepout, "IMAGE", "IUP_stepout");
   IupSetAttribute(btn_stepout, "FLAT", "Yes");
   IupSetCallback(btn_stepout, "ACTION", (Icallback)item_stepout_action_cb);
   IupSetAttribute(btn_stepout, "TIP", "Executes one step out of the execution.");
   IupSetAttribute(btn_stepout, "CANFOCUS", "No");
-
-  btn_curline = IupButton("->", NULL);
-  IupSetAttribute(btn_curline, "NAME", "BTN_CURLINE");
-  IupSetAttribute(btn_curline, "ACTIVE", "NO");
-  IupSetAttribute(btn_curline, "FLAT", "Yes");
-  IupSetCallback(btn_curline, "ACTION", (Icallback)item_curline_action_cb);
-  IupSetAttribute(btn_curline, "TIP", "Shows the current line (Ctrl+L)");
-  IupSetAttribute(btn_curline, "CANFOCUS", "No");
-
-  btn_curlinebreak = IupButton("B", NULL);
-  IupSetAttribute(btn_curlinebreak, "NAME", "BTN_CURLINEBREAK");
-  IupSetAttribute(btn_curlinebreak, "ACTIVE", "NO");
-  IupSetAttribute(btn_curlinebreak, "FLAT", "Yes");
-  IupSetCallback(btn_curlinebreak, "ACTION", (Icallback)item_curlinebreak_action_cb);
-  IupSetAttribute(btn_curlinebreak, "TIP", "Toggle breakpoint at the current line (Ctrl+B)");
-  IupSetAttribute(btn_curlinebreak, "CANFOCUS", "No");
 
   IupAppend(toolbar, IupSetAttributes(IupLabel(NULL), "SEPARATOR=VERTICAL"));
   IupAppend(toolbar, btn_run);
   IupAppend(toolbar, zbox_debug_continue);
   IupAppend(toolbar, btn_stop);
   IupAppend(toolbar, btn_pause);
-  IupAppend(toolbar, btn_stepinto);
   IupAppend(toolbar, btn_stepover);
+  IupAppend(toolbar, btn_stepinto);
   IupAppend(toolbar, btn_stepout);
-  IupAppend(toolbar, IupSetAttributes(IupFill(), "EXPAND=NO, SIZE=10"));
-  IupAppend(toolbar, btn_curline);
-  IupAppend(toolbar, btn_curlinebreak);
-  IupAppend(toolbar, IupSetAttributes(IupLabel(NULL), "SEPARATOR=VERTICAL"));
 }
 
 void appendDebugMenuItens(Ihandle *menu)
@@ -834,13 +794,18 @@ void appendDebugMenuItens(Ihandle *menu)
   Ihandle *item_debug, *item_run, *item_stop, *item_pause, *item_continue, *item_stepinto,
           *item_stepover, *item_stepout, *item_resetluastate, *debugMneu, *subMenuDebug;
 
+  item_run = IupItem("&Run\tCtrl+F5", NULL);
+  IupSetAttribute(item_run, "NAME", "ITM_RUN");
+  IupSetCallback(item_run, "ACTION", (Icallback)item_run_action_cb);
+
   item_debug = IupItem("&Debug\tF5", NULL);
   IupSetAttribute(item_debug, "NAME", "ITM_DEBUG");
   IupSetCallback(item_debug, "ACTION", (Icallback)item_debug_action_cb);
 
-  item_run = IupItem("&Run\tCtrl+F5", NULL);
-  IupSetAttribute(item_run, "NAME", "ITM_RUN");
-  IupSetCallback(item_run, "ACTION", (Icallback)item_run_action_cb);
+  item_continue = IupItem("&Continue\tF5", NULL);
+  IupSetAttribute(item_continue, "NAME", "ITM_CONTINUE");
+  IupSetCallback(item_continue, "ACTION", (Icallback)item_continue_action_cb);
+  IupSetAttribute(item_continue, "ACTIVE", "NO");
 
   item_stop = IupItem("&Stop\tShift+F5", NULL);
   IupSetAttribute(item_stop, "NAME", "ITM_STOP");
@@ -851,11 +816,6 @@ void appendDebugMenuItens(Ihandle *menu)
   IupSetAttribute(item_pause, "NAME", "ITM_PAUSE");
   IupSetCallback(item_pause, "ACTION", (Icallback)item_pause_action_cb);
   IupSetAttribute(item_pause, "ACTIVE", "NO");
-
-  item_continue = IupItem("&Continue\tF5", NULL);
-  IupSetAttribute(item_continue, "NAME", "ITM_CONTINUE");
-  IupSetCallback(item_continue, "ACTION", (Icallback)item_continue_action_cb);
-  IupSetAttribute(item_continue, "ACTIVE", "NO");
 
   item_stepinto = IupItem("Step &Into\tF11", NULL);
   IupSetAttribute(item_stepinto, "NAME", "ITM_STEPINTO");
@@ -876,14 +836,15 @@ void appendDebugMenuItens(Ihandle *menu)
   IupSetCallback(item_resetluastate, "ACTION", (Icallback)item_resetluastate_action_cb);
 
   debugMneu = IupMenu(
-    item_debug,
     item_run,
+    item_debug,
+    item_continue,
     item_stop,
     item_pause,
-    item_continue,
     item_stepover,
     item_stepinto,
     item_stepout,
+    IupSeparator(),
     item_resetluastate,
     NULL);
 
@@ -901,10 +862,12 @@ int main(int argc, char **argv)
   Ihandle *main_dialog;
 
   IupOpen(&argc, &argv);
-  IupImageLibOpen();
-  utlCreateButtonImages();
-
   IupScintillaOpen();
+  IupImageLibOpen();
+
+  IupSetGlobal("GLOBALLAYOUTDLGKEY", "Yes");
+
+  load_all_images_step_images();
 
   L = lcmd_state = lua_open();
   luaL_openlibs(lcmd_state);
