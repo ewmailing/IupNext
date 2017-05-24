@@ -423,11 +423,6 @@ int btn_clear_cb(Ihandle *ih)
   return IUP_DEFAULT;
 }
 
-int btn_buffsize_cb(Ihandle *ih)
-{
-  return IUP_DEFAULT;
-}
-
 int but_printlocal_cb(Ihandle *ih)
 {
   return IUP_DEFAULT;
@@ -508,26 +503,28 @@ int but_removeallbreaks_cb(Ihandle *ih)
 
 Ihandle *buildTabOutput(void)
 {
-  Ihandle *txt_cmdLine, *btn_listfunc, *btn_listvar, *btn_clear, *btn_buffsize, *console_bts;
+  Ihandle *txt_cmdLine, *btn_listfunc, *btn_listvar, *btn_clear, *console_bts;
   Ihandle *frm_consolebts, *ml_output, *output;
 
   txt_cmdLine = IupText(NULL);
   IupSetAttribute(txt_cmdLine, "EXPAND", "HORIZONTAL");
   IupSetAttribute(txt_cmdLine, "NAME", "TXT_CMDLINE");
+  IupSetCallback(txt_cmdLine, IUP_K_ANY, (Icallback)txt_cmdline_cb);
+
   btn_listfunc = IupButton("List Funcs", NULL);
   IupSetAttribute(btn_listfunc, "EXPAND", "NO");
-  IupSetAttribute(btn_listfunc, "NAME", "BTN_LISTFUNC");
+  IupSetCallback(btn_listfunc, "ACTION", (Icallback)btn_listfunc_cb);
+
   btn_listvar = IupButton("List Vars", NULL);
   IupSetAttribute(btn_listvar, "EXPAND", "NO");
-  IupSetAttribute(btn_listvar, "NAME", "BTN_LISTVAR");
+  IupSetCallback(btn_listvar, "ACTION", (Icallback)btn_listvar_cb);
+
   btn_clear = IupButton("Clear", NULL);
   IupSetAttribute(btn_clear, "EXPAND", "NO");
   IupSetAttribute(btn_clear, "NAME", "BTN_CLEAR");
-  btn_buffsize = IupButton("Buffer Size...", NULL);
-  IupSetAttribute(btn_buffsize, "EXPAND", "NO");
-  IupSetAttribute(btn_buffsize, "NAME", "BTN_BUFSIZE");
+  IupSetCallback(btn_clear, "ACTION", (Icallback)btn_clear_cb);
 
-  console_bts = IupHbox(txt_cmdLine, btn_listfunc, btn_listvar, btn_clear, btn_buffsize, NULL);
+  console_bts = IupHbox(txt_cmdLine, btn_listfunc, btn_listvar, btn_clear, NULL);
   IupSetAttribute(console_bts, "EXPAND", "HORIZONTAL");
   IupSetAttribute(console_bts, "MARGIN", "3x3");
   IupSetAttribute(console_bts, "GAP", "2");
@@ -551,12 +548,6 @@ Ihandle *buildTabOutput(void)
   IupSetAttribute(output, "NAME", "OUTPUT");
 
   IupSetHandle("tabOutput", output);
-
-  IupSetCallback(txt_cmdLine, IUP_K_ANY, (Icallback)txt_cmdline_cb);
-  IupSetCallback(btn_listfunc, "ACTION", (Icallback)btn_listfunc_cb);
-  IupSetCallback(btn_listvar, "ACTION", (Icallback)btn_listvar_cb);
-  IupSetCallback(btn_clear, "ACTION", (Icallback)btn_clear_cb);
-  IupSetCallback(btn_buffsize, "ACTION", (Icallback)btn_buffsize_cb);
 
   return output;
 }
@@ -693,7 +684,7 @@ void set_attribs(Ihandle *multitext)
 
 void showVersionInfo()
 {
-  lua_getfield(lcmd_state, LUA_GLOBALSINDEX, "showVersionInfo");
+  lua_getfield(lcmd_state, LUA_GLOBALSINDEX, "consoleVersionInfo");
   lua_call(lcmd_state, 0, 0);
 }
 
@@ -872,6 +863,13 @@ int main(int argc, char **argv)
   L = lcmd_state = lua_open();
   luaL_openlibs(lcmd_state);
 
+#if LUA_VERSION_NUM < 502
+  lua_pushliteral(L, LUA_RELEASE "  " LUA_COPYRIGHT);
+#else
+  lua_pushliteral(L, LUA_COPYRIGHT);
+#endif
+  lua_setglobal(L, "_COPYRIGHT");  /* set global _COPYRIGHT */
+
   iuplua_open(lcmd_state);
 
   config = IupConfig();
@@ -902,12 +900,12 @@ int main(int argc, char **argv)
   IupSetAttributeId(multitext, "MARKERSYMBOL", 2, "BACKGROUND");
 
   IupSetCallback(main_dialog, "K_F5", (Icallback)item_debug_action_cb);
+  IupSetCallback(main_dialog, "K_F5", (Icallback)item_continue_action_cb);
   IupSetCallback(main_dialog, "K_cF5", (Icallback)item_run_action_cb);
   IupSetCallback(main_dialog, "K_sF5", (Icallback)item_stop_action_cb);
   IupSetCallback(main_dialog, "K_PAUSE", (Icallback)pause_action_cb);
-  IupSetCallback(main_dialog, "K_F5", (Icallback)item_continue_action_cb);
-  IupSetCallback(main_dialog, "K_F11", (Icallback)item_stepinto_action_cb);
   IupSetCallback(main_dialog, "K_F10", (Icallback)item_stepover_action_cb);
+  IupSetCallback(main_dialog, "K_F11", (Icallback)item_stepinto_action_cb);
   IupSetCallback(main_dialog, "K_sF11", (Icallback)item_stepout_action_cb);
 
   IupSetCallback(main_dialog, "MARKERCHANGED_CB", (Icallback)marker_changed_cb);
@@ -932,7 +930,6 @@ int main(int argc, char **argv)
   IupSetAttribute(debugTabs, "MARGIN", "0x0");
   IupSetAttribute(debugTabs, "GAP", "4");
   IupSetAttribute(debugTabs, "TABTYPE", "BOTTOM");
-  IupSetAttribute(debugTabs, "NAME", "TBS_DEBUG");
 
   stabs = IupSbox(debugTabs);
   IupSetAttribute(stabs, "EXPAND", "YES");

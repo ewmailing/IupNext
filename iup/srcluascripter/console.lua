@@ -7,13 +7,8 @@ console.create = function()
 	
 	console.cmdList = {}
 
-	console.tbsDebug = iup.GetDialogChild(main_dialog, "TBS_DEBUG")
 	console.txtCmdLine = iup.GetDialogChild(main_dialog, "TXT_CMDLINE")
 	console.mtlOutput = iup.GetDialogChild(main_dialog, "MTL_OUTPUT")
-	console.btnClear = iup.GetDialogChild(main_dialog, "BTN_CLEAR")
-	console.btnBufSize = iup.GetDialogChild(main_dialog, "BTN_BUFSIZE")
-	console.btnListFunc = iup.GetDialogChild(main_dialog, "BTN_LISTFUNC")
-	console.btnListVar = iup.GetDialogChild(main_dialog, "BTN_LISTVAR")
 	
 	console.currentListInd = 0
 	console.hold_caret = false
@@ -47,7 +42,7 @@ function consolePrint(...)
 	consoleEnterMessage(buffer, 1)
 end
 
-function utlIndent()
+function consoleIndent()
 	local level = console.identLevel
 	if level == 0 then
 		return ""
@@ -66,12 +61,12 @@ function utlIndent()
 	end
 end
 
-function utlCommandListInsert(text)
+function consoleCommandListInsert(text)
 	table.insert(console.cmdList, text)
 	console.currentListInd = #console.cmdList
 end
 
-function utlComandListFindStr(text)
+function consoleCommandListFindStr(text)
 
 	for i = 1, #console.cmdList do
 		if text == console.cmdList[i] then
@@ -84,11 +79,11 @@ end
 function consolePrintObject(object, value)
 
 	if type(value)=="string" then
-		consoleEnterMessagef("%s%s = \"%s\"", utlIndent(), object, value)
+		consoleEnterMessagef("%s%s = \"%s\"", consoleIndent(), object, value)
 	elseif type(value)=="userdata" then
-		consoleEnterMessagef("%s%s = <userdata> (type = %s)", utlIndent(), object, type(value))
+		consoleEnterMessagef("%s%s = <userdata> (type = %s)", consoleIndent(), object, type(value))
 	elseif type(value)==nil then
-		consoleEnterMessagef("%s%s = nil", utlIndent(), object)
+		consoleEnterMessagef("%s%s = nil", consoleIndent(), object)
 	elseif type(value)=="number" then
 		local fmt
 		if value == math.floor(value) then
@@ -96,11 +91,11 @@ function consolePrintObject(object, value)
 		else
 			fmt = "%s%s = %f"
 		end
-		consoleEnterMessagef(fmt, utlIndent(), object, value)
+		consoleEnterMessagef(fmt, consoleIndent(), object, value)
 	elseif type(value) == "table" then
 		if console.identLevel < 6 then
-			consoleEnterMessagef("%s%s = ", utlIndent(), object)
-			consoleEnterMessagef("%s[", utlIndent())
+			consoleEnterMessagef("%s%s = ", consoleIndent(), object)
+			consoleEnterMessagef("%s[", consoleIndent())
 			console.identLevel = console.identLevel + 1
 			local holdCaret = console.hold_caret
 			if holdCaret==false then
@@ -113,34 +108,34 @@ function consolePrintObject(object, value)
 			console.identLevel = console.identLevel - 1
 			consoleEnterMessagef("%s}", console.identLevel)
 		else
-			consoleEnterMessagef("%s{table too deep}", utlIndent())
+			consoleEnterMessagef("%s{table too deep}", consoleIndent())
 		end
 	elseif type(value)=="function" then
 		local info = debug.getinfo(object, "Snl")
 		if info.name ~= nil then
 			if string.sub(info.source, 1, 1) ~= "@" then
-				consoleEnterMessagef("%s%s = <function> (\"%s\"%s) [defined in a string at line %d]", utlIndent(), object,
+				consoleEnterMessagef("%s%s = <function> (\"%s\"%s) [defined in a string at line %d]", consoleIndent(), object,
 					info.name, info.namewhat, info.linedefined)
 			else
-				consoleEnterMessagef("%s%s = <function> (\"%s\"%s) [defined in the file \"%s\" at line %d]", utlIndent(),
+				consoleEnterMessagef("%s%s = <function> (\"%s\"%s) [defined in the file \"%s\" at line %d]", consoleIndent(),
 					object, info.name, info.namewhat, info.source, info.linedefined)
 			end
 		elseif string.sub(info.source, 1, 1) ~= "@" then
-			consoleEnterMessagef("%s%s = <function> [defined in a string at line %d]", utlIndent(), object, info.linedefined)
+			consoleEnterMessagef("%s%s = <function> [defined in a string at line %d]", consoleIndent(), object, info.linedefined)
 		else
-			consoleEnterMessagef("%s%s = <function> [defined in the file \"%s\" at line %d", utlIndent(), object, info.source,
+			consoleEnterMessagef("%s%s = <function> [defined in the file \"%s\" at line %d", consoleIndent(), object, info.source,
 				info.linedefined)
 		end
 	else
-		consoleEnterMessagef("%s%s = <unknown> (type = %s)", utlIndent(), object, type(value))
+		consoleEnterMessagef("%s%s = <unknown> (type = %s)", consoleIndent(), object, type(value))
 	end
 end
 
 function consoleEnterCommandStr(text)
-	local ind = utlComandListFindStr(text)
+	local ind = consoleCommandListFindStr(text)
 	
 	if ind == nil then
-		utlCommandListInsert(text)
+		consoleCommandListInsert(text)
 		console.currentListInd = #console.cmdList
 	else
 		console.currentListInd = ind
@@ -289,7 +284,7 @@ function consolePrintVarType(index, value, tableFlag)
 	else
 		name = "["..index.."]"
 	end
-	consoleEnterMessagef("%s%s = \"%s\"", utlIndent(), name, type(value))
+	consoleEnterMessagef("%s%s = \"%s\"", consoleIndent(), name, type(value))
 end
 
 function consolePrintTable(t)
@@ -326,5 +321,25 @@ function consoleListVar()
 	consoleHoldCaret(false)
 end
 
+function consoleVersionInfo()
+  consoleEnterMessage(
+    _COPYRIGHT .. "\n"..
+    "IUP " .. iup._VERSION .. "  " .. iup._COPYRIGHT .. "\n"
+  )
+end
+
+function consoleListFuncAction()
+	consoleEnterCommandStr("consoleListFunc()")
+	consoleListFunc()
+end
+
+function consoleListVarAction()
+	consoleEnterCommandStr("consoleListVar()")
+	consoleListVar()
+end
+
+function consoleClearAction()
+  iup.SetAttribute(console.mtlOutput, "VALUE", "")
+end
 
 console.create()

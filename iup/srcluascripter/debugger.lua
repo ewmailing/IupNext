@@ -10,9 +10,6 @@ DEBUG_STOPPED = 8
 FUNC_INSIDE = 1
 FUNC_OUTSIDE = 2
 
-LUA_COPYRIGHT = "Copyright (C) 1994-2008 Lua.org, PUC-Rio"
-LUA_AUTHORS = "R. Ierusalimschy, L. H. de Figueiredo & W. Celes"
-
 local debug_state = DEBUG_INACTIVE
 
 local breakpoints = {}
@@ -82,40 +79,6 @@ function reloadFile(filename)
 			end
 		end
 	end
-end
-
-function showVersionInfo()
-  consoleEnterMessagef("IupLuaScripter 1.0\n"..
-   "%s  %s\n"..
-   "  (written by %s)\n"..
-   "IUP %s\n"..
-   "  (copyright (c) 1995-2017 Tecgraf/PUC-Rio)\n\n",
-   _VERSION, LUA_COPYRIGHT, LUA_AUTHORS, iup.GetGlobal("VERSION")
-  )
-  iup.SetAttribute(console.tbsDebug, "VALUE", iup.GetHandle("tabOutput"))
-  iup.SetFocus(console.txtCmdLine)
-end
-
-function consoleListFuncAction()
-
-	consoleEnterCommandStr("consoleListFunc()")
-	
-	consoleListFunc()
-	
-end
-
-function consoleListVarAction()
-
-	consoleEnterCommandStr("consoleListVar()")
-	
-	consoleListVar()
-	
-end
-
-function consoleClearAction()
-
-  iup.SetAttribute(console.mtlOutput, "VALUE", "")
-	
 end
 
 function removeAllBreakpoints()
@@ -249,7 +212,6 @@ function removeBreakpointFromList(index)
 	local item = breakpoints[index]
 	
 	if iup.GetAttribute(iup.GetDialogChild(main_dialog, "MULTITEXT"), "FILENAME") == item.filename then
-		--toggleBreakpoint(item.line, 1, 2)
 		iup.SetAttributeId(iup.GetDialogChild(main_dialog, "MULTITEXT"), "TOGGLEMARKER", item.line, 2)
 	else
 		removeBreakpoint(item.filename, item.line)
