@@ -155,13 +155,12 @@ end
 
 function consoleEnterMessage(text, insert_new_line)
 
-	local value  = iup.GetAttribute(console.mtlOutput, "VALUE")
+	local value  = console.mtlOutput.value
 	value = value..text
 	if insert_new_line == 1 then
 		value = value.."\n"
 	end
-	iup.SetAttribute(console.mtlOutput, "VALUE", value)
-	
+	console.mtlOutput.value = value
 end
 
 function consoleHoldCaret(hold)
@@ -173,7 +172,7 @@ end
 
 function consoleEnterCommand()
 
-	local command = iup.GetAttribute(console.txtCmdLine, "VALUE")
+	local command = console.txtCmdLine.value
 	
 	if command == nil then
 		return
@@ -199,14 +198,14 @@ function consoleEnterCommand()
 		consoleHoldCaret(false)
 	end
 	
-	iup.SetAttribute(console.txtCmdLine, "VALUE", "")
+	console.txtCmdLine.value = ""
 	iup.SetFocus(console.txtCmdLine)
 end
 
 function consoleKeyUpCommand()
 	if #console.cmdList > 0 then
 		if console.currentListInd >= 1 then
-			iup.SetAttribute(console.txtCmdLine, "VALUE", console.cmdList[console.currentListInd])
+			console.txtCmdLine.value = console.cmdList[console.currentListInd]
 			if console.currentListInd > 1 then
 				console.currentListInd = console.currentListInd - 1
 			end
@@ -218,7 +217,7 @@ function consoleKeyDownCommand()
 	if #console.cmdList > 0 then
 			print(tostring(console.currentListInd))
 		if console.currentListInd <= #console.cmdList then
-			iup.SetAttribute(console.txtCmdLine, "VALUE", console.cmdList[console.currentListInd])
+			console.txtCmdLine.value = console.cmdList[console.currentListInd]
 			if console.currentListInd < #console.cmdList then
 				console.currentListInd = console.currentListInd + 1
 			end
@@ -295,7 +294,7 @@ function consolePrintTable(t)
   end
 end
 
-function consoleListFunc()
+function consoleListFuncs()
 	 local global = getfenv(0)
 	 local n,v = next(global, nil)
 	 consoleHoldCaret(true)
@@ -308,7 +307,7 @@ function consoleListFunc()
 	consoleHoldCaret(false)
 end
 
-function consoleListVar()
+function consoleListVars()
 	local global = getfenv(0)
 	local n,v = next(global, nil)
 	consoleHoldCaret(true)
@@ -328,18 +327,8 @@ function consoleVersionInfo()
   )
 end
 
-function consoleListFuncAction()
-	consoleEnterCommandStr("consoleListFunc()")
-	consoleListFunc()
-end
-
-function consoleListVarAction()
-	consoleEnterCommandStr("consoleListVar()")
-	consoleListVar()
-end
-
-function consoleClearAction()
-  iup.SetAttribute(console.mtlOutput, "VALUE", "")
+function consoleClear()
+  console.mtlOutput.value = ""
 end
 
 console.create()

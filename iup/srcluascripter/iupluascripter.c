@@ -400,26 +400,57 @@ int txt_cmdline_cb(Ihandle *ih, int c)
   return IUP_CONTINUE;
 }
 
-int btn_listfunc_cb(Ihandle *ih)
+int item_listfuncs_action_cb(Ihandle *ih)
 {
-  lua_getfield(lcmd_state, LUA_GLOBALSINDEX, "consoleListFuncAction");
+  lua_getfield(lcmd_state, LUA_GLOBALSINDEX, "consoleListFuncs");
   lua_call(lcmd_state, 0, 0);
 
+  (void)ih;
   return IUP_DEFAULT;
 }
 
-int btn_listvar_cb(Ihandle *ih)
+int item_listvars_action_cb(Ihandle *ih)
 {
-  lua_getfield(lcmd_state, LUA_GLOBALSINDEX, "consoleListVarAction");
+  lua_getfield(lcmd_state, LUA_GLOBALSINDEX, "consoleListVars");
   lua_call(lcmd_state, 0, 0);
 
+  (void)ih;
   return IUP_DEFAULT;
 }
 
-int btn_clear_cb(Ihandle *ih)
+int item_clear_action_cb(Ihandle *ih)
 {
-  lua_getfield(lcmd_state, LUA_GLOBALSINDEX, "consoleClearAction");
+  lua_getfield(lcmd_state, LUA_GLOBALSINDEX, "consoleClear");
   lua_call(lcmd_state, 0, 0);
+
+  (void)ih;
+  return IUP_DEFAULT;
+}
+
+int btn_tools_cb(Ihandle *ih)
+{
+  int x, y;
+  Ihandle* item_listfuncs, *item_listvars, *item_clear, *tools_menu;
+
+  item_listfuncs = IupItem("List Global Functions", NULL);
+  IupSetCallback(item_listfuncs, "ACTION", (Icallback)item_listfuncs_action_cb);
+
+  item_listvars = IupItem("List Global Variables", NULL);
+  IupSetCallback(item_listvars, "ACTION", (Icallback)item_listvars_action_cb);
+
+  item_clear = IupItem("Clear Output", NULL);
+  IupSetCallback(item_clear, "ACTION", (Icallback)item_clear_action_cb);
+
+  tools_menu = IupMenu(item_listfuncs, item_listvars, IupSeparator(), item_clear, NULL);
+
+  x = IupGetInt(ih, "X");
+  y = IupGetInt(ih, "Y");
+  y += IupGetInt2(ih, "RASTERSIZE");
+
+  IupPopup(tools_menu, x, y);
+
+  IupDestroy(tools_menu);
+
   return IUP_DEFAULT;
 }
 
@@ -503,7 +534,7 @@ int but_removeallbreaks_cb(Ihandle *ih)
 
 Ihandle *buildTabOutput(void)
 {
-  Ihandle *txt_cmdLine, *btn_listfunc, *btn_listvar, *btn_clear, *console_bts;
+  Ihandle *txt_cmdLine, *btn_tools, *console_bts;
   Ihandle *frm_consolebts, *ml_output, *output;
 
   txt_cmdLine = IupText(NULL);
@@ -511,26 +542,19 @@ Ihandle *buildTabOutput(void)
   IupSetAttribute(txt_cmdLine, "NAME", "TXT_CMDLINE");
   IupSetCallback(txt_cmdLine, IUP_K_ANY, (Icallback)txt_cmdline_cb);
 
-  btn_listfunc = IupButton("List Funcs", NULL);
-  IupSetAttribute(btn_listfunc, "EXPAND", "NO");
-  IupSetCallback(btn_listfunc, "ACTION", (Icallback)btn_listfunc_cb);
+  btn_tools = IupButton(NULL, NULL);
+  IupSetCallback(btn_tools, "ACTION", (Icallback)btn_tools_cb);
+  IupSetAttribute(btn_tools, "IMAGE", "IUP_ToolsSettings");
+  IupSetAttribute(btn_tools, "FLAT", "Yes");
+  IupSetAttribute(btn_tools, "TIP", "Tools");
+  IupSetAttribute(btn_tools, "CANFOCUS", "No");
 
-  btn_listvar = IupButton("List Vars", NULL);
-  IupSetAttribute(btn_listvar, "EXPAND", "NO");
-  IupSetCallback(btn_listvar, "ACTION", (Icallback)btn_listvar_cb);
-
-  btn_clear = IupButton("Clear", NULL);
-  IupSetAttribute(btn_clear, "EXPAND", "NO");
-  IupSetAttribute(btn_clear, "NAME", "BTN_CLEAR");
-  IupSetCallback(btn_clear, "ACTION", (Icallback)btn_clear_cb);
-
-  console_bts = IupHbox(txt_cmdLine, btn_listfunc, btn_listvar, btn_clear, NULL);
-  IupSetAttribute(console_bts, "EXPAND", "HORIZONTAL");
-  IupSetAttribute(console_bts, "MARGIN", "3x3");
-  IupSetAttribute(console_bts, "GAP", "2");
+  console_bts = IupHbox(txt_cmdLine, btn_tools, NULL);
+  IupSetAttribute(console_bts, "MARGIN", "5x5");
+  IupSetAttribute(console_bts, "GAP", "5");
+  IupSetAttribute(console_bts, "ALIGNMENT", "ACENTER");
 
   frm_consolebts = IupFrame(console_bts);
-  IupSetAttribute(frm_consolebts, "EXPAND", "HORIZONTAL");
   IupSetAttribute(frm_consolebts, "TITLE", "Command Line:");
 
   ml_output = IupMultiLine(NULL);
@@ -541,13 +565,9 @@ Ihandle *buildTabOutput(void)
   IupSetAttribute(ml_output, "BGCOLOR", "224 224 2254");
 
   output = IupVbox(frm_consolebts, ml_output, NULL);
-  IupSetAttribute(output, "EXPAND", "YES");
-  IupSetAttribute(output, "MARGIN", "0x0");
-  IupSetAttribute(output, "GAP", "4");
-  IupSetAttribute(output, "TABTITLE", "Output");
-  IupSetAttribute(output, "NAME", "OUTPUT");
-
-  IupSetHandle("tabOutput", output);
+  IupSetAttribute(output, "MARGIN", "5x5");
+  IupSetAttribute(output, "GAP", "5");
+  IupSetAttribute(output, "TABTITLE", "Console");
 
   return output;
 }
@@ -614,8 +634,6 @@ Ihandle *buildTabLocals(void)
   IupSetAttribute(locals, "MARGIN", "0x0");
   IupSetAttribute(locals, "GAP", "4");
   IupSetAttribute(locals, "TABTITLE", "Debug");
-
-  IupSetHandle("tabLocals", locals);
 
   IupSetCallback(button_printLocal, "ACTION", (Icallback)but_printlocal_cb);
   IupSetCallback(button_setLocal, "ACTION", (Icallback)but_setlocal_cb);
@@ -697,7 +715,6 @@ void appendDebugButtons(Ihandle *dialog)
 
   btn_debug = IupButton(NULL, NULL);
   IupSetAttribute(btn_debug, "NAME", "BTN_DEBUG");
-  IupSetHandle("BTN_DEBUG", btn_debug);
   IupSetAttribute(btn_debug, "IMAGE", "IUP_MediaGoToEnd");
   IupSetAttribute(btn_debug, "FLAT", "Yes");
   IupSetCallback(btn_debug, "ACTION", (Icallback)item_debug_action_cb);
@@ -732,7 +749,6 @@ void appendDebugButtons(Ihandle *dialog)
 
   btn_continue = IupButton(NULL, NULL);
   IupSetAttribute(btn_continue, "NAME", "BTN_CONTINUE");
-  IupSetHandle("BTN_CONTINUE", btn_continue);
   IupSetAttribute(btn_continue, "ACTIVE", "NO");
   IupSetAttribute(btn_continue, "IMAGE", "IUP_MediaGoToEnd");
   IupSetAttribute(btn_continue, "FLAT", "Yes");
