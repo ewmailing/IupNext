@@ -374,7 +374,7 @@ static int saveallimagesone_cb(void)
   if (!imgtype)
     return IUP_DEFAULT;
 
-  strcat(file_name, imgtype);
+  strcat(file_name, StrLower(imgtype));
   if (GetSaveAsFile(file_name, imgtype) == -1)
     return IUP_DEFAULT;
 

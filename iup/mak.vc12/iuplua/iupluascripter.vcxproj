@@ -16,10 +16,7 @@
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="..\..\srcluascripter\iupluascripter.c" />
-    <ClCompile Include="..\..\srcluascripter\utl_button_images.c" />
-  </ItemGroup>
-  <ItemGroup>
-    <ClInclude Include="..\..\srcluascripter\utl_button_images.h" />
+    <ClCompile Include="..\..\srcluascripter\step_images.c" />
   </ItemGroup>
   <ItemGroup>
     <ResourceCompile Include="..\..\etc\iup.rc" />
