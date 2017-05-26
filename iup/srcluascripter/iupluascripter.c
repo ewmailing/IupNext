@@ -384,18 +384,18 @@ int txt_cmdline_cb(Ihandle *ih, int c)
     case K_CR:
       lua_getfield(lcmd_state, LUA_GLOBALSINDEX, "consoleEnterCommand");
       lua_call(lcmd_state, 0, 0);
-      break;
+      return IUP_IGNORE;
     case K_ESC:
       IupSetAttribute(ih, IUP_VALUE, "");
-      break;
+      return IUP_IGNORE;
     case K_UP:
       lua_getfield(lcmd_state, LUA_GLOBALSINDEX, "consoleKeyUpCommand");
       lua_call(lcmd_state, 0, 0);
-      break;
+      return IUP_IGNORE;
     case K_DOWN:
       lua_getfield(lcmd_state, LUA_GLOBALSINDEX, "consoleKeyDownCommand");
       lua_call(lcmd_state, 0, 0);
-      break;
+      return IUP_IGNORE;
   }
   return IUP_CONTINUE;
 }
@@ -876,7 +876,7 @@ int main(int argc, char **argv)
 
   load_all_images_step_images();
 
-  L = lcmd_state = lua_open();
+  L = lcmd_state = luaL_newstate();
   luaL_openlibs(lcmd_state);
 
 #if LUA_VERSION_NUM < 502
@@ -1000,5 +1000,7 @@ int main(int argc, char **argv)
   IupMainLoop();
 
   IupClose();
+
+  lua_close(L);
   return EXIT_SUCCESS;
 }

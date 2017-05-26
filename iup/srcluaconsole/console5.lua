@@ -52,37 +52,43 @@ print_old = print
 function print(...)
   local param = {...}
   local str = ""
-  for i, k in ipairs(param) do 
-    if (i > 1) then str = str .."\t" end
-    str = str .. tostring(k)
+  if (#param == 0) then
+    str = "nil"
+  else
+    for i, k in ipairs(param) do 
+      if (i > 1) then str = str .."\t" end
+      str = str .. tostring(k)
+    end
   end
   iup_console.mlConsole.append = str
   iup_console.mlConsole.scrollto = "99999999:1"
 end
+write_old = io.write
+io.write = function(...)
+  iup_console.mlConsole.appendnewline="No"
+  print(...)
+  iup_console.mlConsole.appendnewline="Yes"
+end
 
-function iup_console.value_to_string(v, is_table_index)
+function iup_console.value_to_string(v)
   if (type(v) == "string") then
-    if (is_table_index) then 
-      return "[\"" .. v .. "\"]"
-    else
-      return "\"" .. v .. "\""
-    end
+    return "\"" .. v .. "\""
   else 
     return tostring(v)
   end
 end
 
 function iup_console.printtable(t)
-  if (type(t) ~= "table") then 
-    print("Error: Not a table") 
-    print(t) 
-  end
   local str = "{\n"
+  local tmp = {}
   for i, k in ipairs(t) do 
     str = str .. "  "..iup_console.value_to_string(k)..",\n"
+    tmp[i] = true
   end
   for i, k in pairs(t) do 
-    str = str .. "  "..tostring(i).. " = "..iup_console.value_to_string(k)..",\n"
+    if (not tmp[i]) then
+      str = str .. "  "..tostring(i).. " = "..iup_console.value_to_string(k)..",\n"
+    end
   end
   str = str .. "}"
   print(str)
@@ -115,9 +121,9 @@ function iup_console.txtCommand:k_any(k)
     if (not cmd) then
       print("Error: ".. msg) -- the original error message
     else
-      local ret = cmd()
-      if (ret) then
-        iup_console.printvalue(ret)
+      local result = {cmd()}
+      for i = 1, #result do
+        iup_console.printvalue(result[i])
       end
     end
     iup_console.txtCommand.value = ""

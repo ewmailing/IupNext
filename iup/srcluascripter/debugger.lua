@@ -501,7 +501,7 @@ function startDebug(filename, runMode)
 	
 	debug_set_state(DEBUG_INACTIVE)
 	
-	if ok==false then
+	if not ok then
 		print(msg)
 	end
 end
