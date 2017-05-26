@@ -63,7 +63,7 @@ static int iScintillaSetValueAttrib(Ihandle* ih, const char* value)
   return 0;
 }
 
-static char* iScintillaGetLineAttrib(Ihandle* ih, int line)
+static char* iScintillaGetLineAttribId(Ihandle* ih, int line)
 {
   int len = IupScintillaSendMessage(ih, SCI_LINELENGTH, line, 0);
   char* str = iupStrGetMemory(len+1); 
@@ -114,9 +114,11 @@ static int iScintillaSetAppendTextAttrib(Ihandle* ih, const char* value)
   return 0;
 }
 
-static int iScintillaSetInsertTextAttrib(Ihandle* ih, int pos, const char* value)
+static int iScintillaSetInsertTextAttribId(Ihandle* ih, int pos, const char* value)
 {
   ih->data->ignore_change = 1;
+  if (pos < 0)
+    pos = (int)IupScintillaSendMessage(ih, SCI_GETCURRENTPOS, 0, 0);
   IupScintillaSendMessage(ih, SCI_INSERTTEXT, pos, (sptr_t)value);
   ih->data->ignore_change = 0;
   return 0;
@@ -164,7 +166,7 @@ static int iScintillaSetDeleteRangeAttrib(Ihandle* ih, const char* value)
   return 0;
 }
 
-static char* iScintillaGetCharAttrib(Ihandle* ih, int pos)
+static char* iScintillaGetCharAttribId(Ihandle* ih, int pos)
 {
   char str[2];
   str[0] = (char)IupScintillaSendMessage(ih, SCI_GETCHARAT, pos, 0);
@@ -192,9 +194,9 @@ void iupScintillaRegisterText(Iclass* ic)
   iupClassRegisterAttribute(ic,   "APPEND", NULL, iScintillaSetAppendTextAttrib, NULL, NULL, IUPAF_WRITEONLY|IUPAF_NO_INHERIT);
   iupClassRegisterAttribute(ic,   "PREPEND", NULL, iScintillaSetPrependTextAttrib, NULL, NULL, IUPAF_WRITEONLY|IUPAF_NO_INHERIT);
   iupClassRegisterAttribute(ic,   "VALUE", iScintillaGetValueAttrib, iScintillaSetValueAttrib, NULL, NULL, IUPAF_NO_INHERIT);
-  iupClassRegisterAttributeId(ic, "INSERT", NULL, iScintillaSetInsertTextAttrib, IUPAF_WRITEONLY|IUPAF_NO_INHERIT);
-  iupClassRegisterAttributeId(ic, "LINE", iScintillaGetLineAttrib, NULL, IUPAF_READONLY|IUPAF_NO_INHERIT);
-  iupClassRegisterAttributeId(ic, "CHAR", iScintillaGetCharAttrib, NULL, IUPAF_READONLY|IUPAF_NO_INHERIT);
+  iupClassRegisterAttributeId(ic, "INSERT", NULL, iScintillaSetInsertTextAttribId, IUPAF_WRITEONLY|IUPAF_NO_INHERIT);
+  iupClassRegisterAttributeId(ic, "LINE", iScintillaGetLineAttribId, NULL, IUPAF_READONLY | IUPAF_NO_INHERIT);
+  iupClassRegisterAttributeId(ic, "CHAR", iScintillaGetCharAttribId, NULL, IUPAF_READONLY | IUPAF_NO_INHERIT);
   iupClassRegisterAttribute(ic,   "DELETERANGE", NULL, iScintillaSetDeleteRangeAttrib, NULL, NULL, IUPAF_WRITEONLY|IUPAF_NO_INHERIT);
   iupClassRegisterAttribute(ic,   "READONLY", iScintillaGetReadOnlyAttrib, iScintillaSetReadOnlyAttrib, NULL, NULL, IUPAF_NO_INHERIT);
   iupClassRegisterAttribute(ic,   "CLEARALL", NULL, iScintillaSetClearAllAttrib, NULL, NULL, IUPAF_WRITEONLY|IUPAF_NO_INHERIT);
