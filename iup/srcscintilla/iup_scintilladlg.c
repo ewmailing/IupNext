@@ -833,7 +833,7 @@ static int goto_ok_action_cb(Ihandle* bt_ok)
   int line_count = IupGetInt(bt_ok, "TEXT_LINECOUNT");
   Ihandle* txt = IupGetDialogChild(bt_ok, "LINE_TEXT");
   int line = IupGetInt(txt, "VALUE");
-  if (line < 1 || line >= line_count)
+  if (line < 1 || line > line_count)
   {
     IupMessage("Error", "Invalid line number.");
     return IUP_DEFAULT;
@@ -894,7 +894,7 @@ static int item_goto_action_cb(Ihandle* item_goto)
   {
     int line = IupGetInt(txt, "VALUE");
     int pos;
-    IupTextConvertLinColToPos(multitext, line, 0, &pos);
+    IupTextConvertLinColToPos(multitext, line-1, 0, &pos);  /* in Scintilla lin and col starts at 0 */
     IupSetInt(multitext, "CARETPOS", pos);
     IupSetInt(multitext, "SCROLLTOPOS", pos);
   }
