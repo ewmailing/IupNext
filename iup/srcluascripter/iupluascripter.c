@@ -860,6 +860,18 @@ void appendDebugMenuItens(Ihandle *menu)
   IupAppend(menu, subMenuDebug);
 }
 
+static void createargtable(lua_State *L, char **argv, int argc)
+{
+  int i, narg = argc - 1;  /* number of positive indices (non-zero) */
+  lua_createtable(L, narg, 1);
+  for (i = 0; i < argc; i++)
+  {
+    lua_pushstring(L, argv[i]);
+    lua_rawseti(L, -2, i);
+  }
+  lua_setglobal(L, "arg");
+}
+
 int main(int argc, char **argv)
 {
   Ihandle *config;
@@ -887,6 +899,8 @@ int main(int argc, char **argv)
   lua_setglobal(L, "_COPYRIGHT");  /* set global _COPYRIGHT */
 
   iuplua_open(lcmd_state);
+
+  createargtable(L, argv, argc);  /* create table 'arg' */
 
   config = IupConfig();
   IupSetAttribute(config, "APP_NAME", "iupluascripter");
