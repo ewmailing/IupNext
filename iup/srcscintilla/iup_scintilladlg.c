@@ -2005,13 +2005,13 @@ static int iScintillaDlgCreateMethod(Ihandle* ih, void** params)
   item_leadingspacetotab = IupItem("Space to TAB (Leading)", NULL);
   IupSetCallback(item_leadingspacetotab, "ACTION", (Icallback)item_leadingspacetotab_action_cb);
 
-  item_zoomin = IupItem("Zoom In\tCtrl_Num +", NULL);
+  item_zoomin = IupItem("Zoom In\tCtrl+'+'", NULL);
   IupSetCallback(item_zoomin, "ACTION", (Icallback)item_zoomin_action_cb);
 
-  item_zoomout = IupItem("Zoom Out\tCtrl_Num -", NULL);
+  item_zoomout = IupItem("Zoom Out\tCtrl+'-'", NULL);
   IupSetCallback(item_zoomout, "ACTION", (Icallback)item_zoomout_action_cb);
 
-  item_restorezoom = IupItem("Restore Default Zoom\tCtrl_Num /", NULL);
+  item_restorezoom = IupItem("Reset Zoom\tCtrl+/", NULL);
   IupSetCallback(item_restorezoom, "ACTION", (Icallback)item_restorezoom_action_cb);
 
   item_wordwrap = IupItem("Word Wrap", NULL);
@@ -2175,12 +2175,16 @@ static int iScintillaDlgCreateMethod(Ihandle* ih, void** params)
   IupSetCallback(ih, "K_sF2", (Icallback)item_previousmark_action_cb);
   IupSetCallback(ih, "K_F3", (Icallback)find_next_action_cb);
   IupSetCallback(ih, "K_cF3", (Icallback)selection_find_next_action_cb);
-  IupSetCallback(ih, "K_cV", (Icallback)item_paste_action_cb);  /* replace system processing */
   IupSetCallback(ih, "K_c+", (Icallback)item_zoomin_action_cb);
   IupSetCallback(ih, "K_c-", (Icallback)item_zoomout_action_cb);
   IupSetCallback(ih, "K_c/", (Icallback)item_restorezoom_action_cb);
-  IupSetCallback(ih, "K_cU", (Icallback)item_case_action_cb);
-  /* Ctrl+C, Ctrl+X, Ctrl+A, Del, already implemented inside IupText */
+  IupSetCallback(ih, "K_cEqual", (Icallback)item_zoomin_action_cb);
+  IupSetCallback(ih, "K_cMinus", (Icallback)item_zoomout_action_cb);
+  IupSetCallback(ih, "K_cSlash", (Icallback)item_restorezoom_action_cb);
+
+  /* Ctrl+C, Ctrl+X, Ctrl+A, Del, already implemented inside IupScintilla */
+  IupSetCallback(multitext, "K_cV", (Icallback)item_paste_action_cb);  /* replace system processing */
+  IupSetCallback(multitext, "K_cU", (Icallback)item_case_action_cb);
 
   IupSetAttribute(multitext, "WORDWRAPVISUALFLAGS", "MARGIN");
   /* bookmarks */
