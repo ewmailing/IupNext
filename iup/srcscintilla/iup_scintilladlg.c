@@ -695,7 +695,7 @@ static int config_recent_cb(Ihandle* ih_item)
 static int multitext_caret_cb(Ihandle* multitext, int lin, int col)
 {
   Ihandle *lbl_statusbar = IupGetDialogChild(multitext, "STATUSBAR");
-  IupSetfAttribute(lbl_statusbar, "TITLE", "Lin %d, Col %d", lin, col);
+  IupSetfAttribute(lbl_statusbar, "TITLE", "Lin %d, Col %d", lin+1, col+1);  /* in Scintilla lin and col start at 0 */ 
   return IUP_DEFAULT;
 }
 
@@ -894,7 +894,7 @@ static int item_goto_action_cb(Ihandle* item_goto)
   {
     int line = IupGetInt(txt, "VALUE");
     int pos;
-    IupTextConvertLinColToPos(multitext, line-1, 0, &pos);  /* in Scintilla lin and col starts at 0 */
+    IupTextConvertLinColToPos(multitext, line-1, 0, &pos);  /* in Scintilla lin and col start at 0 */
     IupSetInt(multitext, "CARETPOS", pos);
     IupSetInt(multitext, "SCROLLTOPOS", pos);
   }
