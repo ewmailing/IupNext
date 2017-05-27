@@ -704,7 +704,7 @@ static int item_new_action_cb(Ihandle* item_new)
   if (save_check(item_new))
     new_file(item_new);
 
-  return IUP_DEFAULT;
+  return IUP_IGNORE;  /* to avoid garbage in Scintilla when pressing the hot key */
 }
 
 static int item_open_action_cb(Ihandle* item_open)
@@ -1628,7 +1628,7 @@ static int item_zoomout_action_cb(Ihandle* item_toolbar)
 
   IupSetAttribute(multitext, "ZOOMOUT", "10");
 
-  return IUP_DEFAULT;
+  return IUP_IGNORE;  /* to avoid garbage in Scintilla when pressing the hot key */
 }
 
 static int item_restorezoom_action_cb(Ihandle* item_toolbar)
