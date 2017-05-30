@@ -193,7 +193,7 @@ int marker_changed_cb(Ihandle *ih, int lin, int margin, int value)
 {
   if (margin == 2)
   {
-    lua_getfield(lcmd_state, LUA_GLOBALSINDEX, "toggleBreakpoint");
+    lua_getfield(lcmd_state, LUA_GLOBALSINDEX, "debuggerToggleBreakpoint");
     lua_pushinteger(lcmd_state, lin + 1);
     lua_pushinteger(lcmd_state, margin - 1);
     lua_pushinteger(lcmd_state, value);
@@ -261,13 +261,8 @@ int item_autocomplete_action_cb(Ihandle* ih)
 
 void debug_set_state(lua_State *l, const char* state)
 {
-  int st;
-
-  lua_getglobal(l, state);
-  st = (int)lua_tointeger(l, -1);
-
-  lua_getfield(l, LUA_GLOBALSINDEX, "debug_set_state");
-  lua_pushinteger(l, st);
+  lua_getfield(l, LUA_GLOBALSINDEX, "debuggerSetStateString");
+  lua_pushstring(l, state);
   lua_call(l, 1, 0);
 }
 
@@ -282,7 +277,7 @@ int item_debug_action_cb(Ihandle *item)
 
   debug_set_state(lcmd_state, "DEBUG_ACTIVE");
 
-  lua_getfield(lcmd_state, LUA_GLOBALSINDEX, "startDebug");
+  lua_getfield(lcmd_state, LUA_GLOBALSINDEX, "debuggerStartDebug");
   lua_pushstring(lcmd_state, filename);
   lua_call(lcmd_state, 1, 0);
 
@@ -300,7 +295,7 @@ int item_run_action_cb(Ihandle *item)
 
   debug_set_state(lcmd_state, "DEBUG_ACTIVE");
 
-  lua_getfield(lcmd_state, LUA_GLOBALSINDEX, "startDebug");
+  lua_getfield(lcmd_state, LUA_GLOBALSINDEX, "debuggerStartDebug");
   lua_pushstring(lcmd_state, filename);
   lua_pushinteger(lcmd_state, 1);
   lua_call(lcmd_state, 2, 0);
@@ -466,7 +461,7 @@ int but_setlocal_cb(Ihandle *ih)
   if (value == 0)
     return IUP_DEFAULT;
 
-  lua_getfield(lcmd_state, LUA_GLOBALSINDEX, "SetLocal");
+  lua_getfield(lcmd_state, LUA_GLOBALSINDEX, "debuggerSetLocalVariable");
   lua_pushinteger(lcmd_state, value);
   lua_call(lcmd_state, 1, 0);
 
@@ -478,7 +473,7 @@ int lst_stack_cb(Ihandle *ih, char *t, int i, int v)
   if (v == 0)
     return IUP_DEFAULT;
 
-  lua_getfield(lcmd_state, LUA_GLOBALSINDEX, "listStackAction");
+  lua_getfield(lcmd_state, LUA_GLOBALSINDEX, "debuggerStackListAction");
   lua_pushinteger(lcmd_state, i);
   lua_call(lcmd_state, 1, 0);
 
@@ -515,7 +510,7 @@ int but_removebreak_cb(Ihandle *ih)
   if (value == 0)
     return IUP_DEFAULT;
 
-  lua_getfield(lcmd_state, LUA_GLOBALSINDEX, "removeBreakpointFromList");
+  lua_getfield(lcmd_state, LUA_GLOBALSINDEX, "debuggerRemoveBreakpointFromList");
   lua_pushinteger(lcmd_state, value);
   lua_call(lcmd_state, 1, 0);
 
@@ -524,7 +519,7 @@ int but_removebreak_cb(Ihandle *ih)
 
 int but_removeallbreaks_cb(Ihandle *ih)
 {
-  lua_getfield(lcmd_state, LUA_GLOBALSINDEX, "removeAllBreakpoints");
+  lua_getfield(lcmd_state, LUA_GLOBALSINDEX, "debuggerRemoveAllBreakpoints");
   lua_call(lcmd_state, 0, 0);
 
   return IUP_DEFAULT;
