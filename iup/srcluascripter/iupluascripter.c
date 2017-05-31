@@ -18,36 +18,6 @@ void load_all_images_step_images(void);
 
 lua_State *lcmd_state;
 
-static char* read_file(const char* filename)
-{
-  int size;
-  char* str;
-  FILE* file = fopen(filename, "rb");
-  if (!file)
-  {
-    IupMessagef("Error", "Can't open file: %s", filename);
-    return NULL;
-  }
-
-  /* calculate file size */
-  fseek(file, 0, SEEK_END);
-  size = ftell(file);
-  fseek(file, 0, SEEK_SET);
-
-  /* allocate memory for the file contents + nul terminator */
-  str = malloc(size + 1);
-  /* read all data at once */
-  fread(str, size, 1, file);
-  /* set the nul terminator */
-  str[size] = 0;
-
-  if (ferror(file))
-    IupMessagef("Error", "Fail when reading from file: %s", filename);
-
-  fclose(file);
-  return str;
-}
-
 
 /********************************** Utilities *****************************************/
 
@@ -193,13 +163,14 @@ int marker_changed_cb(Ihandle *ih, int lin, int margin, int value)
 {
   if (margin == 2)
   {
-    lua_getfield(lcmd_state, LUA_GLOBALSINDEX, "debuggerToggleBreakpoint");
+    lua_getglobal(lcmd_state, "debuggerToggleBreakpoint");
     lua_pushinteger(lcmd_state, lin + 1);
     lua_pushinteger(lcmd_state, margin - 1);
     lua_pushinteger(lcmd_state, value);
     lua_call(lcmd_state, 3, 0);
   }
 
+  (void)ih;
   return IUP_DEFAULT;
 }
 
@@ -261,9 +232,22 @@ int item_autocomplete_action_cb(Ihandle* ih)
 
 void debug_set_state(lua_State *l, const char* state)
 {
-  lua_getfield(l, LUA_GLOBALSINDEX, "debuggerSetStateString");
+  lua_getglobal(l, "debuggerSetStateString");
   lua_pushstring(l, state);
   lua_call(l, 1, 0);
+}
+
+static int save_check(Ihandle* ih_item)
+{
+  Ihandle* multitext = IupGetDialogChild(ih_item, "MULTITEXT");
+  if (IupGetInt(multitext, "DIRTY"))
+  {
+    if (IupAlarm("Warning", "File must be saved for debugging.\n  Save it now?", "Yes and Debug", "No and Abort Debug", NULL) == 1)
+      IupSetAttribute(IupGetDialog(ih_item), "SAVEFILE", NULL);
+    else
+      return 0;
+  }
+  return 1;
 }
 
 int item_debug_action_cb(Ihandle *item)
@@ -271,13 +255,15 @@ int item_debug_action_cb(Ihandle *item)
   Ihandle* multitext = IupGetDialogChild(item, "MULTITEXT");
 
   char* filename = IupGetAttribute(multitext, "FILENAME");
+  if (filename == NULL || filename[0] == 0)
+    return IUP_DEFAULT;
 
-  if (filename == NULL || strcmp(filename, "") == 0)
+  if (!save_check(item))
     return IUP_DEFAULT;
 
   debug_set_state(lcmd_state, "DEBUG_ACTIVE");
 
-  lua_getfield(lcmd_state, LUA_GLOBALSINDEX, "debuggerStartDebug");
+  lua_getglobal(lcmd_state, "debuggerStartDebug");
   lua_pushstring(lcmd_state, filename);
   lua_call(lcmd_state, 1, 0);
 
@@ -289,16 +275,14 @@ int item_run_action_cb(Ihandle *item)
   Ihandle* multitext = IupGetDialogChild(item, "MULTITEXT");
 
   char* filename = IupGetAttribute(multitext, "FILENAME");
-
-  if (filename == NULL || strcmp(filename, "") == 0)
+  if (filename == NULL || filename[0] == 0)
     return IUP_DEFAULT;
 
-  debug_set_state(lcmd_state, "DEBUG_ACTIVE");
+  debug_set_state(lcmd_state, "DEBUG_INACTIVE");
 
-  lua_getfield(lcmd_state, LUA_GLOBALSINDEX, "debuggerStartDebug");
+  lua_getglobal(lcmd_state, "debuggerRun");
   lua_pushstring(lcmd_state, filename);
-  lua_pushinteger(lcmd_state, 1);
-  lua_call(lcmd_state, 2, 0);
+  lua_call(lcmd_state, 1, 0);
 
   return IUP_DEFAULT;
 }
@@ -306,14 +290,42 @@ int item_run_action_cb(Ihandle *item)
 int item_stop_action_cb(Ihandle *item)
 {
   debug_set_state(lcmd_state, "DEBUG_STOPPED");
-
+  (void)item;
   return IUP_DEFAULT;
 }
 
 int item_pause_action_cb(Ihandle *item)
 {
   debug_set_state(lcmd_state, "DEBUG_PAUSED");
+  (void)item;
+  return IUP_DEFAULT;
+}
 
+int item_continue_action_cb(Ihandle *item)
+{
+  debug_set_state(lcmd_state, "DEBUG_ACTIVE");
+  (void)item;
+  return IUP_DEFAULT;
+}
+
+int item_stepinto_action_cb(Ihandle *item)
+{
+  debug_set_state(lcmd_state, "DEBUG_STEP_INTO");
+  (void)item;
+  return IUP_DEFAULT;
+}
+
+int item_stepover_action_cb(Ihandle *item)
+{
+  debug_set_state(lcmd_state, "DEBUG_STEP_OVER");
+  (void)item;
+  return IUP_DEFAULT;
+}
+
+int item_stepout_action_cb(Ihandle *item)
+{
+  debug_set_state(lcmd_state, "DEBUG_STEP_OUT");
+  (void)item;
   return IUP_DEFAULT;
 }
 
@@ -323,34 +335,6 @@ int pause_action_cb(Ihandle* item)
 
   if (mod[1] == 'C' && mod[2] == 'A')
     item_pause_action_cb(item);
-
-  return IUP_DEFAULT;
-}
-
-int item_continue_action_cb(Ihandle *item)
-{
-  debug_set_state(lcmd_state, "DEBUG_ACTIVE");
-
-  return IUP_DEFAULT;
-}
-
-int item_stepinto_action_cb(Ihandle *item)
-{
-  debug_set_state(lcmd_state, "DEBUG_STEP_INTO");
-
-  return IUP_DEFAULT;
-}
-
-int item_stepover_action_cb(Ihandle *item)
-{
-  debug_set_state(lcmd_state, "DEBUG_STEP_OVER");
-
-  return IUP_DEFAULT;
-}
-
-int item_stepout_action_cb(Ihandle *item)
-{
-  debug_set_state(lcmd_state, "DEBUG_STEP_OUT");
 
   return IUP_DEFAULT;
 }
@@ -377,18 +361,18 @@ int txt_cmdline_cb(Ihandle *ih, int c)
   switch (c)
   {
     case K_CR:
-      lua_getfield(lcmd_state, LUA_GLOBALSINDEX, "consoleEnterCommand");
+      lua_getglobal(lcmd_state, "consoleEnterCommand");
       lua_call(lcmd_state, 0, 0);
       return IUP_IGNORE;
     case K_ESC:
       IupSetAttribute(ih, IUP_VALUE, "");
       return IUP_IGNORE;
     case K_UP:
-      lua_getfield(lcmd_state, LUA_GLOBALSINDEX, "consoleKeyUpCommand");
+      lua_getglobal(lcmd_state, "consoleKeyUpCommand");
       lua_call(lcmd_state, 0, 0);
       return IUP_IGNORE;
     case K_DOWN:
-      lua_getfield(lcmd_state, LUA_GLOBALSINDEX, "consoleKeyDownCommand");
+      lua_getglobal(lcmd_state, "consoleKeyDownCommand");
       lua_call(lcmd_state, 0, 0);
       return IUP_IGNORE;
   }
@@ -397,7 +381,7 @@ int txt_cmdline_cb(Ihandle *ih, int c)
 
 int item_listfuncs_action_cb(Ihandle *ih)
 {
-  lua_getfield(lcmd_state, LUA_GLOBALSINDEX, "consoleListFuncs");
+  lua_getglobal(lcmd_state, "consoleListFuncs");
   lua_call(lcmd_state, 0, 0);
 
   (void)ih;
@@ -406,7 +390,7 @@ int item_listfuncs_action_cb(Ihandle *ih)
 
 int item_listvars_action_cb(Ihandle *ih)
 {
-  lua_getfield(lcmd_state, LUA_GLOBALSINDEX, "consoleListVars");
+  lua_getglobal(lcmd_state, "consoleListVars");
   lua_call(lcmd_state, 0, 0);
 
   (void)ih;
@@ -415,7 +399,7 @@ int item_listvars_action_cb(Ihandle *ih)
 
 int item_clear_action_cb(Ihandle *ih)
 {
-  lua_getfield(lcmd_state, LUA_GLOBALSINDEX, "consoleClear");
+  lua_getglobal(lcmd_state, "consoleClear");
   lua_call(lcmd_state, 0, 0);
 
   (void)ih;
@@ -461,7 +445,7 @@ int but_setlocal_cb(Ihandle *ih)
   if (value == 0)
     return IUP_DEFAULT;
 
-  lua_getfield(lcmd_state, LUA_GLOBALSINDEX, "debuggerSetLocalVariable");
+  lua_getglobal(lcmd_state, "debuggerSetLocalVariable");
   lua_pushinteger(lcmd_state, value);
   lua_call(lcmd_state, 1, 0);
 
@@ -470,10 +454,13 @@ int but_setlocal_cb(Ihandle *ih)
 
 int lst_stack_cb(Ihandle *ih, char *t, int i, int v)
 {
+  (void)ih;
+  (void)t;
+
   if (v == 0)
     return IUP_DEFAULT;
 
-  lua_getfield(lcmd_state, LUA_GLOBALSINDEX, "debuggerStackListAction");
+  lua_getglobal(lcmd_state, "debuggerStackListAction");
   lua_pushinteger(lcmd_state, i);
   lua_call(lcmd_state, 1, 0);
 
@@ -510,7 +497,7 @@ int but_removebreak_cb(Ihandle *ih)
   if (value == 0)
     return IUP_DEFAULT;
 
-  lua_getfield(lcmd_state, LUA_GLOBALSINDEX, "debuggerRemoveBreakpointFromList");
+  lua_getglobal(lcmd_state, "debuggerRemoveBreakpointFromList");
   lua_pushinteger(lcmd_state, value);
   lua_call(lcmd_state, 1, 0);
 
@@ -519,9 +506,9 @@ int but_removebreak_cb(Ihandle *ih)
 
 int but_removeallbreaks_cb(Ihandle *ih)
 {
-  lua_getfield(lcmd_state, LUA_GLOBALSINDEX, "debuggerRemoveAllBreakpoints");
+  lua_getglobal(lcmd_state, "debuggerRemoveAllBreakpoints");
   lua_call(lcmd_state, 0, 0);
-
+  (void)ih;
   return IUP_DEFAULT;
 }
 
@@ -697,7 +684,7 @@ void set_attribs(Ihandle *multitext)
 
 void showVersionInfo()
 {
-  lua_getfield(lcmd_state, LUA_GLOBALSINDEX, "consoleVersionInfo");
+  lua_getglobal(lcmd_state, "consoleVersionInfo");
   lua_call(lcmd_state, 0, 0);
 }
 
@@ -977,7 +964,7 @@ int main(int argc, char **argv)
 #include "debugger.loh"
 #include "console.loh"
 #else
-#ifdef IUPLUA_USELH
+#ifdef XX_IUPLUA_USELH
 #include "debugger.lh"
 #include "console.lh"
 #else

@@ -67,7 +67,7 @@
     <ClCompile>
       <Optimization>Disabled</Optimization>
       <AdditionalIncludeDirectories>..\..\include;..\..\srcluascripter;..\..\srcluascripter\lh;..\..\..\lua$(LUA_SUFFIX)\include;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
-      <PreprocessorDefinitions>WIN32;_DEBUG;_CRT_SECURE_NO_DEPRECATE;IUPLUA_IMGLIB;IUPLUA_SCINTILLA;USE_STATIC;IUPLUA_USELH;IUPLUA_WEB;%(PreprocessorDefinitions)</PreprocessorDefinitions>
+      <PreprocessorDefinitions>WIN32;_DEBUG;_CRT_SECURE_NO_DEPRECATE;USE_STATIC;IUPLUA_USELH;%(PreprocessorDefinitions)</PreprocessorDefinitions>
       <BasicRuntimeChecks>EnableFastChecks</BasicRuntimeChecks>
       <RuntimeLibrary>MultiThreadedDebug</RuntimeLibrary>
       <PrecompiledHeader>
@@ -98,7 +98,7 @@
     <ClCompile>
       <Optimization>Disabled</Optimization>
       <AdditionalIncludeDirectories>..\..\include;..\..\srcluascripter;..\..\srcluascripter\lh;..\..\..\lua$(LUA_SUFFIX)\include;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
-      <PreprocessorDefinitions>WIN32;_DEBUG;_CRT_SECURE_NO_DEPRECATE;IUPLUA_IMGLIB;IUPLUA_SCINTILLA;USE_STATIC;IUPLUA_USELH;IUPLUA_WEB;USE_LUAGL;%(PreprocessorDefinitions)</PreprocessorDefinitions>
+      <PreprocessorDefinitions>WIN32;_DEBUG;_CRT_SECURE_NO_DEPRECATE;USE_STATIC;IUPLUA_USELH;%(PreprocessorDefinitions)</PreprocessorDefinitions>
       <BasicRuntimeChecks>EnableFastChecks</BasicRuntimeChecks>
       <RuntimeLibrary>MultiThreadedDebug</RuntimeLibrary>
       <PrecompiledHeader>

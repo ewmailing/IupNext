@@ -481,13 +481,20 @@ static void open_file(Ihandle* ih_item, const char* filename)
   }
 }
 
+static int item_saveas_action_cb(Ihandle* ih_item);
+
 static void save_file(Ihandle* multitext)
 {
   char* filename = IupGetAttribute(multitext, "FILENAME");
-  char* str = IupGetAttribute(multitext, "VALUE");
-  int count = IupGetInt(multitext, "COUNT");
-  if (write_file(filename, str, count))
-    IupSetAttribute(multitext, "DIRTY", "NO");
+  if (!filename)
+    item_saveas_action_cb(multitext);
+  else
+  {
+    char* str = IupGetAttribute(multitext, "VALUE");
+    int count = IupGetInt(multitext, "COUNT");
+    if (write_file(filename, str, count))
+      IupSetAttribute(multitext, "DIRTY", "NO");
+  }
 }
 
 static void saveas_file(Ihandle* multitext, const char* filename)
@@ -790,16 +797,9 @@ static int item_saveas_action_cb(Ihandle* item_saveas)
 static int item_save_action_cb(Ihandle* item_save)
 {
   Ihandle* multitext = IupGetDialogChild(item_save, "MULTITEXT");
-  char* filename = IupGetAttribute(multitext, "FILENAME");
-  if (!filename)
-    item_saveas_action_cb(item_save);
-  else
-  {
-    /* test again because in can be called using the hot key */
-    int dirty = IupGetInt(multitext, "DIRTY");
-    if (dirty)
-      save_file(multitext);
-  }
+  /* test again because in can be called using the hot key */
+  if (IupGetInt(multitext, "DIRTY"))
+    save_file(multitext);
   return IUP_DEFAULT;
 }
 
@@ -1754,6 +1754,15 @@ static int iScintillaDlgSetOpenFileAttrib(Ihandle* ih, const char* value)
   return 0;
 }
 
+static int iScintillaDlgSetSaveFileAttrib(Ihandle* ih, const char* value)
+{
+  if (value)
+    saveas_file(ih, value);
+  else
+    save_file(ih);
+  return 0;
+}
+
 static int iScintillaDlgSetToggleMarkerAttribId(Ihandle* ih, int id, const char* value)
 {
   int margin;
@@ -2218,6 +2227,7 @@ Iclass* iupScintillaDlgNewClass(void)
   iupClassRegisterAttribute(ic, "CONFIG_HANDLE", NULL, iScintillaDlgSetConfigHandleAttrib, NULL, NULL, IUPAF_IHANDLE | IUPAF_NOT_MAPPED | IUPAF_NO_INHERIT);
   iupClassRegisterAttribute(ic, "NEWFILE", NULL, iScintillaDlgSetOpenFileAttrib, NULL, NULL, IUPAF_WRITEONLY | IUPAF_NOT_MAPPED | IUPAF_NO_INHERIT);
   iupClassRegisterAttribute(ic, "OPENFILE", NULL, iScintillaDlgSetOpenFileAttrib, NULL, NULL, IUPAF_WRITEONLY | IUPAF_NOT_MAPPED | IUPAF_NO_INHERIT);
+  iupClassRegisterAttribute(ic, "SAVEFILE", NULL, iScintillaDlgSetSaveFileAttrib, NULL, NULL, IUPAF_WRITEONLY | IUPAF_NOT_MAPPED | IUPAF_NO_INHERIT);
   iupClassRegisterAttribute(ic, "EXTRAFILTERS", NULL, NULL, NULL, NULL, IUPAF_NOT_MAPPED | IUPAF_NO_INHERIT);
   iupClassRegisterAttributeId(ic, "TOGGLEMARKER", NULL, iScintillaDlgSetToggleMarkerAttribId, IUPAF_WRITEONLY | IUPAF_NOT_MAPPED | IUPAF_NO_INHERIT);
 
