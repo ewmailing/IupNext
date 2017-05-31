@@ -252,37 +252,23 @@ static int save_check(Ihandle* ih_item)
 
 int item_debug_action_cb(Ihandle *item)
 {
-  Ihandle* multitext = IupGetDialogChild(item, "MULTITEXT");
-
-  char* filename = IupGetAttribute(multitext, "FILENAME");
-  if (filename == NULL || filename[0] == 0)
-    return IUP_DEFAULT;
-
   if (!save_check(item))
     return IUP_DEFAULT;
 
   debug_set_state(lcmd_state, "DEBUG_ACTIVE");
 
   lua_getglobal(lcmd_state, "debuggerStartDebug");
-  lua_pushstring(lcmd_state, filename);
-  lua_call(lcmd_state, 1, 0);
+  lua_call(lcmd_state, 0, 0);
 
   return IUP_DEFAULT;
 }
 
 int item_run_action_cb(Ihandle *item)
 {
-  Ihandle* multitext = IupGetDialogChild(item, "MULTITEXT");
-
-  char* filename = IupGetAttribute(multitext, "FILENAME");
-  if (filename == NULL || filename[0] == 0)
-    return IUP_DEFAULT;
-
   debug_set_state(lcmd_state, "DEBUG_INACTIVE");
 
   lua_getglobal(lcmd_state, "debuggerRun");
-  lua_pushstring(lcmd_state, filename);
-  lua_call(lcmd_state, 1, 0);
+  lua_call(lcmd_state, 0, 0);
 
   return IUP_DEFAULT;
 }

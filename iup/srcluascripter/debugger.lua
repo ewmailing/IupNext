@@ -489,7 +489,8 @@ function debuggerHookFunction(event)
 end
 
 function debuggerStartDebug(filename)
-  debugger.currentFile = filename
+  local multitext = iup.GetDialogChild(main_dialog, "MULTITEXT")
+  debugger.currentFile = multitext.filename
   debugger.startLevel = debuggerGetDebugLevel()
   
   print("-- Debug start")
@@ -505,7 +506,7 @@ function debuggerStartDebug(filename)
   end
 end
 
-function debuggerRun(filename)
+function debuggerRun()
   local multitext = iup.GetDialogChild(main_dialog, "MULTITEXT")
   iup.dostring(multitext.value) 
 end
@@ -513,10 +514,8 @@ end
 
 ---- TODO: ---- 
 -- debuggerReloadFile, quando terminar restaura original!!!
--- debug string????  item_debug_action_cb
+-- debug string????
 
 -- iup.SetAttribute
 -- error handler - lua_call
 -- debuggerReturnHook
-
---DOC SAVEFILE

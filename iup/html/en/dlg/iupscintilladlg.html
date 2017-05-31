@@ -49,7 +49,9 @@ map.</p>
 <p><strong>NEWFILE</strong> (write-only): clear the text contents and initialize 
 a new file.</p>
 <p><strong>OPENFILE</strong> (write-only): opens a file using the value as 
-filename.</p>
+filename. If value is NULL works as NEWFILE.</p>
+<p><strong>SAVEFILE</strong> (write-only): saves a file using the value as 
+filename. If value is NULL uses the current file name.</p>
 <p><strong>EXTRAFILTERS</strong>: additional filters for File Open and File Save 
 As dialogs in the same format as the IupFileDlg EXTFILTER attribute. The filters 
 will be concatenated at start with the existing filters: "Text Files|*.txt|All 
