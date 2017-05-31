@@ -255,21 +255,16 @@ int item_debug_action_cb(Ihandle *item)
   if (!save_check(item))
     return IUP_DEFAULT;
 
-  debug_set_state(lcmd_state, "DEBUG_ACTIVE");
-
   lua_getglobal(lcmd_state, "debuggerStartDebug");
   lua_call(lcmd_state, 0, 0);
-
   return IUP_DEFAULT;
 }
 
 int item_run_action_cb(Ihandle *item)
 {
-  debug_set_state(lcmd_state, "DEBUG_INACTIVE");
-
   lua_getglobal(lcmd_state, "debuggerRun");
   lua_call(lcmd_state, 0, 0);
-
+  (void)item;
   return IUP_DEFAULT;
 }
 
@@ -426,15 +421,8 @@ int but_printlocal_cb(Ihandle *ih)
 
 int but_setlocal_cb(Ihandle *ih)
 {
-  int value = IupGetInt(IupGetDialogChild(ih, "LIST_LOCAL"), "VALUE");
-
-  if (value == 0)
-    return IUP_DEFAULT;
-
   lua_getglobal(lcmd_state, "debuggerSetLocalVariable");
-  lua_pushinteger(lcmd_state, value);
-  lua_call(lcmd_state, 1, 0);
-
+  lua_call(lcmd_state, 0, 0);
   return IUP_DEFAULT;
 }
 
@@ -442,7 +430,6 @@ int lst_stack_cb(Ihandle *ih, char *t, int i, int v)
 {
   (void)ih;
   (void)t;
-
   if (v == 0)
     return IUP_DEFAULT;
 
@@ -514,7 +501,7 @@ Ihandle *buildTabOutput(void)
   IupSetCallback(btn_tools, "ACTION", (Icallback)btn_tools_cb);
   IupSetAttribute(btn_tools, "IMAGE", "IUP_ToolsSettings");
   IupSetAttribute(btn_tools, "FLAT", "Yes");
-  IupSetAttribute(btn_tools, "TIP", "Tools");
+  IupSetAttribute(btn_tools, "TIP", "Console Tools");
   IupSetAttribute(btn_tools, "CANFOCUS", "No");
 
   console_bts = IupHbox(txt_cmdLine, btn_tools, NULL);
@@ -551,24 +538,23 @@ Ihandle *buildTabLocals(void)
 
   button_printLocal = IupButton("Print", NULL);
   IupSetAttribute(button_printLocal, "ACTIVE", "NO");
-  IupSetAttribute(button_printLocal, "SIZE", "35x");
   IupSetAttribute(button_printLocal, "NAME", "PRINT_LOCAL");
+  IupSetStrAttribute(button_printLocal, "PADDING", IupGetGlobal("DEFAULTBUTTONPADDING"));
 
   button_setLocal = IupButton("Set...", NULL);
-  IupSetAttribute(button_setLocal, "ACTIVE", "YES");
-  IupSetAttribute(button_setLocal, "SIZE", "35x");
+  IupSetAttribute(button_setLocal, "ACTIVE", "NO");
   IupSetAttribute(button_setLocal, "NAME", "SET_LOCAL");
+  IupSetStrAttribute(button_setLocal, "PADDING", IupGetGlobal("DEFAULTBUTTONPADDING"));
 
   vbox_local = IupVbox(button_printLocal, button_setLocal, NULL);
-  IupSetAttribute(vbox_local, "EXPAND", "NO");
   IupSetAttribute(vbox_local, "MARGIN", "0x0");
   IupSetAttribute(vbox_local, "GAP", "4");
+  IupSetAttribute(vbox_local, "NORMALIZESIZE", "HORIZONTAL");
 
   frame_local = IupFrame(IupHbox(list_local, vbox_local, NULL));
-  IupSetAttribute(frame_local, "EXPAND", "YES");
   IupSetAttribute(frame_local, "MARGIN", "4x4");
   IupSetAttribute(frame_local, "GAP", "4");
-  IupSetAttribute(frame_local, "TITLE", "Locals");
+  IupSetAttribute(frame_local, "TITLE", "Locals:");
 
   list_stack = IupList(NULL);
   IupSetAttribute(list_stack, "EXPAND", "YES");
@@ -577,28 +563,26 @@ Ihandle *buildTabLocals(void)
   button_printLevel = IupButton("Print", NULL);
   IupSetAttribute(button_printLevel, "TIP", "Prints information about the selected call stack level.");
   IupSetAttribute(button_printLevel, "ACTIVE", "NO");
-  IupSetAttribute(button_printLevel, "SIZE", "35x");
   IupSetAttribute(button_printLevel, "NAME", "PRINT_LEVEL");
+  IupSetStrAttribute(button_printLevel, "PADDING", IupGetGlobal("DEFAULTBUTTONPADDING"));
 
-  button_printStack = IupButton("Print ALL", NULL);
+  button_printStack = IupButton("Print All", NULL);
   IupSetAttribute(button_printStack, "TIP", "Prints information about all the stack levels.");
   IupSetAttribute(button_printStack, "ACTIVE", "NO");
-  IupSetAttribute(button_printStack, "SIZE", "35x");
   IupSetAttribute(button_printStack, "NAME", "PRINT_STACK");
+  IupSetStrAttribute(button_printStack, "PADDING", IupGetGlobal("DEFAULTBUTTONPADDING"));
 
   vbox_stack = IupVbox(button_printLevel, button_printStack, NULL);
-  IupSetAttribute(vbox_stack, "EXPAND", "NO");
   IupSetAttribute(vbox_stack, "MARGIN", "0x0");
   IupSetAttribute(vbox_stack, "GAP", "4");
+  IupSetAttribute(vbox_stack, "NORMALIZESIZE", "HORIZONTAL");
 
   frame_stack = IupFrame(IupHbox(list_stack, vbox_stack, NULL));
-  IupSetAttribute(frame_stack, "EXPAND", "YES");
   IupSetAttribute(frame_stack, "MARGIN", "4x4");
   IupSetAttribute(frame_stack, "GAP", "4");
-  IupSetAttribute(frame_stack, "TITLE", "Call Stack");
+  IupSetAttribute(frame_stack, "TITLE", "Call Stack:");
 
   locals = IupHbox(frame_local, frame_stack, NULL);
-  IupSetAttribute(locals, "EXPAND", "YES");
   IupSetAttribute(locals, "MARGIN", "0x0");
   IupSetAttribute(locals, "GAP", "4");
   IupSetAttribute(locals, "TABTITLE", "Debug");
@@ -614,36 +598,43 @@ Ihandle *buildTabLocals(void)
 
 Ihandle *buildTabBreaks(void)
 {
-  Ihandle *button_addbreak, *button_removebreak, *button_removeallbreaks, *hbox, *list, *vbox;
+  Ihandle *button_addbreak, *button_removebreak, *button_removeallbreaks, *hbox, *list, *vbox, *frame;
 
-  button_addbreak = IupButton("Toggle Breakpoint", NULL);
-  IupSetAttribute(button_addbreak, "TIP", "Toggle breakpoint at the current line. Ctrl+B");
+  button_addbreak = IupButton("Add...", NULL);
+  IupSetAttribute(button_addbreak, "TIP", "Adds a breakpoint at the current line.");
   IupSetCallback(button_addbreak, "ACTION", (Icallback)but_addbreak_cb);
+  IupSetStrAttribute(button_addbreak, "PADDING", IupGetGlobal("DEFAULTBUTTONPADDING"));
 
   button_removebreak = IupButton("Remove", NULL);
   IupSetAttribute(button_removebreak, "TIP", "Removes the selected breakpoint at the list.");
   IupSetCallback(button_removebreak, "ACTION", (Icallback)but_removebreak_cb);
+  IupSetStrAttribute(button_removebreak, "PADDING", IupGetGlobal("DEFAULTBUTTONPADDING"));
 
   button_removeallbreaks = IupButton("Remove All", NULL);
   IupSetAttribute(button_removeallbreaks, "TIP", "Removes all breakpoints.");
   IupSetCallback(button_removeallbreaks, "ACTION", (Icallback)but_removeallbreaks_cb);
+  IupSetStrAttribute(button_removeallbreaks, "PADDING", IupGetGlobal("DEFAULTBUTTONPADDING"));
 
-  hbox = IupHbox(button_addbreak, button_removebreak, button_removeallbreaks, NULL);
-  IupSetAttribute(hbox, "EXPAND", "NO");
-  IupSetAttribute(hbox, "MARGIN", "0x0");
-  IupSetAttribute(hbox, "GAP", "4");
+  vbox = IupVbox(button_addbreak, button_removebreak, button_removeallbreaks, NULL);
+  IupSetAttribute(vbox, "MARGIN", "0x0");
+  IupSetAttribute(vbox, "GAP", "4");
+  IupSetAttribute(vbox, "NORMALIZESIZE", "HORIZONTAL");
 
   list = IupList(NULL);
   IupSetAttribute(list, "EXPAND", "YES");
   IupSetAttribute(list, "NAME", "LIST_BREAK");
 
-  vbox = IupVbox(hbox, list, NULL);
-  IupSetAttribute(vbox, "EXPAND", "YES");
-  IupSetAttribute(vbox, "MARGIN", "0x0");
-  IupSetAttribute(vbox, "GAP", "4");
-  IupSetAttribute(vbox, "TABTITLE", "Breakpoints");
+  frame = IupFrame(IupHbox(list, vbox, NULL));
+  IupSetAttribute(frame, "MARGIN", "4x4");
+  IupSetAttribute(frame, "GAP", "4");
+  IupSetAttribute(frame, "TITLE", "Breakpoints:");
 
-  return vbox;
+  hbox = IupVbox(frame, NULL);
+  IupSetAttribute(hbox, "MARGIN", "0x0");
+  IupSetAttribute(hbox, "GAP", "4");
+  IupSetAttribute(hbox, "TABTITLE", "Breaks");
+
+  return hbox;
 }
 
 void set_attribs(Ihandle *multitext)

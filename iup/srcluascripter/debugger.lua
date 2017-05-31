@@ -101,6 +101,10 @@ end
 function debuggerSetState(st)
   local stop, step, pause, contin, curline
 
+  if debugger.debug_state == st then
+    return
+  end
+
   local zbox = iup.GetDialogChild(main_dialog, "ZBOX_DEBUG_CONTINUE")
   local multitext = iup.GetDialogChild(main_dialog, "MULTITEXT")
   multitext.readonly = "Yes"
@@ -108,6 +112,7 @@ function debuggerSetState(st)
   if st == DEBUG_STOPPED then
     local btn_debug = iup.GetDialogChild(main_dialog, "BTN_DEBUG")
     zbox.value = btn_debug
+
     stop = "NO"
     step = "NO"
     contin = "NO"
@@ -117,12 +122,14 @@ function debuggerSetState(st)
   elseif st == DEBUG_ACTIVE or st == DEBUG_STEP_INTO or st == DEBUG_STEP_OVER or st == DEBUG_STEP_OUT then
     local btn_continue = iup.GetDialogChild(main_dialog, "BTN_CONTINUE")
     zbox.value = btn_continue
+
     stop = "YES"
     step = "NO"
     contin = "NO"
     run = "NO"
     pause = "YES"
     curline = "NO"
+
     if st == DEBUG_STEP_OUT then
       debugger.stepFuncLevel = debugger.currentFuncLevel
       debugger.stepFuncState = FUNC_INSIDE
@@ -133,6 +140,7 @@ function debuggerSetState(st)
   elseif st == DEBUG_PAUSED then
     local btn_continue = iup.GetDialogChild(main_dialog, "BTN_CONTINUE")
     zbox.value = btn_continue
+
     stop = "YES"
     step = "YES"
     contin = "YES"
@@ -142,13 +150,17 @@ function debuggerSetState(st)
   else -- st == DEBUG_INACTIVE
     local btn_debug = iup.GetDialogChild(main_dialog, "BTN_DEBUG")
     zbox.value = btn_debug
+
     stop = "NO"
     step = "NO"
     contin = "NO"
     run = "YES"
     pause = "NO"
     curline = "NO"
-  multitext.readonly = "No"
+
+    multitext.readonly = "No"
+    debuggerClearLocalVariablesList()
+    debuggerClearStackList()
   end
     
   debugger.debug_state = st
@@ -279,32 +291,44 @@ function debuggerClearLocalVariablesList()
   iup.SetAttribute(iup.GetDialogChild(main_dialog, "LIST_LOCAL"), "REMOVEITEM", "ALL")
 end
 
-function debuggerGetObjectType(name)
-  local nameType = type(name)
-  if nameType == "string" or nameType == "number" then
-    return name
-  elseif nameType == "table" then
+function debuggerGetObjectType(value)
+  local valueType = type(value)
+  if valueType == "string" or valueType == "number" then
+    return value
+  elseif valueType == "table" then
     return "<table>"
-  elseif nameType == "function" then
+  elseif valueType == "function" then
     return "<function>"
-  elseif nameType == "userdata" then
+  elseif valueType == "userdata" then
     return "<userdata>"
-  elseif nameType == "nil" then
+  elseif valueType == "nil" then
     return "<nil>"
   end
   return "<unknown>"
 end
 
-function debuggerSetLocalVariable(index)
+function debuggerSetLocalVariable()
   local local_list = iup.GetDialogChild(main_dialog, "LIST_LOCAL")
+  local index = local_list.value
+  if (index == 0) then
+    iup.Message("Warning!", "Select a variable on the list.")
+    return
+  end
+
   local level = iup.GetAttribute(local_list, "LEVEL"..index)
   local pos = iup.GetAttribute(local_list, "POS"..index)
   
   local name, value = debug.getlocal(level, pos)
-  
-  local status, newValue = iup.GetParam("Set Local", nil, name.." = ".."%s\n", value)
+  if (value == nil) then value = "" end
+  local valueType = type(value)
+  if valueType ~= "string" and valueType ~= "number" then
+    iup.Message("Warning!", "Can edit only strings and numbers.")
+    return
+  end
 
-  if (status == 1) then
+  local status, newValue = iup.GetParam("Set Local", nil, name.." = ".."%s\n", tostring(value))
+
+  if (status) then
     debug.setlocal(level, pos, newValue)
     debuggerUpdateLocalVarialesList(level)
   end
@@ -328,6 +352,11 @@ function debuggerUpdateLocalVarialesList(level)
     end
     pos = pos + 1
     name, value = debug.getlocal(level+1, pos)
+  end
+
+  if (val_key > 1) then
+    iup.SetAttribute(iup.GetDialogChild(main_dialog, "PRINT_LOCAL"), "ACTIVE", "Yes")
+    iup.SetAttribute(iup.GetDialogChild(main_dialog, "SET_LOCAL"), "ACTIVE", "Yes")
   end
 end
 
@@ -376,7 +405,7 @@ function debuggerUpdateStackList()
   
   level = level-1
   
-  if level> debugger.initialStackLevel then
+  if level > debugger.initialStackLevel then
     iup.SetAttribute(iup.GetDialogChild(main_dialog, "PRINT_LEVEL"), "ACTIVE", "YES")
     iup.SetAttribute(iup.GetDialogChild(main_dialog, "PRINT_STACK"), "ACTIVE", "YES")
     list_stack.value = 1
@@ -446,10 +475,9 @@ function debuggerLineHook(source, currentline)
 end
 
 function debuggerCallHook()
-  local level = debuggerGetDebugLevel()
-
   if debugger.debug_state == DEBUG_STEP_OVER then
     if debugger.stepFuncLevel == 0 then
+      local level = debuggerGetDebugLevel()
       debugger.stepFuncState = FUNC_INSIDE
       debugger.stepFuncLevel = level
     end
@@ -460,7 +488,7 @@ function debuggerReturnHook(what)
   local level = debuggerGetDebugLevel()
 
   if level == debugger.startLevel+1 and what == "main" then
-    debuggerSetState(DEBUG_INACTIVE) -- TODO Faz sentido???
+    debuggerSetState(DEBUG_INACTIVE)
   elseif debugger.debug_state == DEBUG_STEP_OUT or debugger.debug_state == DEBUG_STEP_OVER then
     if debugger.stepFuncLevel == level then
       debugger.stepFuncState = FUNC_OUTSIDE
@@ -494,6 +522,8 @@ function debuggerStartDebug(filename)
   debugger.startLevel = debuggerGetDebugLevel()
   
   print("-- Debug start")
+  debuggerSetState(DEBUG_ACTIVE)
+
   debug.sethook(debuggerHookFunction, "lcr")
 
   local ok, msg = pcall(dofile, debugger.currentFile)
@@ -515,7 +545,3 @@ end
 ---- TODO: ---- 
 -- debuggerReloadFile, quando terminar restaura original!!!
 -- debug string????
-
--- iup.SetAttribute
--- error handler - lua_call
--- debuggerReturnHook
