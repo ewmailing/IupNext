@@ -5,7 +5,7 @@ g_main_x = 44
 
 for i = 1, 10 do
   l_main_x = l_main_x + 1
-  l_main_g = l_main_g - 1
+  g_main_x = g_main_x - 1
 end
 
 function f1(x)

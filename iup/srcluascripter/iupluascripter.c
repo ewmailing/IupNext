@@ -720,23 +720,23 @@ void appendDebugButtons(Ihandle *dialog)
   zbox_debug_continue = IupZbox(btn_debug, btn_continue, NULL);
   IupSetAttribute(zbox_debug_continue, "NAME", "ZBOX_DEBUG_CONTINUE");
 
-  btn_stepinto = IupButton(NULL, NULL);
-  IupSetAttribute(btn_stepinto, "NAME", "BTN_STEPINTO");
-  IupSetAttribute(btn_stepinto, "ACTIVE", "NO");
-  IupSetAttribute(btn_stepinto, "IMAGE", "IUP_stepinto");
-  IupSetAttribute(btn_stepinto, "FLAT", "Yes");
-  IupSetCallback(btn_stepinto, "ACTION", (Icallback)item_stepinto_action_cb);
-  IupSetAttribute(btn_stepinto, "TIP", "Executes one step into the execution.");
-  IupSetAttribute(btn_stepinto, "CANFOCUS", "No");
-
   btn_stepover = IupButton(NULL, NULL);
   IupSetAttribute(btn_stepover, "NAME", "BTN_STEPOVER");
   IupSetAttribute(btn_stepover, "ACTIVE", "NO");
   IupSetAttribute(btn_stepover, "IMAGE", "IUP_stepover");
   IupSetAttribute(btn_stepover, "FLAT", "Yes");
   IupSetCallback(btn_stepover, "ACTION", (Icallback)item_stepover_action_cb);
-  IupSetAttribute(btn_stepover, "TIP", "Executes one step over the execution.");
+  IupSetAttribute(btn_stepover, "TIP", "Executes one step over the execution (F10).");
   IupSetAttribute(btn_stepover, "CANFOCUS", "No");
+
+  btn_stepinto = IupButton(NULL, NULL);
+  IupSetAttribute(btn_stepinto, "NAME", "BTN_STEPINTO");
+  IupSetAttribute(btn_stepinto, "ACTIVE", "NO");
+  IupSetAttribute(btn_stepinto, "IMAGE", "IUP_stepinto");
+  IupSetAttribute(btn_stepinto, "FLAT", "Yes");
+  IupSetCallback(btn_stepinto, "ACTION", (Icallback)item_stepinto_action_cb);
+  IupSetAttribute(btn_stepinto, "TIP", "Executes one step into the execution (F11).");
+  IupSetAttribute(btn_stepinto, "CANFOCUS", "No");
 
   btn_stepout = IupButton(NULL, NULL);
   IupSetAttribute(btn_stepout, "NAME", "BTN_STEPOUT");
@@ -744,7 +744,7 @@ void appendDebugButtons(Ihandle *dialog)
   IupSetAttribute(btn_stepout, "IMAGE", "IUP_stepout");
   IupSetAttribute(btn_stepout, "FLAT", "Yes");
   IupSetCallback(btn_stepout, "ACTION", (Icallback)item_stepout_action_cb);
-  IupSetAttribute(btn_stepout, "TIP", "Executes one step out of the execution.");
+  IupSetAttribute(btn_stepout, "TIP", "Executes one step out of the execution (Shift+F11).");
   IupSetAttribute(btn_stepout, "CANFOCUS", "No");
 
   IupAppend(toolbar, IupSetAttributes(IupLabel(NULL), "SEPARATOR=VERTICAL"));
@@ -785,15 +785,15 @@ void appendDebugMenuItens(Ihandle *menu)
   IupSetCallback(item_pause, "ACTION", (Icallback)item_pause_action_cb);
   IupSetAttribute(item_pause, "ACTIVE", "NO");
 
-  item_stepinto = IupItem("Step &Into\tF11", NULL);
-  IupSetAttribute(item_stepinto, "NAME", "ITM_STEPINTO");
-  IupSetCallback(item_stepinto, "ACTION", (Icallback)item_stepinto_action_cb);
-  IupSetAttribute(item_stepinto, "ACTIVE", "NO");
-
   item_stepover = IupItem("Step &Over\tF10", NULL);
   IupSetAttribute(item_stepover, "NAME", "ITM_STEPOVER");
   IupSetCallback(item_stepover, "ACTION", (Icallback)item_stepover_action_cb);
   IupSetAttribute(item_stepover, "ACTIVE", "NO");
+
+  item_stepinto = IupItem("Step &Into\tF11", NULL);
+  IupSetAttribute(item_stepinto, "NAME", "ITM_STEPINTO");
+  IupSetCallback(item_stepinto, "ACTION", (Icallback)item_stepinto_action_cb);
+  IupSetAttribute(item_stepinto, "ACTIVE", "NO");
 
   item_stepout = IupItem("Step Ou&t\tShift+F11", NULL);
   IupSetAttribute(item_stepout, "NAME", "ITM_STEPOUT");

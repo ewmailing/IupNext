@@ -404,15 +404,16 @@ function debuggerEndDebug(stop)
 
   debuggerSetState(DEBUG_INACTIVE)
 
+  if (debugger.restore_value) then 
+    local multitext = iup.GetDialogChild(main_dialog, "MULTITEXT")
+    debuggerReloadFile(multitext.filename) 
+    debugger.restore_value = false
+  end
+
   if stop then
     error("-- Debug stop\n") -- abort processing
   else
     print("-- Debug finish\n")
-  end
-
-  if (debugger.restore_value) then 
-    debuggerReloadFile(multitext.filename) 
-    debugger.restore_value = false
   end
 end
 
@@ -527,12 +528,11 @@ function debuggerStartDebug(filename)
   debug.sethook(debuggerHookFunction, "lcr")
 
   local ok, msg = pcall(dofile, debugger.currentFile)
-  
-  debuggerEndDebug(false)
-  
   if not ok then
     print(msg)
   end
+  
+  debuggerEndDebug(false)
 end
 
 function debuggerRun()
