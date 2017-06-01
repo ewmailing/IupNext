@@ -95,8 +95,8 @@ char *IupGetLanguage(void)
 /**********************************************************************************/
 
 
-#define ISRTMSG_NUM_LNG 4    /* 3+1 for expansion */
-                             /* ENGLISH, PORTUGUESE, PORTUGUESE(UTF-8), NULL */
+#define ISRTMSG_NUM_LNG 6    /* 5+1 for expansion */
+                             /* ENGLISH, PORTUGUESE, PORTUGUESE(UTF-8), SPANISH, SPANISH(UTF-8), NULL */
 
 typedef struct _IstdMessage
 {
@@ -169,9 +169,16 @@ void iupStrMessageUpdateLanguage(const char* language)
   if (iupStrEqualNoCase(language, "PORTUGUESE"))
   {
     if (utf8mode)
-      lng = 2;
+      lng = 2;  /* PORTUGUESE(UTF - 8) */
     else
-      lng = 1;
+      lng = 1;  /* PORTUGUESE */
+  }
+  else if (iupStrEqualNoCase(language, "SPANISH"))
+  {
+    if (utf8mode)
+      lng = 4; /* SPANISH(UTF - 8) */
+    else
+      lng = 3; /* SPANISH */
   }
 
   iStrMessageRegisterInternal(lng, utf8mode);
