@@ -14,8 +14,6 @@ debugger = {
 
   breakpoints = {},
 
-  initialStackLevel = 2,  -- TODO isso não é atualizado????
-
   currentFuncLevel = 0,
   stepFuncLevel = 0,
   stepFuncState = 0,
@@ -58,7 +56,8 @@ function debuggerReloadFile(filename)
       end
     end
   else
-    -- TODO e se der erro, faz o que??? pode acontecer de dar erro?
+    iup.Message("Warning!", "Failed to read file:\n  "..filename)
+    debuggerEndDebug(true)
   end
 end
 
@@ -206,7 +205,6 @@ function debuggerToggleBreakpoint(line, mark, value)
   end
   
   debuggerUpdateBreakpointsList()
-
 end
 
 function debuggerUpdateBreakpointsList()
@@ -319,10 +317,11 @@ function debuggerUpdateLocalVarialesList(level)
 
   debuggerClearLocalVariablesList()
 
+  local local_list = iup.GetDialogChild(main_dialog, "LIST_LOCAL")
+
   name, value = debug.getlocal(level+1, pos)  -- TODO porque aqui é level+1 ????
   while name ~= nil do
     if string.sub(name, 1, 1) ~= "(" then
-      local local_list = iup.GetDialogChild(main_dialog, "LIST_LOCAL")
       iup.SetAttribute(local_list, val_key, "("..pos..") "..name.." = "..debuggerGetObjectType(value))
       iup.SetAttribute(local_list, "POS"..val_key, pos)
       iup.SetAttribute(local_list, "LEVEL"..val_key, level+1)
@@ -335,13 +334,15 @@ function debuggerUpdateLocalVarialesList(level)
   if (val_key > 1) then
     iup.SetAttribute(iup.GetDialogChild(main_dialog, "PRINT_LOCAL"), "ACTIVE", "Yes")
     iup.SetAttribute(iup.GetDialogChild(main_dialog, "SET_LOCAL"), "ACTIVE", "Yes")
+
+    local_list.value = 1 -- select first item on list
   end
 end
 
 ------------------------------------- Stack -------------------------------------
 
 function debuggerStackListAction(index)
-  local level = index + 4
+  local level = index + debugger.startLevel - 1
   local info = debug.getinfo(level, "l") -- currentline
   
   debuggerUpdateSourceLine(info.currentline)
@@ -359,7 +360,7 @@ end
 
 function debuggerUpdateStackList()
   local info, name
-  local level = 4  -- TODO porque level começa em 4?
+  local level = debugger.startLevel
   
   debuggerClearStackList()
 
@@ -374,22 +375,23 @@ function debuggerUpdateStackList()
     else
       name = "<noname>"
     end
-    iup.SetAttribute(list_stack, level-3, "("..level..") "..name)
+    local index = level - debugger.startLevel + 1
+    iup.SetAttribute(list_stack, index, "("..level..") "..name)
+
+    level = level + 1
     if info.what == "main" then
       break
     end
-    level = level + 1
+
     info = debug.getinfo(level, "Sn") -- name, what
   end
   
-  level = level-1
-  
-  if level > debugger.initialStackLevel then
+  if level > debugger.startLevel then
     iup.SetAttribute(iup.GetDialogChild(main_dialog, "PRINT_LEVEL"), "ACTIVE", "YES")
     iup.SetAttribute(iup.GetDialogChild(main_dialog, "PRINT_STACK"), "ACTIVE", "YES")
 
-    list_stack.value = 1 -- first item on list is level 4
-    debuggerUpdateLocalVarialesList(4)
+    list_stack.value = 1 -- select first item on list
+    debuggerUpdateLocalVarialesList(debugger.startLevel)
   end
   
 end
@@ -397,6 +399,22 @@ end
 
 ----------------------------  Debug State       --------------------------
 
+function debuggerEndDebug(stop)
+  debug.sethook() -- turns off the hook
+
+  debuggerSetState(DEBUG_INACTIVE)
+
+  if stop then
+    error("-- Debug stop\n") -- abort processing
+  else
+    print("-- Debug finish\n")
+  end
+
+  if (debugger.restore_value) then 
+    debuggerReloadFile(multitext.filename) 
+    debugger.restore_value = false
+  end
+end
 
 function debuggerGetDebugLevel()
   local level = -1
@@ -451,13 +469,7 @@ function debuggerLineHook(source, currentline)
   end
   
   if debugger.debug_state == DEBUG_STOPPED then
-    debug.sethook() -- turns off the hook
-    debuggerSetState(DEBUG_INACTIVE)
-    error("-- Debug stop\n") -- abort processing
-    if (debugger.restore_value) then 
-      debuggerReloadFile(multitext.filename) 
-      debugger.restore_value = false
-    end
+    debuggerEndDebug(true)
   end
 end
 
@@ -484,8 +496,9 @@ function debuggerReturnHook(what)
   end
 end
 
-function debuggerHookFunction(event)
-  local info = debug.getinfo(debugger.initialStackLevel, "Sl") -- what, source, currentline
+function debuggerHookFunction(event, currentline)
+  -- Inside a hook, you can call getinfo with level 2 to get more information about the running function
+  local info = debug.getinfo(2, "S") -- what, source
   local s = string.sub(info.source, 1, 1)
   if s ~= "@" then
     return
@@ -497,7 +510,7 @@ function debuggerHookFunction(event)
     elseif event == "return" then
       debuggerReturnHook(info.what)
     elseif event == "line" then
-      debuggerLineHook(info.source, info.currentline)
+      debuggerLineHook(info.source, currentline)
     end
   end
 
@@ -506,7 +519,7 @@ end
 function debuggerStartDebug(filename)
   local multitext = iup.GetDialogChild(main_dialog, "MULTITEXT")
   debugger.currentFile = multitext.filename
-  debugger.startLevel = debuggerGetDebugLevel()
+  debugger.startLevel = debuggerGetDebugLevel() + 1 -- usually 3+1=4
   
   print("-- Debug start\n")
   debuggerSetState(DEBUG_ACTIVE)
@@ -515,13 +528,7 @@ function debuggerStartDebug(filename)
 
   local ok, msg = pcall(dofile, debugger.currentFile)
   
-  debug.sethook() -- turns off the hook
-  debuggerSetState(DEBUG_INACTIVE)
-  print("-- Debug finish\n")
-  if (debugger.restore_value) then 
-    debuggerReloadFile(multitext.filename) 
-    debugger.restore_value = false
-  end
+  debuggerEndDebug(false)
   
   if not ok then
     print(msg)
