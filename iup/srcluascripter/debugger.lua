@@ -14,7 +14,7 @@ debugger = {
 
   breakpoints = {},
 
-  initialStackLevel = 2,
+  initialStackLevel = 2,  -- TODO isso não é atualizado????
 
   currentFuncLevel = 0,
   stepFuncLevel = 0,
@@ -22,65 +22,43 @@ debugger = {
   startLevel = 0,
 
   currentFile = nil,
+  restore_value = false,
 }
 
 ------------------------------------- User Interface State -------------------------------------
 
 function debuggerReadFile(filename)
-  local s = string.sub(filename, 1, 1)
-  if s ~= "@" then
-    return nil
-  end
-
-  local f = io.open(string.sub(filename, 2), "r")
+  local f = io.open(filename, "r")
   if f == nil then
     return nil
   end
   local t = f:read("*a")
   f:close()
-  
   return t
 end
 
-function debuggerUpdateTitle(multitext, filename, is_dirty)
-  local subtitle = multitext.subtitle
-  local dirty_sign = ""
-
-  if is_dirty then
-    dirty_sign = "*"
-  end
-
-  if filename == nil then filename = "Untitled" end
-
-  --iup.SetAttribute(multitext, "TITLE", string.format("%s%s - %s", str_filetitle(filename), dirty_sign, subtitle))
-end
-
 function debuggerReloadFile(filename)
--- TODO usar função pronta para isso
   local str = debuggerReadFile(filename)
   if (str) then
     local multitext = iup.GetDialogChild(main_dialog, "MULTITEXT")
     
-    local fname = string.sub(filename, 2)
-
-    iup.SetAttribute(multitext, "FILENAME", fname)
-    iup.SetAttribute(multitext, "DIRTY", "NO")
     iup.SetAttribute(multitext, "VALUE", str)
+    debugger.restore_value = true
 
-    debuggerUpdateTitle(multitext, fname, 0)
-    
-    debugger.currentFile = fname
+    debugger.currentFile = filename
     
     multitext.markerdeleteall = -1 -- all markers
 
     for i = 1, #debugger.breakpoints do
       local item = debugger.breakpoints[i]
-      if item.filename == fname then
+      if item.filename == filename then
         main_dialog.ignore_toglebreakpoint = 1
         iup.SetAttributeId(main_dialog, "TOGGLEMARKER", item.line-1, 2)
         main_dialog.ignore_toglebreakpoint = nil
       end
     end
+  else
+    -- TODO e se der erro, faz o que??? pode acontecer de dar erro?
   end
 end
 
@@ -310,7 +288,7 @@ end
 function debuggerSetLocalVariable()
   local local_list = iup.GetDialogChild(main_dialog, "LIST_LOCAL")
   local index = local_list.value
-  if (index == 0) then
+  if (not index or tonumber(index) == 0) then
     iup.Message("Warning!", "Select a variable on the list.")
     return
   end
@@ -330,7 +308,7 @@ function debuggerSetLocalVariable()
 
   if (status) then
     debug.setlocal(level, pos, newValue)
-    debuggerUpdateLocalVarialesList(level)
+    iup.SetAttribute(local_list, index, "("..pos..") "..name.." = "..newValue)
   end
 end
 
@@ -341,11 +319,11 @@ function debuggerUpdateLocalVarialesList(level)
 
   debuggerClearLocalVariablesList()
 
-  name, value = debug.getlocal(level+1, pos)
+  name, value = debug.getlocal(level+1, pos)  -- TODO porque aqui é level+1 ????
   while name ~= nil do
     if string.sub(name, 1, 1) ~= "(" then
       local local_list = iup.GetDialogChild(main_dialog, "LIST_LOCAL")
-      iup.SetAttribute(local_list, val_key, name.." = "..debuggerGetObjectType(value))
+      iup.SetAttribute(local_list, val_key, "("..pos..") "..name.." = "..debuggerGetObjectType(value))
       iup.SetAttribute(local_list, "POS"..val_key, pos)
       iup.SetAttribute(local_list, "LEVEL"..val_key, level+1)
       val_key = val_key + 1
@@ -362,12 +340,13 @@ end
 
 ------------------------------------- Stack -------------------------------------
 
-function debuggerStackListAction(level)
-  local info = debug.getinfo(level+4, "l") -- currentline
+function debuggerStackListAction(index)
+  local level = index + 4
+  local info = debug.getinfo(level, "l") -- currentline
   
   debuggerUpdateSourceLine(info.currentline)
   
-  debuggerUpdateLocalVarialesList(level+4)
+  debuggerUpdateLocalVarialesList(level)
 end
 
 function debuggerClearStackList()
@@ -380,7 +359,7 @@ end
 
 function debuggerUpdateStackList()
   local info, name
-  local level = 4
+  local level = 4  -- TODO porque level começa em 4?
   
   debuggerClearStackList()
 
@@ -395,7 +374,7 @@ function debuggerUpdateStackList()
     else
       name = "<noname>"
     end
-    iup.SetAttribute(list_stack, level-3, name)
+    iup.SetAttribute(list_stack, level-3, "("..level..") "..name)
     if info.what == "main" then
       break
     end
@@ -408,7 +387,8 @@ function debuggerUpdateStackList()
   if level > debugger.initialStackLevel then
     iup.SetAttribute(iup.GetDialogChild(main_dialog, "PRINT_LEVEL"), "ACTIVE", "YES")
     iup.SetAttribute(iup.GetDialogChild(main_dialog, "PRINT_STACK"), "ACTIVE", "YES")
-    list_stack.value = 1
+
+    list_stack.value = 1 -- first item on list is level 4
     debuggerUpdateLocalVarialesList(4)
   end
   
@@ -451,7 +431,10 @@ function debuggerLineHook(source, currentline)
   if debugger.debug_state == DEBUG_PAUSED then
   
     if debugger.currentFile ~= filename then
-      debuggerReloadFile(source)
+      local s = string.sub(source, 1, 1)
+      if s == "@" then
+        debuggerReloadFile(filename)
+      end
     end
   
     debuggerUpdateSourceLine(currentline)
@@ -468,9 +451,13 @@ function debuggerLineHook(source, currentline)
   end
   
   if debugger.debug_state == DEBUG_STOPPED then
-    debuggerSetState(DEBUG_INACTIVE)
     debug.sethook() -- turns off the hook
-    error("-- Debug stop") -- abort processing
+    debuggerSetState(DEBUG_INACTIVE)
+    error("-- Debug stop\n") -- abort processing
+    if (debugger.restore_value) then 
+      debuggerReloadFile(multitext.filename) 
+      debugger.restore_value = false
+    end
   end
 end
 
@@ -521,15 +508,20 @@ function debuggerStartDebug(filename)
   debugger.currentFile = multitext.filename
   debugger.startLevel = debuggerGetDebugLevel()
   
-  print("-- Debug start")
+  print("-- Debug start\n")
   debuggerSetState(DEBUG_ACTIVE)
 
   debug.sethook(debuggerHookFunction, "lcr")
 
   local ok, msg = pcall(dofile, debugger.currentFile)
   
+  debug.sethook() -- turns off the hook
   debuggerSetState(DEBUG_INACTIVE)
-  print("-- Debug finish")
+  print("-- Debug finish\n")
+  if (debugger.restore_value) then 
+    debuggerReloadFile(multitext.filename) 
+    debugger.restore_value = false
+  end
   
   if not ok then
     print(msg)
@@ -542,6 +534,4 @@ function debuggerRun()
 end
 
 
----- TODO: ---- 
--- debuggerReloadFile, quando terminar restaura original!!!
--- debug string????
+-- TODO: debug string????

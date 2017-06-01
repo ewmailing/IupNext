@@ -2243,4 +2243,5 @@ Ihandle *IupScintillaDlg(void)
 - Printing
 - multi-language (portuguese)
 - multiple files (IupFlatTabs)
+- save state (files, breakpoints, bookmarks)
 */

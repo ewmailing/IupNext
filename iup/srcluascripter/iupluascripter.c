@@ -426,7 +426,7 @@ int but_setlocal_cb(Ihandle *ih)
   return IUP_DEFAULT;
 }
 
-int lst_stack_cb(Ihandle *ih, char *t, int i, int v)
+int lst_stack_cb(Ihandle *ih, char *t, int index, int v)
 {
   (void)ih;
   (void)t;
@@ -434,7 +434,7 @@ int lst_stack_cb(Ihandle *ih, char *t, int i, int v)
     return IUP_DEFAULT;
 
   lua_getglobal(lcmd_state, "debuggerStackListAction");
-  lua_pushinteger(lcmd_state, i);
+  lua_pushinteger(lcmd_state, index);
   lua_call(lcmd_state, 1, 0);
 
   return IUP_DEFAULT;
@@ -535,6 +535,7 @@ Ihandle *buildTabLocals(void)
   list_local = IupList(NULL);
   IupSetAttribute(list_local, "EXPAND", "YES");
   IupSetAttribute(list_local, "NAME", "LIST_LOCAL");
+  IupSetAttribute(list_local, "TIP", "List of local variables at selected stack level (ordered by pos)");
 
   button_printLocal = IupButton("Print", NULL);
   IupSetAttribute(button_printLocal, "ACTIVE", "NO");
@@ -559,6 +560,7 @@ Ihandle *buildTabLocals(void)
   list_stack = IupList(NULL);
   IupSetAttribute(list_stack, "EXPAND", "YES");
   IupSetAttribute(list_stack, "NAME", "LIST_STACK");
+  IupSetAttribute(list_stack, "TIP", "List of call stack (ordered by level)");
 
   button_printLevel = IupButton("Print", NULL);
   IupSetAttribute(button_printLevel, "TIP", "Prints information about the selected call stack level.");
