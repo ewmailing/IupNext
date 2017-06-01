@@ -319,7 +319,7 @@ function debuggerUpdateLocalVarialesList(level)
 
   local local_list = iup.GetDialogChild(main_dialog, "LIST_LOCAL")
 
-  name, value = debug.getlocal(level+1, pos)  -- TODO porque aqui é level+1 ????
+  name, value = debug.getlocal(level+1, pos)  -- TODO why this is level+1 ????
   while name ~= nil do
     if string.sub(name, 1, 1) ~= "(" then
       iup.SetAttribute(local_list, val_key, "("..pos..") "..name.." = "..debuggerGetObjectType(value))
