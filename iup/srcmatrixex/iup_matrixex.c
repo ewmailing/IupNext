@@ -888,6 +888,11 @@ static int iMatrixExKeyPress_CB(Ihandle* ih, int c, int press)
         iMatrixExSelectAll(ih);
         return IUP_IGNORE;
       }
+      else if (iupStrEqualNoCase(IupGetGlobal("LANGUAGE"), "SPANISH"))
+      {
+        iMatrixExSelectAll(ih);
+        return IUP_IGNORE;
+      }
       break;
     case K_cA:
       if (iupStrEqualNoCase(IupGetGlobal("LANGUAGE"), "ENGLISH"))
@@ -914,6 +919,11 @@ static int iMatrixExKeyPress_CB(Ihandle* ih, int c, int press)
       return IUP_IGNORE;
     case K_cR: 
       if (iupStrEqualNoCase(IupGetGlobal("LANGUAGE"), "PORTUGUESE"))
+      {
+        IupSetAttribute(ih, "REDO", NULL);  /* 1 level */
+        return IUP_IGNORE;
+      }
+      else if (iupStrEqualNoCase(IupGetGlobal("LANGUAGE"), "SPANISH"))
       {
         IupSetAttribute(ih, "REDO", NULL);  /* 1 level */
         return IUP_IGNORE;
@@ -965,6 +975,12 @@ static int iMatrixExKeyPress_CB(Ihandle* ih, int c, int press)
       }
     case K_cL: 
       if (iupStrEqualNoCase(IupGetGlobal("LANGUAGE"), "PORTUGUESE"))
+      {
+        ImatExData* matex_data = (ImatExData*)iupAttribGet(ih, "_IUP_MATEX_DATA");
+        iupMatrixExFindShowDialog(matex_data);
+        return IUP_IGNORE;
+      }
+      else if (iupStrEqualNoCase(IupGetGlobal("LANGUAGE"), "SPANISH"))
       {
         ImatExData* matex_data = (ImatExData*)iupAttribGet(ih, "_IUP_MATEX_DATA");
         iupMatrixExFindShowDialog(matex_data);
@@ -1173,6 +1189,80 @@ static void iMatrixExSetClassUpdate(Iclass* ic)
       IupSetLanguageString("IUP_ERRORINVALIDDATA", "Dado inv√°lido.");
       IupSetLanguageString("IUP_ERRORNOSELECTION", "Sele√ß√£o vazia.");
       IupSetLanguageString("IUP_ERRORINVALIDINTERVAL", "Intervalo inv√°lido.");
+    }
+  }
+  else if (iupStrEqualNoCase(IupGetGlobal("LANGUAGE"), "SPANISH"))
+  {
+    IupSetLanguageString("IUP_EXPORT", "Exportar");
+    IupSetLanguageString("IUP_IMPORT", "Importar");
+    IupSetLanguageString("IUP_SETTINGSDLG", "Preferencias...");
+    IupSetLanguageString("IUP_TEXTSEPARATOR", "Separador de N˙meros:");
+    IupSetLanguageString("IUP_OTHERTEXTSEPARATOR", "  - Otro Sep. de N˙m.:");
+    IupSetLanguageString("IUP_DECIMALSYMBOL", "SÌmbolo Decimal:");
+    IupSetLanguageString("IUP_UNDOAC", "Deshacer\tCtrl+Z");
+    IupSetLanguageString("IUP_REDOAC", "Rehacer\tCtrl+R");
+    IupSetLanguageString("IUP_UNDOLISTDLG", "Lista de Deshacer...\tCtrl+U");
+    IupSetLanguageString("IUP_UNDOLIST", "Lista de Deshacer");
+    IupSetLanguageString("IUP_CURRENTSTATE", "Estado Actual");
+    IupSetLanguageString("IUP_CUTAC", "Cortar\tCtrl+X");
+    IupSetLanguageString("IUP_COPYAC", "Copiar\tCtrl+C");
+    IupSetLanguageString("IUP_PASTEAC", "Pegar\tCtrl+V");
+    IupSetLanguageString("IUP_ERASEAC", "Borrar\tDel");
+    IupSetLanguageString("IUP_SELECTALLAC", "Seleccionar Todo\tCtrl+T");
+    IupSetLanguageString("IUP_FINDDLG", "Localizar...\tCtrl+L");
+    IupSetLanguageString("IUP_GOTODLG", "Ir A...\tCtrl+G");
+    IupSetLanguageString("IUP_SORTDLG", "Ordenar...");
+    IupSetLanguageString("IUP_FREEZE", "Congelar");
+    IupSetLanguageString("IUP_UNFREEZE", "Descongelar");
+    IupSetLanguageString("IUP_COPYTOSAMECOLUMN", "Copiar A (Misma Columna)");
+    IupSetLanguageString("IUP_ALLLINES", "Todas las lineas");
+    IupSetLanguageString("IUP_HERETOTOP", "De aquÌ para arriba");
+    IupSetLanguageString("IUP_HERETOBOTTOM", "De aquÌ para abajo");
+    IupSetLanguageString("IUP_INTERVALDLG", "Intervalo...");
+    IupSetLanguageString("IUP_SELECTEDLINES", "Lineas seleccionadas");
+
+    IupSetLanguageString("IUP_VISIBILITY", "Visibilidad");
+    IupSetLanguageString("IUP_HIDECOLUMN", "Ocultar Columna");
+    IupSetLanguageString("IUP_SHOWHIDDENCOLUMNS", "Mostrar Columnas Ocultas");
+    IupSetLanguageString("IUP_HIDELINE", "Ocultar Linea");
+    IupSetLanguageString("IUP_SHOWHIDDENLINES", "Mostrar Lineas Ocultas");
+
+    IupSetLanguageString("IUP_COPYTOINTERVAL", "Copiar A - Intervalo");
+    IupSetLanguageString("IUP_GOTO", "Ir A");
+    IupSetLanguageString("IUP_LINE", "Linea:");
+    IupSetLanguageString("IUP_COLUMN", "Columna:");
+    IupSetLanguageString("IUP_LINESTART", "Linea Inicial:");
+    IupSetLanguageString("IUP_LINEEND", "Linea Final:");
+
+    IupSetLanguageString("IUP_UNITS", "Unidades:");
+    IupSetLanguageString("IUP_DECIMALS", "Decimales:");
+    IupSetLanguageString("IUP_COLUMNDECIMALS", "Columna de Decimales");
+    IupSetLanguageString("IUP_COLUMNDECIMALSDLG", "Columna de Decimales...");
+    IupSetLanguageString("IUP_COLUMNUNITS", "Unidades de Columna");
+    IupSetLanguageString("IUP_COLUMNUNITSDLG", "Unidades de Columna...");
+
+    IupSetLanguageString("IUP_ERRORINVALIDSELECTION", "SelecciÛn inv·lida.");
+    IupSetLanguageString("IUP_ERRORNOTEXT", "Texto vacÌo.");
+    IupSetLanguageString("IUP_ERRORINVALIDDATA", "Dato inv·lido.");
+    IupSetLanguageString("IUP_ERRORNOSELECTION", "SelecciÛn vacÌa.");
+    IupSetLanguageString("IUP_ERRORINVALIDINTERVAL", "Intervalo inv·lido.");
+    IupSetLanguageString("IUP_ERRORFILEOPEN", "Error al abrir el archivo.");
+
+    if (IupGetInt(NULL, "UTF8MODE"))
+    {
+      /* When seeing this file assuming ISO8859-1 encoding, above will appear correct.
+      When seeing this file assuming UTF-8 encoding, bellow will appear correct. */
+
+      IupSetLanguageString("IUP_ERRORINVALIDSELECTION", "Selecci√≥n inv√°lida.");
+      IupSetLanguageString("IUP_ERRORNOTEXT", "Texto vac√≠o.");
+      IupSetLanguageString("IUP_ERRORINVALIDDATA", "Dato inv√°lido.");
+      IupSetLanguageString("IUP_ERRORNOSELECTION", "Selecci√≥n vac√≠a.");
+      IupSetLanguageString("IUP_ERRORINVALIDINTERVAL", "Intervalo inv√°lido.");
+      IupSetLanguageString("IUP_TEXTSEPARATOR", "Separador de N√∫meros:");
+      IupSetLanguageString("IUP_OTHERTEXTSEPARATOR", "  - Otro Sep. de N√∫m.:");
+      IupSetLanguageString("IUP_DECIMALSYMBOL", "S√≠mbolo Decimal:");
+      IupSetLanguageString("IUP_HERETOTOP", "De aqu√≠ para arriba");
+      IupSetLanguageString("IUP_HERETOBOTTOM", "De aqu√≠ para abajo");
     }
   }
 

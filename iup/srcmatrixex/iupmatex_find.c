@@ -402,6 +402,33 @@ void iupMatrixExSetClassUpdateFind(Iclass* ic)
       IupSetLanguageString("IUP_MATCH_WHOLE_CELL", "Coindidir cÃ©lula inteira");
     }
   }
+  else if (iupStrEqualNoCase(IupGetGlobal("LANGUAGE"), "SPANISH"))
+  {
+    IupSetLanguageString("IUP_FIND", "Localizar");
+    IupSetLanguageString("IUP_FIND_WHAT", "Localizar:");
+    IupSetLanguageString("IUP_FIND_NEXT", "Localizar &Siguiente");
+    IupSetLanguageString("IUP_FIND_PREVIOUS", "Localizar &Previo");
+    IupSetLanguageString("IUP_NOT_FOUND", "No se localizó.");
+    IupSetLanguageString("IUP_FOUND_AT", "Se localizó en");
+
+    IupSetLanguageString("IUP_CLOSE", "Cerrar");
+    IupSetLanguageString("IUP_SEARCH", "Buscar");
+
+    IupSetLanguageString("IUP_MATCH_CASE", "Distinguir mayúsculas y minúsculas");
+    IupSetLanguageString("IUP_MATCH_WHOLE_CELL", "Coincidir con la celda");
+    IupSetLanguageString("IUP_BY_ROW", "por Renglones");
+    IupSetLanguageString("IUP_BY_COL", "por Columnas");
+
+    if (IupGetInt(NULL, "UTF8MODE"))
+    {
+      /* When seeing this file assuming ISO8859-1 encoding, above will appear correct.
+      When seeing this file assuming UTF-8 encoding, bellow will appear correct. */
+
+      IupSetLanguageString("IUP_NOT_FOUND", "No se localizÃ³.");
+      IupSetLanguageString("IUP_FOUND_AT", "Se localizÃ³ en");
+      IupSetLanguageString("IUP_MATCH_CASE", "Distinguir mayÃºsculas y minÃºsculas");
+    }
+  }
 }
 
 void iupMatrixExRegisterFind(Iclass* ic)

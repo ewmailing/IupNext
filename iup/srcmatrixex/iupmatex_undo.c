@@ -449,6 +449,22 @@ void iupMatrixExSetClassUpdateUndo(Iclass* ic)
       IupSetLanguageString("IUP_EDITCELL", "Editar Célula");
     }
   }
+  else if (iupStrEqualNoCase(IupGetGlobal("LANGUAGE"), "SPANISH"))
+  {
+    IupSetLanguageString("IUP_PASTECLIP", "Pegar Desde el Portapapeles");
+    IupSetLanguageString("IUP_PASTEDATA", "Pegar Desde el Buffer");
+    IupSetLanguageString("IUP_PASTEFILE", "Pegar Desde Archivo (Importar)");
+    IupSetLanguageString("IUP_COPYCOLTO:ALL", "Copiar Para Todas las Lineas");
+    IupSetLanguageString("IUP_COPYCOLTO:TOP", "Copiar Para Arriba");
+    IupSetLanguageString("IUP_COPYCOLTO:BOTTOM", "Copiar Para Abajo");
+    IupSetLanguageString("IUP_COPYCOLTO:MARKED", "Copiar Para Seleccionadas");
+    IupSetLanguageString("IUP_COPYCOLTO:INTERVAL", "Copiar Para Intervalo");
+    IupSetLanguageString("IUP_UNDONAME", "Deshacer");
+    IupSetLanguageString("IUP_REDONAME", "Rehacer");
+    IupSetLanguageString("IUP_SETCELL", "Modificar Celda");
+    IupSetLanguageString("IUP_EDITCELL", "Editar Celda");
+    IupSetLanguageString("IUP_CLEARVALUE", "Limpiar Valores");
+  }
 }
 
 void iupMatrixExRegisterUndo(Iclass* ic)

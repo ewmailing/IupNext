@@ -397,6 +397,34 @@ void iupMatrixExSetClassUpdateSort(Iclass* ic)
       IupSetLanguageString("IUP_LASTLINE", "Ãšltima Linha");
     }
   }
+  else if (iupStrEqualNoCase(IupGetGlobal("LANGUAGE"), "SPANISH"))
+  {
+    IupSetLanguageString("IUP_SORTBYCOLUMN", "Ordenar Lineas por Columnas");
+    IupSetLanguageString("IUP_INVERT", "Invertir");
+    IupSetLanguageString("IUP_SORT", "Ordenar");
+
+    IupSetLanguageString("IUP_INVERT_TIP", "Sólo invertir el orden actual. Los nuevos parámetros son ignorados.");
+
+    IupSetLanguageString("IUP_ORDER", "Ordenar");
+    IupSetLanguageString("IUP_ASCENDING", "Ascendente");
+    IupSetLanguageString("IUP_DESCENDING", "Descendente");
+
+    IupSetLanguageString("IUP_ALLLINES", "Todas las Lineas");
+    IupSetLanguageString("IUP_CASESENSITIVE", "Distinguir Mayúsculas y Minúsculas");
+    IupSetLanguageString("IUP_COLUMN", "Columna");
+    IupSetLanguageString("IUP_FIRSTLINE", "Primera Linea");
+    IupSetLanguageString("IUP_LASTLINE", "Última Linea");
+
+    if (IupGetInt(NULL, "UTF8MODE"))
+    {
+      /* When seeing this file assuming ISO8859-1 encoding, above will appear correct.
+      When seeing this file assuming UTF-8 encoding, bellow will appear correct. */
+
+      IupSetLanguageString("IUP_INVERT_TIP", "SÃ³lo invertir el orden actual. Los nuevos parÃ¡metros son ignorados.");
+      IupSetLanguageString("IUP_CASESENSITIVE", "Distinguir MayÃºsculas y MinÃºsculas");
+      IupSetLanguageString("IUP_LASTLINE", "Ãšltima Linea");
+    }
+  }
 }
 
 void iupMatrixExRegisterSort(Iclass* ic)
