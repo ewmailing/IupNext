@@ -16,12 +16,12 @@
 void load_all_images_step_images(void);
 
 
-lua_State *lcmd_state;
+static lua_State *lcmd_state;
 
 
 /********************************** Utilities *****************************************/
 
-char* getLuaKeywords(void)
+static char* getLuaKeywords(void)
 {
   return "and break do else elseif end false for function if in local nil not or repeat return then true until while "
     "_VERSION assert collectgarbage dofile error gcinfo loadfile loadstring print rawget rawset require tonumber tostring type unpack "
@@ -56,13 +56,13 @@ if (*str1 == *str2) return 1;        \
 }
 
 
-char *getLastNonAlphaNumeric(char *text)
+static const char *getLastNonAlphaNumeric(const char *text)
 {
   int len = (int)strlen(text);
-  char *c = text + len - 1;
+  const char *c = text + len - 1;
   if (*c == '\n')
-    c -= 1;
-  for (c; c != text; c--)
+    c--;
+  for (; c != text; c--)
   {
     if (*c < 48 || (*c > 57 && *c < 65) || (*c > 90 && *c < 97) || *c > 122)
       return c + 1;
@@ -70,7 +70,7 @@ char *getLastNonAlphaNumeric(char *text)
   return NULL;
 }
 
-const char* strNextValue(const char* str, int str_len, int *len, char sep)
+static const char* strNextValue(const char* str, int str_len, int *len, char sep)
 {
   int ignore_sep = 0;
 
@@ -98,7 +98,7 @@ const char* strNextValue(const char* str, int str_len, int *len, char sep)
     return str;  /* no next value */
 }
 
-int strEqualPartial(const char* str1, const char* str2)
+static int strEqualPartial(const char* str1, const char* str2)
 {
 #define EXTRAINC(_x) (void)(_x)
 #define SF(_x) (_x)
@@ -110,7 +110,7 @@ int strEqualPartial(const char* str1, const char* str2)
   return 0;
 }
 
-char *filterList(char *text, char *list)
+static char *filterList(const char *text, const char *list)
 {
   char *filteredList[1024];
   char *retList;
@@ -159,7 +159,7 @@ char *filterList(char *text, char *list)
 /********************************** Callbacks *****************************************/
 
 
-int marker_changed_cb(Ihandle *ih, int lin, int margin, int value)
+static int marker_changed_cb(Ihandle *ih, int lin, int margin, int value)
 {
   if (margin == 2)
   {
@@ -174,26 +174,27 @@ int marker_changed_cb(Ihandle *ih, int lin, int margin, int value)
   return IUP_DEFAULT;
 }
 
-int k_any(Ihandle *ih, int c)
+static int multitext_kesc_cb(Ihandle *ih)
 {
   Ihandle* multitext = IupGetDialogChild(ih, "MULTITEXT");
 
   if (!IupGetInt(multitext, "AUTOCOMPLETION"))
     return IUP_CONTINUE;
 
-  if (c == K_ESC && IupGetInt(multitext, "AUTOCACTIVE"))
+  if (IupGetInt(multitext, "AUTOCACTIVE"))
     IupSetAttribute(multitext, "AUTOCCANCEL", "YES");
 
   return IUP_CONTINUE;
 }
 
-int multitext_valuechanged_cb(Ihandle* multitext)
+static int multitext_valuechanged_cb(Ihandle* multitext)
 {
-  IupSetAttribute(multitext, "DIRTY", "YES");
+  Icallback old_valuechanged_cb = IupGetCallback(multitext, "OLD_VALUECHANGED_CB");
+  old_valuechanged_cb(multitext);
 
   if (IupGetInt(multitext, "AUTOCOMPLETION"))
   {
-    char *t;
+    const char *t;
     int pos = IupGetInt(multitext, "CARETPOS");
     char *text = IupGetAttribute(multitext, "VALUE");
     text[pos + 1] = '\0';
@@ -212,7 +213,7 @@ int multitext_valuechanged_cb(Ihandle* multitext)
   return IUP_CONTINUE;
 }
 
-int item_autocomplete_action_cb(Ihandle* ih)
+static int item_autocomplete_action_cb(Ihandle* ih)
 {
   Ihandle* multitext = IupGetDialogChild(ih, "MULTITEXT");
 
@@ -230,7 +231,7 @@ int item_autocomplete_action_cb(Ihandle* ih)
   return IUP_DEFAULT;
 }
 
-void debug_set_state(lua_State *l, const char* state)
+static void debug_set_state(lua_State *l, const char* state)
 {
   lua_getglobal(l, "debuggerSetStateString");
   lua_pushstring(l, state);
@@ -250,8 +251,11 @@ static int save_check(Ihandle* ih_item)
   return 1;
 }
 
-int item_debug_action_cb(Ihandle *item)
+static int item_debug_action_cb(Ihandle* item)
 {
+  if (!IupGetInt(IupGetDialogChild(item, "ITM_DEBUG"), "ACTIVE")) /* can be called by the hot key in the dialog */
+    return IUP_DEFAULT;
+
   if (!save_check(item))
     return IUP_DEFAULT;
 
@@ -260,57 +264,78 @@ int item_debug_action_cb(Ihandle *item)
   return IUP_DEFAULT;
 }
 
-int item_run_action_cb(Ihandle *item)
+static int item_run_action_cb(Ihandle *item)
 {
+  if (!IupGetInt(IupGetDialogChild(item, "ITM_RUN"), "ACTIVE")) /* can be called by the hot key in the dialog */
+    return IUP_DEFAULT;
+
   lua_getglobal(lcmd_state, "debuggerRun");
   lua_call(lcmd_state, 0, 0);
   (void)item;
   return IUP_DEFAULT;
 }
 
-int item_stop_action_cb(Ihandle *item)
+static int item_stop_action_cb(Ihandle *item)
 {
+  if (!IupGetInt(IupGetDialogChild(item, "ITM_STOP"), "ACTIVE")) /* can be called by the hot key in the dialog */
+    return IUP_DEFAULT;
+
   debug_set_state(lcmd_state, "DEBUG_STOPPED");
   (void)item;
   return IUP_DEFAULT;
 }
 
-int item_pause_action_cb(Ihandle *item)
+static int item_pause_action_cb(Ihandle *item)
 {
+  if (!IupGetInt(IupGetDialogChild(item, "ITM_PAUSE"), "ACTIVE")) /* can be called by the hot key in the dialog */
+    return IUP_DEFAULT;
+
   debug_set_state(lcmd_state, "DEBUG_PAUSED");
   (void)item;
   return IUP_DEFAULT;
 }
 
-int item_continue_action_cb(Ihandle *item)
+static int item_continue_action_cb(Ihandle *item)
 {
+  if (!IupGetInt(IupGetDialogChild(item, "ITM_CONTINUE"), "ACTIVE")) /* can be called by the hot key in the dialog */
+    return IUP_DEFAULT;
+
   debug_set_state(lcmd_state, "DEBUG_ACTIVE");
   (void)item;
   return IUP_DEFAULT;
 }
 
-int item_stepinto_action_cb(Ihandle *item)
+static int item_stepinto_action_cb(Ihandle *item)
 {
+  if (!IupGetInt(IupGetDialogChild(item, "ITM_STEPINTO"), "ACTIVE")) /* can be called by the hot key in the dialog */
+    return IUP_DEFAULT;
+
   debug_set_state(lcmd_state, "DEBUG_STEP_INTO");
   (void)item;
   return IUP_DEFAULT;
 }
 
-int item_stepover_action_cb(Ihandle *item)
+static int item_stepover_action_cb(Ihandle *item)
 {
+  if (!IupGetInt(IupGetDialogChild(item, "ITM_STEPOVER"), "ACTIVE")) /* can be called by the hot key in the dialog */
+    return IUP_DEFAULT;
+
   debug_set_state(lcmd_state, "DEBUG_STEP_OVER");
   (void)item;
-  return IUP_DEFAULT;
+  return IUP_IGNORE; /* avoid system default behavior for F10 key */
 }
 
-int item_stepout_action_cb(Ihandle *item)
+static int item_stepout_action_cb(Ihandle *item)
 {
+  if (!IupGetInt(IupGetDialogChild(item, "ITM_STEPOUT"), "ACTIVE")) /* can be called by the hot key in the dialog */
+    return IUP_DEFAULT;
+
   debug_set_state(lcmd_state, "DEBUG_STEP_OUT");
   (void)item;
   return IUP_DEFAULT;
 }
 
-int pause_action_cb(Ihandle* item)
+static int k_pause_action_cb(Ihandle* item)
 {
   char* mod = IupGetGlobal("MODKEYSTATE");
 
@@ -320,24 +345,24 @@ int pause_action_cb(Ihandle* item)
   return IUP_DEFAULT;
 }
 
-int item_resetluastate_action_cb(Ihandle *item)
+static int item_resetluastate_action_cb(Ihandle *item)
 {
   return IUP_DEFAULT;
 }
 
-int item_help_action_cb(void)
+static int item_help_action_cb(void)
 {
   IupHelp("http://www.tecgraf.puc-rio.br/iup");
   return IUP_DEFAULT;
 }
 
-int item_about_action_cb(void)
+static int item_about_action_cb(void)
 {
   IupMessage("About", "   IupLua Scripter\n\nAutors:\n   Camilo Freire\n   Antonio Scuri");
   return IUP_DEFAULT;
 }
 
-int txt_cmdline_cb(Ihandle *ih, int c)
+static int txt_cmdline_cb(Ihandle *ih, int c)
 {
   switch (c)
   {
@@ -360,7 +385,7 @@ int txt_cmdline_cb(Ihandle *ih, int c)
   return IUP_CONTINUE;
 }
 
-int item_listfuncs_action_cb(Ihandle *ih)
+static int item_listfuncs_action_cb(Ihandle *ih)
 {
   lua_getglobal(lcmd_state, "consoleListFuncs");
   lua_call(lcmd_state, 0, 0);
@@ -369,7 +394,7 @@ int item_listfuncs_action_cb(Ihandle *ih)
   return IUP_DEFAULT;
 }
 
-int item_listvars_action_cb(Ihandle *ih)
+static int item_listvars_action_cb(Ihandle *ih)
 {
   lua_getglobal(lcmd_state, "consoleListVars");
   lua_call(lcmd_state, 0, 0);
@@ -378,7 +403,7 @@ int item_listvars_action_cb(Ihandle *ih)
   return IUP_DEFAULT;
 }
 
-int item_clear_action_cb(Ihandle *ih)
+static int item_clear_action_cb(Ihandle *ih)
 {
   lua_getglobal(lcmd_state, "consoleClear");
   lua_call(lcmd_state, 0, 0);
@@ -387,7 +412,7 @@ int item_clear_action_cb(Ihandle *ih)
   return IUP_DEFAULT;
 }
 
-int btn_tools_cb(Ihandle *ih)
+static int btn_tools_cb(Ihandle *ih)
 {
   int x, y;
   Ihandle* item_listfuncs, *item_listvars, *item_clear, *tools_menu;
@@ -414,19 +439,31 @@ int btn_tools_cb(Ihandle *ih)
   return IUP_DEFAULT;
 }
 
-int but_printlocal_cb(Ihandle *ih)
+static int but_printlocal_cb(Ihandle *ih)
 {
+  (void)ih;
+  lua_getglobal(lcmd_state, "debuggerPrintLocalVariable");
+  lua_call(lcmd_state, 0, 0);
   return IUP_DEFAULT;
 }
 
-int but_setlocal_cb(Ihandle *ih)
+static int but_printalllocals_cb(Ihandle *ih)
 {
+  (void)ih;
+  lua_getglobal(lcmd_state, "debuggerPrintAllLocalVariables");
+  lua_call(lcmd_state, 0, 0);
+  return IUP_DEFAULT;
+}
+
+static int but_setlocal_cb(Ihandle *ih)
+{
+  (void)ih;
   lua_getglobal(lcmd_state, "debuggerSetLocalVariable");
   lua_call(lcmd_state, 0, 0);
   return IUP_DEFAULT;
 }
 
-int lst_stack_cb(Ihandle *ih, char *t, int index, int v)
+static int lst_stack_cb(Ihandle *ih, char *t, int index, int v)
 {
   (void)ih;
   (void)t;
@@ -440,17 +477,17 @@ int lst_stack_cb(Ihandle *ih, char *t, int index, int v)
   return IUP_DEFAULT;
 }
 
-int but_printlevel_cb(Ihandle *ih)
+static int but_printlevel_cb(Ihandle *ih)
 {
   return IUP_DEFAULT;
 }
 
-int but_printstack_cb(Ihandle *ih)
+static int but_printstack_cb(Ihandle *ih)
 {
   return IUP_DEFAULT;
 }
 
-int but_addbreak_cb(Ihandle *ih)
+static int but_addbreak_cb(Ihandle *ih)
 {
   int lin, col;
   Ihandle* multitext = IupGetDialogChild(ih, "MULTITEXT");
@@ -462,7 +499,7 @@ int but_addbreak_cb(Ihandle *ih)
   return IUP_DEFAULT;
 }
 
-int but_removebreak_cb(Ihandle *ih)
+static int but_removebreak_cb(Ihandle *ih)
 {
   Ihandle* listBreak = IupGetDialogChild(ih, "LIST_BREAK");
   int value = IupGetInt(listBreak, "VALUE");
@@ -477,7 +514,7 @@ int but_removebreak_cb(Ihandle *ih)
   return IUP_DEFAULT;
 }
 
-int but_removeallbreaks_cb(Ihandle *ih)
+static int but_removeallbreaks_cb(Ihandle *ih)
 {
   lua_getglobal(lcmd_state, "debuggerRemoveAllBreakpoints");
   lua_call(lcmd_state, 0, 0);
@@ -487,7 +524,7 @@ int but_removeallbreaks_cb(Ihandle *ih)
 
 /********************************** Main *****************************************/
 
-Ihandle *buildTabOutput(void)
+static Ihandle *buildTabOutput(void)
 {
   Ihandle *txt_cmdLine, *btn_tools, *console_bts;
   Ihandle *frm_consolebts, *ml_output, *output;
@@ -527,9 +564,9 @@ Ihandle *buildTabOutput(void)
   return output;
 }
 
-Ihandle *buildTabLocals(void)
+static Ihandle *buildTabLocals(void)
 {
-  Ihandle *list_local, *button_printLocal, *button_setLocal, *vbox_local, *frame_local;
+  Ihandle *list_local, *button_printLocal, *button_printAllLocals, *button_setLocal, *vbox_local, *frame_local;
   Ihandle *list_stack, *button_printLevel, *button_printStack, *vbox_stack, *frame_stack, *locals;
 
   list_local = IupList(NULL);
@@ -539,15 +576,25 @@ Ihandle *buildTabLocals(void)
 
   button_printLocal = IupButton("Print", NULL);
   IupSetAttribute(button_printLocal, "ACTIVE", "NO");
+  IupSetAttribute(button_printLocal, "TIP", "Prints debug information about the selected local variable.");
   IupSetAttribute(button_printLocal, "NAME", "PRINT_LOCAL");
   IupSetStrAttribute(button_printLocal, "PADDING", IupGetGlobal("DEFAULTBUTTONPADDING"));
+  IupSetCallback(button_printLocal, "ACTION", (Icallback)but_printlocal_cb);
+
+  button_printAllLocals = IupButton("Print All", NULL);
+  IupSetAttribute(button_printAllLocals, "ACTIVE", "NO");
+  IupSetAttribute(button_printAllLocals, "TIP", "Prints debug information about the all local variables.");
+  IupSetAttribute(button_printAllLocals, "NAME", "PRINT_ALLLOCALS");
+  IupSetStrAttribute(button_printAllLocals, "PADDING", IupGetGlobal("DEFAULTBUTTONPADDING"));
+  IupSetCallback(button_printAllLocals, "ACTION", (Icallback)but_printalllocals_cb);
 
   button_setLocal = IupButton("Set...", NULL);
   IupSetAttribute(button_setLocal, "ACTIVE", "NO");
   IupSetAttribute(button_setLocal, "NAME", "SET_LOCAL");
   IupSetStrAttribute(button_setLocal, "PADDING", IupGetGlobal("DEFAULTBUTTONPADDING"));
+  IupSetCallback(button_setLocal, "ACTION", (Icallback)but_setlocal_cb);
 
-  vbox_local = IupVbox(button_printLocal, button_setLocal, NULL);
+  vbox_local = IupVbox(button_printLocal, button_printAllLocals, button_setLocal, NULL);
   IupSetAttribute(vbox_local, "MARGIN", "0x0");
   IupSetAttribute(vbox_local, "GAP", "4");
   IupSetAttribute(vbox_local, "NORMALIZESIZE", "HORIZONTAL");
@@ -561,18 +608,21 @@ Ihandle *buildTabLocals(void)
   IupSetAttribute(list_stack, "EXPAND", "YES");
   IupSetAttribute(list_stack, "NAME", "LIST_STACK");
   IupSetAttribute(list_stack, "TIP", "List of call stack (ordered by level)");
+  IupSetCallback(list_stack, "ACTION", (Icallback)lst_stack_cb);
 
   button_printLevel = IupButton("Print", NULL);
-  IupSetAttribute(button_printLevel, "TIP", "Prints information about the selected call stack level.");
+  IupSetAttribute(button_printLevel, "TIP", "Prints debug information about the selected call stack level.");
   IupSetAttribute(button_printLevel, "ACTIVE", "NO");
   IupSetAttribute(button_printLevel, "NAME", "PRINT_LEVEL");
   IupSetStrAttribute(button_printLevel, "PADDING", IupGetGlobal("DEFAULTBUTTONPADDING"));
+  IupSetCallback(button_printLevel, "ACTION", (Icallback)but_printlevel_cb);
 
   button_printStack = IupButton("Print All", NULL);
-  IupSetAttribute(button_printStack, "TIP", "Prints information about all the stack levels.");
+  IupSetAttribute(button_printStack, "TIP", "Prints debug information about all the call stack levels.");
   IupSetAttribute(button_printStack, "ACTIVE", "NO");
   IupSetAttribute(button_printStack, "NAME", "PRINT_STACK");
   IupSetStrAttribute(button_printStack, "PADDING", IupGetGlobal("DEFAULTBUTTONPADDING"));
+  IupSetCallback(button_printStack, "ACTION", (Icallback)but_printstack_cb);
 
   vbox_stack = IupVbox(button_printLevel, button_printStack, NULL);
   IupSetAttribute(vbox_stack, "MARGIN", "0x0");
@@ -589,16 +639,10 @@ Ihandle *buildTabLocals(void)
   IupSetAttribute(locals, "GAP", "4");
   IupSetAttribute(locals, "TABTITLE", "Debug");
 
-  IupSetCallback(button_printLocal, "ACTION", (Icallback)but_printlocal_cb);
-  IupSetCallback(button_setLocal, "ACTION", (Icallback)but_setlocal_cb);
-  IupSetCallback(list_stack, "ACTION", (Icallback)lst_stack_cb);
-  IupSetCallback(button_printLevel, "ACTION", (Icallback)but_printlevel_cb);
-  IupSetCallback(button_printStack, "ACTION", (Icallback)but_printstack_cb);
-
   return locals;
 }
 
-Ihandle *buildTabBreaks(void)
+static Ihandle *buildTabBreaks(void)
 {
   Ihandle *button_addbreak, *button_removebreak, *button_removeallbreaks, *hbox, *list, *vbox, *frame;
 
@@ -639,7 +683,7 @@ Ihandle *buildTabBreaks(void)
   return hbox;
 }
 
-void set_attribs(Ihandle *multitext)
+static void set_attribs(Ihandle *multitext)
 {
   IupSetAttribute(multitext, "CLEARALL", "");
   IupSetAttribute(multitext, "LEXERLANGUAGE", "lua");
@@ -661,13 +705,13 @@ void set_attribs(Ihandle *multitext)
   IupSetAttribute(multitext, "STYLEBOLD10", "YES");
 }
 
-void showVersionInfo()
+static void showVersionInfo()
 {
   lua_getglobal(lcmd_state, "consoleVersionInfo");
   lua_call(lcmd_state, 0, 0);
 }
 
-void appendDebugButtons(Ihandle *dialog)
+static void appendDebugButtons(Ihandle *dialog)
 {
   Ihandle *toolbar, *btn_debug, *btn_run, *btn_stop, *btn_pause, *btn_continue;
   Ihandle *zbox_debug_continue, *btn_stepinto, *btn_stepover, *btn_stepout;
@@ -757,9 +801,9 @@ void appendDebugButtons(Ihandle *dialog)
   IupAppend(toolbar, btn_stepout);
 }
 
-void appendDebugMenuItens(Ihandle *menu)
+static void appendDebugMenuItens(Ihandle *menu)
 {
-  Ihandle *item_debug, *item_run, *item_stop, *item_pause, *item_continue, *item_stepinto,
+  Ihandle *item_debug, *item_run, *item_stop, *item_pause, *item_continue, *item_stepinto, *item_autocomplete,
           *item_stepover, *item_stepout, *item_resetluastate, *debugMneu, *subMenuDebug;
 
   item_run = IupItem("&Run\tCtrl+F5", NULL);
@@ -800,6 +844,10 @@ void appendDebugMenuItens(Ihandle *menu)
   IupSetCallback(item_stepout, "ACTION", (Icallback)item_stepout_action_cb);
   IupSetAttribute(item_stepout, "ACTIVE", "NO");
 
+  item_autocomplete = IupItem("Auto Completion", NULL);
+  IupSetCallback(item_autocomplete, "ACTION", (Icallback)item_autocomplete_action_cb);
+  IupSetAttribute(item_autocomplete, "VALUE", "ON");
+
   item_resetluastate = IupItem("&Reset Lua State", NULL);
   IupSetCallback(item_resetluastate, "ACTION", (Icallback)item_resetluastate_action_cb);
 
@@ -813,6 +861,7 @@ void appendDebugMenuItens(Ihandle *menu)
     item_stepinto,
     item_stepout,
     IupSeparator(),
+    item_autocomplete,
     item_resetluastate,
     NULL);
 
@@ -870,6 +919,9 @@ int main(int argc, char **argv)
   main_dialog = IupScintillaDlg();
 
   multitext = IupGetDialogChild(main_dialog, "MULTITEXT");
+  IupSetCallback(multitext, "OLD_VALUECHANGED_CB", IupGetCallback(multitext, "VALUECHANGED_CB"));
+  IupSetCallback(multitext, "VALUECHANGED_CB", (Icallback)multitext_valuechanged_cb);
+  IupSetCallback(multitext, "K_ESC", (Icallback)multitext_kesc_cb);
 
   appendDebugButtons(main_dialog);
 
@@ -894,7 +946,7 @@ int main(int argc, char **argv)
   IupSetCallback(main_dialog, "K_F5", (Icallback)item_continue_action_cb);
   IupSetCallback(main_dialog, "K_cF5", (Icallback)item_run_action_cb);
   IupSetCallback(main_dialog, "K_sF5", (Icallback)item_stop_action_cb);
-  IupSetCallback(main_dialog, "K_PAUSE", (Icallback)pause_action_cb);
+  IupSetCallback(main_dialog, "K_PAUSE", (Icallback)k_pause_action_cb);
   IupSetCallback(main_dialog, "K_F10", (Icallback)item_stepover_action_cb);
   IupSetCallback(main_dialog, "K_F11", (Icallback)item_stepinto_action_cb);
   IupSetCallback(main_dialog, "K_sF11", (Icallback)item_stepout_action_cb);
@@ -921,6 +973,7 @@ int main(int argc, char **argv)
   IupSetAttribute(debugTabs, "MARGIN", "0x0");
   IupSetAttribute(debugTabs, "GAP", "4");
   IupSetAttribute(debugTabs, "TABTYPE", "BOTTOM");
+  IupSetAttribute(debugTabs, "NAME", "DEBUG_TABS");
 
   stabs = IupSbox(debugTabs);
   IupSetAttribute(stabs, "EXPAND", "YES");
