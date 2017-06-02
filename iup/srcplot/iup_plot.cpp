@@ -3090,6 +3090,172 @@ static void iPlotSetClassUpdate(Iclass* ic)
       IupSetLanguageString("IUP_PIESTARTANGLE", "√Çngulo de In√≠cio da Torta:");
     }
   }
+  else if (iupStrEqualNoCase(IupGetGlobal("LANGUAGE"), "SPANISH"))
+  {
+    IupSetLanguageString("IUP_EXPORT", "Exportar");
+    IupSetLanguageString("IUP_COPY", "Copiar");
+    IupSetLanguageString("IUP_PRINTDLG", "Imprimir...");
+
+    IupSetLanguageString("IUP_ZOOMINAC", "Acercar\t+");
+    IupSetLanguageString("IUP_ZOOMOUTAC", "Alejar\t-");
+    IupSetLanguageString("IUP_RESETZOOMAC", "Restablecer Vista\t.");
+    IupSetLanguageString("IUP_SHOWHIDELEGEND", "Mostrar/Ocultar Leyenda");
+    IupSetLanguageString("IUP_SHOWHIDEGRID", "Mostrar/Ocultar Grilla");
+
+    IupSetLanguageString("IUP_ERRORINVALIDFORMULA", "FÛrmula Inv·lida.");
+
+    IupSetLanguageString("IUP_PROPERTIESDLG", "Propiedades...");
+    IupSetLanguageString("IUP_DATASETPROPERTIESDLG", "Propiedades de los Datos...");
+    IupSetLanguageString("IUP_DATASETVALUESDLG", "Valores de los Datos...");
+
+    IupSetLanguageString("IUP_NAME", "Nombre:");
+    IupSetLanguageString("IUP_COLOR", "Color:");
+    IupSetLanguageString("IUP_MODE", "Modo:");
+    IupSetLanguageString("IUP_LINES", "Lineas");
+    IupSetLanguageString("IUP_MARKS", "Marcas");
+    IupSetLanguageString("IUP_MARKSLINES", "Marcas & Lineas");
+    IupSetLanguageString("IUP_BARS", "Barras");
+    IupSetLanguageString("IUP_AREA", "¡rea");
+    IupSetLanguageString("IUP_STEMS", "Plotear");
+    IupSetLanguageString("IUP_MARKSSTEMS", "Marcas & Plotear");
+    IupSetLanguageString("IUP_HORIZONTALBARS", "Barras Horizontales");
+    IupSetLanguageString("IUP_MULTIBARS", "Barras M˙ltiples");
+    IupSetLanguageString("IUP_ERRORBARS", "Barras de Error");
+    IupSetLanguageString("IUP_STEPS", "Pasos");
+    IupSetLanguageString("IUP_PIE", "Pastel");
+    IupSetLanguageString("IUP_LINESTYLE", "Estilo de Linea:");
+    IupSetLanguageString("IUP_CONTINUOUS", "Continua");
+    IupSetLanguageString("IUP_DASHED", "Trazos");
+    IupSetLanguageString("IUP_DOTTED", "Punteada");
+    IupSetLanguageString("IUP_DASH_DOT", "Trazo Punto");
+    IupSetLanguageString("IUP_DASH_DOT_DOT", "Trazo Punto Punto");
+    IupSetLanguageString("IUP_LINEWIDTH", "Ancho de Linea:");
+    IupSetLanguageString("IUP_MARKSTYLE", "Estilo de Marca:");
+    IupSetLanguageString("IUP_BAROUTLINE", "Contorno de Barra:");
+    IupSetLanguageString("IUP_BARSPACING", "Espaciado de Barras:");
+    IupSetLanguageString("IUP_BAROUTLINECOLOR", "Color del Contorno de Barra:");
+    IupSetLanguageString("IUP_PLUS", "Mas");
+    IupSetLanguageString("IUP_STAR", "Estrella");
+    IupSetLanguageString("IUP_CIRCLE", "Circulo");
+    IupSetLanguageString("IUP_X", "X");
+    IupSetLanguageString("IUP_BOX", "Cuadro");
+    IupSetLanguageString("IUP_DIAMOND", "Diamante");
+    IupSetLanguageString("IUP_HOLLOW_CIRCLE", "Circulo VacÌo");
+    IupSetLanguageString("IUP_HOLLOW_BOX", "Cuadro VacÌo");
+    IupSetLanguageString("IUP_HOLLOW_DIAMOND", "Diamante VacÌo");
+    IupSetLanguageString("IUP_MARKSIZE", "TamaÒo de Marca:");
+    IupSetLanguageString("IUP_AREATRANSPARENCY", "Transparencia de ¡rea:");
+    IupSetLanguageString("IUP_PIERADIUS", "Radio del Pastel:");
+    IupSetLanguageString("IUP_PIESTARTANGLE", "¡ngulo de Inicio del Pastel:");
+    IupSetLanguageString("IUP_PIECONTOUR", "Contorno del Pastel:");
+    IupSetLanguageString("IUP_PIEHOLE", "Agujero del Pastel:");
+    IupSetLanguageString("IUP_PIESLICELABEL", "Etiqueta de PorciÛn de Pastel:");
+    IupSetLanguageString("IUP_PIESLICELABELPOS", "Pos. de Etiqueta en la PorciÛn:");
+    IupSetLanguageString("IUP_PERCENT", "Porcentaje");
+    IupSetLanguageString("IUP_NONE", "Ninguno");
+
+    IupSetLanguageString("IUP_CLOSE", "Cerrar");
+
+    IupSetLanguageString("IUP_BACKGROUND", "Fondo");
+    IupSetLanguageString("IUP_TITLE", "TÌtulo");
+    IupSetLanguageString("IUP_LEGEND", "Leyenda");
+    IupSetLanguageString("IUP_LEGENDBOX", "Caja de Leyenda");
+    IupSetLanguageString("IUP_GRID", "Grilla");
+    IupSetLanguageString("IUP_GRIDMINOR", "Grilla Secundaria");
+    IupSetLanguageString("IUP_XAXIS", "Eje X");
+    IupSetLanguageString("IUP_YAXIS", "Eje Y");
+    IupSetLanguageString("IUP_AXISLABEL", "Etiquetas de Ejes");
+    IupSetLanguageString("IUP_AXISTICKS", "Marcas en los Ejes");
+    IupSetLanguageString("IUP_AXISTICKSNUMBER", "N˙meros en las Marcas");
+
+    IupSetLanguageString("IUP_TEXT", "Texto:");
+    IupSetLanguageString("IUP_SHOW", "Mostrar:");
+    IupSetLanguageString("IUP_HORIZONTAL", "Horizontal");
+    IupSetLanguageString("IUP_VERTICAL", "Vertical");
+
+    IupSetLanguageString("IUP_WARNING", "°Advertencia!");
+    IupSetLanguageString("IUP_CHANGESNOTAPPLIEDAPPLY", "Hay Modificaciones. øAplicarlas?");
+
+    IupSetLanguageString("IUP_MARGIN", "Margen");
+    IupSetLanguageString("IUP_LEFT", "Izquierdo:");
+    IupSetLanguageString("IUP_RIGHT", "Derecho:");
+    IupSetLanguageString("IUP_TOP", "Superior:");
+    IupSetLanguageString("IUP_BOTTOM", "Inferior:");
+
+    IupSetLanguageString("IUP_FONTSTYLE", "Estilo de Fuente:");
+    IupSetLanguageString("IUP_FONTSIZE", "TamaÒo de Fuente:");
+    IupSetLanguageString("IUP_PLAIN", "Plano");
+    IupSetLanguageString("IUP_BOLD", "Negrita");
+    IupSetLanguageString("IUP_ITALIC", "It·lica");
+    IupSetLanguageString("IUP_BOLDITALIC", "Negrita It·lica");
+
+    IupSetLanguageString("IUP_POSITION", "PosiciÛn:");
+    IupSetLanguageString("IUP_POSXY", "(x,y):");
+    IupSetLanguageString("IUP_TOPRIGHT", "Arriba a la Derecha");
+    IupSetLanguageString("IUP_TOPLEFT", "Arriba a la Izquierda");
+    IupSetLanguageString("IUP_BOTTOMRIGHT", "Abajo a la Derecha");
+    IupSetLanguageString("IUP_BOTTOMLEFT", "Abajo a la Izquierda");
+    IupSetLanguageString("IUP_BOTTOMCENTER", "Abajo Centrado");
+    IupSetLanguageString("IUP_XY", "(x,y)");
+
+    IupSetLanguageString("IUP_SHOWARROW", "Mostrar Flecha:");
+    IupSetLanguageString("IUP_MIN", "MÌnimo:");
+    IupSetLanguageString("IUP_MAX", "M·ximo:");
+    IupSetLanguageString("IUP_REVERSE", "Invertir:");
+    IupSetLanguageString("IUP_CROSSORIGIN", "Cruzar Origen:");
+    IupSetLanguageString("IUP_CENTERED", "Centrado:");
+
+    IupSetLanguageString("IUP_SCALE", "Escala:");
+    IupSetLanguageString("IUP_LINEAR", "Lineal");
+    IupSetLanguageString("IUP_LOG10", "Logaritmo (base 10)");
+    IupSetLanguageString("IUP_LOG2", "Logaritmo (base 2)");
+    IupSetLanguageString("IUP_LOGN", "Logaritmo (base e)");
+
+    IupSetLanguageString("IUP_SPACING", "Espaciamiento:");
+    IupSetLanguageString("IUP_MAJORSPAN", "Intervalo Principal:");
+    IupSetLanguageString("IUP_MINORDIVISION", "Divisiones Secundarias:");
+    IupSetLanguageString("IUP_SIZE", "TamaÒo:");
+    IupSetLanguageString("IUP_MAJOR", "Principal:");
+    IupSetLanguageString("IUP_MINOR", "Secundario:");
+
+    IupSetLanguageString("IUP_ROTATE", "RotaciÛn:");
+    IupSetLanguageString("IUP_ANGLE", "¡ngulo:");
+
+    IupSetLanguageString("IUP_VALUE", "Valor:");
+    IupSetLanguageString("IUP_DECIMALS", "Decimales:");
+    IupSetLanguageString("IUP_FORMAT", "Formato:");
+
+    if (IupGetInt(NULL, "UTF8MODE"))
+    {
+      /* When seeing this file assuming ISO8859-1 encoding, above will appear correct.
+      When seeing this file assuming UTF-8 encoding, bellow will appear correct. */
+
+      IupSetLanguageString("IUP_ERRORINVALIDFORMULA", "F√≥rmula Inv√°lida.");
+      IupSetLanguageString("IUP_AREA", "√Årea");
+      IupSetLanguageString("IUP_MULTIBARS", "Barras M√∫ltiples");
+      IupSetLanguageString("IUP_HOLLOW_CIRCLE", "Circulo Vac√≠o");
+      IupSetLanguageString("IUP_HOLLOW_BOX", "Cuadro Vac√≠o");
+      IupSetLanguageString("IUP_HOLLOW_DIAMOND", "Diamante Vac√≠o");
+      IupSetLanguageString("IUP_MARKSIZE", "Tama√±o de Marca:");
+      IupSetLanguageString("IUP_AREATRANSPARENCY", "Transparencia de √Årea:");
+      IupSetLanguageString("IUP_PIESTARTANGLE", "√Ångulo de Inicio del Pastel:");
+      IupSetLanguageString("IUP_PIESLICELABEL", "Etiqueta de Porci√≥n de Pastel:");
+      IupSetLanguageString("IUP_PIESLICELABELPOS", "Pos. de Etiqueta en la Porci√≥n:");
+      IupSetLanguageString("IUP_TITLE", "T√≠tulo");
+      IupSetLanguageString("IUP_AXISTICKSNUMBER", "N√∫meros en las Marcas");
+      IupSetLanguageString("IUP_WARNING", "¬°Advertencia!");
+      IupSetLanguageString("IUP_CHANGESNOTAPPLIEDAPPLY", "Hay Modificaciones. ¬øAplicarlas?");
+      IupSetLanguageString("IUP_FONTSIZE", "Tama√±o de Fuente:");
+      IupSetLanguageString("IUP_ITALIC", "It√°lica");
+      IupSetLanguageString("IUP_BOLDITALIC", "Negrita It√°lica");
+      IupSetLanguageString("IUP_POSITION", "Posici√≥n:");
+      IupSetLanguageString("IUP_MIN", "M√≠nimo:");
+      IupSetLanguageString("IUP_MAX", "M√°ximo:");
+      IupSetLanguageString("IUP_SIZE", "Tama√±o:");
+      IupSetLanguageString("IUP_ROTATE", "Rotaci√≥n:");
+      IupSetLanguageString("IUP_ANGLE", "√Ångulo:");
+    }
+  }
 }
 
 static Iclass* iPlotNewClass(void)
