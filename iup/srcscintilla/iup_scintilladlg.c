@@ -31,13 +31,13 @@ static void toggleMarker(Ihandle* multitext, int lin, int margin)
     value = value & 0x000002;
 
   if (value)
-    IupSetIntId(multitext, "MARKERDELETE", lin, margin - 1);
+    IupSetIntId(multitext, "MARKERDELETE", lin, margin - 1);  /* margin 1 maps to marker 0 */
   else
     IupSetIntId(multitext, "MARKERADD", lin, margin - 1);
 
   cb = (IFniii)IupGetCallback(ih, "MARKERCHANGED_CB");
   if (cb)
-    cb(ih, lin, margin, value == 0);
+    cb(ih, lin, margin - 1, value == 0);
 }
 
 static long int setMarkerMask(int markNumber)
@@ -2202,7 +2202,7 @@ static int iScintillaDlgCreateMethod(Ihandle* ih, void** params)
   IupSetAttributeId(multitext, "MARKERFGCOLOR", 0, "0 0 255");
   IupSetAttributeId(multitext, "MARKERBGCOLOR", 0, "0 0 255");
   IupSetAttributeId(multitext, "MARKERALPHA", 0, "80");
-  IupSetAttributeId(multitext, "MARKERSYMBOL", 0, "CIRCLE");
+  IupSetAttributeId(multitext, "MARKERSYMBOL", 0, "BOOKMARK");
 
   (void)params;
   return IUP_NOERROR;

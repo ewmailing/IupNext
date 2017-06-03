@@ -70,13 +70,14 @@ marker given its line number as id, and margin as value.</p>
 
   
     
-<pre>int function(Ihandle*<strong> ih</strong>, int <strong>lin</strong>, int <strong>margin</strong>, int <strong>added</strong>); [in C]<br><strong>elem</strong>:markerchanged_cb(<strong>lin</strong>, <strong>margin</strong>, <strong>added</strong>: number) -&gt; (<strong>ret</strong>: number) [in Lua]</pre>
+<pre>int function(Ihandle*<strong> ih</strong>, int <strong>lin</strong>, int <strong>marker</strong>, int <strong>added</strong>); [in C]<br><strong>elem</strong>:markerchanged_cb(<strong>lin</strong>, <strong>marker</strong>, <strong>added</strong>: number) -&gt; (<strong>ret</strong>: number) [in Lua]</pre>
 
     
 <p class="info"><strong>ih</strong>:
   identifier of the element that activated the 
-  event.<br><strong>lin</strong>: line number where the marker was changed.<br>
-<strong>margin</strong>: which margin was affected.<br><strong>added</strong>: 
+  event.<br><strong>lin</strong>: line number where the marker was changed 
+(starts at 0).<br>
+<strong>marker</strong>: which marker was affected.<br><strong>added</strong>: 
 flag indicating if the marker was added or removed.</p>
 
   
