@@ -493,7 +493,10 @@ static void save_file(Ihandle* multitext)
     char* str = IupGetAttribute(multitext, "VALUE");
     int count = IupGetInt(multitext, "COUNT");
     if (write_file(filename, str, count))
+    {
       IupSetAttribute(multitext, "DIRTY", "NO");
+      update_title(IupGetDialog(multitext), filename, 0);
+    }
   }
 }
 
@@ -507,7 +510,6 @@ static void saveas_file(Ihandle* multitext, const char* filename)
 
     IupSetStrAttribute(multitext, "FILENAME", filename);
     IupSetAttribute(multitext, "DIRTY", "NO");
-
     update_title(IupGetDialog(multitext), filename, 0);
 
     if (config)
@@ -800,7 +802,7 @@ static int item_save_action_cb(Ihandle* item_save)
   /* test again because in can be called using the hot key */
   if (IupGetInt(multitext, "DIRTY"))
     save_file(multitext);
-  return IUP_DEFAULT;
+  return IUP_IGNORE;  /* to avoid garbage in Scintilla when pressing the hot key */
 }
 
 static int item_revert_action_cb(Ihandle* item_revert)
