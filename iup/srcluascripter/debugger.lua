@@ -6,8 +6,8 @@ local DEBUG_STEP_OVER = 5 -- debug should be active and running, we are waiting 
 local DEBUG_STEP_OUT = 6 -- debug should be active and running, we are waiting until its steps out of the function to pause, or we found a breakpoint
 local DEBUG_PAUSED = 7 -- debug should be active, but paused
 
-local FUNC_INSIDE = 1
-local FUNC_OUTSIDE = 2
+local FUNC_STATE_INSIDE = 1
+local FUNC_STATE_OUTSIDE = 2
 
 debugger = {
   debug_state = DEBUG_INACTIVE,
@@ -109,10 +109,10 @@ function debuggerSetState(st)
 
     if st == DEBUG_STEP_OUT then
       debugger.stepFuncLevel = debugger.currentFuncLevel
-      debugger.stepFuncState = FUNC_INSIDE
+      debugger.stepFuncState = FUNC_STATE_INSIDE
     else
       debugger.stepFuncLevel = 0
-      debugger.stepFuncState = FUNC_OUTSIDE
+      debugger.stepFuncState = FUNC_STATE_OUTSIDE
     end
   elseif st == DEBUG_PAUSED then
     local btn_continue = iup.GetDialogChild(main_dialog, "BTN_CONTINUE")
@@ -162,20 +162,27 @@ function debuggerSetState(st)
   iup.SetAttribute(iup.GetDialogChild(main_dialog, "BTN_STEPOUT"), "ACTIVE", step)
 end                   
 
-function debuggerHighlightLine(multitext, line)
-   local pos = iup.TextConvertLinColToPos(multitext, line, 0)
-   multitext.caretpos = pos
-   multitext.markerdeleteall = 2
-   multitext["markeradd"..line] = 2
-end
-
-function debuggerUpdateSourceLine(currentline)
+function debuggerHighlightLine(currentline)
   if currentline == nil or currentline <= 0 then
     return
   end
 
   local multitext = iup.GetDialogChild(main_dialog, "MULTITEXT")
-  debuggerHighlightLine(multitext, currentline-1)
+  local pos = iup.TextConvertLinColToPos(multitext, currentline-1, 0) -- line here starts at 0
+  multitext.caretpos = pos
+  multitext.markerdeleteall = 2
+  multitext["markeradd"..currentline-1] = 2
+end
+
+function debuggerSelectLine(currentline)
+  if currentline == nil or currentline <= 0 then
+    return
+  end
+
+  local multitext = iup.GetDialogChild(main_dialog, "MULTITEXT")
+  local pos = iup.TextConvertLinColToPos(multitext, currentline-1, 0) -- line here starts at 0
+  multitext.caretpos = pos
+  multitext.selection = currentline-1 .. ",0:" .. currentline-1 .. ",9999"
 end
 
 
@@ -309,7 +316,7 @@ function debuggerSetLocalVariable()
 
   if (status) then
     debug.setlocal(level, pos, newValue)
-    iup.SetAttribute(local_list, index, "("..pos..") "..name.." = "..newValue)
+    iup.SetAttribute(local_list, index, name.." = "..newValue)
   end
 end
 
@@ -341,7 +348,7 @@ function debuggerPrintAllLocalVariables()
   end
 end
 
-function debuggerUpdateLocalVariablesList(level)
+function debuggerUpdateLocalVariablesList(level, actual_level)
   local name, value
   local pos = 1
   local index = 1
@@ -350,16 +357,16 @@ function debuggerUpdateLocalVariablesList(level)
 
   local local_list = iup.GetDialogChild(main_dialog, "LIST_LOCAL")
 
-  name, value = debug.getlocal(level+1, pos)  -- TODO why this is level+1 ????
+  name, value = debug.getlocal(level, pos)
   while name ~= nil do
     if string.sub(name, 1, 1) ~= "(" then
       iup.SetAttribute(local_list, index, name.." = "..debuggerGetObjectType(value))
       iup.SetAttribute(local_list, "POS"..index, pos)
-      iup.SetAttribute(local_list, "LEVEL"..index, level+1)
+      iup.SetAttribute(local_list, "LEVEL"..index, actual_level)
       index = index + 1
     end
     pos = pos + 1
-    name, value = debug.getlocal(level+1, pos)
+    name, value = debug.getlocal(level, pos)
   end
 
   if (index > 1) then
@@ -374,12 +381,17 @@ end
 ------------------------------------- Stack -------------------------------------
 
 function debuggerStackListAction(index)
-  local level = index + debugger.startLevel - 1
-  local info = debug.getinfo(level, "l") -- currentline
+  local level = index + debugger.startLevel - 1  -- this is level of the function
+  level = level + 1 -- must fix the level because we called a Lua function
+  local info = debug.getinfo(level, "Sl") -- source, currentline
   
-  debuggerUpdateSourceLine(info.currentline)
+  local filename = string.sub(info.source, 2)
+  if debugger.currentFile == filename then
+    debuggerSelectLine(info.currentline)
+  end
   
-  debuggerUpdateLocalVariablesList(level)
+  debuggerUpdateLocalVariablesList(level + 1, level) -- this is the level of the local variables inside that function
+                                                     -- the actual level does not includes the fix
 end
 
 function debuggerClearStackList()
@@ -388,6 +400,31 @@ function debuggerClearStackList()
   iup.SetAttribute(iup.GetDialogChild(main_dialog, "PRINT_LEVEL"), "ACTIVE", "NO")
   iup.SetAttribute(iup.GetDialogChild(main_dialog, "PRINT_STACK"), "ACTIVE", "NO")
   iup.SetAttribute(iup.GetDialogChild(main_dialog, "LIST_STACK"), "REMOVEITEM", "ALL")
+end
+
+function debuggerPrintStackLevel()
+  local list_stack = iup.GetDialogChild(main_dialog, "LIST_STACK")
+  local index = list_stack.value
+
+  local debugtabs = iup.GetDialogChild(main_dialog, "DEBUG_TABS")
+  debugtabs.valuepos = 0
+
+  local level = index + debugger.startLevel - 1
+
+  print(list_stack[index] .. "  (level="..level..")")
+end
+
+function debuggerPrintStack()
+  local list_stack = iup.GetDialogChild(main_dialog, "LIST_STACK")
+  local count = list_stack.count
+
+  local debugtabs = iup.GetDialogChild(main_dialog, "DEBUG_TABS")
+  debugtabs.valuepos = 0
+
+  for index = 1, count do
+    local level = index + debugger.startLevel - 1
+    print(list_stack[index] .. "  (level="..level..")")
+  end
 end
 
 function debuggerUpdateStackList()
@@ -408,7 +445,7 @@ function debuggerUpdateStackList()
       name = "<noname>"
     end
     local index = level - debugger.startLevel + 1
-    iup.SetAttribute(list_stack, index, "("..level..") "..name)
+    iup.SetAttribute(list_stack, index, name)
 
     level = level + 1
     if info.what == "main" then
@@ -423,7 +460,7 @@ function debuggerUpdateStackList()
     iup.SetAttribute(iup.GetDialogChild(main_dialog, "PRINT_STACK"), "ACTIVE", "YES")
 
     list_stack.value = 1 -- select first item on list
-    debuggerUpdateLocalVariablesList(debugger.startLevel)
+    debuggerUpdateLocalVariablesList(debugger.startLevel + 1, debugger.startLevel + 1) -- this is the level of the local variables inside that function
   end
   
 end
@@ -462,14 +499,14 @@ end
 
 function debuggerUpdateState(filename, line)
   if debugger.debug_state == DEBUG_STEP_OUT then
-    if debugger.stepFuncState == FUNC_OUTSIDE then
+    if debugger.stepFuncState == FUNC_STATE_OUTSIDE then
       debuggerSetState(DEBUG_PAUSED)
       
-      debugger.stepFuncState = FUNC_OUTSIDE
+      debugger.stepFuncState = FUNC_STATE_OUTSIDE
       debugger.stepFuncLevel = debugger.currentFuncLevel
     end
   elseif debugger.debug_state == DEBUG_STEP_INTO or
-      (debugger.debug_state == DEBUG_STEP_OVER and debugger.stepFuncState == FUNC_OUTSIDE) or
+      (debugger.debug_state == DEBUG_STEP_OVER and debugger.stepFuncState == FUNC_STATE_OUTSIDE) or
       (debugger.debug_state ~= DEBUG_PAUSED and debuggerHasLineBreak(filename, line)) then
       debuggerSetState(DEBUG_PAUSED)
   end
@@ -491,7 +528,7 @@ function debuggerLineHook(source, currentline)
       end
     end
   
-    debuggerUpdateSourceLine(currentline)
+    debuggerHighlightLine(currentline)
     
     debuggerUpdateStackList()
     
@@ -513,7 +550,7 @@ function debuggerCallHook()
   if debugger.debug_state == DEBUG_STEP_OVER then
     if debugger.stepFuncLevel == 0 then
       local level = debuggerGetDebugLevel()
-      debugger.stepFuncState = FUNC_INSIDE
+      debugger.stepFuncState = FUNC_STATE_INSIDE
       debugger.stepFuncLevel = level
     end
   end
@@ -522,11 +559,14 @@ end
 function debuggerReturnHook(what)
   local level = debuggerGetDebugLevel()
 
-  if level == debugger.startLevel+1 and what == "main" then
+  print_old("debuggerReturnHook(level="..level..", what="..what..")")
+
+  --TODO if level == debugger.startLevel+1 and what == "main" then  ???
+  if what == "main" then
     debuggerSetState(DEBUG_INACTIVE)
   elseif debugger.debug_state == DEBUG_STEP_OUT or debugger.debug_state == DEBUG_STEP_OVER then
     if debugger.stepFuncLevel == level then
-      debugger.stepFuncState = FUNC_OUTSIDE
+      debugger.stepFuncState = FUNC_STATE_OUTSIDE
       debugger.stepFuncLevel = 0
     end
   end
@@ -539,7 +579,7 @@ function debuggerHookFunction(event, currentline)
   if s ~= "@" then
     return
   end
-  
+
   if debugger.debug_state ~= DEBUG_INACTIVE then
     if event == "call" then
       debuggerCallHook()
@@ -576,6 +616,3 @@ function debuggerRun()
   local multitext = iup.GetDialogChild(main_dialog, "MULTITEXT")
   iup.dostring(multitext.value) 
 end
-
-
--- TODO: debug string????

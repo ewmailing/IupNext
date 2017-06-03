@@ -463,27 +463,33 @@ static int but_setlocal_cb(Ihandle *ih)
   return IUP_DEFAULT;
 }
 
-static int lst_stack_cb(Ihandle *ih, char *t, int index, int v)
+static int lst_stack_action_cb(Ihandle *ih, char *t, int index, int v)
 {
   (void)ih;
   (void)t;
+
   if (v == 0)
     return IUP_DEFAULT;
 
   lua_getglobal(lcmd_state, "debuggerStackListAction");
   lua_pushinteger(lcmd_state, index);
   lua_call(lcmd_state, 1, 0);
-
   return IUP_DEFAULT;
 }
 
 static int but_printlevel_cb(Ihandle *ih)
 {
+  (void)ih;
+  lua_getglobal(lcmd_state, "debuggerPrintStackLevel");
+  lua_call(lcmd_state, 0, 0);
   return IUP_DEFAULT;
 }
 
 static int but_printstack_cb(Ihandle *ih)
 {
+  (void)ih;
+  lua_getglobal(lcmd_state, "debuggerPrintStack");
+  lua_call(lcmd_state, 0, 0);
   return IUP_DEFAULT;
 }
 
@@ -608,7 +614,7 @@ static Ihandle *buildTabLocals(void)
   IupSetAttribute(list_stack, "EXPAND", "YES");
   IupSetAttribute(list_stack, "NAME", "LIST_STACK");
   IupSetAttribute(list_stack, "TIP", "List of call stack (ordered by level)");
-  IupSetCallback(list_stack, "ACTION", (Icallback)lst_stack_cb);
+  IupSetCallback(list_stack, "ACTION", (Icallback)lst_stack_action_cb);
 
   button_printLevel = IupButton("Print", NULL);
   IupSetAttribute(button_printLevel, "TIP", "Prints debug information about the selected call stack level.");
@@ -925,19 +931,21 @@ int main(int argc, char **argv)
 
   appendDebugButtons(main_dialog);
 
-  /* breakpoints */
+  /* breakpoints margin */
   IupSetInt(multitext, "MARGINWIDTH2", 15);
   IupSetAttribute(multitext, "MARGINTYPE2", "SYMBOL");
   IupSetAttribute(multitext, "MARGINSENSITIVE2", "YES");
   IupSetAttribute(multitext, "MARGINMASKFOLDERS2", "NO");
 
-  IupSetIntId(multitext, "MARGINMASK", 1, 0x000005);
+  /* breakpoints marker */
+  IupSetIntId(multitext, "MARGINMASK", 1, 0x000005);  /* 0x00001 << markNumber ??? */
   IupSetAttributeId(multitext, "MARKERFGCOLOR", 1, "255 0 0");
   IupSetAttributeId(multitext, "MARKERBGCOLOR", 1, "255 0 0");
   IupSetAttributeId(multitext, "MARKERALPHA", 1, "80");
   IupSetAttributeId(multitext, "MARKERSYMBOL", 1, "CIRCLE");
 
-  IupSetIntId(multitext, "MARGINMASK", 2, 0x000002);
+  /* current line marker */
+  IupSetIntId(multitext, "MARGINMASK", 2, 0x000002);  /* ??? */
   IupSetAttributeId(multitext, "MARKERBGCOLOR", 2, "0 255 0");
   IupSetAttributeId(multitext, "MARKERALPHA", 2, "80");
   IupSetAttributeId(multitext, "MARKERSYMBOL", 2, "BACKGROUND");
