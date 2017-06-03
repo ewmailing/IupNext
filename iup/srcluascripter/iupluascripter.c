@@ -493,15 +493,18 @@ static int but_printstack_cb(Ihandle *ih)
   return IUP_DEFAULT;
 }
 
-static int but_addbreak_cb(Ihandle *ih)
+static int but_togglebreak_cb(Ihandle *ih)
 {
   int lin, col;
   Ihandle* multitext = IupGetDialogChild(ih, "MULTITEXT");
   int pos = IupGetInt(multitext, "CARETPOS");
   IupTextConvertPosToLinCol(multitext, pos, &lin, &col);
-
   IupSetAttributeId(IupGetDialog(ih), "TOGGLEMARKER", lin, "2");
+  return IUP_IGNORE;
+}
 
+static int but_newbreak_cb(Ihandle* ih)
+{
   return IUP_DEFAULT;
 }
 
@@ -511,7 +514,10 @@ static int but_removebreak_cb(Ihandle *ih)
   int value = IupGetInt(listBreak, "VALUE");
 
   if (value == 0)
+  {
+    IupMessage("Warning!", "Select a breakpoint on the list.");
     return IUP_DEFAULT;
+  }
 
   lua_getglobal(lcmd_state, "debuggerRemoveBreakpointFromList");
   lua_pushinteger(lcmd_state, value);
@@ -650,12 +656,17 @@ static Ihandle *buildTabLocals(void)
 
 static Ihandle *buildTabBreaks(void)
 {
-  Ihandle *button_addbreak, *button_removebreak, *button_removeallbreaks, *hbox, *list, *vbox, *frame;
+  Ihandle *button_newbreak, *button_removebreak, *button_removeallbreaks, *hbox, *list, *vbox, *frame, *button_togglebreak;
 
-  button_addbreak = IupButton("Add...", NULL);
-  IupSetAttribute(button_addbreak, "TIP", "Adds a breakpoint at the current line.");
-  IupSetCallback(button_addbreak, "ACTION", (Icallback)but_addbreak_cb);
-  IupSetStrAttribute(button_addbreak, "PADDING", IupGetGlobal("DEFAULTBUTTONPADDING"));
+  button_togglebreak = IupButton("Toggle", NULL);
+  IupSetAttribute(button_togglebreak, "TIP", "Toggle a breakpoint at current line.");
+  IupSetCallback(button_togglebreak, "ACTION", (Icallback)but_togglebreak_cb);
+  IupSetStrAttribute(button_togglebreak, "PADDING", IupGetGlobal("DEFAULTBUTTONPADDING"));
+
+  button_newbreak = IupButton("New...", NULL);
+  IupSetAttribute(button_newbreak, "TIP", "Adds a new breakpoint at given function and line.");
+  IupSetCallback(button_newbreak, "ACTION", (Icallback)but_newbreak_cb);
+  IupSetStrAttribute(button_newbreak, "PADDING", IupGetGlobal("DEFAULTBUTTONPADDING"));
 
   button_removebreak = IupButton("Remove", NULL);
   IupSetAttribute(button_removebreak, "TIP", "Removes the selected breakpoint at the list.");
@@ -667,7 +678,7 @@ static Ihandle *buildTabBreaks(void)
   IupSetCallback(button_removeallbreaks, "ACTION", (Icallback)but_removeallbreaks_cb);
   IupSetStrAttribute(button_removeallbreaks, "PADDING", IupGetGlobal("DEFAULTBUTTONPADDING"));
 
-  vbox = IupVbox(button_addbreak, button_removebreak, button_removeallbreaks, NULL);
+  vbox = IupVbox(button_togglebreak, button_newbreak, button_removebreak, button_removeallbreaks, NULL);
   IupSetAttribute(vbox, "MARGIN", "0x0");
   IupSetAttribute(vbox, "GAP", "4");
   IupSetAttribute(vbox, "NORMALIZESIZE", "HORIZONTAL");
@@ -810,7 +821,8 @@ static void appendDebugButtons(Ihandle *dialog)
 static void appendDebugMenuItens(Ihandle *menu)
 {
   Ihandle *item_debug, *item_run, *item_stop, *item_pause, *item_continue, *item_stepinto, *item_autocomplete,
-          *item_stepover, *item_stepout, *item_resetluastate, *debugMneu, *subMenuDebug;
+          *item_stepover, *item_stepout, *item_resetluastate, *debugMneu, *subMenuDebug,
+          *item_togglebreakpoint, *item_newbreakpoint, *item_removeallbreakpoints;
 
   item_run = IupItem("&Run\tCtrl+F5", NULL);
   IupSetAttribute(item_run, "NAME", "ITM_RUN");
@@ -854,6 +866,15 @@ static void appendDebugMenuItens(Ihandle *menu)
   IupSetCallback(item_autocomplete, "ACTION", (Icallback)item_autocomplete_action_cb);
   IupSetAttribute(item_autocomplete, "VALUE", "ON");
 
+  item_togglebreakpoint = IupItem("Toggle Breakpoint\tF9", NULL);
+  IupSetCallback(item_togglebreakpoint, "ACTION", (Icallback)but_togglebreak_cb);
+
+  item_newbreakpoint = IupItem("New Breakpoint...", NULL);
+  IupSetCallback(item_newbreakpoint, "ACTION", (Icallback)but_newbreak_cb);
+
+  item_removeallbreakpoints = IupItem("Remove All Breakpoints", NULL);
+  IupSetCallback(item_removeallbreakpoints, "ACTION", (Icallback)but_removeallbreaks_cb);
+
   item_resetluastate = IupItem("&Reset Lua State", NULL);
   IupSetCallback(item_resetluastate, "ACTION", (Icallback)item_resetluastate_action_cb);
 
@@ -866,6 +887,10 @@ static void appendDebugMenuItens(Ihandle *menu)
     item_stepover,
     item_stepinto,
     item_stepout,
+    IupSeparator(),
+    item_togglebreakpoint,
+    item_newbreakpoint,
+    item_removeallbreakpoints,
     IupSeparator(),
     item_autocomplete,
     item_resetluastate,
@@ -958,6 +983,7 @@ int main(int argc, char **argv)
   IupSetCallback(main_dialog, "K_F10", (Icallback)item_stepover_action_cb);
   IupSetCallback(main_dialog, "K_F11", (Icallback)item_stepinto_action_cb);
   IupSetCallback(main_dialog, "K_sF11", (Icallback)item_stepout_action_cb);
+  IupSetCallback(main_dialog, "K_F9", (Icallback)but_togglebreak_cb);
 
   IupSetCallback(main_dialog, "MARKERCHANGED_CB", (Icallback)marker_changed_cb);
 

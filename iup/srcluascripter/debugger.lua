@@ -243,12 +243,11 @@ function debuggerRemoveBreakpointFromList(index)
   local multitext = iup.GetDialogChild(main_dialog, "MULTITEXT")
   
   if multitext.filename == item.filename then
-    iup.SetAttributeId(multitext, "TOGGLEMARKER", item.line, 2)
+    iup.SetAttributeId(main_dialog, "TOGGLEMARKER", item.line-1, 2)
   else
     debuggerRemoveBreakpoint(item.filename, item.line)
+    debuggerUpdateBreakpointsList()
   end
-  
-  debuggerUpdateBreakpointsList()
 end
 
 function debuggerRemoveBreakpoint(filename, line)
@@ -415,8 +414,12 @@ function debuggerPrintStackLevel()
   debugtabs.valuepos = 0
 
   local level = index + debugger.startLevel - 1
+  local defined = iup.GetAttribute(list_stack, "DEFINED"..index)
 
   print(list_stack[index] .. "  (level="..level..")")
+  if defined then
+    print("    [" .. defined .."]")
+  end
 end
 
 function debuggerPrintStack()
@@ -428,36 +431,64 @@ function debuggerPrintStack()
 
   for index = 1, count do
     local level = index + debugger.startLevel - 1
+    local defined = iup.GetAttribute(list_stack, "DEFINED"..index)
+
     print(list_stack[index] .. "  (level="..level..")")
+    if defined then
+      print("    [" .. defined .."]")
+    end
   end
 end
 
 function debuggerUpdateStackList()
-  local info, name
+  local info, name, defined
   local level = debugger.startLevel
   
   debuggerClearStackList()
 
   local list_stack = iup.GetDialogChild(main_dialog, "LIST_STACK")
   
-  info = debug.getinfo(level, "Sn") -- name, what
+  info = debug.getinfo(level, "Snl") -- name, what, currentline
   while  info ~= nil do
     if info.what == "main" then
       name = "<main>"
     elseif info.name and info.name ~= "" then
       name = info.name
+
+      if info.what == "C" then
+        name = name .. " (C)"
+      end
     else
       name = "<noname>"
     end
+    if info.namewhat == "l" then
+        name = name .. " Local"
+    end
+    if info.currentline > 0 then
+       name = name .. ", at line " .. info.currentline
+    end
+
+    defined = nil
+    if info.what ~= "C" then    
+      local s = string.sub(info.source, 1, 1)
+      if s == "@" then
+        local filename = string.sub(info.source, 2)
+        defined = "Defined in the file: " .. filename
+      else
+        defined = "Defined in a string."
+      end
+    end
+
     local index = level - debugger.startLevel + 1
     iup.SetAttribute(list_stack, index, name)
+    iup.SetAttribute(list_stack, "DEFINED"..index, defined)
 
     level = level + 1
     if info.what == "main" then
       break
     end
 
-    info = debug.getinfo(level, "Sn") -- name, what
+    info = debug.getinfo(level, "Snl") -- name, what, currentline
   end
   
   if level > debugger.startLevel then
@@ -563,8 +594,6 @@ end
 
 function debuggerReturnHook(what)
   local level = debuggerGetDebugLevel()
-
-  print_old("debuggerReturnHook(level="..level..", what="..what..")")
 
   --TODO if level == debugger.startLevel+1 and what == "main" then  ???
   if what == "main" then
