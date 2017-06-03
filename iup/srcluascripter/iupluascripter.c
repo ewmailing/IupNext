@@ -159,13 +159,13 @@ static char *filterList(const char *text, const char *list)
 /********************************** Callbacks *****************************************/
 
 
-static int marker_changed_cb(Ihandle *ih, int lin, int margin, int value)
+static int marker_changed_cb(Ihandle *ih, int lin, int marker, int value)
 {
-  if (margin == 2)
+  if (marker == 1)
   {
     lua_getglobal(lcmd_state, "debuggerToggleBreakpoint");
-    lua_pushinteger(lcmd_state, lin + 1);
-    lua_pushinteger(lcmd_state, margin - 1);
+    lua_pushinteger(lcmd_state, lin + 1); /* here starts at 1 */
+    lua_pushinteger(lcmd_state, marker);
     lua_pushinteger(lcmd_state, value);
     lua_call(lcmd_state, 3, 0);
   }
@@ -696,7 +696,7 @@ static void set_attribs(Ihandle *multitext)
 
   IupSetAttribute(multitext, "KEYWORDS0", getLuaKeywords());
 
-  IupSetAttribute(multitext, "STYLEFONT32", "Consolas");
+  IupSetAttribute(multitext, "STYLEFONT32", "Consolas");  /* TODO CHECK: may not work in Linux */
   IupSetAttribute(multitext, "STYLEFONTSIZE32", "11");
   IupSetAttribute(multitext, "STYLECLEARALL", "Yes");  /* sets all styles to have the same attributes as 32 */
 

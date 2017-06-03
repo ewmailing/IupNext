@@ -199,11 +199,16 @@ function debuggerRemoveAllBreakpoints()
   debuggerUpdateBreakpointsList()
 end
 
-function debuggerToggleBreakpoint(line, mark, value)
+function debuggerToggleBreakpoint(line, marker, value)
 
   local multitext = iup.GetDialogChild(main_dialog, "MULTITEXT")
   
   if main_dialog.ignore_toglebreakpoint then
+    return
+  end
+  if not multitext.filename then
+    iup.SetAttributeId(multitext, "MARKERDELETE", line - 1, marker)
+    iup.Message("Warning!", "Must have a filename to add a breakpoint.")
     return
   end
 
