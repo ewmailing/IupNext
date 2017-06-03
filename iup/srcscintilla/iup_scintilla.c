@@ -480,6 +480,7 @@ static int iScintillaMapMethod(Ihandle* ih)
 
   IupScintillaSendMessage(ih, SCI_SETPASTECONVERTENDINGS, 1, 0);
   IupScintillaSendMessage(ih, SCI_SETEOLMODE, SC_EOL_LF, 0);
+  IupScintillaSendMessage(ih, SCI_SETWHITESPACESIZE, 3, 0);
 
   if(IupGetInt(NULL, "UTF8MODE"))
     IupScintillaSendMessage(ih, SCI_SETCODEPAGE, SC_CP_UTF8, 0);

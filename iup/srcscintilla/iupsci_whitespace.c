@@ -146,12 +146,34 @@ static char* iScintillaGetWSExtraDescentAttrib(Ihandle* ih)
   return iupStrReturnInt(desc);
 }
 
+static int iScintillaSetEolVisibleAttrib(Ihandle *ih, const char *value)
+{
+  IupScintillaSendMessage(ih, SCI_SETVIEWEOL, iupStrBoolean(value), 0);
+  return 0;
+}
+
+static char* iScintillaGetEolVisibleAttrib(Ihandle* ih)
+{
+  int visible = IupScintillaSendMessage(ih, SCI_GETVIEWEOL, 0, 0);
+  return iupStrReturnBoolean(visible);
+}
+
+static int iScintillaSetFixEolAttrib(Ihandle *ih, const char *value)
+{
+  (void)value;
+  IupScintillaSendMessage(ih, SCI_CONVERTEOLS, SC_EOL_LF, 0);
+  return 0;
+}
+
 void iupScintillaRegisterWhiteSpace(Iclass* ic)
 {
   iupClassRegisterAttribute(ic, "EXTRAASCENT", iScintillaGetWSExtraDescentAttrib, iScintillaSetWSExtraDescentAttrib, NULL, NULL, IUPAF_NO_INHERIT);
   iupClassRegisterAttribute(ic, "EXTRADESCENT", iScintillaGetWSExtraAscentAttrib, iScintillaSetWSExtraAscentAttrib, NULL, NULL, IUPAF_NO_INHERIT);
   iupClassRegisterAttribute(ic, "WHITESPACEVIEW", iScintillaGetViewWSAttrib, iScintillaSetViewWSAttrib, IUPAF_SAMEASSYSTEM, "INVISIBLE", IUPAF_NO_INHERIT);
-  iupClassRegisterAttribute(ic, "WHITESPACESIZE", iScintillaGetWSSizeAttrib, iScintillaSetWSSizeAttrib, IUPAF_SAMEASSYSTEM, "1", IUPAF_NO_INHERIT);
+  iupClassRegisterAttribute(ic, "WHITESPACESIZE", iScintillaGetWSSizeAttrib, iScintillaSetWSSizeAttrib, IUPAF_SAMEASSYSTEM, "3", IUPAF_NO_INHERIT);
   iupClassRegisterAttribute(ic, "WHITESPACEFGCOLOR", NULL, iScintillaSetWSFgColorAttrib, NULL, NULL, IUPAF_WRITEONLY|IUPAF_NO_INHERIT);
   iupClassRegisterAttribute(ic, "WHITESPACEBGCOLOR", NULL, iScintillaSetWSBgColorAttrib, NULL, NULL, IUPAF_WRITEONLY|IUPAF_NO_INHERIT);
+
+  iupClassRegisterAttribute(ic, "EOLVISIBLE", iScintillaGetEolVisibleAttrib, iScintillaSetEolVisibleAttrib, NULL, NULL, IUPAF_NO_INHERIT);
+  iupClassRegisterAttribute(ic, "FIXEOL", NULL, iScintillaSetFixEolAttrib, NULL, NULL, IUPAF_WRITEONLY | IUPAF_NO_INHERIT);
 }

@@ -723,7 +723,7 @@ arrows) or &quot;VISIBLEAFTERINDENT&quot; (white space used for indentation is d
 normally but after the first visible character, it is shown as dots and arrows). 
 Default: INVISIBLE.</p>
 <p><strong>WHITESPACESIZE</strong> (<font size="3">non inheritable</font>): 
-sets and gets the size of the dots used for mark space characters. Default: 1.</p>
+sets and gets the size of the dots used for mark space characters. Default: 3.</p>
 <p><strong>WHITESPACEFGCOLOR</strong> (<font size="3">non inheritable, write 
 only</font>): 
 defines the foreground color of visible white space. Values in RGB format (<span style="color: rgb(0, 0, 0); font-family: tahoma, verdana, arial, helvetica, geneva, sans-serif; font-size: medium; font-style: normal; font-variant: normal; font-weight: normal; letter-spacing: normal; line-height: 20px; orphans: auto; text-align: start; text-indent: 0px; text-transform: none; white-space: normal; widows: auto; word-spacing: 0px; -webkit-text-size-adjust: auto; -webkit-text-stroke-width: 0px; background-color: rgb(255, 255, 255); display: inline !important; float: none;">&quot;r 
@@ -736,6 +736,12 @@ defines the background color of visible white space. Values in RGB format (<span
 g b&quot;)</span>. By default the color will be defined by the Lexer, but 
 defining this attribute will overriding&nbsp;the Lexer definition. Set to NULL to 
 reset the definition and use the Lexer again.&nbsp;</p>
+<h4>Line Endings</h4>
+
+<p><strong>EOLVISIBLE</strong> (<font size="3">non inheritable</font>): 
+End of line visibility. Default: No. (since 3.22)</p>
+<p><strong>FIXEOL</strong> (<font size="3">non inheritable, write 
+only</font>): Fix the line ends to use only &quot;\n&quot;. (since 3.22)</p>
 <h4>Zooming</h4>
 
 <p><strong>ZOOMIN</strong> (<font size="3">non inheritable, write only</font>): 
