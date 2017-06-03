@@ -100,18 +100,20 @@ static int iScintillaSetMarkerSymbolAttribId(Ihandle* ih, int markerNumber, cons
     markerSymbol = SC_MARK_DOTDOTDOT;
   else if (iupStrEqualNoCase(value, "ARROWS"))
     markerSymbol = SC_MARK_ARROWS;
-/*  else if (iupStrEqualNoCase(value, "PIXMAP"))
-    markerSymbol = SC_MARK_PIXMAP; */
+  /*else if (iupStrEqualNoCase(value, "PIXMAP")) */  /* for pixmaps, use RGBAIMAGE */
+/*  markerSymbol = SC_MARK_PIXMAP; */
   else if (iupStrEqualNoCase(value, "FULLRECT"))   /* margin background color */
     markerSymbol = SC_MARK_FULLRECT;
   else if (iupStrEqualNoCase(value, "LEFTRECT"))
     markerSymbol = SC_MARK_LEFTRECT;
-/*  else if (iupStrEqualNoCase(value, "AVAILABLE"))
-    markerSymbol = SC_MARK_AVAILABLE; */
+/*else if (iupStrEqualNoCase(value, "AVAILABLE")) */ /* for plugins, unused */
+/*  markerSymbol = SC_MARK_AVAILABLE; */
   else if (iupStrEqualNoCase(value, "UNDERLINE"))  /* underline across the line. */
     markerSymbol = SC_MARK_UNDERLINE;
   else if (iupStrEqualNoCase(value, "RGBAIMAGE"))
     markerSymbol = SC_MARK_RGBAIMAGE;
+  else if (iupStrEqualNoCase(value, "BOOKMARK"))
+    markerSymbol = SC_MARK_BOOKMARK;
   else if (iupStrEqualPartial(value, "CHARACTER"))
   {
     int c = (int)value[9];
@@ -126,12 +128,12 @@ static int iScintillaSetMarkerSymbolAttribId(Ihandle* ih, int markerNumber, cons
 
 static char* iScintillaGetMarkerSymbolAttribId(Ihandle* ih, int markerNumber)
 {
-  char* markerSymbolStr[32] = {
+  char* markerSymbolStr[33] = {
     "CIRCLE", "ROUNDRECT", "ARROW", "SMALLRECT", "SHORTARROW", "EMPTY", "ARROWDOWN", "MINUS", 
     "PLUS", "VLINE", "LCORNER", "TCORNER", "BOXPLUS", "BOXPLUSCONNECTED", "BOXMINUS", 
     "BOXMINUSCONNECTED", "LCORNERCURVE", "TCORNERCURVE", "CIRCLEPLUS", "CIRCLEPLUSCONNECTED", 
     "CIRCLEMINUS", "CIRCLEMINUSCONNECTED", "BACKGROUND", "DOTDOTDOT", "ARROWS", "PIXMAP", 
-    "FULLRECT", "LEFTRECT", "AVAILABLE", "UNDERLINE", "RGBAIMAGE", "CHARACTER"};
+    "FULLRECT", "LEFTRECT", "AVAILABLE", "UNDERLINE", "RGBAIMAGE", "BOOKMARK", "CHARACTER" };
 
   int markerSymbol = (int)IupScintillaSendMessage(ih, SCI_MARKERSYMBOLDEFINED, markerNumber, 0);
     
