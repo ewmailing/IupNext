@@ -20,13 +20,14 @@ debugger = {
   startLevel = 0,
 
   currentFile = nil,
+  currentLine = nil,
   restore_value = false,
 }
 
 ------------------------------------- User Interface State -------------------------------------
 
 function debuggerReadFile(filename)
-  local f = io.open(filename, "r")
+  local f = io.open(filename, "rb")
   if f == nil then
     return nil
   end
@@ -76,7 +77,7 @@ function debuggerSetStateString(state)
 end
 
 function debuggerSetState(st)
-  local stop, step, pause, cont, run, dbg
+  local stop, step, pause, cont, run, dbg, curline
 
   if debugger.debug_state == st then
     return
@@ -96,6 +97,7 @@ function debuggerSetState(st)
     run = "NO"
     pause = "NO"
     dbg = "NO"
+    curline = "NO"
   elseif st == DEBUG_ACTIVE or st == DEBUG_STEP_INTO or st == DEBUG_STEP_OVER or st == DEBUG_STEP_OUT then
     local btn_continue = iup.GetDialogChild(main_dialog, "BTN_CONTINUE")
     zbox.value = btn_continue
@@ -106,6 +108,7 @@ function debuggerSetState(st)
     run = "NO"
     pause = "YES"
     dbg = "NO"
+    curline = "NO"
 
     if st == DEBUG_STEP_OUT then
       debugger.stepFuncLevel = debugger.currentFuncLevel
@@ -124,6 +127,7 @@ function debuggerSetState(st)
     run = "NO"
     pause = "NO"
     dbg = "NO"
+    curline = "Yes"
   else -- st == DEBUG_INACTIVE
     local btn_debug = iup.GetDialogChild(main_dialog, "BTN_DEBUG")
     zbox.value = btn_debug
@@ -134,6 +138,7 @@ function debuggerSetState(st)
     run = "YES"
     pause = "NO"
     dbg = "YES"
+    curline = "NO"
 
     multitext.readonly = "No"
     debuggerClearLocalVariablesList()
@@ -152,6 +157,7 @@ function debuggerSetState(st)
   iup.SetAttribute(iup.GetDialogChild(main_dialog, "ITM_STEPINTO"), "ACTIVE", step)
   iup.SetAttribute(iup.GetDialogChild(main_dialog, "ITM_STEPOVER"), "ACTIVE", step)
   iup.SetAttribute(iup.GetDialogChild(main_dialog, "ITM_STEPOUT"), "ACTIVE", step)
+  iup.SetAttribute(iup.GetDialogChild(main_dialog, "ITM_CURRENTLINE"), "ACTIVE", curline)
   iup.SetAttribute(iup.GetDialogChild(main_dialog, "BTN_RUN"), "ACTIVE", run)
   iup.SetAttribute(iup.GetDialogChild(main_dialog, "BTN_STOP"), "ACTIVE", stop)
   iup.SetAttribute(iup.GetDialogChild(main_dialog, "BTN_PAUSE"), "ACTIVE", pause)
@@ -160,6 +166,7 @@ function debuggerSetState(st)
   iup.SetAttribute(iup.GetDialogChild(main_dialog, "BTN_STEPINTO"), "ACTIVE", step)
   iup.SetAttribute(iup.GetDialogChild(main_dialog, "BTN_STEPOVER"), "ACTIVE", step)
   iup.SetAttribute(iup.GetDialogChild(main_dialog, "BTN_STEPOUT"), "ACTIVE", step)
+  iup.SetAttribute(iup.GetDialogChild(main_dialog, "BTN_CURRENTLINE"), "ACTIVE", curline)
 end                   
 
 function debuggerHighlightLine(currentline)
@@ -167,11 +174,21 @@ function debuggerHighlightLine(currentline)
     return
   end
 
+  debugger.currentLine = currentline
+
   local multitext = iup.GetDialogChild(main_dialog, "MULTITEXT")
   local pos = iup.TextConvertLinColToPos(multitext, currentline-1, 0) -- line here starts at 0
   multitext.caretpos = pos
   multitext.markerdeleteall = 2
   multitext["markeradd"..currentline-1] = 2
+end
+
+function debuggerShowCurrentLine()
+  if debugger.currentLine then
+    local multitext = iup.GetDialogChild(main_dialog, "MULTITEXT")
+    local pos = iup.TextConvertLinColToPos(multitext, debugger.currentLine-1, 0) -- line here starts at 0
+    multitext.caretpos = pos
+  end
 end
 
 function debuggerSelectLine(currentline)

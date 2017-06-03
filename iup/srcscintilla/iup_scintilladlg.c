@@ -415,7 +415,7 @@ static char* read_file(const char* filename)
 
 static int write_file(const char* filename, const char* str, int count)
 {
-  FILE* file = fopen(filename, "w");
+  FILE* file = fopen(filename, "wb");
   if (!file)
   {
     IupMessagef("Error", "Can't open file: %s", filename);
@@ -1059,6 +1059,13 @@ static int item_eoltospace_action_cb(Ihandle* ih_item)
   return IUP_DEFAULT;
 }
 
+static int item_fixeol_action_cb(Ihandle* ih_item)
+{
+  Ihandle* multitext = IupGetDialogChild(ih_item, "MULTITEXT");
+  IupSetAttribute(multitext, "FIXEOL", NULL);
+  return IUP_DEFAULT;
+}
+
 static int item_removespaceeol_action_cb(Ihandle* ih_item)
 {
   Ihandle* multitext = IupGetDialogChild(ih_item, "MULTITEXT");
@@ -1666,6 +1673,18 @@ static int item_showwhite_action_cb(Ihandle* item_showwhite)
   return IUP_DEFAULT;
 }
 
+static int item_showeol_action_cb(Ihandle* item_showeol)
+{
+  Ihandle* multitext = IupGetDialogChild(item_showeol, "MULTITEXT");
+
+  if (IupGetInt(item_showeol, "VALUE"))
+    IupSetAttribute(multitext, "EOLVISIBLE", "YES");
+  else
+    IupSetAttribute(multitext, "EOLVISIBLE", "NO");
+
+  return IUP_DEFAULT;
+}
+
 static int item_toolbar_action_cb(Ihandle* item_toolbar)
 {
   Ihandle* multitext = IupGetDialogChild(item_toolbar, "MULTITEXT");
@@ -1809,7 +1828,7 @@ static int iScintillaDlgCreateMethod(Ihandle* ih, void** params)
   Ihandle *sub_menu_edit, *edit_menu, *item_find, *item_find_next, *item_goto, *item_gotombrace, *item_copy, *item_paste, *item_cut, *item_delete, *item_select_all;
   Ihandle *item_togglemark, *item_nextmark, *item_previousmark, *item_clearmarks, *item_cutmarked, *item_copymarked, *item_pastetomarked, *item_removemarked,
     *item_removeunmarked, *item_invertmarks, *item_tabtospace, *item_allspacetotab, *item_leadingspacetotab;
-  Ihandle *item_trimleading, *item_trimtrailing, *item_trimtraillead, *item_eoltospace, *item_removespaceeol;
+  Ihandle *item_trimleading, *item_trimtrailing, *item_trimtraillead, *item_eoltospace, *item_fixeol, *item_removespaceeol;
   Ihandle *item_undo, *item_redo;
   Ihandle *case_menu, *item_uppercase, *item_lowercase;
   Ihandle *btn_cut, *btn_copy, *btn_paste, *btn_find, *btn_new, *btn_open, *btn_save;
@@ -1817,7 +1836,7 @@ static int iScintillaDlgCreateMethod(Ihandle* ih, void** params)
   Ihandle *sub_menu_view, *view_menu, *item_toolbar, *item_statusbar, *item_linenumber, *item_bookmark;
   Ihandle *zoom_menu, *item_zoomin, *item_zoomout, *item_restorezoom;
   Ihandle *lbl_statusbar, *toolbar_hb, *recent_menu;
-  Ihandle *item_wordwrap, *item_showwhite;
+  Ihandle *item_wordwrap, *item_showwhite, *item_showeol;
 
   multitext = IupScintilla();
   IupSetAttribute(multitext, "MULTILINE", "YES");
@@ -1998,8 +2017,11 @@ static int iScintillaDlgCreateMethod(Ihandle* ih, void** params)
   item_trimtraillead = IupItem("Trim Trailing and Leading Space", NULL);
   IupSetCallback(item_trimtraillead, "ACTION", (Icallback)item_trimtraillead_action_cb);
 
-  item_eoltospace = IupItem("EOL to Space", NULL);
+  item_eoltospace = IupItem("End of Lines to Space", NULL);
   IupSetCallback(item_eoltospace, "ACTION", (Icallback)item_eoltospace_action_cb);
+
+  item_fixeol = IupItem("Fix End of Lines", NULL);
+  IupSetCallback(item_fixeol, "ACTION", (Icallback)item_fixeol_action_cb);
 
   item_removespaceeol = IupItem("Remove Unnecessary Blanks and EOL", NULL);
   IupSetCallback(item_removespaceeol, "ACTION", (Icallback)item_removespaceeol_action_cb);
@@ -2032,6 +2054,10 @@ static int iScintillaDlgCreateMethod(Ihandle* ih, void** params)
   item_showwhite = IupItem("Show White Spaces", NULL);
   IupSetCallback(item_showwhite, "ACTION", (Icallback)item_showwhite_action_cb);
   IupSetAttribute(item_showwhite, "AUTOTOGGLE", "YES");
+
+  item_showeol = IupItem("Show End of Lines", NULL);
+  IupSetCallback(item_showeol, "ACTION", (Icallback)item_showeol_action_cb);
+  IupSetAttribute(item_showeol, "AUTOTOGGLE", "YES");
 
   item_toolbar = IupItem("&Toolbar", NULL);
   IupSetCallback(item_toolbar, "ACTION", (Icallback)item_toolbar_action_cb);
@@ -2099,6 +2125,7 @@ static int iScintillaDlgCreateMethod(Ihandle* ih, void** params)
       item_trimleading,
       item_trimtraillead,
       item_eoltospace,
+      item_fixeol,
       item_removespaceeol,
       IupSeparator(),
       item_tabtospace,
@@ -2124,6 +2151,7 @@ static int iScintillaDlgCreateMethod(Ihandle* ih, void** params)
     NULL)),
     item_wordwrap,
     item_showwhite,
+    item_showeol,
     IupSeparator(),
     item_toolbar,
     item_statusbar,
