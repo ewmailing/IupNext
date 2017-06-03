@@ -69,7 +69,7 @@ SCI_MOVESELECTEDLINESDOWN
 
 static char* iScintillaGetCaretStyleAttrib(Ihandle* ih)
 {
-  int style = IupScintillaSendMessage(ih, SCI_GETCARETSTYLE, 0, 0);
+  int style = (int)IupScintillaSendMessage(ih, SCI_GETCARETSTYLE, 0, 0);
   if (style == CARETSTYLE_INVISIBLE)
     return "INVISIBLE";
   else if (style == CARETSTYLE_BLOCK)
@@ -91,7 +91,7 @@ static int iScintillaSetCaretStyleAttrib(Ihandle* ih, const char* value)
 
 static char* iScintillaGetCaretWidthAttrib(Ihandle* ih)
 {
-  int width = IupScintillaSendMessage(ih, SCI_GETCARETWIDTH, 0, 0);
+  int width = (int)IupScintillaSendMessage(ih, SCI_GETCARETWIDTH, 0, 0);
   return iupStrReturnInt(width);
 }
 
@@ -106,7 +106,7 @@ static int iScintillaSetCaretWidthAttrib(Ihandle* ih, const char* value)
 static char* iScintillaGetCaretColorAttrib(Ihandle* ih)
 {
   unsigned char r, g, b;
-  long color = IupScintillaSendMessage(ih, SCI_GETCARETFORE, 0, 0);
+  long color = (long)IupScintillaSendMessage(ih, SCI_GETCARETFORE, 0, 0);
   iupScintillaDecodeColor(color, &r, &g, &b);
   return iupStrReturnRGB(r, g, b);
 }
@@ -123,7 +123,7 @@ static int iScintillaSetCaretColorAttrib(Ihandle* ih, const char* value)
 
 static char* iScintillaGetCurrentLineAttrib(Ihandle* ih)
 {
-  int textLen = IupScintillaSendMessage(ih, SCI_GETCURLINE, 0, 0);
+  int textLen = (int)IupScintillaSendMessage(ih, SCI_GETCURLINE, 0, 0);
   char* str = iupStrGetMemory(textLen+1);
   IupScintillaSendMessage(ih, SCI_GETCURLINE, textLen, (sptr_t)str);
   return str;
@@ -131,13 +131,13 @@ static char* iScintillaGetCurrentLineAttrib(Ihandle* ih)
 
 static char* iScintillaGetCountAttrib(Ihandle* ih)
 {
-  int count = IupScintillaSendMessage(ih, SCI_GETTEXTLENGTH, 0, 0);
+  int count = (int)IupScintillaSendMessage(ih, SCI_GETTEXTLENGTH, 0, 0);
   return iupStrReturnInt(count);
 }
 
 static char* iScintillaGetLineCountAttrib(Ihandle* ih)
 {
-  int count = IupScintillaSendMessage(ih, SCI_GETLINECOUNT, 0, 0);
+  int count = (int)IupScintillaSendMessage(ih, SCI_GETLINECOUNT, 0, 0);
   return iupStrReturnInt(count);
 }
 
@@ -145,7 +145,7 @@ static char* iScintillaGetCaretAttrib(Ihandle* ih)
 {
   int col, lin, pos;
 
-  pos = IupScintillaSendMessage(ih, SCI_GETCURRENTPOS, 0, 0);
+  pos = (int)IupScintillaSendMessage(ih, SCI_GETCURRENTPOS, 0, 0);
   iupScintillaConvertPosToLinCol(ih, pos, &lin, &col);
 
   return iupStrReturnIntInt(lin, col, ',');
@@ -167,7 +167,7 @@ static int iScintillaSetCaretAttrib(Ihandle* ih, const char* value)
 
 static char* iScintillaGetCaretPosAttrib(Ihandle* ih)
 {
-  return iupStrReturnInt(IupScintillaSendMessage(ih, SCI_GETCURRENTPOS, 0, 0));
+  return iupStrReturnInt((int)IupScintillaSendMessage(ih, SCI_GETCURRENTPOS, 0, 0));
 }
 
 static int iScintillaSetCaretPosAttrib(Ihandle* ih, const char* value)
@@ -194,8 +194,8 @@ static int iScintillaSetCaretToViewAttrib(Ihandle *ih, const char *value)
 
 static char* iScintillaGetSelectedTextAttrib(Ihandle* ih)
 {
-  int start = IupScintillaSendMessage(ih, SCI_GETSELECTIONSTART, 0, 0);
-  int end   = IupScintillaSendMessage(ih, SCI_GETSELECTIONEND, 0, 0);
+  int start = (int)IupScintillaSendMessage(ih, SCI_GETSELECTIONSTART, 0, 0);
+  int end   = (int)IupScintillaSendMessage(ih, SCI_GETSELECTIONEND, 0, 0);
   char* str;
 
   if(start == end)
@@ -208,8 +208,8 @@ static char* iScintillaGetSelectedTextAttrib(Ihandle* ih)
 
 static int iScintillaSetSelectedTextAttrib(Ihandle* ih, const char* value)
 {
-  int start = IupScintillaSendMessage(ih, SCI_GETSELECTIONSTART, 0, 0);
-  int end   = IupScintillaSendMessage(ih, SCI_GETSELECTIONEND, 0, 0);
+  int start = (int)IupScintillaSendMessage(ih, SCI_GETSELECTIONSTART, 0, 0);
+  int end   = (int)IupScintillaSendMessage(ih, SCI_GETSELECTIONEND, 0, 0);
 
   if(start == end)
     return 0;
@@ -221,18 +221,18 @@ static int iScintillaSetSelectedTextAttrib(Ihandle* ih, const char* value)
 
 static char* iScintillaGetSelectionAttrib(Ihandle* ih)
 {
-  int start = IupScintillaSendMessage(ih, SCI_GETSELECTIONSTART, 0, 0);
-  int end   = IupScintillaSendMessage(ih, SCI_GETSELECTIONEND, 0, 0);
+  int start = (int)IupScintillaSendMessage(ih, SCI_GETSELECTIONSTART, 0, 0);
+  int end   = (int)IupScintillaSendMessage(ih, SCI_GETSELECTIONEND, 0, 0);
   int start_col, start_lin, end_col, end_lin;
 
   if (start == end)
     return NULL;
 
-  start_lin = IupScintillaSendMessage(ih, SCI_LINEFROMPOSITION, start, 0);
-  start_col = IupScintillaSendMessage(ih, SCI_GETCOLUMN, start, 0);
+  start_lin = (int)IupScintillaSendMessage(ih, SCI_LINEFROMPOSITION, start, 0);
+  start_col = (int)IupScintillaSendMessage(ih, SCI_GETCOLUMN, start, 0);
 
-  end_lin = IupScintillaSendMessage(ih, SCI_LINEFROMPOSITION, end, 0);
-  end_col = IupScintillaSendMessage(ih, SCI_GETCOLUMN, end, 0);
+  end_lin = (int)IupScintillaSendMessage(ih, SCI_LINEFROMPOSITION, end, 0);
+  end_col = (int)IupScintillaSendMessage(ih, SCI_GETCOLUMN, end, 0);
 
   return iupStrReturnStrf("%d,%d:%d,%d", start_lin, start_col, end_lin, end_col);
 }
@@ -240,7 +240,7 @@ static char* iScintillaGetSelectionAttrib(Ihandle* ih)
 static int iScintillaSetSelectionAttrib(Ihandle* ih, const char* value)
 {
   int lin_start=1, col_start=1, lin_end=1, col_end=1;
-  int anchorPos, currentPos;
+  int anchorPos, currentPos, len_start, len_end, line_count;
 
   if (!value || iupStrEqualNoCase(value, "NONE"))
   {
@@ -257,8 +257,25 @@ static int iScintillaSetSelectionAttrib(Ihandle* ih, const char* value)
   if (sscanf(value, "%d,%d:%d,%d", &lin_start, &col_start, &lin_end, &col_end)!=4)
     return 0;
 
-  anchorPos  = IupScintillaSendMessage(ih, SCI_POSITIONFROMLINE, lin_start, 0) + col_start;
-  currentPos = IupScintillaSendMessage(ih, SCI_POSITIONFROMLINE, lin_end, 0)   + col_end;
+  if (lin_start < 0 || lin_end < 0)
+    return 0;
+
+  line_count = (int)IupScintillaSendMessage(ih, SCI_GETLINECOUNT, 0, 0);
+  if (lin_start >= line_count)
+    lin_start = line_count - 1;
+  if (lin_end >= line_count)
+    lin_end = line_count - 1;
+
+  len_start = (int)IupScintillaSendMessage(ih, SCI_LINELENGTH, lin_start, 0);
+  len_end = (int)IupScintillaSendMessage(ih, SCI_LINELENGTH, lin_end, 0);
+
+  if (col_start >= len_start)
+    col_start = len_start - 1;
+  if (col_end >= len_end)
+    col_end = len_end - 1;
+
+  anchorPos  = (int)IupScintillaSendMessage(ih, SCI_POSITIONFROMLINE, lin_start, 0) + col_start;
+  currentPos = (int)IupScintillaSendMessage(ih, SCI_POSITIONFROMLINE, lin_end, 0)   + col_end;
 
   IupScintillaSendMessage(ih, SCI_SETSEL, anchorPos, currentPos);
 
@@ -267,8 +284,8 @@ static int iScintillaSetSelectionAttrib(Ihandle* ih, const char* value)
 
 static char* iScintillaGetSelectionPosAttrib(Ihandle* ih)
 {
-  int start = IupScintillaSendMessage(ih, SCI_GETSELECTIONSTART, 0, 0);
-  int end   = IupScintillaSendMessage(ih, SCI_GETSELECTIONEND, 0, 0);
+  int start = (int)IupScintillaSendMessage(ih, SCI_GETSELECTIONSTART, 0, 0);
+  int end   = (int)IupScintillaSendMessage(ih, SCI_GETSELECTIONEND, 0, 0);
 
   if (start == end)
     return NULL;
@@ -295,7 +312,7 @@ static int iScintillaSetSelectionPosAttrib(Ihandle* ih, const char* value)
   if (iupStrToIntInt(value, &anchorPos, &currentPos, ':') != 2)
     return 0;
 
-  if(anchorPos<0 || currentPos<0)
+  if (anchorPos<0 || currentPos<0)
     return 0;
 
   IupScintillaSendMessage(ih, SCI_SETSEL, anchorPos, currentPos);
@@ -315,19 +332,19 @@ static int iScintillaSetFirstVisibleLineAttrib(Ihandle* ih, const char* value)
 
 static char* iScintillaGetFirstVisibleLineAttrib(Ihandle* ih)
 {
-  int line = IupScintillaSendMessage(ih, SCI_GETFIRSTVISIBLELINE, 0, 0);
+  int line = (int)IupScintillaSendMessage(ih, SCI_GETFIRSTVISIBLELINE, 0, 0);
   return iupStrReturnInt(line);
 }
 
 static char* iScintillaGetVisibleLinesCountAttrib(Ihandle* ih)
 {
-  int count = IupScintillaSendMessage(ih, SCI_LINESONSCREEN, 0, 0);
+  int count = (int)IupScintillaSendMessage(ih, SCI_LINESONSCREEN, 0, 0);
   return iupStrReturnInt(count);
 }
 
 static char* iScintillaGetCaretLineVisibleAttrib(Ihandle* ih)
 {
-  return iupStrReturnBoolean(IupScintillaSendMessage(ih, SCI_GETCARETLINEVISIBLE, 0, 0));
+  return iupStrReturnBoolean((int)IupScintillaSendMessage(ih, SCI_GETCARETLINEVISIBLE, 0, 0));
 }
 
 static int iScintillaSetCaretLineVisibleAttrib(Ihandle* ih, const char* value)
@@ -343,7 +360,7 @@ static int iScintillaSetCaretLineVisibleAttrib(Ihandle* ih, const char* value)
 static char* iScintillaGetCaretLineBackColorAttrib(Ihandle* ih)
 {
   unsigned char r, g, b;
-  long color = IupScintillaSendMessage(ih, SCI_GETCARETLINEBACK, 0, 0);
+  long color = (long)IupScintillaSendMessage(ih, SCI_GETCARETLINEBACK, 0, 0);
   iupScintillaDecodeColor(color, &r, &g, &b);
   return iupStrReturnRGB(r, g, b);
 }
@@ -367,7 +384,7 @@ static int iScintillaSetCaretLineBackAlphaAttrib(Ihandle* ih, const char* value)
 
 static char* iScintillaGetCaretLineBackAlphaAttrib(Ihandle* ih)
 {
-  int alpha = IupScintillaSendMessage(ih, SCI_GETCARETLINEBACKALPHA, 0, 0);
+  int alpha = (int)IupScintillaSendMessage(ih, SCI_GETCARETLINEBACKALPHA, 0, 0);
   return iupStrReturnInt(alpha);
 }
 
