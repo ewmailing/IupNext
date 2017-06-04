@@ -38,13 +38,14 @@ static void iFlatScrollBoxUpdateChildPos(Ihandle *ih, Ihandle* child)
   int posy = iupAttribGetInt(ih, "POSY");
   char* offset = iupAttribGet(ih, "CHILDOFFSET");
   int sb_size = iupAttribGetInt(ih, "SCROLLBARSIZE");
+  int x, y;
 
   if (iupAttribGetBoolean(ih, "SHOWFLOATING"))
     sb_size = 0;
 
   /* Native container, position is reset */
-  int x = 0;
-  int y = 0;
+  x = 0;
+  y = 0;
 
   if (offset) iupStrToIntInt(offset, &x, &y, 'x');
 
