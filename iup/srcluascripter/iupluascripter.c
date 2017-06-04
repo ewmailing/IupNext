@@ -515,6 +515,9 @@ static int but_togglebreak_cb(Ihandle *ih)
 
 static int but_newbreak_cb(Ihandle* ih)
 {
+  (void)ih;
+  lua_getglobal(lcmd_state, "debuggerNewBreakpoint");
+  lua_call(lcmd_state, 0, 0);
   return IUP_DEFAULT;
 }
 

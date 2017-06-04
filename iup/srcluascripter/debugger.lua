@@ -205,6 +205,18 @@ end
 
 ------------------------------------- Breakpoints -------------------------------------
 
+function debuggerNewBreakpoint()
+  local multitext = iup.GetDialogChild(main_dialog, "MULTITEXT")
+  local fname = multitext.filename
+  if (not fname) then fname = "" end
+  local status, filename, line = iup.GetParam("New Breakpoint", nil, "Filename: %s\nLine: %i\n", fname, 1)
+
+  if (status) then
+    iup.SetAttributeId(multitext, "MARKERADD", line - 1, 1)
+    debuggerInsertBreakpoint(multitext.filename, line)
+    debuggerUpdateBreakpointsList()
+  end
+end
 
 function debuggerRemoveAllBreakpoints()
   local multitext = iup.GetDialogChild(main_dialog, "MULTITEXT")
