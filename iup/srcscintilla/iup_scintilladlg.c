@@ -1849,6 +1849,7 @@ static int iScintillaDlgCreateMethod(Ihandle* ih, void** params)
   IupSetCallback(multitext, "MARGINCLICK_CB", (Icallback)multitext_marginclick_cb);
 
   IupSetAttribute(multitext, "STYLEFGCOLOR34", "255 0 0");
+
   /* line numbers */
   IupSetInt(multitext, "MARGINWIDTH0", 30);
   IupSetAttribute(multitext, "MARGINSENSITIVE0", "YES");
