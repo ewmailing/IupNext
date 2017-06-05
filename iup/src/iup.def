@@ -309,6 +309,7 @@ iupStrToRGBA
 iupStrToMac
 iupStrToIntInt
 iupStrToInt
+iupStrToUInt
 iupStrToFloatFloat
 iupStrToDoubleDouble
 iupStrToFloat
@@ -321,6 +322,7 @@ iupStrReturnRGBA
 iupStrReturnBoolean
 iupStrReturnChecked
 iupStrReturnInt
+iupStrReturnUInt
 iupStrReturnIntInt
 iupStrReturnFloat
 iupStrReturnDouble

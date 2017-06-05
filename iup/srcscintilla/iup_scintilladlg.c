@@ -40,13 +40,6 @@ static void toggleMarker(Ihandle* multitext, int lin, int margin)
     cb(ih, lin, margin - 1, value == 0);
 }
 
-static long int setMarkerMask(int markNumber)
-{
-  long int mask = 0x000000;
-  long int mark = 0x00001 << markNumber;
-  return mask | mark;
-}
-
 static void copyMarkedLines(Ihandle *multitext)
 {
   int size = IupGetInt(multitext, "COUNT");
@@ -57,7 +50,7 @@ static void copyMarkedLines(Ihandle *multitext)
   buffer[0] = 0;
   while (lin >= 0)
   {
-    IupSetIntId(multitext, "MARKERNEXT", lin, setMarkerMask(0));
+    IupSetAttributeId(multitext, "MARKERNEXT", lin, "1");  /* 0001 */
     lin = IupGetInt(multitext, "LASTMARKERFOUND");
     if (lin >= 0)
     {
@@ -87,7 +80,7 @@ static void cutMarkedLines(Ihandle *multitext)
   buffer[0] = 0;
   while (lin >= 0 && size)
   {
-    IupSetIntId(multitext, "MARKERNEXT", lin, setMarkerMask(0));
+    IupSetAttributeId(multitext, "MARKERNEXT", lin, "1");  /* 0001 */
     lin = IupGetInt(multitext, "LASTMARKERFOUND");
     if (lin >= 0)
     {
@@ -118,7 +111,7 @@ static void pasteToMarkedLines(Ihandle *multitext)
 
   while (lin >= 0)
   {
-    IupSetIntId(multitext, "MARKERNEXT", lin, setMarkerMask(0));
+    IupSetAttributeId(multitext, "MARKERNEXT", lin, "1");  /* 0001 */
     lin = IupGetInt(multitext, "LASTMARKERFOUND");
     if (lin >= 0)
     {
@@ -153,7 +146,7 @@ static void removeMarkedLines(Ihandle *multitext)
 
   while (lin >= 0)
   {
-    IupSetIntId(multitext, "MARKERNEXT", lin, setMarkerMask(0));
+    IupSetAttributeId(multitext, "MARKERNEXT", lin, "1");  /* 0001 */
     lin = IupGetInt(multitext, "LASTMARKERFOUND");
     if (lin >= 0)
     {
@@ -177,7 +170,7 @@ static void removeUnmarkedLines(Ihandle *multitext)
 
     text = IupGetAttributeId(multitext, "LINE", start);
     len = (int)strlen(text);
-    IupSetIntId(multitext, "MARKERPREVIOUS", start, setMarkerMask(0));
+    IupSetAttributeId(multitext, "MARKERPREVIOUS", start, "1");  /* 0001 */
     end = IupGetInt(multitext, "LASTMARKERFOUND");
     IupTextConvertLinColToPos(multitext, start, len + 1, &posEnd);
     if (end >= 0)
@@ -948,7 +941,7 @@ static int item_nextmark_action_cb(Ihandle* ih_item)
   int lin, col;
   IupTextConvertPosToLinCol(multitext, pos, &lin, &col);
 
-  IupSetIntId(multitext, "MARKERNEXT", lin + 1, setMarkerMask(0));
+  IupSetAttributeId(multitext, "MARKERNEXT", lin + 1, "1");  /* 0001 */
 
   lin = IupGetInt(multitext, "LASTMARKERFOUND");
 
@@ -971,7 +964,7 @@ static int item_previousmark_action_cb(Ihandle* ih_item)
   int lin, col;
   IupTextConvertPosToLinCol(multitext, pos, &lin, &col);
 
-  IupSetIntId(multitext, "MARKERPREVIOUS", lin - 1, setMarkerMask(0));
+  IupSetAttributeId(multitext, "MARKERPREVIOUS", lin - 1, "1");  /* 0001 */
 
   lin = IupGetInt(multitext, "LASTMARKERFOUND");
 
@@ -1848,16 +1841,27 @@ static int iScintillaDlgCreateMethod(Ihandle* ih, void** params)
   IupSetCallback(multitext, "DROPFILES_CB", (Icallback)dropfiles_cb);
   IupSetCallback(multitext, "MARGINCLICK_CB", (Icallback)multitext_marginclick_cb);
 
+  /* highlight color for BRACEHIGHLIGHT */
   IupSetAttribute(multitext, "STYLEFGCOLOR34", "255 0 0");
+  /* change the default for visibility of word warps */
+  IupSetAttribute(multitext, "WORDWRAPVISUALFLAGS", "MARGIN");
 
-  /* line numbers */
+  /* line numbers margin=0 */
   IupSetInt(multitext, "MARGINWIDTH0", 30);
   IupSetAttribute(multitext, "MARGINSENSITIVE0", "YES");
-  /* bookmarks */
+
+  /* bookmarks margin=1 */
   IupSetInt(multitext, "MARGINWIDTH1", 15);
   IupSetAttribute(multitext, "MARGINTYPE1", "SYMBOL");
   IupSetAttribute(multitext, "MARGINSENSITIVE1", "YES");
-  IupSetAttribute(multitext, "MARGINMASKFOLDERS1", "NO");
+  IupSetAttribute(multitext, "MARGINMASKFOLDERS1", "NO"); /* (disable folding) */
+  IupSetAttributeId(multitext, "MARGINMASK", 1, "1");  /* 0001 */
+
+  /* bookmarks marker=0 */
+  IupSetAttributeId(multitext, "MARKERFGCOLOR", 0, "0 0 255");
+  IupSetAttributeId(multitext, "MARKERBGCOLOR", 0, "0 0 255");
+  IupSetAttributeId(multitext, "MARKERALPHA", 0, "80");
+  IupSetAttributeId(multitext, "MARKERSYMBOL", 0, "BOOKMARK");
 
   lbl_statusbar = IupLabel("Lin 1, Col 1");
   IupSetAttribute(lbl_statusbar, "NAME", "STATUSBAR");
@@ -2225,13 +2229,6 @@ static int iScintillaDlgCreateMethod(Ihandle* ih, void** params)
   /* Ctrl+C, Ctrl+X, Ctrl+A, Del, already implemented inside IupScintilla */
   IupSetCallback(multitext, "K_cV", (Icallback)item_paste_action_cb);  /* replace system processing */
   IupSetCallback(multitext, "K_cU", (Icallback)item_case_action_cb);
-
-  IupSetAttribute(multitext, "WORDWRAPVISUALFLAGS", "MARGIN");
-  /* bookmarks */
-  IupSetAttributeId(multitext, "MARKERFGCOLOR", 0, "0 0 255");
-  IupSetAttributeId(multitext, "MARKERBGCOLOR", 0, "0 0 255");
-  IupSetAttributeId(multitext, "MARKERALPHA", 0, "80");
-  IupSetAttributeId(multitext, "MARKERSYMBOL", 0, "BOOKMARK");
 
   (void)params;
   return IUP_NOERROR;

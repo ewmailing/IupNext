@@ -37,12 +37,12 @@ SCI_MARKERSETALPHA(int markerNumber, int alpha)
 SCI_MARKERADD(int line, int markerNumber)
 --SCI_MARKERADDSET(int line, int markerMask)
 SCI_MARKERDELETE(int line, int markerNumber)
---SCI_MARKERDELETEALL(int markerNumber)
---SCI_MARKERGET(int line)
---SCI_MARKERNEXT(int lineStart, int markerMask)
---SCI_MARKERPREVIOUS(int lineStart, int markerMask)
---SCI_MARKERLINEFROMHANDLE(int handle)
---SCI_MARKERDELETEHANDLE(int handle)
+SCI_MARKERDELETEALL(int markerNumber)
+SCI_MARKERGET(int line)
+SCI_MARKERNEXT(int lineStart, int markerMask)
+SCI_MARKERPREVIOUS(int lineStart, int markerMask)
+SCI_MARKERLINEFROMHANDLE(int handle)
+SCI_MARKERDELETEHANDLE(int handle)
 */
 
 static int iScintillaSetMarkerSymbolAttribId(Ihandle* ih, int markerNumber, const char* value)
@@ -100,7 +100,7 @@ static int iScintillaSetMarkerSymbolAttribId(Ihandle* ih, int markerNumber, cons
     markerSymbol = SC_MARK_DOTDOTDOT;
   else if (iupStrEqualNoCase(value, "ARROWS"))
     markerSymbol = SC_MARK_ARROWS;
-  /*else if (iupStrEqualNoCase(value, "PIXMAP")) */  /* for pixmaps, use RGBAIMAGE */
+  /*else if (iupStrEqualNoCase(value, "PIXMAP")) */  /* for pixmaps, unused - use RGBAIMAGE */
 /*  markerSymbol = SC_MARK_PIXMAP; */
   else if (iupStrEqualNoCase(value, "FULLRECT"))   /* margin background color */
     markerSymbol = SC_MARK_FULLRECT;
@@ -289,6 +289,12 @@ static int iScintillaSetMarkerAddAttribId(Ihandle* ih, int line, const char* val
   return 0;
 }
 
+static char* iScintillaGetMarkerGetAttribId(Ihandle* ih, int line)
+{
+  unsigned int markerMask = (unsigned int)IupScintillaSendMessage(ih, SCI_MARKERGET, line, 0);
+  return iupStrReturnUInt(markerMask);
+}
+
 static int iScintillaSetMarkerDeleteAttribId(Ihandle* ih, int line, const char* value)
 {
   int markerNumber;
@@ -297,12 +303,6 @@ static int iScintillaSetMarkerDeleteAttribId(Ihandle* ih, int line, const char* 
   IupScintillaSendMessage(ih, SCI_MARKERDELETE, line, markerNumber);
 
   return 0;
-}
-
-static char* iScintillaGetMarkerGetAttribId(Ihandle* ih, int line)
-{
-  int markers = (int)IupScintillaSendMessage(ih, SCI_MARKERGET, line, 0);
-  return iupStrReturnInt(markers);
 }
 
 static int iScintillaSetMarkerDeleteAllAttrib(Ihandle* ih, const char* value)
@@ -317,8 +317,9 @@ static int iScintillaSetMarkerDeleteAllAttrib(Ihandle* ih, const char* value)
 
 static int iScintillaSetMarkerNextAttribId(Ihandle* ih, int lineStart, const char* value)
 {
-  int markerMask, last_marker_found;
-  iupStrToInt(value, &markerMask);
+  int last_marker_found;
+  unsigned int markerMask;
+  iupStrToUInt(value, &markerMask);
 
   last_marker_found = (int)IupScintillaSendMessage(ih, SCI_MARKERNEXT, lineStart, markerMask);
   iupAttribSetInt(ih, "LASTMARKERFOUND", last_marker_found);
@@ -328,8 +329,9 @@ static int iScintillaSetMarkerNextAttribId(Ihandle* ih, int lineStart, const cha
 
 static int iScintillaSetMarkerPreviousAttribId(Ihandle* ih, int lineStart, const char* value)
 {
-  int markerMask, last_marker_found;
-  iupStrToInt(value, &markerMask);
+  int last_marker_found;
+  unsigned int markerMask;
+  iupStrToUInt(value, &markerMask);
 
   last_marker_found = (int)IupScintillaSendMessage(ih, SCI_MARKERPREVIOUS, lineStart, markerMask);
   iupAttribSetInt(ih, "LASTMARKERFOUND", last_marker_found);

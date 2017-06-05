@@ -418,6 +418,10 @@ support this information then an empty string is returned.&nbsp;</p>
 
 <h4>Margins</h4>
 
+<p>The margins id are numbered 0 to 4. By default, Scintilla margin 0 is set to display 
+line numbers, margin 1 is set to display non-folding symbols, and margin 2 is 
+set to display folding symbols. However, you can set the margins to be whatever you wish using MARGINTYPEid. 
+All margins are hidden by default, i.e. margin with is set to 0.</p>
 <p><b>MARGINMASKFOLDERS<em>id</em> </b>(<font size="3">non inheritable</font>): 
 defines if a 
 margin is folding or non-folding. Can be: Yes or No.</p>
@@ -428,20 +432,18 @@ margins which make it easy to select ranges of lines. By default, all margins
 are insensitive. Can be: YES or NO.</p>
 
 <p><b>MARGINTYPE<em>id</em> </b>(<font size="3">non inheritable</font>): set and get the 
-type of a margin. The margin argument should be 0, 1, 2, 3 or 4.&nbsp; Each 
+type of a margin. Each 
 margin can be set to display only symbols, line numbers, or text. You can use 
 the predefined values &quot;SYMBOL&quot;, &quot;NUMBER&quot;, &quot;TEXT&quot;, 
 &quot;RTEXT&quot; (right justify text), &quot;BACKGROUND&quot; or &quot;FOREGROUND&quot; (the latter two used for symbol 
 margins that set their background or foreground using the style default colors).</p>
 
 <p><b>MARGINWIDTH<em>id</em> </b>(<font size="3">non inheritable</font>): width of a 
-margin in pixels (Default value: 0). A margin with width=0 is invisible. The 
-margins are numbered 0 to 4. By default, Scintilla margin 0 is set to display 
-line numbers, margin 1 is set to display non-folding symbols, and margin 2 is 
-set to display folding symbols. Margins 3 and 4 are free for user default. 
-However, you can set the margins to be whatever you wish using MARGINTYPEid.</p>
+margin in pixels (Default value: 0). A margin with width=0 is invisible. </p>
 <p><b>MARGINMASK<em>id</em> </b>(<font size="3">non inheritable</font>): defines 
-the margin mask for showing symbols. (since 3.22)</p>
+which markers can be used for symbols in the given margin (id). The value is a 
+32 bit number with the selected markers. A single margin can display several 
+types of markers. See Markers. (since 3.22)</p>
 <p><strong>MARGINLEFT</strong> (<font size="3">non inheritable</font>): size of 
 the blank margin on the left side. Default: 1.</p>
 <p><strong>MARGINRIGHT</strong> (<font size="3">non inheritable</font>): 
@@ -463,25 +465,32 @@ g b&quot;)</span>. If set to NULL reset to internal default values. (since 3.22)
 color of the fold margin highlight. Values in RGB format (<span style="color: rgb(0, 0, 0); font-family: tahoma, verdana, arial, helvetica, geneva, sans-serif; font-size: medium; font-style: normal; font-variant: normal; font-weight: normal; letter-spacing: normal; line-height: 20px; orphans: auto; text-align: start; text-indent: 0px; text-transform: none; white-space: normal; widows: auto; word-spacing: 0px; -webkit-text-size-adjust: auto; -webkit-text-stroke-width: 0px; background-color: rgb(255, 255, 255); display: inline !important; float: none;">&quot;r 
 g b&quot;)</span>. If set to NULL reset to internal default values. (since 3.22)</p>
 <h4>Markers</h4>
+<p>Markers are numbers from 0 to 31. They can be combined in a 32 bit mask with 
+one or more markers. </p>
+<p><strong>MARKERSYMBOL<em>id</em></strong> (<font size="3">non inheritable</font>): 
+Defines a marker symbol given its marker number (id). id can be from 0 to 31.</p>
+<p class="info"><strong>Marker symbols:</strong> 0=&quot;CIRCLE&quot;, 1=&quot;ROUNDRECT&quot;, 
+2=&quot;ARROW&quot;, 
+3=&quot;SMALLRECT&quot;, 4=&quot;SHORTARROW&quot;, 5=&quot;EMPTY&quot;, 6=&quot;ARROWDOWN&quot;, 
+7=&quot;MINUS&quot;, 8=&quot;PLUS&quot;, 9=&quot;VLINE&quot;, 
+10=&quot;LCORNER&quot;, 11=&quot;TCORNER&quot;, 12=&quot;BOXPLUS&quot;, 13=&quot;BOXPLUSCONNECTED&quot;, 
+14=&quot;BOXMINUS&quot;, 
+15=&quot;BOXMINUSCONNECTED&quot;, 16=&quot;LCORNERCURVE&quot;, 17=&quot;TCORNERCURVE&quot;, 
+18=&quot;CIRCLEPLUS&quot;, 
+19=&quot;CIRCLEPLUSCONNECTED&quot;, 20=&quot;CIRCLEMINUS&quot;, 21=&quot;CIRCLEMINUSCONNECTED&quot;, 
+22=&quot;BACKGROUND&quot; 
+(line background color), 
+23=&quot;DOTDOTDOT&quot;, 24=&quot;ARROWS&quot;, 25=(unused), 26=&quot;FULLRECT&quot; (margin 
+background color), 27=&quot;LEFTRECT&quot;,&nbsp; 
+28=(unused), 29=&quot;UNDERLINE&quot; (underline across the line), 30=&quot;RGBAIMAGE&quot;, 
+31=&quot;BOOKMARK&quot;&nbsp; and &quot;CHARACTER+c&quot; 
+(where c is an ASCii character code). The numbers are used only in marker masks.</p>
 <p><strong>MARKERDEFINE</strong> (<font size="3">non inheritable, write-only</font>): 
-Defines a marker using its number and its symbol. Format: &quot;number=symbol&quot;. </p>
+Defines a marker using its number and its symbol in the format: &quot;number=symbol&quot;. </p>
 <p class="info"><strong>Marker numbers</strong>: can be a number in the range 0 
 to 31, or the pre-defined names: &quot;FOLDEREND&quot;, &quot;FOLDEROPENMID&quot;, &quot;FOLDERMIDTAIL&quot;, &quot;FOLDERSUB&quot;, 
 &quot;FOLDER&quot; and &quot;FOLDEROPEN&quot;.<br><strong>Marker symbols:</strong> 
-(see MARKERSYMBOL).</p>
-<p><strong>MARKERSYMBOL<em>id</em></strong> (<font size="3">non inheritable</font>): 
-Defines a marker symbol given its number. id can be from 0 to 31.</p>
-<p class="info"><strong>Marker symbols:</strong> &quot;CIRCLE&quot;, &quot;ROUNDRECT&quot;, &quot;ARROW&quot;, 
-&quot;SMALLRECT&quot;, &quot;SHORTARROW&quot;, &quot;EMPTY&quot;, &quot;ARROWDOWN&quot;, &quot;MINUS&quot;, &quot;PLUS&quot;, &quot;VLINE&quot;, 
-&quot;LCORNER&quot;, &quot;TCORNER&quot;, &quot;BOXPLUS&quot;, &quot;BOXPLUSCONNECTED&quot;, &quot;BOXMINUS&quot;, 
-&quot;BOXMINUSCONNECTED&quot;, &quot;LCORNERCURVE&quot;, &quot;TCORNERCURVE&quot;, &quot;CIRCLEPLUS&quot;, 
-&quot;CIRCLEPLUSCONNECTED&quot;, &quot;CIRCLEMINUS&quot;, &quot;CIRCLEMINUSCONNECTED&quot;, &quot;BACKGROUND&quot; 
-(line background color), 
-&quot;DOTDOTDOT&quot;, &quot;ARROWS&quot;, &quot;FULLRECT&quot; (margin 
-background color), &quot;LEFTRECT&quot;,&nbsp; 
-&quot;UNDERLINE&quot; (underline across the line), &quot;RGBAIMAGE&quot;, 
-&quot;BOOKMARK&quot;&nbsp; and &quot;CHARACTER+c&quot; 
-(where c is an ASCii character code).</p>
+the same values used in MARKERSYMBOL.</p>
 <p><strong>MARKERFGCOLOR<em>id</em> </strong>(<font size="3">non inheritable, write 
 only</font>): 
 defines the foreground color of a marker number (id). Values in RGB format (<span style="color: rgb(0, 0, 0); font-family: tahoma, verdana, arial, helvetica, geneva, sans-serif; font-size: medium; font-style: normal; font-variant: normal; font-weight: normal; letter-spacing: normal; line-height: 20px; orphans: auto; text-align: start; text-indent: 0px; text-transform: none; white-space: normal; widows: auto; word-spacing: 0px; -webkit-text-size-adjust: auto; -webkit-text-stroke-width: 0px; background-color: rgb(255, 255, 255); display: inline !important; float: none;">&quot;r 
@@ -514,38 +523,35 @@ contains the caret). Can be Yes or No. Default: No.</p>
 write-only): adds marker number to a line (id). Internally, sets the marker 
 handle number (LASTMARKERADDHANDLE attribute) that identifies the added marker (or 
 -1 for invalid line and out of memory), which may be useful to find where a 
-marker is after moving or combining lines removes markers of the given number 
-from all lines. If marker number is -1, it deletes all markers from all lines.</p>
+marker is after moving or combining lines.</p>
+<p><strong>MARKERGET<em>id</em></strong> (<font size="3">non inheritable, read</font>-only): 
+returns a marker mask with the markers that are present on the line (id).</p>
 <p><strong>MARKERDELETE<em>id</em></strong> (<font size="3">non inheritable, </font>
 write-only): deletes marker number given a line number (id). If marker number is 
 -1, all markers are deleted from the line.</p>
 <p><strong>MARKERDELETEALL</strong> (<font size="3">non inheritable, </font>
-write-only): removes markers of the given number from all lines. If marker 
+write-only): removes the marker from all lines given its number (0-31). If marker 
 number is -1, it deletes all markers from all lines.</p>
-<p><strong>MARKERGET<em>id</em></strong> (<font size="3">non inheritable, read</font>-only): 
-returns a 32-bit integer that indicates which markers were present on the line 
-(id). Bit 0 is set if marker 0 is present, bit 1 for marker 1 and so on.</p>
 <p><strong>MARKERNEXT<em>id</em></strong> (<font size="3">non inheritable, write</font>-only): 
-searches a given marker number, starting at line number (id) and continuing 
+searches for a given marker mask, starting at line number (id) and continuing 
 forwards to the end of the file. Internally, sets the the line number of the 
-first line that contains the marker (LASTMARKERFOUND attribute) or -1, if no 
+first line that contains the markers in the mask (LASTMARKERFOUND attribute) or -1, if no 
 marker is found.</p>
 <p><strong>MARKERPREVIOUS<em>id</em></strong> (<font size="3">non inheritable, 
-write</font>-only): searches a given marker number, starting at line number (id) 
+write</font>-only): searches for a given marker mask, starting at line number (id) 
 and continuing backwards to the start of the file. Internally, sets the the line 
-number of the first line that contains the marker (LASTMARKERFOUND attribute) or 
+number of the first line that contains the markers (LASTMARKERFOUND attribute) or 
 -1, if no marker is found.</p>
 <p><strong>MARKERLINEFROMHANDLE<em>id</em></strong> (<font size="3">non inheritable, 
-read</font>-only): searches the document for the marker given its handle 
-returned in MARKERADDid (use the 
-LASTMARKERADDHANDLE as attribute value) and returns the line number of the 
+read</font>-only): searches for a marker given its handle 
+(id) created in MARKERADDid (use the 
+LASTMARKERADDHANDLE attribute to obtain its value) and returns the line number of the 
 first line that contains the marker or -1, if no 
 marker is found.</p>
 <p><strong>MARKERDELETEHANDLE</strong> (<font size="3">non inheritable, </font>
-write-only): searches the document for the marker with this handle (use the 
-LASTMARKERADDHANDLE as attribute value) and deletes the marker if it is found.</p>
+write-only): searches for a marker given its handle and deletes the marker if it is found.</p>
 <p><strong>LASTMARKERADDHANDLE</strong> (<font size="3">non inheritable, read</font>-only): 
-returns the last marker handle set by the MARKERADDid attribute.</p>
+returns the last marker handle created by the MARKERADDid attribute.</p>
 <p><strong>LASTMARKERFOUND</strong> (<font size="3">non inheritable, read</font>-only): 
 returns the last line number that contains a marker found by the MARKERNEXTid, 
 MARKERPREVIOUSid or MARKERLINEFROMHANDLE attributes.</p>

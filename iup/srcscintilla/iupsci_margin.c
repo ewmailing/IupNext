@@ -52,7 +52,7 @@ SCI_MARGINTEXTCLEARALL
 
 static char* iScintillaGetMarginTypeAttribId(Ihandle* ih, int margin)
 {
-  int type = IupScintillaSendMessage(ih, SCI_GETMARGINTYPEN, margin, 0);
+  int type = (int)IupScintillaSendMessage(ih, SCI_GETMARGINTYPEN, margin, 0);
 
   if (type == SC_MARGIN_NUMBER)
     return "NUMBER";
@@ -88,7 +88,7 @@ static int iScintillaSetMarginTypeAttribId(Ihandle* ih, int margin, const char* 
 
 static char* iScintillaGetMarginWidthAttribId(Ihandle* ih, int margin)
 {
-  int pixelWidth = IupScintillaSendMessage(ih, SCI_GETMARGINWIDTHN, margin, 0);
+  int pixelWidth = (int)IupScintillaSendMessage(ih, SCI_GETMARGINWIDTHN, margin, 0);
   return iupStrReturnInt(pixelWidth);
 }
 
@@ -104,7 +104,7 @@ static int iScintillaSetMarginWidthAttribId(Ihandle* ih, int margin, const char*
 
 static char* iScintillaGetMarginMaskFoldersAttribId(Ihandle* ih, int margin)
 {
-  int mask = IupScintillaSendMessage(ih, SCI_GETMARGINMASKN, margin, 0);
+  unsigned int mask = (unsigned int)IupScintillaSendMessage(ih, SCI_GETMARGINMASKN, margin, 0);
   return iupStrReturnBoolean(mask & SC_MASK_FOLDERS); 
 }
 
@@ -118,25 +118,9 @@ static int iScintillaSetMarginMaskFoldersAttribId(Ihandle* ih, int margin, const
   return 0;
 }
 
-static char* iScintillaGetMarginMaskAttribId(Ihandle* ih, int margin)
-{
-  int mask = IupScintillaSendMessage(ih, SCI_GETMARGINMASKN, margin, 0);
-  return iupStrReturnInt(mask);
-}
-
-static int iScintillaSetMarginMaskAttribId(Ihandle* ih, int margin, const char* value)
-{
-  int mask;
-
-  if (iupStrToInt(value, &mask))
-    IupScintillaSendMessage(ih, SCI_SETMARGINMASKN, margin, mask);
-
-  return 0;
-}
-
 static char* iScintillaGetMarginSensitiveAttribId(Ihandle* ih, int margin)
 {
-  return iupStrReturnBoolean(IupScintillaSendMessage(ih, SCI_SETMARGINSENSITIVEN, margin, 0)); 
+  return iupStrReturnBoolean((int)IupScintillaSendMessage(ih, SCI_SETMARGINSENSITIVEN, margin, 0)); 
 }
 
 static int iScintillaSetMarginSensitiveAttribId(Ihandle* ih, int margin, const char* value)
@@ -151,7 +135,7 @@ static int iScintillaSetMarginSensitiveAttribId(Ihandle* ih, int margin, const c
 
 static char* iScintillaGetMarginLeftAttrib(Ihandle* ih)
 {
-  int pixels = IupScintillaSendMessage(ih, SCI_GETMARGINLEFT, 0, 0);
+  int pixels = (int)IupScintillaSendMessage(ih, SCI_GETMARGINLEFT, 0, 0);
   return iupStrReturnInt(pixels);
 }
 
@@ -167,7 +151,7 @@ static int iScintillaSetMarginLeftAttrib(Ihandle* ih, const char* value)
 
 static char* iScintillaGetMarginRightAttrib(Ihandle* ih)
 {
-  int pixels = IupScintillaSendMessage(ih, SCI_GETMARGINRIGHT, 0, 0);
+  int pixels = (int)IupScintillaSendMessage(ih, SCI_GETMARGINRIGHT, 0, 0);
   return iupStrReturnInt(pixels);
 }
 
@@ -183,7 +167,7 @@ static int iScintillaSetMarginRightAttrib(Ihandle* ih, const char* value)
 
 static char* iScintillaGetMarginTextAttribId(Ihandle* ih, int line)
 {
-  int len = IupScintillaSendMessage(ih, SCI_MARGINGETTEXT, line, 0);
+  int len = (int)IupScintillaSendMessage(ih, SCI_MARGINGETTEXT, line, 0);
   char* str = iupStrGetMemory(len+1);
   IupScintillaSendMessage(ih, SCI_MARGINGETTEXT, line, (sptr_t)str);
   return str;
@@ -204,7 +188,7 @@ static int iScintillaSetMarginTextClearAllAttrib(Ihandle* ih, const char* value)
 
 static char* iScintillaGetMarginTextStyleAttribId(Ihandle* ih, int line)
 {
-  int style = IupScintillaSendMessage(ih, SCI_MARGINGETSTYLE, line, 0);
+  int style = (int)IupScintillaSendMessage(ih, SCI_MARGINGETSTYLE, line, 0);
   return iupStrReturnInt(style);
 }
 
@@ -268,6 +252,21 @@ static int iScintillaSetFoldMarginHiColorAttrib(Ihandle* ih, const char* value)
   return 0;
 }
 
+static char* iScintillaGetMarginMaskAttribId(Ihandle* ih, int margin)
+{
+  unsigned int mask = (unsigned int)IupScintillaSendMessage(ih, SCI_GETMARGINMASKN, margin, 0);
+  return iupStrReturnUInt(mask);
+}
+
+static int iScintillaSetMarginMaskAttribId(Ihandle* ih, int margin, const char* value)
+{
+  unsigned int markerMask;
+
+  if (iupStrToUInt(value, &markerMask))
+    IupScintillaSendMessage(ih, SCI_SETMARGINMASKN, margin, markerMask);
+
+  return 0;
+}
 
 void iupScintillaRegisterMargin(Iclass* ic)
 {

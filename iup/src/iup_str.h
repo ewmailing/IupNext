@@ -177,6 +177,10 @@ char* iupStrReturnChecked(int i);
  * \ingroup str */
 char* iupStrReturnInt(int i);
 
+/** Returns an unsigned int value in a string using \ref iupStrGetMemory.
+* \ingroup str */
+char* iupStrReturnUInt(unsigned int i);
+
 /** maximum float precision
 * \ingroup str */
 #define IUP_FLOAT2STR "%.9f"
@@ -232,7 +236,12 @@ int iupStrToRGBA(const char *str, unsigned char *r, unsigned char *g, unsigned c
  * \ingroup str */
 int iupStrToInt(const char *str, int *i);
 
-/** Converts the string to two int. The string must contains two integer values in sequence, 
+/** Converts the string to an unsigned int. The string must contains only the integer value.
+* Returns a a non zero value if successful.
+* \ingroup str */
+int iupStrToUInt(const char *str, unsigned int *i);
+
+/** Converts the string to two int. The string must contains two integer values in sequence,
  * separated by the given character (usually 'x' or ':').
  * Returns the number of converted values.
  * Values not extracted are not changed.

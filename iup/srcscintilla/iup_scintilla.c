@@ -478,9 +478,11 @@ static int iScintillaMapMethod(Ihandle* ih)
   IupSetCallback(ih, "_IUP_POS2LINCOL_CB", (Icallback)iupScintillaConvertPosToLinCol);
   IupSetCallback(ih, "_IUP_LINCOL2POS_CB", (Icallback)iupScintillaConvertLinColToPos);
 
+  /* change default behavior */
   IupScintillaSendMessage(ih, SCI_SETPASTECONVERTENDINGS, 1, 0);
   IupScintillaSendMessage(ih, SCI_SETEOLMODE, SC_EOL_LF, 0);
   IupScintillaSendMessage(ih, SCI_SETWHITESPACESIZE, 3, 0);
+  IupScintillaSendMessage(ih, SCI_SETMARGINWIDTHN, 1, 0);
 
   if(IupGetInt(NULL, "UTF8MODE"))
     IupScintillaSendMessage(ih, SCI_SETCODEPAGE, SC_CP_UTF8, 0);

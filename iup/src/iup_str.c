@@ -476,6 +476,13 @@ char* iupStrReturnChecked(int check)
     return "OFF";
 }
 
+char* iupStrReturnUInt(unsigned int i)
+{
+  char* str = iupStrGetSmallMem();  /* 20 */
+  sprintf(str, "%u", i);
+  return str;
+}
+
 char* iupStrReturnInt(int i)
 {
   char* str = iupStrGetSmallMem();  /* 20 */
@@ -605,6 +612,13 @@ int iupStrToInt(const char *str, int *i)
 {
   if (!str) return 0;
   if (sscanf(str, "%d", i) != 1) return 0;
+  return 1;
+}
+
+int iupStrToUInt(const char *str, unsigned int *i)
+{
+  if (!str) return 0;
+  if (sscanf(str, "%u", i) != 1) return 0;
   return 1;
 }
 

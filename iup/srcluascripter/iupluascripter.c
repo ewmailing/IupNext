@@ -998,21 +998,20 @@ int main(int argc, char **argv)
 
   appendDebugButtons(main_dialog);
 
-  /* breakpoints margin */
+  /* breakpoints margin=2 */
   IupSetInt(multitext, "MARGINWIDTH2", 15);
   IupSetAttribute(multitext, "MARGINTYPE2", "SYMBOL");
   IupSetAttribute(multitext, "MARGINSENSITIVE2", "YES");
-  IupSetAttribute(multitext, "MARGINMASKFOLDERS2", "NO");
+  IupSetAttribute(multitext, "MARGINMASKFOLDERS2", "NO");  /* (disable folding) */
+  IupSetAttributeId(multitext, "MARGINMASK", 2, "2");  /* 0010 */
 
-  /* breakpoints marker */
-  IupSetIntId(multitext, "MARGINMASK", 1, 0x000005);  /* 0x00001 << markNumber ??? */
+  /* breakpoints marker=1 */
   IupSetAttributeId(multitext, "MARKERFGCOLOR", 1, "255 0 0");
   IupSetAttributeId(multitext, "MARKERBGCOLOR", 1, "255 0 0");
   IupSetAttributeId(multitext, "MARKERALPHA", 1, "80");
   IupSetAttributeId(multitext, "MARKERSYMBOL", 1, "CIRCLE");
 
-  /* current line marker */
-  IupSetIntId(multitext, "MARGINMASK", 2, 0x000002);  /* ??? */
+  /* current line marker=2 (does not use a margin) */
   IupSetAttributeId(multitext, "MARKERBGCOLOR", 2, "0 255 0");
   IupSetAttributeId(multitext, "MARKERALPHA", 2, "80");
   IupSetAttributeId(multitext, "MARKERSYMBOL", 2, "BACKGROUND");
