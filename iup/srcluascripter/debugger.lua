@@ -533,27 +533,6 @@ end
 
 ----------------------------  Debug State       --------------------------
 
-function debuggerEndDebug(stop)
-  debug.sethook() -- turns off the hook
-
-  debuggerSetState(DEBUG_INACTIVE)
-
-  if (debugger.restore_value) then 
-    local multitext = iup.GetDialogChild(main_dialog, "MULTITEXT")
-    debuggerReloadFile(multitext.filename) 
-    debugger.restore_value = false
-  end
-
-  local debugtabs = iup.GetDialogChild(main_dialog, "DEBUG_TABS")
-  debugtabs.valuepos = 0
-
-  if stop then
-    error("-- Debug stop\n") -- abort processing
-  else
-    print("-- Debug finish\n")
-  end
-end
-
 function debuggerGetDebugLevel()
   local level = -1
   repeat 
@@ -653,6 +632,27 @@ function debuggerHookFunction(event, currentline)
     end
   end
 
+end
+
+function debuggerEndDebug(stop)
+  debug.sethook() -- turns off the hook
+
+  debuggerSetState(DEBUG_INACTIVE)
+
+  if (debugger.restore_value) then 
+    local multitext = iup.GetDialogChild(main_dialog, "MULTITEXT")
+    debuggerReloadFile(multitext.filename) 
+    debugger.restore_value = false
+  end
+
+  local debugtabs = iup.GetDialogChild(main_dialog, "DEBUG_TABS")
+  debugtabs.valuepos = 0
+
+  if stop then
+    error("-- Debug stop\n") -- abort processing
+  else
+    print("-- Debug finish\n")
+  end
 end
 
 function debuggerStartDebug(filename)

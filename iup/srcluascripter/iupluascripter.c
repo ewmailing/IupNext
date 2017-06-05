@@ -1108,3 +1108,11 @@ int main(int argc, char **argv)
   lua_close(L);
   return EXIT_SUCCESS;
 }
+
+/* TO DO:
+- Debug Strings
+- multi-language (portuguese)
+- multiple files (IupFlatTabs)
+- watch for globals
+- option for a separate Lua State
+*/
