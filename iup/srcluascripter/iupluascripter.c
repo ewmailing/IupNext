@@ -159,13 +159,13 @@ static char *filterList(const char *text, const char *list)
 /********************************** Callbacks *****************************************/
 
 
-static int marker_changed_cb(Ihandle *ih, int lin, int marker, int value)
+static int marker_changed_cb(Ihandle *ih, int lin, int margin, int value)
 {
-  if (marker == 1)
+  if (margin == 2)
   {
     lua_getglobal(lcmd_state, "debuggerToggleBreakpoint");
     lua_pushinteger(lcmd_state, lin + 1); /* here starts at 1 */
-    lua_pushinteger(lcmd_state, marker);
+    lua_pushinteger(lcmd_state, margin - 1);  /* margin 2 maps to marker 1 */
     lua_pushinteger(lcmd_state, value);
     lua_call(lcmd_state, 3, 0);
   }
@@ -253,6 +253,9 @@ static int save_check(Ihandle* ih_item)
 
 static int item_debug_action_cb(Ihandle* item)
 {
+  char* filename;
+  Ihandle* multitext;
+
   if (!IupGetInt(IupGetDialogChild(item, "ITM_DEBUG"), "ACTIVE")) /* can be called by the hot key in the dialog */
     return IUP_DEFAULT;
 
@@ -261,6 +264,14 @@ static int item_debug_action_cb(Ihandle* item)
 
   lua_getglobal(lcmd_state, "debuggerStartDebug");
   lua_call(lcmd_state, 0, 0);
+
+  multitext = IupGetDialogChild(item, "MULTITEXT");
+  filename = IupGetAttribute(multitext, "FILENAME");
+  iuplua_dofile(lcmd_state, filename);
+
+  lua_getglobal(lcmd_state, "debuggerEndDebug");
+  lua_pushboolean(lcmd_state, 0);
+  lua_call(lcmd_state, 1, 0);
   return IUP_DEFAULT;
 }
 
@@ -509,7 +520,7 @@ static int but_togglebreak_cb(Ihandle *ih)
   Ihandle* multitext = IupGetDialogChild(ih, "MULTITEXT");
   int pos = IupGetInt(multitext, "CARETPOS");
   IupTextConvertPosToLinCol(multitext, pos, &lin, &col);
-  IupSetAttributeId(IupGetDialog(ih), "TOGGLEMARKER", lin, "2");
+  IupSetAttributeId(IupGetDialog(ih), "TOGGLEMARKER", lin, "2");  /* margin=2 */
   return IUP_IGNORE;
 }
 
@@ -1003,18 +1014,24 @@ int main(int argc, char **argv)
   IupSetAttribute(multitext, "MARGINTYPE2", "SYMBOL");
   IupSetAttribute(multitext, "MARGINSENSITIVE2", "YES");
   IupSetAttribute(multitext, "MARGINMASKFOLDERS2", "NO");  /* (disable folding) */
-  IupSetAttributeId(multitext, "MARGINMASK", 2, "2");  /* 0010 */
+  IupSetAttributeId(multitext, "MARGINMASK", 2, "14");  /* 1110 - marker=1 and marker=2 ad marker=3 */
 
   /* breakpoints marker=1 */
   IupSetAttributeId(multitext, "MARKERFGCOLOR", 1, "255 0 0");
   IupSetAttributeId(multitext, "MARKERBGCOLOR", 1, "255 0 0");
-  IupSetAttributeId(multitext, "MARKERALPHA", 1, "80");
+//  IupSetAttributeId(multitext, "MARKERALPHA", 1, "80");
   IupSetAttributeId(multitext, "MARKERSYMBOL", 1, "CIRCLE");
 
-  /* current line marker=2 (does not use a margin) */
+  /* current line marker=2 (not shown in a margin, but uses margin=2 mask) */
   IupSetAttributeId(multitext, "MARKERBGCOLOR", 2, "0 255 0");
   IupSetAttributeId(multitext, "MARKERALPHA", 2, "80");
   IupSetAttributeId(multitext, "MARKERSYMBOL", 2, "BACKGROUND");
+
+  /* current line marker=3 */
+  IupSetAttributeId(multitext, "MARKERFGCOLOR", 3, "0 0 0");
+  IupSetAttributeId(multitext, "MARKERBGCOLOR", 3, "0 255 0");
+  IupSetAttributeId(multitext, "MARKERALPHA", 3, "80");
+  IupSetAttributeId(multitext, "MARKERSYMBOL", 3, "SHORTARROW");
 
   IupSetCallback(main_dialog, "K_F5", (Icallback)item_debug_action_cb);
   IupSetCallback(main_dialog, "K_F5", (Icallback)item_continue_action_cb);

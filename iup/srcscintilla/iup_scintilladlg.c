@@ -21,23 +21,18 @@
 
 static void toggleMarker(Ihandle* multitext, int lin, int margin)
 {
-  long int value = IupGetIntId(multitext, "MARKERGET", lin);
+  unsigned int markerMask = (unsigned int)IupGetIntId(multitext, "MARKERGET", lin);
   Ihandle* ih = IupGetDialog(multitext);
   IFniii cb;
 
-  if (margin == 1)
-    value = value & 0x000001;
+  if (markerMask == 0)
+    IupSetIntId(multitext, "MARKERADD", lin, margin - 1);  /* margin 1 maps to marker 0 */
   else
-    value = value & 0x000002;
-
-  if (value)
-    IupSetIntId(multitext, "MARKERDELETE", lin, margin - 1);  /* margin 1 maps to marker 0 */
-  else
-    IupSetIntId(multitext, "MARKERADD", lin, margin - 1);
+    IupSetIntId(multitext, "MARKERDELETE", lin, margin - 1);
 
   cb = (IFniii)IupGetCallback(ih, "MARKERCHANGED_CB");
   if (cb)
-    cb(ih, lin, margin - 1, value == 0);
+    cb(ih, lin, margin, markerMask == 0);
 }
 
 static void copyMarkedLines(Ihandle *multitext)
@@ -50,7 +45,7 @@ static void copyMarkedLines(Ihandle *multitext)
   buffer[0] = 0;
   while (lin >= 0)
   {
-    IupSetAttributeId(multitext, "MARKERNEXT", lin, "1");  /* 0001 */
+    IupSetAttributeId(multitext, "MARKERNEXT", lin, "1");  /* 0001 - marker=0 */
     lin = IupGetInt(multitext, "LASTMARKERFOUND");
     if (lin >= 0)
     {
@@ -80,7 +75,7 @@ static void cutMarkedLines(Ihandle *multitext)
   buffer[0] = 0;
   while (lin >= 0 && size)
   {
-    IupSetAttributeId(multitext, "MARKERNEXT", lin, "1");  /* 0001 */
+    IupSetAttributeId(multitext, "MARKERNEXT", lin, "1");  /* 0001 - marker=0 */
     lin = IupGetInt(multitext, "LASTMARKERFOUND");
     if (lin >= 0)
     {
@@ -111,7 +106,7 @@ static void pasteToMarkedLines(Ihandle *multitext)
 
   while (lin >= 0)
   {
-    IupSetAttributeId(multitext, "MARKERNEXT", lin, "1");  /* 0001 */
+    IupSetAttributeId(multitext, "MARKERNEXT", lin, "1");  /* 0001 - marker=0 */
     lin = IupGetInt(multitext, "LASTMARKERFOUND");
     if (lin >= 0)
     {
@@ -146,7 +141,7 @@ static void removeMarkedLines(Ihandle *multitext)
 
   while (lin >= 0)
   {
-    IupSetAttributeId(multitext, "MARKERNEXT", lin, "1");  /* 0001 */
+    IupSetAttributeId(multitext, "MARKERNEXT", lin, "1");  /* 0001 - marker=0 */
     lin = IupGetInt(multitext, "LASTMARKERFOUND");
     if (lin >= 0)
     {
@@ -170,7 +165,7 @@ static void removeUnmarkedLines(Ihandle *multitext)
 
     text = IupGetAttributeId(multitext, "LINE", start);
     len = (int)strlen(text);
-    IupSetAttributeId(multitext, "MARKERPREVIOUS", start, "1");  /* 0001 */
+    IupSetAttributeId(multitext, "MARKERPREVIOUS", start, "1");  /* 0001 - marker=0 */
     end = IupGetInt(multitext, "LASTMARKERFOUND");
     IupTextConvertLinColToPos(multitext, start, len + 1, &posEnd);
     if (end >= 0)
@@ -941,7 +936,7 @@ static int item_nextmark_action_cb(Ihandle* ih_item)
   int lin, col;
   IupTextConvertPosToLinCol(multitext, pos, &lin, &col);
 
-  IupSetAttributeId(multitext, "MARKERNEXT", lin + 1, "1");  /* 0001 */
+  IupSetAttributeId(multitext, "MARKERNEXT", lin + 1, "1");  /* 0001 - marker=0 */
 
   lin = IupGetInt(multitext, "LASTMARKERFOUND");
 
@@ -964,7 +959,7 @@ static int item_previousmark_action_cb(Ihandle* ih_item)
   int lin, col;
   IupTextConvertPosToLinCol(multitext, pos, &lin, &col);
 
-  IupSetAttributeId(multitext, "MARKERPREVIOUS", lin - 1, "1");  /* 0001 */
+  IupSetAttributeId(multitext, "MARKERPREVIOUS", lin - 1, "1");  /* 0001 - marker=0 */
 
   lin = IupGetInt(multitext, "LASTMARKERFOUND");
 
@@ -1770,10 +1765,11 @@ static int iScintillaDlgSetOpenFileAttrib(Ihandle* ih, const char* value)
 
 static int iScintillaDlgSetSaveFileAttrib(Ihandle* ih, const char* value)
 {
+  Ihandle* multitext = IupGetDialogChild(ih, "MULTITEXT");
   if (value)
-    saveas_file(ih, value);
+    saveas_file(multitext, value);
   else
-    save_file(ih);
+    save_file(multitext);
   return 0;
 }
 
@@ -1855,7 +1851,7 @@ static int iScintillaDlgCreateMethod(Ihandle* ih, void** params)
   IupSetAttribute(multitext, "MARGINTYPE1", "SYMBOL");
   IupSetAttribute(multitext, "MARGINSENSITIVE1", "YES");
   IupSetAttribute(multitext, "MARGINMASKFOLDERS1", "NO"); /* (disable folding) */
-  IupSetAttributeId(multitext, "MARGINMASK", 1, "1");  /* 0001 */
+  IupSetAttributeId(multitext, "MARGINMASK", 1, "1");  /* 0001 - marker=0 */
 
   /* bookmarks marker=0 */
   IupSetAttributeId(multitext, "MARKERFGCOLOR", 0, "0 0 255");

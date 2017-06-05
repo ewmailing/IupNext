@@ -181,6 +181,8 @@ function debuggerHighlightLine(currentline)
   multitext.caretpos = pos
   multitext.markerdeleteall = 2
   multitext["markeradd"..currentline-1] = 2
+  multitext.markerdeleteall = 3
+  multitext["markeradd"..currentline-1] = 3
 end
 
 function debuggerShowCurrentLine()
@@ -603,7 +605,6 @@ end
 function debuggerReturnHook(what)
   local level = debuggerGetDebugLevel()
 
-  --TODO if level == debugger.startLevel+1 and what == "main" then  ???
   if what == "main" then
     debuggerSetState(DEBUG_INACTIVE)
   elseif debugger.debug_state == DEBUG_STEP_OUT or debugger.debug_state == DEBUG_STEP_OVER then
@@ -649,7 +650,8 @@ function debuggerEndDebug(stop)
   debugtabs.valuepos = 0
 
   if stop then
-    error("-- Debug stop\n") -- abort processing
+    print("-- Debug stop\n")
+    error() -- abort processing, no error message
   else
     print("-- Debug finish\n")
   end
@@ -666,13 +668,6 @@ function debuggerStartDebug(filename)
   debugtabs.valuepos = 1
 
   debug.sethook(debuggerHookFunction, "lcr")
-
-  local ok, msg = pcall(dofile, debugger.currentFile)
-  if not ok then
-    print(msg)
-  end
-  
-  debuggerEndDebug(false)
 end
 
 function debuggerRun()
