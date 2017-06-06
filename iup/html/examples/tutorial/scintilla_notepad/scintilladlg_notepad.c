@@ -59,6 +59,9 @@ int main(int argc, char **argv)
 
   IupMainLoop();
 
+  IupDestroy(config);
+  IupDestroy(main_dialog);
+
   IupClose();
   return EXIT_SUCCESS;
 }

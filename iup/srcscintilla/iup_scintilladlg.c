@@ -805,6 +805,7 @@ static int item_exit_action_cb(Ihandle* item_exit)
 {
   Ihandle* ih = IupGetDialog(item_exit);
   Ihandle* config = IupGetAttributeHandle(ih, "CONFIG");
+  Icallback cb = IupGetCallback(ih, "EXIT_CB");
 
   if (!save_check(item_exit))
     return IUP_IGNORE;  /* to abort the CLOSE_CB callback */
@@ -813,9 +814,14 @@ static int item_exit_action_cb(Ihandle* item_exit)
   {
     IupConfigDialogClosed(config, ih, "MainWindow");
     IupConfigSave(config);
-    IupDestroy(config);
   }
-  return IUP_CLOSE;
+
+  IupHide(ih);
+
+  if (cb && cb(ih) == IUP_IGNORE)
+    return IUP_IGNORE;
+
+  return IUP_DEFAULT;
 }
 
 static int goto_ok_action_cb(Ihandle* bt_ok)
@@ -2245,6 +2251,7 @@ Iclass* iupScintillaDlgNewClass(void)
   ic->has_attrib_id = 1;   /* has attributes with IDs that must be parsed */
 
   iupClassRegisterCallback(ic, "MARKERCHANGED_CB", "iii");
+  iupClassRegisterCallback(ic, "EXIT_CB", "");
 
   iupClassRegisterAttribute(ic, "SUBTITLE", NULL, NULL, IUPAF_SAMEASSYSTEM, "Notepad", IUPAF_NOT_MAPPED | IUPAF_NO_INHERIT);
   iupClassRegisterAttribute(ic, "CONFIG", NULL, NULL, NULL, NULL, IUPAF_IHANDLENAME | IUPAF_NOT_MAPPED | IUPAF_NO_INHERIT);

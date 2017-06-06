@@ -8,6 +8,7 @@ local ctrl = {
   creation = "",
   callback = {
     markerchanged_cb = "nnn",
+    exit_cb = "",
   },
   include = "iup_scintilla.h",
   funcname = "ScintillaDlg",

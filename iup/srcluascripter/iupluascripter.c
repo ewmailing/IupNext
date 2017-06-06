@@ -159,6 +159,14 @@ static char *filterList(const char *text, const char *list)
 /********************************** Callbacks *****************************************/
 
 
+static int exit_cb(Ihandle *ih)
+{
+  (void)ih;
+  lua_getglobal(lcmd_state, "debuggerExit");
+  lua_call(lcmd_state, 0, 0);
+  return IUP_DEFAULT;
+}
+
 static int marker_changed_cb(Ihandle *ih, int lin, int margin, int value)
 {
   if (margin == 2)
@@ -1044,6 +1052,7 @@ int main(int argc, char **argv)
   IupSetCallback(main_dialog, "K_F9", (Icallback)but_togglebreak_cb);
 
   IupSetCallback(main_dialog, "MARKERCHANGED_CB", (Icallback)marker_changed_cb);
+  IupSetCallback(main_dialog, "EXIT_CB", (Icallback)exit_cb);
 
   menu = IupGetAttributeHandle(main_dialog, "MENU");
 
@@ -1118,6 +1127,9 @@ int main(int argc, char **argv)
   set_attribs(IupGetDialogChild(main_dialog, "MULTITEXT"));
 
   IupMainLoop();
+
+  IupDestroy(config);
+  IupDestroy(main_dialog);
 
   IupClose();
 

@@ -148,6 +148,7 @@ function debuggerSetState(st)
   debugger.debug_state = st
 
   multitext.markerdeleteall = 2
+  multitext.markerdeleteall = 3
 
   iup.SetAttribute(iup.GetDialogChild(main_dialog, "ITM_RUN"), "ACTIVE", run)
   iup.SetAttribute(iup.GetDialogChild(main_dialog, "ITM_STOP"), "ACTIVE", stop)
@@ -673,4 +674,10 @@ end
 function debuggerRun()
   local multitext = iup.GetDialogChild(main_dialog, "MULTITEXT")
   iup.dostring(multitext.value) 
+end
+
+function debuggerExit()
+  if debugger.debug_state ~= DEBUG_INACTIVE then
+    debuggerEndDebug(true)
+  end
 end
