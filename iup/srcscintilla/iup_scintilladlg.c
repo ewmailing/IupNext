@@ -18,21 +18,93 @@
 
 /********************************** Utilities *****************************************/
 
+static void saveBookmarks(Ihandle* config, Ihandle* multitext)
+{
+  int lin = 0, i = 1;
+  char mark[10240];
+
+  char* filename = IupGetAttribute(multitext, "FILENAME");
+
+  while (lin >= 0)
+  {
+    IupSetAttributeId(multitext, "MARKERNEXT", lin, "1");  /* 0001 - marker=0 */
+    lin = IupGetInt(multitext, "LASTMARKERFOUND");
+    if (lin >= 0)
+    {
+      sprintf(mark, "%s#%d", filename, lin);
+      IupConfigSetVariableStrId(config, "Bookmarks", "FileLine", i, mark);
+
+      lin++;
+      i++;
+    }
+  }
+
+  IupConfigSetVariableStrId(config, "Bookmarks", "FileLine", i, NULL);
+}
+
+static void restoreBookmarks(Ihandle* config, Ihandle* multitext)
+{
+  const char* mark;
+  int i = 1;
+  char filename_str[10240];
+  char line_str[10];
+
+  char* filename = IupGetAttribute(multitext, "FILENAME");
+
+  IupSetInt(multitext, "MARKERDELETEALL", 0);
+
+  do
+  {
+    mark = IupConfigGetVariableStrId(config, "Bookmarks", "FileLine", i);
+    if (mark)
+    {
+      iupStrToStrStr(mark, filename_str, line_str, '#');
+      if (iupStrEqual(filename, filename_str))
+      {
+        int lin;
+        iupStrToInt(line_str, &lin);
+        IupSetIntId(multitext, "MARKERADD", lin, 0);
+      }
+    }
+    i++;
+  } while (mark != NULL);
+}
+
+static void addBookmark(Ihandle* multitext, int lin)
+{
+  IupSetIntId(multitext, "MARKERADD", lin, 0);
+}
+
+static void removeBookmark(Ihandle* multitext, int lin)
+{
+  IupSetIntId(multitext, "MARKERDELETE", lin, 0);
+}
+
+static void removeAllBookmark(Ihandle* multitext)
+{
+  IupSetInt(multitext, "MARKERDELETEALL", 0);
+}
 
 static void toggleMarker(Ihandle* multitext, int lin, int margin)
 {
-  unsigned int markerMask = (unsigned int)IupGetIntId(multitext, "MARKERGET", lin);
   Ihandle* ih = IupGetDialog(multitext);
-  IFniii cb;
+  IFnii cb;
 
-  if (markerMask == 0)
-    IupSetIntId(multitext, "MARKERADD", lin, margin - 1);  /* margin 1 maps to marker 0 */
-  else
-    IupSetIntId(multitext, "MARKERDELETE", lin, margin - 1);
+  /* bookmarks */
+  if (margin == 1)
+  {
+    unsigned int markerMask = (unsigned int)IupGetIntId(multitext, "MARKERGET", lin);
+    int has_bookmark = markerMask & 0x0001; /* 0001 - marker=0 */
 
-  cb = (IFniii)IupGetCallback(ih, "MARKERCHANGED_CB");
+    if (has_bookmark)
+      removeBookmark(multitext, lin);
+    else
+      addBookmark(multitext, lin);
+  }
+
+  cb = (IFnii)IupGetCallback(ih, "MARKERCHANGED_CB");
   if (cb)
-    cb(ih, lin, margin, markerMask == 0);
+    cb(ih, lin, margin);
 }
 
 static void copyMarkedLines(Ihandle *multitext)
@@ -84,7 +156,7 @@ static void cutMarkedLines(Ihandle *multitext)
       IupTextConvertLinColToPos(multitext, lin, 0, &pos);
       IupSetStrf(multitext, "DELETERANGE", "%d,%d", pos, len);
       strcat(buffer, text);  size -= len;
-      IupSetIntId(multitext, "MARKERDELETE", lin, 0);
+      removeBookmark(multitext, lin);
       lin--;
     }
   }
@@ -116,7 +188,7 @@ static void pasteToMarkedLines(Ihandle *multitext)
       len = (int)strlen(text);
       IupTextConvertLinColToPos(multitext, lin, 0, &pos);
       IupSetStrf(multitext, "DELETERANGE", "%d,%d", pos, len);
-      IupSetIntId(multitext, "MARKERDELETE", lin, 0);
+      removeBookmark(multitext, lin);
       clipboard = IupClipboard();
       IupSetAttributeId(multitext, "INSERT", pos, IupGetAttribute(clipboard, "TEXT"));
       IupDestroy(clipboard);
@@ -149,7 +221,7 @@ static void removeMarkedLines(Ihandle *multitext)
       len = (int)strlen(text);
       IupTextConvertLinColToPos(multitext, lin, 0, &pos);
       IupSetStrf(multitext, "DELETERANGE", "%d,%d", pos, len);
-      IupSetIntId(multitext, "MARKERDELETE", lin, 0);
+      removeBookmark(multitext, lin);
       lin--;
     }
   }
@@ -463,7 +535,10 @@ static void open_file(Ihandle* ih_item, const char* filename)
     update_title(ih, filename, 0);
 
     if (config)
+    {
       IupConfigRecentUpdate(config, filename);
+      restoreBookmarks(config, multitext);
+    }
 
     free(str);
   }
@@ -482,8 +557,13 @@ static void save_file(Ihandle* multitext)
     int count = IupGetInt(multitext, "COUNT");
     if (write_file(filename, str, count))
     {
+      Ihandle* config = IupGetAttributeHandle(multitext, "CONFIG");
+
       IupSetAttribute(multitext, "DIRTY", "NO");
       update_title(IupGetDialog(multitext), filename, 0);
+
+      if (config)
+        saveBookmarks(config, multitext);
     }
   }
 }
@@ -501,7 +581,11 @@ static void saveas_file(Ihandle* multitext, const char* filename)
     update_title(IupGetDialog(multitext), filename, 0);
 
     if (config)
+    {
       IupConfigRecentUpdate(config, filename);
+
+      saveBookmarks(config, multitext);
+    }
   }
 }
 
@@ -812,6 +896,9 @@ static int item_exit_action_cb(Ihandle* item_exit)
 
   if (config)
   {
+    Ihandle* multitext = IupGetDialogChild(item_exit, "MULTITEXT");
+    saveBookmarks(config, multitext);
+
     IupConfigDialogClosed(config, ih, "MainWindow");
     IupConfigSave(config);
   }
@@ -982,7 +1069,7 @@ static int item_previousmark_action_cb(Ihandle* ih_item)
 static int item_clearmarks_action_cb(Ihandle* ih_item)
 {
   Ihandle* multitext = IupGetDialogChild(ih_item, "MULTITEXT");
-  IupSetInt(multitext, "MARKERDELETEALL", 0);
+  removeAllBookmark(multitext);
   return IUP_DEFAULT;
 }
 
@@ -2250,7 +2337,7 @@ Iclass* iupScintillaDlgNewClass(void)
   ic->childtype = IUP_CHILDNONE;
   ic->has_attrib_id = 1;   /* has attributes with IDs that must be parsed */
 
-  iupClassRegisterCallback(ic, "MARKERCHANGED_CB", "iii");
+  iupClassRegisterCallback(ic, "MARKERCHANGED_CB", "ii");
   iupClassRegisterCallback(ic, "EXIT_CB", "");
 
   iupClassRegisterAttribute(ic, "SUBTITLE", NULL, NULL, IUPAF_SAMEASSYSTEM, "Notepad", IUPAF_NOT_MAPPED | IUPAF_NO_INHERIT);

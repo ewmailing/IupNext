@@ -7,7 +7,7 @@ local ctrl = {
   subdir = "ctrl",
   creation = "",
   callback = {
-    markerchanged_cb = "nnn",
+    markerchanged_cb = "nn",
     exit_cb = "",
   },
   include = "iup_scintilla.h",

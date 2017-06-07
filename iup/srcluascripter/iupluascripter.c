@@ -167,15 +167,63 @@ static int exit_cb(Ihandle *ih)
   return IUP_DEFAULT;
 }
 
-static int marker_changed_cb(Ihandle *ih, int lin, int margin, int value)
+static int debuggerHasBreakpoint(lua_State *L)
+{
+  Ihandle* multitext = iuplua_checkihandle(L, 1);
+  int lin = (int)luaL_checkinteger(L, 2);
+  unsigned int markerMask = (unsigned int)IupGetIntId(multitext, "MARKERGET", lin);
+  int has_breakpoint = markerMask & 0x0002; /* 0010 - marker=1 */
+  lua_pushboolean(L, has_breakpoint);
+  return 1;
+}
+
+static int debuggerGetBreakpoints(lua_State *L)
+{
+  Ihandle* multitext = iuplua_checkihandle(L, 1);
+  int lin = 0, i = 1;
+
+  lua_newtable(L);
+
+  while (lin >= 0)
+  {
+    IupSetAttributeId(multitext, "MARKERNEXT", lin, "2");  /* 0010 - marker=1 */
+    lin = IupGetInt(multitext, "LASTMARKERFOUND");
+    if (lin >= 0)
+    {
+      lua_pushinteger(L, i);
+      lua_pushinteger(L, lin + 1);
+      lua_settable(L, -3);
+
+      lin++;
+      i++;
+    }
+  }
+
+  return 1;
+}
+
+static int marker_changed_cb(Ihandle *ih, int lin, int margin)
 {
   if (margin == 2)
   {
-    lua_getglobal(lcmd_state, "debuggerToggleBreakpoint");
-    lua_pushinteger(lcmd_state, lin + 1); /* here starts at 1 */
-    lua_pushinteger(lcmd_state, margin - 1);  /* margin 2 maps to marker 1 */
-    lua_pushinteger(lcmd_state, value);
-    lua_call(lcmd_state, 3, 0);
+    Ihandle* multitext = IupGetDialogChild(ih, "MULTITEXT");
+    unsigned int markerMask = (unsigned int)IupGetIntId(multitext, "MARKERGET", lin);
+    int has_breakpoint = markerMask & 0x0002; /* 0010 - marker=1 */
+
+    char* filename = IupGetAttribute(multitext, "FILENAME");
+    if (!filename)
+    {
+      IupMessage("Warning!", "Must have a filename to add a breakpoint.");
+      return IUP_DEFAULT;
+    }
+
+    if (has_breakpoint)
+      IupSetIntId(multitext, "MARKERDELETE", lin, 1);
+    else
+      IupSetIntId(multitext, "MARKERADD", lin, 1);
+
+    lua_getglobal(lcmd_state, "debuggerUpdateBreakpointsList");
+    lua_call(lcmd_state, 0, 0);
   }
 
   (void)ih;
@@ -522,6 +570,17 @@ static int but_printstack_cb(Ihandle *ih)
   return IUP_DEFAULT;
 }
 
+static int list_breaks_cb(Ihandle *ih, int index, char *t)
+{
+  (void)ih;
+  (void)t;
+
+  lua_getglobal(lcmd_state, "debuggerBreaksListAction");
+  lua_pushinteger(lcmd_state, index);
+  lua_call(lcmd_state, 1, 0);
+  return IUP_DEFAULT;
+}
+
 static int but_togglebreak_cb(Ihandle *ih)
 {
   int lin, col;
@@ -551,7 +610,7 @@ static int but_removebreak_cb(Ihandle *ih)
     return IUP_DEFAULT;
   }
 
-  lua_getglobal(lcmd_state, "debuggerRemoveBreakpointFromList");
+  lua_getglobal(lcmd_state, "debuggerRemoveBreakpoint");
   lua_pushinteger(lcmd_state, value);
   lua_call(lcmd_state, 1, 0);
 
@@ -718,6 +777,7 @@ static Ihandle *buildTabBreaks(void)
   list = IupList(NULL);
   IupSetAttribute(list, "EXPAND", "YES");
   IupSetAttribute(list, "NAME", "LIST_BREAK");
+  IupSetCallback(list, "DBLCLICK_CB", (Icallback)list_breaks_cb);
 
   frame = IupFrame(IupHbox(list, vbox, NULL));
   IupSetAttribute(frame, "MARGIN", "4x4");
@@ -1093,6 +1153,11 @@ int main(int argc, char **argv)
   iuplua_pushihandle(lcmd_state, main_dialog);
   lua_setglobal(lcmd_state, "main_dialog");
 
+  lua_pushcfunction(L, debuggerHasBreakpoint);
+  lua_setglobal(lcmd_state, "debuggerHasBreakpoint");
+  lua_pushcfunction(L, debuggerGetBreakpoints);
+  lua_setglobal(lcmd_state, "debuggerGetBreakpoints");
+
 #ifdef IUPLUA_USELOH
 #include "debugger.loh"
 #include "console.loh"
@@ -1141,6 +1206,6 @@ int main(int argc, char **argv)
 - Debug Strings
 - multi-language (portuguese)
 - multiple files (IupFlatTabs)
-- watch for globals
+- Watch for globals
 - option for a separate Lua State
 */

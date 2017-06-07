@@ -12,8 +12,6 @@ local FUNC_STATE_OUTSIDE = 2
 debugger = {
   debug_state = DEBUG_INACTIVE,
 
-  breakpoints = {},
-
   currentFuncLevel = 0,
   stepFuncLevel = 0,
   stepFuncState = 0,
@@ -21,46 +19,9 @@ debugger = {
 
   currentFile = nil,
   currentLine = nil,
-  restore_value = false,
 }
 
 ------------------------------------- User Interface State -------------------------------------
-
-function debuggerReadFile(filename)
-  local f = io.open(filename, "rb")
-  if f == nil then
-    return nil
-  end
-  local t = f:read("*a")
-  f:close()
-  return t
-end
-
-function debuggerReloadFile(filename)
-  local str = debuggerReadFile(filename)
-  if (str) then
-    local multitext = iup.GetDialogChild(main_dialog, "MULTITEXT")
-    
-    iup.SetAttribute(multitext, "VALUE", str)
-    debugger.restore_value = true
-
-    debugger.currentFile = filename
-    
-    multitext.markerdeleteall = -1 -- all markers
-
-    for i = 1, #debugger.breakpoints do
-      local item = debugger.breakpoints[i]
-      if item.filename == filename then
-        main_dialog.ignore_toglebreakpoint = 1
-        iup.SetAttributeId(main_dialog, "TOGGLEMARKER", item.line-1, 2)
-        main_dialog.ignore_toglebreakpoint = nil
-      end
-    end
-  else
-    iup.Message("Warning!", "Failed to read file:\n  "..filename)
-    debuggerEndDebug(true)
-  end
-end
 
 function debuggerSetStateString(state)
   local map_state = {
@@ -147,8 +108,8 @@ function debuggerSetState(st)
     
   debugger.debug_state = st
 
-  multitext.markerdeleteall = 2
-  multitext.markerdeleteall = 3
+  multitext.markerdeleteall = 2 -- current line highlight
+  multitext.markerdeleteall = 3 -- current line arrow
 
   iup.SetAttribute(iup.GetDialogChild(main_dialog, "ITM_RUN"), "ACTIVE", run)
   iup.SetAttribute(iup.GetDialogChild(main_dialog, "ITM_STOP"), "ACTIVE", stop)
@@ -215,8 +176,7 @@ function debuggerNewBreakpoint()
   local status, filename, line = iup.GetParam("New Breakpoint", nil, "Filename: %s\nLine: %i\n", fname, 1)
 
   if (status) then
-    iup.SetAttributeId(multitext, "MARKERADD", line - 1, 1)
-    debuggerInsertBreakpoint(multitext.filename, line)
+    iup.SetAttributeId(multitext, "MARKERADD", line - 1, 1)-- in user interface line starts at 1, in Scintilla starts at 0
     debuggerUpdateBreakpointsList()
   end
 end
@@ -226,82 +186,55 @@ function debuggerRemoveAllBreakpoints()
   
   multitext.markerdeleteall = 1
   
-  debugger.breakpoints = {}
-  
-  debuggerUpdateBreakpointsList()
-end
-
-function debuggerToggleBreakpoint(line, marker, value)
-
-  local multitext = iup.GetDialogChild(main_dialog, "MULTITEXT")
-  
-  if main_dialog.ignore_toglebreakpoint then
-    return
-  end
-  if not multitext.filename then
-    iup.SetAttributeId(multitext, "MARKERDELETE", line - 1, marker)
-    iup.Message("Warning!", "Must have a filename to add a breakpoint.")
-    return
-  end
-
-  if value > 0 then
-    debuggerInsertBreakpoint(multitext.filename, line)
-  else
-    debuggerRemoveBreakpoint(multitext.filename, line)
-  end
-  
   debuggerUpdateBreakpointsList()
 end
 
 function debuggerUpdateBreakpointsList()
+  local multitext = iup.GetDialogChild(main_dialog, "MULTITEXT")
   local list_break = iup.GetDialogChild(main_dialog, "LIST_BREAK")
   iup.SetAttribute(list_break, "REMOVEITEM", "ALL")
 
-  for i = 1, #debugger.breakpoints do
-    local item = debugger.breakpoints[i]
-    iup.SetAttribute(list_break, i, "Line "..item.line.." of "..item.filename)
+  local breakpoints = debuggerGetBreakpoints(multitext)
+  local filename = multitext.filename
+  -- TODO add for all open files
+
+  for index, line in pairs(breakpoints) do
+    iup.SetAttribute(list_break, index, "Line "..line.." of "..filename)
+    iup.SetAttribute(list_break, "LINE"..index, line)
+    iup.SetAttribute(list_break, "FILENAME"..index, filename)
   end
 end
 
-function debuggerInsertBreakpoint(filename, line)
-  local item = {}
-  item.filename = filename
-  item.line = line
-  table.insert(debugger.breakpoints, item)
+function debuggerBreaksListAction(index)
+  local list_break = iup.GetDialogChild(main_dialog, "LIST_BREAK")
+  local multitext = iup.GetDialogChild(main_dialog, "MULTITEXT")
+
+  local line = iup.GetAttribute(list_break, "LINE"..index)
+  local filename = iup.GetAttribute(list_break, "FILENAME"..index)
+  
+  if multitext.filename == filename then
+    debuggerSelectLine(tonumber(line))
+  end
 end
 
-function debuggerRemoveBreakpointFromList(index)
-  local item = debugger.breakpoints[index]
+function debuggerRemoveBreakpoint(index)
   local multitext = iup.GetDialogChild(main_dialog, "MULTITEXT")
+  local list_break = iup.GetDialogChild(main_dialog, "LIST_BREAK")
+
+  local line = iup.GetAttribute(list_break, "LINE"..index)
+  local filename = iup.GetAttribute(list_break, "FILENAME"..index)
   
-  if multitext.filename == item.filename then
-    iup.SetAttributeId(main_dialog, "TOGGLEMARKER", item.line-1, 2)
+  if multitext.filename == filename then
+    iup.SetAttributeId(main_dialog, "TOGGLEMARKER", line - 1, 2)
   else
-    debuggerRemoveBreakpoint(item.filename, item.line)
+    -- TODO update other filenames ???
     debuggerUpdateBreakpointsList()
   end
 end
 
-function debuggerRemoveBreakpoint(filename, line)
-  for i = 1, #debugger.breakpoints do
-    local item = debugger.breakpoints[i]
-    if item.filename == filename and item.line == line then
-      table.remove(debugger.breakpoints, i)
-      break
-    end
-  end
-    
-end
-
-function debuggerHasLineBreak(filename, line)
-  for i = 1, #debugger.breakpoints do
-    local item = debugger.breakpoints[i]
-    if item.filename == filename and item.line == line then
-      return true
-    end
-  end
-    
-  return false
+function debuggerHasLineBreak(filename, currentline)
+  local multitext = iup.GetDialogChild(main_dialog, "MULTITEXT")
+  return debuggerHasBreakpoint(multitext, currentline - 1)
 end
 
 ------------------------------------- Locals -------------------------------------
@@ -544,7 +477,7 @@ function debuggerGetDebugLevel()
   return level
 end
 
-function debuggerUpdateState(filename, line)
+function debuggerUpdateState(filename, currentline)
   if debugger.debug_state == DEBUG_STEP_OUT then
     if debugger.stepFuncState == FUNC_STATE_OUTSIDE then
       debuggerSetState(DEBUG_PAUSED)
@@ -554,26 +487,17 @@ function debuggerUpdateState(filename, line)
     end
   elseif debugger.debug_state == DEBUG_STEP_INTO or
       (debugger.debug_state == DEBUG_STEP_OVER and debugger.stepFuncState == FUNC_STATE_OUTSIDE) or
-      (debugger.debug_state ~= DEBUG_PAUSED and debuggerHasLineBreak(filename, line)) then
+      (debugger.debug_state ~= DEBUG_PAUSED and debuggerHasLineBreak(filename, currentline)) then
       debuggerSetState(DEBUG_PAUSED)
   end
 end
 
-function debuggerLineHook(source, currentline)
+function debuggerLineHook(filename, currentline)
   debugger.currentFuncLevel = debuggerGetDebugLevel()
-
-  local filename = string.sub(source, 2)
 
   debuggerUpdateState(filename, currentline)
   
   if debugger.debug_state == DEBUG_PAUSED then
-  
-    if debugger.currentFile ~= filename then
-      local s = string.sub(source, 1, 1)
-      if s == "@" then
-        debuggerReloadFile(filename)
-      end
-    end
   
     debuggerHighlightLine(currentline)
     
@@ -621,7 +545,11 @@ function debuggerHookFunction(event, currentline)
   local info = debug.getinfo(2, "S") -- what, source
   local s = string.sub(info.source, 1, 1)
   if s ~= "@" then
-    return
+    return         -- TODO for now, ignore strings
+  end
+  local filename = string.sub(info.source, 2)
+  if debugger.currentFile ~= filename then
+    return         -- TODO for now, ignore other files
   end
 
   if debugger.debug_state ~= DEBUG_INACTIVE then
@@ -630,31 +558,8 @@ function debuggerHookFunction(event, currentline)
     elseif event == "return" then
       debuggerReturnHook(info.what)
     elseif event == "line" then
-      debuggerLineHook(info.source, currentline)
+      debuggerLineHook(filename, currentline)
     end
-  end
-
-end
-
-function debuggerEndDebug(stop)
-  debug.sethook() -- turns off the hook
-
-  debuggerSetState(DEBUG_INACTIVE)
-
-  if (debugger.restore_value) then 
-    local multitext = iup.GetDialogChild(main_dialog, "MULTITEXT")
-    debuggerReloadFile(multitext.filename) 
-    debugger.restore_value = false
-  end
-
-  local debugtabs = iup.GetDialogChild(main_dialog, "DEBUG_TABS")
-  debugtabs.valuepos = 0
-
-  if stop then
-    print("-- Debug stop\n")
-    error() -- abort processing, no error message
-  else
-    print("-- Debug finish\n")
   end
 end
 
@@ -669,6 +574,22 @@ function debuggerStartDebug(filename)
   debugtabs.valuepos = 1
 
   debug.sethook(debuggerHookFunction, "lcr")
+end
+
+function debuggerEndDebug(stop)
+  debug.sethook() -- turns off the hook
+
+  debuggerSetState(DEBUG_INACTIVE)
+
+  local debugtabs = iup.GetDialogChild(main_dialog, "DEBUG_TABS")
+  debugtabs.valuepos = 0
+
+  if stop then
+    print("-- Debug stop\n")
+    error() -- abort processing, no error message
+  else
+    print("-- Debug finish\n")
+  end
 end
 
 function debuggerRun()
