@@ -18,10 +18,11 @@
 
 /********************************** Utilities *****************************************/
 
-static void saveBookmarks(Ihandle* config, Ihandle* multitext)
+static void saveMarkers(Ihandle* config, Ihandle* multitext)
 {
   int lin = 0, i = 1;
   char mark[10240];
+  Icallback cb;
 
   char* filename = IupGetAttribute(multitext, "FILENAME");
 
@@ -40,14 +41,19 @@ static void saveBookmarks(Ihandle* config, Ihandle* multitext)
   }
 
   IupConfigSetVariableStrId(config, "Bookmarks", "FileLine", i, NULL);
+
+  cb = IupGetCallback(IupGetDialog(multitext), "SAVEMARKERS_CB");
+  if (cb)
+    cb(IupGetDialog(multitext));
 }
 
-static void restoreBookmarks(Ihandle* config, Ihandle* multitext)
+static void restoreMarkers(Ihandle* config, Ihandle* multitext)
 {
   const char* mark;
   int i = 1;
   char filename_str[10240];
   char line_str[10];
+  Icallback cb;
 
   char* filename = IupGetAttribute(multitext, "FILENAME");
 
@@ -68,6 +74,10 @@ static void restoreBookmarks(Ihandle* config, Ihandle* multitext)
     }
     i++;
   } while (mark != NULL);
+
+  cb = IupGetCallback(IupGetDialog(multitext), "RESTOREMARKERS_CB");
+  if (cb)
+    cb(IupGetDialog(multitext));
 }
 
 static void addBookmark(Ihandle* multitext, int lin)
@@ -537,7 +547,7 @@ static void open_file(Ihandle* ih_item, const char* filename)
     if (config)
     {
       IupConfigRecentUpdate(config, filename);
-      restoreBookmarks(config, multitext);
+      restoreMarkers(config, multitext);
     }
 
     free(str);
@@ -563,7 +573,7 @@ static void save_file(Ihandle* multitext)
       update_title(IupGetDialog(multitext), filename, 0);
 
       if (config)
-        saveBookmarks(config, multitext);
+        saveMarkers(config, multitext);
     }
   }
 }
@@ -584,7 +594,7 @@ static void saveas_file(Ihandle* multitext, const char* filename)
     {
       IupConfigRecentUpdate(config, filename);
 
-      saveBookmarks(config, multitext);
+      saveMarkers(config, multitext);
     }
   }
 }
@@ -897,7 +907,7 @@ static int item_exit_action_cb(Ihandle* item_exit)
   if (config)
   {
     Ihandle* multitext = IupGetDialogChild(item_exit, "MULTITEXT");
-    saveBookmarks(config, multitext);
+    saveMarkers(config, multitext);
 
     IupConfigDialogClosed(config, ih, "MainWindow");
     IupConfigSave(config);
@@ -2339,6 +2349,8 @@ Iclass* iupScintillaDlgNewClass(void)
 
   iupClassRegisterCallback(ic, "MARKERCHANGED_CB", "ii");
   iupClassRegisterCallback(ic, "EXIT_CB", "");
+  iupClassRegisterCallback(ic, "SAVEMARKERS_CB", "");
+  iupClassRegisterCallback(ic, "RESTOREMARKERS_CB", "");
 
   iupClassRegisterAttribute(ic, "SUBTITLE", NULL, NULL, IUPAF_SAMEASSYSTEM, "Notepad", IUPAF_NOT_MAPPED | IUPAF_NO_INHERIT);
   iupClassRegisterAttribute(ic, "CONFIG", NULL, NULL, NULL, NULL, IUPAF_IHANDLENAME | IUPAF_NOT_MAPPED | IUPAF_NO_INHERIT);

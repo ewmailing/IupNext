@@ -592,11 +592,6 @@ function debuggerEndDebug(stop)
   end
 end
 
-function debuggerRun()
-  local multitext = iup.GetDialogChild(main_dialog, "MULTITEXT")
-  iup.dostring(multitext.value) 
-end
-
 function debuggerExit()
   if debugger.debug_state ~= DEBUG_INACTIVE then
     debuggerEndDebug(true)

@@ -202,6 +202,69 @@ static int debuggerGetBreakpoints(lua_State *L)
   return 1;
 }
 
+static int savemarkers_cb(Ihandle *ih)
+{
+  int lin = 0, i = 1;
+  char mark[10240];
+
+  Ihandle* multitext = IupGetDialogChild(ih, "MULTITEXT");
+  char* filename = IupGetAttribute(multitext, "FILENAME");
+  Ihandle* config = IupGetAttributeHandle(multitext, "CONFIG");
+
+  while (lin >= 0)
+  {
+    IupSetAttributeId(multitext, "MARKERNEXT", lin, "2");  /* 0010 - marker=1 */
+    lin = IupGetInt(multitext, "LASTMARKERFOUND");
+    if (lin >= 0)
+    {
+      sprintf(mark, "%s#%d", filename, lin);
+      IupConfigSetVariableStrId(config, "Breakpoints", "FileLine", i, mark);
+
+      lin++;
+      i++;
+    }
+  }
+
+  IupConfigSetVariableStrId(config, "Breakpoints", "FileLine", i, NULL);
+
+  return IUP_DEFAULT;
+}
+
+static int restoremarkers_cb(Ihandle *ih)
+{
+  const char* mark;
+  int i = 1;
+  char filename_str[10240];
+  char line_str[10];
+
+  Ihandle* multitext = IupGetDialogChild(ih, "MULTITEXT");
+  char* filename = IupGetAttribute(multitext, "FILENAME");
+  Ihandle* config = IupGetAttributeHandle(multitext, "CONFIG");
+
+  IupSetInt(multitext, "MARKERDELETEALL", 1);
+
+  do
+  {
+    mark = IupConfigGetVariableStrId(config, "Breakpoints", "FileLine", i);
+    if (mark)
+    {
+      iupStrToStrStr(mark, filename_str, line_str, '#');
+      if (iupStrEqual(filename, filename_str))
+      {
+        int lin;
+        iupStrToInt(line_str, &lin);
+        IupSetIntId(multitext, "MARKERADD", lin, 1);
+      }
+    }
+    i++;
+  } while (mark != NULL);
+
+  lua_getglobal(lcmd_state, "debuggerUpdateBreakpointsList");
+  lua_call(lcmd_state, 0, 0);
+
+  return IUP_DEFAULT;
+}
+
 static int marker_changed_cb(Ihandle *ih, int lin, int margin)
 {
   if (margin == 2)
@@ -333,12 +396,17 @@ static int item_debug_action_cb(Ihandle* item)
 
 static int item_run_action_cb(Ihandle *item)
 {
+  char* value, *title;
+  Ihandle* multitext;
+
   if (!IupGetInt(IupGetDialogChild(item, "ITM_RUN"), "ACTIVE")) /* can be called by the hot key in the dialog */
     return IUP_DEFAULT;
 
-  lua_getglobal(lcmd_state, "debuggerRun");
-  lua_call(lcmd_state, 0, 0);
-  (void)item;
+  multitext = IupGetDialogChild(item, "MULTITEXT");
+  value = IupGetAttribute(multitext, "VALUE");
+  title = IupGetAttribute(IupGetDialog(multitext), "TITLE");
+
+  iuplua_dostring(lcmd_state, value, title);
   return IUP_DEFAULT;
 }
 
@@ -1048,6 +1116,7 @@ int main(int argc, char **argv)
 
   IupSetGlobal("GLOBALLAYOUTDLGKEY", "Yes");
 
+  IupSetGlobal("IMAGEAUTOSCALE", "Yes");
   load_all_images_step_images();
 
   L = lcmd_state = luaL_newstate();
@@ -1113,6 +1182,8 @@ int main(int argc, char **argv)
 
   IupSetCallback(main_dialog, "MARKERCHANGED_CB", (Icallback)marker_changed_cb);
   IupSetCallback(main_dialog, "EXIT_CB", (Icallback)exit_cb);
+  IupSetCallback(main_dialog, "SAVEMARKERS_CB", (Icallback)savemarkers_cb);
+  IupSetCallback(main_dialog, "RESTOREMARKERS_CB", (Icallback)restoremarkers_cb);
 
   menu = IupGetAttributeHandle(main_dialog, "MENU");
 
@@ -1203,9 +1274,10 @@ int main(int argc, char **argv)
 }
 
 /* TO DO:
+*** multiple files (IupFlatTabs)
+** Watch for globals
+* detachable Console, Debug, Breakpoints
 - Debug Strings
 - multi-language (portuguese)
-- multiple files (IupFlatTabs)
-- Watch for globals
 - option for a separate Lua State
 */
