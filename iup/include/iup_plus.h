@@ -1072,6 +1072,8 @@ namespace Iup
     int GetVariableIntIdDef(const char* group, const char* key, int id, int def) { return IupConfigGetVariableIntIdDef(ih, group, key, id, def); }
     double GetVariableDoubleIdDef(const char* group, const char* key, int id, double def) { return IupConfigGetVariableDoubleIdDef(ih, group, key, id, def); }
 
+    void SetListVariable(const char *group, const char* key, const char* value, int add) { IupConfigSetListVariable(ih, group, key, value, add); }
+
     void RecentInit(Menu menu, Icallback recent_cb, int max_recent) { IupConfigRecentInit(ih, menu.GetHandle(), recent_cb, max_recent); }
     void RecentUpdate(const char* filename) { IupConfigRecentUpdate(ih, filename); }
 

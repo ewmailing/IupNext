@@ -582,6 +582,7 @@ IupConfigRecentInit
 IupConfigRecentUpdate
 IupConfigDialogShow
 IupConfigDialogClosed
+IupConfigSetListVariable
 
 iupwinMouseMove
 iupwinCreateWindow

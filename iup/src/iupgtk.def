@@ -582,3 +582,4 @@ IupConfigRecentInit
 IupConfigRecentUpdate
 IupConfigDialogShow
 IupConfigDialogClosed
+IupConfigSetListVariable

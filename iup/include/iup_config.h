@@ -41,6 +41,8 @@ double IupConfigGetVariableDoubleIdDef(Ihandle* ih, const char* group, const cha
 
 /****************************************************************/
 
+void IupConfigSetListVariable(Ihandle* ih, const char *group, const char* key, const char* value, int add);
+
 void IupConfigRecentInit(Ihandle* ih, Ihandle* menu, Icallback recent_cb, int max_recent);
 void IupConfigRecentUpdate(Ihandle* ih, const char* filename);
 

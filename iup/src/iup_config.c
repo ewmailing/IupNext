@@ -161,7 +161,7 @@ int IupConfigLoad(Ihandle* ih)
       if (!value)                    
         value = line_buffer;
       else
-        value++;  // Skip =
+        value++;  /* Skip '=' */
 
       IupConfigSetVariableStr(ih, group, key, value);
     }
@@ -343,6 +343,53 @@ double IupConfigGetVariableDoubleId(Ihandle* ih, const char* group, const char* 
 /******************************************************************/
 
 
+void IupConfigSetListVariable(Ihandle* ih, const char *group, const char* key, const char* value, int add)
+{
+  const char* value_id;
+  int last_id, found_id = 0;
+
+  /* First search for the value in the list */
+  int i = 1;
+  do
+  {
+    value_id = IupConfigGetVariableStrId(ih, group, key, i);
+
+    if (value_id && iupStrEqual(value_id, value))
+    {
+      found_id = i;
+      if (add)
+        return; /* nothing to do */
+      else
+        break;  /* remove later */
+    }
+
+    i++;
+  } while (value_id);
+
+  last_id = i - 2;
+
+  if (found_id)
+  {
+    /* remove found_id by moving last item to replace old item */
+    value_id = IupConfigGetVariableStrId(ih, group, key, last_id);
+    IupConfigSetVariableStrId(ih, group, key, found_id, value_id);
+    IupConfigSetVariableStrId(ih, group, key, last_id, NULL);
+  }
+  else
+  {
+    if (add)
+    {
+      /* add new item at the end */
+      IupConfigSetVariableStrId(ih, group, key, last_id + 1, value);
+    }
+    /* if remove, nothing to do */
+  }
+}
+
+
+/******************************************************************/
+
+
 static int iConfigItemRecent_CB(Ihandle* ih_item)
 {
   Ihandle* ih = (Ihandle*)IupGetAttribute(ih_item, "_IUP_CONFIG");
@@ -405,7 +452,7 @@ void IupConfigRecentUpdate(Ihandle* ih, const char* filename)
     /* must update the stack */
     int found = 0;
 
-    // First search for the new filename to avoid duplicates
+    /* First search for the new filename to avoid duplicates */
     int i = 1;
     do
     {
@@ -420,7 +467,7 @@ void IupConfigRecentUpdate(Ihandle* ih, const char* filename)
       i++;
     } while (value && i <= max_recent);
 
-    // simply open space for the new filename
+    /* simply open space for the new filename */
     if (found)
       i = found;
     else
@@ -545,10 +592,10 @@ void IupConfigDialogClosed(Ihandle* ih, Ihandle* dialog, const char* name)
     IupConfigSetVariableInt(ih, name, "Width", width);
     IupConfigSetVariableInt(ih, name, "Height", height);
 
-    maximized = IupGetInt(dialog, "MAXIMIZED"); // Windows Only
+    maximized = IupGetInt(dialog, "MAXIMIZED"); /* Windows Only */
     IupGetIntInt(NULL, "SCREENSIZE", &screen_width, &screen_height);
     if (maximized ||
-        ((x < 0 && (2 * x + width == screen_width)) &&    // Works only for the main screen
+        ((x < 0 && (2 * x + width == screen_width)) &&    /* Works only for the main screen */
         (y < 0 && (2 * y + height == screen_height))))
         IupConfigSetVariableInt(ih, name, "Maximized", 1);
     else
