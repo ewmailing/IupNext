@@ -1,16 +1,16 @@
-console = {}
+
+local console = {}
 
 if (not loadstring) then
   loadstring = load
 end
 
-console.create = function()
-
+function iupConsoleInit(txt_cmdline, mtl_output)
   console.cmdList = {}
   console.currentListInd = 0
 
-  console.txtCmdLine = iup.GetDialogChild(main_dialog, "TXT_CMDLINE")
-  console.mtlOutput = iup.GetDialogChild(main_dialog, "MTL_OUTPUT")
+  console.txtCmdLine = txt_cmdline 
+  console.mtlOutput = mtl_output   
   
   console.hold_caret = false
 end
@@ -19,7 +19,7 @@ end
 --------------------- Command History ---------------------
 
 
-function consoleKeyUpCommand()
+function iupConsoleKeyUpCommand()
   if #console.cmdList > 0 then
     if console.currentListInd >= 1 then
       console.txtCmdLine.value = console.cmdList[console.currentListInd]
@@ -30,7 +30,7 @@ function consoleKeyUpCommand()
   end
 end
 
-function consoleKeyDownCommand()
+function iupConsoleKeyDownCommand()
   if #console.cmdList > 0 then
     if console.currentListInd <= #console.cmdList then
       console.txtCmdLine.value = console.cmdList[console.currentListInd]
@@ -41,20 +41,20 @@ function consoleKeyDownCommand()
   end
 end
 
-function consoleEnterCommandStr(text)
+function iupConsoleEnterCommandStr(text)
   table.insert(console.cmdList, text)
   console.currentListInd = #console.cmdList
   print("> " .. text)
 end
 
-function consoleEnterCommand()
+function iupConsoleEnterCommand()
 
   local command = console.txtCmdLine.value
   if command == nil or command == "" then
     return
   end
 
-  consoleEnterCommandStr(command)
+  iupConsoleEnterCommandStr(command)
 
   local cmd, msg = loadstring(command)
   if (not cmd) then
@@ -65,7 +65,7 @@ function consoleEnterCommand()
   else
     local result = {cmd()}
     for i = 1, #result do
-      consolePrintValue(result[i])
+      iupConsolePrintValue(result[i])
     end
   end
 
@@ -100,7 +100,7 @@ io.write = function(...)
   console.mtlOutput.appendnewline="Yes"
 end
 
-function consoleValueToString(v)
+function iupConsoleValueToString(v)
   if (type(v) == "string") then
     return "\"" .. v .. "\""
   else 
@@ -108,27 +108,27 @@ function consoleValueToString(v)
   end
 end
 
-function consolePrintTable(t)
+function iupConsolePrintTable(t)
   local str = "{\n"
   local tmp = {}
   for i, k in ipairs(t) do 
-    str = str .. "  "..consoleValueToString(k)..",\n"
+    str = str .. "  "..iupConsoleValueToString(k)..",\n"
     tmp[i] = true
   end
   for i, k in pairs(t) do 
     if (not tmp[i]) then
-      str = str .. "  "..tostring(i).. " = "..consoleValueToString(k)..",\n"
+      str = str .. "  "..tostring(i).. " = "..iupConsoleValueToString(k)..",\n"
     end
   end
   str = str .. "}"
   print(str)
 end
 
-function consolePrintValue(v)
+function iupConsolePrintValue(v)
   if (type(v) == "table") then 
-    consolePrintTable(v)
+    iupConsolePrintTable(v)
   else
-    print(consoleValueToString(v))
+    print(iupConsoleValueToString(v))
   end
 end
 
@@ -136,7 +136,7 @@ end
 --------------------- Utilities ---------------------
 
 
-function consoleListFuncs()
+function iupConsoleListFuncs()
   console.hold_caret = true
 
   local global = _G
@@ -152,7 +152,7 @@ function consoleListFuncs()
   console.mtlOutput.scrollto = "99999999:1"
 end
 
-function consoleListVars()
+function iupConsoleListVars()
   console.hold_caret = true
 
   local global = _G
@@ -168,17 +168,12 @@ function consoleListVars()
   console.mtlOutput.scrollto = "99999999:1"
 end
 
-function consoleVersionInfo()
+function iupConsoleVersionInfo()
   print(_COPYRIGHT) -- Lua Copyright
   print("IUP " .. iup._VERSION .. "  " .. iup._COPYRIGHT)
 end
 
-function consoleClear()
+function iupConsoleClear()
   console.mtlOutput.value = ""
 end
 
-
---------------------- Module Init ---------------------
-
-
-console.create()

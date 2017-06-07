@@ -9,7 +9,7 @@ local DEBUG_PAUSED = 7 -- debug should be active, but paused
 local FUNC_STATE_INSIDE = 1
 local FUNC_STATE_OUTSIDE = 2
 
-debugger = {
+local debugger = {
   debug_state = DEBUG_INACTIVE,
 
   currentFuncLevel = 0,
@@ -19,11 +19,18 @@ debugger = {
 
   currentFile = nil,
   currentLine = nil,
+
+  main_dialog = nil,
 }
+
+function iupDebuggerInit(main_dialog)
+  debugger.main_dialog = main_dialog
+end
+
 
 ------------------------------------- User Interface State -------------------------------------
 
-function debuggerSetStateString(state)
+function iupDebuggerSetStateString(state)
   local map_state = {
     DEBUG_INACTIVE = DEBUG_INACTIVE,
     DEBUG_ACTIVE = DEBUG_ACTIVE,
@@ -34,22 +41,22 @@ function debuggerSetStateString(state)
     DEBUG_PAUSED = DEBUG_PAUSED,
   }
 
-  debuggerSetState(map_state[state])
+  iupDebuggerSetState(map_state[state])
 end
 
-function debuggerSetState(st)
+function iupDebuggerSetState(st)
   local stop, step, pause, cont, run, dbg, curline
 
   if debugger.debug_state == st then
     return
   end
 
-  local zbox = iup.GetDialogChild(main_dialog, "ZBOX_DEBUG_CONTINUE")
-  local multitext = iup.GetDialogChild(main_dialog, "MULTITEXT")
+  local zbox = iup.GetDialogChild(debugger.main_dialog, "ZBOX_DEBUG_CONTINUE")
+  local multitext = iup.GetDialogChild(debugger.main_dialog, "MULTITEXT")
   multitext.readonly = "Yes"
 
   if st == DEBUG_STOPPED then
-    local btn_debug = iup.GetDialogChild(main_dialog, "BTN_DEBUG")
+    local btn_debug = iup.GetDialogChild(debugger.main_dialog, "BTN_DEBUG")
     zbox.value = btn_debug
 
     stop = "NO"
@@ -60,7 +67,7 @@ function debuggerSetState(st)
     dbg = "NO"
     curline = "NO"
   elseif st == DEBUG_ACTIVE or st == DEBUG_STEP_INTO or st == DEBUG_STEP_OVER or st == DEBUG_STEP_OUT then
-    local btn_continue = iup.GetDialogChild(main_dialog, "BTN_CONTINUE")
+    local btn_continue = iup.GetDialogChild(debugger.main_dialog, "BTN_CONTINUE")
     zbox.value = btn_continue
 
     stop = "YES"
@@ -79,7 +86,7 @@ function debuggerSetState(st)
       debugger.stepFuncState = FUNC_STATE_OUTSIDE
     end
   elseif st == DEBUG_PAUSED then
-    local btn_continue = iup.GetDialogChild(main_dialog, "BTN_CONTINUE")
+    local btn_continue = iup.GetDialogChild(debugger.main_dialog, "BTN_CONTINUE")
     zbox.value = btn_continue
 
     stop = "YES"
@@ -90,7 +97,7 @@ function debuggerSetState(st)
     dbg = "NO"
     curline = "Yes"
   else -- st == DEBUG_INACTIVE
-    local btn_debug = iup.GetDialogChild(main_dialog, "BTN_DEBUG")
+    local btn_debug = iup.GetDialogChild(debugger.main_dialog, "BTN_DEBUG")
     zbox.value = btn_debug
 
     stop = "NO"
@@ -102,8 +109,8 @@ function debuggerSetState(st)
     curline = "NO"
 
     multitext.readonly = "No"
-    debuggerClearLocalVariablesList()
-    debuggerClearStackList()
+    iupDebuggerClearLocalVariablesList()
+    iupDebuggerClearStackList()
   end
     
   debugger.debug_state = st
@@ -111,34 +118,34 @@ function debuggerSetState(st)
   multitext.markerdeleteall = 2 -- current line highlight
   multitext.markerdeleteall = 3 -- current line arrow
 
-  iup.SetAttribute(iup.GetDialogChild(main_dialog, "ITM_RUN"), "ACTIVE", run)
-  iup.SetAttribute(iup.GetDialogChild(main_dialog, "ITM_STOP"), "ACTIVE", stop)
-  iup.SetAttribute(iup.GetDialogChild(main_dialog, "ITM_PAUSE"), "ACTIVE", pause)
-  iup.SetAttribute(iup.GetDialogChild(main_dialog, "ITM_CONTINUE"), "ACTIVE", cont)
-  iup.SetAttribute(iup.GetDialogChild(main_dialog, "ITM_DEBUG"), "ACTIVE", dbg)
-  iup.SetAttribute(iup.GetDialogChild(main_dialog, "ITM_STEPINTO"), "ACTIVE", step)
-  iup.SetAttribute(iup.GetDialogChild(main_dialog, "ITM_STEPOVER"), "ACTIVE", step)
-  iup.SetAttribute(iup.GetDialogChild(main_dialog, "ITM_STEPOUT"), "ACTIVE", step)
-  iup.SetAttribute(iup.GetDialogChild(main_dialog, "ITM_CURRENTLINE"), "ACTIVE", curline)
-  iup.SetAttribute(iup.GetDialogChild(main_dialog, "BTN_RUN"), "ACTIVE", run)
-  iup.SetAttribute(iup.GetDialogChild(main_dialog, "BTN_STOP"), "ACTIVE", stop)
-  iup.SetAttribute(iup.GetDialogChild(main_dialog, "BTN_PAUSE"), "ACTIVE", pause)
-  iup.SetAttribute(iup.GetDialogChild(main_dialog, "BTN_CONTINUE"), "ACTIVE", cont)
-  iup.SetAttribute(iup.GetDialogChild(main_dialog, "BTN_DEBUG"), "ACTIVE", dbg)
-  iup.SetAttribute(iup.GetDialogChild(main_dialog, "BTN_STEPINTO"), "ACTIVE", step)
-  iup.SetAttribute(iup.GetDialogChild(main_dialog, "BTN_STEPOVER"), "ACTIVE", step)
-  iup.SetAttribute(iup.GetDialogChild(main_dialog, "BTN_STEPOUT"), "ACTIVE", step)
-  iup.SetAttribute(iup.GetDialogChild(main_dialog, "BTN_CURRENTLINE"), "ACTIVE", curline)
+  iup.SetAttribute(iup.GetDialogChild(debugger.main_dialog, "ITM_RUN"), "ACTIVE", run)
+  iup.SetAttribute(iup.GetDialogChild(debugger.main_dialog, "ITM_STOP"), "ACTIVE", stop)
+  iup.SetAttribute(iup.GetDialogChild(debugger.main_dialog, "ITM_PAUSE"), "ACTIVE", pause)
+  iup.SetAttribute(iup.GetDialogChild(debugger.main_dialog, "ITM_CONTINUE"), "ACTIVE", cont)
+  iup.SetAttribute(iup.GetDialogChild(debugger.main_dialog, "ITM_DEBUG"), "ACTIVE", dbg)
+  iup.SetAttribute(iup.GetDialogChild(debugger.main_dialog, "ITM_STEPINTO"), "ACTIVE", step)
+  iup.SetAttribute(iup.GetDialogChild(debugger.main_dialog, "ITM_STEPOVER"), "ACTIVE", step)
+  iup.SetAttribute(iup.GetDialogChild(debugger.main_dialog, "ITM_STEPOUT"), "ACTIVE", step)
+  iup.SetAttribute(iup.GetDialogChild(debugger.main_dialog, "ITM_CURRENTLINE"), "ACTIVE", curline)
+  iup.SetAttribute(iup.GetDialogChild(debugger.main_dialog, "BTN_RUN"), "ACTIVE", run)
+  iup.SetAttribute(iup.GetDialogChild(debugger.main_dialog, "BTN_STOP"), "ACTIVE", stop)
+  iup.SetAttribute(iup.GetDialogChild(debugger.main_dialog, "BTN_PAUSE"), "ACTIVE", pause)
+  iup.SetAttribute(iup.GetDialogChild(debugger.main_dialog, "BTN_CONTINUE"), "ACTIVE", cont)
+  iup.SetAttribute(iup.GetDialogChild(debugger.main_dialog, "BTN_DEBUG"), "ACTIVE", dbg)
+  iup.SetAttribute(iup.GetDialogChild(debugger.main_dialog, "BTN_STEPINTO"), "ACTIVE", step)
+  iup.SetAttribute(iup.GetDialogChild(debugger.main_dialog, "BTN_STEPOVER"), "ACTIVE", step)
+  iup.SetAttribute(iup.GetDialogChild(debugger.main_dialog, "BTN_STEPOUT"), "ACTIVE", step)
+  iup.SetAttribute(iup.GetDialogChild(debugger.main_dialog, "BTN_CURRENTLINE"), "ACTIVE", curline)
 end                   
 
-function debuggerHighlightLine(currentline)
+function iupDebuggerHighlightLine(currentline)
   if currentline == nil or currentline <= 0 then
     return
   end
 
   debugger.currentLine = currentline
 
-  local multitext = iup.GetDialogChild(main_dialog, "MULTITEXT")
+  local multitext = iup.GetDialogChild(debugger.main_dialog, "MULTITEXT")
   local pos = iup.TextConvertLinColToPos(multitext, currentline-1, 0) -- line here starts at 0
   multitext.caretpos = pos
   multitext.markerdeleteall = 2
@@ -147,20 +154,20 @@ function debuggerHighlightLine(currentline)
   multitext["markeradd"..currentline-1] = 3
 end
 
-function debuggerShowCurrentLine()
+function iupDebuggerShowCurrentLine()
   if debugger.currentLine then
-    local multitext = iup.GetDialogChild(main_dialog, "MULTITEXT")
+    local multitext = iup.GetDialogChild(debugger.main_dialog, "MULTITEXT")
     local pos = iup.TextConvertLinColToPos(multitext, debugger.currentLine-1, 0) -- line here starts at 0
     multitext.caretpos = pos
   end
 end
 
-function debuggerSelectLine(currentline)
+function iupDebuggerSelectLine(currentline)
   if currentline == nil or currentline <= 0 then
     return
   end
 
-  local multitext = iup.GetDialogChild(main_dialog, "MULTITEXT")
+  local multitext = iup.GetDialogChild(debugger.main_dialog, "MULTITEXT")
   local pos = iup.TextConvertLinColToPos(multitext, currentline-1, 0) -- line here starts at 0
   multitext.caretpos = pos
   multitext.selection = currentline-1 .. ",0:" .. currentline-1 .. ",9999"
@@ -169,32 +176,32 @@ end
 
 ------------------------------------- Breakpoints -------------------------------------
 
-function debuggerNewBreakpoint()
-  local multitext = iup.GetDialogChild(main_dialog, "MULTITEXT")
+function iupDebuggerNewBreakpoint()
+  local multitext = iup.GetDialogChild(debugger.main_dialog, "MULTITEXT")
   local fname = multitext.filename
   if (not fname) then fname = "" end
   local status, filename, line = iup.GetParam("New Breakpoint", nil, "Filename: %s\nLine: %i\n", fname, 1)
 
   if (status) then
     iup.SetAttributeId(multitext, "MARKERADD", line - 1, 1)-- in user interface line starts at 1, in Scintilla starts at 0
-    debuggerUpdateBreakpointsList()
+    iupDebuggerUpdateBreakpointsList()
   end
 end
 
-function debuggerRemoveAllBreakpoints()
-  local multitext = iup.GetDialogChild(main_dialog, "MULTITEXT")
+function iupDebuggerRemoveAllBreakpoints()
+  local multitext = iup.GetDialogChild(debugger.main_dialog, "MULTITEXT")
   
   multitext.markerdeleteall = 1
   
-  debuggerUpdateBreakpointsList()
+  iupDebuggerUpdateBreakpointsList()
 end
 
-function debuggerUpdateBreakpointsList()
-  local multitext = iup.GetDialogChild(main_dialog, "MULTITEXT")
-  local list_break = iup.GetDialogChild(main_dialog, "LIST_BREAK")
+function iupDebuggerUpdateBreakpointsList()
+  local multitext = iup.GetDialogChild(debugger.main_dialog, "MULTITEXT")
+  local list_break = iup.GetDialogChild(debugger.main_dialog, "LIST_BREAK")
   iup.SetAttribute(list_break, "REMOVEITEM", "ALL")
 
-  local breakpoints = debuggerGetBreakpoints(multitext)
+  local breakpoints = iupDebuggerGetBreakpoints(multitext)
   local filename = multitext.filename
   -- TODO add for all open files
 
@@ -205,48 +212,48 @@ function debuggerUpdateBreakpointsList()
   end
 end
 
-function debuggerBreaksListAction(index)
-  local list_break = iup.GetDialogChild(main_dialog, "LIST_BREAK")
-  local multitext = iup.GetDialogChild(main_dialog, "MULTITEXT")
+function iupDebuggerBreaksListAction(index)
+  local list_break = iup.GetDialogChild(debugger.main_dialog, "LIST_BREAK")
+  local multitext = iup.GetDialogChild(debugger.main_dialog, "MULTITEXT")
 
   local line = iup.GetAttribute(list_break, "LINE"..index)
   local filename = iup.GetAttribute(list_break, "FILENAME"..index)
   
   if multitext.filename == filename then
-    debuggerSelectLine(tonumber(line))
+    iupDebuggerSelectLine(tonumber(line))
   end
 end
 
-function debuggerRemoveBreakpoint(index)
-  local multitext = iup.GetDialogChild(main_dialog, "MULTITEXT")
-  local list_break = iup.GetDialogChild(main_dialog, "LIST_BREAK")
+function iupDebuggerRemoveBreakpoint(index)
+  local multitext = iup.GetDialogChild(debugger.main_dialog, "MULTITEXT")
+  local list_break = iup.GetDialogChild(debugger.main_dialog, "LIST_BREAK")
 
   local line = iup.GetAttribute(list_break, "LINE"..index)
   local filename = iup.GetAttribute(list_break, "FILENAME"..index)
   
   if multitext.filename == filename then
-    iup.SetAttributeId(main_dialog, "TOGGLEMARKER", line - 1, 2)
+    iup.SetAttributeId(debugger.main_dialog, "TOGGLEMARKER", line - 1, 2)
   else
     -- TODO update other filenames ???
-    debuggerUpdateBreakpointsList()
+    iupDebuggerUpdateBreakpointsList()
   end
 end
 
-function debuggerHasLineBreak(filename, currentline)
-  local multitext = iup.GetDialogChild(main_dialog, "MULTITEXT")
-  return debuggerHasBreakpoint(multitext, currentline - 1)
+function iupDebuggerHasLineBreak(filename, currentline)
+  local multitext = iup.GetDialogChild(debugger.main_dialog, "MULTITEXT")
+  return iupDebuggerHasBreakpoint(multitext, currentline - 1)
 end
 
 ------------------------------------- Locals -------------------------------------
 
-function debuggerClearLocalVariablesList()
-  iup.SetAttribute(iup.GetDialogChild(main_dialog, "PRINT_ALLLOCALS"), "ACTIVE", "NO")
-  iup.SetAttribute(iup.GetDialogChild(main_dialog, "PRINT_LOCAL"), "ACTIVE", "NO")
-  iup.SetAttribute(iup.GetDialogChild(main_dialog, "SET_LOCAL"), "ACTIVE", "NO")
-  iup.SetAttribute(iup.GetDialogChild(main_dialog, "LIST_LOCAL"), "REMOVEITEM", "ALL")
+function iupDebuggerClearLocalVariablesList()
+  iup.SetAttribute(iup.GetDialogChild(debugger.main_dialog, "PRINT_ALLLOCALS"), "ACTIVE", "NO")
+  iup.SetAttribute(iup.GetDialogChild(debugger.main_dialog, "PRINT_LOCAL"), "ACTIVE", "NO")
+  iup.SetAttribute(iup.GetDialogChild(debugger.main_dialog, "SET_LOCAL"), "ACTIVE", "NO")
+  iup.SetAttribute(iup.GetDialogChild(debugger.main_dialog, "LIST_LOCAL"), "REMOVEITEM", "ALL")
 end
 
-function debuggerGetObjectType(value)
+function iupDebuggerGetObjectType(value)
   local valueType = type(value)
   if valueType == "string" or valueType == "number" then
     return value
@@ -262,8 +269,8 @@ function debuggerGetObjectType(value)
   return "<unknown>"
 end
 
-function debuggerSetLocalVariable()
-  local local_list = iup.GetDialogChild(main_dialog, "LIST_LOCAL")
+function iupDebuggerSetLocalVariable()
+  local local_list = iup.GetDialogChild(debugger.main_dialog, "LIST_LOCAL")
   local index = local_list.value
   if (not index or tonumber(index) == 0) then
     iup.Message("Warning!", "Select a variable on the list.")
@@ -289,11 +296,11 @@ function debuggerSetLocalVariable()
   end
 end
 
-function debuggerPrintLocalVariable()
-  local local_list = iup.GetDialogChild(main_dialog, "LIST_LOCAL")
+function iupDebuggerPrintLocalVariable()
+  local local_list = iup.GetDialogChild(debugger.main_dialog, "LIST_LOCAL")
   local index = local_list.value
 
-  local debugtabs = iup.GetDialogChild(main_dialog, "DEBUG_TABS")
+  local debugtabs = iup.GetDialogChild(debugger.main_dialog, "DEBUG_TABS")
   debugtabs.valuepos = 0
 
   local level = iup.GetAttribute(local_list, "LEVEL"..index)
@@ -302,11 +309,11 @@ function debuggerPrintLocalVariable()
   print(local_list[index] .. "  (level="..level..", pos="..pos..")")
 end
 
-function debuggerPrintAllLocalVariables()
-  local local_list = iup.GetDialogChild(main_dialog, "LIST_LOCAL")
+function iupDebuggerPrintAllLocalVariables()
+  local local_list = iup.GetDialogChild(debugger.main_dialog, "LIST_LOCAL")
   local count = local_list.count
 
-  local debugtabs = iup.GetDialogChild(main_dialog, "DEBUG_TABS")
+  local debugtabs = iup.GetDialogChild(debugger.main_dialog, "DEBUG_TABS")
   debugtabs.valuepos = 0
 
   for index = 1, count do
@@ -317,19 +324,19 @@ function debuggerPrintAllLocalVariables()
   end
 end
 
-function debuggerUpdateLocalVariablesList(level, actual_level)
+function iupDebuggerUpdateLocalVariablesList(level, actual_level)
   local name, value
   local pos = 1
   local index = 1
 
-  debuggerClearLocalVariablesList()
+  iupDebuggerClearLocalVariablesList()
 
-  local local_list = iup.GetDialogChild(main_dialog, "LIST_LOCAL")
+  local local_list = iup.GetDialogChild(debugger.main_dialog, "LIST_LOCAL")
 
   name, value = debug.getlocal(level, pos)
   while name ~= nil do
     if string.sub(name, 1, 1) ~= "(" then
-      iup.SetAttribute(local_list, index, name.." = "..debuggerGetObjectType(value))
+      iup.SetAttribute(local_list, index, name.." = "..iupDebuggerGetObjectType(value))
       iup.SetAttribute(local_list, "POS"..index, pos)
       iup.SetAttribute(local_list, "LEVEL"..index, actual_level)
       index = index + 1
@@ -339,9 +346,9 @@ function debuggerUpdateLocalVariablesList(level, actual_level)
   end
 
   if (index > 1) then
-    iup.SetAttribute(iup.GetDialogChild(main_dialog, "PRINT_LOCAL"), "ACTIVE", "Yes")
-    iup.SetAttribute(iup.GetDialogChild(main_dialog, "PRINT_ALLLOCALS"), "ACTIVE", "Yes")
-    iup.SetAttribute(iup.GetDialogChild(main_dialog, "SET_LOCAL"), "ACTIVE", "Yes")
+    iup.SetAttribute(iup.GetDialogChild(debugger.main_dialog, "PRINT_LOCAL"), "ACTIVE", "Yes")
+    iup.SetAttribute(iup.GetDialogChild(debugger.main_dialog, "PRINT_ALLLOCALS"), "ACTIVE", "Yes")
+    iup.SetAttribute(iup.GetDialogChild(debugger.main_dialog, "SET_LOCAL"), "ACTIVE", "Yes")
 
     local_list.value = 1 -- select first item on list
   end
@@ -349,33 +356,33 @@ end
 
 ------------------------------------- Stack -------------------------------------
 
-function debuggerStackListAction(index)
+function iupDebuggerStackListAction(index)
   local level = index + debugger.startLevel - 1  -- this is level of the function
   level = level + 1 -- must fix the level because we called a Lua function
   local info = debug.getinfo(level, "Sl") -- source, currentline
   
   local filename = string.sub(info.source, 2)
   if debugger.currentFile == filename then
-    debuggerSelectLine(info.currentline)
+    iupDebuggerSelectLine(info.currentline)
   end
   
-  debuggerUpdateLocalVariablesList(level + 1, level) -- this is the level of the local variables inside that function
+  iupDebuggerUpdateLocalVariablesList(level + 1, level) -- this is the level of the local variables inside that function
                                                      -- the actual level does not includes the fix
 end
 
-function debuggerClearStackList()
-  debuggerClearLocalVariablesList()
+function iupDebuggerClearStackList()
+  iupDebuggerClearLocalVariablesList()
 
-  iup.SetAttribute(iup.GetDialogChild(main_dialog, "PRINT_LEVEL"), "ACTIVE", "NO")
-  iup.SetAttribute(iup.GetDialogChild(main_dialog, "PRINT_STACK"), "ACTIVE", "NO")
-  iup.SetAttribute(iup.GetDialogChild(main_dialog, "LIST_STACK"), "REMOVEITEM", "ALL")
+  iup.SetAttribute(iup.GetDialogChild(debugger.main_dialog, "PRINT_LEVEL"), "ACTIVE", "NO")
+  iup.SetAttribute(iup.GetDialogChild(debugger.main_dialog, "PRINT_STACK"), "ACTIVE", "NO")
+  iup.SetAttribute(iup.GetDialogChild(debugger.main_dialog, "LIST_STACK"), "REMOVEITEM", "ALL")
 end
 
-function debuggerPrintStackLevel()
-  local list_stack = iup.GetDialogChild(main_dialog, "LIST_STACK")
+function iupDebuggerPrintStackLevel()
+  local list_stack = iup.GetDialogChild(debugger.main_dialog, "LIST_STACK")
   local index = list_stack.value
 
-  local debugtabs = iup.GetDialogChild(main_dialog, "DEBUG_TABS")
+  local debugtabs = iup.GetDialogChild(debugger.main_dialog, "DEBUG_TABS")
   debugtabs.valuepos = 0
 
   local level = index + debugger.startLevel - 1
@@ -387,11 +394,11 @@ function debuggerPrintStackLevel()
   end
 end
 
-function debuggerPrintStack()
-  local list_stack = iup.GetDialogChild(main_dialog, "LIST_STACK")
+function iupDebuggerPrintStack()
+  local list_stack = iup.GetDialogChild(debugger.main_dialog, "LIST_STACK")
   local count = list_stack.count
 
-  local debugtabs = iup.GetDialogChild(main_dialog, "DEBUG_TABS")
+  local debugtabs = iup.GetDialogChild(debugger.main_dialog, "DEBUG_TABS")
   debugtabs.valuepos = 0
 
   for index = 1, count do
@@ -405,13 +412,13 @@ function debuggerPrintStack()
   end
 end
 
-function debuggerUpdateStackList()
+function iupDebuggerUpdateStackList()
   local info, name, defined
   local level = debugger.startLevel
   
-  debuggerClearStackList()
+  iupDebuggerClearStackList()
 
-  local list_stack = iup.GetDialogChild(main_dialog, "LIST_STACK")
+  local list_stack = iup.GetDialogChild(debugger.main_dialog, "LIST_STACK")
   
   info = debug.getinfo(level, "Snl") -- name, what, currentline
   while  info ~= nil do
@@ -457,11 +464,11 @@ function debuggerUpdateStackList()
   end
   
   if level > debugger.startLevel then
-    iup.SetAttribute(iup.GetDialogChild(main_dialog, "PRINT_LEVEL"), "ACTIVE", "YES")
-    iup.SetAttribute(iup.GetDialogChild(main_dialog, "PRINT_STACK"), "ACTIVE", "YES")
+    iup.SetAttribute(iup.GetDialogChild(debugger.main_dialog, "PRINT_LEVEL"), "ACTIVE", "YES")
+    iup.SetAttribute(iup.GetDialogChild(debugger.main_dialog, "PRINT_STACK"), "ACTIVE", "YES")
 
     list_stack.value = 1 -- select first item on list
-    debuggerUpdateLocalVariablesList(debugger.startLevel + 1, debugger.startLevel + 1) -- this is the level of the local variables inside that function
+    iupDebuggerUpdateLocalVariablesList(debugger.startLevel + 1, debugger.startLevel + 1) -- this is the level of the local variables inside that function
   end
   
 end
@@ -469,7 +476,7 @@ end
 
 ----------------------------  Debug State       --------------------------
 
-function debuggerGetDebugLevel()
+function iupDebuggerGetDebugLevel()
   local level = -1
   repeat 
     level = level+1
@@ -477,31 +484,31 @@ function debuggerGetDebugLevel()
   return level
 end
 
-function debuggerUpdateState(filename, currentline)
+function iupDebuggerUpdateState(filename, currentline)
   if debugger.debug_state == DEBUG_STEP_OUT then
     if debugger.stepFuncState == FUNC_STATE_OUTSIDE then
-      debuggerSetState(DEBUG_PAUSED)
+      iupDebuggerSetState(DEBUG_PAUSED)
       
       debugger.stepFuncState = FUNC_STATE_OUTSIDE
       debugger.stepFuncLevel = debugger.currentFuncLevel
     end
   elseif debugger.debug_state == DEBUG_STEP_INTO or
       (debugger.debug_state == DEBUG_STEP_OVER and debugger.stepFuncState == FUNC_STATE_OUTSIDE) or
-      (debugger.debug_state ~= DEBUG_PAUSED and debuggerHasLineBreak(filename, currentline)) then
-      debuggerSetState(DEBUG_PAUSED)
+      (debugger.debug_state ~= DEBUG_PAUSED and iupDebuggerHasLineBreak(filename, currentline)) then
+      iupDebuggerSetState(DEBUG_PAUSED)
   end
 end
 
-function debuggerLineHook(filename, currentline)
-  debugger.currentFuncLevel = debuggerGetDebugLevel()
+function iupDebuggerLineHook(filename, currentline)
+  debugger.currentFuncLevel = iupDebuggerGetDebugLevel()
 
-  debuggerUpdateState(filename, currentline)
+  iupDebuggerUpdateState(filename, currentline)
   
   if debugger.debug_state == DEBUG_PAUSED then
   
-    debuggerHighlightLine(currentline)
+    iupDebuggerHighlightLine(currentline)
     
-    debuggerUpdateStackList()
+    iupDebuggerUpdateStackList()
     
     debug.sethook() -- turns off the hook
     
@@ -509,29 +516,29 @@ function debuggerLineHook(filename, currentline)
       iup.LoopStep()
     end
     
-    debug.sethook(debuggerHookFunction, "lcr") -- restore the hook
+    debug.sethook(iupDebuggerHookFunction, "lcr") -- restore the hook
   end
   
   if debugger.debug_state == DEBUG_STOPPED then
-    debuggerEndDebug(true)
+    iupDebuggerEndDebug(true)
   end
 end
 
-function debuggerCallHook()
+function iupDebuggerCallHook()
   if debugger.debug_state == DEBUG_STEP_OVER then
     if debugger.stepFuncLevel == 0 then
-      local level = debuggerGetDebugLevel()
+      local level = iupDebuggerGetDebugLevel()
       debugger.stepFuncState = FUNC_STATE_INSIDE
       debugger.stepFuncLevel = level
     end
   end
 end
 
-function debuggerReturnHook(what)
-  local level = debuggerGetDebugLevel()
+function iupDebuggerReturnHook(what)
+  local level = iupDebuggerGetDebugLevel()
 
   if what == "main" then
-    debuggerSetState(DEBUG_INACTIVE)
+    iupDebuggerSetState(DEBUG_INACTIVE)
   elseif debugger.debug_state == DEBUG_STEP_OUT or debugger.debug_state == DEBUG_STEP_OVER then
     if debugger.stepFuncLevel == level then
       debugger.stepFuncState = FUNC_STATE_OUTSIDE
@@ -540,7 +547,7 @@ function debuggerReturnHook(what)
   end
 end
 
-function debuggerHookFunction(event, currentline)
+function iupDebuggerHookFunction(event, currentline)
   -- Inside a hook, you can call getinfo with level 2 to get more information about the running function
   local info = debug.getinfo(2, "S") -- what, source
   local s = string.sub(info.source, 1, 1)
@@ -554,34 +561,34 @@ function debuggerHookFunction(event, currentline)
 
   if debugger.debug_state ~= DEBUG_INACTIVE then
     if event == "call" then
-      debuggerCallHook()
+      iupDebuggerCallHook()
     elseif event == "return" then
-      debuggerReturnHook(info.what)
+      iupDebuggerReturnHook(info.what)
     elseif event == "line" then
-      debuggerLineHook(filename, currentline)
+      iupDebuggerLineHook(filename, currentline)
     end
   end
 end
 
-function debuggerStartDebug(filename)
-  local debugtabs = iup.GetDialogChild(main_dialog, "DEBUG_TABS")
-  local multitext = iup.GetDialogChild(main_dialog, "MULTITEXT")
+function iupDebuggerStartDebug(filename)
+  local debugtabs = iup.GetDialogChild(debugger.main_dialog, "DEBUG_TABS")
+  local multitext = iup.GetDialogChild(debugger.main_dialog, "MULTITEXT")
   debugger.currentFile = multitext.filename
-  debugger.startLevel = debuggerGetDebugLevel() + 1 -- usually 3+1=4
+  debugger.startLevel = iupDebuggerGetDebugLevel() + 1 -- usually 3+1=4
   
   print("-- Debug start\n")
-  debuggerSetState(DEBUG_ACTIVE)
+  iupDebuggerSetState(DEBUG_ACTIVE)
   debugtabs.valuepos = 1
 
-  debug.sethook(debuggerHookFunction, "lcr")
+  debug.sethook(iupDebuggerHookFunction, "lcr")
 end
 
-function debuggerEndDebug(stop)
+function iupDebuggerEndDebug(stop)
   debug.sethook() -- turns off the hook
 
-  debuggerSetState(DEBUG_INACTIVE)
+  iupDebuggerSetState(DEBUG_INACTIVE)
 
-  local debugtabs = iup.GetDialogChild(main_dialog, "DEBUG_TABS")
+  local debugtabs = iup.GetDialogChild(debugger.main_dialog, "DEBUG_TABS")
   debugtabs.valuepos = 0
 
   if stop then
@@ -592,8 +599,8 @@ function debuggerEndDebug(stop)
   end
 end
 
-function debuggerExit()
+function iupDebuggerExit()
   if debugger.debug_state ~= DEBUG_INACTIVE then
-    debuggerEndDebug(true)
+    iupDebuggerEndDebug(true)
   end
 end

@@ -13,6 +13,8 @@
 
 #include <iuplua.h>
 
+//#include "iup_str.h"
+
 void load_all_images_step_images(void);
 
 
@@ -162,7 +164,7 @@ static char *filterList(const char *text, const char *list)
 static int exit_cb(Ihandle *ih)
 {
   (void)ih;
-  lua_getglobal(lcmd_state, "debuggerExit");
+  lua_getglobal(lcmd_state, "iupDebuggerExit");
   lua_call(lcmd_state, 0, 0);
   return IUP_DEFAULT;
 }
@@ -259,7 +261,7 @@ static int restoremarkers_cb(Ihandle *ih)
     i++;
   } while (mark != NULL);
 
-  lua_getglobal(lcmd_state, "debuggerUpdateBreakpointsList");
+  lua_getglobal(lcmd_state, "iupDebuggerUpdateBreakpointsList");
   lua_call(lcmd_state, 0, 0);
 
   return IUP_DEFAULT;
@@ -285,7 +287,7 @@ static int marker_changed_cb(Ihandle *ih, int lin, int margin)
     else
       IupSetIntId(multitext, "MARKERADD", lin, 1);
 
-    lua_getglobal(lcmd_state, "debuggerUpdateBreakpointsList");
+    lua_getglobal(lcmd_state, "iupDebuggerUpdateBreakpointsList");
     lua_call(lcmd_state, 0, 0);
   }
 
@@ -350,11 +352,11 @@ static int item_autocomplete_action_cb(Ihandle* ih)
   return IUP_DEFAULT;
 }
 
-static void debug_set_state(lua_State *l, const char* state)
+static void debug_set_state(lua_State *L, const char* state)
 {
-  lua_getglobal(l, "debuggerSetStateString");
-  lua_pushstring(l, state);
-  lua_call(l, 1, 0);
+  lua_getglobal(L, "iupDebuggerSetStateString");
+  lua_pushstring(L, state);
+  lua_call(L, 1, 0);
 }
 
 static int save_check(Ihandle* ih_item)
@@ -381,14 +383,14 @@ static int item_debug_action_cb(Ihandle* item)
   if (!save_check(item))
     return IUP_DEFAULT;
 
-  lua_getglobal(lcmd_state, "debuggerStartDebug");
+  lua_getglobal(lcmd_state, "iupDebuggerStartDebug");
   lua_call(lcmd_state, 0, 0);
 
   multitext = IupGetDialogChild(item, "MULTITEXT");
   filename = IupGetAttribute(multitext, "FILENAME");
   iuplua_dofile(lcmd_state, filename);
 
-  lua_getglobal(lcmd_state, "debuggerEndDebug");
+  lua_getglobal(lcmd_state, "iupDebuggerEndDebug");
   lua_pushboolean(lcmd_state, 0);
   lua_call(lcmd_state, 1, 0);
   return IUP_DEFAULT;
@@ -472,7 +474,7 @@ static int item_stepout_action_cb(Ihandle *item)
 
 static int item_currentline_cb(Ihandle *item)
 {
-  lua_getglobal(lcmd_state, "debuggerShowCurrentLine");
+  lua_getglobal(lcmd_state, "iupDebuggerShowCurrentLine");
   lua_call(lcmd_state, 0, 0);
   (void)item;
   return IUP_DEFAULT;
@@ -512,18 +514,18 @@ static int txt_cmdline_cb(Ihandle *ih, int c)
   switch (c)
   {
     case K_CR:
-      lua_getglobal(lcmd_state, "consoleEnterCommand");
+      lua_getglobal(lcmd_state, "iupConsoleEnterCommand");
       lua_call(lcmd_state, 0, 0);
       return IUP_IGNORE;
     case K_ESC:
       IupSetAttribute(ih, IUP_VALUE, "");
       return IUP_IGNORE;
     case K_UP:
-      lua_getglobal(lcmd_state, "consoleKeyUpCommand");
+      lua_getglobal(lcmd_state, "iupConsoleKeyUpCommand");
       lua_call(lcmd_state, 0, 0);
       return IUP_IGNORE;
     case K_DOWN:
-      lua_getglobal(lcmd_state, "consoleKeyDownCommand");
+      lua_getglobal(lcmd_state, "iupConsoleKeyDownCommand");
       lua_call(lcmd_state, 0, 0);
       return IUP_IGNORE;
   }
@@ -532,7 +534,7 @@ static int txt_cmdline_cb(Ihandle *ih, int c)
 
 static int item_listfuncs_action_cb(Ihandle *ih)
 {
-  lua_getglobal(lcmd_state, "consoleListFuncs");
+  lua_getglobal(lcmd_state, "iupConsoleListFuncs");
   lua_call(lcmd_state, 0, 0);
 
   (void)ih;
@@ -541,7 +543,7 @@ static int item_listfuncs_action_cb(Ihandle *ih)
 
 static int item_listvars_action_cb(Ihandle *ih)
 {
-  lua_getglobal(lcmd_state, "consoleListVars");
+  lua_getglobal(lcmd_state, "iupConsoleListVars");
   lua_call(lcmd_state, 0, 0);
 
   (void)ih;
@@ -550,7 +552,7 @@ static int item_listvars_action_cb(Ihandle *ih)
 
 static int item_clear_action_cb(Ihandle *ih)
 {
-  lua_getglobal(lcmd_state, "consoleClear");
+  lua_getglobal(lcmd_state, "iupConsoleClear");
   lua_call(lcmd_state, 0, 0);
 
   (void)ih;
@@ -587,7 +589,7 @@ static int btn_tools_cb(Ihandle *ih)
 static int but_printlocal_cb(Ihandle *ih)
 {
   (void)ih;
-  lua_getglobal(lcmd_state, "debuggerPrintLocalVariable");
+  lua_getglobal(lcmd_state, "iupDebuggerPrintLocalVariable");
   lua_call(lcmd_state, 0, 0);
   return IUP_DEFAULT;
 }
@@ -595,7 +597,7 @@ static int but_printlocal_cb(Ihandle *ih)
 static int but_printalllocals_cb(Ihandle *ih)
 {
   (void)ih;
-  lua_getglobal(lcmd_state, "debuggerPrintAllLocalVariables");
+  lua_getglobal(lcmd_state, "iupDebuggerPrintAllLocalVariables");
   lua_call(lcmd_state, 0, 0);
   return IUP_DEFAULT;
 }
@@ -603,7 +605,7 @@ static int but_printalllocals_cb(Ihandle *ih)
 static int but_setlocal_cb(Ihandle *ih)
 {
   (void)ih;
-  lua_getglobal(lcmd_state, "debuggerSetLocalVariable");
+  lua_getglobal(lcmd_state, "iupDebuggerSetLocalVariable");
   lua_call(lcmd_state, 0, 0);
   return IUP_DEFAULT;
 }
@@ -616,7 +618,7 @@ static int lst_stack_action_cb(Ihandle *ih, char *t, int index, int v)
   if (v == 0)
     return IUP_DEFAULT;
 
-  lua_getglobal(lcmd_state, "debuggerStackListAction");
+  lua_getglobal(lcmd_state, "iupDebuggerStackListAction");
   lua_pushinteger(lcmd_state, index);
   lua_call(lcmd_state, 1, 0);
   return IUP_DEFAULT;
@@ -625,7 +627,7 @@ static int lst_stack_action_cb(Ihandle *ih, char *t, int index, int v)
 static int but_printlevel_cb(Ihandle *ih)
 {
   (void)ih;
-  lua_getglobal(lcmd_state, "debuggerPrintStackLevel");
+  lua_getglobal(lcmd_state, "iupDebuggerPrintStackLevel");
   lua_call(lcmd_state, 0, 0);
   return IUP_DEFAULT;
 }
@@ -633,7 +635,7 @@ static int but_printlevel_cb(Ihandle *ih)
 static int but_printstack_cb(Ihandle *ih)
 {
   (void)ih;
-  lua_getglobal(lcmd_state, "debuggerPrintStack");
+  lua_getglobal(lcmd_state, "iupDebuggerPrintStack");
   lua_call(lcmd_state, 0, 0);
   return IUP_DEFAULT;
 }
@@ -643,7 +645,7 @@ static int list_breaks_cb(Ihandle *ih, int index, char *t)
   (void)ih;
   (void)t;
 
-  lua_getglobal(lcmd_state, "debuggerBreaksListAction");
+  lua_getglobal(lcmd_state, "iupDebuggerBreaksListAction");
   lua_pushinteger(lcmd_state, index);
   lua_call(lcmd_state, 1, 0);
   return IUP_DEFAULT;
@@ -662,7 +664,7 @@ static int but_togglebreak_cb(Ihandle *ih)
 static int but_newbreak_cb(Ihandle* ih)
 {
   (void)ih;
-  lua_getglobal(lcmd_state, "debuggerNewBreakpoint");
+  lua_getglobal(lcmd_state, "iupDebuggerNewBreakpoint");
   lua_call(lcmd_state, 0, 0);
   return IUP_DEFAULT;
 }
@@ -678,7 +680,7 @@ static int but_removebreak_cb(Ihandle *ih)
     return IUP_DEFAULT;
   }
 
-  lua_getglobal(lcmd_state, "debuggerRemoveBreakpoint");
+  lua_getglobal(lcmd_state, "iupDebuggerRemoveBreakpoint");
   lua_pushinteger(lcmd_state, value);
   lua_call(lcmd_state, 1, 0);
 
@@ -687,7 +689,7 @@ static int but_removebreak_cb(Ihandle *ih)
 
 static int but_removeallbreaks_cb(Ihandle *ih)
 {
-  lua_getglobal(lcmd_state, "debuggerRemoveAllBreakpoints");
+  lua_getglobal(lcmd_state, "iupDebuggerRemoveAllBreakpoints");
   lua_call(lcmd_state, 0, 0);
   (void)ih;
   return IUP_DEFAULT;
@@ -880,12 +882,6 @@ static void set_attribs(Ihandle *multitext)
   IupSetAttribute(multitext, "STYLEFGCOLOR9", "0 0 255");    /* 9-Preprocessor block  */
   IupSetAttribute(multitext, "STYLEFGCOLOR10", "0 0 0");     /* 10-Operator  */
   IupSetAttribute(multitext, "STYLEBOLD10", "YES");
-}
-
-static void showVersionInfo()
-{
-  lua_getglobal(lcmd_state, "consoleVersionInfo");
-  lua_call(lcmd_state, 0, 0);
 }
 
 static void appendDebugButtons(Ihandle *dialog)
@@ -1116,7 +1112,8 @@ int main(int argc, char **argv)
 
   IupSetGlobal("GLOBALLAYOUTDLGKEY", "Yes");
 
-  IupSetGlobal("IMAGEAUTOSCALE", "Yes");
+  IupSetGlobal("IMAGEAUTOSCALE", "DPI");
+  IupSetGlobal("IMAGESDPI", "192");
   load_all_images_step_images();
 
   L = lcmd_state = luaL_newstate();
@@ -1221,13 +1218,10 @@ int main(int argc, char **argv)
   IupSetAttribute(main_dialog, "SUBTITLE", "IupLuaScriter");
   IupSetAttribute(main_dialog, "EXTRAFILTERS", "Lua Files|*.lua|");
 
-  iuplua_pushihandle(lcmd_state, main_dialog);
-  lua_setglobal(lcmd_state, "main_dialog");
-
   lua_pushcfunction(L, debuggerHasBreakpoint);
-  lua_setglobal(lcmd_state, "debuggerHasBreakpoint");
+  lua_setglobal(lcmd_state, "iupDebuggerHasBreakpoint");
   lua_pushcfunction(L, debuggerGetBreakpoints);
-  lua_setglobal(lcmd_state, "debuggerGetBreakpoints");
+  lua_setglobal(lcmd_state, "iupDebuggerGetBreakpoints");
 
 #ifdef IUPLUA_USELOH
 #include "debugger.loh"
@@ -1241,6 +1235,15 @@ int main(int argc, char **argv)
   iuplua_dofile(L, "debugger.lua");
 #endif
 #endif
+
+  lua_getglobal(lcmd_state, "iupConsoleInit");
+  iuplua_pushihandle(lcmd_state, IupGetDialogChild(main_dialog, "TXT_CMDLINE"));
+  iuplua_pushihandle(lcmd_state, IupGetDialogChild(main_dialog, "MTL_OUTPUT"));
+  lua_call(lcmd_state, 2, 0);
+
+  lua_getglobal(lcmd_state, "iupDebuggerInit");
+  iuplua_pushihandle(lcmd_state, main_dialog);
+  lua_call(lcmd_state, 1, 0);
 
   /* show the dialog at the last position, with the last size */
   IupConfigDialogShow(config, main_dialog, "MainWindow");
@@ -1258,7 +1261,8 @@ int main(int argc, char **argv)
   /* show the dialog at the last position, with the last size */
   IupConfigDialogShow(config, main_dialog, "MainWindow");
 
-  showVersionInfo();
+  lua_getglobal(lcmd_state, "iupConsoleVersionInfo");
+  lua_call(lcmd_state, 0, 0);
 
   set_attribs(IupGetDialogChild(main_dialog, "MULTITEXT"));
 
