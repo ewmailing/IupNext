@@ -9,6 +9,8 @@ local ctrl = {
   callback = {
     markerchanged_cb = "nn",
     exit_cb = "",
+    savemarkers_cb = "",
+    restoremarkers_cb = "",
   },
   include = "iup_scintilla.h",
   funcname = "ScintillaDlg",
