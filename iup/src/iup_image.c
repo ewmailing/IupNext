@@ -420,8 +420,9 @@ static Ihandle* iImageGetImageFromName(const char* name)
       if (iupStrEqualNoCase(autoscale, "DPI"))
       {
         int dpi = iupRound(iupdrvGetScreenDpi());
-        int images_dpi = IupGetInt(NULL, "IMAGESDPI");
-        if (images_dpi == 0) images_dpi = 96;
+        int image_dpi = IupGetInt(ih, "DPI");
+        if (image_dpi == 0) image_dpi = IupGetInt(NULL, "IMAGESDPI");
+        if (image_dpi == 0) image_dpi = 96;
 
         if (dpi <= 96)
           dpi = 96;
@@ -432,7 +433,7 @@ static Ihandle* iImageGetImageFromName(const char* name)
         else
           dpi = 288;
 
-        scale = (double)dpi / (double)images_dpi;
+        scale = (double)dpi / (double)image_dpi;
       }
       else
         iupStrToDouble(autoscale, &scale);

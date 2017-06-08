@@ -62,21 +62,21 @@ USE_IUPLUA = Yes
 
 IUP = ..
 
-SRC = iupluascripter.c step_images.c
-SRCLUA = console.lua debugger.lua
+SRC = iupluascripter.c
 
 ifdef DBG_DIR
   SFX=d
 endif
 
 ifneq ($(findstring Win, $(TEC_SYSNAME)), )
-  LIBS += iupimglib iup_scintilla imm32
+  LIBS += iupimglib iup_scintilla imm32 iupluascripterdlg$(LUASFX)
 else
   SLIB += $(IUP)/lib/$(TEC_UNAME)$(SFX)/libiup_scintilla.a \
-          $(IUP)/lib/$(TEC_UNAME)$(SFX)/libiupimglib.a
+          $(IUP)/lib/$(TEC_UNAME)$(SFX)/libiupimglib.a \
+          $(IUP)/lib/$(TEC_UNAME)$(SFX)/Lua$(LUASFX)\libiupluascripterdlg$(LUASFX).a
 endif
 
 ifneq ($(findstring Win, $(TEC_SYSNAME)), )
   INCLUDES += $(IUP)/etc
-  SRC += $(IUP)/etc/iup.rc
+  SRC += iupluascripter.rc
 endif

@@ -190,7 +190,7 @@ static char* iScintillaGetAppendNewlineAttrib(Ihandle* ih)
 
 void iupScintillaRegisterText(Iclass* ic)
 {
-  iupClassRegisterAttribute(ic,   "APPENDNEWLINE", iScintillaGetAppendNewlineAttrib, iScintillaSetAppendNewlineAttrib, IUPAF_SAMEASSYSTEM, "YES", IUPAF_NOT_MAPPED|IUPAF_NO_INHERIT);
+  iupClassRegisterAttribute(ic,   "APPENDNEWLINE", iScintillaGetAppendNewlineAttrib, iScintillaSetAppendNewlineAttrib, IUPAF_SAMEASSYSTEM, "YES", IUPAF_NO_INHERIT);
   iupClassRegisterAttribute(ic,   "APPEND", NULL, iScintillaSetAppendTextAttrib, NULL, NULL, IUPAF_WRITEONLY|IUPAF_NO_INHERIT);
   iupClassRegisterAttribute(ic,   "PREPEND", NULL, iScintillaSetPrependTextAttrib, NULL, NULL, IUPAF_WRITEONLY|IUPAF_NO_INHERIT);
   iupClassRegisterAttribute(ic,   "VALUE", iScintillaGetValueAttrib, iScintillaSetValueAttrib, NULL, NULL, IUPAF_NO_INHERIT);

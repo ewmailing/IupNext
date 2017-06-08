@@ -11,25 +11,31 @@
     </ProjectConfiguration>
   </ItemGroup>
   <ItemGroup>
-    <ClCompile Include="..\..\srcluascripter\iupluascripter.c" />
+    <None Include="..\..\srclua5\scripter\console.lua" />
+    <None Include="..\..\srclua5\scripter\debugger.lua" />
+    <None Include="..\..\srclua5\scripter\iupluascripterdlg.def" />
+    <None Include="..\..\srclua5\scripter\luascripterdlg.lua" />
   </ItemGroup>
   <ItemGroup>
-    <ResourceCompile Include="..\..\srcluascripter\iupluascripter.rc" />
+    <ClCompile Include="..\..\srclua5\scripter\il_luascripterdlg.c" />
+    <ClCompile Include="..\..\srclua5\scripter\iupluascripterdlg.c" />
+    <ClCompile Include="..\..\srclua5\scripter\iupluascripterdlg_images.c" />
+  </ItemGroup>
+  <ItemGroup>
+    <ClInclude Include="..\..\include\iupluascripterdlg.h" />
   </ItemGroup>
   <PropertyGroup Label="Globals">
-    <ProjectGuid>{4094BDD7-82B1-4754-A86B-C7D893F8CEE3}</ProjectGuid>
+    <ProjectGuid>{1EB17A53-1945-AB56-DD11-A3FB01F18985}</ProjectGuid>
   </PropertyGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.Default.props" />
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'" Label="Configuration">
-    <ConfigurationType>Application</ConfigurationType>
+    <ConfigurationType>StaticLibrary</ConfigurationType>
     <UseOfMfc>false</UseOfMfc>
-    <CharacterSet>MultiByte</CharacterSet>
     <PlatformToolset>v120</PlatformToolset>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|x64'" Label="Configuration">
-    <ConfigurationType>Application</ConfigurationType>
+    <ConfigurationType>StaticLibrary</ConfigurationType>
     <UseOfMfc>false</UseOfMfc>
-    <CharacterSet>MultiByte</CharacterSet>
     <PlatformToolset>v120</PlatformToolset>
   </PropertyGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.props" />
@@ -47,22 +53,16 @@
   <PropertyGroup Label="UserMacros" />
   <PropertyGroup>
     <_ProjectFileVersion>10.0.40219.1</_ProjectFileVersion>
-    <OutDir Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">..\..\bin\Debug\Lua$(LUASFX)\</OutDir>
-    <OutDir Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">..\..\bin\Debug_64\Lua$(LUASFX)\</OutDir>
+    <OutDir Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">..\..\lib\Debug\Lua$(LUASFX)\</OutDir>
+    <OutDir Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">..\..\lib\Debug_64\Lua$(LUASFX)\</OutDir>
     <IntDir Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">..\..\obj\Debug\$(ProjectName)\Lua$(LUASFX)\</IntDir>
     <IntDir Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">..\..\obj\Debug_64\$(ProjectName)\Lua$(LUASFX)\</IntDir>
-    <LinkIncremental Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">false</LinkIncremental>
-    <LinkIncremental Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">false</LinkIncremental>
-    <GenerateManifest Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">false</GenerateManifest>
-    <GenerateManifest Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">false</GenerateManifest>
-    <TargetName Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">iupluascripter$(LUASFX)</TargetName>
-    <TargetName Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">iupluascripter$(LUASFX)</TargetName>
   </PropertyGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">
     <ClCompile>
       <Optimization>Disabled</Optimization>
-      <AdditionalIncludeDirectories>..\..\include;..\..\srcluascripter;..\..\srcluascripter\lh;..\..\..\lua$(LUA_SUFFIX)\include;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
-      <PreprocessorDefinitions>WIN32;_DEBUG;_CRT_SECURE_NO_DEPRECATE;USE_STATIC;IUPLUA_USELH;%(PreprocessorDefinitions)</PreprocessorDefinitions>
+      <AdditionalIncludeDirectories>..\..\src;..\..\include;..\..\srclua5;..\..\srclua5\lh;..\..\..\lua$(LUA_SUFFIX)\include;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <PreprocessorDefinitions>WIN32;_DEBUG;IUPLUA_USELH;_CRT_SECURE_NO_DEPRECATE;%(PreprocessorDefinitions)</PreprocessorDefinitions>
       <BasicRuntimeChecks>EnableFastChecks</BasicRuntimeChecks>
       <RuntimeLibrary>MultiThreadedDebug</RuntimeLibrary>
       <PrecompiledHeader>
@@ -75,25 +75,18 @@
       <CompileAs>Default</CompileAs>
     </ClCompile>
     <ResourceCompile>
-      <PreprocessorDefinitions>_DEBUG;%(PreprocessorDefinitions)</PreprocessorDefinitions>
-      <Culture>
-      </Culture>
-      <AdditionalIncludeDirectories>..\..\etc;</AdditionalIncludeDirectories>
+      <Culture>0x0416</Culture>
     </ResourceCompile>
-    <Link>
-      <AdditionalDependencies>iup.lib;comctl32.lib;ws2_32.lib;iupimglib.lib;lua$(LUA_SUFFIX).lib;iuplua$(LUASFX).lib;iup_scintilla.lib;imm32.lib;iupluascripterdlg$(LUASFX).lib;%(AdditionalDependencies)</AdditionalDependencies>
-      <OutputFile>$(OutDir)iupluascripter$(LUASFX).exe</OutputFile>
+    <Lib>
+      <OutputFile>$(OutDir)$(ProjectName)$(LUASFX).lib</OutputFile>
       <SuppressStartupBanner>true</SuppressStartupBanner>
-      <AdditionalLibraryDirectories>..\..\..\im\lib\Debug;..\..\..\cd\lib\Debug;..\..\..\freetype\lib\Debug;..\..\..\zlib\lib\Debug;..\..\lib\Debug;..\..\..\im\lib\Debug\Lua$(LUASFX);..\..\..\cd\lib\Debug\Lua$(LUASFX);..\..\lib\Debug\Lua$(LUASFX);..\..\..\lua$(LUA_SUFFIX)\lib\vc12;%(AdditionalLibraryDirectories)</AdditionalLibraryDirectories>
-      <GenerateDebugInformation>true</GenerateDebugInformation>
-      <SubSystem>Console</SubSystem>
-    </Link>
+    </Lib>
   </ItemDefinitionGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">
     <ClCompile>
       <Optimization>Disabled</Optimization>
-      <AdditionalIncludeDirectories>..\..\include;..\..\srcluascripter;..\..\srcluascripter\lh;..\..\..\lua$(LUA_SUFFIX)\include;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
-      <PreprocessorDefinitions>WIN32;_DEBUG;_CRT_SECURE_NO_DEPRECATE;USE_STATIC;IUPLUA_USELH;%(PreprocessorDefinitions)</PreprocessorDefinitions>
+      <AdditionalIncludeDirectories>..\..\src;..\..\include;..\..\srclua5;..\..\srclua5\lh;..\..\..\lua$(LUA_SUFFIX)\include;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <PreprocessorDefinitions>WIN32;_DEBUG;IUPLUA_USELH;_CRT_SECURE_NO_DEPRECATE;%(PreprocessorDefinitions)</PreprocessorDefinitions>
       <BasicRuntimeChecks>EnableFastChecks</BasicRuntimeChecks>
       <RuntimeLibrary>MultiThreadedDebug</RuntimeLibrary>
       <PrecompiledHeader>
@@ -106,19 +99,12 @@
       <CompileAs>Default</CompileAs>
     </ClCompile>
     <ResourceCompile>
-      <PreprocessorDefinitions>TEC_64;_DEBUG;%(PreprocessorDefinitions)</PreprocessorDefinitions>
-      <Culture>
-      </Culture>
-      <AdditionalIncludeDirectories>..\..\etc;</AdditionalIncludeDirectories>
+      <Culture>0x0416</Culture>
     </ResourceCompile>
-    <Link>
-      <AdditionalDependencies>iup.lib;comctl32.lib;ws2_32.lib;iupimglib.lib;lua$(LUA_SUFFIX).lib;iuplua$(LUASFX).lib;iup_scintilla.lib;imm32.lib;iupluascripterdlg$(LUASFX).lib;%(AdditionalDependencies)</AdditionalDependencies>
-      <OutputFile>$(OutDir)iupluascripter$(LUASFX).exe</OutputFile>
+    <Lib>
+      <OutputFile>$(OutDir)$(ProjectName)$(LUASFX).lib</OutputFile>
       <SuppressStartupBanner>true</SuppressStartupBanner>
-      <AdditionalLibraryDirectories>..\..\..\im\lib\Debug_64;..\..\..\cd\lib\Debug_64;..\..\lib\Debug_64;..\..\..\freetype\lib\Debug_64;..\..\..\zlib\lib\Debug_64;..\..\..\im\lib\Debug_64\Lua$(LUASFX);..\..\..\cd\lib\Debug_64\Lua$(LUASFX);..\..\lib\Debug_64\Lua$(LUASFX);..\..\..\lua$(LUA_SUFFIX)\lib\vc12_64;%(AdditionalLibraryDirectories)</AdditionalLibraryDirectories>
-      <GenerateDebugInformation>true</GenerateDebugInformation>
-      <SubSystem>Console</SubSystem>
-    </Link>
+    </Lib>
   </ItemDefinitionGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">

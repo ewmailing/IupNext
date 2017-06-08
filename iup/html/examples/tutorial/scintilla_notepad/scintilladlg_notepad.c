@@ -26,7 +26,6 @@ int main(int argc, char **argv)
 
   IupOpen(&argc, &argv);
   IupImageLibOpen();
-
   IupScintillaOpen();
 
   config = IupConfig();

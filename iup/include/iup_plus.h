@@ -713,6 +713,11 @@ namespace Iup
   public:
     ScintillaDlg() : Dialog(IupScintillaDlg()) {}
   };
+#ifdef LUA_VERSION
+  public:
+    LuaScripterDlg(lua_State *L) : Dialog(IupLuaScripterDlg(L)) {}
+  };
+#endif
 
   class GLCanvas : public Control
   {

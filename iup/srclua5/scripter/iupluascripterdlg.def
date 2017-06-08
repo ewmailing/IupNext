@@ -1,0 +1,3 @@
+EXPORTS
+  iupluascripterdlglua_open
+  luaopen_iupluascripterdlg
