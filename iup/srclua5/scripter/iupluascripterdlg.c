@@ -1064,6 +1064,28 @@ static void appendDebugMenuItens(Ihandle *menu)
   IupAppend(menu, subMenuDebug);
 }
 
+static int multitext_map_cb(Ihandle* multitext)
+{
+  IupSetAttribute(multitext, "LEXERLANGUAGE", "lua");
+  IupSetAttribute(multitext, "KEYWORDS0", getLuaKeywords());
+
+  IupSetAttribute(multitext, "STYLEFONT32", "Consolas");  /* TODO CHECK: may not work in Linux */
+  IupSetAttribute(multitext, "STYLEFONTSIZE32", "11");
+  IupSetAttribute(multitext, "STYLECLEARALL", "Yes");  /* sets all styles to have the same attributes as 32 */
+
+  IupSetAttribute(multitext, "STYLEFGCOLOR1", "0 128 0");    /* 1-Lua comment */
+  IupSetAttribute(multitext, "STYLEFGCOLOR2", "0 128 0");    /* 2-Lua comment line  */
+  IupSetAttribute(multitext, "STYLEFGCOLOR4", "255 128 0");  /* 4-Number  */
+  IupSetAttribute(multitext, "STYLEFGCOLOR5", "0 0 255");    /* 5-Keyword  */
+  IupSetAttribute(multitext, "STYLEFGCOLOR6", "171 0 149");  /* 6-String  */
+  IupSetAttribute(multitext, "STYLEFGCOLOR7", "171 0 149");  /* 7-Character  */
+  IupSetAttribute(multitext, "STYLEFGCOLOR9", "0 0 255");    /* 9-Preprocessor block  */
+  IupSetAttribute(multitext, "STYLEFGCOLOR10", "0 0 0");     /* 10-Operator  */
+  IupSetAttribute(multitext, "STYLEBOLD10", "YES");
+
+  return IUP_DEFAULT;
+}
+
 static int iLuaScripterDlgCreateMethod(Ihandle* ih, void** params)
 {
   lua_State *L;
@@ -1103,6 +1125,7 @@ static int iLuaScripterDlgCreateMethod(Ihandle* ih, void** params)
   IupSetCallback(multitext, "OLD_VALUECHANGED_CB", IupGetCallback(multitext, "VALUECHANGED_CB"));
   IupSetCallback(multitext, "VALUECHANGED_CB", (Icallback)multitext_valuechanged_cb);
   IupSetCallback(multitext, "K_ESC", (Icallback)multitext_kesc_cb);
+  IupSetCallback(multitext, "MAP_CB", (Icallback)multitext_map_cb);
 
   /* breakpoints margin=2 */
   IupSetInt(multitext, "MARGINWIDTH2", 15);
@@ -1190,37 +1213,12 @@ static int iLuaScripterDlgCreateMethod(Ihandle* ih, void** params)
   return IUP_NOERROR;
 }
 
-static int iLuaScripterDlgMapMethod(Ihandle* ih)
-{
-  Ihandle* multitext = IupGetDialogChild(ih, "MULTITEXT");
-
-  IupSetAttribute(multitext, "LEXERLANGUAGE", "lua");
-  IupSetAttribute(multitext, "KEYWORDS0", getLuaKeywords());
-
-  IupSetAttribute(multitext, "STYLEFONT32", "Consolas");  /* TODO CHECK: may not work in Linux */
-  IupSetAttribute(multitext, "STYLEFONTSIZE32", "11");
-  IupSetAttribute(multitext, "STYLECLEARALL", "Yes");  /* sets all styles to have the same attributes as 32 */
-
-  IupSetAttribute(multitext, "STYLEFGCOLOR1", "0 128 0");    /* 1-Lua comment */
-  IupSetAttribute(multitext, "STYLEFGCOLOR2", "0 128 0");    /* 2-Lua comment line  */
-  IupSetAttribute(multitext, "STYLEFGCOLOR4", "255 128 0");  /* 4-Number  */
-  IupSetAttribute(multitext, "STYLEFGCOLOR5", "0 0 255");    /* 5-Keyword  */
-  IupSetAttribute(multitext, "STYLEFGCOLOR6", "171 0 149");  /* 6-String  */
-  IupSetAttribute(multitext, "STYLEFGCOLOR7", "171 0 149");  /* 7-Character  */
-  IupSetAttribute(multitext, "STYLEFGCOLOR9", "0 0 255");    /* 9-Preprocessor block  */
-  IupSetAttribute(multitext, "STYLEFGCOLOR10", "0 0 0");     /* 10-Operator  */
-  IupSetAttribute(multitext, "STYLEBOLD10", "YES");
-
-  return IUP_NOERROR;
-}
-
 static Iclass* iupLuaScripterDlgNewClass(void)
 {
   Iclass* ic = iupClassNew(iupRegisterFindClass("scintilladlg"));
 
   ic->New = iupLuaScripterDlgNewClass;
   ic->Create = iLuaScripterDlgCreateMethod;
-  ic->Map = iLuaScripterDlgMapMethod;
 
   ic->name = "luascripterdlg";
   ic->nativetype = IUP_TYPEDIALOG;
@@ -1256,4 +1254,5 @@ void IupLuaScripterDlgOpen(void)
 * detachable Console, Debug, Breakpoints
 - Debug Strings
 - multi-language (portuguese, spanish)
+- replace IupSbox by IupSplit ?
 */

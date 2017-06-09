@@ -14,6 +14,7 @@
 #include "iup_strmessage.h"
 #include "iup_register.h"
 #include "iup_childtree.h"
+#include "iup_predialogs.h"
 
 
 /********************************** Utilities *****************************************/
@@ -469,15 +470,15 @@ static char* read_file(const char* filename)
   char* str;
   FILE* file = fopen(filename, "rb");
   if (!file)
-  {
-    IupMessagef("Error", "Can't open file: %s", filename);
     return NULL;
-  }
 
   /* calculate file size */
   fseek(file, 0, SEEK_END);
   size = ftell(file);
   fseek(file, 0, SEEK_SET);
+
+  if (size == 0)
+    return NULL;
 
   /* allocate memory for the file contents + nul terminator */
   str = malloc(size + 1);
@@ -485,9 +486,6 @@ static char* read_file(const char* filename)
   fread(str, size, 1, file);
   /* set the nul terminator */
   str[size] = 0;
-
-  if (ferror(file))
-    IupMessagef("Error", "Fail when reading from file: %s", filename);
 
   fclose(file);
   return str;
@@ -497,16 +495,9 @@ static int write_file(const char* filename, const char* str, int count)
 {
   FILE* file = fopen(filename, "wb");
   if (!file)
-  {
-    IupMessagef("Error", "Can't open file: %s", filename);
     return 0;
-  }
 
   fwrite(str, 1, count, file);
-
-  if (ferror(file))
-    IupMessagef("Error", "Fail when writing to file: %s", filename);
-
   fclose(file);
   return 1;
 }
@@ -562,6 +553,8 @@ static void open_file(Ihandle* ih_item, const char* filename)
 
     free(str);
   }
+  else
+    iupShowError(IupGetDialog(ih_item), "Failed to open file.");
 }
 
 static int item_saveas_action_cb(Ihandle* ih_item);
@@ -585,6 +578,8 @@ static void save_file(Ihandle* multitext)
       if (config)
         saveMarkers(config, multitext);
     }
+    else
+      iupShowError(IupGetDialog(multitext), "Failed to save file.");
   }
 }
 
@@ -607,6 +602,8 @@ static void saveas_file(Ihandle* multitext, const char* filename)
       saveMarkers(config, multitext);
     }
   }
+  else
+    iupShowError(IupGetDialog(multitext), "Failed to save file.");
 }
 
 static int save_check(Ihandle* ih_item)
@@ -938,7 +935,7 @@ static int goto_ok_action_cb(Ihandle* bt_ok)
   int line = IupGetInt(txt, "VALUE");
   if (line < 1 || line > line_count)
   {
-    IupMessage("Error", "Invalid line number.");
+    iupShowError(IupGetDialog(bt_ok), "Invalid line number.");
     return IUP_DEFAULT;
   }
 
