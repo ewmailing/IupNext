@@ -511,7 +511,7 @@ static int k_pause_action_cb(Ihandle* item)
   return IUP_DEFAULT;
 }
 
-static int txt_cmdline_cb(Ihandle *ih, int c)
+static int txt_cmdline_kany_cb(Ihandle *ih, int c)
 {
   lua_State* L = (lua_State*)IupGetAttribute(ih, "LUASTATE");
   switch (c)
@@ -561,7 +561,7 @@ static int item_clear_action_cb(Ihandle *ih_item)
   return IUP_DEFAULT;
 }
 
-static int btn_tools_cb(Ihandle *ih)
+static int btn_tools_action_cb(Ihandle *ih)
 {
   int x, y;
   Ihandle* item_listfuncs, *item_listvars, *item_clear, *tools_menu;
@@ -710,10 +710,10 @@ static Ihandle *buildTabConsole(void)
   txt_cmdLine = IupText(NULL);
   IupSetAttribute(txt_cmdLine, "EXPAND", "HORIZONTAL");
   IupSetAttribute(txt_cmdLine, "NAME", "TXT_CMDLINE");
-  IupSetCallback(txt_cmdLine, IUP_K_ANY, (Icallback)txt_cmdline_cb);
+  IupSetCallback(txt_cmdLine, "K_ANY", (Icallback)txt_cmdline_kany_cb);
 
   btn_tools = IupButton(NULL, NULL);
-  IupSetCallback(btn_tools, "ACTION", (Icallback)btn_tools_cb);
+  IupSetCallback(btn_tools, "ACTION", (Icallback)btn_tools_action_cb);
   IupSetAttribute(btn_tools, "IMAGE", "IUP_ToolsSettings");
   IupSetAttribute(btn_tools, "FLAT", "Yes");
   IupSetAttribute(btn_tools, "TIP", "Console Tools");
