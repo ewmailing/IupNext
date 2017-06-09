@@ -204,14 +204,23 @@ function iupDebuggerUpdateBreakpointsList()
   local breakpoints = iupDebuggerGetBreakpoints(multitext)
   local filename = multitext.filename
   -- TODO add for all open files
+  local has_breakpoints = false
 
   for index, line in pairs(breakpoints) do
     iup.SetAttribute(list_break, index, "Line "..line.." of "..filename)
     iup.SetAttribute(list_break, "LINE"..index, line)
     iup.SetAttribute(list_break, "FILENAME"..index, filename)
+    has_breakpoints = true
   end
 
-  list_break.value = 1 -- select first item on list
+  if has_breakpoints then
+    iup.SetAttribute(iup.GetDialogChild(debugger.main_dialog, "BTN_REMOVE"), "ACTIVE", "Yes")
+    iup.SetAttribute(iup.GetDialogChild(debugger.main_dialog, "BTN_REMOVEALL"), "ACTIVE", "Yes")
+    list_break.value = 1 -- select first item on list
+  else
+    iup.SetAttribute(iup.GetDialogChild(debugger.main_dialog, "BTN_REMOVE"), "ACTIVE", "NO")
+    iup.SetAttribute(iup.GetDialogChild(debugger.main_dialog, "BTN_REMOVEALL"), "ACTIVE", "NO")
+  end
 end
 
 function iupDebuggerBreaksListAction(index)
@@ -353,6 +362,18 @@ function iupDebuggerUpdateLocalVariablesList(level, actual_level)
     iup.SetAttribute(iup.GetDialogChild(debugger.main_dialog, "SET_LOCAL"), "ACTIVE", "Yes")
 
     local_list.value = 1 -- select first item on list
+  end
+end
+
+function iupDebuggerLocalVariablesListAction(local_list, index)
+  local level = iup.GetAttribute(local_list, "LEVEL"..index)
+  local pos = iup.GetAttribute(local_list, "POS"..index)
+  local name, value = debug.getlocal(level, pos)
+  local valueType = type(value)
+  if valueType == "string" or valueType == "number" then
+    iup.SetAttribute(iup.GetDialogChild(debugger.main_dialog, "SET_LOCAL"), "ACTIVE", "Yes")
+  else
+    iup.SetAttribute(iup.GetDialogChild(debugger.main_dialog, "SET_LOCAL"), "ACTIVE", "No")
   end
 end
 

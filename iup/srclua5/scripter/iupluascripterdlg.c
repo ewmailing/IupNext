@@ -613,6 +613,22 @@ static int but_setlocal_cb(Ihandle *ih)
   return IUP_DEFAULT;
 }
 
+static int lst_locals_action_cb(Ihandle *ih, char *t, int index, int v)
+{
+  lua_State* L;
+  (void)t;
+
+  if (v == 0)
+    return IUP_DEFAULT;
+
+  L = (lua_State*)IupGetAttribute(ih, "LUASTATE");
+  lua_getglobal(L, "iupDebuggerLocalVariablesListAction");
+  iuplua_pushihandle(L, ih);
+  lua_pushinteger(L, index);
+  lua_call(L, 2, 0);
+  return IUP_DEFAULT;
+}
+
 static int lst_stack_action_cb(Ihandle *ih, char *t, int index, int v)
 {
   lua_State* L;
@@ -644,7 +660,7 @@ static int but_printstack_cb(Ihandle *ih)
   return IUP_DEFAULT;
 }
 
-static int list_breaks_cb(Ihandle *ih, int index, char *t)
+static int list_breaks_dblclick_cb(Ihandle *ih, int index, char *t)
 {
   lua_State* L = (lua_State*)IupGetAttribute(ih, "LUASTATE");
   lua_getglobal(L, "iupDebuggerBreaksListAction");
@@ -751,6 +767,7 @@ static Ihandle *buildTabLocals(void)
   IupSetAttribute(list_local, "EXPAND", "YES");
   IupSetAttribute(list_local, "NAME", "LIST_LOCAL");
   IupSetAttribute(list_local, "TIP", "List of local variables at selected stack level (ordered by pos)");
+  IupSetCallback(list_local, "ACTION", (Icallback)lst_locals_action_cb);
 
   button_printLocal = IupButton("Print", NULL);
   IupSetAttribute(button_printLocal, "ACTIVE", "NO");
@@ -838,11 +855,15 @@ static Ihandle *buildTabBreaks(void)
   IupSetAttribute(button_removebreak, "TIP", "Removes the selected breakpoint at the list.");
   IupSetCallback(button_removebreak, "ACTION", (Icallback)but_removebreak_cb);
   IupSetStrAttribute(button_removebreak, "PADDING", IupGetGlobal("DEFAULTBUTTONPADDING"));
+  IupSetAttribute(button_removebreak, "NAME", "BTN_REMOVE");
+  IupSetAttribute(button_removebreak, "ACTIVE", "NO");
 
   button_removeallbreaks = IupButton("Remove All", NULL);
   IupSetAttribute(button_removeallbreaks, "TIP", "Removes all breakpoints.");
   IupSetCallback(button_removeallbreaks, "ACTION", (Icallback)but_removeallbreaks_cb);
   IupSetStrAttribute(button_removeallbreaks, "PADDING", IupGetGlobal("DEFAULTBUTTONPADDING"));
+  IupSetAttribute(button_removeallbreaks, "NAME", "BTN_REMOVEALL");
+  IupSetAttribute(button_removeallbreaks, "ACTIVE", "NO");
 
   vbox = IupVbox(button_togglebreak, button_newbreak, button_removebreak, button_removeallbreaks, NULL);
   IupSetAttribute(vbox, "MARGIN", "0x0");
@@ -852,7 +873,7 @@ static Ihandle *buildTabBreaks(void)
   list = IupList(NULL);
   IupSetAttribute(list, "EXPAND", "YES");
   IupSetAttribute(list, "NAME", "LIST_BREAK");
-  IupSetCallback(list, "DBLCLICK_CB", (Icallback)list_breaks_cb);
+  IupSetCallback(list, "DBLCLICK_CB", (Icallback)list_breaks_dblclick_cb);
 
   frame = IupFrame(IupHbox(list, vbox, NULL));
   IupSetAttribute(frame, "MARGIN", "4x4");

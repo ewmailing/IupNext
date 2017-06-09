@@ -3,6 +3,8 @@
 local l_main_x = 33
 g_main_x = 44
 
+local t = {1, "xx"}
+
 for i = 1, 10 do
   l_main_x = l_main_x + 1
   g_main_x = g_main_x - 1
@@ -21,8 +23,14 @@ function f1(x)
   return x .. " " .. y
 end
 
+function f3()
+  g_main_x = g_main_x + 50
+end
+
 local ret = f1("IUP")
 print(ret)
+
+f3()
 
 g_main_x = g_main_x + 1
 
