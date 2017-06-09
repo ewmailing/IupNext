@@ -55,9 +55,10 @@ else
   LOHDIR = loh$(LUASFX)
 endif
 
-SRCLUA = luascripterdlg.lua console.lua debugger.lua
+SRCLUA_CTRL = luascripterdlg.lua
+SRCLUA = console.lua debugger.lua $(SRCLUA_CTRL)
 
-GC := $(addsuffix .c, $(basename $(SRCLUA)))
+GC := $(addsuffix .c, $(basename $(SRCLUA_CTRL)))
 GC := $(addprefix scripter/il_, $(GC))
 
 $(GC) : scripter/il_%.c : scripter/%.lua generator.lua

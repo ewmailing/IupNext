@@ -44,6 +44,7 @@ endif
 endif
 
 APPNAME := $(APPNAME)$(LUASFX)
+SRC = iupluascripter.c
 
 ifdef NO_LUAOBJECT
   DEFINES += IUPLUA_USELH
@@ -57,26 +58,79 @@ endif
 
 INCLUDES = ../include
 
+IUP = ..
 USE_IUP = Yes
 USE_IUPLUA = Yes
 
-IUP = ..
-
-SRC = iupluascripter.c
-
-ifdef DBG_DIR
-  SFX=d
+ifdef DBG
+  ALL_STATIC=Yes
 endif
 
-ifneq ($(findstring Win, $(TEC_SYSNAME)), )
-  LIBS += iupimglib iup_scintilla imm32 iupluascripterdlg$(LUASFX)
+ifdef ALL_STATIC
+  # Statically link everything only when debugging
+  USE_STATIC = Yes
+  
+  ifdef DBG_DIR
+    IUP_LIB = $(IUP)/lib/$(TEC_UNAME)d
+#    LUA_LIB = $(LUA)/lib/$(TEC_UNAME)d
+  else
+    IUP_LIB = $(IUP)/lib/$(TEC_UNAME)
+#    LUA_LIB = $(LUA)/lib/$(TEC_UNAME)
+  endif  
+  
+  ifneq ($(findstring Win, $(TEC_SYSNAME)), )
+    LIBS += iupluascripterdlg$(LUASFX) iupimglib iup_scintilla imm32
+  else
+    SLIB += $(IUP_LIB)/Lua$(LUASFX)/libiupluascripterdlg$(LUASFX).a \
+            $(IUP_LIB)/libiup_scintilla.a \
+            $(IUP_LIB)/libiupimglib.a
+  endif
 else
-  SLIB += $(IUP)/lib/$(TEC_UNAME)$(SFX)/libiup_scintilla.a \
-          $(IUP)/lib/$(TEC_UNAME)$(SFX)/libiupimglib.a \
-          $(IUP)/lib/$(TEC_UNAME)$(SFX)/Lua$(LUASFX)\libiupluascripterdlg$(LUASFX).a
+  ifneq ($(findstring Win, $(TEC_SYSNAME)), )
+    # Dinamically link in Windows, when not debugging
+    # Must call "tecmake dll10" so USE_* will use the correct TEC_UNAME
+    USE_DLL = Yes
+    GEN_MANIFEST = No
+    LIBS += iupluascripterdlg$(LUASFX) iupimglib iup_scintilla imm32
+  else
+    LDIR += $(IUP_LIB)/Lua$(LUASFX)
+    LIBS += iupluascripterdlg$(LUASFX) iupimglib iup_scintilla
+    ifneq ($(findstring cygw, $(TEC_UNAME)), )
+      # Except in Cygwin
+    else
+      # In UNIX Lua is always statically linked, late binding is used.
+      NO_LUALINK = Yes
+      SLIB += $(LUA_LIB)/liblua$(LUA_SFX).a
+    endif
+  endif
 endif
 
 ifneq ($(findstring Win, $(TEC_SYSNAME)), )
-  INCLUDES += $(IUP)/etc
+  #Comment the following line to build under MingW
+  ifneq ($(findstring vc, $(TEC_UNAME)), )
+    SLIB += setargv.obj
+  endif
   SRC += iupluascripter.rc
+  INCLUDES = ../etc
+endif
+
+ifneq ($(findstring cygw, $(TEC_UNAME)), )
+endif
+
+ifneq ($(findstring MacOS, $(TEC_UNAME)), )
+endif
+
+ifneq ($(findstring Linux, $(TEC_UNAME)), )
+  LIBS += dl 
+  #To allow late binding
+  LFLAGS = -Wl,-E
+endif
+
+ifneq ($(findstring BSD, $(TEC_UNAME)), )
+  #To allow late binding
+  LFLAGS = -Wl,-E
+endif
+
+ifneq ($(findstring SunOS, $(TEC_UNAME)), )
+  LIBS += dl
 endif

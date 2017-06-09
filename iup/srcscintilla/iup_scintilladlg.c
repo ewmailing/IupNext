@@ -2353,7 +2353,7 @@ Ihandle *IupScintillaDlg(void)
   return IupCreate("scintilladlg");
 }
 
-/* TO DO:
+/* TODO:
 - Printing
 - multi-language (portuguese)
 - multiple files (IupFlatTabs)

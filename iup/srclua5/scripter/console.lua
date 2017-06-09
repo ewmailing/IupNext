@@ -13,6 +13,9 @@ function iupConsoleInit(txt_cmdline, mtl_output)
   console.mtlOutput = mtl_output   
   
   console.hold_caret = false
+
+  console.mtlOutput.value = _COPYRIGHT .. "\n" ..
+                            "IUP " .. iup._VERSION .. "  " .. iup._COPYRIGHT .. "\n\n"
 end
 
 
@@ -166,14 +169,5 @@ function iupConsoleListVars()
 
   console.hold_caret = false
   console.mtlOutput.scrollto = "99999999:1"
-end
-
-function iupConsoleVersionInfo()
-  print(_COPYRIGHT) -- Lua Copyright
-  print("IUP " .. iup._VERSION .. "  " .. iup._COPYRIGHT)
-end
-
-function iupConsoleClear()
-  console.mtlOutput.value = ""
 end
 

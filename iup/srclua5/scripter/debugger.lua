@@ -210,6 +210,8 @@ function iupDebuggerUpdateBreakpointsList()
     iup.SetAttribute(list_break, "LINE"..index, line)
     iup.SetAttribute(list_break, "FILENAME"..index, filename)
   end
+
+  list_break.value = 1 -- select first item on list
 end
 
 function iupDebuggerBreaksListAction(index)

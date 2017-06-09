@@ -540,8 +540,6 @@ static int item_listfuncs_action_cb(Ihandle *ih)
   lua_State* L = (lua_State*)IupGetAttribute(ih, "LUASTATE");
   lua_getglobal(L, "iupConsoleListFuncs");
   lua_call(L, 0, 0);
-
-  (void)ih;
   return IUP_DEFAULT;
 }
 
@@ -550,18 +548,13 @@ static int item_listvars_action_cb(Ihandle *ih)
   lua_State* L = (lua_State*)IupGetAttribute(ih, "LUASTATE");
   lua_getglobal(L, "iupConsoleListVars");
   lua_call(L, 0, 0);
-
-  (void)ih;
   return IUP_DEFAULT;
 }
 
 static int item_clear_action_cb(Ihandle *ih)
 {
-  lua_State* L = (lua_State*)IupGetAttribute(ih, "LUASTATE");
-  lua_getglobal(L, "iupConsoleClear");
-  lua_call(L, 0, 0);
-
-  (void)ih;
+  Ihandle* mtlOutput = IupGetDialogChild(ih, "MTL_OUTPUT");
+  IupSetAttribute(mtlOutput, "VALUE", "");
   return IUP_DEFAULT;
 }
 
@@ -1206,9 +1199,6 @@ static int iLuaScripterDlgCreateMethod(Ihandle* ih, void** params)
   iuplua_pushihandle(L, ih);
   lua_call(L, 1, 0);
 
-  lua_getglobal(L, "iupConsoleVersionInfo");
-  lua_call(L, 0, 0);
-
   (void)params;
   return IUP_NOERROR;
 }
@@ -1248,7 +1238,7 @@ void IupLuaScripterDlgOpen(void)
   }
 }
 
-/* TO DO:
+/* TODO:
 *** multiple files (IupFlatTabs)
 ** Watch for globals
 * detachable Console, Debug, Breakpoints
