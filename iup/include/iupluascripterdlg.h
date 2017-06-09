@@ -13,7 +13,7 @@ extern "C" {
 
 void IupLuaScripterDlgOpen(void);
 
-Ihandle *IupLuaScripterDlg(void);
+Ihandle* IupLuaScripterDlg(void);
 
 /* Lua binding */
 int iupluascripterdlglua_open(lua_State * L);

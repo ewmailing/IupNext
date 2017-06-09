@@ -10,6 +10,25 @@ local ctrl = {
   },
   include = "iupluascripterdlg.h",
   funcname = "LuaScripterDlg",
+  openfuncname = "_luascripterdlg",
+  extracode = [[ 
+int iupluascripterdlglua_open(lua_State* L)
+{
+  if (iuplua_opencall_internal(L))
+    IupLuaScripterDlgOpen();
+    
+  iuplua_get_env(L);
+  iup_luascripterdlglua_open(L);
+  return 0;
+}
+
+/* obligatory to use require"iupluascripterdlg" */
+int luaopen_iupluascripterdlg(lua_State* L)
+{
+  return iupluascripterdlglua_open(L);
+}
+
+]]
 } 
 
 function ctrl.showxy(ih, x, y)

@@ -16,7 +16,7 @@ USE_IUPLUA = Yes
 
 INCLUDES = ../src ../srclua5
 DEF_FILE = scripter/iupluascripterdlg.def
-LIBS = iup_scintilla
+LIBS = iup_scintilla iupimglib
 
 ifdef USE_LUA_VERSION
   USE_LUA51:=

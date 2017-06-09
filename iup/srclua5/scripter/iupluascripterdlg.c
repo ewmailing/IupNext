@@ -535,24 +535,27 @@ static int txt_cmdline_cb(Ihandle *ih, int c)
   return IUP_CONTINUE;
 }
 
-static int item_listfuncs_action_cb(Ihandle *ih)
+static int item_listfuncs_action_cb(Ihandle *ih_item)
 {
+  Ihandle* ih = (Ihandle*)IupGetAttribute(ih_item, "MAINDIALOG");
   lua_State* L = (lua_State*)IupGetAttribute(ih, "LUASTATE");
   lua_getglobal(L, "iupConsoleListFuncs");
   lua_call(L, 0, 0);
   return IUP_DEFAULT;
 }
 
-static int item_listvars_action_cb(Ihandle *ih)
+static int item_listvars_action_cb(Ihandle *ih_item)
 {
+  Ihandle* ih = (Ihandle*)IupGetAttribute(ih_item, "MAINDIALOG");
   lua_State* L = (lua_State*)IupGetAttribute(ih, "LUASTATE");
   lua_getglobal(L, "iupConsoleListVars");
   lua_call(L, 0, 0);
   return IUP_DEFAULT;
 }
 
-static int item_clear_action_cb(Ihandle *ih)
+static int item_clear_action_cb(Ihandle *ih_item)
 {
+  Ihandle* ih = (Ihandle*)IupGetAttribute(ih_item, "MAINDIALOG");
   Ihandle* mtlOutput = IupGetDialogChild(ih, "MTL_OUTPUT");
   IupSetAttribute(mtlOutput, "VALUE", "");
   return IUP_DEFAULT;
@@ -573,6 +576,7 @@ static int btn_tools_cb(Ihandle *ih)
   IupSetCallback(item_clear, "ACTION", (Icallback)item_clear_action_cb);
 
   tools_menu = IupMenu(item_listfuncs, item_listvars, IupSeparator(), item_clear, NULL);
+  IupSetAttribute(tools_menu, "MAINDIALOG", (char*)IupGetDialog(ih));
 
   x = IupGetInt(ih, "X");
   y = IupGetInt(ih, "Y");
@@ -698,7 +702,7 @@ static int but_removeallbreaks_cb(Ihandle *ih)
 
 /********************************** Main *****************************************/
 
-static Ihandle *buildTabOutput(void)
+static Ihandle *buildTabConsole(void)
 {
   Ihandle *txt_cmdLine, *btn_tools, *console_bts;
   Ihandle *frm_consolebts, *ml_output, *output;
@@ -1149,7 +1153,7 @@ static int iLuaScripterDlgCreateMethod(Ihandle* ih, void** params)
   menu = IupGetAttributeHandle(ih, "MENU");
   appendDebugMenuItens(menu);
 
-  tabConsole = buildTabOutput();
+  tabConsole = buildTabConsole();
 
   tabLocals = buildTabLocals();
 

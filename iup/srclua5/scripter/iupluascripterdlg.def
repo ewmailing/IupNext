@@ -1,3 +1,5 @@
 EXPORTS
+  IupLuaScripterDlgOpen
+  IupLuaScripterDlg
   iupluascripterdlglua_open
   luaopen_iupluascripterdlg
