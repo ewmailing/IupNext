@@ -493,6 +493,25 @@ static int Message(lua_State *L)
   return 0;
 }
 
+static int MessageError(lua_State *L)
+{
+  Ihandle* parent = iuplua_checkihandleornil(L, 1);
+  const char *message = luaL_checkstring(L, 2);
+  IupMessageError(parent, message);
+  return 0;
+}
+
+static int MessageAlarm(lua_State *L)
+{
+  Ihandle* parent = iuplua_checkihandleornil(L, 1);
+  const char *title = luaL_checkstring(L, 2);
+  const char *message = luaL_checkstring(L, 3);
+  const char *buttons = luaL_checkstring(L, 4);
+  int n = IupMessageAlarm(parent, title, message, buttons);
+  lua_pushinteger(L, n);
+  return 1;
+}
+
 static int Alarm(lua_State *L)
 {
   int n = IupAlarm(luaL_checkstring(L, 1), 
@@ -1066,6 +1085,8 @@ void iupluaapi_open(lua_State * L)
     {"Map", Map},
     {"Unmap", Unmap},
     {"Message", Message},
+    {"MessageError", MessageError},
+    {"MessageAlarm", MessageAlarm},
     {"Alarm", Alarm},  
     {"ListDialog", ListDialog},
     {"GetText", GetText},

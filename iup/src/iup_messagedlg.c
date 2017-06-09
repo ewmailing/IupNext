@@ -73,3 +73,72 @@ void IupMessagef(const char *title, const char *format, ...)
   va_end(arglist);
   IupMessage(title, str);
 }
+
+void IupMessageError(Ihandle* parent, const char* message)
+{
+  Ihandle* dlg = IupMessageDlg();
+  char* title = NULL, *str_message;
+
+  if (!parent)
+  {
+    IupSetStrAttribute(dlg, "PARENTDIALOG", IupGetGlobal("PARENTDIALOG"));
+    parent = IupGetAttributeHandle(dlg, "PARENTDIALOG");
+  }
+  else
+    IupSetAttributeHandle(dlg, "PARENTDIALOG", parent);
+
+  if (parent)
+    title = IupGetAttribute(parent, "TITLE");
+
+  if (!title)
+    title = "_@IUP_ERROR";
+
+  IupSetStrAttribute(dlg, "TITLE", title);
+  IupSetAttribute(dlg, "DIALOGTYPE", "ERROR");
+  IupSetAttribute(dlg, "BUTTONS", "OK");
+
+  str_message = IupGetLanguageString(message);
+  if (!str_message)
+    str_message = (char*)message;
+  IupStoreAttribute(dlg, "VALUE", str_message);
+
+  IupPopup(dlg, IUP_CENTERPARENT, IUP_CENTERPARENT);
+
+  IupDestroy(dlg);
+}
+
+int IupMessageAlarm(Ihandle* parent, const char* title, const char *message, const char *buttons)
+{
+  Ihandle* dlg = IupMessageDlg();
+  char *str_message, *str_title;
+  int ret;
+
+  if (!parent)
+    IupSetStrAttribute(dlg, "PARENTDIALOG", IupGetGlobal("PARENTDIALOG"));
+  else
+    IupSetAttributeHandle(dlg, "PARENTDIALOG", parent);
+
+  if (!title)
+    title = "IUP_ATTENTION";
+
+  str_title = IupGetLanguageString(title);
+  if (!str_title)
+    str_title = (char*)title;
+  IupStoreAttribute(dlg, "TITLE", str_title);
+
+  str_message = IupGetLanguageString(message);
+  if (!str_message)
+    str_message = (char*)message;
+  IupStoreAttribute(dlg, "VALUE", str_message);
+
+  IupSetAttribute(dlg, "DIALOGTYPE", "QUESTION");
+  IupSetStrAttribute(dlg, "BUTTONS", buttons);
+
+  IupPopup(dlg, IUP_CENTERPARENT, IUP_CENTERPARENT);
+
+  ret = IupGetInt(dlg, "BUTTONRESPONSE");
+
+  IupDestroy(dlg);
+
+  return ret;
+}

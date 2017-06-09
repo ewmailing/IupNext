@@ -106,7 +106,7 @@ static int iPlotExportEPS_CB(Ihandle* self)
       cdKillCanvas(cd_canvas);
     }
     else
-      iupShowError(IupGetDialog(ih), "IUP_ERRORFILEOPEN");
+      IupMessageError(IupGetDialog(ih), "IUP_ERRORFILESAVE");
   }
   return IUP_DEFAULT;
 }
@@ -131,7 +131,7 @@ static int iPlotExportSVG_CB(Ihandle* self)
       cdKillCanvas(cd_canvas);
     }
     else
-      iupShowError(IupGetDialog(ih), "IUP_ERRORFILEOPEN");
+      IupMessageError(IupGetDialog(ih), "IUP_ERRORFILESAVE");
   }
   return IUP_DEFAULT;
 }
@@ -156,7 +156,7 @@ static int iPlotExportCGM_CB(Ihandle* self)
       cdKillCanvas(cd_canvas);
     }
     else
-      iupShowError(IupGetDialog(ih), "IUP_ERRORFILEOPEN");
+      IupMessageError(IupGetDialog(ih), "IUP_ERRORFILESAVE");
   }
   return IUP_DEFAULT;
 }
@@ -179,7 +179,7 @@ static int iPlotExportEMF_CB(Ihandle* self)
       cdKillCanvas(cd_canvas);
     }
     else
-      iupShowError(IupGetDialog(ih), "IUP_ERRORFILEOPEN");
+      IupMessageError(IupGetDialog(ih), "IUP_ERRORFILESAVE");
   }
   return IUP_DEFAULT;
 }
@@ -201,7 +201,7 @@ static int iPlotExportWMF_CB(Ihandle* self)
       cdKillCanvas(cd_canvas);
     }
     else
-      iupShowError(IupGetDialog(ih), "IUP_ERRORFILEOPEN");
+      IupMessageError(IupGetDialog(ih), "IUP_ERRORFILESAVE");
   }
   return IUP_DEFAULT;
 }
@@ -873,10 +873,10 @@ static void iPlotPropertiesCheckChanges(Ihandle* parambox)
     IupSetAttribute(dlg, "DIALOGTYPE", "WARNING");
     IupSetAttribute(dlg, "BUTTONS", "YESNO");
 
-    IupSetStrAttribute(dlg, "TITLE", "_@IUP_WARNING");
+    IupSetStrAttribute(dlg, "TITLE", "_@IUP_ATTENTION");
     IupSetStrAttribute(dlg, "VALUE", "_@IUP_CHANGESNOTAPPLIEDAPPLY");
 
-    IupPopup(dlg, IUP_CURRENT, IUP_CURRENT);
+    IupPopup(dlg, IUP_CENTERPARENT, IUP_CENTERPARENT);
 
     int ret = IupGetInt(dlg, "BUTTONRESPONSE");
     IupDestroy(dlg);
@@ -2872,7 +2872,6 @@ static void iPlotSetClassUpdate(Iclass* ic)
     IupSetLanguageString("IUP_HORIZONTAL", "Horizontal");
     IupSetLanguageString("IUP_VERTICAL", "Vertical");
 
-    IupSetLanguageString("IUP_WARNING", "Warning!");
     IupSetLanguageString("IUP_CHANGESNOTAPPLIEDAPPLY", "Changes Not Applied. Apply?");
 
     IupSetLanguageString("IUP_MARGIN", "Margin");
@@ -3007,7 +3006,6 @@ static void iPlotSetClassUpdate(Iclass* ic)
     IupSetLanguageString("IUP_HORIZONTAL", "Horizontal");
     IupSetLanguageString("IUP_VERTICAL", "Vertical");
 
-    IupSetLanguageString("IUP_WARNING", "Aten��o!");
     IupSetLanguageString("IUP_CHANGESNOTAPPLIEDAPPLY", "Modifica��es n�o aplicadas. Aplicar?");
 
     IupSetLanguageString("IUP_MARGIN", "Margem");
@@ -3075,7 +3073,6 @@ static void iPlotSetClassUpdate(Iclass* ic)
       IupSetLanguageString("IUP_TITLE", "Título");
       IupSetLanguageString("IUP_GRIDMINOR", "Grade Secundária");
       IupSetLanguageString("IUP_AXISTICKSNUMBER", "Números do Eixo");
-      IupSetLanguageString("IUP_WARNING", "Atenção!");
       IupSetLanguageString("IUP_CHANGESNOTAPPLIEDAPPLY", "Modificações não aplicadas. Aplicar?");
       IupSetLanguageString("IUP_ITALIC", "Itálico");
       IupSetLanguageString("IUP_BOLDITALIC", "Negrito Itálico");
@@ -3173,7 +3170,6 @@ static void iPlotSetClassUpdate(Iclass* ic)
     IupSetLanguageString("IUP_HORIZONTAL", "Horizontal");
     IupSetLanguageString("IUP_VERTICAL", "Vertical");
 
-    IupSetLanguageString("IUP_WARNING", "�Advertencia!");
     IupSetLanguageString("IUP_CHANGESNOTAPPLIEDAPPLY", "Hay Modificaciones. �Aplicarlas?");
 
     IupSetLanguageString("IUP_MARGIN", "Margen");
@@ -3243,7 +3239,6 @@ static void iPlotSetClassUpdate(Iclass* ic)
       IupSetLanguageString("IUP_PIESLICELABELPOS", "Pos. de Etiqueta en la Porción:");
       IupSetLanguageString("IUP_TITLE", "Título");
       IupSetLanguageString("IUP_AXISTICKSNUMBER", "Números en las Marcas");
-      IupSetLanguageString("IUP_WARNING", "¡Advertencia!");
       IupSetLanguageString("IUP_CHANGESNOTAPPLIEDAPPLY", "Hay Modificaciones. ¿Aplicarlas?");
       IupSetLanguageString("IUP_FONTSIZE", "Tamaño de Fuente:");
       IupSetLanguageString("IUP_ITALIC", "Itálica");

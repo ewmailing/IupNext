@@ -273,7 +273,7 @@ function iupDebuggerSetLocalVariable()
   local local_list = iup.GetDialogChild(debugger.main_dialog, "LIST_LOCAL")
   local index = local_list.value
   if (not index or tonumber(index) == 0) then
-    iup.Message("Warning!", "Select a variable on the list.")
+    iup.MessageError(debugger.main_dialog, "Select a variable on the list.")
     return
   end
 
@@ -284,7 +284,7 @@ function iupDebuggerSetLocalVariable()
   if (value == nil) then value = "" end
   local valueType = type(value)
   if valueType ~= "string" and valueType ~= "number" then
-    iup.Message("Warning!", "Can edit only strings and numbers.")
+    iup.MessageError(debugger.main_dialog, "Can edit only strings and numbers.")
     return
   end
 

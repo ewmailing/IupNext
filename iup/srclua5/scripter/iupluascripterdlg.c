@@ -283,7 +283,7 @@ static int marker_changed_cb(Ihandle *ih, int lin, int margin)
     char* filename = IupGetAttribute(multitext, "FILENAME");
     if (!filename)
     {
-      IupMessage("Warning!", "Must have a filename to add a breakpoint.");
+      IupMessageError(IupGetDialog(ih), "Must have a filename to add a breakpoint.");
       return IUP_DEFAULT;
     }
 
@@ -369,7 +369,7 @@ static int save_check(Ihandle* ih_item)
   Ihandle* multitext = IupGetDialogChild(ih_item, "MULTITEXT");
   if (IupGetInt(multitext, "DIRTY"))
   {
-    if (IupAlarm("Warning", "File must be saved for debugging.\n  Save it now?", "Yes and Debug", "No and Abort Debug", NULL) == 1)
+    if (IupMessageAlarm(IupGetDialog(ih_item), "Attention!", "File must be saved for debugging.\n  Save it now? (No will cancel debug)", "YESNO") == 1)
       IupSetAttribute(IupGetDialog(ih_item), "SAVEFILE", NULL);
     else
       return 0;
@@ -683,7 +683,7 @@ static int but_removebreak_cb(Ihandle *ih)
 
   if (value == 0)
   {
-    IupMessage("Warning!", "Select a breakpoint on the list.");
+    IupMessageError(IupGetDialog(ih), "Must select a breakpoint on the list.");
     return IUP_DEFAULT;
   }
 

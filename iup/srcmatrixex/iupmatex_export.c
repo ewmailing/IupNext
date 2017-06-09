@@ -379,7 +379,7 @@ static int iMatrixExSetCopyFileAttrib(Ihandle *ih, const char* value)
   FILE *file = fopen(value, "wb");
   if (!file)
   {
-    iupAttribSet(ih, "LASTERROR", "IUP_ERRORFILEOPEN");
+    iupAttribSet(ih, "LASTERROR", "IUP_ERRORFILESAVE");
     return 0;
   }
 

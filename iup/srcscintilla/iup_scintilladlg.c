@@ -554,7 +554,7 @@ static void open_file(Ihandle* ih_item, const char* filename)
     free(str);
   }
   else
-    iupShowError(IupGetDialog(ih_item), "Failed to open file.");
+    IupMessageError(IupGetDialog(ih_item), "IUP_ERRORFILEOPEN");
 }
 
 static int item_saveas_action_cb(Ihandle* ih_item);
@@ -579,7 +579,7 @@ static void save_file(Ihandle* multitext)
         saveMarkers(config, multitext);
     }
     else
-      iupShowError(IupGetDialog(multitext), "Failed to save file.");
+      IupMessageError(IupGetDialog(multitext), "IUP_ERRORFILESAVE");
   }
 }
 
@@ -603,7 +603,7 @@ static void saveas_file(Ihandle* multitext, const char* filename)
     }
   }
   else
-    iupShowError(IupGetDialog(multitext), "Failed to save file.");
+    IupMessageError(IupGetDialog(multitext), "IUP_ERRORFILESAVE");
 }
 
 static int save_check(Ihandle* ih_item)
@@ -611,7 +611,7 @@ static int save_check(Ihandle* ih_item)
   Ihandle* multitext = IupGetDialogChild(ih_item, "MULTITEXT");
   if (IupGetInt(multitext, "DIRTY"))
   {
-    switch (IupAlarm("Warning", "File not saved! Save it now?", "Yes", "No", "Cancel"))
+    switch (IupMessageAlarm(IupGetDialog(ih_item), "Attention!", "File not saved. Save it now?", "YESNOCANCEL"))
     {
     case 1:  /* save the changes and continue */
       save_file(multitext);
@@ -935,7 +935,7 @@ static int goto_ok_action_cb(Ihandle* bt_ok)
   int line = IupGetInt(txt, "VALUE");
   if (line < 1 || line > line_count)
   {
-    iupShowError(IupGetDialog(bt_ok), "Invalid line number.");
+    IupMessageError(IupGetDialog(bt_ok), "Invalid line number.");
     return IUP_DEFAULT;
   }
 

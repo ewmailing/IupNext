@@ -444,7 +444,7 @@ static void new_dialog(int test, char* tip)
   }
   else if (test == 5)
   {
-    IupPopup(dlg, IUP_CURRENT, IUP_CURRENT);
+    IupPopup(dlg, IUP_MOUSEPOS, IUP_MOUSEPOS);
   }
   else if (test == 6)
   {

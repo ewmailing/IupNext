@@ -1029,6 +1029,14 @@ wb_usr.tree =
               link= "dlg/iupmessage.html"
             },
             {
+              name= {nl= "IupMessageError"},
+              link= "dlg/iupmessageerror.html"
+            },
+            {
+              name= {nl= "IupMessageAlarm"},
+              link= "dlg/iupmessagealarm.html"
+            },
+            {
               name= {nl= "IupScanf"},
               link= "dlg/iupscanf.html"
             },

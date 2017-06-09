@@ -529,7 +529,7 @@ static int gtkFileDlgPopup(Ihandle* ih, int x, int y)
       {
         if (!dir_exist)
         {
-          iupShowError(ih, "IUP_INVALIDDIR");
+          IupMessageError(ih, "IUP_INVALIDDIR");
           response = GTK_RESPONSE_HELP; /* to leave the dialog open */
           continue;
         }
@@ -538,7 +538,7 @@ static int gtkFileDlgPopup(Ihandle* ih, int x, int y)
       {
         if (dir_exist)
         {
-          iupShowError(ih, "IUP_FILEISDIR");
+          IupMessageError(ih, "IUP_FILEISDIR");
           response = GTK_RESPONSE_HELP; /* to leave the dialog open */
           continue;
         }
@@ -556,7 +556,7 @@ static int gtkFileDlgPopup(Ihandle* ih, int x, int y)
 
           if (!iupStrBoolean(value))
           {
-            iupShowError(ih, "IUP_FILENOTEXIST");
+            IupMessageError(ih, "IUP_FILENOTEXIST");
             response = GTK_RESPONSE_HELP; /* to leave the dialog open */
             continue;
           }

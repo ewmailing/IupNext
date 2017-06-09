@@ -72,7 +72,6 @@ int main(int argc, char **argv)
     IupSetCallbacks(IupItem("&About...", NULL), "ACTION", (Icallback)item_about_action_cb, NULL),
     NULL)));
 
-
   /* show the dialog at the last position, with the last size */
   IupConfigDialogShow(config, main_dialog, "MainWindow");
 

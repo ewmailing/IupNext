@@ -336,7 +336,8 @@ iupStrCompareEqual
 iupStrCompareFind
 iupStrNextLine
 iupStrNextValue
-iupShowError
+IupMessageError
+IupMessageAlarm
 IupGetLanguageString
 iupStrLower
 iupStrUpper

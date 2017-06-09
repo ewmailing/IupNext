@@ -47,7 +47,7 @@ static void iMatrixListShowLastError(Ihandle* ih)
 {
   char* lasterror = iupAttribGet(ih, "LASTERROR");
   if (lasterror)
-    iupShowError(IupGetDialog(ih), lasterror);
+    IupMessageError(IupGetDialog(ih), lasterror);
 }
 
 static void iMatrixExSelectAll(Ihandle *ih)
@@ -1118,7 +1118,6 @@ static void iMatrixExSetClassUpdate(Iclass* ic)
     IupSetLanguageString("IUP_ERRORINVALIDDATA", "Invalid Data.");
     IupSetLanguageString("IUP_ERRORNOSELECTION", "Empty Selection.");
     IupSetLanguageString("IUP_ERRORINVALIDINTERVAL", "Invalid Interval.");
-    IupSetLanguageString("IUP_ERRORFILEOPEN", "Failed to open file.");
   }
   else if (iupStrEqualNoCase(IupGetGlobal("LANGUAGE"), "PORTUGUESE"))
   {
@@ -1175,7 +1174,6 @@ static void iMatrixExSetClassUpdate(Iclass* ic)
     IupSetLanguageString("IUP_ERRORINVALIDDATA", "Dado inválido.");
     IupSetLanguageString("IUP_ERRORNOSELECTION", "Seleção vazia.");
     IupSetLanguageString("IUP_ERRORINVALIDINTERVAL", "Intervalo inválido.");
-    IupSetLanguageString("IUP_ERRORFILEOPEN", "Falha ao abrir o arquivo..");
 
     if (IupGetInt(NULL, "UTF8MODE"))
     {
@@ -1246,7 +1244,6 @@ static void iMatrixExSetClassUpdate(Iclass* ic)
     IupSetLanguageString("IUP_ERRORINVALIDDATA", "Dato inválido.");
     IupSetLanguageString("IUP_ERRORNOSELECTION", "Selección vacía.");
     IupSetLanguageString("IUP_ERRORINVALIDINTERVAL", "Intervalo inválido.");
-    IupSetLanguageString("IUP_ERRORFILEOPEN", "Error al abrir el archivo.");
 
     if (IupGetInt(NULL, "UTF8MODE"))
     {

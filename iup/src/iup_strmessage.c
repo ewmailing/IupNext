@@ -110,7 +110,8 @@ typedef struct _IstdMessage
 
 static IstdMessage iStdMessages[] =
 {
-  {"IUP_ERROR", {"Error", "Erro", NULL, "Error", NULL, NULL}},
+  {"IUP_ERROR", {"Error!", "Erro!", NULL, "Error!", NULL, NULL}},
+  {"IUP_ATTENTION", {"Attention!", "Atenção!", "AtenÃ§Ã£o!", "¡Advertencia!", "Â¡Advertencia!", NULL}},
   {"IUP_YES", {"Yes", "Sim", NULL, "Si", NULL, NULL}},
   {"IUP_NO", {"No", "Não", "NÃ£o", "No", NULL, NULL}},
   {"IUP_INVALIDDIR", {"Invalid directory.", "Diretório inválido.", "DiretÃ³rio invÃ¡lido.", "Directorio inválido.", "Directorio invÃ¡lido.", NULL}},
@@ -143,7 +144,9 @@ static IstdMessage iStdMessages[] =
   {"IUP_STYLE", {"Style:", "Estilo:", NULL, "Estilo:", NULL, NULL}},
   {"IUP_SIZE", {"Size:", "Tamanho:", NULL, "Tamaño:", "TamaÃ±o:", NULL}},
   {"IUP_SAMPLE", {"Sample:", "Exemplo:", NULL, "Ejemplo:", NULL, NULL}},
-  {NULL, {NULL, NULL, NULL, NULL, NULL, NULL}}
+  {"IUP_ERRORFILEOPEN", { "Failed to open file.", "Falha ao abrir o arquivo.", NULL, "Error al abrir el archivo.", NULL, NULL } },
+  {"IUP_ERRORFILESAVE", { "Failed to save file.", "Falha ao salvar o arquivo.", NULL, "Error al guardar el archivo.", NULL, NULL } },
+  { NULL, { NULL, NULL, NULL, NULL, NULL, NULL } }
 };
 
 static void iStrMessageRegisterInternal(int lng, int utf8mode)

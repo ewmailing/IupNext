@@ -281,6 +281,11 @@ namespace Iup
   inline Container Control::GetParent() { return Container(IupGetParent(ih)); }
   inline int Control::Reparent(const Container& new_parent, const Control& ref_child) { return IupReparent(ih, new_parent.GetHandle(), ref_child.GetHandle()); }
 
+  void MessageError(const Dialog& parent, const char* message)
+    { IupMessageError(parent.GetHandle(), message); }
+  int MessageAlarm(const Dialog& parent, const char* title, const char* message, const char* buttons)
+    { return IupMessageAlarm(parent.GetHandle(), title, message, buttons); }
+
   class Menu : public Container
   {
   public:
