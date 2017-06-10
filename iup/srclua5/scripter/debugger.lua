@@ -316,8 +316,10 @@ function iupDebuggerPrintLocalVariable()
 
   local level = iup.GetAttribute(local_list, "LEVEL"..index)
   local pos = iup.GetAttribute(local_list, "POS"..index)
+  local name, value = debug.getlocal(level, pos)
 
-  print(local_list[index] .. "  (level="..level..", pos="..pos..")")
+  iupConsolePrint(local_list[index] .. "  (level="..level..", pos="..pos..")")
+  iupConsolePrintValue(value)
 end
 
 function iupDebuggerPrintAllLocalVariables()
@@ -330,8 +332,10 @@ function iupDebuggerPrintAllLocalVariables()
   for index = 1, count do
     local level = iup.GetAttribute(local_list, "LEVEL"..index)
     local pos = iup.GetAttribute(local_list, "POS"..index)
+    local name, value = debug.getlocal(level, pos)
 
-    print(local_list[index] .. "  (level="..level..", pos="..pos..")")
+    iupConsolePrint(local_list[index] .. "  (level="..level..", pos="..pos..")")
+    iupConsolePrintValue(value)
   end
 end
 
@@ -411,10 +415,8 @@ function iupDebuggerPrintStackLevel()
   local level = index + debugger.startLevel - 1
   local defined = iup.GetAttribute(list_stack, "DEFINED"..index)
 
-  print(list_stack[index] .. "  (level="..level..")")
-  if defined then
-    print("    [" .. defined .."]")
-  end
+  iupConsolePrint(list_stack[index] .. "  (level="..level..")")
+  iupConsolePrint(defined)
 end
 
 function iupDebuggerPrintStack()
@@ -428,15 +430,13 @@ function iupDebuggerPrintStack()
     local level = index + debugger.startLevel - 1
     local defined = iup.GetAttribute(list_stack, "DEFINED"..index)
 
-    print(list_stack[index] .. "  (level="..level..")")
-    if defined then
-      print("    [" .. defined .."]")
-    end
+    iupConsolePrint(list_stack[index] .. "  (level="..level..")")
+    iupConsolePrint(defined)
   end
 end
 
 function iupDebuggerUpdateStackList()
-  local info, name, defined
+  local info, desc, defined
   local level = debugger.startLevel
   
   iupDebuggerClearStackList()
@@ -446,36 +446,37 @@ function iupDebuggerUpdateStackList()
   info = debug.getinfo(level, "Snl") -- name, what, currentline
   while  info ~= nil do
     if info.what == "main" then
-      name = "<main>"
+      desc = "<main>"
     elseif info.name and info.name ~= "" then
-      name = info.name
+      desc = info.name
 
       if info.what == "C" then
-        name = name .. " (C)"
+        desc = name .. " (C)"
       end
     else
-      name = "<noname>"
+      desc = "<noname>"
     end
     if info.namewhat == "l" then
-        name = name .. " Local"
+        desc = desc .. " (Local)"
     end
     if info.currentline > 0 then
-       name = name .. ", at line " .. info.currentline
+       desc = desc .. ", at line " .. info.currentline
     end
 
-    defined = nil
-    if info.what ~= "C" then    
+    if info.what == "C" then    
+      defined = "   [Defined in C.]"
+    else
       local s = string.sub(info.source, 1, 1)
       if s == "@" then
         local filename = string.sub(info.source, 2)
-        defined = "Defined in the file: " .. filename
+        defined = "   [Defined in the file: \"" .. filename .. "\" at line " .. info.linedefined .. ".]"
       else
-        defined = "Defined in a string."
+        defined = "   [Defined in a string.]"
       end
     end
 
     local index = level - debugger.startLevel + 1
-    iup.SetAttribute(list_stack, index, name)
+    iup.SetAttribute(list_stack, index, desc)
     iup.SetAttribute(list_stack, "DEFINED"..index, defined)
 
     level = level + 1
@@ -599,7 +600,7 @@ function iupDebuggerStartDebug(filename)
   debugger.currentFile = multitext.filename
   debugger.startLevel = iupDebuggerGetDebugLevel() + 1 -- usually 3+1=4
   
-  print("-- Debug start\n")
+  iupConsolePrint("-- Debug start\n") -- extra linefeed
   iupDebuggerSetState(DEBUG_ACTIVE)
   debugtabs.valuepos = 1
 
@@ -615,10 +616,10 @@ function iupDebuggerEndDebug(stop)
   debugtabs.valuepos = 0
 
   if stop then
-    print("-- Debug stop\n")
+    iupConsolePrint("-- Debug stop\n") -- extra linefeed 
     error() -- abort processing, no error message
   else
-    print("-- Debug finish\n")
+    iupConsolePrint("\n-- Debug finish") -- extra linefeed
   end
 end
 

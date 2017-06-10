@@ -55,6 +55,68 @@ with <strong>Console</strong>, <strong>Debug</strong> and <strong>Breaks</strong
 interfaces.</p>
 <p>The text editor has syntax highlight for the Lua language and autocomplete 
 for Lua keywords.</p>
+<p>At the <strong>Console</strong> the user can type and enter Lua commands that 
+are executed and printed in the output area. The Lua "print" command and the Lua 
+"io.write" command are redirected to the output area, the previous definitions 
+are saved as "print_old" and "write_old". All the commands entered in the 
+command line are saved in a history list that can be accessed using the arrow up 
+and arrow down keys. If the original functions are restored then only the 
+command line output will be displayed in the output area.</p>
+<p>Any Lua commands can be typed in the command line, but they must be a 
+complete and valid sentence. If the sentence evaluates and return one or more 
+results then the results are printed in the output area. For instance:</p>
+<pre>&gt; x = 3     (sentence entered in the command line are also printed with a "&gt; " prefix)
+&gt; x
+3
+&gt; x + 4
+7</pre>
+<p>Errors in the command line are displayed in the output (errors when running 
+or debugging scripts are displayed in a separate window with more detailed 
+information).</p>
+<pre>&gt; x + y
+Error: [string "return x + y"]:1: attempt to perform arithmetic on global 'y' (a nil value)</pre>
+<p>Multiple return values are also printed:</p>
+<pre>&gt; z = 5
+&gt; x, z
+3
+5</pre>
+<p>Notice that the output of a value here is different from a regular "print", 
+in the sense that strings, tables and functions have a special treatment. </p>
+<pre>&gt; x = "test"
+&gt; x
+"test"
+&gt; print(x)
+test</pre>
+<p>and</p>
+<pre>&gt; t = {33, "test2", x = 123}
+&gt; t
+{
+33,
+"test2",
+x = 123,
+}
+&gt; print(t)
+table: 0000023CCA058AC0</pre>
+<p>and</p>
+<pre>&gt; f1
+   [Defined in the file: "D:\tecgraf\iup\html\examples\Lua\scripter_test.lua" at line 18.]
+&gt; print(f1)
+function: 0000024E6B4DF010</pre>
+<p>Breakpoints can be added by clicking the left margin in its most right area 
+(the left area can has line numbers and bookmarks) or in the <strong>Breaks</strong> 
+tab using the "Toggle Breakpoint" at the caret position or using the "New" 
+button and writing a filename and a line number.</p>
+<p>During the debug process, local variables of each stack level can be 
+inspected in the <strong>Debug</strong> tab. The actual level is not changed 
+when a Call Stack list level is selected, only its local variables are updated 
+in the Locals list. A local variable can be changed only if it is a string or a 
+number. When printed, locals and stack levels display also level and pos debug 
+information.</p>
+<pre>l_main_x = 43 (level=6, pos=1)
+43</pre>
+<p>and</p>
+<pre>f1, at line 22 (level=4)
+    [Defined in the file: "D:\tecgraf\iup\html\examples\Lua\scripter_test.lua" at line 18]</pre>
 <p>&nbsp;</p>
 <h3>To Do's</h3>
 <ul>

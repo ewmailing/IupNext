@@ -405,19 +405,25 @@ static int item_debug_action_cb(Ihandle* item)
 
 static int item_run_action_cb(Ihandle *item)
 {
-  char* value, *title;
   Ihandle* multitext;
   lua_State* L;
+  char* filename;
 
   if (!IupGetInt(IupGetDialogChild(item, "ITM_RUN"), "ACTIVE")) /* can be called by the hot key in the dialog */
     return IUP_DEFAULT;
 
   L = (lua_State*)IupGetAttribute(item, "LUASTATE");
   multitext = IupGetDialogChild(item, "MULTITEXT");
-  value = IupGetAttribute(multitext, "VALUE");
-  title = IupGetAttribute(IupGetDialog(multitext), "TITLE");
+  filename = IupGetAttribute(multitext, "FILENAME");
 
-  iuplua_dostring(L, value, title);
+  if (filename && !IupGetInt(multitext, "DIRTY"))
+    iuplua_dofile(L, filename);
+  else
+  {
+    char* value = IupGetAttribute(multitext, "VALUE");
+    char* title = IupGetAttribute(IupGetDialog(multitext), "TITLE");
+    iuplua_dostring(L, value, title);
+  }
   return IUP_DEFAULT;
 }
 

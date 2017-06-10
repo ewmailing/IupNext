@@ -121,9 +121,13 @@ function iup_console.txtCommand:k_any(k)
     if (not cmd) then
       print("Error: ".. msg) -- the original error message
     else
-      local result = {cmd()}
-      for i = 1, #result do
-        iup_console.printvalue(result[i])
+      local result = {pcall(cmd)}
+      if result[1] then
+        for i = 2, #result do
+          iup_console.printvalue(result[i])
+        end
+      else
+        print("Error: ".. result[2])
       end
     end
     iup_console.txtCommand.value = ""

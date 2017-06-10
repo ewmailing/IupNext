@@ -47,7 +47,7 @@ end
 function iupConsoleEnterCommandStr(text)
   table.insert(console.cmdList, text)
   console.currentListInd = #console.cmdList
-  print("> " .. text)
+  iupConsolePrint("> " .. text)
 end
 
 function iupConsoleEnterCommand()
@@ -64,11 +64,15 @@ function iupConsoleEnterCommand()
     cmd = loadstring("return " .. command)
   end
   if (not cmd) then
-    print("Error: ".. msg) -- the original error message
+    iupConsolePrint("Error: ".. msg) -- the original error message
   else
-    local result = {cmd()}
-    for i = 1, #result do
-      iupConsolePrintValue(result[i])
+    local result = {pcall(cmd)}
+    if result[1] then
+      for i = 2, #result do
+        iupConsolePrintValue(result[i])
+      end
+    else
+      iupConsolePrint("Error: ".. result[2])
     end
   end
 
@@ -78,9 +82,7 @@ end
 
 --------------------- Print Replacement ---------------------
 
-
-print_old = print
-function print(...)
+function iupConsolePrint(...)
   local param = {...}
   local str = ""
   if (#param == 0) then
@@ -96,10 +98,14 @@ function print(...)
     console.mtlOutput.scrollto = "99999999:1"
   end
 end
+
+print_old = print
+print = iupConsolePrint
+
 write_old = io.write
 io.write = function(...)
   console.mtlOutput.appendnewline="No"
-  print(...)
+  iupConsolePrint(...)
   console.mtlOutput.appendnewline="Yes"
 end
 
@@ -124,14 +130,35 @@ function iupConsolePrintTable(t)
     end
   end
   str = str .. "}"
-  print(str)
+
+  iupConsolePrint(str)
+end
+
+function iupConsolePrintFunction(f)
+  local info = debug.getinfo(f, "S")
+  local str = ""
+  if info.what == "C" then    
+    str = "   [Defined in C.]"
+  else
+    local s = string.sub(info.source, 1, 1)
+    if s == "@" then
+      local filename = string.sub(info.source, 2)
+      str = "   [Defined in the file: \"" .. filename .. "\" at line " .. info.linedefined .. ".]"
+    else
+      str = "   [Defined in a string.]"
+    end
+  end
+
+  iupConsolePrint(str)
 end
 
 function iupConsolePrintValue(v)
   if (type(v) == "table") then 
     iupConsolePrintTable(v)
+  elseif (type(v) == "function") then 
+    iupConsolePrintFunction(v)
   else
-    print(iupConsoleValueToString(v))
+    iupConsolePrint(iupConsoleValueToString(v))
   end
 end
 
@@ -146,7 +173,7 @@ function iupConsoleListFuncs()
   local n,v = next(global, nil)
   while n ~= nil do
     if type(v) == "function" then
-      print(n)
+      iupConsolePrint(n)
     end
     n,v = next(global, n)
   end
@@ -162,7 +189,7 @@ function iupConsoleListVars()
   local n,v = next(global, nil)
   while n ~= nil do
     if type(v) ~= "function" and n ~= "_G" then
-      print(n)
+      iupConsolePrint(n)
     end
     n,v = next(global, n)
   end
