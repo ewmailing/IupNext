@@ -1175,6 +1175,7 @@ static int iLuaScripterDlgCreateMethod(Ihandle* ih, void** params)
   IupSetCallback(multitext, "VALUECHANGED_CB", (Icallback)multitext_valuechanged_cb);
   IupSetCallback(multitext, "K_ESC", (Icallback)multitext_kesc_cb);
   IupSetCallback(multitext, "MAP_CB", (Icallback)multitext_map_cb);
+  IupSetAttribute(multitext, "AUTOCOMPLETION", "ON");
 
   /* breakpoints margin=2 */
   IupSetInt(multitext, "MARGINWIDTH2", 15);
