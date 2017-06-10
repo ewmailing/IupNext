@@ -290,6 +290,7 @@ void TextTest(void)
   IupSetAttribute(text, "NAME", "text");
   IupSetAttribute(text, "TIP", "Attribute Value");
 //  IupSetAttribute(text, "FORMATTING", "YES");
+  IupSetCallback(text, "K_ANY", (Icallback)k_any);
 
   opt = IupToggle("Set/Get", NULL);
   IupSetAttribute (opt, "VALUE", "ON");
