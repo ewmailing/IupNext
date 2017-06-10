@@ -1,0 +1,135 @@
+﻿<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.0 Strict//EN">
+<html>
+<head>
+<meta http-equiv="Content-Language" content="en-us">
+<title>IupLuaScripterDlg</title>
+<link rel="stylesheet" type="text/css" href="../../style.css">
+<style type="text/css">
+.style1 {
+	border-width: 0;
+}
+</style>
+</head>
+<body>
+<div id="navigation">
+  <ul>
+    <li><a href="#Creation">Creation</a></li>
+    <li><a href="#Attributes">Attributes</a></li>
+    <li><a href="#Callbacks">Callbacks</a></li>
+    <li><a href="#Notes">Notes</a></li>
+    <li><a href="#Examples">Examples</a></li>
+    <li><a href="#SeeAlso">See Also</a></li>
+  </ul>
+</div>
+
+<h2>IupLuaScripterDlg<font size="4"> (since 3.22)</font></h2>
+<p>Creates a Lua script developer dialog using the
+<a href="iupscintilladlg.html">IupScintillaDlg</a> dialog. It can edit, run and 
+debug Lua scripts. The dialog can be shown with <strong>IupShow</strong>, <strong>IupShowXY</strong> 
+or <strong>IupPopup</strong>.</p>
+<h3><a name="Creation">Creation</a></h3>
+<pre>Ihandle* IupLuaScripterDlg(void); [in C]
+iup.luascripterdlg{} -&gt; (<strong>elem</strong>: ihandle) [in Lua]
+luascripterdlg() [in LED]</pre>
+<p><u>Returns:</u> the identifier of the 
+  created element, or NULL if an error occurs.</p>
+
+<h3><a name="Attributes">Attributes</a></h3>
+<p>Supports all the <a href="iupdialog.html#Attributes">IupDialog</a> and
+<a href="iupscintilladlg.html">IupScintillaDlg</a> attributes. </p>
+<h3><a name="Callbacks">Callbacks</a></h3>
+<p>Supports all the <a href="iupdialog.html#Callbacks">IupDialog</a> and
+<a href="iupscintilladlg.html">IupScintillaDlg</a> callbacks.</p>
+
+
+<h3><a name="Notes">Notes</a></h3>
+<p>The dialog can be freely customized to incorporate other menu items or 
+controls. </p>
+<p>XXX</p>
+<h3><a name="Examples">Examples</a></h3>
+<pre>
+int main(int argc, char **argv)
+{
+  Ihandle *config;
+  lua_State *L;
+  Ihandle *menu;
+  Ihandle *main_dialog;
+
+  L = luaL_newstate();
+  luaL_openlibs(L);
+
+  createargtable(L, argv, argc);  /* create table 'arg' */
+
+  IupOpen(&argc, &argv);
+  IupLuaScripterDlgOpen();
+
+  iuplua_open(L);
+
+  IupSetGlobal("GLOBALLAYOUTDLGKEY", "Yes");
+
+  config = IupConfig();
+  IupSetAttribute(config, "APP_NAME", "iupluascripter");
+  IupConfigLoad(config);
+
+  main_dialog = IupLuaScripterDlg();
+
+  IupSetAttributeHandle(main_dialog, "CONFIG", config);
+  IupSetAttribute(main_dialog, "SUBTITLE", "IupLuaScriter");
+
+  menu = IupGetAttributeHandle(main_dialog, "MENU");
+  IupAppend(menu, IupSubmenu("&Help", IupMenu(
+    IupSetCallbacks(IupItem("&Help...", NULL), "ACTION", (Icallback)item_help_action_cb, NULL),
+    IupSetCallbacks(IupItem("&About...", NULL), "ACTION", (Icallback)item_about_action_cb, NULL),
+    NULL)));
+
+  /* show the dialog at the last position, with the last size */
+  IupConfigDialogShow(config, main_dialog, "MainWindow");
+
+  /* initialize the current file */
+  IupSetAttribute(main_dialog, "NEWFILE", NULL);
+
+  /* open a file from the command line (allow file association in Windows) */
+  if (argc > 1 && argv[1])
+  {
+    const char* filename = argv[1];
+    IupSetStrAttribute(main_dialog, "OPENFILE", filename);
+  }
+
+  IupMainLoop();
+
+  IupDestroy(config);
+  IupDestroy(main_dialog);
+
+  IupClose();
+
+  lua_close(L);
+  return EXIT_SUCCESS;
+}
+</pre>
+<div align="center">
+  <center>
+  <table border="0" cellpadding="5" cellspacing="0" style="border-collapse: collapse" bordercolor="#111111" id="AutoNumber1">
+    <tr>
+      <td  align="center" class="style1"><img border="0" src="images/luascripterdlg.png"><br>
+	  Paused while debugging</td>
+    </tr>
+    <tr>
+      <td  align="center" class="style1"><img border="0" src="images/luascripterdlg1.png"><br>
+	  Command line and output<br></td>
+    </tr>
+    <tr>
+      <td  align="center" class="style1"><img border="0" src="images/luascripterdlg2.png"><br>
+	  Menus and breakpoints</td>
+    </tr>
+  </table>
+  </center>
+</div>
+<h3><a name="SeeAlso">See Also</a></h3>
+<p>
+<a href="../ctrl/iup_scintilla.html">
+IupScintilla</a>,
+<a href="iupdialog.html">IupDialog</a></p>
+
+</body>
+
+</html>

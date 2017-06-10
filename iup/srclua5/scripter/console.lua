@@ -15,7 +15,7 @@ function iupConsoleInit(txt_cmdline, mtl_output)
   console.hold_caret = false
 
   console.mtlOutput.value = _COPYRIGHT .. "\n" ..
-                            "IUP " .. iup._VERSION .. "  " .. iup._COPYRIGHT .. "\n\n"
+                            "IUP " .. iup._VERSION .. "  " .. iup._COPYRIGHT
 end
 
 
