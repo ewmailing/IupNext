@@ -988,6 +988,10 @@ wb_usr.tree =
               name= {nl= "IupScintillaDlg"},
               link= "dlg/iupscintilladlg.html"
             },
+            {
+              name= {nl= "IupLuaScripterDlg"},
+              link= "dlg/iupluascripterdlg.html"
+            },
             { link= "", name= {en= "" } },
             {
               name= {nl= "IupAlarm"},
