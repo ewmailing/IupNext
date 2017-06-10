@@ -1402,7 +1402,10 @@ static char* gtkTextGetSpinValueAttrib(Ihandle* ih)
     if (iupAttribGet(ih, "_IUPGTK_SPIN_NOAUTO"))
       pos = iupAttribGetInt(ih, "_IUPGTK_SPIN_VALUE");
     else
+    {
+      gtk_spin_button_update((GtkSpinButton*)ih->handle);
       pos = gtk_spin_button_get_value_as_int((GtkSpinButton*)ih->handle);
+    }
 
     return iupStrReturnInt(pos);
   }
