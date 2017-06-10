@@ -511,11 +511,38 @@ static int k_pause_action_cb(Ihandle* item)
   return IUP_DEFAULT;
 }
 
+#ifndef WIN32
+/* TODO WORKAROUND: 
+   In GTK, IupText seems to work ok for K_CR and K_ESC. 
+   But in this configuration, for some unknown reason,
+   the K_ANY callback is NOT being called for the IupText, 
+   but is being called for the dialog. So we did this workaround.
+*/
+static int dialog_kany_cb(Ihandle *ih, int c)
+{
+  lua_State* L = (lua_State*)IupGetAttribute(ih, "LUASTATE");
+
+  switch (c)
+  {
+  case K_CR:
+    lua_getglobal(L, "iupConsoleEnterCommand");
+    lua_call(L, 0, 0);
+    return IUP_IGNORE;
+  case K_ESC:
+    IupSetAttribute(IupGetDialogChild(ih, "TXT_CMDLINE"), IUP_VALUE, "");
+    return IUP_IGNORE;
+  }
+  return IUP_DEFAULT;
+}
+#endif
+
 static int txt_cmdline_kany_cb(Ihandle *ih, int c)
 {
   lua_State* L = (lua_State*)IupGetAttribute(ih, "LUASTATE");
+
   switch (c)
   {
+#ifdef WIN32
     case K_CR:
       lua_getglobal(L, "iupConsoleEnterCommand");
       lua_call(L, 0, 0);
@@ -523,6 +550,7 @@ static int txt_cmdline_kany_cb(Ihandle *ih, int c)
     case K_ESC:
       IupSetAttribute(ih, IUP_VALUE, "");
       return IUP_IGNORE;
+#endif
     case K_UP:
       lua_getglobal(L, "iupConsoleKeyUpCommand");
       lua_call(L, 0, 0);
@@ -1133,6 +1161,9 @@ static int iLuaScripterDlgCreateMethod(Ihandle* ih, void** params)
   IupSetCallback(ih, "K_F11", (Icallback)item_stepinto_action_cb);
   IupSetCallback(ih, "K_sF11", (Icallback)item_stepout_action_cb);
   IupSetCallback(ih, "K_F9", (Icallback)but_togglebreak_cb);
+#ifndef WIN32
+  IupSetCallback(ih, "K_ANY", (Icallback)dialog_kany_cb);
+#endif
 
   IupSetCallback(ih, "MARKERCHANGED_CB", (Icallback)marker_changed_cb);
   IupSetCallback(ih, "EXIT_CB", (Icallback)exit_cb);
