@@ -350,7 +350,7 @@ function iupDebuggerUpdateLocalVariablesList(level, actual_level)
 
   name, value = debug.getlocal(level, pos)
   while name ~= nil do
-    if string.sub(name, 1, 1) ~= "(" then
+    if string.sub(name, 1, 1) ~= "(" then  -- not internal variables
       iup.SetAttribute(local_list, index, name.." = "..iupDebuggerGetObjectType(value))
       iup.SetAttribute(local_list, "POS"..index, pos)
       iup.SetAttribute(local_list, "LEVEL"..index, actual_level)
@@ -443,24 +443,20 @@ function iupDebuggerUpdateStackList()
 
   local list_stack = iup.GetDialogChild(debugger.main_dialog, "LIST_STACK")
   
-  info = debug.getinfo(level, "Snl") -- name, what, currentline
+  info = debug.getinfo(level, "Snl") -- source, name, namewhat, what, currentline, linedefined
   while  info ~= nil do
     if info.what == "main" then
       desc = "<main>"
     elseif info.name and info.name ~= "" then
       desc = info.name
-
-      if info.what == "C" then
-        desc = name .. " (C)"
-      end
     else
       desc = "<noname>"
     end
-    if info.namewhat == "l" then
-        desc = desc .. " (Local)"
+    if info.namewhat ~= "" then
+        desc = desc .. " (".. info.namewhat .. ")"
     end
     if info.currentline > 0 then
-       desc = desc .. ", at line " .. info.currentline
+       desc = desc .. " at line " .. info.currentline
     end
 
     if info.what == "C" then    
@@ -484,7 +480,7 @@ function iupDebuggerUpdateStackList()
       break
     end
 
-    info = debug.getinfo(level, "Snl") -- name, what, currentline
+    info = debug.getinfo(level, "Snl") -- source, name, namewhat, what, currentline, linedefined
   end
   
   if level > debugger.startLevel then
@@ -600,7 +596,7 @@ function iupDebuggerStartDebug(filename)
   debugger.currentFile = multitext.filename
   debugger.startLevel = iupDebuggerGetDebugLevel() + 1 -- usually 3+1=4
   
-  iupConsolePrint("-- Debug start\n") -- extra linefeed
+  iupConsolePrint("-- Debug start")
   iupDebuggerSetState(DEBUG_ACTIVE)
   debugtabs.valuepos = 1
 
@@ -616,10 +612,10 @@ function iupDebuggerEndDebug(stop)
   debugtabs.valuepos = 0
 
   if stop then
-    iupConsolePrint("-- Debug stop\n") -- extra linefeed 
+    iupConsolePrint("-- Debug stop!")
     error() -- abort processing, no error message
   else
-    iupConsolePrint("\n-- Debug finish") -- extra linefeed
+    iupConsolePrint("-- Debug finish")
   end
 end
 
