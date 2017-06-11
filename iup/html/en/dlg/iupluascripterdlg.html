@@ -105,7 +105,10 @@ function: 0000024E6B4DF010</pre>
 <p>Breakpoints can be added by clicking the left margin in its most right area 
 (the left area can has line numbers and bookmarks) or in the <strong>Breaks</strong> 
 tab using the "Toggle Breakpoint" at the caret position or using the "New" 
-button and writing a filename and a line number.</p>
+button and writing a filename and a line number. Breakpoints (and bookmarks) are 
+saved in the application configuration file. When lines are removed or added, 
+breakpoints position are automatically updated, but the breakpoints list will be 
+updated only when the file is saved.</p>
 <p>During the debug process, local variables of each stack level can be 
 inspected in the <strong>Debug</strong> tab. The actual level is not changed 
 when a Call Stack list level is selected, only its local variables are updated 
