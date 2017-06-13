@@ -124,6 +124,9 @@ ifneq ($(findstring Linux, $(TEC_UNAME)), )
   LIBS += dl 
   #To allow late binding
   LFLAGS = -Wl,-E
+  ifneq ($(findstring Linux26g4_64co, $(TEC_UNAME)), )
+    LIBS += gthread-2.0
+  endif
 endif
 
 ifneq ($(findstring BSD, $(TEC_UNAME)), )
