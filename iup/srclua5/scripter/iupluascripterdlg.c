@@ -28,14 +28,40 @@ void load_all_images_step_images(void);
 
 static char* getLuaKeywords(void)
 {
-  return "and break do else elseif end false for function if in local nil not or repeat return then true until while "
-    "_VERSION assert collectgarbage dofile error gcinfo loadfile loadstring print rawget rawset require tonumber tostring type unpack "
-    "_ALERT _ERRORMESSAGE _INPUT _PROMPT _OUTPUT _STDERR _STDIN _STDOUT call dostring foreach foreachi getn globals newtype sort tinsert tremove "
-    "abs acos asin atan atan2 ceil cos deg exp floor format frexp gsub ldexp log log10 max min mod rad random randomseed sin sqrt strbyte strchar strfind strlen strlower strrep strsub strupper tan "
-    "openfile closefile readfrom writeto appendto remove rename flush seek tmpfile tmpname read write clock date difftime execute exit getenv setlocale time "
-    "_G getfenv getmetatable ipairs loadlib next pairs pcall rawequal setfenv setmetatable xpcall string table math coroutine io os debug load module select "
-    "string.byte string.char string.dump string.find string.len string.lower string.rep string.sub string.upper string.format string.gfind string.gsub table.concat table.foreach table.foreachi table.getn table.sort table.insert table.remove table.setn math.abs math.acos math.asin math.atan math.atan2 math.ceil math.cos math.deg math.exp math.floor math.frexp math.ldexp math.log math.log10 math.max math.min math.mod math.pi math.pow math.rad math.random math.randomseed math.sin math.sqrt math.tan string.gmatch string.match string.reverse table.maxn math.cosh math.fmod math.modf math.sinh math.tanh math.huge "
-    "coroutine.create coroutine.resume coroutine.status coroutine.wrap coroutine.yield io.close io.flush io.input io.lines io.open io.output io.read io.tmpfile io.type io.write io.stdin io.stdout io.stderr os.clock os.date os.difftime os.execute os.exit os.getenv os.remove os.rename os.setlocale os.time os.tmpname coroutine.running package.cpath package.loaded package.loadlib package.path package.preload package.seeall io.popen";
+  /* Common */
+  return "and break do else elseif end for function if in local load nil not or repeat return then until while "
+  "false true assert collectgarbage dofile error _G getmetatable ipairs loadfile next pairs "
+  "pcall print rawequal rawget rawset setmetatable tonumber tostring type _VERSION select"
+  "require xpcall "
+  "string string.byte string.char string.dump string.find string.format string.gsub string.len string.lower "
+  "string.rep string.sub string.upper string.gmatch string.match string.reverse"
+  "table table.concat table.insert table.remove table.sort "
+  "math math.abs math.acos math.asin math.atan math.ceil math.cos math.deg math.exp math.floor "
+  "math.log math.max math.min math.pi math.rad math.random math.randomseed math.fmod "
+  "math.sin math.sqrt math.tan math.huge math.modf "
+  "coroutine coroutine.create coroutine.resume coroutine.status coroutine.wrap coroutine.yield coroutine.running"
+  "io io.close io.flush io.input io.lines io.open io.output io.read io.tmpfile io.type io.write "
+  "io.stdin io.stdout io.stderr io.popen"
+  "os os.clock os.date os.difftime os.execute os.exit "
+  "os.getenv os.remove os.rename os.setlocale os.time os.tmpname"
+  "debug debug.getfenv debug.getmetatable debug.getregistry debug.setfenv debug.setmetatable debug.debug debug.gethook "
+  "debug.setlocal debug.setupvalue debug.sethook debug.traceback debug.getinfo debug.getlocal debug.getupvalue "
+  "package package.seeall package.cpath package.loaded "
+  "package.loadlib package.path package.preload"
+#if LUA_VERSION_NUM == 501  /* Lua 5.1 Only */
+  "module setfenv getfenv math.log10 loadstring table.maxn unpack package.loaders"
+  "math.atan2 math.cosh math.sinh math.tanh math.pow math.frexp math.ldexp"
+#elif LUA_VERSION_NUM == 502  /* Lua 5.2 Only */
+  "package.searchers goto rawlen table.pack table.unpack package.config debug.getuservalue debug.setuservalue debug.upvalueid debug.upvaluejoin _ENV"
+  "bit32 bit32.arshift bit32.band bit32.bnot bit32.bor bit32.btest bit32.bxor bit32.extract bit32.replace bit32.lrotate bit32.lshift bit32.rrotate bit32.rshift"
+  "package.searchpath"
+  "math.atan2 math.cosh math.sinh math.tanh math.pow math.frexp math.ldexp"
+#elif LUA_VERSION_NUM == 502  /* Lua 5.3 Only */
+  "package.searchers goto rawlen table.pack table.unpack package.config debug.getuservalue debug.setuservalue debug.upvalueid debug.upvaluejoin _ENV"
+  "table.move string.pack string.unpack string.packsize"
+  "utf8.char utf8.charpattern utf8.codes utf8.codepoint utf8.len utf8.offset"
+#endif  
+  ;
 }
 
 
