@@ -56,7 +56,7 @@ static char* getLuaKeywords(void)
   "bit32 bit32.arshift bit32.band bit32.bnot bit32.bor bit32.btest bit32.bxor bit32.extract bit32.replace bit32.lrotate bit32.lshift bit32.rrotate bit32.rshift"
   "package.searchpath"
   "math.atan2 math.cosh math.sinh math.tanh math.pow math.frexp math.ldexp"
-#elif LUA_VERSION_NUM == 502  /* Lua 5.3 Only */
+#elif LUA_VERSION_NUM == 503  /* Lua 5.3 Only */
   "package.searchers goto rawlen table.pack table.unpack package.config debug.getuservalue debug.setuservalue debug.upvalueid debug.upvaluejoin _ENV"
   "table.move string.pack string.unpack string.packsize"
   "utf8.char utf8.charpattern utf8.codes utf8.codepoint utf8.len utf8.offset"
