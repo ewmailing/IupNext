@@ -50,10 +50,8 @@ int main(int argc, char **argv)
 
   createargtable(L, argv, argc);  /* create table 'arg' */
 
-  IupOpen(&argc, &argv);
-  IupLuaScripterDlgOpen();
-
   iuplua_open(L);
+  IupLuaScripterDlgOpen();
 
   IupSetGlobal("GLOBALLAYOUTDLGKEY", "Yes");
 
