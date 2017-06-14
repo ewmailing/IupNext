@@ -444,7 +444,7 @@ static int iScintillaSetFontAttrib(Ihandle* ih, const char* value)
       is_strikeout = 0;
     char typeface[1024];
 
-    if (!value)
+    if (!iupdrvSetFontAttrib(ih, value))
       return 0;
 
     if (!iupGetFontInfo(value, typeface, &size, &is_bold, &is_italic, &is_underline, &is_strikeout))
@@ -457,7 +457,7 @@ static int iScintillaSetFontAttrib(Ihandle* ih, const char* value)
     iScintillaSetItalicStyleAttrib(ih, 0, is_italic ? "Yes" : "No");
     iScintillaSetUnderlineStyleAttrib(ih, 0, is_underline ? "Yes" : "No");
 
-    return iupdrvSetFontAttrib(ih, value);
+    return 1;
   }
 }
 

@@ -601,13 +601,13 @@ int iupGLFontSetFontAttrib(Ihandle* ih, const char* value)
   {
     /* If FONT is changed, must update the SIZE attribute */
     char* value = iupAttribGet(ih, "SIZE");
-    if (!value)
-      return 1;
+    if (value)
+      IupSetStrAttribute(ih, "SIZE", value);
 
-    IupSetStrAttribute(ih, "SIZE", value);
+    return 1;
   }
 
-  return 1;
+  return 0;
 }
 
 void iupGLFontGetCharSize(Ihandle* ih, int *charwidth, int *charheight)

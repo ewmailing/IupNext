@@ -1515,11 +1515,6 @@ static int iFlatTabsSetTabsFontStyleAttrib(Ihandle* ih, const char* value)
   return 0;
 }
 
-static int iFlatTabsSetTabsFontAttrib(Ihandle* ih, const char* value)
-{
-  return iupdrvSetFontAttrib(ih, value);
-}
-
 static int iFlatTabsSetExpandButtonAttrib(Ihandle* ih, const char* value)
 {
   if (iupStrBoolean(value) && !iupAttribGetBoolean(ih, "EXPANDBUTTON"))
@@ -1832,7 +1827,7 @@ Iclass* iupFlatTabsNewClass(void)
   iupClassRegisterAttribute(ic, "TABSHIGHCOLOR", NULL, NULL, NULL, NULL, IUPAF_NO_INHERIT);
 
   /* Visual for all TABS */
-  iupClassRegisterAttribute(ic, "TABSFONT", NULL, iFlatTabsSetTabsFontAttrib, NULL, NULL, IUPAF_NO_INHERIT);
+  iupClassRegisterAttribute(ic, "TABSFONT", NULL, iupdrvSetFontAttrib, NULL, NULL, IUPAF_NO_INHERIT);
   iupClassRegisterAttribute(ic, "TABSFONTSTYLE", iFlatTabsGetTabsFontStyleAttrib, iFlatTabsSetTabsFontStyleAttrib, NULL, NULL, IUPAF_NO_SAVE | IUPAF_NOT_MAPPED | IUPAF_NO_INHERIT);
   iupClassRegisterAttribute(ic, "TABSFONTSIZE", iFlatTabsGetTabsFontSizeAttrib, iFlatTabsSetTabsFontSizeAttrib, NULL, NULL, IUPAF_NO_SAVE | IUPAF_NOT_MAPPED | IUPAF_NO_INHERIT);
 
