@@ -79,13 +79,25 @@ static int is_image(const char* type)
     return 0;
 }
 
+static int compare_image_names(const void* i1, const void* i2)
+{
+  Ihandle* ih1 = *((Ihandle**)i1);
+  Ihandle* ih2 = *((Ihandle**)i2);
+  char* name1 = IupGetName(ih1);
+  char* name2 = IupGetName(ih2);
+  return strcmp(name1, name2);
+}
+
 static int showallimages_cb(Ihandle* ih)
 {
   Ihandle *dialog, *box, *files, *tabs, *toggle, *label;
   Ihandle* params[500];
   char *names[MAX_NAMES];
-  int i, n = 0, num_names = IupGetAllNames(names, MAX_NAMES); 
+  Ihandle* images[MAX_NAMES];
+  int i, n = 0, num_images, num_names = IupGetAllNames(names, MAX_NAMES);
   files = IupUser();
+
+  num_images = 0;
   for (i = 0; i < num_names; i++)
   {
     Ihandle* elem = IupGetHandle(names[i]);
@@ -93,53 +105,70 @@ static int showallimages_cb(Ihandle* ih)
 
     if (is_image(type))
     {
-      Ihandle *tbox, *lbox, *button;
-
       /* show only loaded images */
       char* file_title = IupGetAttribute(elem, "_FILE_TITLE");
       if (!file_title)
         continue;
 
-      tbox = (Ihandle*)IupGetAttribute(files, file_title);
-      if (!tbox)
-      {
-        tbox = IupVbox(NULL);
-        IupSetAttribute(files, file_title, (char*)tbox);
-        IupSetAttribute(tbox, "TABTITLE", file_title);
-#ifdef STOCK_TEST
-        params[n] = IupBackgroundBox(tbox);
-        IupSetStrAttribute(params[n], "BGCOLOR", IupGetAttribute(IupGetDialog(ih), "BGCOLOR"));
-#else
-        params[n] = tbox;
-#endif
-        n++;
-      }
-
-      lbox = (Ihandle*)IupGetAttribute(tbox, file_title);
-      if (!lbox || IupGetInt(lbox, "LINE_COUNT") == 10)
-      {
-        lbox = IupHbox(NULL);
-        IupAppend(tbox, lbox);
-        IupSetAttribute(tbox, file_title, (char*)lbox);
-        IupSetAttribute(lbox, "LINE_COUNT", "0");
-      }
-
-      button = IupButton("", NULL);
-#ifdef STOCK_TEST
-      IupSetAttribute(button, "FLAT", "Yes");
-#endif
-      IupSetAttribute(button, "IMAGE", names[i]);
-      IupSetfAttribute(button, "_INFO", "%s [%d,%d]", names[i], IupGetInt(elem, "WIDTH"), IupGetInt(elem, "HEIGHT"));
-      IupSetCallback(button, "ACTION", (Icallback)imagebutton_cb);
-      IupAppend(lbox, button);
-      IupSetfAttribute(lbox, "LINE_COUNT", "%d", IupGetInt(lbox, "LINE_COUNT")+1);
+      images[num_images] = elem;
+      num_images++;
     }
   }
 
-  if (n == 0)
+  if (num_images == 0)
   {
     IupMessage("Error", "No images.");
     return IUP_DEFAULT;
+  }
+
+  qsort(images, num_images, sizeof(Ihandle*), compare_image_names);
+
+  for (i = 0; i < num_images; i++)
+  {
+    Ihandle *tbox, *lbox, *button, *elem;
+    char* name;
+
+    elem = images[i];
+    name = IupGetName(elem);
+
+    /* show only loaded images */
+    char* file_title = IupGetAttribute(elem, "_FILE_TITLE");
+    if (!file_title)
+      continue;
+
+    tbox = (Ihandle*)IupGetAttribute(files, file_title);
+    if (!tbox)
+    {
+      tbox = IupVbox(NULL);
+      IupSetAttribute(files, file_title, (char*)tbox);
+      IupSetAttribute(tbox, "TABTITLE", file_title);
+#ifdef STOCK_TEST
+      params[n] = IupBackgroundBox(tbox);
+      IupSetStrAttribute(params[n], "BGCOLOR", IupGetAttribute(IupGetDialog(ih), "BGCOLOR"));
+#else
+      params[n] = tbox;
+#endif
+      n++;
+    }
+
+    lbox = (Ihandle*)IupGetAttribute(tbox, file_title);
+    if (!lbox || IupGetInt(lbox, "LINE_COUNT") == 10)
+    {
+      lbox = IupHbox(NULL);
+      IupAppend(tbox, lbox);
+      IupSetAttribute(tbox, file_title, (char*)lbox);
+      IupSetAttribute(lbox, "LINE_COUNT", "0");
+    }
+
+    button = IupButton("", NULL);
+#ifdef STOCK_TEST
+    IupSetAttribute(button, "FLAT", "Yes");
+#endif
+    IupSetStrAttribute(button, "IMAGE", name);
+    IupSetfAttribute(button, "_INFO", "%s [%d,%d]", name, IupGetInt(elem, "WIDTH"), IupGetInt(elem, "HEIGHT"));
+    IupSetCallback(button, "ACTION", (Icallback)imagebutton_cb);
+    IupAppend(lbox, button);
+    IupSetfAttribute(lbox, "LINE_COUNT", "%d", IupGetInt(lbox, "LINE_COUNT")+1);
   }
 
   params[n] = NULL;
@@ -160,6 +189,7 @@ static int showallimages_cb(Ihandle* ih)
   IupSetAttribute(dialog, "TITLE", "All Images");
   IupSetCallback(dialog, "CLOSE_CB", (Icallback)close_cb);
   IupSetAttribute(dialog, "_INFO_LABEL", (char*)label);
+  IupSetAttributeHandle(dialog, "PARENTDIALOG", IupGetDialog(ih));
 
   IupPopup(dialog, IUP_CENTER, IUP_CENTER);
 

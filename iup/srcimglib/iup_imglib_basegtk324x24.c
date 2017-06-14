@@ -14,12 +14,12 @@
 /* source code, included only here */
 #include "iup_imglib_basegtk324x24.h"
 
-void load_all_images_iup_imglib_basegtk324x24(void)
+void iupImglibBaseLibGtk324x24Open(void)
 {
   iupImageStockSet("IUP_ActionCancel", load_image_gtk_cancel, 0);
   iupImageStockSet("IUP_ActionOk", load_image_gtk_apply, 0);
   iupImageStockSet("IUP_ArrowDown", load_image_go_down, 0);
-  iupImageStockSet("IUP_ArrowLeft", load_image_go_last_ltr, 0);
+  iupImageStockSet("IUP_ArrowLeft", load_image_go_previous_ltr, 0);
   iupImageStockSet("IUP_ArrowRight", load_image_go_next_ltr, 0);
   iupImageStockSet("IUP_ArrowUp", load_image_go_up, 0);
   iupImageStockSet("IUP_EditCopy", load_image_edit_copy, 0);
@@ -36,7 +36,7 @@ void load_all_images_iup_imglib_basegtk324x24(void)
   iupImageStockSet("IUP_FileSave", load_image_document_save, 0);
   iupImageStockSet("IUP_MediaForward", load_image_media_seek_forward_ltr, 0);
   iupImageStockSet("IUP_MediaGoToEnd", load_image_media_skip_forward_ltr, 0);
-  iupImageStockSet("IUP_MediaGotoBegin", load_image_media_skip_backward_ltr, 0);
+  iupImageStockSet("IUP_MediaGoToBegin", load_image_media_skip_backward_ltr, 0);
   iupImageStockSet("IUP_MediaPause", load_image_media_playback_pause, 0);
   iupImageStockSet("IUP_MediaPlay", load_image_media_playback_start_ltr, 0);
   iupImageStockSet("IUP_MediaRecord", load_image_media_record, 0);

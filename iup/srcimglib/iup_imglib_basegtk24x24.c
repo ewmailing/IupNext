@@ -36,7 +36,7 @@ void iupImglibBaseLibGtk24x24Open(void)
   iupImageStockSet("IUP_FileSave", 0, "gtk-save");
   iupImageStockSet("IUP_MediaForward", 0, "gtk-media-forward-ltr");
   iupImageStockSet("IUP_MediaGoToEnd", 0, "gtk-media-next-ltr");
-  iupImageStockSet("IUP_MediaGotoBegin", 0, "gtk-media-previous-ltr");
+  iupImageStockSet("IUP_MediaGoToBegin", 0, "gtk-media-previous-ltr");
   iupImageStockSet("IUP_MediaPause", 0, "gtk-media-pause");
   iupImageStockSet("IUP_MediaPlay", 0, "gtk-media-play-ltr");
   iupImageStockSet("IUP_MediaRecord", 0, "gtk-media-record");

@@ -1,3 +1,5 @@
+#ifdef IUP_IMGLIB_LARGE
+
 static Ihandle* load_image_dialog_password(void)
 {
   unsigned char imgdata[] = {
@@ -278,3 +280,4 @@ static Ihandle* load_image_dialog_warning(void)
   return image;
 }
 
+#endif

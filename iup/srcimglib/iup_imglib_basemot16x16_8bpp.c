@@ -43,7 +43,7 @@ void iupImglibBaseLibMot16x16Open(void)
   iupImageStockSet("IUP_FontDialog", load_image_FontDialog8, 0);
   iupImageStockSet("IUP_FontItalic", load_image_FontItalic8, 0);
   iupImageStockSet("IUP_MediaForward", load_image_MediaForward8, 0);
-  iupImageStockSet("IUP_MediaGotoBegin", load_image_MediaGoToBegin8, 0);
+  iupImageStockSet("IUP_MediaGoToBegin", load_image_MediaGoToBegin8, 0);
   iupImageStockSet("IUP_MediaGoToEnd", load_image_MediaGoToEnd8, 0);
   iupImageStockSet("IUP_MediaPause", load_image_MediaPause8, 0);
   iupImageStockSet("IUP_MediaPlay", load_image_MediaPlay8, 0);
