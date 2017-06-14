@@ -14,9 +14,8 @@
 /* source code, included only here */
 #include "iup_imglib_basegtk16x16.h"
 
-void iupImglibBaseLibGtk16x16Open(void)
+void iupImglibBaseLibGtk24x24Open(void)
 {
-  /* these are not 16x16 only... */
   iupImageStockSet("IUP_ActionCancel", 0, "gtk-cancel");
   iupImageStockSet("IUP_ActionOk", 0, "gtk-apply");
   iupImageStockSet("IUP_ArrowDown", 0, "gtk-go-down");
@@ -30,14 +29,14 @@ void iupImglibBaseLibGtk16x16Open(void)
   iupImageStockSet("IUP_EditPaste", 0, "gtk-paste");
   iupImageStockSet("IUP_EditRedo", 0, "gtk-redo-ltr");
   iupImageStockSet("IUP_EditUndo", 0, "gtk-undo-ltr");
+  iupImageStockSet("IUP_FileClose", 0, "gtk-directory");
   iupImageStockSet("IUP_FileNew", 0, "gtk-new");
   iupImageStockSet("IUP_FileOpen", 0, "gtk-open");
-  iupImageStockSet("IUP_FileClose", 0, "gtk-directory");
   iupImageStockSet("IUP_FileProperties", 0, "gtk-properties");
   iupImageStockSet("IUP_FileSave", 0, "gtk-save");
   iupImageStockSet("IUP_MediaForward", 0, "gtk-media-forward-ltr");
-  iupImageStockSet("IUP_MediaGotoBegin", 0, "gtk-media-previous-ltr");
   iupImageStockSet("IUP_MediaGoToEnd", 0, "gtk-media-next-ltr");
+  iupImageStockSet("IUP_MediaGotoBegin", 0, "gtk-media-previous-ltr");
   iupImageStockSet("IUP_MediaPause", 0, "gtk-media-pause");
   iupImageStockSet("IUP_MediaPlay", 0, "gtk-media-play-ltr");
   iupImageStockSet("IUP_MediaRecord", 0, "gtk-media-record");
@@ -60,7 +59,7 @@ void iupImglibBaseLibGtk16x16Open(void)
   iupImageStockSet("IUP_ZoomIn", 0, "gtk-zoom-in");
   iupImageStockSet("IUP_ZoomOut", 0, "gtk-zoom-out");
   iupImageStockSet("IUP_ZoomSelection", 0, "gtk-zoom-fit");
-
+  
 #ifdef IUP_IMGLIB_OLD
   iupImageStockSet("IUP_FileCloseAll", load_image_iupgtk_close_all, 0);
   iupImageStockSet("IUP_FileSaveAll", load_image_iupgtk_save_all, 0);
