@@ -912,6 +912,16 @@ static int dropfile_cb(Ihandle *self, char* file_name)
   return IUP_DEFAULT;
 }
 
+static int use_utf8_cb(Ihandle *self)
+{
+  (void)self;
+  if (IupGetInt(NULL, "UTF8MODE"))
+    IupSetGlobal("UTF8MODE", "No");
+  else
+    IupSetGlobal("UTF8MODE", "Yes");
+  return IUP_DEFAULT;
+}
+
 static Ihandle* mainDialog(void)
 {
   Ihandle *main_dialog, *box, *menu, *list, *label;
@@ -926,6 +936,7 @@ static Ihandle* mainDialog(void)
       IupSetCallbacks(IupItem("Import Image(s)...", NULL), "ACTION", (Icallback)loadimage_cb, NULL),
 #endif
       IupSeparator(),
+      IupSetCallbacks(IupSetAttributes(IupItem("Use UTF-8", NULL), "AUTOTOGGLE=Yes"), "ACTION", (Icallback)use_utf8_cb, NULL),
       IupSetCallbacks(IupItem("Exit", NULL), "ACTION", (Icallback)close_cb, NULL),
       NULL)),
     IupSubmenu("Element", IupMenu(
