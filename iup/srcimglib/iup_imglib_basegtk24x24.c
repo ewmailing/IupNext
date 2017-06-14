@@ -60,6 +60,8 @@ void iupImglibBaseLibGtk24x24Open(void)
   iupImageStockSet("IUP_ZoomOut", 0, "gtk-zoom-out");
   iupImageStockSet("IUP_ZoomSelection", 0, "gtk-zoom-fit");
   
+  iupImageStockSet("IUP_Webcam", load_image_iupgtk_webcam, 0);
+
 #ifdef IUP_IMGLIB_OLD
   iupImageStockSet("IUP_FileCloseAll", load_image_iupgtk_close_all, 0);
   iupImageStockSet("IUP_FileSaveAll", load_image_iupgtk_save_all, 0);
@@ -70,7 +72,5 @@ void iupImglibBaseLibGtk24x24Open(void)
   iupImageStockSet("IUP_WindowsCascade", load_image_iupgtk_cascade, 0);
   iupImageStockSet("IUP_WindowsTile", load_image_iupgtk_tile, 0);
   iupImageStockSet("IUP_Zoom", load_image_iupgtk_zoom, 0);
-
-  iupImageStockSet("IUP_Webcam", load_image_iupgtk_webcam, 0);
 #endif
 }

@@ -59,4 +59,6 @@ void iupImglibBaseLibGtk324x24Open(void)
   iupImageStockSet("IUP_ZoomIn", load_image_zoom_in, 0);
   iupImageStockSet("IUP_ZoomOut", load_image_zoom_out, 0);
   iupImageStockSet("IUP_ZoomSelection", load_image_zoom_fit_best, 0);
+
+  iupImageStockSet("IUP_Webcam", load_image_webcam, 0);
 }

@@ -105,6 +105,10 @@ imagergba(<strong>width</strong>, <strong>height</strong>, <strong>pixel0</stron
   <p><b>CHANNELS </b>(read-only): returns the number of channels in the image. 
 	Images created with <b>IupImage</b> returns 1, with <b>IupImageRGB</b> 
 	returns 3 and with <b>IupImageRGBA</b> returns 4. (since 3.0)</p>
+<p><strong>DPI</strong>: resolution expected for display. Used when 
+AUTOSCALE=DPI. If not defined the global attribute
+<a href="../attrib/iup_globals.html#IMAGESDPI">IMAGESDPI</a> will be used. 
+(since 3.23)</p>
 
 
   <p><b>HEIGHT </b>(read-only): Image height in pixels.</p>

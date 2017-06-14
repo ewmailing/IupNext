@@ -475,12 +475,10 @@ void* iupdrvImageLoad(const char* name, int type)
 #endif
   else /* IUPIMAGE_IMAGE or IUPIMAGE_ICON */
   {
-    int stock_size = 16;
     GdkPixbuf *pixbuf = NULL;
     GtkIconTheme* icon_theme;
     GError *error;
-
-    stock_size = iupImageStockGetSize();
+    int stock_size = iupImageStockGetSize();
 
     /* default approach */
     icon_theme = gtk_icon_theme_get_default();

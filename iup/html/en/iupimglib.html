@@ -48,7 +48,9 @@ when associated with a control.</p>
 	has several image sizes available: 16x16, 18x18, 20x20, 24x24, 32x32, and 
 	48x48. GTK images displayed here are just a sample with the 24x24-32bpp 
 	pixels size, they actually depends on the current GTK theme used by the 
-	system.</p>
+	system. Since GTK 3.10 access to stock images directly becomes deprecated, 
+	so starting in IUP 3.23 the IupImageLib now contains the base set of GTK 
+	images and they will be not affected by the current GTK theme. </p>
 <p>In Windows and GTK, to force a specific height for the images use the 
 IMAGESTOCKSIZE global attribute (since 3.16), it can have the following values 
 16, 24, 32 and 48. In GTK if the system does not provides the image in that size 
@@ -140,6 +142,9 @@ the screen resolution: 96 DPI = 16, 144 DPI = 24, 192 DPI = 32, 288 DPI = 48.</p
       <td>&quot;IUP_ToolsSortDescend&quot;</td>      <td bgcolor="#FFAA80" align="center">      <img border="0" src="imglib/BaseLib/Motif_16x16_8bpp/ToolsSortDescend8.gif"></td>      <td bgcolor="#FFAA80" align="center">      <img border="0" src="imglib/BaseLib/GTK3_24x24/view-sort-descending.png"></td>      <td bgcolor="#FFAA80" align="center">      <img border="0" src="imglib/BaseLib/Windows_32x32/ToolsSortDescend.png"></td>    </tr>
     <tr>
       <td>&quot;IUP_ViewFullScreen&quot;</td>      <td bgcolor="#FFAA80" align="center">      <img border="0" src="imglib/BaseLib/Motif_16x16_8bpp/ViewFullScreen8.gif"></td>      <td bgcolor="#FFAA80" align="center">      <img border="0" src="imglib/BaseLib/GTK3_24x24/view-fullscreen.png"></td>      <td bgcolor="#FFAA80" align="center">      <img border="0" src="imglib/BaseLib/Windows_32x32/ViewFullScreen.png"></td>    </tr>
+    <tr>
+      <td>&quot;IUP_Webcam&quot;</td>      <td bgcolor="#FFAA80" align="center">      <img border="0" src="imglib/BaseLib/Motif_16x16_8bpp/Webcam8.gif"></td>      <td bgcolor="#FFAA80" align="center">      <img border="0" src="imglib/BaseLib/GTK3_24x24/webcam.png"></td>      <td bgcolor="#FFAA80" align="center">      <img border="0" src="imglib/BaseLib/Windows_32x32/Webcam.png"></td>    </tr>
+    <tr>
     <tr>
       <td>&quot;IUP_ZoomActualSize&quot;</td>      <td bgcolor="#FFAA80" align="center">      <img border="0" src="imglib/BaseLib/Motif_16x16_8bpp/ZoomActualSize8.gif"></td>      <td bgcolor="#FFAA80" align="center">      <img border="0" src="imglib/BaseLib/GTK3_24x24/zoom-original.png"></td>      <td bgcolor="#FFAA80" align="center">      <img border="0" src="imglib/BaseLib/Windows_32x32/ZoomActualSize.png"></td>    </tr>
     <tr>
