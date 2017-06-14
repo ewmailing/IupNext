@@ -1328,7 +1328,8 @@ static int iMatrixSetFontAttrib(Ihandle* ih, int lin, int col, const char* value
   {
     if (!value)
       value = IupGetGlobal("DEFAULTFONT");
-    iupdrvSetFontAttrib(ih, value);
+    if (!iupdrvSetFontAttrib(ih, value))
+      return 0;
     iupAttribSetStr(ih, "FONT", value);
     return 1;
   }

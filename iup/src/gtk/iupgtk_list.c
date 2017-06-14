@@ -184,7 +184,8 @@ void iupdrvListRemoveAllItems(Ihandle* ih)
 
 static int gtkListSetFontAttrib(Ihandle* ih, const char* value)
 {
-  iupdrvSetFontAttrib(ih, value);
+  if (!iupdrvSetFontAttrib(ih, value))
+    return 0;
 
   if (ih->handle)
   {

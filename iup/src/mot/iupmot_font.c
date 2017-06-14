@@ -348,7 +348,7 @@ int iupdrvSetFontAttrib(Ihandle* ih, const char* value)
 {
   ImotFont *motfont = motFontCreateNativeFont(ih, value);
   if (!motfont) 
-    return 1;
+    return 0;
 
   /* If FONT is changed, must update the SIZE attribute */
   iupBaseUpdateAttribFromFont(ih);

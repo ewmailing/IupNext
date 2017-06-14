@@ -386,7 +386,9 @@ static int winListSetBgColorAttrib(Ihandle *ih, const char *value)
 
 static int winListSetFontAttrib(Ihandle* ih, const char* value)
 {
-  iupdrvSetFontAttrib(ih, value);
+  if (!iupdrvSetFontAttrib(ih, value))
+    return 0;
+
   if (ih->handle)
   {
     winListUpdateItemWidth(ih);

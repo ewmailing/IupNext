@@ -1517,8 +1517,7 @@ static int iFlatTabsSetTabsFontStyleAttrib(Ihandle* ih, const char* value)
 
 static int iFlatTabsSetTabsFontAttrib(Ihandle* ih, const char* value)
 {
-  iupdrvSetFontAttrib(ih, value);
-  return 1;
+  return iupdrvSetFontAttrib(ih, value);
 }
 
 static int iFlatTabsSetExpandButtonAttrib(Ihandle* ih, const char* value)

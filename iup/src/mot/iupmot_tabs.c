@@ -277,7 +277,8 @@ static int motTabsSetFgColorAttrib(Ihandle* ih, const char* value)
 
 static int motTabsSetFontAttrib(Ihandle* ih, const char* value)
 {
-  iupdrvSetFontAttrib(ih, value);
+  if (!iupdrvSetFontAttrib(ih, value))
+    return 0;
   if (ih->handle)
     motTabsUpdatePageFont(ih);
   return 1;

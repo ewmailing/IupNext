@@ -233,7 +233,8 @@ int iupdrvTabsIsTabVisible(Ihandle* child, int pos)
 
 static int gtkTabsSetFontAttrib(Ihandle* ih, const char* value)
 {
-  iupdrvSetFontAttrib(ih, value);
+  if (!iupdrvSetFontAttrib(ih, value))
+    return 0;
   if (ih->handle)
     gtkTabsUpdatePageFont(ih);
   return 1;

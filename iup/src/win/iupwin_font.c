@@ -207,7 +207,7 @@ int iupdrvSetFontAttrib(Ihandle* ih, const char* value)
 {
   IwinFont* winfont = winFontCreateNativeFont(ih, value);
   if (!winfont)
-    return 1;
+    return 0;
 
   /* If FONT is changed, must update the SIZE attribute */
   iupBaseUpdateAttribFromFont(ih);

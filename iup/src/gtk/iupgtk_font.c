@@ -330,7 +330,7 @@ int iupdrvSetFontAttrib(Ihandle* ih, const char* value)
 {
   IgtkFont* gtkfont = gtkFontCreateNativeFont(ih, value);
   if (!gtkfont)
-    return 1;
+    return 0;
 
   /* If FONT is changed, must update the SIZE attribute */
   iupBaseUpdateAttribFromFont(ih);
