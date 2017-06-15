@@ -437,8 +437,8 @@ static int iScintillaSetFontAttrib(Ihandle* ih, const char* value)
     return iupdrvSetFontAttrib(ih, value);
   else
   {
-    int size = 0;
-    int is_bold = 0,
+    int i, size = 0,
+       is_bold = 0,
       is_italic = 0,
       is_underline = 0,
       is_strikeout = 0;
@@ -450,11 +450,14 @@ static int iScintillaSetFontAttrib(Ihandle* ih, const char* value)
     if (!iupGetFontInfo(value, typeface, &size, &is_bold, &is_italic, &is_underline, &is_strikeout))
       return 0;
 
-    iScintillaSetFontStyleAttrib(ih, 0, typeface);
-    IupScintillaSendMessage(ih, SCI_STYLESETSIZE, 0, size);
-    iScintillaSetBoldStyleAttrib(ih, 0, is_bold ? "Yes" : "No");
-    iScintillaSetItalicStyleAttrib(ih, 0, is_italic ? "Yes" : "No");
-    iScintillaSetUnderlineStyleAttrib(ih, 0, is_underline ? "Yes" : "No");
+    for (i = 0; i < 256; i++)
+    {
+      IupScintillaSendMessage(ih, SCI_STYLESETFONT, i, (sptr_t)typeface);
+      IupScintillaSendMessage(ih, SCI_STYLESETSIZE, i, size);
+      IupScintillaSendMessage(ih, SCI_STYLESETBOLD, i, is_bold);
+      IupScintillaSendMessage(ih, SCI_STYLESETITALIC, i, is_italic);
+      IupScintillaSendMessage(ih, SCI_STYLESETUNDERLINE, i, is_underline);
+    }
 
     return 1;
   }
@@ -462,13 +465,35 @@ static int iScintillaSetFontAttrib(Ihandle* ih, const char* value)
 
 static int iScintillaSetFgColorAttrib(Ihandle *ih, const char *value)
 {
-  iScintillaSetFgColorStyleAttrib(ih, 0, value);
+  unsigned char r, g, b;
+  long fgcolor;
+  int i;
+
+  if (!iupStrToRGB(value, &r, &g, &b))
+    return 0;
+
+  fgcolor = iupScintillaEncodeColor(r, g, b);
+
+  for (i = 0; i < 256; i++)
+    IupScintillaSendMessage(ih, SCI_STYLESETFORE, i, fgcolor);
+
   return 1;
 }
 
 static int iScintillaSetBgColorAttrib(Ihandle *ih, const char *value)
 {
-  iScintillaSetBgColorStyleAttrib(ih, 0, value);
+  unsigned char r, g, b;
+  long fgcolor;
+  int i;
+
+  if (!iupStrToRGB(value, &r, &g, &b))
+    return 0;
+
+  fgcolor = iupScintillaEncodeColor(r, g, b);
+
+  for (i = 0; i < 256; i++)
+    IupScintillaSendMessage(ih, SCI_STYLESETBACK, i, fgcolor);
+
   return 1;
 }
 

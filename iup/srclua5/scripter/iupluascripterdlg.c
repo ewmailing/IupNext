@@ -1147,18 +1147,13 @@ static int multitext_map_cb(Ihandle* multitext)
   IupSetAttribute(multitext, "LEXERLANGUAGE", "lua");
   IupSetAttribute(multitext, "KEYWORDS0", getLuaKeywords());
 
-  IupSetAttribute(multitext, "STYLEFONT32", "Consolas");  /* TODO CHECK: may not work in Linux */
-  IupSetAttribute(multitext, "STYLEFONTSIZE32", "11");
-  IupSetAttribute(multitext, "STYLECLEARALL", "Yes");  /* sets all styles to have the same attributes as 32 */
-
   IupSetAttribute(multitext, "STYLEFGCOLOR1", "0 128 0");    /* 1-Lua comment */
   IupSetAttribute(multitext, "STYLEFGCOLOR2", "0 128 0");    /* 2-Lua comment line  */
   IupSetAttribute(multitext, "STYLEFGCOLOR4", "255 128 0");  /* 4-Number  */
   IupSetAttribute(multitext, "STYLEFGCOLOR5", "0 0 255");    /* 5-Keyword  */
-  IupSetAttribute(multitext, "STYLEFGCOLOR6", "171 0 149");  /* 6-String  */
-  IupSetAttribute(multitext, "STYLEFGCOLOR7", "171 0 149");  /* 7-Character  */
-  IupSetAttribute(multitext, "STYLEFGCOLOR9", "0 0 255");    /* 9-Preprocessor block  */
-  IupSetAttribute(multitext, "STYLEFGCOLOR10", "0 0 0");     /* 10-Operator  */
+  IupSetAttribute(multitext, "STYLEFGCOLOR6", "164 0 164");  /* 6-String  */
+  IupSetAttribute(multitext, "STYLEFGCOLOR7", "164 0 164");  /* 7-Character  */
+  IupSetAttribute(multitext, "STYLEFGCOLOR10", "164 0 0"); /* 10-Operator  */
   IupSetAttribute(multitext, "STYLEBOLD10", "YES");
 
   return IUP_DEFAULT;
@@ -1219,7 +1214,6 @@ static int iLuaScripterDlgCreateMethod(Ihandle* ih, void** params)
   /* breakpoints marker=1 */
   IupSetAttributeId(multitext, "MARKERFGCOLOR", 1, "255 0 0");
   IupSetAttributeId(multitext, "MARKERBGCOLOR", 1, "255 0 0");
-//  IupSetAttributeId(multitext, "MARKERALPHA", 1, "80");
   IupSetAttributeId(multitext, "MARKERSYMBOL", 1, "CIRCLE");
 
   /* current line marker=2 (not shown in a margin, but uses margin=2 mask) */
@@ -1232,6 +1226,13 @@ static int iLuaScripterDlgCreateMethod(Ihandle* ih, void** params)
   IupSetAttributeId(multitext, "MARKERBGCOLOR", 3, "0 255 0");
   IupSetAttributeId(multitext, "MARKERALPHA", 3, "80");
   IupSetAttributeId(multitext, "MARKERSYMBOL", 3, "SHORTARROW");
+
+#ifdef WIN32
+  IupSetAttribute(multitext, "FONT", "Consolas, 11");
+#else
+  IupSetAttribute(multitext, "FONT", "FreeMono, 11");
+  /* Other alternatives for "Consolas" in Linux: "DejaVu Sans Mono", "Liberation Mono", "Nimbus Mono L", "FreeMono" */
+#endif
 
   appendDebugButtons(ih);
 
@@ -1328,9 +1329,10 @@ void IupLuaScripterDlgOpen(void)
 }
 
 /* TODO:
-*** multiple files (IupFlatTabs)
-** Watch for globals
-* detachable Console, Debug, Breakpoints
+*** multiple files (IupFlatTabs) - option for save in config
+** Watch for globals - save in config
+* detachable Console, Debug, Breakpoints - save in config
+- dialog for style colors - save in config
 - Debug Strings
 - multi-language (portuguese, spanish)
 - replace IupSbox by IupSplit ?
