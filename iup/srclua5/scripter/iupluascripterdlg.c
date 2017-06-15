@@ -1230,7 +1230,7 @@ static int iLuaScripterDlgCreateMethod(Ihandle* ih, void** params)
 #ifdef WIN32
   IupSetAttribute(multitext, "FONT", "Consolas, 11");
 #else
-  IupSetAttribute(multitext, "FONT", "FreeMono, 11");
+  IupSetAttribute(multitext, "FONT", "Monospace, 12");
   /* Other alternatives for "Consolas" in Linux: "DejaVu Sans Mono", "Liberation Mono", "Nimbus Mono L", "FreeMono" */
 #endif
 
