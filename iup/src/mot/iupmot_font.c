@@ -427,13 +427,15 @@ static void motFontGetTextSize(ImotFont* motfont, const char* str, int *w, int *
 void iupdrvFontGetMultiLineStringSize(Ihandle* ih, const char* str, int *w, int *h)
 {
   ImotFont* motfont = motGetFont(ih);
-  motFontGetTextSize(motfont, str, w, h);
+  if (motfont)
+    motFontGetTextSize(motfont, str, w, h);
 }
 
 void iupdrvFontGetTextSize(const char* font, const char* str, int *w, int *h)
 {
   ImotFont *motfont = motFindFont(NULL, font);
-  motFontGetTextSize(motfont, str, w, h);
+  if (motfont)
+    motFontGetTextSize(motfont, str, w, h);
 }
 
 void iupdrvFontGetCharSize(Ihandle* ih, int *charwidth, int *charheight)

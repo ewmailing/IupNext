@@ -57,6 +57,27 @@ static void gtkFontUpdateLayout(IgtkFont* gtkfont, PangoLayout* layout)
   }
 }
 
+#if 0
+static int gtkFontTypefaceCheck(const char* typeface)
+{
+  PangoFontFamily **families = NULL;
+  int i, n_families = 0;
+  pango_context_list_families(gtk_fonts_context,  &families, &n_families);
+
+  for (i = 0; i < n_families; i++)
+  {
+    if (iupStrEqualNoCase(typeface, pango_font_family_get_name(families[i])))
+    {
+      g_free(families);
+      return 1;
+    }
+  }
+
+  g_free(families);
+  return 0;
+}
+#endif
+
 static IgtkFont* gtkFindFont(const char *font)
 {
   PangoFontMetrics* metrics;
@@ -383,13 +404,15 @@ static void gtkFontGetTextSize(Ihandle* ih, IgtkFont* gtkfont, const char* str, 
 void iupdrvFontGetMultiLineStringSize(Ihandle* ih, const char* str, int *w, int *h)
 {
   IgtkFont* gtkfont = gtkFontGet(ih);
-  gtkFontGetTextSize(ih, gtkfont, str, w, h);
+  if (gtkfont)
+    gtkFontGetTextSize(ih, gtkfont, str, w, h);
 }
 
 void iupdrvFontGetTextSize(const char* font, const char* str, int *w, int *h)
 {
   IgtkFont *gtkfont = gtkFindFont(font);
-  gtkFontGetTextSize(NULL, gtkfont, str, w, h);
+  if (gtkfont)
+    gtkFontGetTextSize(NULL, gtkfont, str, w, h);
 }
 
 int iupdrvFontGetStringWidth(Ihandle* ih, const char* str)
