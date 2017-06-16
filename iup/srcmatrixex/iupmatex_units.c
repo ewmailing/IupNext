@@ -85,12 +85,15 @@ static ImatExUnit IMATEX_TEMPERATURE_UNITS [IMATEX_UNIT_MAXCOUNT] = {
   {"degree Fahrenheit","°F" , 5./9., "\xC2\xBA""F"},
   {"degree Rankine"   ,"°Ra", 5./9., "\xC2\xBA""Ra"}};
 
-#define IMATEX_AREA_COUNT 10
+#define IMATEX_AREA_COUNT 13
 static ImatExUnit IMATEX_AREA_UNITS [IMATEX_UNIT_MAXCOUNT] = {
   {"square metre"     ,"m²"   , 1,       "m\xC2\xB2"},         /* '²'  \178=ISO8859-1  \xC2\xB2=UTF-8 */
   {"square centimetre","cm²"  , 1.0e-4, "cm\xC2\xB2"},           /* 0.01² */
   {"square millimetre","mm²"  , 1.0e-6, "mm\xC2\xB2"},           /* 0.001² */
   {"square kilometre" ,"km²"  , 1.0e6,  "km\xC2\xB2"},            /* 1000² */
+  {"square nanometre", "nm²",   1.0e-18, "nm\xC2\xB2" },
+  {"square Angstrom",  "Å²",    1.0e-20, "\xC3\x85\xC2\xB2" },
+  {"square micron",    "µ²",    1.0e-12, "\xC2\xB5\xC2\xB2" },
   {"square inch"      ,"sq in", 6.4516e-4, NULL},       /* 0.0254² */
   {"square foot"      ,"sq ft", 9.290304e-2, NULL},      /* 0.3048² */   
   {"square yard"      ,"sq yd", 0.83612736, NULL},       /* 0.9144² */
