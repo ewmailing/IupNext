@@ -301,7 +301,7 @@ void ButtonTest(void)
   else
     IupSetAttribute(button, "TITLE", "&Text && Test(ηγυασι)");
   IupSetAttribute(button, "TIP", "Button & Tip");
-  //IupSetAttribute(button, "PADDING", "15x15");
+  IupSetAttribute(button, "PADDING", "15x15");
   //IupSetAttribute(button, "BGCOLOR", "128 128 255");
 //  IupSetAttribute(button, "SIZE", "40");
 //  IupSetAttribute(button, "EXPAND", "Yes");

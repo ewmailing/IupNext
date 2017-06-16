@@ -36,6 +36,7 @@ GdkWindow* iupgtkGetWindow(GtkWidget *widget);
 void iupgtkWindowGetPointer(GdkWindow *window, int *x, int *y, GdkModifierType *mask);
 int iupgtkIsVisible(GtkWidget* widget);
 void iupgtkClearSizeStyleCSS(GtkWidget* widget);
+void iupgtkSetMargin(GtkWidget* widget, int horiz_padding, int vert_padding, int mandatory_gtk3);
 
 GtkWidget* iupgtkNativeContainerNew(int has_window);
 void iupgtkNativeContainerAdd(GtkWidget* container, GtkWidget* widget);

@@ -546,10 +546,7 @@ static int gtkListSetPaddingAttrib(Ihandle* ih, const char* value)
   {
     GtkEntry* entry = (GtkEntry*)iupAttribGet(ih, "_IUPGTK_ENTRY");
 #if GTK_CHECK_VERSION(3, 4, 0)
-    g_object_set(G_OBJECT(entry), "margin-bottom", ih->data->vert_padding, NULL);
-    g_object_set(G_OBJECT(entry), "margin-top", ih->data->vert_padding, NULL);
-    g_object_set(G_OBJECT(entry), "margin-left", ih->data->horiz_padding, NULL);
-    g_object_set(G_OBJECT(entry), "margin-right", ih->data->horiz_padding, NULL);
+    iupgtkSetMargin(GTK_WIDGET(entry), ih->data->horiz_padding, ih->data->vert_padding, 0);
 #else
 #if GTK_CHECK_VERSION(2, 10, 0)
     GtkBorder border;

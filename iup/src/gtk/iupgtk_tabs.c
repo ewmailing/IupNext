@@ -103,11 +103,8 @@ static void gtkTabsUpdatePagePadding(Ihandle* ih)
     GtkWidget* tab_label = (GtkWidget*)iupAttribGet(child, "_IUPGTK_TABLABEL");
     if (tab_label)
     {
-#if GTK_CHECK_VERSION(3, 14, 0)
-      g_object_set(G_OBJECT(tab_label), "margin-bottom", ih->data->vert_padding, NULL);
-      g_object_set(G_OBJECT(tab_label), "margin-top", ih->data->vert_padding, NULL);
-      g_object_set(G_OBJECT(tab_label), "margin-left", ih->data->horiz_padding, NULL);
-      g_object_set(G_OBJECT(tab_label), "margin-right", ih->data->horiz_padding, NULL);
+#if GTK_CHECK_VERSION(3, 4, 0)
+      iupgtkSetMargin(tab_label, ih->data->horiz_padding, ih->data->vert_padding, 1);
 #else
       gtk_misc_set_padding((GtkMisc*)tab_label, ih->data->horiz_padding, ih->data->vert_padding);
 #endif

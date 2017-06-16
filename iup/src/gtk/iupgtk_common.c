@@ -997,6 +997,28 @@ void iupgtkWindowGetPointer(GdkWindow *window, int *x, int *y, GdkModifierType *
 #endif
 }
 
+void iupgtkSetMargin(GtkWidget* widget, int horiz_padding, int vert_padding, int mandatory_gtk3)
+{
+#if GTK_CHECK_VERSION(3, 12, 0)
+  if (mandatory_gtk3)
+  {
+    gtk_widget_set_margin_top(widget, vert_padding);
+    gtk_widget_set_margin_bottom(widget, vert_padding);
+    gtk_widget_set_margin_start(widget, horiz_padding);
+    gtk_widget_set_margin_end(widget, horiz_padding);
+  }
+#elif GTK_CHECK_VERSION(3, 4, 0)
+  gtk_widget_set_margin_top(widget, vert_padding);
+  gtk_widget_set_margin_bottom(widget, vert_padding);
+  gtk_widget_set_margin_left(widget, horiz_padding);
+  gtk_widget_set_margin_right(widget, horiz_padding);
+#endif
+  (void)widget;
+  (void)horiz_padding;
+  (void)vert_padding;
+  (void)mandatory_gtk3;
+}
+
 void iupgtkClearSizeStyleCSS(GtkWidget* widget)
 {
 #if GTK_CHECK_VERSION(3, 0, 0)

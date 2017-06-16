@@ -420,6 +420,7 @@ static Ihandle* CreateTabs(int tab)
 //  IupSetAttribute(tabs, "BGCOLOR", "92 92 255");
 //  IupSetAttribute(tabs, "FGCOLOR", "250 0 0");
 //  IupSetAttribute(tabs, "FONT", "Helvetica, Italic 16");
+//  IupSetAttribute(tabs, "TABPADDING", "10x10");
 
   IupSetAttribute(tabs, "TIP", "IupTabs Tip");
 //  IupSetAttribute(tabs, "TIPFONT", "SYSTEM");

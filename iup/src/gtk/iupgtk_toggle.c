@@ -246,11 +246,8 @@ static int gtkToggleSetPaddingAttrib(Ihandle* ih, const char* value)
   iupStrToIntInt(value, &ih->data->horiz_padding, &ih->data->vert_padding, 'x');
   if (ih->handle && ih->data->type == IUP_TOGGLE_IMAGE)
   {
-#if GTK_CHECK_VERSION(3, 14, 0)
-    g_object_set(G_OBJECT(ih->handle), "margin-bottom", ih->data->vert_padding, NULL);
-    g_object_set(G_OBJECT(ih->handle), "margin-top", ih->data->vert_padding, NULL);
-    g_object_set(G_OBJECT(ih->handle), "margin-left", ih->data->horiz_padding, NULL);
-    g_object_set(G_OBJECT(ih->handle), "margin-right", ih->data->horiz_padding, NULL);
+#if GTK_CHECK_VERSION(3, 4, 0)
+    iupgtkSetMargin(ih->handle, ih->data->horiz_padding, ih->data->vert_padding, 0);
 #else
     GtkButton* button = (GtkButton*)ih->handle;
     GtkMisc* misc = (GtkMisc*)gtk_button_get_image(button);

@@ -1010,10 +1010,7 @@ static int gtkTextSetPaddingAttrib(Ihandle* ih, const char* value)
     else
     {
 #if GTK_CHECK_VERSION(3, 4, 0)
-      g_object_set(G_OBJECT(ih->handle), "margin-bottom", ih->data->vert_padding, NULL);
-      g_object_set(G_OBJECT(ih->handle), "margin-top", ih->data->vert_padding, NULL);
-      g_object_set(G_OBJECT(ih->handle), "margin-left", ih->data->horiz_padding, NULL);
-      g_object_set(G_OBJECT(ih->handle), "margin-right", ih->data->horiz_padding, NULL);
+      iupgtkSetMargin(ih->handle, ih->data->horiz_padding, ih->data->vert_padding, 1);
 #else
 #if GTK_CHECK_VERSION(2, 10, 0)
       GtkBorder border;

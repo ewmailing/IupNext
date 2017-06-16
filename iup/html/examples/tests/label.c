@@ -128,6 +128,7 @@ void LabelTest(void)
   IupAppend(box1, label);
 //  IupSetCallback(label, "ENTERWINDOW_CB", (Icallback)enterwindow_cb);
 //  IupSetCallback(label, "LEAVEWINDOW_CB", (Icallback)leavewindow_cb);
+  IupSetAttribute(label, "PADDING", "20x20");
 
   label = IupLabel(NULL);
   IupSetAttribute(label, "SEPARATOR", "HORIZONTAL");

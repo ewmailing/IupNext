@@ -291,6 +291,7 @@ void TextTest(void)
   IupSetAttribute(text, "TIP", "Attribute Value");
 //  IupSetAttribute(text, "FORMATTING", "YES");
   IupSetCallback(text, "K_ANY", (Icallback)k_any);
+//  IupSetAttribute(text, "PADDING", "10x10");
 
   opt = IupToggle("Set/Get", NULL);
   IupSetAttribute (opt, "VALUE", "ON");

@@ -159,11 +159,8 @@ static int gtkButtonSetPaddingAttrib(Ihandle* ih, const char* value)
   iupStrToIntInt(value, &ih->data->horiz_padding, &ih->data->vert_padding, 'x');
   if (ih->handle)
   {
-#if GTK_CHECK_VERSION(3, 14, 0)
-    g_object_set(G_OBJECT(ih->handle), "margin-bottom", ih->data->vert_padding, NULL);
-    g_object_set(G_OBJECT(ih->handle), "margin-top", ih->data->vert_padding, NULL);
-    g_object_set(G_OBJECT(ih->handle), "margin-left", ih->data->horiz_padding, NULL);
-    g_object_set(G_OBJECT(ih->handle), "margin-right", ih->data->horiz_padding, NULL);
+#if GTK_CHECK_VERSION(3, 4, 0)
+    iupgtkSetMargin(ih->handle, ih->data->horiz_padding, ih->data->vert_padding, 0);
 #else
     if (ih->data->type == IUP_BUTTON_TEXT)   /* text only */
     {
