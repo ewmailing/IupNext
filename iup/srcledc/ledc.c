@@ -946,7 +946,7 @@ void init(void)
   if (nocode) return;
   outfile = stdout;
 
-  outfile = fopen( outname, "w" );
+  outfile = fopen( outname, "wb" );
   if (!outfile) 
   {
     perror( outname );
