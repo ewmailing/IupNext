@@ -556,17 +556,21 @@ int iupwinBaseContainerMsgProc(Ihandle* ih, UINT msg, WPARAM wp, LPARAM lp, LRES
     }
   case WM_MOUSEWHEEL:
   {
-    HWND hChild;
-    POINT p;
-    p.x = GET_X_LPARAM(lp); p.y = GET_Y_LPARAM(lp);
-    ScreenToClient(ih->handle, &p);
-
-    hChild = ChildWindowFromPointEx(ih->handle, p, CWP_SKIPDISABLED|CWP_SKIPINVISIBLE|CWP_SKIPTRANSPARENT);
-    if (hChild)
+    /* if not a canvas based container, must forward the message to the child under the mouse if any. */
+    if (!IupClassMatch(ih, "canvas"))
     {
-      Ihandle* child = iupwinHandleGet(hChild);
-      if (child && IupClassMatch(child, "canvas"))  /* will check of all canvas based control classes */
-        SendMessage(child->handle, WM_MOUSEWHEEL, wp, lp);
+      HWND hChild;
+      POINT p;
+      p.x = GET_X_LPARAM(lp); p.y = GET_Y_LPARAM(lp);
+      ScreenToClient(ih->handle, &p);
+
+      hChild = ChildWindowFromPointEx(ih->handle, p, CWP_SKIPDISABLED | CWP_SKIPINVISIBLE | CWP_SKIPTRANSPARENT);
+      if (hChild)
+      {
+        Ihandle* child = iupwinHandleGet(hChild);
+        if (child && IupClassMatch(child, "canvas"))  /* will check of all canvas based control classes */
+          SendMessage(child->handle, WM_MOUSEWHEEL, wp, lp);
+      }
     }
     break;
   }

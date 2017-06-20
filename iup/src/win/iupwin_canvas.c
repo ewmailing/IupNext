@@ -483,6 +483,9 @@ static int winCanvasMsgProc(Ihandle* ih, UINT msg, WPARAM wp, LPARAM lp, LRESULT
         iupwinButtonKeySetStatus(LOWORD(wp), status, 0);
         
         cb(ih, (float)delta/120.0f, p.x, p.y, status);
+
+        *result = 0;
+        return 1;
       }
       else
       {
@@ -492,11 +495,12 @@ static int winCanvasMsgProc(Ihandle* ih, UINT msg, WPARAM wp, LPARAM lp, LRESULT
           delta = (short)abs(delta/120);
           for (i=0; i < delta; i++)
             SendMessage(ih->handle, WM_VSCROLL, MAKELONG(winop, 0), 0);
+
+          *result = 0;
+          return 1;
         }
       }
-
-      *result = 0;
-      return 1;
+      break; /* let DefWindowProc forward the message to the parent */
     }
   case WM_XBUTTONDBLCLK:
   case WM_LBUTTONDBLCLK:
