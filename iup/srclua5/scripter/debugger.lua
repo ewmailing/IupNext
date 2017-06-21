@@ -264,22 +264,6 @@ function iupDebuggerClearLocalVariablesList()
   iup.SetAttribute(iup.GetDialogChild(debugger.main_dialog, "LIST_LOCAL"), "REMOVEITEM", "ALL")
 end
 
-function iupDebuggerGetObjectType(value)
-  local valueType = type(value)
-  if valueType == "string" or valueType == "number" then
-    return value
-  elseif valueType == "table" then
-    return "<table>"
-  elseif valueType == "function" then
-    return "<function>"
-  elseif valueType == "userdata" then
-    return "<userdata>"
-  elseif valueType == "nil" then
-    return "<nil>"
-  end
-  return "<unknown>"
-end
-
 function iupDebuggerSetLocalVariable()
   local local_list = iup.GetDialogChild(debugger.main_dialog, "LIST_LOCAL")
   local index = local_list.value
@@ -294,16 +278,37 @@ function iupDebuggerSetLocalVariable()
   local name, value = debug.getlocal(level, pos)
   if (value == nil) then value = "" end
   local valueType = type(value)
-  if valueType ~= "string" and valueType ~= "number" then
-    iup.MessageError(debugger.main_dialog, "Can edit only strings and numbers.")
+  if valueType ~= "string" and valueType ~= "number" and valueType ~= "boolean" then
+    iup.MessageError(debugger.main_dialog, "Can edit only strings, booleans and numbers.")
     return
   end
 
-  local status, newValue = iup.GetParam("Set Local", nil, name.." = ".."%s\n", tostring(value))
+  local status, newValue
+  if valueType == "string" then
+    status, newValue = iup.GetParam("Set Local", nil, name.." = ".."%s\n", tostring(value))
+  elseif valueType == "number" then
+    status, newValue = iup.GetParam("Set Local", nil, name.." = ".."%R\n", tonumber(value))
+  elseif valueType == "boolean" then
+    if value then value = 1 else value = 0 end
+    status, newValue = iup.GetParam("Set Local", nil, name.." = ".."%b[false,true]\n", value)
+  end
 
   if (status) then
+    if valueType == "string" then
+      newValue = tostring(newValue)
+    elseif valueType == "number" then
+      newValue = tonumber(newValue)
+    elseif valueType == "boolean" then
+      newValue = tonumber(newValue)
+      if newValue == 1 then 
+        newValue = true
+      else
+        newValue = false
+      end
+    end
+    
     debug.setlocal(level, pos, newValue)
-    iup.SetAttribute(local_list, index, name.." = "..newValue)
+    iup.SetAttribute(local_list, index, name.." = "..tostring(newValue).." <"..type(newValue)..">")
   end
 end
 
@@ -351,7 +356,7 @@ function iupDebuggerUpdateLocalVariablesList(level, actual_level)
   name, value = debug.getlocal(level, pos)
   while name ~= nil do
     if string.sub(name, 1, 1) ~= "(" then  -- not internal variables
-      iup.SetAttribute(local_list, index, name.." = "..iupDebuggerGetObjectType(value))
+      iup.SetAttribute(local_list, index, name.." = "..tostring(value).." <"..type(value)..">")
       iup.SetAttribute(local_list, "POS"..index, pos)
       iup.SetAttribute(local_list, "LEVEL"..index, actual_level)
       index = index + 1
@@ -374,7 +379,7 @@ function iupDebuggerLocalVariablesListAction(local_list, index)
   local pos = iup.GetAttribute(local_list, "POS"..index)
   local name, value = debug.getlocal(level, pos)
   local valueType = type(value)
-  if valueType == "string" or valueType == "number" then
+  if valueType == "string" or valueType == "number" or valueType == "boolean" then
     iup.SetAttribute(iup.GetDialogChild(debugger.main_dialog, "SET_LOCAL"), "ACTIVE", "Yes")
   else
     iup.SetAttribute(iup.GetDialogChild(debugger.main_dialog, "SET_LOCAL"), "ACTIVE", "No")
