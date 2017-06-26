@@ -366,8 +366,6 @@ static int winDialogMDICloseChildren(Ihandle* ih)
 ****************************************************************************/
 
 
-static Ihandle* winMinMaxHandle = NULL;
-
 static int winDialogCheckMinMaxInfo(Ihandle* ih, MINMAXINFO* minmax)
 {
   int min_w = 1, min_h = 1;          /* MINSIZE default value */
@@ -380,9 +378,6 @@ static int winDialogCheckMinMaxInfo(Ihandle* ih, MINMAXINFO* minmax)
   minmax->ptMinTrackSize.y = min_h;
   minmax->ptMaxTrackSize.x = max_w;
   minmax->ptMaxTrackSize.y = max_h;
-
-  if (winMinMaxHandle == ih)
-    winMinMaxHandle = NULL;
 
   return 1;
 }
@@ -876,6 +871,8 @@ static int winDialogBaseProc(Ihandle* ih, UINT msg, WPARAM wp, LPARAM lp, LRESUL
   return 0;
 }
 
+static Ihandle* winMinMaxHandle = NULL;
+
 static LRESULT CALLBACK winDialogWndProc(HWND hwnd, UINT msg, WPARAM wp, LPARAM lp)
 {   
   LRESULT result;
@@ -1225,6 +1222,10 @@ static int winDialogMapMethod(Ihandle* ih)
                                 iupwin_hinstance,   /* instance of app. */
                                 NULL);              /* no creation parameters */
   }
+
+  /* clear handle right after CreateWindowEx */
+  winMinMaxHandle = NULL;
+
   if (!ih->handle)
     return IUP_ERROR;
 
