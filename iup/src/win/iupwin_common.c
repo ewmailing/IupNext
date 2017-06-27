@@ -559,7 +559,8 @@ int iupwinBaseContainerMsgProc(Ihandle* ih, UINT msg, WPARAM wp, LPARAM lp, LRES
     }
   case WM_MOUSEWHEEL:
   {
-    /* if not a canvas based container, must forward the message to the child under the mouse if any. */
+    /* if not a canvas based container, must forward the message to the canvas child under the mouse if any. 
+       when it is a canvas, the canvas will forward to the parent. */
     if (!IupClassMatch(ih, "canvas"))
     {
       HWND hChild;
