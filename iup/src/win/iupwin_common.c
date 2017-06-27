@@ -116,7 +116,10 @@ void iupdrvBaseLayoutUpdateMethod(Ihandle *ih)
 {
   if (ih->currentwidth > 0 && ih->currentheight > 0)
     SetWindowPos(ih->handle, NULL, ih->x, ih->y, ih->currentwidth, ih->currentheight,
-                 SWP_NOZORDER|SWP_NOACTIVATE|SWP_NOOWNERZORDER);
+                 SWP_NOZORDER | SWP_NOACTIVATE | SWP_NOOWNERZORDER);
+  else /* move only */
+    SetWindowPos(ih->handle, NULL, ih->x, ih->y, 0, 0,
+                 SWP_NOSIZE | SWP_NOZORDER | SWP_NOACTIVATE | SWP_NOOWNERZORDER);
 }
 
 void iupdrvRedrawNow(Ihandle *ih)
