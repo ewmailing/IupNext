@@ -85,7 +85,7 @@ void iupmotSetPosition(Widget widget, int x, int y)
     XmNy, (XtArgVal)y,
     NULL);
 
-  /* to position ouside parent area */
+  /* to position outside parent area */
   {
     int new_x, new_y;
     XtVaGetValues(widget,
