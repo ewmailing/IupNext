@@ -706,8 +706,13 @@ static int iFlatScrollBarFloatTimer_CB(Ihandle* timer)
   Ihandle* sb_vert = iFlatScrollBarGetVertical(ih);
   Ihandle* sb_horiz = iFlatScrollBarGetHorizontal(ih);
 
-  IupSetAttribute(sb_vert, "VISIBLE", "NO");
-  IupSetAttribute(sb_horiz, "VISIBLE", "NO");
+  int press_handler = iupAttribGetInt(sb_vert, "_IUP_PRESSED_HANDLER");
+  if (press_handler == SB_NONE)
+    IupSetAttribute(sb_vert, "VISIBLE", "NO");
+
+  press_handler = iupAttribGetInt(sb_horiz, "_IUP_PRESSED_HANDLER");
+  if (press_handler == SB_NONE)
+    IupSetAttribute(sb_horiz, "VISIBLE", "NO");
 
   IupSetAttribute(timer, "RUN", "NO");
 
