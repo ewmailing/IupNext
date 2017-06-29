@@ -695,7 +695,10 @@ static int iMatrixExSetPasteFileAttrib(Ihandle *ih, const char* value)
     else
     {
       if (iupStrToIntInt(paste_at, &lin, &col, ':') != 2)
+      {
+        free(data);
         return 0;
+      }
     }
   }
 

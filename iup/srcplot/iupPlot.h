@@ -330,7 +330,7 @@ protected:
 class iupPlotTickIterLinear : public iupPlotTickIterBase
 {
 public:
-  iupPlotTickIterLinear() :mCurrentTick(0), mDelta(0){}
+  iupPlotTickIterLinear() :mCurrentTick(0), mCount(0), mDelta(0){}
 
   virtual bool Init();
   virtual bool GetNextTick(double &outTick, bool &outIsMajorTick, char* outFormatString);
@@ -346,7 +346,7 @@ protected:
 class iupPlotTickIterLog : public iupPlotTickIterBase
 {
 public:
-  iupPlotTickIterLog() :mCurrentTick(0), mDelta(0){}
+  iupPlotTickIterLog() :mCurrentTick(0), mCount(0), mDelta(0){}
 
   virtual bool Init();
   virtual bool GetNextTick(double &outTick, bool &outIsMajorTick, char* outFormatString);
@@ -416,7 +416,8 @@ public:
     mMaxDecades(-1), mLogBase(10), mLabelCentered(true), mHasZoom(false),
     mDiscrete(false), mLabel(NULL), mShowArrow(true), mLineWidth(1), mLabelSpacing(-1),
     mFontSize(0), mFontStyle(-1), mDefaultFontSize(inDefaultFontSize),
-    mTrafo(NULL), mTickIter(NULL), mDefaultFontStyle(inDefaultFontStyle)
+    mTrafo(NULL), mTickIter(NULL), mDefaultFontStyle(inDefaultFontStyle),
+    mNoZoomMin(0), mNoZoomMax(0), mNoZoomAutoScaleMin(false), mNoZoomAutoScaleMax(false), mPanMin(0)
   {
     strcpy(mTipFormatString, "%.2f");
   }

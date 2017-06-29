@@ -324,13 +324,11 @@ char *iupStrGetLargeMem(int *size)
   if (buffers_index == -1)
   {
     int i;
-
-    memset(buffers, 0, sizeof(char*)*LARGE_MAX_BUFFERS);
-    buffers_index = 0;
-
-    /* clear all memory only once */
+    /* clear all memory */
     for (i=0; i<LARGE_MAX_BUFFERS; i++)
       memset(buffers[i], 0, sizeof(char)*LARGE_SIZE);
+
+    buffers_index = 0;
   }
 
   /* DON'T clear memory everytime because the buffer is too large */
@@ -350,7 +348,7 @@ char *iupStrGetLargeMem(int *size)
 static char* iupStrGetSmallMem(void)
 {
 #define SMALL_MAX_BUFFERS 100
-#define SMALL_SIZE 80  /* maximum for iupStrReturnFloat */
+#define SMALL_SIZE 80  /* maximum for iupStrReturnFloat and iupStrReturnDouble */
   static char buffers[SMALL_MAX_BUFFERS][SMALL_SIZE];
   static int buffers_index = -1;
   char* ret_str;
@@ -358,7 +356,11 @@ static char* iupStrGetSmallMem(void)
   /* init buffers array */
   if (buffers_index == -1)
   {
-    memset(buffers, 0, sizeof(char*)*SMALL_MAX_BUFFERS);
+    int i;
+    /* clear all memory */
+    for (i = 0; i<SMALL_MAX_BUFFERS; i++)
+      memset(buffers[i], 0, sizeof(char)*SMALL_SIZE);
+    
     buffers_index = 0;
   }
 

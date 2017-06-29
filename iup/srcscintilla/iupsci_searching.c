@@ -139,12 +139,10 @@ static int iScintillaSetTargetStartAttrib(Ihandle* ih, const char* value)
 
 static int iScintillaSetSearchInTargetAttrib(Ihandle* ih, const char* value)
 {
-  int len = strlen(value);
-
   if (!value)
     return 0;
 
-  IupScintillaSendMessage(ih, SCI_SEARCHINTARGET, len, (sptr_t)value);
+  IupScintillaSendMessage(ih, SCI_SEARCHINTARGET, (uptr_t)strlen(value), (sptr_t)value);
 
   return 0;
 }

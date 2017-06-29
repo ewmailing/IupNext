@@ -923,11 +923,11 @@ static void iGridBoxSetChildrenCurrentSizeMethod(Ihandle* ih, int shrink)
 
       if (ih->data->homogeneous_width && ih->data->homogeneous_height)
         iupBaseSetCurrentSize(child, ih->data->homogeneous_width, ih->data->homogeneous_height, shrink);
-      else if (ih->data->homogeneous_width)
+      else if (ih->data->homogeneous_width && lin_height)
         iupBaseSetCurrentSize(child, ih->data->homogeneous_width, lin_height[lin], shrink);
-      else if (ih->data->homogeneous_height)
+      else if (ih->data->homogeneous_height && col_width)
         iupBaseSetCurrentSize(child, col_width[col], ih->data->homogeneous_height, shrink);
-      else
+      else if (lin_height && col_width)
         iupBaseSetCurrentSize(child, col_width[col], lin_height[lin], shrink);
 
       i++;
