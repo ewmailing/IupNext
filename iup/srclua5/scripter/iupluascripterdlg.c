@@ -1332,8 +1332,20 @@ void IupLuaScripterDlgOpen(void)
 *** multiple files (IupFlatTabs) - option for save in config
 ** Watch for globals - save in config
 * detachable Console, Debug, Breakpoints - save in config
+- Printing
+- Save Find options in Config
+- Replace All
+- Bug: Paste in Selection, kept the selection
+- replace global names for iup.console and iup.debugger
+- dialog for Options: set current directory, parameters (arg)
+- upvalues and varags in Locals?
 - dialog for style colors - save in config
 - Debug Strings
 - multi-language (portuguese, spanish)
 - replace IupSbox by IupSplit ?
+- Project menu?
+- Inspect on Mouse Over?
+- Folding support
+- Table Inspector using IupTree
+- Full static link as in iupluaconsole (visual studio and config.mak)
 */
