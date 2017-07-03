@@ -145,13 +145,11 @@ ifdef ALL_STATIC
   #IUPLUA_NO_IM = Yes
   ifndef IUPLUA_NO_IM
     USE_IMLUA = Yes
-    
     ifneq ($(findstring Win, $(TEC_SYSNAME)), )
       LIBS += imlua_process$(LUASFX) iupluaim$(LUASFX) im_process iupim
     else
       SLIB += $(IM_LIB)/Lua$(LUASFX)/libimlua_process$(LUASFX).a $(IUP_LIB)/Lua$(LUASFX)/libiupluaim$(LUASFX).a $(IM_LIB)/libim_process.a $(IUP_LIB)/libiupim.a
     endif
-    
   else
     DEFINES += IUPLUA_NO_IM
   endif

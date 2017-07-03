@@ -368,6 +368,7 @@ static int multitext_valuechanged_cb(Ihandle* multitext)
 static int item_autocomplete_action_cb(Ihandle* ih)
 {
   Ihandle* multitext = IupGetDialogChild(ih, "MULTITEXT");
+  Ihandle* config = IupGetAttributeHandle(multitext, "CONFIG");
 
   if (IupGetInt(ih, "VALUE"))
   {
@@ -379,6 +380,9 @@ static int item_autocomplete_action_cb(Ihandle* ih)
     IupSetAttribute(ih, "VALUE", "ON");
     IupSetAttribute(multitext, "AUTOCOMPLETION", "ON");
   }
+
+  if (config)
+    IupConfigSetVariableStr(config, "Lua", "AutoCompletion", IupGetAttribute(multitext, "AUTOCOMPLETION"));
 
   return IUP_DEFAULT;
 }
@@ -1107,6 +1111,7 @@ static void appendDebugMenuItens(Ihandle *menu)
   IupSetAttribute(item_currentline, "IMAGE", "IUP_ArrowRight");
 
   item_autocomplete = IupItem("Auto Completion", NULL);
+  IupSetAttribute(item_autocomplete, "NAME", "ITM_AUTOCOMPLETE");
   IupSetCallback(item_autocomplete, "ACTION", (Icallback)item_autocomplete_action_cb);
   IupSetAttribute(item_autocomplete, "VALUE", "ON");
 
@@ -1144,6 +1149,8 @@ static void appendDebugMenuItens(Ihandle *menu)
 
 static int multitext_map_cb(Ihandle* multitext)
 {
+  Ihandle* config = IupGetAttributeHandle(multitext, "CONFIG");
+
   IupSetAttribute(multitext, "LEXERLANGUAGE", "lua");
   IupSetAttribute(multitext, "KEYWORDS0", getLuaKeywords());
 
@@ -1155,6 +1162,17 @@ static int multitext_map_cb(Ihandle* multitext)
   IupSetAttribute(multitext, "STYLEFGCOLOR7", "164 0 164");  /* 7-Character  */
   IupSetAttribute(multitext, "STYLEFGCOLOR10", "164 0 0"); /* 10-Operator  */
   IupSetAttribute(multitext, "STYLEBOLD10", "YES");
+
+  if (config)
+  {
+    const char* auto_completion = IupConfigGetVariableStr(config, "Lua", "AutoCompletion");
+    if (auto_completion)
+    {
+      Ihandle* item = IupGetDialogChild(multitext, "ITM_AUTOCOMPLETE");
+      IupSetStrAttribute(item, "VALUE", auto_completion);
+      IupSetStrAttribute(multitext, "AUTOCOMPLETION", auto_completion);
+    }
+  }
 
   return IUP_DEFAULT;
 }
@@ -1333,19 +1351,19 @@ void IupLuaScripterDlgOpen(void)
 ** Watch for globals - save in config
 * detachable Console, Debug, Breakpoints - save in config
 - Printing
+- multi-language (portuguese, spanish)
+- replace IupSbox by IupSplit ?
+- Debug Strings
+- Project menu?
+- dialog for style colors - save in config
+
 - Save Find options in Config
 - Replace All
 - Bug: Paste in Selection, kept the selection
-- replace global names for iup.console and iup.debugger
 - dialog for Options: set current directory, parameters (arg)
 - upvalues and varags in Locals?
-- dialog for style colors - save in config
-- Debug Strings
-- multi-language (portuguese, spanish)
-- replace IupSbox by IupSplit ?
-- Project menu?
 - Inspect on Mouse Over?
 - Folding support
 - Table Inspector using IupTree
-- Full static link as in iupluaconsole (visual studio and config.mak)
+- verificar Format/Tab, View em config
 */

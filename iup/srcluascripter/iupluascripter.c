@@ -1,18 +1,120 @@
-#include <stdio.h>
+
 #include <stdlib.h>
-#include <string.h>
-#include <ctype.h>
 
 #include <lua.h>
 #include <lauxlib.h>
 #include <lualib.h>
 
-#include <iup.h>
-#include <iup_config.h>
+#include "iup.h"
+#include "iup_config.h"
 
-#include <iuplua.h>
-#include <iupluascripterdlg.h>
+#include "iuplua.h"
+#include "iupluascripterdlg.h"
 
+#ifdef USE_STATIC
+
+#ifndef IUPLUA_NO_GL
+#include "iupgl.h"
+#include "iupglcontrols.h"
+#include "iupluagl.h"
+#include "iupluaglcontrols.h"
+#ifdef USE_LUAGL
+#include "luagl.h"
+#endif
+#endif
+
+#ifndef IUPLUA_NO_CD
+#include "iupcontrols.h"
+#include "iupluacontrols.h"
+#include "iupmatrixex.h"
+#include "iupluamatrixex.h"
+#include "iup_plot.h"
+#include "iuplua_plot.h"
+#include <cd.h>
+#include <cdlua.h>
+#include <cdluaiup.h>
+#endif
+
+#ifndef IUPLUA_NO_IM
+#include "iupluaim.h"
+#include <im.h>
+#include <im_image.h>
+#include <imlua.h>
+#endif
+
+#ifndef IUPLUA_NO_IM
+#ifndef IUPLUA_NO_CD
+#include <cdluaim.h>
+#endif
+#endif
+
+#ifdef IUPLUA_TUIO
+#include "iupluatuio.h"
+#endif
+#ifdef IUPLUA_WEB
+#include "iupluaweb.h"
+#endif
+#include "iuplua_scintilla.h"
+
+int luaopen_iupluaimglib(lua_State* L);
+#endif
+
+static void iuplua_openlibs(lua_State *L)
+{
+#if LUA_VERSION_NUM < 502
+  lua_pushliteral(L, LUA_RELEASE "  " LUA_COPYRIGHT);
+#else
+  lua_pushliteral(L, LUA_COPYRIGHT);
+#endif
+  lua_setglobal(L, "_COPYRIGHT");  /* set global _COPYRIGHT */
+
+  /* iuplua initialization */
+  iuplua_open(L);
+
+#ifdef USE_STATIC
+  /* disable require */
+  iuplua_dostring(L, "function require() end ", "static_require");
+
+  luaopen_iupluaimglib(L);
+
+#ifdef IUPLUA_TUIO
+  iuptuiolua_open(L);
+#endif
+#ifdef IUPLUA_WEB
+  iupweblua_open(L);
+#endif
+
+  iup_scintillalua_open(L);
+
+  /* luaopen_lfs(L); */
+
+#ifndef IUPLUA_NO_GL
+  iupgllua_open(L);
+  iupglcontrolslua_open(L);
+#ifdef USE_LUAGL
+  luaopen_luagl(L);
+#endif
+#endif
+#ifndef IUPLUA_NO_CD
+  iupcontrolslua_open(L);
+  iupmatrixexlua_open(L);
+  iup_plotlua_open(L);
+  cdlua_open(L);
+  cdluaiup_open(L);
+  cdInitContextPlus();
+#endif
+#ifndef IUPLUA_NO_IM
+  iupimlua_open(L);
+  imlua_open(L);
+  imlua_open_process(L);
+#endif
+#ifndef IUPLUA_NO_IM
+#ifndef IUPLUA_NO_CD
+  cdluaim_open(L);
+#endif
+#endif
+#endif
+}
 
 static int item_help_action_cb(void)
 {
@@ -50,7 +152,7 @@ int main(int argc, char **argv)
 
   createargtable(L, argv, argc);  /* create table 'arg' */
 
-  iuplua_open(L);
+  iuplua_openlibs(L);
   IupLuaScripterDlgOpen();
 
   IupSetGlobal("GLOBALLAYOUTDLGKEY", "Yes");

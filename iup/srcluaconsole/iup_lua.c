@@ -55,9 +55,6 @@
 #include "iuplua_scintilla.h"
 #endif
 
-#endif
-
-#ifdef USE_STATIC
 #ifdef IUPLUA_IMGLIB
 int luaopen_iupluaimglib(lua_State* L);
 #endif
