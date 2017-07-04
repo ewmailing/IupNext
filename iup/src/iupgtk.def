@@ -244,6 +244,8 @@ iupdrvScreenToClient
 iupdrvClientToScreen
 iupdrvReparent
 iupdrvLocaleInfo
+iupdrvSetCurrentDirectory
+iupdrvGetCurrentDirectory
 iupdrvIsVisible
 iupdrvIsActive
 iupdrvGetUserName

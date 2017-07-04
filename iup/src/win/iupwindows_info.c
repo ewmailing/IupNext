@@ -194,3 +194,23 @@ char *iupdrvGetUserName(void)
   GetUserNameA((LPSTR)str, &size);
   return (char*)str;
 }
+
+int iupdrvSetCurrentDirectory(const char* path)
+{
+  return SetCurrentDirectoryA(path);
+}
+
+char* iupdrvGetCurrentDirectory(void)
+{
+  char* cur_dir = NULL;
+
+  int len = GetCurrentDirectoryA(0, NULL);
+  if (len == 0) return NULL;
+
+  cur_dir = iupStrGetMemory(len + 2);
+  GetCurrentDirectory(len + 1, cur_dir);
+  cur_dir[len] = '\\';
+  cur_dir[len + 1] = 0;
+
+  return cur_dir;
+}

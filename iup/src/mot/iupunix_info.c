@@ -251,6 +251,34 @@ char *iupdrvGetUserName(void)
   return (char*)getlogin();
 }
 
+int iupdrvSetCurrentDirectory(const char* dir)
+{
+  return chdir(dir) == 0 ? 1 : 0;
+}
+
+char* iupdrvGetCurrentDirectory(void)
+{
+  size_t size = 256;
+  char *buffer = (char *)iupStrGetMemory(size);
+
+  for (;;)
+  {
+    if (getcwd(buffer, size) != NULL)
+      return buffer;
+
+    if (errno != ERANGE)
+    {
+      free(buffer);
+      return NULL;
+    }
+
+    size += size;
+    buffer = (char *)iupStrGetMemory(buffer, size);
+  }
+
+  return NULL;
+}
+
 
 /**************************************************************************/
 
@@ -274,34 +302,6 @@ int iupUnixIsDirectory(const char* name)
     return 1;
   return 0;
 }            
-
-int iupUnixSetCurrentDirectory(const char* dir)
-{
-  return chdir(dir) == 0? 1: 0;
-}
-
-char* iupUnixGetCurrentDirectory(void)
-{
-  size_t size = 256;
-  char *buffer = (char *)malloc(size);
-
-  for (;;)
-  {
-    if (getcwd(buffer, size) != NULL)
-      return buffer;
-
-    if (errno != ERANGE)
-    {
-      free(buffer);
-      return NULL;
-    }
-
-    size += size;
-    buffer = (char *)realloc(buffer, size);
-  }
-
-  return NULL;
-}
 
 int iupUnixMakeDirectory(const char* name) 
 {

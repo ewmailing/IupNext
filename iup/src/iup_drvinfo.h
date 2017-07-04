@@ -88,6 +88,14 @@ void* iupdrvGetDisplay(void);
  * \ingroup drvinfo */
 char* iupdrvLocaleInfo(void);
 
+/** Changes the current directory.
+* \ingroup drvinfo */
+int iupdrvSetCurrentDirectory(const char* dir);
+
+/** Returns the current directory.
+* \ingroup drvinfo */
+char* iupdrvGetCurrentDirectory(void);
+
 
 #ifdef __cplusplus
 }

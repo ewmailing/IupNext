@@ -3,6 +3,10 @@
 #include <string.h>
 #include <ctype.h>
 
+#ifndef WIN32
+#include <unistd.h> /* for chdir */
+#endif
+
 #include <lua.h>
 #include <lauxlib.h>
 #include <lualib.h>
@@ -19,6 +23,7 @@
 #include "iup_strmessage.h"
 #include "iup_register.h"
 #include "iup_childtree.h"
+#include "iup_drvinfo.h"
 
 
 void load_all_images_step_images(void);
@@ -64,29 +69,6 @@ static char* getLuaKeywords(void)
   ;
 }
 
-
-#define IUP_STR_EQUAL(str1, str2)      \
-{                                      \
-if (str1 == str2)                    \
-  return 1;                          \
-  \
-if (!str1 || !str2)                  \
-  return 0;                          \
-  \
-while (*str1 && *str2 &&              \
-  SF(*str1) == SF(*str2))        \
-{                                    \
-  EXTRAINC(str1);                    \
-  EXTRAINC(str2);                    \
-  str1++;                            \
-  str2++;                            \
-}                                    \
-  \
-  /* check also for terminator */      \
-if (*str1 == *str2) return 1;        \
-}
-
-
 static const char *getLastNonAlphaNumeric(const char *text)
 {
   int len = (int)strlen(text);
@@ -101,46 +83,6 @@ static const char *getLastNonAlphaNumeric(const char *text)
   return NULL;
 }
 
-static const char* strNextValue(const char* str, int str_len, int *len, char sep)
-{
-  int ignore_sep = 0;
-
-  *len = 0;
-
-  if (!str) return NULL;
-
-  while (*str != 0 && (*str != sep || ignore_sep) && *len < str_len)
-  {
-    if (*str == '\"')
-    {
-      if (ignore_sep)
-        ignore_sep = 0;
-      else
-        ignore_sep = 1;
-    }
-
-    (*len)++;
-    str++;
-  }
-
-  if (*str == sep)
-    return str + 1;
-  else
-    return str;  /* no next value */
-}
-
-static int strEqualPartial(const char* str1, const char* str2)
-{
-#define EXTRAINC(_x) (void)(_x)
-#define SF(_x) (_x)
-  IUP_STR_EQUAL(str1, str2);
-#undef SF
-#undef EXTRAINC
-  if (*str2 == 0)
-    return 1;  /* if second string is at terminator, then it is partially equal */
-  return 0;
-}
-
 static char *filterList(const char *text, const char *list)
 {
   char *filteredList[1024];
@@ -149,10 +91,10 @@ static char *filterList(const char *text, const char *list)
 
   int i, len;
   const char *lastValue = list;
-  const char *nextValue = strNextValue(list, (int)strlen(list), &len, ' ');
+  const char *nextValue = iupStrNextValue(list, (int)strlen(list), &len, ' ');
   while (len != 0)
   {
-    if ((int)strlen(text) <= len && strEqualPartial(lastValue, text))
+    if ((int)strlen(text) <= len && iupStrEqualPartial(lastValue, text))
     {
       char *value = malloc(80);
 
@@ -161,7 +103,7 @@ static char *filterList(const char *text, const char *list)
       filteredList[count++] = value;
     }
     lastValue = nextValue;
-    nextValue = strNextValue(nextValue, (int)strlen(nextValue), &len, ' ');
+    nextValue = iupStrNextValue(nextValue, (int)strlen(nextValue), &len, ' ');
   }
 
   retList = malloc(1024);

@@ -345,7 +345,7 @@ static void motFileDlgCallback(Widget filebox, Ihandle* ih, XmFileSelectionBoxCa
       char* dir;
       XtVaGetValues(filebox, XmNdirectory, &xm_dir, NULL);
       XmStringGetLtoR(xm_dir, XmSTRING_DEFAULT_CHARSET, &dir);
-      iupUnixSetCurrentDirectory(dir);
+      iupdrvSetCurrentDirectory(dir);
       XtFree(dir);
     }
   }
@@ -679,7 +679,7 @@ static int motFileDlgPopup(Ihandle* ih, int x, int y)
       char* dir = iupAttribGet(ih, "DIRECTORY");
       if (!dir)
       {
-        cur_dir = iupUnixGetCurrentDirectory();
+        cur_dir = iupdrvGetCurrentDirectory();
         dir = cur_dir;
       }
 
