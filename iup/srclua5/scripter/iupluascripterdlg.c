@@ -1348,22 +1348,24 @@ void IupLuaScripterDlgOpen(void)
 
 /* TODO:
 *** multiple files (IupFlatTabs) - option for save in config
-** Watch for globals - save in config
-* detachable Console, Debug, Breakpoints - save in config
-- Printing
 - multi-language (portuguese, spanish)
-- replace IupSbox by IupSplit ?
 - Debug Strings
 - Project menu?
-- dialog for style colors - save in config
+
+- replace IupSbox by IupSplit ?
+- detachable Console, Debug, Breakpoints - save in config
+- Table Inspector using IupTree
+
+- Watch for globals - save in config
 - Inspect on Mouse Over?  SCI_POSITIONFROMPOINTCLOSE(int x, int y)
+- dialog for style colors (IupGetParam) - save in config
 - Folding support
 - Replace All
-
-- dialog for Options: set current directory, parameters (arg)
-- upvalues and varags in Locals?
-- Find options in Config
+- Find options in config
 - View options in config - Word Wrap, White Spaces, End of Lines, Line Number, Bookmarks
 
-- Table Inspector using IupTree
+- Printing
+- dialog for Options: set current directory, parameters (arg)
+- upvalues and varags in Locals?
+
 */
