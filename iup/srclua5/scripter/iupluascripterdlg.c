@@ -1362,8 +1362,8 @@ void IupLuaScripterDlgOpen(void)
 
 - dialog for Options: set current directory, parameters (arg)
 - upvalues and varags in Locals?
-- Save Find options in Config
-- verificar Format/Tab, View em config
+- Find options in Config
+- View options in config - Word Wrap, White Spaces, End of Lines, Line Number, Bookmarks
 
 - Table Inspector using IupTree
 */

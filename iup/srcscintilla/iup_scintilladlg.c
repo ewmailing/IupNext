@@ -1263,8 +1263,7 @@ static int find_next_action_cb(Ihandle* ih_item)
       int down = IupGetInt(IupGetDialogChild(find_dlg, "DOWN"), "VALUE");
       int casesensitive = IupGetInt(IupGetDialogChild(find_dlg, "FIND_CASE"), "VALUE");
       int whole_word = IupGetInt(IupGetDialogChild(find_dlg, "WHOLE_WORD"), "VALUE");
-      int word_start = IupGetInt(IupGetDialogChild(find_dlg, "WORD_START"), "VALUE");
-      int regexp = IupGetInt(IupGetDialogChild(find_dlg, "REGEXP"), "VALUE");
+      int regexp = IupGetInt(IupGetDialogChild(find_dlg, "REG_EXP"), "VALUE");
       int posix = IupGetInt(IupGetDialogChild(find_dlg, "POSIX"), "VALUE");
 
       char *sel;
@@ -1277,8 +1276,6 @@ static int find_next_action_cb(Ihandle* ih_item)
         strcpy(flags, "MATCHCASE");
       if (whole_word)
         strcat((flags[0] != 0 ? strcat(flags, " | ") : flags), "WHOLEWORD");
-      if (word_start)
-        strcat((flags[0] != 0 ? strcat(flags, " | ") : flags), "WORDSTART");
       if (regexp)
         strcat((flags[0] != 0 ? strcat(flags, " | ") : flags), "REGEXP");
       if (posix)
@@ -1383,25 +1380,24 @@ static int find_close_action_cb(Ihandle* bt_close)
 static Ihandle* create_find_dialog(Ihandle *multitext)
 {
   Ihandle *box, *bt_next, *bt_close, *txt, *find_dlg;
-  Ihandle *find_case, *whole_word, *word_start, *reg_exp, *posix, *wrap, *up, *down;
+  Ihandle *find_case, *whole_word, *mode, *normal, *reg_exp, *posix, *wrap, *up, *down;
   Ihandle *flags, *direction, *radio;
   Ihandle *txt_replace, *bt_replace;
 
   txt = IupText(NULL);
   IupSetAttribute(txt, "NAME", "FIND_TEXT");
-  IupSetAttribute(txt, "VISIBLECOLUMNS", "20");
+  IupSetAttribute(txt, "EXPAND", "HORIZONTAL");
   txt_replace = IupText(NULL);
   IupSetAttribute(txt_replace, "NAME", "REPLACE_TEXT");
-  IupSetAttribute(txt_replace, "VISIBLECOLUMNS", "20");
-  find_case = IupToggle("Case Sensitive", NULL);
+  IupSetAttribute(txt_replace, "EXPAND", "HORIZONTAL");
+  find_case = IupToggle("Match Case", NULL);
   IupSetAttribute(find_case, "NAME", "FIND_CASE");
-  whole_word = IupToggle("Whole Word", NULL);
+  whole_word = IupToggle("Match Whole Word", NULL);
   IupSetAttribute(whole_word, "NAME", "WHOLE_WORD");
-  word_start = IupToggle("Word Start", NULL);
-  IupSetAttribute(word_start, "NAME", "WORD_START");
-  reg_exp = IupToggle("Regular Expression", NULL);
+  normal = IupToggle("Normal", NULL);
+  reg_exp = IupToggle("Reg. Expression", NULL);
   IupSetAttribute(reg_exp, "NAME", "REG_EXP");
-  posix = IupToggle("Posix", NULL);
+  posix = IupToggle("Posix Reg. Expr.", NULL);
   IupSetAttribute(posix, "NAME", "POSIX");
   wrap = IupToggle("Wrap Around", NULL);
   IupSetAttribute(wrap, "NAME", "WRAP");
@@ -1422,20 +1418,19 @@ static Ihandle* create_find_dialog(Ihandle *multitext)
 
   flags = IupVbox(find_case,
                   whole_word,
-                  word_start,
-                  reg_exp,
-                  posix,
                   wrap,
                   NULL);
 
-  radio = IupRadio(IupVbox(up,
-    down,
-    NULL));
+  radio = IupRadio(IupVbox(normal, reg_exp, posix, NULL));
+  IupSetAttribute(radio, "MARGIN", "10x10");
+  IupSetAttribute(radio, "VALUE_HANDLE", (char*)normal);
+  mode = IupFrame(radio);
+  IupSetAttribute(mode, "TITLE", "Search Mode");
 
+  radio = IupRadio(IupVbox(up, down, NULL));
+  IupSetAttribute(radio, "MARGIN", "10x10");
   IupSetAttribute(radio, "VALUE_HANDLE", (char*)down);
-
   direction = IupFrame(radio);
-
   IupSetAttribute(direction, "TITLE", "Direction");
 
   box = IupVbox(
@@ -1444,18 +1439,20 @@ static Ihandle* create_find_dialog(Ihandle *multitext)
     IupSetAttributes(IupLabel("Replace with:"), "NAME=REPLACE_LABEL"),
     txt_replace,
     IupHbox(
-    flags,
-    direction,
-    NULL),
+      flags,
+      direction,
+      mode,
+      NULL),
+    IupSetAttributes(IupLabel(NULL), "SEPARATOR=HORIZONTAL"),
     IupSetAttributes(IupHbox(
-    IupFill(),
-    bt_next,
-    bt_replace,
-    bt_close,
+      IupFill(),
+      bt_next,
+      bt_replace,
+      bt_close,
     NULL), "NORMALIZESIZE=HORIZONTAL"),
     NULL);
   IupSetAttribute(box, "NMARGIN", "10x10");
-  IupSetAttribute(box, "GAP", "5");
+  IupSetAttribute(box, "GAP", "10");
 
   find_dlg = IupDialog(box);
   IupSetAttribute(find_dlg, "TITLE", "Find");
