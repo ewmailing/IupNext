@@ -192,9 +192,18 @@ static char *filterList(const char *text, const char *list)
 
 static int exit_cb(Ihandle *ih)
 {
+  Ihandle* config = IupGetAttributeHandle(ih, "CONFIG");
+
   lua_State* L = (lua_State*)IupGetAttribute(ih, "LUASTATE");
   lua_getglobal(L, "iupDebuggerExit");
   lua_call(L, 0, 0);
+
+  if (config)
+  {
+    Ihandle* split = IupGetDialogChild(ih, "SPLIT");
+    IupConfigSetVariableStr(config, "MainWindow", "Split", IupGetAttribute(split, "VALUE"));
+  }
+
   return IUP_DEFAULT;
 }
 
@@ -810,7 +819,6 @@ static Ihandle *buildTabConsole(void)
   ml_output = IupMultiLine(NULL);
   IupSetAttribute(ml_output, "NAME", "MTL_OUTPUT");
   IupSetAttribute(ml_output, "EXPAND", "YES");
-  IupSetAttribute(ml_output, "RASTERSIZE", "x250");
   IupSetAttribute(ml_output, "READONLY", "YES");
   IupSetAttribute(ml_output, "BGCOLOR", "224 224 2254");
 
@@ -832,6 +840,7 @@ static Ihandle *buildTabLocals(void)
   IupSetAttribute(list_local, "NAME", "LIST_LOCAL");
   IupSetAttribute(list_local, "TIP", "List of local variables at selected stack level (ordered by pos)");
   IupSetCallback(list_local, "ACTION", (Icallback)lst_locals_action_cb);
+  IupSetAttribute(list_local, "VISIBLEITEMS", "3");
 
   button_printLocal = IupButton("Print", NULL);
   IupSetAttribute(button_printLocal, "ACTIVE", "NO");
@@ -868,6 +877,7 @@ static Ihandle *buildTabLocals(void)
   IupSetAttribute(list_stack, "NAME", "LIST_STACK");
   IupSetAttribute(list_stack, "TIP", "List of call stack (ordered by level)");
   IupSetCallback(list_stack, "ACTION", (Icallback)lst_stack_action_cb);
+  IupSetAttribute(list_stack, "VISIBLEITEMS", "3");
 
   button_printLevel = IupButton("Print", NULL);
   IupSetAttribute(button_printLevel, "TIP", "Prints debug information about the selected call stack level.");
@@ -938,6 +948,7 @@ static Ihandle *buildTabBreaks(void)
   IupSetAttribute(list, "EXPAND", "YES");
   IupSetAttribute(list, "NAME", "LIST_BREAK");
   IupSetCallback(list, "DBLCLICK_CB", (Icallback)list_breaks_dblclick_cb);
+  IupSetAttribute(list, "VISIBLEITEMS", "3");
 
   frame = IupFrame(IupHbox(list, vbox, NULL));
   IupSetAttribute(frame, "MARGIN", "4x4");
@@ -1165,22 +1176,40 @@ static int multitext_map_cb(Ihandle* multitext)
 
   if (config)
   {
-    const char* auto_completion = IupConfigGetVariableStr(config, "Lua", "AutoCompletion");
-    if (auto_completion)
+    const char* value = IupConfigGetVariableStr(config, "Lua", "AutoCompletion");
+    if (value)
     {
       Ihandle* item = IupGetDialogChild(multitext, "ITM_AUTOCOMPLETE");
-      IupSetStrAttribute(item, "VALUE", auto_completion);
-      IupSetStrAttribute(multitext, "AUTOCOMPLETION", auto_completion);
+      IupSetStrAttribute(item, "VALUE", value);
+      IupSetStrAttribute(multitext, "AUTOCOMPLETION", value);
     }
   }
 
   return IUP_DEFAULT;
 }
 
+static int iLuaScripterDlgMapMethod(Ihandle* ih)
+{
+  /* Initialize variables from the configuration file */
+  Ihandle* config = IupGetAttributeHandle(ih, "CONFIG");
+
+  if (config)
+  {
+    const char* value = IupConfigGetVariableStr(config, "MainWindow", "Split");
+    if (value)
+    {
+      Ihandle* split = IupGetDialogChild(ih, "SPLIT");
+      IupSetStrAttribute(split, "VALUE", value);
+    }
+  }
+
+  return IUP_NOERROR;
+}
+
 static int iLuaScripterDlgCreateMethod(Ihandle* ih, void** params)
 {
   lua_State *L;
-  Ihandle *multitext, *menu, *stabs, *box, *statusBar;
+  Ihandle *multitext, *menu, *split, *box, *statusBar;
   Ihandle *tabConsole, *tabLocals, *tabBreaks, *debugTabs;
 
   L = (lua_State*)IupGetGlobal("_IUP_LUA_DEFAULT_STATE");
@@ -1264,21 +1293,20 @@ static int iLuaScripterDlgCreateMethod(Ihandle* ih, void** params)
   tabBreaks = buildTabBreaks();
 
   debugTabs = IupTabs(tabConsole, tabLocals, tabBreaks, NULL);
-  IupSetAttribute(debugTabs, "EXPAND", "YES");
   IupSetAttribute(debugTabs, "MARGIN", "0x0");
   IupSetAttribute(debugTabs, "GAP", "4");
   IupSetAttribute(debugTabs, "TABTYPE", "BOTTOM");
   IupSetAttribute(debugTabs, "NAME", "DEBUG_TABS");
 
-  stabs = IupSbox(debugTabs);
-  IupSetAttribute(stabs, "EXPAND", "YES");
-  IupSetAttribute(stabs, "DIRECTION", "NORTH");
-  IupSetAttribute(stabs, "MARGIN", "0x0");
-  IupSetAttribute(stabs, "GAP", "4");
+  IupDetach(multitext);
+  split = IupSplit(multitext, debugTabs);
+  IupSetAttribute(split, "NAME", "SPLIT");
+  IupSetAttribute(split, "ORIENTATION", "HORIZONTAL");
+  IupSetAttribute(split, "LAYOUTDRAG", "NO");
 
   box = IupGetChild(ih, 0);
   statusBar = IupGetDialogChild(ih, "STATUSBAR");
-  IupInsert(box, statusBar, stabs);
+  IupInsert(box, statusBar, split);
 
 #ifdef IUPLUA_USELOH
 #include "debugger.loh"
@@ -1317,6 +1345,7 @@ static Iclass* iupLuaScripterDlgNewClass(void)
 
   ic->New = iupLuaScripterDlgNewClass;
   ic->Create = iLuaScripterDlgCreateMethod;
+  ic->Map = iLuaScripterDlgMapMethod;
 
   ic->name = "luascripterdlg";
   ic->nativetype = IUP_TYPEDIALOG;
@@ -1347,14 +1376,11 @@ void IupLuaScripterDlgOpen(void)
 }
 
 /* TODO:
-*** multiple files (IupFlatTabs) - option for save in config
+- multiple files (IupFlatTabs) - option for save in config
+
 - multi-language (portuguese, spanish)
 - Debug Strings
 - Project menu?
-
-- replace IupSbox by IupSplit ?
-- detachable Console, Debug, Breakpoints - save in config
-- Table Inspector using IupTree
 
 - Watch for globals - save in config
 - Inspect on Mouse Over?  SCI_POSITIONFROMPOINTCLOSE(int x, int y)
@@ -1364,10 +1390,12 @@ void IupLuaScripterDlgOpen(void)
 - Find options in config
 - View options in config - Word Wrap, White Spaces, End of Lines, Line Number, Bookmarks
 
-- DOC sample for debug.geinfo
+- detachable Console, Debug, Breakpoints - save in config
 - dialog for Options: set current directory, parameters (arg)
 - upvalues and varags in Locals?
 - Printing
+
+- Table Inspector using IupTree
 - iup.TRACEBACK
 - debug pause when error in Lua?
 */

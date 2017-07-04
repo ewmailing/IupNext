@@ -120,6 +120,9 @@ number. When printed locals and stack levels display also debug information.</p>
 <p>and</p>
 <pre>f1, at line 22 (level=4)
     [Defined in the file: "D:\tecgraf\iup\html\examples\Lua\scripter_test.lua" at line 18]</pre>
+<p>This values (level and pos) can be used in the functions "debug.getinfo(level, 
+flags)" or "debug.getlocal(level, pos)" to obtain more information. You can 
+execute code in the console command line while the debug is paused.</p>
 <h3>To Do's</h3>
 <ul>
 	<li>Support for multiple files</li>

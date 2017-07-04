@@ -911,6 +911,9 @@ static int item_exit_action_cb(Ihandle* item_exit)
   if (!save_check(item_exit))
     return IUP_IGNORE;  /* to abort the CLOSE_CB callback */
 
+  if (cb && cb(ih) == IUP_IGNORE)
+    return IUP_IGNORE;
+
   if (config)
   {
     Ihandle* multitext = IupGetDialogChild(item_exit, "MULTITEXT");
@@ -921,9 +924,6 @@ static int item_exit_action_cb(Ihandle* item_exit)
   }
 
   IupHide(ih);
-
-  if (cb && cb(ih) == IUP_IGNORE)
-    return IUP_IGNORE;
 
   return IUP_DEFAULT;
 }
@@ -2302,7 +2302,6 @@ static int iScintillaDlgCreateMethod(Ihandle* ih, void** params)
   iupChildTreeAppend(ih, vbox);
 
   IupSetAttributeHandle(ih, "MENU", menu);
-  IupSetAttribute(ih, "SIZE", "HALFxHALF");
   IupSetCallback(ih, "CLOSE_CB", (Icallback)item_exit_action_cb);
   IupSetCallback(ih, "DROPFILES_CB", (Icallback)dropfiles_cb);
 
