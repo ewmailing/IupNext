@@ -1680,7 +1680,7 @@ static int item_font_action_cb(Ihandle* item_font)
     IupSetStrAttribute(multitext, "FONT", font);
 
     if (config)
-      IupConfigSetVariableStr(config, "MainWindow", "Font", font);
+      IupConfigSetVariableStr(config, "Editor", "Font", font);
   }
 
   IupDestroy(fontdlg);
@@ -1694,14 +1694,22 @@ static int item_tab_action_cb(Ihandle* item_font)
   int replaceBySpace = !IupGetInt(multitext, "USETABS");
   int tabSize = IupGetInt(multitext, "TABSIZE");
 
-  if (!IupGetParam("Tab Settings", NULL,
-    0,
-    "Size: %i\n"
-    "Replace by Whitespace: %b\n", &tabSize, &replaceBySpace))
-    return IUP_IGNORE;
+  if (IupGetParam("Tab Settings", NULL, 0,
+                   "Size: %i\n"
+                   "Replace by Whitespace: %b\n", 
+                   &tabSize, &replaceBySpace))
+  {
+    Ihandle* config = IupGetAttributeHandle(multitext, "CONFIG");
 
-  IupSetInt(multitext, "TABSIZE", tabSize);
-  IupSetInt(multitext, "USETABS", !replaceBySpace);
+    IupSetInt(multitext, "TABSIZE", tabSize);
+    IupSetInt(multitext, "USETABS", !replaceBySpace);
+
+    if (config)
+    {
+      IupConfigSetVariableInt(config, "Editor", "TabSize", tabSize);
+      IupConfigSetVariableInt(config, "Editor", "UseTabs", !replaceBySpace);
+    }
+  }
 
   return IUP_DEFAULT;
 }
@@ -1892,13 +1900,19 @@ static int iScintillaDlgMapMethod(Ihandle* ih)
   if (config)
   {
     Ihandle* recent_menu = (Ihandle*)iupAttribGet(ih, "_IUP_RECENTMENU");
+    Ihandle* multitext = IupGetDialogChild(ih, "MULTITEXT");
 
-    const char* font = IupConfigGetVariableStr(config, "MainWindow", "Font");
-    if (font)
-    {
-      Ihandle* multitext = IupGetDialogChild(ih, "MULTITEXT");
-      IupSetStrAttribute(multitext, "FONT", font);
-    }
+    const char* value = IupConfigGetVariableStr(config, "Editor", "Font");
+    if (value)
+      IupSetStrAttribute(multitext, "FONT", value);
+
+    value = IupConfigGetVariableStr(config, "Editor", "TabSize");
+    if (value)
+      IupSetStrAttribute(multitext, "TABSIZE", value);
+
+    value = IupConfigGetVariableStr(config, "Editor", "UseTabs");
+    if (value)
+      IupSetStrAttribute(multitext, "USETABS", value);
 
     IupConfigRecentInit(config, recent_menu, config_recent_cb, 10);
   }
