@@ -1381,6 +1381,7 @@ void IupLuaScripterDlgOpen(void)
 - multi-language (portuguese, spanish)
 - Debug Strings
 - Project menu?
+- detachable Console, Debug, Breakpoints (problem with IupGetDialogChild(NAME))- save in config
 
 - Watch for globals - save in config
 - Inspect on Mouse Over?  SCI_POSITIONFROMPOINTCLOSE(int x, int y)
@@ -1390,7 +1391,6 @@ void IupLuaScripterDlgOpen(void)
 - Find options in config
 - View options in config - Word Wrap, White Spaces, End of Lines, Line Number, Bookmarks
 
-- detachable Console, Debug, Breakpoints - save in config
 - dialog for Options: set current directory, parameters (arg)
 - upvalues and varags in Locals?
 - Printing
