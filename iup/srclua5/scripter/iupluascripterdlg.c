@@ -1364,8 +1364,10 @@ void IupLuaScripterDlgOpen(void)
 - Find options in config
 - View options in config - Word Wrap, White Spaces, End of Lines, Line Number, Bookmarks
 
-- Printing
+- DOC sample for debug.geinfo
 - dialog for Options: set current directory, parameters (arg)
 - upvalues and varags in Locals?
-
+- Printing
+- iup.TRACEBACK
+- debug pause when error in Lua?
 */
