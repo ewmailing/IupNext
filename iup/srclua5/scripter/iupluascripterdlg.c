@@ -1356,14 +1356,14 @@ void IupLuaScripterDlgOpen(void)
 - Debug Strings
 - Project menu?
 - dialog for style colors - save in config
-- Inspect on Mouse Over?
+- Inspect on Mouse Over?  SCI_POSITIONFROMPOINTCLOSE(int x, int y)
 - Folding support
 - Replace All
 
 - dialog for Options: set current directory, parameters (arg)
 - upvalues and varags in Locals?
-- Table Inspector using IupTree
-
 - Save Find options in Config
 - verificar Format/Tab, View em config
+
+- Table Inspector using IupTree
 */
