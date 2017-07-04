@@ -1567,10 +1567,15 @@ static int item_paste_action_cb(Ihandle* item_paste)
 {
   Ihandle* multitext = IupGetDialogChild(item_paste, "MULTITEXT");
   Ihandle *clipboard = IupClipboard();
-  IupSetAttribute(multitext, "INSERT", IupGetAttribute(clipboard, "TEXT"));
+  if (IupGetAttribute(multitext, "SELECTEDTEXT"))
+    IupSetAttribute(multitext, "SELECTEDTEXT", IupGetAttribute(clipboard, "TEXT"));
+  else
+  {
+    IupSetAttribute(multitext, "INSERT", IupGetAttribute(clipboard, "TEXT"));
+    multitext_valuechanged_cb(multitext); /* INSERT, DELETERANGE do NOT triggers the callback */
+  }
   IupDestroy(clipboard);
 
-  multitext_valuechanged_cb(multitext); /* INSERT, DELETERANGE do NOT triggers the callback */
   return IUP_IGNORE;  /* replace system processing for the hot key, to correctly parse line feed */
 }
 

@@ -1356,14 +1356,14 @@ void IupLuaScripterDlgOpen(void)
 - Debug Strings
 - Project menu?
 - dialog for style colors - save in config
-
-- Save Find options in Config
-- Replace All
-- Bug: Paste in Selection, kept the selection
-- dialog for Options: set current directory, parameters (arg)
-- upvalues and varags in Locals?
 - Inspect on Mouse Over?
 - Folding support
+- Replace All
+
+- dialog for Options: set current directory, parameters (arg)
+- upvalues and varags in Locals?
 - Table Inspector using IupTree
+
+- Save Find options in Config
 - verificar Format/Tab, View em config
 */

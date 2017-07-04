@@ -204,7 +204,8 @@ in order to indicate the start position and text length to delete.</p>
 <p><strong>INSERT<em>id</em></strong> (<font size="3">non inheritable, </font>write-only): Inserts a text string at position 
 &quot;id&quot; or at the current position if pos is -1 or omitted. If the current position is after 
 the insertion point then it is moved along with its surrounding text but no 
-scrolling is performed.</p>
+scrolling is performed. Notice that the selected text is not used to position 
+the inserted text.</p>
 
 <p><strong>LINE<em>id</em></strong> (<font size="3">non inheritable, </font>read-only): 
 returns the text of the line, considering the &quot;id&quot; as the line number. It does not include the &quot;\n&quot; 
