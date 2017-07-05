@@ -338,6 +338,49 @@ static int item_autocomplete_action_cb(Ihandle* ih)
   return IUP_DEFAULT;
 }
 
+static int param_cb(Ihandle* param_dialog, int param_index, void* user_data)
+{
+  if (param_index == IUP_GETPARAM_MAP)
+  {
+    Ihandle* ih = (Ihandle*)user_data;
+    IupSetAttributeHandle(param_dialog, "PARENTDIALOG", ih);
+  }
+
+  return 1;
+}
+
+static int item_options_action_cb(Ihandle* ih_item)
+{
+  Ihandle* multitext = IupGetDialogChild(ih_item, "MULTITEXT");
+  char dir[10240] = "";
+  char args[10240] = "";
+  char* value = IupGetAttribute(IupGetDialog(multitext), "CURRENTDIRECTORY");
+  if (value)
+    strcpy(dir, value);
+  value = IupGetAttribute(IupGetDialog(multitext), "ARGUMENTS");
+  if (value)
+    strcpy(args, value);
+
+  if (IupGetParam("Options", param_cb, IupGetDialog(ih_item),
+                  "Current Directory: %f[dir||||]\n"
+                  "Arguments: %s{Sets the table \"arg\".}\n",
+                  dir, args, NULL))
+  {
+    Ihandle* config = IupGetAttributeHandle(multitext, "CONFIG");
+
+    IupSetStrAttribute(IupGetDialog(multitext), "CURRENTDIRECTORY", dir);
+    IupSetStrAttribute(IupGetDialog(multitext), "ARGUMENTS", args);
+
+    if (config)
+    {
+      IupConfigSetVariableStr(config, "Lua", "CurrentDirectory", dir);
+      IupConfigSetVariableStr(config, "Lua", "Arguments", args);
+    }
+  }
+  return IUP_DEFAULT;
+}
+
+
 static void debug_set_state(lua_State *L, const char* state)
 {
   lua_getglobal(L, "iupDebuggerSetStateString");
@@ -358,9 +401,43 @@ static int save_check(Ihandle* ih_item)
   return 1;
 }
 
+static void set_arguments(lua_State* L, const char* data)
+{
+  int i = 1, len = (int)strlen(data), value_len;
+  char value[100];
+
+  /* only positive indices will be set (non-zero) */
+
+  lua_createtable(L, 0, 0);
+  while (len > 0)
+  {
+    const char* next_value = iupStrNextValue(data, len, &value_len, ' ');
+
+    if (value_len)
+    {
+      if (data[0] == '\"' && data[value_len - 1] == '\"')
+      {
+        data++;
+        value_len -= 2;
+      }
+
+      memcpy(value, data, value_len);
+      value[value_len] = 0;
+
+      lua_pushstring(L, value);
+      lua_rawseti(L, -2, i);
+      i++;
+    }
+
+    data = next_value;
+    len -= value_len + 1;
+  }
+  lua_setglobal(L, "arg");
+}
+
 static int item_debug_action_cb(Ihandle* item)
 {
-  char* filename;
+  char* filename, *value;
   Ihandle* multitext;
   lua_State* L;
 
@@ -376,6 +453,11 @@ static int item_debug_action_cb(Ihandle* item)
 
   multitext = IupGetDialogChild(item, "MULTITEXT");
   filename = IupGetAttribute(multitext, "FILENAME");
+  value = IupGetAttribute(IupGetDialog(multitext), "CURRENTDIRECTORY");
+  if (value && value[0]!=0) iupdrvSetCurrentDirectory(value);
+  value = IupGetAttribute(IupGetDialog(multitext), "ARGUMENTS");
+  if (value && value[0] != 0) set_arguments(L, value);
+
   iuplua_dofile(L, filename);
 
   lua_getglobal(L, "iupDebuggerEndDebug");
@@ -388,7 +470,7 @@ static int item_run_action_cb(Ihandle *item)
 {
   Ihandle* multitext;
   lua_State* L;
-  char* filename;
+  char* filename, *value;
 
   if (!IupGetInt(IupGetDialogChild(item, "ITM_RUN"), "ACTIVE")) /* can be called by the hot key in the dialog */
     return IUP_DEFAULT;
@@ -396,6 +478,10 @@ static int item_run_action_cb(Ihandle *item)
   L = (lua_State*)IupGetAttribute(item, "LUASTATE");
   multitext = IupGetDialogChild(item, "MULTITEXT");
   filename = IupGetAttribute(multitext, "FILENAME");
+  value = IupGetAttribute(IupGetDialog(multitext), "CURRENTDIRECTORY");
+  if (value) iupdrvSetCurrentDirectory(value);
+  value = IupGetAttribute(IupGetDialog(multitext), "ARGUMENTS");
+  if (value && value[0] != 0) set_arguments(L, value);
 
   if (filename && !IupGetInt(multitext, "DIRTY"))
     iuplua_dofile(L, filename);
@@ -1008,7 +1094,7 @@ static void appendDebugButtons(Ihandle *dialog)
 static void appendDebugMenuItens(Ihandle *menu)
 {
   Ihandle *item_debug, *item_run, *item_stop, *item_pause, *item_continue, *item_stepinto, *item_autocomplete,
-          *item_stepover, *item_stepout, *debugMneu, *subMenuDebug, *item_currentline,
+          *item_stepover, *item_stepout, *debugMneu, *subMenuDebug, *item_currentline, *item_options,
           *item_togglebreakpoint, *item_newbreakpoint, *item_removeallbreakpoints;
 
   item_run = IupItem("&Run\tCtrl+F5", NULL);
@@ -1068,6 +1154,9 @@ static void appendDebugMenuItens(Ihandle *menu)
   IupSetCallback(item_autocomplete, "ACTION", (Icallback)item_autocomplete_action_cb);
   IupSetAttribute(item_autocomplete, "VALUE", "ON");
 
+  item_options = IupItem("Options...", NULL);
+  IupSetCallback(item_options, "ACTION", (Icallback)item_options_action_cb);
+
   item_togglebreakpoint = IupItem("Toggle Breakpoint\tF9", NULL);
   IupSetCallback(item_togglebreakpoint, "ACTION", (Icallback)but_togglebreak_cb);
 
@@ -1093,6 +1182,7 @@ static void appendDebugMenuItens(Ihandle *menu)
     item_removeallbreakpoints,
     IupSeparator(),
     item_autocomplete,
+    item_options,
     NULL);
 
   subMenuDebug = IupSubmenu("&Lua", debugMneu);
@@ -1143,6 +1233,14 @@ static int iLuaScripterDlgMapMethod(Ihandle* ih)
       Ihandle* split = IupGetDialogChild(ih, "SPLIT");
       IupSetStrAttribute(split, "VALUE", value);
     }
+
+    value = IupConfigGetVariableStr(config, "Lua", "CurrentDirectory");
+    if (value)
+      IupSetStrAttribute(ih, "CURRENTDIRECTORY", value);
+
+    value = IupConfigGetVariableStr(config, "Lua", "Arguments");
+    if (value)
+      IupSetStrAttribute(ih, "ARGUMENTS", value);
   }
 
   return IUP_NOERROR;
@@ -1333,7 +1431,6 @@ void IupLuaScripterDlgOpen(void)
 - Find options in config
 - View options in config - Word Wrap, White Spaces, End of Lines, Line Number, Bookmarks
 
-- dialog for Options: set current directory, parameters (arg)
 - upvalues and varags in Locals?
 - Printing
 
