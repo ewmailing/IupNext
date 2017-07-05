@@ -121,12 +121,12 @@ function iupConsolePrintTable(t)
   local str = "{\n"
   local tmp = {}
   for i, k in ipairs(t) do 
-    str = str .. "  "..iupConsoleValueToString(k)..",\n"
+    str = str .. "  ["..tostring(i).. "] = " .. iupConsoleValueToString(k) .. ",\n"
     tmp[i] = true
   end
   for i, k in pairs(t) do 
     if (not tmp[i]) then
-      str = str .. "  "..tostring(i).. " = "..iupConsoleValueToString(k)..",\n"
+      str = str .. "  ["..tostring(i).. "] = ".. iupConsoleValueToString(k) .. ",\n"
     end
   end
   str = str .. "}"
