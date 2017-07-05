@@ -500,6 +500,7 @@ static void iMatrixExPasteSetData(Ihandle *ih, const char* data, int data_num_li
             {
               data++;
               value_len -= 2;
+              len -= 2;
             }
 
             value = iMatrixExStrCopyData(value, &value_max_size, data, value_len);
