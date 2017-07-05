@@ -1684,6 +1684,17 @@ static int item_font_action_cb(Ihandle* item_font)
   return IUP_DEFAULT;
 }
 
+static int param_cb(Ihandle* param_dialog, int param_index, void* user_data)
+{
+  if (param_index == IUP_GETPARAM_MAP)
+  {
+    Ihandle* ih = (Ihandle*)user_data;
+    IupSetAttributeHandle(param_dialog, "PARENTDIALOG", ih);
+  }
+
+  return 1;
+}
+
 static int item_tab_action_cb(Ihandle* item_font)
 {
   Ihandle* multitext = IupGetDialogChild(item_font, "MULTITEXT");
@@ -1691,7 +1702,7 @@ static int item_tab_action_cb(Ihandle* item_font)
   int replaceBySpace = !IupGetInt(multitext, "USETABS");
   int tabSize = IupGetInt(multitext, "TABSIZE");
 
-  if (IupGetParam("Tab Settings", NULL, 0,
+  if (IupGetParam("Tab Settings", param_cb, IupGetDialog(item_font),
                    "Size: %i\n"
                    "Replace by Whitespace: %b\n", 
                    &tabSize, &replaceBySpace))
