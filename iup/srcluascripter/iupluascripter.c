@@ -130,12 +130,21 @@ static int item_about_action_cb(void)
 
 static void createargtable(lua_State *L, char **argv, int argc)
 {
-  int i, narg = argc - 1;  /* number of positive indices (non-zero) */
-  lua_createtable(L, narg, 1);
+  /* try to mimic lua.c */
+  int i;
+   
+  if (argc < 2) /* arg table is not set if no arguments */
+    return;
+
+  /* arg[-1] = argv[0] -- executable */
+  /* arg[0] = argv[1] -- filename */
+  /* arg[1] = argv[2] -- and so on... */
+
+  lua_createtable(L, argc - 2, 2);
   for (i = 0; i < argc; i++)
   {
     lua_pushstring(L, argv[i]);
-    lua_rawseti(L, -2, i);
+    lua_rawseti(L, -2, i - 1);
   }
   lua_setglobal(L, "arg");
 }

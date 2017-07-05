@@ -317,8 +317,8 @@ iup_console.print_version_info()
 
 iup.SetGlobal("GLOBALLAYOUTDLGKEY", "Yes")
 
-if (arg[1]) then
-  local filename = arg[1]
+if (arg and arg[0]) then
+  local filename = arg[0]
   print("FileCommandLine:\n  "..filename)
   iup_console.LoadFile(filename)
 end
