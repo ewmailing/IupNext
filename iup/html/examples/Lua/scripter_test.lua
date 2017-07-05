@@ -15,8 +15,9 @@ local function f2(z)
   return z
 end
 
-function f1(x)
+function f1(x, ...)
   local y = x
+  local ta = {...}
   x = "Hello " .. x 
   y = false
   y = f2(3)
@@ -28,7 +29,7 @@ function f3()
   l_main_x = l_main_x + 5
 end
 
-local ret = f1("IUP")
+local ret = f1("IUP", 3, "x23")
 print(ret)
 
 f3()

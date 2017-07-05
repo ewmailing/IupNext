@@ -113,8 +113,10 @@ updated only when the file is saved.</p>
 <p>During the debug process, local variables of each stack level can be 
 inspected in the <strong>Debug</strong> tab. The actual level is not changed 
 when a Call Stack list level is selected, only its local variables are updated 
-in the Locals list. A local variable can be changed only if it is a string or a 
-number. When printed locals and stack levels display also debug information.</p>
+in the Locals list. For now a local variable can be changed only if it is a string or a 
+number. When printed locals and stack levels display also debug information. 
+Variable arguments (vararg) are displayed only for Lua version 5.2 or newer 
+(since 3.23).</p>
 <pre>l_main_x = 43 (level=6, pos=1)
 43</pre>
 <p>and</p>

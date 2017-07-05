@@ -1420,7 +1420,7 @@ void IupLuaScripterDlgOpen(void)
 
 - multi-language (portuguese, spanish)
 - Debug Strings
-- Project menu?
+- Project menu? or Save Session/Load Session?
 - detachable Console, Debug, Breakpoints (problem with IupGetDialogChild(NAME))- save in config
 
 - Watch for globals - save in config

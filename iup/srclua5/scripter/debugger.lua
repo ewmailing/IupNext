@@ -355,13 +355,25 @@ function iupDebuggerUpdateLocalVariablesList(level, actual_level)
 
   name, value = debug.getlocal(level, pos)
   while name ~= nil do
-    if string.sub(name, 1, 1) ~= "(" then  -- not internal variables
+    if string.sub(name, 1, 1) ~= "(" then  -- do not include internal variables (loop control variables, temporaries, etc).
       iup.SetAttribute(local_list, index, name.." = "..tostring(value).." <"..type(value)..">")
       iup.SetAttribute(local_list, "POS"..index, pos)
       iup.SetAttribute(local_list, "LEVEL"..index, actual_level)
       index = index + 1
     end
     pos = pos + 1
+    name, value = debug.getlocal(level, pos)
+  end
+
+  -- vararg (only for Lua >= 5.2, ignored in Lua 5.1)
+  pos = -1
+  name, value = debug.getlocal(level, pos)
+  while name ~= nil do
+    iup.SetAttribute(local_list, index, "vararg["..-pos.."] = "..tostring(value).." <"..type(value)..">")
+    iup.SetAttribute(local_list, "POS"..index, pos)
+    iup.SetAttribute(local_list, "LEVEL"..index, actual_level)
+    index = index + 1
+    pos = pos - 1
     name, value = debug.getlocal(level, pos)
   end
 
