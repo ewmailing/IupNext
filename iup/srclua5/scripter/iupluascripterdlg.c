@@ -1427,9 +1427,9 @@ void IupLuaScripterDlgOpen(void)
 - Inspect on Mouse Over?  SCI_POSITIONFROMPOINTCLOSE(int x, int y)
 - dialog for style colors (IupGetParam) - save in config
 - Folding support
-- Replace All
-- Find options in config
-- View options in config - Word Wrap, White Spaces, End of Lines, Line Number, Bookmarks
+- Replace All (IupScintillaDlg)
+- Find options in config (IupScintillaDlg)
+- View options in config - Word Wrap, White Spaces, End of Lines, Line Number, Bookmarks (IupScintillaDlg)
 
 - upvalues and varags in Locals?
 - Printing
