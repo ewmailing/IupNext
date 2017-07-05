@@ -359,15 +359,20 @@ static int iParamFileButton_CB(Ihandle *self)
 
   Ihandle* file_dlg = IupFileDlg();
 
+  char* dir = iupAttribGet(param, "DIRECTORY");
+
   IupSetAttributeHandle(file_dlg, "PARENTDIALOG", IupGetDialog(self));
   IupSetStrAttribute(file_dlg, "TITLE", iupAttribGet(param, "TITLE"));
   IupSetAttribute(file_dlg, "VALUE", iupAttribGet(param, "VALUE"));
 
   IupSetAttribute(file_dlg, "DIALOGTYPE", iupAttribGet(param, "DIALOGTYPE"));
   IupSetAttribute(file_dlg, "FILTER", iupAttribGet(param, "FILTER"));
-  IupSetAttribute(file_dlg, "DIRECTORY", iupAttribGet(param, "DIRECTORY"));
+  IupSetAttribute(file_dlg, "DIRECTORY", dir);
   IupSetAttribute(file_dlg, "NOCHANGEDIR", iupAttribGet(param, "NOCHANGEDIR"));
   IupSetAttribute(file_dlg, "NOOVERWRITEPROMPT", iupAttribGet(param, "NOOVERWRITEPROMPT"));
+
+  if (iupStrEqualNoCase(IupGetAttribute(file_dlg, "DIALOGTYPE"), "DIR") && (!dir || dir[0]==0))
+    IupSetStrAttribute(file_dlg, "DIRECTORY", iupAttribGet(param, "VALUE"));
 
   IupPopup(file_dlg, IUP_CENTER, IUP_CENTER);
 
@@ -383,7 +388,12 @@ static int iParamFileButton_CB(Ihandle *self)
       iupAttribSetStr(param, "VALUE", iupAttribGet(param, "OLD_VALUE"));
     }
     else
+    {
       IupSetAttribute(ctrl, "VALUE", iupAttribGet(param, "VALUE"));
+
+      if (iupStrEqualNoCase(IupGetAttribute(file_dlg, "DIALOGTYPE"), "DIR"))
+        iupAttribSetStr(param, "DIRECTORY", value);
+    }
   }
 
   IupDestroy(file_dlg);
