@@ -469,8 +469,27 @@ function iupDebuggerUpdateStackList()
     else
       desc = "<noname>"
     end
+    if _VERSION ~= "Lua 5.1" then
+      local call = debug.getinfo(level, "uf")
+      local params = ""
+      local pos = 1
+      local name, value = debug.getlocal(call.func, pos)
+      while name ~= nil do
+        params = params .. name .. ", "
+        pos = pos + 1
+        name, value = debug.getlocal(call.func, pos)
+      end
+      if params ~= "" then 
+        if call.isvararg then
+          params = params .. "..."
+        else
+          params = string.sub(params, 1, -3) -- remove last ", "
+        end
+        desc = desc .. "(" .. params .. ")"
+      end
+    end
     if info.namewhat ~= "" then
-        desc = desc .. " (".. info.namewhat .. ")"
+        desc = desc .. " <".. info.namewhat .. ">"
     end
     if info.currentline > 0 then
        desc = desc .. " at line " .. info.currentline

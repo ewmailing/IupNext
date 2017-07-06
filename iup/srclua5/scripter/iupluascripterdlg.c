@@ -1431,7 +1431,7 @@ void IupLuaScripterDlgOpen(void)
 - Find options in config (IupScintillaDlg)
 - View options in config - Word Wrap, White Spaces, End of Lines, Line Number, Bookmarks (IupScintillaDlg)
 
-- upvalues and varags in Locals?
+- upvalues in Locals?
 - Printing
 
 - Table Inspector using IupTree
