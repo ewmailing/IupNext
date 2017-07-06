@@ -657,6 +657,6 @@ end
 
 function iupDebuggerExit()
   if debugger.debug_state ~= DEBUG_INACTIVE then
-    iupDebuggerEndDebug(true)
+    iupDebuggerEndDebug(true) -- make a stop
   end
 end

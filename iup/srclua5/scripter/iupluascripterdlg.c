@@ -134,17 +134,9 @@ static char *filterList(const char *text, const char *list)
 
 static int exit_cb(Ihandle *ih)
 {
-  Ihandle* config = IupGetAttributeHandle(ih, "CONFIG");
-
   lua_State* L = (lua_State*)IupGetAttribute(ih, "LUASTATE");
-  lua_getglobal(L, "iupDebuggerExit");
+  lua_getglobal(L, "iupDebuggerExit"); /* this may trigger a Lua error which will abort the function with a goto, must sure you do nothing after that */
   lua_call(L, 0, 0);
-
-  if (config)
-  {
-    Ihandle* split = IupGetDialogChild(ih, "SPLIT");
-    IupConfigSetVariableStr(config, "MainWindow", "Split", IupGetAttribute(split, "VALUE"));
-  }
 
   return IUP_DEFAULT;
 }
@@ -244,6 +236,42 @@ static int restoremarkers_cb(Ihandle *ih)
 
   lua_getglobal(L, "iupDebuggerUpdateBreakpointsList");
   lua_call(L, 0, 0);
+
+  return IUP_DEFAULT;
+}
+
+static int configsave_cb(Ihandle *ih)
+{
+  Ihandle* config = IupGetAttributeHandle(ih, "CONFIG");
+  if (config)
+  {
+    Ihandle* split = IupGetDialogChild(ih, "SPLIT");
+    IupConfigSetVariableStr(config, "MainWindow", "Split", IupGetAttribute(split, "VALUE"));
+  }
+
+  return IUP_DEFAULT;
+}
+
+static int configload_cb(Ihandle *ih)
+{
+  Ihandle* config = IupGetAttributeHandle(ih, "CONFIG");
+  if (config)
+  {
+    const char* value = IupConfigGetVariableStr(config, "MainWindow", "Split");
+    if (value)
+    {
+      Ihandle* split = IupGetDialogChild(ih, "SPLIT");
+      IupSetStrAttribute(split, "VALUE", value);
+    }
+
+    value = IupConfigGetVariableStr(config, "Lua", "CurrentDirectory");
+    if (value)
+      IupSetStrAttribute(ih, "CURRENTDIRECTORY", value);
+
+    value = IupConfigGetVariableStr(config, "Lua", "Arguments");
+    if (value)
+      IupSetStrAttribute(ih, "ARGUMENTS", value);
+  }
 
   return IUP_DEFAULT;
 }
@@ -1220,32 +1248,6 @@ static int multitext_map_cb(Ihandle* multitext)
   return IUP_DEFAULT;
 }
 
-static int iLuaScripterDlgMapMethod(Ihandle* ih)
-{
-  /* Initialize variables from the configuration file */
-  Ihandle* config = IupGetAttributeHandle(ih, "CONFIG");
-
-  if (config)
-  {
-    const char* value = IupConfigGetVariableStr(config, "MainWindow", "Split");
-    if (value)
-    {
-      Ihandle* split = IupGetDialogChild(ih, "SPLIT");
-      IupSetStrAttribute(split, "VALUE", value);
-    }
-
-    value = IupConfigGetVariableStr(config, "Lua", "CurrentDirectory");
-    if (value)
-      IupSetStrAttribute(ih, "CURRENTDIRECTORY", value);
-
-    value = IupConfigGetVariableStr(config, "Lua", "Arguments");
-    if (value)
-      IupSetStrAttribute(ih, "ARGUMENTS", value);
-  }
-
-  return IUP_NOERROR;
-}
-
 static int iLuaScripterDlgCreateMethod(Ihandle* ih, void** params)
 {
   lua_State *L;
@@ -1283,6 +1285,8 @@ static int iLuaScripterDlgCreateMethod(Ihandle* ih, void** params)
   IupSetCallback(ih, "EXIT_CB", (Icallback)exit_cb);
   IupSetCallback(ih, "SAVEMARKERS_CB", (Icallback)savemarkers_cb);
   IupSetCallback(ih, "RESTOREMARKERS_CB", (Icallback)restoremarkers_cb);
+  IupSetCallback(ih, "CONFIGSAVE_CB", (Icallback)configsave_cb);
+  IupSetCallback(ih, "CONFIGLOAD_CB", (Icallback)configload_cb);
 
   multitext = IupGetDialogChild(ih, "MULTITEXT");
   IupSetCallback(multitext, "OLD_VALUECHANGED_CB", IupGetCallback(multitext, "VALUECHANGED_CB"));
@@ -1385,7 +1389,6 @@ static Iclass* iupLuaScripterDlgNewClass(void)
 
   ic->New = iupLuaScripterDlgNewClass;
   ic->Create = iLuaScripterDlgCreateMethod;
-  ic->Map = iLuaScripterDlgMapMethod;
 
   ic->name = "luascripterdlg";
   ic->nativetype = IUP_TYPEDIALOG;
