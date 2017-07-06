@@ -11,6 +11,8 @@ local ctrl = {
     exit_cb = "",
     savemarkers_cb = "",
     restoremarkers_cb = "",
+    configsave_cb = "",
+    configload_cb = "",
   },
   include = "iup_scintilla.h",
   funcname = "ScintillaDlg",

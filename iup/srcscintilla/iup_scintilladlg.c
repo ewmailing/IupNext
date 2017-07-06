@@ -906,24 +906,30 @@ static int item_exit_action_cb(Ihandle* item_exit)
 {
   Ihandle* ih = IupGetDialog(item_exit);
   Ihandle* config = IupGetAttributeHandle(ih, "CONFIG");
-  Icallback cb = IupGetCallback(ih, "EXIT_CB");
+  Icallback cb;
 
   if (!save_check(item_exit))
     return IUP_IGNORE;  /* to abort the CLOSE_CB callback */
-
-  if (cb && cb(ih) == IUP_IGNORE)
-    return IUP_IGNORE;
 
   if (config)
   {
     Ihandle* multitext = IupGetDialogChild(item_exit, "MULTITEXT");
     saveMarkers(config, multitext);
 
+    cb = IupGetCallback(ih, "CONFIGSAVE_CB");
+    if (cb)
+      cb(ih);
+
     IupConfigDialogClosed(config, ih, "MainWindow");
     IupConfigSave(config);
   }
 
   IupHide(ih);
+
+  /* after hide, at the last moment */
+  cb = IupGetCallback(ih, "EXIT_CB");
+  if (cb) 
+    cb(ih);
 
   return IUP_DEFAULT;
 }
@@ -1851,6 +1857,35 @@ static int item_bookmark_action_cb(Ihandle* item_bookmark)
 
 /********************************** Attributes *****************************************/
 
+static int iScintillaDlgSetConfigAttrib(Ihandle* ih, const char* value)
+{
+  Ihandle* config = IupGetHandle(value);
+  if (config)
+  {
+    Icallback cb = IupGetCallback(ih, "CONFIGLOAD_CB");
+    Ihandle* recent_menu = (Ihandle*)iupAttribGet(ih, "_IUP_RECENTMENU");
+    Ihandle* multitext = IupGetDialogChild(ih, "MULTITEXT");
+
+    const char* value = IupConfigGetVariableStr(config, "Editor", "Font");
+    if (value)
+      IupSetStrAttribute(multitext, "FONT", value);
+
+    value = IupConfigGetVariableStr(config, "Editor", "TabSize");
+    if (value)
+      IupSetStrAttribute(multitext, "TABSIZE", value);
+
+    value = IupConfigGetVariableStr(config, "Editor", "UseTabs");
+    if (value)
+      IupSetStrAttribute(multitext, "USETABS", value);
+
+    IupConfigRecentInit(config, recent_menu, config_recent_cb, 10);
+
+    if (cb)
+      cb(ih);
+  }
+
+  return 1;
+}
 
 static int iScintillaDlgSetConfigHandleAttrib(Ihandle* ih, const char* value)
 {
@@ -1899,34 +1934,6 @@ static int iScintillaDlgSetToggleMarkerAttribId(Ihandle* ih, int id, const char*
 
 /********************************** Main *****************************************/
 
-
-static int iScintillaDlgMapMethod(Ihandle* ih)
-{
-  /* Initialize variables from the configuration file */
-  Ihandle* config = IupGetAttributeHandle(ih, "CONFIG");
-
-  if (config)
-  {
-    Ihandle* recent_menu = (Ihandle*)iupAttribGet(ih, "_IUP_RECENTMENU");
-    Ihandle* multitext = IupGetDialogChild(ih, "MULTITEXT");
-
-    const char* value = IupConfigGetVariableStr(config, "Editor", "Font");
-    if (value)
-      IupSetStrAttribute(multitext, "FONT", value);
-
-    value = IupConfigGetVariableStr(config, "Editor", "TabSize");
-    if (value)
-      IupSetStrAttribute(multitext, "TABSIZE", value);
-
-    value = IupConfigGetVariableStr(config, "Editor", "UseTabs");
-    if (value)
-      IupSetStrAttribute(multitext, "USETABS", value);
-
-    IupConfigRecentInit(config, recent_menu, config_recent_cb, 10);
-  }
-
-  return IUP_NOERROR;
-}
 
 static int iScintillaDlgCreateMethod(Ihandle* ih, void** params)
 {
@@ -2349,7 +2356,6 @@ Iclass* iupScintillaDlgNewClass(void)
 
   ic->New = iupScintillaDlgNewClass;
   ic->Create = iScintillaDlgCreateMethod;
-  ic->Map = iScintillaDlgMapMethod;
 
   ic->name = "scintilladlg";
   ic->nativetype = IUP_TYPEDIALOG;
@@ -2361,9 +2367,11 @@ Iclass* iupScintillaDlgNewClass(void)
   iupClassRegisterCallback(ic, "EXIT_CB", "");
   iupClassRegisterCallback(ic, "SAVEMARKERS_CB", "");
   iupClassRegisterCallback(ic, "RESTOREMARKERS_CB", "");
+  iupClassRegisterCallback(ic, "CONFIGSAVE_CB", "");
+  iupClassRegisterCallback(ic, "CONFIGLOAD_CB", "");
 
   iupClassRegisterAttribute(ic, "SUBTITLE", NULL, NULL, IUPAF_SAMEASSYSTEM, "Notepad", IUPAF_NOT_MAPPED | IUPAF_NO_INHERIT);
-  iupClassRegisterAttribute(ic, "CONFIG", NULL, NULL, NULL, NULL, IUPAF_IHANDLENAME | IUPAF_NOT_MAPPED | IUPAF_NO_INHERIT);
+  iupClassRegisterAttribute(ic, "CONFIG", NULL, iScintillaDlgSetConfigAttrib, NULL, NULL, IUPAF_IHANDLENAME | IUPAF_NOT_MAPPED | IUPAF_NO_INHERIT);
   iupClassRegisterAttribute(ic, "CONFIG_HANDLE", NULL, iScintillaDlgSetConfigHandleAttrib, NULL, NULL, IUPAF_IHANDLE | IUPAF_NOT_MAPPED | IUPAF_NO_INHERIT);
   iupClassRegisterAttribute(ic, "NEWFILE", NULL, iScintillaDlgSetOpenFileAttrib, NULL, NULL, IUPAF_WRITEONLY | IUPAF_NO_INHERIT);
   iupClassRegisterAttribute(ic, "OPENFILE", NULL, iScintillaDlgSetOpenFileAttrib, NULL, NULL, IUPAF_WRITEONLY | IUPAF_NO_INHERIT);

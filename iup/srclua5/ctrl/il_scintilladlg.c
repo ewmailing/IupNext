@@ -39,6 +39,18 @@ static int scintilladlg_exit_cb(Ihandle *self)
   return iuplua_call(L, 0);
 }
 
+static int scintilladlg_configsave_cb(Ihandle *self)
+{
+  lua_State *L = iuplua_call_start(self, "configsave_cb");
+  return iuplua_call(L, 0);
+}
+
+static int scintilladlg_configload_cb(Ihandle *self)
+{
+  lua_State *L = iuplua_call_start(self, "configload_cb");
+  return iuplua_call(L, 0);
+}
+
 static int ScintillaDlg(lua_State *L)
 {
   Ihandle *ih = IupScintillaDlg();
@@ -55,6 +67,8 @@ int iupscintilladlglua_open(lua_State * L)
   iuplua_register_cb(L, "RESTOREMARKERS_CB", (lua_CFunction)scintilladlg_restoremarkers_cb, NULL);
   iuplua_register_cb(L, "SAVEMARKERS_CB", (lua_CFunction)scintilladlg_savemarkers_cb, NULL);
   iuplua_register_cb(L, "EXIT_CB", (lua_CFunction)scintilladlg_exit_cb, NULL);
+  iuplua_register_cb(L, "CONFIGSAVE_CB", (lua_CFunction)scintilladlg_configsave_cb, NULL);
+  iuplua_register_cb(L, "CONFIGLOAD_CB", (lua_CFunction)scintilladlg_configload_cb, NULL);
 
 #ifdef IUPLUA_USELOH
 #include "scintilladlg.loh"

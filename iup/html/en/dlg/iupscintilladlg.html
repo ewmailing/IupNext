@@ -44,7 +44,7 @@ innumerous children to compose the notepad.</p>
 with the current file name title.</p>
 <p><strong>CONFIG</strong>: name of a <a href="../func/iupconfig.html">IupConfig</a> resource to 
 be used for persistency of menu options and recent file list. Must be set before 
-map.</p>
+map. This will trigger the CONFIGLOAD_CB callback (since 3.23).</p>
 <p><strong>CONFIG_HANDLE</strong>: Ihandle of the IupConfig resource.</p>
 <p><strong>NEWFILE</strong> (write-only): clear the text contents and initialize 
 a new file.</p>
@@ -79,6 +79,66 @@ programmatically).</p>
   event.<br><strong>lin</strong>: line number where the marker was changed 
 (starts at 0).<br>
 <strong>margin</strong>: which margin was affected.</p>
+
+  
+<p><strong>EXIT_CB</strong>:
+  Action generated when the dialog is closing. Called at the last moment after 
+the dialog is already hidden.</p>
+
+  
+    
+<pre>int function(Ihandle*<strong> ih</strong>); [in C]<br><strong>elem</strong>:exit_cb() -&gt; (<strong>ret</strong>: number) [in Lua]</pre>
+
+    
+<p class="info"><strong>ih</strong>:
+  identifier of the element that activated the 
+  event.</p>
+<p><strong>RESTOREMARKERS_CB</strong>: Called when the markers in the Scitilla 
+editor are being restored from the configuration file. By default only bookmarks 
+are handled.</p>
+
+  
+    
+<pre>int function(Ihandle*<strong> ih</strong>); [in C]<br><strong>elem</strong>:exit_cb() -&gt; (<strong>ret</strong>: number) [in Lua]</pre>
+
+    
+<p class="info"><strong>ih</strong>:
+  identifier of the element that activated the 
+  event.</p>
+<p><strong>SAVEMARKERS_CB</strong>: Called when the markers in the Scitilla 
+editor are about to be saved in the configuration file. By default only 
+bookmarks are handled.</p>
+
+  
+    
+<pre>int function(Ihandle*<strong> ih</strong>); [in C]<br><strong>elem</strong>:exit_cb() -&gt; (<strong>ret</strong>: number) [in Lua]</pre>
+
+    
+<p class="info"><strong>ih</strong>:
+  identifier of the element that activated the 
+  event.</p>
+<p><strong>CONFIGLOAD_CB</strong>: Called when the configuration file was set, 
+and supposedly loaded. (since 3.23)</p>
+
+  
+    
+<pre>int function(Ihandle*<strong> ih</strong>); [in C]<br><strong>elem</strong>:exit_cb() -&gt; (<strong>ret</strong>: number) [in Lua]</pre>
+
+    
+<p class="info"><strong>ih</strong>:
+  identifier of the element that activated the 
+  event.</p>
+<p><strong>CONFIGSAVE_CB</strong>: Called when the configuration file is about 
+to be saved. (since 3.23)</p>
+
+  
+    
+<pre>int function(Ihandle*<strong> ih</strong>); [in C]<br><strong>elem</strong>:exit_cb() -&gt; (<strong>ret</strong>: number) [in Lua]</pre>
+
+    
+<p class="info"><strong>ih</strong>:
+  identifier of the element that activated the 
+  event.</p>
 
   
 <h3><a name="Notes">Notes</a></h3>
