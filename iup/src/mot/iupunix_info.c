@@ -273,7 +273,7 @@ char* iupdrvGetCurrentDirectory(void)
     }
 
     size += size;
-    buffer = (char *)iupStrGetMemory(buffer, size);
+    buffer = (char *)iupStrGetMemory(size);
   }
 
   return NULL;
