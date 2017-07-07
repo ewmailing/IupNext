@@ -1416,10 +1416,10 @@ void IupLuaScripterDlgOpen(void)
 
 /* TODO:
 - multiple files (IupFlatTabs) - option for save in config
+- Save Session/Load Session
 
 - multi-language (portuguese, spanish)
 - Debug Strings
-- Project menu? or Save Session/Load Session?
 - detachable Console, Debug, Breakpoints (problem with IupGetDialogChild(NAME))- save in config
 
 - Watch for globals - save in config
