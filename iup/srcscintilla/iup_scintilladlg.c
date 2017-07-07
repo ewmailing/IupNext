@@ -934,6 +934,16 @@ static int item_exit_action_cb(Ihandle* item_exit)
   return IUP_DEFAULT;
 }
 
+static int show_cb(Ihandle* ih, int state)
+{
+  if (state == IUP_HIDE)
+  {
+
+  }
+
+  return IUP_DEFAULT;
+}
+
 static int goto_ok_action_cb(Ihandle* bt_ok)
 {
   int line_count = IupGetInt(bt_ok, "TEXT_LINECOUNT");
@@ -2321,6 +2331,7 @@ static int iScintillaDlgCreateMethod(Ihandle* ih, void** params)
 
   IupSetAttributeHandle(ih, "MENU", menu);
   IupSetCallback(ih, "CLOSE_CB", (Icallback)item_exit_action_cb);
+  IupSetCallback(ih, "SHOW_CB", (Icallback)show_cb);
   IupSetCallback(ih, "DROPFILES_CB", (Icallback)dropfiles_cb);
 
   IupSetCallback(ih, "K_cN", (Icallback)item_new_action_cb);
