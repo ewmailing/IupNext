@@ -271,6 +271,15 @@ static int configload_cb(Ihandle *ih)
     value = IupConfigGetVariableStr(config, "Lua", "Arguments");
     if (value)
       IupSetStrAttribute(ih, "ARGUMENTS", value);
+
+    value = IupConfigGetVariableStr(config, "Lua", "AutoCompletion");
+    if (value)
+    {
+      Ihandle* item = IupGetDialogChild(ih, "ITM_AUTOCOMPLETE");
+      Ihandle* multitext = IupGetDialogChild(ih, "MULTITEXT");
+      IupSetStrAttribute(item, "VALUE", value);
+      IupSetStrAttribute(multitext, "AUTOCOMPLETION", value);
+    }
   }
 
   return IUP_DEFAULT;
@@ -1220,8 +1229,6 @@ static void appendDebugMenuItens(Ihandle *menu)
 
 static int multitext_map_cb(Ihandle* multitext)
 {
-  Ihandle* config = IupGetAttributeHandle(multitext, "CONFIG");
-
   IupSetAttribute(multitext, "LEXERLANGUAGE", "lua");
   IupSetAttribute(multitext, "KEYWORDS0", getLuaKeywords());
 
@@ -1233,17 +1240,6 @@ static int multitext_map_cb(Ihandle* multitext)
   IupSetAttribute(multitext, "STYLEFGCOLOR7", "164 0 164");  /* 7-Character  */
   IupSetAttribute(multitext, "STYLEFGCOLOR10", "164 0 0"); /* 10-Operator  */
   IupSetAttribute(multitext, "STYLEBOLD10", "YES");
-
-  if (config)
-  {
-    const char* value = IupConfigGetVariableStr(config, "Lua", "AutoCompletion");
-    if (value)
-    {
-      Ihandle* item = IupGetDialogChild(multitext, "ITM_AUTOCOMPLETE");
-      IupSetStrAttribute(item, "VALUE", value);
-      IupSetStrAttribute(multitext, "AUTOCOMPLETION", value);
-    }
-  }
 
   return IUP_DEFAULT;
 }
@@ -1430,9 +1426,7 @@ void IupLuaScripterDlgOpen(void)
 - Inspect on Mouse Over?  SCI_POSITIONFROMPOINTCLOSE(int x, int y)
 - dialog for style colors (IupGetParam) - save in config
 - Folding support
-- Replace All (IupScintillaDlg)
 - Find options in config (IupScintillaDlg)
-- View options in config - Word Wrap, White Spaces, End of Lines, Line Number, Bookmarks (IupScintillaDlg)
 
 - upvalues in Locals?
 - Printing
