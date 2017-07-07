@@ -905,18 +905,18 @@ static int item_revert_action_cb(Ihandle* item_revert)
   return IUP_DEFAULT;
 }
 
-static int item_exit_action_cb(Ihandle* item_exit)
+static int close_exit_action_cb(Ihandle* ih_item)
 {
-  Ihandle* ih = IupGetDialog(item_exit);
+  Ihandle* ih = IupGetDialog(ih_item);
   Ihandle* config = IupGetAttributeHandle(ih, "CONFIG");
   Icallback cb;
 
-  if (!save_check(item_exit))
+  if (!save_check(ih))
     return IUP_IGNORE;  /* to abort the CLOSE_CB callback */
 
   if (config)
   {
-    Ihandle* multitext = IupGetDialogChild(item_exit, "MULTITEXT");
+    Ihandle* multitext = IupGetDialogChild(ih, "MULTITEXT");
     saveMarkers(config, multitext);
 
     cb = IupGetCallback(ih, "CONFIGSAVE_CB");
@@ -927,7 +927,9 @@ static int item_exit_action_cb(Ihandle* item_exit)
     IupConfigSave(config);
   }
 
+  iupAttribSet(ih, "_IUP_CLOSING", "1");
   IupHide(ih);
+  iupAttribSet(ih, "_IUP_CLOSING", NULL);
 
   /* after hide, at the last moment */
   cb = IupGetCallback(ih, "EXIT_CB");
@@ -939,10 +941,8 @@ static int item_exit_action_cb(Ihandle* item_exit)
 
 static int show_cb(Ihandle* ih, int state)
 {
-  if (state == IUP_HIDE)
-  {
-
-  }
+  if (state == IUP_HIDE && !iupAttribGet(ih, "_IUP_CLOSING"))
+    close_exit_action_cb(ih);
 
   return IUP_DEFAULT;
 }
@@ -2195,7 +2195,7 @@ static int iScintillaDlgCreateMethod(Ihandle* ih, void** params)
   IupSetCallback(item_revert, "ACTION", (Icallback)item_revert_action_cb);
 
   item_exit = IupItem("E&xit", NULL);
-  IupSetCallback(item_exit, "ACTION", (Icallback)item_exit_action_cb);
+  IupSetCallback(item_exit, "ACTION", (Icallback)close_exit_action_cb);
 
   item_find = IupItem("&Find...\tCtrl+F", NULL);
   IupSetAttribute(item_find, "IMAGE", "IUP_EditFind");
@@ -2495,7 +2495,7 @@ static int iScintillaDlgCreateMethod(Ihandle* ih, void** params)
   iupChildTreeAppend(ih, vbox);
 
   IupSetAttributeHandle(ih, "MENU", menu);
-  IupSetCallback(ih, "CLOSE_CB", (Icallback)item_exit_action_cb);
+  IupSetCallback(ih, "CLOSE_CB", (Icallback)close_exit_action_cb);
   IupSetCallback(ih, "SHOW_CB", (Icallback)show_cb);
   IupSetCallback(ih, "DROPFILES_CB", (Icallback)dropfiles_cb);
 
