@@ -738,7 +738,6 @@ static int file_menu_open_cb(Ihandle* ih_menu)
 
 static int edit_menu_open_cb(Ihandle* ih_menu)
 {
-  Ihandle *clipboard = IupClipboard();
   Ihandle* find_dlg = (Ihandle*)IupGetAttribute(ih_menu, "FIND_DIALOG");
 
   Ihandle *item_paste = IupGetDialogChild(ih_menu, "ITEM_PASTE");
@@ -748,7 +747,7 @@ static int edit_menu_open_cb(Ihandle* ih_menu)
   Ihandle *item_find_next = IupGetDialogChild(ih_menu, "ITEM_FINDNEXT");
   Ihandle* multitext = IupGetDialogChild(ih_menu, "MULTITEXT");
 
-  if (!IupGetInt(clipboard, "TEXTAVAILABLE"))
+  if (!IupGetInt(multitext, "CLIPBOARD"))
     IupSetAttribute(item_paste, "ACTIVE", "NO");
   else
     IupSetAttribute(item_paste, "ACTIVE", "YES");
@@ -779,7 +778,6 @@ static int edit_menu_open_cb(Ihandle* ih_menu)
   else
     IupSetAttribute(item_find_next, "ACTIVE", "NO");
 
-  IupDestroy(clipboard);
   return IUP_DEFAULT;
 }
 
@@ -1644,42 +1642,28 @@ static int selection_find_next_action_cb(Ihandle* ih)
 static int item_copy_action_cb(Ihandle* item_copy)
 {
   Ihandle* multitext = IupGetDialogChild(item_copy, "MULTITEXT");
-  Ihandle *clipboard = IupClipboard();
-  IupSetAttribute(clipboard, "TEXT", IupGetAttribute(multitext, "SELECTEDTEXT"));
-  IupDestroy(clipboard);
+  IupSetAttribute(multitext, "CLIPBOARD", "COPY");
   return IUP_DEFAULT;
 }
 
 static int item_paste_action_cb(Ihandle* item_paste)
 {
   Ihandle* multitext = IupGetDialogChild(item_paste, "MULTITEXT");
-  Ihandle *clipboard = IupClipboard();
-  if (IupGetAttribute(multitext, "SELECTEDTEXT"))
-    IupSetAttribute(multitext, "SELECTEDTEXT", IupGetAttribute(clipboard, "TEXT"));
-  else
-  {
-    IupSetAttribute(multitext, "INSERT", IupGetAttribute(clipboard, "TEXT"));
-    multitext_valuechanged_cb(multitext); /* INSERT, DELETERANGE do NOT triggers the callback */
-  }
-  IupDestroy(clipboard);
-
+  IupSetAttribute(multitext, "CLIPBOARD", "PASTE");
   return IUP_IGNORE;  /* replace system processing for the hot key, to correctly parse line feed */
 }
 
 static int item_cut_action_cb(Ihandle* item_cut)
 {
   Ihandle* multitext = IupGetDialogChild(item_cut, "MULTITEXT");
-  Ihandle *clipboard = IupClipboard();
-  IupSetAttribute(clipboard, "TEXT", IupGetAttribute(multitext, "SELECTEDTEXT"));
-  IupSetAttribute(multitext, "SELECTEDTEXT", "");
-  IupDestroy(clipboard);
+  IupSetAttribute(multitext, "CLIPBOARD", "CUT");
   return IUP_DEFAULT;
 }
 
 static int item_delete_action_cb(Ihandle* item_delete)
 {
   Ihandle* multitext = IupGetDialogChild(item_delete, "MULTITEXT");
-  IupSetAttribute(multitext, "SELECTEDTEXT", "");
+  IupSetAttribute(multitext, "CLIPBOARD", "CLEAR");
   return IUP_DEFAULT;
 }
 
