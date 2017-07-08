@@ -285,6 +285,8 @@ void iupCallGetFocusCb(Ihandle *ih)
     if (cb2) cb2(ih, 1);
   }
 
+  iupSetCurrentFocus(ih);
+
   if (iupAttribGetBoolean(ih, "PROPAGATEFOCUS"))
   {
     Ihandle* parent = iupChildTreeGetNativeParent(ih);
@@ -300,8 +302,6 @@ void iupCallGetFocusCb(Ihandle *ih)
       parent = iupChildTreeGetNativeParent(parent);
     }
   }
-
-  iupSetCurrentFocus(ih);
 }
 
 void iupCallKillFocusCb(Ihandle *ih)
