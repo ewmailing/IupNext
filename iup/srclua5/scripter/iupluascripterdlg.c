@@ -1428,7 +1428,6 @@ void IupLuaScripterDlgOpen(void)
 - Folding support
 - Find options in config (IupScintillaDlg)
 
-- upvalues in Locals?
 - Printing
 
 - Table Inspector using IupTree

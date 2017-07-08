@@ -17,10 +17,10 @@ end
 
 function f1(x, ...)
   local y = x
-  local ta = {...}
-  x = "Hello " .. x 
+  local ta = {...} -- vararg expansion
+  x = "Hello " .. x .. " " .. l_main_x -- upvalue l_main_x
   y = false
-  y = f2(3)
+  y = f2(3) -- upvalue f2
   return x .. " " .. y
 end
 

@@ -9,6 +9,9 @@
 	border-width: 0;
 	padding-bottom: 2em;
 }
+.auto-style1 {
+	text-decoration: underline;
+}
 </style>
 </head>
 <body>
@@ -60,7 +63,7 @@ for the application.</p>
 are executed and printed in the output area. The Lua "print" command and the Lua 
 "io.write" command are redirected to the output area, the previous definitions 
 are saved as "print_old" and "write_old". All the commands entered in the 
-command line are saved in a history list that can be accessed using the arrow up 
+<span class="auto-style1">Command Line</span> are saved in a history list that can be accessed using the arrow up 
 and arrow down keys. If the original functions are restored then only the 
 command line output will be displayed in the output area.</p>
 <p>Any Lua commands can be typed in the command line, but they must be a 
@@ -108,15 +111,25 @@ function: 0000024E6B4DF010</pre>
 tab using the "Toggle Breakpoint" at the caret position or using the "New" 
 button and writing a filename and a line number. Breakpoints (and bookmarks) are 
 saved in the application configuration file. When lines are removed or added, 
-breakpoints position are automatically updated, but the breakpoints list will be 
+breakpoints position are automatically updated, but the 
+<span class="auto-style1">Breakpoints</span> list will be 
 updated only when the file is saved.</p>
 <p>During the debug process, local variables of each stack level can be 
 inspected in the <strong>Debug</strong> tab. The actual level is not changed 
-when a Call Stack list level is selected, only its local variables are updated 
-in the Locals list. For now a local variable can be changed only if it is a string or a 
-number. When printed locals and stack levels display also debug information. 
-Variable arguments (vararg) are displayed only for Lua version 5.2 or newer 
-(since 3.23).</p>
+when a <span class="auto-style1">Call Stack</span> list level is selected, only its local variables are updated 
+in the <span class="auto-style1">Locals</span> list. The list supports 3 types 
+of local variables: variables declared as "local" and function parameters;
+<span style="color: rgb(0, 0, 0); font-family: Helvetica, Arial, sans-serif; font-size: medium; font-style: normal; font-variant-ligatures: normal; font-variant-caps: normal; font-weight: normal; letter-spacing: normal; orphans: 2; text-align: justify; text-indent: 0px; text-transform: none; white-space: normal; widows: 2; word-spacing: 0px; -webkit-text-stroke-width: 0px; background-color: rgb(255, 255, 255); text-decoration-style: initial; text-decoration-color: initial; display: inline !important; float: none;">
+Vararg<span>&nbsp;</span></span><span><span style="font-style: normal; font-variant-ligatures: normal; font-variant-caps: normal; font-weight: normal; orphans: 2; text-align: justify; text-indent: 0px; text-transform: none; white-space: normal; widows: 2; word-spacing: 0px; -webkit-text-stroke-width: 0px; background-color: rgb(255, 255, 255); text-decoration-style: initial; text-decoration-color: initial; display: inline !important; float: none;">parameters; 
+and Upvalues (<span style="color: rgb(0, 0, 0); font-family: Helvetica, Arial, sans-serif; font-size: medium; font-style: normal; font-variant-ligatures: normal; font-variant-caps: normal; font-weight: normal; letter-spacing: normal; orphans: 2; text-align: justify; text-indent: 0px; text-transform: none; white-space: normal; widows: 2; word-spacing: 0px; -webkit-text-stroke-width: 0px; background-color: rgb(255, 255, 255); text-decoration-style: initial; text-decoration-color: initial; display: inline !important; float: none;">external 
+local variables).</span></span></span> Varargs don't have names, so we list them 
+as if a table called "vararg" was created and each element of the table is 
+listed separately. Upvalues are listed last with a ":: " prefix, used simply to 
+distinguish them from the other variables. For now a local variable can be changed only if it is a string or a 
+number. Variable arguments (vararg) are displayed only for Lua version 5.2 or newer.
+<span style="color: rgb(0, 0, 0); font-family: Helvetica, Arial, sans-serif; font-size: medium; font-style: normal; font-variant-ligatures: normal; font-variant-caps: normal; font-weight: normal; letter-spacing: normal; orphans: 2; text-align: justify; text-indent: 0px; text-transform: none; white-space: normal; widows: 2; word-spacing: 0px; -webkit-text-stroke-width: 0px; background-color: rgb(255, 255, 255); text-decoration-style: initial; text-decoration-color: initial; display: inline !important; float: none;">
+(Vararg<span>&nbsp;and Upvalues since 3.23)</span></span></p>
+<p>When printed locals and stack levels display also debug information. </p>
 <pre>l_main_x = 43 (level=6, pos=1)
 43</pre>
 <p>and</p>
