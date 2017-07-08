@@ -213,6 +213,26 @@ the event.<br>
 <p class="info"><u>Returns</u>: the tab will be hidden if the callback returns 
 IUP_DEFAULT or if it does not exists. If IUP_CONTINUE is returned the tab is 
 removed and its children are destroyed. If IUP_IGNORE is returned does nothing.</p>
+
+  
+<p><b><a name="FOCUS_CB">FOCUS_CB</a></b>: Called when a child of the container gets or looses the focus. It is called 
+  only if PROPAGATEFOCUS is defined in the child. (since 3.23)</p>
+
+  
+    
+<pre>int function(Ihandle *<b>ih</b>, int <b>focus</b>); [in C]<br><b>ih</b>:focus_cb(<b>focus</b>: number) -&gt; (ret: number) [in Lua]</pre>
+
+    
+<p class="info"><strong>ih</strong>:
+  identifier of the element that activated the 
+  event.<br>
+
+    <strong>focus</strong>: is non zero if the canvas is getting the focus, is zero 
+    if it is loosing the focus.</p>
+
+  
+
+  
 <p><strong>RIGHTCLICK_CB</strong>: Callback called when the user clicks on some 
 tab using the right mouse button (since 3.10).</p>
 <div align="left">
@@ -269,7 +289,7 @@ then inside the&nbsp;<strong>IupTabs</strong>, so the problem does not occur. </
 char* IupGetAttribute<span class="style3">Id</span>(Ihandle *ih, const char* name, int id);
 int   IupGetInt<span class="style3">Id</span>(Ihandle *ih, const char* name, int id);
 float IupGetFloat<span class="style3">Id</span>(Ihandle *ih, const char* name, int id);
-void  IupSetfAttribute<span class="style3">Id</span>(Ihandle *ih, const char* name, int id, const char* format, ...);
+void  IupSetfAttribute<span class="style3">Id</span>(Ihandle ih, const char* name, int id, const char* format, ...);
 void  IupSetIntId(Ihandle* ih, const char* name, int id, int value);
 void  IupSetFloatId(Ihandle* ih, const char* name, int id, float value);</pre>
 <p>They work just like the respective traditional set and get functions. But the attribute string is complemented with 

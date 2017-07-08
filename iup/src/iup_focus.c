@@ -16,6 +16,7 @@
 #include "iup_attrib.h"
 #include "iup_str.h"
 #include "iup_drv.h"
+#include "iup_childtree.h"
 
 
 Ihandle* iupFocusNextInteractive(Ihandle *ih)
@@ -284,6 +285,22 @@ void iupCallGetFocusCb(Ihandle *ih)
     if (cb2) cb2(ih, 1);
   }
 
+  if (iupAttribGetBoolean(ih, "PROPAGATEFOCUS"))
+  {
+    Ihandle* parent = iupChildTreeGetNativeParent(ih);
+    while (parent)
+    {
+      IFni cb = (IFni)IupGetCallback(ih, "FOCUS_CB");
+      if (cb)
+      {
+        cb(parent, 1);
+        break;
+      }
+
+      parent = iupChildTreeGetNativeParent(parent);
+    }
+  }
+
   iupSetCurrentFocus(ih);
 }
 
@@ -301,6 +318,22 @@ void iupCallKillFocusCb(Ihandle *ih)
   {
     IFni cb2 = (IFni)IupGetCallback(ih, "FOCUS_CB");
     if (cb2) cb2(ih, 0);
+  }
+
+  if (iupObjectCheck(ih) && iupAttribGetBoolean(ih, "PROPAGATEFOCUS"))
+  {
+    Ihandle* parent = iupChildTreeGetNativeParent(ih);
+    while (parent)
+    {
+      IFni cb = (IFni)IupGetCallback(ih, "FOCUS_CB");
+      if (cb)
+      {
+        cb(parent, 0);
+        break;
+      }
+
+      parent = iupChildTreeGetNativeParent(parent);
+    }
   }
 
   iupSetCurrentFocus(NULL);

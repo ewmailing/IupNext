@@ -190,6 +190,7 @@ Iclass* iupFrameNewClass(void)
   /* Common Callbacks */
   iupClassRegisterCallback(ic, "MAP_CB", "");
   iupClassRegisterCallback(ic, "UNMAP_CB", "");
+  iupClassRegisterCallback(ic, "FOCUS_CB", "i");
 
   /* Common */
   iupBaseRegisterCommonAttrib(ic);
