@@ -1428,8 +1428,8 @@ void IupLuaScripterDlgOpen(void)
 - Folding support
 - Find options in config (IupScintillaDlg)
 
+- iupConsole,iupDebugger => iup.Console,iup.Debugger
 - Printing
-
 - Table Inspector using IupTree
 - iup.TRACEBACK
 - debug pause when error in Lua?
