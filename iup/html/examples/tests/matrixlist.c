@@ -91,6 +91,8 @@ void MatrixListTest(void)
   IupSetAttribute(mlist, "IMAGEVALUE3", "ON");
 
 //  IupSetAttribute(mlist, "FLATSCROLLBAR", "VERTICAL");
+//  IupSetAttribute(mlist, "SHOWFLOATING", "Yes");
+  //IupSetAttribute(mlist, "EXPAND", "VERTICAL");
 
   dlg = IupDialog(IupVbox(mlist, NULL));
   IupSetAttribute(dlg, "TITLE", "IupMatrixList");
