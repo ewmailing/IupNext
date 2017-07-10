@@ -115,12 +115,18 @@ static int il_error_message(lua_State *L)
   return 0;
 }
 
-static void show_error(lua_State *L, const char *msg)
+void iuplua_push_name(lua_State *L, const char* name)
 {
+  /* push iup.name in stack */
   iuplua_get_env(L);
-  lua_pushstring(L, "_ERRORMESSAGE");
+  lua_pushstring(L, name);
   lua_gettable(L, -2);
   lua_remove(L, -2);  /* remove global table from stack */
+}
+
+static void show_error(lua_State *L, const char *msg)
+{
+  iuplua_push_name(L, "_ERRORMESSAGE");
 
   if (lua_isnil(L, -1))
   {
@@ -357,13 +363,8 @@ void iuplua_pushihandle(lua_State *L, Ihandle *ih)
 
       iuplua_plugstate(L, ih);
 
-      /* get the function iup.RegisterHandle */
-      iuplua_get_env(L);
-      lua_pushstring(L,"RegisterHandle");
-      lua_gettable(L, -2);
-      lua_remove(L, -2);  /* remove global table from stack */
-
-      /* call the function iup.RegisterHandle */
+      /* push iup.RegisterHandle */
+      iuplua_push_name(L, "RegisterHandle");
       iuplua_pushihandle_raw(L, ih);
       lua_pushstring(L, IupGetClassName(ih));
       lua_call(L, 2, 1);  /* iup.RegisterHandle(ih, type) */
@@ -399,7 +400,7 @@ static int il_destroy_cb(Ihandle* ih)
     lua_pushstring(L, "ihandle");
     lua_pushnil(L);
     lua_settable(L, -3);
-    lua_pop(L,1);
+    lua_pop(L, 1);
 
     /* removes the association of the Ihandle* with the lua object */
     luaL_unref(L, LUA_REGISTRYINDEX, ref);  /* this is the complement of SetWidget */
@@ -437,7 +438,7 @@ char** iuplua_checkstring_array(lua_State *L, int pos, int n)
     lua_pushinteger(L,i);
     lua_gettable(L,pos);
     v[i-1] = (char*)lua_tostring(L, -1);
-    lua_pop(L,1);
+    lua_pop(L, 1);
   }
   return v;
 }
@@ -460,7 +461,7 @@ int* iuplua_checkint_array(lua_State *L, int pos, int n)
     lua_pushinteger(L,i);
     lua_gettable(L,pos);
     v[i - 1] = (int)lua_tointeger(L, -1);
-    lua_pop(L,1);
+    lua_pop(L, 1);
   }
   return v;
 }
@@ -483,7 +484,7 @@ float* iuplua_checkfloat_array(lua_State *L, int pos, int n)
     lua_pushinteger(L,i);
     lua_gettable(L,pos);
     v[i-1] = (float)lua_tonumber(L, -1);
-    lua_pop(L,1);
+    lua_pop(L, 1);
   }
   return v;
 }
@@ -529,7 +530,7 @@ unsigned char* iuplua_checkuchar_array(lua_State *L, int pos, int n)
     lua_pushinteger(L,i);
     lua_gettable(L,pos);
     v[i-1] = (unsigned char)lua_tointeger(L, -1);
-    lua_pop(L,1);
+    lua_pop(L, 1);
   }
   return v;
 }
@@ -552,7 +553,7 @@ Ihandle ** iuplua_checkihandle_array(lua_State *L, int pos, int n)
     lua_pushinteger(L,i);
     lua_gettable(L,pos);
     v[i-1] = iuplua_checkihandle(L, -1);
-    lua_pop(L,1);
+    lua_pop(L, 1);
   }
   v[i-1] = NULL;
   return v;
@@ -584,11 +585,8 @@ lua_State* iuplua_call_start(Ihandle *ih, const char* name)
   lua_State *L = iuplua_getstate(ih);
 
   /* prepare to call iup.CallMethod(name, ih, ...) */
-  iuplua_get_env(L);
-  lua_pushstring(L,"CallMethod");
-  lua_gettable(L, -2);
-  lua_remove(L, -2);  /* remove global table from stack */
 
+  iuplua_push_name(L, "CallMethod");
   lua_pushstring(L, name);
   iuplua_pushihandle(L, ih);
 
@@ -602,12 +600,10 @@ static lua_State* iuplua_call_global_start(const char* name)
   lua_State *L = (lua_State *) IupGetGlobal("_IUP_LUA_DEFAULT_STATE");
 
   /* prepare to call iup.CallGlobalMethod(name, ...) */
-  iuplua_get_env(L);
-  lua_pushstring(L,"CallGlobalMethod");
-  lua_gettable(L, -2);
-  lua_remove(L, -2);  /* remove global table from stack */
 
+  iuplua_push_name(L, "CallGlobalMethod");
   lua_pushstring(L, name);
+
   return L;
 }
 
@@ -670,10 +666,7 @@ int iuplua_call_raw(lua_State* L, int nargs, int nresults)
 
 void iuplua_register_cb(lua_State *L, const char* name, lua_CFunction func, const char* type)
 {
-  iuplua_get_env(L);
-  lua_pushstring(L,"RegisterCallback");
-  lua_gettable(L, -2);
-  lua_remove(L, -2);  /* remove global table from stack */
+  iuplua_push_name(L, "RegisterCallback");
 
   lua_pushstring(L, name);
   lua_pushcfunction(L, func);
@@ -873,7 +866,7 @@ int iuplua_opencall_internal(lua_State * L)
   s = lua_tostring(L, -1);
   if (s && strcmp(s, "INTERNAL")==0)
     ret = 1;
-  lua_pop(L,2);  /* remove global table and <global table>._IUPOPEN_CALL from stack */
+  lua_pop(L, 2);  /* remove global table and <global table>._IUPOPEN_CALL from stack */
   return ret;
 }
 
@@ -1154,7 +1147,7 @@ static int il_open(lua_State * L)
       lua_pushinteger(L,i);
       lua_gettable(L,-2);
       argv[i-1] = (char*)lua_tostring(L, -1);
-      lua_pop(L,1);
+      lua_pop(L, 1);
     }
   }
   lua_pop(L, 1);
