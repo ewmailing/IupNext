@@ -5,7 +5,7 @@ if (not loadstring) then
   loadstring = load
 end
 
-function iupConsoleInit(txt_cmdline, mtl_output)
+function iup.ConsoleInit(txt_cmdline, mtl_output)
   console.cmdList = {}
   console.currentListInd = 0
 
@@ -22,7 +22,7 @@ end
 --------------------- Command History ---------------------
 
 
-function iupConsoleKeyUpCommand()
+function iup.ConsoleKeyUpCommand()
   if #console.cmdList > 0 then
     if console.currentListInd >= 1 then
       console.txtCmdLine.value = console.cmdList[console.currentListInd]
@@ -33,7 +33,7 @@ function iupConsoleKeyUpCommand()
   end
 end
 
-function iupConsoleKeyDownCommand()
+function iup.ConsoleKeyDownCommand()
   if #console.cmdList > 0 then
     if console.currentListInd <= #console.cmdList then
       console.txtCmdLine.value = console.cmdList[console.currentListInd]
@@ -44,35 +44,35 @@ function iupConsoleKeyDownCommand()
   end
 end
 
-function iupConsoleEnterCommandStr(text)
+function iup.ConsoleEnterCommandStr(text)
   table.insert(console.cmdList, text)
   console.currentListInd = #console.cmdList
-  iupConsolePrint("> " .. text)
+  iup.ConsolePrint("> " .. text)
 end
 
-function iupConsoleEnterCommand()
+function iup.ConsoleEnterCommand()
 
   local command = console.txtCmdLine.value
   if command == nil or command == "" then
     return
   end
 
-  iupConsoleEnterCommandStr(command)
+  iup.ConsoleEnterCommandStr(command)
 
   local cmd, msg = loadstring(command)
   if (not cmd) then
     cmd = loadstring("return " .. command)
   end
   if (not cmd) then
-    iupConsolePrint("Error: ".. msg) -- the original error message
+    iup.ConsolePrint("Error: ".. msg) -- the original error message
   else
     local result = {pcall(cmd)}
     if result[1] then
       for i = 2, #result do
-        iupConsolePrintValue(result[i])
+        iup.ConsolePrintValue(result[i])
       end
     else
-      iupConsolePrint("Error: ".. result[2])
+      iup.ConsolePrint("Error: ".. result[2])
     end
   end
 
@@ -82,7 +82,7 @@ end
 
 --------------------- Print Replacement ---------------------
 
-function iupConsolePrint(...)
+function iup.ConsolePrint(...)
   local param = {...}
   local str = ""
   if (#param == 0) then
@@ -100,16 +100,16 @@ function iupConsolePrint(...)
 end
 
 print_old = print
-print = iupConsolePrint
+print = iup.ConsolePrint
 
 write_old = io.write
 io.write = function(...)
   console.mtlOutput.appendnewline="No"
-  iupConsolePrint(...)
+  iup.ConsolePrint(...)
   console.mtlOutput.appendnewline="Yes"
 end
 
-function iupConsoleValueToString(v)
+function iup.ConsoleValueToString(v)
   if (type(v) == "string") then
     return "\"" .. v .. "\""
   else 
@@ -117,24 +117,24 @@ function iupConsoleValueToString(v)
   end
 end
 
-function iupConsolePrintTable(t)
+function iup.ConsolePrintTable(t)
   local str = "{\n"
   local tmp = {}
   for i, k in ipairs(t) do 
-    str = str .. "  ["..tostring(i).. "] = " .. iupConsoleValueToString(k) .. ",\n"
+    str = str .. "  ["..tostring(i).. "] = " .. iup.ConsoleValueToString(k) .. ",\n"
     tmp[i] = true
   end
   for i, k in pairs(t) do 
     if (not tmp[i]) then
-      str = str .. "  ["..tostring(i).. "] = ".. iupConsoleValueToString(k) .. ",\n"
+      str = str .. "  ["..tostring(i).. "] = ".. iup.ConsoleValueToString(k) .. ",\n"
     end
   end
   str = str .. "}"
 
-  iupConsolePrint(str)
+  iup.ConsolePrint(str)
 end
 
-function iupConsolePrintFunction(f)
+function iup.ConsolePrintFunction(f)
   local info = debug.getinfo(f, "S")
   local str = ""
   if info.what == "C" then    
@@ -149,16 +149,16 @@ function iupConsolePrintFunction(f)
     end
   end
 
-  iupConsolePrint(str)
+  iup.ConsolePrint(str)
 end
 
-function iupConsolePrintValue(v)
+function iup.ConsolePrintValue(v)
   if (type(v) == "table") then 
-    iupConsolePrintTable(v)
+    iup.ConsolePrintTable(v)
   elseif (type(v) == "function") then 
-    iupConsolePrintFunction(v)
+    iup.ConsolePrintFunction(v)
   else
-    iupConsolePrint(iupConsoleValueToString(v))
+    iup.ConsolePrint(iup.ConsoleValueToString(v))
   end
 end
 
@@ -166,14 +166,14 @@ end
 --------------------- Utilities ---------------------
 
 
-function iupConsoleListFuncs()
+function iup.ConsoleListFuncs()
   console.hold_caret = true
 
   local global = _G
   local n,v = next(global, nil)
   while n ~= nil do
     if type(v) == "function" then
-      iupConsolePrint(n)
+      iup.ConsolePrint(n)
     end
     n,v = next(global, n)
   end
@@ -182,14 +182,14 @@ function iupConsoleListFuncs()
   console.mtlOutput.scrollto = "99999999:1"
 end
 
-function iupConsoleListVars()
+function iup.ConsoleListVars()
   console.hold_caret = true
 
   local global = _G
   local n,v = next(global, nil)
   while n ~= nil do
     if type(v) ~= "function" and n ~= "_G" then
-      iupConsolePrint(n)
+      iup.ConsolePrint(n)
     end
     n,v = next(global, n)
   end
