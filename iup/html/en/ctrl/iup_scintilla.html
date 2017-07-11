@@ -585,16 +585,17 @@ found text.</p>
 sets and gets the search flags used in SEARCHINTARGET attribute. Possible 
 values: MATCHCASE, WHOLEWORD, WORDSTART, REGEXP and POSIX. The flag options are 
 combined using &quot;|&quot; as separators. Use NULL to reset all flags.</p>
-<p><strong>TARGETSTART</strong> (<font size="3">non inheritable</font>): 
-sets and gets the start of target. When searching in non-regular expression 
-mode, you can set TARGETSTART greater than TARGETEND to find the last matching 
-text in the target rather than the first matching text. If set 0, target start
-<span id="result_box0" class="short_text" lang="en"><span class="hps">will be</span>
-<span class="hps">1 (first position of text).</span></span></p>
+<p><strong>TARGETSTART</strong> (<font size="3">non inheritable</font>): sets 
+and gets the start of target. When searching in non-regular expression mode, you 
+can set TARGETSTART greater than TARGETEND to find the last matching text in the 
+target rather than the first matching text.
+<span id="result_box0" class="short_text" lang="en"><span class="hps">The first position of text 
+is 0. If set to NULL, 0 will be used (since 3.23).</span></span></p>
 <p><strong>TARGETEND</strong> (<font size="3">non inheritable</font>): 
-sets and gets the end of target. If set 0, target end
+sets and gets the end of target. If set to -1 or NULL, target end
 <span id="result_box1" class="short_text" lang="en"><span class="hps">will be</span>
-<span class="hps">the last position of text.</span></span></p>
+<span class="hps">the last position of text<span id="result_box2" class="short_text" lang="en"> 
+(since 3.23)</span>.</span></span></p>
 <p><strong>TARGETFROMSELECTION</strong> (<font size="3">non inheritable, write 
 only</font>): 
 set the target start and end from current position of the selection.</p>
@@ -1488,7 +1489,8 @@ and col starts at 0, pos starts at 0.</p>
 	insert a Tab.</p>
 <p>Internal Drag&amp;Drop support is enabled by default.</p>
 <p><strong>IupScintilla</strong> uses attributes and callbacks very similar to 
-the <strong>IupText</strong> control, except for text formatting. </p>
+the <strong>IupText</strong> control, except for text formatting. But notice 
+that in IupScintilla position always starts at 0.</p>
 <p>Although the <strong>IupScintilla</strong> documentation should be sufficient 
 for most uses, some advanced features will be better understood if the
 <a href="http://www.scintilla.org/ScintillaDoc.html">Scintilla Documentation</a> 

@@ -651,15 +651,18 @@ static void set_find_replace_visibility(Ihandle* find_dlg, int show_replace)
   Ihandle* replace_txt = IupGetDialogChild(find_dlg, "REPLACE_TEXT");
   Ihandle* replace_lbl = IupGetDialogChild(find_dlg, "REPLACE_LABEL");
   Ihandle* replace_bt = IupGetDialogChild(find_dlg, "REPLACE_BUTTON");
+  Ihandle* replace_all_bt = IupGetDialogChild(find_dlg, "REPLACE_ALL_BUTTON");
 
   if (show_replace)
   {
     IupSetAttribute(replace_txt, "VISIBLE", "Yes");
     IupSetAttribute(replace_lbl, "VISIBLE", "Yes");
     IupSetAttribute(replace_bt, "VISIBLE", "Yes");
+    IupSetAttribute(replace_all_bt, "VISIBLE", "Yes");
     IupSetAttribute(replace_txt, "FLOATING", "No");
     IupSetAttribute(replace_lbl, "FLOATING", "No");
     IupSetAttribute(replace_bt, "FLOATING", "No");
+    IupSetAttribute(replace_all_bt, "FLOATING", "No");
 
     IupSetAttribute(find_dlg, "TITLE", "Replace");
   }
@@ -668,9 +671,11 @@ static void set_find_replace_visibility(Ihandle* find_dlg, int show_replace)
     IupSetAttribute(replace_txt, "FLOATING", "Yes");
     IupSetAttribute(replace_lbl, "FLOATING", "Yes");
     IupSetAttribute(replace_bt, "FLOATING", "Yes");
+    IupSetAttribute(replace_all_bt, "FLOATING", "Yes");
     IupSetAttribute(replace_txt, "VISIBLE", "No");
     IupSetAttribute(replace_lbl, "VISIBLE", "No");
     IupSetAttribute(replace_bt, "VISIBLE", "No");
+    IupSetAttribute(replace_all_bt, "VISIBLE", "No");
 
     IupSetAttribute(find_dlg, "TITLE", "Find");
   }
@@ -903,18 +908,25 @@ static int item_revert_action_cb(Ihandle* item_revert)
   return IUP_DEFAULT;
 }
 
+static int find_close_action_cb(Ihandle* bt_close);
+
 static int close_exit_action_cb(Ihandle* ih_item)
 {
   Ihandle* ih = IupGetDialog(ih_item);
   Ihandle* config = IupGetAttributeHandle(ih, "CONFIG");
+  Ihandle* find_dlg = (Ihandle*)IupGetAttribute(ih_item, "FIND_DIALOG");
   Icallback cb;
 
   if (!save_check(ih))
     return IUP_IGNORE;  /* to abort the CLOSE_CB callback */
+  
+  if (find_dlg)
+    find_close_action_cb(find_dlg);
 
   if (config)
   {
     Ihandle* multitext = IupGetDialogChild(ih, "MULTITEXT");
+    
     saveMarkers(config, multitext);
 
     cb = IupGetCallback(ih, "CONFIGSAVE_CB");
@@ -1453,8 +1465,26 @@ static int find_close_action_cb(Ihandle* bt_close)
   Ihandle* find_dlg = IupGetDialog(bt_close);
   Ihandle* multitext = (Ihandle*)IupGetAttribute(find_dlg, "MULTITEXT");
   Ihandle* config = IupGetAttributeHandle(multitext, "CONFIG");
+  
   if (config)
+  {
+    Ihandle*  find_text = IupGetDialogChild(find_dlg, "FIND_TEXT");
+    Ihandle*  replace_text = IupGetDialogChild(find_dlg, "REPLACE_TEXT");
+    Ihandle*  find_case = IupGetDialogChild(find_dlg, "FIND_CASE");
+    Ihandle*  whole_word = IupGetDialogChild(find_dlg, "WHOLE_WORD");
+    Ihandle*  wrap = IupGetDialogChild(find_dlg, "WRAP");
+    Ihandle*  searchMode = IupGetDialogChild(find_dlg, "SEARCH_RADIO");
+    Ihandle*  dirMode = IupGetDialogChild(find_dlg, "DIRECTION_RADIO");
+    IupConfigSetVariableStr(config, "FindDialog", "FindText", IupGetAttribute(find_text, "VALUE"));
+    IupConfigSetVariableStr(config, "FindDialog", "ReplaceText", IupGetAttribute(replace_text, "VALUE"));
+    IupConfigSetVariableStr(config, "FindDialog", "FindCase", IupGetAttribute(find_case, "VALUE"));
+    IupConfigSetVariableStr(config, "FindDialog", "WholeWord", IupGetAttribute(whole_word, "VALUE"));
+    IupConfigSetVariableStr(config, "FindDialog", "Wrap", IupGetAttribute(wrap, "VALUE"));
+    IupConfigSetVariableStr(config, "FindDialog", "SearchMode", IupGetAttribute((Ihandle*)IupGetAttribute(searchMode, "VALUE_HANDLE"), "NAME"));
+    IupConfigSetVariableStr(config, "FindDialog", "SearchDir", IupGetAttribute((Ihandle*)IupGetAttribute(dirMode, "VALUE_HANDLE"), "NAME"));
+    
     IupConfigDialogClosed(config, find_dlg, "FindDialog");
+  }
 
   IupHide(find_dlg);  /* do not destroy, just hide */
   return IUP_DEFAULT;
@@ -1464,8 +1494,9 @@ static Ihandle* create_find_dialog(Ihandle *multitext)
 {
   Ihandle *box, *bt_next, *bt_close, *txt, *find_dlg;
   Ihandle *find_case, *whole_word, *mode, *normal, *reg_exp, *posix, *wrap, *up, *down;
-  Ihandle *flags, *direction, *radio;
+  Ihandle *flags, *direction, *searchRadio, *directionRadio;
   Ihandle *txt_replace, *bt_replace, *bt_replace_all;
+  Ihandle* config = IupGetAttributeHandle(multitext, "CONFIG");
 
   txt = IupText(NULL);
   IupSetAttribute(txt, "NAME", "FIND_TEXT");
@@ -1478,6 +1509,7 @@ static Ihandle* create_find_dialog(Ihandle *multitext)
   whole_word = IupToggle("Match Whole Word", NULL);
   IupSetAttribute(whole_word, "NAME", "WHOLE_WORD");
   normal = IupToggle("Normal", NULL);
+  IupSetAttribute(normal, "NAME", "NORMAL");
   reg_exp = IupToggle("Reg. Expression", NULL);
   IupSetAttribute(reg_exp, "NAME", "REG_EXP");
   posix = IupToggle("Posix Reg. Expr.", NULL);
@@ -1508,16 +1540,18 @@ static Ihandle* create_find_dialog(Ihandle *multitext)
                   wrap,
                   NULL);
 
-  radio = IupRadio(IupVbox(normal, reg_exp, posix, NULL));
-  IupSetAttribute(radio, "MARGIN", "10x10");
-  IupSetAttribute(radio, "VALUE_HANDLE", (char*)normal);
-  mode = IupFrame(radio);
+  searchRadio = IupRadio(IupVbox(normal, reg_exp, posix, NULL));
+  IupSetAttribute(searchRadio, "MARGIN", "10x10");
+  IupSetAttribute(searchRadio, "VALUE_HANDLE", (char*)normal);
+  IupSetAttribute(searchRadio, "NAME", "SEARCH_RADIO");
+  mode = IupFrame(searchRadio);
   IupSetAttribute(mode, "TITLE", "Search Mode");
 
-  radio = IupRadio(IupVbox(up, down, NULL));
-  IupSetAttribute(radio, "MARGIN", "10x10");
-  IupSetAttribute(radio, "VALUE_HANDLE", (char*)down);
-  direction = IupFrame(radio);
+  directionRadio = IupRadio(IupVbox(up, down, NULL));
+  IupSetAttribute(directionRadio, "MARGIN", "10x10");
+  IupSetAttribute(directionRadio, "VALUE_HANDLE", (char*)down);
+  IupSetAttribute(directionRadio, "NAME", "DIRECTION_RADIO");
+  direction = IupFrame(directionRadio);
   IupSetAttribute(direction, "TITLE", "Direction");
 
   box = IupVbox(
@@ -1559,6 +1593,47 @@ static Ihandle* create_find_dialog(Ihandle *multitext)
   /* Save the dialog to reuse it */
   IupSetAttribute(find_dlg, "FIND_DIALOG", (char*)find_dlg);  /* from itself */
   IupSetAttribute(IupGetDialog(multitext), "FIND_DIALOG", (char*)find_dlg); /* from the main dialog */
+
+  IupMap(find_dlg);
+
+  if (config)
+  {
+    const char* value = IupConfigGetVariableStr(config, "FindDialog", "FindText");
+    if (value)
+      IupSetStrAttribute(txt, "VALUE", value);
+
+    value = IupConfigGetVariableStr(config, "FindDialog", "ReplaceText");
+    if (value)
+      IupSetStrAttribute(txt_replace, "VALUE", value);
+
+    value = IupConfigGetVariableStr(config, "FindDialog", "FindCase");
+    if (value)
+      IupSetStrAttribute(find_case, "VALUE", value);
+
+    value = IupConfigGetVariableStr(config, "FindDialog", "WholeWord");
+    if (value)
+      IupSetStrAttribute(whole_word, "VALUE", value);
+
+    value = IupConfigGetVariableStr(config, "FindDialog", "Wrap");
+    if (value)
+      IupSetStrAttribute(wrap, "VALUE", value);
+
+    value = IupConfigGetVariableStr(config, "FindDialog", "SearchMode");
+    if (value)
+    {
+      Ihandle* search_mode = IupGetDialogChild(find_dlg, value);
+      if (search_mode)
+        IupSetAttribute(searchRadio, "VALUE_HANDLE", (char*)search_mode);
+    }
+
+    value = IupConfigGetVariableStr(config, "FindDialog", "SearchDir");
+    if (value)
+    {
+      Ihandle* search_dir = IupGetDialogChild(find_dlg, value);
+      if (search_dir)
+        IupSetAttribute(directionRadio, "VALUE_HANDLE", (char*)search_dir);
+    }
+  }
 
   return find_dlg;
 }
