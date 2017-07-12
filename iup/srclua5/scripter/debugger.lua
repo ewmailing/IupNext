@@ -15,7 +15,6 @@ local debugger = {
   currentFuncLevel = 0,
   stepFuncLevel = 0,
   stepFuncState = 0,
-  startLevel = 0,
 
   currentFile = nil,
   currentLine = nil,
@@ -272,9 +271,11 @@ function iup.DebuggerSetLocalVariable()
     return
   end
 
-  local level = iup.GetAttribute(local_list, "LEVEL")
-  
-  local name, value = iup.DebuggerGetLocal(local_list, level, index)
+  local name = local_list[index]
+  local s, e = string.find(name, " =", 1, true)
+  name = string.sub(name, 1, s - 1)
+  local value = local_list["VAL"..index]
+
   if (value == nil) then value = "" end
   local valueType = type(value)
   if valueType ~= "string" and valueType ~= "number" and valueType ~= "boolean" then
@@ -305,9 +306,20 @@ function iup.DebuggerSetLocalVariable()
         newValue = false
       end
     end
+  
+  -- here there are 4 levels on top of the script: 
+  --   1-DebuggerSetLocalVariable, 
+  --   2-LoopStep
+  --   3-DebuggerLineHook, 
+  --   4-DebuggerHookFunction
+
+    local list_stack = iup.GetDialogChild(debugger.main_dialog, "LIST_STACK")
+    local index = tonumber(list_stack.value)
+    local level = index + 4  -- this is the level of the function
+    level = level + 1   -- this is the level of the local variables inside that function
     
     iup.DebuggerSetLocal(local_list, level, index, newValue)
-    iup.DebuggerSetLocalListTitle(local_list, index, name, newValue)
+    iup.DebuggerSetLocalListItem(local_list, index, name, newValue) -- do not set pos
   end
 end
 
@@ -318,11 +330,10 @@ function iup.DebuggerPrintLocalVariable()
   local debugtabs = iup.GetDialogChild(debugger.main_dialog, "DEBUG_TABS")
   debugtabs.valuepos = 0
 
-  local level = iup.GetAttribute(local_list, "LEVEL")
   local pos = iup.GetAttribute(local_list, "POS"..index)
-  local name, value = iup.DebuggerGetLocal(local_list, level, index)
+  local value = local_list["VAL"..index]
 
-  iup.ConsolePrint(local_list[index] .. "  (level="..level..", pos="..pos..")")
+  iup.ConsolePrint(local_list[index] .. "  (pos="..pos..")")
   iup.ConsolePrintValue(value)
 end
 
@@ -333,13 +344,11 @@ function iup.DebuggerPrintAllLocalVariables()
   local debugtabs = iup.GetDialogChild(debugger.main_dialog, "DEBUG_TABS")
   debugtabs.valuepos = 0
 
-  local level = iup.GetAttribute(local_list, "LEVEL")
-
   for index = 1, count do
     local pos = iup.GetAttribute(local_list, "POS"..index)
-    local name, value = iup.DebuggerGetLocal(local_list, level, index)
+    local value = local_list["VAL"..index]
 
-    iup.ConsolePrint(local_list[index] .. "  (level="..level..", pos="..pos..")")
+    iup.ConsolePrint(local_list[index] .. "  (pos="..pos..")")
     iup.ConsolePrintValue(value)
   end
 end
@@ -369,8 +378,7 @@ function iup.DebuggerGetLocal(local_list, level, index)
 end
 
 function iup.DebuggerLocalVariablesListAction(local_list, index)
-  local level = iup.GetAttribute(local_list, "LEVEL")
-  local name, value = iup.DebuggerGetLocal(local_list, level, index)
+  local value = local_list["VAL"..index]
   local valueType = type(value)
   if valueType == "string" or valueType == "number" or valueType == "boolean" then
     iup.SetAttribute(iup.GetDialogChild(debugger.main_dialog, "SET_LOCAL"), "ACTIVE", "Yes")
@@ -379,16 +387,22 @@ function iup.DebuggerLocalVariablesListAction(local_list, index)
   end
 end
 
-function iup.DebuggerSetLocalListTitle(local_list, index, name, value)
+function iup.DebuggerSetLocalListItem(local_list, index, name, value, pos)
   local valueType = type(value)
   if valueType ~= "string" and valueType ~= "number" and valueType ~= "boolean" then
     iup.SetAttribute(local_list, index, name.." = <"..tostring(value)..">")
   else
     iup.SetAttribute(local_list, index, name.." = "..tostring(value).." <"..valueType..">")
   end
+
+  local_list["VAL"..index] = value
+
+  if pos then
+    iup.SetAttribute(local_list, "POS"..index, pos)
+  end
 end
 
-function iup.DebuggerUpdateLocalVariablesList(level, actual_level)
+function iup.DebuggerUpdateLocalVariablesList(level)
   local name, value
   local pos
   local index = 1
@@ -396,14 +410,12 @@ function iup.DebuggerUpdateLocalVariablesList(level, actual_level)
   iup.DebuggerClearLocalVariablesList()
 
   local local_list = iup.GetDialogChild(debugger.main_dialog, "LIST_LOCAL")
-  iup.SetAttribute(local_list, "LEVEL", actual_level)
 
   pos = 1
   name, value = debug.getlocal(level, pos)
   while name ~= nil do
     if string.sub(name, 1, 1) ~= "(" then  -- do not include internal variables (loop control variables, temporaries, etc).
-      iup.DebuggerSetLocalListTitle(local_list, index, name, value)
-      iup.SetAttribute(local_list, "POS"..index, pos)
+      iup.DebuggerSetLocalListItem(local_list, index, name, value, pos)
       index = index + 1
     end
 
@@ -416,8 +428,7 @@ function iup.DebuggerUpdateLocalVariablesList(level, actual_level)
   name, value = debug.getlocal(level, pos)
   while name ~= nil do
     name = "vararg[" .. -pos .. "]"
-    iup.DebuggerSetLocalListTitle(local_list, index, name, value)
-    iup.SetAttribute(local_list, "POS"..index, pos)
+    iup.DebuggerSetLocalListItem(local_list, index, name, value, pos)
     index = index + 1
 
     pos = pos - 1
@@ -431,8 +442,7 @@ function iup.DebuggerUpdateLocalVariablesList(level, actual_level)
     name, value = debug.getupvalue(call.func, pos)
     while name ~= nil do
       name = ":: " .. name
-      iup.DebuggerSetLocalListTitle(local_list, index, name, value)
-      iup.SetAttribute(local_list, "POS"..index, pos)
+      iup.DebuggerSetLocalListItem(local_list, index, name, value, pos)
       index = index + 1
 
       pos = pos + 1
@@ -453,18 +463,24 @@ end
 
 ------------------------------------- Stack -------------------------------------
 
-function iup.DebuggerStackListAction(index)
-  local level = index + debugger.startLevel - 1  -- this is level of the function
-  level = level + 1 -- must fix the level because we called a Lua function
-  local info = debug.getinfo(level, "Sl") -- source, currentline
+function iup.DebuggerStackListAction(list_stack, index)
   
-  local filename = string.sub(info.source, 2)
-  if debugger.currentFile == filename then
-    iup.DebuggerSelectLine(info.currentline)
+  -- here there are 4 levels on top of the script: 
+  --   1-DebuggerStackListAction, 
+  --   2-LoopStep
+  --   3-DebuggerLineHook, 
+  --   4-DebuggerHookFunction
+
+  local level = index + 4  -- this is the level of the function
+  level = level + 1 -- this is the level of the local variables inside that function
+  
+  local filename = iup.GetAttribute(list_stack, "FILENAME"..index)
+  if filename and debugger.currentFile == filename then
+    local currentline = iup.GetAttribute(list_stack, "CURRENTLINE"..index)
+    iup.DebuggerSelectLine(tonumber(currentline))
   end
   
-  iup.DebuggerUpdateLocalVariablesList(level + 1, level) -- this is the level of the local variables inside that function
-                                                     -- the actual level does not includes the fix
+  iup.DebuggerUpdateLocalVariablesList(level, index)
 end
 
 function iup.DebuggerClearStackList()
@@ -482,10 +498,9 @@ function iup.DebuggerPrintStackLevel()
   local debugtabs = iup.GetDialogChild(debugger.main_dialog, "DEBUG_TABS")
   debugtabs.valuepos = 0
 
-  local level = index + debugger.startLevel - 1
   local defined = iup.GetAttribute(list_stack, "DEFINED"..index)
 
-  iup.ConsolePrint(list_stack[index] .. "  (level="..level..")")
+  iup.ConsolePrint(list_stack[index] .. "  (level="..index..")")
   iup.ConsolePrint(defined)
 end
 
@@ -497,23 +512,28 @@ function iup.DebuggerPrintStack()
   debugtabs.valuepos = 0
 
   for index = 1, count do
-    local level = index + debugger.startLevel - 1
     local defined = iup.GetAttribute(list_stack, "DEFINED"..index)
 
-    iup.ConsolePrint(list_stack[index] .. "  (level="..level..")")
+    iup.ConsolePrint(list_stack[index] .. "  (level="..index..")")
     iup.ConsolePrint(defined)
   end
 end
 
 function iup.DebuggerUpdateStackList()
   local info, desc, defined
-  local level = debugger.startLevel
   
+  -- here there are 3 levels on top of the script: 
+  --   1-DebuggerUpdateStackList, 
+  --   2-DebuggerLineHook, 
+  --   3-DebuggerHookFunction
+  local startLevel = 4 -- here level 4 is the script function at highest level on the stack
+  local level = startLevel
+
   iup.DebuggerClearStackList()
 
   local list_stack = iup.GetDialogChild(debugger.main_dialog, "LIST_STACK")
   
-  info = debug.getinfo(level, "Snl") -- source, name, namewhat, what, currentline, linedefined
+  info = debug.getinfo(level)--, "Snl") -- source, name, namewhat, what, currentline, linedefined
   while  info ~= nil do
     if info.what == "main" then
       desc = "<main>"
@@ -548,36 +568,43 @@ function iup.DebuggerUpdateStackList()
        desc = desc .. " at line " .. info.currentline
     end
 
+    local filename
     if info.what == "C" then    
-      defined = "   [Defined in C.]"
+      defined = "  [Defined in C"
     else
       local s = string.sub(info.source, 1, 1)
       if s == "@" then
-        local filename = string.sub(info.source, 2)
-        defined = "   [Defined in the file: \"" .. filename .. "\" at line " .. info.linedefined .. ".]"
+        filename = string.sub(info.source, 2)
+        defined = "  [Defined in the file: \"" .. filename .. "\""
       else
-        defined = "   [Defined in a string.]"
+        local short_src = string.sub(info.short_src, 2, -2)
+        defined = "  [Defined in a " .. short_src
       end
     end
-
-    local index = level - debugger.startLevel + 1
-    iup.SetAttribute(list_stack, index, desc)
-    iup.SetAttribute(list_stack, "DEFINED"..index, defined)
-
-    level = level + 1
-    if info.what == "main" then
-      break
+    if info.linedefined > 0 then
+       defined = defined .. ", line " .. info.linedefined .. "]"
+    else
+       defined = defined .. "]"
     end
 
-    info = debug.getinfo(level, "Snl") -- source, name, namewhat, what, currentline, linedefined
+    local index = (level - startLevel) + 1
+    iup.SetAttribute(list_stack, index, desc)
+    iup.SetAttribute(list_stack, "DEFINED"..index, defined)
+    iup.SetAttribute(list_stack, "FILENAME"..index, filename)
+    iup.SetAttribute(list_stack, "CURRENTLINE"..index, info.currentline)
+
+    level = level + 1
+
+    info = debug.getinfo(level)--, "Snl") -- source, name, namewhat, what, currentline, linedefined
   end
   
-  if level > debugger.startLevel then
+  if level > startLevel then
     iup.SetAttribute(iup.GetDialogChild(debugger.main_dialog, "PRINT_LEVEL"), "ACTIVE", "YES")
     iup.SetAttribute(iup.GetDialogChild(debugger.main_dialog, "PRINT_STACK"), "ACTIVE", "YES")
 
     list_stack.value = 1 -- select first item on list
-    iup.DebuggerUpdateLocalVariablesList(debugger.startLevel + 1, debugger.startLevel + 1) -- this is the level of the local variables inside that function
+
+    iup.DebuggerUpdateLocalVariablesList(startLevel + 1, 1) -- this is the level of the local variables inside that function
   end
   
 end
@@ -585,12 +612,14 @@ end
 
 ----------------------------  Debug State       --------------------------
 
-function iup.DebuggerGetDebugLevel()
-  local level = -1
+function iup.DebuggerGetFuncLevel()
+-- level 0 is the current function (getinfo itself); 
+-- level 1 is the function that called getinfo (DebuggerGetFuncLevel)
+  local level = 1
   repeat 
-    level = level+1
+    level = level + 1
   until debug.getinfo(level, "l") == nil  -- only current line, default is all info
-  return level
+  return level - 1
 end
 
 function iup.DebuggerUpdateState(filename, currentline)
@@ -609,7 +638,7 @@ function iup.DebuggerUpdateState(filename, currentline)
 end
 
 function iup.DebuggerLineHook(filename, currentline)
-  debugger.currentFuncLevel = iup.DebuggerGetDebugLevel()
+  debugger.currentFuncLevel = iup.DebuggerGetFuncLevel()
 
   iup.DebuggerUpdateState(filename, currentline)
   
@@ -636,7 +665,7 @@ end
 function iup.DebuggerCallHook()
   if debugger.debug_state == DEBUG_STEP_OVER then
     if debugger.stepFuncLevel == 0 then
-      local level = iup.DebuggerGetDebugLevel()
+      local level = iup.DebuggerGetFuncLevel()
       debugger.stepFuncState = FUNC_STATE_INSIDE
       debugger.stepFuncLevel = level
     end
@@ -644,11 +673,10 @@ function iup.DebuggerCallHook()
 end
 
 function iup.DebuggerReturnHook(what)
-  local level = iup.DebuggerGetDebugLevel()
-
   if what == "main" then
     iup.DebuggerSetState(DEBUG_INACTIVE)
   elseif debugger.debug_state == DEBUG_STEP_OUT or debugger.debug_state == DEBUG_STEP_OVER then
+    local level = iup.DebuggerGetFuncLevel()
     if debugger.stepFuncLevel == level then
       debugger.stepFuncState = FUNC_STATE_OUTSIDE
       debugger.stepFuncLevel = 0
@@ -657,6 +685,13 @@ function iup.DebuggerReturnHook(what)
 end
 
 function iup.DebuggerHookFunction(event, currentline)
+
+-- how many levels we have before the hook was invoked?
+--  local stackLevel = iup.DebuggerGetFuncLevel()-- - 2 -- hook is always at level 2 when called
+--  if stackLevel ~= debugger.stackLevel then
+--    debugger.stackLevel = stackLevel
+--  end
+
   -- Inside a hook, you can call getinfo with level 2 to get more information about the running function
   local info = debug.getinfo(2, "S") -- what, source
   local s = string.sub(info.source, 1, 1)
@@ -683,7 +718,6 @@ function iup.DebuggerStartDebug(filename)
   local debugtabs = iup.GetDialogChild(debugger.main_dialog, "DEBUG_TABS")
   local multitext = iup.GetDialogChild(debugger.main_dialog, "MULTITEXT")
   debugger.currentFile = multitext.filename
-  debugger.startLevel = iup.DebuggerGetDebugLevel() + 1 -- usually 3+1=4
   
   iup.ConsolePrint("-- Debug start")
   iup.DebuggerSetState(DEBUG_ACTIVE)

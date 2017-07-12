@@ -693,6 +693,15 @@ static int item_listvars_action_cb(Ihandle *ih_item)
   return IUP_DEFAULT;
 }
 
+static int item_printstack_action_cb(Ihandle *ih_item)
+{
+  Ihandle* ih = (Ihandle*)IupGetAttribute(ih_item, "MAINDIALOG");
+  lua_State* L = (lua_State*)IupGetAttribute(ih, "LUASTATE");
+  iuplua_push_name(L, "ConsolePrintStack");
+  lua_call(L, 0, 0);
+  return IUP_DEFAULT;
+}
+
 static int item_clear_action_cb(Ihandle *ih_item)
 {
   Ihandle* ih = (Ihandle*)IupGetAttribute(ih_item, "MAINDIALOG");
@@ -704,7 +713,7 @@ static int item_clear_action_cb(Ihandle *ih_item)
 static int btn_tools_action_cb(Ihandle *ih)
 {
   int x, y;
-  Ihandle* item_listfuncs, *item_listvars, *item_clear, *tools_menu;
+  Ihandle* item_listfuncs, *item_listvars, *item_printstack, *item_clear, *tools_menu;
 
   item_listfuncs = IupItem("List Global Functions", NULL);
   IupSetCallback(item_listfuncs, "ACTION", (Icallback)item_listfuncs_action_cb);
@@ -712,10 +721,13 @@ static int btn_tools_action_cb(Ihandle *ih)
   item_listvars = IupItem("List Global Variables", NULL);
   IupSetCallback(item_listvars, "ACTION", (Icallback)item_listvars_action_cb);
 
+  item_printstack = IupItem("Print Stack", NULL);
+  IupSetCallback(item_printstack, "ACTION", (Icallback)item_printstack_action_cb);
+
   item_clear = IupItem("Clear Output", NULL);
   IupSetCallback(item_clear, "ACTION", (Icallback)item_clear_action_cb);
 
-  tools_menu = IupMenu(item_listfuncs, item_listvars, IupSeparator(), item_clear, NULL);
+  tools_menu = IupMenu(item_listfuncs, item_listvars, item_printstack, IupSeparator(), item_clear, NULL);
   IupSetAttribute(tools_menu, "MAINDIALOG", (char*)IupGetDialog(ih));
 
   x = IupGetInt(ih, "X");
@@ -779,8 +791,9 @@ static int lst_stack_action_cb(Ihandle *ih, char *t, int index, int v)
 
   L = (lua_State*)IupGetAttribute(ih, "LUASTATE");
   iuplua_push_name(L, "DebuggerStackListAction");
+  iuplua_pushihandle(L, ih);
   lua_pushinteger(L, index);
-  lua_call(L, 1, 0);
+  lua_call(L, 2, 0);
   return IUP_DEFAULT;
 }
 

@@ -129,14 +129,18 @@ distinguish them from the other variables. For now a local variable can be chang
 number. Variable arguments (vararg) are displayed only for Lua version 5.2 or newer.
 <span style="color: rgb(0, 0, 0); font-family: Helvetica, Arial, sans-serif; font-size: medium; font-style: normal; font-variant-ligatures: normal; font-variant-caps: normal; font-weight: normal; letter-spacing: normal; orphans: 2; text-align: justify; text-indent: 0px; text-transform: none; white-space: normal; widows: 2; word-spacing: 0px; -webkit-text-stroke-width: 0px; background-color: rgb(255, 255, 255); text-decoration-style: initial; text-decoration-color: initial; display: inline !important; float: none;">
 (Vararg<span>&nbsp;and Upvalues since 3.23)</span></span></p>
-<p>When printed locals and stack levels display also debug information. </p>
-<pre>l_main_x = 43 (level=6, pos=1)
+<p>When printed, locals and stack display also debug information. </p>
+<pre>l_main_x = 43 (pos=1)
 43</pre>
 <p>and</p>
-<pre>f1, at line 22 (level=4)
+<pre>f1, at line 22 (level=1)
     [Defined in the file: "D:\tecgraf\iup\html\examples\Lua\scripter_test.lua" at line 18]</pre>
-<p>This values (level and pos) can be used in the functions "debug.getinfo(level, 
-flags)" or "debug.getlocal(level, pos)" to obtain more information. You can 
+<p>These values (level and pos) can be used in the functions "debug.getinfo(level, 
+flags)" or "debug.getlocal(level, pos)" to obtain more information. But level is 
+a relative stack level number, the actual stack level must be calculated 
+depending on the situation you are going to it. Inside the command line you must 
+add 6 levels.</p>
+<p>You can 
 execute code in the console command line while the debug is paused.</p>
 <h3>To Do's</h3>
 <ul>

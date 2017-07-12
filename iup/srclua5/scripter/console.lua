@@ -136,20 +136,27 @@ end
 
 function iup.ConsolePrintFunction(f)
   local info = debug.getinfo(f, "S")
-  local str = ""
+
+  local defined
   if info.what == "C" then    
-    str = "   [Defined in C.]"
+    defined = "  [Defined in C"
   else
     local s = string.sub(info.source, 1, 1)
     if s == "@" then
       local filename = string.sub(info.source, 2)
-      str = "   [Defined in the file: \"" .. filename .. "\" at line " .. info.linedefined .. ".]"
+      defined = "  [Defined in the file: \"" .. filename .. "\""
     else
-      str = "   [Defined in a string.]"
+      local short_src = string.sub(info.short_src, 2, -2)
+      defined = "  [Defined in a " .. short_src
     end
   end
+  if info.linedefined > 0 then
+      defined = defined .. ", line " .. info.linedefined .. "]"
+  else
+      defined = defined .. "]"
+  end
 
-  iup.ConsolePrint(str)
+  iup.ConsolePrint(defined)
 end
 
 function iup.ConsolePrintValue(v)
@@ -167,6 +174,9 @@ end
 
 
 function iup.ConsoleListFuncs()
+
+  iup.ConsoleEnterCommandStr("iup.ConsoleListFuncs()")
+
   console.hold_caret = true
 
   local global = _G
@@ -183,6 +193,9 @@ function iup.ConsoleListFuncs()
 end
 
 function iup.ConsoleListVars()
+
+  iup.ConsoleEnterCommandStr("iup.ConsoleListVars()")
+
   console.hold_caret = true
 
   local global = _G
@@ -196,5 +209,55 @@ function iup.ConsoleListVars()
 
   console.hold_caret = false
   console.mtlOutput.scrollto = "99999999:1"
+end
+
+function iup.ConsolePrintStack()
+  local info, desc, defined 
+  
+  iup.ConsoleEnterCommandStr("iup.ConsolePrintStack()")
+
+  local level = 2 -- skip level 0, getinfo
+                  -- skip level 1, ConsolePrintStack
+
+  info = debug.getinfo(level, "Snl") -- source, name, namewhat, what, currentline, linedefined
+  while  info ~= nil do
+    if info.what == "main" then
+      desc = "<main>"
+    elseif info.name and info.name ~= "" then
+      desc = info.name
+    else
+      desc = "<noname>"
+    end
+    if info.namewhat ~= "" then
+        desc = desc .. " <".. info.namewhat .. ">"
+    end
+    if info.currentline > 0 then
+       desc = desc .. " at line " .. info.currentline
+    end
+
+    if info.what == "C" then    
+      defined = "  [Defined in C"
+    else
+      local s = string.sub(info.source, 1, 1)
+      if s == "@" then
+        local filename = string.sub(info.source, 2)
+        defined = "  [Defined in the file: \"" .. filename .. "\""
+      else
+        local short_src = string.sub(info.short_src, 2, -2)
+        defined = "  [Defined in a " .. short_src
+      end
+    end
+    if info.linedefined > 0 then
+       defined = defined .. ", line " .. info.linedefined .. "]"
+    else
+       defined = defined .. "]"
+    end
+
+    iup.ConsolePrint(level - 1 .. " - " .. desc .. defined)
+
+    level = level + 1
+    info = debug.getinfo(level, "Snl") -- source, name, namewhat, what, currentline, linedefined
+  end
+ 
 end
 
