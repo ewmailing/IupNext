@@ -799,7 +799,7 @@ static int config_recent_cb(Ihandle* ih_item)
 static int multitext_caret_cb(Ihandle* multitext, int lin, int col)
 {
   Ihandle *lbl_statusbar = IupGetDialogChild(multitext, "STATUSBAR");
-  IupSetfAttribute(lbl_statusbar, "TITLE", "Lin %d, Col %d", lin+1, col+1);  /* in Scintilla lin and col start at 0 */ 
+  IupSetfAttribute(lbl_statusbar, "TITLE", "Lin %d, Col %d", lin + 1, col + 1);  /* in Scintilla lin and col start at 0 */
   return IUP_DEFAULT;
 }
 
@@ -943,7 +943,7 @@ static int close_exit_action_cb(Ihandle* ih_item)
 
   /* after hide, at the last moment */
   cb = IupGetCallback(ih, "EXIT_CB");
-  if (cb) 
+  if (cb)
     cb(ih);
 
   return IUP_DEFAULT;
@@ -1023,7 +1023,7 @@ static int item_goto_action_cb(Ihandle* item_goto)
   {
     int line = IupGetInt(txt, "VALUE");
     int pos;
-    IupTextConvertLinColToPos(multitext, line-1, 0, &pos);  /* in Scintilla lin and col start at 0 */
+    IupTextConvertLinColToPos(multitext, line - 1, 0, &pos);  /* in Scintilla lin and col start at 0 */
     IupSetInt(multitext, "CARETPOS", pos);
     IupSetInt(multitext, "SCROLLTOPOS", pos);
   }
@@ -1278,16 +1278,17 @@ static int find_next_action_cb(Ihandle* ih_item)
   if (find_dlg)
   {
     char* str_to_find;
-    int pos;
-    Ihandle* txt;
     Ihandle* multitext = (Ihandle*)IupGetAttribute(find_dlg, "MULTITEXT");
-
-    txt = IupGetDialogChild(find_dlg, "FIND_TEXT");
-    str_to_find = IupGetAttribute(txt, "VALUE");
+    Ihandle* find_txt = IupGetDialogChild(find_dlg, "FIND_TEXT");
 
     /* test again, because it can be called from the hot key */
+    str_to_find = IupGetAttribute(find_txt, "VALUE");
     if (str_to_find && str_to_find[0] != 0)
     {
+      char flags[80];
+      int find_start, find_end;
+      int pos_start, pos_end;
+
       int wrap = IupGetInt(IupGetDialogChild(find_dlg, "WRAP"), "VALUE");
       int down = IupGetInt(IupGetDialogChild(find_dlg, "DOWN"), "VALUE");
       int casesensitive = IupGetInt(IupGetDialogChild(find_dlg, "FIND_CASE"), "VALUE");
@@ -1295,12 +1296,7 @@ static int find_next_action_cb(Ihandle* ih_item)
       int regexp = IupGetInt(IupGetDialogChild(find_dlg, "REG_EXP"), "VALUE");
       int posix = IupGetInt(IupGetDialogChild(find_dlg, "POSIX"), "VALUE");
 
-      char *sel;
-      char flags[80];
-      int find_pos;
-
       flags[0] = 0;
-      IupSetAttribute(multitext, "SEARCHFLAGS", NULL);
       if (casesensitive)
         strcpy(flags, "MATCHCASE");
       if (whole_word)
@@ -1312,46 +1308,54 @@ static int find_next_action_cb(Ihandle* ih_item)
 
       if (flags[0] != 0)
         IupSetAttribute(multitext, "SEARCHFLAGS", flags);
+      else
+        IupSetAttribute(multitext, "SEARCHFLAGS", NULL);
 
-      find_pos = IupGetInt(multitext, "CARETPOS");
-      sel = IupGetAttribute(multitext, "SELECTIONPOS");
-
-      if (!down && sel)
+      if (!down && IupGetAttribute(multitext, "SELECTIONPOS"))
       {
         int st, ed;
         IupGetIntInt(multitext, "SELECTIONPOS", &st, &ed);
-        find_pos = st;
+        find_start = st;
       }
+      else
+        find_start = IupGetInt(multitext, "CARETPOS");
 
-      IupSetInt(multitext, "TARGETSTART", find_pos);
-      IupSetInt(multitext, "TARGETEND", down ? IupGetInt(multitext, "COUNT") - 1 : 1);
+      find_end = down ? IupGetInt(multitext, "COUNT") : 0;
 
+      IupSetInt(multitext, "TARGETSTART", find_start);
+      IupSetInt(multitext, "TARGETEND", find_end);
+
+      str_to_find = IupGetAttribute(find_txt, "VALUE");
       IupSetAttribute(multitext, "SEARCHINTARGET", str_to_find);
 
-      pos = IupGetInt(multitext, "TARGETSTART");
+      pos_start = IupGetInt(multitext, "TARGETSTART");
+      pos_end = IupGetInt(multitext, "TARGETEND");
 
-      if (pos == find_pos && wrap)
+      if (pos_start == find_start && pos_end == find_end && wrap)
       {
         /* if not found and wrap search again in the complementary region */
-        IupSetInt(multitext, "TARGETSTART", down ? 1 : IupGetInt(multitext, "COUNT") - 1);
-        IupSetInt(multitext, "TARGETEND", find_pos);
+        find_end = find_start;
+        find_start = down ? 0 : IupGetInt(multitext, "COUNT");
 
+        IupSetInt(multitext, "TARGETSTART", find_start);
+        IupSetInt(multitext, "TARGETEND", find_end);
+
+        str_to_find = IupGetAttribute(find_txt, "VALUE");
         IupSetAttribute(multitext, "SEARCHINTARGET", str_to_find);
 
-        pos = IupGetInt(multitext, "TARGETSTART");
+        pos_start = IupGetInt(multitext, "TARGETSTART");
+        pos_end = IupGetInt(multitext, "TARGETEND");
       }
 
-      if (pos != find_pos)
+      if (pos_start != find_start || pos_end != find_end)
       {
         int lin, col;
 
-        int end_pos = IupGetInt(multitext, "TARGETEND");
-
         IupSetFocus(multitext);
-        IupSetfAttribute(multitext, "SELECTIONPOS", "%d:%d", pos, end_pos);
+        IupSetfAttribute(multitext, "SELECTIONPOS", "%d:%d", pos_start, pos_end);
 
         /* update statusbar */
-        IupTextConvertPosToLinCol(multitext, end_pos, &lin, &col);
+        IupTextConvertPosToLinCol(multitext, pos_end, &lin, &col);
         multitext_caret_cb(multitext, lin, col);
       }
       else
@@ -1401,25 +1405,24 @@ static int find_replace_all_action_cb(Ihandle* bt_replace)
   {
     char* str_to_find;
     char* str_to_replace;
-    int pos;
     Ihandle* multitext = (Ihandle*)IupGetAttribute(find_dlg, "MULTITEXT");
     Ihandle* replace_txt = IupGetDialogChild(find_dlg, "REPLACE_TEXT");
-    Ihandle* txt = IupGetDialogChild(find_dlg, "FIND_TEXT");
+    Ihandle* find_txt = IupGetDialogChild(find_dlg, "FIND_TEXT");
     
     /* test again, because it can be called from the hot key */
-    str_to_find = IupGetAttribute(txt, "VALUE");
+    str_to_find = IupGetAttribute(find_txt, "VALUE");
     if (str_to_find && str_to_find[0] != 0)
     {
+      char flags[80];
+      int find_start, find_end;
+      int pos_start, pos_end;
+
       int casesensitive = IupGetInt(IupGetDialogChild(find_dlg, "FIND_CASE"), "VALUE");
       int whole_word = IupGetInt(IupGetDialogChild(find_dlg, "WHOLE_WORD"), "VALUE");
       int regexp = IupGetInt(IupGetDialogChild(find_dlg, "REG_EXP"), "VALUE");
       int posix = IupGetInt(IupGetDialogChild(find_dlg, "POSIX"), "VALUE");
 
-      char flags[80];
-      int find_pos;
-
       flags[0] = 0;
-      IupSetAttribute(multitext, "SEARCHFLAGS", NULL);
       if (casesensitive)
         strcpy(flags, "MATCHCASE");
       if (whole_word)
@@ -1431,28 +1434,37 @@ static int find_replace_all_action_cb(Ihandle* bt_replace)
 
       if (flags[0] != 0)
         IupSetAttribute(multitext, "SEARCHFLAGS", flags);
+      else
+        IupSetAttribute(multitext, "SEARCHFLAGS", NULL);
 
-      IupSetInt(multitext, "TARGETSTART", 0);
-      IupSetInt(multitext, "TARGETEND", 0);
+      find_start = 0;
+      find_end = IupGetInt(multitext, "COUNT");
 
-      str_to_find = IupGetAttribute(txt, "VALUE");
+      IupSetInt(multitext, "TARGETSTART", find_start);
+      IupSetInt(multitext, "TARGETEND", find_end);
+
+      str_to_find = IupGetAttribute(find_txt, "VALUE");
       IupSetAttribute(multitext, "SEARCHINTARGET", str_to_find);
 
-      find_pos = 0;
-      pos = IupGetInt(multitext, "TARGETSTART");
+      pos_start = IupGetInt(multitext, "TARGETSTART");
+      pos_end = IupGetInt(multitext, "TARGETEND");
 
-      while (pos != find_pos)
+      while (find_start != pos_start || find_end != pos_end)
       {
         str_to_replace = IupGetAttribute(replace_txt, "VALUE");
         IupSetAttribute(multitext, "REPLACETARGET", str_to_replace);
 
-        IupSetInt(multitext, "TARGETSTART", IupGetInt(multitext, "TARGETEND"));
-        find_pos = IupGetInt(multitext, "TARGETEND");
-        IupSetInt(multitext, "TARGETEND", 0);
+        find_start = IupGetInt(multitext, "TARGETEND");
+        find_end = IupGetInt(multitext, "COUNT");
 
-        str_to_find = IupGetAttribute(txt, "VALUE");
+        IupSetInt(multitext, "TARGETSTART", find_start);
+        IupSetInt(multitext, "TARGETEND", find_end);
+
+        str_to_find = IupGetAttribute(find_txt, "VALUE");
         IupSetAttribute(multitext, "SEARCHINTARGET", str_to_find);
-        pos = IupGetInt(multitext, "TARGETSTART");
+
+        pos_start = IupGetInt(multitext, "TARGETSTART");
+        pos_end = IupGetInt(multitext, "TARGETEND");
       }
     }
   }
