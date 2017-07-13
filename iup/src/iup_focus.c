@@ -292,7 +292,7 @@ void iupCallGetFocusCb(Ihandle *ih)
     Ihandle* parent = iupChildTreeGetNativeParent(ih);
     while (parent)
     {
-      IFni cb = (IFni)IupGetCallback(ih, "FOCUS_CB");
+      IFni cb = (IFni)IupGetCallback(parent, "FOCUS_CB");
       if (cb)
       {
         cb(parent, 1);
@@ -325,7 +325,7 @@ void iupCallKillFocusCb(Ihandle *ih)
     Ihandle* parent = iupChildTreeGetNativeParent(ih);
     while (parent)
     {
-      IFni cb = (IFni)IupGetCallback(ih, "FOCUS_CB");
+      IFni cb = (IFni)IupGetCallback(parent, "FOCUS_CB");
       if (cb)
       {
         cb(parent, 0);
