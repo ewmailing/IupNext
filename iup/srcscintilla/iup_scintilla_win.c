@@ -10,9 +10,8 @@
 #include <string.h>
 #include <math.h>
 
-
-#include <Scintilla.h>
-#include <SciLexer.h>
+#include "Scintilla.h"
+#include "SciLexer.h"
 
 #include <windows.h>
 

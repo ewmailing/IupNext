@@ -80,7 +80,7 @@ static int iScintillaSetZoomAttrib(Ihandle *ih, const char *value)
 
 static char* iScintillaGetZoomAttrib(Ihandle* ih)
 {
-  int points = IupScintillaSendMessage(ih, SCI_GETZOOM, 0, 0);
+  int points = (int)IupScintillaSendMessage(ih, SCI_GETZOOM, 0, 0);
   return iupStrReturnInt(points);
 }
 

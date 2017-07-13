@@ -51,9 +51,9 @@ static int iScintillaLoadLexerLibraryAttrib(Ihandle* ih, const char* value)
 
 static char* iScintillaGetLexerLanguageAttrib(Ihandle* ih)
 {
-  int len = IupScintillaSendMessage(ih, SCI_GETLEXERLANGUAGE, 0, (sptr_t)NULL);
+  int len = (int)IupScintillaSendMessage(ih, SCI_GETLEXERLANGUAGE, 0, (sptr_t)NULL);
   char *str = iupStrGetMemory(len+1);
-  len = IupScintillaSendMessage(ih, SCI_GETLEXERLANGUAGE, 0, (sptr_t)str);
+  len = (int)IupScintillaSendMessage(ih, SCI_GETLEXERLANGUAGE, 0, (sptr_t)str);
   if (len)
   {
     if (!iupStrEqual(str, "null"))
@@ -88,7 +88,7 @@ static char* iScintillaGetPropertyAttrib(Ihandle* ih)
     int len = (int)IupScintillaSendMessage(ih, SCI_GETPROPERTY, (uptr_t)strKey, (sptr_t)NULL);
     char *str = iupStrGetMemory(len+1);
 
-    len = IupScintillaSendMessage(ih, SCI_GETPROPERTY, (uptr_t)strKey, (sptr_t)str);
+    len = (int)IupScintillaSendMessage(ih, SCI_GETPROPERTY, (uptr_t)strKey, (sptr_t)str);
     if (len)
       return str;
   }

@@ -49,7 +49,7 @@ SCI_GETCHARAT(int position)
 
 static char* iScintillaGetValueAttrib(Ihandle* ih)
 {
-  int len = IupScintillaSendMessage(ih, SCI_GETTEXTLENGTH, 0, 0);
+  int len = (int)IupScintillaSendMessage(ih, SCI_GETTEXTLENGTH, 0, 0);
   char* str = iupStrGetMemory(len+1);
   IupScintillaSendMessage(ih, SCI_GETTEXT, len+1, (sptr_t)str); /* include also the terminator */
   return str;
@@ -65,7 +65,7 @@ static int iScintillaSetValueAttrib(Ihandle* ih, const char* value)
 
 static char* iScintillaGetLineAttribId(Ihandle* ih, int line)
 {
-  int len = IupScintillaSendMessage(ih, SCI_LINELENGTH, line, 0);
+  int len = (int)IupScintillaSendMessage(ih, SCI_LINELENGTH, line, 0);
   char* str = iupStrGetMemory(len+1); 
   IupScintillaSendMessage(ih, SCI_GETLINE, line, (sptr_t)str);
   return str;
@@ -73,7 +73,7 @@ static char* iScintillaGetLineAttribId(Ihandle* ih, int line)
 
 static char* iScintillaGetReadOnlyAttrib(Ihandle* ih)
 {
-  return iupStrReturnBoolean(IupScintillaSendMessage(ih, SCI_GETREADONLY, 0, 0));
+  return iupStrReturnBoolean((int)IupScintillaSendMessage(ih, SCI_GETREADONLY, 0, 0));
 }
 
 static int iScintillaSetReadOnlyAttrib(Ihandle* ih, const char* value)
@@ -88,7 +88,7 @@ static int iScintillaSetReadOnlyAttrib(Ihandle* ih, const char* value)
 
 static int iScintillaSetPrependTextAttrib(Ihandle* ih, const char* value)
 {
-  int len = strlen(value);
+  int len = (int)strlen(value);
 
   ih->data->ignore_change = 1;
   IupScintillaSendMessage(ih, SCI_ADDTEXT, len, (sptr_t)value);
@@ -102,7 +102,7 @@ static int iScintillaSetPrependTextAttrib(Ihandle* ih, const char* value)
 
 static int iScintillaSetAppendTextAttrib(Ihandle* ih, const char* value)
 {
-  int len = strlen(value);
+  int len = (int)strlen(value);
 
   ih->data->ignore_change = 1;
   if(ih->data->append_newline)
@@ -152,7 +152,7 @@ static int iScintillaSetSavePointAttrib(Ihandle* ih, const char* value)
 
 static char* iScintillaGetModifyAttrib(Ihandle* ih)
 {
-  return iupStrReturnBoolean (IupScintillaSendMessage(ih, SCI_GETMODIFY, 0, 0)); 
+  return iupStrReturnBoolean((int)IupScintillaSendMessage(ih, SCI_GETMODIFY, 0, 0));
 }
 
 static int iScintillaSetDeleteRangeAttrib(Ihandle* ih, const char* value)

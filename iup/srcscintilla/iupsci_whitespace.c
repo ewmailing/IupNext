@@ -108,7 +108,7 @@ static int iScintillaSetWSSizeAttrib(Ihandle *ih, const char *value)
 
 static char* iScintillaGetWSSizeAttrib(Ihandle* ih)
 {
-  int size = IupScintillaSendMessage(ih, SCI_GETWHITESPACESIZE, 0, 0);
+  int size = (int)IupScintillaSendMessage(ih, SCI_GETWHITESPACESIZE, 0, 0);
   return iupStrReturnInt(size);
 }
 
@@ -125,7 +125,7 @@ static int iScintillaSetWSExtraAscentAttrib(Ihandle *ih, const char *value)
 
 static char* iScintillaGetWSExtraAscentAttrib(Ihandle* ih)
 {
-  int asc = IupScintillaSendMessage(ih, SCI_GETEXTRAASCENT, 0, 0);
+  int asc = (int)IupScintillaSendMessage(ih, SCI_GETEXTRAASCENT, 0, 0);
   return iupStrReturnInt(asc);
 }
 
@@ -142,7 +142,7 @@ static int iScintillaSetWSExtraDescentAttrib(Ihandle *ih, const char *value)
 
 static char* iScintillaGetWSExtraDescentAttrib(Ihandle* ih)
 {
-  int desc = IupScintillaSendMessage(ih, SCI_GETEXTRADESCENT, 0, 0);
+  int desc = (int)IupScintillaSendMessage(ih, SCI_GETEXTRADESCENT, 0, 0);
   return iupStrReturnInt(desc);
 }
 
@@ -154,7 +154,7 @@ static int iScintillaSetEolVisibleAttrib(Ihandle *ih, const char *value)
 
 static char* iScintillaGetEolVisibleAttrib(Ihandle* ih)
 {
-  int visible = IupScintillaSendMessage(ih, SCI_GETVIEWEOL, 0, 0);
+  int visible = (int)IupScintillaSendMessage(ih, SCI_GETVIEWEOL, 0, 0);
   return iupStrReturnBoolean(visible);
 }
 
