@@ -10,7 +10,7 @@
     <ClCompile Include="..\srcscintilla\win32\HanjaDic.cxx">
       <Filter>Scintilla</Filter>
     </ClCompile>
-    <ClCompile Include="..\srcscintilla\iup_scintilla.c" />
+    <ClCompile Include="..\srcscintilla\iup_scintilla_win.c" />
   </ItemGroup>
   <ItemGroup>
     <Filter Include="Scintilla">

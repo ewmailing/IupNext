@@ -168,6 +168,10 @@
     <ClCompile Include="..\srcscintilla\iupsci_text.c" />
     <ClCompile Include="..\srcscintilla\iupsci_whitespace.c" />
     <ClCompile Include="..\srcscintilla\iupsci_wordwrap.c" />
+    <ClCompile Include="..\srcscintilla\iup_scintilla.c">
+      <CompileAs Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">Default</CompileAs>
+      <CompileAs Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">Default</CompileAs>
+    </ClCompile>
     <ClCompile Include="..\srcscintilla\iup_scintilladlg.c" />
     <ClCompile Include="..\srcscintilla\lexers\LexBatch.cxx" />
     <ClCompile Include="..\srcscintilla\lexers\LexBibTeX.cxx" />

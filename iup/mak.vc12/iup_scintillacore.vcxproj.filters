@@ -443,6 +443,7 @@
       <Filter>Scintilla\Lexers</Filter>
     </ClCompile>
     <ClCompile Include="..\srcscintilla\iup_scintilladlg.c" />
+    <ClCompile Include="..\srcscintilla\iup_scintilla.c" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="..\srcscintilla\src\Indicator.h">

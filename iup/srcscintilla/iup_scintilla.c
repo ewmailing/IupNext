@@ -14,13 +14,6 @@
 #include <Scintilla.h>
 #include <SciLexer.h>
 
-#ifdef GTK
-#include <gtk/gtk.h>
-#include <ScintillaWidget.h>
-#else
-#include <windows.h>
-#endif
-
 #include "iup.h"
 #include "iup_scintilla.h"
 #include "iupcbs.h"
@@ -36,30 +29,10 @@
 #include "iup_layout.h"
 #include "iup_assert.h"
 
-#ifdef GTK
-#include "iupgtk_drv.h"
-#else
-#include "iupwin_drv.h"
-#endif
-
 #include "iupsci.h"
 
 
-#ifndef GTK
-#define WM_IUPCARET WM_APP+1   /* Custom IUP message */
-#endif
-
-sptr_t IupScintillaSendMessage(Ihandle* ih, unsigned int iMessage, uptr_t wParam, sptr_t lParam)
-{
-#ifdef GTK
-  return scintilla_send_message(SCINTILLA(ih->handle), iMessage, wParam, lParam);
-#else
-  return SendMessage(ih->handle, iMessage, wParam, lParam);
-#endif
-}
-
-
-/***** AUXILIARY ATTRIBUTES *****/
+/***** AUXILIARY FUNCTIONS *****/
 
 long iupScintillaEncodeColor(unsigned char r, unsigned char g, unsigned char b)
 {
@@ -110,7 +83,7 @@ static int iScintillaConvertXYToPos(Ihandle* ih, int x, int y)
 }
 
 
-/***** GENERAL FUNCTIONS *****/
+/***** AUXILIARY ATTRIBUTES *****/
 
 static int iScintillaSetUsePopupAttrib(Ihandle* ih, const char* value)
 {
@@ -141,7 +114,7 @@ static void iScintillaKeySetStatus(int state, char* status, int doubleclick)
     iupKEY_SETDOUBLE(status);
 }
 
-static void iScintillaNotify(Ihandle *ih, SCNotification* pMsg)
+void iupScintillaNotify(Ihandle *ih, SCNotification* pMsg)
 {
   int lin = (int)IupScintillaSendMessage(ih, SCI_LINEFROMPOSITION, pMsg->position, 0);
   int col = (int)IupScintillaSendMessage(ih, SCI_GETCOLUMN, pMsg->position, 0);
@@ -196,9 +169,7 @@ static void iScintillaNotify(Ihandle *ih, SCNotification* pMsg)
   case SCN_MODIFIED:
     if (ih->data->ignore_change)
     {
-#ifndef GTK
-      PostMessage(ih->handle, WM_IUPCARET, 0, 0L);
-#endif
+      iupdrvScintillaRefreshCaret(ih);
       break;
     }
 
@@ -218,9 +189,8 @@ static void iScintillaNotify(Ihandle *ih, SCNotification* pMsg)
 
           cb(ih, insert, pMsg->position, pMsg->length, (char*)pMsg->text);
         }
-#ifndef GTK
-        PostMessage(ih->handle, WM_IUPCARET, 0, 0L);
-#endif
+
+        iupdrvScintillaRefreshCaret(ih);
       }
 
       if (pMsg->modificationType&SC_MOD_INSERTTEXT ||
@@ -229,9 +199,8 @@ static void iScintillaNotify(Ihandle *ih, SCNotification* pMsg)
         IFn value_cb = (IFn)IupGetCallback(ih, "VALUECHANGED_CB");
         if (value_cb)
           value_cb(ih);
-#ifndef GTK
-        PostMessage(ih->handle, WM_IUPCARET, 0, 0L);
-#endif
+
+        iupdrvScintillaRefreshCaret(ih);
       }
     }
 
@@ -263,7 +232,7 @@ static void iScintillaNotify(Ihandle *ih, SCNotification* pMsg)
   }
 }
 
-static void iScintillaCallCaretCb(Ihandle* ih)
+void iupScintillaCallCaretCb(Ihandle* ih)
 {
   int pos;
 
@@ -284,180 +253,12 @@ static void iScintillaCallCaretCb(Ihandle* ih)
   }
 }
 
-#ifdef GTK
-static void gtkScintillaNotify(GtkWidget *w, gint wp, gpointer lp, Ihandle *ih)
-{
-  SCNotification *pMsg =(SCNotification*)lp;
-
-  iScintillaNotify(ih, pMsg);
-
-  (void)w;
-  (void)wp;
-}
-
-static gboolean gtkScintillaKeyReleaseEvent(GtkWidget *widget, GdkEventKey *evt, Ihandle *ih)
-{
-  iScintillaCallCaretCb(ih);
-  (void)widget;
-  (void)evt;
-  return FALSE;
-}
-
-static gboolean gtkScintillaButtonEvent(GtkWidget *widget, GdkEventButton *evt, Ihandle *ih)
-{
-  iScintillaCallCaretCb(ih);
-  return iupgtkButtonEvent(widget, evt, ih);
-}
-
-#else
-
-static int winScintillaWmNotify(Ihandle* ih, NMHDR* msg_info, int *result)
-{
-  SCNotification *pMsg = (SCNotification*)msg_info;
-
-  iScintillaNotify(ih, pMsg);
-
-  (void)result;
-  return 0; /* result not used */
-}
-
-static int winScintillaMsgProc(Ihandle* ih, UINT msg, WPARAM wp, LPARAM lp, LRESULT *result)
-{
-  if (msg==WM_KEYDOWN) /* process K_ANY before text callbacks */
-  {
-    int ret = iupwinBaseMsgProc(ih, msg, wp, lp, result);
-    if (ret) 
-    {
-      iupAttribSet(ih, "_IUPWIN_IGNORE_CHAR", "1");
-      *result = 0;
-      return 1;
-    }
-    else
-      iupAttribSet(ih, "_IUPWIN_IGNORE_CHAR", NULL);
-  }
-
-  switch (msg)
-  {
-  case WM_CHAR:
-    {
-      /* even aborting WM_KEYDOWN, a WM_CHAR will be sent, so ignore it also */
-      /* if a dialog was shown, the loop will be processed, so ignore out of focus WM_CHAR messages */
-      if (GetFocus() != ih->handle || iupAttribGet(ih, "_IUPWIN_IGNORE_CHAR"))
-      {
-        iupAttribSet(ih, "_IUPWIN_IGNORE_CHAR", NULL);
-        *result = 0;
-        return 1;
-      }
-
-      break;
-    }
-  case WM_KEYDOWN:
-    {
-      PostMessage(ih->handle, WM_IUPCARET, 0, 0L);
-      return 0;  /* already processed at the begining of this function */
-    }
-  case WM_KEYUP:
-    {
-      PostMessage(ih->handle, WM_IUPCARET, 0, 0L);
-      break;
-    }
-  case WM_LBUTTONDBLCLK:
-  case WM_MBUTTONDBLCLK:
-  case WM_RBUTTONDBLCLK:
-  case WM_LBUTTONDOWN:
-  case WM_MBUTTONDOWN:
-  case WM_RBUTTONDOWN:
-    {
-      if (iupwinButtonDown(ih, msg, wp, lp)==-1)
-      {
-        *result = 0;
-        return 1;
-      }
-      PostMessage(ih->handle, WM_IUPCARET, 0, 0L);
-      break;
-    }
-  case WM_MBUTTONUP:
-  case WM_RBUTTONUP:
-  case WM_LBUTTONUP:
-    {
-      if (iupwinButtonUp(ih, msg, wp, lp)==-1)
-      {
-        *result = 0;
-        return 1;
-      }
-      PostMessage(ih->handle, WM_IUPCARET, 0, 0L);
-      break;
-    }
-  case WM_IUPCARET:
-    {
-      iScintillaCallCaretCb(ih);
-      break;
-    }
-  case WM_MOUSEMOVE:
-    {
-      iupwinMouseMove(ih, msg, wp, lp);
-      break;
-    }
-  }
-
-  return iupwinBaseMsgProc(ih, msg, wp, lp, result);
-}
-#endif
-
 /*****************************************************************************/
 
 static int iScintillaMapMethod(Ihandle* ih)
 {
-#ifdef GTK
-  ih->handle = scintilla_new();
-  if (!ih->handle)
+  if (idrvScintillaMap(ih) == IUP_ERROR)
     return IUP_ERROR;
-
-  gtk_widget_show(ih->handle);
-
-  /* add to the parent, all GTK controls must call this. */
-  iupgtkAddToParent(ih);
-
-  if (!iupAttribGetBoolean(ih, "CANFOCUS"))
-    iupgtkSetCanFocus(ih->handle, 0);
-
-  g_signal_connect(G_OBJECT(ih->handle), "enter-notify-event", G_CALLBACK(iupgtkEnterLeaveEvent), ih);
-  g_signal_connect(G_OBJECT(ih->handle), "leave-notify-event", G_CALLBACK(iupgtkEnterLeaveEvent), ih);
-  g_signal_connect(G_OBJECT(ih->handle), "focus-in-event",     G_CALLBACK(iupgtkFocusInOutEvent), ih);
-  g_signal_connect(G_OBJECT(ih->handle), "focus-out-event",    G_CALLBACK(iupgtkFocusInOutEvent), ih);
-  g_signal_connect(G_OBJECT(ih->handle), "key-press-event",    G_CALLBACK(iupgtkKeyPressEvent), ih);
-  g_signal_connect(G_OBJECT(ih->handle), "show-help",          G_CALLBACK(iupgtkShowHelp), ih);
-
-  g_signal_connect_after(G_OBJECT(ih->handle), "key-release-event", G_CALLBACK(gtkScintillaKeyReleaseEvent), ih);
-  g_signal_connect(G_OBJECT(ih->handle), "button-press-event", G_CALLBACK(gtkScintillaButtonEvent), ih);  /* if connected "after" then it is ignored */
-  g_signal_connect(G_OBJECT(ih->handle), "button-release-event", G_CALLBACK(gtkScintillaButtonEvent), ih);
-  g_signal_connect(G_OBJECT(ih->handle), "motion-notify-event", G_CALLBACK(iupgtkMotionNotifyEvent), ih);
-
-  g_signal_connect(G_OBJECT(ih->handle), "sci-notify", G_CALLBACK(gtkScintillaNotify), ih);
-
-  gtk_widget_realize(ih->handle);
-#else
-  DWORD dwStyle = WS_CHILD | WS_CLIPSIBLINGS;
-  DWORD dwExStyle = 0;
-
-  if (!ih->parent)
-    return IUP_ERROR;
-
-  if (iupAttribGetBoolean(ih, "CANFOCUS"))
-    dwStyle |= WS_TABSTOP;
-
-  if (iupAttribGetBoolean(ih, "BORDER"))
-    dwExStyle |= WS_EX_CLIENTEDGE;
-  
-  if (!iupwinCreateWindow(ih, TEXT("Scintilla"), dwExStyle, dwStyle, NULL))
-    return IUP_ERROR;
-
-  /* Process Scintilla Notifications */
-  IupSetCallback(ih, "_IUPWIN_NOTIFY_CB", (Icallback)winScintillaWmNotify);
-
-  /* Process BUTTON_CB, MOTION_CB and CARET_CB */
-  IupSetCallback(ih, "_IUPWIN_CTRLMSGPROC_CB", (Icallback)winScintillaMsgProc);
-#endif
 
   /* configure for DROP of files */
   if (IupGetCallback(ih, "DROPFILES_CB"))
@@ -508,11 +309,7 @@ static void iScintillaComputeNaturalSizeMethod(Ihandle* ih, int *w, int *h, int 
   /* compute the borders space */
   if (iupAttribGetBoolean(ih, "BORDER"))
   {
-#ifdef GTK
-    int border_size = 2*5;
-#else
-    int border_size = 2*3;
-#endif
+    int border_size = iupdrvScintillaGetBorder();
     natural_w += border_size;
     natural_h += border_size;
   }
@@ -545,14 +342,6 @@ static int iScintillaCreateMethod(Ihandle* ih, void **params)
   return IUP_NOERROR;
 }
 
-static void iScintillaReleaseMethod(Iclass* ic)
-{
-  (void)ic;
-#ifndef GTK
-  Scintilla_ReleaseResources();
-#endif
-}
-
 static Iclass* iupScintillaNewClass(void)
 {
   Iclass* ic = iupClassNew(NULL);
@@ -566,7 +355,7 @@ static Iclass* iupScintillaNewClass(void)
 
   /* Class functions */
   ic->New     = iupScintillaNewClass;
-  ic->Release = iScintillaReleaseMethod;
+  ic->Release = iupdrvScintillaReleaseMethod;
   ic->Create  = iScintillaCreateMethod;
   ic->Map     = iScintillaMapMethod;
   ic->UnMap = iupdrvBaseUnMapMethod;
@@ -640,9 +429,7 @@ void IupScintillaOpen(void)
     iupRegisterClass(iupScintillaDlgNewClass());
     IupSetGlobal("_IUP_SCINTILLA_OPEN", "1");
 
-#ifndef GTK
-    Scintilla_RegisterClasses(IupGetGlobal("HINSTANCE"));
-#endif
+    iupdrvScintillaOpen();
   }
 }
 
