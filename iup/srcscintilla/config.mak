@@ -38,6 +38,10 @@ ifndef GTK_DEFAULT
   endif
 endif
 
+SCINTILLA = scintilla
+
+INCLUDES += $(SCINTILLA)/lexlib $(SCINTILLA)/src $(SCINTILLA)/include
+
 ifdef USE_GTK
   CHECK_GTK = Yes
   DEFINES += NO_CXX11_REGEX
@@ -45,15 +49,13 @@ ifdef USE_GTK
   ifdef USE_GTK3
     DEFINES += GDK_DISABLE_DEPRECATED GSEAL_ENABLE G_HAVE_ISO_VARARGS
   endif
-  INCLUDES += ../src/gtk lexlib src include gtk
-  INCLUDES += gtk
+  INCLUDES += ../src/gtk $(SCINTILLA)/gtk
   ifneq ($(findstring cygw, $(TEC_UNAME)), )
     INCLUDES += $(GTK)/include/cairo
     LIBS += pangocairo-1.0 cairo
   endif
 else
-  INCLUDES += ../src/win lexlib src include win32
-  INCLUDES += win
+  INCLUDES += ../src/win $(SCINTILLA)/win32
   LIBS += imm32
   DEFINES += UNICODE
   
@@ -115,6 +117,8 @@ else
   SRCSCINTILLA += win32/PlatWin.cxx win32/ScintillaWin.cxx win32/HanjaDic.cxx
   SRCSCINTILLA += iup_scintilla_win.c 
 endif
+
+SRCSCINTILLA := $(addprefix $(SCINTILLA)/, $(SRCSCINTILLA))
 
 SRC = $(SRCSCINTILLA) iupsci_clipboard.c iupsci_folding.c iupsci_lexer.c iupsci_margin.c \
       iupsci_overtype.c iupsci_scrolling.c iupsci_selection.c iupsci_style.c iupsci_tab.c \
