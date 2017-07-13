@@ -43,6 +43,9 @@ ifdef SCINTILLA_OLD
 else
   SCINTILLA := scintilla
 endif
+ifdef SCINTILLA_NEW
+  SCINTILLA := scintilla375
+endif
 
 INCLUDES += $(SCINTILLA)/lexlib $(SCINTILLA)/src $(SCINTILLA)/include
 
@@ -115,6 +118,9 @@ else
   SRCSCINTILLA += lexers/LexBatch.cxx lexers/LexDiff.cxx lexers/LexErrorList.cxx \
 				lexers/LexMake.cxx lexers/LexNull.cxx lexers/LexProps.cxx lexers/LexJSON.cxx
 endif
+ifdef SCINTILLA_NEW
+  SRCSCINTILLA += lexers/LexEDIFACT.cxx lexers/LexIndent.cxx
+endif
 
 SRCSCINTILLA += lexlib/Accessor.cxx lexlib/CharacterSet.cxx lexlib/LexerBase.cxx lexlib/LexerModule.cxx \
                 lexlib/LexerNoExceptions.cxx lexlib/LexerSimple.cxx lexlib/PropSetSimple.cxx \
@@ -122,6 +128,9 @@ SRCSCINTILLA += lexlib/Accessor.cxx lexlib/CharacterSet.cxx lexlib/LexerBase.cxx
 
 ifdef USE_GTK
   SRCSCINTILLA += gtk/PlatGTK.cxx gtk/ScintillaGTK.cxx gtk/scintilla-marshal.c
+  ifdef SCINTILLA_NEW
+    SRCSCINTILLA += gtk/ScintillaGTKAccessible.cxx
+  endif
   SRCSCINTILLA += iup_scintilla_gtk.c 
 else
   SRCSCINTILLA += win32/PlatWin.cxx win32/ScintillaWin.cxx
