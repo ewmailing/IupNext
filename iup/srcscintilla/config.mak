@@ -38,7 +38,11 @@ ifndef GTK_DEFAULT
   endif
 endif
 
-SCINTILLA = scintilla
+ifdef SCINTILLA_OLD
+  SCINTILLA := scintilla353
+else
+  SCINTILLA := scintilla
+endif
 
 INCLUDES += $(SCINTILLA)/lexlib $(SCINTILLA)/src $(SCINTILLA)/include
 
@@ -103,9 +107,15 @@ SRCSCINTILLA += lexers/LexA68k.cxx lexers/LexAbaqus.cxx lexers/LexAda.cxx lexers
 				lexers/LexVerilog.cxx lexers/LexVHDL.cxx lexers/LexVisualProlog.cxx lexers/LexYAML.cxx \
 				lexers/LexKVIrc.cxx lexers/LexLaTeX.cxx lexers/LexSTTXT.cxx lexers/LexRust.cxx \
 				lexers/LexDMAP.cxx lexers/LexDMIS.cxx lexers/LexBibTeX.cxx lexers/LexHex.cxx lexers/LexAsm.cxx \
-				lexers/LexRegistry.cxx lexers/LexBatch.cxx lexers/LexDiff.cxx lexers/LexErrorList.cxx \
+				lexers/LexRegistry.cxx
+        
+ifdef SCINTILLA_OLD
+  SRCSCINTILLA += lexers/LexOthers.cxx
+else
+  SRCSCINTILLA += lexers/LexBatch.cxx lexers/LexDiff.cxx lexers/LexErrorList.cxx \
 				lexers/LexMake.cxx lexers/LexNull.cxx lexers/LexProps.cxx lexers/LexJSON.cxx
-				
+endif
+
 SRCSCINTILLA += lexlib/Accessor.cxx lexlib/CharacterSet.cxx lexlib/LexerBase.cxx lexlib/LexerModule.cxx \
                 lexlib/LexerNoExceptions.cxx lexlib/LexerSimple.cxx lexlib/PropSetSimple.cxx \
                 lexlib/StyleContext.cxx lexlib/WordList.cxx lexlib/CharacterCategory.cxx
@@ -114,7 +124,10 @@ ifdef USE_GTK
   SRCSCINTILLA += gtk/PlatGTK.cxx gtk/ScintillaGTK.cxx gtk/scintilla-marshal.c
   SRCSCINTILLA += iup_scintilla_gtk.c 
 else
-  SRCSCINTILLA += win32/PlatWin.cxx win32/ScintillaWin.cxx win32/HanjaDic.cxx
+  SRCSCINTILLA += win32/PlatWin.cxx win32/ScintillaWin.cxx
+  ifndef SCINTILLA_OLD
+    SRCSCINTILLA += win32/HanjaDic.cxx
+  endif
   SRCSCINTILLA += iup_scintilla_win.c 
 endif
 
