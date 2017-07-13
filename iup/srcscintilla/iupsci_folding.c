@@ -58,29 +58,61 @@ static int iScintillaSetFoldFlagsAttrib(Ihandle* ih, const char* value)
 
 static char* iScintillaGetFoldLevelAttrib(Ihandle* ih, int line)
 {
-  int level = IupScintillaSendMessage(ih, SCI_GETFOLDLEVEL, line, 0);
-
-  if (level & SC_FOLDLEVELWHITEFLAG)
-    return "WHITEFLAG";
-  else if (level & SC_FOLDLEVELHEADERFLAG)
-    return "HEADERFLAG";
-  else if (level & SC_FOLDLEVELNUMBERMASK)
-    return "NUMBERMASK";
-  else  /* SC_FOLDLEVELBASE */
-    return "BASE";
+  int level = (int)IupScintillaSendMessage(ih, SCI_GETFOLDLEVEL, line, 0);
+  level = level & SC_FOLDLEVELNUMBERMASK;
+  return iupStrReturnInt(level);
 }
 
 static int iScintillaSetFoldLevelAttrib(Ihandle* ih, int line, const char* value)
 {
-  if (iupStrEqualNoCase(value, "WHITEFLAG"))
-    IupScintillaSendMessage(ih, SCI_SETFOLDLEVEL, line, SC_FOLDLEVELWHITEFLAG);
-  else if (iupStrEqualNoCase(value, "HEADERFLAG"))
-    IupScintillaSendMessage(ih, SCI_SETFOLDLEVEL, line, SC_FOLDLEVELHEADERFLAG);
-  else if (iupStrEqualNoCase(value, "NUMBERMASK"))
-    IupScintillaSendMessage(ih, SCI_SETFOLDLEVEL, line, SC_FOLDLEVELNUMBERMASK);
-  else  /* BASE */
-    IupScintillaSendMessage(ih, SCI_SETFOLDLEVEL, line, SC_FOLDLEVELBASE);
+  int newLevel;
+  if (iupStrToInt(value, &newLevel))
+  {
+    int level = (int)IupScintillaSendMessage(ih, SCI_GETFOLDLEVEL, line, 0);
+    int whiteflag = level & SC_FOLDLEVELWHITEFLAG;
+    int headerflag = level & SC_FOLDLEVELHEADERFLAG;
+    level = newLevel | whiteflag | headerflag;
+    IupScintillaSendMessage(ih, SCI_SETFOLDLEVEL, line, level);
+  }
 
+  return 0;
+}
+
+static char* iScintillaGetFoldLevelWhiteAttrib(Ihandle* ih, int line)
+{
+  int level = (int)IupScintillaSendMessage(ih, SCI_GETFOLDLEVEL, line, 0);
+  int white = level & SC_FOLDLEVELWHITEFLAG? 1: 0;
+  return iupStrReturnBoolean(white);
+}
+
+static int iScintillaSetFoldLevelWhiteAttrib(Ihandle* ih, int line, const char* value)
+{
+  int level = (int)IupScintillaSendMessage(ih, SCI_GETFOLDLEVEL, line, 0);
+  int headerflag = level & SC_FOLDLEVELHEADERFLAG;
+  int white = iupStrBoolean(value);
+  int whiteflag = white? SC_FOLDLEVELWHITEFLAG: 0;
+  level = level & SC_FOLDLEVELNUMBERMASK;
+  level = level | whiteflag | headerflag;
+  IupScintillaSendMessage(ih, SCI_SETFOLDLEVEL, line, level);
+  return 0;
+}
+
+static char* iScintillaGetFoldLevelHeaderAttrib(Ihandle* ih, int line)
+{
+  int level = (int)IupScintillaSendMessage(ih, SCI_GETFOLDLEVEL, line, 0);
+  int header = level & SC_FOLDLEVELHEADERFLAG ? 1 : 0;
+  return iupStrReturnBoolean(header);
+}
+
+static int iScintillaSetFoldLevelHeaderAttrib(Ihandle* ih, int line, const char* value)
+{
+  int level = (int)IupScintillaSendMessage(ih, SCI_GETFOLDLEVEL, line, 0);
+  int whiteflag = level & SC_FOLDLEVELWHITEFLAG;
+  int header = iupStrBoolean(value);
+  int headerflag = header ? SC_FOLDLEVELHEADERFLAG: 0;
+  level = level & SC_FOLDLEVELNUMBERMASK;
+  level = level | whiteflag | headerflag;
+  IupScintillaSendMessage(ih, SCI_SETFOLDLEVEL, line, level);
   return 0;
 }
 
@@ -89,7 +121,7 @@ static int iScintillaSetFoldToggleAttrib(Ihandle* ih, const char* value)
   int line, level;
   
   iupStrToInt(value, &line);
-  level = IupScintillaSendMessage(ih, SCI_GETFOLDLEVEL, line, 0);
+  level = (int)IupScintillaSendMessage(ih, SCI_GETFOLDLEVEL, line, 0);
 
   if (level & SC_FOLDLEVELHEADERFLAG)
   {
@@ -105,4 +137,6 @@ void iupScintillaRegisterFolding(Iclass* ic)
   iupClassRegisterAttribute(ic,   "FOLDFLAGS", NULL, iScintillaSetFoldFlagsAttrib, NULL, NULL, IUPAF_WRITEONLY|IUPAF_NO_INHERIT);
   iupClassRegisterAttribute(ic,   "FOLDTOGGLE", NULL, iScintillaSetFoldToggleAttrib, NULL, NULL, IUPAF_WRITEONLY|IUPAF_NO_INHERIT);
   iupClassRegisterAttributeId(ic, "FOLDLEVEL", iScintillaGetFoldLevelAttrib, iScintillaSetFoldLevelAttrib, IUPAF_NO_INHERIT);
+  iupClassRegisterAttributeId(ic, "FOLDLEVELWHITE", iScintillaGetFoldLevelWhiteAttrib, iScintillaSetFoldLevelWhiteAttrib, IUPAF_NO_INHERIT);
+  iupClassRegisterAttributeId(ic, "FOLDLEVELHEADER", iScintillaGetFoldLevelHeaderAttrib, iScintillaSetFoldLevelHeaderAttrib, IUPAF_NO_INHERIT);
 }

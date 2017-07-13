@@ -380,11 +380,17 @@ correspond to the character after the last selected character. The values ALL an
 determines how folding lines are drawn. Can be: &quot;LEVELNUMBERS&quot;, 
 &quot;LINEBEFORE_EXPANDED&quot;, &quot;LINEBEFORE_CONTRACTED&quot;, &quot;LINEAFTER_EXPANDED&quot; or 
 &quot;LINEAFTER_CONTRACTED &quot; (default).</p>
-<p><strong>FOLDLEVEL<em>id</em></strong> (<font size="3">non inheritable</font>): sets 
-and gets the fold level of a &quot;id&quot; line. Can be: &quot;WHITEFLAG&quot;, &quot;HEADERFLAG&quot;, 
-&quot;NUMBERMASK&quot; or &quot;BASE&quot; (default). If you use a Lexer, it is not recommend to set 
-the fold level (this is far better handled by the Lexer). By contrast, get fold 
+<p><strong>FOLDLEVEL<em>id</em></strong> (<font size="3">non inheritable</font>): the fold level 
+number of a line (given in id). If you use a Lexer, it is not recommend to set 
+the fold level (this is far better handled by the Lexer). By contrast, the fold 
 level is useful to decide how to handle user folding requests.</p>
+
+<p><strong>FOLDLEVELWHITE<em>id</em></strong> (<font size="3">non inheritable</font>): the fold level 
+white flag state of a line (<span>indicates that the line is blank</span>). Can be: &quot;Yes&quot; or &quot;No&quot;. 
+(since 3.23)</p>
+<p><strong>FOLDLEVELHEADER<em>id</em></strong> (<font size="3">non inheritable</font>): the fold level 
+header flag state of a line (<span>&nbsp;indicates that the line is a header/fold 
+point</span>). Can be: &quot;Yes&quot; or &quot;No&quot;. (since 3.23)</p>
 
 <p><b>FOLDTOGGLE</b> (<font size="3">non inheritable, write-only</font>): 
 Determines if the fold point (line number) may be either expanded, displaying 
