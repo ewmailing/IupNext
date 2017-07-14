@@ -28,7 +28,6 @@ LD = $(CPPC)
 ifeq ($(findstring Win, $(TEC_SYSNAME)), )
   # Force definition if not in Windows
   USE_GTK = Yes
-#  USE_CPP11 = Yes
 endif
 
 ifndef GTK_DEFAULT
@@ -39,11 +38,15 @@ ifndef GTK_DEFAULT
 endif
 
 ifdef SCINTILLA_OLD
+  # CentOS 5
   SCINTILLA := scintilla353
 else
   SCINTILLA := scintilla
 endif
 ifdef SCINTILLA_NEW
+  # minimum GCC 4.8 (Linux313_64) and MSVC 2015 (vc14)
+  # Needs C++ 11 support
+  USE_CPP11 = Yes
   SCINTILLA := scintilla375
 endif
 
@@ -51,7 +54,9 @@ INCLUDES += $(SCINTILLA)/lexlib $(SCINTILLA)/src $(SCINTILLA)/include
 
 ifdef USE_GTK
   CHECK_GTK = Yes
-  DEFINES += NO_CXX11_REGEX
+  ifndef USE_CPP11
+    DEFINES += NO_CXX11_REGEX
+  endif
   DEFINES += GTK GTK_DISABLE_DEPRECATED 
   ifdef USE_GTK3
     DEFINES += GDK_DISABLE_DEPRECATED GSEAL_ENABLE G_HAVE_ISO_VARARGS
@@ -68,7 +73,6 @@ else
   
   ifneq ($(findstring gcc, $(TEC_UNAME)), )
     DEFINES += _WIN32 DISABLE_D2D NO_CXX11_REGEX
-    #FLAGS = -std=c++11
   endif
   ifneq ($(findstring dllg, $(TEC_UNAME)), )
     DEFINES += _WIN32 DISABLE_D2D NO_CXX11_REGEX
