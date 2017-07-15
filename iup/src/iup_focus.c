@@ -125,7 +125,7 @@ Ihandle* IupNextField(Ihandle *ih)
   ih_next = iFocusFindNext(ih, 1);
   if (!ih_next)
   {
-    /* not found after the element, then start over from the begining,
+    /* not found after the element, then start over from the beginning,
        at the dialog. */
     ih_next = iFocusFindNext(IupGetDialog(ih), 1);
     if (ih_next == ih)
@@ -146,7 +146,7 @@ void iupFocusNext(Ihandle *ih)
   Ihandle *ih_next = iFocusFindNext(ih, 0);
   if (!ih_next)
   {
-    /* not found after the element, then start over from the begining,
+    /* not found after the element, then start over from the beginning,
        at the dialog. */
     ih_next = iFocusFindNext(IupGetDialog(ih), 0);
     if (ih_next == ih)
