@@ -61,6 +61,8 @@ void iupdrvScintillaReleaseMethod(Iclass* ic);
 void iupdrvScintillaRefreshCaret(Ihandle* ih);
 int iupdrvScintillaGetBorder(void);
 
+int iupdrvScintillaPrintAttrib(Ihandle* ih, const char* value);
+
 
 #ifdef __cplusplus
 }

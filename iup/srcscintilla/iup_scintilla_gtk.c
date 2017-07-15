@@ -80,7 +80,14 @@ static gboolean gtkScintillaButtonEvent(GtkWidget *widget, GdkEventButton *evt, 
   return iupgtkButtonEvent(widget, evt, ih);
 }
 
+int iupdrvScintillaPrintAttrib(Ihandle* ih, const char* value)
+{
+  return 0;
+}
+
+
 /*****************************************************************************/
+
 
 int idrvScintillaMap(Ihandle* ih)
 {

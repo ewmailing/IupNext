@@ -416,6 +416,13 @@ static Iclass* iupScintillaNewClass(void)
 
   iupClassRegisterAttribute(ic, "USEPOPUP", NULL, iScintillaSetUsePopupAttrib, IUPAF_SAMEASSYSTEM, "YES", IUPAF_WRITEONLY|IUPAF_NO_INHERIT);
 
+  iupClassRegisterAttribute(ic, "PRINT", NULL, iupdrvScintillaPrintAttrib, NULL, NULL, IUPAF_WRITEONLY | IUPAF_NO_INHERIT);
+  iupClassRegisterAttribute(ic, "PRINTDIALOG", NULL, NULL, IUPAF_SAMEASSYSTEM, "YES", IUPAF_NO_INHERIT);
+  iupClassRegisterAttribute(ic, "PRINTMARGINLEFT", NULL, NULL, NULL, NULL, IUPAF_NO_INHERIT);
+  iupClassRegisterAttribute(ic, "PRINTMARGINTOP", NULL, NULL, NULL, NULL, IUPAF_NO_INHERIT);
+  iupClassRegisterAttribute(ic, "PRINTMARGINRIGHT", NULL, NULL, NULL, NULL, IUPAF_NO_INHERIT);
+  iupClassRegisterAttribute(ic, "PRINTMARGINBOTTOM", NULL, NULL, NULL, NULL, IUPAF_NO_INHERIT);
+
   return ic;
 }
 

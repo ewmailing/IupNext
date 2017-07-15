@@ -31,6 +31,7 @@
 #include "iup_assert.h"
 
 #include "iupwin_drv.h"
+#include "iupwin_str.h"
 
 #include "iupsci.h"
 
@@ -101,7 +102,7 @@ static int winScintillaMsgProc(Ihandle* ih, UINT msg, WPARAM wp, LPARAM lp, LRES
   case WM_KEYDOWN:
     {
       PostMessage(ih->handle, WM_IUPCARET, 0, 0L);
-      return 0;  /* already processed at the begining of this function */
+      return 0;  /* already processed at the beginning of this function */
     }
   case WM_KEYUP:
     {
@@ -149,6 +150,153 @@ static int winScintillaMsgProc(Ihandle* ih, UINT msg, WPARAM wp, LPARAM lp, LRES
 
   return iupwinBaseMsgProc(ih, msg, wp, lp, result);
 }
+
+int iupdrvScintillaPrintAttrib(Ihandle* ih, const char* value)
+{
+  PRINTDLG pdlg;
+  DOCINFO di;
+  int startPos, endPos;
+  HDC hdc;
+  struct Sci_RangeToFormat frPrint;
+  int margin_left, margin_top, margin_right, margin_bottom,
+      page_width, page_height;
+  int pageNum, printPage;
+  LONG lengthDoc, lengthDocMax, lengthPrinted;
+
+  ZeroMemory(&pdlg, sizeof(PRINTDLG));
+  pdlg.lStructSize = sizeof(PRINTDLG);
+  pdlg.hwndOwner = IupGetDialog(ih)->handle;
+  pdlg.hInstance = iupwin_hinstance;
+  pdlg.Flags = PD_USEDEVMODECOPIES | PD_ALLPAGES | PD_RETURNDC;
+  pdlg.nCopies = 1;
+  pdlg.nFromPage = 1;
+  pdlg.nToPage = 1;
+  pdlg.nMinPage = 1;
+  pdlg.nMaxPage = 0xffffU; /* We do not know how many pages in the */
+                           /* document until the printer is selected and the paper size is known. */
+
+  /* See if a range has been selected */
+  IupGetIntInt(ih, "SELECTIONPOS", &startPos, &endPos);
+
+  margin_left = IupGetInt(ih, "PRINTMARGINLEFT");
+  margin_top = IupGetInt(ih, "PRINTMARGINTOP");
+  margin_right = IupGetInt(ih, "PRINTMARGINRIGHT");
+  margin_bottom = IupGetInt(ih, "PRINTMARGINBOTTOM");
+
+  if (startPos == endPos)
+    pdlg.Flags |= PD_NOSELECTION;
+  else
+    pdlg.Flags |= PD_SELECTION;
+
+  if (!iupAttribGetBoolean(ih, "PRINTDIALOG")) 
+  {
+    /* Don't display dialog box, just use the default printer and options */
+    pdlg.Flags |= PD_RETURNDEFAULT;
+  }
+
+  if (!PrintDlg(&pdlg)) 
+  {
+    if (pdlg.hDevMode)
+      GlobalFree(pdlg.hDevMode);
+    if (pdlg.hDevNames)
+      GlobalFree(pdlg.hDevNames);
+    return 0;
+  }
+
+  hdc = pdlg.hDC;
+
+  page_width = GetDeviceCaps(hdc, HORZRES);    /* physically printable pixels */
+  page_height = GetDeviceCaps(hdc, VERTRES);
+
+  di.cbSize = sizeof(DOCINFO);
+  di.lpszDocName = iupwinStrToSystem(value);
+  di.lpszOutput = 0;
+  di.lpszDatatype = 0;
+  di.fwType = 0;
+
+  if (StartDoc(hdc, &di) < 0) 
+  {
+    DeleteDC(hdc);
+    if (pdlg.hDevMode)
+      GlobalFree(pdlg.hDevMode);
+    if (pdlg.hDevNames)
+      GlobalFree(pdlg.hDevNames);
+    return 0;
+  }
+
+  lengthDoc = (LONG)IupScintillaSendMessage(ih, SCI_GETLENGTH, 0, 0);
+  lengthDocMax = lengthDoc;
+  lengthPrinted = 0;
+
+  /* Requested to print selection */
+  if (pdlg.Flags & PD_SELECTION) 
+  {
+    if (startPos > endPos) 
+    {
+      lengthPrinted = endPos;
+      lengthDoc = startPos;
+    }
+    else 
+    {
+      lengthPrinted = startPos;
+      lengthDoc = endPos;
+    }
+
+    if (lengthPrinted < 0)
+      lengthPrinted = 0;
+    if (lengthDoc > lengthDocMax)
+      lengthDoc = lengthDocMax;
+  }
+
+  frPrint.hdc = hdc;
+  frPrint.hdcTarget = hdc;
+  frPrint.rc.left = margin_left;
+  frPrint.rc.top = margin_top;
+  frPrint.rc.right = page_width - margin_right;
+  frPrint.rc.bottom = page_height - margin_bottom;
+  frPrint.rcPage.left = 0;
+  frPrint.rcPage.top = 0;
+  frPrint.rcPage.right = page_width - 1;
+  frPrint.rcPage.bottom = page_height - 1;
+
+  /* Print each page */
+  pageNum = 1;
+
+  while (lengthPrinted < lengthDoc) 
+  {
+    printPage = (!(pdlg.Flags & PD_PAGENUMS) ||
+                      ((pageNum >= pdlg.nFromPage) && (pageNum <= pdlg.nToPage)));
+
+    if (printPage)
+      StartPage(hdc);
+
+    frPrint.chrg.cpMin = lengthPrinted;
+    frPrint.chrg.cpMax = lengthDoc;
+
+    lengthPrinted = (LONG)IupScintillaSendMessage(ih, SCI_FORMATRANGE, printPage, (sptr_t)&frPrint);
+
+    if (printPage)
+      EndPage(hdc);
+    
+    pageNum++;
+
+    if ((pdlg.Flags & PD_PAGENUMS) && (pageNum > pdlg.nToPage))
+      break;
+  }
+
+  IupScintillaSendMessage(ih, SCI_FORMATRANGE, FALSE, 0);
+
+  EndDoc(hdc);
+  DeleteDC(hdc);
+
+  if (pdlg.hDevMode)
+    GlobalFree(pdlg.hDevMode);
+  if (pdlg.hDevNames)
+    GlobalFree(pdlg.hDevNames);
+
+  return 0;
+}
+
 
 /*****************************************************************************/
 
