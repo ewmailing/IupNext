@@ -406,6 +406,7 @@ static Iclass* iupScintillaNewClass(void)
   iupScintillaRegisterScrolling(ic);       /* Scrolling and automatic scrolling */
   iupScintillaRegisterAutocompletion(ic);  /* Autocompletion */
   iupScintillaRegisterSearching(ic);       /* Search & Replace */
+  iupScintillaRegisterPrint(ic);           /* Printing */
 
   /* General */
   iupClassRegisterAttribute(ic, "VISIBLECOLUMNS", NULL, NULL, IUPAF_SAMEASSYSTEM, "30", IUPAF_NO_INHERIT);
@@ -415,13 +416,6 @@ static Iclass* iupScintillaNewClass(void)
   iupClassRegisterAttribute(ic, "MULTILINE", NULL, NULL, IUPAF_SAMEASSYSTEM, "YES", IUPAF_READONLY|IUPAF_NO_INHERIT);
 
   iupClassRegisterAttribute(ic, "USEPOPUP", NULL, iScintillaSetUsePopupAttrib, IUPAF_SAMEASSYSTEM, "YES", IUPAF_WRITEONLY|IUPAF_NO_INHERIT);
-
-  iupClassRegisterAttribute(ic, "PRINT", NULL, iupdrvScintillaPrintAttrib, NULL, NULL, IUPAF_WRITEONLY | IUPAF_NO_INHERIT);
-  iupClassRegisterAttribute(ic, "PRINTDIALOG", NULL, NULL, IUPAF_SAMEASSYSTEM, "YES", IUPAF_NO_INHERIT);
-  iupClassRegisterAttribute(ic, "PRINTMARGINLEFT", NULL, NULL, NULL, NULL, IUPAF_NO_INHERIT);
-  iupClassRegisterAttribute(ic, "PRINTMARGINTOP", NULL, NULL, NULL, NULL, IUPAF_NO_INHERIT);
-  iupClassRegisterAttribute(ic, "PRINTMARGINRIGHT", NULL, NULL, NULL, NULL, IUPAF_NO_INHERIT);
-  iupClassRegisterAttribute(ic, "PRINTMARGINBOTTOM", NULL, NULL, NULL, NULL, IUPAF_NO_INHERIT);
 
   return ic;
 }
@@ -449,7 +443,6 @@ Ihandle *IupScintilla(void)
 /*****  TODO  (by-demand)
 - Multiple Selection and Virtual Space
 - Macro recording
-- Printing
 - Long lines
 - Call tips
 - Caret, selection, and hotspot styles

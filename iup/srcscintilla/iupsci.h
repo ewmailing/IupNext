@@ -34,6 +34,7 @@ void iupScintillaRegisterAnnotation(Iclass* ic);
 void iupScintillaRegisterScrolling(Iclass* ic);
 void iupScintillaRegisterAutocompletion(Iclass* ic);
 void iupScintillaRegisterSearching(Iclass* ic);
+void iupScintillaRegisterPrint(Iclass* ic);
 
 /* this function is also exported in the DLL */
 sptr_t IupScintillaSendMessage(Ihandle* ih, unsigned int iMessage, uptr_t wParam, sptr_t lParam);
@@ -62,6 +63,9 @@ void iupdrvScintillaRefreshCaret(Ihandle* ih);
 int iupdrvScintillaGetBorder(void);
 
 int iupdrvScintillaPrintAttrib(Ihandle* ih, const char* value);
+enum { PRINTUNITS_PIXELS, PRINTUNITS_INCH, PRINTUNITS_CM };
+int iupSciGetPrintMarginUnits(Ihandle* ih);
+int iupSciGetPrintMargin(Ihandle* ih, const char* margin_attrib, int units, int dpi);
 
 
 #ifdef __cplusplus

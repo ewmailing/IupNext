@@ -160,6 +160,7 @@
     <ClCompile Include="..\srcscintilla\iupsci_margin.c" />
     <ClCompile Include="..\srcscintilla\iupsci_markers.c" />
     <ClCompile Include="..\srcscintilla\iupsci_overtype.c" />
+    <ClCompile Include="..\srcscintilla\iupsci_print.c" />
     <ClCompile Include="..\srcscintilla\iupsci_scrolling.c" />
     <ClCompile Include="..\srcscintilla\iupsci_searching.c" />
     <ClCompile Include="..\srcscintilla\iupsci_selection.c" />

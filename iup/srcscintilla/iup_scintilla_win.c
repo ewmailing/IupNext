@@ -158,9 +158,9 @@ int iupdrvScintillaPrintAttrib(Ihandle* ih, const char* value)
   int startPos, endPos;
   HDC hdc;
   struct Sci_RangeToFormat frPrint;
-  int margin_left, margin_top, margin_right, margin_bottom,
+  int margin_left, margin_top, margin_right, margin_bottom, margin_units,
       page_width, page_height;
-  int pageNum, printPage;
+  int pageNum, printPage, dpi;
   LONG lengthDoc, lengthDocMax, lengthPrinted;
 
   ZeroMemory(&pdlg, sizeof(PRINTDLG));
@@ -177,11 +177,6 @@ int iupdrvScintillaPrintAttrib(Ihandle* ih, const char* value)
 
   /* See if a range has been selected */
   IupGetIntInt(ih, "SELECTIONPOS", &startPos, &endPos);
-
-  margin_left = IupGetInt(ih, "PRINTMARGINLEFT");
-  margin_top = IupGetInt(ih, "PRINTMARGINTOP");
-  margin_right = IupGetInt(ih, "PRINTMARGINRIGHT");
-  margin_bottom = IupGetInt(ih, "PRINTMARGINBOTTOM");
 
   if (startPos == endPos)
     pdlg.Flags |= PD_NOSELECTION;
@@ -207,6 +202,7 @@ int iupdrvScintillaPrintAttrib(Ihandle* ih, const char* value)
 
   page_width = GetDeviceCaps(hdc, HORZRES);    /* physically printable pixels */
   page_height = GetDeviceCaps(hdc, VERTRES);
+  dpi = GetDeviceCaps(hdc, LOGPIXELSY);
 
   di.cbSize = sizeof(DOCINFO);
   di.lpszDocName = iupwinStrToSystem(value);
@@ -247,6 +243,12 @@ int iupdrvScintillaPrintAttrib(Ihandle* ih, const char* value)
     if (lengthDoc > lengthDocMax)
       lengthDoc = lengthDocMax;
   }
+
+  margin_units = iupSciGetPrintMarginUnits(ih);
+  margin_left = iupSciGetPrintMargin(ih, "PRINTMARGINLEFT", margin_units, dpi);
+  margin_top = iupSciGetPrintMargin(ih, "PRINTMARGINTOP", margin_units, dpi);
+  margin_right = iupSciGetPrintMargin(ih, "PRINTMARGINRIGHT", margin_units, dpi);
+  margin_bottom = iupSciGetPrintMargin(ih, "PRINTMARGINBOTTOM", margin_units, dpi);
 
   frPrint.hdc = hdc;
   frPrint.hdcTarget = hdc;
@@ -297,15 +299,6 @@ int iupdrvScintillaPrintAttrib(Ihandle* ih, const char* value)
   return 0;
 }
 
-/*
-SCI_SETPRINTMAGNIFICATION(int magnification)
-SCI_GETPRINTMAGNIFICATION
-SCI_SETPRINTCOLOURMODE(int mode)
-SCI_GETPRINTCOLOURMODE
-SCI_SETPRINTWRAPMODE
-SCI_GETPRINTWRAPMODE
-MARGINUNITS
-*/
 
 /*****************************************************************************/
 
