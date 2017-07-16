@@ -297,6 +297,15 @@ int iupdrvScintillaPrintAttrib(Ihandle* ih, const char* value)
   return 0;
 }
 
+/*
+SCI_SETPRINTMAGNIFICATION(int magnification)
+SCI_GETPRINTMAGNIFICATION
+SCI_SETPRINTCOLOURMODE(int mode)
+SCI_GETPRINTCOLOURMODE
+SCI_SETPRINTWRAPMODE
+SCI_GETPRINTWRAPMODE
+MARGINUNITS
+*/
 
 /*****************************************************************************/
 
