@@ -17,8 +17,8 @@
 #include "iup_predialogs.h"
 
 
-#define LINENUMBER_MARGIN 50
-#define BOOKMARK_MARGIN 20
+#define LINENUMBER_MARGIN "50"
+#define BOOKMARK_MARGIN "20"
 
 /********************************** Utilities *****************************************/
 
@@ -699,12 +699,7 @@ static int dropfiles_cb(Ihandle* multitext, const char* filename)
 static int multitext_marginclick_cb(Ihandle* multitext, int margin, int lin, char *status)
 {
   (void)status;
-
-  if (margin < 1 || margin > 2)
-    return IUP_IGNORE;
-
   toggleMarker(multitext, lin, margin);
-
   return IUP_DEFAULT;
 }
 
@@ -1024,6 +1019,7 @@ static int item_goto_action_cb(Ihandle* item_goto)
     int line = IupGetInt(txt, "VALUE");
     int pos;
     IupTextConvertLinColToPos(multitext, line - 1, 0, &pos);  /* in Scintilla lin and col start at 0 */
+    IupSetAttributeId(multitext, "ENSUREVISIBLE", line-1, NULL);
     IupSetInt(multitext, "CARETPOS", pos);
     IupSetInt(multitext, "SCROLLTOPOS", pos);
   }
@@ -1994,9 +1990,9 @@ static int item_linenumber_action_cb(Ihandle* item_linenumber)
   char *value = IupGetAttribute(item_linenumber, "VALUE");
 
   if (iupStrBoolean(value))
-    IupSetInt(multitext, "MARGINWIDTH0", LINENUMBER_MARGIN);
+    IupSetAttribute(multitext, "MARGINWIDTH0", LINENUMBER_MARGIN);
   else
-    IupSetInt(multitext, "MARGINWIDTH0", 0);
+    IupSetAttribute(multitext, "MARGINWIDTH0", "0");
 
   if (config)
     IupConfigSetVariableStr(config, "View", "LineNumber", value);
@@ -2010,9 +2006,9 @@ static int item_bookmark_action_cb(Ihandle* item_bookmark)
   char *value = IupGetAttribute(item_bookmark, "VALUE");
 
   if (iupStrBoolean(value))
-    IupSetInt(multitext, "MARGINWIDTH1", BOOKMARK_MARGIN);
+    IupSetAttribute(multitext, "MARGINWIDTH1", BOOKMARK_MARGIN);
   else
-    IupSetInt(multitext, "MARGINWIDTH1", 0);
+    IupSetAttribute(multitext, "MARGINWIDTH1", "0");
 
   if (config)
     IupConfigSetVariableStr(config, "View", "Bookmark", value);
@@ -2099,9 +2095,9 @@ static int iScintillaDlgSetConfigAttrib(Ihandle* ih, const char* value)
       Ihandle* item_linenumber = IupGetDialogChild(ih, "ITEM_LINENUMBER");
       IupSetAttribute(item_linenumber, "VALUE", value);
       if (iupStrBoolean(value))
-        IupSetInt(multitext, "MARGINWIDTH0", LINENUMBER_MARGIN);
+        IupSetAttribute(multitext, "MARGINWIDTH0", LINENUMBER_MARGIN);
       else
-        IupSetInt(multitext, "MARGINWIDTH0", 0);
+        IupSetAttribute(multitext, "MARGINWIDTH0", "0");
     }
 
     value = IupConfigGetVariableStr(config, "View", "Bookmark");
@@ -2110,9 +2106,9 @@ static int iScintillaDlgSetConfigAttrib(Ihandle* ih, const char* value)
       Ihandle* item_bookmark = IupGetDialogChild(ih, "ITEM_BOOKMARK");
       IupSetAttribute(item_bookmark, "VALUE", value);
       if (iupStrBoolean(value))
-        IupSetInt(multitext, "MARGINWIDTH1", BOOKMARK_MARGIN);
+        IupSetAttribute(multitext, "MARGINWIDTH1", BOOKMARK_MARGIN);
       else
-        IupSetInt(multitext, "MARGINWIDTH1", 0);
+        IupSetAttribute(multitext, "MARGINWIDTH1", "0");
     }
 
     IupConfigRecentInit(config, recent_menu, config_recent_cb, 10);
@@ -2205,11 +2201,11 @@ static int iScintillaDlgCreateMethod(Ihandle* ih, void** params)
   IupSetAttribute(multitext, "WORDWRAPVISUALFLAGS", "MARGIN");
 
   /* line numbers margin=0 */
-  IupSetInt(multitext, "MARGINWIDTH0", LINENUMBER_MARGIN);
+  IupSetAttribute(multitext, "MARGINWIDTH0", LINENUMBER_MARGIN);
   IupSetAttribute(multitext, "MARGINSENSITIVE0", "YES");
 
   /* bookmarks margin=1 */
-  IupSetInt(multitext, "MARGINWIDTH1", BOOKMARK_MARGIN);
+  IupSetAttribute(multitext, "MARGINWIDTH1", BOOKMARK_MARGIN);
   IupSetAttribute(multitext, "MARGINTYPE1", "SYMBOL");
   IupSetAttribute(multitext, "MARGINSENSITIVE1", "YES");
   IupSetAttribute(multitext, "MARGINMASKFOLDERS1", "NO"); /* (disable folding) */

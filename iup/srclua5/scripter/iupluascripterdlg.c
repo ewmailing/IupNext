@@ -27,6 +27,8 @@
 #include "iup_drvinfo.h"
 
 
+#define BREAKPOINT_MARGIN "15"
+#define FOLDING_MARGIN "20"
 
 void load_all_images_step_images(void);
 
@@ -282,6 +284,26 @@ static int configload_cb(Ihandle *ih)
       IupSetStrAttribute(item, "VALUE", value);
       IupSetStrAttribute(multitext, "AUTOCOMPLETION", value);
     }
+
+    value = IupConfigGetVariableStr(config, "Lua", "Folding");
+    if (value)
+    {
+      Ihandle* item = IupGetDialogChild(ih, "ITM_FOLDING");
+      Ihandle* multitext = IupGetDialogChild(ih, "MULTITEXT");
+      IupSetStrAttribute(item, "VALUE", value);
+      if (iupStrBoolean(value))
+      {
+        IupSetAttribute(multitext, "MARGINWIDTH3", FOLDING_MARGIN);
+        IupSetAttribute(multitext, "PROPERTY", "fold=1");
+      }
+      else
+      {
+        IupSetAttribute(multitext, "MARGINWIDTH3", "0");
+        IupSetAttribute(multitext, "PROPERTY", "fold=0");
+      }
+
+      IupSetAttribute(multitext, "FOLDALL", "EXPAND");
+    }
   }
 
   return IUP_DEFAULT;
@@ -289,10 +311,10 @@ static int configload_cb(Ihandle *ih)
 
 static int marker_changed_cb(Ihandle *ih, int lin, int margin)
 {
+  Ihandle* multitext = IupGetDialogChild(ih, "MULTITEXT");
   if (margin == 2)
   {
     lua_State* L = (lua_State*)IupGetAttribute(ih, "LUASTATE");
-    Ihandle* multitext = IupGetDialogChild(ih, "MULTITEXT");
     unsigned int markerMask = (unsigned int)IupGetIntId(multitext, "MARKERGET", lin);
     int has_breakpoint = markerMask & 0x0002; /* 0010 - marker=1 */
 
@@ -311,6 +333,8 @@ static int marker_changed_cb(Ihandle *ih, int lin, int margin)
     iuplua_push_name(L, "DebuggerUpdateBreakpointsList");
     lua_call(L, 0, 0);
   }
+  else if (margin == 3)
+    IupSetfAttribute(multitext, "FOLDTOGGLE", "%d", lin);
 
   (void)ih;
   return IUP_DEFAULT;
@@ -377,6 +401,32 @@ static int item_autocomplete_action_cb(Ihandle* ih)
   return IUP_DEFAULT;
 }
 
+static int item_folding_action_cb(Ihandle* ih)
+{
+  Ihandle* multitext = IupGetDialogChild(ih, "MULTITEXT");
+  Ihandle* config = IupGetAttributeHandle(multitext, "CONFIG");
+
+  if (IupGetInt(ih, "VALUE"))
+  {
+    IupSetAttribute(ih, "VALUE", "OFF");
+    IupSetAttribute(multitext, "PROPERTY", "fold=0");
+    IupSetAttribute(multitext, "MARGINWIDTH3", "0");
+  }
+  else
+  {
+    IupSetAttribute(ih, "VALUE", "ON");
+    IupSetAttribute(multitext, "PROPERTY", "fold=1");
+    IupSetAttribute(multitext, "MARGINWIDTH3", FOLDING_MARGIN);
+  }
+
+  IupSetAttribute(multitext, "FOLDALL", "EXPAND");
+
+  if (config)
+    IupConfigSetVariableStr(config, "Lua", "Folding", IupGetAttribute(ih, "VALUE"));
+
+  return IUP_DEFAULT;
+}
+
 static int param_cb(Ihandle* param_dialog, int param_index, void* user_data)
 {
   if (param_index == IUP_GETPARAM_MAP)
@@ -401,9 +451,9 @@ static int item_options_action_cb(Ihandle* ih_item)
     strcpy(args, value);
 
   if (IupGetParam("Options", param_cb, IupGetDialog(ih_item),
-                  "Current Directory: %f[dir||||]\n"
-                  "Arguments: %s{Sets the table \"arg\".}\n",
-                  dir, args, NULL))
+    "Current Directory: %f[dir||||]\n"
+    "Arguments: %s{Sets the table \"arg\".}\n",
+    dir, args, NULL))
   {
     Ihandle* config = IupGetAttributeHandle(multitext, "CONFIG");
 
@@ -1146,8 +1196,8 @@ static void appendDebugButtons(Ihandle *dialog)
 static void appendDebugMenuItens(Ihandle *menu)
 {
   Ihandle *item_debug, *item_run, *item_stop, *item_pause, *item_continue, *item_stepinto, *item_autocomplete,
-          *item_stepover, *item_stepout, *debugMneu, *subMenuDebug, *item_currentline, *item_options,
-          *item_togglebreakpoint, *item_newbreakpoint, *item_removeallbreakpoints;
+    *item_folding, *item_stepover, *item_stepout, *debugMneu, *subMenuDebug, *item_currentline, *item_options,
+    *item_togglebreakpoint, *item_newbreakpoint, *item_removeallbreakpoints;
 
   item_run = IupItem("&Run\tCtrl+F5", NULL);
   IupSetAttribute(item_run, "NAME", "ITM_RUN");
@@ -1206,6 +1256,11 @@ static void appendDebugMenuItens(Ihandle *menu)
   IupSetCallback(item_autocomplete, "ACTION", (Icallback)item_autocomplete_action_cb);
   IupSetAttribute(item_autocomplete, "VALUE", "ON");
 
+  item_folding = IupItem("Folding", NULL);
+  IupSetAttribute(item_folding, "NAME", "ITM_FOLDING");
+  IupSetCallback(item_folding, "ACTION", (Icallback)item_folding_action_cb);
+  IupSetAttribute(item_folding, "VALUE", "ON");
+
   item_options = IupItem("Options...", NULL);
   IupSetCallback(item_options, "ACTION", (Icallback)item_options_action_cb);
 
@@ -1234,6 +1289,7 @@ static void appendDebugMenuItens(Ihandle *menu)
     item_removeallbreakpoints,
     IupSeparator(),
     item_autocomplete,
+    item_folding,
     item_options,
     NULL);
 
@@ -1255,6 +1311,47 @@ static int multitext_map_cb(Ihandle* multitext)
   IupSetAttribute(multitext, "STYLEFGCOLOR7", "164 0 164");  /* 7-Character  */
   IupSetAttribute(multitext, "STYLEFGCOLOR10", "164 0 0"); /* 10-Operator  */
   IupSetAttribute(multitext, "STYLEBOLD10", "YES");
+
+  IupSetAttribute(multitext, "MARKERHIGHLIGHT", "YES");
+
+  IupSetAttributeId(multitext, "MARKERBGCOLOR", 25, "0 0 0");
+  IupSetAttributeId(multitext, "MARKERFGCOLOR", 25, "255 255 255");
+  IupSetAttributeId(multitext, "MARKERBGCOLOR", 26, "0 0 0");
+  IupSetAttributeId(multitext, "MARKERFGCOLOR", 26, "255 255 255");
+  IupSetAttributeId(multitext, "MARKERBGCOLOR", 27, "0 0 0");
+  IupSetAttributeId(multitext, "MARKERFGCOLOR", 27, "255 255 255");
+  IupSetAttributeId(multitext, "MARKERBGCOLOR", 28, "0 0 0");
+  IupSetAttributeId(multitext, "MARKERFGCOLOR", 28, "255 255 255");
+  IupSetAttributeId(multitext, "MARKERBGCOLOR", 29, "0 0 0");
+  IupSetAttributeId(multitext, "MARKERFGCOLOR", 29, "255 255 255");
+  IupSetAttributeId(multitext, "MARKERBGCOLOR", 30, "0 0 0");
+  IupSetAttributeId(multitext, "MARKERFGCOLOR", 30, "255 255 255");
+  IupSetAttributeId(multitext, "MARKERBGCOLOR", 31, "0 0 0");
+  IupSetAttributeId(multitext, "MARKERFGCOLOR", 31, "255 255 255");
+
+  IupSetAttribute(multitext, "PROPERTY", "fold=1");
+
+  IupSetAttributeId(multitext, "FOLDLEVEL", 10, "HEADERFLAG");
+  IupSetAttributeId(multitext, "FOLDLEVEL", 11, "NUMBERMASK");
+  IupSetAttributeId(multitext, "FOLDLEVEL", 12, "NUMBERMASK");
+  IupSetAttributeId(multitext, "FOLDLEVEL", 13, "NUMBERMASK");
+  IupSetAttributeId(multitext, "FOLDLEVEL", 14, "NUMBERMASK");
+  IupSetAttributeId(multitext, "FOLDLEVEL", 15, "BASE");
+
+  /* Folding margin=3 */
+  IupSetAttribute(multitext, "MARGINWIDTH3", FOLDING_MARGIN);
+  IupSetAttribute(multitext, "MARGINMASKFOLDERS3", "Yes");
+  IupSetAttribute(multitext, "MARGINSENSITIVE3", "YES");
+
+  IupSetAttribute(multitext, "MARKERDEFINE", "FOLDER=BOXPLUS");
+  IupSetAttribute(multitext, "MARKERDEFINE", "FOLDEROPEN=BOXMINUS");
+  IupSetAttribute(multitext, "MARKERDEFINE", "FOLDEREND=BOXPLUSCONNECTED");
+  IupSetAttribute(multitext, "MARKERDEFINE", "FOLDERMIDTAIL=TCORNER");
+  IupSetAttribute(multitext, "MARKERDEFINE", "FOLDEROPENMID=BOXMINUSCONNECTED");
+  IupSetAttribute(multitext, "MARKERDEFINE", "FOLDERSUB=VLINE");
+  IupSetAttribute(multitext, "MARKERDEFINE", "FOLDERTAIL=LCORNER");
+
+  IupSetAttribute(multitext, "FOLDFLAGS", "LINEAFTER_CONTRACTED");
 
   return IUP_DEFAULT;
 }
@@ -1307,7 +1404,7 @@ static int iLuaScripterDlgCreateMethod(Ihandle* ih, void** params)
   IupSetAttribute(multitext, "AUTOCOMPLETION", "ON");
 
   /* breakpoints margin=2 */
-  IupSetInt(multitext, "MARGINWIDTH2", 15);
+  IupSetAttribute(multitext, "MARGINWIDTH2", BREAKPOINT_MARGIN);
   IupSetAttribute(multitext, "MARGINTYPE2", "SYMBOL");
   IupSetAttribute(multitext, "MARGINSENSITIVE2", "YES");
   IupSetAttribute(multitext, "MARGINMASKFOLDERS2", "NO");  /* (disable folding) */
