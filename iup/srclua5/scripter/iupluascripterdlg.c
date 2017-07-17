@@ -1538,12 +1538,13 @@ void IupLuaScripterDlgOpen(void)
 - Inspect on Mouse Over?  SCI_POSITIONFROMPOINTCLOSE(int x, int y)
 - dialog for style colors (IupGetParam) - save in config
 - Folding support
-  submenu
-    Collapse All    Alt+0
-    Expand All      Alt+Shift+0
-    Collapse Current  Ctrl+Alt+F
-    Expand Current    Ctrl+Alt+Shift+F
-    
+    Folding             (enable)
+    Toggle Folding  F8  (current line)
+    All Folding         (submenu)
+      Collapse
+      Expand
+      Toggle
+      Level...          (seleciona o nivel para collapse or expand or toggle)
 
 - Printing
 - Table Inspector using IupTree
