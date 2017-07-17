@@ -1538,6 +1538,12 @@ void IupLuaScripterDlgOpen(void)
 - Inspect on Mouse Over?  SCI_POSITIONFROMPOINTCLOSE(int x, int y)
 - dialog for style colors (IupGetParam) - save in config
 - Folding support
+  submenu
+    Collapse All    Alt+0
+    Expand All      Alt+Shift+0
+    Collapse Current  Ctrl+Alt+F
+    Expand Current    Ctrl+Alt+Shift+F
+    
 
 - Printing
 - Table Inspector using IupTree
