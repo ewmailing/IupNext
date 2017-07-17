@@ -29,6 +29,8 @@
 --SCI_GETALLLINESVISIBLE
 SCI_SETFOLDLEVEL(int line, int level)
 SCI_GETFOLDLEVEL(int line)
+--SCI_SETAUTOMATICFOLD(int automaticFold)
+--SCI_GETAUTOMATICFOLD
 SCI_SETFOLDFLAGS(int flags)
 --SCI_GETLASTCHILD(int line, int level)
 --SCI_GETFOLDPARENT(int line)
@@ -36,7 +38,11 @@ SCI_SETFOLDFLAGS(int flags)
 --SCI_GETFOLDEXPANDED(int line)
 --SCI_CONTRACTEDFOLDNEXT(int lineStart)
 SCI_TOGGLEFOLD(int line)
---SCI_ENSUREVISIBLE(int line)
+--SCI_FOLDLINE(int line, int action)
+--SCI_FOLDCHILDREN(int line, int action)
+SCI_FOLDALL(int action)
+--SCI_EXPANDCHILDREN(int line, int level)
+SCI_ENSUREVISIBLE(int line)
 --SCI_ENSUREVISIBLEENFORCEPOLICY(int line)
 */
 
@@ -116,6 +122,26 @@ static int iScintillaSetFoldLevelHeaderAttrib(Ihandle* ih, int line, const char*
   return 0;
 }
 
+static int iScintillaSetEnsureVisibleAttrib(Ihandle* ih, int line, const char* value)
+{
+  if (iupStrEqualNoCase(value, "ENFORCEPOLICY"))
+    IupScintillaSendMessage(ih, SCI_ENSUREVISIBLEENFORCEPOLICY, line, 0);
+  else
+    IupScintillaSendMessage(ih, SCI_ENSUREVISIBLE, line, 0);
+  return 0;
+}
+
+static int iScintillaSetFoldAllAttrib(Ihandle* ih, const char* value)
+{
+  if (iupStrEqualNoCase(value, "CONTRACT"))
+    IupScintillaSendMessage(ih, SCI_FOLDALL, SC_FOLDACTION_CONTRACT, 0);
+  else if (iupStrEqualNoCase(value, "EXPAND"))
+    IupScintillaSendMessage(ih, SCI_FOLDALL, SC_FOLDACTION_EXPAND, 0);
+  else if (iupStrEqualNoCase(value, "TOGGLE"))
+    IupScintillaSendMessage(ih, SCI_FOLDALL, SC_FOLDACTION_TOGGLE, 0);
+  return 0;
+}
+
 static int iScintillaSetFoldToggleAttrib(Ihandle* ih, const char* value)
 {
   int line, level;
@@ -139,4 +165,6 @@ void iupScintillaRegisterFolding(Iclass* ic)
   iupClassRegisterAttributeId(ic, "FOLDLEVEL", iScintillaGetFoldLevelAttrib, iScintillaSetFoldLevelAttrib, IUPAF_NO_INHERIT);
   iupClassRegisterAttributeId(ic, "FOLDLEVELWHITE", iScintillaGetFoldLevelWhiteAttrib, iScintillaSetFoldLevelWhiteAttrib, IUPAF_NO_INHERIT);
   iupClassRegisterAttributeId(ic, "FOLDLEVELHEADER", iScintillaGetFoldLevelHeaderAttrib, iScintillaSetFoldLevelHeaderAttrib, IUPAF_NO_INHERIT);
+  iupClassRegisterAttributeId(ic, "ENSUREVISIBLE", NULL, iScintillaSetEnsureVisibleAttrib, IUPAF_WRITEONLY | IUPAF_NO_INHERIT);
+  iupClassRegisterAttribute(ic, "FOLDALL", NULL, iScintillaSetFoldAllAttrib, NULL, NULL, IUPAF_WRITEONLY | IUPAF_NO_INHERIT);
 }

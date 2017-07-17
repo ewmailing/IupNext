@@ -389,12 +389,18 @@ level is useful to decide how to handle user folding requests.</p>
 white flag state of a line (<span>indicates that the line is blank</span>). Can be: &quot;Yes&quot; or &quot;No&quot;. 
 (since 3.23)</p>
 <p><strong>FOLDLEVELHEADER<em>id</em></strong> (<font size="3">non inheritable</font>): the fold level 
-header flag state of a line (<span>&nbsp;indicates that the line is a header/fold 
+header flag state of a line (<span>indicates that the line is a header/fold 
 point</span>). Can be: &quot;Yes&quot; or &quot;No&quot;. (since 3.23)</p>
 
 <p><b>FOLDTOGGLE</b> (<font size="3">non inheritable, write-only</font>): 
 Determines if the fold point (line number) may be either expanded, displaying 
 all its child lines, or contracted, hiding all the child lines. </p>
+<p><strong>FOLDALL</strong> (<font size="3">non inheritable, write-only</font>): 
+operates over all levels. Can be CONTRACT, EXPAND, or TOGGLE. (since 3.23)</p>
+<p><strong>ENSUREVISIBLE</strong><em><strong>id</strong></em> (<font size="3">non inheritable, write-only</font>): 
+ensure that the given line (in id) is visible by expanding folded parents. Value 
+is can be NULL or &quot;ENFORCEPOLICY&quot; to apply <span>vertical caret policy.&nbsp;</span>(since 
+3.23)</p>
 
 <h4>Lexer</h4>
 
