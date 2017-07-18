@@ -41,7 +41,7 @@ static int iScintillaSetPrintMagnificationAttrib(Ihandle* ih, const char* value)
   int magnification;
 
   if (iupStrToInt(value, &magnification))
-    IupScintillaSendMessage(ih, SCI_SETPRINTMAGNIFICATION, 0, magnification);
+    IupScintillaSendMessage(ih, SCI_SETPRINTMAGNIFICATION, magnification, 0);
 
   return 0;
 }
@@ -75,9 +75,9 @@ static char* iScintillaGetPrintColorAttrib(Ihandle *ih)
   int type = (int)IupScintillaSendMessage(ih, SCI_GETPRINTCOLOURMODE, 0, 0);
 
   if (type == SC_PRINT_COLOURONWHITEDEFAULTBG)
-    return "COLOURONWHITEDEFAULTBG";
+    return "COLORONWHITEDEFAULTBG";
   else if (type == SC_PRINT_COLOURONWHITE)
-    return "COLOURONWHITE";
+    return "COLORONWHITE";
   else if (type == SC_PRINT_BLACKONWHITE)
     return "BLACKONWHITE";
   else if (type == SC_PRINT_INVERTLIGHT)
@@ -88,9 +88,9 @@ static char* iScintillaGetPrintColorAttrib(Ihandle *ih)
 
 static int iScintillaSetPrintColorAttrib(Ihandle *ih, const char *value)
 {
-  if (iupStrEqualNoCase(value, "COLOURONWHITEDEFAULTBG"))
+  if (iupStrEqualNoCase(value, "COLORONWHITEDEFAULTBG"))
     IupScintillaSendMessage(ih, SCI_SETPRINTCOLOURMODE, SC_PRINT_COLOURONWHITEDEFAULTBG, 0);
-  else if (iupStrEqualNoCase(value, "COLOURONWHITE"))
+  else if (iupStrEqualNoCase(value, "COLORONWHITE"))
     IupScintillaSendMessage(ih, SCI_SETPRINTCOLOURMODE, SC_PRINT_COLOURONWHITE, 0);
   else if (iupStrEqualNoCase(value, "BLACKONWHITE"))
     IupScintillaSendMessage(ih, SCI_SETPRINTCOLOURMODE, SC_PRINT_BLACKONWHITE, 0);
@@ -113,15 +113,15 @@ int iupSciGetPrintMarginUnits(Ihandle* ih)
     return PRINTUNITS_PIXELS;
 }
 
-int iupSciGetPrintMargin(Ihandle* ih, const char* margin_attrib, int units, int dpi)
+int iupSciGetPrintMargin(Ihandle* ih, const char* margin_attrib, int units, double dpi)
 {
-  int margin = IupGetInt(ih, margin_attrib);
+  double margin = IupGetDouble(ih, margin_attrib);
   if (units == PRINTUNITS_PIXELS)
-    return margin;
+    return (int)margin;
   else if (units == PRINTUNITS_INCH)
-    return margin * dpi;
+    return (int)(margin * dpi);
   else
-    return (margin * dpi * 100) / 254;
+    return (int)((margin * dpi) / 2.54);
 }
 
 void iupScintillaRegisterPrint(Iclass* ic)

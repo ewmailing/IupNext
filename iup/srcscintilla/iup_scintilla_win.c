@@ -160,7 +160,8 @@ int iupdrvScintillaPrintAttrib(Ihandle* ih, const char* value)
   struct Sci_RangeToFormat frPrint;
   int margin_left, margin_top, margin_right, margin_bottom, margin_units,
       page_width, page_height;
-  int p, printPage, dpi;
+  int p, printPage;
+  double dpi;
   LONG lengthDoc, lengthDocMax, lengthPrinted;
 
   ZeroMemory(&pdlg, sizeof(PRINTDLG));
@@ -202,7 +203,7 @@ int iupdrvScintillaPrintAttrib(Ihandle* ih, const char* value)
 
   page_width = GetDeviceCaps(hdc, HORZRES);    /* physically printable pixels */
   page_height = GetDeviceCaps(hdc, VERTRES);
-  dpi = GetDeviceCaps(hdc, LOGPIXELSY);
+  dpi = (double)GetDeviceCaps(hdc, LOGPIXELSY);
 
   di.cbSize = sizeof(DOCINFO);
   di.lpszDocName = iupwinStrToSystem(value);

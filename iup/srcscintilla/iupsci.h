@@ -65,7 +65,7 @@ int iupdrvScintillaGetBorder(void);
 int iupdrvScintillaPrintAttrib(Ihandle* ih, const char* value);
 enum { PRINTUNITS_PIXELS, PRINTUNITS_INCH, PRINTUNITS_CM };
 int iupSciGetPrintMarginUnits(Ihandle* ih);
-int iupSciGetPrintMargin(Ihandle* ih, const char* margin_attrib, int units, int dpi);
+int iupSciGetPrintMargin(Ihandle* ih, const char* margin_attrib, int units, double dpi);
 
 
 #ifdef __cplusplus

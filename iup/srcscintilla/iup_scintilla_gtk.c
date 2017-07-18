@@ -84,7 +84,8 @@ static gboolean gtkScintillaButtonEvent(GtkWidget *widget, GdkEventButton *evt, 
 static void gtkScintillaSetupFormat(struct Sci_RangeToFormat *frPrint, GtkPrintContext *context, Ihandle* ih)
 {
   int margin_left, margin_top, margin_right, margin_bottom, margin_units,
-      page_width, page_height, dpi;
+      page_width, page_height;
+  double dpi;
   cairo_t *cr = gtk_print_context_get_cairo_context(context);
 
   frPrint->hdc = cr;
@@ -92,7 +93,7 @@ static void gtkScintillaSetupFormat(struct Sci_RangeToFormat *frPrint, GtkPrintC
 
   page_width = (int)gtk_print_context_get_width(context);
   page_height = (int)gtk_print_context_get_height(context);
-  dpi = (int)gtk_print_context_get_dpi_y(context);
+  dpi = gtk_print_context_get_dpi_y(context);
 
   margin_units = iupSciGetPrintMarginUnits(ih);
   margin_left = iupSciGetPrintMargin(ih, "PRINTMARGINLEFT", margin_units, dpi);
