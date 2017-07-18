@@ -87,6 +87,7 @@ static char* iScintillaGetZoomAttrib(Ihandle* ih)
 void iupScintillaRegisterCursor(Iclass* ic)
 {
   iupClassRegisterAttribute(ic, "CURSOR",  iScintillaGetCursorAttrib, iScintillaSetCursorAttrib, NULL, NULL, IUPAF_NO_INHERIT);
+
   iupClassRegisterAttribute(ic, "ZOOMIN",  NULL, iScintillaSetZoomInAttrib, NULL, NULL, IUPAF_WRITEONLY|IUPAF_NO_INHERIT);
   iupClassRegisterAttribute(ic, "ZOOMOUT", NULL, iScintillaSetZoomOutAttrib, NULL, NULL, IUPAF_WRITEONLY|IUPAF_NO_INHERIT);
   iupClassRegisterAttribute(ic, "ZOOM",    iScintillaGetZoomAttrib, iScintillaSetZoomAttrib, NULL, NULL, IUPAF_NO_INHERIT);
