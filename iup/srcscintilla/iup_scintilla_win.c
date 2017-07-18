@@ -155,12 +155,12 @@ int iupdrvScintillaPrintAttrib(Ihandle* ih, const char* value)
 {
   PRINTDLG pdlg;
   DOCINFO di;
-  int startPos, endPos;
+  int startPos = 0, endPos = 0;
   HDC hdc;
   struct Sci_RangeToFormat frPrint;
   int margin_left, margin_top, margin_right, margin_bottom, margin_units,
       page_width, page_height;
-  int pageNum, printPage, dpi;
+  int p, printPage, dpi;
   LONG lengthDoc, lengthDocMax, lengthPrinted;
 
   ZeroMemory(&pdlg, sizeof(PRINTDLG));
@@ -258,31 +258,28 @@ int iupdrvScintillaPrintAttrib(Ihandle* ih, const char* value)
   frPrint.rc.bottom = page_height - margin_bottom;
   frPrint.rcPage.left = 0;
   frPrint.rcPage.top = 0;
-  frPrint.rcPage.right = page_width - 1;
-  frPrint.rcPage.bottom = page_height - 1;
+  frPrint.rcPage.right = page_width;
+  frPrint.rcPage.bottom = page_height;
 
   /* Print each page */
-  pageNum = 1;
-
+  p = 1;  /* starts at 1 to match page selection */
   while (lengthPrinted < lengthDoc) 
   {
     printPage = (!(pdlg.Flags & PD_PAGENUMS) ||
-                      ((pageNum >= pdlg.nFromPage) && (pageNum <= pdlg.nToPage)));
+                      ((p >= pdlg.nFromPage) && (p <= pdlg.nToPage)));
 
     if (printPage)
       StartPage(hdc);
 
     frPrint.chrg.cpMin = lengthPrinted;
     frPrint.chrg.cpMax = lengthDoc;
-
     lengthPrinted = (LONG)IupScintillaSendMessage(ih, SCI_FORMATRANGE, printPage, (sptr_t)&frPrint);
+    p++;
 
     if (printPage)
       EndPage(hdc);
-    
-    pageNum++;
 
-    if ((pdlg.Flags & PD_PAGENUMS) && (pageNum > pdlg.nToPage))
+    if ((pdlg.Flags & PD_PAGENUMS) && (p > pdlg.nToPage))
       break;
   }
 

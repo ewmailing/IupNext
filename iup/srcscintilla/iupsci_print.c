@@ -127,12 +127,14 @@ int iupSciGetPrintMargin(Ihandle* ih, const char* margin_attrib, int units, int 
 void iupScintillaRegisterPrint(Iclass* ic)
 {
   iupClassRegisterAttribute(ic, "PRINT", NULL, iupdrvScintillaPrintAttrib, NULL, NULL, IUPAF_WRITEONLY | IUPAF_NO_INHERIT);
+
   iupClassRegisterAttribute(ic, "PRINTDIALOG", NULL, NULL, IUPAF_SAMEASSYSTEM, "YES", IUPAF_NO_INHERIT);
   iupClassRegisterAttribute(ic, "PRINTMARGINLEFT", NULL, NULL, NULL, NULL, IUPAF_NO_INHERIT);
   iupClassRegisterAttribute(ic, "PRINTMARGINTOP", NULL, NULL, NULL, NULL, IUPAF_NO_INHERIT);
   iupClassRegisterAttribute(ic, "PRINTMARGINRIGHT", NULL, NULL, NULL, NULL, IUPAF_NO_INHERIT);
   iupClassRegisterAttribute(ic, "PRINTMARGINBOTTOM", NULL, NULL, NULL, NULL, IUPAF_NO_INHERIT);
   iupClassRegisterAttribute(ic, "PRINTMARGINUNITS", NULL, NULL, IUPAF_SAMEASSYSTEM, "INCH", IUPAF_NO_INHERIT);
+
   iupClassRegisterAttribute(ic, "PRINTWORDWRAP", iScintillaGetPrintWrapAttrib, iScintillaSetPrintWrapAttrib, IUPAF_SAMEASSYSTEM, "WORD", IUPAF_NO_INHERIT);
   iupClassRegisterAttribute(ic, "PRINTCOLOR", iScintillaGetPrintColorAttrib, iScintillaSetPrintColorAttrib, IUPAF_SAMEASSYSTEM, "NORMAL", IUPAF_NO_INHERIT);
   iupClassRegisterAttribute(ic, "PRINTMAGNIFICATION", iScintillaGetPrintMagnificationAttrib, iScintillaSetPrintMagnificationAttrib, NULL, NULL, IUPAF_NO_INHERIT);

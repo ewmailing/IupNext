@@ -903,6 +903,18 @@ static int item_revert_action_cb(Ihandle* item_revert)
   return IUP_DEFAULT;
 }
 
+static int item_print_action_cb(Ihandle* item)
+{
+  Ihandle* multitext = IupGetDialogChild(item, "MULTITEXT");
+  IupSetAttribute(multitext, "PRINT", IupGetAttribute(IupGetDialog(multitext), "TITLE"));
+  return IUP_DEFAULT;
+}
+
+static int item_pagesetup_action_cb(Ihandle* item)
+{
+  return IUP_DEFAULT;
+}
+
 static int find_close_action_cb(Ihandle* bt_close);
 
 static int close_exit_action_cb(Ihandle* ih_item)
@@ -2176,7 +2188,7 @@ static int iScintillaDlgCreateMethod(Ihandle* ih, void** params)
   Ihandle *item_togglemark, *item_nextmark, *item_previousmark, *item_clearmarks, *item_cutmarked, *item_copymarked, *item_pastetomarked, *item_removemarked,
     *item_invertmarks, *item_tabtospace, *item_allspacetotab, *item_leadingspacetotab;
   Ihandle *item_trimleading, *item_trimtrailing, *item_trimtraillead, *item_eoltospace, *item_fixeol, *item_removespaceeol;
-  Ihandle *item_undo, *item_redo;
+  Ihandle *item_undo, *item_redo, *item_pagesetup, *item_print;
   Ihandle *case_menu, *item_uppercase, *item_lowercase;
   Ihandle *btn_cut, *btn_copy, *btn_paste, *btn_find, *btn_new, *btn_open, *btn_save;
   Ihandle *sub_menu_format, *format_menu, *item_font, *item_tab, *item_replace;
@@ -2260,6 +2272,11 @@ static int iScintillaDlgCreateMethod(Ihandle* ih, void** params)
   item_revert = IupItem("&Revert", NULL);
   IupSetAttribute(item_revert, "NAME", "ITEM_REVERT");
   IupSetCallback(item_revert, "ACTION", (Icallback)item_revert_action_cb);
+
+  item_print = IupItem("&Print...\tCtrl+P", NULL);
+  IupSetCallback(item_print, "ACTION", (Icallback)item_print_action_cb);
+  item_pagesetup = IupItem("Page Set&up...", NULL);
+  IupSetCallback(item_pagesetup, "ACTION", (Icallback)item_pagesetup_action_cb);
 
   item_exit = IupItem("E&xit", NULL);
   IupSetCallback(item_exit, "ACTION", (Icallback)close_exit_action_cb);
@@ -2456,6 +2473,9 @@ static int iScintillaDlgCreateMethod(Ihandle* ih, void** params)
     item_saveas,
     item_revert,
     IupSeparator(),
+    item_pagesetup,
+    item_print,
+    IupSeparator(),
     IupSubmenu("Recent &Files", recent_menu),
     item_exit,
     NULL);
@@ -2569,6 +2589,7 @@ static int iScintillaDlgCreateMethod(Ihandle* ih, void** params)
   IupSetCallback(ih, "K_cN", (Icallback)item_new_action_cb);
   IupSetCallback(ih, "K_cO", (Icallback)item_open_action_cb);
   IupSetCallback(ih, "K_cS", (Icallback)item_save_action_cb);
+  IupSetCallback(ih, "K_cP", (Icallback)item_print_action_cb);
   IupSetCallback(ih, "K_cF", (Icallback)item_find_action_cb);
   IupSetCallback(ih, "K_cH", (Icallback)item_replace_action_cb);  /* replace system processing */
   IupSetCallback(ih, "K_cG", (Icallback)item_goto_action_cb);
