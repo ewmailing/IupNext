@@ -910,8 +910,86 @@ static int item_print_action_cb(Ihandle* item)
   return IUP_DEFAULT;
 }
 
+static int getListIndex(const char* value, const char* list[])
+{
+  int i, count = sizeof(list);
+
+  if (!value)
+    return 0;
+
+  for (i = 0; i < count; i++)
+  {
+    if (iupStrEqualNoCase(list[i], value))
+      return i;
+  }
+  return 0;
+}
+
+static const char* getListValue(int index, const char* list[])
+{
+  return list[index];
+}
+
+static int param_cb(Ihandle* param_dialog, int param_index, void* user_data)
+{
+  if (param_index == IUP_GETPARAM_MAP)
+  {
+    Ihandle* ih = (Ihandle*)user_data;
+    IupSetAttributeHandle(param_dialog, "PARENTDIALOG", ih);
+  }
+
+  return 1;
+}
+
 static int item_pagesetup_action_cb(Ihandle* item)
 {
+  Ihandle* multitext = IupGetDialogChild(item, "MULTITEXT");
+  double margin_left, margin_top, margin_right, margin_bottom;
+  int margin_units_index, word_wrap_index, color_index;
+  char* margin_units_list[] = { "PIXELS", "INCH", "CM" };
+  char* word_wrap_list[] = { "NONE", "CHAR", "WORD" };
+  char* color_list[] = { "NORMAL", "INVERTLIGHT", "BLACKONWHITE", "COLORONWHITE" };
+  const char *margin_units, *word_wrap, *color;
+  int magnification;
+
+  margin_left = IupGetDouble(multitext, "PRINTMARGINLEFT");
+  margin_right = IupGetDouble(multitext, "PRINTMARGINRIGHT");
+  margin_top = IupGetDouble(multitext, "PRINTMARGINTOP");
+  margin_bottom = IupGetDouble(multitext, "PRINTMARGINBOTTOM");
+  margin_units = IupGetAttribute(multitext, "PRINTMARGINUNITS");
+  margin_units_index = getListIndex(margin_units, margin_units_list);
+  word_wrap = IupGetAttribute(multitext, "PRINTWORDWRAP");
+  word_wrap_index = getListIndex(word_wrap, word_wrap_list);
+  color = IupGetAttribute(multitext, "PRINTCOLOR");
+  color_index = getListIndex(color, color_list);
+  magnification = IupGetInt(multitext, "PRINTMAGNIFICATION");
+
+  if (IupGetParam("Page Setup", param_cb, IupGetDialog(item),
+                   "Margin Left: %R\n"
+                   "Margin Right: %R\n"
+                   "Margin Top: %R\n"
+                   "Margin Bottom: %R\n"
+                   "Margin Units: %l|Pixels|Inch|Cm|\n"
+                   "Word Wrap: %l|None|Char|Word|\n"
+                   "Color: %l|Normal|Invert Light|Black on White|Color on White|\n"
+                   "Magnification: %i\n",
+                   &margin_left, &margin_top, &margin_right, &margin_bottom, 
+                   &margin_units_index, &word_wrap_index, &color_index,
+                   &magnification,
+                   NULL))
+  { 
+    IupSetDouble(multitext, "PRINTMARGINLEFT", margin_left);
+    IupSetDouble(multitext, "PRINTMARGINRIGHT", margin_right);
+    IupSetDouble(multitext, "PRINTMARGINTOP", margin_top);
+    IupSetDouble(multitext, "PRINTMARGINBOTTOM", margin_bottom);
+    margin_units = getListValue(margin_units_index, margin_units_list);
+    IupSetStrAttribute(multitext, "PRINTMARGINUNITS", margin_units);
+    word_wrap = getListValue(word_wrap_index, word_wrap_list);
+    IupSetStrAttribute(multitext, "PRINTWORDWRAP", word_wrap);
+    color = getListValue(color_index, color_list);
+    IupSetStrAttribute(multitext, "PRINTCOLOR", color);
+    IupSetInt(multitext, "PRINTMAGNIFICATION", magnification);
+  }
   return IUP_DEFAULT;
 }
 
@@ -1853,17 +1931,6 @@ static int item_font_action_cb(Ihandle* item_font)
   return IUP_DEFAULT;
 }
 
-static int param_cb(Ihandle* param_dialog, int param_index, void* user_data)
-{
-  if (param_index == IUP_GETPARAM_MAP)
-  {
-    Ihandle* ih = (Ihandle*)user_data;
-    IupSetAttributeHandle(param_dialog, "PARENTDIALOG", ih);
-  }
-
-  return 1;
-}
-
 static int item_tab_action_cb(Ihandle* item)
 {
   Ihandle* multitext = IupGetDialogChild(item, "MULTITEXT");
@@ -1874,7 +1941,7 @@ static int item_tab_action_cb(Ihandle* item)
   if (IupGetParam("Tab Settings", param_cb, IupGetDialog(item),
                    "Size: %i\n"
                    "Replace by Whitespace: %b\n", 
-                   &tabSize, &replaceBySpace))
+                   &tabSize, &replaceBySpace, NULL))
   {
     Ihandle* config = IupGetAttributeHandle(multitext, "CONFIG");
 
