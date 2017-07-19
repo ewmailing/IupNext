@@ -23,10 +23,38 @@
 
 
 /***** STYLE DEFINITION *****
-Attributes not implement:
-SCI_STYLESETCHANGEABLE(int styleNumber, bool changeable)
-SCI_STYLEGETCHANGEABLE(int styleNumber)  
-*/
+SCI_STYLERESETDEFAULT
+SCI_STYLECLEARALL
+SCI_STYLESETFONT(int styleNumber, char *fontName)
+SCI_STYLEGETFONT(int styleNumber, char *fontName)
+SCI_STYLESETSIZE(int styleNumber, int sizeInPoints)
+SCI_STYLEGETSIZE(int styleNumber)
+SCI_STYLESETSIZEFRACTIONAL(int styleNumber, int sizeInHundredthPoints)
+SCI_STYLEGETSIZEFRACTIONAL(int styleNumber)
+SCI_STYLESETBOLD(int styleNumber, bool bold)
+SCI_STYLEGETBOLD(int styleNumber)
+SCI_STYLESETWEIGHT(int styleNumber, int weight)
+SCI_STYLEGETWEIGHT(int styleNumber)
+SCI_STYLESETITALIC(int styleNumber, bool italic)
+SCI_STYLEGETITALIC(int styleNumber)
+SCI_STYLESETUNDERLINE(int styleNumber, bool underline)
+SCI_STYLEGETUNDERLINE(int styleNumber)
+SCI_STYLESETFORE(int styleNumber, int colour)
+SCI_STYLEGETFORE(int styleNumber)
+SCI_STYLESETBACK(int styleNumber, int colour)
+SCI_STYLEGETBACK(int styleNumber)
+SCI_STYLESETEOLFILLED(int styleNumber, bool eolFilled)
+SCI_STYLEGETEOLFILLED(int styleNumber)
+SCI_STYLESETCHARACTERSET(int styleNumber, int charSet)
+SCI_STYLEGETCHARACTERSET(int styleNumber)
+SCI_STYLESETCASE(int styleNumber, int caseMode)
+SCI_STYLEGETCASE(int styleNumber)
+SCI_STYLESETVISIBLE(int styleNumber, bool visible)
+SCI_STYLEGETVISIBLE(int styleNumber)
+--SCI_STYLESETCHANGEABLE(int styleNumber, bool changeable)
+--SCI_STYLEGETCHANGEABLE(int styleNumber)
+SCI_STYLESETHOTSPOT(int styleNumber, bool hotspot)
+SCI_STYLEGETHOTSPOT(int styleNumber)*/
 
 static char* iScintillaGetCaseStyleAttrib(Ihandle* ih, int style)
 {
