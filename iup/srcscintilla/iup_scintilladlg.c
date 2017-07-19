@@ -628,22 +628,22 @@ static int save_check(Ihandle* ih_item)
   return 1;
 }
 
-static void toggle_bar_visibility(Ihandle* item, Ihandle* item_toolbar)
+static void toggle_bar_visibility(Ihandle* item, Ihandle* bar)
 {
   if (IupGetInt(item, "VALUE"))
   {
-    IupSetAttribute(item_toolbar, "FLOATING", "YES");
-    IupSetAttribute(item_toolbar, "VISIBLE", "NO");
+    IupSetAttribute(bar, "FLOATING", "YES");
+    IupSetAttribute(bar, "VISIBLE", "NO");
     IupSetAttribute(item, "VALUE", "OFF");
   }
   else
   {
-    IupSetAttribute(item_toolbar, "FLOATING", "NO");
-    IupSetAttribute(item_toolbar, "VISIBLE", "YES");
+    IupSetAttribute(bar, "FLOATING", "NO");
+    IupSetAttribute(bar, "VISIBLE", "YES");
     IupSetAttribute(item, "VALUE", "ON");
   }
 
-  IupRefresh(item_toolbar);  /* refresh the dialog layout */
+  IupRefresh(bar);  /* refresh the dialog layout */
 }
 
 static void set_find_replace_visibility(Ihandle* find_dlg, int show_replace)
@@ -978,6 +978,8 @@ static int item_pagesetup_action_cb(Ihandle* item)
                    &magnification,
                    NULL))
   { 
+    Ihandle* config = IupGetAttributeHandle(item, "CONFIG");
+
     IupSetDouble(multitext, "PRINTMARGINLEFT", margin_left);
     IupSetDouble(multitext, "PRINTMARGINRIGHT", margin_right);
     IupSetDouble(multitext, "PRINTMARGINTOP", margin_top);
@@ -989,6 +991,18 @@ static int item_pagesetup_action_cb(Ihandle* item)
     color = getListValue(color_index, color_list);
     IupSetStrAttribute(multitext, "PRINTCOLOR", color);
     IupSetInt(multitext, "PRINTMAGNIFICATION", magnification);
+
+    if (config)
+    {
+      IupConfigSetVariableDouble(config, "Print", "MarginLeft", margin_left);
+      IupConfigSetVariableDouble(config, "Print", "MarginRight", margin_right);
+      IupConfigSetVariableDouble(config, "Print", "MarginTop", margin_top);
+      IupConfigSetVariableDouble(config, "Print", "MarginBottom", margin_bottom);
+      IupConfigSetVariableStr(config, "Print", "MarginUnits", margin_units);
+      IupConfigSetVariableStr(config, "Print", "WordWrap", word_wrap);
+      IupConfigSetVariableStr(config, "Print", "Color", color);
+      IupConfigSetVariableInt(config, "Print", "Magnification", magnification);
+    }
   }
   return IUP_DEFAULT;
 }
@@ -2153,19 +2167,25 @@ static int iScintillaDlgSetConfigAttrib(Ihandle* ih, const char* value)
     }
 
     value = IupConfigGetVariableStr(config, "View", "Toolbar");
-    if (value)
+    if (value && !iupStrBoolean(value))
     {
       Ihandle* item_toolbar = IupGetDialogChild(ih, "ITEM_TOOLBAR");
       Ihandle* toolbar = IupGetChild(IupGetParent(multitext), 0);
-      toggle_bar_visibility(item_toolbar, toolbar);
+      /* default is visible */
+      IupSetAttribute(toolbar, "FLOATING", "YES");
+      IupSetAttribute(toolbar, "VISIBLE", "NO");
+      IupSetAttribute(item_toolbar, "VALUE", "OFF");
     }
 
     value = IupConfigGetVariableStr(config, "View", "Statusbar");
-    if (value)
+    if (value && !iupStrBoolean(value))
     {
       Ihandle* item_statusbar = IupGetDialogChild(ih, "ITEM_STATUSBAR");
       Ihandle* statusbar = IupGetBrother(multitext);
-      toggle_bar_visibility(item_statusbar, statusbar);
+      /* default is visible */
+      IupSetAttribute(statusbar, "FLOATING", "YES");
+      IupSetAttribute(statusbar, "VISIBLE", "NO");
+      IupSetAttribute(item_statusbar, "VALUE", "OFF");
     }
 
     value = IupConfigGetVariableStr(config, "View", "LineNumber");
@@ -2189,6 +2209,38 @@ static int iScintillaDlgSetConfigAttrib(Ihandle* ih, const char* value)
       else
         IupSetAttribute(multitext, "MARGINWIDTH1", "0");
     }
+
+    value = IupConfigGetVariableStr(config, "Print", "MarginLeft");
+    if (value)
+      IupSetStrAttribute(multitext, "PRINTMARGINLEFT", value);
+
+    value = IupConfigGetVariableStr(config, "Print", "MarginRight");
+    if (value)
+      IupSetStrAttribute(multitext, "PRINTMARGINRIGHT", value);
+
+    value = IupConfigGetVariableStr(config, "Print", "MarginTop");
+    if (value)
+      IupSetStrAttribute(multitext, "PRINTMARGINTOP", value);
+
+    value = IupConfigGetVariableStr(config, "Print", "MarginBottom");
+    if (value)
+      IupSetStrAttribute(multitext, "PRINTMARGINBOTTOM", value);
+
+    value = IupConfigGetVariableStr(config, "Print", "MarginUnits");
+    if (value)
+      IupSetStrAttribute(multitext, "PRINTMARGINUNITS", value);
+
+    value = IupConfigGetVariableStr(config, "Print", "WordWrap");
+    if (value)
+      IupSetStrAttribute(multitext, "PRINTWORDWRAP", value);
+
+    value = IupConfigGetVariableStr(config, "Print", "Color");
+    if (value)
+      IupSetStrAttribute(multitext, "PRINTCOLOR", value);
+
+    value = IupConfigGetVariableStr(config, "Print", "Magnification");
+    if (value)
+      IupSetStrAttribute(multitext, "PRINTMAGNIFICATION", value);
 
     IupConfigRecentInit(config, recent_menu, config_recent_cb, 10);
 
