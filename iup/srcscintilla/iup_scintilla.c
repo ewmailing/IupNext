@@ -79,7 +79,7 @@ void iupScintillaConvertPosToLinCol(Ihandle* ih, int pos, int *lin, int *col)
 
 static int iScintillaConvertXYToPos(Ihandle* ih, int x, int y)
 {
-  return (int)IupScintillaSendMessage(ih, SCI_POSITIONFROMPOINT, x, y);
+  return (int)IupScintillaSendMessage(ih, SCI_POSITIONFROMPOINTCLOSE, x, y);
 }
 
 

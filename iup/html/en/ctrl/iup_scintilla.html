@@ -147,11 +147,19 @@ the caret.</p>
   without changing it. Restricts the insertion using keyboard input and 
 attributes. Navigation keys are still available. Possible values: "YES" and "NO". 
 Default: NO.</p>
-<p><strong><a name="SAVEDSTATE">SAVEDSTATE</a></strong> (<font size="3">non inheritable</font>): sets the current state of the document to saved 
-(given value is ignored), returns Yes or No if the document has been modified.&nbsp;After 
-setting the SAVEDSTATE, when editing is done the <a href="#SAVEPOINT_CB">
+<p>After 
+setting the SAVEPOINT, when editing is done the <a href="#SAVEPOINT_CB">
 SAVEPOINT_CB</a> callback is called with status=0. When undo is performed back to 
 the point were the saved state was set the callback is called again with status=1. </p>
+<p><strong><a name="SAVEPOINT">SAVEPOINT</a></strong> (<font size="3">non inheritable, write-only</font>): 
+sets the current state of the document to saved (given value is ignored). The
+<a href="#SAVEPOINT_CB">
+SAVEPOINT_CB</a> 
+callback is called with status=0 if the document is modified, and called with&nbsp;status=1 if the save point is reached with Undo/Redo. 
+(since 3.23)</p>
+<p><strong>MODIFIED</strong> (<font size="3">non inheritable, read-only</font>): 
+returns if the text has been modified since the last SAVEPOINT. Can return Yes 
+or No. (since 3.23)</p>
 
   
 <p><a href="../attrib/iup_size.html">SIZE</a> (<font size="3">non inheritable</font>): 
@@ -991,7 +999,7 @@ the moment the event was generated. The same macros used for
 <p><b><a name="SAVEPOINT_CB">SAVEPOINT_CB</a></b>:
   Notifies the application that a save point was reached (1) or left (0). Can be 
 used to controls whether to display a saved or modified document. To set the 
-save point use the <a href="#SAVEDSTATE">SAVEDSTATE</a> attribute.</p>
+save point use the <a href="#SAVEPOINT">SAVEPOINT</a> attribute.</p>
 
   
     

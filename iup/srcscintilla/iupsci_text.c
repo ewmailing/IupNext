@@ -201,5 +201,6 @@ void iupScintillaRegisterText(Iclass* ic)
   iupClassRegisterAttribute(ic,   "READONLY", iScintillaGetReadOnlyAttrib, iScintillaSetReadOnlyAttrib, NULL, NULL, IUPAF_NO_INHERIT);
   iupClassRegisterAttribute(ic,   "CLEARALL", NULL, iScintillaSetClearAllAttrib, NULL, NULL, IUPAF_WRITEONLY|IUPAF_NO_INHERIT);
   iupClassRegisterAttribute(ic,   "CLEARDOCUMENTSTYLE", NULL, iScintillaSetClearDocumentAttrib, NULL, NULL, IUPAF_WRITEONLY|IUPAF_NO_INHERIT);
-  iupClassRegisterAttribute(ic,   "SAVEDSTATE", iScintillaGetModifyAttrib, iScintillaSetSavePointAttrib, NULL, NULL, IUPAF_NO_INHERIT);
+  iupClassRegisterAttribute(ic, "MODIFIED", iScintillaGetModifyAttrib, NULL, NULL, NULL, IUPAF_READONLY | IUPAF_NO_INHERIT);
+  iupClassRegisterAttribute(ic, "SAVEPOINT", NULL, iScintillaSetSavePointAttrib, NULL, NULL, IUPAF_WRITEONLY | IUPAF_NO_INHERIT);
 }
