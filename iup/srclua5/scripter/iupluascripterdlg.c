@@ -1530,7 +1530,7 @@ void IupLuaScripterDlgOpen(void)
 - multiple files (IupFlatTabs) - option for save in config
 - Project Menu - Save Session/Load Session
 
-- multi-language (portuguese, spanish)
+- multi-language (Portuguese, Spanish)
 - Debug Strings
 - detachable Console, Debug, Breakpoints (problem with IupGetDialogChild(NAME))- save in config
 
@@ -1546,7 +1546,6 @@ void IupLuaScripterDlgOpen(void)
       Toggle
       Level...          (seleciona o nivel para collapse or expand or toggle)
 
-- Printing
 - Table Inspector using IupTree
 - iup.TRACEBACK
 - debug pause when error in Lua?
