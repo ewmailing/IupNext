@@ -355,9 +355,6 @@ static int multitext_kesc_cb(Ihandle *ih)
 
 static int multitext_valuechanged_cb(Ihandle* multitext)
 {
-  Icallback old_valuechanged_cb = IupGetCallback(multitext, "OLD_VALUECHANGED_CB");
-  old_valuechanged_cb(multitext);
-
   if (IupGetInt(multitext, "AUTOCOMPLETION"))
   {
     const char *t;
@@ -480,7 +477,7 @@ static void debug_set_state(lua_State *L, const char* state)
 static int save_check(Ihandle* ih_item)
 {
   Ihandle* multitext = IupGetDialogChild(ih_item, "MULTITEXT");
-  if (IupGetInt(multitext, "DIRTY"))
+  if (IupGetInt(multitext, "MODIFIED"))
   {
     if (IupMessageAlarm(IupGetDialog(ih_item), "Attention!", "File must be saved for debugging.\n  Save it now? (No will cancel debug)", "YESNO") == 1)
       IupSetAttribute(IupGetDialog(ih_item), "SAVEFILE", NULL);
@@ -572,7 +569,7 @@ static int item_run_action_cb(Ihandle *item)
   value = IupGetAttribute(IupGetDialog(multitext), "ARGUMENTS");
   if (value && value[0] != 0) set_arguments(L, value);
 
-  if (filename && !IupGetInt(multitext, "DIRTY"))
+  if (filename && !IupGetInt(multitext, "MODIFIED"))
     iuplua_dofile(L, filename);
   else
   {
@@ -1397,7 +1394,6 @@ static int iLuaScripterDlgCreateMethod(Ihandle* ih, void** params)
   IupSetCallback(ih, "CONFIGLOAD_CB", (Icallback)configload_cb);
 
   multitext = IupGetDialogChild(ih, "MULTITEXT");
-  IupSetCallback(multitext, "OLD_VALUECHANGED_CB", IupGetCallback(multitext, "VALUECHANGED_CB"));
   IupSetCallback(multitext, "VALUECHANGED_CB", (Icallback)multitext_valuechanged_cb);
   IupSetCallback(multitext, "K_ESC", (Icallback)multitext_kesc_cb);
   IupSetCallback(multitext, "MAP_CB", (Icallback)multitext_map_cb);
@@ -1535,7 +1531,7 @@ void IupLuaScripterDlgOpen(void)
 - detachable Console, Debug, Breakpoints (problem with IupGetDialogChild(NAME))- save in config
 
 - Watch for globals - save in config
-- Inspect on Mouse Over?  SCI_POSITIONFROMPOINTCLOSE(int x, int y)
+- Inspect on Mouse Over?  IupConvertXYToPos
 - dialog for style colors (IupGetParam) - save in config
 - Folding support
     Folding             (enable)

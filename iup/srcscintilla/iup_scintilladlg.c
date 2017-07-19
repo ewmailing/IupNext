@@ -151,8 +151,6 @@ static void copyMarkedLines(Ihandle *multitext)
   free(buffer);
 }
 
-static int multitext_valuechanged_cb(Ihandle* multitext);
-
 static void cutMarkedLines(Ihandle *multitext)
 {
   int size = IupGetInt(multitext, "COUNT");
@@ -182,8 +180,6 @@ static void cutMarkedLines(Ihandle *multitext)
     Ihandle *clipboard = IupClipboard();
     IupSetAttribute(clipboard, "TEXT", buffer);
     IupDestroy(clipboard);
-
-    multitext_valuechanged_cb(multitext); /* INSERT, DELETERANGE do NOT triggers the callback */
   }
 
   free(buffer);
@@ -192,7 +188,7 @@ static void cutMarkedLines(Ihandle *multitext)
 static void pasteToMarkedLines(Ihandle *multitext)
 {
   char *text;
-  int lin = 0, pos, len, changed = 0;
+  int lin = 0, pos, len;
   Ihandle *clipboard;
 
   while (lin >= 0)
@@ -201,7 +197,6 @@ static void pasteToMarkedLines(Ihandle *multitext)
     lin = IupGetInt(multitext, "LASTMARKERFOUND");
     if (lin >= 0)
     {
-      changed = 1;
       text = IupGetAttributeId(multitext, "LINE", lin);
       len = (int)strlen(text);
       IupTextConvertLinColToPos(multitext, lin, 0, &pos);
@@ -213,9 +208,6 @@ static void pasteToMarkedLines(Ihandle *multitext)
       lin--;
     }
   }
-
-  if (changed)
-    multitext_valuechanged_cb(multitext); /* INSERT, DELETERANGE do NOT triggers the callback */
 }
 
 static void invertMarkedLines(Ihandle *multitext)
@@ -230,7 +222,7 @@ static void invertMarkedLines(Ihandle *multitext)
 static void removeMarkedLines(Ihandle *multitext)
 {
   char *text;
-  int lin = 0, pos, len, changed = 0;
+  int lin = 0, pos, len;
 
   while (lin >= 0)
   {
@@ -238,7 +230,6 @@ static void removeMarkedLines(Ihandle *multitext)
     lin = IupGetInt(multitext, "LASTMARKERFOUND");
     if (lin >= 0)
     {
-      changed = 1;
       text = IupGetAttributeId(multitext, "LINE", lin);
       len = (int)strlen(text);
       IupTextConvertLinColToPos(multitext, lin, 0, &pos);
@@ -247,9 +238,6 @@ static void removeMarkedLines(Ihandle *multitext)
       lin--;
     }
   }
-
-  if (changed)
-    multitext_valuechanged_cb(multitext); /* INSERT, DELETERANGE do NOT triggers the callback */
 }
 
 static void changeTabsToSpaces(Ihandle *multitext)
@@ -257,7 +245,7 @@ static void changeTabsToSpaces(Ihandle *multitext)
   char *text = IupGetAttribute(multitext, "VALUE");
   int count = IupGetInt(multitext, "COUNT");
   int tabSize = IupGetInt(multitext, "TABSIZE");
-  int lin, col, i, j, changed = 0;
+  int lin, col, i, j;
 
   for (i = count - 1; i >= 0; i--)
   {
@@ -266,8 +254,6 @@ static void changeTabsToSpaces(Ihandle *multitext)
 
     if (c != '\t')
       continue;
-
-    changed = 1;
 
     IupTextConvertPosToLinCol(multitext, i, &lin, &col);
 
@@ -278,9 +264,6 @@ static void changeTabsToSpaces(Ihandle *multitext)
     for (j = 0; j < spacesToNextTab; j++)
       IupSetAttributeId(multitext, "INSERT", i + j, " ");
   }
-
-  if (changed)
-    multitext_valuechanged_cb(multitext); /* INSERT, DELETERANGE do NOT triggers the callback */
 }
 
 static void changeSpacesToTabs(Ihandle *multitext)
@@ -288,7 +271,7 @@ static void changeSpacesToTabs(Ihandle *multitext)
   char *text = IupGetAttribute(multitext, "VALUE");
   int count = IupGetInt(multitext, "COUNT");
   int tabSize = IupGetInt(multitext, "TABSIZE");
-  int lin, col, i, changed = 0;
+  int lin, col, i;
 
   for (i = count - 1; i >= 0; i--)
   {
@@ -301,8 +284,6 @@ static void changeSpacesToTabs(Ihandle *multitext)
 
     if (!tabStop || c != ' ')
       continue;
-
-    changed = 1;
 
     IupSetStrf(multitext, "DELETERANGE", "%d,%d", i + 1, 1);
     IupSetAttributeId(multitext, "INSERT", i + 1, "\t");
@@ -319,16 +300,13 @@ static void changeSpacesToTabs(Ihandle *multitext)
 
     IupSetStrf(multitext, "DELETERANGE", "%d,%d", i + 1, nSpaces);
   }
-
-  if (changed)
-    multitext_valuechanged_cb(multitext); /* INSERT, DELETERANGE do NOT triggers the callback */
 }
 
 static void changeLeadingSpacesToTabs(Ihandle *multitext)
 {
   int lineCount = IupGetInt(multitext, "LINECOUNT");
   int tabSize = IupGetInt(multitext, "TABSIZE");
-  int pos, i, j, changed = 0;
+  int pos, i, j;
 
   for (i = 0; i < lineCount; i++)
   {
@@ -339,8 +317,6 @@ static void changeLeadingSpacesToTabs(Ihandle *multitext)
     int len = (int)strspn(text, " \t");
     if (len == 0)
       continue;
-
-    changed = 1;
 
     for (j = 0; j < len; j++)
     {
@@ -365,15 +341,12 @@ static void changeLeadingSpacesToTabs(Ihandle *multitext)
     for (j = 0; j < tabCount; j++)
       IupSetAttributeId(multitext, "INSERT", pos, "\t");
   }
-
-  if (changed)
-    multitext_valuechanged_cb(multitext); /* INSERT, DELETERANGE do NOT triggers the callback */
 }
 
 static void removeLeadingSpaces(Ihandle *multitext)
 {
   int lineCount = IupGetInt(multitext, "LINECOUNT");
-  int pos, i, changed = 0;
+  int pos, i;
 
   for (i = 0; i < lineCount; i++)
   {
@@ -382,20 +355,15 @@ static void removeLeadingSpaces(Ihandle *multitext)
     if (len == 0)
       continue;
 
-    changed = 1;
-
     IupTextConvertLinColToPos(multitext, i, 0, &pos);
     IupSetStrf(multitext, "DELETERANGE", "%d,%d", pos, len);
   }
-
-  if (changed)
-    multitext_valuechanged_cb(multitext); /* INSERT, DELETERANGE do NOT triggers the callback */
 }
 
 static void removeTrailingSpaces(Ihandle *multitext)
 {
   int lineCount = IupGetInt(multitext, "LINECOUNT");
-  int pos, i, j, changed = 0;
+  int pos, i, j;
 
   for (i = 0; i < lineCount; i++)
   {
@@ -418,20 +386,14 @@ static void removeTrailingSpaces(Ihandle *multitext)
     if (count == 0)
       continue;
 
-    changed = 1;
-
     IupTextConvertLinColToPos(multitext, i, len - count, &pos);
     IupSetStrf(multitext, "DELETERANGE", "%d,%d", pos, count);
   }
-
-  if (changed)
-    multitext_valuechanged_cb(multitext); /* INSERT, DELETERANGE do NOT triggers the callback */
 }
 
 static void changeEolToSpace(Ihandle *multitext)
 {
   char *c;
-  int changed = 0;
 
   do
   {
@@ -442,12 +404,8 @@ static void changeEolToSpace(Ihandle *multitext)
       int pos = (int)(c - text);
       IupSetStrf(multitext, "DELETERANGE", "%d,%d", pos, 1);
       IupSetAttributeId(multitext, "INSERT", pos, " ");
-      changed = 1;
     }
   } while (c);
-
-  if (changed)
-    multitext_valuechanged_cb(multitext); /* INSERT, DELETERANGE do NOT triggers the callback */
 }
 
 static const char* str_filetitle(const char *filename)
@@ -527,8 +485,9 @@ static void new_file(Ihandle* ih_item)
   Ihandle* multitext = IupGetDialogChild(ih, "MULTITEXT");
 
   IupSetAttribute(multitext, "FILENAME", NULL);
-  IupSetAttribute(multitext, "DIRTY", "NO");
   IupSetAttribute(multitext, "VALUE", "");
+  IupSetAttribute(multitext, "SAVEPOINT", NULL);
+  IupSetAttribute(multitext, "UNDO", NULL); /* clear undo */
 
   update_title(ih, NULL, 0);
 }
@@ -543,8 +502,9 @@ static void open_file(Ihandle* ih_item, const char* filename)
     Ihandle* config = IupGetAttributeHandle(multitext, "CONFIG");
 
     IupSetStrAttribute(multitext, "FILENAME", filename);
-    IupSetAttribute(multitext, "DIRTY", "NO");
     IupSetStrAttribute(multitext, "VALUE", str);
+    IupSetAttribute(multitext, "SAVEPOINT", NULL);
+    IupSetAttribute(multitext, "UNDO", NULL); /* clear undo */
 
     update_title(ih, filename, 0);
 
@@ -575,7 +535,8 @@ static void save_file(Ihandle* multitext)
     {
       Ihandle* config = IupGetAttributeHandle(multitext, "CONFIG");
 
-      IupSetAttribute(multitext, "DIRTY", "NO");
+      IupSetAttribute(multitext, "SAVEPOINT", NULL);
+      IupSetAttribute(multitext, "UNDO", NULL); /* clear undo */
       update_title(IupGetDialog(multitext), filename, 0);
 
       if (config)
@@ -595,7 +556,9 @@ static void saveas_file(Ihandle* multitext, const char* filename)
     Ihandle* config = IupGetAttributeHandle(multitext, "CONFIG");
 
     IupSetStrAttribute(multitext, "FILENAME", filename);
-    IupSetAttribute(multitext, "DIRTY", "NO");
+
+    IupSetAttribute(multitext, "SAVEPOINT", NULL);
+    IupSetAttribute(multitext, "UNDO", NULL); /* clear undo */
     update_title(IupGetDialog(multitext), filename, 0);
 
     if (config)
@@ -612,7 +575,7 @@ static void saveas_file(Ihandle* multitext, const char* filename)
 static int save_check(Ihandle* ih_item)
 {
   Ihandle* multitext = IupGetDialogChild(ih_item, "MULTITEXT");
-  if (IupGetInt(multitext, "DIRTY"))
+  if (IupGetInt(multitext, "MODIFIED"))
   {
     switch (IupMessageAlarm(IupGetDialog(ih_item), "Attention!", "File not saved. Save it now?", "YESNOCANCEL"))
     {
@@ -703,16 +666,13 @@ static int multitext_marginclick_cb(Ihandle* multitext, int margin, int lin, cha
   return IUP_DEFAULT;
 }
 
-static int multitext_valuechanged_cb(Ihandle* multitext)
+static int multitext_savepoint_cb(Ihandle* multitext, int state)
 {
-  int dirty = IupGetInt(multitext, "DIRTY");
-  if (!dirty)
-  {
-    char* filename = IupGetAttribute(multitext, "FILENAME");
-    IupSetAttribute(multitext, "DIRTY", "YES");
-
+  char* filename = IupGetAttribute(multitext, "FILENAME");
+  if (state == 1) /* save point */
+    update_title(IupGetDialog(multitext), filename, 0);
+  else
     update_title(IupGetDialog(multitext), filename, 1);
-  }
   return IUP_DEFAULT;
 }
 
@@ -722,7 +682,7 @@ static int file_menu_open_cb(Ihandle* ih_menu)
   Ihandle* item_save = IupGetDialogChild(ih_menu, "ITEM_SAVE");
   Ihandle* multitext = IupGetDialogChild(ih_menu, "MULTITEXT");
   char* filename = IupGetAttribute(multitext, "FILENAME");
-  int dirty = IupGetInt(multitext, "DIRTY");
+  int dirty = IupGetInt(multitext, "MODIFIED");
 
   if (dirty)
     IupSetAttribute(item_save, "ACTIVE", "YES");
@@ -740,6 +700,8 @@ static int edit_menu_open_cb(Ihandle* ih_menu)
 {
   Ihandle* find_dlg = (Ihandle*)IupGetAttribute(ih_menu, "FIND_DIALOG");
 
+  Ihandle *item_undo = IupGetDialogChild(ih_menu, "ITEM_UNDO");
+  Ihandle *item_redo = IupGetDialogChild(ih_menu, "ITEM_REDO");
   Ihandle *item_paste = IupGetDialogChild(ih_menu, "ITEM_PASTE");
   Ihandle *item_cut = IupGetDialogChild(ih_menu, "ITEM_CUT");
   Ihandle *item_delete = IupGetDialogChild(ih_menu, "ITEM_DELETE");
@@ -747,22 +709,32 @@ static int edit_menu_open_cb(Ihandle* ih_menu)
   Ihandle *item_find_next = IupGetDialogChild(ih_menu, "ITEM_FINDNEXT");
   Ihandle* multitext = IupGetDialogChild(ih_menu, "MULTITEXT");
 
-  if (!IupGetInt(multitext, "CLIPBOARD"))
-    IupSetAttribute(item_paste, "ACTIVE", "NO");
+  if (IupGetInt(multitext, "UNDO"))
+    IupSetAttribute(item_undo, "ACTIVE", "YES");
   else
-    IupSetAttribute(item_paste, "ACTIVE", "YES");
+    IupSetAttribute(item_undo, "ACTIVE", "NO");
 
-  if (!IupGetAttribute(multitext, "SELECTEDTEXT"))
-  {
-    IupSetAttribute(item_cut, "ACTIVE", "NO");
-    IupSetAttribute(item_delete, "ACTIVE", "NO");
-    IupSetAttribute(item_copy, "ACTIVE", "NO");
-  }
+  if (IupGetInt(multitext, "REDO"))
+    IupSetAttribute(item_redo, "ACTIVE", "YES");
   else
+    IupSetAttribute(item_redo, "ACTIVE", "NO");
+
+  if (IupGetInt(multitext, "CLIPBOARD"))
+    IupSetAttribute(item_paste, "ACTIVE", "YES");
+  else
+    IupSetAttribute(item_paste, "ACTIVE", "NO");
+
+  if (IupGetAttribute(multitext, "SELECTEDTEXT"))
   {
     IupSetAttribute(item_cut, "ACTIVE", "YES");
     IupSetAttribute(item_delete, "ACTIVE", "YES");
     IupSetAttribute(item_copy, "ACTIVE", "YES");
+  }
+  else
+  {
+    IupSetAttribute(item_cut, "ACTIVE", "NO");
+    IupSetAttribute(item_delete, "ACTIVE", "NO");
+    IupSetAttribute(item_copy, "ACTIVE", "NO");
   }
 
   if (find_dlg)
@@ -890,7 +862,7 @@ static int item_save_action_cb(Ihandle* item_save)
 {
   Ihandle* multitext = IupGetDialogChild(item_save, "MULTITEXT");
   /* test again because in can be called using the hot key */
-  if (IupGetInt(multitext, "DIRTY"))
+  if (IupGetInt(multitext, "MODIFIED"))
     save_file(multitext);
   return IUP_IGNORE;  /* to avoid garbage in Scintilla when pressing the hot key */
 }
@@ -1229,21 +1201,39 @@ static int item_copymarked_action_cb(Ihandle* ih_item)
 static int item_cutmarked_action_cb(Ihandle* ih_item)
 {
   Ihandle* multitext = IupGetDialogChild(ih_item, "MULTITEXT");
+
+  IupSetAttribute(multitext, "UNDOACTION", "BEGIN");
+
   cutMarkedLines(multitext);
+
+  IupSetAttribute(multitext, "UNDOACTION", "END");
+
   return IUP_DEFAULT;
 }
 
 static int item_pastetomarked_action_cb(Ihandle* ih_item)
 {
   Ihandle* multitext = IupGetDialogChild(ih_item, "MULTITEXT");
+
+  IupSetAttribute(multitext, "UNDOACTION", "BEGIN");
+
   pasteToMarkedLines(multitext);
+
+  IupSetAttribute(multitext, "UNDOACTION", "END");
+
   return IUP_DEFAULT;
 }
 
 static int item_removemarked_action_cb(Ihandle* ih_item)
 {
   Ihandle* multitext = IupGetDialogChild(ih_item, "MULTITEXT");
+
+  IupSetAttribute(multitext, "UNDOACTION", "BEGIN");
+
   removeMarkedLines(multitext);
+
+  IupSetAttribute(multitext, "UNDOACTION", "END");
+
   return IUP_DEFAULT;
 }
 
@@ -1549,6 +1539,8 @@ static int find_replace_all_action_cb(Ihandle* bt_replace)
       pos_start = IupGetInt(multitext, "TARGETSTART");
       pos_end = IupGetInt(multitext, "TARGETEND");
 
+      IupSetAttribute(multitext, "UNDOACTION", "BEGIN");
+
       while (find_start != pos_start || find_end != pos_end)
       {
         str_to_replace = IupGetAttribute(replace_txt, "VALUE");
@@ -1566,6 +1558,8 @@ static int find_replace_all_action_cb(Ihandle* bt_replace)
         pos_start = IupGetInt(multitext, "TARGETSTART");
         pos_end = IupGetInt(multitext, "TARGETEND");
       }
+
+      IupSetAttribute(multitext, "UNDOACTION", "END");
     }
   }
 
@@ -2320,9 +2314,9 @@ static int iScintillaDlgCreateMethod(Ihandle* ih, void** params)
   IupSetAttribute(multitext, "MULTILINE", "YES");
   IupSetAttribute(multitext, "EXPAND", "YES");
   IupSetAttribute(multitext, "NAME", "MULTITEXT");
-  IupSetAttribute(multitext, "DIRTY", "NO");
+  IupSetAttribute(multitext, "SAVEPOINT", NULL);
   IupSetCallback(multitext, "CARET_CB", (Icallback)multitext_caret_cb);
-  IupSetCallback(multitext, "VALUECHANGED_CB", (Icallback)multitext_valuechanged_cb);
+  IupSetCallback(multitext, "SAVEPOINT_CB", (Icallback)multitext_savepoint_cb);
   IupSetCallback(multitext, "DROPFILES_CB", (Icallback)dropfiles_cb);
   IupSetCallback(multitext, "MARGINCLICK_CB", (Icallback)multitext_marginclick_cb);
 
@@ -2459,9 +2453,11 @@ static int iScintillaDlgCreateMethod(Ihandle* ih, void** params)
   IupSetCallback(item_select_all, "ACTION", (Icallback)item_select_all_action_cb);
 
   item_undo = IupItem("Undo\tCtrl+Z", NULL);
+  IupSetAttribute(item_undo, "NAME", "ITEM_UNDO");
   IupSetCallback(item_undo, "ACTION", (Icallback)item_undo_action_cb);
 
   item_redo = IupItem("Redo\tCtrl+Y", NULL);
+  IupSetAttribute(item_redo, "NAME", "ITEM_REDO");
   IupSetCallback(item_redo, "ACTION", (Icallback)item_redo_action_cb);
 
   item_uppercase = IupItem("UPPERCASE\tCtrl+Shift+U", NULL);
