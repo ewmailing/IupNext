@@ -27,7 +27,7 @@ SCI_GETLEXER
 SCI_SETLEXERLANGUAGE(<unused>, const char *name)
 SCI_GETLEXERLANGUAGE(<unused>, char *name)
 SCI_LOADLEXERLIBRARY(<unused>, const char *path)
---SCI_COLOURISE(int start, int end)
+SCI_COLOURISE(int start, int end)
 --SCI_CHANGELEXERSTATE(int start, int end)
 SCI_PROPERTYNAMES(<unused>, char *names)
 --SCI_PROPERTYTYPE(const char *name)
@@ -71,12 +71,20 @@ static int iScintillaSetLexerLanguageAttrib(Ihandle* ih, const char* value)
   return 0;
 }
 
-static int iScintillaSetKeyWordsAttrib(Ihandle* ih, int keyWordSet, const char* value)
+static int iScintillaSetKeywordsAttrib(Ihandle* ih, int keyWordSet, const char* value)
 {
   /* Note: You can set up to 9 lists of keywords for use by the current lexer */
   if(keyWordSet >= 0 && keyWordSet < 9)
     IupScintillaSendMessage(ih, SCI_SETKEYWORDS, keyWordSet, (sptr_t)value);
 
+  return 0;
+}
+
+static int iScintillaSetColoriseAttrib(Ihandle* ih, const char* value)
+{
+  int start = 0, end = -1;
+  iupStrToIntInt(value, &start, &end, ':');
+  IupScintillaSendMessage(ih, SCI_COLOURISE, start, end);
   return 0;
 }
 
@@ -130,7 +138,8 @@ void iupScintillaRegisterLexer(Iclass* ic)
   iupClassRegisterAttribute(ic,   "LEXERLANGUAGE", iScintillaGetLexerLanguageAttrib, iScintillaSetLexerLanguageAttrib, NULL, NULL, IUPAF_NO_INHERIT);
   iupClassRegisterAttribute(ic,   "PROPERTYNAME", NULL, NULL, NULL, NULL, IUPAF_NO_INHERIT);
   iupClassRegisterAttribute(ic,   "PROPERTY", iScintillaGetPropertyAttrib, iScintillaSetPropertyAttrib, NULL, NULL, IUPAF_NO_INHERIT);
-  iupClassRegisterAttributeId(ic, "KEYWORDS", NULL, iScintillaSetKeyWordsAttrib, IUPAF_WRITEONLY|IUPAF_NO_INHERIT);
+  iupClassRegisterAttribute(ic,   "COLORISE", NULL, iScintillaSetColoriseAttrib, NULL, NULL, IUPAF_WRITEONLY | IUPAF_NO_INHERIT);
+  iupClassRegisterAttributeId(ic, "KEYWORDS", NULL, iScintillaSetKeywordsAttrib, IUPAF_WRITEONLY | IUPAF_NO_INHERIT);
   iupClassRegisterAttribute(ic,   "PROPERTYNAMES", iScintillaGetPropertyNamessAttrib, NULL, NULL, NULL, IUPAF_READONLY|IUPAF_NO_INHERIT);
   iupClassRegisterAttribute(ic,   "KEYWORDSETS", iScintillaGetDescribeKeywordSetsAttrib, NULL, NULL, NULL, IUPAF_READONLY|IUPAF_NO_INHERIT);
 }

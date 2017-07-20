@@ -23,8 +23,8 @@
 /***** FOLDING *****
 --SCI_VISIBLEFROMDOCLINE(int docLine)
 --SCI_DOCLINEFROMVISIBLE(int displayLine)
---SCI_SHOWLINES(int lineStart, int lineEnd)
---SCI_HIDELINES(int lineStart, int lineEnd)
+SCI_SHOWLINES(int lineStart, int lineEnd)
+SCI_HIDELINES(int lineStart, int lineEnd)
 --SCI_GETLINEVISIBLE(int line)
 --SCI_GETALLLINESVISIBLE
 SCI_SETFOLDLEVEL(int line, int level)
@@ -33,7 +33,7 @@ SCI_GETFOLDLEVEL(int line)
 --SCI_GETAUTOMATICFOLD
 SCI_SETFOLDFLAGS(int flags)
 --SCI_GETLASTCHILD(int line, int level)
---SCI_GETFOLDPARENT(int line)
+SCI_GETFOLDPARENT(int line)
 SCI_SETFOLDEXPANDED(int line, bool expanded)
 SCI_GETFOLDEXPANDED(int line)
 --SCI_CONTRACTEDFOLDNEXT(int lineStart)
@@ -48,7 +48,7 @@ SCI_ENSUREVISIBLE(int line)
 
 static int iScintillaSetFoldFlagsAttrib(Ihandle* ih, const char* value)
 {
-  if (iupStrEqualNoCase(value, "LEVELNUMBERS"))
+  if (iupStrEqualNoCase(value, "LEVELNUMBERS")) /* for debug only */
     IupScintillaSendMessage(ih, SCI_SETFOLDFLAGS, SC_FOLDFLAG_LEVELNUMBERS, 0);
   else if (iupStrEqualNoCase(value, "LINEBEFORE_EXPANDED"))
     IupScintillaSendMessage(ih, SCI_SETFOLDFLAGS, SC_FOLDFLAG_LINEBEFORE_EXPANDED, 0);
@@ -66,6 +66,7 @@ static char* iScintillaGetFoldLevelAttrib(Ihandle* ih, int line)
 {
   int level = (int)IupScintillaSendMessage(ih, SCI_GETFOLDLEVEL, line, 0);
   level = level & SC_FOLDLEVELNUMBERMASK;
+  level = level - SC_FOLDLEVELBASE;
   return iupStrReturnInt(level);
 }
 
@@ -77,6 +78,7 @@ static int iScintillaSetFoldLevelAttrib(Ihandle* ih, int line, const char* value
     int level = (int)IupScintillaSendMessage(ih, SCI_GETFOLDLEVEL, line, 0);
     int whiteflag = level & SC_FOLDLEVELWHITEFLAG;
     int headerflag = level & SC_FOLDLEVELHEADERFLAG;
+    newLevel = newLevel + SC_FOLDLEVELBASE;
     level = newLevel | whiteflag | headerflag;
     IupScintillaSendMessage(ih, SCI_SETFOLDLEVEL, line, level);
   }
@@ -142,13 +144,33 @@ static int iScintillaSetFoldAllAttrib(Ihandle* ih, const char* value)
   return 0;
 }
 
+static int iScintillaSetShowLinesAttrib(Ihandle* ih, const char* value)
+{
+  int start = 0, end = -1;
+  iupStrToIntInt(value, &start, &end, ':');
+  if (end == -1)
+    end = (int)IupScintillaSendMessage(ih, SCI_GETLINECOUNT, 0, 0) - 1;
+  IupScintillaSendMessage(ih, SCI_SHOWLINES, start, end);
+  return 0;
+}
+
+static int iScintillaSetHideLinesAttrib(Ihandle* ih, const char* value)
+{
+  int start = 0, end = -1;
+  iupStrToIntInt(value, &start, &end, ':');
+  if (end == -1)
+    end = (int)IupScintillaSendMessage(ih, SCI_GETLINECOUNT, 0, 0) - 1;
+  IupScintillaSendMessage(ih, SCI_HIDELINES, start, end);
+  return 0;
+}
+
 static int iScintillaSetFoldToggleAttrib(Ihandle* ih, const char* value)
 {
   int line, level;
   
   iupStrToInt(value, &line);
-  level = (int)IupScintillaSendMessage(ih, SCI_GETFOLDLEVEL, line, 0);
 
+  level = (int)IupScintillaSendMessage(ih, SCI_GETFOLDLEVEL, line, 0);
   if (level & SC_FOLDLEVELHEADERFLAG)
   {
     IupScintillaSendMessage(ih, SCI_TOGGLEFOLD, line, 0);
@@ -180,6 +202,12 @@ static int iScintillaSetFoldChildrenAttrib(Ihandle* ih, int line, const char* va
   return 0;
 }
 
+static char* iScintillaGetFoldParentAttrib(Ihandle* ih, int start_line)
+{
+  int line = (int)IupScintillaSendMessage(ih, SCI_GETFOLDPARENT, start_line, 0);
+  return iupStrReturnInt(line);
+}
+
 static char* iScintillaGetFoldExpandedAttrib(Ihandle* ih, int line)
 {
   int expand = (int)IupScintillaSendMessage(ih, SCI_GETFOLDEXPANDED, line, 0);
@@ -199,6 +227,7 @@ void iupScintillaRegisterFolding(Iclass* ic)
 {
   iupClassRegisterAttribute(ic, "FOLDFLAGS", NULL, iScintillaSetFoldFlagsAttrib, NULL, NULL, IUPAF_WRITEONLY|IUPAF_NO_INHERIT);
   iupClassRegisterAttribute(ic, "FOLDTOGGLE", NULL, iScintillaSetFoldToggleAttrib, NULL, NULL, IUPAF_WRITEONLY | IUPAF_NO_INHERIT);
+  iupClassRegisterAttributeId(ic, "FOLDPARENT", iScintillaGetFoldParentAttrib, NULL, IUPAF_READONLY | IUPAF_NO_INHERIT);
   iupClassRegisterAttributeId(ic, "FOLDLINE", NULL, iScintillaSetFoldLineAttrib, IUPAF_WRITEONLY | IUPAF_NO_INHERIT);
   iupClassRegisterAttributeId(ic, "FOLDCHILDREN", NULL, iScintillaSetFoldChildrenAttrib, IUPAF_WRITEONLY | IUPAF_NO_INHERIT);
   iupClassRegisterAttributeId(ic, "FOLDEXPANDED", iScintillaGetFoldExpandedAttrib, iScintillaSetFoldExpandedAttrib, IUPAF_NO_INHERIT);
@@ -207,4 +236,6 @@ void iupScintillaRegisterFolding(Iclass* ic)
   iupClassRegisterAttributeId(ic, "FOLDLEVELHEADER", iScintillaGetFoldLevelHeaderAttrib, iScintillaSetFoldLevelHeaderAttrib, IUPAF_NO_INHERIT);
   iupClassRegisterAttributeId(ic, "ENSUREVISIBLE", NULL, iScintillaSetEnsureVisibleAttrib, IUPAF_WRITEONLY | IUPAF_NO_INHERIT);
   iupClassRegisterAttribute(ic, "FOLDALL", NULL, iScintillaSetFoldAllAttrib, NULL, NULL, IUPAF_WRITEONLY | IUPAF_NO_INHERIT);
+  iupClassRegisterAttribute(ic, "SHOWLINES", NULL, iScintillaSetShowLinesAttrib, NULL, NULL, IUPAF_WRITEONLY | IUPAF_NO_INHERIT);
+  iupClassRegisterAttribute(ic, "HIDELINES", NULL, iScintillaSetHideLinesAttrib, NULL, NULL, IUPAF_WRITEONLY | IUPAF_NO_INHERIT);
 }

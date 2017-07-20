@@ -388,8 +388,7 @@ correspond to the character after the last selected character. The values ALL an
 <h4>Folding</h4>
 
 <p><strong>FOLDFLAGS</strong> (<font size="3">non inheritable, write-only</font>): 
-determines how folding lines are drawn. Can be: &quot;LEVELNUMBERS&quot;, 
-&quot;LINEBEFORE_EXPANDED&quot;, &quot;LINEBEFORE_CONTRACTED&quot;, &quot;LINEAFTER_EXPANDED&quot; or 
+determines how folding lines are drawn. Can be: &quot;LINEBEFORE_EXPANDED&quot;, &quot;LINEBEFORE_CONTRACTED&quot;, &quot;LINEAFTER_EXPANDED&quot; or 
 &quot;LINEAFTER_CONTRACTED &quot; (default).</p>
 <p><strong>FOLDLINE<em>id</em></strong> (<font size="3">non inheritable, 
 write-only</font>): operates over a single line. Can be CONTRACT, EXPAND, or 
@@ -403,9 +402,9 @@ operates over all levels. Can be CONTRACT, EXPAND, or TOGGLE. (since 3.23)</p>
 <span>the expanded state of a single line. It has no effect on the visible state 
 of the line or any lines that depend on it. It does change the markers in the 
 folding margin. If you just want to toggle the fold state of one line and handle 
-all the lines that are dependent on it, it is much easier to use&nbsp;TOGGLEFOLD. You 
-would use it&nbsp;to process many folds without updating the display until you had 
-finished.&nbsp;(since 3.23)</span></p>
+all the lines that are dependent on it, it is much easier to use&nbsp;TOGGLEFOLD. It 
+can be used&nbsp;to process many folds without updating the display until you had 
+finished, but you have to manually hide or show lines, and force a COLORISE.&nbsp;(since 3.23)</span></p>
 <p><strong>FOLDLEVEL<em>id</em></strong> (<font size="3">non inheritable</font>): the fold level 
 number of a line (given in id). If you use a Lexer, it is not recommend to set 
 the fold level (this is far better handled by the Lexer). By contrast, the fold 
@@ -417,6 +416,12 @@ white flag state of a line (<span>indicates that the line is blank</span>). Can 
 <p><strong>FOLDLEVELHEADER<em>id</em></strong> (<font size="3">non inheritable</font>): the fold level 
 header flag state of a line (<span>indicates that the line is a header/fold 
 point</span>). Can be: &quot;Yes&quot; or &quot;No&quot;. (since 3.23)</p>
+<p><strong>FOLDPARENT<em>id</em></strong> (<font size="3">non inheritable, 
+read-only</font>): returns the <span>line number of the first line before&nbsp;the 
+given l</span>ine<span>&nbsp;(in id) that is marked as a fold point with&nbsp;</span>FOLDLEVELHEADER<span>=Yes&nbsp;and 
+has a fold level less than the&nbsp;</span>given line<span>. If no line is found, or 
+if the header flags and fold levels are inconsistent, the return value is -1. 
+(since 3.23)</span></p>
 
 <p><b>FOLDTOGGLE</b> (<font size="3">non inheritable, write-only</font>): 
 Determines if the fold point (line number) may be either expanded, displaying 
@@ -425,9 +430,19 @@ all its child lines, or contracted, hiding all the child lines. </p>
 ensure that the given line (in id) is visible by expanding folded parents. Value 
 is can be NULL or &quot;ENFORCEPOLICY&quot; to apply <span>vertical caret policy.&nbsp;</span>(since 
 3.23)</p>
+<p><strong>SHOWLINES</strong> (<font size="3">non inheritable, write-only</font>): 
+make the given lines interval visible. Value is in the format &quot;start:end&quot;, <span>
+start default is 0, end default is -1 (last line).&nbsp;(since 3.23)</span></p>
+<p><strong>HIDELINES</strong> (<font size="3">non inheritable, write-only</font>): 
+make the given lines interval hidden. Value is in the format &quot;start:end&quot;, <span>
+start default is 0, end default is -1 (last line).&nbsp;(since 3.23)</span>&nbsp;</p>
 
 <h4>Lexer</h4>
 
+<p><strong>COLORISE </strong>(<font size="3">non inheritable, write-only</font>):
+<span>requests the lexer to style the document in an character interval given in 
+value (format &quot;start:end&quot;, start default is 0, end default is -1 (last 
+pos)).&nbsp;(since 3.23)</span></p>
 <p><strong>KEYWORD<em>id</em></strong> (<font size="3">non inheritable, write-only</font>): 
 keyword list used by the current Lexer. Until 9 lists of keywords can set up 
 using id from 0 to 8. The value is a list of keywords separated by spaces, tabs, 
