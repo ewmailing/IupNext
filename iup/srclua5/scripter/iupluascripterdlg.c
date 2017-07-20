@@ -39,38 +39,38 @@ static char* getLuaKeywords(void)
 {
   /* Common */
   return "and break do else elseif end for function if in local load nil not or repeat return then until while "
-  "false true assert collectgarbage dofile error _G getmetatable ipairs loadfile next pairs "
-  "pcall print rawequal rawget rawset setmetatable tonumber tostring type _VERSION select "
-  "require xpcall "
-  "string string.byte string.char string.dump string.find string.format string.gsub string.len string.lower "
-  "string.rep string.sub string.upper string.gmatch string.match string.reverse "
-  "table table.concat table.insert table.remove table.sort "
-  "math math.abs math.acos math.asin math.atan math.ceil math.cos math.deg math.exp math.floor "
-  "math.log math.max math.min math.pi math.rad math.random math.randomseed math.fmod "
-  "math.sin math.sqrt math.tan math.huge math.modf "
-  "coroutine coroutine.create coroutine.resume coroutine.status coroutine.wrap coroutine.yield coroutine.running "
-  "io io.close io.flush io.input io.lines io.open io.output io.read io.tmpfile io.type io.write "
-  "io.stdin io.stdout io.stderr io.popen "
-  "os os.clock os.date os.difftime os.execute os.exit "
-  "os.getenv os.remove os.rename os.setlocale os.time os.tmpname "
-  "debug debug.getfenv debug.getmetatable debug.getregistry debug.setfenv debug.setmetatable debug.debug debug.gethook "
-  "debug.setlocal debug.setupvalue debug.sethook debug.traceback debug.getinfo debug.getlocal debug.getupvalue "
-  "package package.seeall package.cpath package.loaded "
-  "package.loadlib package.path package.preload "
+    "false true assert collectgarbage dofile error _G getmetatable ipairs loadfile next pairs "
+    "pcall print rawequal rawget rawset setmetatable tonumber tostring type _VERSION select "
+    "require xpcall "
+    "string string.byte string.char string.dump string.find string.format string.gsub string.len string.lower "
+    "string.rep string.sub string.upper string.gmatch string.match string.reverse "
+    "table table.concat table.insert table.remove table.sort "
+    "math math.abs math.acos math.asin math.atan math.ceil math.cos math.deg math.exp math.floor "
+    "math.log math.max math.min math.pi math.rad math.random math.randomseed math.fmod "
+    "math.sin math.sqrt math.tan math.huge math.modf "
+    "coroutine coroutine.create coroutine.resume coroutine.status coroutine.wrap coroutine.yield coroutine.running "
+    "io io.close io.flush io.input io.lines io.open io.output io.read io.tmpfile io.type io.write "
+    "io.stdin io.stdout io.stderr io.popen "
+    "os os.clock os.date os.difftime os.execute os.exit "
+    "os.getenv os.remove os.rename os.setlocale os.time os.tmpname "
+    "debug debug.getfenv debug.getmetatable debug.getregistry debug.setfenv debug.setmetatable debug.debug debug.gethook "
+    "debug.setlocal debug.setupvalue debug.sethook debug.traceback debug.getinfo debug.getlocal debug.getupvalue "
+    "package package.seeall package.cpath package.loaded "
+    "package.loadlib package.path package.preload "
 #if LUA_VERSION_NUM == 501  /* Lua 5.1 Only */
-  "module setfenv getfenv math.log10 loadstring table.maxn unpack package.loaders "
-  "math.atan2 math.cosh math.sinh math.tanh math.pow math.frexp math.ldexp "
+    "module setfenv getfenv math.log10 loadstring table.maxn unpack package.loaders "
+    "math.atan2 math.cosh math.sinh math.tanh math.pow math.frexp math.ldexp "
 #elif LUA_VERSION_NUM == 502  /* Lua 5.2 Only */
-  "package.searchers goto rawlen table.pack table.unpack package.config debug.getuservalue debug.setuservalue debug.upvalueid debug.upvaluejoin _ENV "
-  "bit32 bit32.arshift bit32.band bit32.bnot bit32.bor bit32.btest bit32.bxor bit32.extract bit32.replace bit32.lrotate bit32.lshift bit32.rrotate bit32.rshift "
-  "package.searchpath "
-  "math.atan2 math.cosh math.sinh math.tanh math.pow math.frexp math.ldexp "
+    "package.searchers goto rawlen table.pack table.unpack package.config debug.getuservalue debug.setuservalue debug.upvalueid debug.upvaluejoin _ENV "
+    "bit32 bit32.arshift bit32.band bit32.bnot bit32.bor bit32.btest bit32.bxor bit32.extract bit32.replace bit32.lrotate bit32.lshift bit32.rrotate bit32.rshift "
+    "package.searchpath "
+    "math.atan2 math.cosh math.sinh math.tanh math.pow math.frexp math.ldexp "
 #elif LUA_VERSION_NUM == 503  /* Lua 5.3 Only */
-  "package.searchers goto rawlen table.pack table.unpack package.config debug.getuservalue debug.setuservalue debug.upvalueid debug.upvaluejoin _ENV "
-  "table.move string.pack string.unpack string.packsize "
-  "utf8.char utf8.charpattern utf8.codes utf8.codepoint utf8.len utf8.offset "
+    "package.searchers goto rawlen table.pack table.unpack package.config debug.getuservalue debug.setuservalue debug.upvalueid debug.upvaluejoin _ENV "
+    "table.move string.pack string.unpack string.packsize "
+    "utf8.char utf8.charpattern utf8.codes utf8.codepoint utf8.len utf8.offset "
 #endif  
-  ;
+    ;
 }
 
 static const char *getLastNonAlphaNumeric(const char *text)
@@ -258,7 +258,9 @@ static int configsave_cb(Ihandle *ih)
 
 static int configload_cb(Ihandle *ih)
 {
+  Ihandle* multitext = IupGetDialogChild(ih, "MULTITEXT");
   Ihandle* config = IupGetAttributeHandle(ih, "CONFIG");
+
   if (config)
   {
     const char* value = IupConfigGetVariableStr(config, "MainWindow", "Split");
@@ -280,7 +282,6 @@ static int configload_cb(Ihandle *ih)
     if (value)
     {
       Ihandle* item = IupGetDialogChild(ih, "ITM_AUTOCOMPLETE");
-      Ihandle* multitext = IupGetDialogChild(ih, "MULTITEXT");
       IupSetStrAttribute(item, "VALUE", value);
       IupSetStrAttribute(multitext, "AUTOCOMPLETION", value);
     }
@@ -289,17 +290,18 @@ static int configload_cb(Ihandle *ih)
     if (value)
     {
       Ihandle* item = IupGetDialogChild(ih, "ITM_FOLDING");
-      Ihandle* multitext = IupGetDialogChild(ih, "MULTITEXT");
       IupSetStrAttribute(item, "VALUE", value);
       if (iupStrBoolean(value))
       {
         IupSetAttribute(multitext, "MARGINWIDTH3", FOLDING_MARGIN);
         IupSetAttribute(multitext, "PROPERTY", "fold=1");
+        IupSetAttribute(multitext, "_IUP_FOLDDING", "1");
       }
       else
       {
         IupSetAttribute(multitext, "MARGINWIDTH3", "0");
         IupSetAttribute(multitext, "PROPERTY", "fold=0");
+        IupSetAttribute(multitext, "_IUP_FOLDDING", NULL);
       }
 
       IupSetAttribute(multitext, "FOLDALL", "EXPAND");
@@ -398,22 +400,89 @@ static int item_autocomplete_action_cb(Ihandle* ih)
   return IUP_DEFAULT;
 }
 
+static int param_cb(Ihandle* param_dialog, int param_index, void* user_data)
+{
+  if (param_index == IUP_GETPARAM_MAP)
+  {
+    Ihandle* ih = (Ihandle*)user_data;
+    IupSetAttributeHandle(param_dialog, "PARENTDIALOG", ih);
+  }
+
+  return 1;
+}
+
+static int item_style_config_action_cb(Ihandle* ih_item)
+{
+  Ihandle* multitext = IupGetDialogChild(ih_item, "MULTITEXT");
+  Ihandle* config = IupGetAttributeHandle(multitext, "CONFIG");
+  char commentColor[30], commentLineColor[30], numberColor[30], keywordColor[30],
+    stringColor[30], characterColor[30], operatorColor[30];
+
+  strcpy(commentColor, IupGetAttribute(multitext, "STYLEFGCOLOR1"));
+  strcpy(commentLineColor, IupGetAttribute(multitext, "STYLEFGCOLOR2"));
+  strcpy(numberColor, IupGetAttribute(multitext, "STYLEFGCOLOR4"));
+  strcpy(keywordColor, IupGetAttribute(multitext, "STYLEFGCOLOR5"));
+  strcpy(stringColor, IupGetAttribute(multitext, "STYLEFGCOLOR6"));
+  strcpy(characterColor, IupGetAttribute(multitext, "STYLEFGCOLOR7"));
+  strcpy(operatorColor, IupGetAttribute(multitext, "STYLEFGCOLOR10"));
+
+  if (!IupGetParam("Syntax Colors", param_cb, IupGetDialog(ih_item),
+                   "Comment: %c\n"
+                   "Comment Line: %c\n"
+                   "Number: %c\n"
+                   "Keyword: %c\n"
+                   "String: %c\n"
+                   "Character: %c\n"
+                   "Operator: %c\n",
+                   commentColor, commentLineColor, numberColor, keywordColor, stringColor, characterColor, operatorColor, NULL))
+    return IUP_DEFAULT;
+
+  IupSetStrAttribute(multitext, "STYLEFGCOLOR1", commentColor);
+  IupSetStrAttribute(multitext, "STYLEFGCOLOR2", commentLineColor);
+  IupSetStrAttribute(multitext, "STYLEFGCOLOR4", numberColor);
+  IupSetStrAttribute(multitext, "STYLEFGCOLOR5", keywordColor);
+  IupSetStrAttribute(multitext, "STYLEFGCOLOR6", stringColor);
+  IupSetStrAttribute(multitext, "STYLEFGCOLOR7", characterColor);
+  IupSetStrAttribute(multitext, "STYLEFGCOLOR10", operatorColor);
+
+  if (config)
+  {
+    IupConfigSetVariableStr(config, "Lua", "CommentColor", commentColor);
+    IupConfigSetVariableStr(config, "Lua", "CommentLineColor", commentLineColor);
+    IupConfigSetVariableStr(config, "Lua", "NumberColor", numberColor);
+    IupConfigSetVariableStr(config, "Lua", "KeywordColor", keywordColor);
+    IupConfigSetVariableStr(config, "Lua", "StringColor", stringColor);
+    IupConfigSetVariableStr(config, "Lua", "CharacterColor", characterColor);
+    IupConfigSetVariableStr(config, "Lua", "OperatorColor", operatorColor);
+  }
+
+  return IUP_DEFAULT;
+}
+
 static int item_folding_action_cb(Ihandle* ih)
 {
   Ihandle* multitext = IupGetDialogChild(ih, "MULTITEXT");
   Ihandle* config = IupGetAttributeHandle(multitext, "CONFIG");
+  Ihandle* item_toggle_folding = IupGetDialogChild(ih, "ITM_TOGGLE_FOLDING");
+  Ihandle* menu_foldall = IupGetDialogChild(ih, "ITM_FOLD_ALL");
 
   if (IupGetInt(ih, "VALUE"))
   {
     IupSetAttribute(ih, "VALUE", "OFF");
     IupSetAttribute(multitext, "PROPERTY", "fold=0");
     IupSetAttribute(multitext, "MARGINWIDTH3", "0");
+    IupSetAttribute(multitext, "_IUP_FOLDDING", NULL);
+    IupSetAttribute(item_toggle_folding, "ACTIVE", "NO");
+    IupSetAttribute(menu_foldall, "ACTIVE", "NO");
   }
   else
   {
     IupSetAttribute(ih, "VALUE", "ON");
     IupSetAttribute(multitext, "PROPERTY", "fold=1");
     IupSetAttribute(multitext, "MARGINWIDTH3", FOLDING_MARGIN);
+    IupSetAttribute(multitext, "_IUP_FOLDDING", "1");
+    IupSetAttribute(item_toggle_folding, "ACTIVE", "Yes");
+    IupSetAttribute(menu_foldall, "ACTIVE", "Yes");
   }
 
   IupSetAttribute(multitext, "FOLDALL", "EXPAND");
@@ -424,15 +493,113 @@ static int item_folding_action_cb(Ihandle* ih)
   return IUP_DEFAULT;
 }
 
-static int param_cb(Ihandle* param_dialog, int param_index, void* user_data)
+static int item_toggle_folding_action_cb(Ihandle* ih)
 {
-  if (param_index == IUP_GETPARAM_MAP)
+  Ihandle* multitext = IupGetDialogChild(ih, "MULTITEXT");
+  int pos = IupGetInt(multitext, "CARETPOS");
+  int lin, col;
+
+  /* must test again because it can be called by the hot key */
+  if (!IupGetInt(multitext, "_IUP_FOLDDING"))
+    return IUP_DEFAULT;
+
+  IupTextConvertPosToLinCol(multitext, pos, &lin, &col);
+
+  if (!IupGetIntId(multitext, "FOLDLEVELHEADER", lin))
   {
-    Ihandle* ih = (Ihandle*)user_data;
-    IupSetAttributeHandle(param_dialog, "PARENTDIALOG", ih);
+    lin = IupGetIntId(multitext, "FOLDPARENT", lin);
+    if (lin < 0)
+      return IUP_DEFAULT;
   }
 
-  return 1;
+  IupSetfAttribute(multitext, "FOLDTOGGLE", "%d", lin);
+  IupSetfAttribute(multitext, "CARET", "%d:0", lin);
+
+  return IUP_DEFAULT;
+}
+
+static int item_collapse_action_cb(Ihandle* ih)
+{
+  Ihandle* multitext = IupGetDialogChild(ih, "MULTITEXT");
+
+  IupSetAttribute(multitext, "FOLDALL", "CONTRACT");
+
+  return IUP_DEFAULT;
+}
+
+static int item_expand_action_cb(Ihandle* ih)
+{
+  Ihandle* multitext = IupGetDialogChild(ih, "MULTITEXT");
+
+  IupSetAttribute(multitext, "FOLDALL", "EXPAND");
+
+  return IUP_DEFAULT;
+}
+
+static int item_toggle_action_cb(Ihandle* ih)
+{
+  Ihandle* multitext = IupGetDialogChild(ih, "MULTITEXT");
+
+  IupSetAttribute(multitext, "FOLDALL", "TOGGLE");
+
+  return IUP_DEFAULT;
+}
+
+static int item_level_action_cb(Ihandle* ih_item)
+{
+  Ihandle* multitext = IupGetDialogChild(ih_item, "MULTITEXT");
+  int level=0, action=0;
+  Ihandle* config = IupGetAttributeHandle(multitext, "CONFIG");
+
+  if (config)
+  {
+    const char* value = IupConfigGetVariableStr(config, "Lua", "FoldAllLevel");
+    if (value) iupStrToInt(value, &level);
+
+    value = IupConfigGetVariableStr(config, "Lua", "FoldAllLevelAction");
+    if (value) iupStrToInt(value, &action);
+  }
+
+  if (IupGetParam("Fold All by Level", param_cb, IupGetDialog(ih_item),
+                  "Level: %i\n"
+                  "Options: %o|Collapse|Expand|Toggle|\n",
+                  &level, &action, NULL))
+  {
+    int lin, count = IupGetInt(multitext, "LINECOUNT");
+
+    if (config)
+    {
+      IupConfigSetVariableInt(config, "Lua", "FoldAllLevel", level);
+      IupConfigSetVariableInt(config, "Lua", "FoldAllLevelAction", action);
+    }
+
+    for (lin = 0; lin < count; lin++)
+    {
+      if (IupGetIntId(multitext, "FOLDLEVELHEADER", lin))
+      {
+        int foldLevel = IupGetIntId(multitext, "FOLDLEVEL", lin);
+        if (foldLevel + 1 == level) /* level at header is different from child */
+        {
+          switch (action)
+          {
+          case 0: /* Collapse */
+            if (IupGetIntId(multitext, "FOLDEXPANDED", lin))
+              IupSetfAttribute(multitext, "FOLDTOGGLE", "%d", lin);
+            break;
+          case 1: /* Expand */
+            if (!IupGetIntId(multitext, "FOLDEXPANDED", lin))
+              IupSetfAttribute(multitext, "FOLDTOGGLE", "%d", lin);
+            break;
+          case 2: /* Toggle */
+            IupSetfAttribute(multitext, "FOLDTOGGLE", "%d", lin);
+            break;
+          }
+        }
+      }
+    } 
+  }
+    
+  return IUP_DEFAULT;
 }
 
 static int item_options_action_cb(Ihandle* ih_item)
@@ -1192,9 +1359,9 @@ static void appendDebugButtons(Ihandle *dialog)
 
 static void appendDebugMenuItens(Ihandle *menu)
 {
-  Ihandle *item_debug, *item_run, *item_stop, *item_pause, *item_continue, *item_stepinto, *item_autocomplete,
-    *item_folding, *item_stepover, *item_stepout, *debugMneu, *subMenuDebug, *item_currentline, *item_options,
-    *item_togglebreakpoint, *item_newbreakpoint, *item_removeallbreakpoints;
+  Ihandle *item_debug, *item_run, *item_stop, *item_pause, *item_continue, *item_stepinto, *item_autocomplete, *item_style_config,
+    *item_folding, *item_toggle_folding, *item_stepover, *item_stepout, *debugMneu, *subMenuDebug, *item_currentline, *item_options,
+    *item_togglebreakpoint, *item_newbreakpoint, *item_removeallbreakpoints, *item_collapse, *item_expand, *item_toggle, *item_level;
 
   item_run = IupItem("&Run\tCtrl+F5", NULL);
   IupSetAttribute(item_run, "NAME", "ITM_RUN");
@@ -1252,11 +1419,36 @@ static void appendDebugMenuItens(Ihandle *menu)
   IupSetAttribute(item_autocomplete, "NAME", "ITM_AUTOCOMPLETE");
   IupSetCallback(item_autocomplete, "ACTION", (Icallback)item_autocomplete_action_cb);
   IupSetAttribute(item_autocomplete, "VALUE", "ON");
+//  IupSetAttribute(item_autocomplete, "AUTOTOGGLE", "YES");
+
+  item_style_config = IupItem("Syntax Colors...", NULL);
+  IupSetAttribute(item_style_config, "NAME", "ITM_STYLE");
+  IupSetCallback(item_style_config, "ACTION", (Icallback)item_style_config_action_cb);
 
   item_folding = IupItem("Folding", NULL);
   IupSetAttribute(item_folding, "NAME", "ITM_FOLDING");
   IupSetCallback(item_folding, "ACTION", (Icallback)item_folding_action_cb);
   IupSetAttribute(item_folding, "VALUE", "ON");
+
+  item_toggle_folding = IupItem("Toggle Current Fold\tF8", NULL);
+  IupSetAttribute(item_toggle_folding, "NAME", "ITM_TOGGLE_FOLDING");
+  IupSetCallback(item_toggle_folding, "ACTION", (Icallback)item_toggle_folding_action_cb);
+
+  item_collapse = IupItem("Collapse", NULL);
+  IupSetAttribute(item_collapse, "NAME", "ITM_COLLAPSE");
+  IupSetCallback(item_collapse, "ACTION", (Icallback)item_collapse_action_cb);
+
+  item_expand = IupItem("Expand", NULL);
+  IupSetAttribute(item_expand, "NAME", "ITM_EXPAND");
+  IupSetCallback(item_expand, "ACTION", (Icallback)item_expand_action_cb);
+
+  item_toggle = IupItem("Toggle", NULL);
+  IupSetAttribute(item_toggle, "NAME", "ITM_TOGGLE");
+  IupSetCallback(item_toggle, "ACTION", (Icallback)item_toggle_action_cb);
+
+  item_level = IupItem("by Level...", NULL);
+  IupSetAttribute(item_level, "NAME", "ITM_LEVEL");
+  IupSetCallback(item_level, "ACTION", (Icallback)item_level_action_cb);
 
   item_options = IupItem("Options...", NULL);
   IupSetCallback(item_options, "ACTION", (Icallback)item_options_action_cb);
@@ -1285,8 +1477,18 @@ static void appendDebugMenuItens(Ihandle *menu)
     item_newbreakpoint,
     item_removeallbreakpoints,
     IupSeparator(),
-    item_autocomplete,
     item_folding,
+    item_toggle_folding,
+    IupSubmenu("Fold All",
+      IupSetAttributes(IupMenu(
+        item_collapse,
+        item_expand,
+        item_toggle,
+        item_level,
+        NULL), "NAME=ITM_FOLD_ALL")),
+    IupSeparator(),
+    item_autocomplete,
+    item_style_config,
     item_options,
     NULL);
 
@@ -1297,6 +1499,8 @@ static void appendDebugMenuItens(Ihandle *menu)
 
 static int multitext_map_cb(Ihandle* multitext)
 {
+  Ihandle* config = IupGetAttributeHandle(multitext, "CONFIG");
+
   IupSetAttribute(multitext, "LEXERLANGUAGE", "lua");
   IupSetAttribute(multitext, "KEYWORDS0", getLuaKeywords());
 
@@ -1306,34 +1510,30 @@ static int multitext_map_cb(Ihandle* multitext)
   IupSetAttribute(multitext, "STYLEFGCOLOR5", "0 0 255");    /* 5-Keyword  */
   IupSetAttribute(multitext, "STYLEFGCOLOR6", "164 0 164");  /* 6-String  */
   IupSetAttribute(multitext, "STYLEFGCOLOR7", "164 0 164");  /* 7-Character  */
-  IupSetAttribute(multitext, "STYLEFGCOLOR10", "164 0 0"); /* 10-Operator  */
+  IupSetAttribute(multitext, "STYLEFGCOLOR10", "164 0 0");   /* 10-Operator  */
+                                                             /* 3, 8 and 9 - are not used */
   IupSetAttribute(multitext, "STYLEBOLD10", "YES");
 
   IupSetAttribute(multitext, "MARKERHIGHLIGHT", "YES");
 
-  IupSetAttributeId(multitext, "MARKERBGCOLOR", 25, "0 0 0");
-  IupSetAttributeId(multitext, "MARKERFGCOLOR", 25, "255 255 255");
-  IupSetAttributeId(multitext, "MARKERBGCOLOR", 26, "0 0 0");
-  IupSetAttributeId(multitext, "MARKERFGCOLOR", 26, "255 255 255");
-  IupSetAttributeId(multitext, "MARKERBGCOLOR", 27, "0 0 0");
-  IupSetAttributeId(multitext, "MARKERFGCOLOR", 27, "255 255 255");
-  IupSetAttributeId(multitext, "MARKERBGCOLOR", 28, "0 0 0");
-  IupSetAttributeId(multitext, "MARKERFGCOLOR", 28, "255 255 255");
-  IupSetAttributeId(multitext, "MARKERBGCOLOR", 29, "0 0 0");
-  IupSetAttributeId(multitext, "MARKERFGCOLOR", 29, "255 255 255");
-  IupSetAttributeId(multitext, "MARKERBGCOLOR", 30, "0 0 0");
-  IupSetAttributeId(multitext, "MARKERFGCOLOR", 30, "255 255 255");
-  IupSetAttributeId(multitext, "MARKERBGCOLOR", 31, "0 0 0");
-  IupSetAttributeId(multitext, "MARKERFGCOLOR", 31, "255 255 255");
+  IupSetAttributeId(multitext, "MARKERBGCOLOR", 25, "0 0 0");         /* BGCOLOR para SC_MARKNUM_FOLDEREND */
+  IupSetAttributeId(multitext, "MARKERFGCOLOR", 25, "255 255 255");   /* FGCOLOR para SC_MARKNUM_FOLDEREND */
+  IupSetAttributeId(multitext, "MARKERBGCOLOR", 26, "0 0 0");         /* BGCOLOR para SC_MARKNUM_FOLDEROPENMID */
+  IupSetAttributeId(multitext, "MARKERFGCOLOR", 26, "255 255 255");   /* FGCOLOR para SC_MARKNUM_FOLDEROPENMID */
+  IupSetAttributeId(multitext, "MARKERBGCOLOR", 27, "0 0 0");         /* BGCOLOR para SC_MARKNUM_FOLDERMIDTAIL */
+  IupSetAttributeId(multitext, "MARKERFGCOLOR", 27, "255 255 255");   /* FGCOLOR para SC_MARKNUM_FOLDERMIDTAIL */
+  IupSetAttributeId(multitext, "MARKERBGCOLOR", 28, "0 0 0");         /* BGCOLOR para SC_MARKNUM_FOLDERTAIL */
+  IupSetAttributeId(multitext, "MARKERFGCOLOR", 28, "255 255 255");   /* FGCOLOR para SC_MARKNUM_FOLDERTAIL */
+  IupSetAttributeId(multitext, "MARKERBGCOLOR", 29, "0 0 0");         /* BGCOLOR para SC_MARKNUM_FOLDERSUB */
+  IupSetAttributeId(multitext, "MARKERFGCOLOR", 29, "255 255 255");   /* FGCOLOR para SC_MARKNUM_FOLDERSUB */
+  IupSetAttributeId(multitext, "MARKERBGCOLOR", 30, "0 0 0");         /* BGCOLOR para SC_MARKNUM_FOLDER */
+  IupSetAttributeId(multitext, "MARKERFGCOLOR", 30, "255 255 255");   /* FGCOLOR para SC_MARKNUM_FOLDER */
+  IupSetAttributeId(multitext, "MARKERBGCOLOR", 31, "0 0 0");         /* BGCOLOR para SC_MARKNUM_FOLDEROPEN */
+  IupSetAttributeId(multitext, "MARKERFGCOLOR", 31, "255 255 255");   /* FGCOLOR para SC_MARKNUM_FOLDEROPEN */
 
   IupSetAttribute(multitext, "PROPERTY", "fold=1");
-
-  IupSetAttributeId(multitext, "FOLDLEVEL", 10, "HEADERFLAG");
-  IupSetAttributeId(multitext, "FOLDLEVEL", 11, "NUMBERMASK");
-  IupSetAttributeId(multitext, "FOLDLEVEL", 12, "NUMBERMASK");
-  IupSetAttributeId(multitext, "FOLDLEVEL", 13, "NUMBERMASK");
-  IupSetAttributeId(multitext, "FOLDLEVEL", 14, "NUMBERMASK");
-  IupSetAttributeId(multitext, "FOLDLEVEL", 15, "BASE");
+  IupSetAttribute(multitext, "PROPERTY", "fold.compact=0"); /* avoid folding of blank lines */
+  IupSetAttribute(multitext, "_IUP_FOLDDING", "1");
 
   /* Folding margin=3 */
   IupSetAttribute(multitext, "MARGINWIDTH3", FOLDING_MARGIN);
@@ -1349,6 +1549,37 @@ static int multitext_map_cb(Ihandle* multitext)
   IupSetAttribute(multitext, "MARKERDEFINE", "FOLDERTAIL=LCORNER");
 
   IupSetAttribute(multitext, "FOLDFLAGS", "LINEAFTER_CONTRACTED");
+
+  if (config)
+  {
+    const char *value = IupConfigGetVariableStr(config, "Lua", "CommentColor");
+    if (value)
+      IupSetStrAttribute(multitext, "STYLEFGCOLOR1", value);
+
+    value = IupConfigGetVariableStr(config, "Lua", "CommentLineColor");
+    if (value)
+      IupSetStrAttribute(multitext, "STYLEFGCOLOR2", value);
+
+    value = IupConfigGetVariableStr(config, "Lua", "NumberColor");
+    if (value)
+      IupSetStrAttribute(multitext, "STYLEFGCOLOR4", value);
+
+    value = IupConfigGetVariableStr(config, "Lua", "KeywordColor");
+    if (value)
+      IupSetStrAttribute(multitext, "STYLEFGCOLOR5", value);
+
+    value = IupConfigGetVariableStr(config, "Lua", "StringColor");
+    if (value)
+      IupSetStrAttribute(multitext, "STYLEFGCOLOR6", value);
+
+    value = IupConfigGetVariableStr(config, "Lua", "CharacterColor");
+    if (value)
+      IupSetStrAttribute(multitext, "STYLEFGCOLOR7", value);
+
+    value = IupConfigGetVariableStr(config, "Lua", "OperatorColor");
+    if (value)
+      IupSetStrAttribute(multitext, "STYLEFGCOLOR10", value);
+  }
 
   return IUP_DEFAULT;
 }
@@ -1382,6 +1613,7 @@ static int iLuaScripterDlgCreateMethod(Ihandle* ih, void** params)
   IupSetCallback(ih, "K_F11", (Icallback)item_stepinto_action_cb);
   IupSetCallback(ih, "K_sF11", (Icallback)item_stepout_action_cb);
   IupSetCallback(ih, "K_F9", (Icallback)but_togglebreak_cb);
+  IupSetCallback(ih, "K_F8", (Icallback)item_toggle_folding_action_cb);
 #ifndef WIN32
   IupSetCallback(ih, "K_ANY", (Icallback)dialog_kany_cb);
 #endif
@@ -1532,15 +1764,6 @@ void IupLuaScripterDlgOpen(void)
 
 - Watch for globals - save in config
 - Inspect on Mouse Over?  MOUSEDWELLTIME attribute and DWELL_CB callback só em Debug
-- dialog for style colors (IupGetParam) - save in config
-- Folding support
-    Folding             (enable)
-    Toggle Folding  F8  (current line)
-    All Folding         (submenu)
-      Collapse
-      Expand
-      Toggle
-      Level...          (seleciona o nivel para collapse or expand or toggle)
 
 - Table Inspector using IupTree
 - iup.TRACEBACK
