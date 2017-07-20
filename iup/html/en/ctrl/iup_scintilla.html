@@ -143,6 +143,9 @@ allow processing of Unicode typed characters. Default: NO. (since 3.9)</p>
 When enabled, each typed character replaces the character to the right of the 
 text caret. When disabled, characters are inserted at 
 the caret.</p>
+<p><strong><a name="MOUSEDWELLTIME">MOUSEDWELLTIME</a></strong> (<font size="3">non inheritable</font>):
+<span>time the mouse must sit still, in milliseconds, to generate a&nbsp;</span><a href="#DWELL_CB">DWELL_CB</a><span>&nbsp;callback. 
+If set to&nbsp;NULL, the default, no dwell events are generated. </span>(since 3.23)</p>
 <p><strong>READONLY </strong>(<font size="3">non inheritable</font>): Allows the user only to read the contents, 
   without changing it. Restricts the insertion using keyboard input and 
 attributes. Navigation keys are still available. Possible values: "YES" and "NO". 
@@ -935,9 +938,25 @@ character while auto-completion list was active. (since 3.10.1)</p>
   
 <p><a href="../call/iup_dropfiles_cb.html">DROPFILES_CB</a>: Action generated when one or 
   more files are dropped in the element.</p>
+<p><strong><a name="DWELL_CB">DWELL_CB</a></strong>: <span>Action generated when 
+the user keeps the mouse in one position for the dwell period defined in
+<a href="#MOUSEDWELLTIME">MOUSEDWELLTIME</a>. (since 3.23)</span></p>
 
   
 
+  
+<pre>int function(Ihandle *<strong>ih</strong>, int <strong>state</strong>, int <strong>pos</strong>, int <strong>x</strong>, int <strong>y</strong>); [in C]<br><strong>ih</strong>:dwell_cb(<strong>state, pos</strong>, <strong>x</strong>, <strong>y</strong>: number) -&gt; (<strong>ret</strong>: number) [in Lua]</pre>
+
+    
+<p class="info"><strong>ih</strong>:
+  identifier of the element that activated the 
+  event.<br><strong>state</strong>: 1 if mouse sit still more than the dwell 
+period, 0 if mouse moved or key pressed after state=1 was called.<br><strong>pos</strong>: <span>the nearest position in the document to 
+the position where the mouse pointer was lingering. Can be -1 if not near any 
+character.</span><br><strong>x, y</strong>: <span>Where the pointer lingered.&nbsp;</span></p>
+
+  
+  
   
 <p><b>HOTSPOTCLICK_CB</b>:
   <span style="color: rgb(0, 0, 0); font-family: tahoma, verdana, arial, helvetica, geneva, sans-serif; font-size: medium; font-style: normal; font-variant: normal; font-weight: normal; letter-spacing: normal; line-height: 20px; orphans: auto; text-align: start; text-indent: 0px; text-transform: none; white-space: normal; widows: auto; word-spacing: 0px; -webkit-text-size-adjust: auto; -webkit-text-stroke-width: 0px; background-color: rgb(255, 255, 255); display: inline !important; float: none;">

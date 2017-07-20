@@ -23,7 +23,27 @@
 /***** CURSOR ****
 SCI_SETCURSOR(int curType)
 SCI_GETCURSOR
+
+SCI_SETMOUSEDWELLTIME(int milliseconds)
+SCI_GETMOUSEDWELLTIME
 */
+
+static int iScintillaSetMouseDWellTimeAttrib(Ihandle *ih, const char *value)
+{
+  int time;
+  if (iupStrToInt(value, &time))
+    IupScintillaSendMessage(ih, SCI_SETMOUSEDWELLTIME, time, 0);
+  else
+    IupScintillaSendMessage(ih, SCI_SETMOUSEDWELLTIME, SC_TIME_FOREVER, 0);
+  
+  return 0;
+}
+
+static char* iScintillaGetMouseDWellTimeAttrib(Ihandle* ih)
+{
+  int time = (int)IupScintillaSendMessage(ih, SCI_SETMOUSEDWELLTIME, 0, 0);
+  return iupStrReturnInt(time);
+}
 
 static char* iScintillaGetCursorAttrib(Ihandle *ih)
 {
@@ -87,6 +107,7 @@ static char* iScintillaGetZoomAttrib(Ihandle* ih)
 void iupScintillaRegisterCursor(Iclass* ic)
 {
   iupClassRegisterAttribute(ic, "CURSOR",  iScintillaGetCursorAttrib, iScintillaSetCursorAttrib, NULL, NULL, IUPAF_NO_INHERIT);
+  iupClassRegisterAttribute(ic, "MOUSEDWELLTIME", iScintillaGetMouseDWellTimeAttrib, iScintillaSetMouseDWellTimeAttrib, NULL, NULL, IUPAF_NO_INHERIT);
 
   iupClassRegisterAttribute(ic, "ZOOMIN",  NULL, iScintillaSetZoomInAttrib, NULL, NULL, IUPAF_WRITEONLY|IUPAF_NO_INHERIT);
   iupClassRegisterAttribute(ic, "ZOOMOUT", NULL, iScintillaSetZoomOutAttrib, NULL, NULL, IUPAF_WRITEONLY|IUPAF_NO_INHERIT);

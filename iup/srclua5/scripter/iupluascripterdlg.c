@@ -1531,7 +1531,7 @@ void IupLuaScripterDlgOpen(void)
 - detachable Console, Debug, Breakpoints (problem with IupGetDialogChild(NAME))- save in config
 
 - Watch for globals - save in config
-- Inspect on Mouse Over?  IupConvertXYToPos
+- Inspect on Mouse Over?  MOUSEDWELLTIME attribute and DWELL_CB callback só em Debug
 - dialog for style colors (IupGetParam) - save in config
 - Folding support
     Folding             (enable)

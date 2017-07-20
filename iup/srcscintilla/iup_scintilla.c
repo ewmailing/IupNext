@@ -121,6 +121,15 @@ void iupScintillaNotify(Ihandle *ih, SCNotification* pMsg)
 
   switch(pMsg->nmhdr.code)
   {
+  case SCN_DWELLSTART:
+  case SCN_DWELLEND:
+    {
+      IFniiii cb = (IFniiii)IupGetCallback(ih, "DWELL_CB");
+      if (cb)
+        cb(ih, pMsg->nmhdr.code == SCN_DWELLSTART ? 1 : 0, pMsg->position, pMsg->x, pMsg->y);
+
+      break;
+    }
   case SCN_SAVEPOINTREACHED:
   case SCN_SAVEPOINTLEFT:
     {
@@ -363,6 +372,8 @@ static Iclass* iupScintillaNewClass(void)
   ic->LayoutUpdate = iupdrvBaseLayoutUpdateMethod;
 
   /* Callbacks */
+  
+  iupClassRegisterCallback(ic, "DWELL_CB", "iiii");
   iupClassRegisterCallback(ic, "SAVEPOINT_CB", "i");
   iupClassRegisterCallback(ic, "MARGINCLICK_CB", "iis");
   iupClassRegisterCallback(ic, "HOTSPOTCLICK_CB", "iiis");

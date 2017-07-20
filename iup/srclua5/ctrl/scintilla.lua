@@ -7,6 +7,7 @@ local ctrl = {
   creation = "",
   subdir = "ctrl",
   callback = {
+    dwell_cb = "nnnn",
     savepoint_cb = "n",
   --  valuechanged_cb = "",
   --  caret_cb = "nnn", 
