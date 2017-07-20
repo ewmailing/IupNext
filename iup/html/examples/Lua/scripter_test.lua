@@ -20,6 +20,9 @@ function f1(x, ...)
   local ta = {...} -- vararg expansion
   x = "Hello " .. x .. " " .. l_main_x -- upvalue l_main_x
   y = false
+  if y then
+    y = 2
+  end
   y = f2(3) -- upvalue f2
   return x .. " " .. y
 end
