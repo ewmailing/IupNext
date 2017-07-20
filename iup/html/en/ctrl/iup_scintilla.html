@@ -391,6 +391,21 @@ correspond to the character after the last selected character. The values ALL an
 determines how folding lines are drawn. Can be: &quot;LEVELNUMBERS&quot;, 
 &quot;LINEBEFORE_EXPANDED&quot;, &quot;LINEBEFORE_CONTRACTED&quot;, &quot;LINEAFTER_EXPANDED&quot; or 
 &quot;LINEAFTER_CONTRACTED &quot; (default).</p>
+<p><strong>FOLDLINE<em>id</em></strong> (<font size="3">non inheritable, 
+write-only</font>): operates over a single line. Can be CONTRACT, EXPAND, or 
+TOGGLE. (since 3.23)</p>
+<p><strong>FOLDCHILDREN</strong><strong><em>id</em></strong> (<font size="3">non inheritable, 
+write-only</font>): operates over a single line and all its children. Can be 
+CONTRACT, EXPAND, or TOGGLE. (since 3.23)</p>
+<p><strong>FOLDALL</strong> (<font size="3">non inheritable, write-only</font>): 
+operates over all levels. Can be CONTRACT, EXPAND, or TOGGLE. (since 3.23)</p>
+<p><strong>FOLDEXPANDED<em>id</em></strong> (<font size="3">non inheritable</font>):
+<span>the expanded state of a single line. It has no effect on the visible state 
+of the line or any lines that depend on it. It does change the markers in the 
+folding margin. If you just want to toggle the fold state of one line and handle 
+all the lines that are dependent on it, it is much easier to use&nbsp;TOGGLEFOLD. You 
+would use it&nbsp;to process many folds without updating the display until you had 
+finished.&nbsp;(since 3.23)</span></p>
 <p><strong>FOLDLEVEL<em>id</em></strong> (<font size="3">non inheritable</font>): the fold level 
 number of a line (given in id). If you use a Lexer, it is not recommend to set 
 the fold level (this is far better handled by the Lexer). By contrast, the fold 
@@ -406,8 +421,6 @@ point</span>). Can be: &quot;Yes&quot; or &quot;No&quot;. (since 3.23)</p>
 <p><b>FOLDTOGGLE</b> (<font size="3">non inheritable, write-only</font>): 
 Determines if the fold point (line number) may be either expanded, displaying 
 all its child lines, or contracted, hiding all the child lines. </p>
-<p><strong>FOLDALL</strong> (<font size="3">non inheritable, write-only</font>): 
-operates over all levels. Can be CONTRACT, EXPAND, or TOGGLE. (since 3.23)</p>
 <p><strong>ENSUREVISIBLE</strong><em><strong>id</strong></em> (<font size="3">non inheritable, write-only</font>): 
 ensure that the given line (in id) is visible by expanding folded parents. Value 
 is can be NULL or &quot;ENFORCEPOLICY&quot; to apply <span>vertical caret policy.&nbsp;</span>(since 

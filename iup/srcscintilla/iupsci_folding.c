@@ -34,12 +34,12 @@ SCI_GETFOLDLEVEL(int line)
 SCI_SETFOLDFLAGS(int flags)
 --SCI_GETLASTCHILD(int line, int level)
 --SCI_GETFOLDPARENT(int line)
---SCI_SETFOLDEXPANDED(int line, bool expanded)
---SCI_GETFOLDEXPANDED(int line)
+SCI_SETFOLDEXPANDED(int line, bool expanded)
+SCI_GETFOLDEXPANDED(int line)
 --SCI_CONTRACTEDFOLDNEXT(int lineStart)
 SCI_TOGGLEFOLD(int line)
---SCI_FOLDLINE(int line, int action)
---SCI_FOLDCHILDREN(int line, int action)
+SCI_FOLDLINE(int line, int action)
+SCI_FOLDCHILDREN(int line, int action)
 SCI_FOLDALL(int action)
 --SCI_EXPANDCHILDREN(int line, int level)
 SCI_ENSUREVISIBLE(int line)
@@ -158,10 +158,50 @@ static int iScintillaSetFoldToggleAttrib(Ihandle* ih, const char* value)
   return 0;
 }
 
+static int iScintillaSetFoldLineAttrib(Ihandle* ih, int line, const char* value)
+{
+  if (iupStrEqualNoCase(value, "CONTRACT"))
+    IupScintillaSendMessage(ih, SCI_FOLDLINE, line, SC_FOLDACTION_CONTRACT);
+  else if (iupStrEqualNoCase(value, "EXPAND"))
+    IupScintillaSendMessage(ih, SCI_FOLDLINE, line, SC_FOLDACTION_EXPAND);
+  else if (iupStrEqualNoCase(value, "TOGGLE"))
+    IupScintillaSendMessage(ih, SCI_FOLDLINE, line, SC_FOLDACTION_TOGGLE);
+  return 0;
+}
+
+static int iScintillaSetFoldChildrenAttrib(Ihandle* ih, int line, const char* value)
+{
+  if (iupStrEqualNoCase(value, "CONTRACT"))
+    IupScintillaSendMessage(ih, SCI_FOLDCHILDREN, line, SC_FOLDACTION_CONTRACT);
+  else if (iupStrEqualNoCase(value, "EXPAND"))
+    IupScintillaSendMessage(ih, SCI_FOLDCHILDREN, line, SC_FOLDACTION_EXPAND);
+  else if (iupStrEqualNoCase(value, "TOGGLE"))
+    IupScintillaSendMessage(ih, SCI_FOLDCHILDREN, line, SC_FOLDACTION_TOGGLE);
+  return 0;
+}
+
+static char* iScintillaGetFoldExpandedAttrib(Ihandle* ih, int line)
+{
+  int expand = (int)IupScintillaSendMessage(ih, SCI_GETFOLDEXPANDED, line, 0);
+  return iupStrReturnInt(expand);
+}
+
+static int iScintillaSetFoldExpandedAttrib(Ihandle* ih, int line, const char* value)
+{
+  if (iupStrBoolean(value))
+    IupScintillaSendMessage(ih, SCI_SETFOLDEXPANDED, line, 1);
+  else
+    IupScintillaSendMessage(ih, SCI_SETFOLDEXPANDED, line, 0);
+  return 0;
+}
+
 void iupScintillaRegisterFolding(Iclass* ic)
 {
-  iupClassRegisterAttribute(ic,   "FOLDFLAGS", NULL, iScintillaSetFoldFlagsAttrib, NULL, NULL, IUPAF_WRITEONLY|IUPAF_NO_INHERIT);
-  iupClassRegisterAttribute(ic,   "FOLDTOGGLE", NULL, iScintillaSetFoldToggleAttrib, NULL, NULL, IUPAF_WRITEONLY|IUPAF_NO_INHERIT);
+  iupClassRegisterAttribute(ic, "FOLDFLAGS", NULL, iScintillaSetFoldFlagsAttrib, NULL, NULL, IUPAF_WRITEONLY|IUPAF_NO_INHERIT);
+  iupClassRegisterAttribute(ic, "FOLDTOGGLE", NULL, iScintillaSetFoldToggleAttrib, NULL, NULL, IUPAF_WRITEONLY | IUPAF_NO_INHERIT);
+  iupClassRegisterAttributeId(ic, "FOLDLINE", NULL, iScintillaSetFoldLineAttrib, IUPAF_WRITEONLY | IUPAF_NO_INHERIT);
+  iupClassRegisterAttributeId(ic, "FOLDCHILDREN", NULL, iScintillaSetFoldChildrenAttrib, IUPAF_WRITEONLY | IUPAF_NO_INHERIT);
+  iupClassRegisterAttributeId(ic, "FOLDEXPANDED", iScintillaGetFoldExpandedAttrib, iScintillaSetFoldExpandedAttrib, IUPAF_NO_INHERIT);
   iupClassRegisterAttributeId(ic, "FOLDLEVEL", iScintillaGetFoldLevelAttrib, iScintillaSetFoldLevelAttrib, IUPAF_NO_INHERIT);
   iupClassRegisterAttributeId(ic, "FOLDLEVELWHITE", iScintillaGetFoldLevelWhiteAttrib, iScintillaSetFoldLevelWhiteAttrib, IUPAF_NO_INHERIT);
   iupClassRegisterAttributeId(ic, "FOLDLEVELHEADER", iScintillaGetFoldLevelHeaderAttrib, iScintillaSetFoldLevelHeaderAttrib, IUPAF_NO_INHERIT);
