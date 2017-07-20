@@ -1419,7 +1419,6 @@ static void appendDebugMenuItens(Ihandle *menu)
   IupSetAttribute(item_autocomplete, "NAME", "ITM_AUTOCOMPLETE");
   IupSetCallback(item_autocomplete, "ACTION", (Icallback)item_autocomplete_action_cb);
   IupSetAttribute(item_autocomplete, "VALUE", "ON");
-//  IupSetAttribute(item_autocomplete, "AUTOTOGGLE", "YES");
 
   item_style_config = IupItem("Syntax Colors...", NULL);
   IupSetAttribute(item_style_config, "NAME", "ITM_STYLE");
