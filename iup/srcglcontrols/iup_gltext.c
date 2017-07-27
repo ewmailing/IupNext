@@ -98,7 +98,7 @@ static int iGLTextBUTTON_CB(Ihandle* ih, int button, int pressed, int x, int y, 
 static int iGLTextEditKILLFOCUS_CB(Ihandle* text)
 {
   Ihandle* ih = text->parent;
-  Ihandle* gl_parent = (Ihandle*)iupAttribGet(ih, "GL_CANVAS");
+  Ihandle* gl_parent = (Ihandle*)iupAttribGet(ih, "_IUP_GLCANVAS_PARENT");
   IupSetAttribute(text, "VISIBLE", "NO");
   IupSetAttribute(text, "ACTIVE", "NO");
   IupSetAttribute(gl_parent, "REDRAW", NULL);  /* redraw the whole box */

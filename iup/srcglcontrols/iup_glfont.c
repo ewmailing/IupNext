@@ -466,7 +466,7 @@ static IglFont* iGLFindFont(Ihandle* ih, Ihandle* gl_parent, const char *font)
 static IglFont* iGLFontCreateNativeFont(Ihandle *ih, const char* value)
 {
   IglFont* glfont;
-  Ihandle* gl_parent = (Ihandle*)iupAttribGet(ih, "GL_CANVAS");
+  Ihandle* gl_parent = (Ihandle*)iupAttribGet(ih, "_IUP_GLCANVAS_PARENT");
   IupGLMakeCurrent(gl_parent);
 
   glfont = iGLFindFont(ih, gl_parent, value);
