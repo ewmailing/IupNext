@@ -3,6 +3,7 @@ LIBNAME = iupluaimglib
 
 OPT = YES
 NO_LUALINK = Yes
+LUAMOD_DIR = Yes
 
 SRC = iupluaimglib.c
 DEF_FILE = iupluaimglib5.def

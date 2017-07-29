@@ -3,6 +3,7 @@ LIBNAME  = iupluaim
 
 OPT = YES
 NO_LUALINK = Yes
+LUAMOD_DIR = Yes
 
 DEF_FILE = iupluaim5.def
 SRC = iupluaim.c

@@ -5,6 +5,7 @@ OPT = YES
 NO_LUALINK = Yes
 USE_BIN2C_LUA = Yes
 NO_LUAOBJECT = Yes
+LUAMOD_DIR = Yes
 
 DEF_FILE = iupluagl5.def
 
@@ -29,6 +30,7 @@ USE_LH_SUBDIR = Yes
 LHDIR = lh
 
 LIBS = iuplua$(LUASFX)
+LDIR = ../lib/$(TEC_UNAME) ../lib/$(TEC_UNAME)/Lua$(LUASFX)
 
 SRCLUA = glcanvas.lua
 GC = $(addsuffix .c, $(basename $(SRCLUA)))

@@ -5,6 +5,7 @@ OPT = YES
 NO_LUAOBJECT = Yes
 NO_LUALINK = Yes
 USE_BIN2C_LUA = Yes
+LUAMOD_DIR = Yes
 
 DEF_FILE = iuplua_pplot5.def
 

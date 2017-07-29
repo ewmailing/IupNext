@@ -5,6 +5,7 @@ OPT = YES
 NO_LUALINK = Yes
 USE_BIN2C_LUA = Yes
 NO_LUAOBJECT = Yes
+LUAMOD_DIR = Yes
 
 DEF_FILE = iupluaole5.def
 

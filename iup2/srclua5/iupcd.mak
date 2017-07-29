@@ -3,6 +3,7 @@ LIBNAME = iupluacd
 
 OPT = YES
 NO_LUALINK = Yes
+LUAMOD_DIR = Yes
 
 DEFINES = CD_NO_OLD_INTERFACE
 SRC = iupluacd.c
@@ -11,7 +12,6 @@ DEF_FILE = iupluacd5.def
 # Can not use USE_IUPLUA because Tecmake will include "iupluacd5X" in linker
 
 INCLUDES = ../include
-LDIR = ../lib/$(TEC_UNAME)
 
 IUP := ..
 
@@ -29,3 +29,4 @@ endif
 LIBNAME := $(LIBNAME)$(LUASFX)
 
 LIBS = iuplua$(LUASFX)
+LDIR = ../lib/$(TEC_UNAME) ../lib/$(TEC_UNAME)/Lua$(LUASFX)
