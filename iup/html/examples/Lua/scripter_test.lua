@@ -21,7 +21,7 @@ function f1(x, ...)
   x = "Hello " .. x .. " " .. l_main_x -- upvalue l_main_x
   y = false
   if y then
-    y = 2
+    y = 2 + g_main_x
   end
   y = f2(3) -- upvalue f2
   return x .. " " .. y

@@ -349,8 +349,8 @@ static int dwell_cb(Ihandle* multitext, int code, int pos, int x, int y)
 
   if (code)
   {
-    int st, ed, l, sc, ec;
-    const char *name, *value;
+    int start, end, lin, start_col, end_col;
+    const char *value;
     char *text;
     char word[1024];
     int tabSize = IupGetInt(multitext, "TABSIZE");
@@ -359,26 +359,24 @@ static int dwell_cb(Ihandle* multitext, int code, int pos, int x, int y)
     if (wordpos == NULL)
       return IUP_DEFAULT;
     
-    sscanf(wordpos, "%d:%d", &st, &ed);
-    IupTextConvertPosToLinCol(multitext, st, &l, &sc);
-    IupTextConvertPosToLinCol(multitext, ed, &l, &ec);
-    text = IupGetAttributeId(multitext, "LINE", l);
+    sscanf(wordpos, "%d:%d", &start, &end);
+    IupTextConvertPosToLinCol(multitext, start, &lin, &start_col);
+    IupTextConvertPosToLinCol(multitext, end, &lin, &end_col);
+    text = IupGetAttributeId(multitext, "LINE", lin);
     text = changeTabsForSpaces(text, tabSize);
-    text[ec] = '\0';
-    strcpy(word, text+sc);
+    text[end_col] = '\0';
+    strcpy(word, text+start_col);
     
     iuplua_push_name(L, "DebuggerShowTip");
     lua_pushstring(L, word);
-    lua_pushinteger(L, l+1);
-    lua_call(L, 2, 2);
+    lua_pushinteger(L, lin+1);
+    lua_call(L, 2, 1);
     
-    name = lua_tostring(L, -2);
     value = lua_tostring(L, -1);
-
-    if (name==NULL || value==NULL)
+    if (value==NULL)
       return IUP_DEFAULT;
 
-    IupSetStrf(multitext, "TIP", "%s = %s" , name, value);
+    IupSetStrf(multitext, "TIP", "%s = %s" , word, value);
     IupSetAttribute(multitext, "TIPVISIBLE", "Yes");
   }
   else
@@ -1846,7 +1844,7 @@ void IupLuaScripterDlgOpen(void)
 - detachable Console, Debug, Breakpoints (problem with IupGetDialogChild(NAME))- save in config
 
 - Watch for globals - save in config
-- Inspect on Mouse Over?  MOUSEDWELLTIME attribute and DWELL_CB callback só em Debug
+- Block comments menu items
 
 - Table Inspector using IupTree
 - iup.TRACEBACK
