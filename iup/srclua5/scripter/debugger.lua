@@ -485,6 +485,7 @@ function iup.DebuggerShowTip(word, line)
   local startLevel = 5
   local level = index - 1 + startLevel  -- this is the level of the function
 
+  -- check if inside the current function
   local info = debug.getinfo(level, "SlL") -- linedefined, lastlinedefined, activelines
   if info.linedefined == 0 and info.lastlinedefined == 0 then
     if not info.activelines[line] then
@@ -494,14 +495,31 @@ function iup.DebuggerShowTip(word, line)
     return
   end
 
+  -- check for local
   local pos = 1
   local name, value = debug.getlocal(level, pos)
   while name ~= nil do
     if name == word then
       return tostring(value)
     end
+
     pos = pos + 1
     name, value = debug.getlocal(level, pos)
+  end
+
+  -- check for upvalues
+  local call = debug.getinfo(level, "uf")
+  if call.nups > 0 then
+    pos = 1
+    name, value = debug.getupvalue(call.func, pos)
+    while name ~= nil do
+      if name == word then
+        return tostring(value)
+      end
+
+      pos = pos + 1
+      name, value = debug.getupvalue(call.func, pos)
+    end
   end
 
   -- check for global  
