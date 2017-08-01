@@ -383,6 +383,10 @@ correspond to the character after the last selected character. The values ALL an
   Same as SELECTION but using a zero based character 
 	index "<strong>pos1</strong>:<strong>pos2</strong>". Useful for indexing the VALUE string. 
 	The values ALL and NONE are also accepted.</p>
+<p><strong>WORDPOS<em>id</em></strong> (<font size="3">non inheritable, 
+read-only</font>): returns the start and end of a word in the text around the 
+given position (in id). It uses the format &quot;<strong>start</strong>:<strong>end</strong>&quot;. 
+Returns NULL if no words were found. (since 3.23)</p>
 
   
 <h4>Folding</h4>

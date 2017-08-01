@@ -64,8 +64,8 @@ SCI_GETCURLINE(int textLen, char *text)
 --SCI_GETLINESELSTARTPOSITION(int line)
 --SCI_GETLINESELENDPOSITION(int line)
 SCI_MOVECARETINSIDEVIEW
---SCI_WORDENDPOSITION(int position, bool onlyWordCharacters)
---SCI_WORDSTARTPOSITION(int position, bool onlyWordCharacters)
+SCI_WORDENDPOSITION(int position, bool onlyWordCharacters)
+SCI_WORDSTARTPOSITION(int position, bool onlyWordCharacters)
 --SCI_POSITIONBEFORE(int position)
 --SCI_POSITIONAFTER(int position)
 --SCI_POSITIONRELATIVE(int position, int relative)
@@ -332,6 +332,17 @@ static int iScintillaSetSelectionPosAttrib(Ihandle* ih, const char* value)
   return 0;
 }
 
+static char* iScintillaGetWordPosAttrib(Ihandle* ih, int pos)
+{
+  int start = (int)IupScintillaSendMessage(ih, SCI_WORDSTARTPOSITION, pos, 1);
+  int end = (int)IupScintillaSendMessage(ih, SCI_WORDENDPOSITION, pos, 1);
+
+  if (start == end)
+    return NULL;
+
+  return iupStrReturnIntInt(start, end, ':');
+}
+
 static int iScintillaSetFirstVisibleLineAttrib(Ihandle* ih, const char* value)
 {
   int line = 0;
@@ -418,6 +429,7 @@ void iupScintillaRegisterSelection(Iclass* ic)
   iupClassRegisterAttribute(ic, "SELECTEDTEXT", iScintillaGetSelectedTextAttrib, iScintillaSetSelectedTextAttrib, NULL, NULL, IUPAF_NO_INHERIT);
   iupClassRegisterAttribute(ic, "SELECTION", iScintillaGetSelectionAttrib, iScintillaSetSelectionAttrib, NULL, NULL, IUPAF_NO_INHERIT);
   iupClassRegisterAttribute(ic, "SELECTIONPOS", iScintillaGetSelectionPosAttrib, iScintillaSetSelectionPosAttrib, NULL, NULL, IUPAF_NO_INHERIT);
-  iupClassRegisterAttribute(ic, "VISIBLELINESCOUNT", iScintillaGetVisibleLinesCountAttrib, NULL, NULL, NULL, IUPAF_READONLY|IUPAF_NO_INHERIT);
+  iupClassRegisterAttributeId(ic, "WORDPOS", iScintillaGetWordPosAttrib, NULL, IUPAF_READONLY | IUPAF_NO_INHERIT);
+  iupClassRegisterAttribute(ic, "VISIBLELINESCOUNT", iScintillaGetVisibleLinesCountAttrib, NULL, NULL, NULL, IUPAF_READONLY | IUPAF_NO_INHERIT);
   iupClassRegisterAttribute(ic, "FIRSTVISIBLELINE", iScintillaGetFirstVisibleLineAttrib, iScintillaSetFirstVisibleLineAttrib, NULL, NULL, IUPAF_NO_INHERIT);
 }
