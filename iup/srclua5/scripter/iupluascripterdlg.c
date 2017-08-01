@@ -311,6 +311,87 @@ static int configload_cb(Ihandle *ih)
   return IUP_DEFAULT;
 }
 
+static char* changeTabsForSpaces(const char *text, int tabsize)
+{
+  static char newText[1024];
+  int len = (int)strlen(text);
+  int i, j, charcount = 0;
+
+  for (i = 0; i < len; i++)
+  {
+    char c = text[i];
+
+    if (c == '\t')
+    {
+      int nWhites = tabsize - (charcount % tabsize);
+
+      for (j = 0; j < nWhites; j++)
+      {
+        newText[charcount] = ' ';
+        charcount++;
+      }
+      continue;
+    }
+    
+    newText[charcount] = c;  
+    charcount++;
+  }
+
+  newText[charcount] = '\0';
+
+  return newText;
+}
+
+static int dwell_cb(Ihandle* multitext, int code, int pos, int x, int y)
+{
+  if (IupGetInt(IupGetDialogChild(multitext, "ITM_DEBUG"), "ACTIVE")) /* can be called by the hot key in the dialog */
+    return IUP_DEFAULT;
+
+  if (code)
+  {
+    int st, ed, l, sc, ec;
+    const char *name, *value;
+    char *text;
+    char word[1024];
+    int tabSize = IupGetInt(multitext, "TABSIZE");
+    lua_State* L = (lua_State*)IupGetAttribute(multitext, "LUASTATE");
+    char* wordpos = IupGetAttributeId(multitext, "WORDPOS", pos);
+    if (wordpos == NULL)
+      return IUP_DEFAULT;
+    
+    sscanf(wordpos, "%d:%d", &st, &ed);
+    IupTextConvertPosToLinCol(multitext, st, &l, &sc);
+    IupTextConvertPosToLinCol(multitext, ed, &l, &ec);
+    text = IupGetAttributeId(multitext, "LINE", l);
+    text = changeTabsForSpaces(text, tabSize);
+    text[ec] = '\0';
+    strcpy(word, text+sc);
+    
+    iuplua_push_name(L, "DebuggerShowTip");
+    lua_pushstring(L, word);
+    lua_pushinteger(L, l+1);
+    lua_call(L, 2, 2);
+    
+    name = lua_tostring(L, -2);
+    value = lua_tostring(L, -1);
+
+    if (name==NULL || value==NULL)
+      return IUP_DEFAULT;
+
+    IupSetStrf(multitext, "TIP", "%s = %s" , name, value);
+    IupSetAttribute(multitext, "TIPVISIBLE", "Yes");
+  }
+  else
+  {
+    IupSetAttribute(multitext, "TIPVISIBLE", "No");
+    IupSetAttribute(multitext, "TIP", NULL);
+  }
+
+  (void)x;
+  (void)y;
+  return IUP_DEFAULT;
+}
+
 static int marker_changed_cb(Ihandle *ih, int lin, int margin)
 {
   Ihandle* multitext = IupGetDialogChild(ih, "MULTITEXT");
@@ -1628,6 +1709,7 @@ static int iLuaScripterDlgCreateMethod(Ihandle* ih, void** params)
   IupSetCallback(multitext, "VALUECHANGED_CB", (Icallback)multitext_valuechanged_cb);
   IupSetCallback(multitext, "K_ESC", (Icallback)multitext_kesc_cb);
   IupSetCallback(multitext, "MAP_CB", (Icallback)multitext_map_cb);
+  IupSetCallback(multitext, "DWELL_CB", (Icallback)dwell_cb);
   IupSetAttribute(multitext, "AUTOCOMPLETION", "ON");
 
   /* breakpoints margin=2 */
@@ -1652,6 +1734,8 @@ static int iLuaScripterDlgCreateMethod(Ihandle* ih, void** params)
   IupSetAttributeId(multitext, "MARKERBGCOLOR", 3, "0 255 0");
   IupSetAttributeId(multitext, "MARKERALPHA", 3, "80");
   IupSetAttributeId(multitext, "MARKERSYMBOL", 3, "SHORTARROW");
+
+  IupSetAttribute(multitext, "MOUSEDWELLTIME", "1000");
 
 #ifdef WIN32
   IupSetAttribute(multitext, "FONT", "Consolas, 11");

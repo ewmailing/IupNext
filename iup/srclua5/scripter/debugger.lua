@@ -307,16 +307,16 @@ function iup.DebuggerSetLocalVariable()
       end
     end
   
-  -- here there are 4 levels on top of the script: 
-  --   1-DebuggerSetLocalVariable, 
-  --   2-LoopStep
-  --   3-DebuggerLineHook, 
-  --   4-DebuggerHookFunction
-
     local list_stack = iup.GetDialogChild(debugger.main_dialog, "LIST_STACK")
     local index = tonumber(list_stack.value)
-    local level = index + 4  -- this is the level of the function
-    level = level + 1   -- this is the level of the local variables inside that function
+
+    -- here there are 4 levels on top of the stack: 
+    --   1-DebuggerSetLocalVariable, 
+    --   2-LoopStep
+    --   3-DebuggerLineHook, 
+    --   4-DebuggerHookFunction
+    local startLevel = 5
+    local level = index - 1 + startLevel  -- this is the level of the function
     
     iup.DebuggerSetLocal(local_list, level, index, newValue)
     iup.DebuggerSetLocalListItem(local_list, index, name, newValue) -- do not set pos
@@ -360,6 +360,7 @@ function iup.DebuggerSetLocal(local_list, level, index, newValue)
   if s == ":: " then
     debug.setupvalue(local_list.func, pos, newValue)
   else
+    level = level + 1 -- this is the level inside this function
     debug.setlocal(level, pos, newValue)
   end
 end
@@ -372,6 +373,7 @@ function iup.DebuggerGetLocal(local_list, level, index)
   if s == ":: " then
     name, value = debug.getupvalue(local_list.func, pos)
   else
+    level = level + 1 -- this is the level inside this function
     name, value = debug.getlocal(level, pos)
   end
   return name, value
@@ -406,6 +408,8 @@ function iup.DebuggerUpdateLocalVariablesList(level)
   local name, value
   local pos
   local index = 1
+
+  level = level + 1 -- this is the level inside this function
 
   iup.DebuggerClearLocalVariablesList()
 
@@ -461,18 +465,65 @@ function iup.DebuggerUpdateLocalVariablesList(level)
   end
 end
 
+function iup.DebuggerShowTip(word, line)
+
+  local list_stack = iup.GetDialogChild(debugger.main_dialog, "LIST_STACK")
+  local count = iup.GetAttribute(list_stack, "COUNT")
+  local index = tonumber(list_stack.value)
+
+  local filename = iup.GetAttribute(list_stack, "FILENAME"..index)
+  
+  if not filename or debugger.currentFile ~= filename then
+    return
+  end  
+
+  -- here there are 4 levels on top of the stack: 
+  --   1-DebuggerShowTip, 
+  --   2-LoopStep
+  --   3-DebuggerLineHook, 
+  --   4-DebuggerHookFunction
+  local startLevel = 5
+  local level = index - 1 + startLevel  -- this is the level of the function
+
+  local info = debug.getinfo(level, "SnlL") -- source, name, namewhat, what, currentline, linedefined
+  if info.linedefined == 0 and info.lastlinedefined == 0 then
+    if not info.activelines[line] then
+      return
+    end
+  elseif line < info.linedefined or line > info.lastlinedefined then
+    return
+  end
+
+  local pos = 1
+  local name, value = debug.getlocal(level, pos)
+  while name ~= nil do
+    if name == word then
+      return name, tostring(value)
+    end
+    pos = pos + 1
+    name, value = debug.getlocal(level, pos)
+  end
+  
+  for gname, gvalue in pairs(_G) do 
+    if gname == word then
+      return gname, tostring(gvalue)
+    end
+  end
+
+end
+
 ------------------------------------- Stack -------------------------------------
+
 
 function iup.DebuggerStackListAction(list_stack, index)
   
-  -- here there are 4 levels on top of the script: 
+  -- here there are 4 levels on top of the stack: 
   --   1-DebuggerStackListAction, 
   --   2-LoopStep
   --   3-DebuggerLineHook, 
   --   4-DebuggerHookFunction
-
-  local level = index + 4  -- this is the level of the function
-  level = level + 1 -- this is the level of the local variables inside that function
+  local startLevel = 5
+  local level = index - 1 + startLevel  -- this is the level of the function
   
   local filename = iup.GetAttribute(list_stack, "FILENAME"..index)
   if filename and debugger.currentFile == filename then
@@ -480,7 +531,7 @@ function iup.DebuggerStackListAction(list_stack, index)
     iup.DebuggerSelectLine(tonumber(currentline))
   end
   
-  iup.DebuggerUpdateLocalVariablesList(level, index)
+  iup.DebuggerUpdateLocalVariablesList(level)
 end
 
 function iup.DebuggerClearStackList()
@@ -522,11 +573,11 @@ end
 function iup.DebuggerUpdateStackList()
   local info, desc, defined
   
-  -- here there are 3 levels on top of the script: 
+  -- here there are 3 levels on top of the stack: 
   --   1-DebuggerUpdateStackList, 
   --   2-DebuggerLineHook, 
   --   3-DebuggerHookFunction
-  local startLevel = 4 -- here level 4 is the script function at highest level on the stack
+  local startLevel = 4
   local level = startLevel
 
   iup.DebuggerClearStackList()
@@ -602,9 +653,8 @@ function iup.DebuggerUpdateStackList()
     iup.SetAttribute(iup.GetDialogChild(debugger.main_dialog, "PRINT_LEVEL"), "ACTIVE", "YES")
     iup.SetAttribute(iup.GetDialogChild(debugger.main_dialog, "PRINT_STACK"), "ACTIVE", "YES")
 
-    list_stack.value = 1 -- select first item on list
-
-    iup.DebuggerUpdateLocalVariablesList(startLevel + 1, 1) -- this is the level of the local variables inside that function
+    list_stack.value = 1 -- select first item on list (startLevel)
+    iup.DebuggerUpdateLocalVariablesList(startLevel)
   end
   
 end
@@ -615,11 +665,11 @@ end
 function iup.DebuggerGetFuncLevel()
 -- level 0 is the current function (getinfo itself); 
 -- level 1 is the function that called getinfo (DebuggerGetFuncLevel)
-  local level = 1
+  local func_level = 1
   repeat 
-    level = level + 1
-  until debug.getinfo(level, "l") == nil  -- only current line, default is all info
-  return level - 1
+    func_level = func_level + 1
+  until debug.getinfo(func_level, "l") == nil  -- only current line, default is all info
+  return func_level - 1
 end
 
 function iup.DebuggerUpdateState(filename, currentline)
@@ -665,9 +715,9 @@ end
 function iup.DebuggerCallHook()
   if debugger.debug_state == DEBUG_STEP_OVER then
     if debugger.stepFuncLevel == 0 then
-      local level = iup.DebuggerGetFuncLevel()
+      local func_level = iup.DebuggerGetFuncLevel()
       debugger.stepFuncState = FUNC_STATE_INSIDE
-      debugger.stepFuncLevel = level
+      debugger.stepFuncLevel = func_level
     end
   end
 end
@@ -676,8 +726,8 @@ function iup.DebuggerReturnHook(what)
   if what == "main" then
     iup.DebuggerSetState(DEBUG_INACTIVE)
   elseif debugger.debug_state == DEBUG_STEP_OUT or debugger.debug_state == DEBUG_STEP_OVER then
-    local level = iup.DebuggerGetFuncLevel()
-    if debugger.stepFuncLevel == level then
+    local func_level = iup.DebuggerGetFuncLevel()
+    if debugger.stepFuncLevel == func_level then
       debugger.stepFuncState = FUNC_STATE_OUTSIDE
       debugger.stepFuncLevel = 0
     end
@@ -686,12 +736,8 @@ end
 
 function iup.DebuggerHookFunction(event, currentline)
 
--- how many levels we have before the hook was invoked?
---  local stackLevel = iup.DebuggerGetFuncLevel()-- - 2 -- hook is always at level 2 when called
---  if stackLevel ~= debugger.stackLevel then
---    debugger.stackLevel = stackLevel
---  end
-
+  -- how many levels we have before the hook was invoked?
+  -- hook is always at level 2 when called
   -- Inside a hook, you can call getinfo with level 2 to get more information about the running function
   local info = debug.getinfo(2, "S") -- what, source
   local s = string.sub(info.source, 1, 1)
