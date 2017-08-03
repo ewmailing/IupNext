@@ -207,7 +207,7 @@ void iupMatrixScrollMove(iupMatrixScrollMoveFunc func, Ihandle* ih, int mode, in
    In the first time, go to the beginning of the line.
    In the second time, go to the beginning of the page.
    In the third time, go to the beginning of the matrix.
-   -> mode and pos : DO NOT USED.
+   -> mode and pos : NOT USED.
 */
 void iupMatrixScrollHomeFunc(Ihandle* ih, int unused_mode, int unused_m)
 {
@@ -238,7 +238,7 @@ void iupMatrixScrollHomeFunc(Ihandle* ih, int unused_mode, int unused_m)
    In the first time, go to the end of the line.
    In the second time, go to the end of the page.
    In the third time, go to the end of the matrix.
-   -> mode and pos : DO NOT USED.
+   -> mode and pos : NOT USED.
 */
 void iupMatrixScrollEndFunc(Ihandle* ih, int unused_mode, int unused_m)
 {
@@ -268,7 +268,7 @@ void iupMatrixScrollEndFunc(Ihandle* ih, int unused_mode, int unused_m)
 /* This function is called to move a cell to the left or up.
    -> mode : indicate if the command was from the keyboard or the scrollbar. If scrollbar,
              do not change the focus.
-   -> pos  : DO NOT USED
+   -> pos  : NOT USED
    -> m    : define the mode of operation: lines or columns [IMAT_PROCESS_LIN|IMAT_PROCESS_COL]
 */
 void iupMatrixScrollLeftUpFunc(Ihandle* ih, int mode, int m)
@@ -297,7 +297,7 @@ void iupMatrixScrollLeftUpFunc(Ihandle* ih, int mode, int m)
 /* This function is called to move a cell to the right or down.
    -> mode : indicate if the command from the keyboard or the scrollbar. If scrollbar,
              do not change the focus.
-   -> pos  : DO NOT USED
+   -> pos  : NOT USED
    -> m    : define the mode of operation: lines or columns [IMAT_PROCESS_LIN|IMAT_PROCESS_COL]
 */
 void iupMatrixScrollRightDownFunc(Ihandle* ih, int mode, int m)
@@ -326,7 +326,7 @@ void iupMatrixScrollRightDownFunc(Ihandle* ih, int mode, int m)
 /* This function is called to move a page to the left or up.
    -> mode : indicate if the command was from the keyboard or the scrollbar. If scrollbar,
              do not change the focus.
-   -> pos  : DO NOT USED
+   -> pos  : NOT USED
    -> m    : define the mode of operation: lines (PgLeft) or columns (PgUp) [IMAT_PROCESS_LIN|IMAT_PROCESS_COL]
 */
 void iupMatrixScrollPgLeftUpFunc(Ihandle* ih, int mode, int m)
@@ -355,7 +355,7 @@ void iupMatrixScrollPgLeftUpFunc(Ihandle* ih, int mode, int m)
 /* This function is called to move a page to the right or down.
    -> mode : indicate if the command was from the keyboard or the scrollbar. If scrollbar,
              do not change the focus.
-   -> pos  : DO NOT USED
+   -> pos  : NOT USED
    -> m    : define the mode of operation: lines (PgDown) or columns (PgRight) [IMAT_PROCESS_LIN|IMAT_PROCESS_COL]
 */
 void iupMatrixScrollPgRightDownFunc(Ihandle* ih, int mode, int m)
@@ -386,10 +386,15 @@ void iupMatrixScrollCrFunc(Ihandle* ih, int unused_mode, int unused_m)
   int m;
   int oldlin = ih->data->lines.focus_cell;
   int oldcol = ih->data->columns.focus_cell;
+
+  /* m is decided according to editnext */
   (void)unused_m;
-  (void)unused_mode;
 
   /* called only for mode==IMAT_SCROLLKEY */
+  (void)unused_mode;
+
+  if (ih->data->editnext == IMAT_EDITNEXT_NONE)
+    return;
 
   if (ih->data->editnext == IMAT_EDITNEXT_LIN || 
       ih->data->editnext == IMAT_EDITNEXT_LINCR)
@@ -436,16 +441,13 @@ void iupMatrixScrollCrFunc(Ihandle* ih, int unused_mode, int unused_m)
         iMatrixScrollSetFocusScrollToVisibleLinCol(ih, IMAT_PROCESS_COL, col);
       }
       break;
-    case IMAT_EDITNEXT_NONE: 
-    default:
-      break;
     }
   }
 }
 
 /* This function is called when a drag is performed in the scrollbar.
    -> x    : scrollbar thumb position, value between 0 and 1
-   -> mode : DO NOT USED
+   -> mode : NOT USED
    -> m    : define the mode of operation: lines or columns [IMAT_PROCESS_LIN|IMAT_PROCESS_COL]
 */
 void iupMatrixScrollPosFunc(Ihandle* ih, int mode, int m)

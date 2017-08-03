@@ -563,14 +563,15 @@ value has been updated, but before the editing control is made invisible. (since
 3.13)</p>
 <p><strong><a name="EDITNEXT">EDITNEXT</a></strong>: controls how the next cell after editing is 
 chosen. Can be LIN, COL, LINCR, COLCR. Default: LIN. (since 3.4)</p>
-<p class="info">LIN&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; - go to the next line, if at 
-last line then go to the next column at the same line;<br>
-LINCR&nbsp; - go to the next line, if at last line then go to the next column at 
+<p class="info">LIN&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; - go to the next line at the 
+same column, if at 
+the last line then go to the next column at the same line;<br>
+LINCR&nbsp; - go to the next line at the same column, if at the last line then go to the next column at 
 the first line;<br>
-COL&nbsp;&nbsp;&nbsp;&nbsp; - go to the next column, if at last column then go 
+COL&nbsp;&nbsp;&nbsp;&nbsp; - go to the next column at the same line, if at the last column then go 
 to the next line at the same column;<br>
-COLCR - go to the next column, if at last column then go to the next line at the 
-first column;<br>NONE&nbsp;&nbsp; - stay in the same cell. (since 3.6)</p>
+COLCR - go to the next column at the same line, if at the last column then go to the next line at the 
+first column;<br>NONE&nbsp;&nbsp;- stay in the same cell. (since 3.6)</p>
 <p><strong>EDITTEXT</strong> (read-only): returns Yes if the editing is being 
 done by a text box. (since 3.14)</p>
 <p><strong>EDITVALUE</strong> (read-only): returns Yes if the display cell value 
