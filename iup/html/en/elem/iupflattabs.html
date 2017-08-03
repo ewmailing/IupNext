@@ -275,7 +275,9 @@ if TABIMAGEn is changed.</p>
 but redefines a few of them. Including BUTTON_CB, MOTION_CB, and LEAVEWINDOW_CB. 
 To allow the application to use those callbacks the same callbacks are exported 
 with the &quot;FLAT_&quot; prefix using the same parameters. They are all called before the internal callbacks and if they return 
-IUP_IGNORE the internal callbacks are not processed.</p>
+IUP_IGNORE the internal callbacks are not processed. In FLATBUTTON_CB and 
+FLAT_MOTION_CB use <a href="../func/iupconvertxytopos.html">IupConvertXYToPos</a> to convert 
+	(x,y) coordinates in tab position (same as VALUEPOS) (since 3.23). </p>
 
 <p><strong>TABCHANGE_CB</strong>: Callback called when the user changes the 
 current tab.</p>

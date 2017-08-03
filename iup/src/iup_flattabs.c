@@ -1553,6 +1553,18 @@ static int iFlatTabsSetExpandButtonStateAttrib(Ihandle* ih, const char* value)
 
 /*********************************************************************************/
 
+
+static int iFlatTabsConvertXYToPos(Ihandle* ih, int x, int y)
+{
+  int inside_close;
+  int show_close = iupAttribGetBoolean(ih, "SHOWCLOSE");
+  int tab_found = iFlatTabsFindTab(ih, x, y, show_close, &inside_close);
+  if (tab_found > ITABS_NONE)
+    return tab_found;
+  else
+    return -1;
+}
+
 #define ATTRIB_ID_COUNT 8
 const static char* attrib_id[ATTRIB_ID_COUNT] = {
   "TABTITLE",
@@ -1730,6 +1742,8 @@ static int iFlatTabsCreateMethod(Ihandle* ih, void **params)
       iparams++;
     }
   }
+
+  IupSetCallback(ih, "_IUP_XY2POS_CB", (Icallback)iFlatTabsConvertXYToPos);
 
   iupAttribSetInt(ih, "_IUPFTABS_HIGHLIGHTED", ITABS_NONE);
   iupAttribSetInt(ih, "_IUPFTABS_CLOSEHIGH", ITABS_NONE);
