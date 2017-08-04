@@ -1844,7 +1844,11 @@ void IupLuaScripterDlgOpen(void)
 - detachable Console, Debug, Breakpoints (problem with IupGetDialogChild(NAME))- save in config
 
 - Watch for globals - save in config
+  (evaluate expression)
 - Block comments menu items
+- Selected Word highlight
+- Condicional Breakpoints
+- SetLocal/Global number/boolean/string not restricted
 
 - Table Inspector using IupTree
 - iup.TRACEBACK
