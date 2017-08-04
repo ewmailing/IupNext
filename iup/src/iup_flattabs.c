@@ -122,6 +122,69 @@ static void iFlatTabsInitializeImages(void)
   IupSetHandle("IupFlatExpandUp", image);
 }
 
+static int iFlatTabsGetExtraWidth(Ihandle* ih, int extra_buttons, int img_position, int horiz_padding);
+static void iFlatTabsGetTabSize(Ihandle* ih, int fixedwidth, int horiz_padding, int vert_padding, int show_close, int pos, int *tab_w, int *tab_h);
+
+static void iFlatTabsCheckVisibleTab(Ihandle* ih, Ihandle* child)
+{
+  int child_pos = IupGetChildPos(ih, child);
+  int scroll_pos = iupAttribGetInt(ih, "_IUPFTABS_SCROLLPOS");
+
+  if (child_pos == scroll_pos)
+    return; /* already visible */
+
+  if (child_pos < scroll_pos)
+  {
+    /* if before current scroll simply scroll to child */
+    iupAttribSetInt(ih, "_IUPFTABS_SCROLLPOS", child_pos);
+    return;
+  }
+
+  if (child_pos > scroll_pos)
+  {
+    int extra_width, horiz_padding, vert_padding;
+    int tab_w, tab_h, pos;
+    int* visible_width, check_width;
+    int img_position = iupFlatGetImagePosition(iupAttribGetStr(ih, "TABSIMAGEPOSITION"));
+    int extra_buttons = iupAttribGetInt(ih, "EXTRABUTTONS");
+    int fixedwidth = iupAttribGetInt(ih, "FIXEDWIDTH");
+    int show_close = iupAttribGetBoolean(ih, "SHOWCLOSE");
+    int count = IupGetChildCount(ih);
+    int old_scroll_pos = scroll_pos;
+
+    iupAttribGetIntInt(ih, "TABSPADDING", &horiz_padding, &vert_padding, 'x');
+    extra_width = iFlatTabsGetExtraWidth(ih, extra_buttons, img_position, horiz_padding);
+
+    visible_width = calloc(count, sizeof(int));
+
+    check_width = 0;
+    for (pos = scroll_pos, child = ih->firstchild; child && pos <= child_pos; child = child->brother, pos++)
+    {
+      int tabvisible = iupAttribGetBooleanId(ih, "TABVISIBLE", pos);
+      if (tabvisible)
+      {
+        iFlatTabsGetTabSize(ih, fixedwidth, horiz_padding, vert_padding, show_close, pos, &tab_w, &tab_h);
+
+        visible_width[pos] = tab_w;
+        check_width += tab_w;
+      }
+    }
+
+    while (check_width > ih->currentwidth - extra_width && scroll_pos < child_pos)
+    {
+      scroll_pos++;
+
+      check_width = 0;
+      for (pos = scroll_pos; pos <= child_pos; pos++)
+        check_width += visible_width[pos];
+    }
+
+    if (old_scroll_pos != scroll_pos)
+      iupAttribSetInt(ih, "_IUPFTABS_SCROLLPOS", scroll_pos);
+
+    free(visible_width);
+  }
+}
 
 static Ihandle* iFlatTabsGetCurrentTab(Ihandle* ih)
 {
@@ -136,7 +199,11 @@ static void iFlatTabsSetCurrentTab(Ihandle* ih, Ihandle* child)
 
   iupAttribSet(ih, "_IUPFTABS_VALUE_HANDLE", (char*)child);
   if (child)
+  {
     IupSetAttribute(child, "VISIBLE", "Yes");
+
+    iFlatTabsCheckVisibleTab(ih, child);
+  }
 
   if (ih->handle)
     iupdrvPostRedraw(ih);

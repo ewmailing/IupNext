@@ -144,7 +144,10 @@ static int cbTest(Ihandle* ih)
 {
   Ihandle* tabs = (Ihandle*)IupGetAttribute(ih, "APP_TABS");
 
-
+#if 1
+  int count = IupGetInt(tabs, "COUNT");
+  IupSetInt(tabs, "VALUEPOS", count - 1);
+#endif
 
 #if 0
   char att[50];

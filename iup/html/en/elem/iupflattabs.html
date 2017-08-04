@@ -232,13 +232,13 @@ current tab by its name. The value passed must be the name of one of the element
 contained in the tabs. Use <a href="../func/iupsethandle.html">
 IupSetHandle</a> or <a href="../func/iupsetattributehandle.html">
 IupSetAttributeHandle</a> to associate a child to a name. In Lua you can also 
-use the element reference directly.</p>
+use the element reference directly. When the tabs is created, the first element 
+inserted is set as the current tab. When the current tab is changed is also 
+scrolled to be visible (since 3.23).</p>
 <p><b>VALUE_HANDLE</b>: Changes the current tab by its handle. The value passed 
-must be the handle of a child contained in the tabs. When the tabs is created, 
-the first element inserted is set as the visible child.</p>
+must be the handle of a child contained in the tabs. </p>
 <p><strong>VALUEPOS</strong>: Changes the current tab by its position, starting 
-at 0. When the tabs is created, the first element inserted is set as the visible 
-child. In GTK, inside the callback the returned value is still the previous one.</p>
+at 0.</p>
   <blockquote>
   <hr>
 </blockquote>
@@ -305,7 +305,7 @@ the event.<br>
 <strong>old_pos</strong>: the previously selected tab position</p>
 <p class="info"><u>Returns</u>: if IUP_IGNORE is returned the current tab is NOT 
 changed.</p>
-<p><strong>TABCLOSE_CB</strong> [Windows and GTK Only]: Callback called when the user clicks on the 
+<p><strong>TABCLOSE_CB</strong>: Callback called when the user clicks on the 
 close button. Called only when SHOWCLOSE=Yes.</p>
 <div align="left">
   <pre>int function(Ihandle* <strong>ih</strong>, int <strong>pos</strong>); [in C]
