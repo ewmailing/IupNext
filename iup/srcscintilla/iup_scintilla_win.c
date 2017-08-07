@@ -167,7 +167,7 @@ int iupdrvScintillaPrintAttrib(Ihandle* ih, const char* value)
   ZeroMemory(&pdlg, sizeof(PRINTDLG));
   pdlg.lStructSize = sizeof(PRINTDLG);
   pdlg.hwndOwner = IupGetDialog(ih)->handle;
-  pdlg.hInstance = iupwin_hinstance;
+  pdlg.hInstance = (HINSTANCE)IupGetGlobal("HINSTANCE");
   pdlg.Flags = PD_USEDEVMODECOPIES | PD_ALLPAGES | PD_RETURNDC;
   pdlg.nCopies = 1;
   pdlg.nFromPage = 1;
