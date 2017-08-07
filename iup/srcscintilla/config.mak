@@ -135,13 +135,11 @@ ifdef USE_GTK
   ifdef SCINTILLA_NEW
     SRCSCINTILLA += gtk/ScintillaGTKAccessible.cxx
   endif
-  SRCSCINTILLA += iup_scintilla_gtk.c 
 else
   SRCSCINTILLA += win32/PlatWin.cxx win32/ScintillaWin.cxx
   ifndef SCINTILLA_OLD
     SRCSCINTILLA += win32/HanjaDic.cxx
   endif
-  SRCSCINTILLA += iup_scintilla_win.c 
 endif
 
 SRCSCINTILLA := $(addprefix $(SCINTILLA)/, $(SRCSCINTILLA))
@@ -151,7 +149,12 @@ SRC = $(SRCSCINTILLA) iupsci_clipboard.c iupsci_folding.c iupsci_lexer.c iupsci_
       iupsci_text.c iupsci_wordwrap.c iupsci_markers.c iupsci_bracelight.c iupsci_cursor.c \
       iupsci_whitespace.c iupsci_annotation.c iupsci_autocompletion.c iupsci_searching.c  \
       iupsci_print.c iup_scintilla.c iup_scintilladlg.c 
-      
+ifdef USE_GTK
+  SRC += iup_scintilla_gtk.c 
+else
+  SRC += iup_scintilla_win.c 
+endif
+
 ifneq ($(findstring MacOS, $(TEC_UNAME)), )
   ifneq ($(TEC_SYSMINOR), 4)
     BUILD_DYLIB=Yes
