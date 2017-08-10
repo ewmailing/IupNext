@@ -266,23 +266,6 @@ static void iTabsSetTab(Ihandle* ih, Ihandle* child, int pos)
 /* TABS - Sets and Gets - Attribs                                           */
 /* ------------------------------------------------------------------------- */
 
-static int iTabsSetValueHandleAttrib(Ihandle* ih, const char* value)
-{
-  int pos;
-  Ihandle *child;
-
-  child = (Ihandle*)value;
-
-  if (!iupObjectCheck(child))
-    return 0;
-
-  pos = IupGetChildPos(ih, child);
-  if (pos != -1) /* found child */
-    iTabsSetTab(ih, child, pos);
- 
-  return 0;
-}
-
 char* iupTabsGetTabTypeAttrib(Ihandle* ih)
 {
   switch(ih->data->type)
@@ -306,6 +289,28 @@ char* iupTabsGetTabOrientationAttrib(Ihandle* ih)
     return "VERTICAL";
 }
 
+static char* iTabsGetCountAttrib(Ihandle* ih)
+{
+  return iupStrReturnInt(IupGetChildCount(ih));
+}
+
+static int iTabsSetValueHandleAttrib(Ihandle* ih, const char* value)
+{
+  int pos;
+  Ihandle *child;
+
+  child = (Ihandle*)value;
+
+  if (!iupObjectCheck(child))
+    return 0;
+
+  pos = IupGetChildPos(ih, child);
+  if (pos != -1) /* found child */
+    iTabsSetTab(ih, child, pos);
+
+  return 0;
+}
+
 static char* iTabsGetValueHandleAttrib(Ihandle* ih)
 {
   if (ih->handle)
@@ -315,11 +320,6 @@ static char* iTabsGetValueHandleAttrib(Ihandle* ih)
   }
   else
     return iupAttribGet(ih, "_IUPTABS_VALUE_HANDLE");
-}
-
-static char* iTabsGetCountAttrib(Ihandle* ih)
-{
-  return iupStrReturnInt(IupGetChildCount(ih));
 }
 
 static int iTabsSetValuePosAttrib(Ihandle* ih, const char* value)
