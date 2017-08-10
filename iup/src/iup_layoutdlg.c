@@ -2367,6 +2367,19 @@ static int iLayoutContextMenuRefreshChildren_CB(Ihandle* menu)
   return IUP_DEFAULT;
 }
 
+static void iLayoutSelectTreeItem(iLayoutDialog* layoutdlg, Ihandle* elem);
+
+static int iLayoutContextMenuGoToParent_CB(Ihandle* menu)
+{
+  iLayoutDialog* layoutdlg = (iLayoutDialog*)iupAttribGetInherit(menu, "_IUP_LAYOUTDIALOG");
+  Ihandle* elem = (Ihandle*)iupAttribGetInherit(menu, "_IUP_LAYOUTCONTEXTELEMENT");
+
+  if (elem->parent)
+    iLayoutSelectTreeItem(layoutdlg, elem->parent);
+
+  return IUP_DEFAULT;
+}
+
 static void iLayoutSaveAttributes(Ihandle* ih)
 {
   IupSaveClassAttributes(ih);
@@ -2400,6 +2413,8 @@ static int iLayoutContextMenuUnmap_CB(Ihandle* menu)
 static int iLayoutContextMenuSetFocus_CB(Ihandle* menu)
 {
   Ihandle* elem = (Ihandle*)iupAttribGetInherit(menu, "_IUP_LAYOUTCONTEXTELEMENT");
+
+  IupShow(IupGetDialog(elem)); /* must be the active dialog to get the focus */
 
   IupSetFocus(elem);
 
@@ -2551,6 +2566,7 @@ static void iLayoutContextMenu(iLayoutDialog* layoutdlg, Ihandle* ih, Ihandle* d
     IupSetCallbacks(IupSetAttributes(IupItem("Unmap", NULL), can_unmap ? "ACTIVE=Yes" : "ACTIVE=No"), "ACTION", iLayoutContextMenuUnmap_CB, NULL),
     IupSetCallbacks(IupItem("Refresh Children", NULL), "ACTION", iLayoutContextMenuRefreshChildren_CB, NULL),
     IupSeparator(),
+    IupSetCallbacks(IupItem("Go to Parent", NULL), "ACTION", iLayoutContextMenuGoToParent_CB, NULL),
     IupSetCallbacks(IupSetAttributes(IupItem("Blink", NULL), can_blink ? "ACTIVE=Yes" : "ACTIVE=No"), "ACTION", iLayoutContextMenuBlink_CB, NULL),
     IupSetCallbacks(IupSetAttributes(IupItem("Set Focus", NULL), can_focus ? "ACTIVE=Yes" : "ACTIVE=No"), "ACTION", iLayoutContextMenuSetFocus_CB, NULL),
     IupSeparator(),
@@ -2595,7 +2611,7 @@ static void iLayoutBlink(Ihandle* ih)
 
 static void iLayoutUpdateMark(iLayoutDialog* layoutdlg, Ihandle* ih, int id)
 {
-  IupSetfAttribute(layoutdlg->status, "TITLE", "[SZ] User:%4d,%4d | Natural:%4d,%4d | Current:%4d,%4d", ih->userwidth, ih->userheight, ih->naturalwidth, ih->naturalheight, ih->currentwidth, ih->currentheight);
+  IupSetfAttribute(layoutdlg->status, "TITLE", "Position:%4d,%4d | User:%4d,%4d | Natural:%4d,%4d | Current:%4d,%4d", ih->x, ih->y, ih->userwidth, ih->userheight, ih->naturalwidth, ih->naturalheight, ih->currentwidth, ih->currentheight);
 
   if (!ih->handle)
     IupSetAttributeId(layoutdlg->tree, "COLOR", id, "128 0 0");
@@ -2690,6 +2706,16 @@ static Ihandle* iLayoutGetDialogElementByPos(iLayoutDialog* layoutdlg, int x, in
   return NULL;
 }
 
+static void iLayoutSelectTreeItem(iLayoutDialog* layoutdlg, Ihandle* elem)
+{
+  int id = IupTreeGetId(layoutdlg->tree, elem);
+  int old_id = IupGetInt(layoutdlg->tree, "VALUE");
+  Ihandle* old_elem = (Ihandle*)IupTreeGetUserId(layoutdlg->tree, old_id);
+  iLayoutTreeSetNodeColor(layoutdlg->tree, old_id, old_elem);
+  IupSetInt(layoutdlg->tree, "VALUE", id);
+  iLayoutUpdateMark(layoutdlg, elem, id);
+}
+
 static int iLayoutCanvasButton_CB(Ihandle* canvas, int but, int pressed, int x, int y, char* status)
 {
   (void)status;
@@ -2706,14 +2732,7 @@ static int iLayoutCanvasButton_CB(Ihandle* canvas, int but, int pressed, int x, 
         IupUpdate(canvas);
       }
       else
-      {
-        int id = IupTreeGetId(layoutdlg->tree, elem);
-        int old_id = IupGetInt(layoutdlg->tree, "VALUE");
-        Ihandle* old_elem = (Ihandle*)IupTreeGetUserId(layoutdlg->tree, old_id);
-        iLayoutTreeSetNodeColor(layoutdlg->tree, old_id, old_elem);
-        IupSetInt(layoutdlg->tree, "VALUE", id);
-        iLayoutUpdateMark(layoutdlg, elem, id);
-      }
+        iLayoutSelectTreeItem(layoutdlg, elem);
     }
     else if (iupAttribGet(dlg, "_IUPLAYOUT_MARK"))
     {
