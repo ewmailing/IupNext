@@ -771,12 +771,12 @@ static int iFlatTabsCallTabChange(Ihandle* ih, Ihandle* prev_child, int prev_pos
   return ret;
 }
 
-static int iFlatTabsCheckCurrentTab(Ihandle* ih, Ihandle* check_child, int pos, int removed)
+static void iFlatTabsCheckCurrentTab(Ihandle* ih, Ihandle* check_child, int check_pos, int removed)
 {
   Ihandle* current_child = iFlatTabsGetCurrentTab(ih);
   if (current_child == check_child)
   {
-    int p, v = 0;
+    int p;
     Ihandle* child;
 
     /* if given tab is the current tab,
@@ -786,39 +786,29 @@ static int iFlatTabsCheckCurrentTab(Ihandle* ih, Ihandle* check_child, int pos, 
     but before the system tab being removed. */
 
     p = 0;
-    if (removed && p == pos)
+    if (removed && p == check_pos)
       p++;  /* increment twice to compensate for child already removed */
 
     for (child = ih->firstchild; child; child = child->brother)
     {
-      if (iupAttribGetBooleanId(ih, "TABVISIBLE", p))
+      if (p != check_pos && iupAttribGetBooleanId(ih, "TABVISIBLE", p))
       {
-        v++;
+        /* found a new tab to be current */
+        if (iupAttribGetBoolean(ih, "TABCHANGEONCHECK"))
+          iFlatTabsCallTabChange(ih, check_child, check_pos, child); /* ignore return value */
 
-        if (p != pos)
-        {
-          if (iupAttribGetBoolean(ih, "TABCHANGEONCHECK"))
-            iFlatTabsCallTabChange(ih, current_child, pos, child); /* ignore return value */
-
-          iFlatTabsSetCurrentTab(ih, child);
-          return 1;
-        }
+        iFlatTabsSetCurrentTab(ih, child);
+        return;
       }
 
       p++;
-      if (removed && p == pos)
+      if (removed && p == check_pos)
         p++;  /* increment twice to compensate for child already removed */
     }
 
-    if (v == 0 && ih->firstchild) /* all invisible but has at least 1 tab */
-    {
-      /* make sure to hide the current child */
-      iFlatTabsSetCurrentTab(ih, NULL);
-      return 1;
-    }
+    /* could NOT find a new tab to be current (empty or all invisible) */
+    iFlatTabsSetCurrentTab(ih, NULL);
   }
-
-  return 0;
 }
 
 static int iFlatTabsFindTab(Ihandle* ih, int cur_x, int cur_y, int show_close, int *inside_close)
@@ -1284,7 +1274,7 @@ static int iFlatTabsSetValueHandleAttrib(Ihandle* ih, const char* value)
 
 static char* iFlatTabsGetValueHandleAttrib(Ihandle* ih)
 {
-  return iupAttribGet(ih, "_IUPFTABS_VALUE_HANDLE");
+  return (char*)iFlatTabsGetCurrentTab(ih);
 }
 
 static char* iFlatTabsGetCountAttrib(Ihandle* ih)
@@ -1341,19 +1331,17 @@ static char* iFlatTabsGetValueAttrib(Ihandle* ih)
 
 static int iFlatTabsSetTabVisibleAttrib(Ihandle* ih, int pos, const char* value)
 {
-  int redraw = 0;
-
   Ihandle* child = IupGetChild(ih, pos);
   if (child)
   {
     if (!iupStrBoolean(value))
     {
       iupAttribSetStrId(ih, "TABVISIBLE", pos, value);
-      redraw = iFlatTabsCheckCurrentTab(ih, child, pos, 0);
+      iFlatTabsCheckCurrentTab(ih, child, pos, 0);
     }
   }
 
-  if (redraw && ih->handle)
+  if (ih->handle)
     iupdrvPostRedraw(ih);
 
   return 1;
