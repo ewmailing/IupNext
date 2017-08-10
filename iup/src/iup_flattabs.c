@@ -306,6 +306,13 @@ static int iFlatTabsGetTitleHeight(Ihandle* ih, int *title_width, int scrolled_w
     }
   }
 
+  if (pos == 0) /* empty tabs, let the application define at least TABTITLE0 */
+  {
+    iFlatTabsGetTabSize(ih, fixedwidth, horiz_padding, vert_padding, show_close, pos, &tab_w, &tab_h);
+    title_height = tab_h;
+    if (title_width) *title_width = tab_w;
+  }
+
   return title_height;
 }
 
