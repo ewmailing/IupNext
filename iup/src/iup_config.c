@@ -467,11 +467,12 @@ void IupConfigRecentUpdate(Ihandle* ih, const char* filename)
       i++;
     } while (value && i <= max_recent);
 
-    /* simply open space for the new filename */
     if (found)
       i = found;
     else
       i = max_recent;
+
+    /* simply open space for the new filename */
     do
     {
       value = IupConfigGetVariableStrId(ih, "Recent", "File", i - 1);
