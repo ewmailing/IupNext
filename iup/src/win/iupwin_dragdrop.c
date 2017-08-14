@@ -1083,6 +1083,7 @@ void iupwinDropFiles(HDROP hDrop, Ihandle *ih)
 {
   /* called for a WM_DROPFILES */
   TCHAR* filename;
+  char* str;
   int i, numFiles, numchar, ret;
   POINT point;
 
@@ -1101,7 +1102,11 @@ void iupwinDropFiles(HDROP hDrop, Ihandle *ih)
 
     DragQueryFile(hDrop, i, filename, numchar+1);
 
-    ret = cb(ih, iupwinStrFromSystemFilename(filename), numFiles-i-1, (int) point.x, (int) point.y); 
+    str = iupwinStrFromSystemFilename(filename);
+    memcpy(filename, str, strlen(str) + 1);
+    str = (char*)filename;
+
+    ret = cb(ih, str, numFiles-i-1, (int) point.x, (int) point.y); 
 
     free(filename);
 
