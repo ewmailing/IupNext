@@ -782,28 +782,57 @@ static void iFlatTabsCheckCurrentTab(Ihandle* ih, Ihandle* check_child, int chec
     /* if given tab is the current tab,
     then the current tab must be changed to a visible tab */
 
-    /* this function is called after the child has being removed from the hierarchy,
+    /* this function is also called after the child has being removed from the hierarchy,
     but before the system tab being removed. */
 
-    p = 0;
-    if (removed && p == check_pos)
-      p++;  /* increment twice to compensate for child already removed */
-
-    for (child = ih->firstchild; child; child = child->brother)
+    /* look forward first */
+    child = IupGetChild(ih, check_pos);
+    if (child) /* could be the last */
     {
-      if (p != check_pos && iupAttribGetBooleanId(ih, "TABVISIBLE", p))
+      p = check_pos;
+      if (removed)
+        p++;  /* increment to compensate for child already removed, but id based attributes are not updated yet */
+      else
       {
-        /* found a new tab to be current */
-        if (iupAttribGetBoolean(ih, "TABCHANGEONCHECK"))
-          iFlatTabsCallTabChange(ih, check_child, check_pos, child); /* ignore return value */
-
-        iFlatTabsSetCurrentTab(ih, child);
-        return;
+        child = child->brother;
+        p++; /* increment to get the next child */
       }
 
-      p++;
-      if (removed && p == check_pos)
-        p++;  /* increment twice to compensate for child already removed */
+      for (; child; child = child->brother, p++)
+      {
+        if (iupAttribGetBooleanId(ih, "TABVISIBLE", p))
+        {
+          /* found a new tab to be current */
+          if (iupAttribGetBoolean(ih, "TABCHANGEONCHECK"))
+            iFlatTabsCallTabChange(ih, check_child, check_pos, child); /* ignore return value */
+
+          iFlatTabsSetCurrentTab(ih, child);
+          return;
+        }
+      }
+    }
+
+    /* look backward */
+    child = IupGetChild(ih, check_pos - 1);
+    if (child) /* could be the first */
+    {
+      p = check_pos - 1;
+
+      while (p >= 0 && child)
+      {
+        if (iupAttribGetBooleanId(ih, "TABVISIBLE", p))
+        {
+          /* found a new tab to be current */
+          if (iupAttribGetBoolean(ih, "TABCHANGEONCHECK"))
+            iFlatTabsCallTabChange(ih, check_child, check_pos, child); /* ignore return value */
+
+          iFlatTabsSetCurrentTab(ih, child);
+          return;
+        }
+
+        p--;
+        child = IupGetChild(ih, p);
+      }
     }
 
     /* could NOT find a new tab to be current (empty or all invisible) */
@@ -1628,7 +1657,7 @@ static int iFlatTabsConvertXYToPos(Ihandle* ih, int x, int y)
 }
 
 #define ATTRIB_ID_COUNT 8
-const static char* attrib_id[ATTRIB_ID_COUNT] = {
+const static char* flattabs_attrib_id[ATTRIB_ID_COUNT] = {
   "TABTITLE",
   "TABIMAGE",
   "TABVISIBLE",
@@ -1653,22 +1682,22 @@ static void iFlatTabsChildAddedMethod(Ihandle* ih, Ihandle* child)
   {
     for (i = 0; i < ATTRIB_ID_COUNT; i++)
     {
-      char* value = iupAttribGetId(ih, attrib_id[i], p - 1);
-      iupAttribSetStrId(ih, attrib_id[i], p, value);
-      iupAttribSetStrId(ih, attrib_id[i], p - 1, NULL);
+      char* value = iupAttribGetId(ih, flattabs_attrib_id[i], p - 1);
+      iupAttribSetStrId(ih, flattabs_attrib_id[i], p, value);
+      iupAttribSetStrId(ih, flattabs_attrib_id[i], p - 1, NULL);
     }
   }
 
   /* transfer form child to Id based attribute */
   for (i = 0; i < ATTRIB_ID_COUNT; i++)
   {
-    if (!iupAttribGetId(ih, attrib_id[i], pos))
+    if (!iupAttribGetId(ih, flattabs_attrib_id[i], pos))
     {
-      char* value = iupAttribGet(child, attrib_id[i]);
+      char* value = iupAttribGet(child, flattabs_attrib_id[i]);
       if (value)
-        iupAttribSetStrId(ih, attrib_id[i], pos, value);
-      else if (iupStrEqual(attrib_id[i], "TABVISIBLE") || iupStrEqual(attrib_id[i], "TABACTIVE"))
-        iupAttribSetStrId(ih, attrib_id[i], pos, "Yes");  /* ensure a default value */
+        iupAttribSetStrId(ih, flattabs_attrib_id[i], pos, value);
+      else if (iupStrEqual(flattabs_attrib_id[i], "TABVISIBLE") || iupStrEqual(flattabs_attrib_id[i], "TABACTIVE"))
+        iupAttribSetStrId(ih, flattabs_attrib_id[i], pos, "Yes");  /* ensure a default value */
     }
   }
 
@@ -1703,14 +1732,20 @@ static void iFlatTabsChildRemovedMethod(Ihandle* ih, Ihandle* child, int pos)
   {
     for (i = 0; i < ATTRIB_ID_COUNT; i++)
     {
-      char* value = iupAttribGetId(ih, attrib_id[i], p + 1);
-      iupAttribSetStrId(ih, attrib_id[i], p, value);
-      iupAttribSetStrId(ih, attrib_id[i], p + 1, NULL);
+      char* value = iupAttribGetId(ih, flattabs_attrib_id[i], p + 1);
+      iupAttribSetStrId(ih, flattabs_attrib_id[i], p, value);
+      iupAttribSetStrId(ih, flattabs_attrib_id[i], p + 1, NULL);
     }
   }
 
   if (ih->handle)
+  {
+    int scroll_pos = iupAttribGetInt(ih, "_IUPFTABS_SCROLLPOS");
+    if (scroll_pos >= count)
+      iupAttribSetInt(ih, "_IUPFTABS_SCROLLPOS", 0);
+
     iupdrvPostRedraw(ih);
+  }
 }
 
 static void iFlatTabsComputeNaturalSizeMethod(Ihandle* ih, int *w, int *h, int *children_expand)
