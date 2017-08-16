@@ -238,6 +238,35 @@ void iupScintillaNotify(Ihandle *ih, SCNotification* pMsg)
 
       break;
     }
+  case SCN_UPDATEUI:
+  {
+      if (pMsg->updated & SC_UPDATE_CONTENT)
+      {
+        IFn cb = (IFn)IupGetCallback(ih, "UPDATECONTENT_CB");
+        if (cb)
+          cb(ih);
+      }
+      else if (pMsg->updated & SC_UPDATE_SELECTION)
+      {
+        IFn cb = (IFn)IupGetCallback(ih, "UPDATESELECTION_CB");
+        if (cb)
+          cb(ih);
+      }
+      else if (pMsg->updated & SC_UPDATE_V_SCROLL)
+      {
+        IFn cb = (IFn)IupGetCallback(ih, "UPDATEVSCROLL_CB");
+        if (cb)
+          cb(ih);
+      }
+      else if (pMsg->updated & SC_UPDATE_H_SCROLL)
+      {
+        IFn cb = (IFn)IupGetCallback(ih, "UPDATEHSCROLL_CB");
+        if (cb)
+          cb(ih);
+      }
+
+      break;
+  }
   }
 }
 
@@ -386,6 +415,10 @@ static Iclass* iupScintillaNewClass(void)
   iupClassRegisterCallback(ic, "AUTOCSELECTION_CB", "is");
   iupClassRegisterCallback(ic, "AUTOCCANCELLED_CB", "");
   iupClassRegisterCallback(ic, "AUTOCCHARDELETED_CB", "");
+  iupClassRegisterCallback(ic, "UPDATECONTENT_CB", "");
+  iupClassRegisterCallback(ic, "UPDATESELECTION_CB", "");
+  iupClassRegisterCallback(ic, "UPDATEVSCROLL_CB", "");
+  iupClassRegisterCallback(ic, "UPDATEHSCROLL_CB", "");
 
   /* Common Callbacks */
   iupBaseRegisterCommonCallbacks(ic);
@@ -418,6 +451,7 @@ static Iclass* iupScintillaNewClass(void)
   iupScintillaRegisterAutocompletion(ic);  /* Autocompletion */
   iupScintillaRegisterSearching(ic);       /* Search & Replace */
   iupScintillaRegisterPrint(ic);           /* Printing */
+  iupScintillaRegisterIndicators(ic);      /* Indicators */
 
   /* General */
   iupClassRegisterAttribute(ic, "VISIBLECOLUMNS", NULL, NULL, IUPAF_SAMEASSYSTEM, "30", IUPAF_NO_INHERIT);
@@ -449,18 +483,3 @@ Ihandle *IupScintilla(void)
 {
   return IupCreate("scintilla");
 }
-
-
-/*****  TODO  (by-demand)
-- Multiple Selection and Virtual Space
-- Macro recording
-- Long lines
-- Call tips
-- Caret, selection, and hotspot styles
-- Indicators
-- Brace Highlighting with Indicators
-  BRACEHLINDICATOR (non inheritable, write only): defines a specified indicator to highlight matching braces instead of changing their style (See Indicator Styles).
-  BRACEBLINDICATOR (non inheritable, write only): defines a specified indicator to highlight non matching brace instead of changing its style (See Indicator Styles).
-  USEBRACEHLINDICATOR (non inheritable): enable or disable the indicator to highlight matching braces. Can be YES or NO. Default: YES.
-  USEBRACEBLINDICATOR (non inheritable): enable or disable the indicator to highlight non matching brace. Can be YES or NO. Default: YES.
-*/
