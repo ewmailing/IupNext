@@ -66,6 +66,7 @@ SCI_GETCURLINE(int textLen, char *text)
 SCI_MOVECARETINSIDEVIEW
 SCI_WORDENDPOSITION(int position, bool onlyWordCharacters)
 SCI_WORDSTARTPOSITION(int position, bool onlyWordCharacters)
+SCI_ISRANGEWORD(int start, int end)
 --SCI_POSITIONBEFORE(int position)
 --SCI_POSITIONAFTER(int position)
 --SCI_POSITIONRELATIVE(int position, int relative)
@@ -343,6 +344,21 @@ static char* iScintillaGetWordPosAttrib(Ihandle* ih, int pos)
   return iupStrReturnIntInt(start, end, ':');
 }
 
+static char* iScintillaGetIsWordAttrib(Ihandle* ih)
+{
+  int start, end, wordEnd;
+  const char *range = IupGetAttribute(ih, "WORDRANGE");
+
+  iupStrToIntInt(range, &start, &end, ':');
+
+  if (start == end)
+    return 0;
+
+  wordEnd = (int)IupScintillaSendMessage(ih, SCI_WORDENDPOSITION, start, 1);
+
+  return iupStrReturnBoolean((int)IupScintillaSendMessage(ih, SCI_ISRANGEWORD, start, end) && wordEnd == end);
+}
+
 static int iScintillaSetFirstVisibleLineAttrib(Ihandle* ih, const char* value)
 {
   int line = 0;
@@ -430,6 +446,8 @@ void iupScintillaRegisterSelection(Iclass* ic)
   iupClassRegisterAttribute(ic, "SELECTION", iScintillaGetSelectionAttrib, iScintillaSetSelectionAttrib, NULL, NULL, IUPAF_NO_INHERIT);
   iupClassRegisterAttribute(ic, "SELECTIONPOS", iScintillaGetSelectionPosAttrib, iScintillaSetSelectionPosAttrib, NULL, NULL, IUPAF_NO_INHERIT);
   iupClassRegisterAttributeId(ic, "WORDPOS", iScintillaGetWordPosAttrib, NULL, IUPAF_READONLY | IUPAF_NO_INHERIT);
+  iupClassRegisterAttribute(ic, "WORDRANGE", NULL, NULL, NULL, NULL, IUPAF_NOT_MAPPED | IUPAF_NO_INHERIT);
+  iupClassRegisterAttribute(ic, "ISWORD", iScintillaGetIsWordAttrib, NULL, NULL, NULL, IUPAF_READONLY);
   iupClassRegisterAttribute(ic, "VISIBLELINESCOUNT", iScintillaGetVisibleLinesCountAttrib, NULL, NULL, NULL, IUPAF_READONLY | IUPAF_NO_INHERIT);
   iupClassRegisterAttribute(ic, "FIRSTVISIBLELINE", iScintillaGetFirstVisibleLineAttrib, iScintillaSetFirstVisibleLineAttrib, NULL, NULL, IUPAF_NO_INHERIT);
 }
