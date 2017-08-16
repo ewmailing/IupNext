@@ -53,8 +53,8 @@ instance of the <strong>IupLuaScripterDlg</strong> dialog.</p>
 <p>Files can be open from the command line, from the File/Open menu, or from 
 drag and drop from the system file manager.</p>
 <p>All the <strong>IupScintillaDlg</strong> text processing are available. 
-Additionally it provides a <strong>Lua</strong> menu, and 3 tabs bellow the text 
-with <strong>Console</strong>, <strong>Debug</strong> and <strong>Breaks</strong> 
+Additionally it provides a <strong>Lua</strong> menu, and 4 tabs bellow the text, 
+with <strong>Console</strong>, <strong>Breaks, Debug</strong> and <strong>Watch</strong> 
 interfaces.</p>
 <p>The text editor has syntax highlight for the Lua language and autocomplete 
 for Lua keywords. We use only the "KEYWORDS0" attributes other keywords are free 
@@ -142,12 +142,13 @@ depending on the situation you are going to it. Inside the command line you must
 add 6 levels.</p>
 <p>You can 
 execute code in the console command line while the debug is paused.</p>
+<p>During the debug the list of global variables in <strong>Watch</strong> is 
+also updated with the respective values. When not in debug the list contains 
+only the name of the variables to be watched. (since 3.23)</p>
 <h3>To Do's</h3>
 <ul>
 	<li>Support for multiple files</li>
-	<li>Watch tab for global variables and expressions</li>
 	<li>Detachable Console, Debug, Breakpoints</li>
-	<li>Dialog for custom style colors</li>
 	<li>Debug and breakpoints in strings</li>
 	<li>Multi-language support (Portuguese and Spanish)</li>
 </ul>

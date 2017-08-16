@@ -210,7 +210,7 @@ static int savemarkers_cb(Ihandle *ih)
 
 static int restoremarkers_cb(Ihandle *ih)
 {
-  const char* mark;
+  const char *mark;
   int i = 1;
   char filename_str[10240];
   char line_str[10];
@@ -249,8 +249,23 @@ static int configsave_cb(Ihandle *ih)
   Ihandle* config = IupGetAttributeHandle(ih, "CONFIG");
   if (config)
   {
+    Ihandle* listGlobal = IupGetDialogChild(ih, "LIST_GLOBAL");
+    int i;
+    char *global;
+
     Ihandle* split = IupGetDialogChild(ih, "SPLIT");
     IupConfigSetVariableStr(config, "MainWindow", "Split", IupGetAttribute(split, "VALUE"));
+
+    i = 1;
+    global = IupGetAttributeId(listGlobal, "GLOBALNAME", i);
+    while (global != NULL)
+    {
+      IupConfigSetVariableStrId(config, "Globals", "Name", i, global);
+      global = IupGetAttributeId(listGlobal, "GLOBALNAME", i);
+      i++;
+    }
+
+    IupConfigSetVariableStrId(config, "Globals", "Name", i, NULL);
   }
 
   return IUP_DEFAULT;
@@ -263,12 +278,28 @@ static int configload_cb(Ihandle *ih)
 
   if (config)
   {
-    const char* value = IupConfigGetVariableStr(config, "MainWindow", "Split");
+    Ihandle* listGlobal = IupGetDialogChild(ih, "LIST_GLOBAL");
+    lua_State* L = (lua_State*)IupGetAttribute(ih, "LUASTATE");
+    int i;
+    const char* value;
+
+    value = IupConfigGetVariableStr(config, "MainWindow", "Split");
     if (value)
     {
       Ihandle* split = IupGetDialogChild(ih, "SPLIT");
       IupSetStrAttribute(split, "VALUE", value);
     }
+
+    i = 1;
+    do
+    {
+      value = IupConfigGetVariableStrId(config, "Globals", "Name", i);
+      IupSetStrAttributeId(listGlobal, "GLOBALNAME", i, value);
+      i++;
+    } while (value != NULL);
+
+    iuplua_push_name(L, "DebuggerInitGlobalList");
+    lua_call(L, 0, 0);
 
     value = IupConfigGetVariableStr(config, "Lua", "CurrentDirectory");
     if (value)
@@ -542,8 +573,6 @@ static int item_folding_action_cb(Ihandle* ih)
 {
   Ihandle* multitext = IupGetDialogChild(ih, "MULTITEXT");
   Ihandle* config = IupGetAttributeHandle(multitext, "CONFIG");
-  Ihandle* item_toggle_folding = IupGetDialogChild(ih, "ITM_TOGGLE_FOLDING");
-  Ihandle* menu_foldall = IupGetDialogChild(ih, "ITM_FOLD_ALL");
 
   if (IupGetInt(ih, "VALUE"))
   {
@@ -551,8 +580,6 @@ static int item_folding_action_cb(Ihandle* ih)
     IupSetAttribute(multitext, "PROPERTY", "fold=0");
     IupSetAttribute(multitext, "MARGINWIDTH3", "0");
     IupSetAttribute(multitext, "_IUP_FOLDDING", NULL);
-    IupSetAttribute(item_toggle_folding, "ACTIVE", "NO");
-    IupSetAttribute(menu_foldall, "ACTIVE", "NO");
   }
   else
   {
@@ -560,8 +587,6 @@ static int item_folding_action_cb(Ihandle* ih)
     IupSetAttribute(multitext, "PROPERTY", "fold=1");
     IupSetAttribute(multitext, "MARGINWIDTH3", FOLDING_MARGIN);
     IupSetAttribute(multitext, "_IUP_FOLDDING", "1");
-    IupSetAttribute(item_toggle_folding, "ACTIVE", "Yes");
-    IupSetAttribute(menu_foldall, "ACTIVE", "Yes");
   }
 
   IupSetAttribute(multitext, "FOLDALL", "EXPAND");
@@ -678,6 +703,148 @@ static int item_level_action_cb(Ihandle* ih_item)
     } 
   }
     
+  return IUP_DEFAULT;
+}
+
+static int item_blockcomment_action_cb(Ihandle* ih_item)
+{
+  Ihandle* multitext = IupGetDialogChild(ih_item, "MULTITEXT");
+  char *selpos = IupGetAttribute(multitext, "SELECTIONPOS");
+  int pos1 = 0, pos2 = 0;
+
+  if (!selpos)
+    return IUP_DEFAULT;
+
+  sscanf(selpos, "%d:%d", &pos1, &pos2);
+
+  IupSetAttribute(multitext, "UNDOACTION", "BEGIN");
+
+  IupSetAttributeId(multitext, "INSERT", pos1, "--[[");
+  IupSetAttributeId(multitext, "INSERT", pos2+4, "]]");
+
+  IupSetAttribute(multitext, "UNDOACTION", "END");
+
+  IupSetStrf(multitext, "SELECTIONPOS", "%d:%d", pos1, pos2 + 4 + 2);
+
+  return IUP_DEFAULT;
+}
+
+static int item_blockuncomment_action_cb(Ihandle* ih_item)
+{
+  Ihandle* multitext = IupGetDialogChild(ih_item, "MULTITEXT");
+  char *sel = IupGetAttribute(multitext, "SELECTION");
+  char *line;
+  int lin1, lin2, col1, col2, pos1, pos2;
+
+  if (!sel)
+    return IUP_DEFAULT;
+
+  sscanf(sel, "%d,%d:%d,%d", &lin1, &col1, &lin2, &col2);
+
+  line = IupGetAttributeId(multitext, "LINE", lin1);
+  if (line[col1] != '-' || line[col1 + 1] != '-' || line[col1 + 2] != '[' || line[col1 + 3] != '[')
+    return IUP_DEFAULT;
+
+  line = IupGetAttributeId(multitext, "LINE", lin2);
+  if (line[col2 - 1] != ']' || line[col2 - 2] != ']')
+    return IUP_DEFAULT;
+
+  IupTextConvertLinColToPos(multitext, lin1, col1, &pos1);
+  IupTextConvertLinColToPos(multitext, lin2, col2, &pos2);
+
+  IupSetAttribute(multitext, "UNDOACTION", "BEGIN");
+
+  IupSetStrf(multitext, "DELETERANGE", "%d,%d", pos1, 4);
+  IupSetStrf(multitext, "DELETERANGE", "%d,%d", pos2 - 4 - 2, 2);
+
+  IupSetAttribute(multitext, "UNDOACTION", "END");
+
+  IupSetStrf(multitext, "SELECTIONPOS", "%d:%d", pos1, pos2 - 4 - 2);
+
+  return IUP_DEFAULT;
+}
+
+static int item_linescomment_action_cb(Ihandle* ih_item)
+{
+  Ihandle* multitext = IupGetDialogChild(ih_item, "MULTITEXT");
+  char *sel = IupGetAttribute(multitext, "SELECTION");
+  char *line;
+  int lin, col, lin1, lin2, col1, col2;
+
+  if (!sel)
+    return IUP_DEFAULT;
+
+  sscanf(sel, "%d,%d:%d,%d", &lin1, &col1, &lin2, &col2);
+
+  IupSetAttribute(multitext, "UNDOACTION", "BEGIN");
+
+  for (lin = lin1; lin <= lin2; lin++)
+  {
+    int len, pos;
+    line = IupGetAttributeId(multitext, "LINE", lin);
+    len = (int)strlen(line);
+
+    for (col = 0; col < len; col++)
+    {
+      char c = line[col];
+      if (c != ' ' && c != '\t')
+        break;
+    }
+
+    IupTextConvertLinColToPos(multitext, lin, col, &pos);
+    IupSetAttributeId(multitext, "INSERT", pos, "-- ");
+  }
+
+  IupSetAttribute(multitext, "UNDOACTION", "END");
+
+  IupSetStrf(multitext, "SELECTION", "%d,0:%d,999", lin1, lin2);
+
+  return IUP_DEFAULT;
+}
+
+static int item_linesuncomment_action_cb(Ihandle* ih_item)
+{
+  Ihandle* multitext = IupGetDialogChild(ih_item, "MULTITEXT");
+  char *sel = IupGetAttribute(multitext, "SELECTION");
+  char *line;
+  int lin, col, lin1, lin2, col1, col2;
+
+  if (!sel)
+    return IUP_DEFAULT;
+
+  sscanf(sel, "%d,%d:%d,%d", &lin1, &col1, &lin2, &col2);
+
+  IupSetAttribute(multitext, "UNDOACTION", "BEGIN");
+
+  for (lin = lin1; lin <= lin2; lin++)
+  {
+    int len, pos, nChar;
+    line = IupGetAttributeId(multitext, "LINE", lin);
+    len = (int)strlen(line);
+    nChar = 0;
+
+    for (col = 0; col < len; col++)
+    {
+      if (line[col] == '-' && line[col+1] == '-')
+      {
+        nChar = 2;
+        if (line[col+2] == ' ')
+          nChar++;
+        break;
+      }
+    }
+
+    if (nChar == 0)
+      continue;
+
+    IupTextConvertLinColToPos(multitext, lin, col, &pos);
+    IupSetStrf(multitext, "DELETERANGE", "%d,%d", pos, nChar);
+  }
+
+  IupSetAttribute(multitext, "UNDOACTION", "END");
+
+  IupSetStrf(multitext, "SELECTION", "%d,0:%d,999", lin1, lin2);
+
   return IUP_DEFAULT;
 }
 
@@ -1074,6 +1241,46 @@ static int lst_locals_action_cb(Ihandle *ih, char *t, int index, int v)
   return IUP_DEFAULT;
 }
 
+static int but_printglobal_cb(Ihandle *ih)
+{
+  lua_State* L = (lua_State*)IupGetAttribute(ih, "LUASTATE");
+  iuplua_push_name(L, "DebuggerPrintGlobalVariable");
+  lua_call(L, 0, 0);
+  return IUP_DEFAULT;
+}
+
+static int but_printallglobals_cb(Ihandle *ih)
+{
+  lua_State* L = (lua_State*)IupGetAttribute(ih, "LUASTATE");
+  iuplua_push_name(L, "DebuggerPrintAllGlobalVariables");
+  lua_call(L, 0, 0);
+  return IUP_DEFAULT;
+}
+
+static int but_setglobal_cb(Ihandle *ih)
+{
+  lua_State* L = (lua_State*)IupGetAttribute(ih, "LUASTATE");
+  iuplua_push_name(L, "DebuggerSetGlobalVariable");
+  lua_call(L, 0, 0);
+  return IUP_DEFAULT;
+}
+
+static int but_addglobal_cb(Ihandle *ih)
+{
+  lua_State* L = (lua_State*)IupGetAttribute(ih, "LUASTATE");
+  iuplua_push_name(L, "DebuggerAddGlobalVariable");
+  lua_call(L, 0, 0);
+  return IUP_DEFAULT;
+}
+
+static int but_removeglobal_cb(Ihandle *ih)
+{
+  lua_State* L = (lua_State*)IupGetAttribute(ih, "LUASTATE");
+  iuplua_push_name(L, "DebuggerRemoveGlobalVariable");
+  lua_call(L, 0, 0);
+  return IUP_DEFAULT;
+}
+
 static int lst_stack_action_cb(Ihandle *ih, char *t, int index, int v)
 {
   lua_State* L;
@@ -1162,6 +1369,34 @@ static int but_removeallbreaks_cb(Ihandle *ih)
   return IUP_DEFAULT;
 }
 
+static int lua_menu_open_cb(Ihandle *ih_menu)
+{
+  Ihandle* multitext = IupGetDialogChild(ih_menu, "MULTITEXT");
+  Ihandle* menu_foldall = IupGetDialogChild(ih_menu, "ITM_FOLD_ALL");
+  Ihandle* item_toggle_folding = IupGetDialogChild(ih_menu, "ITM_TOGGLE_FOLDING");
+  Ihandle* item_folding = IupGetDialogChild(ih_menu, "ITM_FOLDING");
+  Ihandle* item_comments = IupGetDialogChild(ih_menu, "ITM_COMMENTS");
+  char *selpos = IupGetAttribute(multitext, "SELECTIONPOS");
+
+  if (IupGetInt(item_folding, "VALUE"))
+  {
+    IupSetAttribute(item_toggle_folding, "ACTIVE", "Yes");
+    IupSetAttribute(menu_foldall, "ACTIVE", "Yes");
+  }
+  else
+  {
+    IupSetAttribute(item_toggle_folding, "ACTIVE", "NO");
+    IupSetAttribute(menu_foldall, "ACTIVE", "NO");
+  }
+
+  if (selpos)
+    IupSetAttribute(item_comments, "ACTIVE", "Yes");
+  else
+    IupSetAttribute(item_comments, "ACTIVE", "NO");
+
+  return IUP_DEFAULT;
+}
+
 /********************************** Main *****************************************/
 
 static Ihandle *buildTabConsole(void)
@@ -1203,10 +1438,10 @@ static Ihandle *buildTabConsole(void)
   return output;
 }
 
-static Ihandle *buildTabLocals(void)
+static Ihandle *buildTabDebug(void)
 {
   Ihandle *list_local, *button_printLocal, *button_printAllLocals, *button_setLocal, *vbox_local, *frame_local;
-  Ihandle *list_stack, *button_printLevel, *button_printStack, *vbox_stack, *frame_stack, *locals;
+  Ihandle *list_stack, *button_printLevel, *button_printStack, *vbox_stack, *frame_stack, *debug;
 
   list_local = IupList(NULL);
   IupSetAttribute(list_local, "EXPAND", "YES");
@@ -1276,12 +1511,69 @@ static Ihandle *buildTabLocals(void)
   IupSetAttribute(frame_stack, "GAP", "4");
   IupSetAttribute(frame_stack, "TITLE", "Call Stack:");
 
-  locals = IupHbox(frame_local, frame_stack, NULL);
-  IupSetAttribute(locals, "MARGIN", "0x0");
-  IupSetAttribute(locals, "GAP", "4");
-  IupSetAttribute(locals, "TABTITLE", "Debug");
+  debug = IupHbox(frame_local, frame_stack, NULL);
+  IupSetAttribute(debug, "MARGIN", "0x0");
+  IupSetAttribute(debug, "GAP", "4");
+  IupSetAttribute(debug, "TABTITLE", "Debug");
 
-  return locals;
+  return debug;
+}
+
+static Ihandle *buildTabWatch(void)
+{
+  Ihandle *list_global, *button_printGlobal, *button_printAllGlobals, *button_addGlobal, *button_removeGlobal, *button_setGlobal, *vbox_global, *frame_global, *watch;
+
+  list_global = IupList(NULL);
+  IupSetAttribute(list_global, "EXPAND", "YES");
+  IupSetAttribute(list_global, "NAME", "LIST_GLOBAL");
+  IupSetAttribute(list_global, "TIP", "List of globals");
+  IupSetAttribute(list_global, "VISIBLEITEMS", "3");
+
+  button_printGlobal = IupButton("Print", NULL);
+  IupSetAttribute(button_printGlobal, "ACTIVE", "NO");
+  IupSetAttribute(button_printGlobal, "TIP", "Prints debug information about the selected global variable.");
+  IupSetAttribute(button_printGlobal, "NAME", "PRINT_GLOBAL");
+  IupSetStrAttribute(button_printGlobal, "PADDING", IupGetGlobal("DEFAULTBUTTONPADDING"));
+  IupSetCallback(button_printGlobal, "ACTION", (Icallback)but_printglobal_cb);
+
+  button_printAllGlobals = IupButton("Print All", NULL);
+  IupSetAttribute(button_printAllGlobals, "ACTIVE", "NO");
+  IupSetAttribute(button_printAllGlobals, "TIP", "Prints debug information about the all global variables.");
+  IupSetAttribute(button_printAllGlobals, "NAME", "PRINT_ALLGLOBALS");
+  IupSetStrAttribute(button_printAllGlobals, "PADDING", IupGetGlobal("DEFAULTBUTTONPADDING"));
+  IupSetCallback(button_printAllGlobals, "ACTION", (Icallback)but_printallglobals_cb);
+
+  button_setGlobal = IupButton("Set...", NULL);
+  IupSetAttribute(button_setGlobal, "ACTIVE", "NO");
+  IupSetAttribute(button_setGlobal, "NAME", "SET_GLOBAL");
+  IupSetStrAttribute(button_setGlobal, "PADDING", IupGetGlobal("DEFAULTBUTTONPADDING"));
+  IupSetCallback(button_setGlobal, "ACTION", (Icallback)but_setglobal_cb);
+
+  button_addGlobal = IupButton("Add...", NULL);
+  IupSetStrAttribute(button_addGlobal, "PADDING", IupGetGlobal("DEFAULTBUTTONPADDING"));
+  IupSetCallback(button_addGlobal, "ACTION", (Icallback)but_addglobal_cb);
+
+  button_removeGlobal = IupButton("Remove", NULL);
+  IupSetAttribute(button_removeGlobal, "NAME", "REMOVE_GLOBAL");
+  IupSetStrAttribute(button_removeGlobal, "PADDING", IupGetGlobal("DEFAULTBUTTONPADDING"));
+  IupSetCallback(button_removeGlobal, "ACTION", (Icallback)but_removeglobal_cb);
+
+  vbox_global = IupVbox(button_printGlobal, button_printAllGlobals, button_addGlobal, button_removeGlobal, button_setGlobal, NULL);
+  IupSetAttribute(vbox_global, "MARGIN", "0x0");
+  IupSetAttribute(vbox_global, "GAP", "4");
+  IupSetAttribute(vbox_global, "NORMALIZESIZE", "HORIZONTAL");
+
+  frame_global = IupFrame(IupHbox(list_global, vbox_global, NULL));
+  IupSetAttribute(frame_global, "MARGIN", "4x4");
+  IupSetAttribute(frame_global, "GAP", "4");
+  IupSetAttribute(frame_global, "TITLE", "Globals:");
+
+  watch = IupHbox(frame_global, NULL);
+  IupSetAttribute(watch, "MARGIN", "0x0");
+  IupSetAttribute(watch, "GAP", "4");
+  IupSetAttribute(watch, "TABTITLE", "Watch");
+
+  return watch;
 }
 
 static Ihandle *buildTabBreaks(void)
@@ -1439,8 +1731,9 @@ static void appendDebugButtons(Ihandle *dialog)
 static void appendDebugMenuItens(Ihandle *menu)
 {
   Ihandle *item_debug, *item_run, *item_stop, *item_pause, *item_continue, *item_stepinto, *item_autocomplete, *item_style_config,
-    *item_folding, *item_toggle_folding, *item_stepover, *item_stepout, *debugMneu, *subMenuDebug, *item_currentline, *item_options,
-    *item_togglebreakpoint, *item_newbreakpoint, *item_removeallbreakpoints, *item_collapse, *item_expand, *item_toggle, *item_level;
+    *item_folding, *item_toggle_folding, *item_stepover, *item_stepout, *luaMenu, *subMenuDebug, *item_currentline, *item_options,
+    *item_togglebreakpoint, *item_newbreakpoint, *item_removeallbreakpoints, *item_collapse, *item_expand, *item_toggle, *item_level,
+    *item_blockcomment, *item_blockuncomment, *item_linescomment, *item_linesuncomment;
 
   item_run = IupItem("&Run\tCtrl+F5", NULL);
   IupSetAttribute(item_run, "NAME", "ITM_RUN");
@@ -1528,6 +1821,18 @@ static void appendDebugMenuItens(Ihandle *menu)
   IupSetAttribute(item_level, "NAME", "ITM_LEVEL");
   IupSetCallback(item_level, "ACTION", (Icallback)item_level_action_cb);
 
+  item_blockcomment = IupItem("Block Comment", NULL);
+  IupSetCallback(item_blockcomment, "ACTION", (Icallback)item_blockcomment_action_cb);
+
+  item_blockuncomment = IupItem("Block Uncomment", NULL);
+  IupSetCallback(item_blockuncomment, "ACTION", (Icallback)item_blockuncomment_action_cb);
+
+  item_linescomment = IupItem("Lines Comment", NULL);
+  IupSetCallback(item_linescomment, "ACTION", (Icallback)item_linescomment_action_cb);
+
+  item_linesuncomment = IupItem("Lines Uncomment", NULL);
+  IupSetCallback(item_linesuncomment, "ACTION", (Icallback)item_linesuncomment_action_cb);
+
   item_options = IupItem("Options...", NULL);
   IupSetCallback(item_options, "ACTION", (Icallback)item_options_action_cb);
 
@@ -1540,7 +1845,7 @@ static void appendDebugMenuItens(Ihandle *menu)
   item_removeallbreakpoints = IupItem("Remove All Breakpoints", NULL);
   IupSetCallback(item_removeallbreakpoints, "ACTION", (Icallback)but_removeallbreaks_cb);
 
-  debugMneu = IupMenu(
+  luaMenu = IupMenu(
     item_run,
     item_debug,
     item_continue,
@@ -1565,12 +1870,21 @@ static void appendDebugMenuItens(Ihandle *menu)
         item_level,
         NULL), "NAME=ITM_FOLD_ALL")),
     IupSeparator(),
+    IupSubmenu("Comments",
+      IupSetAttributes(IupMenu(
+        item_blockcomment,
+        item_blockuncomment,
+        item_linescomment,
+        item_linesuncomment,
+        NULL), "NAME=ITM_COMMENTS")),
     item_autocomplete,
     item_style_config,
     item_options,
     NULL);
 
-  subMenuDebug = IupSubmenu("&Lua", debugMneu);
+  IupSetCallback(luaMenu, "OPEN_CB", (Icallback)lua_menu_open_cb);
+
+  subMenuDebug = IupSubmenu("&Lua", luaMenu);
 
   IupAppend(menu, subMenuDebug);
 }
@@ -1666,7 +1980,7 @@ static int iLuaScripterDlgCreateMethod(Ihandle* ih, void** params)
 {
   lua_State *L;
   Ihandle *multitext, *menu, *split, *box, *statusBar;
-  Ihandle *tabConsole, *tabLocals, *tabBreaks, *debugTabs;
+  Ihandle *tabConsole, *tabDebug, *tabBreaks, *tabWatch, *debugTabs;
 
   L = (lua_State*)IupGetGlobal("_IUP_LUA_DEFAULT_STATE");
 
@@ -1749,11 +2063,13 @@ static int iLuaScripterDlgCreateMethod(Ihandle* ih, void** params)
 
   tabConsole = buildTabConsole();
 
-  tabLocals = buildTabLocals();
-
   tabBreaks = buildTabBreaks();
 
-  debugTabs = IupTabs(tabConsole, tabLocals, tabBreaks, NULL);
+  tabDebug = buildTabDebug();
+
+  tabWatch = buildTabWatch();
+
+  debugTabs = IupTabs(tabConsole, tabBreaks, tabDebug, tabWatch, NULL);
   IupSetAttribute(debugTabs, "MARGIN", "0x0");
   IupSetAttribute(debugTabs, "GAP", "4");
   IupSetAttribute(debugTabs, "TABTYPE", "BOTTOM");
@@ -1843,12 +2159,8 @@ void IupLuaScripterDlgOpen(void)
 - Debug Strings
 - detachable Console, Debug, Breakpoints (problem with IupGetDialogChild(NAME))- save in config
 
-- Watch for globals - save in config
-  (evaluate expression)
-- Block comments menu items
-- Selected Word highlight
-- Condicional Breakpoints
-- SetLocal/Global number/boolean/string not restricted
+- Condicional Breakpoints, Hit Count, When Hit
+- Evaluate expression in Global
 
 - Table Inspector using IupTree
 - iup.TRACEBACK

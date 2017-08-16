@@ -29,6 +29,7 @@ end
 
 ------------------------------------- User Interface State -------------------------------------
 
+
 function iup.DebuggerSetStateString(state)
   local map_state = {
     DEBUG_INACTIVE = DEBUG_INACTIVE,
@@ -110,6 +111,7 @@ function iup.DebuggerSetState(st)
     multitext.readonly = "No"
     iup.DebuggerClearLocalVariablesList()
     iup.DebuggerClearStackList()
+    iup.DebuggerInitGlobalList()
   end
     
   debugger.debug_state = st
@@ -174,6 +176,7 @@ end
 
 
 ------------------------------------- Breakpoints -------------------------------------
+
 
 function iup.DebuggerNewBreakpoint()
   local multitext = iup.GetDialogChild(debugger.main_dialog, "MULTITEXT")
@@ -254,7 +257,9 @@ function iup.DebuggerHasLineBreak(filename, currentline)
   return iup.DebuggerHasBreakpoint(multitext, currentline - 1)
 end
 
+
 ------------------------------------- Locals -------------------------------------
+
 
 function iup.DebuggerClearLocalVariablesList()
   iup.SetAttribute(iup.GetDialogChild(debugger.main_dialog, "PRINT_ALLLOCALS"), "ACTIVE", "NO")
@@ -274,39 +279,32 @@ function iup.DebuggerSetLocalVariable()
   local name = local_list[index]
   local s, e = string.find(name, " =", 1, true)
   name = string.sub(name, 1, s - 1)
-  local value = local_list["VAL"..index]
+  local value = local_list["LOCALVALUE"..index]
 
-  if (value == nil) then value = "" end
+  if (value == nil) then value = "nil" end
   local valueType = type(value)
   if valueType ~= "string" and valueType ~= "number" and valueType ~= "boolean" then
     iup.MessageError(debugger.main_dialog, "Can edit only strings, booleans and numbers.")
     return
   end
 
-  local status, newValue
-  if valueType == "string" then
-    status, newValue = iup.GetParam("Set Local", nil, name.." = ".."%s\n", tostring(value))
-  elseif valueType == "number" then
-    status, newValue = iup.GetParam("Set Local", nil, name.." = ".."%R\n", tonumber(value))
-  elseif valueType == "boolean" then
-    if value then value = 1 else value = 0 end
-    status, newValue = iup.GetParam("Set Local", nil, name.." = ".."%b[false,true]\n", value)
-  end
+  local status, newValue = iup.GetParam("Set Local", nil, name.." = ".."%s{true, false and nil are translated to Lua values.}\n", tostring(value))
 
   if (status) then
-    if valueType == "string" then
-      newValue = tostring(newValue)
-    elseif valueType == "number" then
-      newValue = tonumber(newValue)
-    elseif valueType == "boolean" then
-      newValue = tonumber(newValue)
-      if newValue == 1 then 
-        newValue = true
-      else
-        newValue = false
+    local bol = string.lower(newValue)
+    if bol == "true" then
+      newValue = true
+    elseif bol == "false" then
+      newValue = false
+    elseif bol == "nil" then
+      newValue = nil
+    else
+      local num = tonumber(newValue)
+      if num then
+        newValue = num
       end
     end
-  
+
     local list_stack = iup.GetDialogChild(debugger.main_dialog, "LIST_STACK")
     local index = tonumber(list_stack.value)
 
@@ -328,10 +326,10 @@ function iup.DebuggerPrintLocalVariable()
   local index = local_list.value
 
   local debugtabs = iup.GetDialogChild(debugger.main_dialog, "DEBUG_TABS")
-  debugtabs.valuepos = 0
+  debugtabs.valuepos = 0 -- show console
 
   local pos = iup.GetAttribute(local_list, "POS"..index)
-  local value = local_list["VAL"..index]
+  local value = local_list["LOCALVALUE"..index]
 
   iup.ConsolePrint(local_list[index] .. "  (pos="..pos..")")
   iup.ConsolePrintValue(value)
@@ -342,11 +340,11 @@ function iup.DebuggerPrintAllLocalVariables()
   local count = local_list.count
 
   local debugtabs = iup.GetDialogChild(debugger.main_dialog, "DEBUG_TABS")
-  debugtabs.valuepos = 0
+  debugtabs.valuepos = 0 -- show console
 
   for index = 1, count do
     local pos = iup.GetAttribute(local_list, "POS"..index)
-    local value = local_list["VAL"..index]
+    local value = local_list["LOCALVALUE"..index]
 
     iup.ConsolePrint(local_list[index] .. "  (pos="..pos..")")
     iup.ConsolePrintValue(value)
@@ -380,7 +378,7 @@ function iup.DebuggerGetLocal(local_list, level, index)
 end
 
 function iup.DebuggerLocalVariablesListAction(local_list, index)
-  local value = local_list["VAL"..index]
+  local value = local_list["LOCALVALUE"..index]
   local valueType = type(value)
   if valueType == "string" or valueType == "number" or valueType == "boolean" then
     iup.SetAttribute(iup.GetDialogChild(debugger.main_dialog, "SET_LOCAL"), "ACTIVE", "Yes")
@@ -397,7 +395,7 @@ function iup.DebuggerSetLocalListItem(local_list, index, name, value, pos)
     iup.SetAttribute(local_list, index, name.." = "..tostring(value).." <"..valueType..">")
   end
 
-  local_list["VAL"..index] = value
+  local_list["LOCALVALUE"..index] = value
 
   if pos then
     iup.SetAttribute(local_list, "POS"..index, pos)
@@ -528,6 +526,7 @@ function iup.DebuggerShowTip(word, line)
   end
 end
 
+
 ------------------------------------- Stack -------------------------------------
 
 
@@ -551,8 +550,6 @@ function iup.DebuggerStackListAction(list_stack, index)
 end
 
 function iup.DebuggerClearStackList()
-  iup.DebuggerClearLocalVariablesList()
-
   iup.SetAttribute(iup.GetDialogChild(debugger.main_dialog, "PRINT_LEVEL"), "ACTIVE", "NO")
   iup.SetAttribute(iup.GetDialogChild(debugger.main_dialog, "PRINT_STACK"), "ACTIVE", "NO")
   iup.SetAttribute(iup.GetDialogChild(debugger.main_dialog, "LIST_STACK"), "REMOVEITEM", "ALL")
@@ -563,7 +560,7 @@ function iup.DebuggerPrintStackLevel()
   local index = list_stack.value
 
   local debugtabs = iup.GetDialogChild(debugger.main_dialog, "DEBUG_TABS")
-  debugtabs.valuepos = 0
+  debugtabs.valuepos = 0 -- show console
 
   local defined = iup.GetAttribute(list_stack, "DEFINED"..index)
 
@@ -576,7 +573,7 @@ function iup.DebuggerPrintStack()
   local count = list_stack.count
 
   local debugtabs = iup.GetDialogChild(debugger.main_dialog, "DEBUG_TABS")
-  debugtabs.valuepos = 0
+  debugtabs.valuepos = 0 -- show console
 
   for index = 1, count do
     local defined = iup.GetAttribute(list_stack, "DEFINED"..index)
@@ -676,7 +673,195 @@ function iup.DebuggerUpdateStackList()
 end
 
 
+----------------------------  Globals       --------------------------
+
+
+function iup.DebuggerInitGlobalList()
+  local global_list = iup.GetDialogChild(debugger.main_dialog, "LIST_GLOBAL")
+
+  local index = 1
+  local name = global_list["GLOBALNAME1"]
+  while name do
+    global_list[index] = name
+
+    index = index + 1
+    name = global_list["GLOBALNAME"..index]
+  end
+  global_list[index] = nil
+
+  local count = tonumber(global_list.count)
+  if (count > 0) then
+    iup.SetAttribute(iup.GetDialogChild(debugger.main_dialog, "PRINT_GLOBAL"), "ACTIVE", "Yes")
+    iup.SetAttribute(iup.GetDialogChild(debugger.main_dialog, "PRINT_ALLGLOBALS"), "ACTIVE", "Yes")
+    iup.SetAttribute(iup.GetDialogChild(debugger.main_dialog, "SET_GLOBAL"), "ACTIVE", "Yes")
+    iup.SetAttribute(iup.GetDialogChild(debugger.main_dialog, "REMOVE_GLOBAL"), "ACTIVE", "Yes")
+  else
+    iup.SetAttribute(iup.GetDialogChild(debugger.main_dialog, "PRINT_ALLGLOBALS"), "ACTIVE", "NO")
+    iup.SetAttribute(iup.GetDialogChild(debugger.main_dialog, "PRINT_GLOBAL"), "ACTIVE", "NO")
+    iup.SetAttribute(iup.GetDialogChild(debugger.main_dialog, "SET_GLOBAL"), "ACTIVE", "NO")
+    iup.SetAttribute(iup.GetDialogChild(debugger.main_dialog, "REMOVE_GLOBAL"), "ACTIVE", "NO")
+  end
+end
+
+function iup.DebuggerUpdateGlobalList()
+  local global_list = iup.GetDialogChild(debugger.main_dialog, "LIST_GLOBAL")
+
+  -- this is called only during debug
+
+  local index = 1
+  local name = global_list["GLOBALNAME1"]
+  while name do
+    local value = _G[name]
+    iup.DebuggerSetGlobalListItem(global_list, index, name, value)
+
+    index = index + 1
+    name = global_list["GLOBALNAME"..index]
+  end
+end
+
+function iup.DebuggerSetGlobalListItem(global_list, index, name, value)
+  local valueType = type(value)
+  if valueType ~= "string" and valueType ~= "number" and valueType ~= "boolean" then
+    iup.SetAttribute(global_list, index, name.." = <"..tostring(value)..">")
+  else
+    iup.SetAttribute(global_list, index, name.." = "..tostring(value).." <"..valueType..">")
+  end
+end
+
+function iup.DebuggerAddGlobalVariable()
+  local global_list = iup.GetDialogChild(debugger.main_dialog, "LIST_GLOBAL")
+
+  local status, newName = iup.GetParam("Add Global", nil, "Name = ".."%s\n", "")
+
+  if (status) then
+    local count = tonumber(global_list.count)
+    local index = count + 1
+
+    local value = _G[newName]
+    global_list["GLOBALNAME"..index] = newName
+
+    if debugger.debug_state ~= DEBUG_INACTIVE then
+      iup.DebuggerSetGlobalListItem(global_list, index, newName, value)
+    else
+      global_list[index] = newName
+    end
+
+    if (count == 0) then
+      iup.SetAttribute(iup.GetDialogChild(debugger.main_dialog, "PRINT_GLOBAL"), "ACTIVE", "Yes")
+      iup.SetAttribute(iup.GetDialogChild(debugger.main_dialog, "PRINT_ALLGLOBALS"), "ACTIVE", "Yes")
+      iup.SetAttribute(iup.GetDialogChild(debugger.main_dialog, "SET_GLOBAL"), "ACTIVE", "Yes")
+      iup.SetAttribute(iup.GetDialogChild(debugger.main_dialog, "REMOVE_GLOBAL"), "ACTIVE", "Yes")
+
+      global_list.value = 1 -- select first item on list
+    end
+  end
+end
+
+function iup.DebuggerRemoveGlobalVariable()
+  local global_list = iup.GetDialogChild(debugger.main_dialog, "LIST_GLOBAL")
+  local index = global_list.value
+  if (not index or tonumber(index) == 0) then
+    iup.MessageError(debugger.main_dialog, "Select a variable on the list.")
+    return
+  end
+
+  index = tonumber(index)
+  local count = tonumber(global_list.count)
+
+  for i = index, count-1 do
+    global_list["GLOBALNAME"..i] = global_list["GLOBALNAME"..i+1]
+    global_list[i] = global_list[i+1]
+  end
+  global_list["GLOBALNAME"..count] = nil
+  global_list[count] = nil
+
+  if (count == 1) then
+    iup.SetAttribute(iup.GetDialogChild(debugger.main_dialog, "PRINT_GLOBAL"), "ACTIVE", "No")
+    iup.SetAttribute(iup.GetDialogChild(debugger.main_dialog, "PRINT_ALLGLOBALS"), "ACTIVE", "No")
+    iup.SetAttribute(iup.GetDialogChild(debugger.main_dialog, "SET_GLOBAL"), "ACTIVE", "No")
+    iup.SetAttribute(iup.GetDialogChild(debugger.main_dialog, "REMOVE_GLOBAL"), "ACTIVE", "No")
+  end
+end
+
+function iup.DebuggerSetGlobalVariable()
+  local global_list = iup.GetDialogChild(debugger.main_dialog, "LIST_GLOBAL")
+  local index = global_list.value
+  if (not index or tonumber(index) == 0) then
+    iup.MessageError(debugger.main_dialog, "Select a variable on the list.")
+    return
+  end
+
+  index = tonumber(index)
+  local name = global_list["GLOBALNAME"..index]
+  local value = _G[name]
+
+  if (value == nil) then value = "nil" end
+  local valueType = type(value)
+  if valueType ~= "string" and valueType ~= "number" and valueType ~= "boolean" then
+    iup.MessageError(debugger.main_dialog, "Can edit only strings, booleans and numbers.")
+    return
+  end
+
+  local status, newValue = iup.GetParam("Set Global", nil, name.." = ".."%s{true, false and nil are translated to Lua values.}\n", tostring(value))
+
+  if (status) then
+    local bol = string.lower(newValue)
+    if bol == "true" then
+      newValue = true
+    elseif bol == "false" then
+      newValue = false
+    elseif bol == "nil" then
+      newValue = nil
+    else
+      local num = tonumber(newValue)
+      if num then
+        newValue = num
+      end
+    end
+
+    _G[name] = newValue
+
+    if debugger.debug_state ~= DEBUG_INACTIVE then
+      iup.DebuggerSetGlobalListItem(global_list, index, name, newValue)
+    else
+      global_list[index] = name
+    end
+  end
+end
+
+function iup.DebuggerPrintGlobalVariable()
+  local global_list = iup.GetDialogChild(debugger.main_dialog, "LIST_GLOBAL")
+  local index = global_list.value
+
+  local debugtabs = iup.GetDialogChild(debugger.main_dialog, "DEBUG_TABS")
+  debugtabs.valuepos = 0 -- show console
+
+  local name = global_list["GLOBALNAME"..index]
+  local value = _G[name]
+
+  iup.ConsolePrint(global_list[index])
+  iup.ConsolePrintValue(value)
+end
+
+function iup.DebuggerPrintAllGlobalVariables()
+  local global_list = iup.GetDialogChild(debugger.main_dialog, "LIST_GLOBAL")
+  local count = global_list.count
+
+  local debugtabs = iup.GetDialogChild(debugger.main_dialog, "DEBUG_TABS")
+  debugtabs.valuepos = 0 -- show console
+
+  for index = 1, count do
+    local name = global_list["GLOBALNAME"..index]
+    local value = _G[name]
+
+    iup.ConsolePrint(global_list[index])
+    iup.ConsolePrintValue(value)
+  end
+end
+
+
 ----------------------------  Debug State       --------------------------
+
 
 function iup.DebuggerGetFuncLevel()
 -- level 0 is the current function (getinfo itself); 
@@ -711,6 +896,8 @@ function iup.DebuggerLineHook(filename, currentline)
   if debugger.debug_state == DEBUG_PAUSED then
   
     iup.DebuggerHighlightLine(currentline)
+    
+    iup.DebuggerUpdateGlobalList()
     
     iup.DebuggerUpdateStackList()
     
@@ -783,7 +970,7 @@ function iup.DebuggerStartDebug(filename)
   
   iup.ConsolePrint("-- Debug start")
   iup.DebuggerSetState(DEBUG_ACTIVE)
-  debugtabs.valuepos = 1
+  debugtabs.valuepos = 2 -- show locals
 
   debug.sethook(iup.DebuggerHookFunction, "lcr")
 end
@@ -794,7 +981,7 @@ function iup.DebuggerEndDebug(stop)
   iup.DebuggerSetState(DEBUG_INACTIVE)
 
   local debugtabs = iup.GetDialogChild(debugger.main_dialog, "DEBUG_TABS")
-  debugtabs.valuepos = 0
+  debugtabs.valuepos = 0 -- show console
 
   if stop then
     iup.ConsolePrint("-- Debug stop!")
