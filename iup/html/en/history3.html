@@ -61,7 +61,7 @@
 <p>Check the <a href="migration_guide.html">Migration Guide</a> for a summary of 
 the important changes and how to proceed when migrating from version 2.x to 
 version 3.x.</p>
-<h3>SVN (10/Ago/2017)</h3>
+<h3>SVN (16/Ago/2017)</h3>
 
 <ul>
 
@@ -126,10 +126,20 @@ version 3.x.</p>
 	<li>
 	<font SIZE="3">
 	<b>
-	<span class="hist_new">New:</span> </b>WORDPOS, SHOWLINES, HIDELINES, FOLDPARENT, FOLDLINE, FOLDCHILDREN, <strong class="style3">FOLDALL,</strong>
+	<span class="hist_new">New:</span> </b>TARGETWHOLEDOCUMENT, WORDRANGE, 
+	ISWORD, WORDPOS, SHOWLINES, HIDELINES, FOLDPARENT, FOLDLINE, FOLDCHILDREN, <strong class="style3">FOLDALL,</strong>
 	<strong class="style3">ENSUREVISIBLE</strong>, <strong class="style3">FOLDLEVELWHITE </strong>
 	and<b><strong> </strong> </b>FOLDLEVELHEADER attributes for <strong>
 	IupScintilla</strong>.</font></li>
+	<li>
+	<font SIZE="3">
+	<b>
+	<span class="hist_new">New:</span> </b>UPDATECONTENT_CB, UPDATESELECTION_CB, 
+	UPDATEHSCROLL_CB, UPDATEVSCROLL_CB callbacks for
+	<b>
+	<strong>
+	<span class="auto-style1"><span style="color: #008000"><span
+            style="color: #000000"> IupScintilla</span></span></span>.</strong></b></font></li>
 	<li>
 	<font SIZE="3">
 	<b>
@@ -141,9 +151,18 @@ version 3.x.</p>
 	<font SIZE="3">
 	<b>
 	<span class="hist_new">New:</span> </b>MOUSEDWELLTIME attribute and DWELL_CB 
-	callback in <strong>
+	callbacks in <strong>
 	<span class="auto-style1"><span style="color: #008000"><span
             style="color: #000000"> IupScintillaDlg</span></span></span></strong>.</font></li>
+	<li>
+	<font SIZE="3">
+	<b>
+	<span class="hist_new">New:</span> </b>support for highlight of all words 
+	equal to the selected word in
+	<b>
+	<strong>
+	<span class="auto-style1"><span style="color: #008000"><span
+            style="color: #000000"> IupScintillaDlg</span></span></span></strong></b>.</font></li>
 	<li>
 	<font SIZE="3">
 	<b>
@@ -151,9 +170,30 @@ version 3.x.</p>
 	in <strong>IupFlatTabs</strong>.</li>
 	<li>
 	<font SIZE="3">
+	<b>
+	<span class="hist_new">New:</span> </b>watch for global variables in
+	<b>
+	IupLuaScripterDlg</b>.</font></li>
+	<li>
+	<font SIZE="3">
+	<b>
+	<span class="hist_new">New:</span> </b>tools to comment blocks and multiple 
+	lines in <b>
+	IupLuaScripterDlg</b>.</font></li>
+	<li>
+	<strong>
+	<font SIZE="3">
+	<b>
+	<span class="hist_new">New:</span> </b> </font></strong>INDICATORCURRENT, 
+	INDICATORVALUE, INDICATORCLEARRANGE, INDICATORFILLRANGE, INDICATORSTYLE<em>id</em> 
+	, INDICATORFGCOLOR<em>id</em> , INDICATOROUTLINEALPHA<em>id</em> , 
+	INDICATORALPHA<em>id</em>&nbsp; <font SIZE="3">
+	attributes for <strong>IupScintilla.</strong></font></li>
+	<li>
+	<font SIZE="3">
 	<span class="hist_changed" style="color: rgb(0, 128, 0); font-weight: bold;">
 	<strong>Changed:</strong></span><span class="auto-style1"> Stock images in 
-	GTK 3.x are now provided by the <strong>IupImageLib</strong>. Since GTK 3.10 
+	GTK 3.x are now provided by the <strong>IupImageLib</strong>, because GTK 3.10 
 	stock images are deprecated. Replaced
 	<span style="color: rgb(0, 0, 0); font-family: tahoma, verdana, arial, helvetica, geneva, sans-serif; font-size: medium; font-style: normal; font-variant-ligatures: normal; font-variant-caps: normal; font-weight: normal; letter-spacing: normal; orphans: 2; text-align: start; text-indent: 0px; text-transform: none; white-space: normal; widows: 2; word-spacing: 0px; -webkit-text-stroke-width: 0px; background-color: rgb(255, 255, 255); text-decoration-style: initial; text-decoration-color: initial; display: inline !important; float: none;">
 	&quot;IUP_ZoomActualSize&quot; image in Windows. IUP_Webcam returned to the base list.</span></span></font></li>

@@ -387,6 +387,11 @@ correspond to the character after the last selected character. The values ALL an
 read-only</font>): returns the start and end of a word in the text around the 
 given position (in id). It uses the format &quot;<strong>start</strong>:<strong>end</strong>&quot;. 
 Returns NULL if no words were found. (since 3.23)</p>
+<p><strong>WORDRANGE</strong> (<font size="3">non inheritable</font>): interval 
+for ISWORD. (since 3.23)</p>
+<p><strong>ISWORD</strong> (<font size="3">non inheritable, 
+read-only</font>): check if the interval defined by WORDRANGE is a word. (since 
+3.23)</p>
 
   
 <h4>Folding</h4>
@@ -442,6 +447,40 @@ start default is 0, end default is -1 (last line).&nbsp;(since 3.23)</span></p>
 make the given lines interval hidden. Value is in the format &quot;start:end&quot;, <span>
 start default is 0, end default is -1 (last line).&nbsp;(since 3.23)</span>&nbsp;</p>
 
+<h4>Indicators</h4>
+<p><span>Indicators are used to display additional information over the top of 
+styling.&nbsp;</span></p>
+
+<p><strong>INDICATORCURRENT </strong>(<font size="3">non inheritable</font>):
+<span>sets the indicator number that will affect INDICATORCLEARRANGE and 
+INDICATORFILLRANGE. (since 3.23)</span></p>
+<p><strong>INDICATORVALUE </strong>(<font size="3">non inheritable</font>):
+<span>sets the indicator value that will affect INDICATORFILLRANGE. (since 3.23)</span></p>
+<p><strong>INDICATORCLEARRANGE </strong>(<font size="3">non inheritable, write-only</font>):
+<span>clears the current indicator in the range given in the format &quot;start:length&quot; 
+(&quot;%d:%d&quot; in C). (since 3.23)</span></p>
+<p><strong>INDICATORFILLRANGE </strong>(<font size="3">non inheritable, write-only</font>):
+<span>fills the current indicator with the current value in the range given in 
+the format &quot;start:length&quot; (&quot;%d:%d&quot; in C). (since 3.23)</span></p>
+<p><strong>INDICATORSTYLE<em>id</em> </strong>(<font size="3">non inheritable</font>):
+<span>the style used to draw the given indicator (in id). Can be: PLAIN, 
+SQUIGGLE, TT, DIAGONAL, STRIKE, HIDDEN, BOX, ROUNDBOX, STRAIGHTBOX, FULLBOX, 
+DASH, DOTS, SQUIGGLELOW, DOTBOX, SQUIGGLEPIXMAP, COMPOSITIONTHICK, 
+COMPOSITIONTHIN, TEXTFORE. Default for indicator 0 is SQUIGGLE, default for 
+indicator 1 is TT, default for indicator 2 is PLAIN. (since 3.23)</span></p>
+<p><strong>INDICATORFGCOLOR<em>id</em> </strong>(<font size="3">non inheritable</font>):
+<span>the color used to draw the given indicator (in id). Value in RGB format (<span style="color: rgb(0, 0, 0); font-family: tahoma, verdana, arial, helvetica, geneva, sans-serif; font-size: medium; font-style: normal; font-variant: normal; font-weight: normal; letter-spacing: normal; line-height: 20px; orphans: auto; text-align: start; text-indent: 0px; text-transform: none; white-space: normal; widows: auto; word-spacing: 0px; -webkit-text-size-adjust: auto; -webkit-text-stroke-width: 0px; background-color: rgb(255, 255, 255); display: inline !important; float: none;">&quot;r 
+g b&quot;)</span>. Default for indicator 0 is &quot;0 127 0&quot;, default for indicator 1 
+is &quot;255 0 0&quot;, default for indicator 2 is &quot;0 0 255&quot;. (since 3.23)</span></p>
+<p><strong>INDICATOROUTLINEALPHA<em>id</em> </strong>(<font size="3">non inheritable</font>):
+<span>sets and retrieves the alpha transparency used to draw the outline color 
+of the given indicator (in id). The alpha value can range from 0 (completely 
+transparent) to 255 (no transparency). (since 3.23)</span></p>
+<p><strong>INDICATORALPHA<em>id</em> </strong>(<font size="3">non inheritable</font>):
+sets and retrieves the alpha <span>transparency used to draw the fill color</span> 
+of the given indicator (in id). <span>The alpha value can range from 0 
+(completely transparent) to 255 (no transparency). (since 3.23)</span></p>
+
 <h4>Lexer</h4>
 
 <p><strong>COLORISE </strong>(<font size="3">non inheritable, write-only</font>):
@@ -473,6 +512,13 @@ attribute, the PROPERTY attribute will return its value.</p>
 <p><strong>PROPERTYNAMES</strong> (<font size="3">non inheritable, read only</font>): 
 returns a list of property names separated by &quot;\n&quot;. If the Lexer does not 
 support this information then an empty string is returned.&nbsp;</p>
+
+<h4>Line Endings</h4>
+
+<p><strong>EOLVISIBLE</strong> (<font size="3">non inheritable</font>): 
+End of line visibility. Default: No. (since 3.22)</p>
+<p><strong>FIXEOL</strong> (<font size="3">non inheritable, write 
+only</font>): Fix the line ends to use only &quot;\n&quot;. (since 3.22)</p>
 
 <h4>Margins</h4>
 
@@ -682,6 +728,12 @@ sets and gets the end of target. If set to -1 or NULL, target end
 <p><strong>TARGETFROMSELECTION</strong> (<font size="3">non inheritable, write 
 only</font>): 
 set the target start and end from current position of the selection.</p>
+<p>&nbsp;<strong>TARGETWHOLEDOCUMENT</strong> (<font size="3">non inheritable, write 
+only</font>):
+<span id="result_box3" class="short_text" lang="en">
+<span class="hps"><span id="result_box4" class="short_text" lang="en"> 
+<span>Set the target start to the start of the document and target end to the 
+end of the document. </span>(since 3.23)</span></span></span></p>
 <p><strong>REPLACETARGET</strong> (<font size="3">non inheritable, write only</font>): 
 replaces the target text. After replacement, the target range refers to the 
 replacement text.</p>
@@ -831,12 +883,6 @@ defines the background color of visible white space. Values in RGB format (<span
 g b&quot;)</span>. By default the color will be defined by the Lexer, but 
 defining this attribute will overriding&nbsp;the Lexer definition. Set to NULL to 
 reset the definition and use the Lexer again.&nbsp;</p>
-<h4>Line Endings</h4>
-
-<p><strong>EOLVISIBLE</strong> (<font size="3">non inheritable</font>): 
-End of line visibility. Default: No. (since 3.22)</p>
-<p><strong>FIXEOL</strong> (<font size="3">non inheritable, write 
-only</font>): Fix the line ends to use only &quot;\n&quot;. (since 3.22)</p>
 <h4>Zooming</h4>
 
 <p><strong>ZOOMIN</strong> (<font size="3">non inheritable, write only</font>): 
@@ -1063,6 +1109,53 @@ save point use the <a href="#SAVEPOINT">SAVEPOINT</a> attribute.</p>
   event.<br>
 
 	<strong>status</strong>: can be 1 (reached) or 0 (left).</p>
+
+  
+  
+<p><strong>UPDATECONTENT_CB</strong>: Called when contents, styling or markers 
+have been changed. (since 3.23)</p>
+
+<pre>int function(Ihandle *<strong>ih</strong>); [in C]<br><strong>ih</strong>:updatecontent_cb() -&gt; (<strong>ret</strong>: number) [in Lua]</pre>
+
+    
+<p class="info"><strong>ih</strong>:
+  identifier of the element that activated the 
+  event.</p>
+
+  
+  
+<p><strong>UPDATESELECTION_CB</strong>: Called when selection has been changed . (since 3.23)</p>
+
+<pre>int function(Ihandle *<strong>ih</strong>); [in C]<br><strong>ih</strong>:updateselection_cb() -&gt; (<strong>ret</strong>: number) [in Lua]</pre>
+
+    
+<p class="info"><strong>ih</strong>:
+  identifier of the element that activated the 
+  event.</p>
+
+  
+  
+<p><strong>UPDATEHSCROLL_CB</strong>: Called when <span>the document was 
+scrolled horizontally</span>. (since 3.23)</p>
+
+<pre>int function(Ihandle *<strong>ih</strong>); [in C]<br><strong>ih</strong>:updatehscroll_cb() -&gt; (<strong>ret</strong>: number) [in Lua]</pre>
+
+    
+<p class="info"><strong>ih</strong>:
+  identifier of the element that activated the 
+  event.</p>
+
+  
+  
+<p><strong>UPDATEVSCROLL_CB</strong>: Called when <span>the document was 
+scrolled vertically</span>. (since 3.23)</p>
+
+<pre>int function(Ihandle *<strong>ih</strong>); [in C]<br><strong>ih</strong>:updatevscroll_cb() -&gt; (<strong>ret</strong>: number) [in Lua]</pre>
+
+    
+<p class="info"><strong>ih</strong>:
+  identifier of the element that activated the 
+  event.</p>
 
   
   
