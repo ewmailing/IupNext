@@ -666,6 +666,63 @@ static int multitext_marginclick_cb(Ihandle* multitext, int margin, int lin, cha
   return IUP_DEFAULT;
 }
 
+static int updateselection_cb(Ihandle* multitext)
+{
+  // Indicators 0-7 could be in use by a lexer
+  // so we'll use indicator 8 to highlight words.
+  const int id = 8;
+  int find_start, find_end, startPos, endPos;
+  IupGetIntInt(multitext, "SELECTIONPOS", &startPos, &endPos);
+
+  IupSetfAttribute(multitext, "INDICATORCLEARRANGE", "%d:%d", 0, IupGetInt(multitext, "COUNT"));
+
+  if (startPos == endPos)
+    return IUP_IGNORE;
+
+  IupSetInt(multitext, "INDICATORCURRENT", id);
+  IupSetAttributeId(multitext, "INDICATORSTYLE", id, "STRAIGHTBOX");
+  IupSetAttributeId(multitext, "INDICATORFGCOLOR", id, "0 255 0");
+  IupSetIntId(multitext, "INDICATOROUTLINEALPHA", id, 50);
+  IupSetIntId(multitext, "INDICATORALPHA", id, 50);
+
+  IupSetfAttribute(multitext, "WORDRANGE", "%d:%d", startPos, endPos);
+
+  if (IupGetInt(multitext, "ISWORD"))
+  {
+    char* find_txt = IupGetAttribute(multitext, "SELECTEDTEXT");
+
+    IupSetAttribute(multitext, "SEARCHFLAGS", "WHOLEWORD");
+
+    find_start = -1;
+    find_end =  IupGetInt(multitext, "COUNT") + 1;
+
+    IupSetInt(multitext, "TARGETSTART", find_start);
+    IupSetInt(multitext, "TARGETEND", find_end);
+
+    IupSetAttribute(multitext, "SEARCHINTARGET", find_txt);
+
+    startPos = IupGetInt(multitext, "TARGETSTART");
+    endPos = IupGetInt(multitext, "TARGETEND");
+
+    while (find_start != startPos && find_end != endPos)
+    {
+      IupSetfAttribute(multitext, "INDICATORFILLRANGE", "%d:%d", startPos, endPos - startPos);
+      
+      find_start = endPos;
+      find_end = IupGetInt(multitext, "COUNT");
+      IupSetInt(multitext, "TARGETSTART", find_start);
+      IupSetInt(multitext, "TARGETEND", find_end + 1);
+
+      IupSetAttribute(multitext, "SEARCHINTARGET", find_txt);
+
+      startPos = IupGetInt(multitext, "TARGETSTART");
+      endPos = IupGetInt(multitext, "TARGETEND");
+    }
+  }
+
+  return IUP_DEFAULT;
+}
+
 static int multitext_savepoint_cb(Ihandle* multitext, int state)
 {
   char* filename = IupGetAttribute(multitext, "FILENAME");
@@ -2319,6 +2376,7 @@ static int iScintillaDlgCreateMethod(Ihandle* ih, void** params)
   IupSetCallback(multitext, "SAVEPOINT_CB", (Icallback)multitext_savepoint_cb);
   IupSetCallback(multitext, "DROPFILES_CB", (Icallback)dropfiles_cb);
   IupSetCallback(multitext, "MARGINCLICK_CB", (Icallback)multitext_marginclick_cb);
+  IupSetCallback(multitext, "UPDATESELECTION_CB", (Icallback)updateselection_cb);
 
   /* highlight color for BRACEHIGHLIGHT */
   IupSetAttribute(multitext, "STYLEFGCOLOR34", "255 0 0");
@@ -2765,8 +2823,3 @@ Ihandle *IupScintillaDlg(void)
 {
   return IupCreate("scintilladlg");
 }
-
-/* TODO:
-- multi-language (portuguese)
-- multiple files (IupFlatTabs)
-*/
