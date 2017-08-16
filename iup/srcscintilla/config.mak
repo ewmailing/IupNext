@@ -148,7 +148,7 @@ SRC = $(SRCSCINTILLA) iupsci_clipboard.c iupsci_folding.c iupsci_lexer.c iupsci_
       iupsci_overtype.c iupsci_scrolling.c iupsci_selection.c iupsci_style.c iupsci_tab.c \
       iupsci_text.c iupsci_wordwrap.c iupsci_markers.c iupsci_bracelight.c iupsci_cursor.c \
       iupsci_whitespace.c iupsci_annotation.c iupsci_autocompletion.c iupsci_searching.c  \
-      iupsci_print.c iup_scintilla.c iup_scintilladlg.c 
+      iupsci_print.c iupsci_indicator.c iup_scintilla.c iup_scintilladlg.c 
 ifdef USE_GTK
   SRC += iup_scintilla_gtk.c 
 else

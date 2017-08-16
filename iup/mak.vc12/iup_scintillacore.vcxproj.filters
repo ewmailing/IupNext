@@ -445,6 +445,7 @@
     <ClCompile Include="..\srcscintilla\iup_scintilladlg.c" />
     <ClCompile Include="..\srcscintilla\iup_scintilla.c" />
     <ClCompile Include="..\srcscintilla\iupsci_print.c" />
+    <ClCompile Include="..\srcscintilla\iupsci_indicator.c" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="..\srcscintilla\scintilla\src\Indicator.h">

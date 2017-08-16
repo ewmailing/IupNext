@@ -156,6 +156,7 @@
     <ClCompile Include="..\srcscintilla\iupsci_clipboard.c" />
     <ClCompile Include="..\srcscintilla\iupsci_cursor.c" />
     <ClCompile Include="..\srcscintilla\iupsci_folding.c" />
+    <ClCompile Include="..\srcscintilla\iupsci_indicator.c" />
     <ClCompile Include="..\srcscintilla\iupsci_lexer.c" />
     <ClCompile Include="..\srcscintilla\iupsci_margin.c" />
     <ClCompile Include="..\srcscintilla\iupsci_markers.c" />

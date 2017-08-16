@@ -35,6 +35,7 @@ void iupScintillaRegisterScrolling(Iclass* ic);
 void iupScintillaRegisterAutocompletion(Iclass* ic);
 void iupScintillaRegisterSearching(Iclass* ic);
 void iupScintillaRegisterPrint(Iclass* ic);
+void iupScintillaRegisterIndicators(Iclass* ic);
 
 /* this function is also exported in the DLL */
 sptr_t IupScintillaSendMessage(Ihandle* ih, unsigned int iMessage, uptr_t wParam, sptr_t lParam);
