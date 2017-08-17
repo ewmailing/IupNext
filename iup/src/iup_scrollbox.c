@@ -284,8 +284,15 @@ static void iScrollBoxSetChildrenCurrentSizeMethod(Ihandle* ih, int shrink)
     iupBaseSetCurrentSize(child, w, h, shrink);
 
     /* Now we use the actual child size as the virtual area */
-    IupSetInt(ih, "XMAX", child->currentwidth);
-    IupSetInt(ih, "YMAX", child->currentheight);
+    if (iScrollBoxHasHorizScroll(ih))
+      IupSetInt(ih, "XMAX", child->currentwidth);
+    else
+      IupSetAttribute(ih, "XMAX", "0");
+
+    if (iScrollBoxHasVertScroll(ih))
+      IupSetInt(ih, "YMAX", child->currentheight);
+    else
+      IupSetAttribute(ih, "YMAX", "0");
 
     /* Finally update the visible scroll area */
     iScrollBoxUpdateVisibleScrollArea(ih, child->currentwidth, child->currentheight);
