@@ -195,7 +195,7 @@ static void iScrollBoxComputeNaturalSizeMethod(Ihandle* ih, int *w, int *h, int 
   *children_expand = ih->expand;
 }
 
-static void iScrollBoxUpdateVisibleScrollArea(Ihandle* ih, int view_width, int view_height)
+static void iScrollBoxUpdateVisibleScrollArea(Ihandle* ih, int view_width, int view_height, int sb_horiz, int sb_vert)
 {
   /* this is available drawing size not considering the scrollbars (BORDER=NO) */
   int canvas_width = ih->currentwidth,
@@ -219,8 +219,15 @@ static void iScrollBoxUpdateVisibleScrollArea(Ihandle* ih, int view_width, int v
   if (canvas_width < 0) canvas_width = 0;
   if (canvas_height < 0) canvas_height = 0;
 
-  IupSetInt(ih, "DX", canvas_width);
-  IupSetInt(ih, "DY", canvas_height);
+  if (sb_horiz)
+    IupSetInt(ih, "DX", canvas_width);
+  else
+    IupSetAttribute(ih, "DX", "0");
+
+  if (sb_vert)
+    IupSetInt(ih, "DY", canvas_height);
+  else
+    IupSetAttribute(ih, "DY", "0");
 }
 
 static int iScrollBoxHasHorizScroll(Ihandle* ih)
@@ -248,6 +255,8 @@ static void iScrollBoxSetChildrenCurrentSizeMethod(Ihandle* ih, int shrink)
   {
     int w, h, has_sb_horiz=0, has_sb_vert=0;
     int sb_size = iupdrvGetScrollbarSize();
+    int sb_vert = iScrollBoxHasVertScroll(ih);
+    int sb_horiz = iScrollBoxHasHorizScroll(ih);
 
     /* If child is greater than scrollbox area, use child natural size,
        else use current scrollbox size;
@@ -258,7 +267,7 @@ static void iScrollBoxSetChildrenCurrentSizeMethod(Ihandle* ih, int shrink)
     {
       w = child->naturalwidth;
 
-      if (iScrollBoxHasHorizScroll(ih))
+      if (sb_horiz)
         has_sb_horiz = 1;
     }
     else
@@ -268,7 +277,7 @@ static void iScrollBoxSetChildrenCurrentSizeMethod(Ihandle* ih, int shrink)
     {
       h = child->naturalheight;
 
-      if (iScrollBoxHasVertScroll(ih))
+      if (sb_vert)
         has_sb_vert = 1;
     }
     else
@@ -284,18 +293,18 @@ static void iScrollBoxSetChildrenCurrentSizeMethod(Ihandle* ih, int shrink)
     iupBaseSetCurrentSize(child, w, h, shrink);
 
     /* Now we use the actual child size as the virtual area */
-    if (iScrollBoxHasHorizScroll(ih))
+    if (sb_horiz)
       IupSetInt(ih, "XMAX", child->currentwidth);
     else
       IupSetAttribute(ih, "XMAX", "0");
 
-    if (iScrollBoxHasVertScroll(ih))
+    if (sb_vert)
       IupSetInt(ih, "YMAX", child->currentheight);
     else
       IupSetAttribute(ih, "YMAX", "0");
 
     /* Finally update the visible scroll area */
-    iScrollBoxUpdateVisibleScrollArea(ih, child->currentwidth, child->currentheight);
+    iScrollBoxUpdateVisibleScrollArea(ih, child->currentwidth, child->currentheight, sb_horiz, sb_vert);
   }
   else
   {

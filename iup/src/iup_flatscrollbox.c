@@ -247,7 +247,7 @@ static void iFlatScrollBoxComputeNaturalSizeMethod(Ihandle* ih, int *w, int *h, 
   *children_expand = ih->expand;
 }
 
-static void iFlatScrollBoxUpdateVisibleScrollArea(Ihandle* ih, int view_width, int view_height)
+static void iFlatScrollBoxUpdateVisibleScrollArea(Ihandle* ih, int view_width, int view_height, int sb_horiz, int sb_vert)
 {
   /* this is available drawing size not considering the scrollbars (BORDER=NO) */
   int canvas_width = ih->currentwidth,
@@ -275,8 +275,15 @@ static void iFlatScrollBoxUpdateVisibleScrollArea(Ihandle* ih, int view_width, i
   if (canvas_width < 0) canvas_width = 0;
   if (canvas_height < 0) canvas_height = 0;
 
-  IupSetInt(ih, "DX", canvas_width);
-  IupSetInt(ih, "DY", canvas_height);
+  if (sb_horiz)
+    IupSetInt(ih, "DX", canvas_width);
+  else
+    IupSetAttribute(ih, "DX", "0");
+
+  if (sb_vert)
+    IupSetInt(ih, "DY", canvas_height);
+  else
+    IupSetAttribute(ih, "DY", "0");
 }
 
 static void iFlatScrollBoxSetChildrenCurrentSizeMethod(Ihandle* ih, int shrink)
@@ -285,6 +292,8 @@ static void iFlatScrollBoxSetChildrenCurrentSizeMethod(Ihandle* ih, int shrink)
   if (child)
   {
     int w, h, has_sb_horiz=0, has_sb_vert=0;
+    int sb_vert = iupFlatScrollBarGet(ih) & IUP_SB_VERT;
+    int sb_horiz = iupFlatScrollBarGet(ih) & IUP_SB_HORIZ;
 
     /* If child is greater than scrollbox area, use child natural size,
        else use current scrollbox size;
@@ -295,7 +304,7 @@ static void iFlatScrollBoxSetChildrenCurrentSizeMethod(Ihandle* ih, int shrink)
     {
       w = child->naturalwidth;
 
-      if (iupFlatScrollBarGet(ih) & IUP_SB_HORIZ)
+      if (sb_horiz)
         has_sb_horiz = 1;
     }
     else
@@ -305,7 +314,7 @@ static void iFlatScrollBoxSetChildrenCurrentSizeMethod(Ihandle* ih, int shrink)
     {
       h = child->naturalheight;
 
-      if (iupFlatScrollBarGet(ih) & IUP_SB_VERT)
+      if (sb_vert)
         has_sb_vert = 1;
     }
     else
@@ -326,18 +335,18 @@ static void iFlatScrollBoxSetChildrenCurrentSizeMethod(Ihandle* ih, int shrink)
     iupBaseSetCurrentSize(child, w, h, shrink);
 
     /* Now we use the actual child size as the virtual area */
-    if (iupFlatScrollBarGet(ih) & IUP_SB_HORIZ)
+    if (sb_horiz)
       iupAttribSetInt(ih, "XMAX", child->currentwidth);
     else
       iupAttribSet(ih, "XMAX", "0");
 
-    if (iupFlatScrollBarGet(ih) & IUP_SB_VERT)
+    if (sb_vert)
       iupAttribSetInt(ih, "YMAX", child->currentheight);
     else
       iupAttribSet(ih, "YMAX", "0");
 
     /* Finally update the visible area */
-    iFlatScrollBoxUpdateVisibleScrollArea(ih, child->currentwidth, child->currentheight);
+    iFlatScrollBoxUpdateVisibleScrollArea(ih, child->currentwidth, child->currentheight, sb_horiz, sb_vert);
   }
   else
   {
