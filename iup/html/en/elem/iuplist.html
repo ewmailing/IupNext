@@ -414,7 +414,7 @@ Called only when DROPDOWN=NO. (since 3.0)</p>
 
   
     
-<pre>int function (Ihandle *<strong>ih</strong>, int <strong>item</strong>, char *<strong>text</strong>); [in C]<br><strong>ih</strong>:action(<strong>item</strong>: number<b>, text</b>: string) -&gt; (ret: number) [in Lua]</pre>
+<pre>int function (Ihandle *<strong>ih</strong>, int <strong>item</strong>, char *<strong>text</strong>); [in C]<br><strong>ih</strong>:dblclick_cb(<strong>item</strong>: number<b>, text</b>: string) -&gt; (ret: number) [in Lua]</pre>
 
 <p class="info"><strong>ih</strong>:
   identifier of the element that activated the 
@@ -455,7 +455,7 @@ Called only when DROPDOWN=YES. (since 3.0)</p>
 
   
     
-<pre>int function (Ihandle *<strong>ih</strong>, int <strong>state</strong>); [in C]<br><strong>ih</strong>:action(<strong>state</strong>: boolean) -&gt; (ret: number) [in Lua]</pre>
+<pre>int function (Ihandle *<strong>ih</strong>, int <strong>state</strong>); [in C]<br><strong>ih</strong>:dropdown_cb(<strong>state</strong>: boolean) -&gt; (ret: number) [in Lua]</pre>
 
 <p class="info"><strong>ih</strong>:
   identifier of the element that activated the 
