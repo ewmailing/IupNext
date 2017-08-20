@@ -1062,6 +1062,21 @@ the moment the event was generated. The same macros used for
 
   
   
+<p><strong>LINESCHANGED_CB</strong>:
+  Called after the number of lines was interactively changed by the user. (since 
+3.23)</p>
+
+<pre>int function(Ihandle *<strong>ih</strong>, int <strong>lin</strong>, int <strong>num</strong>); [in C]<br><strong>ih</strong>:lineschanged_cb(<strong>lin</strong>, <strong>num</strong>: number) -&gt; (<strong>ret</strong>: number) [in Lua]</pre>
+
+    
+<p class="info"><strong>ih</strong>:
+  identifier of the element that activated the 
+  event.<br><strong>lin</strong>: line where the change started<br><strong>num</strong>: 
+number of lines than changed. A negative value indicates that lines were 
+removed.</p>
+
+  
+  
 <p><b>MARGINCLICK_CB</b>:
   Action generated when the mouse button is clicked inside a margin that is 
 marked as sensitive.</p>

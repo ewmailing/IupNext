@@ -210,6 +210,13 @@ void iupScintillaNotify(Ihandle *ih, SCNotification* pMsg)
           value_cb(ih);
 
         iupdrvScintillaRefreshCaret(ih);
+
+        if (pMsg->linesAdded != 0)
+        {
+          IFnii cb = (IFnii)IupGetCallback(ih, "LINESCHANGED_CB");
+          if (cb)
+            cb(ih, lin, pMsg->linesAdded);
+        }
       }
     }
 
@@ -239,7 +246,7 @@ void iupScintillaNotify(Ihandle *ih, SCNotification* pMsg)
       break;
     }
   case SCN_UPDATEUI:
-  {
+    {
       if (pMsg->updated & SC_UPDATE_CONTENT)
       {
         IFn cb = (IFn)IupGetCallback(ih, "UPDATECONTENT_CB");
@@ -266,7 +273,7 @@ void iupScintillaNotify(Ihandle *ih, SCNotification* pMsg)
       }
 
       break;
-  }
+    }
   }
 }
 
@@ -419,6 +426,7 @@ static Iclass* iupScintillaNewClass(void)
   iupClassRegisterCallback(ic, "UPDATESELECTION_CB", "");
   iupClassRegisterCallback(ic, "UPDATEVSCROLL_CB", "");
   iupClassRegisterCallback(ic, "UPDATEHSCROLL_CB", "");
+  iupClassRegisterCallback(ic, "LINESCHANGED_CB", "ii");
 
   /* Common Callbacks */
   iupBaseRegisterCommonCallbacks(ic);

@@ -23,6 +23,7 @@ local ctrl = {
     updateselection_cb = "",
     updatevscroll_cb = "",
     updatehscroll_cb = "",
+    lineschanged_cb = "ii",
     zoom_cb = "n",
   },
   include = "iup_scintilla.h",
