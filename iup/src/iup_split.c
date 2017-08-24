@@ -71,16 +71,16 @@ static void iSplitAutoHide(Ihandle* ih)
     if (ih->data->orientation == ISPLIT_VERT)
     {
       if (ih->currentwidth <= ih->data->barsize)
-        return;
-
-      tol = (1000*ih->data->barsize)/ih->currentwidth;
+        tol = 50;
+      else
+        tol = (1000*ih->data->barsize)/ih->currentwidth;
     }
     else
     {
       if (ih->currentheight <= ih->data->barsize)
-        return;
-
-      tol = (1000*ih->data->barsize)/ih->currentheight;
+        tol = 50;
+      else
+        tol = (1000 * ih->data->barsize) / ih->currentheight;
     }
 
     iSplitAutoHideChild(child1, ih->data->val<=tol? ISPLIT_HIDE: ISPLIT_SHOW);
