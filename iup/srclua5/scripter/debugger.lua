@@ -251,6 +251,7 @@ function iup.DebuggerGetMultitext(filename, find, open, source)
       if open then
         local tabs = iup.GetDialogChild(debugger.main_dialog, "TABS")
         tabs.value = multitext
+        debugger.main_dialog.updatetitle = "Yes"
 
         if not multitext then
           multitext = iup.DebuggerOpenMultitext(filename, source)
@@ -391,7 +392,7 @@ function iup.DebuggerAddBreakpoint(list_break, filename, line)
   iup.DebuggerRestoreLastListValue(list_break, last_value)
 end
 
-function iup.DebuggerMultitextLinesChanged(multitext, start, len)
+function iup.DebuggerMultitextLinesChanged(multitext, start_lin, num_lin)
   local filename = multitext.filename
   local list_break = iup.GetDialogChild(debugger.main_dialog, "LIST_BREAK")
 
@@ -403,12 +404,12 @@ function iup.DebuggerMultitextLinesChanged(multitext, start, len)
   local new_file_breaks = {}
 
   for line, v in pairs(file_breaks) do
-    if line >= start then
-      if len < 0 and line <= start - len then
+    if line >= start_lin then
+      if num_lin < 0 and line <= start_lin - num_lin then
         -- removed lines and removed breakpoint
 
         -- update multitext
-        multitext["MARKERDELETE" .. (start - 1)] = 1 -- margin=1    -- all breakpoints inside the region are collapsed to the start
+        multitext["MARKERDELETE" .. (start_lin - 1)] = 1 -- margin=1    -- all breakpoints inside the region are collapsed to the start_lin
 
         -- update list
         list_break.removeitem = v.index
@@ -428,13 +429,13 @@ function iup.DebuggerMultitextLinesChanged(multitext, start, len)
         -- added or removed lines, just changed line in breakpoint
 
         -- update breakpoints table
-        new_file_breaks[line + len] = v
+        new_file_breaks[line + num_lin] = v
 
         -- update list
-        list_break[v.index] = "Line " .. line + len .. " of \"" .. filename .. "\""
+        list_break[v.index] = "Line " .. line + num_lin .. " of \"" .. filename .. "\""
         
         -- update FILENAME#LINE
-        list_break["LINE" .. v.index] = line + len
+        list_break["LINE" .. v.index] = line + num_lin
       end
     else
       new_file_breaks[line] = v
