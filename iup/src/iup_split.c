@@ -126,12 +126,12 @@ static int iSplitGetHeight2(Ihandle* ih, int height1)
   return height2;
 }
 
-static int iSplitCalcVal(Ihandle* ih, int size1)
+static void iSplitCalcVal(Ihandle* ih, int size1)
 {
   if (ih->data->orientation == ISPLIT_VERT)
-    return (size1*1000)/(ih->currentwidth - ih->data->barsize);
+    ih->data->val = (size1 * 1000) / (ih->currentwidth - ih->data->barsize);
   else
-    return (size1*1000)/(ih->currentheight - ih->data->barsize);
+    ih->data->val = (size1 * 1000) / (ih->currentheight - ih->data->barsize);
 }
 
 static void iSplitAdjustVal(Ihandle* ih)
@@ -348,13 +348,13 @@ static int iSplitMotion_CB(Ihandle* bar, int x, int y, char *status)
       {
         int width1 = ih->data->start_size + (cur_x - ih->data->start_pos);
         iSplitAdjustWidth1(ih, &width1);
-        ih->data->val = iSplitCalcVal(ih, width1);
+        iSplitCalcVal(ih, width1);
       }
       else
       {
         int height1 = ih->data->start_size + (cur_y - ih->data->start_pos);
         iSplitAdjustHeight1(ih, &height1);
-        ih->data->val = iSplitCalcVal(ih, height1);
+        iSplitCalcVal(ih, height1);
       }
 
       iSplitAdjustVal(ih);
@@ -699,11 +699,11 @@ static void iSplitComputeNaturalSizeMethod(Ihandle* ih, int *w, int *h, int *chi
   {
     if (child1)
     {
-      /* just is just an initial value based on natural size of the split and the child */
+      /* just is just an initial value based on natural size of the split and the child, similar to iSplitCalcVal */
       if (ih->data->orientation == ISPLIT_VERT)
-        ih->data->val = (child1->naturalwidth*1000)/(natural_w-ih->data->barsize);
+        ih->data->val = (child1->naturalwidth*1000)/(natural_w - ih->data->barsize);
       else
-        ih->data->val = (child1->naturalheight*1000)/(natural_h-ih->data->barsize);
+        ih->data->val = (child1->naturalheight*1000)/(natural_h - ih->data->barsize);
     }
     else
       ih->data->val = ih->data->min;
@@ -727,7 +727,7 @@ static void iSplitSetChildrenCurrentSizeMethod(Ihandle* ih, int shrink)
   {
     int width1 = iSplitGetWidth1(ih);
     if (iSplitAdjustWidth1(ih, &width1))    /* this will check for child1 and child2 */
-      ih->data->val = iSplitCalcVal(ih, width1);  /* has a MINMAX size, must fix split value */
+      iSplitCalcVal(ih, width1);  /* has a MINMAX size, must fix split value */
 
     if (child1 && !(child1->flags & IUP_FLOATING_IGNORE))
     {
@@ -737,7 +737,7 @@ static void iSplitSetChildrenCurrentSizeMethod(Ihandle* ih, int shrink)
       {
         /* has a minimum size, must fix split value */
         width1 = child1->currentwidth;
-        ih->data->val = iSplitCalcVal(ih, width1);
+        iSplitCalcVal(ih, width1);
       }
     }
 
@@ -755,7 +755,7 @@ static void iSplitSetChildrenCurrentSizeMethod(Ihandle* ih, int shrink)
         /* has a minimum size, must fix split value */
         width2 = child2->currentwidth;
         width1 = (ih->currentwidth-ih->data->barsize) - width2;
-        ih->data->val = iSplitCalcVal(ih, width1);
+        iSplitCalcVal(ih, width1);
         if (child1)
           iupBaseSetCurrentSize(child1, width1, ih->currentheight, shrink);
       }
@@ -765,7 +765,7 @@ static void iSplitSetChildrenCurrentSizeMethod(Ihandle* ih, int shrink)
   {
     int height1 = iSplitGetHeight1(ih);
     if (iSplitAdjustHeight1(ih, &height1))  /* this will check for child1 and child2 */
-      ih->data->val = iSplitCalcVal(ih, height1);  /* has a MINMAX size, must fix split value */
+      iSplitCalcVal(ih, height1);  /* has a MINMAX size, must fix split value */
 
     if (child1 && !(child1->flags & IUP_FLOATING_IGNORE))
     {
@@ -775,7 +775,7 @@ static void iSplitSetChildrenCurrentSizeMethod(Ihandle* ih, int shrink)
       {
         /* has a minimum size, must fix split value */
         height1 = child1->currentheight;
-        ih->data->val = iSplitCalcVal(ih, height1);
+        iSplitCalcVal(ih, height1);
       }
     }
 
@@ -793,7 +793,7 @@ static void iSplitSetChildrenCurrentSizeMethod(Ihandle* ih, int shrink)
         /* has a minimum size, must fix split value */
         height2 = child2->currentheight;
         height1 = (ih->currentheight-ih->data->barsize) - height2;
-        ih->data->val = iSplitCalcVal(ih, height1);
+        iSplitCalcVal(ih, height1);
         if (child1)
           iupBaseSetCurrentSize(child1, ih->currentwidth, height1, shrink);
       }
