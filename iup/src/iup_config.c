@@ -407,15 +407,17 @@ static int iConfigItemRecent_CB(Ihandle* ih_item)
 static void iConfigBuildRecent(Ihandle* ih)
 {
   /* add the new items, reusing old ones */
-  int max_recent = IupGetInt(ih, "RECENTMAX");
+  int i, max_recent = IupGetInt(ih, "RECENTMAX");
   Ihandle* menu = (Ihandle*)IupGetAttribute(ih, "RECENTMENU");
-
   int mapped = IupGetAttribute(menu, "WID") != NULL ? 1 : 0;
   const char* value;
-  int i = 1;
+  char* recent_name = IupGetAttribute(ih, "RECENTNAME");
+  if (!recent_name) recent_name = "Recent";
+
+  i = 1;
   do
   {
-    value = IupConfigGetVariableStrId(ih, "Recent", "File", i);
+    value = IupConfigGetVariableStrId(ih, recent_name, "File", i);
     if (value)
     {
       Ihandle* item = IupGetChild(menu, i - 1);
@@ -445,8 +447,12 @@ void IupConfigRecentInit(Ihandle* ih, Ihandle* menu, Icallback recent_cb, int ma
 
 void IupConfigRecentUpdate(Ihandle* ih, const char* filename)
 {
+  const char* value;
   int max_recent = IupGetInt(ih, "RECENTMAX");
-  const char* value = IupConfigGetVariableStr(ih, "Recent", "File1");
+  char* recent_name = IupGetAttribute(ih, "RECENTNAME");
+  if (!recent_name) recent_name = "Recent";
+
+  value = IupConfigGetVariableStr(ih, recent_name, "File1");
   if (value && !iupStrEqual(value, filename))
   {
     /* must update the stack */
@@ -456,7 +462,7 @@ void IupConfigRecentUpdate(Ihandle* ih, const char* filename)
     int i = 1;
     do
     {
-      value = IupConfigGetVariableStrId(ih, "Recent", "File", i);
+      value = IupConfigGetVariableStrId(ih, recent_name, "File", i);
 
       if (value && iupStrEqual(value, filename))
       {
@@ -475,15 +481,15 @@ void IupConfigRecentUpdate(Ihandle* ih, const char* filename)
     /* simply open space for the new filename */
     do
     {
-      value = IupConfigGetVariableStrId(ih, "Recent", "File", i - 1);
-      IupConfigSetVariableStrId(ih, "Recent", "File", i, value);
+      value = IupConfigGetVariableStrId(ih, recent_name, "File", i - 1);
+      IupConfigSetVariableStrId(ih, recent_name, "File", i, value);
 
       i--;
     } while (i > 1);
   }
 
   /* push new at start always */
-  IupConfigSetVariableStr(ih, "Recent", "File1", filename);
+  IupConfigSetVariableStr(ih, recent_name, "File1", filename);
 
   iConfigBuildRecent(ih);
 }
