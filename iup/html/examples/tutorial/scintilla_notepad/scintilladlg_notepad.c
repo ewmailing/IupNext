@@ -49,7 +49,7 @@ int main(int argc, char **argv)
     NULL)));
 
   /* show the dialog at the last position, with the last size */
-  IupConfigDialogShow(config, main_dialog, "MainWindow");
+  IupConfigDialogShow(config, main_dialog, IupGetAttribute(main_dialog, "SUBTITLE"));
 
   /* open a file from the command line (allow file association in Windows) */
   for (i = 1; i < argc; i++)
