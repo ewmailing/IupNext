@@ -299,7 +299,7 @@ static void save_breakpoints(Ihandle *ih, Ihandle* config)
 static int configsave_cb(Ihandle *ih, Ihandle* config)
 {
   Ihandle* split = IupGetDialogChild(ih, "SPLIT");
-  IupConfigSetVariableStr(config, "MainWindow", "Split", IupGetAttribute(split, "VALUE"));
+  IupConfigSetVariableStr(config, "Lua", "Split", IupGetAttribute(split, "VALUE"));
 
   save_breakpoints(ih, config);
 
@@ -365,7 +365,7 @@ static int configload_cb(Ihandle *ih, Ihandle* config)
 {
   const char* value;
 
-  value = IupConfigGetVariableStr(config, "MainWindow", "Split");
+  value = IupConfigGetVariableStr(config, "Lua", "Split");
   if (value)
   {
     Ihandle* split = IupGetDialogChild(ih, "SPLIT");
@@ -977,9 +977,9 @@ static void debug_set_state(lua_State *L, const char* state)
   lua_call(L, 1, 0);
 }
 
-static int save_check(Ihandle* multitext)
+static int debug_save_check(Ihandle* multitext, const char* filename)
 {
-  if (IupGetInt(multitext, "MODIFIED"))
+  if (!filename || IupGetInt(multitext, "MODIFIED"))
   {
     if (IupMessageAlarm(IupGetDialog(multitext), "Attention!", "File must be saved for debugging.\n  Save it now? (No will cancel debug)", "YESNO") == 1)
       IupSetAttribute(IupGetDialog(multitext), "SAVEFILE", NULL);
@@ -1039,12 +1039,13 @@ static int item_debug_action_cb(Ihandle* ih_item)
   Ihandle* multitext;
   lua_State* L;
   int end_debug = 1;
+  Ihandle* ih = IupGetDialog(ih_item);
 
-  if (!IupGetInt(IupGetDialogChild(ih_item, "ITM_DEBUG"), "ACTIVE")) /* can be called by the hot key in the dialog */
+  if (!IupGetInt(IupGetDialogChild(ih, "ITM_DEBUG"), "ACTIVE")) /* can be called by the hot key in the dialog */
     return IUP_DEFAULT;
 
-  L = (lua_State*)IupGetAttribute(ih_item, "LUASTATE");
-  multitext = get_current_multitext(ih_item);
+  L = (lua_State*)IupGetAttribute(ih, "LUASTATE");
+  multitext = get_current_multitext(ih);
   filename = IupGetAttribute(multitext, "FILENAME");
 
   if (debug_is_active(L)) /* already active, just continue */
@@ -1057,7 +1058,7 @@ static int item_debug_action_cb(Ihandle* ih_item)
   if (value[2] == 'A') /* Alt */
     end_debug = 0;
 
-  if (!save_check(multitext))
+  if (!debug_save_check(multitext, filename))
     return IUP_DEFAULT;
 
   iuplua_push_name(L, "DebuggerStartDebug");
@@ -1067,9 +1068,9 @@ static int item_debug_action_cb(Ihandle* ih_item)
     lua_pushnil(L);
   lua_call(L, 1, 0);
 
-  value = IupGetAttribute(IupGetDialog(multitext), "CURRENTDIRECTORY");
+  value = IupGetAttribute(ih, "CURRENTDIRECTORY");
   if (value && value[0]!=0) iupdrvSetCurrentDirectory(value);
-  value = IupGetAttribute(IupGetDialog(multitext), "ARGUMENTS");
+  value = IupGetAttribute(ih, "ARGUMENTS");
   if (value && value[0] != 0) set_arguments(L, value);
 
   iuplua_dofile(L, filename);
@@ -1089,17 +1090,18 @@ static int item_run_action_cb(Ihandle *ih_item)
   Ihandle* multitext;
   lua_State* L;
   char* filename, *value;
+  Ihandle* ih = IupGetDialog(ih_item);
 
-  if (!IupGetInt(IupGetDialogChild(ih_item, "ITM_RUN"), "ACTIVE")) /* can be called by the hot key in the dialog */
+  if (!IupGetInt(IupGetDialogChild(ih, "ITM_RUN"), "ACTIVE")) /* can be called by the hot key in the dialog */
     return IUP_DEFAULT;
 
-  L = (lua_State*)IupGetAttribute(ih_item, "LUASTATE");
-  multitext = get_current_multitext(ih_item);
+  L = (lua_State*)IupGetAttribute(ih, "LUASTATE");
+  multitext = get_current_multitext(ih);
   filename = IupGetAttribute(multitext, "FILENAME");
 
-  value = IupGetAttribute(IupGetDialog(multitext), "CURRENTDIRECTORY");
+  value = IupGetAttribute(ih, "CURRENTDIRECTORY");
   if (value) iupdrvSetCurrentDirectory(value);
-  value = IupGetAttribute(IupGetDialog(multitext), "ARGUMENTS");
+  value = IupGetAttribute(ih, "ARGUMENTS");
   if (value && value[0] != 0) set_arguments(L, value);
 
   if (filename && !IupGetInt(multitext, "MODIFIED"))
@@ -1107,9 +1109,10 @@ static int item_run_action_cb(Ihandle *ih_item)
   else
   {
     char* value = IupGetAttribute(multitext, "VALUE");
-    char* title = IupGetAttribute(IupGetDialog(multitext), "TITLE");
+    char* title = IupGetAttribute(ih, "TITLE");
     iuplua_dostring(L, value, title);
   }
+
   return IUP_DEFAULT;
 }
 
@@ -1600,7 +1603,7 @@ static Ihandle *buildTabDebug(void)
   IupSetAttribute(list_local, "NAME", "LIST_LOCAL");
   IupSetAttribute(list_local, "TIP", "List of local variables at selected stack level (ordered by pos)");
   IupSetCallback(list_local, "ACTION", (Icallback)list_locals_action_cb);
-  IupSetAttribute(list_local, "VISIBLEITEMS", "3");
+  IupSetAttribute(list_local, "VISIBLELINES", "3");
 
   button_printLocal = IupButton("Print", NULL);
   IupSetAttribute(button_printLocal, "ACTIVE", "NO");
@@ -1638,7 +1641,7 @@ static Ihandle *buildTabDebug(void)
   IupSetAttribute(list_stack, "TIP", "List of call stack (ordered by level)");
   IupSetCallback(list_stack, "ACTION", (Icallback)list_stack_action_cb);
   IupSetCallback(list_stack, "DBLCLICK_CB", (Icallback)list_stack_dblclick_cb);
-  IupSetAttribute(list_stack, "VISIBLEITEMS", "3");
+  IupSetAttribute(list_stack, "VISIBLELINES", "3");
 
   button_printLevel = IupButton("Print", NULL);
   IupSetAttribute(button_printLevel, "TIP", "Prints debug information about the selected call stack level.");
@@ -1681,7 +1684,7 @@ static Ihandle *buildTabWatch(void)
   IupSetAttribute(list_global, "EXPAND", "YES");
   IupSetAttribute(list_global, "NAME", "LIST_GLOBAL");
   IupSetAttribute(list_global, "TIP", "List of globals");
-  IupSetAttribute(list_global, "VISIBLEITEMS", "3");
+  IupSetAttribute(list_global, "VISIBLELINES", "3");
 
   button_printGlobal = IupButton("Print", NULL);
   IupSetAttribute(button_printGlobal, "ACTIVE", "NO");
@@ -1775,7 +1778,7 @@ static Ihandle *buildTabBreaks(void)
   IupSetAttribute(list, "NAME", "LIST_BREAK");
   IupSetCallback(list, "ACTION", (Icallback)list_breaks_action_cb);
   IupSetCallback(list, "DBLCLICK_CB", (Icallback)list_breaks_dblclick_cb);
-  IupSetAttribute(list, "VISIBLEITEMS", "3");
+  IupSetAttribute(list, "VISIBLELINES", "3");
 
   frame = IupFrame(IupHbox(list, vbox, NULL));
   IupSetAttribute(frame, "MARGIN", "4x4");
