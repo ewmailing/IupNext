@@ -70,6 +70,11 @@ static int iScintillaSetUndoAttrib(Ihandle *ih, const char *value)
 {
   if (iupStrBoolean(value))
     IupScintillaSendMessage(ih, SCI_UNDO, 0, 0);
+  else if (iupStrEqualNoCase(value, "ALL"))
+  {
+    while ((int)IupScintillaSendMessage(ih, SCI_CANUNDO, 0, 0))
+      IupScintillaSendMessage(ih, SCI_UNDO, 0, 0);
+  }
   else
     IupScintillaSendMessage(ih, SCI_EMPTYUNDOBUFFER, 0, 0);
   return 0;
@@ -84,6 +89,11 @@ static int iScintillaSetRedoAttrib(Ihandle *ih, const char *value)
 {
   if (iupStrBoolean(value))
     IupScintillaSendMessage(ih, SCI_REDO, 0, 0);
+  else if (iupStrEqualNoCase(value, "ALL"))
+  {
+    while ((int)IupScintillaSendMessage(ih, SCI_CANREDO, 0, 0))
+      IupScintillaSendMessage(ih, SCI_REDO, 0, 0);
+  }
   else
     IupScintillaSendMessage(ih, SCI_EMPTYUNDOBUFFER, 0, 0);
   return 0;

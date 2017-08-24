@@ -150,15 +150,15 @@ If set to&nbsp;NULL, the default, no dwell events are generated. </span>(since 3
   without changing it. Restricts the insertion using keyboard input and 
 attributes. Navigation keys are still available. Possible values: "YES" and "NO". 
 Default: NO.</p>
-<p>After 
-setting the SAVEPOINT, when editing is done the <a href="#SAVEPOINT_CB">
-SAVEPOINT_CB</a> callback is called with status=0. When undo is performed back to 
-the point were the saved state was set the callback is called again with status=1. </p>
 <p><strong><a name="SAVEPOINT">SAVEPOINT</a></strong> (<font size="3">non inheritable, write-only</font>): 
 sets the current state of the document to saved (given value is ignored). The
 <a href="#SAVEPOINT_CB">
 SAVEPOINT_CB</a> 
-callback is called with status=0 if the document is modified, and called with&nbsp;status=1 if the save point is reached with Undo/Redo. 
+callback is called with status=0 if the document is modified, and called 
+with&nbsp;status=1 if the save point is reached with Undo/Redo. After 
+setting the SAVEPOINT, when editing is done the <a href="#SAVEPOINT_CB">
+SAVEPOINT_CB</a> callback is called with status=0. When undo is performed back to 
+the point were the saved state was set the callback is called again with status=1. 
 (since 3.23)</p>
 <p><strong>MODIFIED</strong> (<font size="3">non inheritable, read-only</font>): 
 returns if the text has been modified since the last SAVEPOINT. Can return Yes 
@@ -843,11 +843,11 @@ Use tabs also for indentation or only spaces. Can be Yes or No. Default: Yes.</p
 <h4>Undo and Redo</h4>
 
 <p><strong>REDO</strong><b> </b>(<font size="3">non inheritable</font>): redo 
-the last operation if set to Yes, clears the undo information otherwise. Returns 
+the last operation if set to Yes, redo all operations if set to ALL, clears the undo information otherwise. Returns 
 Yes or No if redo can be performed.</p>
 
 <p><strong>UNDO</strong><b> </b>(<font size="3">non inheritable</font>): undo 
-the last operation if set to Yes, clears the undo information otherwise. Returns 
+the last operation if set to Yes, undo all operations if set to ALL, clears the undo information otherwise. Returns 
 Yes or No if undo can be performed.</p>
 <p><strong>UNDOCOLLECT</strong> (<font size="3">non inheritable</font>): enable 
 or disable the undo collect of information. Can be Yes or No. Default: Yes.</p>
