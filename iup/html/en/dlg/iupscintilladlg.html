@@ -42,6 +42,8 @@ innumerous children to compose the notepad.</p>
 <p>New attributes. All non inheritable.</p>
 <p><strong>SUBTITLE</strong>: partial title to be used in dialog title along 
 with the current file name title.</p>
+<p><strong>UPDATETITLE</strong> (write-only): force an update of the dialog 
+title. (since 3.23)</p>
 <p><strong>CONFIG</strong>: name of a <a href="../func/iupconfig.html">IupConfig</a> resource to 
 be used for persistency of menu options and recent file list. Must be set before 
 map. This will trigger the CONFIGLOAD_CB callback (since 3.23).</p>
@@ -52,6 +54,10 @@ a new file.</p>
 filename. If value is NULL works as NEWFILE.</p>
 <p><strong>SAVEFILE</strong> (write-only): saves a file using the value as 
 filename. If value is NULL uses the current file name.</p>
+<p><strong>CLOSEFILE</strong> (write-only): closes a file checking if it is 
+saved. (since 3.23)</p>
+<p><strong>FORCECLOSEFILE</strong> (write-only): force a file to close with no 
+save check. (since 3.23)</p>
 <p><strong>EXTRAFILTERS</strong>: additional filters for File Open and File Save 
 As dialogs in the same format as the IupFileDlg EXTFILTER attribute. The filters 
 will be concatenated at start with the existing filters: "Text Files|*.txt|All 
