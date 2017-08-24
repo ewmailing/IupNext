@@ -255,18 +255,18 @@ static void save_globals(Ihandle *ih, Ihandle* config)
   value = IupGetAttributeId(listGlobals, "GLOBALNAME", i);
   while (value != NULL)
   {
-    IupConfigSetVariableStrId(config, "Globals", "Name", i, value);
+    IupConfigSetVariableStrId(config, "LuaScripterGlobals", "Name", i, value);
 
     i++;
     value = IupGetAttributeId(listGlobals, "GLOBALNAME", i);
   }
 
   count = i - 1;
-  IupConfigSetVariableInt(config, "Globals", "Count", count);
+  IupConfigSetVariableInt(config, "LuaScripterGlobals", "Count", count);
 
   /* make sure some older globals are not saved in the configuration file (at least 10) */
   for (i = count+1; i <= count+1 + 10; i++)
-    IupConfigSetVariableStrId(config, "Globals", "Name", i, NULL);
+    IupConfigSetVariableStrId(config, "LuaScripterGlobals", "Name", i, NULL);
 }
 
 static void save_breakpoints(Ihandle *ih, Ihandle* config)
@@ -282,24 +282,24 @@ static void save_breakpoints(Ihandle *ih, Ihandle* config)
   {
     line = IupGetIntId(listBreak, "LINE", i);
     sprintf(data, "%s#%d", filename, line);
-    IupConfigSetVariableStrId(config, "Breakpoints", "FileLine", i, data);
+    IupConfigSetVariableStrId(config, "LuaScripterBreakpoints", "FileLine", i, data);
 
     i++;
     filename = IupGetAttributeId(listBreak, "FILENAME", i);
   }
 
   count = i - 1;
-  IupConfigSetVariableInt(config, "Breakpoints", "Count", count);
+  IupConfigSetVariableInt(config, "LuaScripterBreakpoints", "Count", count);
 
   /* make sure some older breakpoints are not saved in the configuration file (at least 10) */
   for (i = count+1; i <= count+1 + 10; i++)
-    IupConfigSetVariableStrId(config, "Breakpoints", "FileLine", i, NULL);
+    IupConfigSetVariableStrId(config, "LuaScripterBreakpoints", "FileLine", i, NULL);
 }
 
 static int configsave_cb(Ihandle *ih, Ihandle* config)
 {
   Ihandle* split = IupGetDialogChild(ih, "SPLIT");
-  IupConfigSetVariableStr(config, "Lua", "Split", IupGetAttribute(split, "VALUE"));
+  IupConfigSetVariableStr(config, IupGetAttribute(ih, "SUBTITLE"), "Split", IupGetAttribute(split, "VALUE"));
 
   save_breakpoints(ih, config);
 
@@ -318,7 +318,7 @@ static void load_globals(Ihandle *ih, Ihandle* config)
   i = 1;
   do
   {
-    value = IupConfigGetVariableStrId(config, "Globals", "Name", i);
+    value = IupConfigGetVariableStrId(config, "LuaScripterGlobals", "Name", i);
     if (value)
       IupSetStrAttributeId(listGlobals, "GLOBALNAME", i, value);
     i++;
@@ -342,7 +342,7 @@ static void load_breakpoints(Ihandle *ih, Ihandle* config)
   i = 1;
   do
   {
-    value = IupConfigGetVariableStrId(config, "Breakpoints", "FileLine", i);
+    value = IupConfigGetVariableStrId(config, "LuaScripterBreakpoints", "FileLine", i);
     if (value)
     {
       iupStrToStrStr(value, filename, line_str, '#');
@@ -365,29 +365,29 @@ static int configload_cb(Ihandle *ih, Ihandle* config)
 {
   const char* value;
 
-  value = IupConfigGetVariableStr(config, "Lua", "Split");
+  value = IupConfigGetVariableStr(config, IupGetAttribute(ih, "SUBTITLE"), "Split");
   if (value)
   {
     Ihandle* split = IupGetDialogChild(ih, "SPLIT");
     IupSetStrAttribute(split, "VALUE", value);
   }
 
-  value = IupConfigGetVariableStr(config, "Lua", "CurrentDirectory");
+  value = IupConfigGetVariableStr(config, "LuaScripter", "CurrentDirectory");
   if (value)
     IupSetStrAttribute(ih, "CURRENTDIRECTORY", value);
 
-  value = IupConfigGetVariableStr(config, "Lua", "Arguments");
+  value = IupConfigGetVariableStr(config, "LuaScripter", "Arguments");
   if (value)
     IupSetStrAttribute(ih, "ARGUMENTS", value);
 
-  value = IupConfigGetVariableStr(config, "Lua", "AutoCompletion");
+  value = IupConfigGetVariableStr(config, "LuaScripter", "AutoCompletion");
   if (value)
   {
     Ihandle* ih_item = IupGetDialogChild(ih, "ITM_AUTOCOMPLETE");
     IupSetStrAttribute(ih_item, "VALUE", value);
   }
 
-  value = IupConfigGetVariableStr(config, "Lua", "Folding");
+  value = IupConfigGetVariableStr(config, "LuaScripter", "Folding");
   if (value)
   {
     Ihandle* ih_item = IupGetDialogChild(ih, "ITM_FOLDING");
@@ -582,7 +582,7 @@ static int item_autocomplete_action_cb(Ihandle* ih_item)
       IupSetAttribute(multitext, "AUTOCOMPLETION", "ON");
   }
 
-  IupConfigSetVariableStr(config, "Lua", "AutoCompletion", IupGetAttribute(ih_item, "VALUE"));
+  IupConfigSetVariableStr(config, "LuaScripter", "AutoCompletion", IupGetAttribute(ih_item, "VALUE"));
 
   return IUP_DEFAULT;
 }
@@ -619,13 +619,13 @@ static int item_style_config_action_cb(Ihandle* ih_item)
   char commentColor[30], commentLineColor[30], numberColor[30], keywordColor[30],
     stringColor[30], characterColor[30], operatorColor[30];
 
-  strcpy(commentColor, IupConfigGetVariableStr(config, "Lua", "CommentColor"));
-  strcpy(commentLineColor, IupConfigGetVariableStr(config, "Lua", "CommentLineColor"));
-  strcpy(numberColor, IupConfigGetVariableStr(config, "Lua", "NumberColor"));
-  strcpy(keywordColor, IupConfigGetVariableStr(config, "Lua", "KeywordColor"));
-  strcpy(stringColor, IupConfigGetVariableStr(config, "Lua", "StringColor"));
-  strcpy(characterColor, IupConfigGetVariableStr(config, "Lua", "CharacterColor"));
-  strcpy(operatorColor, IupConfigGetVariableStr(config, "Lua", "OperatorColor"));
+  strcpy(commentColor, IupConfigGetVariableStr(config, "LuaScripter", "CommentColor"));
+  strcpy(commentLineColor, IupConfigGetVariableStr(config, "LuaScripter", "CommentLineColor"));
+  strcpy(numberColor, IupConfigGetVariableStr(config, "LuaScripter", "NumberColor"));
+  strcpy(keywordColor, IupConfigGetVariableStr(config, "LuaScripter", "KeywordColor"));
+  strcpy(stringColor, IupConfigGetVariableStr(config, "LuaScripter", "StringColor"));
+  strcpy(characterColor, IupConfigGetVariableStr(config, "LuaScripter", "CharacterColor"));
+  strcpy(operatorColor, IupConfigGetVariableStr(config, "LuaScripter", "OperatorColor"));
 
   if (!IupGetParam("Syntax Colors", setparent_param_cb, IupGetDialog(ih_item),
                    "Comment: %c\n"
@@ -638,13 +638,13 @@ static int item_style_config_action_cb(Ihandle* ih_item)
                    commentColor, commentLineColor, numberColor, keywordColor, stringColor, characterColor, operatorColor, NULL))
     return IUP_DEFAULT;
 
-  IupConfigSetVariableStr(config, "Lua", "CommentColor", commentColor);
-  IupConfigSetVariableStr(config, "Lua", "CommentLineColor", commentLineColor);
-  IupConfigSetVariableStr(config, "Lua", "NumberColor", numberColor);
-  IupConfigSetVariableStr(config, "Lua", "KeywordColor", keywordColor);
-  IupConfigSetVariableStr(config, "Lua", "StringColor", stringColor);
-  IupConfigSetVariableStr(config, "Lua", "CharacterColor", characterColor);
-  IupConfigSetVariableStr(config, "Lua", "OperatorColor", operatorColor);
+  IupConfigSetVariableStr(config, "LuaScripter", "CommentColor", commentColor);
+  IupConfigSetVariableStr(config, "LuaScripter", "CommentLineColor", commentLineColor);
+  IupConfigSetVariableStr(config, "LuaScripter", "NumberColor", numberColor);
+  IupConfigSetVariableStr(config, "LuaScripter", "KeywordColor", keywordColor);
+  IupConfigSetVariableStr(config, "LuaScripter", "StringColor", stringColor);
+  IupConfigSetVariableStr(config, "LuaScripter", "CharacterColor", characterColor);
+  IupConfigSetVariableStr(config, "LuaScripter", "OperatorColor", operatorColor);
 
   for (multitext = tabs->firstchild; multitext; multitext = multitext->brother)
   {
@@ -691,7 +691,7 @@ static int item_folding_action_cb(Ihandle* ih)
 
   IupSetAttribute(multitext, "FOLDALL", "EXPAND");
 
-  IupConfigSetVariableStr(config, "Lua", "Folding", IupGetAttribute(ih, "VALUE"));
+  IupConfigSetVariableStr(config, "LuaScripter", "Folding", IupGetAttribute(ih, "VALUE"));
 
   return IUP_DEFAULT;
 }
@@ -753,10 +753,10 @@ static int item_fold_level_action_cb(Ihandle* ih_item)
   int level=0, action=0;
   Ihandle* config = get_config(ih_item);
 
-  const char* value = IupConfigGetVariableStr(config, "Lua", "FoldAllLevel");
+  const char* value = IupConfigGetVariableStr(config, "LuaScripter", "FoldAllLevel");
   if (value) iupStrToInt(value, &level);
 
-  value = IupConfigGetVariableStr(config, "Lua", "FoldAllLevelAction");
+  value = IupConfigGetVariableStr(config, "LuaScripter", "FoldAllLevelAction");
   if (value) iupStrToInt(value, &action);
 
   if (IupGetParam("Fold All by Level", setparent_param_cb, IupGetDialog(ih_item),
@@ -767,8 +767,8 @@ static int item_fold_level_action_cb(Ihandle* ih_item)
     Ihandle* multitext = get_current_multitext(ih_item);
     int lin, count = IupGetInt(multitext, "LINECOUNT");
 
-    IupConfigSetVariableInt(config, "Lua", "FoldAllLevel", level);
-    IupConfigSetVariableInt(config, "Lua", "FoldAllLevelAction", action);
+    IupConfigSetVariableInt(config, "LuaScripter", "FoldAllLevel", level);
+    IupConfigSetVariableInt(config, "LuaScripter", "FoldAllLevelAction", action);
 
     for (lin = 0; lin < count; lin++)
     {
@@ -963,8 +963,8 @@ static int item_options_action_cb(Ihandle* ih_item)
     IupSetStrAttribute(ih, "CURRENTDIRECTORY", dir);
     IupSetStrAttribute(ih, "ARGUMENTS", args);
 
-    IupConfigSetVariableStr(config, "Lua", "CurrentDirectory", dir);
-    IupConfigSetVariableStr(config, "Lua", "Arguments", args);
+    IupConfigSetVariableStr(config, "LuaScripter", "CurrentDirectory", dir);
+    IupConfigSetVariableStr(config, "LuaScripter", "Arguments", args);
   }
   return IUP_DEFAULT;
 }
@@ -2095,53 +2095,53 @@ static int multitext_map_cb(Ihandle* multitext)
 
   IupSetAttribute(multitext, "FOLDFLAGS", "LINEAFTER_CONTRACTED");
 
-  value = IupConfigGetVariableStr(config, "Lua", "CommentColor");
+  value = IupConfigGetVariableStr(config, "LuaScripter", "CommentColor");
   if (value)
     IupSetStrAttribute(multitext, "STYLEFGCOLOR1", value);
   else
-    IupConfigSetVariableStr(config, "Lua", "CommentColor", IupGetAttribute(multitext, "STYLEFGCOLOR1"));
+    IupConfigSetVariableStr(config, "LuaScripter", "CommentColor", IupGetAttribute(multitext, "STYLEFGCOLOR1"));
 
-  value = IupConfigGetVariableStr(config, "Lua", "CommentLineColor");
+  value = IupConfigGetVariableStr(config, "LuaScripter", "CommentLineColor");
   if (value)
     IupSetStrAttribute(multitext, "STYLEFGCOLOR2", value);
   else
-    IupConfigSetVariableStr(config, "Lua", "CommentLineColor", IupGetAttribute(multitext, "STYLEFGCOLOR2"));
+    IupConfigSetVariableStr(config, "LuaScripter", "CommentLineColor", IupGetAttribute(multitext, "STYLEFGCOLOR2"));
 
-  value = IupConfigGetVariableStr(config, "Lua", "NumberColor");
+  value = IupConfigGetVariableStr(config, "LuaScripter", "NumberColor");
   if (value)
     IupSetStrAttribute(multitext, "STYLEFGCOLOR4", value);
   else
-    IupConfigSetVariableStr(config, "Lua", "NumberColor", IupGetAttribute(multitext, "STYLEFGCOLOR4"));
+    IupConfigSetVariableStr(config, "LuaScripter", "NumberColor", IupGetAttribute(multitext, "STYLEFGCOLOR4"));
 
-  value = IupConfigGetVariableStr(config, "Lua", "KeywordColor");
+  value = IupConfigGetVariableStr(config, "LuaScripter", "KeywordColor");
   if (value)
     IupSetStrAttribute(multitext, "STYLEFGCOLOR5", value);
   else
-    IupConfigSetVariableStr(config, "Lua", "KeywordColor", IupGetAttribute(multitext, "STYLEFGCOLOR5"));
+    IupConfigSetVariableStr(config, "LuaScripter", "KeywordColor", IupGetAttribute(multitext, "STYLEFGCOLOR5"));
 
-  value = IupConfigGetVariableStr(config, "Lua", "StringColor");
+  value = IupConfigGetVariableStr(config, "LuaScripter", "StringColor");
   if (value)
     IupSetStrAttribute(multitext, "STYLEFGCOLOR6", value);
   else
-    IupConfigSetVariableStr(config, "Lua", "StringColor", IupGetAttribute(multitext, "STYLEFGCOLOR6"));
+    IupConfigSetVariableStr(config, "LuaScripter", "StringColor", IupGetAttribute(multitext, "STYLEFGCOLOR6"));
 
-  value = IupConfigGetVariableStr(config, "Lua", "CharacterColor");
+  value = IupConfigGetVariableStr(config, "LuaScripter", "CharacterColor");
   if (value)
     IupSetStrAttribute(multitext, "STYLEFGCOLOR7", value);
   else
-    IupConfigSetVariableStr(config, "Lua", "CharacterColor", IupGetAttribute(multitext, "STYLEFGCOLOR7"));
+    IupConfigSetVariableStr(config, "LuaScripter", "CharacterColor", IupGetAttribute(multitext, "STYLEFGCOLOR7"));
 
-  value = IupConfigGetVariableStr(config, "Lua", "OperatorColor");
+  value = IupConfigGetVariableStr(config, "LuaScripter", "OperatorColor");
   if (value)
     IupSetStrAttribute(multitext, "STYLEFGCOLOR10", value);
   else
-    IupConfigSetVariableStr(config, "Lua", "OperatorColor", IupGetAttribute(multitext, "STYLEFGCOLOR10"));
+    IupConfigSetVariableStr(config, "LuaScripter", "OperatorColor", IupGetAttribute(multitext, "STYLEFGCOLOR10"));
 
-  value = IupConfigGetVariableStr(config, "Lua", "AutoCompletion");
+  value = IupConfigGetVariableStr(config, "LuaScripter", "AutoCompletion");
   if (value)
     IupSetStrAttribute(multitext, "AUTOCOMPLETION", value);
 
-  value = IupConfigGetVariableStr(config, "Lua", "Folding");
+  value = IupConfigGetVariableStr(config, "LuaScripter", "Folding");
   if (iupStrBoolean(value))
   {
     IupSetAttribute(multitext, "MARGINWIDTH3", FOLDING_MARGIN);

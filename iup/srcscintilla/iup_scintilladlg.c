@@ -34,17 +34,17 @@ static void saveMarkers(Ihandle* config, Ihandle* multitext)
   int i, lin, count;
   IFnn cb;
 
-  count = IupConfigGetVariableInt(config, "Bookmarks", "Count");
+  count = IupConfigGetVariableInt(config, "ScintillaBookmarks", "Count");
 
   /* clear all bookmarks for this filename and compact list */
   for (i = 1; i <= count; )
   {
-    value = IupConfigGetVariableStrId(config, "Bookmarks", "FileLine", i);
+    value = IupConfigGetVariableStrId(config, "ScintillaBookmarks", "FileLine", i);
     iupStrToStrStr(value, filename, line_str, '#');
     if (iupStrEqual(filename, m_filename))
     {
-      IupConfigSetVariableStrId(config, "Bookmarks", "FileLine", i, IupConfigGetVariableStrId(config, "Bookmarks", "FileLine", count));
-      IupConfigSetVariableStrId(config, "Bookmarks", "FileLine", count, NULL);
+      IupConfigSetVariableStrId(config, "ScintillaBookmarks", "FileLine", i, IupConfigGetVariableStrId(config, "ScintillaBookmarks", "FileLine", count));
+      IupConfigSetVariableStrId(config, "ScintillaBookmarks", "FileLine", count, NULL);
       count--;
     }
     else
@@ -61,17 +61,17 @@ static void saveMarkers(Ihandle* config, Ihandle* multitext)
     {
       count++;
       sprintf(filename, "%s#%d", m_filename, lin + 1);  /* use the same origin for line numbers */
-      IupConfigSetVariableStrId(config, "Bookmarks", "FileLine", count, filename);
+      IupConfigSetVariableStrId(config, "ScintillaBookmarks", "FileLine", count, filename);
 
       lin++;
     }
   }
 
-  IupConfigSetVariableInt(config, "Bookmarks", "Count", count);
+  IupConfigSetVariableInt(config, "ScintillaBookmarks", "Count", count);
 
   /* make sure some older bookmarks are not saved in the configuration file (at least 10) */
   for (i = count+1; i <= count+1 + 10; i++)
-    IupConfigSetVariableStrId(config, "Bookmarks", "FileLine", i, NULL);
+    IupConfigSetVariableStrId(config, "ScintillaBookmarks", "FileLine", i, NULL);
 
 
   cb = (IFnn)IupGetCallback(IupGetDialog(multitext), "SAVEMARKERS_CB");
@@ -89,12 +89,12 @@ static void restoreMarkers(Ihandle* config, Ihandle* multitext)
 
   IupSetInt(multitext, "MARKERDELETEALL", 0);
 
-  count = IupConfigGetVariableInt(config, "Bookmarks", "Count");
+  count = IupConfigGetVariableInt(config, "ScintillaBookmarks", "Count");
 
   /* clear all bookmarks for this filename and compact list */
   for (i = 1; i <= count; i++)
   {
-    value = IupConfigGetVariableStrId(config, "Bookmarks", "FileLine", i);
+    value = IupConfigGetVariableStrId(config, "ScintillaBookmarks", "FileLine", i);
     iupStrToStrStr(value, filename, line_str, '#');
     if (iupStrEqual(filename, m_filename))
     {
@@ -1115,7 +1115,7 @@ static int item_open_action_cb(Ihandle* ih_item)
   char* extra_filters = IupGetAttribute(ih, "EXTRAFILTERS");
 
   config = iScintillaDlgGetConfig(ih_item);
-  dir = IupConfigGetVariableStr(config, "ScintillaWindow", "LastDirectory");
+  dir = IupConfigGetVariableStr(config, IupGetAttribute(ih, "SUBTITLE"), "LastDirectory");
 
   filedlg = IupFileDlg();
   IupSetAttribute(filedlg, "DIALOGTYPE", "OPEN");
@@ -1134,7 +1134,7 @@ static int item_open_action_cb(Ihandle* ih_item)
       open_file(ih_item, filename, 1);
 
     dir = IupGetAttribute(filedlg, "DIRECTORY");
-    IupConfigSetVariableStr(config, "ScintillaWindow", "LastDirectory", dir);
+    IupConfigSetVariableStr(config, IupGetAttribute(ih, "SUBTITLE"), "LastDirectory", dir);
   }
 
   IupDestroy(filedlg);
@@ -1151,7 +1151,7 @@ static int item_saveas_action_cb(Ihandle* ih_item)
   char* extra_filters = IupGetAttribute(ih, "EXTRAFILTERS");
   char* old_filename = IupGetAttribute(multitext, "FILENAME");
 
-  dir = IupConfigGetVariableStr(config, "ScintillaWindow", "LastDirectory");
+  dir = IupConfigGetVariableStr(config, IupGetAttribute(ih, "SUBTITLE"), "LastDirectory");
 
   IupSetAttribute(filedlg, "DIALOGTYPE", "SAVE");
   if (extra_filters)
@@ -1173,7 +1173,7 @@ static int item_saveas_action_cb(Ihandle* ih_item)
       saveas_file(multitext, filename);
 
     dir = IupGetAttribute(filedlg, "DIRECTORY");
-    IupConfigSetVariableStr(config, "ScintillaWindow", "LastDirectory", dir);
+    IupConfigSetVariableStr(config, IupGetAttribute(ih, "SUBTITLE"), "LastDirectory", dir);
   }
 
   IupDestroy(filedlg);
@@ -1189,7 +1189,7 @@ static int item_savecopy_action_cb(Ihandle* ih_item)
   Ihandle *filedlg = IupFileDlg();
   char* extra_filters = IupGetAttribute(ih, "EXTRAFILTERS");
 
-  dir = IupConfigGetVariableStr(config, "ScintillaWindow", "LastDirectory");
+  dir = IupConfigGetVariableStr(config, IupGetAttribute(ih, "SUBTITLE"), "LastDirectory");
 
   IupSetAttribute(filedlg, "DIALOGTYPE", "SAVE");
   if (extra_filters)
@@ -1208,7 +1208,7 @@ static int item_savecopy_action_cb(Ihandle* ih_item)
     savecopy_file(multitext, filename);
 
     dir = IupGetAttribute(filedlg, "DIRECTORY");
-    IupConfigSetVariableStr(config, "ScintillaWindow", "LastDirectory", dir);
+    IupConfigSetVariableStr(config, IupGetAttribute(ih, "SUBTITLE"), "LastDirectory", dir);
   }
 
   IupDestroy(filedlg);
@@ -2889,6 +2889,7 @@ static void iScintillaDlgSetConfig(Ihandle* ih, Ihandle* config)
   for (multitext = tabs->firstchild; multitext; multitext = multitext->brother)
     iScintillaDlgSetConfigMultitext(ih, config, multitext);
 
+  IupSetAttribute(ih, "RECENTNAME", "ScintillaRecent");
   IupConfigRecentInit(config, recent_menu, config_recent_cb, 10);
 
   if (cb)
