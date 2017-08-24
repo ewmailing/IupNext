@@ -2341,8 +2341,6 @@ void IupLuaScripterDlgOpen(void)
 }
 
 /* TODO:
-X multiple files (IupFlatTabs) - option for save in config
-X Debug Strings
 - Project Menu - Save Session/Load Session
 
 - Condicional Breakpoints, Hit Count, When Hit
