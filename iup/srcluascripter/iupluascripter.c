@@ -155,6 +155,7 @@ int main(int argc, char **argv)
   lua_State *L;
   Ihandle *menu;
   Ihandle *main_dialog;
+  int i;
 
   L = luaL_newstate();
   luaL_openlibs(L);
@@ -184,13 +185,10 @@ int main(int argc, char **argv)
   /* show the dialog at the last position, with the last size */
   IupConfigDialogShow(config, main_dialog, "MainWindow");
 
-  /* initialize the current file */
-  IupSetAttribute(main_dialog, "NEWFILE", NULL);
-
   /* open a file from the command line (allow file association in Windows) */
-  if (argc > 1 && argv[1])
+  for (i = 1; i < argc; i++)
   {
-    const char* filename = argv[1];
+    const char* filename = argv[i];
     IupSetStrAttribute(main_dialog, "OPENFILE", filename);
   }
 

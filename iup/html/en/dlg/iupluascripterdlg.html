@@ -53,7 +53,7 @@ instance of the <strong>IupLuaScripterDlg</strong> dialog.</p>
 <p>Files can be open from the command line, from the File/Open menu, or from 
 drag and drop from the system file manager.</p>
 <p>All the <strong>IupScintillaDlg</strong> text processing are available. 
-Additionally it provides a <strong>Lua</strong> menu, and 4 tabs bellow the text, 
+Additionally it provides a <strong>Lua</strong> menu, and 4 tabs in a panel bellow the text, 
 with <strong>Console</strong>, <strong>Breaks, Debug</strong> and <strong>Watch</strong> 
 interfaces.</p>
 <p>The text editor has syntax highlight for the Lua language and autocomplete 
@@ -108,12 +108,11 @@ table: 0000023CCA058AC0</pre>
 function: 0000024E6B4DF010</pre>
 <p>Breakpoints can be added by clicking the left margin in its most right area 
 (the left area can has line numbers and bookmarks) or in the <strong>Breaks</strong> 
-tab using the "Toggle Breakpoint" at the caret position or using the "New" 
+tab using the "Toggle Breakpoint" at the caret position or using the "Add" 
 button and writing a filename and a line number. Breakpoints (and bookmarks) are 
 saved in the application configuration file. When lines are removed or added, 
-breakpoints position are automatically updated, but the 
-<span class="auto-style1">Breakpoints</span> list will be 
-updated only when the file is saved.</p>
+breakpoints position are automatically updated. But breakpoints are not restored 
+in undo operations.</p>
 <p>During the debug process, local variables of each stack level can be 
 inspected in the <strong>Debug</strong> tab. The actual level is not changed 
 when a <span class="auto-style1">Call Stack</span> list level is selected, only its local variables are updated 
@@ -142,14 +141,20 @@ depending on the situation you are going to it. Inside the command line you must
 add 6 levels.</p>
 <p>You can 
 execute code in the console command line while the debug is paused.</p>
+<p>To debug event driven scripts, press Alt key before starting to debug the 
+script. This will disable the automatic end of debugging when the script is 
+fully executed. The debugging will remain active until it is stopped. (since 
+3.23)</p>
+<p>Lua code that are run from strings, instead of files, can also be debugged. 
+But you can only set breakpoints when you step in the string and its contents 
+are displayed in a new document. This temporary document is automatically closed 
+when the debug is ended. (since 3.23)</p>
 <p>During the debug the list of global variables in <strong>Watch</strong> is 
 also updated with the respective values. When not in debug the list contains 
 only the name of the variables to be watched. (since 3.23)</p>
 <h3>To Do's</h3>
 <ul>
-	<li>Support for multiple files</li>
 	<li>Detachable Console, Debug, Breakpoints</li>
-	<li>Debug and breakpoints in strings</li>
 	<li>Multi-language support (Portuguese and Spanish)</li>
 </ul>
 <h3><a name="Creation">Creation</a></h3>
@@ -178,6 +183,7 @@ int main(int argc, char **argv)
   lua_State *L;
   Ihandle *menu;
   Ihandle *main_dialog;
+  int i;
 
   L = luaL_newstate();
   luaL_openlibs(L);
@@ -207,13 +213,10 @@ int main(int argc, char **argv)
   /* show the dialog at the last position, with the last size */
   IupConfigDialogShow(config, main_dialog, "MainWindow");
 
-  /* initialize the current file */
-  IupSetAttribute(main_dialog, "NEWFILE", NULL);
-
   /* open a file from the command line (allow file association in Windows) */
-  if (argc > 1 && argv[1])
+  for (i = 1; i &lt; argc; i++)
   {
-    const char* filename = argv[1];
+    const char* filename = argv[i];
     IupSetStrAttribute(main_dialog, "OPENFILE", filename);
   }
 

@@ -20,89 +20,113 @@
 #define LINENUMBER_MARGIN "50"
 #define BOOKMARK_MARGIN "20"
 
+#define WINDOWMENU_MAX 10
+
+
 /********************************** Utilities *****************************************/
+
 
 static void saveMarkers(Ihandle* config, Ihandle* multitext)
 {
-  int lin = 0, i = 1;
-  char mark[10240];
-  Icallback cb;
+  char* m_filename = IupGetAttribute(multitext, "FILENAME");
+  char filename[10240], line_str[30];
+  const char* value;
+  int i, lin, count;
+  IFnn cb;
 
-  char* filename = IupGetAttribute(multitext, "FILENAME");
+  count = IupConfigGetVariableInt(config, "Bookmarks", "Count");
 
+  /* clear all bookmarks for this filename and compact list */
+  for (i = 1; i <= count; )
+  {
+    value = IupConfigGetVariableStrId(config, "Bookmarks", "FileLine", i);
+    iupStrToStrStr(value, filename, line_str, '#');
+    if (iupStrEqual(filename, m_filename))
+    {
+      IupConfigSetVariableStrId(config, "Bookmarks", "FileLine", i, IupConfigGetVariableStrId(config, "Bookmarks", "FileLine", count));
+      IupConfigSetVariableStrId(config, "Bookmarks", "FileLine", count, NULL);
+      count--;
+    }
+    else
+      i++;
+  }
+
+  /* add current bookmarks */
+  lin = 0;
   while (lin >= 0)
   {
     IupSetAttributeId(multitext, "MARKERNEXT", lin, "1");  /* 0001 - marker=0 */
     lin = IupGetInt(multitext, "LASTMARKERFOUND");
     if (lin >= 0)
     {
-      sprintf(mark, "%s#%d", filename, lin);
-      IupConfigSetVariableStrId(config, "Bookmarks", "FileLine", i, mark);
+      count++;
+      sprintf(filename, "%s#%d", m_filename, lin + 1);  /* use the same origin for line numbers */
+      IupConfigSetVariableStrId(config, "Bookmarks", "FileLine", count, filename);
 
       lin++;
-      i++;
     }
   }
 
-  IupConfigSetVariableStrId(config, "Bookmarks", "FileLine", i, NULL);
+  IupConfigSetVariableInt(config, "Bookmarks", "Count", count);
 
-  cb = IupGetCallback(IupGetDialog(multitext), "SAVEMARKERS_CB");
+  /* make sure some older bookmarks are not saved in the configuration file (at least 10) */
+  for (i = count+1; i <= count+1 + 10; i++)
+    IupConfigSetVariableStrId(config, "Bookmarks", "FileLine", i, NULL);
+
+
+  cb = (IFnn)IupGetCallback(IupGetDialog(multitext), "SAVEMARKERS_CB");
   if (cb)
-    cb(IupGetDialog(multitext));
+    cb(IupGetDialog(multitext), multitext);
 }
 
 static void restoreMarkers(Ihandle* config, Ihandle* multitext)
 {
-  const char* mark;
-  int i = 1;
-  char filename_str[10240];
-  char line_str[10];
-  Icallback cb;
-
-  char* filename = IupGetAttribute(multitext, "FILENAME");
+  char* m_filename = IupGetAttribute(multitext, "FILENAME");
+  char filename[10240], line_str[30];
+  const char* value;
+  int i, line, count;
+  IFnn cb;
 
   IupSetInt(multitext, "MARKERDELETEALL", 0);
 
-  do
-  {
-    mark = IupConfigGetVariableStrId(config, "Bookmarks", "FileLine", i);
-    if (mark)
-    {
-      iupStrToStrStr(mark, filename_str, line_str, '#');
-      if (iupStrEqual(filename, filename_str))
-      {
-        int lin;
-        iupStrToInt(line_str, &lin);
-        IupSetIntId(multitext, "MARKERADD", lin, 0);
-      }
-    }
-    i++;
-  } while (mark != NULL);
+  count = IupConfigGetVariableInt(config, "Bookmarks", "Count");
 
-  cb = IupGetCallback(IupGetDialog(multitext), "RESTOREMARKERS_CB");
+  /* clear all bookmarks for this filename and compact list */
+  for (i = 1; i <= count; i++)
+  {
+    value = IupConfigGetVariableStrId(config, "Bookmarks", "FileLine", i);
+    iupStrToStrStr(value, filename, line_str, '#');
+    if (iupStrEqual(filename, m_filename))
+    {
+      iupStrToInt(line_str, &line);
+      IupSetIntId(multitext, "MARKERADD", line - 1, 0);
+    }
+  }
+
+  cb = (IFnn)IupGetCallback(IupGetDialog(multitext), "RESTOREMARKERS_CB");
   if (cb)
-    cb(IupGetDialog(multitext));
+    cb(IupGetDialog(multitext), multitext);
 }
 
 static void addBookmark(Ihandle* multitext, int lin)
 {
-  IupSetIntId(multitext, "MARKERADD", lin, 0);
+  IupSetIntId(multitext, "MARKERADD", lin, 0); /* marker=0 */
 }
 
 static void removeBookmark(Ihandle* multitext, int lin)
 {
-  IupSetIntId(multitext, "MARKERDELETE", lin, 0);
+  IupSetIntId(multitext, "MARKERDELETE", lin, 0); /* marker=0 */
 }
 
 static void removeAllBookmark(Ihandle* multitext)
 {
-  IupSetInt(multitext, "MARKERDELETEALL", 0);
+  IupSetInt(multitext, "MARKERDELETEALL", 0); /* marker=0 */
 }
 
 static void toggleMarker(Ihandle* multitext, int lin, int margin)
 {
   Ihandle* ih = IupGetDialog(multitext);
-  IFnii cb;
+  IFnnii cb;
 
   /* bookmarks */
   if (margin == 1)
@@ -116,9 +140,9 @@ static void toggleMarker(Ihandle* multitext, int lin, int margin)
       addBookmark(multitext, lin);
   }
 
-  cb = (IFnii)IupGetCallback(ih, "MARKERCHANGED_CB");
+  cb = (IFnnii)IupGetCallback(ih, "MARKERCHANGED_CB");
   if (cb)
-    cb(ih, lin, margin);
+    cb(ih, multitext, lin, margin);
 }
 
 static void copyMarkedLines(Ihandle *multitext)
@@ -144,6 +168,7 @@ static void copyMarkedLines(Ihandle *multitext)
   if (strlen(buffer) > 0)
   {
     Ihandle *clipboard = IupClipboard();
+    IupSetAttribute(clipboard, "TEXT", NULL); /* clear clipboard first */
     IupSetAttribute(clipboard, "TEXT", buffer);
     IupDestroy(clipboard);
   }
@@ -178,6 +203,7 @@ static void cutMarkedLines(Ihandle *multitext)
   if (strlen(buffer) > 0)
   {
     Ihandle *clipboard = IupClipboard();
+    IupSetAttribute(clipboard, "TEXT", NULL); /* clear clipboard first */
     IupSetAttribute(clipboard, "TEXT", buffer);
     IupDestroy(clipboard);
   }
@@ -466,196 +492,48 @@ static int write_file(const char* filename, const char* str, int count)
 
 /********************************** Interface Utilities *****************************************/
 
-static void update_title(Ihandle* ih, const char* filename, int is_dirty)
+
+static void update_dialog_title(Ihandle* multitext)
 {
+  Ihandle* ih = IupGetDialog(multitext);
+  char* filename = IupGetAttribute(multitext, "FILENAME");
   char* subtitle = IupGetAttribute(ih, "SUBTITLE");
   char* dirty_sign = "";
+
+  if (IupGetInt(multitext, "MODIFIED"))
+    dirty_sign = "*";
+
+  if (!filename) filename = "Untitled";
+
+  IupSetfAttribute(ih, "TITLE", "%s%s - %s", str_filetitle(filename), dirty_sign, subtitle);
+
+}
+
+static void update_title(Ihandle* multitext, int is_dirty)
+{
+  Ihandle* ih = IupGetDialog(multitext);
+  Ihandle* tabs = IupGetParent(multitext);
+  int pos = IupGetChildPos(tabs, multitext);
+  char* filename = IupGetAttribute(multitext, "FILENAME");
+  char* subtitle = IupGetAttribute(ih, "SUBTITLE");
+  const char* dirty_sign = "", *title;
 
   if (is_dirty)
     dirty_sign = "*";
 
   if (!filename) filename = "Untitled";
 
-  IupSetfAttribute(ih, "TITLE", "%s%s - %s", str_filetitle(filename), dirty_sign, subtitle);
+  title = str_filetitle(filename);
+
+  IupSetfAttribute(ih, "TITLE", "%s%s - %s", title, dirty_sign, subtitle);
+  IupSetfAttributeId(tabs, "TABTITLE", pos, "%s%s", title, dirty_sign);
+  IupSetStrAttributeId(tabs, "TABTIP", pos, filename);
 }
 
-static void new_file(Ihandle* ih_item)
+static int multitext_caret_cb(Ihandle* multitext, int lin, int col)
 {
-  Ihandle* ih = IupGetDialog(ih_item);
-  Ihandle* multitext = IupGetDialogChild(ih, "MULTITEXT");
-
-  IupSetAttribute(multitext, "FILENAME", NULL);
-  IupSetAttribute(multitext, "VALUE", "");
-  IupSetAttribute(multitext, "SAVEPOINT", NULL);
-  IupSetAttribute(multitext, "UNDO", NULL); /* clear undo */
-
-  update_title(ih, NULL, 0);
-}
-
-static void open_file(Ihandle* ih_item, const char* filename)
-{
-  char* str = read_file(filename);
-  if (str)
-  {
-    Ihandle* ih = IupGetDialog(ih_item);
-    Ihandle* multitext = IupGetDialogChild(ih, "MULTITEXT");
-    Ihandle* config = IupGetAttributeHandle(multitext, "CONFIG");
-
-    IupSetStrAttribute(multitext, "FILENAME", filename);
-    IupSetStrAttribute(multitext, "VALUE", str);
-    IupSetAttribute(multitext, "SAVEPOINT", NULL);
-    IupSetAttribute(multitext, "UNDO", NULL); /* clear undo */
-
-    update_title(ih, filename, 0);
-
-    if (config)
-    {
-      IupConfigRecentUpdate(config, filename);
-      restoreMarkers(config, multitext);
-    }
-
-    free(str);
-  }
-  else
-    IupMessageError(IupGetDialog(ih_item), "IUP_ERRORFILEOPEN");
-}
-
-static int item_saveas_action_cb(Ihandle* ih_item);
-
-static void save_file(Ihandle* multitext)
-{
-  char* filename = IupGetAttribute(multitext, "FILENAME");
-  if (!filename)
-    item_saveas_action_cb(multitext);
-  else
-  {
-    char* str = IupGetAttribute(multitext, "VALUE");
-    int count = IupGetInt(multitext, "COUNT");
-    if (write_file(filename, str, count))
-    {
-      Ihandle* config = IupGetAttributeHandle(multitext, "CONFIG");
-
-      IupSetAttribute(multitext, "SAVEPOINT", NULL);
-      IupSetAttribute(multitext, "UNDO", NULL); /* clear undo */
-      update_title(IupGetDialog(multitext), filename, 0);
-
-      if (config)
-        saveMarkers(config, multitext);
-    }
-    else
-      IupMessageError(IupGetDialog(multitext), "IUP_ERRORFILESAVE");
-  }
-}
-
-static void saveas_file(Ihandle* multitext, const char* filename)
-{
-  char* str = IupGetAttribute(multitext, "VALUE");
-  int count = IupGetInt(multitext, "COUNT");
-  if (write_file(filename, str, count))
-  {
-    Ihandle* config = IupGetAttributeHandle(multitext, "CONFIG");
-
-    IupSetStrAttribute(multitext, "FILENAME", filename);
-
-    IupSetAttribute(multitext, "SAVEPOINT", NULL);
-    IupSetAttribute(multitext, "UNDO", NULL); /* clear undo */
-    update_title(IupGetDialog(multitext), filename, 0);
-
-    if (config)
-    {
-      IupConfigRecentUpdate(config, filename);
-
-      saveMarkers(config, multitext);
-    }
-  }
-  else
-    IupMessageError(IupGetDialog(multitext), "IUP_ERRORFILESAVE");
-}
-
-static int save_check(Ihandle* ih_item)
-{
-  Ihandle* multitext = IupGetDialogChild(ih_item, "MULTITEXT");
-  if (IupGetInt(multitext, "MODIFIED"))
-  {
-    switch (IupMessageAlarm(IupGetDialog(ih_item), "Attention!", "File not saved. Save it now?", "YESNOCANCEL"))
-    {
-    case 1:  /* save the changes and continue */
-      save_file(multitext);
-      break;
-    case 2:  /* ignore the changes and continue */
-      break;
-    case 3:  /* cancel */
-      return 0;
-    }
-  }
-  return 1;
-}
-
-static void toggle_bar_visibility(Ihandle* item, Ihandle* bar)
-{
-  if (IupGetInt(item, "VALUE"))
-  {
-    IupSetAttribute(bar, "FLOATING", "YES");
-    IupSetAttribute(bar, "VISIBLE", "NO");
-    IupSetAttribute(item, "VALUE", "OFF");
-  }
-  else
-  {
-    IupSetAttribute(bar, "FLOATING", "NO");
-    IupSetAttribute(bar, "VISIBLE", "YES");
-    IupSetAttribute(item, "VALUE", "ON");
-  }
-
-  IupRefresh(bar);  /* refresh the dialog layout */
-}
-
-static void set_find_replace_visibility(Ihandle* find_dlg, int show_replace)
-{
-  Ihandle* replace_txt = IupGetDialogChild(find_dlg, "REPLACE_TEXT");
-  Ihandle* replace_lbl = IupGetDialogChild(find_dlg, "REPLACE_LABEL");
-  Ihandle* replace_bt = IupGetDialogChild(find_dlg, "REPLACE_BUTTON");
-  Ihandle* replace_all_bt = IupGetDialogChild(find_dlg, "REPLACE_ALL_BUTTON");
-
-  if (show_replace)
-  {
-    IupSetAttribute(replace_txt, "VISIBLE", "Yes");
-    IupSetAttribute(replace_lbl, "VISIBLE", "Yes");
-    IupSetAttribute(replace_bt, "VISIBLE", "Yes");
-    IupSetAttribute(replace_all_bt, "VISIBLE", "Yes");
-    IupSetAttribute(replace_txt, "FLOATING", "No");
-    IupSetAttribute(replace_lbl, "FLOATING", "No");
-    IupSetAttribute(replace_bt, "FLOATING", "No");
-    IupSetAttribute(replace_all_bt, "FLOATING", "No");
-
-    IupSetAttribute(find_dlg, "TITLE", "Replace");
-  }
-  else
-  {
-    IupSetAttribute(replace_txt, "FLOATING", "Yes");
-    IupSetAttribute(replace_lbl, "FLOATING", "Yes");
-    IupSetAttribute(replace_bt, "FLOATING", "Yes");
-    IupSetAttribute(replace_all_bt, "FLOATING", "Yes");
-    IupSetAttribute(replace_txt, "VISIBLE", "No");
-    IupSetAttribute(replace_lbl, "VISIBLE", "No");
-    IupSetAttribute(replace_bt, "VISIBLE", "No");
-    IupSetAttribute(replace_all_bt, "VISIBLE", "No");
-
-    IupSetAttribute(find_dlg, "TITLE", "Find");
-  }
-
-  IupSetAttribute(find_dlg, "SIZE", NULL);  /* force a dialog resize on the IupRefresh */
-  IupRefresh(find_dlg);
-}
-
-
-/********************************** Callbacks *****************************************/
-
-
-static int dropfiles_cb(Ihandle* multitext, const char* filename)
-{
-  if (save_check(multitext))
-    open_file(multitext, filename);
-
+  Ihandle *lbl_statusbar = IupGetDialogChild(multitext, "STATUSBAR");
+  IupSetfAttribute(lbl_statusbar, "TITLE", "Lin %d, Col %d", lin + 1, col + 1);  /* in Scintilla lin and col start at 0 */
   return IUP_DEFAULT;
 }
 
@@ -666,10 +544,19 @@ static int multitext_marginclick_cb(Ihandle* multitext, int margin, int lin, cha
   return IUP_DEFAULT;
 }
 
-static int updateselection_cb(Ihandle* multitext)
+static int multitext_savepoint_cb(Ihandle* multitext, int state)
 {
-  // Indicators 0-7 could be in use by a lexer
-  // so we'll use indicator 8 to highlight words.
+  if (state == 1) /* save point */
+    update_title(multitext, 0);
+  else
+    update_title(multitext, 1);
+  return IUP_DEFAULT;
+}
+
+static int multitext_updateselection_cb(Ihandle* multitext)
+{
+  /* Indicators 0-7 could be in use by a lexer
+     so we'll use indicator 8 to highlight words. */
   const int id = 8;
   int find_start, find_end, startPos, endPos;
   IupGetIntInt(multitext, "SELECTIONPOS", &startPos, &endPos);
@@ -723,13 +610,370 @@ static int updateselection_cb(Ihandle* multitext)
   return IUP_DEFAULT;
 }
 
-static int multitext_savepoint_cb(Ihandle* multitext, int state)
+static int item_paste_action_cb(Ihandle* item_paste);
+static int item_case_action_cb(Ihandle* ih_item);
+static int dropfiles_cb(Ihandle* multitext, const char* filename, int num, int x, int y);
+static int item_windowN_action_cb(Ihandle* ih_item);
+
+static void multitext_add_menuitem(Ihandle* item_window1)
+{
+  Ihandle* menu = IupGetParent(item_window1);
+  int count = IupGetChildCount(menu);
+  Ihandle* item_windowN = IupItem("N", NULL);
+  IupSetCallback(item_windowN, "ACTION", (Icallback)item_windowN_action_cb);
+  IupInsert(menu, IupGetChild(menu, count - 2), item_windowN); /* before the separator */
+  if (item_window1->handle)
+    IupMap(item_windowN);
+}
+
+static Ihandle* iScintillaDlgNewMultitext(Ihandle* ih_item)
+{
+  Ihandle* ih = IupGetDialog(ih_item);
+  Ihandle* tabs = IupGetDialogChild(ih, "TABS");
+  Ihandle* item_window1 = IupGetDialogChild(ih, "ITEM_WINDOW1");
+  int count;
+  IFnn cb;
+
+  Ihandle* multitext = IupScintilla();
+  IupSetAttribute(multitext, "EXPAND", "YES");
+  IupSetAttribute(multitext, "VISIBLELINES", "5");
+  IupSetAttribute(multitext, "SAVEPOINT", NULL);
+  IupSetCallback(multitext, "CARET_CB", (Icallback)multitext_caret_cb);
+  IupSetCallback(multitext, "SAVEPOINT_CB", (Icallback)multitext_savepoint_cb);
+  IupSetCallback(multitext, "DROPFILES_CB", (Icallback)dropfiles_cb);
+  IupSetCallback(multitext, "MARGINCLICK_CB", (Icallback)multitext_marginclick_cb);
+  IupSetCallback(multitext, "UPDATESELECTION_CB", (Icallback)multitext_updateselection_cb);
+
+  /* highlight color for BRACEHIGHLIGHT */
+  IupSetAttribute(multitext, "STYLEFGCOLOR34", "255 0 0");
+  /* change the default for visibility of word warps */
+  IupSetAttribute(multitext, "WORDWRAPVISUALFLAGS", "MARGIN");
+
+  /* line numbers margin=0 */
+  IupSetAttribute(multitext, "MARGINWIDTH0", LINENUMBER_MARGIN);
+  IupSetAttribute(multitext, "MARGINSENSITIVE0", "YES");
+
+  /* bookmarks margin=1 */
+  IupSetAttribute(multitext, "MARGINWIDTH1", BOOKMARK_MARGIN);
+  IupSetAttribute(multitext, "MARGINTYPE1", "SYMBOL");
+  IupSetAttribute(multitext, "MARGINSENSITIVE1", "YES");
+  IupSetAttribute(multitext, "MARGINMASKFOLDERS1", "NO"); /* (disable folding) */
+  IupSetAttributeId(multitext, "MARGINMASK", 1, "1");  /* 0001 - marker=0 */
+
+  /* bookmarks marker=0 */
+  IupSetAttributeId(multitext, "MARKERFGCOLOR", 0, "0 0 255");
+  IupSetAttributeId(multitext, "MARKERBGCOLOR", 0, "0 0 255");
+  IupSetAttributeId(multitext, "MARKERALPHA", 0, "80");
+  IupSetAttributeId(multitext, "MARKERSYMBOL", 0, "BOOKMARK");
+
+  /* Ctrl+C, Ctrl+X, Ctrl+A, Del, already implemented inside IupScintilla */
+  IupSetCallback(multitext, "K_cV", (Icallback)item_paste_action_cb);  /* replace system processing */
+  IupSetCallback(multitext, "K_cU", (Icallback)item_case_action_cb);
+
+  IupAppend(tabs, multitext);
+
+  cb = (IFnn)IupGetCallback(ih, "NEWTEXT_CB");
+  if (cb) cb(ih, multitext);
+
+  if (tabs->handle)
+  {
+    IupMap(multitext);
+
+    if (tabs->firstchild == multitext)
+      IupRefresh(tabs);
+    else
+      IupRefreshChildren(tabs);
+  }
+
+  IupSetAttribute(tabs, "VALUE_HANDLE", (char*)multitext);
+
+  IupSetStrAttributeId(multitext, "STYLEBGCOLOR", 33, IupGetGlobal("DLGBGCOLOR"));  /* line number style color, reset by IupFlatTabs default BGCOLOR */
+
+  count = IupGetChildCount(tabs);
+  if (count > 1 && count <= WINDOWMENU_MAX)
+    multitext_add_menuitem(item_window1);
+
+  return multitext;
+}
+
+static void iScintillaDlgCloseMultitext(Ihandle* multitext)
+{
+  Ihandle* tabs = IupGetParent(multitext);
+  Ihandle* item_window1 = IupGetDialogChild(tabs, "ITEM_WINDOW1");
+  IFnn cb;
+
+  int count = IupGetChildCount(tabs);
+  if (count > 1 && count <= WINDOWMENU_MAX)
+  {
+    /* remove the second menu item (anyone but the first) */
+    Ihandle* item_windowN = IupGetBrother(item_window1);
+    IupDestroy(item_windowN);
+  }
+
+  cb = (IFnn)IupGetCallback(IupGetDialog(tabs), "CLOSETEXT_CB");
+  if (cb) cb(IupGetDialog(tabs), multitext);
+
+  IupDestroy(multitext);
+}
+
+static Ihandle* iScintillaDlgGetCurrentMultitext(Ihandle* ih)
+{
+  Ihandle* tabs = IupGetDialogChild(ih, "TABS");
+  if (!tabs) return (Ihandle*)iupAttribGetInherit(ih, "MULTITEXT"); /* from the context menu */
+  return (Ihandle*)IupGetAttribute(tabs, "VALUE_HANDLE");
+}
+
+static Ihandle* iScintillaDlgGetConfig(Ihandle* ih)
+{
+  Ihandle* config = (Ihandle*)iupAttribGetInherit(ih, "_IUP_CONFIG");
+  return config;
+}
+
+static void new_file(Ihandle* ih_item)
+{
+  Ihandle* multitext = iScintillaDlgNewMultitext(ih_item);
+
+  IupSetAttribute(multitext, "FILENAME", NULL);
+  IupSetAttribute(multitext, "VALUE", "");
+  IupSetAttribute(multitext, "SAVEPOINT", NULL); /* this will update title */
+  IupSetAttribute(multitext, "UNDO", NULL); /* clear undo */
+}
+
+static void open_file(Ihandle* ih_item, const char* filename, int check_empty)
+{
+  char* str = read_file(filename);
+  if (str)
+  {
+    Ihandle* tabs = IupGetDialogChild(ih_item, "TABS");
+    Ihandle* multitext = iScintillaDlgNewMultitext(ih_item);
+    Ihandle* config = iScintillaDlgGetConfig(ih_item);
+
+    IupConfigRecentUpdate(config, filename);
+
+    IupSetStrAttribute(multitext, "FILENAME", filename);
+    IupSetStrAttribute(multitext, "VALUE", str);
+    IupSetAttribute(multitext, "SAVEPOINT", NULL); /* this will update title */
+    IupSetAttribute(multitext, "UNDO", NULL); /* clear undo */
+
+    restoreMarkers(config, multitext);
+
+    free(str);
+
+    if (check_empty && IupGetChildCount(tabs) == 2)
+    {
+      multitext = IupGetChild(tabs, 0);
+      filename = IupGetAttribute(multitext, "FILENAME");
+      if (!filename && IupGetInt(multitext, "COUNT") == 0) /* an empty non saved single file is replaced by the open file */
+        iScintillaDlgCloseMultitext(multitext);
+    }
+  }
+  else
+    IupMessageError(IupGetDialog(ih_item), "IUP_ERRORFILEOPEN");
+}
+
+static void revert_file(Ihandle* multitext)
+{
+  IupSetAttribute(multitext, "UNDO", "ALL");
+}
+
+static int item_saveas_action_cb(Ihandle* ih_item);
+
+static void save_file(Ihandle* multitext)
 {
   char* filename = IupGetAttribute(multitext, "FILENAME");
-  if (state == 1) /* save point */
-    update_title(IupGetDialog(multitext), filename, 0);
+  if (!filename)
+    item_saveas_action_cb(multitext);
   else
-    update_title(IupGetDialog(multitext), filename, 1);
+  {
+    char* str = IupGetAttribute(multitext, "VALUE");
+    int count = IupGetInt(multitext, "COUNT");
+    if (write_file(filename, str, count))
+    {
+      IupSetAttribute(multitext, "SAVEPOINT", NULL); /* this will update title */
+      IupSetAttribute(multitext, "UNDO", NULL); /* clear undo */
+    }
+    else
+      IupMessageError(IupGetDialog(multitext), "IUP_ERRORFILESAVE");
+  }
+}
+
+static void saveas_file(Ihandle* multitext, const char* filename)
+{
+  char* str = IupGetAttribute(multitext, "VALUE");
+  int count = IupGetInt(multitext, "COUNT");
+  if (write_file(filename, str, count))
+  {
+    Ihandle* config = iScintillaDlgGetConfig(multitext);
+    char* old_filename = iupStrDup(IupGetAttribute(multitext, "FILENAME"));
+    IFnss cb;
+
+    IupConfigRecentUpdate(config, filename);
+
+    IupSetStrAttribute(multitext, "FILENAME", filename);
+
+    IupSetAttribute(multitext, "SAVEPOINT", NULL); /* this will update title */
+    IupSetAttribute(multitext, "UNDO", NULL); /* clear undo */
+
+    cb = (IFnss)IupGetCallback(IupGetDialog(multitext), "NEWFILENAME_CB");
+    if (cb)
+      cb(IupGetDialog(multitext), old_filename, (char*)filename);
+
+    free(old_filename);
+  }
+  else
+    IupMessageError(IupGetDialog(multitext), "IUP_ERRORFILESAVE");
+}
+
+static void savecopy_file(Ihandle* multitext, const char* filename)
+{
+  char* str = IupGetAttribute(multitext, "VALUE");
+  int count = IupGetInt(multitext, "COUNT");
+  if (write_file(filename, str, count))
+  {
+    Ihandle* config = iScintillaDlgGetConfig(multitext);
+    IupConfigRecentUpdate(config, filename);
+  }
+  else
+    IupMessageError(IupGetDialog(multitext), "IUP_ERRORFILESAVE");
+}
+
+static int save_check(Ihandle* multitext)
+{
+  if (IupGetInt(multitext, "MODIFIED"))
+  {
+    switch (IupMessageAlarm(IupGetDialog(multitext), "Attention!", "File not saved. Save it now?", "YESNOCANCEL"))
+    {
+    case 1:  /* save the changes and continue */
+      save_file(multitext);
+      break;
+    case 2:  /* ignore the changes and continue */
+      break;
+    case 3:  /* cancel */
+      return 0;
+    }
+  }
+  return 1;
+}
+
+static void toggle_bar_visibility(Ihandle* ih_item, Ihandle* bar)
+{
+  if (IupGetInt(ih_item, "VALUE"))
+  {
+    IupSetAttribute(bar, "FLOATING", "YES");
+    IupSetAttribute(bar, "VISIBLE", "NO");
+    IupSetAttribute(ih_item, "VALUE", "OFF");
+  }
+  else
+  {
+    IupSetAttribute(bar, "FLOATING", "NO");
+    IupSetAttribute(bar, "VISIBLE", "YES");
+    IupSetAttribute(ih_item, "VALUE", "ON");
+  }
+
+  IupRefresh(bar);  /* refresh the dialog layout */
+}
+
+static void set_find_replace_visibility(Ihandle* find_dlg, int show_replace)
+{
+  Ihandle* replace_txt = IupGetDialogChild(find_dlg, "REPLACE_TEXT");
+  Ihandle* replace_lbl = IupGetDialogChild(find_dlg, "REPLACE_LABEL");
+  Ihandle* replace_bt = IupGetDialogChild(find_dlg, "REPLACE_BUTTON");
+  Ihandle* replace_all_bt = IupGetDialogChild(find_dlg, "REPLACE_ALL_BUTTON");
+
+  if (show_replace)
+  {
+    IupSetAttribute(replace_txt, "VISIBLE", "Yes");
+    IupSetAttribute(replace_lbl, "VISIBLE", "Yes");
+    IupSetAttribute(replace_bt, "VISIBLE", "Yes");
+    IupSetAttribute(replace_all_bt, "VISIBLE", "Yes");
+    IupSetAttribute(replace_txt, "FLOATING", "No");
+    IupSetAttribute(replace_lbl, "FLOATING", "No");
+    IupSetAttribute(replace_bt, "FLOATING", "No");
+    IupSetAttribute(replace_all_bt, "FLOATING", "No");
+
+    IupSetAttribute(find_dlg, "TITLE", "Replace");
+  }
+  else
+  {
+    IupSetAttribute(replace_txt, "FLOATING", "Yes");
+    IupSetAttribute(replace_lbl, "FLOATING", "Yes");
+    IupSetAttribute(replace_bt, "FLOATING", "Yes");
+    IupSetAttribute(replace_all_bt, "FLOATING", "Yes");
+    IupSetAttribute(replace_txt, "VISIBLE", "No");
+    IupSetAttribute(replace_lbl, "VISIBLE", "No");
+    IupSetAttribute(replace_bt, "VISIBLE", "No");
+    IupSetAttribute(replace_all_bt, "VISIBLE", "No");
+
+    IupSetAttribute(find_dlg, "TITLE", "Find");
+  }
+
+  IupSetAttribute(find_dlg, "SIZE", NULL);  /* force a dialog resize on the IupRefresh */
+  IupRefresh(find_dlg);
+}
+
+
+/********************************** Callbacks *****************************************/
+
+static int check_open(Ihandle* ih, const char* check_filename, int save)
+{
+  Ihandle* tabs = IupGetDialogChild(ih, "TABS");
+  Ihandle* multitext;
+
+  for (multitext = tabs->firstchild; multitext; multitext = multitext->brother)
+  {
+    char* filename = IupGetAttribute(multitext, "FILENAME");
+    if (filename && iupStrEqual(filename, check_filename))
+    {
+      if (save)
+        IupMessageError(IupGetDialog(tabs), "File already opened. Can not save using this filename.");
+      else if (IupGetInt(multitext, "MODIFIED") && IupMessageAlarm(IupGetDialog(tabs), "Attention!", "File already opened, but modified. Do you want to revert it?", "YESNO") == 1)
+        revert_file(multitext);
+
+      return 1; /* exists, abort */
+    }
+  }
+
+  return 0; /* does NOT exists, continue */
+}
+
+static int dropfiles_cb(Ihandle* ih, const char* filename, int num, int x, int y)
+{
+  static int last = 1;
+  static int remove_empty = 0;
+
+  (void)x;
+  (void)y;
+
+  if (last)
+  {
+    Ihandle* tabs = IupGetDialogChild(ih, "TABS");
+    if (IupGetChildCount(tabs) == 1)
+    {
+      Ihandle* multitext = IupGetChild(tabs, 0);
+      char* m_filename = IupGetAttribute(multitext, "FILENAME");
+      if (!m_filename && IupGetInt(multitext, "COUNT") == 0) /* an empty non saved single file is replaced by the open file */
+        remove_empty = 1;
+    }
+
+    last = 0;
+  }
+
+  if (!check_open(ih, filename, 0))
+    open_file(ih, filename, 0);
+
+  if (num == 0)
+  {
+    if (remove_empty)
+    {
+      Ihandle* tabs = IupGetDialogChild(ih, "TABS");
+      Ihandle* multitext = IupGetChild(tabs, 0);
+      iScintillaDlgCloseMultitext(multitext);
+      remove_empty = 0;
+    }
+
+    last = 1;
+  }
+
   return IUP_DEFAULT;
 }
 
@@ -737,7 +981,7 @@ static int file_menu_open_cb(Ihandle* ih_menu)
 {
   Ihandle* item_revert = IupGetDialogChild(ih_menu, "ITEM_REVERT");
   Ihandle* item_save = IupGetDialogChild(ih_menu, "ITEM_SAVE");
-  Ihandle* multitext = IupGetDialogChild(ih_menu, "MULTITEXT");
+  Ihandle* multitext = iScintillaDlgGetCurrentMultitext(ih_menu);
   char* filename = IupGetAttribute(multitext, "FILENAME");
   int dirty = IupGetInt(multitext, "MODIFIED");
 
@@ -764,7 +1008,7 @@ static int edit_menu_open_cb(Ihandle* ih_menu)
   Ihandle *item_delete = IupGetDialogChild(ih_menu, "ITEM_DELETE");
   Ihandle *item_copy = IupGetDialogChild(ih_menu, "ITEM_COPY");
   Ihandle *item_find_next = IupGetDialogChild(ih_menu, "ITEM_FINDNEXT");
-  Ihandle* multitext = IupGetDialogChild(ih_menu, "MULTITEXT");
+  Ihandle* multitext = iScintillaDlgGetCurrentMultitext(ih_menu);
 
   if (IupGetInt(multitext, "UNDO"))
     IupSetAttribute(item_undo, "ACTIVE", "YES");
@@ -810,45 +1054,54 @@ static int edit_menu_open_cb(Ihandle* ih_menu)
   return IUP_DEFAULT;
 }
 
+static int window_menu_open_cb(Ihandle* ih_menu)
+{
+  Ihandle* tabs = IupGetDialogChild(ih_menu, "TABS");
+  Ihandle* item_window1 = IupGetDialogChild(tabs, "ITEM_WINDOW1");
+  Ihandle* current_multitext = (Ihandle*)IupGetAttribute(tabs, "VALUE_HANDLE");
+  Ihandle* m_multitext, *item_windowN;
+  int pos;
+
+  for (m_multitext = tabs->firstchild, pos = 0, item_windowN = item_window1; m_multitext && pos < WINDOWMENU_MAX && item_windowN; m_multitext = m_multitext->brother, pos++, item_windowN = item_windowN->brother)
+  {
+    char* filename = IupGetAttribute(m_multitext, "FILENAME");
+    if (!filename) filename = "Untitled";
+
+    IupSetfAttribute(item_windowN, "TITLE", "&%d %s", pos + 1, str_filetitle(filename));
+
+    if (m_multitext == current_multitext)
+      IupSetAttribute(item_windowN, "VALUE", "ON");
+    else
+      IupSetAttribute(item_windowN, "VALUE", "OFF");
+  }
+
+  return IUP_DEFAULT;
+}
+
 static int config_recent_cb(Ihandle* ih_item)
 {
-  if (save_check(ih_item))
-  {
-    char* filename = IupGetAttribute(ih_item, "TITLE");
-    open_file(ih_item, filename);
-  }
+  char* filename = IupGetAttribute(ih_item, "TITLE");
+  if (!check_open(ih_item, filename, 0))
+    open_file(ih_item, filename, 1);
   return IUP_DEFAULT;
 }
 
-static int multitext_caret_cb(Ihandle* multitext, int lin, int col)
+static int item_new_action_cb(Ihandle* ih_item)
 {
-  Ihandle *lbl_statusbar = IupGetDialogChild(multitext, "STATUSBAR");
-  IupSetfAttribute(lbl_statusbar, "TITLE", "Lin %d, Col %d", lin + 1, col + 1);  /* in Scintilla lin and col start at 0 */
-  return IUP_DEFAULT;
-}
-
-static int item_new_action_cb(Ihandle* item_new)
-{
-  if (save_check(item_new))
-    new_file(item_new);
-
+  new_file(ih_item);
   return IUP_IGNORE;  /* to avoid garbage in Scintilla when pressing the hot key */
 }
 
-static int item_open_action_cb(Ihandle* item_open)
+static int item_open_action_cb(Ihandle* ih_item)
 {
-  Ihandle* ih = IupGetDialog(item_open);
+  Ihandle* ih = IupGetDialog(ih_item);
   Ihandle *filedlg;
   Ihandle* config;
   const char* dir = NULL;
   char* extra_filters = IupGetAttribute(ih, "EXTRAFILTERS");
 
-  if (!save_check(item_open))
-    return IUP_DEFAULT;
-
-  config = IupGetAttributeHandle(item_open, "CONFIG");
-  if (config)
-    dir = IupConfigGetVariableStr(config, "MainWindow", "LastDirectory");
+  config = iScintillaDlgGetConfig(ih_item);
+  dir = IupConfigGetVariableStr(config, "MainWindow", "LastDirectory");
 
   filedlg = IupFileDlg();
   IupSetAttribute(filedlg, "DIALOGTYPE", "OPEN");
@@ -863,30 +1116,66 @@ static int item_open_action_cb(Ihandle* item_open)
   if (IupGetInt(filedlg, "STATUS") != -1)
   {
     char* filename = IupGetAttribute(filedlg, "VALUE");
-    open_file(item_open, filename);
+    if (!check_open(ih, filename, 0))
+      open_file(ih_item, filename, 1);
 
-    if (config)
-    {
-      dir = IupGetAttribute(filedlg, "DIRECTORY");
-      IupConfigSetVariableStr(config, "MainWindow", "LastDirectory", dir);
-    }
+    dir = IupGetAttribute(filedlg, "DIRECTORY");
+    IupConfigSetVariableStr(config, "MainWindow", "LastDirectory", dir);
   }
 
   IupDestroy(filedlg);
   return IUP_DEFAULT;
 }
 
-static int item_saveas_action_cb(Ihandle* item_saveas)
+static int item_saveas_action_cb(Ihandle* ih_item)
 {
-  Ihandle* ih = IupGetDialog(item_saveas);
-  const char* dir = NULL;
-  Ihandle* multitext = IupGetDialogChild(item_saveas, "MULTITEXT");
-  Ihandle* config = IupGetAttributeHandle(multitext, "CONFIG");
+  Ihandle* ih = IupGetDialog(ih_item);
+  const char* dir;
+  Ihandle* multitext = iScintillaDlgGetCurrentMultitext(ih_item);
+  Ihandle* config = iScintillaDlgGetConfig(multitext);
+  Ihandle *filedlg = IupFileDlg();
+  char* extra_filters = IupGetAttribute(ih, "EXTRAFILTERS");
+  char* old_filename = IupGetAttribute(multitext, "FILENAME");
+
+  dir = IupConfigGetVariableStr(config, "MainWindow", "LastDirectory");
+
+  IupSetAttribute(filedlg, "DIALOGTYPE", "SAVE");
+  if (extra_filters)
+    IupSetStrf(filedlg, "EXTFILTER", "%sText Files|*.txt|All Files|*.*|", extra_filters);
+  else
+    IupSetAttribute(filedlg, "EXTFILTER", "Text Files|*.txt|All Files|*.*|");
+  IupSetAttributeHandle(filedlg, "PARENTDIALOG", ih);
+  IupSetStrAttribute(filedlg, "FILE", old_filename);
+  IupSetStrAttribute(filedlg, "DIRECTORY", dir);
+
+  IupPopup(filedlg, IUP_CENTERPARENT, IUP_CENTERPARENT);
+
+  if (IupGetInt(filedlg, "STATUS") != -1)
+  {
+    char* filename = IupGetAttribute(filedlg, "VALUE");
+    if (iupStrEqual(old_filename, filename))
+      save_file(multitext);
+    else if (!check_open(ih, filename, 1))
+      saveas_file(multitext, filename);
+
+    dir = IupGetAttribute(filedlg, "DIRECTORY");
+    IupConfigSetVariableStr(config, "MainWindow", "LastDirectory", dir);
+  }
+
+  IupDestroy(filedlg);
+  return IUP_DEFAULT;
+}
+
+static int item_savecopy_action_cb(Ihandle* ih_item)
+{
+  Ihandle* ih = IupGetDialog(ih_item);
+  const char* dir;
+  Ihandle* multitext = iScintillaDlgGetCurrentMultitext(ih_item);
+  Ihandle* config = iScintillaDlgGetConfig(multitext);
   Ihandle *filedlg = IupFileDlg();
   char* extra_filters = IupGetAttribute(ih, "EXTRAFILTERS");
 
-  if (config)
-    dir = IupConfigGetVariableStr(config, "MainWindow", "LastDirectory");
+  dir = IupConfigGetVariableStr(config, "MainWindow", "LastDirectory");
 
   IupSetAttribute(filedlg, "DIALOGTYPE", "SAVE");
   if (extra_filters)
@@ -902,39 +1191,210 @@ static int item_saveas_action_cb(Ihandle* item_saveas)
   if (IupGetInt(filedlg, "STATUS") != -1)
   {
     char* filename = IupGetAttribute(filedlg, "VALUE");
-    saveas_file(multitext, filename);
+    savecopy_file(multitext, filename);
 
-    if (config)
-    {
-      dir = IupGetAttribute(filedlg, "DIRECTORY");
-      IupConfigSetVariableStr(config, "MainWindow", "LastDirectory", dir);
-    }
+    dir = IupGetAttribute(filedlg, "DIRECTORY");
+    IupConfigSetVariableStr(config, "MainWindow", "LastDirectory", dir);
   }
 
   IupDestroy(filedlg);
   return IUP_DEFAULT;
 }
 
-static int item_save_action_cb(Ihandle* item_save)
+static int item_save_action_cb(Ihandle* ih_item)
 {
-  Ihandle* multitext = IupGetDialogChild(item_save, "MULTITEXT");
+  Ihandle* multitext = iScintillaDlgGetCurrentMultitext(ih_item);  /* ih_item can be from the context menu */
   /* test again because in can be called using the hot key */
   if (IupGetInt(multitext, "MODIFIED"))
     save_file(multitext);
   return IUP_IGNORE;  /* to avoid garbage in Scintilla when pressing the hot key */
 }
 
-static int item_revert_action_cb(Ihandle* item_revert)
+static int item_saveall_action_cb(Ihandle* ih_item)
 {
-  Ihandle* multitext = IupGetDialogChild(item_revert, "MULTITEXT");
-  char* filename = IupGetAttribute(multitext, "FILENAME");
-  open_file(item_revert, filename);
+  Ihandle* tabs = IupGetDialogChild(ih_item, "TABS");
+  Ihandle* multitext;
+
+  for (multitext = tabs->firstchild; multitext; multitext = multitext->brother)
+  {
+    if (IupGetInt(multitext, "MODIFIED"))
+      save_file(multitext);
+  }
+
   return IUP_DEFAULT;
 }
 
-static int item_print_action_cb(Ihandle* item)
+static int item_close_action_cb(Ihandle* ih_item)
 {
-  Ihandle* multitext = IupGetDialogChild(item, "MULTITEXT");
+  Ihandle* multitext = iScintillaDlgGetCurrentMultitext(ih_item); /* ih_item can be from the context menu */
+  Ihandle* config = iScintillaDlgGetConfig(multitext);
+
+  saveMarkers(config, multitext);
+
+  if (!save_check(multitext))
+    return IUP_DEFAULT;
+
+  if (IupGetChildCount(IupGetParent(multitext)) == 1) /* last tab */
+    new_file(multitext);  /* always keep at least one multitext */
+
+  iScintillaDlgCloseMultitext(multitext);
+
+  return IUP_DEFAULT;
+}
+
+static int item_closeall_action_cb(Ihandle* ih_item)
+{
+  Ihandle* tabs = IupGetDialogChild(ih_item, "TABS");
+  if (!tabs) tabs = (Ihandle*)iupAttribGetInherit(ih_item, "TABS");  /* from the context menu */
+  Ihandle* config = iScintillaDlgGetConfig(tabs);
+  Ihandle* multitext, *tmp;
+
+  for (multitext = tabs->firstchild; multitext; /* increment before destroy */)
+  {
+    saveMarkers(config, multitext);
+
+    if (!save_check(multitext))
+      return IUP_DEFAULT;
+
+    /* increment before destroy */
+    tmp = multitext;
+    multitext = multitext->brother;
+    iScintillaDlgCloseMultitext(tmp);
+  }
+
+  new_file(tabs);  /* always keep at least one multitext */
+
+  return IUP_DEFAULT;
+}
+
+static int item_closeall_butthis_action_cb(Ihandle* ih_item)
+{
+  Ihandle* tabs = (Ihandle*)iupAttribGetInherit(ih_item, "TABS");  /* from the context menu */
+  Ihandle* this_multitext = (Ihandle*)iupAttribGetInherit(ih_item, "MULTITEXT");  /* from the context menu */
+  Ihandle* config = iScintillaDlgGetConfig(tabs);
+  Ihandle* multitext, *tmp;
+
+  for (multitext = tabs->firstchild; multitext; /* increment before destroy */)
+  {
+    if (this_multitext != multitext)
+    {
+      saveMarkers(config, multitext);
+
+      if (!save_check(multitext))
+        return IUP_DEFAULT;
+
+      /* increment before destroy */
+      tmp = multitext;
+      multitext = multitext->brother;
+      iScintillaDlgCloseMultitext(tmp);
+    }
+    else
+      multitext = multitext->brother;
+  }
+
+  return IUP_DEFAULT;
+}
+
+static int setparent_param_cb(Ihandle* param_dialog, int param_index, void* user_data)
+{
+  if (param_index == IUP_GETPARAM_MAP)
+  {
+    Ihandle* ih = (Ihandle*)user_data;
+    IupSetAttributeHandle(param_dialog, "PARENTDIALOG", ih);
+  }
+
+  return 1;
+}
+
+static int item_rename_action_cb(Ihandle* ih_item)
+{
+  Ihandle* config = iScintillaDlgGetConfig(ih_item);
+  Ihandle* multitext = iScintillaDlgGetCurrentMultitext(ih_item);
+  char* filename = iupStrDup(IupGetAttribute(multitext, "FILENAME"));
+  char new_name[512], new_filename[10240];
+  IFnss cb;
+
+  if (!filename) filename = iupStrDup("");
+  strcpy(new_name, str_filetitle(filename));
+
+  if (!IupGetParam("Rename", setparent_param_cb, IupGetDialog(ih_item), "Name: %s\n", new_name, NULL))
+    return IUP_DEFAULT;
+
+  strcpy(new_filename, filename);
+  strcpy((char*)str_filetitle(new_filename), new_name);
+
+  if (filename[0] != 0)
+  {
+    if (rename(filename, new_filename) != 0)
+    {
+      IupMessageError(IupGetDialog(ih_item), "Failed to rename file. File already exists.");
+      return IUP_DEFAULT;
+    }
+  }
+
+  IupSetStrAttribute(multitext, "FILENAME", new_filename);
+
+  update_title(multitext, IupGetInt(multitext, "MODIFIED"));
+
+  IupConfigRecentUpdate(config, new_filename);
+
+  if (filename[0] != 0)
+  {
+    cb = (IFnss)IupGetCallback(IupGetDialog(multitext), "NEWFILENAME_CB");
+    if (cb)
+      cb(IupGetDialog(multitext), filename, (char*)new_filename);
+  }
+
+  free(filename);
+
+  return IUP_DEFAULT;
+}
+
+static int item_revert_action_cb(Ihandle* ih_item)
+{
+  Ihandle* multitext = iScintillaDlgGetCurrentMultitext(ih_item);  /* ih_item can be from the context menu */
+  revert_file(multitext);
+  return IUP_DEFAULT;
+}
+
+static int item_print_action_cb(Ihandle* ih_item)
+{
+  Ihandle* multitext = iScintillaDlgGetCurrentMultitext(ih_item);
+  Ihandle* config = iScintillaDlgGetConfig(ih_item);
+  const char* value;
+
+  value = IupConfigGetVariableStr(config, "Print", "MarginLeft");
+  if (value)
+    IupSetStrAttribute(multitext, "PRINTMARGINLEFT", value);
+
+  value = IupConfigGetVariableStr(config, "Print", "MarginRight");
+  if (value)
+    IupSetStrAttribute(multitext, "PRINTMARGINRIGHT", value);
+
+  value = IupConfigGetVariableStr(config, "Print", "MarginTop");
+  if (value)
+    IupSetStrAttribute(multitext, "PRINTMARGINTOP", value);
+
+  value = IupConfigGetVariableStr(config, "Print", "MarginBottom");
+  if (value)
+    IupSetStrAttribute(multitext, "PRINTMARGINBOTTOM", value);
+
+  value = IupConfigGetVariableStr(config, "Print", "MarginUnits");
+  if (value)
+    IupSetStrAttribute(multitext, "PRINTMARGINUNITS", value);
+
+  value = IupConfigGetVariableStr(config, "Print", "WordWrap");
+  if (value)
+    IupSetStrAttribute(multitext, "PRINTWORDWRAP", value);
+
+  value = IupConfigGetVariableStr(config, "Print", "Color");
+  if (value)
+    IupSetStrAttribute(multitext, "PRINTCOLOR", value);
+
+  value = IupConfigGetVariableStr(config, "Print", "Magnification");
+  if (value)
+    IupSetStrAttribute(multitext, "PRINTMAGNIFICATION", value);
+
   IupSetAttribute(multitext, "PRINT", IupGetAttribute(IupGetDialog(multitext), "TITLE"));
   return IUP_DEFAULT;
 }
@@ -959,20 +1419,9 @@ static const char* getListValue(int index, const char* list[])
   return list[index];
 }
 
-static int param_cb(Ihandle* param_dialog, int param_index, void* user_data)
+static int item_pagesetup_action_cb(Ihandle* ih_item)
 {
-  if (param_index == IUP_GETPARAM_MAP)
-  {
-    Ihandle* ih = (Ihandle*)user_data;
-    IupSetAttributeHandle(param_dialog, "PARENTDIALOG", ih);
-  }
-
-  return 1;
-}
-
-static int item_pagesetup_action_cb(Ihandle* item)
-{
-  Ihandle* multitext = IupGetDialogChild(item, "MULTITEXT");
+  Ihandle* config = iScintillaDlgGetConfig(ih_item);
   double margin_left, margin_top, margin_right, margin_bottom;
   int margin_units_index, word_wrap_index, color_index;
   char* margin_units_list[] = { "PIXELS", "INCH", "CM" };
@@ -981,19 +1430,20 @@ static int item_pagesetup_action_cb(Ihandle* item)
   const char *margin_units, *word_wrap, *color;
   int magnification;
 
-  margin_left = IupGetDouble(multitext, "PRINTMARGINLEFT");
-  margin_right = IupGetDouble(multitext, "PRINTMARGINRIGHT");
-  margin_top = IupGetDouble(multitext, "PRINTMARGINTOP");
-  margin_bottom = IupGetDouble(multitext, "PRINTMARGINBOTTOM");
-  margin_units = IupGetAttribute(multitext, "PRINTMARGINUNITS");
-  margin_units_index = getListIndex(margin_units, margin_units_list);
-  word_wrap = IupGetAttribute(multitext, "PRINTWORDWRAP");
-  word_wrap_index = getListIndex(word_wrap, word_wrap_list);
-  color = IupGetAttribute(multitext, "PRINTCOLOR");
-  color_index = getListIndex(color, color_list);
-  magnification = IupGetInt(multitext, "PRINTMAGNIFICATION");
+  margin_left = IupConfigGetVariableDouble(config, "Print", "MarginLeft");
+  margin_right = IupConfigGetVariableDouble(config, "Print", "MarginRight");
+  margin_top = IupConfigGetVariableDouble(config, "Print", "MarginTop");
+  margin_bottom = IupConfigGetVariableDouble(config, "Print", "MarginBottom");
+  margin_units = IupConfigGetVariableStr(config, "Print", "MarginUnits");
+  word_wrap = IupConfigGetVariableStr(config, "Print", "WordWrap");
+  color = IupConfigGetVariableStr(config, "Print", "Color");
+  magnification = IupConfigGetVariableInt(config, "Print", "Magnification");
 
-  if (IupGetParam("Page Setup", param_cb, IupGetDialog(item),
+  margin_units_index = getListIndex(margin_units, margin_units_list);
+  word_wrap_index = getListIndex(word_wrap, word_wrap_list);
+  color_index = getListIndex(color, color_list);
+
+  if (IupGetParam("Page Setup", setparent_param_cb, IupGetDialog(ih_item),
                    "Margin Left: %R\n"
                    "Margin Right: %R\n"
                    "Margin Top: %R\n"
@@ -1007,63 +1457,195 @@ static int item_pagesetup_action_cb(Ihandle* item)
                    &magnification,
                    NULL))
   { 
-    Ihandle* config = IupGetAttributeHandle(item, "CONFIG");
-
-    IupSetDouble(multitext, "PRINTMARGINLEFT", margin_left);
-    IupSetDouble(multitext, "PRINTMARGINRIGHT", margin_right);
-    IupSetDouble(multitext, "PRINTMARGINTOP", margin_top);
-    IupSetDouble(multitext, "PRINTMARGINBOTTOM", margin_bottom);
     margin_units = getListValue(margin_units_index, margin_units_list);
-    IupSetStrAttribute(multitext, "PRINTMARGINUNITS", margin_units);
     word_wrap = getListValue(word_wrap_index, word_wrap_list);
-    IupSetStrAttribute(multitext, "PRINTWORDWRAP", word_wrap);
     color = getListValue(color_index, color_list);
-    IupSetStrAttribute(multitext, "PRINTCOLOR", color);
-    IupSetInt(multitext, "PRINTMAGNIFICATION", magnification);
 
-    if (config)
-    {
-      IupConfigSetVariableDouble(config, "Print", "MarginLeft", margin_left);
-      IupConfigSetVariableDouble(config, "Print", "MarginRight", margin_right);
-      IupConfigSetVariableDouble(config, "Print", "MarginTop", margin_top);
-      IupConfigSetVariableDouble(config, "Print", "MarginBottom", margin_bottom);
-      IupConfigSetVariableStr(config, "Print", "MarginUnits", margin_units);
-      IupConfigSetVariableStr(config, "Print", "WordWrap", word_wrap);
-      IupConfigSetVariableStr(config, "Print", "Color", color);
-      IupConfigSetVariableInt(config, "Print", "Magnification", magnification);
-    }
+    IupConfigSetVariableDouble(config, "Print", "MarginLeft", margin_left);
+    IupConfigSetVariableDouble(config, "Print", "MarginRight", margin_right);
+    IupConfigSetVariableDouble(config, "Print", "MarginTop", margin_top);
+    IupConfigSetVariableDouble(config, "Print", "MarginBottom", margin_bottom);
+    IupConfigSetVariableStr(config, "Print", "MarginUnits", margin_units);
+    IupConfigSetVariableStr(config, "Print", "WordWrap", word_wrap);
+    IupConfigSetVariableStr(config, "Print", "Color", color);
+    IupConfigSetVariableInt(config, "Print", "Magnification", magnification);
   }
   return IUP_DEFAULT;
 }
 
+static int item_openfolder_action_cb(Ihandle* ih_item)
+{
+  Ihandle* multitext = (Ihandle*)iupAttribGetInherit(ih_item, "MULTITEXT");  /* from the context menu */
+  char* filename = IupGetAttribute(multitext, "FILENAME");
+  char folder[10240] = "\"";
+  char* title, *exec;
+
+  strcpy(folder+1, filename);
+  title = (char*)str_filetitle(folder+1);
+  title[0] = '"';
+  title[1] = 0;
+
+#ifdef WIN32
+  exec = "explorer";
+#else
+  exec = "nautilus";
+#endif
+
+  IupExecute(exec, folder);
+
+  return IUP_DEFAULT;
+}
+
+static int item_copyfilename_action_cb(Ihandle* ih_item)
+{
+  Ihandle* multitext = (Ihandle*)iupAttribGetInherit(ih_item, "MULTITEXT");  /* from the context menu */
+  char* filename = IupGetAttribute(multitext, "FILENAME");
+  Ihandle *clipboard = IupClipboard();
+  IupSetAttribute(clipboard, "TEXT", NULL); /* clear clipboard first */
+  IupSetAttribute(clipboard, "TEXT", filename);
+  IupDestroy(clipboard);
+  return IUP_DEFAULT;
+}
+
+static int tabs_rightclick_cb(Ihandle* tabs, int pos)
+{
+  Ihandle *menu, *item_close, *item_revert, *item_save, *item_closeall, *item_closeall_butthis, *item_openfolder, *item_copyfilename;
+  Ihandle* multitext = IupGetChild(tabs, pos);
+  char* filename = IupGetAttribute(multitext, "FILENAME");
+  int dirty = IupGetInt(multitext, "MODIFIED");
+
+  item_save = IupItem("Save\tCtrl+S", NULL);
+  IupSetAttribute(item_save, "IMAGE", "IUP_FileSave");
+  IupSetCallback(item_save, "ACTION", (Icallback)item_save_action_cb);
+
+  item_close = IupItem("Close\tCtrl+F4", NULL);
+  IupSetCallback(item_close, "ACTION", (Icallback)item_close_action_cb);
+
+  item_closeall = IupItem("Close All", NULL);
+  IupSetCallback(item_closeall, "ACTION", (Icallback)item_closeall_action_cb);
+
+  item_closeall_butthis = IupItem("Close All But This", NULL);
+  IupSetCallback(item_closeall_butthis, "ACTION", (Icallback)item_closeall_butthis_action_cb);
+
+  item_revert = IupItem("Revert", NULL);
+  IupSetCallback(item_revert, "ACTION", (Icallback)item_revert_action_cb);
+
+  item_openfolder = IupItem("Open Containing Folder", NULL);
+  IupSetCallback(item_openfolder, "ACTION", (Icallback)item_openfolder_action_cb);
+
+  item_copyfilename = IupItem("Copy File Name", NULL);
+  IupSetCallback(item_copyfilename, "ACTION", (Icallback)item_copyfilename_action_cb);
+
+  if (dirty)
+    IupSetAttribute(item_save, "ACTIVE", "YES");
+  else
+    IupSetAttribute(item_save, "ACTIVE", "NO");
+
+  if (dirty && filename)
+    IupSetAttribute(item_revert, "ACTIVE", "YES");
+  else
+    IupSetAttribute(item_revert, "ACTIVE", "NO");
+
+  if (IupGetChildCount(IupGetParent(multitext)) > 1)
+    IupSetAttribute(item_closeall_butthis, "ACTIVE", "YES");
+  else
+    IupSetAttribute(item_closeall_butthis, "ACTIVE", "NO");
+
+  if (filename)
+  {
+    IupSetAttribute(item_openfolder, "ACTIVE", "YES");
+    IupSetAttribute(item_copyfilename, "ACTIVE", "YES");
+  }
+  else
+  {
+    IupSetAttribute(item_openfolder, "ACTIVE", "NO");
+    IupSetAttribute(item_copyfilename, "ACTIVE", "NO");
+  }
+
+  menu = IupMenu(
+    item_revert,
+    item_save,
+    item_close,
+    item_closeall,
+    item_closeall_butthis,
+    IupSeparator(),
+    item_copyfilename,
+    item_openfolder,
+    NULL);
+
+  iupAttribSet(menu, "TABS", (char*)tabs);
+  iupAttribSet(menu, "MULTITEXT", (char*)multitext);
+
+  IupPopup(menu, IUP_MOUSEPOS, IUP_MOUSEPOS);
+
+  IupDestroy(menu);
+
+  return IUP_DEFAULT;
+}
+
+static int tabs_change_cb(Ihandle* tabs, Ihandle* new_tab, Ihandle* old_tab)
+{
+  update_dialog_title(new_tab);
+
+  (void)tabs;
+  (void)old_tab;
+  return IUP_DEFAULT;
+}
+
+static int tabs_close_cb(Ihandle* tabs, int pos)
+{
+  Ihandle* config = iScintillaDlgGetConfig(tabs);
+  Ihandle* multitext = IupGetChild(tabs, pos);
+
+  saveMarkers(config, multitext);
+
+  if (!save_check(multitext))
+    return IUP_IGNORE;  /* to abort the CLOSE_CB callback */
+
+  if (IupGetChildCount(tabs) == 1) /* last tab */
+    new_file(tabs);  /* always keep at least one multitext */
+
+  iScintillaDlgCloseMultitext(multitext);
+  IupRefreshChildren(tabs);
+  return IUP_IGNORE;  /* we already destroyed the multitext */
+}
 static int find_close_action_cb(Ihandle* bt_close);
 
 static int close_exit_action_cb(Ihandle* ih_item)
 {
   Ihandle* ih = IupGetDialog(ih_item);
-  Ihandle* config = IupGetAttributeHandle(ih, "CONFIG");
+  Ihandle* tabs = IupGetDialogChild(ih, "TABS");
+  Ihandle* config = iScintillaDlgGetConfig(ih);
   Ihandle* find_dlg = (Ihandle*)IupGetAttribute(ih_item, "FIND_DIALOG");
+  int pos;
+  Ihandle* multitext;
+  IFnn configsave_cb;
   Icallback cb;
 
-  if (!save_check(ih))
-    return IUP_IGNORE;  /* to abort the CLOSE_CB callback */
+  for (multitext = tabs->firstchild, pos = 0; multitext; pos++ /* increment before destroy */)
+  {
+    Ihandle* tmp;
+
+    saveMarkers(config, multitext);
+
+    if (!save_check(multitext))
+      return IUP_IGNORE;  /* to abort the CLOSE_CB callback */
+
+    /* increment before destroy */
+    tmp = multitext;
+    multitext = multitext->brother;
+    iScintillaDlgCloseMultitext(tmp);
+  }
   
   if (find_dlg)
     find_close_action_cb(find_dlg);
 
-  if (config)
-  {
-    Ihandle* multitext = IupGetDialogChild(ih, "MULTITEXT");
-    
-    saveMarkers(config, multitext);
+  configsave_cb = (IFnn)IupGetCallback(ih, "CONFIGSAVE_CB");
+  if (configsave_cb)
+    configsave_cb(ih, config);
 
-    cb = IupGetCallback(ih, "CONFIGSAVE_CB");
-    if (cb)
-      cb(ih);
-
-    IupConfigDialogClosed(config, ih, "MainWindow");
-    IupConfigSave(config);
-  }
+  IupConfigDialogClosed(config, ih, "MainWindow");
+  IupConfigSave(config);
 
   iupAttribSet(ih, "_IUP_CLOSING", "1");
   IupHide(ih);
@@ -1106,9 +1688,9 @@ static int goto_cancel_action_cb(Ihandle* bt_ok)
   return IUP_CLOSE;
 }
 
-static int item_goto_action_cb(Ihandle* item_goto)
+static int item_goto_action_cb(Ihandle* ih_item)
 {
-  Ihandle* multitext = IupGetDialogChild(item_goto, "MULTITEXT");
+  Ihandle* multitext = iScintillaDlgGetCurrentMultitext(ih_item);
   Ihandle *goto_dlg, *box, *bt_ok, *bt_cancel, *txt, *lbl;
   int line_count = IupGetInt(multitext, "LINECOUNT");
 
@@ -1143,7 +1725,7 @@ static int item_goto_action_cb(Ihandle* item_goto)
   IupSetAttribute(goto_dlg, "DIALOGFRAME", "Yes");
   IupSetAttributeHandle(goto_dlg, "DEFAULTENTER", bt_ok);
   IupSetAttributeHandle(goto_dlg, "DEFAULTESC", bt_cancel);
-  IupSetAttributeHandle(goto_dlg, "PARENTDIALOG", IupGetDialog(item_goto));
+  IupSetAttributeHandle(goto_dlg, "PARENTDIALOG", IupGetDialog(ih_item));
 
   IupPopup(goto_dlg, IUP_CENTERPARENT, IUP_CENTERPARENT);
 
@@ -1164,7 +1746,7 @@ static int item_goto_action_cb(Ihandle* item_goto)
 
 static int item_gotombrace_action_cb(Ihandle* ih_item)
 {
-  Ihandle* multitext = IupGetDialogChild(ih_item, "MULTITEXT");
+  Ihandle* multitext = iScintillaDlgGetCurrentMultitext(ih_item);
 
   int pos = IupGetInt(multitext, "CARETPOS");
 
@@ -1183,7 +1765,7 @@ static int item_gotombrace_action_cb(Ihandle* ih_item)
 
 static int item_togglemark_action_cb(Ihandle* ih_item)
 {
-  Ihandle* multitext = IupGetDialogChild(ih_item, "MULTITEXT");
+  Ihandle* multitext = iScintillaDlgGetCurrentMultitext(ih_item);
 
   int pos = IupGetInt(multitext, "CARETPOS");
 
@@ -1197,7 +1779,7 @@ static int item_togglemark_action_cb(Ihandle* ih_item)
 
 static int item_nextmark_action_cb(Ihandle* ih_item)
 {
-  Ihandle* multitext = IupGetDialogChild(ih_item, "MULTITEXT");
+  Ihandle* multitext = iScintillaDlgGetCurrentMultitext(ih_item);
 
   int pos = IupGetInt(multitext, "CARETPOS");
 
@@ -1220,7 +1802,7 @@ static int item_nextmark_action_cb(Ihandle* ih_item)
 
 static int item_previousmark_action_cb(Ihandle* ih_item)
 {
-  Ihandle* multitext = IupGetDialogChild(ih_item, "MULTITEXT");
+  Ihandle* multitext = iScintillaDlgGetCurrentMultitext(ih_item);
 
   int pos = IupGetInt(multitext, "CARETPOS");
 
@@ -1243,21 +1825,21 @@ static int item_previousmark_action_cb(Ihandle* ih_item)
 
 static int item_clearmarks_action_cb(Ihandle* ih_item)
 {
-  Ihandle* multitext = IupGetDialogChild(ih_item, "MULTITEXT");
+  Ihandle* multitext = iScintillaDlgGetCurrentMultitext(ih_item);
   removeAllBookmark(multitext);
   return IUP_DEFAULT;
 }
 
 static int item_copymarked_action_cb(Ihandle* ih_item)
 {
-  Ihandle* multitext = IupGetDialogChild(ih_item, "MULTITEXT");
+  Ihandle* multitext = iScintillaDlgGetCurrentMultitext(ih_item);
   copyMarkedLines(multitext);
   return IUP_DEFAULT;
 }
 
 static int item_cutmarked_action_cb(Ihandle* ih_item)
 {
-  Ihandle* multitext = IupGetDialogChild(ih_item, "MULTITEXT");
+  Ihandle* multitext = iScintillaDlgGetCurrentMultitext(ih_item);
 
   IupSetAttribute(multitext, "UNDOACTION", "BEGIN");
 
@@ -1270,7 +1852,7 @@ static int item_cutmarked_action_cb(Ihandle* ih_item)
 
 static int item_pastetomarked_action_cb(Ihandle* ih_item)
 {
-  Ihandle* multitext = IupGetDialogChild(ih_item, "MULTITEXT");
+  Ihandle* multitext = iScintillaDlgGetCurrentMultitext(ih_item);
 
   IupSetAttribute(multitext, "UNDOACTION", "BEGIN");
 
@@ -1283,7 +1865,7 @@ static int item_pastetomarked_action_cb(Ihandle* ih_item)
 
 static int item_removemarked_action_cb(Ihandle* ih_item)
 {
-  Ihandle* multitext = IupGetDialogChild(ih_item, "MULTITEXT");
+  Ihandle* multitext = iScintillaDlgGetCurrentMultitext(ih_item);
 
   IupSetAttribute(multitext, "UNDOACTION", "BEGIN");
 
@@ -1296,14 +1878,14 @@ static int item_removemarked_action_cb(Ihandle* ih_item)
 
 static int item_invertmarks_action_cb(Ihandle* ih_item)
 {
-  Ihandle* multitext = IupGetDialogChild(ih_item, "MULTITEXT");
+  Ihandle* multitext = iScintillaDlgGetCurrentMultitext(ih_item);
   invertMarkedLines(multitext);
   return IUP_DEFAULT;
 }
 
 static int item_eoltospace_action_cb(Ihandle* ih_item)
 {
-  Ihandle* multitext = IupGetDialogChild(ih_item, "MULTITEXT");
+  Ihandle* multitext = iScintillaDlgGetCurrentMultitext(ih_item);
 
   IupSetAttribute(multitext, "UNDOACTION", "BEGIN");
 
@@ -1316,14 +1898,14 @@ static int item_eoltospace_action_cb(Ihandle* ih_item)
 
 static int item_fixeol_action_cb(Ihandle* ih_item)
 {
-  Ihandle* multitext = IupGetDialogChild(ih_item, "MULTITEXT");
+  Ihandle* multitext = iScintillaDlgGetCurrentMultitext(ih_item);
   IupSetAttribute(multitext, "FIXEOL", NULL);
   return IUP_DEFAULT;
 }
 
 static int item_removespaceeol_action_cb(Ihandle* ih_item)
 {
-  Ihandle* multitext = IupGetDialogChild(ih_item, "MULTITEXT");
+  Ihandle* multitext = iScintillaDlgGetCurrentMultitext(ih_item);
 
   IupSetAttribute(multitext, "UNDOACTION", "BEGIN");
 
@@ -1340,7 +1922,7 @@ static int item_removespaceeol_action_cb(Ihandle* ih_item)
 
 static int item_trimtrailing_action_cb(Ihandle* ih_item)
 {
-  Ihandle* multitext = IupGetDialogChild(ih_item, "MULTITEXT");
+  Ihandle* multitext = iScintillaDlgGetCurrentMultitext(ih_item);
 
   IupSetAttribute(multitext, "UNDOACTION", "BEGIN");
 
@@ -1353,7 +1935,7 @@ static int item_trimtrailing_action_cb(Ihandle* ih_item)
 
 static int item_trimleading_action_cb(Ihandle* ih_item)
 {
-  Ihandle* multitext = IupGetDialogChild(ih_item, "MULTITEXT");
+  Ihandle* multitext = iScintillaDlgGetCurrentMultitext(ih_item);
 
   IupSetAttribute(multitext, "UNDOACTION", "BEGIN");
 
@@ -1366,7 +1948,7 @@ static int item_trimleading_action_cb(Ihandle* ih_item)
 
 static int item_trimtraillead_action_cb(Ihandle* ih_item)
 {
-  Ihandle* multitext = IupGetDialogChild(ih_item, "MULTITEXT");
+  Ihandle* multitext = iScintillaDlgGetCurrentMultitext(ih_item);
 
   IupSetAttribute(multitext, "UNDOACTION", "BEGIN");
 
@@ -1381,7 +1963,7 @@ static int item_trimtraillead_action_cb(Ihandle* ih_item)
 
 static int item_tabtospace_action_cb(Ihandle* ih_item)
 {
-  Ihandle* multitext = IupGetDialogChild(ih_item, "MULTITEXT");
+  Ihandle* multitext = iScintillaDlgGetCurrentMultitext(ih_item);
 
   IupSetAttribute(multitext, "UNDOACTION", "BEGIN");
 
@@ -1394,7 +1976,7 @@ static int item_tabtospace_action_cb(Ihandle* ih_item)
 
 static int item_allspacetotab_action_cb(Ihandle* ih_item)
 {
-  Ihandle* multitext = IupGetDialogChild(ih_item, "MULTITEXT");
+  Ihandle* multitext = iScintillaDlgGetCurrentMultitext(ih_item);
 
   IupSetAttribute(multitext, "UNDOACTION", "BEGIN");
 
@@ -1407,7 +1989,7 @@ static int item_allspacetotab_action_cb(Ihandle* ih_item)
 
 static int item_leadingspacetotab_action_cb(Ihandle* ih_item)
 {
-  Ihandle* multitext = IupGetDialogChild(ih_item, "MULTITEXT");
+  Ihandle* multitext = iScintillaDlgGetCurrentMultitext(ih_item);
 
   IupSetAttribute(multitext, "UNDOACTION", "BEGIN");
 
@@ -1425,7 +2007,7 @@ static int find_next_action_cb(Ihandle* ih_item)
   if (find_dlg)
   {
     char* str_to_find;
-    Ihandle* multitext = (Ihandle*)IupGetAttribute(find_dlg, "MULTITEXT");
+    Ihandle* multitext = (Ihandle*)IupGetAttribute(find_dlg, "CURRENTMULTITEXT");
     Ihandle* find_txt = IupGetDialogChild(find_dlg, "FIND_TEXT");
 
     /* test again, because it can be called from the hot key */
@@ -1520,7 +2102,7 @@ static int find_next_action_cb(Ihandle* ih_item)
 static int find_replace_action_cb(Ihandle* bt_replace)
 {
   Ihandle* find_dlg = (Ihandle*)IupGetAttribute(bt_replace, "FIND_DIALOG");
-  Ihandle* multitext = (Ihandle*)IupGetAttribute(find_dlg, "MULTITEXT");
+  Ihandle* multitext = (Ihandle*)IupGetAttribute(find_dlg, "CURRENTMULTITEXT");
   char* selectionpos = IupGetAttribute(multitext, "SELECTIONPOS");
 
   if (!selectionpos)
@@ -1552,7 +2134,7 @@ static int find_replace_all_action_cb(Ihandle* bt_replace)
   {
     char* str_to_find;
     char* str_to_replace;
-    Ihandle* multitext = (Ihandle*)IupGetAttribute(find_dlg, "MULTITEXT");
+    Ihandle* multitext = (Ihandle*)IupGetAttribute(find_dlg, "CURRENTMULTITEXT");
     Ihandle* replace_txt = IupGetDialogChild(find_dlg, "REPLACE_TEXT");
     Ihandle* find_txt = IupGetDialogChild(find_dlg, "FIND_TEXT");
     
@@ -1626,28 +2208,25 @@ static int find_replace_all_action_cb(Ihandle* bt_replace)
 static int find_close_action_cb(Ihandle* bt_close)
 {
   Ihandle* find_dlg = IupGetDialog(bt_close);
-  Ihandle* multitext = (Ihandle*)IupGetAttribute(find_dlg, "MULTITEXT");
-  Ihandle* config = IupGetAttributeHandle(multitext, "CONFIG");
-  
-  if (config)
-  {
-    Ihandle*  find_text = IupGetDialogChild(find_dlg, "FIND_TEXT");
-    Ihandle*  replace_text = IupGetDialogChild(find_dlg, "REPLACE_TEXT");
-    Ihandle*  find_case = IupGetDialogChild(find_dlg, "FIND_CASE");
-    Ihandle*  whole_word = IupGetDialogChild(find_dlg, "WHOLE_WORD");
-    Ihandle*  wrap = IupGetDialogChild(find_dlg, "WRAP");
-    Ihandle*  searchMode = IupGetDialogChild(find_dlg, "SEARCH_RADIO");
-    Ihandle*  dirMode = IupGetDialogChild(find_dlg, "DIRECTION_RADIO");
-    IupConfigSetVariableStr(config, "FindDialog", "FindText", IupGetAttribute(find_text, "VALUE"));
-    IupConfigSetVariableStr(config, "FindDialog", "ReplaceText", IupGetAttribute(replace_text, "VALUE"));
-    IupConfigSetVariableStr(config, "FindDialog", "FindCase", IupGetAttribute(find_case, "VALUE"));
-    IupConfigSetVariableStr(config, "FindDialog", "WholeWord", IupGetAttribute(whole_word, "VALUE"));
-    IupConfigSetVariableStr(config, "FindDialog", "Wrap", IupGetAttribute(wrap, "VALUE"));
-    IupConfigSetVariableStr(config, "FindDialog", "SearchMode", IupGetAttribute((Ihandle*)IupGetAttribute(searchMode, "VALUE_HANDLE"), "NAME"));
-    IupConfigSetVariableStr(config, "FindDialog", "SearchDir", IupGetAttribute((Ihandle*)IupGetAttribute(dirMode, "VALUE_HANDLE"), "NAME"));
+  Ihandle* multitext = (Ihandle*)IupGetAttribute(find_dlg, "CURRENTMULTITEXT");
+  Ihandle* find_text = IupGetDialogChild(find_dlg, "FIND_TEXT");
+  Ihandle* replace_text = IupGetDialogChild(find_dlg, "REPLACE_TEXT");
+  Ihandle* find_case = IupGetDialogChild(find_dlg, "FIND_CASE");
+  Ihandle* whole_word = IupGetDialogChild(find_dlg, "WHOLE_WORD");
+  Ihandle* wrap = IupGetDialogChild(find_dlg, "WRAP");
+  Ihandle* searchMode = IupGetDialogChild(find_dlg, "SEARCH_RADIO");
+  Ihandle* dirMode = IupGetDialogChild(find_dlg, "DIRECTION_RADIO");
+  Ihandle* config = iScintillaDlgGetConfig(multitext);
+
+  IupConfigSetVariableStr(config, "FindDialog", "FindText", IupGetAttribute(find_text, "VALUE"));
+  IupConfigSetVariableStr(config, "FindDialog", "ReplaceText", IupGetAttribute(replace_text, "VALUE"));
+  IupConfigSetVariableStr(config, "FindDialog", "FindCase", IupGetAttribute(find_case, "VALUE"));
+  IupConfigSetVariableStr(config, "FindDialog", "WholeWord", IupGetAttribute(whole_word, "VALUE"));
+  IupConfigSetVariableStr(config, "FindDialog", "Wrap", IupGetAttribute(wrap, "VALUE"));
+  IupConfigSetVariableStr(config, "FindDialog", "SearchMode", IupGetAttribute((Ihandle*)IupGetAttribute(searchMode, "VALUE_HANDLE"), "NAME"));
+  IupConfigSetVariableStr(config, "FindDialog", "SearchDir", IupGetAttribute((Ihandle*)IupGetAttribute(dirMode, "VALUE_HANDLE"), "NAME"));
     
-    IupConfigDialogClosed(config, find_dlg, "FindDialog");
-  }
+  IupConfigDialogClosed(config, find_dlg, "FindDialog");
 
   IupHide(find_dlg);  /* do not destroy, just hide */
   return IUP_DEFAULT;
@@ -1659,7 +2238,8 @@ static Ihandle* create_find_dialog(Ihandle *multitext)
   Ihandle *find_case, *whole_word, *mode, *normal, *reg_exp, *posix, *wrap, *up, *down;
   Ihandle *flags, *direction, *searchRadio, *directionRadio;
   Ihandle *txt_replace, *bt_replace, *bt_replace_all;
-  Ihandle* config = IupGetAttributeHandle(multitext, "CONFIG");
+  Ihandle* config = iScintillaDlgGetConfig(multitext);
+  const char* value;
 
   txt = IupText(NULL);
   IupSetAttribute(txt, "NAME", "FIND_TEXT");
@@ -1748,7 +2328,7 @@ static Ihandle* create_find_dialog(Ihandle *multitext)
   IupSetCallback(find_dlg, "CLOSE_CB", (Icallback)find_close_action_cb);
 
   /* Save the multiline to access it from the callbacks */
-  IupSetAttribute(find_dlg, "MULTITEXT", (char*)multitext);
+  IupSetAttribute(find_dlg, "CURRENTMULTITEXT", (char*)multitext);
 
   IupSetInt(multitext, "TARGETSTART", IupGetInt(multitext, "CARETPOS"));
   IupSetInt(multitext, "TARGETEND", IupGetInt(multitext, "COUNT") - 1);
@@ -1759,53 +2339,50 @@ static Ihandle* create_find_dialog(Ihandle *multitext)
 
   IupMap(find_dlg);
 
-  if (config)
+  value = IupConfigGetVariableStr(config, "FindDialog", "FindText");
+  if (value)
+    IupSetStrAttribute(txt, "VALUE", value);
+
+  value = IupConfigGetVariableStr(config, "FindDialog", "ReplaceText");
+  if (value)
+    IupSetStrAttribute(txt_replace, "VALUE", value);
+
+  value = IupConfigGetVariableStr(config, "FindDialog", "FindCase");
+  if (value)
+    IupSetStrAttribute(find_case, "VALUE", value);
+
+  value = IupConfigGetVariableStr(config, "FindDialog", "WholeWord");
+  if (value)
+    IupSetStrAttribute(whole_word, "VALUE", value);
+
+  value = IupConfigGetVariableStr(config, "FindDialog", "Wrap");
+  if (value)
+    IupSetStrAttribute(wrap, "VALUE", value);
+
+  value = IupConfigGetVariableStr(config, "FindDialog", "SearchMode");
+  if (value)
   {
-    const char* value = IupConfigGetVariableStr(config, "FindDialog", "FindText");
-    if (value)
-      IupSetStrAttribute(txt, "VALUE", value);
+    Ihandle* search_mode = IupGetDialogChild(find_dlg, value);
+    if (search_mode)
+      IupSetAttribute(searchRadio, "VALUE_HANDLE", (char*)search_mode);
+  }
 
-    value = IupConfigGetVariableStr(config, "FindDialog", "ReplaceText");
-    if (value)
-      IupSetStrAttribute(txt_replace, "VALUE", value);
-
-    value = IupConfigGetVariableStr(config, "FindDialog", "FindCase");
-    if (value)
-      IupSetStrAttribute(find_case, "VALUE", value);
-
-    value = IupConfigGetVariableStr(config, "FindDialog", "WholeWord");
-    if (value)
-      IupSetStrAttribute(whole_word, "VALUE", value);
-
-    value = IupConfigGetVariableStr(config, "FindDialog", "Wrap");
-    if (value)
-      IupSetStrAttribute(wrap, "VALUE", value);
-
-    value = IupConfigGetVariableStr(config, "FindDialog", "SearchMode");
-    if (value)
-    {
-      Ihandle* search_mode = IupGetDialogChild(find_dlg, value);
-      if (search_mode)
-        IupSetAttribute(searchRadio, "VALUE_HANDLE", (char*)search_mode);
-    }
-
-    value = IupConfigGetVariableStr(config, "FindDialog", "SearchDir");
-    if (value)
-    {
-      Ihandle* search_dir = IupGetDialogChild(find_dlg, value);
-      if (search_dir)
-        IupSetAttribute(directionRadio, "VALUE_HANDLE", (char*)search_dir);
-    }
+  value = IupConfigGetVariableStr(config, "FindDialog", "SearchDir");
+  if (value)
+  {
+    Ihandle* search_dir = IupGetDialogChild(find_dlg, value);
+    if (search_dir)
+      IupSetAttribute(directionRadio, "VALUE_HANDLE", (char*)search_dir);
   }
 
   return find_dlg;
 }
 
-static int item_find_action_cb(Ihandle* item_find)
+static int item_find_action_cb(Ihandle* ih_item)
 {
-  Ihandle* find_dlg = (Ihandle*)IupGetAttribute(item_find, "FIND_DIALOG");
-  Ihandle* multitext = IupGetDialogChild(item_find, "MULTITEXT");
-  Ihandle* config = IupGetAttributeHandle(multitext, "CONFIG");
+  Ihandle* find_dlg = (Ihandle*)IupGetAttribute(ih_item, "FIND_DIALOG");
+  Ihandle* multitext = iScintillaDlgGetCurrentMultitext(ih_item);
+  Ihandle* config = iScintillaDlgGetConfig(multitext);
   char* str;
 
   if (!find_dlg)
@@ -1813,10 +2390,7 @@ static int item_find_action_cb(Ihandle* item_find)
 
   set_find_replace_visibility(find_dlg, 0);
 
-  if (config)
-    IupConfigDialogShow(config, find_dlg, "FindDialog");
-  else
-    IupShow(find_dlg);
+  IupConfigDialogShow(config, find_dlg, "FindDialog");
 
   str = IupGetAttribute(multitext, "SELECTEDTEXT");
   if (str && str[0] != 0)
@@ -1828,11 +2402,11 @@ static int item_find_action_cb(Ihandle* item_find)
   return IUP_DEFAULT;
 }
 
-static int item_replace_action_cb(Ihandle* item_replace)
+static int item_replace_action_cb(Ihandle* ih_item)
 {
-  Ihandle* find_dlg = (Ihandle*)IupGetAttribute(item_replace, "FIND_DIALOG");
-  Ihandle* multitext = IupGetDialogChild(item_replace, "MULTITEXT");
-  Ihandle* config = IupGetAttributeHandle(multitext, "CONFIG");
+  Ihandle* find_dlg = (Ihandle*)IupGetAttribute(ih_item, "FIND_DIALOG");
+  Ihandle* multitext = iScintillaDlgGetCurrentMultitext(ih_item);
+  Ihandle* config = iScintillaDlgGetConfig(multitext);
   char* str;
 
   if (!find_dlg)
@@ -1840,10 +2414,7 @@ static int item_replace_action_cb(Ihandle* item_replace)
 
   set_find_replace_visibility(find_dlg, 1);
 
-  if (config)
-    IupConfigDialogShow(config, find_dlg, "FindDialog");
-  else
-    IupShow(find_dlg);
+  IupConfigDialogShow(config, find_dlg, "FindDialog");
 
   str = IupGetAttribute(multitext, "SELECTEDTEXT");
   if (str && str[0] != 0)
@@ -1857,7 +2428,7 @@ static int item_replace_action_cb(Ihandle* item_replace)
 
 static int selection_find_next_action_cb(Ihandle* ih)
 {
-  Ihandle* multitext = IupGetDialogChild(ih, "MULTITEXT");
+  Ihandle* multitext = iScintillaDlgGetCurrentMultitext(ih);
 
   char* str = IupGetAttribute(multitext, "SELECTEDTEXT");
   if (str && str[0] != 0)
@@ -1877,63 +2448,63 @@ static int selection_find_next_action_cb(Ihandle* ih)
   return IUP_DEFAULT;
 }
 
-static int item_copy_action_cb(Ihandle* item_copy)
+static int item_copy_action_cb(Ihandle* ih_item)
 {
-  Ihandle* multitext = IupGetDialogChild(item_copy, "MULTITEXT");
+  Ihandle* multitext = iScintillaDlgGetCurrentMultitext(ih_item);
   IupSetAttribute(multitext, "CLIPBOARD", "COPY");
   return IUP_DEFAULT;
 }
 
-static int item_paste_action_cb(Ihandle* item_paste)
+static int item_paste_action_cb(Ihandle* ih_item)
 {
-  Ihandle* multitext = IupGetDialogChild(item_paste, "MULTITEXT");
+  Ihandle* multitext = iScintillaDlgGetCurrentMultitext(ih_item);
   IupSetAttribute(multitext, "CLIPBOARD", "PASTE");
   return IUP_IGNORE;  /* replace system processing for the hot key, to correctly parse line feed */
 }
 
-static int item_cut_action_cb(Ihandle* item_cut)
+static int item_cut_action_cb(Ihandle* ih_item)
 {
-  Ihandle* multitext = IupGetDialogChild(item_cut, "MULTITEXT");
+  Ihandle* multitext = iScintillaDlgGetCurrentMultitext(ih_item);
   IupSetAttribute(multitext, "CLIPBOARD", "CUT");
   return IUP_DEFAULT;
 }
 
-static int item_delete_action_cb(Ihandle* item_delete)
+static int item_delete_action_cb(Ihandle* ih_item)
 {
-  Ihandle* multitext = IupGetDialogChild(item_delete, "MULTITEXT");
+  Ihandle* multitext = iScintillaDlgGetCurrentMultitext(ih_item);
   IupSetAttribute(multitext, "CLIPBOARD", "CLEAR");
   return IUP_DEFAULT;
 }
 
-static int item_select_all_action_cb(Ihandle* item_select_all)
+static int item_select_all_action_cb(Ihandle* ih_item)
 {
   int count;
-  Ihandle* multitext = IupGetDialogChild(item_select_all, "MULTITEXT");
+  Ihandle* multitext = iScintillaDlgGetCurrentMultitext(ih_item);
   IupSetFocus(multitext);
   count = IupGetInt(multitext, "COUNT");
   IupSetStrf(multitext, "SELECTIONPOS", "%d:%d", 0, count - 1);
   return IUP_DEFAULT;
 }
 
-static int item_undo_action_cb(Ihandle* item)
+static int item_undo_action_cb(Ihandle* ih_item)
 {
-  Ihandle* multitext = IupGetDialogChild(item, "MULTITEXT");
+  Ihandle* multitext = iScintillaDlgGetCurrentMultitext(ih_item);
   IupSetAttribute(multitext, "UNDO", "YES");
   return IUP_DEFAULT;
 }
 
-static int item_redo_action_cb(Ihandle* item)
+static int item_redo_action_cb(Ihandle* ih_item)
 {
-  Ihandle* multitext = IupGetDialogChild(item, "MULTITEXT");
+  Ihandle* multitext = iScintillaDlgGetCurrentMultitext(ih_item);
   IupSetAttribute(multitext, "REDO", "YES");
   return IUP_DEFAULT;
 }
 
-static int item_uppercase_action_cb(Ihandle* item)
+static int item_uppercase_action_cb(Ihandle* ih_item)
 {
   char *text;
   int start, end;
-  Ihandle* multitext = IupGetDialogChild(item, "MULTITEXT");
+  Ihandle* multitext = iScintillaDlgGetCurrentMultitext(ih_item);
   IupGetIntInt(multitext, "SELECTIONPOS", &start, &end);
   text = IupGetAttribute(multitext, "SELECTEDTEXT");
   text = iupStrDup(text);
@@ -1944,11 +2515,11 @@ static int item_uppercase_action_cb(Ihandle* item)
   return IUP_DEFAULT;
 }
 
-static int item_lowercase_action_cb(Ihandle* item)
+static int item_lowercase_action_cb(Ihandle* ih_item)
 {
   char *text;
   int start, end;
-  Ihandle* multitext = IupGetDialogChild(item, "MULTITEXT");
+  Ihandle* multitext = iScintillaDlgGetCurrentMultitext(ih_item);
   IupGetIntInt(multitext, "SELECTIONPOS", &start, &end);
   text = IupGetAttribute(multitext, "SELECTEDTEXT");
   text = iupStrDup(text);
@@ -1959,352 +2530,383 @@ static int item_lowercase_action_cb(Ihandle* item)
   return IUP_DEFAULT;
 }
 
-static int item_case_action_cb(Ihandle* item)
+static int item_case_action_cb(Ihandle* ih_item)
 {
   char* shift = IupGetGlobal("SHIFTKEY");
 
   if (strcmp(shift, "ON") == 0)
-    item_uppercase_action_cb(item);
+    item_uppercase_action_cb(ih_item);
   else
-    item_lowercase_action_cb(item);
+    item_lowercase_action_cb(ih_item);
 
   return IUP_DEFAULT;
 }
 
-static int item_font_action_cb(Ihandle* item_font)
+static int item_font_action_cb(Ihandle* ih_item)
 {
-  Ihandle* multitext = IupGetDialogChild(item_font, "MULTITEXT");
+  Ihandle* tabs = IupGetDialogChild(ih_item, "TABS");
+  Ihandle* multitext;
+  Ihandle* config = iScintillaDlgGetConfig(ih_item);
   Ihandle* fontdlg = IupFontDlg();
-  char* font = IupGetAttribute(multitext, "FONT");
+
+  const char* font = IupConfigGetVariableStr(config, "Format", "Font");
+
   IupSetStrAttribute(fontdlg, "VALUE", font);
-  IupSetAttributeHandle(fontdlg, "PARENTDIALOG", IupGetDialog(item_font));
+  IupSetAttributeHandle(fontdlg, "PARENTDIALOG", IupGetDialog(ih_item));
 
   IupPopup(fontdlg, IUP_CENTERPARENT, IUP_CENTERPARENT);
 
   if (IupGetInt(fontdlg, "STATUS") == 1)
   {
-    Ihandle* config = IupGetAttributeHandle(multitext, "CONFIG");
-
     font = IupGetAttribute(fontdlg, "VALUE");
-    IupSetStrAttribute(multitext, "FONT", font);
 
-    if (config)
-      IupConfigSetVariableStr(config, "Format", "Font", font);
+    for (multitext = tabs->firstchild; multitext; multitext = multitext->brother)
+      IupSetStrAttribute(multitext, "FONT", font);
+
+    IupConfigSetVariableStr(config, "Format", "Font", font);
   }
 
   IupDestroy(fontdlg);
   return IUP_DEFAULT;
 }
 
-static int item_tab_action_cb(Ihandle* item)
+static int item_tab_action_cb(Ihandle* ih_item)
 {
-  Ihandle* multitext = IupGetDialogChild(item, "MULTITEXT");
+  Ihandle* tabs = IupGetDialogChild(ih_item, "TABS");
+  Ihandle* multitext;
+  Ihandle* config = iScintillaDlgGetConfig(ih_item);
 
-  int replaceBySpace = !IupGetInt(multitext, "USETABS");
-  int tabSize = IupGetInt(multitext, "TABSIZE");
+  int replaceBySpace = !IupConfigGetVariableIntDef(config, "Format", "UseTabs", 1);
+  int tabSize = IupConfigGetVariableIntDef(config, "Format", "TabSize", 8);
 
-  if (IupGetParam("Tab Settings", param_cb, IupGetDialog(item),
+  if (IupGetParam("Tab Settings", setparent_param_cb, IupGetDialog(ih_item),
                    "Size: %i\n"
                    "Replace by Whitespace: %b\n", 
                    &tabSize, &replaceBySpace, NULL))
   {
-    Ihandle* config = IupGetAttributeHandle(multitext, "CONFIG");
 
-    IupSetInt(multitext, "TABSIZE", tabSize);
-    IupSetInt(multitext, "USETABS", !replaceBySpace);
-
-    if (config)
+    for (multitext = tabs->firstchild; multitext; multitext = multitext->brother)
     {
-      IupConfigSetVariableInt(config, "Format", "TabSize", tabSize);
-      IupConfigSetVariableInt(config, "Format", "UseTabs", !replaceBySpace);
+      IupSetInt(multitext, "TABSIZE", tabSize);
+      IupSetInt(multitext, "USETABS", !replaceBySpace);
     }
+
+    IupConfigSetVariableInt(config, "Format", "TabSize", tabSize);
+    IupConfigSetVariableInt(config, "Format", "UseTabs", !replaceBySpace);
   }
 
   return IUP_DEFAULT;
 }
 
-static int item_zoomin_action_cb(Ihandle* item)
+static int item_zoomin_action_cb(Ihandle* ih_item)
 {
-  Ihandle* multitext = IupGetDialogChild(item, "MULTITEXT");
+  Ihandle* multitext = iScintillaDlgGetCurrentMultitext(ih_item);
 
   IupSetAttribute(multitext, "ZOOMIN", "10");
 
   return IUP_DEFAULT;
 }
 
-static int item_zoomout_action_cb(Ihandle* item)
+static int item_zoomout_action_cb(Ihandle* ih_item)
 {
-  Ihandle* multitext = IupGetDialogChild(item, "MULTITEXT");
+  Ihandle* multitext = iScintillaDlgGetCurrentMultitext(ih_item);
 
   IupSetAttribute(multitext, "ZOOMOUT", "10");
 
   return IUP_IGNORE;  /* to avoid garbage in Scintilla when pressing the hot key */
 }
 
-static int item_restorezoom_action_cb(Ihandle* item)
+static int item_restorezoom_action_cb(Ihandle* ih_item)
 {
-  Ihandle* multitext = IupGetDialogChild(item, "MULTITEXT");
+  Ihandle* multitext = iScintillaDlgGetCurrentMultitext(ih_item);
 
   IupSetAttribute(multitext, "ZOOM", "0");
 
   return IUP_DEFAULT;
 }
 
-static int item_wordwrap_action_cb(Ihandle* item_wordwrap)
+static int item_wordwrap_action_cb(Ihandle* ih_item)
 {
-  Ihandle* multitext = IupGetDialogChild(item_wordwrap, "MULTITEXT");
-  Ihandle* config = IupGetAttributeHandle(multitext, "CONFIG");
-  char *value = IupGetAttribute(item_wordwrap, "VALUE");
+  Ihandle* tabs = IupGetDialogChild(ih_item, "TABS");
+  Ihandle* multitext;
+  Ihandle* config = iScintillaDlgGetConfig(ih_item);
+  char *value = IupGetAttribute(ih_item, "VALUE");
 
-  if (iupStrBoolean(value))
-    IupSetAttribute(multitext, "WORDWRAP", "WORD");
-  else
-    IupSetAttribute(multitext, "WORDWRAP", "NONE");
+  for (multitext = tabs->firstchild; multitext; multitext = multitext->brother)
+  {
+    if (iupStrBoolean(value))
+      IupSetAttribute(multitext, "WORDWRAP", "WORD");
+    else
+      IupSetAttribute(multitext, "WORDWRAP", "NONE");
+  }
 
-  if (config)
-    IupConfigSetVariableStr(config, "View", "WordWrap", value);
+  IupConfigSetVariableStr(config, "View", "WordWrap", value);
 
   return IUP_DEFAULT;
 }
 
-static int item_showwhite_action_cb(Ihandle* item_showwhite)
+static int item_showwhite_action_cb(Ihandle* ih_item)
 {
-  Ihandle* multitext = IupGetDialogChild(item_showwhite, "MULTITEXT");
-  Ihandle* config = IupGetAttributeHandle(multitext, "CONFIG");
-  char *value = IupGetAttribute(item_showwhite, "VALUE");
+  Ihandle* tabs = IupGetDialogChild(ih_item, "TABS");
+  Ihandle* multitext;
+  Ihandle* config = iScintillaDlgGetConfig(ih_item);
+  char *value = IupGetAttribute(ih_item, "VALUE");
 
-  if (iupStrBoolean(value))
-    IupSetAttribute(multitext, "WHITESPACEVIEW", "VISIBLEALWAYS");
-  else
-    IupSetAttribute(multitext, "WHITESPACEVIEW", "INVISIBLE");
+  for (multitext = tabs->firstchild; multitext; multitext = multitext->brother)
+  {
+    if (iupStrBoolean(value))
+      IupSetAttribute(multitext, "WHITESPACEVIEW", "VISIBLEALWAYS");
+    else
+      IupSetAttribute(multitext, "WHITESPACEVIEW", "INVISIBLE");
+  }
 
-  if (config)
-    IupConfigSetVariableStr(config, "View", "ShowWhite", value);
-
+  IupConfigSetVariableStr(config, "View", "ShowWhite", value);
   return IUP_DEFAULT;
 }
 
-static int item_showeol_action_cb(Ihandle* item_showeol)
+static int item_showeol_action_cb(Ihandle* ih_item)
 {
-  Ihandle* multitext = IupGetDialogChild(item_showeol, "MULTITEXT");
-  Ihandle* config = IupGetAttributeHandle(multitext, "CONFIG");
-  char *value = IupGetAttribute(item_showeol, "VALUE");
+  Ihandle* tabs = IupGetDialogChild(ih_item, "TABS");
+  Ihandle* multitext;
+  Ihandle* config = iScintillaDlgGetConfig(ih_item);
+  char *value = IupGetAttribute(ih_item, "VALUE");
 
-  if (iupStrBoolean(value))
-    IupSetAttribute(multitext, "EOLVISIBLE", "YES");
-  else
-    IupSetAttribute(multitext, "EOLVISIBLE", "NO");
+  for (multitext = tabs->firstchild; multitext; multitext = multitext->brother)
+  {
+    if (iupStrBoolean(value))
+      IupSetAttribute(multitext, "EOLVISIBLE", "YES");
+    else
+      IupSetAttribute(multitext, "EOLVISIBLE", "NO");
+  }
 
-  if (config)
-    IupConfigSetVariableStr(config, "View", "ShowEol", value);
-
+  IupConfigSetVariableStr(config, "View", "ShowEol", value);
   return IUP_DEFAULT;
 }
 
-static int item_toolbar_action_cb(Ihandle* item_toolbar)
+static int item_toolbar_action_cb(Ihandle* ih_item)
 {
-  Ihandle* multitext = IupGetDialogChild(item_toolbar, "MULTITEXT");
-  Ihandle* toolbar = IupGetChild(IupGetParent(multitext), 0);
-  Ihandle* config = IupGetAttributeHandle(multitext, "CONFIG");
+  Ihandle* tabs = IupGetDialogChild(ih_item, "TABS");
+  Ihandle* toolbar = IupGetChild(IupGetParent(tabs), 0);
+  Ihandle* config = iScintillaDlgGetConfig(tabs);
 
-  toggle_bar_visibility(item_toolbar, toolbar);
+  toggle_bar_visibility(ih_item, toolbar);
 
-  if (config)
-    IupConfigSetVariableStr(config, "View", "Toolbar", IupGetAttribute(item_toolbar, "VALUE"));
+  IupConfigSetVariableStr(config, "View", "Toolbar", IupGetAttribute(ih_item, "VALUE"));
   return IUP_DEFAULT;
 }
 
-static int item_statusbar_action_cb(Ihandle* item_statusbar)
+static int item_statusbar_action_cb(Ihandle* ih_item)
 {
-  Ihandle* multitext = IupGetDialogChild(item_statusbar, "MULTITEXT");
-  Ihandle* statusbar = IupGetBrother(multitext);
-  Ihandle* config = IupGetAttributeHandle(multitext, "CONFIG");
+  Ihandle* tabs = IupGetDialogChild(ih_item, "TABS");
+  Ihandle* statusbar = IupGetBrother(tabs);
+  Ihandle* config = iScintillaDlgGetConfig(tabs);
 
-  toggle_bar_visibility(item_statusbar, statusbar);
+  toggle_bar_visibility(ih_item, statusbar);
 
-  if (config)
-    IupConfigSetVariableStr(config, "View", "Statusbar", IupGetAttribute(item_statusbar, "VALUE"));
+  IupConfigSetVariableStr(config, "View", "Statusbar", IupGetAttribute(ih_item, "VALUE"));
   return IUP_DEFAULT;
 }
 
-static int item_linenumber_action_cb(Ihandle* item_linenumber)
+static int item_linenumber_action_cb(Ihandle* ih_item)
 {
-  Ihandle* multitext = IupGetDialogChild(item_linenumber, "MULTITEXT");
-  Ihandle* config = IupGetAttributeHandle(multitext, "CONFIG");
-  char *value = IupGetAttribute(item_linenumber, "VALUE");
+  Ihandle* tabs = IupGetDialogChild(ih_item, "TABS");
+  Ihandle* multitext;
+  Ihandle* config = iScintillaDlgGetConfig(ih_item);
+  char *value = IupGetAttribute(ih_item, "VALUE");
 
-  if (iupStrBoolean(value))
-    IupSetAttribute(multitext, "MARGINWIDTH0", LINENUMBER_MARGIN);
-  else
-    IupSetAttribute(multitext, "MARGINWIDTH0", "0");
+  for (multitext = tabs->firstchild; multitext; multitext = multitext->brother)
+  {
+    if (iupStrBoolean(value))
+      IupSetAttribute(multitext, "MARGINWIDTH0", LINENUMBER_MARGIN);
+    else
+      IupSetAttribute(multitext, "MARGINWIDTH0", "0");
+  }
 
-  if (config)
-    IupConfigSetVariableStr(config, "View", "LineNumber", value);
+  IupConfigSetVariableStr(config, "View", "LineNumber", value);
   return IUP_DEFAULT;
 }
 
-static int item_bookmark_action_cb(Ihandle* item_bookmark)
+static int item_bookmark_action_cb(Ihandle* ih_item)
 {
-  Ihandle* multitext = IupGetDialogChild(item_bookmark, "MULTITEXT");
-  Ihandle* config = IupGetAttributeHandle(multitext, "CONFIG");
-  char *value = IupGetAttribute(item_bookmark, "VALUE");
+  Ihandle* tabs = IupGetDialogChild(ih_item, "TABS");
+  Ihandle* multitext;
+  Ihandle* config = iScintillaDlgGetConfig(ih_item);
+  char *value = IupGetAttribute(ih_item, "VALUE");
 
-  if (iupStrBoolean(value))
-    IupSetAttribute(multitext, "MARGINWIDTH1", BOOKMARK_MARGIN);
-  else
-    IupSetAttribute(multitext, "MARGINWIDTH1", "0");
+  for (multitext = tabs->firstchild; multitext; multitext = multitext->brother)
+  {
+    if (iupStrBoolean(value))
+      IupSetAttribute(multitext, "MARGINWIDTH1", BOOKMARK_MARGIN);
+    else
+      IupSetAttribute(multitext, "MARGINWIDTH1", "0");
+  }
 
-  if (config)
-    IupConfigSetVariableStr(config, "View", "Bookmark", value);
+  IupConfigSetVariableStr(config, "View", "Bookmark", value);
   return IUP_DEFAULT;
 }
 
+static int item_windowN_action_cb(Ihandle* ih_item)
+{
+  Ihandle* tabs = IupGetDialogChild(ih_item, "TABS");
+  int pos = IupGetChildPos(IupGetParent(ih_item), ih_item);
+  IupSetInt(tabs, "VALUEPOS", pos);
+  return IUP_DEFAULT;
+}
+
+static int item_windows_action_cb(Ihandle* ih_item)
+{
+  Ihandle* tabs = IupGetDialogChild(ih_item, "TABS");
+  int pos = IupGetInt(tabs, "VALUEPOS");
+  Ihandle* multitext;
+  int ret, count = 0, max_lin;
+  char* win_list_str[300];
+
+  for (multitext = tabs->firstchild; multitext; multitext = multitext->brother)
+  {
+    char* filename = IupGetAttribute(multitext, "FILENAME");
+    win_list_str[count] = filename;
+    count++;
+  }
+
+  IupStoreGlobal("_IUP_OLD_PARENTDIALOG", IupGetGlobal("PARENTDIALOG"));
+  IupSetAttributeHandle(NULL, "PARENTDIALOG", IupGetDialog(tabs));
+
+  max_lin = count < 15 ? count + 1 : 15;
+
+  ret = IupListDialog(1, "Windows", count, (const char**)win_list_str, pos + 1, 30, max_lin, NULL);
+
+  IupStoreGlobal("PARENTDIALOG", IupGetGlobal("_IUP_OLD_PARENTDIALOG"));
+  IupSetGlobal("_IUP_OLD_PARENTDIALOG", NULL);
+
+  if (ret != -1)
+    IupSetInt(tabs, "VALUEPOS", ret);
+
+  return IUP_DEFAULT;
+}
 
 
 /********************************** Attributes *****************************************/
 
-static int iScintillaDlgSetConfigAttrib(Ihandle* ih, const char* value)
+
+static void iScintillaDlgSetConfigMultitext(Ihandle* ih, Ihandle* config, Ihandle* multitext)
 {
-  Ihandle* config = IupGetHandle(value);
-  if (config)
+  const char* value;
+
+  value = IupConfigGetVariableStr(config, "Format", "Font");
+  if (value)
+    IupSetStrAttribute(multitext, "FONT", value);
+  else
   {
-    Icallback cb = IupGetCallback(ih, "CONFIGLOAD_CB");
-    Ihandle* recent_menu = (Ihandle*)iupAttribGet(ih, "_IUP_RECENTMENU");
-    Ihandle* multitext = IupGetDialogChild(ih, "MULTITEXT");
-
-    const char* value = IupConfigGetVariableStr(config, "Format", "Font");
-    if (value)
-      IupSetStrAttribute(multitext, "FONT", value);
-
-    value = IupConfigGetVariableStr(config, "Format", "TabSize");
-    if (value)
-      IupSetStrAttribute(multitext, "TABSIZE", value);
-
-    value = IupConfigGetVariableStr(config, "Format", "UseTabs");
-    if (value)
-      IupSetStrAttribute(multitext, "USETABS", value);
-    
-    value = IupConfigGetVariableStr(config, "View", "WordWrap");
-    if (value)
-    {
-      Ihandle* item_wordwrap = IupGetDialogChild(ih, "ITEM_WORDWRAP");
-      IupSetAttribute(item_wordwrap, "VALUE", value);
-      if (iupStrBoolean(value))
-        IupSetAttribute(multitext, "WORDWRAP", "WORD");
-      else
-        IupSetAttribute(multitext, "WORDWRAP", "NONE");
-    }
-
-    value = IupConfigGetVariableStr(config, "View", "ShowWhite");
-    if (value)
-    {
-      Ihandle* item_showwhite = IupGetDialogChild(ih, "ITEM_SHOWWHITE");
-      IupSetAttribute(item_showwhite, "VALUE", value);
-      if (iupStrBoolean(value))
-        IupSetAttribute(multitext, "WHITESPACEVIEW", "VISIBLEALWAYS");
-      else
-        IupSetAttribute(multitext, "WHITESPACEVIEW", "INVISIBLE");
-    }
-
-    value = IupConfigGetVariableStr(config, "View", "ShowEol");
-    if (value)
-    {
-      Ihandle* item_showeol = IupGetDialogChild(ih, "ITEM_SHOWEOL");
-      IupSetAttribute(item_showeol, "VALUE", value);
-      if (iupStrBoolean(value))
-        IupSetAttribute(multitext, "EOLVISIBLE", "YES");
-      else
-        IupSetAttribute(multitext, "EOLVISIBLE", "NO");
-    }
-
-    value = IupConfigGetVariableStr(config, "View", "Toolbar");
-    if (value && !iupStrBoolean(value))
-    {
-      Ihandle* item_toolbar = IupGetDialogChild(ih, "ITEM_TOOLBAR");
-      Ihandle* toolbar = IupGetChild(IupGetParent(multitext), 0);
-      /* default is visible */
-      IupSetAttribute(toolbar, "FLOATING", "YES");
-      IupSetAttribute(toolbar, "VISIBLE", "NO");
-      IupSetAttribute(item_toolbar, "VALUE", "OFF");
-    }
-
-    value = IupConfigGetVariableStr(config, "View", "Statusbar");
-    if (value && !iupStrBoolean(value))
-    {
-      Ihandle* item_statusbar = IupGetDialogChild(ih, "ITEM_STATUSBAR");
-      Ihandle* statusbar = IupGetBrother(multitext);
-      /* default is visible */
-      IupSetAttribute(statusbar, "FLOATING", "YES");
-      IupSetAttribute(statusbar, "VISIBLE", "NO");
-      IupSetAttribute(item_statusbar, "VALUE", "OFF");
-    }
-
-    value = IupConfigGetVariableStr(config, "View", "LineNumber");
-    if (value)
-    {
-      Ihandle* item_linenumber = IupGetDialogChild(ih, "ITEM_LINENUMBER");
-      IupSetAttribute(item_linenumber, "VALUE", value);
-      if (iupStrBoolean(value))
-        IupSetAttribute(multitext, "MARGINWIDTH0", LINENUMBER_MARGIN);
-      else
-        IupSetAttribute(multitext, "MARGINWIDTH0", "0");
-    }
-
-    value = IupConfigGetVariableStr(config, "View", "Bookmark");
-    if (value)
-    {
-      Ihandle* item_bookmark = IupGetDialogChild(ih, "ITEM_BOOKMARK");
-      IupSetAttribute(item_bookmark, "VALUE", value);
-      if (iupStrBoolean(value))
-        IupSetAttribute(multitext, "MARGINWIDTH1", BOOKMARK_MARGIN);
-      else
-        IupSetAttribute(multitext, "MARGINWIDTH1", "0");
-    }
-
-    value = IupConfigGetVariableStr(config, "Print", "MarginLeft");
-    if (value)
-      IupSetStrAttribute(multitext, "PRINTMARGINLEFT", value);
-
-    value = IupConfigGetVariableStr(config, "Print", "MarginRight");
-    if (value)
-      IupSetStrAttribute(multitext, "PRINTMARGINRIGHT", value);
-
-    value = IupConfigGetVariableStr(config, "Print", "MarginTop");
-    if (value)
-      IupSetStrAttribute(multitext, "PRINTMARGINTOP", value);
-
-    value = IupConfigGetVariableStr(config, "Print", "MarginBottom");
-    if (value)
-      IupSetStrAttribute(multitext, "PRINTMARGINBOTTOM", value);
-
-    value = IupConfigGetVariableStr(config, "Print", "MarginUnits");
-    if (value)
-      IupSetStrAttribute(multitext, "PRINTMARGINUNITS", value);
-
-    value = IupConfigGetVariableStr(config, "Print", "WordWrap");
-    if (value)
-      IupSetStrAttribute(multitext, "PRINTWORDWRAP", value);
-
-    value = IupConfigGetVariableStr(config, "Print", "Color");
-    if (value)
-      IupSetStrAttribute(multitext, "PRINTCOLOR", value);
-
-    value = IupConfigGetVariableStr(config, "Print", "Magnification");
-    if (value)
-      IupSetStrAttribute(multitext, "PRINTMAGNIFICATION", value);
-
-    IupConfigRecentInit(config, recent_menu, config_recent_cb, 10);
-
-    if (cb)
-      cb(ih);
+    value = IupGetAttribute(multitext, "FONT");
+    IupConfigSetVariableStr(config, "Format", "Font", value);
   }
 
-  return 1;
+  value = IupConfigGetVariableStr(config, "Format", "TabSize");
+  if (value)
+    IupSetStrAttribute(multitext, "TABSIZE", value);
+
+  value = IupConfigGetVariableStr(config, "Format", "UseTabs");
+  if (value)
+    IupSetStrAttribute(multitext, "USETABS", value);
+
+  value = IupConfigGetVariableStr(config, "View", "WordWrap");
+  if (value)
+  {
+    Ihandle* item_wordwrap = IupGetDialogChild(ih, "ITEM_WORDWRAP");
+    IupSetAttribute(item_wordwrap, "VALUE", value);
+    if (iupStrBoolean(value))
+      IupSetAttribute(multitext, "WORDWRAP", "WORD");
+    else
+      IupSetAttribute(multitext, "WORDWRAP", "NONE");
+  }
+
+  value = IupConfigGetVariableStr(config, "View", "ShowWhite");
+  if (value)
+  {
+    Ihandle* item_showwhite = IupGetDialogChild(ih, "ITEM_SHOWWHITE");
+    IupSetAttribute(item_showwhite, "VALUE", value);
+    if (iupStrBoolean(value))
+      IupSetAttribute(multitext, "WHITESPACEVIEW", "VISIBLEALWAYS");
+    else
+      IupSetAttribute(multitext, "WHITESPACEVIEW", "INVISIBLE");
+  }
+
+  value = IupConfigGetVariableStr(config, "View", "ShowEol");
+  if (value)
+  {
+    Ihandle* item_showeol = IupGetDialogChild(ih, "ITEM_SHOWEOL");
+    IupSetAttribute(item_showeol, "VALUE", value);
+    if (iupStrBoolean(value))
+      IupSetAttribute(multitext, "EOLVISIBLE", "YES");
+    else
+      IupSetAttribute(multitext, "EOLVISIBLE", "NO");
+  }
+
+  value = IupConfigGetVariableStr(config, "View", "LineNumber");
+  if (value)
+  {
+    Ihandle* item_linenumber = IupGetDialogChild(ih, "ITEM_LINENUMBER");
+    IupSetAttribute(item_linenumber, "VALUE", value);
+    if (iupStrBoolean(value))
+      IupSetAttribute(multitext, "MARGINWIDTH0", LINENUMBER_MARGIN);
+    else
+      IupSetAttribute(multitext, "MARGINWIDTH0", "0");
+  }
+
+  value = IupConfigGetVariableStr(config, "View", "Bookmark");
+  if (value)
+  {
+    Ihandle* item_bookmark = IupGetDialogChild(ih, "ITEM_BOOKMARK");
+    IupSetAttribute(item_bookmark, "VALUE", value);
+    if (iupStrBoolean(value))
+      IupSetAttribute(multitext, "MARGINWIDTH1", BOOKMARK_MARGIN);
+    else
+      IupSetAttribute(multitext, "MARGINWIDTH1", "0");
+  }
+}
+
+static void iScintillaDlgSetConfig(Ihandle* ih, Ihandle* config)
+{
+  IFnn cb = (IFnn)IupGetCallback(ih, "CONFIGLOAD_CB");
+  Ihandle* recent_menu = (Ihandle*)iupAttribGet(ih, "_IUP_RECENTMENU");
+  Ihandle* tabs = IupGetDialogChild(ih, "TABS");
+  Ihandle* multitext;
+  const char* value;
+
+  value = IupConfigGetVariableStr(config, "View", "Toolbar");
+  if (value && !iupStrBoolean(value))
+  {
+    Ihandle* item_toolbar = IupGetDialogChild(ih, "ITEM_TOOLBAR");
+    Ihandle* toolbar = IupGetChild(IupGetParent(tabs), 0);
+    /* default is visible */
+    IupSetAttribute(toolbar, "FLOATING", "YES");
+    IupSetAttribute(toolbar, "VISIBLE", "NO");
+    IupSetAttribute(item_toolbar, "VALUE", "OFF");
+  }
+
+  value = IupConfigGetVariableStr(config, "View", "Statusbar");
+  if (value && !iupStrBoolean(value))
+  {
+    Ihandle* item_statusbar = IupGetDialogChild(ih, "ITEM_STATUSBAR");
+    Ihandle* statusbar = IupGetBrother(tabs);
+    /* default is visible */
+    IupSetAttribute(statusbar, "FLOATING", "YES");
+    IupSetAttribute(statusbar, "VISIBLE", "NO");
+    IupSetAttribute(item_statusbar, "VALUE", "OFF");
+  }
+
+  for (multitext = tabs->firstchild; multitext; multitext = multitext->brother)
+    iScintillaDlgSetConfigMultitext(ih, config, multitext);
+
+  IupConfigRecentInit(config, recent_menu, config_recent_cb, 10);
+
+  if (cb)
+    cb(ih, config);
 }
 
 static int iScintillaDlgSetConfigHandleAttrib(Ihandle* ih, const char* value)
 {
-  Ihandle* config = (Ihandle*)value;
+  Ihandle *old_config, *config = (Ihandle*)value;
   if (!iupObjectCheck(config))
     return 0;
 
@@ -2312,14 +2914,53 @@ static int iScintillaDlgSetConfigHandleAttrib(Ihandle* ih, const char* value)
   if (ih->handle)
     return 0;
 
-  IupSetAttributeHandle(ih, "CONFIG", config);
+  old_config = (Ihandle*)iupAttribGet(ih, "_IUP_CONFIG");
+  IupDestroy(old_config);
+
+  iupAttribSet(ih, "_IUP_CONFIG", (char*)config);
+
+  /* make sure it has at least one name */
+  if (!iupAttribGetHandleName(config))
+    iupAttribSetHandleName(config);
+
+  iScintillaDlgSetConfig(ih, config);
+
+  return 0;
+}
+
+static char* iScintillaDlgGetConfigHandleAttrib(Ihandle* ih)
+{
+  return iupAttribGet(ih, "_IUP_CONFIG");
+}
+
+static int iScintillaDlgSetConfigAttrib(Ihandle* ih, const char* value)
+{
+  Ihandle* config = IupGetHandle(value);
+  iScintillaDlgSetConfigHandleAttrib(ih, (char*)config);
+  return 0;
+}
+
+static char* iScintillaDlgGetConfigAttrib(Ihandle* ih)
+{
+  Ihandle* config = (Ihandle*)iupAttribGet(ih, "_IUP_CONFIG");
+  return IupGetName(config);
+}
+
+static int iScintillaDlgSetSubTitleAttrib(Ihandle* ih, const char* value)
+{
+  Ihandle* multitext = iScintillaDlgGetCurrentMultitext(ih);
+  iupAttribSetStr(ih, "SUBTITLE", value);
+  update_dialog_title(multitext);
   return 1;
 }
 
 static int iScintillaDlgSetOpenFileAttrib(Ihandle* ih, const char* value)
 {
   if (value)
-    open_file(ih, value);
+  {
+    if (!check_open(ih, value, 0))
+      open_file(ih, value, 1);
+  }
   else
     new_file(ih);
   return 0;
@@ -2327,11 +2968,26 @@ static int iScintillaDlgSetOpenFileAttrib(Ihandle* ih, const char* value)
 
 static int iScintillaDlgSetSaveFileAttrib(Ihandle* ih, const char* value)
 {
-  Ihandle* multitext = IupGetDialogChild(ih, "MULTITEXT");
+  Ihandle* multitext = iScintillaDlgGetCurrentMultitext(ih);
   if (value)
-    saveas_file(multitext, value);
+  {
+    if (!check_open(ih, value, 1))
+      saveas_file(multitext, value);
+  }
   else
     save_file(multitext);
+  return 0;
+}
+
+static int iScintillaDlgSetForceCloseFileAttrib(Ihandle* ih, const char* value)
+{
+  int pos;
+  if (iupStrToInt(value, &pos))
+  {
+    Ihandle* tabs = IupGetDialogChild(ih, "TABS");
+    Ihandle* multitext = IupGetChild(tabs, pos);
+    iScintillaDlgCloseMultitext(multitext);
+  }
   return 0;
 }
 
@@ -2340,7 +2996,7 @@ static int iScintillaDlgSetToggleMarkerAttribId(Ihandle* ih, int id, const char*
   int margin;
   if (iupStrToInt(value, &margin))
   {
-    Ihandle* multitext = IupGetDialogChild(ih, "MULTITEXT");
+    Ihandle* multitext = iScintillaDlgGetCurrentMultitext(ih);
     toggleMarker(multitext, id, margin);
   }
   return 0;
@@ -2352,7 +3008,7 @@ static int iScintillaDlgSetToggleMarkerAttribId(Ihandle* ih, int id, const char*
 
 static int iScintillaDlgCreateMethod(Ihandle* ih, void** params)
 {
-  Ihandle *vbox, *multitext, *menu;
+  Ihandle *vbox, *tabs, *menu;
   Ihandle *sub_menu_file, *file_menu, *item_exit, *item_new, *item_open, *item_save, *item_saveas, *item_revert;
   Ihandle *sub_menu_edit, *edit_menu, *item_find, *item_find_next, *item_goto, *item_gotombrace, *item_copy, *item_paste, *item_cut, *item_delete, *item_select_all;
   Ihandle *item_togglemark, *item_nextmark, *item_previousmark, *item_clearmarks, *item_cutmarked, *item_copymarked, *item_pastetomarked, *item_removemarked,
@@ -2364,41 +3020,18 @@ static int iScintillaDlgCreateMethod(Ihandle* ih, void** params)
   Ihandle *sub_menu_format, *format_menu, *item_font, *item_tab, *item_replace;
   Ihandle *sub_menu_view, *view_menu, *item_toolbar, *item_statusbar, *item_linenumber, *item_bookmark;
   Ihandle *zoom_menu, *item_zoomin, *item_zoomout, *item_restorezoom;
-  Ihandle *lbl_statusbar, *toolbar_hb, *recent_menu;
+  Ihandle *item_savecopy, *item_saveall, *item_closeall, *item_close, *item_rename, *item_windows;
+  Ihandle *lbl_statusbar, *toolbar_hb, *recent_menu, *window_menu, *sub_menu_window, *item_window1;
   Ihandle *item_wordwrap, *item_showwhite, *item_showeol;
 
-  multitext = IupScintilla();
-  IupSetAttribute(multitext, "MULTILINE", "YES");
-  IupSetAttribute(multitext, "EXPAND", "YES");
-  IupSetAttribute(multitext, "NAME", "MULTITEXT");
-  IupSetAttribute(multitext, "SAVEPOINT", NULL);
-  IupSetCallback(multitext, "CARET_CB", (Icallback)multitext_caret_cb);
-  IupSetCallback(multitext, "SAVEPOINT_CB", (Icallback)multitext_savepoint_cb);
-  IupSetCallback(multitext, "DROPFILES_CB", (Icallback)dropfiles_cb);
-  IupSetCallback(multitext, "MARGINCLICK_CB", (Icallback)multitext_marginclick_cb);
-  IupSetCallback(multitext, "UPDATESELECTION_CB", (Icallback)updateselection_cb);
-
-  /* highlight color for BRACEHIGHLIGHT */
-  IupSetAttribute(multitext, "STYLEFGCOLOR34", "255 0 0");
-  /* change the default for visibility of word warps */
-  IupSetAttribute(multitext, "WORDWRAPVISUALFLAGS", "MARGIN");
-
-  /* line numbers margin=0 */
-  IupSetAttribute(multitext, "MARGINWIDTH0", LINENUMBER_MARGIN);
-  IupSetAttribute(multitext, "MARGINSENSITIVE0", "YES");
-
-  /* bookmarks margin=1 */
-  IupSetAttribute(multitext, "MARGINWIDTH1", BOOKMARK_MARGIN);
-  IupSetAttribute(multitext, "MARGINTYPE1", "SYMBOL");
-  IupSetAttribute(multitext, "MARGINSENSITIVE1", "YES");
-  IupSetAttribute(multitext, "MARGINMASKFOLDERS1", "NO"); /* (disable folding) */
-  IupSetAttributeId(multitext, "MARGINMASK", 1, "1");  /* 0001 - marker=0 */
-
-  /* bookmarks marker=0 */
-  IupSetAttributeId(multitext, "MARKERFGCOLOR", 0, "0 0 255");
-  IupSetAttributeId(multitext, "MARKERBGCOLOR", 0, "0 0 255");
-  IupSetAttributeId(multitext, "MARKERALPHA", 0, "80");
-  IupSetAttributeId(multitext, "MARKERSYMBOL", 0, "BOOKMARK");
+  tabs = IupFlatTabs(NULL);
+  IupSetAttribute(tabs, "NAME", "TABS");
+  IupSetAttribute(tabs, "SHOWCLOSE", "YES");
+  IupSetAttribute(tabs, "TABCHANGEONCHECK", "YES");
+  IupSetAttribute(tabs, "TABTITLE0", "Untitled");
+  IupSetCallback(tabs, "TABCLOSE_CB", (Icallback)tabs_close_cb);
+  IupSetCallback(tabs, "TABCHANGE_CB", (Icallback)tabs_change_cb);
+  IupSetCallback(tabs, "RIGHTCLICK_CB", (Icallback)tabs_rightclick_cb);
 
   lbl_statusbar = IupLabel("Lin 1, Col 1");
   IupSetAttribute(lbl_statusbar, "NAME", "STATUSBAR");
@@ -2437,8 +3070,22 @@ static int iScintillaDlgCreateMethod(Ihandle* ih, void** params)
   IupSetAttribute(btn_save, "CANFOCUS", "No");
 
   item_saveas = IupItem("Save &As...", NULL);
-  IupSetAttribute(item_saveas, "NAME", "ITEM_SAVEAS");
   IupSetCallback(item_saveas, "ACTION", (Icallback)item_saveas_action_cb);
+
+  item_savecopy = IupItem("Save Cop&y...", NULL);
+  IupSetCallback(item_savecopy, "ACTION", (Icallback)item_savecopy_action_cb);
+
+  item_saveall = IupItem("Save A&ll", NULL);
+  IupSetCallback(item_saveall, "ACTION", (Icallback)item_saveall_action_cb);
+
+  item_closeall = IupItem("Cl&ose All", NULL);
+  IupSetCallback(item_closeall, "ACTION", (Icallback)item_closeall_action_cb);
+
+  item_close = IupItem("&Close\tCtrl+F4", NULL);
+  IupSetCallback(item_close, "ACTION", (Icallback)item_close_action_cb);
+
+  item_rename = IupItem("R&ename...", NULL);
+  IupSetCallback(item_rename, "ACTION", (Icallback)item_rename_action_cb);
 
   item_revert = IupItem("&Revert", NULL);
   IupSetAttribute(item_revert, "NAME", "ITEM_REVERT");
@@ -2636,15 +3283,29 @@ static int iScintillaDlgCreateMethod(Ihandle* ih, void** params)
   item_tab = IupItem("Tab...", NULL);
   IupSetCallback(item_tab, "ACTION", (Icallback)item_tab_action_cb);
 
+  item_window1 = IupItem("1 Untitled", NULL);
+  IupSetAttribute(item_window1, "NAME", "ITEM_WINDOW1");
+  IupSetCallback(item_window1, "ACTION", (Icallback)item_windowN_action_cb);
+  IupSetAttribute(item_window1, "VALUE", "ON");
+
+  item_windows = IupItem("Windows...", NULL);
+  IupSetCallback(item_windows, "ACTION", (Icallback)item_windows_action_cb);
+
   recent_menu = IupMenu(NULL);
   iupAttribSet(ih, "_IUP_RECENTMENU", (char*)recent_menu);
 
   file_menu = IupMenu(
     item_new,
     item_open,
+    item_close,
+    item_closeall,
+    item_revert,
+    IupSeparator(),
     item_save,
     item_saveas,
-    item_revert,
+    item_savecopy,
+    item_saveall,
+    item_rename,
     IupSeparator(),
     item_pagesetup,
     item_print,
@@ -2702,10 +3363,10 @@ static int iScintillaDlgCreateMethod(Ihandle* ih, void** params)
     NULL);
   view_menu = IupMenu(
     IupSubmenu("Zoom", zoom_menu = IupMenu(
-    item_zoomin,
-    item_zoomout,
-    item_restorezoom,
-    NULL)),
+      item_zoomin,
+      item_zoomout,
+      item_restorezoom,
+      NULL)),
     item_wordwrap,
     item_showwhite,
     item_showeol,
@@ -2715,20 +3376,28 @@ static int iScintillaDlgCreateMethod(Ihandle* ih, void** params)
     item_linenumber,
     item_bookmark,
     NULL);
+  window_menu = IupMenu(
+    item_window1,
+    IupSeparator(),
+    item_windows,
+    NULL);
 
   IupSetCallback(file_menu, "OPEN_CB", (Icallback)file_menu_open_cb);
   IupSetCallback(edit_menu, "OPEN_CB", (Icallback)edit_menu_open_cb);
+  IupSetCallback(window_menu, "OPEN_CB", (Icallback)window_menu_open_cb);
 
   sub_menu_file = IupSubmenu("&File", file_menu);
   sub_menu_edit = IupSubmenu("&Edit", edit_menu);
   sub_menu_format = IupSubmenu("F&ormat", format_menu);
   sub_menu_view = IupSubmenu("&View", view_menu);
+  sub_menu_window = IupSubmenu("&Window", window_menu);
 
   menu = IupMenu(
     sub_menu_file,
     sub_menu_edit,
     sub_menu_format,
     sub_menu_view,
+    sub_menu_window,
     NULL);
 
   toolbar_hb = IupHbox(
@@ -2747,7 +3416,7 @@ static int iScintillaDlgCreateMethod(Ihandle* ih, void** params)
 
   vbox = IupVbox(
     toolbar_hb,
-    multitext,
+    tabs,
     lbl_statusbar,
     NULL);
 
@@ -2778,10 +3447,11 @@ static int iScintillaDlgCreateMethod(Ihandle* ih, void** params)
   IupSetCallback(ih, "K_cEqual", (Icallback)item_zoomin_action_cb);
   IupSetCallback(ih, "K_cMinus", (Icallback)item_zoomout_action_cb);
   IupSetCallback(ih, "K_cSlash", (Icallback)item_restorezoom_action_cb);
+  IupSetCallback(ih, "K_F4", (Icallback)item_close_action_cb);
 
-  /* Ctrl+C, Ctrl+X, Ctrl+A, Del, already implemented inside IupScintilla */
-  IupSetCallback(multitext, "K_cV", (Icallback)item_paste_action_cb);  /* replace system processing */
-  IupSetCallback(multitext, "K_cU", (Icallback)item_case_action_cb);
+  iupAttribSet(ih, "_IUP_CONFIG", (char*)IupConfig());
+
+  new_file(tabs);  /* always keep at least one multitext */
 
   (void)params;
   return IUP_NOERROR;
@@ -2800,26 +3470,30 @@ Iclass* iupScintillaDlgNewClass(void)
   ic->childtype = IUP_CHILDNONE;
   ic->has_attrib_id = 1;   /* has attributes with IDs that must be parsed */
 
-  iupClassRegisterCallback(ic, "MARKERCHANGED_CB", "ii");
+  iupClassRegisterCallback(ic, "MARKERCHANGED_CB", "nii");
+  iupClassRegisterCallback(ic, "SAVEMARKERS_CB", "i");
+  iupClassRegisterCallback(ic, "RESTOREMARKERS_CB", "i");
+  iupClassRegisterCallback(ic, "NEWTEXT_CB", "i");
+  iupClassRegisterCallback(ic, "CLOSETEXT_CB", "i");
+  iupClassRegisterCallback(ic, "NEWFILENAME_CB", "ss");
+  iupClassRegisterCallback(ic, "CONFIGSAVE_CB", "i");
+  iupClassRegisterCallback(ic, "CONFIGLOAD_CB", "i");
   iupClassRegisterCallback(ic, "EXIT_CB", "");
-  iupClassRegisterCallback(ic, "SAVEMARKERS_CB", "");
-  iupClassRegisterCallback(ic, "RESTOREMARKERS_CB", "");
-  iupClassRegisterCallback(ic, "CONFIGSAVE_CB", "");
-  iupClassRegisterCallback(ic, "CONFIGLOAD_CB", "");
 
-  iupClassRegisterAttribute(ic, "SUBTITLE", NULL, NULL, IUPAF_SAMEASSYSTEM, "Notepad", IUPAF_NOT_MAPPED | IUPAF_NO_INHERIT);
-  iupClassRegisterAttribute(ic, "CONFIG", NULL, iScintillaDlgSetConfigAttrib, NULL, NULL, IUPAF_IHANDLENAME | IUPAF_NOT_MAPPED | IUPAF_NO_INHERIT);
-  iupClassRegisterAttribute(ic, "CONFIG_HANDLE", NULL, iScintillaDlgSetConfigHandleAttrib, NULL, NULL, IUPAF_IHANDLE | IUPAF_NOT_MAPPED | IUPAF_NO_INHERIT);
+  iupClassRegisterAttribute(ic, "SUBTITLE", NULL, iScintillaDlgSetSubTitleAttrib, IUPAF_SAMEASSYSTEM, "Notepad", IUPAF_NOT_MAPPED | IUPAF_NO_INHERIT);
+  iupClassRegisterAttribute(ic, "CONFIG", iScintillaDlgGetConfigAttrib, iScintillaDlgSetConfigAttrib, NULL, NULL, IUPAF_IHANDLENAME | IUPAF_NOT_MAPPED | IUPAF_NO_INHERIT);
+  iupClassRegisterAttribute(ic, "CONFIG_HANDLE", iScintillaDlgGetConfigHandleAttrib, iScintillaDlgSetConfigHandleAttrib, NULL, NULL, IUPAF_IHANDLE | IUPAF_NOT_MAPPED | IUPAF_NO_INHERIT);
   iupClassRegisterAttribute(ic, "NEWFILE", NULL, iScintillaDlgSetOpenFileAttrib, NULL, NULL, IUPAF_WRITEONLY | IUPAF_NO_INHERIT);
   iupClassRegisterAttribute(ic, "OPENFILE", NULL, iScintillaDlgSetOpenFileAttrib, NULL, NULL, IUPAF_WRITEONLY | IUPAF_NO_INHERIT);
   iupClassRegisterAttribute(ic, "SAVEFILE", NULL, iScintillaDlgSetSaveFileAttrib, NULL, NULL, IUPAF_WRITEONLY | IUPAF_NO_INHERIT);
+  iupClassRegisterAttribute(ic, "FORCECLOSEFILE", NULL, iScintillaDlgSetForceCloseFileAttrib, NULL, NULL, IUPAF_WRITEONLY | IUPAF_NO_INHERIT);
   iupClassRegisterAttribute(ic, "EXTRAFILTERS", NULL, NULL, NULL, NULL, IUPAF_NOT_MAPPED | IUPAF_NO_INHERIT);
   iupClassRegisterAttributeId(ic, "TOGGLEMARKER", NULL, iScintillaDlgSetToggleMarkerAttribId, IUPAF_WRITEONLY | IUPAF_NO_INHERIT);
 
   return ic;
 }
 
-Ihandle *IupScintillaDlg(void)
+Ihandle* IupScintillaDlg(void)
 {
   return IupCreate("scintilladlg");
 }

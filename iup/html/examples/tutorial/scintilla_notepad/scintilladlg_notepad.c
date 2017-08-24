@@ -23,10 +23,15 @@ int main(int argc, char **argv)
   Ihandle *main_dialog;
   Ihandle *config;
   Ihandle *menu;
+  int i;
 
   IupOpen(&argc, &argv);
   IupImageLibOpen();
   IupScintillaOpen();
+
+#ifdef _DEBUG
+  IupSetGlobal("GLOBALLAYOUTDLGKEY", "Yes");
+#endif
 
   config = IupConfig();
   IupSetAttribute(config, "APP_NAME", "scintilla_notepad");
@@ -46,13 +51,10 @@ int main(int argc, char **argv)
   /* show the dialog at the last position, with the last size */
   IupConfigDialogShow(config, main_dialog, "MainWindow");
 
-  /* initialize the current file */
-  IupSetAttribute(main_dialog, "NEWFILE", NULL);
-
   /* open a file from the command line (allow file association in Windows) */
-  if (argc > 1 && argv[1])
+  for (i = 1; i < argc; i++)
   {
-    const char* filename = argv[1];
+    const char* filename = argv[i];
     IupSetStrAttribute(main_dialog, "OPENFILE", filename);
   }
 

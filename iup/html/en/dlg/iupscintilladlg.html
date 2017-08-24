@@ -65,20 +65,6 @@ marker given its line number as id, and margin as value.</p>
 <hr>
 
 <p>New callbacks.</p>
-<p><strong>MARKERCHANGED_CB</strong>:
-  Action generated when a marker is changed in a margin (interactively or 
-programmatically).</p>
-
-  
-    
-<pre>int function(Ihandle*<strong> ih</strong>, int <strong>lin</strong>, int <strong>margin</strong>); [in C]<br><strong>elem</strong>:markerchanged_cb(<strong>lin</strong>, <strong>margin</strong>: number) -&gt; (<strong>ret</strong>: number) [in Lua]</pre>
-
-    
-<p class="info"><strong>ih</strong>:
-  identifier of the element that activated the 
-  event.<br><strong>lin</strong>: line number where the marker was changed 
-(starts at 0).<br>
-<strong>margin</strong>: which margin was affected.</p>
 
   
 <p><strong>EXIT_CB</strong>:
@@ -93,52 +79,111 @@ the dialog is already hidden.</p>
 <p class="info"><strong>ih</strong>:
   identifier of the element that activated the 
   event.</p>
+<p><strong>NEWTEXT_CB</strong>: Called when a new document is created. (since 3.23)</p>
+
+  
+    
+<pre>int function(Ihandle*<strong> ih</strong>, char* <strong>old_filename</strong>, char* <strong>new_filename</strong>); [in C]<br><strong>elem</strong>:newtext_cb(<strong>old_filename</strong>, <strong>new_filename</strong>: string) -&gt; (<strong>ret</strong>: number) [in Lua]</pre>
+
+    
+<p class="info"><strong>ih</strong>:
+  identifier of the element that activated the 
+  event.<br><strong>old_filename</strong>: previous file name.<br><strong>
+new_filename</strong>: current filename.</p>
+<p><strong>CLOSETEXT_CB</strong>: Called when a document is closed. (since 3.23)</p>
+
+  
+    
+<pre>int function(Ihandle*<strong> ih</strong>, Ihandle* <strong>multitext</strong>); [in C]<br><strong>elem</strong>:closetext_cb(<strong>multitext</strong>: ihandle) -&gt; (<strong>ret</strong>: number) [in Lua]</pre>
+
+    
+<p class="info"><strong>ih</strong>:
+  identifier of the element that activated the 
+  event.<br><strong>multitext</strong>: identifier of the scintilla element that 
+is affected.</p>
+
+  
+<p><strong>NEWFILENAME_CB</strong>: Called after the filename of document was 
+changed by "Save As" or "Rename". (since 3.23)</p>
+
+  
+    
+<pre>int function(Ihandle*<strong> ih</strong>, Ihandle* <strong>multitext</strong>); [in C]<br><strong>elem</strong>:newfilename_cb(<strong>multitext</strong>: ihandle) -&gt; (<strong>ret</strong>: number) [in Lua]</pre>
+
+    
+<p class="info"><strong>ih</strong>:
+  identifier of the element that activated the 
+  event.<br><strong>multitext</strong>: identifier of the scintilla element that 
+is affected.</p>
+
+  
+<p><strong>MARKERCHANGED_CB</strong>:
+  Action generated when a marker is changed in a margin (interactively or 
+programmatically).</p>
+
+  
+    
+<pre>int function(Ihandle*<strong> ih</strong>, Ihandle* <strong>multitext</strong>, int <strong>lin</strong>, int <strong>margin</strong>); [in C]<br><strong>elem</strong>:markerchanged_cb(<strong>multitext</strong>: ihandle, <strong>lin</strong>, <strong>margin</strong>: number) -&gt; (<strong>ret</strong>: number) [in Lua]</pre>
+
+    
+<p class="info"><strong>ih</strong>:
+  identifier of the element that activated the 
+  event.<br><strong>multitext</strong>: identifier of the scintilla element that 
+is affected.<br><strong>lin</strong>: line number where the marker was changed 
+(starts at 0).<br>
+<strong>margin</strong>: which margin was affected.</p>
+
+  
 <p><strong>RESTOREMARKERS_CB</strong>: Called when the markers in the Scitilla 
 editor are being restored from the configuration file. By default only bookmarks 
 are handled.</p>
 
   
     
-<pre>int function(Ihandle*<strong> ih</strong>); [in C]<br><strong>elem</strong>:exit_cb() -&gt; (<strong>ret</strong>: number) [in Lua]</pre>
+<pre>int function(Ihandle*<strong> ih</strong>, Ihandle* <strong>multitext</strong>); [in C]<br><strong>elem</strong>:restoremarkers_cb(<strong>multitext</strong>: ihandle) -&gt; (<strong>ret</strong>: number) [in Lua]</pre>
 
     
 <p class="info"><strong>ih</strong>:
   identifier of the element that activated the 
-  event.</p>
+  event.<br><strong>multitext</strong>: identifier of the scintilla element that 
+is affected.</p>
 <p><strong>SAVEMARKERS_CB</strong>: Called when the markers in the Scitilla 
 editor are about to be saved in the configuration file. By default only 
 bookmarks are handled.</p>
 
   
     
-<pre>int function(Ihandle*<strong> ih</strong>); [in C]<br><strong>elem</strong>:exit_cb() -&gt; (<strong>ret</strong>: number) [in Lua]</pre>
+<pre>int function(Ihandle*<strong> ih</strong>, Ihandle* <strong>multitext</strong>); [in C]<br><strong>elem</strong>:savemarkers_cb(<strong>multitext</strong>: ihandle) -&gt; (<strong>ret</strong>: number) [in Lua]</pre>
 
     
 <p class="info"><strong>ih</strong>:
   identifier of the element that activated the 
-  event.</p>
+  event.<br><strong>multitext</strong>: identifier of the scintilla element that 
+is affected.</p>
 <p><strong>CONFIGLOAD_CB</strong>: Called when the configuration file was set, 
 and supposedly loaded. (since 3.23)</p>
 
   
     
-<pre>int function(Ihandle*<strong> ih</strong>); [in C]<br><strong>elem</strong>:exit_cb() -&gt; (<strong>ret</strong>: number) [in Lua]</pre>
+<pre>int function(Ihandle*<strong> ih</strong>, Ihandle* <strong>multitext</strong>); [in C]<br><strong>elem</strong>:configload_cb(<strong>multitext</strong>: ihandle) -&gt; (<strong>ret</strong>: number) [in Lua]</pre>
 
     
 <p class="info"><strong>ih</strong>:
   identifier of the element that activated the 
-  event.</p>
+  event.<br><strong>multitext</strong>: identifier of the scintilla element that 
+is affected.</p>
 <p><strong>CONFIGSAVE_CB</strong>: Called when the configuration file is about 
 to be saved. (since 3.23)</p>
 
   
     
-<pre>int function(Ihandle*<strong> ih</strong>); [in C]<br><strong>elem</strong>:exit_cb() -&gt; (<strong>ret</strong>: number) [in Lua]</pre>
+<pre>int function(Ihandle*<strong> ih</strong>, Ihandle* <strong>multitext</strong>); [in C]<br><strong>elem</strong>:configsave_cb(<strong>multitext</strong>: ihandle) -&gt; (<strong>ret</strong>: number) [in Lua]</pre>
 
     
 <p class="info"><strong>ih</strong>:
   identifier of the element that activated the 
-  event.</p>
+  event.<br><strong>multitext</strong>: identifier of the scintilla element that 
+is affected.</p>
 
   
 <h3><a name="Notes">Notes</a></h3>

@@ -39,3 +39,20 @@ f3()
 
 g_main_x = g_main_x + 1
 
+
+--local file = io.open("stripter_test2.lua", "rb")
+--if file then 
+--    s = file:read "*a"
+--    file:close()
+--end
+--print(s)
+
+--require("stripter_test2")
+
+--f_load = loadfile("stripter_test2.lua")
+--f_load()
+
+--dofile("stripter_test2.lua")
+
+--f4()
+
