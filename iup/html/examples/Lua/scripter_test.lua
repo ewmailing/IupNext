@@ -37,6 +37,11 @@ print(ret)
 
 f3()
 
+-- to test pause
+-- while g_main_x do
+  -- g_main_x = g_main_x + 1
+-- end
+-- 
 g_main_x = g_main_x + 1
 
 
