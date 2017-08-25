@@ -352,7 +352,6 @@ function iup.DebuggerRemoveBreakpoint(list_break, index)
   if count == 0 then
     -- update buttons, it is now empty
     iup.DebuggerSetDialogChildAttrib("REMOVE_BREAK", "ACTIVE", "NO")
-    iup.DebuggerSetDialogChildAttrib("REMOVE_ALLBREAK", "ACTIVE", "NO")
   else
     iup.DebuggerRestoreLastListValue(list_break, last_value)
   end
@@ -386,7 +385,6 @@ function iup.DebuggerAddBreakpoint(list_break, filename, line)
   if count == 1 then
     -- update buttons, it was empty
     iup.DebuggerSetDialogChildAttrib("REMOVE_BREAK", "ACTIVE", "Yes")
-    iup.DebuggerSetDialogChildAttrib("REMOVE_ALLBREAK", "ACTIVE", "Yes")
   end
 
   iup.DebuggerRestoreLastListValue(list_break, last_value)
@@ -453,7 +451,6 @@ function iup.DebuggerMultitextLinesChanged(multitext, start_lin, num_lin)
   if count == 0 then
     -- update buttons, it is now empty
     iup.DebuggerSetDialogChildAttrib("REMOVE_BREAK", "ACTIVE", "NO")
-    iup.DebuggerSetDialogChildAttrib("REMOVE_ALLBREAK", "ACTIVE", "NO")
   end
 end
 
@@ -482,7 +479,6 @@ function iup.DebuggerRemoveAllBreakpoints()
 
   -- update buttons
   iup.DebuggerSetDialogChildAttrib("REMOVE_BREAK", "ACTIVE", "NO")
-  iup.DebuggerSetDialogChildAttrib("REMOVE_ALLBREAK", "ACTIVE", "NO")
 end
 
 function iup.DebuggerInitBreakpointsList(list_break)
@@ -515,12 +511,10 @@ function iup.DebuggerInitBreakpointsList(list_break)
   -- update buttons
   if index > 1 then
     iup.DebuggerSetDialogChildAttrib("REMOVE_BREAK", "ACTIVE", "Yes")
-    iup.DebuggerSetDialogChildAttrib("REMOVE_ALLBREAK", "ACTIVE", "Yes")
 
     list_break.value = 1 -- select first item on list
   else
     iup.DebuggerSetDialogChildAttrib("REMOVE_BREAK", "ACTIVE", "NO")
-    iup.DebuggerSetDialogChildAttrib("REMOVE_ALLBREAK", "ACTIVE", "NO")
   end
 end
 
@@ -563,7 +557,6 @@ end
 
 
 function iup.DebuggerClearLocalVariablesList()
-  iup.DebuggerSetDialogChildAttrib("PRINT_ALLLOCALS", "ACTIVE", "NO")
   iup.DebuggerSetDialogChildAttrib("PRINT_LOCAL", "ACTIVE", "NO")
   iup.DebuggerSetDialogChildAttrib("SET_LOCAL", "ACTIVE", "NO")
 
@@ -586,7 +579,7 @@ function iup.DebuggerSetLocalVariable()
   if (value == nil) then value = "nil" end
   local valueType = type(value)
   if valueType ~= "string" and valueType ~= "number" and valueType ~= "boolean" then
-    iup.MessageError(debugger.main_dialog, "Can edit only strings, booleans and numbers.")
+    iup.MessageError(debugger.main_dialog, "Can edit only strings, numbers and booleans.")
     return
   end
 
@@ -758,7 +751,6 @@ function iup.DebuggerUpdateLocalVariablesList(level)
 
   if (index > 1) then
     iup.DebuggerSetDialogChildAttrib("PRINT_LOCAL", "ACTIVE", "Yes")
-    iup.DebuggerSetDialogChildAttrib("PRINT_ALLLOCALS", "ACTIVE", "Yes")
     iup.DebuggerSetDialogChildAttrib("SET_LOCAL", "ACTIVE", "Yes")
 
     list_local.value = 1 -- select first item on list
@@ -766,6 +758,10 @@ function iup.DebuggerUpdateLocalVariablesList(level)
 end
 
 function iup.DebuggerShowTip(word, line)
+
+  if debugger.debugState ~= DEBUG_PAUSED then
+    return
+  end
 
   local list_stack = iup.GetDialogChild(debugger.main_dialog, "LIST_STACK")
   local index = tonumber(list_stack.value)
@@ -858,7 +854,6 @@ end
 
 function iup.DebuggerClearStackList()
   iup.DebuggerSetDialogChildAttrib("PRINT_LEVEL", "ACTIVE", "NO")
-  iup.DebuggerSetDialogChildAttrib("PRINT_STACK", "ACTIVE", "NO")
 
   iup.DebuggerSetDialogChildAttrib("LIST_STACK", "REMOVEITEM", "ALL")
 end
@@ -973,7 +968,6 @@ function iup.DebuggerUpdateStackList()
   
   if level > startLevel then
     iup.DebuggerSetDialogChildAttrib("PRINT_LEVEL", "ACTIVE", "YES")
-    iup.DebuggerSetDialogChildAttrib("PRINT_STACK", "ACTIVE", "YES")
 
     list_stack.value = 1 -- select first item on list (startLevel)
     iup.DebuggerUpdateLocalVariablesList(startLevel)
@@ -1003,17 +997,13 @@ function iup.DebuggerInitGlobalsList(list_global)
   local count = tonumber(list_global.count)
   if (count > 0) then
     iup.DebuggerSetDialogChildAttrib("PRINT_GLOBAL", "ACTIVE", "Yes")
-    iup.DebuggerSetDialogChildAttrib("PRINT_ALLGLOBALS", "ACTIVE", "Yes")
     iup.DebuggerSetDialogChildAttrib("SET_GLOBAL", "ACTIVE", "Yes")
     iup.DebuggerSetDialogChildAttrib("REMOVE_GLOBAL", "ACTIVE", "Yes")
-    iup.DebuggerSetDialogChildAttrib("REMOVE_ALLGLOBAL", "ACTIVE", "Yes")
     list_global.value = 1 -- select first item on list
   else
-    iup.DebuggerSetDialogChildAttrib("PRINT_ALLGLOBALS", "ACTIVE", "NO")
     iup.DebuggerSetDialogChildAttrib("PRINT_GLOBAL", "ACTIVE", "NO")
     iup.DebuggerSetDialogChildAttrib("SET_GLOBAL", "ACTIVE", "NO")
     iup.DebuggerSetDialogChildAttrib("REMOVE_GLOBAL", "ACTIVE", "NO")
-    iup.DebuggerSetDialogChildAttrib("REMOVE_ALLGLOBAL", "ACTIVE", "NO")
   end
 end
 
@@ -1062,10 +1052,8 @@ function iup.DebuggerAddGlobalVariable()
 
     if (count == 0) then
       iup.DebuggerSetDialogChildAttrib("PRINT_GLOBAL", "ACTIVE", "Yes")
-      iup.DebuggerSetDialogChildAttrib("PRINT_ALLGLOBALS", "ACTIVE", "Yes")
       iup.DebuggerSetDialogChildAttrib("SET_GLOBAL", "ACTIVE", "Yes")
       iup.DebuggerSetDialogChildAttrib("REMOVE_GLOBAL", "ACTIVE", "Yes")
-      iup.DebuggerSetDialogChildAttrib("REMOVE_ALLGLOBAL", "ACTIVE", "Yes")
     end
 
     list_global.value = count + 1 -- select the added item
@@ -1092,10 +1080,8 @@ function iup.DebuggerRemoveGlobalVariable()
 
   if (count == 1) then
     iup.DebuggerSetDialogChildAttrib("PRINT_GLOBAL", "ACTIVE", "No")
-    iup.DebuggerSetDialogChildAttrib("PRINT_ALLGLOBALS", "ACTIVE", "No")
     iup.DebuggerSetDialogChildAttrib("SET_GLOBAL", "ACTIVE", "No")
     iup.DebuggerSetDialogChildAttrib("REMOVE_GLOBAL", "ACTIVE", "No")
-    iup.DebuggerSetDialogChildAttrib("REMOVE_ALLGLOBAL", "ACTIVE", "No")
   else
     if index == count then
       list_global.value = index - 1
@@ -1112,10 +1098,8 @@ function iup.DebuggerRemoveAllGlobalVariable()
   list_global[1] = nil
 
   iup.DebuggerSetDialogChildAttrib("PRINT_GLOBAL", "ACTIVE", "No")
-  iup.DebuggerSetDialogChildAttrib("PRINT_ALLGLOBALS", "ACTIVE", "No")
   iup.DebuggerSetDialogChildAttrib("SET_GLOBAL", "ACTIVE", "No")
   iup.DebuggerSetDialogChildAttrib("REMOVE_GLOBAL", "ACTIVE", "No")
-  iup.DebuggerSetDialogChildAttrib("REMOVE_ALLGLOBAL", "ACTIVE", "No")
 end
 
 function iup.DebuggerSetGlobalVariable()
@@ -1133,7 +1117,7 @@ function iup.DebuggerSetGlobalVariable()
   if (value == nil) then value = "nil" end
   local valueType = type(value)
   if valueType ~= "string" and valueType ~= "number" and valueType ~= "boolean" then
-    iup.MessageError(debugger.main_dialog, "Can edit only strings, booleans and numbers.")
+    iup.MessageError(debugger.main_dialog, "Can edit only strings, numbers and booleans.")
     return
   end
 

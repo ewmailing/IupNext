@@ -1054,8 +1054,7 @@ static int item_debug_action_cb(Ihandle* ih_item)
     return IUP_DEFAULT;
   }
 
-  value = IupGetGlobal("MODKEYSTATE");
-  if (value[2] == 'A') /* Alt */
+  if (IupGetInt(NULL, "SHIFTKEY"))
     end_debug = 0;
 
   if (!debug_save_check(multitext, filename))
@@ -1121,7 +1120,13 @@ static int item_stop_action_cb(Ihandle *ih_item)
   lua_State* L;
 
   if (!IupGetInt(IupGetDialogChild(ih_item, "ITM_STOP"), "ACTIVE")) /* can be called by the hot key in the dialog */
+  {
+    L = (lua_State*)IupGetAttribute(ih_item, "LUASTATE");
+
+    if (!debug_is_active(L))
+      item_debug_action_cb(ih_item);
     return IUP_DEFAULT;
+  }
 
   L = (lua_State*)IupGetAttribute(ih_item, "LUASTATE");
   debug_set_state(L, "DEBUG_STOPPED");
@@ -1133,7 +1138,7 @@ static int item_pause_action_cb(Ihandle *ih_item)
   lua_State* L;
 
   if (!IupGetInt(IupGetDialogChild(ih_item, "ITM_PAUSE"), "ACTIVE")) /* can be called by the hot key in the dialog */
-    return IUP_DEFAULT;
+    return IUP_IGNORE;  /* to avoid garbage in Scintilla when pressing the hot key */
 
   L = (lua_State*)IupGetAttribute(ih_item, "LUASTATE");
   debug_set_state(L, "DEBUG_PAUSED");
@@ -1181,16 +1186,6 @@ static int item_currentline_cb(Ihandle *ih_item)
   lua_State* L = (lua_State*)IupGetAttribute(ih_item, "LUASTATE");
   iuplua_push_name(L, "DebuggerShowCurrentLine");
   lua_call(L, 0, 0);
-  return IUP_DEFAULT;
-}
-
-static int k_pause_action_cb(Ihandle* ih_item)
-{
-  char* mod = IupGetGlobal("MODKEYSTATE");
-
-  if (mod[1] == 'C' && mod[2] == 'A')
-    item_pause_action_cb(ih_item);
-
   return IUP_DEFAULT;
 }
 
@@ -1315,15 +1310,12 @@ static int btn_tools_action_cb(Ihandle *ih)
 static int but_printlocal_cb(Ihandle *ih)
 {
   lua_State* L = (lua_State*)IupGetAttribute(ih, "LUASTATE");
-  iuplua_push_name(L, "DebuggerPrintLocalVariable");
-  lua_call(L, 0, 0);
-  return IUP_DEFAULT;
-}
 
-static int but_printalllocals_cb(Ihandle *ih)
-{
-  lua_State* L = (lua_State*)IupGetAttribute(ih, "LUASTATE");
-  iuplua_push_name(L, "DebuggerPrintAllLocalVariables");
+  if (IupGetInt(NULL, "SHIFTKEY"))
+    iuplua_push_name(L, "DebuggerPrintAllLocalVariables");
+  else
+    iuplua_push_name(L, "DebuggerPrintLocalVariable");
+
   lua_call(L, 0, 0);
   return IUP_DEFAULT;
 }
@@ -1355,15 +1347,12 @@ static int list_locals_action_cb(Ihandle *ih, char *t, int index, int v)
 static int but_printglobal_cb(Ihandle *ih)
 {
   lua_State* L = (lua_State*)IupGetAttribute(ih, "LUASTATE");
-  iuplua_push_name(L, "DebuggerPrintGlobalVariable");
-  lua_call(L, 0, 0);
-  return IUP_DEFAULT;
-}
 
-static int but_printallglobals_cb(Ihandle *ih)
-{
-  lua_State* L = (lua_State*)IupGetAttribute(ih, "LUASTATE");
-  iuplua_push_name(L, "DebuggerPrintAllGlobalVariables");
+  if (IupGetInt(NULL, "SHIFTKEY"))
+    iuplua_push_name(L, "DebuggerPrintAllGlobalVariables");
+  else
+    iuplua_push_name(L, "DebuggerPrintGlobalVariable");
+
   lua_call(L, 0, 0);
   return IUP_DEFAULT;
 }
@@ -1387,15 +1376,12 @@ static int but_addglobal_cb(Ihandle *ih)
 static int but_removeglobal_cb(Ihandle *ih)
 {
   lua_State* L = (lua_State*)IupGetAttribute(ih, "LUASTATE");
-  iuplua_push_name(L, "DebuggerRemoveGlobalVariable");
-  lua_call(L, 0, 0);
-  return IUP_DEFAULT;
-}
 
-static int but_removeallglobal_cb(Ihandle *ih)
-{
-  lua_State* L = (lua_State*)IupGetAttribute(ih, "LUASTATE");
-  iuplua_push_name(L, "DebuggerRemoveAllGlobalVariable");
+  if (IupGetInt(NULL, "SHIFTKEY"))
+    iuplua_push_name(L, "DebuggerRemoveAllGlobalVariable");
+  else
+    iuplua_push_name(L, "DebuggerRemoveGlobalVariable");
+
   lua_call(L, 0, 0);
   return IUP_DEFAULT;
 }
@@ -1430,16 +1416,14 @@ static int list_stack_dblclick_cb(Ihandle *ih, int index, char *t)
 static int but_printlevel_cb(Ihandle *ih)
 {
   lua_State* L = (lua_State*)IupGetAttribute(ih, "LUASTATE");
-  iuplua_push_name(L, "DebuggerPrintStackLevel");
-  lua_call(L, 0, 0);
-  return IUP_DEFAULT;
-}
 
-static int but_printstack_cb(Ihandle *ih)
-{
-  lua_State* L = (lua_State*)IupGetAttribute(ih, "LUASTATE");
-  iuplua_push_name(L, "DebuggerPrintAllStackLevel");
+  if (IupGetInt(NULL, "SHIFTKEY"))
+    iuplua_push_name(L, "DebuggerPrintAllStackLevel");
+  else
+    iuplua_push_name(L, "DebuggerPrintStackLevel");
+
   lua_call(L, 0, 0);
+
   return IUP_DEFAULT;
 }
 
@@ -1595,8 +1579,8 @@ static Ihandle *buildTabConsole(void)
 
 static Ihandle *buildTabDebug(void)
 {
-  Ihandle *list_local, *button_printLocal, *button_printAllLocals, *button_setLocal, *vbox_local, *frame_local;
-  Ihandle *list_stack, *button_printLevel, *button_printStack, *vbox_stack, *frame_stack, *debug;
+  Ihandle *list_local, *button_printLocal, *button_setLocal, *vbox_local, *frame_local;
+  Ihandle *list_stack, *button_printLevel, *vbox_stack, *frame_stack, *debug;
 
   list_local = IupList(NULL);
   IupSetAttribute(list_local, "EXPAND", "YES");
@@ -1605,27 +1589,23 @@ static Ihandle *buildTabDebug(void)
   IupSetCallback(list_local, "ACTION", (Icallback)list_locals_action_cb);
   IupSetAttribute(list_local, "VISIBLELINES", "3");
 
-  button_printLocal = IupButton("Print", NULL);
+  button_printLocal = IupButton(NULL, NULL);
   IupSetAttribute(button_printLocal, "ACTIVE", "NO");
-  IupSetAttribute(button_printLocal, "TIP", "Prints debug information about the selected local variable.");
+  IupSetAttribute(button_printLocal, "FLAT", "Yes");
+  IupSetAttribute(button_printLocal, "IMAGE", "IUP_Print");
+  IupSetAttribute(button_printLocal, "TIP", "Prints debug information about the selected local variable.\nPress <Shift> to print all variables.");
   IupSetAttribute(button_printLocal, "NAME", "PRINT_LOCAL");
-  IupSetStrAttribute(button_printLocal, "PADDING", IupGetGlobal("DEFAULTBUTTONPADDING"));
   IupSetCallback(button_printLocal, "ACTION", (Icallback)but_printlocal_cb);
 
-  button_printAllLocals = IupButton("Print All", NULL);
-  IupSetAttribute(button_printAllLocals, "ACTIVE", "NO");
-  IupSetAttribute(button_printAllLocals, "TIP", "Prints debug information about the all local variables.");
-  IupSetAttribute(button_printAllLocals, "NAME", "PRINT_ALLLOCALS");
-  IupSetStrAttribute(button_printAllLocals, "PADDING", IupGetGlobal("DEFAULTBUTTONPADDING"));
-  IupSetCallback(button_printAllLocals, "ACTION", (Icallback)but_printalllocals_cb);
-
-  button_setLocal = IupButton("Set...", NULL);
+  button_setLocal = IupButton(NULL, NULL);
+  IupSetAttribute(button_setLocal, "IMAGE", "IUP_FileProperties");
+  IupSetAttribute(button_setLocal, "FLAT", "Yes");
   IupSetAttribute(button_setLocal, "ACTIVE", "NO");
+  IupSetAttribute(button_setLocal, "TIP", "Set the value of the selected local variable.\nOnly strings, numbers and booleans can be changed.");
   IupSetAttribute(button_setLocal, "NAME", "SET_LOCAL");
-  IupSetStrAttribute(button_setLocal, "PADDING", IupGetGlobal("DEFAULTBUTTONPADDING"));
   IupSetCallback(button_setLocal, "ACTION", (Icallback)but_setlocal_cb);
 
-  vbox_local = IupVbox(button_printLocal, button_printAllLocals, button_setLocal, NULL);
+  vbox_local = IupVbox(button_printLocal, button_setLocal, NULL);
   IupSetAttribute(vbox_local, "MARGIN", "0x0");
   IupSetAttribute(vbox_local, "GAP", "4");
   IupSetAttribute(vbox_local, "NORMALIZESIZE", "HORIZONTAL");
@@ -1643,21 +1623,15 @@ static Ihandle *buildTabDebug(void)
   IupSetCallback(list_stack, "DBLCLICK_CB", (Icallback)list_stack_dblclick_cb);
   IupSetAttribute(list_stack, "VISIBLELINES", "3");
 
-  button_printLevel = IupButton("Print", NULL);
-  IupSetAttribute(button_printLevel, "TIP", "Prints debug information about the selected call stack level.");
+  button_printLevel = IupButton(NULL, NULL);
+  IupSetAttribute(button_printLevel, "FLAT", "Yes");
+  IupSetAttribute(button_printLevel, "IMAGE", "IUP_Print");
+  IupSetAttribute(button_printLevel, "TIP", "Prints debug information about the selected call stack level./nPress <Shift> to print all levels.");
   IupSetAttribute(button_printLevel, "ACTIVE", "NO");
   IupSetAttribute(button_printLevel, "NAME", "PRINT_LEVEL");
-  IupSetStrAttribute(button_printLevel, "PADDING", IupGetGlobal("DEFAULTBUTTONPADDING"));
   IupSetCallback(button_printLevel, "ACTION", (Icallback)but_printlevel_cb);
 
-  button_printStack = IupButton("Print All", NULL);
-  IupSetAttribute(button_printStack, "TIP", "Prints debug information about all the call stack levels.");
-  IupSetAttribute(button_printStack, "ACTIVE", "NO");
-  IupSetAttribute(button_printStack, "NAME", "PRINT_STACK");
-  IupSetStrAttribute(button_printStack, "PADDING", IupGetGlobal("DEFAULTBUTTONPADDING"));
-  IupSetCallback(button_printStack, "ACTION", (Icallback)but_printstack_cb);
-
-  vbox_stack = IupVbox(button_printLevel, button_printStack, NULL);
+  vbox_stack = IupVbox(button_printLevel, NULL);
   IupSetAttribute(vbox_stack, "MARGIN", "0x0");
   IupSetAttribute(vbox_stack, "GAP", "4");
   IupSetAttribute(vbox_stack, "NORMALIZESIZE", "HORIZONTAL");
@@ -1677,7 +1651,7 @@ static Ihandle *buildTabDebug(void)
 
 static Ihandle *buildTabWatch(void)
 {
-  Ihandle *list_global, *button_printGlobal, *button_printAllGlobals, *button_addGlobal, *button_removeallGlobal,
+  Ihandle *list_global, *button_printGlobal, *button_addGlobal, 
     *button_removeGlobal, *button_setGlobal, *vbox_global, *frame_global, *watch;
 
   list_global = IupList(NULL);
@@ -1686,43 +1660,36 @@ static Ihandle *buildTabWatch(void)
   IupSetAttribute(list_global, "TIP", "List of globals");
   IupSetAttribute(list_global, "VISIBLELINES", "3");
 
-  button_printGlobal = IupButton("Print", NULL);
+  button_printGlobal = IupButton(NULL, NULL);
+  IupSetAttribute(button_printGlobal, "FLAT", "Yes");
+  IupSetAttribute(button_printGlobal, "IMAGE", "IUP_Print");
   IupSetAttribute(button_printGlobal, "ACTIVE", "NO");
-  IupSetAttribute(button_printGlobal, "TIP", "Prints debug information about the selected global variable.");
+  IupSetAttribute(button_printGlobal, "TIP", "Prints debug information about the selected global variable./nPress <Shift> to print all variables.");
   IupSetAttribute(button_printGlobal, "NAME", "PRINT_GLOBAL");
-  IupSetStrAttribute(button_printGlobal, "PADDING", IupGetGlobal("DEFAULTBUTTONPADDING"));
   IupSetCallback(button_printGlobal, "ACTION", (Icallback)but_printglobal_cb);
 
-  button_printAllGlobals = IupButton("Print All", NULL);
-  IupSetAttribute(button_printAllGlobals, "ACTIVE", "NO");
-  IupSetAttribute(button_printAllGlobals, "TIP", "Prints debug information about the all global variables.");
-  IupSetAttribute(button_printAllGlobals, "NAME", "PRINT_ALLGLOBALS");
-  IupSetStrAttribute(button_printAllGlobals, "PADDING", IupGetGlobal("DEFAULTBUTTONPADDING"));
-  IupSetCallback(button_printAllGlobals, "ACTION", (Icallback)but_printallglobals_cb);
-
-  button_setGlobal = IupButton("Set...", NULL);
+  button_setGlobal = IupButton(NULL, NULL);
+  IupSetAttribute(button_setGlobal, "IMAGE", "IUP_FileProperties");
+  IupSetAttribute(button_setGlobal, "FLAT", "Yes");
   IupSetAttribute(button_setGlobal, "ACTIVE", "NO");
+  IupSetAttribute(button_setGlobal, "TIP", "Set the value of the selected global variable.\nOnly strings, numbers and booleans can be changed.");
   IupSetAttribute(button_setGlobal, "NAME", "SET_GLOBAL");
-  IupSetStrAttribute(button_setGlobal, "PADDING", IupGetGlobal("DEFAULTBUTTONPADDING"));
   IupSetCallback(button_setGlobal, "ACTION", (Icallback)but_setglobal_cb);
 
-  button_addGlobal = IupButton("Add...", NULL);
-  IupSetStrAttribute(button_addGlobal, "PADDING", IupGetGlobal("DEFAULTBUTTONPADDING"));
+  button_addGlobal = IupButton(NULL, NULL);
+  IupSetAttribute(button_addGlobal, "FLAT", "Yes");
+  IupSetAttribute(button_addGlobal, "IMAGE", "IUP_plus");
+  IupSetAttribute(button_addGlobal, "TIP", "Add a global variable given its name.");
   IupSetCallback(button_addGlobal, "ACTION", (Icallback)but_addglobal_cb);
 
-  button_removeGlobal = IupButton("Remove", NULL);
+  button_removeGlobal = IupButton(NULL, NULL);
+  IupSetAttribute(button_removeGlobal, "FLAT", "Yes");
+  IupSetAttribute(button_removeGlobal, "IMAGE", "IUP_EditErase");
   IupSetAttribute(button_removeGlobal, "NAME", "REMOVE_GLOBAL");
-  IupSetStrAttribute(button_removeGlobal, "PADDING", IupGetGlobal("DEFAULTBUTTONPADDING"));
+  IupSetAttribute(button_removeGlobal, "TIP", "Removes the selected global variable./nPress <Shift> to remove all variables.");
   IupSetCallback(button_removeGlobal, "ACTION", (Icallback)but_removeglobal_cb);
 
-  button_removeallGlobal = IupButton("Remove All", NULL);
-  IupSetAttribute(button_removeallGlobal, "TIP", "Removes all watch.");
-  IupSetCallback(button_removeallGlobal, "ACTION", (Icallback)but_removeallglobal_cb);
-  IupSetStrAttribute(button_removeallGlobal, "PADDING", IupGetGlobal("DEFAULTBUTTONPADDING"));
-  IupSetAttribute(button_removeallGlobal, "NAME", "REMOVE_ALLGLOBAL");
-  IupSetAttribute(button_removeallGlobal, "ACTIVE", "NO");
-
-  vbox_global = IupVbox(button_printGlobal, button_printAllGlobals, button_setGlobal, button_addGlobal, button_removeGlobal, button_removeallGlobal, NULL);
+  vbox_global = IupVbox(button_printGlobal, button_setGlobal, button_addGlobal, button_removeGlobal, NULL);
   IupSetAttribute(vbox_global, "MARGIN", "0x0");
   IupSetAttribute(vbox_global, "GAP", "4");
   IupSetAttribute(vbox_global, "NORMALIZESIZE", "HORIZONTAL");
@@ -1742,33 +1709,29 @@ static Ihandle *buildTabWatch(void)
 
 static Ihandle *buildTabBreaks(void)
 {
-  Ihandle *button_addbreak, *button_removebreak, *button_removeallbreaks, *hbox, *list, *vbox, *frame, *button_togglebreak;
+  Ihandle *button_addbreak, *button_removebreak, *hbox, *list, *vbox, *frame, *button_togglebreak;
 
-  button_togglebreak = IupButton("Toggle", NULL);
-  IupSetAttribute(button_togglebreak, "TIP", "Toggle a breakpoint at current line.");
+  button_togglebreak = IupButton(NULL, NULL);
+  IupSetAttribute(button_togglebreak, "IMAGE", "IUP_MediaRecord");
+  IupSetAttribute(button_togglebreak, "FLAT", "Yes");
+  IupSetAttribute(button_togglebreak, "TIP", "Toggle a breakpoint at current line. (F9)");
   IupSetCallback(button_togglebreak, "ACTION", (Icallback)but_togglebreak_cb);
-  IupSetStrAttribute(button_togglebreak, "PADDING", IupGetGlobal("DEFAULTBUTTONPADDING"));
 
-  button_addbreak = IupButton("Add...", NULL);
+  button_addbreak = IupButton(NULL, NULL);
   IupSetAttribute(button_addbreak, "TIP", "Adds a breakpoint at given function and line.");
+  IupSetAttribute(button_addbreak, "FLAT", "Yes");
+  IupSetAttribute(button_addbreak, "IMAGE", "IUP_plus");
   IupSetCallback(button_addbreak, "ACTION", (Icallback)but_addbreak_cb);
-  IupSetStrAttribute(button_addbreak, "PADDING", IupGetGlobal("DEFAULTBUTTONPADDING"));
 
-  button_removebreak = IupButton("Remove", NULL);
-  IupSetAttribute(button_removebreak, "TIP", "Removes the selected breakpoint at the list.");
+  button_removebreak = IupButton(NULL, NULL);
+  IupSetAttribute(button_removebreak, "FLAT", "Yes");
+  IupSetAttribute(button_removebreak, "IMAGE", "IUP_EditErase");
+  IupSetAttribute(button_removebreak, "TIP", "Removes the selected breakpoint./nPress <Shift> to remove all breakpoints.");
   IupSetCallback(button_removebreak, "ACTION", (Icallback)but_removebreak_cb);
-  IupSetStrAttribute(button_removebreak, "PADDING", IupGetGlobal("DEFAULTBUTTONPADDING"));
   IupSetAttribute(button_removebreak, "NAME", "REMOVE_BREAK");
   IupSetAttribute(button_removebreak, "ACTIVE", "NO");
 
-  button_removeallbreaks = IupButton("Remove All", NULL);
-  IupSetAttribute(button_removeallbreaks, "TIP", "Removes all breakpoints.");
-  IupSetCallback(button_removeallbreaks, "ACTION", (Icallback)but_removeallbreaks_cb);
-  IupSetStrAttribute(button_removeallbreaks, "PADDING", IupGetGlobal("DEFAULTBUTTONPADDING"));
-  IupSetAttribute(button_removeallbreaks, "NAME", "REMOVE_ALLBREAK");
-  IupSetAttribute(button_removeallbreaks, "ACTIVE", "NO");
-
-  vbox = IupVbox(button_togglebreak, button_addbreak, button_removebreak, button_removeallbreaks, NULL);
+  vbox = IupVbox(button_togglebreak, button_addbreak, button_removebreak, NULL);
   IupSetAttribute(vbox, "MARGIN", "0x0");
   IupSetAttribute(vbox, "GAP", "4");
   IupSetAttribute(vbox, "NORMALIZESIZE", "HORIZONTAL");
@@ -1805,7 +1768,7 @@ static void appendToolbarDebugButtons(Ihandle *dialog)
   IupSetAttribute(btn_debug, "IMAGE", "IUP_MediaGoToEnd");
   IupSetAttribute(btn_debug, "FLAT", "Yes");
   IupSetCallback(btn_debug, "ACTION", (Icallback)item_debug_action_cb);
-  IupSetAttribute(btn_debug, "TIP", "Debug/Continue (F5)\nPress <Alt> to keep debug active after script finishes.");
+  IupSetAttribute(btn_debug, "TIP", "Debug/Continue (F5)\nPress <Shift> to keep debug active after script finishes.");
   IupSetAttribute(btn_debug, "CANFOCUS", "No");
 
   btn_run = IupButton(NULL, NULL);
@@ -1831,7 +1794,7 @@ static void appendToolbarDebugButtons(Ihandle *dialog)
   IupSetAttribute(btn_pause, "IMAGE", "IUP_MediaPause");
   IupSetAttribute(btn_pause, "FLAT", "Yes");
   IupSetCallback(btn_pause, "ACTION", (Icallback)item_pause_action_cb);
-  IupSetAttribute(btn_pause, "TIP", "Debug (F5)");
+  IupSetAttribute(btn_pause, "TIP", "Pause (Ctrl+Break)");
   IupSetAttribute(btn_pause, "CANFOCUS", "No");
 
   btn_stepover = IupButton(NULL, NULL);
@@ -1905,7 +1868,7 @@ static Ihandle* buildLuaMenu(void)
   IupSetAttribute(item_stop, "ACTIVE", "NO");
   IupSetAttribute(item_stop, "IMAGE", "IUP_MediaStop");
 
-  item_pause = IupItem("&Pause\tCtrl+Alt+Break", NULL);
+  item_pause = IupItem("&Pause\tCtrl+Break", NULL);
   IupSetAttribute(item_pause, "NAME", "ITM_PAUSE");
   IupSetCallback(item_pause, "ACTION", (Icallback)item_pause_action_cb);
   IupSetAttribute(item_pause, "ACTIVE", "NO");
@@ -2229,7 +2192,7 @@ static int iLuaScripterDlgCreateMethod(Ihandle* ih, void** params)
   IupSetCallback(ih, "K_F5", (Icallback)item_debug_action_cb);
   IupSetCallback(ih, "K_cF5", (Icallback)item_run_action_cb);
   IupSetCallback(ih, "K_sF5", (Icallback)item_stop_action_cb);
-  IupSetCallback(ih, "K_PAUSE", (Icallback)k_pause_action_cb);
+  IupSetCallback(ih, "K_cPAUSE", (Icallback)item_pause_action_cb);
   IupSetCallback(ih, "K_F10", (Icallback)item_stepover_action_cb);
   IupSetCallback(ih, "K_F11", (Icallback)item_stepinto_action_cb);
   IupSetCallback(ih, "K_sF11", (Icallback)item_stepout_action_cb);
