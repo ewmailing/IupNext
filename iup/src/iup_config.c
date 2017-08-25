@@ -510,37 +510,37 @@ void IupConfigDialogShow(Ihandle* ih, Ihandle* dialog, const char* name)
     return;
   }
 
+  /* set size only if dialog is resizable */
+  if (IupGetInt(dialog, "RESIZE"))
+  {
+    /* dialog size from Config */
+    int width = IupConfigGetVariableInt(ih, name, "Width");
+    int height = IupConfigGetVariableInt(ih, name, "Height");
+    if (width != 0 || height != 0)
+    {
+      int screen_width = 0, screen_height = 0;
+      IupGetIntInt(NULL, "SCREENSIZE", &screen_width, &screen_height);
+      if (width == 0)
+        width = screen_width;
+      if (height == 0)
+        height = screen_height;
+
+#ifdef WIN32
+      IupSetfAttribute(dialog, "RASTERSIZE", "%dx%d", width, height);
+#else
+      IupMap(dialog);
+      IupSetfAttribute(dialog, "CLIENTSIZE", "%dx%d", width, height);
+#endif
+      set_size = 1;
+    }
+  }
+
   if (IupConfigGetVariableIntDef(ih, name, "Maximized", 1) && IupGetInt(dialog, "RESIZE"))
   {
     IupSetAttribute(dialog, "PLACEMENT", "MAXIMIZED");
   }
   else
   {
-    /* set size only if dialog is resizable */
-    if (IupGetInt(dialog, "RESIZE"))
-    {
-      /* dialog size from Config */
-      int width = IupConfigGetVariableInt(ih, name, "Width");
-      int height = IupConfigGetVariableInt(ih, name, "Height");
-      if (width != 0 || height != 0)
-      {
-        int screen_width = 0, screen_height = 0;
-        IupGetIntInt(NULL, "SCREENSIZE", &screen_width, &screen_height);
-        if (width == 0)
-          width = screen_width;
-        if (height == 0)
-          height = screen_height;
-
-#ifdef WIN32
-        IupSetfAttribute(dialog, "RASTERSIZE", "%dx%d", width, height);
-#else
-        IupMap(dialog);
-        IupSetfAttribute(dialog, "CLIENTSIZE", "%dx%d", width, height);
-#endif
-        set_size = 1;
-      }
-    }
-
     /* dialog position from Config */
     if (IupConfigGetVariableStr(ih, name, "X"))
     {
