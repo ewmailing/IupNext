@@ -76,12 +76,16 @@ static int winScintillaMsgProc(Ihandle* ih, UINT msg, WPARAM wp, LPARAM lp, LRES
     int ret = iupwinBaseMsgProc(ih, msg, wp, lp, result);
     if (ret) 
     {
-      iupAttribSet(ih, "_IUPWIN_IGNORE_CHAR", "1");
+      if (iupObjectCheck(ih))
+        iupAttribSet(ih, "_IUPWIN_IGNORE_CHAR", "1");
       *result = 0;
       return 1;
     }
     else
-      iupAttribSet(ih, "_IUPWIN_IGNORE_CHAR", NULL);
+    {
+      if (iupObjectCheck(ih))
+        iupAttribSet(ih, "_IUPWIN_IGNORE_CHAR", NULL);
+    }
   }
 
   switch (msg)
