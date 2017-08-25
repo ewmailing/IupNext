@@ -1593,7 +1593,7 @@ static Ihandle *buildTabDebug(void)
   IupSetAttribute(button_printLocal, "ACTIVE", "NO");
   IupSetAttribute(button_printLocal, "FLAT", "Yes");
   IupSetAttribute(button_printLocal, "IMAGE", "IUP_Print");
-  IupSetAttribute(button_printLocal, "TIP", "Prints debug information about the selected local variable.\nPress <Shift> to print all variables.");
+  IupSetAttribute(button_printLocal, "TIP", "Prints in the console debug information about the selected local variable.\nPress <Shift> to print all variables.");
   IupSetAttribute(button_printLocal, "NAME", "PRINT_LOCAL");
   IupSetCallback(button_printLocal, "ACTION", (Icallback)but_printlocal_cb);
 
@@ -1601,7 +1601,7 @@ static Ihandle *buildTabDebug(void)
   IupSetAttribute(button_setLocal, "IMAGE", "IUP_FileProperties");
   IupSetAttribute(button_setLocal, "FLAT", "Yes");
   IupSetAttribute(button_setLocal, "ACTIVE", "NO");
-  IupSetAttribute(button_setLocal, "TIP", "Set the value of the selected local variable.\nOnly strings, numbers and booleans can be changed.");
+  IupSetAttribute(button_setLocal, "TIP", "Changes the value of the selected local variable.\nOnly strings, numbers and booleans can be changed.");
   IupSetAttribute(button_setLocal, "NAME", "SET_LOCAL");
   IupSetCallback(button_setLocal, "ACTION", (Icallback)but_setlocal_cb);
 
@@ -1626,7 +1626,7 @@ static Ihandle *buildTabDebug(void)
   button_printLevel = IupButton(NULL, NULL);
   IupSetAttribute(button_printLevel, "FLAT", "Yes");
   IupSetAttribute(button_printLevel, "IMAGE", "IUP_Print");
-  IupSetAttribute(button_printLevel, "TIP", "Prints debug information about the selected call stack level.\nPress <Shift> to print all levels.");
+  IupSetAttribute(button_printLevel, "TIP", "Prints in the console debug information about the selected call stack level.\nPress <Shift> to print all levels.");
   IupSetAttribute(button_printLevel, "ACTIVE", "NO");
   IupSetAttribute(button_printLevel, "NAME", "PRINT_LEVEL");
   IupSetCallback(button_printLevel, "ACTION", (Icallback)but_printlevel_cb);
@@ -1664,7 +1664,7 @@ static Ihandle *buildTabWatch(void)
   IupSetAttribute(button_printGlobal, "FLAT", "Yes");
   IupSetAttribute(button_printGlobal, "IMAGE", "IUP_Print");
   IupSetAttribute(button_printGlobal, "ACTIVE", "NO");
-  IupSetAttribute(button_printGlobal, "TIP", "Prints debug information about the selected global variable.\nPress <Shift> to print all variables.");
+  IupSetAttribute(button_printGlobal, "TIP", "Prints in the console debug information about the selected global variable.\nPress <Shift> to print all variables.");
   IupSetAttribute(button_printGlobal, "NAME", "PRINT_GLOBAL");
   IupSetCallback(button_printGlobal, "ACTION", (Icallback)but_printglobal_cb);
 
@@ -1672,7 +1672,7 @@ static Ihandle *buildTabWatch(void)
   IupSetAttribute(button_setGlobal, "IMAGE", "IUP_FileProperties");
   IupSetAttribute(button_setGlobal, "FLAT", "Yes");
   IupSetAttribute(button_setGlobal, "ACTIVE", "NO");
-  IupSetAttribute(button_setGlobal, "TIP", "Set the value of the selected global variable.\nOnly strings, numbers and booleans can be changed.");
+  IupSetAttribute(button_setGlobal, "TIP", "Changes the value of the selected global variable.\nOnly strings, numbers and booleans can be changed.");
   IupSetAttribute(button_setGlobal, "NAME", "SET_GLOBAL");
   IupSetCallback(button_setGlobal, "ACTION", (Icallback)but_setglobal_cb);
 
