@@ -1246,9 +1246,9 @@ static int item_save_action_cb(Ihandle* ih_item)
 
 static int item_closeall_action_cb(Ihandle* ih_item)
 {
+  Ihandle* multitext, *tmp;
   Ihandle* tabs = IupGetDialogChild(ih_item, "TABS");
   if (!tabs) tabs = (Ihandle*)iupAttribGetInherit(ih_item, "TABS");  /* from the context menu */
-  Ihandle* multitext, *tmp;
 
   for (multitext = tabs->firstchild; multitext; /* increment before destroy */)
   {
