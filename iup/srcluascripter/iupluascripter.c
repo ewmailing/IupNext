@@ -173,8 +173,8 @@ int main(int argc, char **argv)
 
   main_dialog = IupLuaScripterDlg();
 
-  IupSetAttributeHandle(main_dialog, "CONFIG", config);
   IupSetAttribute(main_dialog, "SUBTITLE", "IupLuaScripter");
+  IupSetAttributeHandle(main_dialog, "CONFIG", config);
 
   menu = IupGetAttributeHandle(main_dialog, "MENU");
   IupAppend(menu, IupSubmenu("&Help", IupMenu(

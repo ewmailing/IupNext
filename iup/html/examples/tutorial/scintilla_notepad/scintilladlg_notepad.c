@@ -39,8 +39,8 @@ int main(int argc, char **argv)
 
   main_dialog = IupScintillaDlg();
 
-  IupSetAttributeHandle(main_dialog, "CONFIG", config);
   IupSetAttribute(main_dialog, "SUBTITLE", "Scintilla Notepad");
+  IupSetAttributeHandle(main_dialog, "CONFIG", config);
 
   menu = IupGetAttributeHandle(main_dialog, "MENU");
   IupAppend(menu, IupSubmenu("&Help", IupMenu(
