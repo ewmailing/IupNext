@@ -47,6 +47,22 @@ function iup.DebuggerFindMultitext(filename)
   end
 end
 
+function iup.DebuggerRestoreBreakpoints(multitext, m_filename)
+  local list_break = iup.GetDialogChild(debugger.main_dialog, "LIST_BREAK")
+
+  local index = 1
+  local filename = list_break["FILENAME"..index]
+  while filename do
+    if filename == m_filename then
+      local line = tonumber(list_break["LINE"..index])
+      multitext["MARKERADD".. (line - 1)] = 1 -- (margin=1)
+    end
+
+    index = index + 1
+    filename = list_break["FILENAME"..index]
+  end
+end
+
 function iup.DebuggerOpenMultitext(filename, source)
   local tabs = iup.GetDialogChild(debugger.main_dialog, "TABS")
   local old_count = tonumber(tabs.count)
@@ -66,6 +82,12 @@ function iup.DebuggerOpenMultitext(filename, source)
       multitext.filename = filename
       multitext.value = source
       multitext.temporary = "Yes"
+
+      iup.DebuggerRestoreBreakpoints(multitext, filename)
+    end
+
+    if iup.DebuggerIsActive() then
+      multitext.readonly = "Yes"
     end
 
     return multitext
@@ -231,9 +253,9 @@ function iup.DebuggerHighlightLine(filename, line, source)
   multitext.caretpos = pos
 
   -- highlight
-  multitext["MARKERADD"..line-1] = 2 -- (margin=2)
+  multitext["MARKERADD"..(line-1)] = 2 -- (margin=2)
   -- arrow
-  multitext["MARKERADD"..line-1] = 3 -- (margin=3)
+  multitext["MARKERADD"..(line-1)] = 3 -- (margin=3)
 end
 
 function iup.DebuggerShowCurrentLine()
@@ -1044,7 +1066,7 @@ function iup.DebuggerAddGlobalVariable()
     local value = _G[newName]
     list_global["GLOBALNAME"..index] = newName
 
-    if debugger.debugState ~= DEBUG_INACTIVE then
+    if iup.DebuggerIsActive() then
       iup.DebuggerSetGlobalListItem(list_global, index, newName, value)
     else
       list_global[index] = newName
@@ -1140,7 +1162,7 @@ function iup.DebuggerSetGlobalVariable()
 
     _G[name] = newValue
 
-    if debugger.debugState ~= DEBUG_INACTIVE then
+    if iup.DebuggerIsActive() then
       iup.DebuggerSetGlobalListItem(list_global, index, name, newValue)
     else
       list_global[index] = name
@@ -1269,7 +1291,7 @@ function iup.DebuggerHookFunction(event, line)
     filename = string.sub(info.short_src, 2, -2)
   end
 
-  if debugger.debugState ~= DEBUG_INACTIVE then
+  if iup.DebuggerIsActive() then
     if event == "call" then
       iup.DebuggerCallHook()
     elseif event == "return" then
@@ -1312,7 +1334,7 @@ function iup.DebuggerEndDebug(stop)
 end
 
 function iup.DebuggerExit()
-  if debugger.debugState ~= DEBUG_INACTIVE then
+  if iup.DebuggerIsActive() then
     iup.DebuggerEndDebug(true) -- make a stop
   end
 end
