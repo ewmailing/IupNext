@@ -1472,32 +1472,37 @@ static int but_addbreak_cb(Ihandle* ih)
   return IUP_DEFAULT;
 }
 
-static int but_removebreak_cb(Ihandle *ih)
-{
-  lua_State* L;
-  Ihandle* listBreak = IupGetDialogChild(ih, "LIST_BREAK");
-  int index = IupGetInt(listBreak, "VALUE");
-
-  if (index == 0)
-  {
-    IupMessageError(IupGetDialog(ih), "Must select a breakpoint on the list.");
-    return IUP_DEFAULT;
-  }
-
-  L = (lua_State*)IupGetAttribute(ih, "LUASTATE");
-  iuplua_push_name(L, "DebuggerRemoveBreakpoint");
-  iuplua_pushihandle(L, listBreak);
-  lua_pushinteger(L, index);
-  lua_call(L, 2, 0);
-
-  return IUP_DEFAULT;
-}
-
 static int but_removeallbreaks_cb(Ihandle *ih)
 {
   lua_State* L = (lua_State*)IupGetAttribute(ih, "LUASTATE");
   iuplua_push_name(L, "DebuggerRemoveAllBreakpoints");
   lua_call(L, 0, 0);
+  return IUP_DEFAULT;
+}
+
+static int but_removebreak_cb(Ihandle *ih)
+{
+  if (IupGetInt(NULL, "SHIFTKEY"))
+    but_removeallbreaks_cb(ih);
+  else
+  {
+    lua_State* L;
+    Ihandle* listBreak = IupGetDialogChild(ih, "LIST_BREAK");
+    int index = IupGetInt(listBreak, "VALUE");
+
+    if (index == 0)
+    {
+      IupMessageError(IupGetDialog(ih), "Must select a breakpoint on the list.");
+      return IUP_DEFAULT;
+    }
+
+    L = (lua_State*)IupGetAttribute(ih, "LUASTATE");
+    iuplua_push_name(L, "DebuggerRemoveBreakpoint");
+    iuplua_pushihandle(L, listBreak);
+    lua_pushinteger(L, index);
+    lua_call(L, 2, 0);
+  }
+
   return IUP_DEFAULT;
 }
 
