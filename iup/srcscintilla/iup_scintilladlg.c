@@ -1127,6 +1127,7 @@ static int item_open_action_cb(Ihandle* ih_item)
   IupSetStrAttribute(filedlg, "DIRECTORY", dir);
 
   IupPopup(filedlg, IUP_CENTERPARENT, IUP_CENTERPARENT);
+  
   if (IupGetInt(filedlg, "STATUS") != -1)
   {
     char* filename = IupGetAttribute(filedlg, "VALUE");
@@ -1215,15 +1216,6 @@ static int item_savecopy_action_cb(Ihandle* ih_item)
   return IUP_DEFAULT;
 }
 
-static int item_save_action_cb(Ihandle* ih_item)
-{
-  Ihandle* multitext = iScintillaDlgGetCurrentMultitext(ih_item);  /* ih_item can be from the context menu */
-  /* test again because in can be called using the hot key */
-  if (IupGetInt(multitext, "MODIFIED"))
-    save_file(multitext);
-  return IUP_IGNORE;  /* to avoid garbage in Scintilla when pressing the hot key */
-}
-
 static int item_saveall_action_cb(Ihandle* ih_item)
 {
   Ihandle* tabs = IupGetDialogChild(ih_item, "TABS");
@@ -1238,17 +1230,18 @@ static int item_saveall_action_cb(Ihandle* ih_item)
   return IUP_DEFAULT;
 }
 
-static int item_close_action_cb(Ihandle* ih_item)
+static int item_save_action_cb(Ihandle* ih_item)
 {
-  Ihandle* multitext = iScintillaDlgGetCurrentMultitext(ih_item); /* ih_item can be from the context menu */
-
-  if (!iScintillaDlgCloseMultitext(multitext, 1))
-    return IUP_DEFAULT;
-
-  if (IupGetChildCount(IupGetParent(multitext)) == 0)
-    new_file(multitext);  /* always keep at least one multitext */
-
-  return IUP_DEFAULT;
+  if (IupGetInt(NULL, "SHIFTKEY"))
+    item_saveall_action_cb(ih_item);
+  else
+  {
+    Ihandle* multitext = iScintillaDlgGetCurrentMultitext(ih_item);  /* ih_item can be from the context menu */
+    /* test again because in can be called using the hot key */
+    if (IupGetInt(multitext, "MODIFIED"))
+      save_file(multitext);
+  }
+  return IUP_IGNORE;  /* to avoid garbage in Scintilla when pressing the hot key */
 }
 
 static int item_closeall_action_cb(Ihandle* ih_item)
@@ -1268,6 +1261,25 @@ static int item_closeall_action_cb(Ihandle* ih_item)
   }
 
   new_file(tabs);  /* always keep at least one multitext */
+
+  return IUP_DEFAULT;
+}
+
+static int item_close_action_cb(Ihandle* ih_item)
+{
+  if (IupGetInt(NULL, "SHIFTKEY"))
+    item_closeall_action_cb(ih_item);
+  else
+  {
+    Ihandle* multitext = iScintillaDlgGetCurrentMultitext(ih_item); /* ih_item can be from the context menu */
+    Ihandle* tabs = IupGetParent(multitext);
+
+    if (!iScintillaDlgCloseMultitext(multitext, 1))
+      return IUP_DEFAULT;
+
+    if (IupGetChildCount(tabs) == 0)
+      new_file(ih_item);  /* always keep at least one multitext */
+  }
 
   return IUP_DEFAULT;
 }
@@ -1522,7 +1534,7 @@ static int tabs_rightclick_cb(Ihandle* tabs, int pos)
   item_close = IupItem("Close\tCtrl+F4", NULL);
   IupSetCallback(item_close, "ACTION", (Icallback)item_close_action_cb);
 
-  item_closeall = IupItem("Close All", NULL);
+  item_closeall = IupItem("Close All\tCtrl+Shift+F4", NULL);
   IupSetCallback(item_closeall, "ACTION", (Icallback)item_closeall_action_cb);
 
   item_closeall_butthis = IupItem("Close All But This", NULL);
@@ -1605,6 +1617,7 @@ static int tabs_close_cb(Ihandle* tabs, int pos)
 
   return IUP_IGNORE;  /* we already destroyed the multitext */
 }
+
 static int find_close_action_cb(Ihandle* bt_close);
 
 static int close_exit_action_cb(Ihandle* ih_item)
@@ -2889,7 +2902,7 @@ static void iScintillaDlgSetConfig(Ihandle* ih, Ihandle* config)
   for (multitext = tabs->firstchild; multitext; multitext = multitext->brother)
     iScintillaDlgSetConfigMultitext(ih, config, multitext);
 
-  IupSetAttribute(ih, "RECENTNAME", "ScintillaRecent");
+  IupSetAttribute(config, "RECENTNAME", "ScintillaRecent");
   IupConfigRecentInit(config, recent_menu, config_recent_cb, 10);
 
   if (cb)
@@ -2986,7 +2999,11 @@ static int iScintillaDlgSetForceCloseFileAttrib(Ihandle* ih, const char* value)
   {
     Ihandle* tabs = IupGetDialogChild(ih, "TABS");
     Ihandle* multitext = IupGetChild(tabs, pos);
+
     iScintillaDlgCloseMultitext(multitext, 0);
+
+    if (IupGetChildCount(tabs) == 0)
+      new_file(ih);  /* always keep at least one multitext */
   }
   return 0;
 }
@@ -2998,7 +3015,11 @@ static int iScintillaDlgSetCloseFileAttrib(Ihandle* ih, const char* value)
   {
     Ihandle* tabs = IupGetDialogChild(ih, "TABS");
     Ihandle* multitext = IupGetChild(tabs, pos);
+
     iScintillaDlgCloseMultitext(multitext, 1);
+
+    if (IupGetChildCount(tabs) == 0)
+      new_file(ih);  /* always keep at least one multitext */
   }
   return 0;
 }
@@ -3079,7 +3100,7 @@ static int iScintillaDlgCreateMethod(Ihandle* ih, void** params)
   IupSetAttribute(btn_save, "IMAGE", "IUP_FileSave");
   IupSetAttribute(btn_save, "FLAT", "Yes");
   IupSetCallback(btn_save, "ACTION", (Icallback)item_save_action_cb);
-  IupSetAttribute(btn_save, "TIP", "Save (Ctrl+S)");
+  IupSetAttribute(btn_save, "TIP", "Save (Ctrl+S)\nPress <Shift> to save all open files.");
   IupSetAttribute(btn_save, "CANFOCUS", "No");
 
   item_saveas = IupItem("Save &As...", NULL);
@@ -3088,10 +3109,10 @@ static int iScintillaDlgCreateMethod(Ihandle* ih, void** params)
   item_savecopy = IupItem("Save Cop&y...", NULL);
   IupSetCallback(item_savecopy, "ACTION", (Icallback)item_savecopy_action_cb);
 
-  item_saveall = IupItem("Save A&ll", NULL);
+  item_saveall = IupItem("Save A&ll\tCtrl+Shift+S", NULL);
   IupSetCallback(item_saveall, "ACTION", (Icallback)item_saveall_action_cb);
 
-  item_closeall = IupItem("Cl&ose All", NULL);
+  item_closeall = IupItem("Cl&ose All\tCtrl+Shift+F4", NULL);
   IupSetCallback(item_closeall, "ACTION", (Icallback)item_closeall_action_cb);
 
   item_close = IupItem("&Close\tCtrl+F4", NULL);
@@ -3460,7 +3481,8 @@ static int iScintillaDlgCreateMethod(Ihandle* ih, void** params)
   IupSetCallback(ih, "K_cEqual", (Icallback)item_zoomin_action_cb);
   IupSetCallback(ih, "K_cMinus", (Icallback)item_zoomout_action_cb);
   IupSetCallback(ih, "K_cSlash", (Icallback)item_restorezoom_action_cb);
-  IupSetCallback(ih, "K_F4", (Icallback)item_close_action_cb);
+  IupSetCallback(ih, "K_cF4", (Icallback)item_close_action_cb);
+  IupSetCallback(ih, "K_sF4", (Icallback)item_close_action_cb);
 
   iupAttribSet(ih, "_IUP_CONFIG", (char*)IupConfig());
 
