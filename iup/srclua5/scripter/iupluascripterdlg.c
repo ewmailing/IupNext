@@ -1626,7 +1626,7 @@ static Ihandle *buildTabDebug(void)
   button_printLevel = IupButton(NULL, NULL);
   IupSetAttribute(button_printLevel, "FLAT", "Yes");
   IupSetAttribute(button_printLevel, "IMAGE", "IUP_Print");
-  IupSetAttribute(button_printLevel, "TIP", "Prints debug information about the selected call stack level./nPress <Shift> to print all levels.");
+  IupSetAttribute(button_printLevel, "TIP", "Prints debug information about the selected call stack level.\nPress <Shift> to print all levels.");
   IupSetAttribute(button_printLevel, "ACTIVE", "NO");
   IupSetAttribute(button_printLevel, "NAME", "PRINT_LEVEL");
   IupSetCallback(button_printLevel, "ACTION", (Icallback)but_printlevel_cb);
@@ -1664,7 +1664,7 @@ static Ihandle *buildTabWatch(void)
   IupSetAttribute(button_printGlobal, "FLAT", "Yes");
   IupSetAttribute(button_printGlobal, "IMAGE", "IUP_Print");
   IupSetAttribute(button_printGlobal, "ACTIVE", "NO");
-  IupSetAttribute(button_printGlobal, "TIP", "Prints debug information about the selected global variable./nPress <Shift> to print all variables.");
+  IupSetAttribute(button_printGlobal, "TIP", "Prints debug information about the selected global variable.\nPress <Shift> to print all variables.");
   IupSetAttribute(button_printGlobal, "NAME", "PRINT_GLOBAL");
   IupSetCallback(button_printGlobal, "ACTION", (Icallback)but_printglobal_cb);
 
@@ -1686,7 +1686,7 @@ static Ihandle *buildTabWatch(void)
   IupSetAttribute(button_removeGlobal, "FLAT", "Yes");
   IupSetAttribute(button_removeGlobal, "IMAGE", "IUP_EditErase");
   IupSetAttribute(button_removeGlobal, "NAME", "REMOVE_GLOBAL");
-  IupSetAttribute(button_removeGlobal, "TIP", "Removes the selected global variable./nPress <Shift> to remove all variables.");
+  IupSetAttribute(button_removeGlobal, "TIP", "Removes the selected global variable.\nPress <Shift> to remove all variables.");
   IupSetCallback(button_removeGlobal, "ACTION", (Icallback)but_removeglobal_cb);
 
   vbox_global = IupVbox(button_printGlobal, button_setGlobal, button_addGlobal, button_removeGlobal, NULL);
@@ -1726,7 +1726,7 @@ static Ihandle *buildTabBreaks(void)
   button_removebreak = IupButton(NULL, NULL);
   IupSetAttribute(button_removebreak, "FLAT", "Yes");
   IupSetAttribute(button_removebreak, "IMAGE", "IUP_EditErase");
-  IupSetAttribute(button_removebreak, "TIP", "Removes the selected breakpoint./nPress <Shift> to remove all breakpoints.");
+  IupSetAttribute(button_removebreak, "TIP", "Removes the selected breakpoint.\nPress <Shift> to remove all breakpoints.");
   IupSetCallback(button_removebreak, "ACTION", (Icallback)but_removebreak_cb);
   IupSetAttribute(button_removebreak, "NAME", "REMOVE_BREAK");
   IupSetAttribute(button_removebreak, "ACTIVE", "NO");
