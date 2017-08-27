@@ -524,7 +524,7 @@ static int multitext_kesc_cb(Ihandle *multitext)
 static int multitext_lineschanged_cb(Ihandle* multitext, int start, int len)
 {
   lua_State* L = (lua_State*)IupGetAttribute(multitext, "LUASTATE");
-  iuplua_push_name(L, "DebuggerMultitextLinesChanged");
+  iuplua_push_name(L, "DebuggerBreakpointsChanged");
   iuplua_pushihandle(L, multitext);
   lua_pushinteger(L, start + 1);
   lua_pushinteger(L, len);

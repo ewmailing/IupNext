@@ -51,15 +51,15 @@ function iup.DebuggerRestoreBreakpoints(multitext, m_filename)
   local list_break = iup.GetDialogChild(debugger.main_dialog, "LIST_BREAK")
 
   local index = 1
-  local filename = list_break["FILENAME"..index]
+  local filename = list_break["FILENAME" .. index]
   while filename do
     if filename == m_filename then
-      local line = tonumber(list_break["LINE"..index])
+      local line = tonumber(list_break["LINE" .. index])
       multitext["MARKERADD".. (line - 1)] = 1 -- (margin=1)
     end
 
     index = index + 1
-    filename = list_break["FILENAME"..index]
+    filename = list_break["FILENAME" .. index]
   end
 end
 
@@ -320,14 +320,12 @@ end
 
 function iup.DebuggerRestoreLastListValue(list, last_value)
   -- maintain visual position of the selection on the list, not necessarily the same item
-  if last_value then
-    last_value = tonumber(last_value)
-    local count = tonumber(list.count)
-    if last_value > count then
-      list.value = count
-    else
-      list.value = last_value
-    end
+  last_value = tonumber(last_value)
+  local count = tonumber(list.count)
+  if last_value > count then
+    list.value = count
+  else
+    list.value = last_value
   end
 end
 
@@ -339,10 +337,53 @@ function table.count(t)
   return count
 end
 
+function iup.DebuggerUpdateBreakpointsListLines(list_break, m_filename, m_line, new_line)
+  local count = tonumber(list_break.count)
+  for i = 1, count do
+    local filename = list_break["FILENAME" .. i]
+    local line = tonumber(list_break["LINE" .. i])
+
+    if m_filename == filename and m_line == line then
+      -- update list (just title, index remains the same)
+      list_break[i] = "Line " .. new_line .. " of \"" .. filename .. "\""
+        
+      -- update FILENAME#LINE
+      list_break["LINE" .. i] = new_line
+    end
+  end
+end
+
+function iup.DebuggerRemoveBreakpointsListItem(list_break, m_filename, m_line)
+  local count = tonumber(list_break.count)
+  for i = 1, count do
+    local filename = list_break["FILENAME" .. i]
+    local line = tonumber(list_break["LINE" .. i])
+
+    if m_filename == filename and m_line == line then
+      iup.DebuggerRemoveBreakpointsListIndex(list_break, i)
+    end
+  end
+end
+
+function iup.DebuggerRemoveBreakpointsListIndex(list_break, index)
+  -- update list
+  list_break.removeitem = index
+  local count = tonumber(list_break.count)
+
+  -- update FILENAME#LINE
+  for i = index, count do
+    list_break["FILENAME"..i] = list_break["FILENAME"..(i+1)]
+    list_break["LINE"..i] = list_break["LINE"..(i+1)]
+  end
+  list_break["FILENAME" .. count+1] = nil
+  list_break["LINE" .. count+1] = nil
+end
+
 function iup.DebuggerRemoveBreakpoint(list_break, index)
   local last_value = list_break.value
-  local line = tonumber(list_break["LINE"..index])
-  local filename = list_break["FILENAME"..index]
+  local line = tonumber(list_break["LINE" .. index])
+  local filename = list_break["FILENAME" .. index]
+  local count = tonumber(list_break.count)
   
   -- update multitext
   local multitext = iup.DebuggerGetMultitext(filename, true, false) -- find but do NOT open if not found
@@ -350,10 +391,7 @@ function iup.DebuggerRemoveBreakpoint(list_break, index)
     multitext["MARKERDELETE" .. (line - 1)] = 1 -- margin=1
   end
 
-  -- update list
-  list_break.removeitem = index
-
-    -- update breakpoints table
+  -- update breakpoints table
   local file_breaks = debugger.breakpoints[filename]
   if file_breaks then 
     file_breaks[line] = nil
@@ -362,16 +400,10 @@ function iup.DebuggerRemoveBreakpoint(list_break, index)
     end
   end
 
-  -- update FILENAME#LINE
-  local count = tonumber(list_break.count)
-  for i = index, count do
-    list_break["FILENAME"..i] = list_break["FILENAME"..(i+1)]
-    list_break["LINE"..i] = list_break["LINE"..(i+1)]
-  end
-  list_break["FILENAME" .. count+1] = nil
-  list_break["LINE" .. count+1] = nil
+  -- update list and FILENAME#LINE
+  iup.DebuggerRemoveBreakpointsListIndex(list_break, index)
 
-  if count == 0 then
+  if count == 1 then
     -- update buttons, it is now empty
     iup.DebuggerSetDialogChildAttrib("REMOVE_BREAK", "ACTIVE", "NO")
   else
@@ -388,17 +420,17 @@ function iup.DebuggerAddBreakpoint(list_break, filename, line)
       multitext["MARKERADD" .. (line - 1)] = 1 -- margin=1
     end
 
-  -- update list
-  list_break.appenditem = "Line " .. line .. " of \"" .. filename .. "\""
-  local count = tonumber(list_break.count)
-
   -- update breakpoints table
   local file_breaks = debugger.breakpoints[filename]
   if not file_breaks then 
     file_breaks = {} 
     debugger.breakpoints[filename] = file_breaks
   end
-  file_breaks[line] = { index = count }
+  file_breaks[line] = { } -- other breakpoint info can be saved here
+
+  -- update list
+  list_break.appenditem = "Line " .. line .. " of \"" .. filename .. "\""
+  local count = tonumber(list_break.count)
 
   -- update FILENAME#LINE
   list_break["FILENAME"..count] = filename
@@ -409,12 +441,22 @@ function iup.DebuggerAddBreakpoint(list_break, filename, line)
     iup.DebuggerSetDialogChildAttrib("REMOVE_BREAK", "ACTIVE", "Yes")
   end
 
-  iup.DebuggerRestoreLastListValue(list_break, last_value)
+  -- select the new item
+  list_break.value = count
 end
 
-function iup.DebuggerMultitextLinesChanged(multitext, start_lin, num_lin)
+function table_compare_lines(elem1, elem2)
+  if (elem1.line < elem2.line) then
+    return true
+  else
+    return false
+  end
+end
+
+function iup.DebuggerBreakpointsChanged(multitext, start_lin, num_lin)
   local filename = multitext.filename
   local list_break = iup.GetDialogChild(debugger.main_dialog, "LIST_BREAK")
+  local last_value = list_break.value
 
   local file_breaks = debugger.breakpoints[filename]
   if not file_breaks then 
@@ -423,42 +465,32 @@ function iup.DebuggerMultitextLinesChanged(multitext, start_lin, num_lin)
 
   local new_file_breaks = {}
 
-  for line, v in pairs(file_breaks) do
+  for line, bp in pairs(file_breaks) do
     if line >= start_lin then
-      if num_lin < 0 and line <= start_lin - num_lin then
+      if num_lin < 0 and line < start_lin - num_lin then
         -- removed lines and removed breakpoint
 
         -- update multitext
         multitext["MARKERDELETE" .. (start_lin - 1)] = 1 -- margin=1    -- all breakpoints inside the region are collapsed to the start_lin
 
-        -- update list
-        list_break.removeitem = v.index
-
         -- update breakpoints table
-        -- just don't copy to new_file_breaks
+        -- simply don't copy to new_file_breaks
 
-        -- update FILENAME#LINE
-        local count = tonumber(list_break.count)
-        for i = v.index, count do
-          list_break["FILENAME"..i] = list_break["FILENAME"..(i+1)]
-          list_break["LINE"..i] = list_break["LINE"..(i+1)]
-        end
-        list_break["FILENAME" .. (count+1)] = nil
-        list_break["LINE" .. (count+1)] = nil
+        -- update list and FILENAME#LINE
+        iup.DebuggerRemoveBreakpointsListItem(list_break, filename, line)
       else
-        -- added or removed lines, just changed line in breakpoint
+        -- added or removed lines, just change line in breakpoints
 
         -- update breakpoints table
-        new_file_breaks[line + num_lin] = v
+        -- copy breakpoint at the new position
+        new_file_breaks[line + num_lin] = bp
 
-        -- update list
-        list_break[v.index] = "Line " .. line + num_lin .. " of \"" .. filename .. "\""
-        
-        -- update FILENAME#LINE
-        list_break["LINE" .. v.index] = line + num_lin
+        -- update list and FILENAME#LINE
+        iup.DebuggerUpdateBreakpointsListLines(list_break, filename, line, line + num_lin)
       end
     else
-      new_file_breaks[line] = v
+      -- no changes, just copy
+      new_file_breaks[line] = bp
     end
   end
 
@@ -473,6 +505,8 @@ function iup.DebuggerMultitextLinesChanged(multitext, start_lin, num_lin)
   if count == 0 then
     -- update buttons, it is now empty
     iup.DebuggerSetDialogChildAttrib("REMOVE_BREAK", "ACTIVE", "NO")
+  else
+    iup.DebuggerRestoreLastListValue(list_break, last_value)
   end
 end
 
@@ -490,13 +524,13 @@ function iup.DebuggerRemoveAllBreakpoints()
   
   -- update FILENAME#LINE
   local index = 1
-  local filename = list_break["FILENAME"..index]
+  local filename = list_break["FILENAME" .. index]
   while filename do
-    list_break["FILENAME"..index] = nil
-    list_break["LINE"..index] = nil
+    list_break["FILENAME" .. index] = nil
+    list_break["LINE" .. index] = nil
 
     index = index + 1
-    filename = list_break["FILENAME"..index]
+    filename = list_break["FILENAME" .. index]
   end
 
   -- update buttons
@@ -511,9 +545,9 @@ function iup.DebuggerInitBreakpointsList(list_break)
   debugger.breakpoints = {}
 
   local index = 1
-  local filename = list_break["FILENAME"..index]
+  local filename = list_break["FILENAME" .. index]
   while filename do
-    local line = tonumber(list_break["LINE"..index])
+    local line = tonumber(list_break["LINE" .. index])
 
     -- update list
     list_break[index] = "Line " .. line .. " of \"" .. filename .. "\""
@@ -524,10 +558,10 @@ function iup.DebuggerInitBreakpointsList(list_break)
       file_breaks = {} 
       debugger.breakpoints[filename] = file_breaks
     end
-    file_breaks[line] = { index = index }
+    file_breaks[line] = { } -- other breakpoint info can be saved here
 
     index = index + 1
-    filename = list_break["FILENAME"..index]
+    filename = list_break["FILENAME" .. index]
   end
 
   -- update buttons
@@ -561,15 +595,15 @@ function iup.DebuggerAddBreakpointList()
 end
 
 function iup.DebuggerBreaksListAction(list_break, index)
-  local filename = list_break["FILENAME"..index]
-  local line = tonumber(list_break["LINE"..index])
+  local filename = list_break["FILENAME" .. index]
+  local line = tonumber(list_break["LINE" .. index])
   
   iup.DebuggerSelectLine(filename, line, false) -- do not find
 end
 
 function iup.DebuggerBreaksListActivate(list_break, index)
-  local filename = list_break["FILENAME"..index]
-  local line = tonumber(list_break["LINE"..index])
+  local filename = list_break["FILENAME" .. index]
+  local line = tonumber(list_break["LINE" .. index])
 
   iup.DebuggerSelectLine(filename, line, true) -- find
 end
@@ -596,7 +630,7 @@ function iup.DebuggerSetLocalVariable()
   local name = list_local[index]
   local s, e = string.find(name, " =", 1, true)
   name = string.sub(name, 1, s - 1)
-  local value = list_local["LOCALVALUE"..index]
+  local value = list_local["LOCALVALUE" .. index]
 
   if (value == nil) then value = "nil" end
   local valueType = type(value)
@@ -645,8 +679,8 @@ function iup.DebuggerPrintLocalVariable()
   local luaTabs = iup.GetDialogChild(debugger.main_dialog, "LUA_TABS")
   luaTabs.valuepos = 0 -- show console tab
 
-  local pos = list_local["POS"..index]
-  local value = list_local["LOCALVALUE"..index]
+  local pos = list_local["POS" .. index]
+  local value = list_local["LOCALVALUE" .. index]
 
   iup.ConsolePrint(list_local[index] .. "  (pos="..pos..")")
   iup.ConsolePrintValue(value)
@@ -660,8 +694,8 @@ function iup.DebuggerPrintAllLocalVariables()
   luaTabs.valuepos = 0 -- show console tab
 
   for index = 1, count do
-    local pos = list_local["POS"..index]
-    local value = list_local["LOCALVALUE"..index]
+    local pos = list_local["POS" .. index]
+    local value = list_local["LOCALVALUE" .. index]
 
     iup.ConsolePrint(list_local[index] .. "  (pos="..pos..")")
     iup.ConsolePrintValue(value)
@@ -669,7 +703,7 @@ function iup.DebuggerPrintAllLocalVariables()
 end
 
 function iup.DebuggerSetLocal(list_local, level, index, newValue)
-  local pos = list_local["POS"..index]
+  local pos = list_local["POS" .. index]
   local list_value = list_local[index]
   local s = string.sub(list_value, 1, 3)
   if s == ":: " then
@@ -682,7 +716,7 @@ end
 
 function iup.DebuggerGetLocal(list_local, level, index)
   local name, value
-  local pos = list_local["POS"..index]
+  local pos = list_local["POS" .. index]
   local list_value = list_local[index]
   local s = string.sub(list_value, 1, 3)
   if s == ":: " then
@@ -695,7 +729,7 @@ function iup.DebuggerGetLocal(list_local, level, index)
 end
 
 function iup.DebuggerLocalVariablesListAction(list_local, index)
-  local value = list_local["LOCALVALUE"..index]
+  local value = list_local["LOCALVALUE" .. index]
   local valueType = type(value)
   if valueType == "string" or valueType == "number" or valueType == "boolean" then
     iup.DebuggerSetDialogChildAttrib("SET_LOCAL", "ACTIVE", "Yes")
@@ -712,10 +746,10 @@ function iup.DebuggerSetLocalListItem(list_local, index, name, value, pos)
     list_local[index] = name .. " = " .. tostring(value) .. " <" .. valueType .. ">"
   end
 
-  list_local["LOCALVALUE"..index] = value
+  list_local["LOCALVALUE" .. index] = value
 
   if pos then
-    list_local["POS"..index] = pos
+    list_local["POS" .. index] = pos
   end
 end
 
@@ -855,8 +889,8 @@ function iup.DebuggerStackListAction(list_stack, index)
   
   iup.DebuggerUpdateLocalVariablesList(level)
   
-  local filename = list_stack["FILENAME"..index]
-  local line = list_stack["LINE"..index]
+  local filename = list_stack["FILENAME" .. index]
+  local line = list_stack["LINE" .. index]
 
   iup.DebuggerSelectLine(filename, tonumber(line), false) -- do not find
 end
@@ -867,9 +901,9 @@ function iup.DebuggerStackListActivate(list_stack, index)
   
   iup.DebuggerUpdateLocalVariablesList(level)
   
-  local filename = list_stack["FILENAME"..index]
-  local line = list_stack["LINE"..index]
-  local source = list_stack["SOURCE"..index]
+  local filename = list_stack["FILENAME" .. index]
+  local line = list_stack["LINE" .. index]
+  local source = list_stack["SOURCE" .. index]
 
   iup.DebuggerSelectLine(filename, tonumber(line), true, source) -- find
 end
@@ -887,9 +921,9 @@ function iup.DebuggerPrintStackLevel()
   local luaTabs = iup.GetDialogChild(debugger.main_dialog, "LUA_TABS")
   luaTabs.valuepos = 0 -- show console tab
 
-  local defined = list_stack["DEFINED"..index]
+  local defined = list_stack["DEFINED" .. index]
 
-  iup.ConsolePrint(list_stack[index] .. "  (level="..index..")")
+  iup.ConsolePrint(list_stack[index] .. "  (level=" .. index..")")
   iup.ConsolePrint(defined)
 end
 
@@ -901,9 +935,9 @@ function iup.DebuggerPrintAllStackLevel()
   luaTabs.valuepos = 0 -- show console tab
 
   for index = 1, count do
-    local defined = list_stack["DEFINED"..index]
+    local defined = list_stack["DEFINED" .. index]
 
-    iup.ConsolePrint(list_stack[index] .. "  (level="..index..")")
+    iup.ConsolePrint(list_stack[index] .. "  (level=" .. index..")")
     iup.ConsolePrint(defined)
   end
 end
@@ -978,10 +1012,10 @@ function iup.DebuggerUpdateStackList()
 
     local index = (level - startLevel) + 1
     list_stack[index] = desc
-    list_stack["DEFINED"..index] = defined
-    list_stack["FILENAME"..index] = filename
-    list_stack["SOURCE"..index] = info.source
-    list_stack["LINE"..index] = info.currentline
+    list_stack["DEFINED" .. index] = defined
+    list_stack["FILENAME" .. index] = filename
+    list_stack["SOURCE" .. index] = info.source
+    list_stack["LINE" .. index] = info.currentline
 
     level = level + 1
 
@@ -1012,7 +1046,7 @@ function iup.DebuggerInitGlobalsList(list_global)
     list_global[index] = name
 
     index = index + 1
-    name = list_global["GLOBALNAME"..index]
+    name = list_global["GLOBALNAME" .. index]
   end
   list_global[index] = nil
 
@@ -1041,7 +1075,7 @@ function iup.DebuggerUpdateGlobalList()
     iup.DebuggerSetGlobalListItem(list_global, index, name, value)
 
     index = index + 1
-    name = list_global["GLOBALNAME"..index]
+    name = list_global["GLOBALNAME" .. index]
   end
 end
 
@@ -1064,7 +1098,7 @@ function iup.DebuggerAddGlobalVariable()
     local index = count + 1
 
     local value = _G[newName]
-    list_global["GLOBALNAME"..index] = newName
+    list_global["GLOBALNAME" .. index] = newName
 
     if iup.DebuggerIsActive() then
       iup.DebuggerSetGlobalListItem(list_global, index, newName, value)
@@ -1133,7 +1167,7 @@ function iup.DebuggerSetGlobalVariable()
   end
 
   index = tonumber(index)
-  local name = list_global["GLOBALNAME"..index]
+  local name = list_global["GLOBALNAME" .. index]
   local value = _G[name]
 
   if (value == nil) then value = "nil" end
@@ -1177,7 +1211,7 @@ function iup.DebuggerPrintGlobalVariable()
   local luaTabs = iup.GetDialogChild(debugger.main_dialog, "LUA_TABS")
   luaTabs.valuepos = 0 -- show console tab
 
-  local name = list_global["GLOBALNAME"..index]
+  local name = list_global["GLOBALNAME" .. index]
   local value = _G[name]
 
   iup.ConsolePrint(list_global[index])
@@ -1192,7 +1226,7 @@ function iup.DebuggerPrintAllGlobalVariables()
   luaTabs.valuepos = 0 -- show console tab
 
   for index = 1, count do
-    local name = list_global["GLOBALNAME"..index]
+    local name = list_global["GLOBALNAME" .. index]
     local value = _G[name]
 
     iup.ConsolePrint(list_global[index])
