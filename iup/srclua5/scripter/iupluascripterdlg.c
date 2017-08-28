@@ -147,7 +147,7 @@ static int exit_cb(Ihandle *ih)
 {
   lua_State* L = (lua_State*)IupGetAttribute(ih, "LUASTATE");
   iuplua_push_name(L, "DebuggerExit"); /* this may trigger a Lua error which will abort the function with a goto, must sure you do nothing after that */
-  lua_call(L, 0, 0);
+  iuplua_call_raw(L, 0, 0);
 
   return IUP_DEFAULT;
 }
@@ -199,7 +199,7 @@ static void remove_breakpoint(Ihandle *listBreak, const char* m_filename, int m_
       iuplua_push_name(L, "DebuggerRemoveBreakpoint");
       iuplua_pushihandle(L, listBreak);
       lua_pushinteger(L, i);
-      lua_call(L, 2, 0);
+      iuplua_call_raw(L, 2, 0);
       return;
     }
 
@@ -214,7 +214,7 @@ static void add_breakpoint(Ihandle *listBreak, const char* filename, int line, l
   iuplua_pushihandle(L, listBreak);
   lua_pushstring(L, filename);
   lua_pushinteger(L, line);
-  lua_call(L, 3, 0);
+  iuplua_call_raw(L, 3, 0);
 }
 
 static int marker_changed_cb(Ihandle *ih, Ihandle *multitext, int lin, int margin)
@@ -328,7 +328,7 @@ static void load_globals(Ihandle *ih, Ihandle* config)
 
   iuplua_push_name(L, "DebuggerInitGlobalsList");
   iuplua_pushihandle(L, listGlobals);
-  lua_call(L, 1, 0);
+  iuplua_call_raw(L, 1, 0);
 }
 
 static void load_breakpoints(Ihandle *ih, Ihandle* config)
@@ -358,7 +358,7 @@ static void load_breakpoints(Ihandle *ih, Ihandle* config)
 
   iuplua_push_name(L, "DebuggerInitBreakpointsList");
   iuplua_pushihandle(L, listBreak);
-  lua_call(L, 1, 0);
+  iuplua_call_raw(L, 1, 0);
 }
 
 static int configload_cb(Ihandle *ih, Ihandle* config)
@@ -426,7 +426,7 @@ static int newfilename_cb(Ihandle *ih, char* old_filename, char* new_filename)
     lua_State* L = (lua_State*)IupGetAttribute(ih, "LUASTATE");
     iuplua_push_name(L, "DebuggerInitBreakpointsList");
     iuplua_pushihandle(L, listBreak);
-    lua_call(L, 1, 0);
+    iuplua_call_raw(L, 1, 0);
   }
   return IUP_DEFAULT;
 }
@@ -490,7 +490,7 @@ static int multitext_dwell_cb(Ihandle* multitext, int code, int pos, int x, int 
     iuplua_push_name(L, "DebuggerShowTip");
     lua_pushstring(L, word);
     lua_pushinteger(L, lin+1);
-    lua_call(L, 2, 1);
+    iuplua_call_raw(L, 2, 1);
     
     value = lua_tostring(L, -1);
     if (value==NULL)
@@ -528,7 +528,7 @@ static int multitext_lineschanged_cb(Ihandle* multitext, int start, int len)
   iuplua_pushihandle(L, multitext);
   lua_pushinteger(L, start + 1);
   lua_pushinteger(L, len);
-  lua_call(L, 3, 0);
+  iuplua_call_raw(L, 3, 0);
   return IUP_DEFAULT;
 }
 
@@ -974,7 +974,7 @@ static void debug_set_state(lua_State *L, const char* state)
 {
   iuplua_push_name(L, "DebuggerSetStateString");
   lua_pushstring(L, state);
-  lua_call(L, 1, 0);
+  iuplua_call_raw(L, 1, 0);
 }
 
 static int debug_save_check(Ihandle* multitext, const char* filename)
@@ -1027,7 +1027,7 @@ static int debug_is_active(lua_State* L)
 {
   int ret;
   iuplua_push_name(L, "DebuggerIsActive");
-  lua_call(L, 0, 1);
+  iuplua_call_raw(L, 0, 1);
   ret = lua_toboolean(L, -1);
   lua_pop(L, 1);  /* remove the result from the stack */
   return ret;
@@ -1065,7 +1065,7 @@ static int item_debug_action_cb(Ihandle* ih_item)
     lua_pushstring(L, filename);
   else
     lua_pushnil(L);
-  lua_call(L, 1, 0);
+  iuplua_call_raw(L, 1, 0);
 
   value = IupGetAttribute(ih, "CURRENTDIRECTORY");
   if (value && value[0]!=0) iupdrvSetCurrentDirectory(value);
@@ -1078,7 +1078,7 @@ static int item_debug_action_cb(Ihandle* ih_item)
   {
     iuplua_push_name(L, "DebuggerEndDebug");
     lua_pushboolean(L, 0);
-    lua_call(L, 1, 0);
+    iuplua_call_raw(L, 1, 0);
   }
 
   return IUP_DEFAULT;
@@ -1185,7 +1185,7 @@ static int item_currentline_cb(Ihandle *ih_item)
 {
   lua_State* L = (lua_State*)IupGetAttribute(ih_item, "LUASTATE");
   iuplua_push_name(L, "DebuggerShowCurrentLine");
-  lua_call(L, 0, 0);
+  iuplua_call_raw(L, 0, 0);
   return IUP_DEFAULT;
 }
 
@@ -1204,7 +1204,7 @@ static int dialog_kany_cb(Ihandle *ih, int c)
   {
   case K_CR:
     iuplua_push_name(L, "ConsoleEnterCommand");
-    lua_call(L, 0, 0);
+    iuplua_call_raw(L, 0, 0);
     return IUP_IGNORE;
   case K_ESC:
     IupSetAttribute(IupGetDialogChild(ih, "TXT_CMDLINE"), IUP_VALUE, "");
@@ -1223,7 +1223,7 @@ static int txt_cmdline_kany_cb(Ihandle *ih, int c)
 #ifdef WIN32
     case K_CR:
       iuplua_push_name(L, "ConsoleEnterCommand");
-      lua_call(L, 0, 0);
+      iuplua_call_raw(L, 0, 0);
       return IUP_IGNORE;
     case K_ESC:
       IupSetAttribute(ih, IUP_VALUE, "");
@@ -1231,11 +1231,11 @@ static int txt_cmdline_kany_cb(Ihandle *ih, int c)
 #endif
     case K_UP:
       iuplua_push_name(L, "ConsoleKeyUpCommand");
-      lua_call(L, 0, 0);
+      iuplua_call_raw(L, 0, 0);
       return IUP_IGNORE;
     case K_DOWN:
       iuplua_push_name(L, "ConsoleKeyDownCommand");
-      lua_call(L, 0, 0);
+      iuplua_call_raw(L, 0, 0);
       return IUP_IGNORE;
   }
   return IUP_CONTINUE;
@@ -1246,7 +1246,7 @@ static int item_listfuncs_action_cb(Ihandle *ih_item)
   Ihandle* ih = (Ihandle*)IupGetAttribute(ih_item, "MAINDIALOG");
   lua_State* L = (lua_State*)IupGetAttribute(ih, "LUASTATE");
   iuplua_push_name(L, "ConsoleListFuncs");
-  lua_call(L, 0, 0);
+  iuplua_call_raw(L, 0, 0);
   return IUP_DEFAULT;
 }
 
@@ -1255,7 +1255,7 @@ static int item_listvars_action_cb(Ihandle *ih_item)
   Ihandle* ih = (Ihandle*)IupGetAttribute(ih_item, "MAINDIALOG");
   lua_State* L = (lua_State*)IupGetAttribute(ih, "LUASTATE");
   iuplua_push_name(L, "ConsoleListVars");
-  lua_call(L, 0, 0);
+  iuplua_call_raw(L, 0, 0);
   return IUP_DEFAULT;
 }
 
@@ -1264,7 +1264,7 @@ static int item_printstack_action_cb(Ihandle *ih_item)
   Ihandle* ih = (Ihandle*)IupGetAttribute(ih_item, "MAINDIALOG");
   lua_State* L = (lua_State*)IupGetAttribute(ih, "LUASTATE");
   iuplua_push_name(L, "ConsolePrintStack");
-  lua_call(L, 0, 0);
+  iuplua_call_raw(L, 0, 0);
   return IUP_DEFAULT;
 }
 
@@ -1316,7 +1316,7 @@ static int but_printlocal_cb(Ihandle *ih)
   else
     iuplua_push_name(L, "DebuggerPrintLocalVariable");
 
-  lua_call(L, 0, 0);
+  iuplua_call_raw(L, 0, 0);
   return IUP_DEFAULT;
 }
 
@@ -1324,7 +1324,7 @@ static int but_setlocal_cb(Ihandle *ih)
 {
   lua_State* L = (lua_State*)IupGetAttribute(ih, "LUASTATE");
   iuplua_push_name(L, "DebuggerSetLocalVariable");
-  lua_call(L, 0, 0);
+  iuplua_call_raw(L, 0, 0);
   return IUP_DEFAULT;
 }
 
@@ -1340,7 +1340,7 @@ static int list_locals_action_cb(Ihandle *ih, char *t, int index, int v)
   iuplua_push_name(L, "DebuggerLocalVariablesListAction");
   iuplua_pushihandle(L, ih);
   lua_pushinteger(L, index);
-  lua_call(L, 2, 0);
+  iuplua_call_raw(L, 2, 0);
   return IUP_DEFAULT;
 }
 
@@ -1353,7 +1353,7 @@ static int but_printglobal_cb(Ihandle *ih)
   else
     iuplua_push_name(L, "DebuggerPrintGlobalVariable");
 
-  lua_call(L, 0, 0);
+  iuplua_call_raw(L, 0, 0);
   return IUP_DEFAULT;
 }
 
@@ -1361,7 +1361,7 @@ static int but_setglobal_cb(Ihandle *ih)
 {
   lua_State* L = (lua_State*)IupGetAttribute(ih, "LUASTATE");
   iuplua_push_name(L, "DebuggerSetGlobalVariable");
-  lua_call(L, 0, 0);
+  iuplua_call_raw(L, 0, 0);
   return IUP_DEFAULT;
 }
 
@@ -1369,7 +1369,7 @@ static int but_addglobal_cb(Ihandle *ih)
 {
   lua_State* L = (lua_State*)IupGetAttribute(ih, "LUASTATE");
   iuplua_push_name(L, "DebuggerAddGlobalVariable");
-  lua_call(L, 0, 0);
+  iuplua_call_raw(L, 0, 0);
   return IUP_DEFAULT;
 }
 
@@ -1382,7 +1382,7 @@ static int but_removeglobal_cb(Ihandle *ih)
   else
     iuplua_push_name(L, "DebuggerRemoveGlobalVariable");
 
-  lua_call(L, 0, 0);
+  iuplua_call_raw(L, 0, 0);
   return IUP_DEFAULT;
 }
 
@@ -1398,7 +1398,7 @@ static int list_stack_action_cb(Ihandle *ih, char *t, int index, int v)
   iuplua_push_name(L, "DebuggerStackListAction");
   iuplua_pushihandle(L, ih);
   lua_pushinteger(L, index);
-  lua_call(L, 2, 0);
+  iuplua_call_raw(L, 2, 0);
   return IUP_DEFAULT;
 }
 
@@ -1408,7 +1408,7 @@ static int list_stack_dblclick_cb(Ihandle *ih, int index, char *t)
   iuplua_push_name(L, "DebuggerStackListActivate");
   iuplua_pushihandle(L, ih);
   lua_pushinteger(L, index);
-  lua_call(L, 2, 0);
+  iuplua_call_raw(L, 2, 0);
   (void)t;
   return IUP_DEFAULT;
 }
@@ -1422,7 +1422,7 @@ static int but_printlevel_cb(Ihandle *ih)
   else
     iuplua_push_name(L, "DebuggerPrintStackLevel");
 
-  lua_call(L, 0, 0);
+  iuplua_call_raw(L, 0, 0);
 
   return IUP_DEFAULT;
 }
@@ -1433,7 +1433,7 @@ static int list_breaks_dblclick_cb(Ihandle *ih, int index, char *t)
   iuplua_push_name(L, "DebuggerBreaksListActivate");
   iuplua_pushihandle(L, ih);
   lua_pushinteger(L, index);
-  lua_call(L, 2, 0);
+  iuplua_call_raw(L, 2, 0);
   (void)t;
   return IUP_DEFAULT;
 }
@@ -1450,7 +1450,7 @@ static int list_breaks_action_cb(Ihandle *ih, char *t, int index, int v)
   iuplua_push_name(L, "DebuggerBreaksListAction");
   iuplua_pushihandle(L, ih);
   lua_pushinteger(L, index);
-  lua_call(L, 2, 0);
+  iuplua_call_raw(L, 2, 0);
   return IUP_DEFAULT;
 }
 
@@ -1468,7 +1468,7 @@ static int but_addbreak_cb(Ihandle* ih)
 {
   lua_State* L = (lua_State*)IupGetAttribute(ih, "LUASTATE");
   iuplua_push_name(L, "DebuggerAddBreakpointList");
-  lua_call(L, 0, 0);
+  iuplua_call_raw(L, 0, 0);
   return IUP_DEFAULT;
 }
 
@@ -1476,7 +1476,7 @@ static int but_removeallbreaks_cb(Ihandle *ih)
 {
   lua_State* L = (lua_State*)IupGetAttribute(ih, "LUASTATE");
   iuplua_push_name(L, "DebuggerRemoveAllBreakpoints");
-  lua_call(L, 0, 0);
+  iuplua_call_raw(L, 0, 0);
   return IUP_DEFAULT;
 }
 
@@ -1500,7 +1500,7 @@ static int but_removebreak_cb(Ihandle *ih)
     iuplua_push_name(L, "DebuggerRemoveBreakpoint");
     iuplua_pushihandle(L, listBreak);
     lua_pushinteger(L, index);
-    lua_call(L, 2, 0);
+    iuplua_call_raw(L, 2, 0);
   }
 
   return IUP_DEFAULT;
@@ -2266,11 +2266,11 @@ static int iLuaScripterDlgCreateMethod(Ihandle* ih, void** params)
   iuplua_push_name(L, "ConsoleInit");
   iuplua_pushihandle(L, IupGetDialogChild(ih, "TXT_CMDLINE"));
   iuplua_pushihandle(L, IupGetDialogChild(ih, "MTL_OUTPUT"));
-  lua_call(L, 2, 0);
+  iuplua_call_raw(L, 2, 0);
 
   iuplua_push_name(L, "DebuggerInit");
   iuplua_pushihandle(L, ih);
-  lua_call(L, 1, 0);
+  iuplua_call_raw(L, 1, 0);
 
   (void)params;
   return IUP_NOERROR;
