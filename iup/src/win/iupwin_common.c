@@ -565,6 +565,13 @@ int iupwinBaseContainerMsgProc(Ihandle* ih, UINT msg, WPARAM wp, LPARAM lp, LRES
     {
       HWND hChild;
       POINT p;
+
+      if (IupGetDialog(ih) == ih && iupAttribGet(ih, "_IUP_WHEEL_PROPAGATING")) /* to avoid the dialog to propagate again to the child */
+      {
+        iupAttribSet(ih, "_IUP_WHEEL_PROPAGATING", NULL);
+        break;
+      }
+
       p.x = GET_X_LPARAM(lp); p.y = GET_Y_LPARAM(lp);
       ScreenToClient(ih->handle, &p);
 
