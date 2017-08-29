@@ -70,6 +70,14 @@ the current page.</p>
 <p><strong>BACKFORWARD </strong>(write only): sets the number of steps away from the current 
 page and loads the history item. Negative values represent steps backward while 
 positive values represent steps forward.</p>
+<p><strong>GOBACK </strong>(write only): go to the previous page. Same as BACKFORWARD=-1. 
+(since 3.23)</p>
+<p><strong>GOFORWARD </strong>(write only): go to the next page. Same as BACKFORWARD=1. 
+(since 3.23)</p>
+<p><strong>CANGOBACK</strong> [GTK Only] (read-only): informs if there is a 
+previous page. (since 3.23)</p>
+<p><strong>CANGOFORWARD</strong> [GTK Only] (read-only): informs if there is a 
+next page. (since 3.23)</p>
 <p><strong>COPY</strong> (write only): copy the selection to the clipboard. 
 (since 3.10)</p>
 <p><strong>FORWARDCOUNT</strong> [GTK Only] (read only): gets the number of items that 
