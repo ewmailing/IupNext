@@ -541,12 +541,12 @@ static void iMatrixDrawFeedbackImage(Ihandle* ih, int x1, int x2, int y1, int y2
     static unsigned char green[IMAT_FEEDBACK_SIZE * IMAT_FEEDBACK_SIZE];
     static unsigned char blue[IMAT_FEEDBACK_SIZE * IMAT_FEEDBACK_SIZE];
     static unsigned char last_r = 0, last_g = 0, last_b = 0;
-    static int first = 1;
+    static int init = 1;
 
     unsigned char r = 0, g = 0, b = 0;
     iupMatrixGetFgRGB(ih, lin, col, &r, &g, &b, marked, active);
 
-    if (first || last_r != r || last_g != g || last_b != b)
+    if (init || last_r != r || last_g != g || last_b != b)
     {
       int count = IMAT_FEEDBACK_SIZE * IMAT_FEEDBACK_SIZE;
 
@@ -557,7 +557,7 @@ static void iMatrixDrawFeedbackImage(Ihandle* ih, int x1, int x2, int y1, int y2
       last_r = r;
       last_g = g;
       last_b = b;
-      first = 0;
+      init = 0;
     }
 
     y = (y2 + y1 + IMAT_FEEDBACK_SIZE) / 2;

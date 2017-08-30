@@ -95,7 +95,7 @@ void iupMatrixAuxAdjustFirstFromLast(ImatLinColData* p)
     sum += p->dt[i].size;
   }
 
-  if (i==p->num_noscroll && sum < p->current_visible_size)
+  if (i == p->num_noscroll && sum < p->current_visible_size)
   {
     /* if there are room for everyone then position at start */
     p->first = p->num_noscroll;
@@ -352,7 +352,7 @@ void iupMatrixAuxCalcSizes(Ihandle* ih)
   if (ih->data->lines.first > ih->data->lines.num-1) 
   {
     ih->data->lines.first_offset = 0;
-    if (ih->data->lines.num==ih->data->lines.num_noscroll)
+    if (ih->data->lines.num == ih->data->lines.num_noscroll)
       ih->data->lines.first = ih->data->lines.num_noscroll;
     else
       ih->data->lines.first = ih->data->lines.num-1;
@@ -360,7 +360,7 @@ void iupMatrixAuxCalcSizes(Ihandle* ih)
   if (ih->data->columns.first > ih->data->columns.num-1) 
   {
     ih->data->columns.first_offset = 0;
-    if (ih->data->columns.num==ih->data->columns.num_noscroll)
+    if (ih->data->columns.num == ih->data->columns.num_noscroll)
       ih->data->columns.first = ih->data->columns.num_noscroll;
     else
       ih->data->columns.first = ih->data->columns.num-1;

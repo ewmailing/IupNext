@@ -213,7 +213,7 @@ static Ihandle* create_matrix(void)
   IupSetAttribute(mat, "NUMCOL_VISIBLE", "3");
   IupSetAttribute(mat, "NUMLIN_VISIBLE", "5");
 //  IupSetAttribute(mat,"EDITNEXT","COLCR");
-//  IupSetAttribute(mat, "NUMCOL_NOSCROLL", "1");
+  IupSetAttribute(mat, "NUMCOL_NOSCROLL", "1");
 
 //  IupSetAttribute(mat, "LIMITEXPAND", "Yes");
 //  IupSetAttribute(mat, "XAUTOHIDE", "NO");
