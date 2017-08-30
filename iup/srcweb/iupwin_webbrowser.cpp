@@ -60,6 +60,8 @@ public:
 #endif
     SINK_ENTRY_EX(0, DIID_DWebBrowserEvents2, DISPID_NAVIGATEERROR, NavigateError)
     SINK_ENTRY_EX(0, DIID_DWebBrowserEvents2, DISPID_DOCUMENTCOMPLETE, DocumentComplete)
+    SINK_ENTRY_EX(0, DIID_DWebBrowserEvents2, DISPID_COMMANDSTATECHANGE, CommandStateChange)
+    
   END_SINK_MAP()
 
   void STDMETHODCALLTYPE BeforeNavigate2(IDispatch *pDisp, VARIANT *url, VARIANT *Flags, VARIANT *TargetFrameName,
@@ -133,6 +135,24 @@ public:
       free(urlString);
     }
     (void)pDisp;
+  }
+
+  void STDMETHODCALLTYPE CommandStateChange(LONG Command, VARIANT_BOOL Enable)
+  {
+    if (Command == CSC_NAVIGATEFORWARD)
+    {
+      if (Enable == VARIANT_TRUE)
+        iupAttribSet(ih, "CANGOFORWARD", "YES");
+      else
+        iupAttribSet(ih, "CANGOFORWARD", "NO");
+    }
+    else if (Command == CSC_NAVIGATEBACK)
+    {
+      if (Enable == VARIANT_TRUE)
+        iupAttribSet(ih, "CANGOBACK", "YES");
+      else
+        iupAttribSet(ih, "CANGOBACK", "NO");
+    }
   }
 };
 
@@ -487,6 +507,8 @@ Iclass* iupWebBrowserNewClass(void)
   iupClassRegisterAttribute(ic, "SELECTALL", NULL, winWebBrowserSetSelectAllAttrib, NULL, NULL, IUPAF_WRITEONLY | IUPAF_NO_INHERIT);
   iupClassRegisterAttribute(ic, "ZOOM", winWebBrowserGetZoomAttrib, winWebBrowserSetZoomAttrib, NULL, NULL, IUPAF_NO_INHERIT);
   iupClassRegisterAttribute(ic, "PRINT", NULL, winWebBrowserSetPrintAttrib, NULL, NULL, IUPAF_WRITEONLY | IUPAF_NO_INHERIT);
+  iupClassRegisterAttribute(ic, "CANGOBACK", NULL, NULL, NULL, NULL, IUPAF_READONLY | IUPAF_NO_DEFAULTVALUE | IUPAF_NO_INHERIT);
+  iupClassRegisterAttribute(ic, "CANGOFORWARD", NULL, NULL, NULL, NULL, IUPAF_READONLY | IUPAF_NO_DEFAULTVALUE | IUPAF_NO_INHERIT);
 
   if (!iweb_module)
   {
