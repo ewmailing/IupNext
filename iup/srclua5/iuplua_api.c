@@ -389,6 +389,14 @@ static int Help(lua_State *L)
   return 1;
 }
 
+static int Log(lua_State *L)
+{
+  const char *type = luaL_checkstring(L, 1);
+  const char *str = luaL_checkstring(L, 2);
+  IupLog(type, "%s", str);
+  return 0;
+}
+
 static int Execute(lua_State *L)
 {
   const char *filename = luaL_checkstring(L, 1);
@@ -1070,6 +1078,7 @@ void iupluaapi_open(lua_State * L)
     {"GetLanguage", GetLanguage},
     {"GetName", GetName},
     {"Help", Help},
+    {"Log", Log},
     {"Execute", Execute},
     {"ExecuteWait", ExecuteWait},
     {"Hide", Hide},

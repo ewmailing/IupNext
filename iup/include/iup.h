@@ -55,6 +55,7 @@ void      IupRefreshChildren(Ihandle* ih);
 int       IupExecute(const char *filename, const char* parameters);
 int       IupExecuteWait(const char *filename, const char* parameters);
 int       IupHelp(const char* url);
+void      IupLog(const char* type, const char* format, ...);
 
 char*     IupLoad          (const char *filename);
 char*     IupLoadBuffer    (const char *buffer);

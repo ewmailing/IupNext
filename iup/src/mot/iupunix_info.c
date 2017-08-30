@@ -9,6 +9,7 @@
 #include <string.h> 
 #include <limits.h>
 #include <sys/stat.h>
+#include <stdarg.h>
 
 /* This module should depend only on IUP core headers 
    and UNIX system headers. NO Motif headers allowed. */
@@ -22,6 +23,7 @@
 #include <unistd.h>
 #include <errno.h>
 #include <langinfo.h>
+#include <syslog.h>
 
 #include "iup_str.h"
 #include "iup_drvinfo.h"
@@ -314,3 +316,33 @@ int iupUnixMakeDirectory(const char* name)
   return 1;
 }
 
+
+/**************************************************************************/
+
+
+void IupLog(const char* type, const char* format, ...)
+{
+  int options = LOG_CONS | LOG_PID;
+  int priority = 0;
+  va_list arglist;
+
+  if (iupStrEqualNoCase(type, "DEBUG"))
+  {
+    priority = LOG_DEBUG;
+    options |= LOG_PERROR;
+  }
+  else if (iupStrEqualNoCase(type, "ERROR"))
+    priority = LOG_ERR;
+  else if (iupStrEqualNoCase(type, "WARNING"))
+    priority = LOG_WARNING;
+  else if (iupStrEqualNoCase(type, "INFO"))
+    priority = LOG_INFO;
+
+  openlog(NULL, options, LOG_USER);
+
+  va_start(arglist, format);
+  vsyslog(priority, format, arglist);
+  va_end(arglist);
+
+  closelog();
+}

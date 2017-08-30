@@ -234,6 +234,8 @@ int main(int argc, char* argv[])
 //  IupSetGlobal("DEFAULTDECIMALSYMBOL", ".");
   //  setlocale(LC_NUMERIC, "C");
 //  printf("EXEFILENAME=%s\n", IupGetGlobal("EXEFILENAME"));
+//  IupLog("DEBUG", "IUP version %s\n", IupVersion());
+//  IupLog("INFO", "IUP version %s", IupVersion());
 
   dlg = IupDialog(IupVbox(list = IupList(NULL), NULL));
   IupSetAttribute(dlg, "MARGIN", "10x10");

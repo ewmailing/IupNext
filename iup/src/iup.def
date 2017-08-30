@@ -36,6 +36,7 @@ IupGetLanguage
 IupGetName
 IupHbox
 IupHelp
+IupLog
 IupExecute
 IupExecuteWait
 IupImage

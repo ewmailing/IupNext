@@ -214,3 +214,35 @@ char* iupdrvGetCurrentDirectory(void)
 
   return cur_dir;
 }
+
+void IupLog(const char* type, const char* format, ...)
+{
+  HANDLE EventSource;
+  WORD wtype = 0;
+
+  int size;
+  char* value = iupStrGetLargeMem(&size);
+  va_list arglist;
+  va_start(arglist, format);
+  vsnprintf(value, size, format, arglist);
+  va_end(arglist);
+
+  if (iupStrEqualNoCase(type, "DEBUG"))
+  {
+    OutputDebugStringA(value);
+    return;
+  }
+  else if (iupStrEqualNoCase(type, "ERROR"))
+    wtype = EVENTLOG_ERROR_TYPE;
+  else if (iupStrEqualNoCase(type, "WARNING"))
+    wtype = EVENTLOG_WARNING_TYPE;
+  else if (iupStrEqualNoCase(type, "INFO"))
+    wtype = EVENTLOG_INFORMATION_TYPE;
+
+  EventSource = RegisterEventSource(NULL, "Application");
+  if (EventSource)
+  {
+    ReportEventA(EventSource, wtype, 0, 0, NULL, 1, 0, &value, NULL);
+    DeregisterEventSource(EventSource);
+  }
+}

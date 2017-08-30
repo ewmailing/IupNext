@@ -1929,6 +1929,10 @@ wb_usr.tree =
           name= {nl= "IupHelp"},
           link= "func/iuphelp.html"
         },
+        {
+          name= {nl= "IupLog"},
+          link= "func/iuplog.html"
+        },
         { link= "", name= {en= "" } },
         {
           name= {nl= "iupMask"},

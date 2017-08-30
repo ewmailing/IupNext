@@ -55,6 +55,7 @@ namespace Iup
   inline int PlayInput(const char* filename) { return IupPlayInput(filename); }
 
   inline int Help(const char* url) { return IupHelp(url); }
+  inline void Log(const char* type, const char* str) { IupLog(type, "%s", str); }
   inline const char* Load(const char *filename) { return IupLoad(filename); }
   inline const char* LoadBuffer(const char *buffer) { return IupLoadBuffer(buffer); }
 
