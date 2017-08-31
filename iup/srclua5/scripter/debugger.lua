@@ -1034,6 +1034,43 @@ end
 
 ----------------------------  Globals       --------------------------
 
+function iup.DebuggerIsExpression(name)
+  if string.find(name, "[^%w_]") then -- finds any non alphanumeric character, but allows underscore
+    return true
+  else
+    return false
+  end
+end
+
+function iup.DebuggerGetGlobalValue(name)
+  local value
+  if iup.DebuggerIsExpression(name) then
+    local cmd, msg = loadstring("return " .. name)
+    if not cmd then
+      value = "<Invalid Expression> " .. msg
+    else
+      local result = {pcall(cmd)}
+      if result[1] then
+        value = result[2]
+      else
+        value = "<Invalid Expression>" .. result[2]
+      end
+    end
+  else
+    value = _G[name]
+  end
+
+  return value
+end
+
+function iup.DebuggerGlobalListAction(list_global, index)
+  local name = list_global["GLOBALNAME" .. index]
+  if iup.DebuggerIsExpression(name) then
+    iup.DebuggerSetDialogChildAttrib("SET_GLOBAL", "ACTIVE", "NO")
+  else
+    iup.DebuggerSetDialogChildAttrib("SET_GLOBAL", "ACTIVE", "YES")
+  end
+end
 
 function iup.DebuggerInitGlobalsList(list_global)
   if not list_global then 
@@ -1055,7 +1092,9 @@ function iup.DebuggerInitGlobalsList(list_global)
     iup.DebuggerSetDialogChildAttrib("PRINT_GLOBAL", "ACTIVE", "Yes")
     iup.DebuggerSetDialogChildAttrib("SET_GLOBAL", "ACTIVE", "Yes")
     iup.DebuggerSetDialogChildAttrib("REMOVE_GLOBAL", "ACTIVE", "Yes")
+
     list_global.value = 1 -- select first item on list
+    iup.DebuggerGlobalListAction(list_global, list_global.value)
   else
     iup.DebuggerSetDialogChildAttrib("PRINT_GLOBAL", "ACTIVE", "NO")
     iup.DebuggerSetDialogChildAttrib("SET_GLOBAL", "ACTIVE", "NO")
@@ -1071,7 +1110,7 @@ function iup.DebuggerUpdateGlobalList()
   local index = 1
   local name = list_global["GLOBALNAME1"]
   while name do
-    local value = _G[name]
+    local value = iup.DebuggerGetGlobalValue(name)
     iup.DebuggerSetGlobalListItem(list_global, index, name, value)
 
     index = index + 1
@@ -1090,14 +1129,13 @@ end
 
 function iup.DebuggerAddGlobalVariable()
   local list_global = iup.GetDialogChild(debugger.main_dialog, "LIST_GLOBAL")
-
   local status, newName = iup.GetParam("Add Global", setparent_param_cb, "Name = ".."%s\n", "")
 
   if (status) then
     local count = tonumber(list_global.count)
     local index = count + 1
 
-    local value = _G[newName]
+    local value = iup.DebuggerGetGlobalValue(newName)
     list_global["GLOBALNAME" .. index] = newName
 
     if iup.DebuggerIsActive() then
@@ -1113,14 +1151,16 @@ function iup.DebuggerAddGlobalVariable()
     end
 
     list_global.value = count + 1 -- select the added item
+    iup.DebuggerGlobalListAction(list_global, list_global.value)
   end
+
 end
 
 function iup.DebuggerRemoveGlobalVariable()
   local list_global = iup.GetDialogChild(debugger.main_dialog, "LIST_GLOBAL")
   local index = list_global.value
   if (not index or tonumber(index) == 0) then
-    iup.MessageError(debugger.main_dialog, "Select a variable on the list.")
+    iup.MessageError(debugger.main_dialog, "Select a variable or expression on the list.")
     return
   end
 
@@ -1144,6 +1184,7 @@ function iup.DebuggerRemoveGlobalVariable()
     else
       list_global.value = index
     end
+    iup.DebuggerGlobalListAction(list_global, list_global.value)
   end
 end
 
@@ -1162,7 +1203,7 @@ function iup.DebuggerSetGlobalVariable()
   local list_global = iup.GetDialogChild(debugger.main_dialog, "LIST_GLOBAL")
   local index = list_global.value
   if (not index or tonumber(index) == 0) then
-    iup.MessageError(debugger.main_dialog, "Select a variable on the list.")
+    iup.MessageError(debugger.main_dialog, "Select a variable on the list.\nCan not change expressions values.")
     return
   end
 
@@ -1279,10 +1320,15 @@ function iup.DebuggerLineHook(filename, line, source)
     debug.sethook() -- turns off the hook
     
     while debugger.debugState == DEBUG_PAUSED do
-      iup.LoopStep()
+      local ret = iup.LoopStep()
+      if ret == iup.CLOSE then
+        iup.ExitLoop() -- repost to MainLoop
+      end
     end
     
-    debug.sethook(iup.DebuggerHookFunction, "lcr") -- restore the hook
+    if iup.DebuggerIsActive() then
+      debug.sethook(iup.DebuggerHookFunction, "lcr") -- restore the hook if still active
+    end
   end
   
   if debugger.debugState == DEBUG_STOPPED then
@@ -1335,7 +1381,10 @@ function iup.DebuggerHookFunction(event, line)
     end
   end
 
-  iup.LoopStep()
+  local ret = iup.LoopStep()
+  if ret == iup.CLOSE then
+    iup.ExitLoop() -- repost to MainLoop
+  end
 end
 
 function iup.DebuggerStartDebug(filename)

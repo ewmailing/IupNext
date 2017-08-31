@@ -146,9 +146,8 @@ static Ihandle* get_config(Ihandle* ih)
 static int exit_cb(Ihandle *ih)
 {
   lua_State* L = (lua_State*)IupGetAttribute(ih, "LUASTATE");
-  iuplua_push_name(L, "DebuggerExit"); /* this may trigger a Lua error which will abort the function with a goto, must sure you do nothing after that */
-  iuplua_call_raw(L, 0, 0);
-
+  iuplua_push_name(L, "DebuggerExit");
+  iuplua_call_raw(L, 0, 0); /* this may trigger a Lua error which will abort the function with a goto, must sure you do nothing after that */
   return IUP_DEFAULT;
 }
 
@@ -1344,6 +1343,22 @@ static int list_locals_action_cb(Ihandle *ih, char *t, int index, int v)
   return IUP_DEFAULT;
 }
 
+static int list_global_action_cb(Ihandle *ih, char *t, int index, int v)
+{
+  lua_State* L;
+  (void)t;
+
+  if (v == 0)
+    return IUP_DEFAULT;
+
+  L = (lua_State*)IupGetAttribute(ih, "LUASTATE");
+  iuplua_push_name(L, "DebuggerGlobalListAction");
+  iuplua_pushihandle(L, ih);
+  lua_pushinteger(L, index);
+  iuplua_call_raw(L, 2, 0);
+  return IUP_DEFAULT;
+}
+
 static int but_printglobal_cb(Ihandle *ih)
 {
   lua_State* L = (lua_State*)IupGetAttribute(ih, "LUASTATE");
@@ -1662,14 +1677,15 @@ static Ihandle *buildTabWatch(void)
   list_global = IupList(NULL);
   IupSetAttribute(list_global, "EXPAND", "YES");
   IupSetAttribute(list_global, "NAME", "LIST_GLOBAL");
-  IupSetAttribute(list_global, "TIP", "List of globals");
+  IupSetAttribute(list_global, "TIP", "List of globals variables or expressions");
   IupSetAttribute(list_global, "VISIBLELINES", "3");
+  IupSetCallback(list_global, "ACTION", (Icallback)list_global_action_cb);
 
   button_printGlobal = IupButton(NULL, NULL);
   IupSetAttribute(button_printGlobal, "FLAT", "Yes");
   IupSetAttribute(button_printGlobal, "IMAGE", "IUP_Print");
   IupSetAttribute(button_printGlobal, "ACTIVE", "NO");
-  IupSetAttribute(button_printGlobal, "TIP", "Prints in the console debug information about the selected global variable.\nPress <Shift> to print all variables.");
+  IupSetAttribute(button_printGlobal, "TIP", "Prints in the console debug information about the selected global variable or expression.\nPress <Shift> to print all items.");
   IupSetAttribute(button_printGlobal, "NAME", "PRINT_GLOBAL");
   IupSetCallback(button_printGlobal, "ACTION", (Icallback)but_printglobal_cb);
 
@@ -1691,7 +1707,7 @@ static Ihandle *buildTabWatch(void)
   IupSetAttribute(button_removeGlobal, "FLAT", "Yes");
   IupSetAttribute(button_removeGlobal, "IMAGE", "IUP_EditErase");
   IupSetAttribute(button_removeGlobal, "NAME", "REMOVE_GLOBAL");
-  IupSetAttribute(button_removeGlobal, "TIP", "Removes the selected global variable.\nPress <Shift> to remove all variables.");
+  IupSetAttribute(button_removeGlobal, "TIP", "Removes the selected global variable or expression.\nPress <Shift> to remove all items.");
   IupSetCallback(button_removeGlobal, "ACTION", (Icallback)but_removeglobal_cb);
 
   vbox_global = IupVbox(button_printGlobal, button_setGlobal, button_addGlobal, button_removeGlobal, NULL);
@@ -2312,17 +2328,12 @@ void IupLuaScripterDlgOpen(void)
 }
 
 /* TODO:
-- Project Menu - Save Session/Load Session
-
 - Condicional Breakpoints, Hit Count, When Hit
-- Evaluate expression in Global
-
+- Project Menu and/or Save Session/Load Session
 - Table Inspector using IupTree
-- iup.TRACEBACK
 - debug pause when error in Lua?
 
 - multi-language (Portuguese, Spanish)
-
 - detachable Console, Debug, Breakpoints (problem with IupGetDialogChild(NAME))?
 - detachable Multitext?
 */
