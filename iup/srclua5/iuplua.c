@@ -157,6 +157,21 @@ static int report (lua_State *L, int status)
 }
 
 #if LUA_VERSION_NUM	> 501
+#if LUA_VERSION_NUM	> 502
+static int traceback (lua_State *L) {
+  const char *msg = lua_tostring(L, 1);
+  if (msg == NULL) {  /* is error object not a string? */
+    if (luaL_callmeta(L, 1, "__tostring") &&  /* does it have a metamethod */
+        lua_type(L, -1) == LUA_TSTRING)  /* that produces a string? */
+        return 1;  /* that is the message */
+    else
+      msg = lua_pushfstring(L, "(error object is a %s value)",
+      luaL_typename(L, 1));
+  }
+  luaL_traceback(L, L, msg, 1);  /* append a standard traceback */
+  return 1;  /* return the traceback */
+}
+#else
 static int traceback(lua_State *L) {
   const char *msg = lua_tostring(L, 1);
   if (msg)
@@ -167,6 +182,7 @@ static int traceback(lua_State *L) {
   }
   return 1;
 }
+#endif
 #else
 static int traceback(lua_State *L) {
   if (!lua_isstring(L, 1))  /* 'message' not a string? */
@@ -188,11 +204,25 @@ static int traceback(lua_State *L) {
 }
 #endif
 
+static void push_tracefunc(lua_State *L)
+{
+  iuplua_get_env(L);
+  lua_pushstring(L, "_TRACEBACK");
+  lua_gettable(L, -2);
+  lua_remove(L, -2);  /* remove global table from stack */
+
+  if (lua_isnil(L, -1))
+  {
+    lua_pop(L, 1);
+    lua_pushcfunction(L, traceback);  /* push traceback function */
+  }
+}
+
 static int docall (lua_State *L, int narg, int nret) 
 {
   int status;
   int base = lua_gettop(L) - narg;  /* function index */
-  lua_pushcfunction(L, traceback);  /* push traceback function */
+  push_tracefunc(L);  /* push traceback function */
   lua_insert(L, base);  /* put it under chunk and args */
   status = lua_pcall(L, narg, nret, base);
   lua_remove(L, base);  /* remove traceback function */
