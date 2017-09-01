@@ -2333,6 +2333,9 @@ void IupLuaScripterDlgOpen(void)
 - Table Inspector using IupTree
 - debug pause when error in Lua?
 
+- Replace All (in All Open Documents, in All Project Files)
+- Find All (Search Results)
+
 - multi-language (Portuguese, Spanish)
 - detachable Console, Debug, Breakpoints (problem with IupGetDialogChild(NAME))?
 - detachable Multitext?
