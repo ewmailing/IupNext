@@ -2011,7 +2011,8 @@ static int find_next_action_cb(Ihandle* ih_item)
   if (find_dlg)
   {
     char* str_to_find;
-    Ihandle* multitext = (Ihandle*)IupGetAttribute(find_dlg, "CURRENTMULTITEXT");
+    Ihandle* ih = IupGetAttributeHandle(find_dlg, "PARENTDIALOG");
+    Ihandle* multitext = iScintillaDlgGetCurrentMultitext(ih);
     Ihandle* find_txt = IupGetDialogChild(find_dlg, "FIND_TEXT");
 
     /* test again, because it can be called from the hot key */
@@ -2106,7 +2107,8 @@ static int find_next_action_cb(Ihandle* ih_item)
 static int find_replace_action_cb(Ihandle* bt_replace)
 {
   Ihandle* find_dlg = (Ihandle*)IupGetAttribute(bt_replace, "FIND_DIALOG");
-  Ihandle* multitext = (Ihandle*)IupGetAttribute(find_dlg, "CURRENTMULTITEXT");
+  Ihandle* ih = IupGetAttributeHandle(find_dlg, "PARENTDIALOG");
+  Ihandle* multitext = iScintillaDlgGetCurrentMultitext(ih);
   char* selectionpos = IupGetAttribute(multitext, "SELECTIONPOS");
 
   if (!selectionpos)
@@ -2138,7 +2140,8 @@ static int find_replace_all_action_cb(Ihandle* bt_replace)
   {
     char* str_to_find;
     char* str_to_replace;
-    Ihandle* multitext = (Ihandle*)IupGetAttribute(find_dlg, "CURRENTMULTITEXT");
+    Ihandle* ih = IupGetAttributeHandle(find_dlg, "PARENTDIALOG");
+    Ihandle* multitext = iScintillaDlgGetCurrentMultitext(ih);
     Ihandle* replace_txt = IupGetDialogChild(find_dlg, "REPLACE_TEXT");
     Ihandle* find_txt = IupGetDialogChild(find_dlg, "FIND_TEXT");
     
@@ -2212,7 +2215,6 @@ static int find_replace_all_action_cb(Ihandle* bt_replace)
 static int find_close_action_cb(Ihandle* bt_close)
 {
   Ihandle* find_dlg = IupGetDialog(bt_close);
-  Ihandle* multitext = (Ihandle*)IupGetAttribute(find_dlg, "CURRENTMULTITEXT");
   Ihandle* find_text = IupGetDialogChild(find_dlg, "FIND_TEXT");
   Ihandle* replace_text = IupGetDialogChild(find_dlg, "REPLACE_TEXT");
   Ihandle* find_case = IupGetDialogChild(find_dlg, "FIND_CASE");
@@ -2220,7 +2222,8 @@ static int find_close_action_cb(Ihandle* bt_close)
   Ihandle* wrap = IupGetDialogChild(find_dlg, "WRAP");
   Ihandle* searchMode = IupGetDialogChild(find_dlg, "SEARCH_RADIO");
   Ihandle* dirMode = IupGetDialogChild(find_dlg, "DIRECTION_RADIO");
-  Ihandle* config = iScintillaDlgGetConfig(multitext);
+  Ihandle* ih = IupGetAttributeHandle(find_dlg, "PARENTDIALOG");
+  Ihandle* config = iScintillaDlgGetConfig(ih);
 
   IupConfigSetVariableStr(config, "ScintillaFind", "FindText", IupGetAttribute(find_text, "VALUE"));
   IupConfigSetVariableStr(config, "ScintillaFind", "ReplaceText", IupGetAttribute(replace_text, "VALUE"));
@@ -2236,13 +2239,13 @@ static int find_close_action_cb(Ihandle* bt_close)
   return IUP_DEFAULT;
 }
 
-static Ihandle* create_find_dialog(Ihandle *multitext)
+static Ihandle* create_find_dialog(Ihandle* ih_item)
 {
   Ihandle *box, *bt_next, *bt_close, *txt, *find_dlg;
   Ihandle *find_case, *whole_word, *mode, *normal, *reg_exp, *posix, *wrap, *up, *down;
   Ihandle *flags, *direction, *searchRadio, *directionRadio;
   Ihandle *txt_replace, *bt_replace, *bt_replace_all;
-  Ihandle* config = iScintillaDlgGetConfig(multitext);
+  Ihandle* config = iScintillaDlgGetConfig(ih_item);
   const char* value;
 
   txt = IupText(NULL);
@@ -2328,18 +2331,12 @@ static Ihandle* create_find_dialog(Ihandle *multitext)
   IupSetAttribute(find_dlg, "DIALOGFRAME", "Yes");
   IupSetAttributeHandle(find_dlg, "DEFAULTENTER", bt_next);
   IupSetAttributeHandle(find_dlg, "DEFAULTESC", bt_close);
-  IupSetAttributeHandle(find_dlg, "PARENTDIALOG", IupGetDialog(multitext));
+  IupSetAttributeHandle(find_dlg, "PARENTDIALOG", IupGetDialog(ih_item));
   IupSetCallback(find_dlg, "CLOSE_CB", (Icallback)find_close_action_cb);
-
-  /* Save the multiline to access it from the callbacks */
-  IupSetAttribute(find_dlg, "CURRENTMULTITEXT", (char*)multitext);
-
-  IupSetInt(multitext, "TARGETSTART", IupGetInt(multitext, "CARETPOS"));
-  IupSetInt(multitext, "TARGETEND", IupGetInt(multitext, "COUNT") - 1);
 
   /* Save the dialog to reuse it */
   IupSetAttribute(find_dlg, "FIND_DIALOG", (char*)find_dlg);  /* from itself */
-  IupSetAttribute(IupGetDialog(multitext), "FIND_DIALOG", (char*)find_dlg); /* from the main dialog */
+  IupSetAttribute(IupGetDialog(ih_item), "FIND_DIALOG", (char*)find_dlg); /* from the main dialog */
 
   IupMap(find_dlg);
 
@@ -2386,11 +2383,11 @@ static int item_find_action_cb(Ihandle* ih_item)
 {
   Ihandle* find_dlg = (Ihandle*)IupGetAttribute(ih_item, "FIND_DIALOG");
   Ihandle* multitext = iScintillaDlgGetCurrentMultitext(ih_item);
-  Ihandle* config = iScintillaDlgGetConfig(multitext);
+  Ihandle* config = iScintillaDlgGetConfig(ih_item);
   char* str;
 
   if (!find_dlg)
-    find_dlg = create_find_dialog(multitext);
+    find_dlg = create_find_dialog(ih_item);
 
   set_find_replace_visibility(find_dlg, 0);
 
@@ -2410,11 +2407,11 @@ static int item_replace_action_cb(Ihandle* ih_item)
 {
   Ihandle* find_dlg = (Ihandle*)IupGetAttribute(ih_item, "FIND_DIALOG");
   Ihandle* multitext = iScintillaDlgGetCurrentMultitext(ih_item);
-  Ihandle* config = iScintillaDlgGetConfig(multitext);
+  Ihandle* config = iScintillaDlgGetConfig(ih_item);
   char* str;
 
   if (!find_dlg)
-    find_dlg = create_find_dialog(multitext);
+    find_dlg = create_find_dialog(ih_item);
 
   set_find_replace_visibility(find_dlg, 1);
 
