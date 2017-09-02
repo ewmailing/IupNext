@@ -7,6 +7,7 @@
 #include "iupcbs.h"
 #include "iup_scintilla.h"
 #include "iup_config.h"
+#include "iup_linefile.h"
 
 #include "iup_object.h"
 #include "iup_attrib.h"
@@ -1663,6 +1664,111 @@ static int close_exit_action_cb(Ihandle* ih_item)
   return IUP_DEFAULT;
 }
 
+static int item_loadsession_action_cb(Ihandle *ih_item)
+{
+  Ihandle* ih = IupGetDialog(ih_item);
+  const char* dir;
+  Ihandle* config;
+  Ihandle *filedlg;
+
+  config = iScintillaDlgGetConfig(ih_item);
+  dir = IupConfigGetVariableStr(config, IupGetAttribute(ih, "SUBTITLE"), "LastDirectory");
+
+  filedlg = IupFileDlg();
+
+  IupSetAttribute(filedlg, "DIALOGTYPE", "OPEN");
+  IupSetAttribute(filedlg, "EXTFILTER", "Text Files|*.txt|All Files|*.*|");
+  IupSetAttributeHandle(filedlg, "PARENTDIALOG", ih);
+  IupSetStrAttribute(filedlg, "DIRECTORY", dir);
+
+  IupPopup(filedlg, IUP_CENTERPARENT, IUP_CENTERPARENT);
+
+  if (IupGetInt(filedlg, "STATUS") != -1)
+  {
+    char* filename = IupGetAttribute(filedlg, "VALUE");
+    IlineFile* line_file = iupLineFileOpen(filename);
+    if (!line_file)
+    {
+      IupMessageError(ih, "IUP_ERRORFILEOPEN");
+      return IUP_DEFAULT;
+    }
+
+    do
+    {
+      const char* line_buffer;
+
+      int line_len = iupLineFileReadLine(line_file);
+      if (line_len == -1)
+        break;
+
+      line_buffer = iupLineFileGetBuffer(line_file);
+
+      if (!check_open(ih, line_buffer, 0))
+        open_file(ih_item, line_buffer, 1);
+
+    } while (!iupLineFileEOF(line_file));
+
+    iupLineFileClose(line_file);
+
+    dir = IupGetAttribute(filedlg, "DIRECTORY");
+    IupConfigSetVariableStr(config, IupGetAttribute(ih, "SUBTITLE"), "LastDirectory", dir);
+  }
+
+  return IUP_DEFAULT;
+}
+
+static int item_savesession_action_cb(Ihandle *ih_item)
+{
+  Ihandle* ih = IupGetDialog(ih_item);
+  const char* dir;
+  Ihandle* config;
+
+  config = iScintillaDlgGetConfig(ih_item);
+  dir = IupConfigGetVariableStr(config, IupGetAttribute(ih, "SUBTITLE"), "LastDirectory");
+
+  Ihandle *filedlg = IupFileDlg();
+
+  IupSetAttribute(filedlg, "DIALOGTYPE", "SAVE");
+  IupSetAttribute(filedlg, "EXTFILTER", "Text Files|*.txt|All Files|*.*|");
+  IupSetAttributeHandle(filedlg, "PARENTDIALOG", ih);
+  IupSetStrAttribute(filedlg, "DIRECTORY", dir);
+
+  IupPopup(filedlg, IUP_CENTERPARENT, IUP_CENTERPARENT);
+
+  if (IupGetInt(filedlg, "STATUS") != -1)
+  {
+    Ihandle* tabs = IupGetDialogChild(ih, "TABS");
+    char* filename = IupGetAttribute(filedlg, "VALUE");
+    int i, count = IupGetChildCount(tabs);
+
+    FILE* file = fopen(filename, "wb");
+    if (!file)
+    {
+      IupMessageError(ih, "IUP_ERRORFILESAVE");
+      return IUP_DEFAULT;
+    }
+
+    for (i = 0; i < count; i++)
+    {
+      Ihandle* multitext = IupGetChild(tabs, i);
+      char* m_filename = IupGetAttribute(multitext, "FILENAME");
+      if (m_filename && IupGetInt(multitext, "COUNT") > 0)
+      {
+        if (i > 0)
+          fprintf(file, "\n");
+        fprintf(file, "%s", m_filename);
+      }
+    }
+
+    fclose(file);
+
+    dir = IupGetAttribute(filedlg, "DIRECTORY");
+    IupConfigSetVariableStr(config, IupGetAttribute(ih, "SUBTITLE"), "LastDirectory", dir);
+  }
+
+  IupDestroy(filedlg);
+  return IUP_DEFAULT;
+}
 static int show_cb(Ihandle* ih, int state)
 {
   if (state == IUP_HIDE && !iupAttribGet(ih, "_IUP_CLOSING"))
@@ -3051,7 +3157,7 @@ static int iScintillaDlgCreateMethod(Ihandle* ih, void** params)
   Ihandle *sub_menu_format, *format_menu, *item_font, *item_tab, *item_replace;
   Ihandle *sub_menu_view, *view_menu, *item_toolbar, *item_statusbar, *item_linenumber, *item_bookmark;
   Ihandle *zoom_menu, *item_zoomin, *item_zoomout, *item_restorezoom;
-  Ihandle *item_savecopy, *item_saveall, *item_closeall, *item_close, *item_rename, *item_windows;
+  Ihandle *item_savecopy, *item_saveall, *item_closeall, *item_close, *item_rename, *item_windows, *item_loadsession, *item_savesession;
   Ihandle *lbl_statusbar, *toolbar_hb, *recent_menu, *window_menu, *sub_menu_window, *item_window1;
   Ihandle *item_wordwrap, *item_showwhite, *item_showeol;
 
@@ -3127,6 +3233,10 @@ static int iScintillaDlgCreateMethod(Ihandle* ih, void** params)
   item_pagesetup = IupItem("Page Set&up...", NULL);
   IupSetCallback(item_pagesetup, "ACTION", (Icallback)item_pagesetup_action_cb);
 
+  item_loadsession = IupItem("Load Session...", NULL);
+  IupSetCallback(item_loadsession, "ACTION", (Icallback)item_loadsession_action_cb);
+  item_savesession = IupItem("Save Session...", NULL);
+  IupSetCallback(item_savesession, "ACTION", (Icallback)item_savesession_action_cb);
   item_exit = IupItem("E&xit", NULL);
   IupSetCallback(item_exit, "ACTION", (Icallback)close_exit_action_cb);
 
@@ -3340,6 +3450,9 @@ static int iScintillaDlgCreateMethod(Ihandle* ih, void** params)
     IupSeparator(),
     item_pagesetup,
     item_print,
+    IupSeparator(),
+    item_loadsession,
+    item_savesession,
     IupSeparator(),
     IupSubmenu("Recent &Files", recent_menu),
     item_exit,
