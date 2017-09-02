@@ -30,6 +30,10 @@ static int StringCompare(lua_State *L)
   return 1;
 }
 
+
+/*******************************  Error Handling *****************************************/
+
+
 static int show_error_continue_action(Ihandle* ih)
 {
   (void)ih;
@@ -38,8 +42,8 @@ static int show_error_continue_action(Ihandle* ih)
 
 static int show_error_exit_action(Ihandle* ih)
 {
-  if (ih) /* just to avoid a warning */
-    exit(EXIT_FAILURE);
+  (void)ih;
+  exit(EXIT_FAILURE);
   return IUP_DEFAULT;
 }
 
@@ -63,6 +67,7 @@ void iuplua_show_error_message(const char *pname, const char* msg)
   if (value) IupSetStrAttribute(lbl, "TITLE", value);
 
   copy = IupButton("Copy", NULL);
+  IupSetAttribute(copy, "TIP", "Copy text to clipboard.");
   IupSetStrAttribute(copy, "PADDING", IupGetGlobal("DEFAULTBUTTONPADDING"));
   IupSetCallback(copy, "ACTION", show_error_copy_action);
 
@@ -113,15 +118,6 @@ static int il_error_message(lua_State *L)
   const char* msg = lua_tostring(L, 1);
   iuplua_show_error_message(NULL, msg);
   return 0;
-}
-
-void iuplua_push_name(lua_State *L, const char* name)
-{
-  /* push iup.name in stack */
-  iuplua_get_env(L);
-  lua_pushstring(L, name);
-  lua_gettable(L, -2);
-  lua_remove(L, -2);  /* remove global table from stack */
 }
 
 static void show_error(lua_State *L, const char *msg)
@@ -233,6 +229,15 @@ static int docall (lua_State *L, int narg, int nret)
 
              /*************************************/
              /*              Utilities            */
+
+void iuplua_push_name(lua_State *L, const char* name)
+{
+  /* push iup.name in stack */
+  iuplua_get_env(L);
+  lua_pushstring(L, name);
+  lua_gettable(L, -2);
+  lua_remove(L, -2);  /* remove global table from stack */
+}
 
 int iuplua_dofile(lua_State *L, const char *filename)
 {
