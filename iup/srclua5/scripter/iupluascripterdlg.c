@@ -2329,9 +2329,8 @@ void IupLuaScripterDlgOpen(void)
 
 /* TODO:
 - Condicional Breakpoints, Hit Count, When Hit
-- Project Menu and/or Save Session/Load Session
+- Project Menu
 - Table Inspector using IupTree
-- debug pause when error in Lua?
 
 - Replace All (in All Open Documents, in All Project Files)
 - Find All (Search Results)
