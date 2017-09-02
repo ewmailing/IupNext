@@ -5,6 +5,7 @@ local DEBUG_STEP_INTO = 4 -- debug should be active and running, we are waiting 
 local DEBUG_STEP_OVER = 5 -- debug should be active and running, we are waiting until its steps over the function to pause, or we found a breakpoint
 local DEBUG_STEP_OUT = 6 -- debug should be active and running, we are waiting until its steps out of the function to pause, or we found a breakpoint
 local DEBUG_PAUSED = 7 -- debug should be active, but paused
+local DEBUG_ERRORPAUSED = 8 -- debug should be active, but paused in an error
 
 local FUNC_STATE_INSIDE = 1
 local FUNC_STATE_OUTSIDE = 2
@@ -139,8 +140,7 @@ end
 
 
 function iup.DebuggerSetStateString(state)
-  local map_state = {
-    DEBUG_INACTIVE = DEBUG_INACTIVE,
+  local map_state = {  -- only the ones used in C
     DEBUG_ACTIVE = DEBUG_ACTIVE,
     DEBUG_STOPPED = DEBUG_STOPPED,
     DEBUG_STEP_INTO = DEBUG_STEP_INTO,
@@ -170,6 +170,7 @@ function iup.DebuggerSetState(st)
   iup.DebuggerSetAttribAllMultitext("READONLY", "Yes")
 
   if st == DEBUG_STOPPED then
+
     stop = "NO"
     step = "NO"
     run = "NO"
@@ -197,6 +198,13 @@ function iup.DebuggerSetState(st)
     run = "NO"
     pause = "NO"
     dbg = "YES"
+    curline = "Yes"
+  elseif st == DEBUG_ERRORPAUSED then
+    stop = "YES"
+    step = "NO"
+    run = "NO"
+    pause = "NO"
+    dbg = "NO"
     curline = "Yes"
   else -- st == DEBUG_INACTIVE
     stop = "NO"
@@ -815,7 +823,7 @@ end
 
 function iup.DebuggerShowTip(word, line)
 
-  if debugger.debugState ~= DEBUG_PAUSED then
+  if debugger.debugState ~= DEBUG_PAUSED and debugger.debugState ~= DEBUG_ERRORPAUSED then
     return
   end
 
@@ -1304,6 +1312,74 @@ function iup.DebuggerUpdateState(filename, line)
   end
 end
 
+function iup.DebuggerErrorMessage(message)
+  local dlg = iup.messagedlg
+  {
+    parentdialog = debugger.main_dialog,
+    dialogtype = "ERROR",
+    buttons = "OKCANCEL",
+    title = "Lua Error!",
+  }
+  
+  dlg.value = message .. "\n\nWould you like to debug at error location?"
+    
+  dlg:popup(iup.CENTERPARENT, iup.CENTERPARENT)
+  local ret = dlg.buttonresponse
+  dlg:destroy()
+
+  if ret == "1" then
+    return true
+  else
+    return false
+  end
+end
+
+function iup.DebuggerForcePause(filename, currentline, source)
+  iup.DebuggerSetState(DEBUG_ERRORPAUSED)
+
+  iup.DebuggerHighlightLine(filename, currentline, source)
+
+  iup.DebuggerUpdateGlobalList()
+
+  iup.DebuggerUpdateStackList()
+
+  while debugger.debugState == DEBUG_ERRORPAUSED do
+    local ret = iup.LoopStep()
+    if ret == iup.CLOSE then
+      iup.ExitLoop() -- repost to MainLoop
+    end
+  end
+
+  -- in any change of state, simply stop the debugger
+  iup.DebuggerSetState(DEBUG_INACTIVE)
+  iup.DebuggerCloseTemporary()
+end
+
+function iup.DebuggerTraceBack(msg)
+  -- hook is always at level 2 when called
+  local info = debug.getinfo(2, "Sl") -- what, source, currentline
+  local s = string.sub(info.source, 1, 1)
+  local filename
+  if s == "@" then
+    filename = string.sub(info.source, 2)
+  else
+    filename = string.sub(info.short_src, 2, -2)
+  end
+
+  iup._TRACEBACK = nil
+  debug.sethook() -- turns off the hook
+
+-- NOT necessary
+-- msg = debug.traceback(msg)
+
+  iup.ConsolePrint("Lua Error:")
+  iup.ConsolePrint(msg)
+
+  if iup.DebuggerErrorMessage(msg) then
+    iup.DebuggerForcePause(filename, info.currentline, info.source)
+  end
+end
+
 function iup.DebuggerLineHook(filename, line, source)
   debugger.currentFuncLevel = iup.DebuggerGetFuncLevel()
 
@@ -1388,17 +1464,23 @@ function iup.DebuggerHookFunction(event, line)
 end
 
 function iup.DebuggerStartDebug(filename)
-  local luaTabs = iup.GetDialogChild(debugger.main_dialog, "LUA_TABS")
   debugger.startFile = filename
 
-  iup.ConsolePrint("-- Debug start")
-  iup.DebuggerSetState(DEBUG_ACTIVE)
+  local luaTabs = iup.GetDialogChild(debugger.main_dialog, "LUA_TABS")
   luaTabs.valuepos = 2 -- show debug tab
 
+  iup.ConsolePrint("-- Debug start")
+
+  iup.DebuggerSetState(DEBUG_ACTIVE)
+
   debug.sethook(iup.DebuggerHookFunction, "lcr")
+
+  iup._TRACEBACK = iup.DebuggerTraceBack
 end
 
 function iup.DebuggerEndDebug(stop)
+  iup._TRACEBACK = nil
+
   debug.sethook() -- turns off the hook
 
   iup.DebuggerSetState(DEBUG_INACTIVE)
@@ -1406,14 +1488,14 @@ function iup.DebuggerEndDebug(stop)
   local luaTabs = iup.GetDialogChild(debugger.main_dialog, "LUA_TABS")
   luaTabs.valuepos = 0 -- show console tab
 
-  iup.DebuggerCloseTemporary()
-
   if stop then
     iup.ConsolePrint("-- Debug stop!")
     error() -- abort processing, no error message
   else
     iup.ConsolePrint("-- Debug finish")
   end
+
+  iup.DebuggerCloseTemporary()
 end
 
 function iup.DebuggerExit()
