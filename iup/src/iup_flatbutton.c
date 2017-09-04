@@ -124,7 +124,7 @@ static int iFlatButtonRedraw_CB(Ihandle* ih)
   else
     iupFlatDrawBox(dc, border_width, ih->currentwidth - 1 - border_width,
                            border_width, ih->currentheight - 1 - border_width,
-                           bgcolor, NULL, 1);  /* always active */
+                           bgcolor, NULL, 1);  /* background is always active */
 
   draw_image = iupFlatGetImageName(ih, "IMAGE", image, ih->data->pressed, ih->data->highlighted, active, &make_inactive);
   iupFlatDrawIcon(ih, dc, border_width, border_width,
