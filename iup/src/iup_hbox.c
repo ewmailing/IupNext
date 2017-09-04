@@ -19,6 +19,7 @@
 #include "iup_layout.h"
 #include "iup_box.h"
 #include "iup_normalizer.h"
+#include "iup_varg.h"
 
 
 static int iHboxSetRasterSizeAttrib(Ihandle* ih, const char* value)
@@ -272,18 +273,19 @@ Ihandle *IupHboxv(Ihandle **children)
   return IupCreatev("hbox", (void**)children);
 }
 
+Ihandle* IupHboxV(Ihandle* child, va_list arglist)
+{
+  return IupCreateV("hbox", child, arglist);
+}
+
 Ihandle *IupHbox(Ihandle* child, ...)
 {
-  Ihandle **children;
   Ihandle *ih;
 
   va_list arglist;
   va_start(arglist, child);
-  children = (Ihandle **)iupObjectGetParamList(child, arglist);
+  ih = IupCreateV("hbox", child, arglist);
   va_end(arglist);
-
-  ih = IupCreatev("hbox", (void**)children);
-  free(children);
 
   return ih;
 }

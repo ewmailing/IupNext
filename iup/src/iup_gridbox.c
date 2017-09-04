@@ -18,6 +18,7 @@
 #include "iup_stdcontrols.h"
 #include "iup_layout.h"
 #include "iup_normalizer.h"
+#include "iup_varg.h"
 
 
 /* Orientation */
@@ -1140,18 +1141,19 @@ Ihandle *IupGridBoxv(Ihandle **children)
   return IupCreatev("gridbox", (void**)children);
 }
 
+Ihandle*  IupGridBoxV(Ihandle* child, va_list arglist)
+{
+  return IupCreateV("gridbox", child, arglist);
+}
+
 Ihandle *IupGridBox(Ihandle* child, ...)
 {
-  Ihandle **children;
   Ihandle *ih;
 
   va_list arglist;
   va_start(arglist, child);
-  children = (Ihandle **)iupObjectGetParamList(child, arglist);
+  ih = IupCreateV("gridbox", child, arglist);
   va_end(arglist);
-
-  ih = IupCreatev("gridbox", (void**)children);
-  free(children);
 
   return ih;
 }

@@ -17,6 +17,7 @@
 #include "iup_stdcontrols.h"
 #include "iup_register.h"
 #include "iup_str.h"
+#include "iup_varg.h"
 
 
 Ihandle* IupMessageDlg(void)
@@ -63,15 +64,20 @@ void IupMessage(const char* title, const char* message)
   IupDestroy(dlg);
 }
 
-void IupMessagef(const char *title, const char *format, ...)
+void IupMessageV(const char *title, const char *format, va_list arglist)
 {
   int size;
   char* str = iupStrGetLargeMem(&size);
+  vsnprintf(str, size, format, arglist);
+  IupMessage(title, str);
+}
+
+void IupMessagef(const char *title, const char *format, ...)
+{
   va_list arglist;
   va_start(arglist, format);
-  vsnprintf(str, size, format, arglist);
+  IupMessageV(title, format, arglist);
   va_end(arglist);
-  IupMessage(title, str);
 }
 
 void IupMessageError(Ihandle* parent, const char* message)

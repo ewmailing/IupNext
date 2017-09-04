@@ -14,6 +14,7 @@
 
 #include "iup_str.h"
 #include "iup_drvinfo.h"
+#include "iup_varg.h"
 
 
 char* iupdrvLocaleInfo(void)
@@ -215,17 +216,14 @@ char* iupdrvGetCurrentDirectory(void)
   return cur_dir;
 }
 
-void IupLog(const char* type, const char* format, ...)
+void IupLogV(const char* type, const char* format, va_list arglist)
 {
   HANDLE EventSource;
   WORD wtype = 0;
 
   int size;
   char* value = iupStrGetLargeMem(&size);
-  va_list arglist;
-  va_start(arglist, format);
   vsnprintf(value, size, format, arglist);
-  va_end(arglist);
 
   if (iupStrEqualNoCase(type, "DEBUG"))
   {
@@ -245,4 +243,12 @@ void IupLog(const char* type, const char* format, ...)
     ReportEventA(EventSource, wtype, 0, 0, NULL, 1, 0, &value, NULL);
     DeregisterEventSource(EventSource);
   }
+}
+
+void IupLog(const char* type, const char* format, ...)
+{
+  va_list arglist;
+  va_start(arglist, format);
+  IupLogV(type, format, arglist);
+  va_end(arglist);
 }

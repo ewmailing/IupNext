@@ -236,6 +236,26 @@ IupDrawResetClip
 IupDrawSelectRect
 IupDrawFocusRect
 IupDrawGetSize
+IupLogV
+IupSetAttV
+IupSetStrfV
+IupSetStrfIdV
+IupSetStrfId2V
+IupSetCallbacksV
+IupCreateV
+IupVboxV
+IupZboxV
+IupHboxV
+IupNormalizerV
+IupCboxV
+IupGridBoxV
+IupMenuV
+IupTabsV
+IupFlatTabsV
+IupMessagefV
+IupGetParamV
+IupParamBoxV
+IupGLCanvasBoxV
 
 iupdrvSetVisible
 iupdrvSetFontAttrib

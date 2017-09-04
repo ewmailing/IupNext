@@ -6,7 +6,6 @@
 
 #include <stdio.h>  
 #include <stdlib.h>  
-#include <stdarg.h>  
 #include <memory.h>  
 
 #include "iup.h"
@@ -15,6 +14,7 @@
 #include "iup_assert.h"
 #include "iup_register.h"
 #include "iup_names.h"
+#include "iup_varg.h"
 
 
 static Ihandle* iHandleCreate(void)
@@ -123,19 +123,30 @@ Ihandle* IupCreatev(const char *name, void **params)
     return NULL;
 }
 
+Ihandle *IupCreateV(const char *name, void* first, va_list arglist)
+{
+  void **params;
+  Ihandle *ih;
+
+  iupASSERT(name != NULL);
+
+  params = iupObjectGetParamList(first, arglist);
+  ih = IupCreatev(name, params);
+  free(params);
+
+  return ih;
+}
+
 Ihandle *IupCreatep(const char *name, void* first, ...)
 {
   va_list arglist;
-  void **params;
   Ihandle *ih;
+
   iupASSERT(name!=NULL);
 
   va_start(arglist, first);
-  params = iupObjectGetParamList(first, arglist);
+  ih = IupCreateV(name, first, arglist);
   va_end(arglist);
-
-  ih = IupCreatev(name, params);
-  free(params);
 
   return ih;
 }

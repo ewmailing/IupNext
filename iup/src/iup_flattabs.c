@@ -23,6 +23,7 @@
 #include "iup_image.h"
 #include "iup_register.h"
 #include "iup_drvdraw.h"
+#include "iup_varg.h"
 
 
 #define ITABS_CLOSE_SIZE 13
@@ -1985,23 +1986,24 @@ Iclass* iupFlatTabsNewClass(void)
   return ic;
 }
 
-Ihandle* IupFlatTabs(Ihandle* first, ...)
-{
-  Ihandle **children;
-  Ihandle *ih;
-
-  va_list arglist;
-  va_start(arglist, first);
-  children = (Ihandle**)iupObjectGetParamList(first, arglist);
-  va_end(arglist);
-
-  ih = IupCreatev("flattabs", (void**)children);
-  free(children);
-
-  return ih;
-}
-
 Ihandle* IupFlatTabsv(Ihandle** params)
 {
   return IupCreatev("flattabs", (void**)params);
+}
+
+Ihandle*  IupFlatTabsV(Ihandle* child, va_list arglist)
+{
+  return IupCreateV("flattabs", child, arglist);
+}
+
+Ihandle* IupFlatTabs(Ihandle* child, ...)
+{
+  Ihandle *ih;
+
+  va_list arglist;
+  va_start(arglist, child);
+  ih = IupCreateV("flattabs", child, arglist);
+  va_end(arglist);
+
+  return ih;
 }

@@ -22,7 +22,7 @@
 #include "iup_layout.h"
 #include "iup_image.h"
 #include "iup_tabs.h"
-
+#include "iup_varg.h"
 
 
 char* iupTabsGetTabPaddingAttrib(Ihandle* ih)
@@ -580,23 +580,24 @@ Iclass* iupTabsNewClass(void)
   return ic;
 }
 
-Ihandle* IupTabs(Ihandle* first,...)
-{
-  Ihandle **children;
-  Ihandle *ih;
-
-  va_list arglist;
-  va_start(arglist, first);
-  children = (Ihandle**)iupObjectGetParamList(first, arglist);
-  va_end(arglist);
-
-  ih = IupCreatev("tabs", (void**)children);
-  free(children);
-
-  return ih;
-}
-
 Ihandle* IupTabsv(Ihandle** params)
 {
   return IupCreatev("tabs", (void**)params);
+}
+
+Ihandle*  IupTabsV(Ihandle* child, va_list arglist)
+{
+  return IupCreateV("tabs", child, arglist);
+}
+
+Ihandle* IupTabs(Ihandle* child, ...)
+{
+  Ihandle *ih;
+
+  va_list arglist;
+  va_start(arglist, child);
+  ih = IupCreateV("tabs", child, arglist);
+  va_end(arglist);
+
+  return ih;
 }

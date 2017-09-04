@@ -20,6 +20,7 @@
 #include "iup_drvfont.h"
 #include "iup_register.h"
 #include "iup_stdcontrols.h"
+#include "iup_varg.h"
 
 
 #define RAD2DEG  57.296   /* radians to degrees */
@@ -1800,26 +1801,35 @@ int IupGetParamv(const char* title, Iparamcb action, void* user_data, const char
   }
 }
 
-int IupGetParam(const char* title, Iparamcb action, void* user_data, const char* format,...)
+int IupGetParamV(const char* title, Iparamcb action, void* user_data, const char* format, va_list arglist)
 {
   int param_count, param_extra, i, ret;
   void** param_data;
-  va_list arg;
 
   param_count = iupGetParamCount(format, &param_extra);
 
   param_data = malloc(param_count*sizeof(void*));
 
-  va_start(arg, format);
   for (i = 0; i < param_count; i++)
   {
-    param_data[i] = (void*)(va_arg(arg, void*));
+    param_data[i] = (void*)(va_arg(arglist, void*));
   }
-  va_end(arg);
 
   ret = IupGetParamv(title, action, user_data, format, param_count, param_extra, param_data);
 
   free(param_data);
+  return ret;
+}
+
+int IupGetParam(const char* title, Iparamcb action, void* user_data, const char* format, ...)
+{
+  va_list arglist;
+  int ret;
+
+  va_start(arglist, format);
+  ret = IupGetParamV(title, action, user_data, format, arglist);
+  va_end(arglist);
+
   return ret;
 }
 
@@ -1889,18 +1899,19 @@ Ihandle *IupParamBoxv(Ihandle** children)
   return IupCreatev("parambox", (void**)children);
 }
 
+Ihandle*  IupParamBoxV(Ihandle* child, va_list arglist)
+{
+  return IupCreateV("parambox", child, arglist);
+}
+
 Ihandle *IupParamBox(Ihandle * child, ...)
 {
-  Ihandle **children;
   Ihandle *ih;
 
   va_list arglist;
   va_start(arglist, child);
-  children = (Ihandle **)iupObjectGetParamList(child, arglist);
+  ih = IupCreateV("parambox", child, arglist);
   va_end(arglist);
-
-  ih = IupCreatev("parambox", (void**)children);
-  free(children);
 
   return ih;
 }
