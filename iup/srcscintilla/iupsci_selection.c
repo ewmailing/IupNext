@@ -78,6 +78,9 @@ SCI_ISRANGEWORD(int start, int end)
 --SCI_MOVESELECTEDLINESDOWN
 --SCI_SETMOUSESELECTIONRECTANGULARSWITCH(bool mouseSelectionRectangularSwitch)
 --SCI_GETMOUSESELECTIONRECTANGULARSWITCH
+SCI_SETSELFORE
+SCI_SETSELBACK
+SCI_GETSELALPHA
 */
 
 static char* iScintillaGetCaretStyleAttrib(Ihandle* ih)
@@ -427,11 +430,59 @@ static char* iScintillaGetCaretLineBackAlphaAttrib(Ihandle* ih)
   return iupStrReturnInt(alpha);
 }
 
+static int iScintillaSetSelectionForeColorAttrib(Ihandle* ih, const char* value)
+{
+  if (!value)
+    IupScintillaSendMessage(ih, SCI_SETSELFORE, 0, 0);
+  else
+  {
+    unsigned char r, g, b;
+
+    if (!iupStrToRGB(value, &r, &g, &b))
+      return 0;
+
+    IupScintillaSendMessage(ih, SCI_SETSELFORE, 1, iupScintillaEncodeColor(r, g, b));
+  }
+  return 1;
+}
+
+static int iScintillaSetSelectionBackColorAttrib(Ihandle* ih, const char* value)
+{
+  if (!value)
+    IupScintillaSendMessage(ih, SCI_SETSELBACK, 0, 0);
+  else
+  {
+    unsigned char r, g, b;
+
+    if (!iupStrToRGB(value, &r, &g, &b))
+      return 0;
+
+    IupScintillaSendMessage(ih, SCI_SETSELBACK, 1, iupScintillaEncodeColor(r, g, b));
+  }
+  return 1;
+}
+
+static int iScintillaSetSelectionAlphaAttrib(Ihandle* ih, const char* value)
+{
+  int alpha;
+  if (iupStrToInt(value, &alpha))
+    IupScintillaSendMessage(ih, SCI_SETSELALPHA, alpha, 0);
+  return 0;
+}
+
+static char* iScintillaGetSelectionAlphaAttrib(Ihandle* ih)
+{
+  int alpha = (int)IupScintillaSendMessage(ih, SCI_GETSELALPHA, 0, 0);
+  return iupStrReturnInt(alpha);
+}
+
+
 void iupScintillaRegisterSelection(Iclass* ic)
 {
   iupClassRegisterAttribute(ic, "CARETLINEVISIBLE",   iScintillaGetCaretLineVisibleAttrib,   iScintillaSetCaretLineVisibleAttrib,   NULL, NULL, IUPAF_NO_SAVE | IUPAF_NO_INHERIT);
   iupClassRegisterAttribute(ic, "CARETLINEBACKCOLOR", iScintillaGetCaretLineBackColorAttrib, iScintillaSetCaretLineBackColorAttrib, NULL, NULL, IUPAF_NO_SAVE | IUPAF_NO_INHERIT);
   iupClassRegisterAttribute(ic, "CARETLINEBACKALPHA", iScintillaGetCaretLineBackAlphaAttrib, iScintillaSetCaretLineBackAlphaAttrib, NULL, NULL, IUPAF_NO_SAVE | IUPAF_NO_INHERIT);
+
   iupClassRegisterAttribute(ic, "CARETSTYLE", iScintillaGetCaretStyleAttrib, iScintillaSetCaretStyleAttrib, NULL, NULL, IUPAF_NO_SAVE | IUPAF_NO_INHERIT);
   iupClassRegisterAttribute(ic, "CARETWIDTH", iScintillaGetCaretWidthAttrib, iScintillaSetCaretWidthAttrib, NULL, NULL, IUPAF_NO_SAVE | IUPAF_NO_INHERIT);
   iupClassRegisterAttribute(ic, "CARETCOLOR", iScintillaGetCaretColorAttrib, iScintillaSetCaretColorAttrib, NULL, NULL, IUPAF_NO_SAVE | IUPAF_NO_INHERIT);
@@ -445,6 +496,9 @@ void iupScintillaRegisterSelection(Iclass* ic)
   iupClassRegisterAttribute(ic, "SELECTEDTEXT", iScintillaGetSelectedTextAttrib, iScintillaSetSelectedTextAttrib, NULL, NULL, IUPAF_NO_INHERIT);
   iupClassRegisterAttribute(ic, "SELECTION", iScintillaGetSelectionAttrib, iScintillaSetSelectionAttrib, NULL, NULL, IUPAF_NO_INHERIT);
   iupClassRegisterAttribute(ic, "SELECTIONPOS", iScintillaGetSelectionPosAttrib, iScintillaSetSelectionPosAttrib, NULL, NULL, IUPAF_NO_INHERIT);
+  iupClassRegisterAttribute(ic, "SELECTIONFGCOLOR", NULL, iScintillaSetSelectionForeColorAttrib, NULL, NULL, IUPAF_NO_INHERIT);
+  iupClassRegisterAttribute(ic, "SELECTIONBGCOLOR", NULL, iScintillaSetSelectionBackColorAttrib, NULL, NULL, IUPAF_NO_INHERIT);
+  iupClassRegisterAttribute(ic, "SELECTIONALPHA", iScintillaGetSelectionAlphaAttrib, iScintillaSetSelectionAlphaAttrib,  NULL, NULL, IUPAF_NO_SAVE | IUPAF_NO_INHERIT);
   iupClassRegisterAttributeId(ic, "WORDPOS", iScintillaGetWordPosAttrib, NULL, IUPAF_READONLY | IUPAF_NO_INHERIT);
   iupClassRegisterAttribute(ic, "WORDRANGE", NULL, NULL, NULL, NULL, IUPAF_NOT_MAPPED | IUPAF_NO_INHERIT);
   iupClassRegisterAttribute(ic, "ISWORD", iScintillaGetIsWordAttrib, NULL, NULL, NULL, IUPAF_READONLY);

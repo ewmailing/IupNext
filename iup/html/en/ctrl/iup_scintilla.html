@@ -379,6 +379,17 @@ represented by the string &quot;<strong>lin1</strong>,<strong>col1</strong>:<str
 correspond to the character after the last selected character. The values ALL and NONE are also accepted.</p>
 
   
+<p><strong>SELECTIONFGCOLOR</strong> (non inheritable): foreground color of the selection. Values in RGB format ("r g b"). 
+Default is system dependent. (since 3.23)</p>
+
+<p><strong>SELECTIONBGCOLOR</strong> (non inheritable): background color of the selection. Values in RGB format ("r g b"). 
+Default is system dependent. (since 3.23)</p>
+
+<p><strong>SELECTIONALPHA</strong> (non inheritable): The selection can be drawn translucently in the selection background color by setting an alpha value.
+Translucency ranges from 0 for completely transparent to 255 for opaque with 256 being opaque and not using translucent drawing. 
+(since 3.23)
+</p>
+
 <p><strong>SELECTIONPOS</strong> (<font size="3">non inheritable</font>):
   Same as SELECTION but using a zero based character 
 	index "<strong>pos1</strong>:<strong>pos2</strong>". Useful for indexing the VALUE string. 
