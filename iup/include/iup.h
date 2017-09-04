@@ -195,7 +195,7 @@ Ihandle*  IupVbox       (Ihandle* child, ...);
 Ihandle*  IupVboxv      (Ihandle* *children);
 Ihandle*  IupZbox       (Ihandle* child, ...);
 Ihandle*  IupZboxv      (Ihandle* *children);
-Ihandle*  IupHbox       (Ihandle* child,...);
+Ihandle*  IupHbox       (Ihandle* child, ...);
 Ihandle*  IupHboxv      (Ihandle* *children);
 
 Ihandle*  IupNormalizer (Ihandle* ih_first, ...);
@@ -223,7 +223,7 @@ Ihandle*  IupImageRGBA  (int width, int height, const unsigned char *pixmap);
 Ihandle*  IupItem       (const char* title, const char* action);
 Ihandle*  IupSubmenu    (const char* title, Ihandle* child);
 Ihandle*  IupSeparator  (void);
-Ihandle*  IupMenu       (Ihandle* child,...);
+Ihandle*  IupMenu       (Ihandle* child, ...);
 Ihandle*  IupMenuv      (Ihandle* *children);
 
 Ihandle*  IupButton     (const char* title, const char* action);
@@ -311,7 +311,7 @@ int  IupGetText(const char* title, char* text, int maxsize);
 int  IupGetColor(int x, int y, unsigned char* r, unsigned char* g, unsigned char* b);
 
 typedef int (*Iparamcb)(Ihandle* dialog, int param_index, void* user_data);
-int IupGetParam(const char* title, Iparamcb action, void* user_data, const char* format,...);
+int IupGetParam(const char* title, Iparamcb action, void* user_data, const char* format, ...);
 int IupGetParamv(const char* title, Iparamcb action, void* user_data, const char* format, int param_count, int param_extra, void** param_data);
 Ihandle* IupParam(const char* format);
 Ihandle*  IupParamBox(Ihandle* child, ...);
