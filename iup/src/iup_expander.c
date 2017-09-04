@@ -23,6 +23,7 @@
 #include "iup_layout.h"
 #include "iup_childtree.h"
 #include "iup_image.h"
+#include "iup_drvdraw.h"
 
 
 static Ihandle* load_image_arrowup_highlight(void)
@@ -927,6 +928,39 @@ static int iExpanderExtraButtonButton_CB(Ihandle* extra_button, int button, int 
   return IUP_DEFAULT;
 }
 
+static int iExpanderBarRedraw_CB(Ihandle* bar)
+{
+  Ihandle* ih = bar->parent;
+  char* backcolor = iupAttribGet(ih, "BACKCOLOR");
+  int frame_width = 0;
+  int frame = iupAttribGetBoolean(ih, "FRAME");
+  IdrawCanvas* dc = iupdrvDrawCreateCanvas(bar);
+
+  if (!backcolor)
+    backcolor = iupBaseNativeParentGetBgColorAttrib(ih);
+
+  /* draw border - can still be disabled setting frame_width=0 */
+  if (frame)
+  {
+    char* frame_color = iupAttribGetStr(ih, "FRAMECOLOR");
+    int active = IupGetInt(ih, "ACTIVE");
+    frame_width = iupAttribGetInt(ih, "FRAMEWIDTH");
+
+    iupFlatDrawBorder(dc, 0, bar->currentwidth - 1,
+                          0, bar->currentheight - 1,
+                          frame_width, frame_color, NULL, active);
+  }
+
+  /* draw child area background */
+  iupFlatDrawBox(dc, frame_width, bar->currentwidth  - 1 - frame_width,
+                     frame_width, bar->currentheight - 1 - frame_width, backcolor, NULL, 1);  /* background is always active */
+
+  iupdrvDrawFlush(dc);
+
+  iupdrvDrawKillCanvas(dc);
+
+  return IUP_DEFAULT;
+}
 
 /*****************************************************************************\
 |* Attributes                                                                *|
@@ -1074,7 +1108,9 @@ static int iExpanderSetHighColorAttrib(Ihandle* ih, const char* value)
 static int iExpanderSetBackColorAttrib(Ihandle* ih, const char* value)
 {
   Ihandle* bar = ih->firstchild;
-  IupSetStrAttribute(bar, "BGCOLOR", value);
+  IupSetStrAttribute(bar, "BGCOLOR", value); /* used in children */
+  IupUpdate(bar);
+  (void)value;
   return 1;
 }
 
@@ -1490,6 +1526,7 @@ static int iExpanderCreateMethod(Ihandle* ih, void** params)
   IupSetAttribute(bar, "CANFOCUS", "NO");
   IupSetAttribute(bar, "BORDER", "NO");
   IupSetAttribute(bar, "EXPAND", "YES");
+  IupSetCallback(bar, "ACTION", (Icallback)iExpanderBarRedraw_CB);
 
   if (params)
   {
@@ -1578,6 +1615,10 @@ Iclass* iupExpanderNewClass(void)
   iupClassRegisterAttribute(ic, "IMAGEEXTRA3", NULL, iExpanderSetImageExtra3Attrib, NULL, NULL, IUPAF_NOT_MAPPED | IUPAF_NO_INHERIT);
   iupClassRegisterAttribute(ic, "IMAGEEXTRAPRESS3", NULL, iExpanderSetImageExtraPress3Attrib, NULL, NULL, IUPAF_NOT_MAPPED | IUPAF_NO_INHERIT);
   iupClassRegisterAttribute(ic, "IMAGEEXTRAHIGHLIGHT3", NULL, iExpanderSetImageExtraHighlight3Attrib, NULL, NULL, IUPAF_NOT_MAPPED | IUPAF_NO_INHERIT);
+
+  iupClassRegisterAttribute(ic, "FRAME", NULL, NULL, NULL, NULL, IUPAF_NO_INHERIT);
+  iupClassRegisterAttribute(ic, "FRAMECOLOR", NULL, NULL, IUPAF_SAMEASSYSTEM, "DLGFGCOLOR", IUPAF_NO_INHERIT);
+  iupClassRegisterAttribute(ic, "FRAMEWIDTH", NULL, NULL, IUPAF_SAMEASSYSTEM, "1", IUPAF_NO_INHERIT);
 
   if (!IupGetHandle("IupArrowUp") || !IupGetHandle("IupArrowDown"))
     iExpanderLoadImages();
