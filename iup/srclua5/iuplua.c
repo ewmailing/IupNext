@@ -42,8 +42,8 @@ static int show_error_continue_action(Ihandle* ih)
 
 static int show_error_exit_action(Ihandle* ih)
 {
-  (void)ih;
-  exit(EXIT_FAILURE);
+  if (ih) /* just to avoid a warning at return */
+    exit(EXIT_FAILURE);
   return IUP_DEFAULT;
 }
 
