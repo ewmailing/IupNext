@@ -82,6 +82,7 @@ static int iFlatFrameRedraw_CB(Ihandle* ih)
   IdrawCanvas* dc = iupdrvDrawCreateCanvas(ih);
   int title_height = iFlatFrameGetTitleHeight(ih);
   char* text_align = iupAttribGetStr(ih, "TITLETEXTALIGNMENT");
+  int active = IupGetInt(ih, "ACTIVE");
 
   if (!backcolor)
     backcolor = iupBaseNativeParentGetBgColorAttrib(ih);
@@ -93,14 +94,14 @@ static int iFlatFrameRedraw_CB(Ihandle* ih)
 
     iupFlatDrawBorder(dc, 0, ih->currentwidth - 1,
                           0, ih->currentheight - 1,
-                          frame_width, frame_color, NULL, 1);
+                          frame_width, frame_color, NULL, active);
   }
   else
     frame_width = 0;
 
   /* draw child area background */
   iupFlatDrawBox(dc, frame_width, ih->currentwidth - 1 - frame_width,
-                     frame_width + title_height, ih->currentheight - 1 - frame_width, backcolor, NULL, 1);
+                     frame_width + title_height, ih->currentheight - 1 - frame_width, backcolor, NULL, 1);  /* background is always active */
 
   if (title_height)
   {
@@ -112,7 +113,6 @@ static int iFlatFrameRedraw_CB(Ihandle* ih)
     int img_position = iupFlatGetImagePosition(iupAttribGetStr(ih, "TITLEIMAGEPOSITION"));
     int spacing = iupAttribGetInt(ih, "TITLEIMAGESPACING");
     int horiz_padding, vert_padding;
-    int active = IupGetInt(ih, "ACTIVE");
     int make_inactive = 0;
 
     int title_line = 0;
@@ -130,7 +130,7 @@ static int iFlatFrameRedraw_CB(Ihandle* ih)
 
     /* draw title background */
     iupFlatDrawBox(dc, frame_width, ih->currentwidth - 1 - frame_width,
-                       frame_width, frame_width + title_height - 1 - title_line, titlebgcolor, NULL, 1);
+                       frame_width, frame_width + title_height - 1 - title_line, titlebgcolor, NULL, 1); /* background is always active */
 
     if (iupAttribGetBoolean(ih, "TITLELINE"))
     {
