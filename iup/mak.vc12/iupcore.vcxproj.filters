@@ -438,5 +438,8 @@
     <ClInclude Include="..\src\iup_flatscrollbar.h">
       <Filter>inc_controls</Filter>
     </ClInclude>
+    <ClInclude Include="..\include\iup_varg.h">
+      <Filter>include</Filter>
+    </ClInclude>
   </ItemGroup>
 </Project>

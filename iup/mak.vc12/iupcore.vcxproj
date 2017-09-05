@@ -180,6 +180,7 @@
     <ClInclude Include="..\include\iup_class_cbs.hpp" />
     <ClInclude Include="..\include\iup_config.h" />
     <ClInclude Include="..\include\iup_plus.h" />
+    <ClInclude Include="..\include\iup_varg.h" />
     <ClInclude Include="..\src\iup_array.h" />
     <ClInclude Include="..\src\iup_assert.h" />
     <ClInclude Include="..\src\iup_attrib.h" />
