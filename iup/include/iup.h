@@ -314,8 +314,8 @@ typedef int (*Iparamcb)(Ihandle* dialog, int param_index, void* user_data);
 int IupGetParam(const char* title, Iparamcb action, void* user_data, const char* format, ...);
 int IupGetParamv(const char* title, Iparamcb action, void* user_data, const char* format, int param_count, int param_extra, void** param_data);
 Ihandle* IupParam(const char* format);
-Ihandle*  IupParamBox(Ihandle* child, ...);
-Ihandle*  IupParamBoxv(Ihandle* *children);
+Ihandle*  IupParamBox(Ihandle* param, ...);
+Ihandle*  IupParamBoxv(Ihandle* *param_array);
 
 Ihandle* IupLayoutDialog(Ihandle* dialog);
 Ihandle* IupElementPropertiesDialog(Ihandle* elem);

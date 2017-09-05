@@ -35,7 +35,8 @@ You can also filter messages using grep and the filename of the application.
 </span></p>
 <h3>
 Parameters/Return</h3>
-<pre>int IupLog(const char* <strong>type, </strong>const char* <strong>format, ...</strong>); [in C]
+<pre>void IupLog(const char* <strong>type, </strong>const char* <strong>format, ...</strong>); [in C]
+void IupLogV(const char* <strong>type</strong>, const char* <strong>format</strong>, va_list <strong>arglist</strong>); [in C]
 iup.Log(<strong>type, str</strong>: string) -&gt; (<strong>ret</strong>: number) [in Lua]</pre>
 <p><strong>type</strong>: type of the log. Can be DEBUG, INFO, ERROR and 
 WARNING.<br><strong>format</strong>: uses the same format specification as the 

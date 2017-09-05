@@ -33,10 +33,10 @@ Ihandle*  IupCboxV(Ihandle* child, va_list arglist);
 Ihandle*  IupGridBoxV(Ihandle* child, va_list arglist);
 Ihandle*  IupMenuV(Ihandle* child,va_list arglist);
 Ihandle*  IupTabsV(Ihandle* child, va_list arglist);
-Ihandle*  IupFlatTabsV(Ihandle* first, va_list arglist);
+Ihandle*  IupFlatTabsV(Ihandle* child, va_list arglist);
 
 void      IupMessageV(const char *title, const char *format, va_list arglist);
-Ihandle*  IupParamBoxV(Ihandle* child, va_list arglist);
+Ihandle*  IupParamBoxV(Ihandle* param, va_list arglist);
 int       IupGetParamV(const char* title, Iparamcb action, void* user_data, const char* format, va_list arglist);
 
 Ihandle*  IupGLCanvasBoxV(Ihandle* child, va_list arglist);
