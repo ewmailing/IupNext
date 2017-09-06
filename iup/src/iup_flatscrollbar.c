@@ -1015,34 +1015,36 @@ int iupFlatScrollBarCreate(Ihandle* ih)
   IupSetAttribute(sb_horiz, "BORDER", "NO");
   IupSetAttribute(sb_horiz, "ZORDER", "TOP");
   IupSetAttribute(sb_horiz, "SB_HORIZ", "YES");
-  iChildTreeInsertFirst(ih, sb_horiz);  /* sb_vert will always be the firstchild->brother */
-  sb_horiz->flags |= IUP_INTERNAL;
+  IupSetAttribute(sb_horiz, "CANFOCUS", "NO");
+  IupSetAttribute(sb_horiz, "VISIBLE", "NO");
   IupSetCallback(sb_horiz, "ACTION", (Icallback)iFlatScrollBarAction_CB);
   IupSetCallback(sb_horiz, "BUTTON_CB", (Icallback)iFlatScrollBarButton_CB);
   IupSetCallback(sb_horiz, "MOTION_CB", (Icallback)iFlatScrollBarMotion_CB);
   IupSetCallback(sb_horiz, "LEAVEWINDOW_CB", (Icallback)iFlatScrollBarLeaveWindow_CB);
   IupSetCallback(sb_horiz, "WHEEL_CB", (Icallback)iFlatScrollBarWheel_CB);
-  IupSetAttribute(sb_horiz, "CANFOCUS", "NO");
   iupAttribSetInt(sb_horiz, "_IUP_PRESSED_HANDLER", SB_NONE);
   iupAttribSetInt(sb_horiz, "_IUP_HIGHLIGHT_HANDLER", SB_NONE);
-  IupSetAttribute(sb_horiz, "VISIBLE", "NO");
+
+  iChildTreeInsertFirst(ih, sb_horiz);  /* sb_vert will always be the firstchild->brother */
+  sb_horiz->flags |= IUP_INTERNAL;
   iupAttribSet(ih, "XHIDDEN", "YES");
 
   sb_vert = IupCanvas(NULL);
   IupSetAttribute(sb_vert, "BORDER", "NO");
   IupSetAttribute(sb_vert, "ZORDER", "TOP");
   IupSetAttribute(sb_vert, "SB_VERT", "YES");
-  iChildTreeInsertFirst(ih, sb_vert);  /* sb_vert will always be the firstchild */
-  sb_vert->flags |= IUP_INTERNAL;
+  IupSetAttribute(sb_vert, "CANFOCUS", "NO");
+  IupSetAttribute(sb_vert, "VISIBLE", "NO");
   IupSetCallback(sb_vert, "ACTION", (Icallback)iFlatScrollBarAction_CB);
   IupSetCallback(sb_vert, "BUTTON_CB", (Icallback)iFlatScrollBarButton_CB);
   IupSetCallback(sb_vert, "MOTION_CB", (Icallback)iFlatScrollBarMotion_CB);
   IupSetCallback(sb_vert, "LEAVEWINDOW_CB", (Icallback)iFlatScrollBarLeaveWindow_CB);
   IupSetCallback(sb_vert, "WHEEL_CB", (Icallback)iFlatScrollBarWheel_CB);
-  IupSetAttribute(sb_vert, "CANFOCUS", "NO");
   iupAttribSetInt(sb_vert, "_IUP_PRESSED_HANDLER", SB_NONE);
   iupAttribSetInt(sb_vert, "_IUP_HIGHLIGHT_HANDLER", SB_NONE);
-  IupSetAttribute(sb_vert, "VISIBLE", "NO");
+
+  iChildTreeInsertFirst(ih, sb_vert);  /* sb_vert will always be the firstchild */
+  sb_vert->flags |= IUP_INTERNAL;
   iupAttribSet(ih, "YHIDDEN", "YES");
 
   return 1;
@@ -1066,10 +1068,10 @@ void iupFlatScrollBarRegister(Iclass* ic)
   iupClassRegisterAttribute(ic, "FLOATINGDELAY", NULL, NULL, IUPAF_SAMEASSYSTEM, "2000", IUPAF_NO_INHERIT);
 
   iupClassRegisterAttribute(ic, "SCROLLBARSIZE", NULL, NULL, IUPAF_SAMEASSYSTEM, "15", IUPAF_NO_INHERIT);
-  iupClassRegisterAttribute(ic, "HIGHCOLOR", NULL, NULL, IUPAF_SAMEASSYSTEM, "132 132 132", IUPAF_NO_INHERIT);
   iupClassRegisterAttribute(ic, "FORECOLOR", NULL, NULL, IUPAF_SAMEASSYSTEM, "220 220 220", IUPAF_NO_INHERIT);
-  iupClassRegisterAttribute(ic, "PRESSCOLOR", NULL, NULL, IUPAF_SAMEASSYSTEM, "96 96 96", IUPAF_NO_INHERIT);
   iupClassRegisterAttribute(ic, "BACKCOLOR", NULL, NULL, NULL, NULL, IUPAF_NO_INHERIT);
+  iupClassRegisterAttribute(ic, "HIGHCOLOR", NULL, NULL, IUPAF_SAMEASSYSTEM, "132 132 132", IUPAF_NO_INHERIT);
+  iupClassRegisterAttribute(ic, "PRESSCOLOR", NULL, NULL, IUPAF_SAMEASSYSTEM, "96 96 96", IUPAF_NO_INHERIT);
   iupClassRegisterAttribute(ic, "SHOWARROWS", NULL, NULL, IUPAF_SAMEASSYSTEM, "Yes", IUPAF_NO_INHERIT);
 
   iupClassRegisterAttribute(ic, "ARROWIMAGES", NULL, NULL, NULL, NULL, IUPAF_NO_INHERIT);
