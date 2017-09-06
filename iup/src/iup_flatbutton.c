@@ -63,7 +63,7 @@ static int iFlatButtonRedraw_CB(Ihandle* ih)
   const char* draw_image;
   int border_width = ih->data->border_width;
   int draw_border = 0;
-  int old_pressed = ih->data->pressed;
+  int image_pressed;
   IdrawCanvas* dc = iupdrvDrawCreateCanvas(ih);
   int make_inactive = 0;
 
@@ -72,16 +72,13 @@ static int iFlatButtonRedraw_CB(Ihandle* ih)
   if (!bgcolor)
     bgcolor = iupBaseNativeParentGetBgColorAttrib(ih);
 
-  if (ih->data->pressed || selected)
+  if (ih->data->pressed || (selected && !ih->data->highlighted))
   {
     char* presscolor = iupAttribGetStr(ih, "PSCOLOR");
     if (presscolor)
       bgcolor = presscolor;
 
     draw_border = 1;
-
-    if (!ih->data->pressed && (bgimage || image))
-      ih->data->pressed = 1;
   }
   else if (ih->data->highlighted)
   {
@@ -96,7 +93,8 @@ static int iFlatButtonRedraw_CB(Ihandle* ih)
   if (draw_border)
   {
     char* bordercolor = iupAttribGetStr(ih, "BORDERCOLOR");
-    if (ih->data->pressed || selected)
+
+    if (ih->data->pressed || (selected && !ih->data->highlighted))
     {
       char* presscolor = iupAttribGetStr(ih, "BORDERPSCOLOR");
       if (presscolor)
@@ -115,10 +113,15 @@ static int iFlatButtonRedraw_CB(Ihandle* ih)
                               border_width, bordercolor, bgcolor, active);
   }
 
+  /* simulate pressed when selected and has images (but colors and borders are not included) */
+  image_pressed = ih->data->pressed;
+  if (selected && !ih->data->pressed && (bgimage || image))
+    image_pressed = 1;
+
   /* draw background */
   if (bgimage)
   {
-    draw_image = iupFlatGetImageName(ih, "BACKIMAGE", bgimage, ih->data->pressed, ih->data->highlighted, active, &make_inactive);
+    draw_image = iupFlatGetImageName(ih, "BACKIMAGE", bgimage, image_pressed, ih->data->highlighted, active, &make_inactive);
     iupdrvDrawImage(dc, draw_image, make_inactive, border_width, border_width);
   }
   else
@@ -126,7 +129,7 @@ static int iFlatButtonRedraw_CB(Ihandle* ih)
                            border_width, ih->currentheight - 1 - border_width,
                            bgcolor, NULL, 1);  /* background is always active */
 
-  draw_image = iupFlatGetImageName(ih, "IMAGE", image, ih->data->pressed, ih->data->highlighted, active, &make_inactive);
+  draw_image = iupFlatGetImageName(ih, "IMAGE", image, image_pressed, ih->data->highlighted, active, &make_inactive);
   iupFlatDrawIcon(ih, dc, border_width, border_width,
                   ih->currentwidth - 2 * border_width, ih->currentheight - 2 * border_width,
                   ih->data->img_position, ih->data->spacing, ih->data->horiz_alignment, ih->data->vert_alignment, ih->data->horiz_padding, ih->data->vert_padding,
@@ -134,7 +137,7 @@ static int iFlatButtonRedraw_CB(Ihandle* ih)
 
   if (fgimage)
   {
-    draw_image = iupFlatGetImageName(ih, "FRONTIMAGE", fgimage, ih->data->pressed, ih->data->highlighted, active, &make_inactive);
+    draw_image = iupFlatGetImageName(ih, "FRONTIMAGE", fgimage, image_pressed, ih->data->highlighted, active, &make_inactive);
     iupdrvDrawImage(dc, draw_image, make_inactive, border_width, border_width);
   }
   else if (!image && !title)
@@ -149,9 +152,6 @@ static int iFlatButtonRedraw_CB(Ihandle* ih)
                            fgcolor, bgcolor, active);
   }
 
-
-  if (selected && !old_pressed && (bgimage || image))
-    ih->data->pressed = 0;
 
   if (ih->data->has_focus)
     iupdrvDrawFocusRect(dc, border_width, border_width, ih->currentwidth - border_width, ih->currentheight - border_width);
@@ -517,7 +517,12 @@ static int iFlatButtonCreateMethod(Ihandle* ih, void** params)
   ih->data->border_width = 1;
   ih->data->horiz_alignment = IUP_ALIGN_ACENTER;
   ih->data->vert_alignment = IUP_ALIGN_ACENTER;
-  
+
+  /* initial values - don't use default so they can be set to NULL */
+  iupAttribSet(ih, "HLCOLOR", "200 225 245");
+  iupAttribSet(ih, "PSCOLOR", "150 200 235");
+
+  /* internal callbacks */
   IupSetCallback(ih, "ACTION", (Icallback)iFlatButtonRedraw_CB);
   IupSetCallback(ih, "BUTTON_CB", (Icallback)iFlatButtonButton_CB);
   IupSetCallback(ih, "FOCUS_CB", (Icallback)iFlatButtonFocus_CB);
@@ -651,8 +656,8 @@ Iclass* iupFlatButtonNewClass(void)
   iupClassRegisterAttribute(ic, "BORDERWIDTH", iFlatButtonGetBorderWidthAttrib, iFlatButtonSetBorderWidthAttrib, IUPAF_SAMEASSYSTEM, "1", IUPAF_DEFAULT);  /* inheritable */
   iupClassRegisterAttribute(ic, "FGCOLOR", NULL, NULL, "DLGFGCOLOR", NULL, IUPAF_NOT_MAPPED);  /* force the new default value */
   iupClassRegisterAttribute(ic, "BGCOLOR", iFlatButtonGetBgColorAttrib, iFlatButtonSetBgColorAttrib, IUPAF_SAMEASSYSTEM, "DLGBGCOLOR", IUPAF_NO_SAVE | IUPAF_DEFAULT);
-  iupClassRegisterAttribute(ic, "HLCOLOR", NULL, NULL, IUPAF_SAMEASSYSTEM, "200 225 245", IUPAF_DEFAULT);  /* inheritable */
-  iupClassRegisterAttribute(ic, "PSCOLOR", NULL, NULL, IUPAF_SAMEASSYSTEM, "150 200 235", IUPAF_DEFAULT);  /* inheritable */
+  iupClassRegisterAttribute(ic, "HLCOLOR", NULL, NULL, NULL, NULL, IUPAF_DEFAULT);  /* inheritable */
+  iupClassRegisterAttribute(ic, "PSCOLOR", NULL, NULL, NULL, NULL, IUPAF_DEFAULT);  /* inheritable */
 
   iupClassRegisterAttribute(ic, "IMAGE", NULL, NULL, NULL, NULL, IUPAF_IHANDLENAME | IUPAF_NO_DEFAULTVALUE | IUPAF_NO_INHERIT);
   iupClassRegisterAttribute(ic, "IMAGEPRESS", NULL, NULL, NULL, NULL, IUPAF_IHANDLENAME | IUPAF_NO_DEFAULTVALUE | IUPAF_NO_INHERIT);
