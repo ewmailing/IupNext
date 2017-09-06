@@ -2331,11 +2331,10 @@ void IupLuaScripterDlgOpen(void)
 - Condicional Breakpoints, Hit Count, When Hit
 - Project Menu
 - Table Inspector using IupTree
-
-- Replace All (in All Open Documents, in All Project Files)
-- Find All (Search Results)
+- Find/replace in: current document or all open documents
 
 - multi-language (Portuguese, Spanish)
 - detachable Console, Debug, Breakpoints (problem with IupGetDialogChild(NAME))?
 - detachable Multitext?
+- search results?
 */
