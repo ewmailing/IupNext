@@ -146,6 +146,11 @@ static IstdMessage iStdMessages[] =
   {"IUP_SAMPLE", {"Sample:", "Exemplo:", NULL, "Ejemplo:", NULL, NULL}},
   {"IUP_ERRORFILEOPEN", { "Failed to open file.", "Falha ao abrir o arquivo.", NULL, "Error al abrir el archivo.", NULL, NULL } },
   {"IUP_ERRORFILESAVE", { "Failed to save file.", "Falha ao salvar o arquivo.", NULL, "Error al guardar el archivo.", NULL, NULL } },
+  { "IUP_LUAERROR", { "Lua Error", "Erro de Lua", NULL, "Error de Lua", NULL, NULL } },
+  { "IUP_CONTINUE", { "Continue", "Continuar", NULL, "Continúe", "ContinÃºe", NULL } },
+  { "IUP_COPYTOCLIPBOARD", { "Copy text to clipboard.", "Copiar texto para a área de transferência.", "Copiar texto para a Ã¡rea de transferÃªncia.", "Copiar texto para un área de transferencia.", "Copiar texto para un Ã¡rea de transferencia.", NULL } },
+  { "IUP_COPY", { "Copy", "Copiar", NULL, "Copiar", NULL, NULL } },
+  { "IUP_EXIT", { "Exit", "Sair", NULL, "Salir", NULL, NULL } },
   { NULL, { NULL, NULL, NULL, NULL, NULL, NULL } }
 };
 
@@ -161,7 +166,6 @@ static void iStrMessageRegisterInternal(int lng, int utf8mode)
     messages++;
   }
 }
-
 
 void iupStrMessageUpdateLanguage(const char* language)
 {

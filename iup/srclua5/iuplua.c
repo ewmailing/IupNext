@@ -60,22 +60,22 @@ void iuplua_show_error_message(const char *pname, const char* msg)
   Ihandle *multi_text, *lbl, *copy, *button, *box, *dlg, *abort, *buttonbox;
   char* value = IupGetGlobal("LUA_ERROR_LABEL");
 
-  if (!pname) pname = "Lua Error!";
+  if (!pname) pname = "_@IUP_ERROR";
 
-  lbl = IupLabel("Internal error.");
+  lbl = IupLabel("_@IUP_LUAERROR");
   IupSetAttribute(lbl, "EXPAND", "HORIZONTAL");
   if (value) IupSetStrAttribute(lbl, "TITLE", value);
 
-  copy = IupButton("Copy", NULL);
-  IupSetAttribute(copy, "TIP", "Copy text to clipboard.");
+  copy = IupButton("_@IUP_COPY", NULL);
+  IupSetStrAttribute(copy, "TIP", "_@IUP_COPYTOCLIPBOARD");
   IupSetStrAttribute(copy, "PADDING", IupGetGlobal("DEFAULTBUTTONPADDING"));
   IupSetCallback(copy, "ACTION", show_error_copy_action);
 
-  button = IupButton("Continue", NULL);
+  button = IupButton("_@IUP_CONTINUE", NULL);
   IupSetStrAttribute(button, "PADDING", IupGetGlobal("DEFAULTBUTTONPADDING"));
   IupSetCallback(button, "ACTION", show_error_continue_action);
 
-  abort = IupButton("Exit", NULL);
+  abort = IupButton("_@IUP_EXIT", NULL);
   IupSetStrAttribute(abort, "PADDING", IupGetGlobal("DEFAULTBUTTONPADDING"));
   IupSetCallback(abort, "ACTION", show_error_exit_action);
 
