@@ -252,10 +252,9 @@ IupGridBoxV
 IupMenuV
 IupTabsV
 IupFlatTabsV
-IupMessagefV
+IupMessageV
 IupGetParamV
 IupParamBoxV
-IupGLCanvasBoxV
 
 iupdrvSetVisible
 iupdrvSetFontAttrib
