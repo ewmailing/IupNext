@@ -1722,11 +1722,12 @@ static int item_savesession_action_cb(Ihandle *ih_item)
   Ihandle* ih = IupGetDialog(ih_item);
   const char* dir;
   Ihandle* config;
+  Ihandle *filedlg;
 
   config = iScintillaDlgGetConfig(ih_item);
   dir = IupConfigGetVariableStr(config, IupGetAttribute(ih, "SUBTITLE"), "LastDirectory");
 
-  Ihandle *filedlg = IupFileDlg();
+  filedlg = IupFileDlg();
 
   IupSetAttribute(filedlg, "DIALOGTYPE", "SAVE");
   IupSetAttribute(filedlg, "EXTFILTER", "Text Files|*.txt|All Files|*.*|");
