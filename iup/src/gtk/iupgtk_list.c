@@ -508,7 +508,7 @@ static int gtkListSetTopItemAttrib(Ihandle* ih, const char* value)
     if (iupStrToInt(value, &pos))
     {
       GtkTreePath* path = gtk_tree_path_new_from_indices(pos-1, -1);   /* IUP starts at 1 */
-      gtk_tree_view_scroll_to_cell((GtkTreeView*)ih->handle, path, NULL, FALSE, 0, 0);
+      gtk_tree_view_scroll_to_cell((GtkTreeView*)ih->handle, path, NULL, TRUE, 0, 0);  /* scroll to visible, top */
       gtk_tree_path_free(path);
     }
   }

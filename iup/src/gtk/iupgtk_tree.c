@@ -945,7 +945,7 @@ static int gtkTreeSetTopItemAttrib(Ihandle* ih, const char* value)
     if (!expanded) gtk_tree_view_collapse_row(GTK_TREE_VIEW(ih->handle), path);
   }
 
-  gtk_tree_view_scroll_to_cell(GTK_TREE_VIEW(ih->handle), path, NULL, FALSE, 0, 0);  /* scroll to visible */
+  gtk_tree_view_scroll_to_cell(GTK_TREE_VIEW(ih->handle), path, NULL, TRUE, 0, 0);  /* scroll to visible, top */
 
   gtk_tree_path_free(path);
  
@@ -1438,7 +1438,7 @@ static int gtkTreeSetValueAttrib(Ihandle* ih, const char* value)
     if (!expanded) gtk_tree_view_collapse_row(GTK_TREE_VIEW(ih->handle), path);
   }
 
-  gtk_tree_view_scroll_to_cell(GTK_TREE_VIEW(ih->handle), path, NULL, FALSE, 0, 0); /* scroll to visible */
+  gtk_tree_view_scroll_to_cell(GTK_TREE_VIEW(ih->handle), path, NULL, FALSE, 0, 0);  /* scroll to visible, minimum change */
 
   gtkTreeSetFocus(ih, path, &iterItem, FALSE);
 
@@ -2022,7 +2022,7 @@ static void gtkTreeDragDataReceived(GtkWidget *widget, GdkDragContext *context, 
         pathNew = gtk_tree_model_get_path(model, &iterNewItem);
         gtkTreeSelectNode(model, selection, &iterNewItem, 1);
 
-        gtk_tree_view_scroll_to_cell(GTK_TREE_VIEW(ih->handle), pathNew, NULL, FALSE, 0, 0);
+        gtk_tree_view_scroll_to_cell(GTK_TREE_VIEW(ih->handle), pathNew, NULL, FALSE, 0, 0);  /* scroll to visible, minimum change */
 
         /* unselect all, select new node and focus */
         iupAttribSet(ih, "_IUPTREE_IGNORE_SELECTION_CB", "1");
