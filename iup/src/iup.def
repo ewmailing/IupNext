@@ -601,6 +601,7 @@ IupConfigGetVariableIntDef
 IupConfigGetVariableIntIdDef
 IupConfigGetVariableDoubleDef
 IupConfigGetVariableDoubleIdDef
+IupConfigCopy
 IupConfigRecentInit
 IupConfigRecentUpdate
 IupConfigDialogShow

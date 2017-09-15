@@ -15,6 +15,8 @@
 #include "iup_config.h"
 #include "iup_linefile.h"
 #include "iup_str.h"
+#include "iup_attrib.h"
+#include "iup_assert.h"
 
 
 #define GROUPKEYSIZE 100
@@ -339,6 +341,27 @@ double IupConfigGetVariableDoubleId(Ihandle* ih, const char* group, const char* 
   return IupConfigGetVariableDouble(ih, group, key_id);
 }
 
+void IupConfigCopy(Ihandle* ih1, Ihandle* ih2, const char* exclude_prefix)
+{
+  char *name;
+
+  iupASSERT(iupObjectCheck(ih1));
+  if (!iupObjectCheck(ih1))
+    return;
+
+  iupASSERT(iupObjectCheck(ih2));
+  if (!iupObjectCheck(ih2))
+    return;
+
+  name = iupTableFirst(ih1->attrib);
+  while (name)
+  {
+    if (!iupATTRIB_ISINTERNAL(name) && !iupStrEqualPartial(name, exclude_prefix))
+      iupTableSet(ih2->attrib, name, iupTableGet(ih1->attrib, name), IUPTABLE_STRING);
+
+    name = iupTableNext(ih1->attrib);
+  }
+}
 
 /******************************************************************/
 
