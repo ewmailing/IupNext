@@ -634,7 +634,15 @@ void SampleTest(void)
 //  IupSetCallback(dlg, "FOCUS_CB", (Icallback)focus_cb);
   IupSetCallback(dlg, "RESIZE_CB", (Icallback)resize_cb);
 
-#if 1
+#if 0    // NO decorations
+  IupSetAttribute(dlg, "RESIZE", "NO");
+  IupSetAttribute(dlg, "MAXBOX", "NO");
+  IupSetAttribute(dlg, "MENUBOX", "NO");
+  IupSetAttribute(dlg, "MINBOX", "NO");
+  IupSetAttribute(dlg, "TITLE", NULL);
+#endif
+
+#if 0  // custom frame
   {
     Ihandle* label;
     Ihandle* caption_bar = IupSetAttributes(IupBackgroundBox(IupHbox(
