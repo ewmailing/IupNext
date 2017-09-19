@@ -220,7 +220,24 @@ static void iMatrixMouseLeftPress(Ihandle* ih, int lin, int col, int shift, int 
       {
         /* only process marks here if at titles */
         if (ih->data->mark_mode != IMAT_MARK_NO && iupAttribGetBoolean(ih, "MARKATTITLE"))
+        {
           iupMatrixMarkBlockSet(ih, ctrl, lin, col);
+
+          if (ih->data->merge_info_count)
+          {
+            int merged = iupMatrixGetMerged(ih, lin, col);
+            if (merged)
+            {
+              int endLin, endCol;
+              iupMatrixGetMergedRect(ih, merged, NULL, &endLin, NULL, &endCol);
+
+              if (lin == 0)
+                iupMatrixMarkBlockInc(ih, 0, endCol);
+              else
+                iupMatrixMarkBlockInc(ih, endLin, 0);
+            }
+          }
+        }
       }
     }
   }
@@ -332,6 +349,22 @@ int iupMatrixMouseMove_CB(Ihandle* ih, int x, int y, char *status)
     if (has_lincol)
     {
       iupMatrixMarkBlockInc(ih, lin, col);
+
+      if (ih->data->merge_info_count)
+      {
+        int merged = iupMatrixGetMerged(ih, lin, col);
+        if (merged)
+        {
+          int endLin, endCol;
+          iupMatrixGetMergedRect(ih, merged, NULL, &endLin, NULL, &endCol);
+
+          if (lin == 0)
+            iupMatrixMarkBlockInc(ih, 0, endCol);
+          else
+            iupMatrixMarkBlockInc(ih, endLin, 0);
+        }
+      }
+
       iupMatrixDrawUpdate(ih);
 
       iMatrixMouseCallMoveCb(ih, lin, col);

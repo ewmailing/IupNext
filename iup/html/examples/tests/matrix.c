@@ -215,6 +215,8 @@ static Ihandle* create_matrix(void)
 //  IupSetAttribute(mat,"EDITNEXT","COLCR");
   IupSetAttribute(mat, "NUMCOL_NOSCROLL", "1");
 
+  IupSetAttributeId2(mat, "MERGE", 1, 2, "1:3");
+
 //  IupSetAttribute(mat, "LIMITEXPAND", "Yes");
 //  IupSetAttribute(mat, "XAUTOHIDE", "NO");
 //  IupSetAttribute(mat, "YAUTOHIDE", "NO");
@@ -260,12 +262,15 @@ void MatrixTest(void)
 
   dlg = IupDialog(box);
   IupSetAttribute(dlg, "TITLE", "IupMatrix Simple Test");
+
+
   IupShowXY(dlg, IUP_CENTER, IUP_CENTER);
 
-//        IupSetAttribute(mat, "ADDLIN", "1");
+//  IupSetAttributeId2(mat, "MERGE", 1, 2, "1:3");
+  //        IupSetAttribute(mat, "ADDLIN", "1");
 //        IupSetAttribute(mat,"4:0","Teste");
 //        IupSetAttribute(mat, "FONTSTYLE0:1", "Bold");
-//        IupSetAttribute(mat, "REDRAW", "ALL");
+//       IupSetAttribute(mat, "REDRAW", "ALL");
 }
 
 #ifndef BIG_TEST

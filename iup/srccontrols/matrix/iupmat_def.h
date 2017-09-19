@@ -30,7 +30,7 @@ extern "C" {
 #define IMAT_IS_MARKED   0x08     /* Is marked */
 #define IMAT_HAS_FRAMEHORIZCOLOR 0x10  /* Has FRAMEHORIZCOLORL:C */
 #define IMAT_HAS_FRAMEVERTCOLOR  0x20  /* Has FRAMEVERTCOLORL:C */
-#define IMAT_HAS_TYPE 0x40       /* Has TYPEL:C attribute */
+#define IMAT_HAS_TYPE     0x40     /* Has TYPEL:C attribute */
 
 /* Numeric Column flags */
 #define IMAT_IS_NUMERIC  1      /* Is numeric */
@@ -47,6 +47,11 @@ enum{IMAT_EDITNEXT_LIN,
      IMAT_EDITNEXT_LINCR, 
      IMAT_EDITNEXT_COLCR,
      IMAT_EDITNEXT_NONE};
+
+/* Text Alignment that will be draw. Used by iMatrixDrawCellValue */
+#define IMAT_ALIGN_CENTER  0
+#define IMAT_ALIGN_START    1
+#define IMAT_ALIGN_END   2
 
 typedef double (*ImatNumericConvertFunc)(double number, int quantity, int src_units, int dst_units);
 
@@ -96,6 +101,15 @@ typedef struct _ImatNumericData
   unsigned char flags;  
 } ImatNumericData;
 
+typedef struct _ImatMergedData
+{
+  int start_lin;
+  int start_col;
+  int end_lin;
+  int end_col;
+  unsigned char used;
+} ImatMergedData;
+
 struct _IcontrolData
 {
   iupCanvas canvas; /* from IupCanvas (must reserve it) */
@@ -125,7 +139,7 @@ struct _IcontrolData
 
   /* attributes */
   int mark_continuous, mark_mode, mark_multiple;
-  int checkframecolor, hidden_text_marks, editnext;
+  int hidden_text_marks, editnext;
   int use_title_size;   /* use title contents when calculating cell size */
   int limit_expand; /* limit expand to maximum size */
   int undo_redo, show_fill_value;
@@ -166,6 +180,10 @@ struct _IcontrolData
   /* Column Sort */
   int* sort_line_index;     /* Remap index of the line */
   int sort_has_index;       /* has a remap index of columns/lines */
+
+  /* merged ranges */
+  ImatMergedData* merge_info;  /* must free if not NULL */
+  int merge_info_max, merge_info_count;
 };
 
 
