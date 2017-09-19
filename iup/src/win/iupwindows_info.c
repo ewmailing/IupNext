@@ -209,7 +209,7 @@ char* iupdrvGetCurrentDirectory(void)
   if (len == 0) return NULL;
 
   cur_dir = iupStrGetMemory(len + 2);
-  GetCurrentDirectory(len + 1, cur_dir);
+  GetCurrentDirectoryA(len + 1, cur_dir);
   cur_dir[len] = '\\';
   cur_dir[len + 1] = 0;
 
@@ -237,7 +237,7 @@ void IupLogV(const char* type, const char* format, va_list arglist)
   else if (iupStrEqualNoCase(type, "INFO"))
     wtype = EVENTLOG_INFORMATION_TYPE;
 
-  EventSource = RegisterEventSource(NULL, "Application");
+  EventSource = RegisterEventSourceA(NULL, "Application");
   if (EventSource)
   {
     ReportEventA(EventSource, wtype, 0, 0, NULL, 1, 0, &value, NULL);
