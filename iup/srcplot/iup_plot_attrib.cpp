@@ -1778,7 +1778,7 @@ static int iPlotSetDSBarOutlineAttrib(Ihandle* ih, const char* value)
 {
   if (ih->data->current_plot->mCurrentDataSet < 0 ||
       ih->data->current_plot->mCurrentDataSet >= ih->data->current_plot->mDataSetListCount)
-      return NULL;
+      return 0;
 
   iupPlotDataSet* dataset = ih->data->current_plot->mDataSetList[ih->data->current_plot->mCurrentDataSet];
   dataset->mBarShowOutline = iupStrBoolean(value) ? true : false;
@@ -1800,7 +1800,7 @@ static int iPlotSetDSBarMulticolorAttrib(Ihandle* ih, const char* value)
 {
   if (ih->data->current_plot->mCurrentDataSet < 0 ||
       ih->data->current_plot->mCurrentDataSet >= ih->data->current_plot->mDataSetListCount)
-      return NULL;
+      return 0;
 
   iupPlotDataSet* dataset = ih->data->current_plot->mDataSetList[ih->data->current_plot->mCurrentDataSet];
   dataset->mBarMulticolor = iupStrBoolean(value) ? true : false;
