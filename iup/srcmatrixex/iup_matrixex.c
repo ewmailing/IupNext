@@ -522,12 +522,12 @@ static int iMatrixExItemSort_CB(Ihandle* ih_item)
 static int iMatrixExItemFreeze_CB(Ihandle* ih_item)
 {
   ImatExData* matex_data = (ImatExData*)IupGetAttribute(ih_item, "MATRIX_EX_DATA");
-  int lin, col, flin, fcol;
+  int lin, col, flin, fcol, ret;
 
   IupGetIntInt(ih_item, "MENUCONTEXT_CELL", &lin, &col);
 
-  IupGetIntInt(matex_data->ih, "FREEZE", &flin, &fcol);
-  if (lin!=flin || col!=fcol)
+  ret = IupGetIntInt(matex_data->ih, "FREEZE", &flin, &fcol);
+  if (ret!=2 || lin!=flin || col!=fcol)
     IupSetfAttribute(matex_data->ih, "FREEZE", "%d:%d", lin, col);
   else
     IupSetAttribute(matex_data->ih, "FREEZE", NULL);
@@ -720,9 +720,9 @@ static Ihandle* iMatrixExCreateMenuContext(Ihandle* ih, int lin, int col)
   IupAppend(menu, IupSetCallbacks(IupSetAttributes(IupItem("_@IUP_SORTDLG", NULL), "IMAGE=IUP_ToolsSortAscend"), "ACTION", iMatrixExItemSort_CB, NULL));
 
   {
-    int flin, fcol;
-    IupGetIntInt(ih, "FREEZE", &flin, &fcol);
-    if (lin!=flin || col!=fcol)
+    int flin, fcol, ret;
+    ret = IupGetIntInt(ih, "FREEZE", &flin, &fcol);
+    if (ret!=2 || lin!=flin || col!=fcol)
       IupAppend(menu, IupSetCallbacks(IupItem("_@IUP_FREEZE", NULL), "ACTION", iMatrixExItemFreeze_CB, NULL));
     else
       IupAppend(menu, IupSetCallbacks(IupItem("_@IUP_UNFREEZE", NULL), "ACTION", iMatrixExItemFreeze_CB, NULL));
