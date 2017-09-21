@@ -252,6 +252,14 @@ void iupSetCurrentFocus(Ihandle *ih)
   }
 }
 
+void iupResetCurrentFocus(Ihandle *destroyed_ih)
+{
+  if (iup_current_focus == destroyed_ih)
+    iup_current_focus = NULL;
+  if (iup_current_focus_dialog == destroyed_ih)
+    iup_current_focus_dialog = NULL;
+}
+
 Ihandle *IupSetFocus(Ihandle *ih)
 {
   Ihandle* old_focus = IupGetFocus();

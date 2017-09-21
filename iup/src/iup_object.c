@@ -15,6 +15,7 @@
 #include "iup_register.h"
 #include "iup_names.h"
 #include "iup_varg.h"
+#include "iup_focus.h"
 
 
 static Ihandle* iHandleCreate(void)
@@ -183,6 +184,9 @@ void IupDestroy(Ihandle *ih)
 
   /* unmap if mapped and remove from its parent child list */
   IupDetach(ih);
+
+  /* check if the element had the focus */
+  iupResetCurrentFocus(ih);
 
   /* removes names associated with the element */
   iupRemoveNames(ih);
