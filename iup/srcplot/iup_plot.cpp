@@ -3135,10 +3135,10 @@ static void iPlotSetClassUpdate(Iclass* ic)
     IupSetLanguageString("IUP_STAR", "Estrella");
     IupSetLanguageString("IUP_CIRCLE", "Circulo");
     IupSetLanguageString("IUP_X", "X");
-    IupSetLanguageString("IUP_BOX", "Cuadro");
+    IupSetLanguageString("IUP_BOX", "Caja");
     IupSetLanguageString("IUP_DIAMOND", "Diamante");
     IupSetLanguageString("IUP_HOLLOW_CIRCLE", "Circulo VacÌo");
-    IupSetLanguageString("IUP_HOLLOW_BOX", "Cuadro VacÌo");
+    IupSetLanguageString("IUP_HOLLOW_BOX", "Caja VacÌa");
     IupSetLanguageString("IUP_HOLLOW_DIAMOND", "Diamante VacÌo");
     IupSetLanguageString("IUP_MARKSIZE", "TamaÒo de Marca:");
     IupSetLanguageString("IUP_AREATRANSPARENCY", "Transparencia de ¡rea:");
@@ -3230,7 +3230,7 @@ static void iPlotSetClassUpdate(Iclass* ic)
       IupSetLanguageString("IUP_AREA", "√Årea");
       IupSetLanguageString("IUP_MULTIBARS", "Barras M√∫ltiples");
       IupSetLanguageString("IUP_HOLLOW_CIRCLE", "Circulo Vac√≠o");
-      IupSetLanguageString("IUP_HOLLOW_BOX", "Cuadro Vac√≠o");
+      IupSetLanguageString("IUP_HOLLOW_BOX", "Caja Vac√a");
       IupSetLanguageString("IUP_HOLLOW_DIAMOND", "Diamante Vac√≠o");
       IupSetLanguageString("IUP_MARKSIZE", "Tama√±o de Marca:");
       IupSetLanguageString("IUP_AREATRANSPARENCY", "Transparencia de √Årea:");
