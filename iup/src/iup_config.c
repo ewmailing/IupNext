@@ -416,7 +416,8 @@ void IupConfigSetListVariable(Ihandle* ih, const char *group, const char* key, c
 static int iConfigItemRecent_CB(Ihandle* ih_item)
 {
   Ihandle* ih = (Ihandle*)IupGetAttribute(ih_item, "_IUP_CONFIG");
-  Icallback recent_cb = IupGetCallback(ih, "RECENT_CB");
+  Ihandle* menu = (Ihandle*)IupGetAttribute(ih, "RECENTMENU");
+  Icallback recent_cb = IupGetCallback(menu, "RECENT_CB");
   if (recent_cb)
   {
     IupSetStrAttribute(ih, "TITLE", IupGetAttribute(ih_item, "TITLE"));
@@ -430,8 +431,8 @@ static int iConfigItemRecent_CB(Ihandle* ih_item)
 static void iConfigBuildRecent(Ihandle* ih)
 {
   /* add the new items, reusing old ones */
-  int i, max_recent = IupGetInt(ih, "RECENTMAX");
   Ihandle* menu = (Ihandle*)IupGetAttribute(ih, "RECENTMENU");
+  int i, max_recent = IupGetInt(menu, "RECENTMAX");
   int mapped = IupGetAttribute(menu, "WID") != NULL ? 1 : 0;
   const char* value;
   char* recent_name = IupGetAttribute(ih, "RECENTNAME");
@@ -462,8 +463,8 @@ static void iConfigBuildRecent(Ihandle* ih)
 void IupConfigRecentInit(Ihandle* ih, Ihandle* menu, Icallback recent_cb, int max_recent)
 {
   IupSetAttribute(ih, "RECENTMENU", (char*)menu);
-  IupSetCallback(ih, "RECENT_CB", recent_cb);
-  IupSetInt(ih, "RECENTMAX", max_recent);
+  IupSetCallback(menu, "RECENT_CB", recent_cb);
+  IupSetInt(menu, "RECENTMAX", max_recent);
 
   iConfigBuildRecent(ih);
 }
@@ -471,7 +472,8 @@ void IupConfigRecentInit(Ihandle* ih, Ihandle* menu, Icallback recent_cb, int ma
 void IupConfigRecentUpdate(Ihandle* ih, const char* filename)
 {
   const char* value;
-  int max_recent = IupGetInt(ih, "RECENTMAX");
+  Ihandle* menu = (Ihandle*)IupGetAttribute(ih, "RECENTMENU");
+  int max_recent = IupGetInt(menu, "RECENTMAX");
   char* recent_name = IupGetAttribute(ih, "RECENTNAME");
   if (!recent_name) recent_name = "Recent";
 
