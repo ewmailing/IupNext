@@ -146,6 +146,15 @@ static Ihandle* get_config(Ihandle* ih)
 static int exit_cb(Ihandle *ih)
 {
   lua_State* L = (lua_State*)IupGetAttribute(ih, "LUASTATE");
+
+  char* exit_loop = IupGetGlobal("EXITLOOP");
+  if (exit_loop && !iupStrBoolean(exit_loop))
+  {
+    /* assume we are inside the iupluascripter application */
+    IupSetGlobal("EXITLOOP", NULL);
+    IupExitLoop();
+  }
+
   iuplua_push_name(L, "DebuggerExit");
   iuplua_call_raw(L, 0, 0); /* this may trigger a Lua error which will abort the function with a goto, must sure you do nothing after that */
   return IUP_DEFAULT;
@@ -2328,11 +2337,11 @@ void IupLuaScripterDlgOpen(void)
 }
 
 /* TODO:
-- Condicional Breakpoints, Hit Count, When Hit
 - Project Menu
 - Table Inspector using IupTree
 - Find/replace in: current document or all open documents
 
+- Condicional Breakpoints, Hit Count, When Hit
 - multi-language (Portuguese, Spanish)
 - detachable Console, Debug, Breakpoints (problem with IupGetDialogChild(NAME))?
 - detachable Multitext?

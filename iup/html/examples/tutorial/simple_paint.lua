@@ -1278,8 +1278,8 @@ function canvas:motion_cb(x, y, status)
         local tool_index = tonumber(toolbox.toolindex)
         
         if (tool_index == 0) then -- Pointer 
-          if not canvas.start_cursor_x then canvas.start_cursor_x = cursor_x
-          if not canvas.start_cursor_y then canvas.start_cursor_y = cursor_y
+          if not canvas.start_cursor_x then canvas.start_cursor_x = cursor_x end
+          if not canvas.start_cursor_y then canvas.start_cursor_y = cursor_y end
           local start_cursor_x = tonumber(canvas.start_cursor_x)
           local start_cursor_y = tonumber(canvas.start_cursor_y)
 

@@ -52,6 +52,11 @@ be used if you set the element handle to NULL.</p>
 <p>When the last visible dialog is closed the <b>IupExitLoop</b> function is called. To avoid that set 
 LOCKLOOP=YES before hiding the last dialog. Possible values: &quot;YES&quot; or &quot;NO&quot;. 
 Default: &quot;NO&quot;. </p>
+<h3><strong>EXITLOOP<span class="style2"> (since 3.23)</span></strong></h3>
+<p>Disable the <b>IupExitLoop</b> function. Used when the application runs 
+secondary dialogs that behave as full applications but sharing the same IUP 
+environment, like in &quot;iupluascripter&quot;. Possible values: &quot;YES&quot; or &quot;NO&quot;. 
+Default: &quot;YES&quot;. </p>
 <h3>LASTERROR [Windows Only]<span class="style2">&nbsp; (read-only) (since 3.6)</span></h3>
 <p>If an error is found, returns a string with the system error description.</p>
 <h3><strong><a name="UTF8MODE">UTF8MODE</a></strong> [Windows and GTK Only]</h3>

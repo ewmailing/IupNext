@@ -32,6 +32,7 @@ function cv:action()
 end
 
 dg:showxy(iup.CENTER, iup.CENTER)
+
 if (iup.MainLoopLevel()==0) then
   iup.MainLoop()
 end

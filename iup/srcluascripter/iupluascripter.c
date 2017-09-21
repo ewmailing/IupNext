@@ -192,6 +192,7 @@ int main(int argc, char **argv)
     IupSetStrAttribute(main_dialog, "OPENFILE", filename);
   }
 
+  IupSetGlobal("EXITLOOP", "NO");
   IupMainLoop();
 
   IupDestroy(config);
