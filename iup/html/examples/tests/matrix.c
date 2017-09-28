@@ -216,6 +216,7 @@ static Ihandle* create_matrix(void)
   IupSetAttribute(mat, "NUMCOL_NOSCROLL", "1");
 
   IupSetAttributeId2(mat, "MERGE", 1, 2, "1:3");
+  IupSetAttributeId2(mat, "MERGE", 5, 2, "7:4");
 
 //  IupSetAttribute(mat, "LIMITEXPAND", "Yes");
 //  IupSetAttribute(mat, "XAUTOHIDE", "NO");
