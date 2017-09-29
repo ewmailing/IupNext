@@ -453,12 +453,32 @@ HDC_WMPAINT</b><span style="color: rgb(0, 0, 0); font-family: tahoma, verdana, a
 CLIPRECT</strong>&nbsp;attributes are defined during the callback</span></span>. 
 For mouse callbacks use the same callbacks as <strong>IupCanvas</strong>, such 
 as <a href="../call/iup_button_cb.html">BUTTON_CB</a> and <a href="../call/iup_motion_cb.html">MOTION_CB</a>. (since 3.18)</p>
-<pre>int function(Ihandle *<strong>ih</strong>); [in C]<br><strong>elem</strong>:customframe() -&gt; (<strong>ret</strong>: number) [in Lua]</pre>
+<pre>int function(Ihandle *<strong>ih</strong>); [in C]<br><strong>elem</strong>:customframe_cb() -&gt; (<strong>ret</strong>: number) [in Lua]</pre>
 
 <blockquote>
 
 <p><strong>ih</strong>: identifier of the element that activated the event.</p>
 </blockquote>
+
+  
+<p><b>CUSTOMFRAMEACTIVATE_CB</b> [Windows Only]: Called when the dialog active 
+state is changed (for instance the user Alt+Tab to another application, or 
+clicked in another window). Works only when CUSTOMFRAME or CUSTOMFRAMEEX is 
+defined. (since 3.23)</p>
+
+  
+    
+<pre>int function(Ihandle *<b>ih</b>, int <strong>active</strong>); [in C]<br><b>ih</b>:customframeactivate_cb(<strong>active</strong>: number) -&gt; (ret: number) [in Lua]</pre>
+
+    
+<p class="info"><strong>ih</strong>:
+  identifier of the element that activated the 
+  event.<br>
+
+    <strong>active</strong>: is non zero if the dialog is active or zero if it 
+is inactive.</p>
+
+  
 
   
 <p><b><a name="FOCUS_CB">FOCUS_CB</a></b>: Called when the dialog or any of its 

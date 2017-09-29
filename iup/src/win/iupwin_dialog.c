@@ -479,6 +479,28 @@ static int winDialogCustomFrameProc(Ihandle* ih, UINT msg, WPARAM wp, LPARAM lp,
 {
   switch (msg)
   {
+  case WM_NCACTIVATE:
+    {
+      IFni cb = (IFni)IupGetCallback(ih, "CUSTOMFRAMEACTIVATE_CB");
+      if (cb)
+      {
+        int active = 1;
+        if (wp == FALSE)
+          active = 0;
+
+        cb(ih, active);
+      }
+
+      if (!iupwin_comctl32ver6) /* visual style not active */
+      {
+        DefWindowProc(ih->handle, msg, wp, (LPARAM)-1);  /* use -1 to not repaint the nonclient area */
+
+        *result = 1; /* allow the change */
+        return 1;
+      }
+
+      break;
+    }
   case WM_PAINT:
     {
       IFn cb = (IFn)IupGetCallback(ih, "CUSTOMFRAMEDRAW_CB");
@@ -496,6 +518,20 @@ static int winDialogCustomFrameProc(Ihandle* ih, UINT msg, WPARAM wp, LPARAM lp,
         EndPaint(ih->handle, &ps);
 
         *result = 0;
+        return 1;
+      }
+
+      break;
+    }
+  case WM_ERASEBKGND:
+    {
+      IFn cb = (IFn)IupGetCallback(ih, "CUSTOMFRAMEDRAW_CB");
+      if (cb)
+      {
+        InvalidateRect(ih->handle, NULL, FALSE);
+
+        /* return non zero value */
+        *result = 1;
         return 1;
       }
 
@@ -781,10 +817,16 @@ static int winDialogBaseProc(Ihandle* ih, UINT msg, WPARAM wp, LPARAM lp, LRESUL
     }
   case WM_ERASEBKGND:
     {
-      IFn cb = (IFn)IupGetCallback(ih, "CUSTOMFRAMEDRAW_CB");
-      if (cb)
+      HBITMAP hBitmap = (HBITMAP)iupAttribGet(ih, "_IUPWIN_BACKGROUND_BITMAP");
+      if (hBitmap)
       {
-        InvalidateRect(ih->handle, NULL, FALSE);
+        RECT rect;
+        HDC hdc = (HDC)wp;
+
+        HBRUSH hBrush = CreatePatternBrush(hBitmap);
+        GetClientRect(ih->handle, &rect);
+        FillRect(hdc, &rect, hBrush);
+        DeleteObject(hBrush);
 
         /* return non zero value */
         *result = 1;
@@ -792,38 +834,20 @@ static int winDialogBaseProc(Ihandle* ih, UINT msg, WPARAM wp, LPARAM lp, LRESUL
       }
       else
       {
-        HBITMAP hBitmap = (HBITMAP)iupAttribGet(ih, "_IUPWIN_BACKGROUND_BITMAP");
-        if (hBitmap)
+        unsigned char r, g, b;
+        char* color = iupAttribGet(ih, "_IUPWIN_BACKGROUND_COLOR");
+        if (iupStrToRGB(color, &r, &g, &b))
         {
           RECT rect;
           HDC hdc = (HDC)wp;
 
-          HBRUSH hBrush = CreatePatternBrush(hBitmap);
+          SetDCBrushColor(hdc, RGB(r, g, b));
           GetClientRect(ih->handle, &rect);
-          FillRect(hdc, &rect, hBrush);
-          DeleteObject(hBrush);
+          FillRect(hdc, &rect, (HBRUSH)GetStockObject(DC_BRUSH));
 
           /* return non zero value */
           *result = 1;
           return 1;
-        }
-        else
-        {
-          unsigned char r, g, b;
-          char* color = iupAttribGet(ih, "_IUPWIN_BACKGROUND_COLOR");
-          if (iupStrToRGB(color, &r, &g, &b))
-          {
-            RECT rect;
-            HDC hdc = (HDC)wp;
-
-            SetDCBrushColor(hdc, RGB(r, g, b));
-            GetClientRect(ih->handle, &rect);
-            FillRect(hdc, &rect, (HBRUSH)GetStockObject(DC_BRUSH));
-
-            /* return non zero value */
-            *result = 1;
-            return 1;
-          }
         }
       }
       break;
@@ -1853,6 +1877,7 @@ void iupdrvDialogInitClass(Iclass* ic)
   /* Callback Windows Only*/
   iupClassRegisterCallback(ic, "MDIACTIVATE_CB", "");
   iupClassRegisterCallback(ic, "CUSTOMFRAMEDRAW_CB", "");
+  iupClassRegisterCallback(ic, "CUSTOMFRAMEACTIVATE_CB", "i");
 
   /* Callback Windows and GTK Only */
   iupClassRegisterCallback(ic, "TRAYCLICK_CB", "iii");

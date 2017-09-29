@@ -642,7 +642,7 @@ void SampleTest(void)
   IupSetAttribute(dlg, "TITLE", NULL);
 #endif
 
-#if 0  // custom frame
+#if 1  // custom frame
   {
     Ihandle* label;
     Ihandle* caption_bar = IupSetAttributes(IupBackgroundBox(IupHbox(
