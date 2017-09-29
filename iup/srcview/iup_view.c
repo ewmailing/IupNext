@@ -127,12 +127,13 @@ static int showallimages_cb(Ihandle* ih)
   {
     Ihandle *tbox, *lbox, *button, *elem;
     char* name;
+    char* file_title;
 
     elem = images[i];
     name = IupGetName(elem);
 
     /* show only loaded images */
-    char* file_title = IupGetAttribute(elem, "_FILE_TITLE");
+    file_title = IupGetAttribute(elem, "_FILE_TITLE");
     if (!file_title)
       continue;
 
