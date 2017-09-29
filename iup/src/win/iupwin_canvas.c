@@ -434,6 +434,9 @@ static int winCanvasMsgProc(Ihandle* ih, UINT msg, WPARAM wp, LPARAM lp, LRESULT
         iupAttribSet(ih, "CLIPRECT", NULL);
         iupAttribSet(ih, "HDC_WMPAINT", NULL);
         EndPaint(ih->handle, &ps);
+
+        *result = 0;
+        return 1;
       }
       break;
     }
