@@ -169,7 +169,7 @@ immediate children has depth=1, their children has depth=2 and so on.</p>
     The node is a branch</li>
 </ul>
 </blockquote>
-<p><strong>PARENTid </strong>(read only): returns the identifier of the 
+<p><strong>PARENTid </strong>(read only): returns the parent of the 
 specified node.</p>
 <p><strong>STATEid</strong>: the state of the specified branch. Returns NULL for 
 a LEAF. In Windows, it 
@@ -216,18 +216,19 @@ is a branch it is used when collapsed.</p>
   same as the IMAGE attribute but used for expanded branches.</p>
 <p><strong>IMAGELEAF</strong>:
   the image name that will be shown for all 
-  leaves. Default: &quot;IMGLEAF&quot;. Internal values &quot;IMGBLANK&quot; and &quot;IMGPAPER&quot; are 
+  leaves. Default: &quot;IMGLEAF&quot; (a bullet). Internal values &quot;IMGBLANK&quot; 
+(an empty image) and &quot;IMGPAPER&quot; (a sheet of paper) are 
     also available. If BGCOLOR is set the image is automatically updated. This 
 image defines the available space for the image in all nodes.</p>
 <p><strong>IMAGEBRANCHCOLLAPSED</strong>:
   the image name that will be shown for all collapsed branches.
     Default:
-    &quot;IMGCOLLAPSED&quot;. If BGCOLOR is set the image is automatically 
+    &quot;IMGCOLLAPSED&quot; (a closed folder). If BGCOLOR is set the image is automatically 
 updated.</p>
 <p><strong>IMAGEBRANCHEXPANDED</strong>:
   the image name that will be shown for all expanded branches.
     Default:
-    &quot;IMGEXPANDED&quot;. If BGCOLOR is set the image is automatically 
+    &quot;IMGEXPANDED&quot; (an open folder). If BGCOLOR is set the image is automatically 
 updated.</p>
 <h3><a name="focus">Focus Node</a></h3>
 <p><strong>VALUE</strong> (<font size="3">non inheritable</font>):
