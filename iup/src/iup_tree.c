@@ -27,7 +27,7 @@
 static void iTreeInitializeImages(void)
 {
   Ihandle *image_leaf, *image_blank, *image_paper;  
-  Ihandle *image_collapsed, *image_expanded;  
+  Ihandle *image_collapsed, *image_expanded, *image_empty;
 
 #define ITREE_IMG_WIDTH   16
 #define ITREE_IMG_HEIGHT  16
@@ -137,6 +137,7 @@ static void iTreeInitializeImages(void)
   image_expanded  = IupImage(ITREE_IMG_WIDTH, ITREE_IMG_HEIGHT, img_expanded);
   image_blank     = IupImage(ITREE_IMG_WIDTH, ITREE_IMG_HEIGHT, img_blank);
   image_paper     = IupImage(ITREE_IMG_WIDTH, ITREE_IMG_HEIGHT, img_paper);
+  image_empty     = IupImage(ITREE_IMG_WIDTH/2, ITREE_IMG_HEIGHT, NULL);
 
   IupSetAttribute(image_leaf, "0", "BGCOLOR");
   IupSetAttribute(image_leaf, "1", "192 192 192");
@@ -177,11 +178,14 @@ static void iTreeInitializeImages(void)
   IupSetAttribute(image_paper, "4", "136 136 136");
   IupSetAttribute(image_paper, "5", "187 187 187");
 
+  IupSetAttribute(image_empty, "0", "BGCOLOR");
+
   IupSetHandle("IMGLEAF",      image_leaf);
   IupSetHandle("IMGCOLLAPSED", image_collapsed);
   IupSetHandle("IMGEXPANDED",  image_expanded);
   IupSetHandle("IMGBLANK",     image_blank);
   IupSetHandle("IMGPAPER",     image_paper);
+  IupSetHandle("IMGEMPTY",     image_empty);
 
 #undef ITREE_IMG_WIDTH
 #undef ITREE_IMG_HEIGHT
