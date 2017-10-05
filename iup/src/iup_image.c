@@ -920,6 +920,8 @@ static int iImageCreate(Ihandle* ih, void** params, int bpp)
   {
     if ((int)(params[2])!=-1)
       memcpy(imgdata, params[2], count);
+    else
+      memset(imgdata, 0, count);
   }
   else /* one param for each pixel/plane */
   {
