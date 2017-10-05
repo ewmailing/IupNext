@@ -46,7 +46,7 @@ static int winLoopCallIdle(void)
 void IupExitLoop(void)
 {
   char* exit_loop = IupGetGlobal("EXITLOOP");
-  if (!exit_loop || iupStrBoolean(exit_loop))
+  if (win_main_loop > 1 || !exit_loop || iupStrBoolean(exit_loop))
     PostQuitMessage(0);
 }
 

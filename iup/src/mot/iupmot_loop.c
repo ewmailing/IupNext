@@ -67,7 +67,7 @@ static int motLoopProcessEvent(void)
 void IupExitLoop(void)
 {
   char* exit_loop = IupGetGlobal("EXITLOOP");
-  if (!exit_loop || iupStrBoolean(exit_loop))
+  if (mot_mainloop > 1 || !exit_loop || iupStrBoolean(exit_loop))
     mot_exitmainloop = 1;
 }
 

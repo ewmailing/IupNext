@@ -56,7 +56,7 @@ void iupdrvSetIdleFunction(Icallback f)
 void IupExitLoop(void)
 {
   char* exit_loop = IupGetGlobal("EXITLOOP");
-  if (!exit_loop || iupStrBoolean(exit_loop))
+  if (gtk_main_level() > 1 || !exit_loop || iupStrBoolean(exit_loop))
   {
     if (gtk_main_iteration_do(FALSE) == FALSE)
       gtk_main_quit();
