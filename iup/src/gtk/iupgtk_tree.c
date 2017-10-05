@@ -1109,6 +1109,72 @@ static char* gtkTreeGetParentAttrib(Ihandle* ih, int id)
   return iupStrReturnInt(gtkTreeFindNodeId(ih, &iterParent));
 }
 
+static char* gtkTreeGetNextAttrib(Ihandle* ih, int id)
+{
+  GtkTreeModel* model = gtk_tree_view_get_model(GTK_TREE_VIEW(ih->handle));
+  GtkTreeIter iterItem;
+
+  if (!gtkTreeFindNode(ih, id, &iterItem))
+    return NULL;
+
+  if (!gtk_tree_model_iter_next(model, &iterItem))
+    return NULL;
+
+  return iupStrReturnInt(gtkTreeFindNodeId(ih, &iterItem));
+}
+
+static char* gtkTreeGetLastAttrib(Ihandle* ih, int id)
+{
+  GtkTreeModel* model = gtk_tree_view_get_model(GTK_TREE_VIEW(ih->handle));
+  GtkTreeIter iterItem;
+  GtkTreeIter iterItemLast;
+  int found = 1;
+
+  if (!gtkTreeFindNode(ih, id, &iterItem))
+    return NULL;
+
+  while (found)
+  {
+    iterItemLast = iterItem;
+    found = gtk_tree_model_iter_next(model, &iterItem);
+  }
+
+  return iupStrReturnInt(gtkTreeFindNodeId(ih, &iterItemLast));
+}
+
+static char* gtkTreeGetPreviousAttrib(Ihandle* ih, int id)
+{
+  GtkTreeModel* model = gtk_tree_view_get_model(GTK_TREE_VIEW(ih->handle));
+  GtkTreeIter iterItem;
+
+  if (!gtkTreeFindNode(ih, id, &iterItem))
+    return NULL;
+
+  if (!gtk_tree_model_iter_previous(model, &iterItem))
+    return NULL;
+
+  return iupStrReturnInt(gtkTreeFindNodeId(ih, &iterItem));
+}
+
+static char* gtkTreeGetFirstAttrib(Ihandle* ih, int id)
+{
+  GtkTreeModel* model = gtk_tree_view_get_model(GTK_TREE_VIEW(ih->handle));
+  GtkTreeIter iterItem;
+  GtkTreeIter iterItemFirst;
+  int found = 1;
+
+  if (!gtkTreeFindNode(ih, id, &iterItem))
+    return NULL;
+
+  while (found)
+  {
+    iterItemFirst = iterItem;
+    found = gtk_tree_model_iter_previous(model, &iterItem);
+  }
+
+  return iupStrReturnInt(gtkTreeFindNodeId(ih, &iterItemFirst));
+}
+
 static char* gtkTreeGetChildCountAttrib(Ihandle* ih, int id)
 {
   GtkTreeModel* model = gtk_tree_view_get_model(GTK_TREE_VIEW(ih->handle));
@@ -1118,6 +1184,12 @@ static char* gtkTreeGetChildCountAttrib(Ihandle* ih, int id)
     return NULL;
 
   return iupStrReturnInt(gtk_tree_model_iter_n_children(model, &iterItem));
+}
+
+static char* gtkTreeGetRootCountAttrib(Ihandle* ih)
+{
+  GtkTreeModel* model = gtk_tree_view_get_model(GTK_TREE_VIEW(ih->handle));
+  return iupStrReturnInt(gtk_tree_model_iter_n_children(model, NULL));
 }
 
 static char* gtkTreeGetKindAttrib(Ihandle* ih, int id)
@@ -2910,7 +2982,11 @@ void iupdrvTreeInitClass(Iclass* ic)
   iupClassRegisterAttributeId(ic, "DEPTH",  gtkTreeGetDepthAttrib,  NULL, IUPAF_READONLY|IUPAF_NO_INHERIT);
   iupClassRegisterAttributeId(ic, "KIND",   gtkTreeGetKindAttrib,   NULL, IUPAF_READONLY|IUPAF_NO_INHERIT);
   iupClassRegisterAttributeId(ic, "PARENT", gtkTreeGetParentAttrib, NULL, IUPAF_READONLY|IUPAF_NO_INHERIT);
-  iupClassRegisterAttributeId(ic, "COLOR",  gtkTreeGetColorAttrib,  gtkTreeSetColorAttrib, IUPAF_NO_INHERIT);
+  iupClassRegisterAttributeId(ic, "NEXT", gtkTreeGetNextAttrib, NULL, IUPAF_READONLY | IUPAF_NO_INHERIT);
+  iupClassRegisterAttributeId(ic, "PREVIOUS", gtkTreeGetPreviousAttrib, NULL, IUPAF_READONLY | IUPAF_NO_INHERIT);
+  iupClassRegisterAttributeId(ic, "LAST", gtkTreeGetLastAttrib, NULL, IUPAF_READONLY | IUPAF_NO_INHERIT);
+  iupClassRegisterAttributeId(ic, "FIRST", gtkTreeGetFirstAttrib, NULL, IUPAF_READONLY | IUPAF_NO_INHERIT);
+  iupClassRegisterAttributeId(ic, "COLOR", gtkTreeGetColorAttrib, gtkTreeSetColorAttrib, IUPAF_NO_INHERIT);
   iupClassRegisterAttributeId(ic, "TITLE",  gtkTreeGetTitleAttrib,  gtkTreeSetTitleAttrib, IUPAF_NO_INHERIT);
   iupClassRegisterAttributeId(ic, "TOGGLEVALUE", gtkTreeGetToggleValueAttrib, gtkTreeSetToggleValueAttrib, IUPAF_NO_INHERIT);
   iupClassRegisterAttributeId(ic, "TOGGLEVISIBLE", gtkTreeGetToggleVisibleAttrib, gtkTreeSetToggleVisibleAttrib, IUPAF_NO_INHERIT);
@@ -2920,6 +2996,7 @@ void iupdrvTreeInitClass(Iclass* ic)
 
   iupClassRegisterAttributeId(ic, "CHILDCOUNT", gtkTreeGetChildCountAttrib, NULL, IUPAF_READONLY|IUPAF_NO_INHERIT);
   iupClassRegisterAttributeId(ic, "TITLEFONT",  gtkTreeGetTitleFontAttrib,  gtkTreeSetTitleFontAttrib, IUPAF_NO_INHERIT);
+  iupClassRegisterAttribute(ic, "ROOTCOUNT", gtkTreeGetRootCountAttrib, NULL, NULL, NULL, IUPAF_READONLY | IUPAF_NO_INHERIT);
 
   /* IupTree Attributes - MARKS */
   iupClassRegisterAttributeId(ic, "MARKED", gtkTreeGetMarkedAttrib, gtkTreeSetMarkedAttrib, IUPAF_NO_DEFAULTVALUE|IUPAF_NO_INHERIT);

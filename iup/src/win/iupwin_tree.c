@@ -1486,6 +1486,26 @@ static char* winTreeGetChildCountAttrib(Ihandle* ih, int id)
   return iupStrReturnInt(count);
 }
 
+static char* winTreeGetRootCountAttrib(Ihandle* ih)
+{
+  int count;
+  HTREEITEM hItem = iupTreeGetNode(ih, 0);
+  if (!hItem)
+    return NULL;
+
+  count = 1;
+  hItem = (HTREEITEM)SendMessage(ih->handle, TVM_GETNEXTITEM, TVGN_NEXT, (LPARAM)hItem);
+  while (hItem != NULL)
+  {
+    count++;
+
+    /* Go to next sibling item */
+    hItem = (HTREEITEM)SendMessage(ih->handle, TVM_GETNEXTITEM, TVGN_NEXT, (LPARAM)hItem);
+  }
+
+  return iupStrReturnInt(count);
+}
+
 static char* winTreeGetKindAttrib(Ihandle* ih, int id)
 {
   TVITEM item; 
@@ -1516,6 +1536,64 @@ static char* winTreeGetParentAttrib(Ihandle* ih, int id)
     return NULL;
 
   return iupStrReturnInt(iupTreeFindNodeId(ih, hItem));
+}
+
+static char* winTreeGetNextAttrib(Ihandle* ih, int id)
+{
+  HTREEITEM hItem = iupTreeGetNode(ih, id);
+  if (!hItem)
+    return NULL;
+
+  hItem = (HTREEITEM)SendMessage(ih->handle, TVM_GETNEXTITEM, TVGN_NEXT, (LPARAM)hItem);
+  if (!hItem)
+    return NULL;
+
+  return iupStrReturnInt(iupTreeFindNodeId(ih, hItem));
+}
+
+static char* winTreeGetLastAttrib(Ihandle* ih, int id)
+{
+  HTREEITEM hItemLast = NULL;
+  HTREEITEM hItem = iupTreeGetNode(ih, id);
+  if (!hItem)
+    return NULL;
+
+  while (hItem)
+  {
+    hItemLast = hItem;
+    hItem = (HTREEITEM)SendMessage(ih->handle, TVM_GETNEXTITEM, TVGN_NEXT, (LPARAM)hItem);
+  }
+
+  return iupStrReturnInt(iupTreeFindNodeId(ih, hItemLast));
+}
+
+static char* winTreeGetPreviousAttrib(Ihandle* ih, int id)
+{
+  HTREEITEM hItem = iupTreeGetNode(ih, id);
+  if (!hItem)
+    return NULL;
+
+  hItem = (HTREEITEM)SendMessage(ih->handle, TVM_GETNEXTITEM, TVGN_PREVIOUS, (LPARAM)hItem);
+  if (!hItem)
+    return NULL;
+
+  return iupStrReturnInt(iupTreeFindNodeId(ih, hItem));
+}
+
+static char* winTreeGetFirstAttrib(Ihandle* ih, int id)
+{
+  HTREEITEM hItemFirst = NULL;
+  HTREEITEM hItem = iupTreeGetNode(ih, id);
+  if (!hItem)
+    return NULL;
+
+  while (hItem)
+  {
+    hItemFirst = hItem;
+    hItem = (HTREEITEM)SendMessage(ih->handle, TVM_GETNEXTITEM, TVGN_PREVIOUS, (LPARAM)hItem);
+  }
+
+  return iupStrReturnInt(iupTreeFindNodeId(ih, hItemFirst));
 }
 
 static void winTreeRemoveItemData(Ihandle* ih, HTREEITEM hItem, IFns cb, int id)
@@ -3111,12 +3189,18 @@ void iupdrvTreeInitClass(Iclass* ic)
   iupClassRegisterAttributeId(ic, "DEPTH",  winTreeGetDepthAttrib,  NULL, IUPAF_READONLY|IUPAF_NO_INHERIT);
   iupClassRegisterAttributeId(ic, "KIND",   winTreeGetKindAttrib,   NULL, IUPAF_READONLY|IUPAF_NO_INHERIT);
   iupClassRegisterAttributeId(ic, "PARENT", winTreeGetParentAttrib, NULL, IUPAF_READONLY|IUPAF_NO_INHERIT);
-  iupClassRegisterAttributeId(ic, "TITLE",  winTreeGetTitleAttrib,  winTreeSetTitleAttrib, IUPAF_NO_INHERIT);
+  iupClassRegisterAttributeId(ic, "NEXT", winTreeGetNextAttrib, NULL, IUPAF_READONLY | IUPAF_NO_INHERIT);
+  iupClassRegisterAttributeId(ic, "PREVIOUS", winTreeGetPreviousAttrib, NULL, IUPAF_READONLY | IUPAF_NO_INHERIT);
+  iupClassRegisterAttributeId(ic, "LAST", winTreeGetLastAttrib, NULL, IUPAF_READONLY | IUPAF_NO_INHERIT);
+  iupClassRegisterAttributeId(ic, "FIRST", winTreeGetFirstAttrib, NULL, IUPAF_READONLY | IUPAF_NO_INHERIT);
+  iupClassRegisterAttributeId(ic, "TITLE", winTreeGetTitleAttrib, winTreeSetTitleAttrib, IUPAF_NO_INHERIT);
   iupClassRegisterAttributeId(ic, "CHILDCOUNT", winTreeGetChildCountAttrib, NULL, IUPAF_READONLY|IUPAF_NO_INHERIT);
   iupClassRegisterAttributeId(ic, "COLOR", winTreeGetColorAttrib, winTreeSetColorAttrib, IUPAF_NO_INHERIT);
   iupClassRegisterAttributeId(ic, "TITLEFONT", winTreeGetTitleFontAttrib, winTreeSetTitleFontAttrib, IUPAF_NO_INHERIT);
   iupClassRegisterAttributeId(ic, "TOGGLEVALUE", winTreeGetToggleValueAttrib, winTreeSetToggleValueAttrib, IUPAF_NO_INHERIT);
   iupClassRegisterAttributeId(ic, "TOGGLEVISIBLE", winTreeGetToggleVisibleAttrib, winTreeSetToggleVisibleAttrib, IUPAF_NO_INHERIT);
+
+  iupClassRegisterAttribute(ic, "ROOTCOUNT", winTreeGetRootCountAttrib, NULL, NULL, NULL, IUPAF_READONLY | IUPAF_NO_INHERIT);
 
   /* IupTree Attributes - MARKS */
   iupClassRegisterAttributeId(ic, "MARKED", winTreeGetMarkedAttrib, winTreeSetMarkedAttrib, IUPAF_NO_INHERIT);

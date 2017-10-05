@@ -43,11 +43,6 @@ tree. Default: the global attribute TXTBGCOLOR.</p>
 <p><strong>PROPAGATEFOCUS</strong>(<font size="3">non inheritable</font>): enables the focus callback forwarding to the next native parent with FOCUS_CB defined. Default: NO. (since 3.23)</p>
 
   
-<p><strong>COUNT</strong> (read only) (<font size="3">non inheritable</font>): returns the total number of 
-nodes in the 
-tree. (since 3.0)</p>
-
-  
 <p><strong>DRAGDROPTREE</strong> (<font SIZE="3">non inheritable</font>): enable 
 or disable the drag and drop of nodes between trees, in the same IUP application. 
 <a href="../attrib/iup_dragdrop.html">Drag &amp; Drop</a> attributes<span id="result_box" class="" lang="en"><span class="hps"> 
@@ -150,9 +145,20 @@ SHOWDRAGDROP must be set no No.&nbsp;</p>
     <p>For these attributes &quot;id&quot; is the specified node identifier. If 
 	&quot;id&quot; is 
 	empty or invalid, then the focus node is used as the specified node. </p>
-<p><strong>CHILDCOUNTid</strong> (read only): returns the immediate children 
+
+  
+<p><strong>COUNT</strong> (read only) (<font size="3">non inheritable</font>): returns the total number of 
+nodes in the 
+tree. (since 3.0)</p>
+
+  
+<p><strong>CHILDCOUNT<em>id</em></strong> (read only): returns the immediate children 
 	count of the specified branch. It 
 	does not count children of child that are branches. (since 3.0)</p>
+<p><strong>TOTALCHILDCOUNT<em>id</em></strong> (read only): returns the total children 
+	count of the specified branch. It 
+	counts all grandchildren. (since 3.0)</p>
+<p><strong>ROOTCOUNT</strong> (read only): returns the number of root nodes. (since 3.23)</p>
 <p><strong>COLORid</strong>: text foreground color of the specified node. The value should be a string in the format &quot;R G B&quot; where R, G, B are numbers 
   from 0 to 255.</p>
 <p><strong>DEPTHid </strong>(read only): returns the depth of the specified 
@@ -169,8 +175,23 @@ immediate children has depth=1, their children has depth=2 and so on.</p>
     The node is a branch</li>
 </ul>
 </blockquote>
-<p><strong>PARENTid </strong>(read only): returns the parent of the 
+<p><strong>PARENT<em>id</em> </strong>(read only): returns the parent of the 
 specified node.</p>
+<p><strong>NEXT<em>id</em> </strong>(read only): returns the next brother (same 
+depth) of the 
+specified node. Returns NULLs if at last child node of the parent (at the same 
+depth). (since 3.23)</p>
+<p><strong>PREVIOUS<em>id</em> </strong>(read only): returns the previous 
+brother (same depth) of the 
+specified node. Returns NULLs if at first child node of the parent (at the same 
+depth). (since 3.23)&nbsp;</p>
+<p><strong>LAST<em>id</em> </strong>(read only): returns the last brother (same 
+depth) of the 
+specified node. (since 3.23)</p>
+<p><strong>FIRST<em>id</em> </strong>(read only): returns the first brother 
+(same depth) of the 
+specified node. This is the same as getting the first child of the parent of the 
+given node. (since 3.23)&nbsp;</p>
 <p><strong>STATEid</strong>: the state of the specified branch. Returns NULL for 
 a LEAF. In Windows, it 
 will be effective only if the branch has children. In GTK, it will be effective 
@@ -200,9 +221,6 @@ SHOW3STATE=YES then can
 also be &quot;NOTDEF&quot;. Default: &quot;OFF&quot;. (Since 3.6)</p>
 <p><strong>TOGGLEVISIBLEid</strong> (<font size="3">non inheritable</font>): 
 defines the toggle visible state. Values can be &quot;Yes&quot; or &quot;No&quot;. Default: &quot;Yes&quot;. (Since 3.8)</p>
-<p><strong>TOTALCHILDCOUNTid</strong> (read only): returns the total children 
-	count of the specified branch. It 
-	counts all grandchildren. (since 3.0)</p>
 <p><strong>USERDATAid</strong>: the user data associated with the specified node. (since 3.0)</p>
 <h3><a name="images">Images</a> (<font size="3">non inheritable</font>)</h3>
 <p><strong>IMAGEid</strong> (write only):
