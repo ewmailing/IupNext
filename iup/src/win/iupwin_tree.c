@@ -1491,7 +1491,7 @@ static char* winTreeGetRootCountAttrib(Ihandle* ih)
   int count;
   HTREEITEM hItem = iupTreeGetNode(ih, 0);
   if (!hItem)
-    return NULL;
+    return "0";
 
   count = 1;
   hItem = (HTREEITEM)SendMessage(ih->handle, TVM_GETNEXTITEM, TVGN_NEXT, (LPARAM)hItem);
