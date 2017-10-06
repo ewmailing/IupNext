@@ -255,26 +255,30 @@ static int marker_changed_cb(Ihandle *ih, Ihandle *multitext, int lin, int margi
 
 static void save_globals(Ihandle *ih, Ihandle* config)
 {
-  Ihandle* listGlobals = IupGetDialogChild(ih, "LIST_GLOBAL");
+  Ihandle* treeGlobals = IupGetDialogChild(ih, "TREE_GLOBAL");
+  lua_State* L = (lua_State*)IupGetAttribute(ih, "LUASTATE");
   int i, count;
-  char *value;
+  const char *value;
 
-  i = 1;
-  value = IupGetAttributeId(listGlobals, "GLOBALNAME", i);
-  while (value != NULL)
+  count = IupGetInt(treeGlobals, "ROOTCOUNT");
+
+  for (i = 0; i < count; i++)
   {
-    IupConfigSetVariableStrId(config, "LuaScripterGlobals", "Name", i, value);
+    iuplua_push_name(L, "DebuggerGetGlobalNameFromTree");
+    iuplua_pushihandle(L, treeGlobals);
+    lua_pushinteger(L, i);
+    iuplua_call_raw(L, 2, 1);
 
-    i++;
-    value = IupGetAttributeId(listGlobals, "GLOBALNAME", i);
+    value = lua_tostring(L, -1);
+
+    IupConfigSetVariableStrId(config, "LuaScripterGlobals", "Name", i+1, value);
   }
 
-  count = i - 1;
   IupConfigSetVariableInt(config, "LuaScripterGlobals", "Count", count);
 
   /* make sure some older globals are not saved in the configuration file (at least 10) */
-  for (i = count+1; i <= count+1 + 10; i++)
-    IupConfigSetVariableStrId(config, "LuaScripterGlobals", "Name", i, NULL);
+  for (i = count; i <= count + 10; i++)
+    IupConfigSetVariableStrId(config, "LuaScripterGlobals", "Name", i+1, NULL);
 }
 
 static void save_breakpoints(Ihandle *ih, Ihandle* config)
@@ -318,24 +322,31 @@ static int configsave_cb(Ihandle *ih, Ihandle* config)
 
 static void load_globals(Ihandle *ih, Ihandle* config)
 {
-  Ihandle* listGlobals = IupGetDialogChild(ih, "LIST_GLOBAL");
+  Ihandle* treeGlobals = IupGetDialogChild(ih, "TREE_GLOBAL");
   lua_State* L = (lua_State*)IupGetAttribute(ih, "LUASTATE");
   int i;
   const char* value;
+
+  /* this will work only if the tree is already mapped */
+
+  IupSetAttribute(treeGlobals, "DELNODE", "ALL");
 
   i = 1;
   do
   {
     value = IupConfigGetVariableStrId(config, "LuaScripterGlobals", "Name", i);
     if (value)
-      IupSetStrAttributeId(listGlobals, "GLOBALNAME", i, value);
+    {
+      iuplua_push_name(L, "DebuggerAddGlobal");
+      iuplua_pushihandle(L, treeGlobals);
+      lua_pushstring(L, value);
+      iuplua_call_raw(L, 2, 0);
+    }
     i++;
   } while (value != NULL);
 
-  IupSetStrAttributeId(listGlobals, "GLOBALNAME", i, NULL);
-
-  iuplua_push_name(L, "DebuggerInitGlobalsList");
-  iuplua_pushihandle(L, listGlobals);
+  iuplua_push_name(L, "DebuggerInitGlobalsTree");
+  iuplua_pushihandle(L, treeGlobals);
   iuplua_call_raw(L, 1, 0);
 }
 
@@ -404,7 +415,8 @@ static int configload_cb(Ihandle *ih, Ihandle* config)
 
   load_breakpoints(ih, config);
 
-  load_globals(ih, config);
+  if (ih->handle)
+    load_globals(ih, config);
 
   return IUP_DEFAULT;
 }
@@ -1336,32 +1348,30 @@ static int but_setlocal_cb(Ihandle *ih)
   return IUP_DEFAULT;
 }
 
-static int list_locals_action_cb(Ihandle *ih, char *t, int index, int v)
+static int tree_locals_action_cb(Ihandle *ih, int id, int v)
 {
   lua_State* L;
-  (void)t;
 
   if (v == 0)
     return IUP_DEFAULT;
 
   L = (lua_State*)IupGetAttribute(ih, "LUASTATE");
-  iuplua_push_name(L, "DebuggerLocalVariablesListAction");
+  iuplua_push_name(L, "DebuggerLocalVariablesTreeAction");
   iuplua_pushihandle(L, ih);
-  lua_pushinteger(L, index);
+  lua_pushinteger(L, id);
   iuplua_call_raw(L, 2, 0);
   return IUP_DEFAULT;
 }
 
-static int list_global_action_cb(Ihandle *ih, char *t, int index, int v)
+static int tree_globals_action_cb(Ihandle *ih, int index, int v)
 {
   lua_State* L;
-  (void)t;
 
   if (v == 0)
     return IUP_DEFAULT;
 
   L = (lua_State*)IupGetAttribute(ih, "LUASTATE");
-  iuplua_push_name(L, "DebuggerGlobalListAction");
+  iuplua_push_name(L, "DebuggerGlobalsTreeAction");
   iuplua_pushihandle(L, ih);
   lua_pushinteger(L, index);
   iuplua_call_raw(L, 2, 0);
@@ -1565,6 +1575,15 @@ static int lua_menu_open_cb(Ihandle *ih_menu)
   return IUP_DEFAULT;
 }
 
+static int tree_globals_map(Ihandle* ih)
+{
+  Ihandle* config = get_config(ih);
+  /* must load also here because we need the tree mapped */
+  load_globals(ih, config);
+  return IUP_NOERROR;
+}
+
+
 /********************************** Main *****************************************/
 
 static Ihandle *buildTabConsole(void)
@@ -1608,15 +1627,20 @@ static Ihandle *buildTabConsole(void)
 
 static Ihandle *buildTabDebug(void)
 {
-  Ihandle *list_local, *button_printLocal, *button_setLocal, *vbox_local, *frame_local;
+  Ihandle *tree_local, *button_printLocal, *button_setLocal, *vbox_local, *frame_local;
   Ihandle *list_stack, *button_printLevel, *vbox_stack, *frame_stack, *debug;
 
-  list_local = IupList(NULL);
-  IupSetAttribute(list_local, "EXPAND", "YES");
-  IupSetAttribute(list_local, "NAME", "LIST_LOCAL");
-  IupSetAttribute(list_local, "TIP", "List of local variables at selected stack level (ordered by pos)");
-  IupSetCallback(list_local, "ACTION", (Icallback)list_locals_action_cb);
-  IupSetAttribute(list_local, "VISIBLELINES", "3");
+  tree_local = IupTree();
+  IupSetAttribute(tree_local, "EXPAND", "YES");
+  IupSetAttribute(tree_local, "NAME", "TREE_LOCAL");
+  IupSetAttribute(tree_local, "TIP", "List of local variables at selected stack level (ordered by pos)");
+  IupSetAttribute(tree_local, "ADDROOT", "NO");
+//  IupSetAttribute(tree_local, "ADDEXPANDED", "NO");
+  IupSetAttribute(tree_local, "HIDELINES", "YES");
+  IupSetAttribute(tree_local, "IMAGELEAF", "IMGEMPTY");
+  IupSetAttribute(tree_local, "IMAGEBRANCHCOLLAPSED", "IMGEMPTY");
+  IupSetAttribute(tree_local, "IMAGEBRANCHEXPANDED", "IMGEMPTY");
+  IupSetCallback(tree_local, "SELECTION_CB", (Icallback)tree_locals_action_cb);
 
   button_printLocal = IupButton(NULL, NULL);
   IupSetAttribute(button_printLocal, "ACTIVE", "NO");
@@ -1639,7 +1663,7 @@ static Ihandle *buildTabDebug(void)
   IupSetAttribute(vbox_local, "GAP", "4");
   IupSetAttribute(vbox_local, "NORMALIZESIZE", "HORIZONTAL");
 
-  frame_local = IupFrame(IupHbox(list_local, vbox_local, NULL));
+  frame_local = IupFrame(IupHbox(tree_local, vbox_local, NULL));
   IupSetAttribute(frame_local, "MARGIN", "4x4");
   IupSetAttribute(frame_local, "GAP", "4");
   IupSetAttribute(frame_local, "TITLE", "Locals:");
@@ -1680,15 +1704,21 @@ static Ihandle *buildTabDebug(void)
 
 static Ihandle *buildTabWatch(void)
 {
-  Ihandle *list_global, *button_printGlobal, *button_addGlobal, 
+  Ihandle *tree_global, *button_printGlobal, *button_addGlobal, 
     *button_removeGlobal, *button_setGlobal, *vbox_global, *frame_global, *watch;
 
-  list_global = IupList(NULL);
-  IupSetAttribute(list_global, "EXPAND", "YES");
-  IupSetAttribute(list_global, "NAME", "LIST_GLOBAL");
-  IupSetAttribute(list_global, "TIP", "List of globals variables or expressions");
-  IupSetAttribute(list_global, "VISIBLELINES", "3");
-  IupSetCallback(list_global, "ACTION", (Icallback)list_global_action_cb);
+  tree_global = IupTree();
+  IupSetAttribute(tree_global, "EXPAND", "YES");
+  IupSetAttribute(tree_global, "NAME", "TREE_GLOBAL");
+  IupSetAttribute(tree_global, "TIP", "List of globals variables or expressions");
+  IupSetAttribute(tree_global, "ADDROOT", "NO");
+  //  IupSetAttribute(tree_global, "ADDEXPANDED", "NO");
+  IupSetAttribute(tree_global, "HIDELINES", "YES");
+  IupSetAttribute(tree_global, "IMAGELEAF", "IMGEMPTY");
+  IupSetAttribute(tree_global, "IMAGEBRANCHCOLLAPSED", "IMGEMPTY");
+  IupSetAttribute(tree_global, "IMAGEBRANCHEXPANDED", "IMGEMPTY");
+  IupSetCallback(tree_global, "ACTION", (Icallback)tree_globals_action_cb);
+  IupSetCallback(tree_global, "MAP_CB", (Icallback)tree_globals_map);
 
   button_printGlobal = IupButton(NULL, NULL);
   IupSetAttribute(button_printGlobal, "FLAT", "Yes");
@@ -1724,7 +1754,7 @@ static Ihandle *buildTabWatch(void)
   IupSetAttribute(vbox_global, "GAP", "4");
   IupSetAttribute(vbox_global, "NORMALIZESIZE", "HORIZONTAL");
 
-  frame_global = IupFrame(IupHbox(list_global, vbox_global, NULL));
+  frame_global = IupFrame(IupHbox(tree_global, vbox_global, NULL));
   IupSetAttribute(frame_global, "MARGIN", "4x4");
   IupSetAttribute(frame_global, "GAP", "4");
   IupSetAttribute(frame_global, "TITLE", "Globals:");
@@ -2342,8 +2372,8 @@ void IupLuaScripterDlgOpen(void)
 - Find/replace in: current document or all open documents
 
 - Condicional Breakpoints, Hit Count, When Hit
+- search results - find all
 - multi-language (Portuguese, Spanish)
 - detachable Console, Debug, Breakpoints (problem with IupGetDialogChild(NAME))?
 - detachable Multitext?
-- search results?
 */

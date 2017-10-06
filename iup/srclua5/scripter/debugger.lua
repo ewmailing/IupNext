@@ -216,9 +216,9 @@ function iup.DebuggerSetState(st)
 
     iup.DebuggerSetAttribAllMultitext("READONLY", "No")
 
-    iup.DebuggerClearLocalVariablesList()
+    iup.DebuggerClearLocalVariablesTree()
     iup.DebuggerClearStackList()
-    iup.DebuggerInitGlobalsList()
+    iup.DebuggerInitGlobalsTree()
   end
     
   debugger.debugState = st
@@ -620,26 +620,26 @@ end
 ------------------------------------- Locals -------------------------------------
 
 
-function iup.DebuggerClearLocalVariablesList()
+function iup.DebuggerClearLocalVariablesTree()
   iup.DebuggerSetDialogChildAttrib("PRINT_LOCAL", "ACTIVE", "NO")
   iup.DebuggerSetDialogChildAttrib("SET_LOCAL", "ACTIVE", "NO")
 
-  iup.DebuggerSetDialogChildAttrib("LIST_LOCAL", "REMOVEITEM", "ALL")
+  iup.DebuggerSetDialogChildAttrib("TREE_LOCAL", "DELNODE", "ALL")
 end
 
 function iup.DebuggerSetLocalVariable()
-  local list_local = iup.GetDialogChild(debugger.main_dialog, "LIST_LOCAL")
-  local index = list_local.value
-  if (not index or tonumber(index) == 0) then
+  local tree_local = iup.GetDialogChild(debugger.main_dialog, "TREE_LOCAL")
+  local id = tree_local.value
+  if (not id or tonumber(id) < 0) then
     iup.MessageError(debugger.main_dialog, "Select a variable on the list.")
     return
   end
+  
+  local userdata = iup.TreeGetUserId(tree_local, id)
 
-  local name = list_local[index]
-  local s, e = string.find(name, " =", 1, true)
-  name = string.sub(name, 1, s - 1)
-  local value = list_local["LOCALVALUE" .. index]
-
+  local name = userdata.name
+  local value = userdata.value
+  
   if (value == nil) then value = "nil" end
   local valueType = type(value)
   if valueType ~= "string" and valueType ~= "number" and valueType ~= "boolean" then
@@ -663,7 +663,7 @@ function iup.DebuggerSetLocalVariable()
         newValue = num
       end
     end
-
+  
     local list_stack = iup.GetDialogChild(debugger.main_dialog, "LIST_STACK")
     local index = tonumber(list_stack.value)
 
@@ -675,60 +675,64 @@ function iup.DebuggerSetLocalVariable()
     local startLevel = 5
     local level = index - 1 + startLevel  -- this is the level of the function
     
-    iup.DebuggerSetLocal(list_local, level, index, newValue)
-    iup.DebuggerSetLocalListItem(list_local, index, name, newValue) -- do not set pos
+    iup.DebuggerSetLocal(tree_local, level, id, newValue)
+    iup.DebuggerSetLocalTreeItem(tree_local, id, name, newValue) -- do not set pos
   end
 end
 
 function iup.DebuggerPrintLocalVariable()
-  local list_local = iup.GetDialogChild(debugger.main_dialog, "LIST_LOCAL")
-  local index = list_local.value
+  local tree_local = iup.GetDialogChild(debugger.main_dialog, "TREE_LOCAL")
+  local id = tree_local.value
+  local userdata = iup.TreeGetUserId(tree_local, id)
 
   local luaTabs = iup.GetDialogChild(debugger.main_dialog, "LUA_TABS")
   luaTabs.valuepos = 0 -- show console tab
 
-  local pos = list_local["POS" .. index]
-  local value = list_local["LOCALVALUE" .. index]
+  local pos = userdata.pos
+  local value = userdata.value
 
-  iup.ConsolePrint(list_local[index] .. "  (pos="..pos..")")
+  iup.ConsolePrint(tree_local["TITLE"..id] .. "  (pos="..pos..")")
   iup.ConsolePrintValue(value)
 end
 
 function iup.DebuggerPrintAllLocalVariables()
-  local list_local = iup.GetDialogChild(debugger.main_dialog, "LIST_LOCAL")
-  local count = tonumber(list_local.count)
+  local tree_local = iup.GetDialogChild(debugger.main_dialog, "TREE_LOCAL")
+  local count = tonumber(tree_local.rootcount)
 
   local luaTabs = iup.GetDialogChild(debugger.main_dialog, "LUA_TABS")
   luaTabs.valuepos = 0 -- show console tab
 
-  for index = 1, count do
-    local pos = list_local["POS" .. index]
-    local value = list_local["LOCALVALUE" .. index]
+  for id = 0, count-1 do
+    local userdata = iup.TreeGetUserId(tree_local, id)
+    local pos = userdata.pos
+    local value = userdata.value
 
-    iup.ConsolePrint(list_local[index] .. "  (pos="..pos..")")
+    iup.ConsolePrint(tree_local["TITLE"..id] .. "  (pos="..pos..")")
     iup.ConsolePrintValue(value)
   end
 end
 
-function iup.DebuggerSetLocal(list_local, level, index, newValue)
-  local pos = list_local["POS" .. index]
-  local list_value = list_local[index]
-  local s = string.sub(list_value, 1, 3)
+function iup.DebuggerSetLocal(tree_local, level, id, newValue)
+  local userdata = iup.TreeGetUserId(tree_local, id)
+  local pos = userdata.pos
+  local tree_value = tree_local["TITLE"..id]
+  local s = string.sub(tree_value, 1, 3)
   if s == ":: " then
-    debug.setupvalue(list_local.func, pos, newValue)
+    debug.setupvalue(tree_local.func, pos, newValue)
   else
     level = level + 1 -- this is the level inside this function
     debug.setlocal(level, pos, newValue)
   end
 end
 
-function iup.DebuggerGetLocal(list_local, level, index)
+function iup.DebuggerGetLocal(tree_local, level, id)
   local name, value
-  local pos = list_local["POS" .. index]
-  local list_value = list_local[index]
-  local s = string.sub(list_value, 1, 3)
+  local userdata = iup.TreeGetUserId(tree_local, id)
+  local pos = userdata.pos
+  local tree_value = tree_local["TITLE"..id]
+  local s = string.sub(tree_value, 1, 3)
   if s == ":: " then
-    name, value = debug.getupvalue(list_local.func, pos)
+    name, value = debug.getupvalue(tree_local.func, pos)
   else
     level = level + 1 -- this is the level inside this function
     name, value = debug.getlocal(level, pos)
@@ -736,9 +740,9 @@ function iup.DebuggerGetLocal(list_local, level, index)
   return name, value
 end
 
-function iup.DebuggerLocalVariablesListAction(list_local, index)
-  local value = list_local["LOCALVALUE" .. index]
-  local valueType = type(value)
+function iup.DebuggerLocalVariablesTreeAction(tree_local, id)
+  local userdata = iup.TreeGetUserId(tree_local, id)
+  local valueType = type(userdata.value)
   if valueType == "string" or valueType == "number" or valueType == "boolean" then
     iup.DebuggerSetDialogChildAttrib("SET_LOCAL", "ACTIVE", "Yes")
   else
@@ -746,38 +750,53 @@ function iup.DebuggerLocalVariablesListAction(list_local, index)
   end
 end
 
-function iup.DebuggerSetLocalListItem(list_local, index, name, value, pos)
+function iup.DebuggerSetLocalTreeItem(tree_local, id, name, value)
   local valueType = type(value)
+  local userdata = iup.TreeGetUserId(tree_local, id)
+  
   if valueType ~= "string" and valueType ~= "number" and valueType ~= "boolean" then
-    list_local[index] = name .. " = <" .. tostring(value) .. ">"
+    tree_local["TITLE"..id] = name .. " = <" .. tostring(value) .. ">"
   else
-    list_local[index] = name .. " = " .. tostring(value) .. " <" .. valueType .. ">"
+    tree_local["TITLE"..id] = name .. " = " .. tostring(value) .. " <" .. valueType .. ">"
   end
 
-  list_local["LOCALVALUE" .. index] = value
-
-  if pos then
-    list_local["POS" .. index] = pos
-  end
+  userdata.value = value
 end
 
-function iup.DebuggerUpdateLocalVariablesList(level)
+function iup.DebuggerAddLocalTreeItem(tree_local, id, name, value, pos)
+  local valueType = type(value)
+  local userdata = {}
+  
+  if valueType ~= "string" and valueType ~= "number" and valueType ~= "boolean" then
+    tree_local["ADDLEAF"..id] = name .. " = <" .. tostring(value) .. ">"
+  else
+    tree_local["ADDLEAF"..id] = name .. " = " .. tostring(value) .. " <" .. valueType .. ">"
+  end
+  
+  userdata.name = name
+  userdata.value = value
+  userdata.pos = pos
+  
+  iup.TreeSetUserId(tree_local, tree_local.lastaddnode, userdata)
+end
+
+function iup.DebuggerUpdateLocalVariablesTree(level)
   local name, value
   local pos
-  local index = 1
+  local id = -1
 
   level = level + 1 -- this is the level inside this function
 
-  iup.DebuggerClearLocalVariablesList()
+  iup.DebuggerClearLocalVariablesTree()
 
-  local list_local = iup.GetDialogChild(debugger.main_dialog, "LIST_LOCAL")
+  local tree_local = iup.GetDialogChild(debugger.main_dialog, "TREE_LOCAL")
 
   pos = 1
   name, value = debug.getlocal(level, pos)
   while name ~= nil do
     if string.sub(name, 1, 1) ~= "(" then  -- do not include internal variables (loop control variables, temporaries, etc).
-      iup.DebuggerSetLocalListItem(list_local, index, name, value, pos)
-      index = index + 1
+      iup.DebuggerAddLocalTreeItem(tree_local, id, name, value, pos)
+      id = id + 1
     end
 
     pos = pos + 1
@@ -789,8 +808,8 @@ function iup.DebuggerUpdateLocalVariablesList(level)
   name, value = debug.getlocal(level, pos)
   while name ~= nil do
     name = "vararg[" .. -pos .. "]"
-    iup.DebuggerSetLocalListItem(list_local, index, name, value, pos)
-    index = index + 1
+    iup.DebuggerAddLocalTreeItem(tree_local, id, name, value, pos)
+    id = id + 1
 
     pos = pos - 1
     name, value = debug.getlocal(level, pos)
@@ -799,25 +818,25 @@ function iup.DebuggerUpdateLocalVariablesList(level)
   local call = debug.getinfo(level, "uf")
   if call.nups > 0 then
     pos = 1
-    list_local.func = call.func
+    tree_local.func = call.func
     name, value = debug.getupvalue(call.func, pos)
     while name ~= nil do
       name = ":: " .. name
-      iup.DebuggerSetLocalListItem(list_local, index, name, value, pos)
-      index = index + 1
+      iup.DebuggerAddLocalTreeItem(tree_local, id, name, value, pos)
+      id = id + 1
 
       pos = pos + 1
       name, value = debug.getupvalue(call.func, pos)
     end
   else
-    list_local.func = nil
+    tree_local.func = nil
   end
 
-  if (index > 1) then
+  if (id > 0) then
     iup.DebuggerSetDialogChildAttrib("PRINT_LOCAL", "ACTIVE", "Yes")
     iup.DebuggerSetDialogChildAttrib("SET_LOCAL", "ACTIVE", "Yes")
 
-    list_local.value = 1 -- select first item on list
+    tree_local.value = 1 -- select first item on list
   end
 end
 
@@ -895,7 +914,7 @@ function iup.DebuggerStackListAction(list_stack, index)
   local startLevel = 5
   local level = index - 1 + startLevel  -- this is the level of the function
   
-  iup.DebuggerUpdateLocalVariablesList(level)
+  iup.DebuggerUpdateLocalVariablesTree(level)
   
   local filename = list_stack["FILENAME" .. index]
   local line = list_stack["LINE" .. index]
@@ -907,7 +926,7 @@ function iup.DebuggerStackListActivate(list_stack, index)
   local startLevel = 5
   local level = index - 1 + startLevel  -- this is the level of the function
   
-  iup.DebuggerUpdateLocalVariablesList(level)
+  iup.DebuggerUpdateLocalVariablesTree(level)
   
   local filename = list_stack["FILENAME" .. index]
   local line = list_stack["LINE" .. index]
@@ -1034,7 +1053,7 @@ function iup.DebuggerUpdateStackList()
     iup.DebuggerSetDialogChildAttrib("PRINT_LEVEL", "ACTIVE", "YES")
 
     list_stack.value = 1 -- select first item on list (startLevel)
-    iup.DebuggerUpdateLocalVariablesList(startLevel)
+    iup.DebuggerUpdateLocalVariablesTree(startLevel)
   end
   
 end
@@ -1048,6 +1067,11 @@ function iup.DebuggerIsExpression(name)
   else
     return false
   end
+end
+
+function iup.DebuggerGetGlobalNameFromTree(tree_global, id)
+  local userdata = iup.TreeGetUserId(tree_global, id)
+  return userdata.globalname
 end
 
 function iup.DebuggerGetGlobalValue(name)
@@ -1071,8 +1095,9 @@ function iup.DebuggerGetGlobalValue(name)
   return value
 end
 
-function iup.DebuggerGlobalListAction(list_global, index)
-  local name = list_global["GLOBALNAME" .. index]
+function iup.DebuggerGlobalsTreeAction(tree_global, id)
+  local userdata = iup.TreeGetUserId(tree_global, id)
+  local name = userdata.globalname
   if iup.DebuggerIsExpression(name) then
     iup.DebuggerSetDialogChildAttrib("SET_GLOBAL", "ACTIVE", "NO")
   else
@@ -1080,29 +1105,29 @@ function iup.DebuggerGlobalListAction(list_global, index)
   end
 end
 
-function iup.DebuggerInitGlobalsList(list_global)
-  if not list_global then 
-    list_global = iup.GetDialogChild(debugger.main_dialog, "LIST_GLOBAL")
+function iup.DebuggerInitGlobalsTree(tree_global)
+  if not tree_global then 
+    tree_global = iup.GetDialogChild(debugger.main_dialog, "TREE_GLOBAL")
   end
 
-  local index = 1
-  local name = list_global["GLOBALNAME1"]
-  while name do
-    list_global[index] = name
+  local id = 0
+  local userdata = iup.TreeGetUserId(tree_global, id)
+  while userdata do
+    local name = userdata.globalname
+    tree_global["TITLE"..id] = name
 
-    index = index + 1
-    name = list_global["GLOBALNAME" .. index]
+    id = id + 1
+    userdata = iup.TreeGetUserId(tree_global, id)
   end
-  list_global[index] = nil
 
-  local count = tonumber(list_global.count)
+  local count = tonumber(tree_global.rootcount)
   if (count > 0) then
     iup.DebuggerSetDialogChildAttrib("PRINT_GLOBAL", "ACTIVE", "Yes")
     iup.DebuggerSetDialogChildAttrib("SET_GLOBAL", "ACTIVE", "Yes")
     iup.DebuggerSetDialogChildAttrib("REMOVE_GLOBAL", "ACTIVE", "Yes")
 
-    list_global.value = 1 -- select first item on list
-    iup.DebuggerGlobalListAction(list_global, list_global.value)
+    tree_global.value = 1 -- select first item on list
+    iup.DebuggerGlobalsTreeAction(tree_global, tree_global.value)
   else
     iup.DebuggerSetDialogChildAttrib("PRINT_GLOBAL", "ACTIVE", "NO")
     iup.DebuggerSetDialogChildAttrib("SET_GLOBAL", "ACTIVE", "NO")
@@ -1110,97 +1135,108 @@ function iup.DebuggerInitGlobalsList(list_global)
   end
 end
 
-function iup.DebuggerUpdateGlobalList()
-  local list_global = iup.GetDialogChild(debugger.main_dialog, "LIST_GLOBAL")
+function iup.DebuggerUpdateGlobalsTree()
+  local tree_global = iup.GetDialogChild(debugger.main_dialog, "TREE_GLOBAL")
 
   -- this is called only during debug
 
-  local index = 1
-  local name = list_global["GLOBALNAME1"]
-  while name do
+  local id = 0
+  local userdata = iup.TreeGetUserId(tree_global, id)
+  while userdata do
+    local name = userdata.globalname
     local value = iup.DebuggerGetGlobalValue(name)
-    iup.DebuggerSetGlobalListItem(list_global, index, name, value)
+    iup.DebuggerSetGlobalsTreeItem(tree_global, id, name, value)
 
-    index = index + 1
-    name = list_global["GLOBALNAME" .. index]
+    id = id + 1
+	userdata = iup.TreeGetUserId(tree_global, id)
   end
 end
 
-function iup.DebuggerSetGlobalListItem(list_global, index, name, value)
+function iup.DebuggerSetGlobalsTreeItem(tree_global, id, name, value)
   local valueType = type(value)
   if valueType ~= "string" and valueType ~= "number" and valueType ~= "boolean" then
-    list_global[index] = name.." = <"..tostring(value)..">"
+    tree_global["TITLE"..id] = name.." = <"..tostring(value)..">"
   else
-    list_global[index] = name.." = "..tostring(value).." <"..valueType..">"
+    tree_global["TITLE"..id] = name.." = "..tostring(value).." <"..valueType..">"
   end
+end
+
+function iup.DebuggerAddGlobalsTreeItem(tree_global, id, name, value)
+  local valueType = type(value)
+  if valueType ~= "string" and valueType ~= "number" and valueType ~= "boolean" then
+    tree_global["INSERTBRANCH"..id] = name.." = <"..tostring(value)..">"
+  else
+    tree_global["INSERTBRANCH"..id] = name.." = "..tostring(value).." <"..valueType..">"
+  end
+end
+
+function iup.DebuggerAddGlobal(tree_global, name)
+  local id = tonumber(tree_global.last0)
+  if not id then id = -1 end
+   
+  local userdata = {}
+  userdata.globalname = name
+    
+  if iup.DebuggerIsActive() then
+    local value = iup.DebuggerGetGlobalValue(name)
+    iup.DebuggerAddGlobalsTreeItem(tree_global, id, name, value)
+  else
+    tree_global["INSERTBRANCH"..id] = name
+  end
+    
+  iup.TreeSetUserId(tree_global, tree_global.lastaddnode, userdata)
 end
 
 function iup.DebuggerAddGlobalVariable()
-  local list_global = iup.GetDialogChild(debugger.main_dialog, "LIST_GLOBAL")
   local status, newName = iup.GetParam("Add Global", setparent_param_cb, "Name = ".."%s\n", "")
-
   if (status) then
-    local count = tonumber(list_global.count)
-    local index = count + 1
-
-    local value = iup.DebuggerGetGlobalValue(newName)
-    list_global["GLOBALNAME" .. index] = newName
-
-    if iup.DebuggerIsActive() then
-      iup.DebuggerSetGlobalListItem(list_global, index, newName, value)
-    else
-      list_global[index] = newName
-    end
+    local tree_global = iup.GetDialogChild(debugger.main_dialog, "TREE_GLOBAL")
+    local count = tonumber(tree_global.rootcount)
+   
+    iup.DebuggerAddGlobal(tree_global, newName)
 
     if (count == 0) then
       iup.DebuggerSetDialogChildAttrib("PRINT_GLOBAL", "ACTIVE", "Yes")
       iup.DebuggerSetDialogChildAttrib("SET_GLOBAL", "ACTIVE", "Yes")
       iup.DebuggerSetDialogChildAttrib("REMOVE_GLOBAL", "ACTIVE", "Yes")
     end
-
-    list_global.value = count + 1 -- select the added item
-    iup.DebuggerGlobalListAction(list_global, list_global.value)
+    
+    iup.DebuggerGlobalsTreeAction(tree_global, tree_global.lastaddnode)
   end
-
 end
 
 function iup.DebuggerRemoveGlobalVariable()
-  local list_global = iup.GetDialogChild(debugger.main_dialog, "LIST_GLOBAL")
-  local index = list_global.value
-  if (not index or tonumber(index) == 0) then
+  local tree_global = iup.GetDialogChild(debugger.main_dialog, "TREE_GLOBAL")
+  local id = tree_global.value
+  if (not id or tonumber(id) < 0) then
     iup.MessageError(debugger.main_dialog, "Select a variable or expression on the list.")
     return
   end
 
-  index = tonumber(index)
-  local count = tonumber(list_global.count)
 
-  list_global.removeitem = index
+  tree_global["DELNODE"..id] = "SELECTED"
 
-  for i = index, count-1 do
-    list_global["GLOBALNAME"..i] = list_global["GLOBALNAME"..i+1]
-  end
-  list_global["GLOBALNAME" .. count] = nil
-
-  if (count == 1) then
+  local count = tonumber(tree_global.rootcount)
+  if (count == 0) then
     iup.DebuggerSetDialogChildAttrib("PRINT_GLOBAL", "ACTIVE", "No")
     iup.DebuggerSetDialogChildAttrib("SET_GLOBAL", "ACTIVE", "No")
     iup.DebuggerSetDialogChildAttrib("REMOVE_GLOBAL", "ACTIVE", "No")
   else
-    if index == count then
-      list_global.value = index - 1
+    -- select the next item
+    if id == count-1 then
+      tree_global.value = id - 1
     else
-      list_global.value = index
+      tree_global.value = id
     end
-    iup.DebuggerGlobalListAction(list_global, list_global.value)
+
+    iup.DebuggerGlobalsTreeAction(tree_global, tree_global.value)
   end
 end
 
 function iup.DebuggerRemoveAllGlobalVariable()
-  local list_global = iup.GetDialogChild(debugger.main_dialog, "LIST_GLOBAL")
+  local tree_global = iup.GetDialogChild(debugger.main_dialog, "TREE_GLOBAL")
 
-  list_global["GLOBALNAME" .. 1] = nil
-  list_global[1] = nil
+  tree_global["DELNODE"] = "ALL"
 
   iup.DebuggerSetDialogChildAttrib("PRINT_GLOBAL", "ACTIVE", "No")
   iup.DebuggerSetDialogChildAttrib("SET_GLOBAL", "ACTIVE", "No")
@@ -1208,15 +1244,21 @@ function iup.DebuggerRemoveAllGlobalVariable()
 end
 
 function iup.DebuggerSetGlobalVariable()
-  local list_global = iup.GetDialogChild(debugger.main_dialog, "LIST_GLOBAL")
-  local index = list_global.value
-  if (not index or tonumber(index) == 0) then
-    iup.MessageError(debugger.main_dialog, "Select a variable on the list.\nCan not change expressions values.")
+  local tree_global = iup.GetDialogChild(debugger.main_dialog, "TREE_GLOBAL")
+  local id = tree_global.value
+  if (not id or tonumber(id) < 0) then
+    iup.MessageError(debugger.main_dialog, "Select a variable on the list.")
+    return
+  end
+  
+  local userdata = iup.TreeGetUserId(tree_global, id)
+  local name = userdata.globalname
+
+  if iup.DebuggerIsExpression(name) then
+    iup.MessageError(debugger.main_dialog, "Can not change expressions values.")
     return
   end
 
-  index = tonumber(index)
-  local name = list_global["GLOBALNAME" .. index]
   local value = _G[name]
 
   if (value == nil) then value = "nil" end
@@ -1246,39 +1288,41 @@ function iup.DebuggerSetGlobalVariable()
     _G[name] = newValue
 
     if iup.DebuggerIsActive() then
-      iup.DebuggerSetGlobalListItem(list_global, index, name, newValue)
+      iup.DebuggerSetGlobalsTreeItem(tree_global, id, name, newValue)
     else
-      list_global[index] = name
+      tree_global["TITLE"..id] = name
     end
   end
 end
 
 function iup.DebuggerPrintGlobalVariable()
-  local list_global = iup.GetDialogChild(debugger.main_dialog, "LIST_GLOBAL")
-  local index = list_global.value
+  local tree_global = iup.GetDialogChild(debugger.main_dialog, "TREE_GLOBAL")
+  local id = tree_global.value
 
   local luaTabs = iup.GetDialogChild(debugger.main_dialog, "LUA_TABS")
   luaTabs.valuepos = 0 -- show console tab
 
-  local name = list_global["GLOBALNAME" .. index]
-  local value = _G[name]
+  local userdata = iup.TreeGetUserId(tree_global, id)
+  local name = userdata.globalname
+  local value = iup.DebuggerGetGlobalValue(name)
 
-  iup.ConsolePrint(list_global[index])
+  iup.ConsolePrint(tree_global["TITLE"..id])
   iup.ConsolePrintValue(value)
 end
 
 function iup.DebuggerPrintAllGlobalVariables()
-  local list_global = iup.GetDialogChild(debugger.main_dialog, "LIST_GLOBAL")
-  local count = tonumber(list_global.count)
+  local tree_global = iup.GetDialogChild(debugger.main_dialog, "TREE_GLOBAL")
+  local count = tonumber(tree_global.rootcount)
 
   local luaTabs = iup.GetDialogChild(debugger.main_dialog, "LUA_TABS")
   luaTabs.valuepos = 0 -- show console tab
 
-  for index = 1, count do
-    local name = list_global["GLOBALNAME" .. index]
-    local value = _G[name]
+  for id = 0, count-1 do
+    local userdata = iup.TreeGetUserId(tree_global, id)
+    local name = userdata.globalname
+    local value = iup.DebuggerGetGlobalValue(name)
 
-    iup.ConsolePrint(list_global[index])
+    iup.ConsolePrint(tree_global["TITLE"..id])
     iup.ConsolePrintValue(value)
   end
 end
@@ -1339,7 +1383,7 @@ function iup.DebuggerForcePause(filename, currentline, source)
 
   iup.DebuggerHighlightLine(filename, currentline, source)
 
-  iup.DebuggerUpdateGlobalList()
+  iup.DebuggerUpdateGlobalsTree()
 
   iup.DebuggerUpdateStackList()
 
@@ -1356,6 +1400,10 @@ function iup.DebuggerForcePause(filename, currentline, source)
 end
 
 function iup.DebuggerTraceBack(msg)
+  if not msg then
+    return
+  end
+
   -- hook is always at level 2 when called
   local info = debug.getinfo(2, "Sl") -- what, source, currentline
   local s = string.sub(info.source, 1, 1)
@@ -1389,7 +1437,7 @@ function iup.DebuggerLineHook(filename, line, source)
   
     iup.DebuggerHighlightLine(filename, line, source)
     
-    iup.DebuggerUpdateGlobalList()
+    iup.DebuggerUpdateGlobalsTree()
     
     iup.DebuggerUpdateStackList()
     
