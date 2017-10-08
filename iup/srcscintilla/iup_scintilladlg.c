@@ -88,6 +88,15 @@ static void saveMarkers(Ihandle* config, Ihandle* multitext)
     cb(IupGetDialog(multitext), multitext);
 }
 
+static void saveAllMarkers(Ihandle* ih, Ihandle* config)
+{
+  Ihandle* tabs = IupGetDialogChild(ih, "TABS");
+  Ihandle* multitext;
+
+  for (multitext = tabs->firstchild; multitext; multitext = multitext->brother)
+    saveMarkers(config, multitext);
+}
+
 static void restoreMarkers(Ihandle* config, Ihandle* multitext)
 {
   char* m_filename = IupGetAttribute(multitext, "FILENAME");
@@ -581,7 +590,7 @@ static void addFileToProjectTree(Ihandle *projectTree, const char *new_filename)
   else if (currentId == -1)
     IupSetStrAttributeId(projectTree, "ADDLEAF", count + 1, newTitle);
   else
-    IupSetStrAttribute(projectTree, "ADDLEAF", newTitle);
+    IupSetStrAttributeId(projectTree, "ADDLEAF", currentId, newTitle);
 
   IupTreeSetUserId(projectTree, IupGetInt(projectTree, "LASTADDNODE"), iupStrDup(new_filename));
 
@@ -708,6 +717,13 @@ static void openFolder(char *filename)
 
 /********************************** Interface Utilities *****************************************/
 
+static Ihandle* get_project_tree(Ihandle* ih_item)
+{
+  Ihandle* projectTree = (Ihandle*)IupGetAttribute(ih_item, "PROJECTTREE");
+  if (!projectTree)
+    projectTree = IupGetDialogChild(ih_item, "PROJECTTREE");
+  return projectTree;
+}
 
 static void update_dialog_title(Ihandle* multitext)
 {
@@ -1129,6 +1145,7 @@ static int save_project_check(Ihandle* ih)
     char *filename = IupGetAttribute(projectConfig, "APP_FILENAME");
     if (filename)
     {
+      saveAllMarkers(ih, projectConfig);
       saveProjectOpenFiles(ih, projectConfig);
       IupConfigSave(projectConfig);
     }
@@ -1387,6 +1404,7 @@ static int project_menu_open_cb(Ihandle* ih_menu)
   Ihandle* item_close_proj = IupGetDialogChild(ih_menu, "ITEM_CLOSE_PROJ");
   Ihandle* item_add_new_proj = IupGetDialogChild(ih_menu, "ITEM_ADD_NEW_FILE");
   Ihandle* item_add_exist_proj = IupGetDialogChild(ih_menu, "ITEM_ADD_EXIST_FILE");
+  Ihandle* item_add_open_proj = IupGetDialogChild(ih_menu, "ITEM_ADD_OPEN_FILE");
   Ihandle* item_open_proj_file = IupGetDialogChild(ih_menu, "ITEM_OPEN_PROJ_FILE");
   Ihandle* item_open_all_proj_file = IupGetDialogChild(ih_menu, "ITEM_OPEN_ALL_PROJ_FILE");
   Ihandle* item_remove_proj_file = IupGetDialogChild(ih_menu, "ITEM_REMOVE_PROJ_FILE");
@@ -1398,6 +1416,7 @@ static int project_menu_open_cb(Ihandle* ih_menu)
     IupSetAttribute(item_add_new_proj, "ACTIVE", "YES");
     IupSetAttribute(item_add_new_proj, "ACTIVE", "YES");
     IupSetAttribute(item_add_exist_proj, "ACTIVE", "YES");
+    IupSetAttribute(item_add_open_proj, "ACTIVE", "YES");
     IupSetAttribute(item_open_proj_file, "ACTIVE", "YES");
     IupSetAttribute(item_open_all_proj_file, "ACTIVE", "YES");
     IupSetAttribute(item_remove_proj_file, "ACTIVE", "YES");
@@ -1414,6 +1433,7 @@ static int project_menu_open_cb(Ihandle* ih_menu)
     IupSetAttribute(item_save_proj_as, "ACTIVE", "NO");
     IupSetAttribute(item_add_new_proj, "ACTIVE", "NO");
     IupSetAttribute(item_add_exist_proj, "ACTIVE", "NO");
+    IupSetAttribute(item_add_open_proj, "ACTIVE", "NO");
     IupSetAttribute(item_open_proj_file, "ACTIVE", "NO");
     IupSetAttribute(item_open_all_proj_file, "ACTIVE", "NO");
     IupSetAttribute(item_remove_proj_file, "ACTIVE", "NO");
@@ -1818,12 +1838,30 @@ static int item_copyfilename_action_cb(Ihandle* ih_item)
   return IUP_DEFAULT;
 }
 
+static int item_addtoproject_action_cb(Ihandle* ih_item)
+{
+  Ihandle* multitext = (Ihandle*)iupAttribGetInherit(ih_item, "MULTITEXT");  /* from the context menu */
+  char* filename = IupGetAttribute(multitext, "FILENAME");
+  Ihandle* projectConfig = iScintillaDlgGetProjectConfig(multitext);
+  Ihandle *projectTree = get_project_tree(multitext);
+
+  if (!check_inproject(projectTree, filename))
+  {
+    addFileToProjectTree(projectTree, filename);
+    IupSetAttribute(projectConfig, "MODIFIED", "YES");
+  }
+
+  return IUP_DEFAULT;
+}
+
 static int tabs_rightclick_cb(Ihandle* tabs, int pos)
 {
-  Ihandle *menu, *item_close, *item_revert, *item_save, *item_closeall, *item_closeall_butthis, *item_openfolder, *item_copyfilename;
+  Ihandle *menu, *item_close, *item_revert, *item_save, *item_closeall, *item_closeall_butthis, 
+          *item_openfolder, *item_copyfilename, *item_addtoproject;
   Ihandle* multitext = IupGetChild(tabs, pos);
   char* filename = IupGetAttribute(multitext, "FILENAME");
   int dirty = IupGetInt(multitext, "MODIFIED");
+  Ihandle *projectConfig = iScintillaDlgGetProjectConfig(tabs);
 
   item_save = IupItem("Save\tCtrl+S", NULL);
   IupSetAttribute(item_save, "IMAGE", "IUP_FileSave");
@@ -1846,6 +1884,9 @@ static int tabs_rightclick_cb(Ihandle* tabs, int pos)
 
   item_copyfilename = IupItem("Copy File Name", NULL);
   IupSetCallback(item_copyfilename, "ACTION", (Icallback)item_copyfilename_action_cb);
+
+  item_addtoproject = IupItem("Add To Project", NULL);
+  IupSetCallback(item_addtoproject, "ACTION", (Icallback)item_addtoproject_action_cb);
 
   if (dirty)
     IupSetAttribute(item_save, "ACTIVE", "YES");
@@ -1873,6 +1914,11 @@ static int tabs_rightclick_cb(Ihandle* tabs, int pos)
     IupSetAttribute(item_copyfilename, "ACTIVE", "NO");
   }
 
+  if (projectConfig)
+    IupSetAttribute(item_addtoproject, "ACTIVE", "YES");
+  else
+    IupSetAttribute(item_addtoproject, "ACTIVE", "NO");
+
   menu = IupMenu(
     item_revert,
     item_save,
@@ -1882,6 +1928,8 @@ static int tabs_rightclick_cb(Ihandle* tabs, int pos)
     IupSeparator(),
     item_copyfilename,
     item_openfolder,
+    IupSeparator(),
+    item_addtoproject,
     NULL);
 
   iupAttribSet(menu, "TABS", (char*)tabs);
@@ -2019,6 +2067,7 @@ static int tree_rename_cb(Ihandle* projectTree, int id, char* new_name)
     IupSetStrAttributeId(projectTree, "TITLE", id, strFileTitle(new_filename));
     IupTreeSetUserId(projectTree, id, iupStrDup(new_filename));
 
+    saveMarkers(projectConfig, multitext);
     saveProjectFiles(projectTree, projectConfig);
     saveProjectOpenFiles(projectTree, projectConfig);
 
@@ -2026,14 +2075,6 @@ static int tree_rename_cb(Ihandle* projectTree, int id, char* new_name)
   }
 
   return IUP_DEFAULT;
-}
-
-static Ihandle* get_project_tree(Ihandle* ih_item)
-{
-  Ihandle* projectTree = (Ihandle*)IupGetAttribute(ih_item, "PROJECTTREE");
-  if (!projectTree)
-    projectTree = IupGetDialogChild(ih_item, "PROJECTTREE");
-  return projectTree;
 }
 
 static int leaf_open_action_cb(Ihandle* ih_item)
@@ -2109,9 +2150,24 @@ static int leaf_openfolder_action_cb(Ihandle* ih_item)
   return IUP_DEFAULT;
 }
 
-static int tree_rightclick_cb(Ihandle* ih, int id)
+static int tree_dropfiles_cb(Ihandle* projectTree, const char* filename, int num, int x, int y)
 {
-  Ihandle* projectTree = IupGetDialogChild(ih, "PROJECTTREE");
+  Ihandle* projectConfig = iScintillaDlgGetProjectConfig(projectTree);
+  int id = IupConvertXYToPos(projectTree, x, y);
+  IupSetInt(projectTree, "VALUE", id);
+
+  if (!check_inproject(projectTree, filename))
+  {
+    addFileToProjectTree(projectTree, filename);
+    IupSetAttribute(projectConfig, "MODIFIED", "YES");
+  }
+
+  (void)num;
+  return IUP_DEFAULT;
+}
+
+static int tree_rightclick_cb(Ihandle* projectTree, int id)
+{
   Ihandle *menu, *item_open, *item_remove, *item_rename, *item_copyfilename, *item_openfolder;
 
   if (id == 0)
@@ -2318,6 +2374,7 @@ static void saveProject(Ihandle *ih, Ihandle *projectConfig, int show_dialog)
       return;
   }
 
+  saveAllMarkers(ih, projectConfig);
   saveProjectOpenFiles(ih, projectConfig);
   IupConfigSave(projectConfig);
 
@@ -2343,6 +2400,8 @@ static int item_close_proj_action_cb(Ihandle* ih_item)
   if (!save_project_check(ih))
     return IUP_IGNORE;
 
+  item_closeall_action_cb(ih_item);
+
   i = 1;
   filename = IupTreeGetUserId(projectTree, i);
   while (filename != NULL)
@@ -2361,8 +2420,6 @@ static int item_close_proj_action_cb(Ihandle* ih_item)
   iupAttribSet(ih, "_IUP_PROJECT_CONFIG", NULL);
 
   IupDestroy(projectConfig);
-
-  item_closeall_action_cb(ih_item);
 
   return IUP_DEFAULT;
 }
@@ -2448,6 +2505,23 @@ static int item_add_exist_file_action_cb(Ihandle* ih_item)
   }
 
   IupDestroy(filedlg);
+  return IUP_DEFAULT;
+}
+
+static int item_add_open_file_action_cb(Ihandle* ih_item)
+{
+  Ihandle* ih = IupGetDialog(ih_item);
+  Ihandle* projectTree = IupGetDialogChild(ih, "PROJECTTREE");
+  Ihandle* projectConfig = iScintillaDlgGetProjectConfig(ih_item);
+  Ihandle* multitext = iScintillaDlgGetCurrentMultitext(ih_item);
+  char* filename = IupGetAttribute(multitext, "FILENAME");
+
+  if (!check_inproject(projectTree, filename))
+  {
+    addFileToProjectTree(projectTree, filename);
+    IupSetAttribute(projectConfig, "MODIFIED", "YES");
+  }
+
   return IUP_DEFAULT;
 }
 
@@ -3992,7 +4066,7 @@ static int iScintillaDlgCreateMethod(Ihandle* ih, void** params)
   Ihandle *sub_menu_file, *file_menu, *item_exit, *item_new, *item_open, *item_save, *item_saveas, *item_revert;
   Ihandle *sub_menu_edit, *edit_menu, *item_find, *item_find_next, *item_goto, *item_gotombrace, *item_copy, *item_paste, *item_cut, *item_delete, *item_select_all;
   Ihandle *sub_menu_project, *project_menu, *item_new_proj, *item_new_blank_proj, *item_open_proj, *item_save_proj, *item_save_proj_as,
-    *item_close_proj, *item_add_new_file, *item_add_exist_file, *item_open_proj_file, *item_open_all_proj_file, *item_remove_proj_file;
+    *item_close_proj, *item_add_new_file, *item_add_exist_file, *item_add_open_file, *item_open_proj_file, *item_open_all_proj_file, *item_remove_proj_file;
   Ihandle *item_togglemark, *item_nextmark, *item_previousmark, *item_clearmarks, *item_cutmarked, *item_copymarked, *item_pastetomarked, *item_removemarked,
     *item_invertmarks, *item_tabtospace, *item_allspacetotab, *item_leadingspacetotab;
   Ihandle *item_trimleading, *item_trimtrailing, *item_trimtraillead, *item_eoltospace, *item_fixeol, *item_removespaceeol;
@@ -4024,6 +4098,7 @@ static int iScintillaDlgCreateMethod(Ihandle* ih, void** params)
   IupSetCallback(projectTree, "RIGHTCLICK_CB", (Icallback)tree_rightclick_cb);
   IupSetCallback(projectTree, "SHOWRENAME_CB", (Icallback)tree_showrename_cb);
   IupSetCallback(projectTree, "RENAME_CB", (Icallback)tree_rename_cb);
+  IupSetCallback(projectTree, "DROPFILES_CB", (Icallback)tree_dropfiles_cb);
   IupSetCallback(projectTree, "K_DEL", (Icallback)leaf_remove_action_cb);
   IupSetCallback(projectTree, "K_F2", (Icallback)leaf_rename_action_cb);
   IupSetCallback(projectTree, "K_CR", (Icallback)leaf_open_action_cb);
@@ -4134,6 +4209,10 @@ static int iScintillaDlgCreateMethod(Ihandle* ih, void** params)
   item_add_exist_file = IupItem("Add &Existing File...", NULL);
   IupSetAttribute(item_add_exist_file, "NAME", "ITEM_ADD_EXIST_FILE");
   IupSetCallback(item_add_exist_file, "ACTION", (Icallback)item_add_exist_file_action_cb);
+
+  item_add_open_file = IupItem("Add O&pen File...", NULL);
+  IupSetAttribute(item_add_open_file, "NAME", "ITEM_ADD_OPEN_FILE");
+  IupSetCallback(item_add_open_file, "ACTION", (Icallback)item_add_open_file_action_cb);
 
   item_open_proj_file = IupItem("Open Selected &File", NULL);
   IupSetAttribute(item_open_proj_file, "NAME", "ITEM_OPEN_PROJ_FILE");
@@ -4378,6 +4457,7 @@ static int iScintillaDlgCreateMethod(Ihandle* ih, void** params)
     IupSeparator(),
     item_add_new_file,
     item_add_exist_file,
+    item_add_open_file,
     item_remove_proj_file,
     IupSeparator(),
     item_open_proj_file,
@@ -4575,9 +4655,3 @@ Ihandle* IupScintillaDlg(void)
 {
   return IupCreate("scintilladlg");
 }
-
-/* TODO:
-DROPFILES_CB adiciona os arquivos na lista.
-Modificar o menu de contexto do Tabs para incluir "Add To Project".
-O title do dialogo vai incluir também o nome do projeto. 
-*/
