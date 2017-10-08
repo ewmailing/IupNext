@@ -197,6 +197,18 @@ is affected.</p>
 controls. </p>
 <p>The dialog explores many <strong>IupScintilla</strong> features and made them 
 available through the menus. The screenshots bellow illustrates some of them.</p>
+<p>In IUP version 3.23 we added support for <strong>Projects</strong>. This is a 
+configuration file that stores a list of files that can be easily accessed from 
+a list. When a configuration file is active the bookmarks are also saved in the 
+project file instead of the global configuration file. When it is created or 
+opened the list of files is shown at left. There the user can double click to 
+open a file. Files can be added from new files, from existing files, and from 
+already open files. When a non blank project is created it inherits all the 
+current global configurations and the current opened files are automatically 
+added to the project. Only files that are saved can be added to the project. 
+Project files must be manually saved only when a files is added or removed from 
+the project, when other parameters are changed the project file is automatically 
+saved.</p>
 <h3><a name="Examples">Examples</a></h3>
 <pre>static int item_help_action_cb(void)
 {

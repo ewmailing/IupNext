@@ -4210,7 +4210,7 @@ static int iScintillaDlgCreateMethod(Ihandle* ih, void** params)
   IupSetAttribute(item_add_exist_file, "NAME", "ITEM_ADD_EXIST_FILE");
   IupSetCallback(item_add_exist_file, "ACTION", (Icallback)item_add_exist_file_action_cb);
 
-  item_add_open_file = IupItem("Add O&pen File...", NULL);
+  item_add_open_file = IupItem("Add O&pened File...", NULL);
   IupSetAttribute(item_add_open_file, "NAME", "ITEM_ADD_OPEN_FILE");
   IupSetCallback(item_add_open_file, "ACTION", (Icallback)item_add_open_file_action_cb);
 
