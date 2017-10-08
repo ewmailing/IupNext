@@ -2288,7 +2288,7 @@ static int iLuaScripterDlgCreateMethod(Ihandle* ih, void** params)
   IupSetAttribute(luaTabs, "TABTYPE", "BOTTOM");
   IupSetAttribute(luaTabs, "NAME", "LUA_TABS");
 
-  textTabs = IupGetDialogChild(ih, "TABS");
+  textTabs = IupGetDialogChild(ih, "PROJECTSPLIT");
   IupDetach(textTabs);
   split = IupSplit(textTabs, luaTabs);
   IupSetAttribute(split, "NAME", "SPLIT");
@@ -2367,12 +2367,12 @@ void IupLuaScripterDlgOpen(void)
 }
 
 /* TODO:
-- Project Menu
 - Table Inspector using IupTree
 - Find/replace in: current document or all open documents
 
-- Condicional Breakpoints, Hit Count, When Hit
+- sub-folder level for Projects
 - search results - find all
+- Condicional Breakpoints, Hit Count, When Hit
 - multi-language (Portuguese, Spanish)
 - detachable Console, Debug, Breakpoints (problem with IupGetDialogChild(NAME))?
 - detachable Multitext?
