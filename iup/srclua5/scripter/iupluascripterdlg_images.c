@@ -1,5 +1,65 @@
 #include <iup.h>
 
+static Ihandle* load_image_treeplus(void)
+{
+  unsigned char imgdata[8 * 16] =
+  {
+    0, 0, 0, 0, 0, 0, 0, 0, 
+    0, 0, 0, 0, 0, 0, 0, 0, 
+    0, 0, 0, 0, 0, 0, 0, 0, 
+    0, 0, 0, 0, 0, 0, 0, 0, 
+    0, 0, 0, 1, 1, 0, 0, 0, 
+    0, 0, 0, 1, 1, 0, 0, 0, 
+    0, 0, 0, 1, 1, 0, 0, 0, 
+    1, 1, 1, 1, 1, 1, 1, 1, 
+    1, 1, 1, 1, 1, 1, 1, 1,
+    0, 0, 0, 1, 1, 0, 0, 0,
+    0, 0, 0, 1, 1, 0, 0, 0, 
+    0, 0, 0, 1, 1, 0, 0, 0, 
+    0, 0, 0, 0, 0, 0, 0, 0, 
+    0, 0, 0, 0, 0, 0, 0, 0, 
+    0, 0, 0, 0, 0, 0, 0, 0, 
+    0, 0, 0, 0, 0, 0, 0, 0
+  };
+
+  Ihandle* image = IupImage(8, 16, imgdata);
+
+  IupSetAttribute(image, "0", "BGCOLOR");
+  IupSetAttribute(image, "1", "0 0 0");
+
+  return image;
+}
+
+static Ihandle* load_image_treeminus(void)
+{
+  unsigned char imgdata[8 * 16] =
+  {
+    0, 0, 0, 0, 0, 0, 0, 0,
+    0, 0, 0, 0, 0, 0, 0, 0,
+    0, 0, 0, 0, 0, 0, 0, 0,
+    0, 0, 0, 0, 0, 0, 0, 0,
+    0, 0, 0, 0, 0, 0, 0, 0,
+    0, 0, 0, 0, 0, 0, 0, 0,
+    0, 0, 0, 0, 0, 0, 0, 0,
+    1, 1, 1, 1, 1, 1, 1, 1,
+    1, 1, 1, 1, 1, 1, 1, 1,
+    0, 0, 0, 0, 0, 0, 0, 0,
+    0, 0, 0, 0, 0, 0, 0, 0,
+    0, 0, 0, 0, 0, 0, 0, 0,
+    0, 0, 0, 0, 0, 0, 0, 0,
+    0, 0, 0, 0, 0, 0, 0, 0,
+    0, 0, 0, 0, 0, 0, 0, 0,
+    0, 0, 0, 0, 0, 0, 0, 0
+  };
+
+  Ihandle* image = IupImage(8, 16, imgdata);
+
+  IupSetAttribute(image, "0", "BGCOLOR");
+  IupSetAttribute(image, "1", "0 0 0");
+
+  return image;
+}
+
 static Ihandle* load_image_plus(void)
 {
   unsigned char imgdata[] = {
@@ -174,5 +234,7 @@ void load_all_images_step_images(void)
   IupSetHandle("IUP_stepover", load_image_stepover());
   IupSetHandle("IUP_stepout", load_image_stepout());
   IupSetHandle("IUP_plus", load_image_plus());
+  IupSetHandle("IUP_treeplus", load_image_treeplus());
+  IupSetHandle("IUP_treeminus", load_image_treeminus());
 }
 

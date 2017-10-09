@@ -675,8 +675,8 @@ function iup.DebuggerSetLocalVariable()
     local startLevel = 5
     local level = index - 1 + startLevel  -- this is the level of the function
     
-    iup.DebuggerSetLocal(tree_local, level, id, newValue)
-    iup.DebuggerSetLocalTreeItem(tree_local, id, name, newValue) -- do not set pos
+    iup.DebuggerSetLocalValue(tree_local, level, id, newValue)
+    iup.DebuggerSetLocalTreeItem(tree_local, id, name, newValue)
   end
 end
 
@@ -690,41 +690,58 @@ function iup.DebuggerPrintLocalVariable()
 
   local pos = userdata.pos
   local value = userdata.value
-
   iup.ConsolePrint(tree_local["TITLE"..id] .. "  (pos="..pos..")")
   iup.ConsolePrintValue(value)
 end
 
 function iup.DebuggerPrintAllLocalVariables()
   local tree_local = iup.GetDialogChild(debugger.main_dialog, "TREE_LOCAL")
-  local count = tonumber(tree_local.rootcount)
+  local count = tonumber(tree_local.rootcount) -- print all at root only
 
   local luaTabs = iup.GetDialogChild(debugger.main_dialog, "LUA_TABS")
   luaTabs.valuepos = 0 -- show console tab
 
-  for id = 0, count-1 do
+  local id = 0
+  for i = 0, count-1 do
     local userdata = iup.TreeGetUserId(tree_local, id)
     local pos = userdata.pos
     local value = userdata.value
 
     iup.ConsolePrint(tree_local["TITLE"..id] .. "  (pos="..pos..")")
     iup.ConsolePrintValue(value)
+
+    id = tree_local["NEXT"..id]
   end
 end
 
-function iup.DebuggerSetLocal(tree_local, level, id, newValue)
+function iup.DebuggerSetLocalTableValue(tree_local, name, id, newValue)
+  local parentId = tree_local["parent"..id]
+  local parentUdata = iup.TreeGetUserId(tree_local, parentId)
+  local parent = parentUdata.value
+  parent[name] = newValue
+end
+
+function iup.DebuggerSetLocalValue(tree_local, level, id, newValue)
   local userdata = iup.TreeGetUserId(tree_local, id)
-  local pos = userdata.pos
-  local tree_value = tree_local["TITLE"..id]
-  local s = string.sub(tree_value, 1, 3)
-  if s == ":: " then
-    debug.setupvalue(tree_local.func, pos, newValue)
+  local depth = tonumber(tree_local["depth"..id])
+
+  if depth > 0 then
+    iup.DebuggerSetLocalTableValue(tree_local, userdata.name, id, newValue)
   else
-    level = level + 1 -- this is the level inside this function
-    debug.setlocal(level, pos, newValue)
+    local pos = userdata.pos
+    local s = string.sub(userdata.name, 1, 3)
+    if s == ":: " then
+      debug.setupvalue(tree_local.func, pos, newValue)
+    else
+     level = level + 1 -- this is the level inside this function
+     debug.setlocal(level, pos, newValue)
+    end
   end
+
+  userdata.value = newValue
 end
 
+--[[  UNUSED
 function iup.DebuggerGetLocal(tree_local, level, id)
   local name, value
   local userdata = iup.TreeGetUserId(tree_local, id)
@@ -739,6 +756,7 @@ function iup.DebuggerGetLocal(tree_local, level, id)
   end
   return name, value
 end
+]]
 
 function iup.DebuggerLocalVariablesTreeAction(tree_local, id)
   local userdata = iup.TreeGetUserId(tree_local, id)
@@ -750,34 +768,86 @@ function iup.DebuggerLocalVariablesTreeAction(tree_local, id)
   end
 end
 
-function iup.DebuggerSetLocalTreeItem(tree_local, id, name, value)
-  local valueType = type(value)
+function iup.DebuggerLocalVariablesBranchOpenAction(tree_local, id)
   local userdata = iup.TreeGetUserId(tree_local, id)
+  local tableValue = userdata.value
+  local pos = userdata.pos
   
-  if valueType ~= "string" and valueType ~= "number" and valueType ~= "boolean" then
-    tree_local["TITLE"..id] = name .. " = <" .. tostring(value) .. ">"
-  else
-    tree_local["TITLE"..id] = name .. " = " .. tostring(value) .. " <" .. valueType .. ">"
+  if type(tableValue) ~= "table" or userdata.expanded then
+    return
+  end
+  
+  local dummy_id = id + 1
+  userdata.expanded = true
+
+  id = dummy_id
+
+  -- the same algorithm used in ConsolePrintTable
+  local name
+  local tmp = {}
+  for name, value in ipairs(tableValue) do 
+    id = iup.DebuggerAddLocalTreeItem(tree_local, id, name, value, pos)
+    tmp[name] = true
+  end
+  for name, value in pairs(tableValue) do 
+    if (not tmp[name]) then
+      id = iup.DebuggerAddLocalTreeItem(tree_local, id, name, value, pos)
+    end
   end
 
-  userdata.value = value
+  iup.DebuggerSetDialogChildAttrib("TREE_LOCAL", "DELNODE"..dummy_id, "SELECTED")
+end
+
+function iup.DebuggerSetLocalTreeItem(tree_local, id, name, value)
+  local depth = tonumber(tree_local["depth"..id])
+  local pref = ""
+  local suff = ""
+  if depth and depth > 0 then
+    pref = "["
+    suff = "]"
+  end
+
+  local valueType = type(value)
+  if valueType ~= "string" and valueType ~= "number" and valueType ~= "boolean" then
+    tree_local["TITLE"..id] = pref .. name .. suff .. " = <" .. tostring(value) .. ">"
+  else
+    tree_local["TITLE"..id] = pref .. name .. suff .. " = " .. tostring(value) .. " <" .. valueType .. ">"
+  end
 end
 
 function iup.DebuggerAddLocalTreeItem(tree_local, id, name, value, pos)
   local valueType = type(value)
   local userdata = {}
-  
-  if valueType ~= "string" and valueType ~= "number" and valueType ~= "boolean" then
-    tree_local["ADDLEAF"..id] = name .. " = <" .. tostring(value) .. ">"
+  local lastAddedNode
+
+  local depth = tonumber(tree_local["depth"..id])
+  local pref = ""
+  local suff = ""
+  if depth and depth > 0 then
+    pref = "["
+    suff = "]"
+  end
+
+  if valueType == "table" then
+    tree_local["INSERTBRANCH"..id] = pref .. name .. suff .. " = " .. tostring(value) .. " <" .. valueType .. ">"
+    lastAddedNode = tree_local.lastaddnode
+    tree_local["ADDLEAF"..lastAddedNode] = "dummy"
+    userdata.expanded = false
+  elseif valueType ~= "string" and valueType ~= "number" and valueType ~= "boolean" then
+    tree_local["INSERTLEAF"..id] = pref .. name .. suff  .. " = <" .. tostring(value) .. ">"
+    lastAddedNode = tree_local.lastaddnode
   else
-    tree_local["ADDLEAF"..id] = name .. " = " .. tostring(value) .. " <" .. valueType .. ">"
+    tree_local["INSERTLEAF"..id] = pref .. name .. suff  .. " = " .. tostring(value) .. " <" .. valueType .. ">"
+    lastAddedNode = tree_local.lastaddnode
   end
   
   userdata.name = name
   userdata.value = value
   userdata.pos = pos
   
-  iup.TreeSetUserId(tree_local, tree_local.lastaddnode, userdata)
+  iup.TreeSetUserId(tree_local, lastAddedNode, userdata)
+  
+  return tonumber(lastAddedNode)
 end
 
 function iup.DebuggerUpdateLocalVariablesTree(level)
@@ -795,8 +865,7 @@ function iup.DebuggerUpdateLocalVariablesTree(level)
   name, value = debug.getlocal(level, pos)
   while name ~= nil do
     if string.sub(name, 1, 1) ~= "(" then  -- do not include internal variables (loop control variables, temporaries, etc).
-      iup.DebuggerAddLocalTreeItem(tree_local, id, name, value, pos)
-      id = id + 1
+      id = iup.DebuggerAddLocalTreeItem(tree_local, id, name, value, pos)
     end
 
     pos = pos + 1
@@ -808,8 +877,7 @@ function iup.DebuggerUpdateLocalVariablesTree(level)
   name, value = debug.getlocal(level, pos)
   while name ~= nil do
     name = "vararg[" .. -pos .. "]"
-    iup.DebuggerAddLocalTreeItem(tree_local, id, name, value, pos)
-    id = id + 1
+    id = iup.DebuggerAddLocalTreeItem(tree_local, id, name, value, pos)
 
     pos = pos - 1
     name, value = debug.getlocal(level, pos)
@@ -822,8 +890,7 @@ function iup.DebuggerUpdateLocalVariablesTree(level)
     name, value = debug.getupvalue(call.func, pos)
     while name ~= nil do
       name = ":: " .. name
-      iup.DebuggerAddLocalTreeItem(tree_local, id, name, value, pos)
-      id = id + 1
+      id = iup.DebuggerAddLocalTreeItem(tree_local, id, name, value, pos)
 
       pos = pos + 1
       name, value = debug.getupvalue(call.func, pos)
@@ -1148,7 +1215,7 @@ function iup.DebuggerUpdateGlobalsTree()
     iup.DebuggerSetGlobalsTreeItem(tree_global, id, name, value)
 
     id = id + 1
-	userdata = iup.TreeGetUserId(tree_global, id)
+    userdata = iup.TreeGetUserId(tree_global, id)
   end
 end
 

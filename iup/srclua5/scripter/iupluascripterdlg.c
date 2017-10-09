@@ -1363,6 +1363,18 @@ static int tree_locals_action_cb(Ihandle *ih, int id, int v)
   return IUP_DEFAULT;
 }
 
+static int tree_locals_branchopen_cb(Ihandle *ih, int id)
+{
+  lua_State* L;
+
+  L = (lua_State*)IupGetAttribute(ih, "LUASTATE");
+  iuplua_push_name(L, "DebuggerLocalVariablesBranchOpenAction");
+  iuplua_pushihandle(L, ih);
+  lua_pushinteger(L, id);
+  iuplua_call_raw(L, 2, 0);
+  return IUP_DEFAULT;
+}
+
 static int tree_globals_action_cb(Ihandle *ih, int index, int v)
 {
   lua_State* L;
@@ -1635,12 +1647,13 @@ static Ihandle *buildTabDebug(void)
   IupSetAttribute(tree_local, "NAME", "TREE_LOCAL");
   IupSetAttribute(tree_local, "TIP", "List of local variables at selected stack level (ordered by pos)");
   IupSetAttribute(tree_local, "ADDROOT", "NO");
-//  IupSetAttribute(tree_local, "ADDEXPANDED", "NO");
   IupSetAttribute(tree_local, "HIDELINES", "YES");
   IupSetAttribute(tree_local, "IMAGELEAF", "IMGEMPTY");
-  IupSetAttribute(tree_local, "IMAGEBRANCHCOLLAPSED", "IMGEMPTY");
-  IupSetAttribute(tree_local, "IMAGEBRANCHEXPANDED", "IMGEMPTY");
+  IupSetAttribute(tree_local, "IMAGEBRANCHCOLLAPSED", "IUP_treeplus");
+  IupSetAttribute(tree_local, "IMAGEBRANCHEXPANDED", "IUP_treeminus");
+  IupSetAttribute(tree_local, "ADDEXPANDED", "NO");
   IupSetCallback(tree_local, "SELECTION_CB", (Icallback)tree_locals_action_cb);
+  IupSetCallback(tree_local, "BRANCHOPEN_CB", (Icallback)tree_locals_branchopen_cb);
 
   button_printLocal = IupButton(NULL, NULL);
   IupSetAttribute(button_printLocal, "ACTIVE", "NO");
@@ -2237,8 +2250,6 @@ static int iLuaScripterDlgCreateMethod(Ihandle* ih, void** params)
 
   L = (lua_State*)IupGetGlobal("_IUP_LUA_DEFAULT_STATE");
 
-  load_all_images_step_images();
-
 #if LUA_VERSION_NUM < 502
   lua_pushliteral(L, LUA_RELEASE "  " LUA_COPYRIGHT);
 #else
@@ -2345,6 +2356,9 @@ static Iclass* iupLuaScripterDlgNewClass(void)
   ic->has_attrib_id = 1;   /* has attributes with IDs that must be parsed */
 
   iupClassRegisterReplaceAttribDef(ic, "SUBTITLE", IUPAF_SAMEASSYSTEM, "Scripter");
+
+  if (!IupGetHandle("IUP_stepinto"))
+    load_all_images_step_images();
 
   return ic;
 }
