@@ -3,7 +3,7 @@
 local l_main_x = 33
 g_main_x = 44
 
-local t = {1, "xx"}
+local t = {1, "xx", _G}
 
 for i = 1, 10 do
   l_main_x = l_main_x + 1
