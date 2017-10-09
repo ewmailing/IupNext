@@ -124,11 +124,12 @@ and Upvalues (<span style="color: rgb(0, 0, 0); font-family: Helvetica, Arial, s
 local variables).</span></span></span> Varargs don't have names, so we list them 
 as if a table called "vararg" was created and each element of the table is 
 listed separately. Upvalues are listed last with a ":: " prefix, used simply to 
-distinguish them from the other variables. For now a local variable can be changed only if it is a string or a 
+distinguish them from the other variables. For now, a local variable can be changed only if it is a 
+boolean, string or a 
 number. Variable arguments (vararg) are displayed only for Lua version 5.2 or newer.
 <span style="color: rgb(0, 0, 0); font-family: Helvetica, Arial, sans-serif; font-size: medium; font-style: normal; font-variant-ligatures: normal; font-variant-caps: normal; font-weight: normal; letter-spacing: normal; orphans: 2; text-align: justify; text-indent: 0px; text-transform: none; white-space: normal; widows: 2; word-spacing: 0px; -webkit-text-stroke-width: 0px; background-color: rgb(255, 255, 255); text-decoration-style: initial; text-decoration-color: initial; display: inline !important; float: none;">
 (Vararg<span>&nbsp;and Upvalues since 3.23)</span></span></p>
-<p>When printed, locals and stack display also debug information. </p>
+<p>When printed, locals or stack, it display also some debug information:</p>
 <pre>l_main_x = 43 (pos=1)
 43</pre>
 <p>and</p>
