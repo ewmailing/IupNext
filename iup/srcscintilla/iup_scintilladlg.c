@@ -46,7 +46,7 @@ static void saveMarkers(Ihandle* config, Ihandle* multitext)
   count = IupConfigGetVariableInt(config, "SciBookmarks", "Count");
 
   /* clear all bookmarks for this filename and compact list */
-  for (i = 1; i <= count; )
+  for (i = 1; i <= count;)
   {
     value = IupConfigGetVariableStrId(config, "SciBookmarks", "FileLine", i);
     iupStrToStrStr(value, filename, line_str, '#');
@@ -79,7 +79,7 @@ static void saveMarkers(Ihandle* config, Ihandle* multitext)
   IupConfigSetVariableInt(config, "SciBookmarks", "Count", count);
 
   /* make sure some older bookmarks are not saved in the configuration file (at least 10) */
-  for (i = count+1; i <= count+1 + 10; i++)
+  for (i = count + 1; i <= count + 1 + 10; i++)
     IupConfigSetVariableStrId(config, "SciBookmarks", "FileLine", i, NULL);
 
 
@@ -118,7 +118,7 @@ static void restoreMarkers(Ihandle* config, Ihandle* multitext)
     {
       unsigned int markerMask;
       int has_bookmark;
-      
+
       iupStrToInt(line_str, &line);
 
       markerMask = (unsigned int)IupGetIntId(multitext, "MARKERGET", line);
@@ -715,6 +715,71 @@ static void openFolder(char *filename)
   IupExecute(exec, folder);
 }
 
+static int multitext_caret_cb(Ihandle* multitext, int lin, int col);
+
+static int searchInFile(Ihandle* multitext, Ihandle *find_txt, int find_start, int find_end, int wrap, int down, int casesensitive, int whole_word, int regexp, int posix)
+{
+  char* str_to_find;
+  char flags[80];
+  int pos_start, pos_end;
+  int found = 0;
+
+  flags[0] = 0;
+  if (casesensitive)
+    strcpy(flags, "MATCHCASE");
+  if (whole_word)
+    strcat((flags[0] != 0 ? strcat(flags, " | ") : flags), "WHOLEWORD");
+  if (regexp)
+    strcat((flags[0] != 0 ? strcat(flags, " | ") : flags), "REGEXP");
+  if (posix)
+    strcat((flags[0] != 0 ? strcat(flags, " | ") : flags), "POSIX");
+
+  if (flags[0] != 0)
+    IupSetAttribute(multitext, "SEARCHFLAGS", flags);
+  else
+    IupSetAttribute(multitext, "SEARCHFLAGS", NULL);
+
+  IupSetInt(multitext, "TARGETSTART", find_start);
+  IupSetInt(multitext, "TARGETEND", find_end);
+
+  str_to_find = IupGetAttribute(find_txt, "VALUE");
+  IupSetAttribute(multitext, "SEARCHINTARGET", str_to_find);
+
+  pos_start = IupGetInt(multitext, "TARGETSTART");
+  pos_end = IupGetInt(multitext, "TARGETEND");
+
+  if (pos_start == find_start && pos_end == find_end && wrap)
+  {
+    /* if not found and wrap search again in the complementary region */
+    find_end = find_start;
+    find_start = down ? 0 : IupGetInt(multitext, "COUNT");
+
+    IupSetInt(multitext, "TARGETSTART", find_start);
+    IupSetInt(multitext, "TARGETEND", find_end);
+
+    str_to_find = IupGetAttribute(find_txt, "VALUE");
+    IupSetAttribute(multitext, "SEARCHINTARGET", str_to_find);
+
+    pos_start = IupGetInt(multitext, "TARGETSTART");
+    pos_end = IupGetInt(multitext, "TARGETEND");
+  }
+
+  if (pos_start != find_start || pos_end != find_end)
+  {
+    int lin, col;
+
+    IupSetFocus(multitext);
+    IupSetfAttribute(multitext, "SELECTIONPOS", "%d:%d", pos_start, pos_end);
+
+    /* update statusbar */
+    IupTextConvertPosToLinCol(multitext, pos_end, &lin, &col);
+    multitext_caret_cb(multitext, lin, col);
+    found = 1;
+  }
+
+  return found;
+}
+
 /********************************** Interface Utilities *****************************************/
 
 static Ihandle* get_project_tree(Ihandle* ih_item)
@@ -791,7 +856,7 @@ static int multitext_updateselection_cb(Ihandle* multitext)
     IupSetAttribute(multitext, "SEARCHFLAGS", "WHOLEWORD");
 
     find_start = -1;
-    find_end =  IupGetInt(multitext, "COUNT") + 1;
+    find_end = IupGetInt(multitext, "COUNT") + 1;
 
     IupSetInt(multitext, "TARGETSTART", find_start);
     IupSetInt(multitext, "TARGETEND", find_end);
@@ -804,7 +869,7 @@ static int multitext_updateselection_cb(Ihandle* multitext)
     while (find_start != startPos && find_end != endPos)
     {
       IupSetfAttribute(multitext, "INDICATORFILLRANGE", "%d:%d", startPos, endPos - startPos);
-      
+
       find_start = endPos;
       find_end = IupGetInt(multitext, "COUNT");
       IupSetInt(multitext, "TARGETSTART", find_start);
@@ -1485,7 +1550,7 @@ static int item_open_action_cb(Ihandle* ih_item)
   IupSetStrAttribute(filedlg, "DIRECTORY", dir);
 
   IupPopup(filedlg, IUP_CENTERPARENT, IUP_CENTERPARENT);
-  
+
   if (IupGetInt(filedlg, "STATUS") != -1)
   {
     char* filename = IupGetAttribute(filedlg, "VALUE");
@@ -1791,19 +1856,19 @@ static int item_pagesetup_action_cb(Ihandle* ih_item)
   color_index = getListIndex(color, color_list);
 
   if (IupGetParam("Page Setup", setparent_param_cb, IupGetDialog(ih_item),
-                   "Margin Left: %R\n"
-                   "Margin Right: %R\n"
-                   "Margin Top: %R\n"
-                   "Margin Bottom: %R\n"
-                   "Margin Units: %l|Pixels|Inch|Cm|\n"
-                   "Word Wrap: %l|None|Char|Word|\n"
-                   "Color: %l|Normal|Invert Light|Black on White|Color on White|\n"
-                   "Magnification: %i\n",
-                   &margin_left, &margin_top, &margin_right, &margin_bottom, 
-                   &margin_units_index, &word_wrap_index, &color_index,
-                   &magnification,
-                   NULL))
-  { 
+    "Margin Left: %R\n"
+    "Margin Right: %R\n"
+    "Margin Top: %R\n"
+    "Margin Bottom: %R\n"
+    "Margin Units: %l|Pixels|Inch|Cm|\n"
+    "Word Wrap: %l|None|Char|Word|\n"
+    "Color: %l|Normal|Invert Light|Black on White|Color on White|\n"
+    "Magnification: %i\n",
+    &margin_left, &margin_top, &margin_right, &margin_bottom,
+    &margin_units_index, &word_wrap_index, &color_index,
+    &magnification,
+    NULL))
+  {
     margin_units = getListValue(margin_units_index, margin_units_list);
     word_wrap = getListValue(word_wrap_index, word_wrap_list);
     color = getListValue(color_index, color_list);
@@ -1856,8 +1921,8 @@ static int item_addtoproject_action_cb(Ihandle* ih_item)
 
 static int tabs_rightclick_cb(Ihandle* tabs, int pos)
 {
-  Ihandle *menu, *item_close, *item_revert, *item_save, *item_closeall, *item_closeall_butthis, 
-          *item_openfolder, *item_copyfilename, *item_addtoproject;
+  Ihandle *menu, *item_close, *item_revert, *item_save, *item_closeall, *item_closeall_butthis,
+    *item_openfolder, *item_copyfilename, *item_addtoproject;
   Ihandle* multitext = IupGetChild(tabs, pos);
   char* filename = IupGetAttribute(multitext, "FILENAME");
   int dirty = IupGetInt(multitext, "MODIFIED");
@@ -2531,7 +2596,7 @@ static int item_open_proj_file_action_cb(Ihandle* ih_item)
   Ihandle* projectTree = IupGetDialogChild(ih_item, "PROJECTTREE");
 
   int id = IupGetInt(projectTree, "VALUE");
-  if (id<1)
+  if (id < 1)
     return IUP_DEFAULT;
 
   filename = IupTreeGetUserId(projectTree, id);
@@ -2750,7 +2815,7 @@ static int item_goto_action_cb(Ihandle* ih_item)
     int line = IupGetInt(txt, "VALUE");
     int pos;
     IupTextConvertLinColToPos(multitext, line - 1, 0, &pos);  /* in Scintilla lin and col start at 0 */
-    IupSetAttributeId(multitext, "ENSUREVISIBLE", line-1, NULL);
+    IupSetAttributeId(multitext, "ENSUREVISIBLE", line - 1, NULL);
     IupSetInt(multitext, "CARETPOS", pos);
     IupSetInt(multitext, "SCROLLTOPOS", pos);
   }
@@ -3016,6 +3081,30 @@ static int item_leadingspacetotab_action_cb(Ihandle* ih_item)
   return IUP_DEFAULT;
 }
 
+static int lst_search_in_action_cb(Ihandle* ih, char *text, int item, int state)
+{
+  Ihandle* find_dlg = (Ihandle*)IupGetAttribute(ih, "FIND_DIALOG");
+  Ihandle* dirMode = IupGetDialogChild(find_dlg, "DIRECTION_RADIO");
+  Ihandle* wrap = IupGetDialogChild(find_dlg, "WRAP");
+
+  IupSetAttribute(dirMode, "VALUE_HANDLE", (char*)IupGetDialogChild(find_dlg, "DOWN"));
+  IupSetAttribute(wrap, "VALUE", "OFF");
+
+  if (item == 2 && state == 1)
+  {
+    IupSetAttribute(dirMode, "ACTIVE", "NO");
+    IupSetAttribute(wrap, "ACTIVE", "NO");
+  }
+  else
+  {
+    IupSetAttribute(dirMode, "ACTIVE", "YES");
+    IupSetAttribute(wrap, "ACTIVE", "YES");
+  }
+
+  (void)text;
+  return IUP_DEFAULT;
+}
+
 static int find_next_action_cb(Ihandle* ih_item)
 {
   /* this callback can be called from the main dialog also */
@@ -3024,17 +3113,20 @@ static int find_next_action_cb(Ihandle* ih_item)
   {
     char* str_to_find;
     Ihandle* ih = IupGetAttributeHandle(find_dlg, "PARENTDIALOG");
-    Ihandle* multitext = iScintillaDlgGetCurrentMultitext(ih);
+    Ihandle* tabs = IupGetDialogChild(ih, "TABS");
+    Ihandle* currentMultitext = iScintillaDlgGetCurrentMultitext(ih);
+    Ihandle *multitext = currentMultitext;
     Ihandle* find_txt = IupGetDialogChild(find_dlg, "FIND_TEXT");
+    int count = IupGetInt(tabs, "COUNT");
+    int find_start, find_end;
+    int found = 0;
+    int i;
 
     /* test again, because it can be called from the hot key */
     str_to_find = IupGetAttribute(find_txt, "VALUE");
     if (str_to_find && str_to_find[0] != 0)
     {
-      char flags[80];
-      int find_start, find_end;
-      int pos_start, pos_end;
-
+      int searchIn = IupGetInt(IupGetDialogChild(find_dlg, "LST_SEARCH_IN"), "VALUE");
       int wrap = IupGetInt(IupGetDialogChild(find_dlg, "WRAP"), "VALUE");
       int down = IupGetInt(IupGetDialogChild(find_dlg, "DOWN"), "VALUE");
       int casesensitive = IupGetInt(IupGetDialogChild(find_dlg, "FIND_CASE"), "VALUE");
@@ -3042,70 +3134,43 @@ static int find_next_action_cb(Ihandle* ih_item)
       int regexp = IupGetInt(IupGetDialogChild(find_dlg, "REG_EXP"), "VALUE");
       int posix = IupGetInt(IupGetDialogChild(find_dlg, "POSIX"), "VALUE");
 
-      flags[0] = 0;
-      if (casesensitive)
-        strcpy(flags, "MATCHCASE");
-      if (whole_word)
-        strcat((flags[0] != 0 ? strcat(flags, " | ") : flags), "WHOLEWORD");
-      if (regexp)
-        strcat((flags[0] != 0 ? strcat(flags, " | ") : flags), "REGEXP");
-      if (posix)
-        strcat((flags[0] != 0 ? strcat(flags, " | ") : flags), "POSIX");
-
-      if (flags[0] != 0)
-        IupSetAttribute(multitext, "SEARCHFLAGS", flags);
-      else
-        IupSetAttribute(multitext, "SEARCHFLAGS", NULL);
-
-      if (!down && IupGetAttribute(multitext, "SELECTIONPOS"))
+      if (!down && IupGetAttribute(currentMultitext, "SELECTIONPOS"))
       {
         int st, ed;
-        IupGetIntInt(multitext, "SELECTIONPOS", &st, &ed);
+        IupGetIntInt(currentMultitext, "SELECTIONPOS", &st, &ed);
         find_start = st;
       }
       else
-        find_start = IupGetInt(multitext, "CARETPOS");
+        find_start = IupGetInt(currentMultitext, "CARETPOS");
 
-      find_end = down ? IupGetInt(multitext, "COUNT") : 0;
+      find_end = down ? IupGetInt(currentMultitext, "COUNT") : 0;
 
-      IupSetInt(multitext, "TARGETSTART", find_start);
-      IupSetInt(multitext, "TARGETEND", find_end);
+      if (searchIn == 1)
+        count = 1;
 
-      str_to_find = IupGetAttribute(find_txt, "VALUE");
-      IupSetAttribute(multitext, "SEARCHINTARGET", str_to_find);
-
-      pos_start = IupGetInt(multitext, "TARGETSTART");
-      pos_end = IupGetInt(multitext, "TARGETEND");
-
-      if (pos_start == find_start && pos_end == find_end && wrap)
+      for (i = 0; i < count; i++)
       {
-        /* if not found and wrap search again in the complementary region */
-        find_end = find_start;
-        find_start = down ? 0 : IupGetInt(multitext, "COUNT");
+        found = searchInFile(multitext, find_txt, find_start, find_end, wrap, down, casesensitive, whole_word, regexp, posix);
 
-        IupSetInt(multitext, "TARGETSTART", find_start);
-        IupSetInt(multitext, "TARGETEND", find_end);
+        if (found)
+        {
+          if ((Ihandle*)IupGetAttribute(tabs, "VALUE_HANDLE") != multitext)
+            IupSetAttribute(tabs, "VALUE_HANDLE", (char *)multitext);
+          break;
+        }
 
-        str_to_find = IupGetAttribute(find_txt, "VALUE");
-        IupSetAttribute(multitext, "SEARCHINTARGET", str_to_find);
+        find_start = 0;
+        find_end = IupGetInt(currentMultitext, "COUNT");
 
-        pos_start = IupGetInt(multitext, "TARGETSTART");
-        pos_end = IupGetInt(multitext, "TARGETEND");
+        if (multitext->brother)
+          multitext = multitext->brother;
+        else
+          multitext = tabs->firstchild;
       }
 
-      if (pos_start != find_start || pos_end != find_end)
+      if (!found)
       {
-        int lin, col;
-
-        IupSetFocus(multitext);
-        IupSetfAttribute(multitext, "SELECTIONPOS", "%d:%d", pos_start, pos_end);
-
-        /* update statusbar */
-        IupTextConvertPosToLinCol(multitext, pos_end, &lin, &col);
-        multitext_caret_cb(multitext, lin, col);
-      }
-      else
-      {
+        Ihandle* multitext = iScintillaDlgGetCurrentMultitext(ih);
         /* update statusbar */
         Ihandle *lbl_statusbar = IupGetDialogChild(multitext, "STATUSBAR");
         IupSetfAttribute(lbl_statusbar, "TITLE", "Text \"%s\" not found.", str_to_find);
@@ -3153,10 +3218,14 @@ static int find_replace_all_action_cb(Ihandle* bt_replace)
     char* str_to_find;
     char* str_to_replace;
     Ihandle* ih = IupGetAttributeHandle(find_dlg, "PARENTDIALOG");
-    Ihandle* multitext = iScintillaDlgGetCurrentMultitext(ih);
+    Ihandle* tabs = IupGetDialogChild(ih, "TABS");
+    Ihandle* currentMultitext = iScintillaDlgGetCurrentMultitext(ih);
+    Ihandle* multitext = currentMultitext;
     Ihandle* replace_txt = IupGetDialogChild(find_dlg, "REPLACE_TEXT");
     Ihandle* find_txt = IupGetDialogChild(find_dlg, "FIND_TEXT");
-    
+    int count = IupGetInt(tabs, "COUNT");
+    int i;
+
     /* test again, because it can be called from the hot key */
     str_to_find = IupGetAttribute(find_txt, "VALUE");
     if (str_to_find && str_to_find[0] != 0)
@@ -3165,6 +3234,7 @@ static int find_replace_all_action_cb(Ihandle* bt_replace)
       int find_start, find_end;
       int pos_start, pos_end;
 
+      int searchIn = IupGetInt(IupGetDialogChild(find_dlg, "LST_SEARCH_IN"), "VALUE");
       int casesensitive = IupGetInt(IupGetDialogChild(find_dlg, "FIND_CASE"), "VALUE");
       int whole_word = IupGetInt(IupGetDialogChild(find_dlg, "WHOLE_WORD"), "VALUE");
       int regexp = IupGetInt(IupGetDialogChild(find_dlg, "REG_EXP"), "VALUE");
@@ -3180,31 +3250,17 @@ static int find_replace_all_action_cb(Ihandle* bt_replace)
       if (posix)
         strcat((flags[0] != 0 ? strcat(flags, " | ") : flags), "POSIX");
 
-      if (flags[0] != 0)
-        IupSetAttribute(multitext, "SEARCHFLAGS", flags);
-      else
-        IupSetAttribute(multitext, "SEARCHFLAGS", NULL);
+      if (searchIn == 1)
+        count = 1;
 
-      find_start = 0;
-      find_end = IupGetInt(multitext, "COUNT");
-
-      IupSetInt(multitext, "TARGETSTART", find_start);
-      IupSetInt(multitext, "TARGETEND", find_end);
-
-      str_to_find = IupGetAttribute(find_txt, "VALUE");
-      IupSetAttribute(multitext, "SEARCHINTARGET", str_to_find);
-
-      pos_start = IupGetInt(multitext, "TARGETSTART");
-      pos_end = IupGetInt(multitext, "TARGETEND");
-
-      IupSetAttribute(multitext, "UNDOACTION", "BEGIN");
-
-      while (find_start != pos_start || find_end != pos_end)
+      for (i = 0; i < count; i++)
       {
-        str_to_replace = IupGetAttribute(replace_txt, "VALUE");
-        IupSetAttribute(multitext, "REPLACETARGET", str_to_replace);
+        if (flags[0] != 0)
+          IupSetAttribute(multitext, "SEARCHFLAGS", flags);
+        else
+          IupSetAttribute(multitext, "SEARCHFLAGS", NULL);
 
-        find_start = IupGetInt(multitext, "TARGETEND");
+        find_start = 0;
         find_end = IupGetInt(multitext, "COUNT");
 
         IupSetInt(multitext, "TARGETSTART", find_start);
@@ -3215,9 +3271,34 @@ static int find_replace_all_action_cb(Ihandle* bt_replace)
 
         pos_start = IupGetInt(multitext, "TARGETSTART");
         pos_end = IupGetInt(multitext, "TARGETEND");
-      }
 
-      IupSetAttribute(multitext, "UNDOACTION", "END");
+        IupSetAttribute(multitext, "UNDOACTION", "BEGIN");
+
+        while (find_start != pos_start || find_end != pos_end)
+        {
+          str_to_replace = IupGetAttribute(replace_txt, "VALUE");
+          IupSetAttribute(multitext, "REPLACETARGET", str_to_replace);
+
+          find_start = IupGetInt(multitext, "TARGETEND");
+          find_end = IupGetInt(multitext, "COUNT");
+
+          IupSetInt(multitext, "TARGETSTART", find_start);
+          IupSetInt(multitext, "TARGETEND", find_end);
+
+          str_to_find = IupGetAttribute(find_txt, "VALUE");
+          IupSetAttribute(multitext, "SEARCHINTARGET", str_to_find);
+
+          pos_start = IupGetInt(multitext, "TARGETSTART");
+          pos_end = IupGetInt(multitext, "TARGETEND");
+        }
+
+        IupSetAttribute(multitext, "UNDOACTION", "END");
+
+        if (multitext->brother)
+          multitext = multitext->brother;
+        else
+          multitext = tabs->firstchild;
+      }
     }
   }
 
@@ -3244,7 +3325,7 @@ static int find_close_action_cb(Ihandle* bt_close)
   IupConfigSetVariableStr(config, "ScintillaFind", "Wrap", IupGetAttribute(wrap, "VALUE"));
   IupConfigSetVariableStr(config, "ScintillaFind", "SearchMode", IupGetAttribute((Ihandle*)IupGetAttribute(searchMode, "VALUE_HANDLE"), "NAME"));
   IupConfigSetVariableStr(config, "ScintillaFind", "SearchDir", IupGetAttribute((Ihandle*)IupGetAttribute(dirMode, "VALUE_HANDLE"), "NAME"));
-    
+
   IupConfigDialogClosed(config, find_dlg, "ScintillaFind");
 
   IupHide(find_dlg);  /* do not destroy, just hide */
@@ -3253,7 +3334,7 @@ static int find_close_action_cb(Ihandle* bt_close)
 
 static Ihandle* create_find_dialog(Ihandle* ih_item)
 {
-  Ihandle *box, *bt_next, *bt_close, *txt, *find_dlg;
+  Ihandle *box, *bt_next, *bt_close, *txt, *lst_search_in, *find_dlg;
   Ihandle *find_case, *whole_word, *mode, *normal, *reg_exp, *posix, *wrap, *up, *down;
   Ihandle *flags, *direction, *searchRadio, *directionRadio;
   Ihandle *txt_replace, *bt_replace, *bt_replace_all;
@@ -3266,6 +3347,14 @@ static Ihandle* create_find_dialog(Ihandle* ih_item)
   txt_replace = IupText(NULL);
   IupSetAttribute(txt_replace, "NAME", "REPLACE_TEXT");
   IupSetAttribute(txt_replace, "EXPAND", "HORIZONTAL");
+  lst_search_in = IupList(NULL);
+  IupSetAttribute(lst_search_in, "NAME", "LST_SEARCH_IN");
+  IupSetAttribute(lst_search_in, "EXPAND", "HORIZONTAL");
+  IupSetAttribute(lst_search_in, "DROPDOWN", "YES");
+  IupSetAttribute(lst_search_in, "1", "Current Document");
+  IupSetAttribute(lst_search_in, "2", "All Open Documents");
+  IupSetAttribute(lst_search_in, "VALUE", "1");
+  IupSetCallback(lst_search_in, "ACTION", (Icallback)lst_search_in_action_cb);
   find_case = IupToggle("Match Case", NULL);
   IupSetAttribute(find_case, "NAME", "FIND_CASE");
   whole_word = IupToggle("Match Whole Word", NULL);
@@ -3321,18 +3410,20 @@ static Ihandle* create_find_dialog(Ihandle* ih_item)
     txt,
     IupSetAttributes(IupLabel("Replace with:"), "NAME=REPLACE_LABEL"),
     txt_replace,
+    IupLabel("Search in:"),
+    lst_search_in,
     IupHbox(
-      flags,
-      direction,
-      mode,
-      NULL),
+    flags,
+    direction,
+    mode,
+    NULL),
     IupSetAttributes(IupLabel(NULL), "SEPARATOR=HORIZONTAL"),
     IupSetAttributes(IupHbox(
-      IupFill(),
-      bt_next,
-      bt_replace,
-      bt_replace_all,
-      bt_close,
+    IupFill(),
+    bt_next,
+    bt_replace,
+    bt_replace_all,
+    bt_close,
     NULL), "NORMALIZESIZE=HORIZONTAL"),
     NULL);
   IupSetAttribute(box, "NMARGIN", "10x10");
@@ -3593,9 +3684,9 @@ static int item_tab_action_cb(Ihandle* ih_item)
   int tabSize = IupConfigGetVariableIntDef(config, "ScintillaFormat", "TabSize", 8);
 
   if (IupGetParam("Tab Settings", setparent_param_cb, IupGetDialog(ih_item),
-                   "Size: %i\n"
-                   "Replace by Whitespace: %b\n", 
-                   &tabSize, &replaceBySpace, NULL))
+    "Size: %i\n"
+    "Replace by Whitespace: %b\n",
+    &tabSize, &replaceBySpace, NULL))
   {
 
     for (multitext = tabs->firstchild; multitext; multitext = multitext->brother)
@@ -4481,31 +4572,31 @@ static int iScintillaDlgCreateMethod(Ihandle* ih, void** params)
     item_gotombrace,
     IupSeparator(),
     IupSubmenu("Bookmarks", IupMenu(item_togglemark,
-      item_nextmark,
-      item_previousmark,
-      item_clearmarks,
-      item_cutmarked,
-      item_copymarked,
-      item_pastetomarked,
-      item_removemarked,
-      item_invertmarks,
-      NULL)),
+    item_nextmark,
+    item_previousmark,
+    item_clearmarks,
+    item_cutmarked,
+    item_copymarked,
+    item_pastetomarked,
+    item_removemarked,
+    item_invertmarks,
+    NULL)),
     IupSubmenu("Blank Operations", IupMenu(
-      item_trimtrailing,
-      item_trimleading,
-      item_trimtraillead,
-      item_eoltospace,
-      item_fixeol,
-      item_removespaceeol,
-      IupSeparator(),
-      item_tabtospace,
-      item_allspacetotab,
-      item_leadingspacetotab,
-      NULL)),
+    item_trimtrailing,
+    item_trimleading,
+    item_trimtraillead,
+    item_eoltospace,
+    item_fixeol,
+    item_removespaceeol,
+    IupSeparator(),
+    item_tabtospace,
+    item_allspacetotab,
+    item_leadingspacetotab,
+    NULL)),
     IupSubmenu("Convert Case to", case_menu = IupMenu(
-      item_uppercase,
-      item_lowercase,
-      NULL)),
+    item_uppercase,
+    item_lowercase,
+    NULL)),
     IupSeparator(),
     item_select_all,
     NULL);
@@ -4515,10 +4606,10 @@ static int iScintillaDlgCreateMethod(Ihandle* ih, void** params)
     NULL);
   view_menu = IupMenu(
     IupSubmenu("Zoom", zoom_menu = IupMenu(
-      item_zoomin,
-      item_zoomout,
-      item_restorezoom,
-      NULL)),
+    item_zoomin,
+    item_zoomout,
+    item_restorezoom,
+    NULL)),
     item_wordwrap,
     item_showwhite,
     item_showeol,

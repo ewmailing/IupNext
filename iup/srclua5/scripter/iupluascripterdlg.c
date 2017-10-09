@@ -2382,7 +2382,6 @@ void IupLuaScripterDlgOpen(void)
 
 /* TODO:
 - Globals Table Inspector using IupTree
-- Find/replace in: current document or all open documents
 
 - sub-folder level for Projects
 - find/replace in Project Files
