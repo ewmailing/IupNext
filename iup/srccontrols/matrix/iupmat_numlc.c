@@ -627,6 +627,9 @@ int iupMatrixSetNumLinAttrib(Ihandle* ih, const char* value)
     ih->data->lines.num = num;  
     if (ih->data->lines.num_noscroll >= ih->data->lines.num)
       ih->data->lines.num_noscroll = ih->data->lines.num - 1;
+    if (ih->data->lines.num_noscroll < 1)
+      ih->data->lines.num_noscroll = 1;
+
     ih->data->need_calcsize = 1;
 
     old_focus_cell = ih->data->lines.focus_cell;
@@ -671,6 +674,9 @@ int iupMatrixSetNumColAttrib(Ihandle* ih, const char* value)
     ih->data->columns.num = num;
     if (ih->data->columns.num_noscroll >= ih->data->columns.num)
       ih->data->columns.num_noscroll = ih->data->columns.num - 1;
+    if (ih->data->columns.num_noscroll < 1)
+      ih->data->columns.num_noscroll = 1;
+
     ih->data->need_calcsize = 1;
 
     old_focus_cell = ih->data->lines.focus_cell;

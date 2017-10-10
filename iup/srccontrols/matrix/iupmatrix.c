@@ -698,6 +698,9 @@ static int iMatrixSetNumColNoScrollAttrib(Ihandle* ih, const char* value)
     ih->data->columns.num_noscroll = num;
     if (ih->data->columns.num_noscroll >= ih->data->columns.num)
       ih->data->columns.num_noscroll = ih->data->columns.num - 1;
+    if (ih->data->columns.num_noscroll < 1)
+      ih->data->columns.num_noscroll = 1;
+
     if (ih->data->columns.first < ih->data->columns.num_noscroll)
     {
       ih->data->columns.first = ih->data->columns.num_noscroll;
@@ -727,6 +730,9 @@ static int iMatrixSetNumLinNoScrollAttrib(Ihandle* ih, const char* value)
     ih->data->lines.num_noscroll = num;
     if (ih->data->lines.num_noscroll >= ih->data->lines.num)
       ih->data->lines.num_noscroll = ih->data->lines.num - 1;
+    if (ih->data->lines.num_noscroll < 1)
+      ih->data->lines.num_noscroll = 1;
+
     if (ih->data->lines.first < ih->data->lines.num_noscroll)
     {
       ih->data->lines.first = ih->data->lines.num_noscroll;
