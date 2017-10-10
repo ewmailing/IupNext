@@ -1150,27 +1150,56 @@ static char* gtkTreeGetPreviousAttrib(Ihandle* ih, int id)
   if (!gtkTreeFindNode(ih, id, &iterItem))
     return NULL;
 
+#if GTK_CHECK_VERSION(3, 0, 0)
   if (!gtk_tree_model_iter_previous(model, &iterItem))
     return NULL;
+#else
+  {
+    GtkTreeIter iterItemPrevious;
+    GtkTreeIter iterItemNext;
+    GtkTreeIter iterParent;
+    int found = 1;
+
+    /* get first */
+    if (gtk_tree_model_iter_parent(model, &iterParent, &iterItem))
+      gtk_tree_model_iter_children(model, &iterItemPrevious, &iterParent);
+    else
+      gtk_tree_model_get_iter_first(model, &iterItemPrevious);
+
+    if (iterItemPrevious.user_data == iterItem.user_data)
+      return NULL;
+
+    do
+    {
+      iterItemNext = iterItemPrevious;
+      found = gtk_tree_model_iter_next(model, &iterItemNext);
+      if (found && iterItemNext.user_data == iterItem.user_data)
+        break;
+    } while (found);
+
+    iterItem = iterItemPrevious;
+  }
+#endif
 
   return iupStrReturnInt(gtkTreeFindNodeId(ih, &iterItem));
 }
+
 
 static char* gtkTreeGetFirstAttrib(Ihandle* ih, int id)
 {
   GtkTreeModel* model = gtk_tree_view_get_model(GTK_TREE_VIEW(ih->handle));
   GtkTreeIter iterItem;
   GtkTreeIter iterItemFirst;
-  int found = 1;
+  GtkTreeIter iterParent;
 
   if (!gtkTreeFindNode(ih, id, &iterItem))
     return NULL;
 
-  while (found)
-  {
-    iterItemFirst = iterItem;
-    found = gtk_tree_model_iter_previous(model, &iterItem);
-  }
+  if (!gtk_tree_model_iter_parent(model, &iterParent, &iterItem))
+    return "0";
+
+  if (!gtk_tree_model_iter_children(model, &iterItemFirst, &iterParent))
+    return NULL;
 
   return iupStrReturnInt(gtkTreeFindNodeId(ih, &iterItemFirst));
 }
@@ -1221,7 +1250,7 @@ static char* gtkTreeGetStateAttrib(Ihandle* ih, int id)
   {
     GtkTreePath* path = gtk_tree_model_get_path(model, &iterItem);
     int expanded = gtk_tree_view_row_expanded(GTK_TREE_VIEW(ih->handle), path);
-    gtk_tree_path_free(path);
+   gtk_tree_path_free(path);
 
     if (expanded)
       return "EXPANDED";
@@ -2983,8 +3012,8 @@ void iupdrvTreeInitClass(Iclass* ic)
   iupClassRegisterAttributeId(ic, "KIND",   gtkTreeGetKindAttrib,   NULL, IUPAF_READONLY|IUPAF_NO_INHERIT);
   iupClassRegisterAttributeId(ic, "PARENT", gtkTreeGetParentAttrib, NULL, IUPAF_READONLY|IUPAF_NO_INHERIT);
   iupClassRegisterAttributeId(ic, "NEXT", gtkTreeGetNextAttrib, NULL, IUPAF_READONLY | IUPAF_NO_INHERIT);
-  iupClassRegisterAttributeId(ic, "PREVIOUS", gtkTreeGetPreviousAttrib, NULL, IUPAF_READONLY | IUPAF_NO_INHERIT);
   iupClassRegisterAttributeId(ic, "LAST", gtkTreeGetLastAttrib, NULL, IUPAF_READONLY | IUPAF_NO_INHERIT);
+  iupClassRegisterAttributeId(ic, "PREVIOUS", gtkTreeGetPreviousAttrib, NULL, IUPAF_READONLY | IUPAF_NO_INHERIT);
   iupClassRegisterAttributeId(ic, "FIRST", gtkTreeGetFirstAttrib, NULL, IUPAF_READONLY | IUPAF_NO_INHERIT);
   iupClassRegisterAttributeId(ic, "COLOR", gtkTreeGetColorAttrib, gtkTreeSetColorAttrib, IUPAF_NO_INHERIT);
   iupClassRegisterAttributeId(ic, "TITLE",  gtkTreeGetTitleAttrib,  gtkTreeSetTitleAttrib, IUPAF_NO_INHERIT);
