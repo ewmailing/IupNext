@@ -245,6 +245,17 @@ static int iMatrixExItemImport_CB(Ihandle* ih_item)
   return IUP_DEFAULT;
 }
 
+static int setparent_param_cb(Ihandle* param_dialog, int param_index, void* user_data)
+{
+  if (param_index == IUP_GETPARAM_MAP)
+  {
+    Ihandle* ih = (Ihandle*)user_data;
+    IupSetAttributeHandle(param_dialog, "PARENTDIALOG", ih);
+  }
+
+  return 1;
+}
+
 static int iMatrixExItemSettings_CB(Ihandle* ih_item)
 {
   ImatExData* matex_data = (ImatExData*)IupGetAttribute(ih_item, "MATRIX_EX_DATA");
@@ -272,7 +283,7 @@ static int iMatrixExItemSettings_CB(Ihandle* ih_item)
   decimals = IupGetInt(matex_data->ih, "NUMERICFORMATPRECISION");  /* get the value for the whole matrix */
   decimals_old = decimals;
 
-  if (IupGetParam("_@IUP_SETTINGSDLG", NULL, NULL,
+  if (IupGetParam("_@IUP_SETTINGSDLG", setparent_param_cb, IupGetDialog(matex_data->ih),
                   "_@IUP_TEXTSEPARATOR%l|Tab|\";\"|\" \"|\n"
                   "_@IUP_OTHERTEXTSEPARATOR%s[^0-9]\n"
                   "_@IUP_DECIMALS%i[0]\n"
@@ -367,7 +378,7 @@ static int iMatrixExItemCopyColTo_CB(Ihandle* ih_item)
       iupStrCopyN(line1, 50, last_lin1);
       iupStrCopyN(line2, 50, last_lin2);
 
-      if (IupGetParam("_@IUP_COPYTOINTERVAL", NULL, NULL, "_@IUP_LINESTART%s\n_@IUP_LINEEND%s\n", line1, line2, NULL))
+      if (IupGetParam("_@IUP_COPYTOINTERVAL", setparent_param_cb, IupGetDialog(matex_data->ih), "_@IUP_LINESTART%s\n_@IUP_LINEEND%s\n", line1, line2, NULL))
       {
         int lin1 = iMatrixExFindLin(matex_data->ih, line1);
         int lin2 = iMatrixExFindLin(matex_data->ih, line2);
@@ -383,7 +394,7 @@ static int iMatrixExItemCopyColTo_CB(Ihandle* ih_item)
       int lin1 = iupAttribGetInt(matex_data->ih, "_IUP_LAST_COPYTO_LIN1");
       int lin2 = iupAttribGetInt(matex_data->ih, "_IUP_LAST_COPYTO_LIN2");
 
-      if (IupGetParam("_@IUP_COPYTOINTERVAL", NULL, NULL, "_@IUP_LINESTART%i[1,,]\n_@IUP_LINEEND%i[1,,]\n", &lin1, &lin2, NULL))
+      if (IupGetParam("_@IUP_COPYTOINTERVAL", setparent_param_cb, IupGetDialog(matex_data->ih), "_@IUP_LINESTART%i[1,,]\n_@IUP_LINEEND%i[1,,]\n", &lin1, &lin2, NULL))
       {
         IupSetStrfId2(matex_data->ih, "COPYCOLTO", lin, col, "%d-%d", lin1, lin2);
 
@@ -481,7 +492,7 @@ static int iMatrixExItemGoTo_CB(Ihandle* ih_item)
     iupStrCopyN(line, 50, last_lin);
     iupStrCopyN(column, 50, last_col);
 
-    if (IupGetParam("_@IUP_GOTO", NULL, NULL, "_@IUP_LINE%s\n_@IUP_COLUMN%s\n", line, column, NULL))
+    if (IupGetParam("_@IUP_GOTO", setparent_param_cb, IupGetDialog(matex_data->ih), "_@IUP_LINE%s\n_@IUP_COLUMN%s\n", line, column, NULL))
     {
       int lin = iMatrixExFindLin(matex_data->ih, line);
       int col = iMatrixExFindCol(matex_data->ih, column);
@@ -498,7 +509,7 @@ static int iMatrixExItemGoTo_CB(Ihandle* ih_item)
     int lin = iupAttribGetInt(matex_data->ih, "_IUP_LAST_GOTO_LIN");
     int col = iupAttribGetInt(matex_data->ih, "_IUP_LAST_GOTO_COL");
 
-    if (IupGetParam("_@IUP_GOTO", NULL, NULL, "_@IUP_LINE%i[1,,]\n_@IUP_COLUMN%i[1,,]\n", &lin, &col, NULL))
+    if (IupGetParam("_@IUP_GOTO", setparent_param_cb, IupGetDialog(matex_data->ih), "_@IUP_LINE%i[1,,]\n_@IUP_COLUMN%i[1,,]\n", &lin, &col, NULL))
     {
       IupSetStrf(matex_data->ih, "SHOW", "%d:%d", lin, col);
       IupSetStrf(matex_data->ih, "FOCUSCELL", "%d:%d", lin, col);
@@ -618,7 +629,7 @@ static int iMatrixExItemNumericUnits_CB(Ihandle* ih_item)
 
   sprintf(format, "_@IUP_UNITS%%l%s\n_@IUP_DECIMALS%%i[0]\n", list_str);
 
-  if (IupGetParam("_@IUP_COLUMNUNITS", NULL, NULL, format, &unit, &decimals, NULL))
+  if (IupGetParam("_@IUP_COLUMNUNITS", setparent_param_cb, IupGetDialog(matex_data->ih), format, &unit, &decimals, NULL))
   {
     IupSetIntId(matex_data->ih, "NUMERICUNITSHOWNINDEX", col, unit);
     IupSetIntId(matex_data->ih, "NUMERICFORMATPRECISION", col, decimals);
@@ -638,7 +649,7 @@ static int iMatrixExItemNumericDecimals_CB(Ihandle* ih_item)
 
   decimals = IupGetIntId(matex_data->ih, "NUMERICFORMATPRECISION", col);
 
-  if (IupGetParam("_@IUP_COLUMNDECIMALS", NULL, NULL, "_@IUP_DECIMALS%i[0]\n", &decimals, NULL))
+  if (IupGetParam("_@IUP_COLUMNDECIMALS", setparent_param_cb, IupGetDialog(matex_data->ih), "_@IUP_DECIMALS%i[0]\n", &decimals, NULL))
   {
     IupSetIntId(matex_data->ih, "NUMERICFORMATPRECISION", col, decimals);
     IupSetfAttribute(matex_data->ih, "REDRAW", "C%d", col);

@@ -1056,6 +1056,17 @@ static int iPlotProperties_CB(Ihandle* ih_item)
   return IUP_DEFAULT;
 }
 
+static int setparent_param_cb(Ihandle* param_dialog, int param_index, void* user_data)
+{
+  if (param_index == IUP_GETPARAM_MAP)
+  {
+    Ihandle* ih = (Ihandle*)user_data;
+    IupSetAttributeHandle(param_dialog, "PARENTDIALOG", ih);
+  }
+
+  return 1;
+}
+
 static int iPlotDataSetProperties_CB(Ihandle* ih_item)
 {
   Ihandle* ih = (Ihandle*)IupGetAttribute(ih_item, "PLOT");
@@ -1126,7 +1137,7 @@ static int iPlotDataSetProperties_CB(Ihandle* ih_item)
     "_@IUP_PIESLICELABEL%l|_@IUP_NONE|X|Y|_@IUP_PERCENT|\n"
     "_@IUP_PIESLICELABELPOS%R[0,1,]\n";
 
-  if (!IupGetParam("_@IUP_DATASETPROPERTIESDLG", NULL, NULL, format,
+  if (!IupGetParam("_@IUP_DATASETPROPERTIESDLG", setparent_param_cb, IupGetDialog(ih), format,
     name, color, &mode, &linestyle, &linewidth, &markstyle, &marksize,
     &barSpacing, &barOutline, barOutlineColor,
     &areaTransparency,
