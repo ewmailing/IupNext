@@ -266,25 +266,6 @@ static int gtkTabsSetBgColorAttrib(Ihandle* ih, const char* value)
 /* gtkTabs - Callbacks                                                       */
 /* ------------------------------------------------------------------------- */
 
-static void gtkTabsSwitchManual(Ihandle* ih, Ihandle* prev_child, int prev_pos)
-{
-  IFnnn cb = (IFnnn)IupGetCallback(ih, "TABCHANGE_CB");
-  int pos = iupdrvTabsGetCurrentTab(ih);
-
-  Ihandle* child = IupGetChild(ih, pos);
-  GtkWidget* tab_container = (GtkWidget*)iupAttribGet(child, "_IUPTAB_CONTAINER");
-  if (tab_container) gtk_widget_show(tab_container);   /* show new page, if any */
-
-  if (cb)
-    cb(ih, child, prev_child);
-  else
-  {
-    IFnii cb2 = (IFnii)IupGetCallback(ih, "TABCHANGEPOS_CB");
-    if (cb2)
-      cb2(ih, pos, prev_pos);
-  }
-}
-
 static void gtkTabsSwitchPage(GtkNotebook* notebook, void* page, int pos, Ihandle* ih)
 {
   IFnnn cb = (IFnnn)IupGetCallback(ih, "TABCHANGE_CB");
@@ -573,11 +554,7 @@ static void gtkTabsChildRemovedMethod(Ihandle* ih, Ihandle* child, int pos)
       iupAttribSet(child, "_IUPTAB_CONTAINER", NULL);
       iupAttribSet(child, "_IUPTAB_PAGE", NULL);
 
-      if (iupAttribGet(ih, "_IUPGTK_IGNORE_SWITCHPAGE"))
-      {
-        gtkTabsSwitchManual(ih, child, pos);
-        iupAttribSet(ih, "_IUPGTK_IGNORE_SWITCHPAGE", NULL);
-      }
+      iupAttribSet(ih, "_IUPGTK_IGNORE_SWITCHPAGE", NULL);
     }
   }
 }

@@ -359,29 +359,10 @@ int iupdrvTabsIsTabVisible(Ihandle* child, int pos)
 }
 
 
-
 /* ------------------------------------------------------------------------- */
 /* motTabs - Callback                                                        */
 /* ------------------------------------------------------------------------- */
 
-static void motTabsPageChangedManual(Ihandle* ih, Ihandle* prev_child, int prev_pos)
-{
-  IFnnn cb = (IFnnn)IupGetCallback(ih, "TABCHANGE_CB");
-  int pos = iupdrvTabsGetCurrentTab(ih);
-
-  Ihandle* child = IupGetChild(ih, pos);
-  Widget tab_container = (Widget)iupAttribGet(child, "_IUPTAB_CONTAINER");
-  if (tab_container) XtMapWidget(tab_container);  /* show new page, if any */
-
-  if (cb)
-    cb(ih, child, prev_child);
-  else
-  {
-    IFnii cb2 = (IFnii)IupGetCallback(ih, "TABCHANGEPOS_CB");
-    if (cb2)
-      cb2(ih, pos, prev_pos);
-  }
-}
 
 static void motTabsPageChangedCallback(Widget w, Ihandle* ih, XmNotebookCallbackStruct *nptr)
 {
@@ -601,11 +582,7 @@ static void motTabsChildRemovedMethod(Ihandle* ih, Ihandle* child, int pos)
       iupAttribSet(child, "_IUPMOT_TABBUTTON", NULL);
       iupAttribSet(child, "_IUPMOT_TABNUMBER", NULL);
 
-      if (iupAttribGet(ih, "_IUPMOT_IGNORE_PAGECHANGE"))
-      {
-        motTabsPageChangedManual(ih, child, pos);
-        iupAttribSet(ih, "_IUPMOT_IGNORE_PAGECHANGE", NULL);
-      }
+      iupAttribSet(ih, "_IUPMOT_IGNORE_PAGECHANGE", NULL);
     }
   }
 }
