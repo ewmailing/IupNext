@@ -683,13 +683,14 @@ end
 function iup.DebuggerPrintLocalVariable()
   local tree_local = iup.GetDialogChild(debugger.main_dialog, "TREE_LOCAL")
   local id = tree_local.value
-  local userdata = iup.TreeGetUserId(tree_local, id)
 
   local luaTabs = iup.GetDialogChild(debugger.main_dialog, "LUA_TABS")
   luaTabs.valuepos = 0 -- show console tab
 
+  local userdata = iup.TreeGetUserId(tree_local, id)
   local pos = userdata.pos
   local value = userdata.value
+  
   iup.ConsolePrint(tree_local["TITLE"..id] .. "  (pos="..pos..")")
   iup.ConsolePrintValue(value)
 end
@@ -714,9 +715,9 @@ function iup.DebuggerPrintAllLocalVariables()
   end
 end
 
-function iup.DebuggerSetLocalTableValue(tree_local, name, id, newValue)
-  local parentId = tree_local["parent"..id]
-  local parentUdata = iup.TreeGetUserId(tree_local, parentId)
+function iup.DebuggerSetTreeTableValue(tree, name, id, newValue)
+  local parentId = tree["parent"..id]
+  local parentUdata = iup.TreeGetUserId(tree, parentId)
   local parent = parentUdata.value
   parent[name] = newValue
 end
@@ -726,7 +727,7 @@ function iup.DebuggerSetLocalValue(tree_local, level, id, newValue)
   local depth = tonumber(tree_local["depth"..id])
 
   if depth > 0 then
-    iup.DebuggerSetLocalTableValue(tree_local, userdata.name, id, newValue)
+    iup.DebuggerSetTreeTableValue(tree_local, userdata.name, id, newValue)
   else
     local pos = userdata.pos
     local s = string.sub(userdata.name, 1, 3)
@@ -798,8 +799,8 @@ function iup.DebuggerLocalVariablesBranchOpenAction(tree_local, id)
   iup.DebuggerSetDialogChildAttrib("TREE_LOCAL", "DELNODE"..dummy_id, "SELECTED")
 end
 
-function iup.DebuggerSetLocalTreeItem(tree_local, id, name, value)
-  local depth = tonumber(tree_local["depth"..id])
+function iup.DebuggerGetTreeTitle(tree, id, name, value)
+  local depth = tonumber(tree["depth"..id])
   local pref = ""
   local suff = ""
   if depth and depth > 0 then
@@ -807,37 +808,35 @@ function iup.DebuggerSetLocalTreeItem(tree_local, id, name, value)
     suff = "]"
   end
 
-  local valueType = type(value)
-  if valueType ~= "string" and valueType ~= "number" and valueType ~= "boolean" then
-    tree_local["TITLE"..id] = pref .. name .. suff .. " = <" .. tostring(value) .. ">"
+  local title = pref .. name .. suff .. " = "
+  
+  if type(value) == "string" then
+    title = title .. "\"" .. value .. "\""
   else
-    tree_local["TITLE"..id] = pref .. name .. suff .. " = " .. tostring(value) .. " <" .. valueType .. ">"
+    title = title .. tostring(value)
   end
+  
+  title = title .. " <" .. type(value) .. ">"
+  
+  return title
+end
+
+function iup.DebuggerSetLocalTreeItem(tree_local, id, name, value)
+  tree_local["TITLE"..id] = iup.DebuggerGetTreeTitle(tree_local, id, name, value)
 end
 
 function iup.DebuggerAddLocalTreeItem(tree_local, id, name, value, pos)
-  local valueType = type(value)
   local userdata = {}
   local lastAddedNode
 
-  local depth = tonumber(tree_local["depth"..id])
-  local pref = ""
-  local suff = ""
-  if depth and depth > 0 then
-    pref = "["
-    suff = "]"
-  end
-
-  if valueType == "table" then
-    tree_local["INSERTBRANCH"..id] = pref .. name .. suff .. " = " .. tostring(value) .. " <" .. valueType .. ">"
+  if type(value) == "table" then
+    tree_local["INSERTBRANCH"..id] = iup.DebuggerGetTreeTitle(tree_local, id, name, value)
     lastAddedNode = tree_local.lastaddnode
+    
     tree_local["ADDLEAF"..lastAddedNode] = "dummy"
     userdata.expanded = false
-  elseif valueType ~= "string" and valueType ~= "number" and valueType ~= "boolean" then
-    tree_local["INSERTLEAF"..id] = pref .. name .. suff  .. " = <" .. tostring(value) .. ">"
-    lastAddedNode = tree_local.lastaddnode
   else
-    tree_local["INSERTLEAF"..id] = pref .. name .. suff  .. " = " .. tostring(value) .. " <" .. valueType .. ">"
+    tree_local["INSERTLEAF"..id] = iup.DebuggerGetTreeTitle(tree_local, id, name, value)
     lastAddedNode = tree_local.lastaddnode
   end
   
@@ -846,7 +845,7 @@ function iup.DebuggerAddLocalTreeItem(tree_local, id, name, value, pos)
   userdata.pos = pos
   
   iup.TreeSetUserId(tree_local, lastAddedNode, userdata)
-  
+    
   return tonumber(lastAddedNode)
 end
 
@@ -1143,6 +1142,8 @@ end
 
 function iup.DebuggerGetGlobalValue(name)
   local value
+  -- used only for root nodes, and only when debuger is active
+  
   if iup.DebuggerIsExpression(name) then
     local cmd, msg = loadstring("return " .. name)
     if not cmd then
@@ -1172,20 +1173,60 @@ function iup.DebuggerGlobalsTreeAction(tree_global, id)
   end
 end
 
+function iup.DebuggerGlobalVariablesBranchOpenAction(tree_global, id)
+  -- can not expand when debugger is not active  
+  if not iup.DebuggerIsActive() then
+    return iup.IGNORE
+  end
+  
+  local userdata = iup.TreeGetUserId(tree_global, id)
+  local tableValue = userdata.value
+  
+  if type(tableValue) ~= "table" or userdata.expanded then
+    return
+  end
+  
+  local dummy_id = id + 1
+  userdata.expanded = true
+
+  id = dummy_id
+
+  -- the same algorithm used in ConsolePrintTable
+  local name
+  local tmp = {}
+  for name, value in ipairs(tableValue) do 
+    id = iup.DebuggerAddGlobalsTreeItem(tree_global, id, name, value)
+    tmp[name] = true
+  end
+  for name, value in pairs(tableValue) do 
+    if (not tmp[name]) then
+      id = iup.DebuggerAddGlobalsTreeItem(tree_global, id, name, value)
+    end
+  end
+
+  iup.DebuggerSetDialogChildAttrib("TREE_GLOBAL", "DELNODE"..dummy_id, "SELECTED")
+end
+
 function iup.DebuggerInitGlobalsTree(tree_global)
   if not tree_global then 
     tree_global = iup.GetDialogChild(debugger.main_dialog, "TREE_GLOBAL")
   end
 
+  local count = tonumber(tree_global.rootcount)
+
   local id = 0
-  local userdata = iup.TreeGetUserId(tree_global, id)
-  while userdata do
+  for i = 0, count-1 do
+    local userdata = iup.TreeGetUserId(tree_global, id)
     local name = userdata.globalname
     tree_global["TITLE"..id] = name
+    tree_global["IMAGE"..id] = "IMGEMPTY"
+    tree_global["IMAGEEXPANDED"..id] = "IMGEMPTY"
+    tree_global["DELNODE"..id] = "CHILDREN"
 
-    id = id + 1
-    userdata = iup.TreeGetUserId(tree_global, id)
+    id = tree_global["NEXT"..id]
   end
+
+  tree_global.expandall = "NO"
 
   local count = tonumber(tree_global.rootcount)
   if (count > 0) then
@@ -1203,55 +1244,96 @@ function iup.DebuggerInitGlobalsTree(tree_global)
 end
 
 function iup.DebuggerUpdateGlobalsTree()
-  local tree_global = iup.GetDialogChild(debugger.main_dialog, "TREE_GLOBAL")
-
   -- this is called only during debug
+  local tree_global = iup.GetDialogChild(debugger.main_dialog, "TREE_GLOBAL")
+  local count = tonumber(tree_global.rootcount) -- print all at root only
 
+  -- clear all secondary branches (including "dummy")
   local id = 0
-  local userdata = iup.TreeGetUserId(tree_global, id)
-  while userdata do
+  for i = 0, count-1 do
+    tree_global["DELNODE"..id] = "CHILDREN"
+    id = tree_global["NEXT"..id]
+  end
+  
+  id = 0
+  for i = 0, count-1 do
+    local userdata = iup.TreeGetUserId(tree_global, id)
     local name = userdata.globalname
     local value = iup.DebuggerGetGlobalValue(name)
+    userdata.value = value
+    userdata.expanded = false
+    
     iup.DebuggerSetGlobalsTreeItem(tree_global, id, name, value)
 
-    id = id + 1
-    userdata = iup.TreeGetUserId(tree_global, id)
+    id = tree_global["NEXT"..id]
   end
+
+  tree_global.expandall = "NO"
 end
 
 function iup.DebuggerSetGlobalsTreeItem(tree_global, id, name, value)
-  local valueType = type(value)
-  if valueType ~= "string" and valueType ~= "number" and valueType ~= "boolean" then
-    tree_global["TITLE"..id] = name.." = <"..tostring(value)..">"
+  tree_global["TITLE"..id] = iup.DebuggerGetTreeTitle(tree_global, id, name, value)
+  
+  if type(value) == "table" then
+    tree_global["IMAGE"..id] = "IUP_treeplus"
+    tree_global["IMAGEEXPANDED"..id] = "IUP_treeminus"
+
+    -- restore "dummy"
+    tree_global["ADDLEAF"..id] = "dummy"
   else
-    tree_global["TITLE"..id] = name.." = "..tostring(value).." <"..valueType..">"
+    tree_global["IMAGE"..id] = "IMGEMPTY"
+    tree_global["IMAGEEXPANDED"..id] = "IMGEMPTY"
   end
 end
 
 function iup.DebuggerAddGlobalsTreeItem(tree_global, id, name, value)
-  local valueType = type(value)
-  if valueType ~= "string" and valueType ~= "number" and valueType ~= "boolean" then
-    tree_global["INSERTBRANCH"..id] = name.." = <"..tostring(value)..">"
+  local userdata = {}
+  local lastAddedNode
+  
+  if type(value) == "table" then
+    tree_global["INSERTBRANCH"..id] = iup.DebuggerGetTreeTitle(tree_global, id, name, value)
+    lastAddedNode = tree_global.lastaddnode
+    tree_global["IMAGE"..lastAddedNode] = "IUP_treeplus"
+    tree_global["IMAGEEXPANDED"..lastAddedNode] = "IUP_treeminus"
+    
+    tree_global["ADDLEAF"..lastAddedNode] = "dummy"
   else
-    tree_global["INSERTBRANCH"..id] = name.." = "..tostring(value).." <"..valueType..">"
+    tree_global["INSERTBRANCH"..id] = iup.DebuggerGetTreeTitle(tree_global, id, name, value)
+    lastAddedNode = tree_global.lastaddnode
+    tree_global["IMAGE"..lastAddedNode] = "IMGEMPTY"
+    tree_global["IMAGEEXPANDED"..lastAddedNode] = "IMGEMPTY"
   end
+  
+  userdata.globalname = name
+  userdata.expanded = false
+  userdata.value = value
+  
+  iup.TreeSetUserId(tree_global, lastAddedNode, userdata)
+  
+  return lastAddedNode
 end
 
 function iup.DebuggerAddGlobal(tree_global, name)
   local id = tonumber(tree_global.last0)
   if not id then id = -1 end
    
-  local userdata = {}
-  userdata.globalname = name
-    
   if iup.DebuggerIsActive() then
     local value = iup.DebuggerGetGlobalValue(name)
-    iup.DebuggerAddGlobalsTreeItem(tree_global, id, name, value)
+    return iup.DebuggerAddGlobalsTreeItem(tree_global, id, name, value)
   else
-    tree_global["INSERTBRANCH"..id] = name
-  end
+    local userdata = {}
     
-  iup.TreeSetUserId(tree_global, tree_global.lastaddnode, userdata)
+    userdata.globalname = name
+    userdata.expanded = false
+    
+    tree_global["INSERTBRANCH"..id] = name
+    local lastAddedNode = tree_global.lastaddnode
+    tree_global["IMAGE"..lastAddedNode] = "IMGEMPTY"
+    tree_global["IMAGEEXPANDED"..lastAddedNode] = "IMGEMPTY"
+    
+    iup.TreeSetUserId(tree_global, lastAddedNode, userdata)
+    return lastAddedNode
+  end
 end
 
 function iup.DebuggerAddGlobalVariable()
@@ -1260,7 +1342,7 @@ function iup.DebuggerAddGlobalVariable()
     local tree_global = iup.GetDialogChild(debugger.main_dialog, "TREE_GLOBAL")
     local count = tonumber(tree_global.rootcount)
    
-    iup.DebuggerAddGlobal(tree_global, newName)
+    local lastAddedNode = iup.DebuggerAddGlobal(tree_global, newName)
 
     if (count == 0) then
       iup.DebuggerSetDialogChildAttrib("PRINT_GLOBAL", "ACTIVE", "Yes")
@@ -1268,7 +1350,7 @@ function iup.DebuggerAddGlobalVariable()
       iup.DebuggerSetDialogChildAttrib("REMOVE_GLOBAL", "ACTIVE", "Yes")
     end
     
-    iup.DebuggerGlobalsTreeAction(tree_global, tree_global.lastaddnode)
+    iup.DebuggerGlobalsTreeAction(tree_global, lastAddedNode)
   end
 end
 
@@ -1279,7 +1361,24 @@ function iup.DebuggerRemoveGlobalVariable()
     iup.MessageError(debugger.main_dialog, "Select a variable or expression on the list.")
     return
   end
-
+  
+  -- get the root item
+  local parentId = tree_global["parent"..id]
+  while parentId do
+    id = parentId
+    parentId = tree_global["parent"..id]
+  end
+  
+  -- select the next item
+  local next_id = tree_global["next"..id]
+  if next_id then
+    tree_global.value = next_id
+  else
+    local previous_id = tree_global["previous"..id]
+    if previous_id then
+      tree_global.value = previous_id
+    end
+  end
 
   tree_global["DELNODE"..id] = "SELECTED"
 
@@ -1289,12 +1388,6 @@ function iup.DebuggerRemoveGlobalVariable()
     iup.DebuggerSetDialogChildAttrib("SET_GLOBAL", "ACTIVE", "No")
     iup.DebuggerSetDialogChildAttrib("REMOVE_GLOBAL", "ACTIVE", "No")
   else
-    -- select the next item
-    if id == count-1 then
-      tree_global.value = id - 1
-    else
-      tree_global.value = id
-    end
 
     iup.DebuggerGlobalsTreeAction(tree_global, tree_global.value)
   end
@@ -1319,14 +1412,21 @@ function iup.DebuggerSetGlobalVariable()
   end
   
   local userdata = iup.TreeGetUserId(tree_global, id)
+  
   local name = userdata.globalname
 
   if iup.DebuggerIsExpression(name) then
     iup.MessageError(debugger.main_dialog, "Can not change expressions values.")
     return
   end
-
-  local value = _G[name]
+  
+  local value
+  local depth = tonumber(tree_global["depth"..id])
+  if depth > 0 then
+    value = userdata.value
+  else
+    value = iup.DebuggerGetGlobalValue(name)
+  end
 
   if (value == nil) then value = "nil" end
   local valueType = type(value)
@@ -1352,12 +1452,18 @@ function iup.DebuggerSetGlobalVariable()
       end
     end
 
-    _G[name] = newValue
+    if depth > 0 then
+      iup.DebuggerSetTreeTableValue(tree_global, name, id, newValue)
+    else
+      _G[name] = newValue
+    end
 
     if iup.DebuggerIsActive() then
       iup.DebuggerSetGlobalsTreeItem(tree_global, id, name, newValue)
     else
       tree_global["TITLE"..id] = name
+      tree_global["IMAGE"..id] = "IMGEMPTY"
+      tree_global["IMAGEEXPANDED"..id] = "IMGEMPTY"
     end
   end
 end
@@ -1368,10 +1474,16 @@ function iup.DebuggerPrintGlobalVariable()
 
   local luaTabs = iup.GetDialogChild(debugger.main_dialog, "LUA_TABS")
   luaTabs.valuepos = 0 -- show console tab
-
+  
   local userdata = iup.TreeGetUserId(tree_global, id)
-  local name = userdata.globalname
-  local value = iup.DebuggerGetGlobalValue(name)
+  
+  local value
+  local depth = tonumber(tree_global["depth"..id])
+  if depth > 0 then
+    value = userdata.value
+  else
+    value = iup.DebuggerGetGlobalValue(userdata.globalname)
+  end
 
   iup.ConsolePrint(tree_global["TITLE"..id])
   iup.ConsolePrintValue(value)
@@ -1379,18 +1491,20 @@ end
 
 function iup.DebuggerPrintAllGlobalVariables()
   local tree_global = iup.GetDialogChild(debugger.main_dialog, "TREE_GLOBAL")
-  local count = tonumber(tree_global.rootcount)
+  local count = tonumber(tree_global.rootcount) -- print all at root only
 
   local luaTabs = iup.GetDialogChild(debugger.main_dialog, "LUA_TABS")
   luaTabs.valuepos = 0 -- show console tab
 
-  for id = 0, count-1 do
+  local id = 0
+  for i = 0, count-1 do
     local userdata = iup.TreeGetUserId(tree_global, id)
-    local name = userdata.globalname
-    local value = iup.DebuggerGetGlobalValue(name)
+    local value = iup.DebuggerGetGlobalValue(userdata.globalname)
 
     iup.ConsolePrint(tree_global["TITLE"..id])
     iup.ConsolePrintValue(value)
+
+    id = tree_global["NEXT"..id]
   end
 end
 

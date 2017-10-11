@@ -257,21 +257,23 @@ static void save_globals(Ihandle *ih, Ihandle* config)
 {
   Ihandle* treeGlobals = IupGetDialogChild(ih, "TREE_GLOBAL");
   lua_State* L = (lua_State*)IupGetAttribute(ih, "LUASTATE");
-  int i, count;
+  int i, count, id;
   const char *value;
 
   count = IupGetInt(treeGlobals, "ROOTCOUNT");
 
+  id = 0;
   for (i = 0; i < count; i++)
   {
     iuplua_push_name(L, "DebuggerGetGlobalNameFromTree");
     iuplua_pushihandle(L, treeGlobals);
-    lua_pushinteger(L, i);
+    lua_pushinteger(L, id);
     iuplua_call_raw(L, 2, 1);
 
     value = lua_tostring(L, -1);
 
     IupConfigSetVariableStrId(config, "LuaScripterGlobals", "Name", i+1, value);
+    id = IupGetIntId(treeGlobals, "NEXT", id);
   }
 
   IupConfigSetVariableInt(config, "LuaScripterGlobals", "Count", count);
@@ -1390,6 +1392,18 @@ static int tree_globals_action_cb(Ihandle *ih, int index, int v)
   return IUP_DEFAULT;
 }
 
+static int tree_globals_branchopen_cb(Ihandle *ih, int id)
+{
+  lua_State* L;
+
+  L = (lua_State*)IupGetAttribute(ih, "LUASTATE");
+  iuplua_push_name(L, "DebuggerGlobalVariablesBranchOpenAction");
+  iuplua_pushihandle(L, ih);
+  lua_pushinteger(L, id);
+  iuplua_call_raw(L, 2, 0);
+  return IUP_DEFAULT;
+}
+
 static int but_printglobal_cb(Ihandle *ih)
 {
   lua_State* L = (lua_State*)IupGetAttribute(ih, "LUASTATE");
@@ -1729,8 +1743,10 @@ static Ihandle *buildTabWatch(void)
   IupSetAttribute(tree_global, "HIDELINES", "YES");
   IupSetAttribute(tree_global, "IMAGELEAF", "IMGEMPTY");
   IupSetAttribute(tree_global, "IMAGEBRANCHCOLLAPSED", "IMGEMPTY");
+  IupSetAttribute(tree_global, "ADDEXPANDED", "NO");
   IupSetAttribute(tree_global, "IMAGEBRANCHEXPANDED", "IMGEMPTY");
   IupSetCallback(tree_global, "ACTION", (Icallback)tree_globals_action_cb);
+  IupSetCallback(tree_global, "BRANCHOPEN_CB", (Icallback)tree_globals_branchopen_cb);
   IupSetCallback(tree_global, "MAP_CB", (Icallback)tree_globals_map);
 
   button_printGlobal = IupButton(NULL, NULL);
