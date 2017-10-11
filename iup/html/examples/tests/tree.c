@@ -502,12 +502,15 @@ static void init_tree_nodes(void)
   IupSetAttribute(tree, "INSERTBRANCH2","parallelogram");  /* same depth as id=2, new id=6 */
   IupSetAttribute(tree, "ADDLEAF6",     "square very long string at tree node");
   IupSetAttribute(tree, "ADDLEAF7",     "diamond");
-  IupSetAttribute(tree, "INSERTLEAF6","2D");  /* new id=9 */
+  IupSetAttribute(tree, "INSERTLEAF6", "2D");  /* new id=9 */
   IupSetAttribute(tree, "INSERTBRANCH9","3D");
   if (IupGetInt(NULL, "UTF8MODE"))
     IupSetAttribute(tree, "INSERTBRANCH10","Other (Γ§Γ£ΓµΓ΅Γ³Γ©)");
   else
     IupSetAttribute(tree, "INSERTBRANCH10","Other (ηγυασι)");
+  IupSetAttribute(tree, "ADDLEAF11", "Depth 1");
+  IupSetAttribute(tree, "ADDBRANCH12", "Folder");
+  IupSetAttribute(tree, "ADDLEAF13", "Depth 2");
 #endif
 
   IupSetAttribute(tree, "TOGGLEVALUE2", "ON");
@@ -595,6 +598,11 @@ static void init_tree(void)
   //  IupSetAttribute(tree, "TIPBGCOLOR", "255 128 128");
 //  IupSetAttribute(tree, "TIPFGCOLOR", "0 92 255");
 //  IupSetAttribute(tree, "HLCOLOR", "240 116 64");
+
+//  IupSetAttribute(tree, "ADDROOT", "NO");
+//  IupSetAttribute(tree, "IMAGELEAF", "IMGEMPTY");
+//  IupSetAttribute(tree, "IMAGEBRANCHCOLLAPSED", "IMGEMPTY");
+//  IupSetAttribute(tree, "IMAGEBRANCHEXPANDED", "IMGEMPTY");
 
   // Windows Only  
 //  IupSetAttribute(tree, "TIPBALLOON", "YES");

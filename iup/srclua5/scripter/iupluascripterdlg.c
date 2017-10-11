@@ -1662,6 +1662,7 @@ static Ihandle *buildTabDebug(void)
   IupSetAttribute(tree_local, "TIP", "List of local variables at selected stack level (ordered by pos)");
   IupSetAttribute(tree_local, "ADDROOT", "NO");
   IupSetAttribute(tree_local, "HIDELINES", "YES");
+  IupSetAttribute(tree_local, "HIDEBUTTONS", "YES");
   IupSetAttribute(tree_local, "IMAGELEAF", "IMGEMPTY");
   IupSetAttribute(tree_local, "IMAGEBRANCHCOLLAPSED", "IUP_treeplus");
   IupSetAttribute(tree_local, "IMAGEBRANCHEXPANDED", "IUP_treeminus");
@@ -1739,8 +1740,8 @@ static Ihandle *buildTabWatch(void)
   IupSetAttribute(tree_global, "NAME", "TREE_GLOBAL");
   IupSetAttribute(tree_global, "TIP", "List of globals variables or expressions");
   IupSetAttribute(tree_global, "ADDROOT", "NO");
-  //  IupSetAttribute(tree_global, "ADDEXPANDED", "NO");
   IupSetAttribute(tree_global, "HIDELINES", "YES");
+  IupSetAttribute(tree_global, "HIDEBUTTONS", "YES");
   IupSetAttribute(tree_global, "IMAGELEAF", "IMGEMPTY");
   IupSetAttribute(tree_global, "IMAGEBRANCHCOLLAPSED", "IMGEMPTY");
   IupSetAttribute(tree_global, "ADDEXPANDED", "NO");
