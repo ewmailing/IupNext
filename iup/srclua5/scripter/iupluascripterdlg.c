@@ -370,8 +370,8 @@ static void load_breakpoints(Ihandle *ih, Ihandle* config)
       iupStrToInt(line_str, &line);
       IupSetStrAttributeId(listBreak, "FILENAME", i, filename);
       IupSetIntId(listBreak, "LINE", i, line);
+      i++;
     }
-    i++;
   } while (value != NULL);
 
   IupSetStrAttributeId(listBreak, "FILENAME", i, NULL);
