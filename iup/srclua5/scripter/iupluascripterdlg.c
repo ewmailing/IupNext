@@ -38,7 +38,7 @@ void load_all_images_step_images(void);
 
 static char* getLuaKeywords(void)
 {
-  /* Common */
+#ifdef OLD_LUA_LEXER
   return "and break do else elseif end for function if in local load nil not or repeat return then until while "
     "false true assert collectgarbage dofile error _G getmetatable ipairs loadfile next pairs "
     "pcall print rawequal rawget rawset setmetatable tonumber tostring type _VERSION select "
@@ -69,8 +69,42 @@ static char* getLuaKeywords(void)
 #elif LUA_VERSION_NUM == 503  /* Lua 5.3 Only */
     "package.searchers goto rawlen table.pack table.unpack package.config debug.getuservalue debug.setuservalue debug.upvalueid debug.upvaluejoin _ENV "
     "table.move string.pack string.unpack string.packsize "
-    "utf8.char utf8.charpattern utf8.codes utf8.codepoint utf8.len utf8.offset "
+    "utf8 utf8.char utf8.charpattern utf8.codes utf8.codepoint utf8.len utf8.offset "
 #endif  
+#else
+  return "and break do else elseif end for function if in local load nil not or repeat return then until while "
+    "false true assert collectgarbage dofile error _G getmetatable ipairs loadfile next pairs "
+    "pcall print rawequal rawget rawset setmetatable tonumber tostring type _VERSION select "
+    "require xpcall "
+    "string byte char dump find format gsub len lower "
+    "rep sub upper gmatch match reverse "
+    "table concat insert remove sort "
+    "math abs acos asin atan ceil cos deg exp floor "
+    "log max min pi rad random randomseed fmod "
+    "sin sqrt tan huge modf "
+    "coroutine create resume status wrap yield running "
+    "io close flush input lines open output read tmpfile type write "
+    "stdin stdout stderr popen "
+    "os clock date difftime execute exit "
+    "getenv remove rename setlocale time tmpname "
+    "debug getfenv getmetatable getregistry setfenv setmetatable debug gethook "
+    "setlocal setupvalue sethook traceback getinfo getlocal getupvalue "
+    "package seeall cpath loaded "
+    "loadlib path preload "
+#if LUA_VERSION_NUM == 501  /* Lua 5.1 Only */
+    "module setfenv getfenv log10 loadstring maxn unpack loaders "
+    "atan2 cosh sinh tanh pow frexp ldexp "
+#elif LUA_VERSION_NUM == 502  /* Lua 5.2 Only */
+    "searchers goto rawlen pack unpack config getuservalue setuservalue upvalueid upvaluejoin _ENV "
+    "bit32 arshift band bnot bor btest bxor extract replace lrotate lshift rrotate rshift "
+    "searchpath "
+    "atan2 cosh sinh tanh pow frexp ldexp "
+#elif LUA_VERSION_NUM == 503  /* Lua 5.3 Only */
+    "searchers goto rawlen pack unpack config getuservalue setuservalue upvalueid upvaluejoin _ENV "
+    "move pack unpack packsize "
+    "utf8 char charpattern codes codepoint len offset "
+#endif  
+#endif
     ;
 }
 

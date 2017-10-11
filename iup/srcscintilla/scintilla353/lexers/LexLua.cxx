@@ -178,7 +178,8 @@ static void ColouriseLuaDoc(
 					sc.SetState(SCE_LUA_DEFAULT);
 			}
 		} else if (sc.state == SCE_LUA_IDENTIFIER) {
-			if (!(setWord.Contains(sc.ch) || sc.ch == '.') || sc.Match('.', '.')) {
+			// IUP  if (!(setWord.Contains(sc.ch) || sc.ch == '.') || sc.Match('.', '.')) {
+			if (!(setWord.Contains(sc.ch))) {
 				char s[100];
 				sc.GetCurrent(s, sizeof(s));
 				if (keywords.InList(s)) {
