@@ -994,7 +994,8 @@ static int gtkDialogMapMethod(Ihandle* ih)
 
 static void gtkDialogUnMapMethod(Ihandle* ih)
 {
-  GtkWidget* inner_parent;
+  GtkWidget* inner_parent, *parent;
+
 #if GTK_CHECK_VERSION(2, 10, 0) && !GTK_CHECK_VERSION(3, 14, 0)
   GtkStatusIcon* status_icon;
 #endif
@@ -1013,6 +1014,14 @@ static void gtkDialogUnMapMethod(Ihandle* ih)
     iupAttribSet(ih, "_IUPDLG_STATUSICON", NULL);
   }
 #endif
+
+  /* disconnect signal handlers */
+#if GLIB_CHECK_VERSION(2, 32, 0)
+  g_signal_handlers_disconnect_by_data(G_OBJECT(ih->handle), ih);
+#endif
+  parent = iupDialogGetNativeParent(ih);
+  if (parent)
+    g_signal_handlers_disconnect_by_func(G_OBJECT(parent), gtkDialogChildDestroyEvent, ih);
 
   inner_parent = gtk_bin_get_child((GtkBin*)ih->handle);
   gtk_widget_unrealize(inner_parent);
