@@ -6,7 +6,7 @@ function f4(z)
   return z
 end ]]
 
-local func = loadstring(s) -- if chuckname is used source is the chunckname not the string, must check in 5.2 and 5.3
+local func = loadstring(s) -- if chuckname is used source is the chunckname not the string
 func()
 
 local r = f4(3)
