@@ -2397,12 +2397,10 @@ void IupLuaScripterDlgOpen(void)
 }
 
 /* TODO:
-- Globals Table Inspector using IupTree
-
+- UTL: find/replace in Project Files
+- UTL: search results - find all
+- UTL: Condicional Breakpoints, Hit Count, When Hit
 - sub-folder level for Projects
-- find/replace in Project Files
-- search results - find all
-- Condicional Breakpoints, Hit Count, When Hit
 - multi-language (Portuguese, Spanish)
 - detachable Console, Debug, Breakpoints (problem with IupGetDialogChild(NAME))?
 - detachable Multitext?
