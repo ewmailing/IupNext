@@ -328,7 +328,9 @@ void IupLogV(const char* type, const char* format, va_list arglist)
   if (iupStrEqualNoCase(type, "DEBUG"))
   {
     priority = LOG_DEBUG;
+#ifdef LOG_PERROR
     options |= LOG_PERROR;
+#endif
   }
   else if (iupStrEqualNoCase(type, "ERROR"))
     priority = LOG_ERR;
