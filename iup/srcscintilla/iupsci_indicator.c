@@ -134,8 +134,6 @@ static char* iScintillaGetIndicatorStyleAttrib(Ihandle* ih, int indicator)
     return "ROUNDBOX";
   if (type == INDIC_STRAIGHTBOX)
     return "STRAIGHTBOX";
-  if (type == INDIC_FULLBOX)
-    return "FULLBOX";
   if (type == INDIC_DASH)
     return "DASH";
   if (type == INDIC_DOTS)
@@ -148,10 +146,14 @@ static char* iScintillaGetIndicatorStyleAttrib(Ihandle* ih, int indicator)
     return "SQUIGGLEPIXMAP";
   if (type == INDIC_COMPOSITIONTHICK)
     return "COMPOSITIONTHICK";
+#ifdef INDIC_COMPOSITIONTHIN  
   if (type == INDIC_COMPOSITIONTHIN)
     return "COMPOSITIONTHIN";
   if (type == INDIC_TEXTFORE)
     return "TEXTFORE";
+  if (type == INDIC_FULLBOX)
+    return "FULLBOX";
+#endif
 
   return "PLAIN";
 }
@@ -176,8 +178,6 @@ static int iScintillaSetIndicatorStyleAttrib(Ihandle* ih, int indicator, const c
     IupScintillaSendMessage(ih, SCI_INDICSETSTYLE, indicator, INDIC_ROUNDBOX);
   else if (iupStrEqualNoCase(value, "STRAIGHTBOX"))
     IupScintillaSendMessage(ih, SCI_INDICSETSTYLE, indicator, INDIC_STRAIGHTBOX);
-  else if (iupStrEqualNoCase(value, "FULLBOX"))
-    IupScintillaSendMessage(ih, SCI_INDICSETSTYLE, indicator, INDIC_FULLBOX);
   else if (iupStrEqualNoCase(value, "DASH"))
     IupScintillaSendMessage(ih, SCI_INDICSETSTYLE, indicator, INDIC_DASH);
   else if (iupStrEqualNoCase(value, "DOTS"))
@@ -190,10 +190,14 @@ static int iScintillaSetIndicatorStyleAttrib(Ihandle* ih, int indicator, const c
     IupScintillaSendMessage(ih, SCI_INDICSETSTYLE, indicator, INDIC_SQUIGGLEPIXMAP);
   else if (iupStrEqualNoCase(value, "COMPOSITIONTHICK"))
     IupScintillaSendMessage(ih, SCI_INDICSETSTYLE, indicator, INDIC_COMPOSITIONTHICK);
+#ifdef INDIC_COMPOSITIONTHIN  
   else if (iupStrEqualNoCase(value, "COMPOSITIONTHIN"))
     IupScintillaSendMessage(ih, SCI_INDICSETSTYLE, indicator, INDIC_COMPOSITIONTHIN);
   else if (iupStrEqualNoCase(value, "TEXTFORE"))
     IupScintillaSendMessage(ih, SCI_INDICSETSTYLE, indicator, INDIC_TEXTFORE);
+  else if (iupStrEqualNoCase(value, "FULLBOX"))
+    IupScintillaSendMessage(ih, SCI_INDICSETSTYLE, indicator, INDIC_FULLBOX);
+#endif
 
   return 0;
 }
