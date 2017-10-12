@@ -46,12 +46,14 @@ static int iScintillaSetTargetFromSelectionAttrib(Ihandle* ih, const char* value
   return 0;
 }
 
+#ifdef SCI_TARGETWHOLEDOCUMENT
 static int iScintillaSetTargetWholeDocumentAttrib(Ihandle* ih, const char* value)
 {
   IupScintillaSendMessage(ih, SCI_TARGETWHOLEDOCUMENT, 0, 0);
   (void)value;
   return 0;
 }
+#endif
 
 static char* iScintillaGetSearchFlagsAttrib(Ihandle* ih)
 {
@@ -165,7 +167,9 @@ void iupScintillaRegisterSearching(Iclass* ic)
   iupClassRegisterAttribute(ic, "TARGETEND", iScintillaGetTargetEndAttrib, iScintillaSetTargetEndAttrib, NULL, NULL, IUPAF_NO_INHERIT);
   iupClassRegisterAttribute(ic, "TARGETSTART", iScintillaGetTargetStartAttrib, iScintillaSetTargetStartAttrib, NULL, NULL, IUPAF_NO_INHERIT);
   iupClassRegisterAttribute(ic, "TARGETFROMSELECTION", NULL, iScintillaSetTargetFromSelectionAttrib, NULL, NULL, IUPAF_WRITEONLY | IUPAF_NO_INHERIT);
+#ifdef SCI_TARGETWHOLEDOCUMENT
   iupClassRegisterAttribute(ic, "TARGETWHOLEDOCUMENT", NULL, iScintillaSetTargetWholeDocumentAttrib, NULL, NULL, IUPAF_WRITEONLY | IUPAF_NO_INHERIT);
+#endif
   iupClassRegisterAttribute(ic, "SEARCHINTARGET", NULL, iScintillaSetSearchInTargetAttrib, NULL, NULL, IUPAF_WRITEONLY | IUPAF_NO_INHERIT);
   iupClassRegisterAttribute(ic, "REPLACETARGET", NULL, iScintillaSetReplaceTargetAttrib, NULL, NULL, IUPAF_WRITEONLY|IUPAF_NO_INHERIT);
 }
