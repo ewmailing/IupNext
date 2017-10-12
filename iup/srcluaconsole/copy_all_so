@@ -25,9 +25,9 @@ Copy_SOs()
   cp -f $BASE_EXTRA/lfs/lib/$PLAT/Lua$LUA_SFX/*.$EXT ../bin/$PLAT/Lua$LUA_SFX
 }
 
-# MacOS1010 Linux32 Linux32_64 Linux35_64  SunOS511x86
+# MacOS1010 Linux32 
 
-for plat in Linux26g4_64 Linux313_64 Linux319_64 Linux44_64 
+for plat in Linux26g4_64 Linux32_64 Linux35_64 Linux313_64 Linux319_64 Linux44_64 SunOS511x86
 do
   Copy_SOs $plat 51 so
   Copy_SOs $plat 52 so
