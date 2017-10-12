@@ -127,6 +127,7 @@ static void gtkScintillaBeginPrint(GtkPrintOperation *operation, GtkPrintContext
   lengthPrinted = 0;
   lengthDocMax = lengthDoc;
 
+#if GTK_CHECK_VERSION(2, 18, 0)
   if (startPos != endPos && gtk_print_operation_get_has_selection(operation))
   {
     if (startPos > endPos)
@@ -145,6 +146,7 @@ static void gtkScintillaBeginPrint(GtkPrintOperation *operation, GtkPrintContext
     if (lengthDoc > lengthDocMax)
       lengthDoc = lengthDocMax;
   }
+#endif
 
   /* Pre-process each page */
   p = 0;  /* page_nr starts at 0 */
@@ -199,6 +201,7 @@ int iupdrvScintillaPrintAttrib(Ihandle* ih, const char* value)
   /* See if a range has been selected */
   IupGetIntInt(ih, "SELECTIONPOS", &startPos, &endPos);
 
+#if GTK_CHECK_VERSION(2, 18, 0)
   if (startPos == endPos)
     gtk_print_operation_set_support_selection(printOp, FALSE);
   else
@@ -206,6 +209,7 @@ int iupdrvScintillaPrintAttrib(Ihandle* ih, const char* value)
     gtk_print_operation_set_support_selection(printOp, TRUE);
     gtk_print_operation_set_has_selection(printOp, TRUE);
   }
+#endif
 
   if (!iupAttribGetBoolean(ih, "PRINTDIALOG"))
     gtk_print_operation_run(printOp, GTK_PRINT_OPERATION_ACTION_PRINT, GTK_WINDOW(IupGetDialog(ih)->handle), NULL);
