@@ -347,6 +347,7 @@ static char* iScintillaGetWordPosAttrib(Ihandle* ih, int pos)
   return iupStrReturnIntInt(start, end, ':');
 }
 
+#ifdef SCI_ISRANGEWORD
 static char* iScintillaGetIsWordAttrib(Ihandle* ih)
 {
   int start, end, wordEnd;
@@ -361,6 +362,7 @@ static char* iScintillaGetIsWordAttrib(Ihandle* ih)
 
   return iupStrReturnBoolean((int)IupScintillaSendMessage(ih, SCI_ISRANGEWORD, start, end) && wordEnd == end);
 }
+#endif
 
 static int iScintillaSetFirstVisibleLineAttrib(Ihandle* ih, const char* value)
 {
@@ -501,7 +503,9 @@ void iupScintillaRegisterSelection(Iclass* ic)
   iupClassRegisterAttribute(ic, "SELECTIONALPHA", iScintillaGetSelectionAlphaAttrib, iScintillaSetSelectionAlphaAttrib,  NULL, NULL, IUPAF_NO_SAVE | IUPAF_NO_INHERIT);
   iupClassRegisterAttributeId(ic, "WORDPOS", iScintillaGetWordPosAttrib, NULL, IUPAF_READONLY | IUPAF_NO_INHERIT);
   iupClassRegisterAttribute(ic, "WORDRANGE", NULL, NULL, NULL, NULL, IUPAF_NOT_MAPPED | IUPAF_NO_INHERIT);
+#ifdef SCI_ISRANGEWORD
   iupClassRegisterAttribute(ic, "ISWORD", iScintillaGetIsWordAttrib, NULL, NULL, NULL, IUPAF_READONLY);
+#endif  
   iupClassRegisterAttribute(ic, "VISIBLELINESCOUNT", iScintillaGetVisibleLinesCountAttrib, NULL, NULL, NULL, IUPAF_READONLY | IUPAF_NO_INHERIT);
   iupClassRegisterAttribute(ic, "FIRSTVISIBLELINE", iScintillaGetFirstVisibleLineAttrib, iScintillaSetFirstVisibleLineAttrib, NULL, NULL, IUPAF_NO_INHERIT);
 }
