@@ -1,4 +1,4 @@
-﻿/** \file
+/** \file
  * \brief Scintilla control: Cursor and Zooming
  *
  * See Copyright Notice in "iup.h"
@@ -22,32 +22,32 @@
 
 /***** INDICATORS ****
 SCI_INDICSETSTYLE(int indicator, int indicatorStyle)
-SCI_INDICGETSTYLE(int indicator) → int
+SCI_INDICGETSTYLE(int indicator) ? int
 SCI_INDICSETFORE(int indicator, colour fore)
-SCI_INDICGETFORE(int indicator) → colour
+SCI_INDICGETFORE(int indicator) ? colour
 SCI_INDICSETALPHA(int indicator, alpha alpha)
-SCI_INDICGETALPHA(int indicator) → int
+SCI_INDICGETALPHA(int indicator) ? int
 SCI_INDICSETOUTLINEALPHA(int indicator, alpha alpha)
-SCI_INDICGETOUTLINEALPHA(int indicator) → int
+SCI_INDICGETOUTLINEALPHA(int indicator) ? int
 --SCI_INDICSETUNDER(int indicator, bool under)
---SCI_INDICGETUNDER(int indicator) → bool
+--SCI_INDICGETUNDER(int indicator) ? bool
 --SCI_INDICSETHOVERSTYLE(int indicator, int indicatorStyle)
---SCI_INDICGETHOVERSTYLE(int indicator) → int
+--SCI_INDICGETHOVERSTYLE(int indicator) ? int
 --SCI_INDICSETHOVERFORE(int indicator, colour fore)
---SCI_INDICGETHOVERFORE(int indicator) → colour
+--SCI_INDICGETHOVERFORE(int indicator) ? colour
 --SCI_INDICSETFLAGS(int indicator, int flags)
---SCI_INDICGETFLAGS(int indicator) → int
+--SCI_INDICGETFLAGS(int indicator) ? int
 
 SCI_SETINDICATORCURRENT(int indicator)
-SCI_GETINDICATORCURRENT → int
+SCI_GETINDICATORCURRENT ? int
 SCI_SETINDICATORVALUE(int value)
-SCI_GETINDICATORVALUE → int
+SCI_GETINDICATORVALUE ? int
 SCI_INDICATORFILLRANGE(int start, int lengthFill)
 SCI_INDICATORCLEARRANGE(int start, int lengthClear)
---SCI_INDICATORALLONFOR(int pos) → int
---SCI_INDICATORVALUEAT(int indicator, int pos) → int
---SCI_INDICATORSTART(int indicator, int pos) → int
---SCI_INDICATOREND(int indicator, int pos) → int
+--SCI_INDICATORALLONFOR(int pos) ? int
+--SCI_INDICATORVALUEAT(int indicator, int pos) ? int
+--SCI_INDICATORSTART(int indicator, int pos) ? int
+--SCI_INDICATOREND(int indicator, int pos) ? int
 --SCI_FINDINDICATORSHOW(int start, int end)
 --SCI_FINDINDICATORFLASH(int start, int end)
 --SCI_FINDINDICATORHIDE*/
