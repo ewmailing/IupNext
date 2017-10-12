@@ -287,8 +287,8 @@ static int iScintillaSetSelectionAttrib(Ihandle* ih, const char* value)
 
   if (col_start >= len_start)
     col_start = len_start - 1;
-  if (col_end >= len_end)
-    col_end = len_end - 1;
+  if (col_end > len_end) /* col_end correspond to the character after the last selected character */
+    col_end = len_end;
 
   anchorPos  = (int)IupScintillaSendMessage(ih, SCI_POSITIONFROMLINE, lin_start, 0) + col_start;
   currentPos = (int)IupScintillaSendMessage(ih, SCI_POSITIONFROMLINE, lin_end, 0)   + col_end;
