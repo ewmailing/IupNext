@@ -6,7 +6,7 @@
 
 #---------------------------------#
 # Tecmake Version
-VERSION = 4.15
+VERSION = 4.16
 
 
 #---------------------------------#
@@ -587,6 +587,10 @@ else
   endif
 endif
 
+ifdef USE_CPP11
+  CPPFLAGS += -std=c++11
+  DEPFLAGS += -std=c++11
+endif
 ifeq "$(TEC_SYSNAME)" "Haiku"
   STDFLAGS += -Wno-multichar
   LIBS += be textencoding tracker
@@ -1198,7 +1202,7 @@ ifdef LINK_WEBKIT
     LIBS += webkitgtk-3.0
   else 
     ifneq ($(findstring Linux3, $(TEC_UNAME)), )
-      ifneq ($(findstring Linux31, $(TEC_UNAME)), )
+      ifdef USE_GTK3
         LIBS += webkitgtk-3.0
       else
         LIBS += webkitgtk-1.0
@@ -1737,7 +1741,7 @@ $(DEPEND): $(MAKENAME)
 	  @which $(CPPC) 2> /dev/null 1>&2 ;\
 	  if [ $$? -eq 0 ]; then \
 	    echo "Tecmake: Building Dependencies ... [ $(DEPEND) ] (can be slow)" ;\
-	    $(CPPC) $(DEPINCS) $(DEFINES) $(STDDEFS) -MM $(SOURCES) | \
+	    $(CPPC) $(DEPFLAGS) $(DEPINCS) $(DEFINES) $(STDDEFS) -MM $(SOURCES) | \
 	    sed -e '1,$$s/^\([^ ]\)/$$(OBJDIR)\/\1/' > $(DEPEND) ;\
 	  else \
 	    echo "" ;\
