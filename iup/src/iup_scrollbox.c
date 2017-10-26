@@ -33,7 +33,8 @@ static void iScrollBoxUpdateChildPos(Ihandle *ih)
   {
     ih->iclass->SetChildrenPosition(ih, 0, 0);
 
-    iupLayoutUpdate(ih->firstchild);
+    if (ih->firstchild->handle)
+      iupLayoutUpdate(ih->firstchild);
   }
 }
 

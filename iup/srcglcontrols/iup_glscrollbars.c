@@ -284,7 +284,9 @@ void iupGLScrollbarsChildLayoutUpdate(Ihandle *ih)
     int sb_posy = iupAttribGetInt(ih, "POSY");
 
     iupBaseSetPosition(ih->firstchild, ih->x - sb_posx, ih->y - sb_posy);
-    iupLayoutUpdate(ih->firstchild);
+
+    if (ih->firstchild->handle)
+      iupLayoutUpdate(ih->firstchild);
   }
 }
 

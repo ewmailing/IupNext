@@ -73,7 +73,8 @@ static int iFlatScrollBoxScroll_CB(Ihandle *ih, int op, float posx, float posy)
   {
     iFlatScrollBoxUpdateChildPos(ih, child);
 
-    iupLayoutUpdate(child);
+    if (child->handle)
+      iupLayoutUpdate(child);
   }
 
   (void)posx;
@@ -90,7 +91,8 @@ static int iFlatScrollBoxFlatScroll_CB(Ihandle *ih)
   {
     iFlatScrollBoxUpdateChildPos(ih, child);
 
-    iupLayoutUpdate(child);
+    if (child->handle)
+      iupLayoutUpdate(child);
   }
 
   return IUP_DEFAULT;

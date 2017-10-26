@@ -423,7 +423,8 @@ static void motTabsConfigureNotify(Widget w, XEvent *evt, String* s, Cardinal *c
   XtVaGetValues(w, XmNuserData, &child, NULL);
   if (!child) return;
 
-  iupLayoutUpdate(child);
+  if (child->handle)
+    iupLayoutUpdate(child);
 }
 
 /* ------------------------------------------------------------------------- */
