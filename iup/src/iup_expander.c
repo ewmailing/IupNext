@@ -999,6 +999,7 @@ static int iExpanderSetPositionAttrib(Ihandle* ih, const char* value)
     ih->data->position = IEXPANDER_TOP;
 
   iExpanderUpdateBox(ih);
+  iExpanderUpdateExtraButtons(ih);
 
   return 0;  /* do not store value in hash table */
 }
