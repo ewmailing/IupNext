@@ -500,6 +500,7 @@ void ExpanderTest(void)
   IupSetAttribute(_frm_3, "FRAMEWIDTH", "3");
   IupSetAttribute(_frm_3, "FRAMECOLOR", "255 255 255");
   IupSetAttribute(_frm_3, "ANIMATION", "SLIDE");
+//  IupSetAttribute(_frm_3, "FRAMETIME", "300");
     IupSetAttribute(_frm_3, "BARSIZE", "50");
     IupSetAttribute(_frm_3, "TITLEEXPAND", "Yes");
     IupSetAttribute(_frm_3, "HIGHCOLOR", "192 192 192");

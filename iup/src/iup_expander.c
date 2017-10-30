@@ -374,16 +374,16 @@ static void iExpanderUpdateStateImage(Ihandle* ih)
   }
 }
 
-static int iExpanderAnimateTimer_CB(Ihandle* ih_timer)
+static int iExpanderAnimateTimer_CB(Ihandle* animate_timer)
 {
-  Ihandle* ih = (Ihandle*)iupAttribGet(ih_timer, "_IUP_EXPANDER");
-  Ihandle* child = (Ihandle*)iupAttribGet(ih_timer, "_IUP_CHILD");
-  int final_height = IupGetInt(ih_timer, "_IUP_FINAL_HEIGHT");
-  int closing = IupGetInt(ih_timer, "_IUP_CLOSING");
-  int width = IupGetInt(ih_timer, "_IUP_WIDTH");
+  Ihandle* ih = (Ihandle*)iupAttribGet(animate_timer, "_IUP_EXPANDER");
+  Ihandle* child = (Ihandle*)iupAttribGet(animate_timer, "_IUP_CHILD");
+  int final_height = IupGetInt(animate_timer, "_IUP_FINAL_HEIGHT");
+  int closing = IupGetInt(animate_timer, "_IUP_CLOSING");
+  int width = IupGetInt(animate_timer, "_IUP_WIDTH");
   int frame_time = iupAttribGetInt(ih, "FRAMETIME");
   int num_frames = iupAttribGetInt(ih, "NUMFRAMES");
-  int time_delay = iupAttribGetInt(ih_timer, "ELAPSEDTIME");
+  int time_delay = iupAttribGetInt(animate_timer, "ELAPSEDTIME");
   int height;
   int current_frame = time_delay / frame_time;
 
@@ -394,7 +394,7 @@ static int iExpanderAnimateTimer_CB(Ihandle* ih_timer)
 
   IupSetfAttribute(child, "MAXSIZE", "%dx%d", width, height);
 
-  if (ih->data->animation == 2)
+  if (ih->data->animation == 2) /* slide */
     IupSetfAttribute(child, "CHILDOFFSET", "0x%d", height - final_height);
 
   if (ih->data->state_refresh)
@@ -413,7 +413,7 @@ static int iExpanderAnimateTimer_CB(Ihandle* ih_timer)
         IupRefresh(ih);
     }
 
-    IupSetAttribute(ih_timer, "RUN", "NO");
+    IupSetAttribute(animate_timer, "RUN", "NO");
   }
 
   return IUP_DEFAULT;
@@ -467,6 +467,9 @@ static void iExpanderAnimateChild(Ihandle* ih, Ihandle* child)
 static void iExpanderOpenCloseChild(Ihandle* ih, int refresh, int callcb, int state)
 {
   Ihandle* child = ih->firstchild->brother;
+
+  if (ih->data->animate_timer && IupGetInt(ih->data->animate_timer, "RUN"))
+    return;
 
   if (callcb)
   {
@@ -729,13 +732,13 @@ static int iExpanderGlobalMotion_cb(int x, int y)
   return IUP_DEFAULT;
 }
 
-static int iExpanderAutoShowTimer_cb(Ihandle* ih_timer)
+static int iExpanderAutoShowTimer_cb(Ihandle* auto_show_timer)
 {
-  Ihandle* ih = (Ihandle*)iupAttribGet(ih_timer, "_IUP_EXPANDER");
+  Ihandle* ih = (Ihandle*)iupAttribGet(auto_show_timer, "_IUP_EXPANDER");
   Ihandle* child = ih->firstchild->brother;
 
   /* run timer just once each time */
-  IupSetAttribute(ih_timer, "RUN", "No");
+  IupSetAttribute(auto_show_timer, "RUN", "NO");
 
   /* just show child on top,
      that's why child must be a native container when using autoshow. */
@@ -771,7 +774,7 @@ static int iExpanderExpandButtonLeaveWindow_cb(Ihandle* expand_button)
     if (ih->data->auto_show)
     {
       if (IupGetInt(ih->data->auto_show_timer, "RUN"))
-        IupSetAttribute(ih->data->auto_show_timer, "RUN", "No");
+        IupSetAttribute(ih->data->auto_show_timer, "RUN", "NO");
     }
   }
   return IUP_DEFAULT;
@@ -806,7 +809,7 @@ static int iExpanderExpandButtonEnterWindow_cb(Ihandle* expand_button)
 
 static int iExpanderExpandButtonButton_CB(Ihandle* expand_button, int button, int pressed, int x, int y, char* status)
 {
-  if (button == IUP_BUTTON1 && pressed)
+  if (button == IUP_BUTTON1 && pressed && !iup_isdouble(status))
   {
     /* expander -> bar -> box -> (expand_button, ...) */
     Ihandle* ih = IupGetParent(IupGetParent(IupGetParent(expand_button)));
@@ -814,7 +817,7 @@ static int iExpanderExpandButtonButton_CB(Ihandle* expand_button, int button, in
     if (ih->data->auto_show)
     {
       if (IupGetInt(ih->data->auto_show_timer, "RUN"))
-        IupSetAttribute(ih->data->auto_show_timer, "RUN", "No");
+        IupSetAttribute(ih->data->auto_show_timer, "RUN", "NO");
     }
 
     iExpanderOpenCloseChild(ih, 1, 1, ih->data->state == IEXPANDER_OPEN ? IEXPANDER_CLOSE : IEXPANDER_OPEN);
@@ -822,7 +825,6 @@ static int iExpanderExpandButtonButton_CB(Ihandle* expand_button, int button, in
 
   (void)x;
   (void)y;
-  (void)status;
   return IUP_DEFAULT;
 }
 
@@ -862,7 +864,7 @@ static int iExpanderTitleEnterWindow_cb(Ihandle* title_label)
 
 static int iExpanderTitleButton_CB(Ihandle* title_label, int button, int pressed, int x, int y, char* status)
 {
-  if (button == IUP_BUTTON1 && pressed)
+  if (button == IUP_BUTTON1 && pressed && !iup_isdouble(status))
   {
     /* expander -> bar -> box -> (expand_button, title_label, ...) */
     Ihandle* ih = IupGetParent(IupGetParent(IupGetParent(title_label)));
@@ -875,7 +877,6 @@ static int iExpanderTitleButton_CB(Ihandle* title_label, int button, int pressed
 
   (void)x;
   (void)y;
-  (void)status;
   return IUP_DEFAULT;
 }
 
