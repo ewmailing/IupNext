@@ -684,8 +684,8 @@ function iup.DebuggerPrintLocalVariable()
   local tree_local = iup.GetDialogChild(debugger.main_dialog, "TREE_LOCAL")
   local id = tree_local.value
 
-  local luaTabs = iup.GetDialogChild(debugger.main_dialog, "LUA_TABS")
-  luaTabs.valuepos = 0 -- show console tab
+  local panelTabs = iup.GetDialogChild(debugger.main_dialog, "PANEL_TABS")
+  panelTabs.valuepos = 1 -- show console tab
 
   local userdata = iup.TreeGetUserId(tree_local, id)
   local pos = userdata.pos
@@ -699,8 +699,8 @@ function iup.DebuggerPrintAllLocalVariables()
   local tree_local = iup.GetDialogChild(debugger.main_dialog, "TREE_LOCAL")
   local count = tonumber(tree_local.rootcount) -- print all at root only
 
-  local luaTabs = iup.GetDialogChild(debugger.main_dialog, "LUA_TABS")
-  luaTabs.valuepos = 0 -- show console tab
+  local panelTabs = iup.GetDialogChild(debugger.main_dialog, "PANEL_TABS")
+  panelTabs.valuepos = 1 -- show console tab
 
   local id = 0
   for i = 0, count-1 do
@@ -1011,8 +1011,8 @@ function iup.DebuggerPrintStackLevel()
   local list_stack = iup.GetDialogChild(debugger.main_dialog, "LIST_STACK")
   local index = list_stack.value
 
-  local luaTabs = iup.GetDialogChild(debugger.main_dialog, "LUA_TABS")
-  luaTabs.valuepos = 0 -- show console tab
+  local panelTabs = iup.GetDialogChild(debugger.main_dialog, "PANEL_TABS")
+  panelTabs.valuepos = 1 -- show console tab
 
   local defined = list_stack["DEFINED" .. index]
 
@@ -1024,8 +1024,8 @@ function iup.DebuggerPrintAllStackLevel()
   local list_stack = iup.GetDialogChild(debugger.main_dialog, "LIST_STACK")
   local count = tonumber(list_stack.count)
 
-  local luaTabs = iup.GetDialogChild(debugger.main_dialog, "LUA_TABS")
-  luaTabs.valuepos = 0 -- show console tab
+  local panelTabs = iup.GetDialogChild(debugger.main_dialog, "PANEL_TABS")
+  panelTabs.valuepos = 1 -- show console tab
 
   for index = 1, count do
     local defined = list_stack["DEFINED" .. index]
@@ -1472,8 +1472,8 @@ function iup.DebuggerPrintGlobalVariable()
   local tree_global = iup.GetDialogChild(debugger.main_dialog, "TREE_GLOBAL")
   local id = tree_global.value
 
-  local luaTabs = iup.GetDialogChild(debugger.main_dialog, "LUA_TABS")
-  luaTabs.valuepos = 0 -- show console tab
+  local panelTabs = iup.GetDialogChild(debugger.main_dialog, "CSUTOM_TABS")
+  panelTabs.valuepos = 1 -- show console tab
   
   local userdata = iup.TreeGetUserId(tree_global, id)
   
@@ -1493,8 +1493,8 @@ function iup.DebuggerPrintAllGlobalVariables()
   local tree_global = iup.GetDialogChild(debugger.main_dialog, "TREE_GLOBAL")
   local count = tonumber(tree_global.rootcount) -- print all at root only
 
-  local luaTabs = iup.GetDialogChild(debugger.main_dialog, "LUA_TABS")
-  luaTabs.valuepos = 0 -- show console tab
+  local panelTabs = iup.GetDialogChild(debugger.main_dialog, "PANEL_TABS")
+  panelTabs.valuepos = 1 -- show console tab
 
   local id = 0
   for i = 0, count-1 do
@@ -1695,8 +1695,8 @@ end
 function iup.DebuggerStartDebug(filename)
   debugger.startFile = filename
 
-  local luaTabs = iup.GetDialogChild(debugger.main_dialog, "LUA_TABS")
-  luaTabs.valuepos = 2 -- show debug tab
+  local panelTabs = iup.GetDialogChild(debugger.main_dialog, "PANEL_TABS")
+  panelTabs.valuepos = 3 -- show debug tab
 
   iup.ConsolePrint("-- Debug start")
 
@@ -1714,8 +1714,8 @@ function iup.DebuggerEndDebug(stop)
 
   iup.DebuggerSetState(DEBUG_INACTIVE)
 
-  local luaTabs = iup.GetDialogChild(debugger.main_dialog, "LUA_TABS")
-  luaTabs.valuepos = 0 -- show console tab
+  local panelTabs = iup.GetDialogChild(debugger.main_dialog, "PANEL_TABS")
+  panelTabs.valuepos = 1 -- show console tab
 
   if stop then
     iup.ConsolePrint("-- Debug stop!")

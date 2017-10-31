@@ -346,9 +346,6 @@ static void save_breakpoints(Ihandle *ih, Ihandle* config)
 
 static int configsave_cb(Ihandle *ih, Ihandle* config)
 {
-  Ihandle* split = IupGetDialogChild(ih, "SPLIT");
-  IupConfigSetVariableStr(config, IupGetAttribute(ih, "SUBTITLE"), "Split", IupGetAttribute(split, "VALUE"));
-
   save_breakpoints(ih, config);
 
   save_globals(ih, config);
@@ -419,13 +416,6 @@ static void load_breakpoints(Ihandle *ih, Ihandle* config)
 static int configload_cb(Ihandle *ih, Ihandle* config)
 {
   const char* value;
-
-  value = IupConfigGetVariableStr(config, IupGetAttribute(ih, "SUBTITLE"), "Split");
-  if (value)
-  {
-    Ihandle* split = IupGetDialogChild(ih, "SPLIT");
-    IupSetStrAttribute(split, "VALUE", value);
-  }
 
   value = IupConfigGetVariableStr(config, "LuaScripter", "CurrentDirectory");
   if (value)
@@ -520,7 +510,7 @@ static char* changeTabsForSpaces(const char *text, int tabsize)
 
 static int multitext_dwell_cb(Ihandle* multitext, int code, int pos, int x, int y)
 {
-  if (IupGetInt(IupGetDialogChild(multitext, "ITM_DEBUG"), "ACTIVE")) /* can be called by the hot key in the dialog */
+  if (!IupGetInt(IupGetDialogChild(multitext, "ITM_DEBUG"), "ACTIVE")) /* can be called by the hot key in the dialog */
     return IUP_DEFAULT;
 
   if (code)
@@ -642,19 +632,6 @@ static int item_autocomplete_action_cb(Ihandle* ih_item)
 
   return IUP_DEFAULT;
 }
-
-static int item_displaypanel_action_cb(Ihandle* ih_item)
-{
-  Ihandle* split = IupGetDialogChild(ih_item, "SPLIT");
-
-  if (IupGetInt(split, "VALUE") == 1000)
-    IupSetAttribute(split, "VALUE", "800");
-  else
-    IupSetAttribute(split, "VALUE", "1000");
-
-  return IUP_DEFAULT;
-}
-
 
 static int setparent_param_cb(Ihandle* param_dialog, int param_index, void* user_data)
 {
@@ -1606,15 +1583,8 @@ static int lua_menu_open_cb(Ihandle *ih_menu)
   Ihandle* item_toggle_folding = IupGetDialogChild(ih_menu, "ITM_TOGGLE_FOLDING");
   Ihandle* item_folding = IupGetDialogChild(ih_menu, "ITM_FOLDING");
   Ihandle* item_comments = IupGetDialogChild(ih_menu, "ITM_COMMENTS");
-  Ihandle* item_displaypanel = IupGetDialogChild(ih_menu, "ITM_PANEL");
-  Ihandle* split = IupGetDialogChild(ih_menu, "SPLIT");
   Ihandle* multitext = get_current_multitext(ih_menu);
   char *selpos = IupGetAttribute(multitext, "SELECTIONPOS");
-
-  if (IupGetInt(split, "VALUE") == 1000)
-    IupSetAttribute(item_displaypanel, "VALUE", "OFF");
-  else
-    IupSetAttribute(item_displaypanel, "VALUE", "ON");
 
   if (IupGetInt(item_folding, "VALUE"))
   {
@@ -1974,7 +1944,7 @@ static Ihandle* buildLuaMenu(void)
   Ihandle *item_debug, *item_run, *item_stop, *item_pause, *item_stepinto, *item_autocomplete, *item_style_config,
     *item_folding, *item_toggle_folding, *item_stepover, *item_stepout, *luaMenu, *item_currentline, *item_options,
     *item_togglebreakpoint, *item_addbreakpoint, *item_removeallbreakpoints, *item_collapse, *item_expand, *item_toggle, *item_level,
-    *item_blockcomment, *item_blockuncomment, *item_linescomment, *item_linesuncomment, *item_displaypanel;
+    *item_blockcomment, *item_blockuncomment, *item_linescomment, *item_linesuncomment;
 
   item_run = IupItem("&Run\tCtrl+F5", NULL);
   IupSetAttribute(item_run, "NAME", "ITM_RUN");
@@ -2078,11 +2048,6 @@ static Ihandle* buildLuaMenu(void)
   item_removeallbreakpoints = IupItem("Remove All Breakpoints", NULL);
   IupSetCallback(item_removeallbreakpoints, "ACTION", (Icallback)but_removeallbreaks_cb);
 
-  item_displaypanel = IupItem("Display Panel", NULL);
-  IupSetAttribute(item_displaypanel, "NAME", "ITM_PANEL");
-  IupSetCallback(item_displaypanel, "ACTION", (Icallback)item_displaypanel_action_cb);
-  IupSetAttribute(item_displaypanel, "VALUE", "ON");
-
   luaMenu = IupMenu(
     item_run,
     IupSeparator(),
@@ -2118,7 +2083,6 @@ static Ihandle* buildLuaMenu(void)
     IupSeparator(),
     item_autocomplete,
     IupSeparator(),
-    item_displaypanel,
     item_style_config,
     item_options,
     NULL);
@@ -2296,8 +2260,8 @@ static int newtext_cb(Ihandle* ih, Ihandle *multitext)
 static int iLuaScripterDlgCreateMethod(Ihandle* ih, void** params)
 {
   lua_State *L;
-  Ihandle *menu, *split, *box, *statusBar, *luaMenu;
-  Ihandle *tabConsole, *tabDebug, *tabBreaks, *tabWatch, *luaTabs, *textTabs;
+  Ihandle *menu, *luaMenu;
+  Ihandle *tabConsole, *tabDebug, *tabBreaks, *tabWatch, *panelTabs;
 
   L = (lua_State*)IupGetGlobal("_IUP_LUA_DEFAULT_STATE");
 
@@ -2344,25 +2308,13 @@ static int iLuaScripterDlgCreateMethod(Ihandle* ih, void** params)
 
   tabWatch = buildTabWatch();
 
-  luaTabs = IupTabs(tabConsole, tabBreaks, tabDebug, tabWatch, NULL);
-  IupSetAttribute(luaTabs, "MARGIN", "0x0");
-  IupSetAttribute(luaTabs, "GAP", "4");
-  IupSetAttribute(luaTabs, "TABTYPE", "BOTTOM");
-  IupSetAttribute(luaTabs, "NAME", "LUA_TABS");
+  panelTabs = IupGetDialogChild(ih, "PANEL_TABS");
+  IupAppend(panelTabs, tabConsole);
+  IupAppend(panelTabs, tabBreaks);
+  IupAppend(panelTabs, tabDebug);
+  IupAppend(panelTabs, tabWatch);
 
-  textTabs = IupGetDialogChild(ih, "PROJECTSPLIT");
-  IupDetach(textTabs);
-  split = IupSplit(textTabs, luaTabs);
-  IupSetAttribute(split, "NAME", "SPLIT");
-  IupSetAttribute(split, "ORIENTATION", "HORIZONTAL");
-  IupSetAttribute(split, "LAYOUTDRAG", "NO");
-  IupSetAttribute(split, "AUTOHIDE", "YES");
-  IupSetAttribute(split, "MINMAX", "100:1000");
-  IupSetAttribute(split, "COLOR", "50 150 255");
-
-  box = IupGetChild(ih, 0);
-  statusBar = IupGetDialogChild(ih, "STATUSBAR");
-  IupInsert(box, statusBar, split);
+  IupSetAttribute(panelTabs, "VALUEPOS", "1"); /* show Console by default */
 
   menu = IupGetAttributeHandle(ih, "MENU");
   IupInsert(menu, IupGetChild(menu, IupGetChildCount(menu) - 1), luaMenu);
@@ -2432,9 +2384,7 @@ void IupLuaScripterDlgOpen(void)
 }
 
 /* TODO:
-- UTL: find/replace in Project Files
-- UTL: search results - find all
-- UTL: Condicional Breakpoints, Hit Count, When Hit
+- condicional Breakpoints, Hit Count, When Hit
 - sub-folder level for Projects
 - multi-language (Portuguese, Spanish)
 - detachable Console, Debug, Breakpoints (problem with IupGetDialogChild(NAME))?
