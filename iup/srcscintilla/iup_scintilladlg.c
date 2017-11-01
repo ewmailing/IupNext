@@ -3343,13 +3343,14 @@ static int find_all_action_cb(Ihandle* bt_replace)
     Ihandle* projectTree = IupGetDialogChild(ih, "PROJECTTREE");
     Ihandle* panelTabs = IupGetDialogChild(ih, "PANEL_TABS");
     Ihandle* listSearch = IupGetDialogChild(ih, "LIST_SEARCH");
+    Ihandle* panelFrame = IupGetDialogChild(ih, "PANEL_FRAME");
     Ihandle* currentMultitext = iScintillaDlgGetCurrentMultitext(ih);
     Ihandle* multitext = NULL;
     Ihandle* find_txt = IupGetDialogChild(find_dlg, "FIND_TEXT");
     int i, count;
 
     IupSetAttribute(listSearch, "REMOVEITEM", "ALL");
-    IupSetAttribute(panelTabs, "VALUE_HANDLE", (char*)listSearch);
+    IupSetAttribute(panelTabs, "VALUEPOS", "0");
 
     /* test again, because it can be called from the hot key */
     str_to_find = IupGetAttribute(find_txt, "VALUE");
@@ -3453,7 +3454,11 @@ static int find_all_action_cb(Ihandle* bt_replace)
         else
           multitext = tabs->firstchild;
       }
+
+      IupSetStrf(panelFrame, "TITLE", "Find Results: (%s)", str_to_find);
     }
+    else
+      IupSetAttribute(panelFrame, "TITLE", "Find Results:");
   }
 
   return IUP_DEFAULT;
@@ -4457,7 +4462,7 @@ static int iScintillaDlgCreateMethod(Ihandle* ih, void** params)
   Ihandle *item_savecopy, *item_saveall, *item_closeall, *item_close, *item_rename, *item_windows, *item_loadsession, *item_savesession;
   Ihandle *lbl_statusbar, *toolbar_hb, *recent_menu, *recent_proj_menu, *window_menu, *sub_menu_window, *item_window1;
   Ihandle *item_wordwrap, *item_showwhite, *item_showeol;
-  Ihandle *panelTabs, *listSearch, *panelSplit;
+  Ihandle *panelFrame, *panelTabs, *listSearch, *panelSplit;
 
   tabs = IupFlatTabs(NULL);
   IupSetAttribute(tabs, "NAME", "TABS");
@@ -4495,9 +4500,15 @@ static int iScintillaDlgCreateMethod(Ihandle* ih, void** params)
   IupSetAttribute(listSearch, "NAME", "LIST_SEARCH");
   IupSetCallback(listSearch, "DBLCLICK_CB", (Icallback)list_search_dblclick_cb);
   IupSetAttribute(listSearch, "VISIBLELINES", "3");
-  IupSetAttribute(listSearch, "TABTITLE", "Find Results");
 
-  panelTabs = IupTabs(listSearch, NULL);
+  panelFrame = IupFrame(listSearch);
+  IupSetAttribute(panelFrame, "NAME", "PANEL_FRAME");
+  IupSetAttribute(panelFrame, "MARGIN", "4x4");
+  IupSetAttribute(panelFrame, "GAP", "4");
+  IupSetAttribute(panelFrame, "TITLE", "Find Results:");
+  IupSetAttribute(panelFrame, "TABTITLE", "Find");
+
+  panelTabs = IupTabs(panelFrame, NULL);
   IupSetAttribute(panelTabs, "MARGIN", "0x0");
   IupSetAttribute(panelTabs, "GAP", "4");
   IupSetAttribute(panelTabs, "TABTYPE", "BOTTOM");
