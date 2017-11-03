@@ -115,7 +115,7 @@ void iupMatrixSetValue(Ihandle* ih, int lin, int col, const char* value, int use
   if (user_edited)
   {
     /* value_edit_cb called when value is "interactively" edited.
-       This is NOT called only when L:C or VALUE attributes are set.
+       This is NOT called when L:C or VALUE attributes are set.
        It works in normal mode and in callback mode. */
     IFniis value_edit_cb = (IFniis)IupGetCallback(ih, "VALUE_EDIT_CB");
     if (value_edit_cb)
