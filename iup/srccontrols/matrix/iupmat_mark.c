@@ -58,14 +58,11 @@ static int iMatrixSetMarkCell(Ihandle* ih, int lin, int col, int mark, IFniii ma
 {
   if (ih->data->callback_mode)
   {
-    if (markedit_cb)
+    if (markedit_cb && !ih->data->inside_markedit_cb) /* allow MARK to be set from inside the callback */
     {
-      if (!ih->data->inside_markedit_cb)
-      {
-        ih->data->inside_markedit_cb = 1;
-        markedit_cb(ih, lin, col, mark);
-        ih->data->inside_markedit_cb = 0;
-      }
+      ih->data->inside_markedit_cb = 1;
+      markedit_cb(ih, lin, col, mark);  /* called only here */
+      ih->data->inside_markedit_cb = 0;
     }
     else
     {
