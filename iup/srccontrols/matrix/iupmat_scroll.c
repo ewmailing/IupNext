@@ -71,7 +71,7 @@ static void iMatrixScrollCallScrollTopCb(Ihandle* ih)
     cb(ih, ih->data->lines.first, ih->data->columns.first);
 }
 
-static int iMatrixScrollGetNextNonEmpty(Ihandle* ih, int m, int index)
+static int iMatrixScrollGetNextNonEmpty(Ihandle* ih, int m, int index, int scrollkey)
 {
   ImatLinColData* p;
 
@@ -80,13 +80,18 @@ static int iMatrixScrollGetNextNonEmpty(Ihandle* ih, int m, int index)
   else
     p = &(ih->data->columns);
 
+  /* get the next non-empty cell */
   while(index < p->num && p->dt[index].size == 0)
     index++;
 
   if (index > p->num-1)
   {
-    if (p->num == p->num_noscroll)
-      return p->num_noscroll;
+    int noscroll = p->num_noscroll;
+    if (scrollkey)
+      noscroll = 1;
+
+    if (p->num == noscroll)
+      return noscroll;
     else
       return p->num-1;
   }
@@ -94,20 +99,26 @@ static int iMatrixScrollGetNextNonEmpty(Ihandle* ih, int m, int index)
     return index;
 }
 
-static int iMatrixScrollGetPrevNonEmpty(Ihandle* ih, int m, int index)
+static int iMatrixScrollGetPrevNonEmpty(Ihandle* ih, int m, int index, int scrollkey)
 {
   ImatLinColData* p;
+  int noscroll;
 
   if (m == IMAT_PROCESS_LIN)
     p = &(ih->data->lines);
   else
     p = &(ih->data->columns);
 
-  while(index > 0 && p->dt[index].size == 0)
+  /* get the previous non-empty cell */
+  while (index > 0 && p->dt[index].size == 0)
     index--;
 
-  if (index < p->num_noscroll)
-    return p->num_noscroll;
+  noscroll = p->num_noscroll;
+  if (scrollkey)
+    noscroll = 1;
+
+  if (index < noscroll)
+    return noscroll;
   else
     return index;
 }
@@ -219,7 +230,7 @@ void iupMatrixScrollHomeFunc(Ihandle* ih, int unused_mode, int unused_m)
 
   if(ih->data->homekeycount == 0)  /* go to the beginning of the line */
   {
-    int col = iMatrixScrollGetNextNonEmpty(ih, IMAT_PROCESS_COL, ih->data->columns.num_noscroll);
+    int col = iMatrixScrollGetNextNonEmpty(ih, IMAT_PROCESS_COL, 1, 1);
     iMatrixScrollSetFocusScrollToVisibleLinCol(ih, IMAT_PROCESS_COL, col);
   }
   else if(ih->data->homekeycount == 1)   /* go to the beginning of the visible page */
@@ -228,8 +239,8 @@ void iupMatrixScrollHomeFunc(Ihandle* ih, int unused_mode, int unused_m)
   }
   else if(ih->data->homekeycount == 2)   /* go to the beginning of the matrix 1:1 */
   {
-    int lin = iMatrixScrollGetNextNonEmpty(ih, IMAT_PROCESS_LIN, ih->data->lines.num_noscroll);
-    int col = iMatrixScrollGetNextNonEmpty(ih, IMAT_PROCESS_COL, ih->data->columns.num_noscroll);
+    int lin = iMatrixScrollGetNextNonEmpty(ih, IMAT_PROCESS_LIN, 1, 1);
+    int col = iMatrixScrollGetNextNonEmpty(ih, IMAT_PROCESS_COL, 1, 1);
     iMatrixScrollSetFocusScrollToVisible(ih, lin, col);
   }
 }
@@ -250,7 +261,7 @@ void iupMatrixScrollEndFunc(Ihandle* ih, int unused_mode, int unused_m)
 
   if(ih->data->endkeycount == 0)  /* go to the end of the line */
   {
-    int col = iMatrixScrollGetPrevNonEmpty(ih, IMAT_PROCESS_COL, ih->data->columns.num-1);
+    int col = iMatrixScrollGetPrevNonEmpty(ih, IMAT_PROCESS_COL, ih->data->columns.num - 1, 1);
     iMatrixScrollSetFocusScrollToVisibleLinCol(ih, IMAT_PROCESS_COL, col);
   }
   else if(ih->data->endkeycount == 1)   /* go to the end of the visible page */
@@ -259,8 +270,8 @@ void iupMatrixScrollEndFunc(Ihandle* ih, int unused_mode, int unused_m)
   }
   else if(ih->data->endkeycount == 2)   /* go to the end of the matrix */
   {
-    int lin = iMatrixScrollGetPrevNonEmpty(ih, IMAT_PROCESS_LIN, ih->data->lines.num-1);
-    int col = iMatrixScrollGetPrevNonEmpty(ih, IMAT_PROCESS_COL, ih->data->columns.num-1);
+    int lin = iMatrixScrollGetPrevNonEmpty(ih, IMAT_PROCESS_LIN, ih->data->lines.num - 1, 1);
+    int col = iMatrixScrollGetPrevNonEmpty(ih, IMAT_PROCESS_COL, ih->data->columns.num - 1, 1);
     iMatrixScrollSetFocusScrollToVisible(ih, lin, col);
   }
 }
@@ -283,13 +294,13 @@ void iupMatrixScrollLeftUpFunc(Ihandle* ih, int mode, int m)
   if (mode == IMAT_SCROLLKEY)
   {
     /* moving focus and eventually scrolling */
-    int next = iMatrixScrollGetPrevNonEmpty(ih, m, p->focus_cell-1);
+    int next = iMatrixScrollGetPrevNonEmpty(ih, m, p->focus_cell - 1, 1);
     iMatrixScrollSetFocusScrollToVisibleLinCol(ih, m, next);
   }
   else  /* IMAT_SCROLLBAR */
   {
     /* always scrolling without changing focus */
-    p->first = iMatrixScrollGetPrevNonEmpty(ih, m, p->first-1);
+    p->first = iMatrixScrollGetPrevNonEmpty(ih, m, p->first - 1, 0);
     p->first_offset = 0;
   }
 }
@@ -312,13 +323,13 @@ void iupMatrixScrollRightDownFunc(Ihandle* ih, int mode, int m)
   if (mode == IMAT_SCROLLKEY)
   {
     /* moving focus and eventually scrolling */
-    int next = iMatrixScrollGetNextNonEmpty(ih, m, p->focus_cell+1);
+    int next = iMatrixScrollGetNextNonEmpty(ih, m, p->focus_cell + 1, 1);
     iMatrixScrollSetFocusScrollToVisibleLinCol(ih, m, next);
   }
   else  /* IMAT_SCROLLBAR */
   {
     /* always scrolling without changing focus */
-    p->first = iMatrixScrollGetNextNonEmpty(ih, m, p->first+1);
+    p->first = iMatrixScrollGetNextNonEmpty(ih, m, p->first + 1, 0);
     p->first_offset = 0;
   }
 }
@@ -341,13 +352,13 @@ void iupMatrixScrollPgLeftUpFunc(Ihandle* ih, int mode, int m)
   if (mode == IMAT_SCROLLKEY)
   {
     /* moving focus and eventually scrolling */
-    int next = iMatrixScrollGetPrevNonEmpty(ih, m, p->focus_cell - (p->last - p->first));
+    int next = iMatrixScrollGetPrevNonEmpty(ih, m, p->focus_cell - (p->last - p->first), 1);
     iMatrixScrollSetFocusScrollToVisibleLinCol(ih, m, next);
   }
   else  /* IMAT_SCROLLBAR */
   {
     /* always scrolling without changing focus */
-    p->first = iMatrixScrollGetPrevNonEmpty(ih, m, p->first - (p->last - p->first));
+    p->first = iMatrixScrollGetPrevNonEmpty(ih, m, p->first - (p->last - p->first), 0);
     p->first_offset = 0;
   }
 }
@@ -370,13 +381,13 @@ void iupMatrixScrollPgRightDownFunc(Ihandle* ih, int mode, int m)
   if (mode == IMAT_SCROLLKEY)
   {
     /* moving focus and eventually scrolling */
-    int next = iMatrixScrollGetNextNonEmpty(ih, m, p->focus_cell + (p->last - p->first));
+    int next = iMatrixScrollGetNextNonEmpty(ih, m, p->focus_cell + (p->last - p->first), 1);
     iMatrixScrollSetFocusScrollToVisibleLinCol(ih, m, next);
   }
   else  /* IMAT_SCROLLBAR */
   {
     /* always scrolling without changing focus */
-    p->first = iMatrixScrollGetPrevNonEmpty(ih, m, p->first + (p->last - p->first));
+    p->first = iMatrixScrollGetPrevNonEmpty(ih, m, p->first + (p->last - p->first), 0);
     p->first_offset = 0;
   }
 }
@@ -426,7 +437,7 @@ void iupMatrixScrollCrFunc(Ihandle* ih, int unused_mode, int unused_m)
       /* if successfully changed the col, then go to first line */
       if (ih->data->columns.focus_cell != oldcol)
       {
-        int lin = iMatrixScrollGetNextNonEmpty(ih, IMAT_PROCESS_LIN, ih->data->lines.num_noscroll);
+        int lin = iMatrixScrollGetNextNonEmpty(ih, IMAT_PROCESS_LIN, 1, 1);
         iMatrixScrollSetFocusScrollToVisibleLinCol(ih, IMAT_PROCESS_LIN, lin);
       }
       break;
@@ -437,7 +448,7 @@ void iupMatrixScrollCrFunc(Ihandle* ih, int unused_mode, int unused_m)
       /* if successfully changed the line, then go to first col */
       if (ih->data->lines.focus_cell != oldlin)
       {
-        int col = iMatrixScrollGetNextNonEmpty(ih, IMAT_PROCESS_COL, ih->data->columns.num_noscroll);
+        int col = iMatrixScrollGetNextNonEmpty(ih, IMAT_PROCESS_COL, 1, 1);
         iMatrixScrollSetFocusScrollToVisibleLinCol(ih, IMAT_PROCESS_COL, col);
       }
       break;
