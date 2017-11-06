@@ -155,6 +155,8 @@ static void iMatrixDrawSetCellClipping(Ihandle* ih, int x1, int x2, int y1, int 
     if (x2 > ih->data->clip_x2) x2 = ih->data->clip_x2;
     if (y1 < ih->data->clip_y1) y1 = ih->data->clip_y1;
     if (y2 > ih->data->clip_y2) y2 = ih->data->clip_y2;
+    if (x1 > x2) x2 = x1;
+    if (y1 > y2) y2 = y1;
     cdCanvasClipArea(ih->data->cd_canvas, x1, x2, y1, y2);
     cdCanvasClip(ih->data->cd_canvas, CD_CLIPAREA);
   }
@@ -527,7 +529,11 @@ static void iMatrixDrawText(Ihandle* ih, int x1, int x2, int y1, int y2, int col
     iMatrixDrawSetCellClipping(ih, x1, x2 - crop, y1, y2);
   }
   else
+  {
+    if (lin == 3 && col == 2)
+      lin = lin;
     iMatrixDrawSetCellClipping(ih, x1, x2, y1, y2);
+  }
 
   IupCdSetFont(ih, ih->data->cd_canvas, iupMatrixGetFont(ih, lin, col));
 
