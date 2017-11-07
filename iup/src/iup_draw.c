@@ -199,6 +199,10 @@ void IupDrawText(Ihandle* ih, const char* text, int len, int x, int y)
   if (!iupObjectCheck(ih))
     return;
 
+  iupASSERT(text);
+  if (!text || text[0] == 0)
+    return;
+
   dc = (IdrawCanvas*)iupAttribGet(ih, "_IUP_DRAW_DC");
   if (!dc)
     return;
@@ -209,7 +213,11 @@ void IupDrawText(Ihandle* ih, const char* text, int len, int x, int y)
 
   font = iupFlatGetTextSize(ih, text, &w, &h);
 
-  iupdrvDrawText(dc, text, len, x, y, w, h, r, g, b, font, align);
+  if (len == 0)
+    len = (int)strlen(text);
+
+  if (len != 0)
+    iupdrvDrawText(dc, text, len, x, y, w, h, r, g, b, font, align);
 }
 
 void IupDrawGetTextSize(Ihandle* ih, const char* str, int *w, int *h)

@@ -84,6 +84,10 @@ static void drawTest(Ihandle *ih, int posx)
   IupDrawLine(ih, -posx, 0, w - posx, h);
   IupDrawLine(ih, -posx, h, w - posx, 0);
 
+  IupSetAttribute(ih, "DRAWCOLOR", "0 0 0");
+  IupSetAttribute(ih, "DRAWFONT", "Times, 28");
+  IupDrawText(ih, "This is a test", 0, w / 2, h / 2);
+
   IupDrawEnd(ih); 
 }
 #else
