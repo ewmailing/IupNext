@@ -270,6 +270,19 @@ static int winTreeIsItemExpanded(Ihandle* ih, HTREEITEM hItem)
   return (item.state & TVIS_EXPANDED) != 0;
 }
 
+static int winTreeIsBranch(Ihandle* ih, HTREEITEM hItem)
+{
+  TVITEM item;
+  winTreeItemData* itemData;
+
+  item.mask = TVIF_HANDLE | TVIF_PARAM;
+  item.hItem = hItem;
+  SendMessage(ih->handle, TVM_GETITEM, 0, (LPARAM)(LPTVITEM)&item);
+  itemData = (winTreeItemData*)item.lParam;
+
+  return (itemData->kind == ITREE_BRANCH);
+}
+
 static void winTreeExpandItem(Ihandle* ih, HTREEITEM hItem, int expand)
 {
   TVITEM item;
@@ -2430,7 +2443,13 @@ static int winTreeMsgProc(Ihandle* ih, UINT msg, WPARAM wp, LPARAM lp, LRESULT *
       {
         HTREEITEM hItemFocus = iupdrvTreeGetFocusNode(ih);
         if (winTreeCallBranchLeafCb(ih, hItemFocus) != IUP_IGNORE)
-          winTreeExpandItem(ih, hItemFocus, -1);
+        {
+          if (winTreeIsBranch(ih, hItemFocus))
+          {
+            int expanded = winTreeIsItemExpanded(ih, hItemFocus);
+            winTreeExpandItem(ih, hItemFocus, !expanded);
+          }
+        }
 
         *result = 0;
         return 1;
