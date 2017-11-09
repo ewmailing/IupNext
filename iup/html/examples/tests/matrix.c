@@ -38,6 +38,19 @@ static unsigned char image_data_32 [TEST_IMAGE_SIZE*TEST_IMAGE_SIZE*4] =
 static int mousemove_cb(Ihandle *ih, int lin, int col)
 {
   printf("mousemove_cb(%d, %d)\n", lin, col);
+
+#if 0
+  {
+    char* value = IupGetAttributeId2(ih, "", lin, col);
+    char* tip = IupGetAttribute(ih, "TIP");
+    if (value && ((tip && strcmp(value, tip) != 0) || !tip))
+    {
+      IupSetStrAttribute(ih, "TIP", value);
+      IupSetAttribute(ih, "TIPVISIBLE", "Yes");
+    }
+   }
+#endif
+
   return IUP_DEFAULT;
 }
 
@@ -245,7 +258,7 @@ static Ihandle* create_matrix(void)
   IupSetCallback(mat, "DROPCHECK_CB", (Icallback)dropcheck_cb);
   IupSetCallback(mat,"DROP_CB",(Icallback)drop);
 //  IupSetCallback(mat,"MENUDROP_CB",(Icallback)drop);
-//  IupSetCallback(mat, "MOUSEMOVE_CB", (Icallback)mousemove_cb);
+  IupSetCallback(mat, "MOUSEMOVE_CB", (Icallback)mousemove_cb);
 //  IupSetCallback(mat,"CLICK_CB",(Icallback)click);
 //  IupSetCallback(mat,"ENTERITEM_CB",(Icallback)enteritem_cb);
   IupSetCallback(mat,"TOGGLEVALUE_CB",(Icallback)togglevalue_cb);
