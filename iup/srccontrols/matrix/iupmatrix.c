@@ -750,6 +750,20 @@ static int iMatrixSetNumLinNoScrollAttrib(Ihandle* ih, const char* value)
   return 0;
 }
 
+static int iMatrixSetNoScrollAsTitleAttrib(Ihandle* ih, const char* value)
+{
+  if (iupStrBoolean(value))
+    ih->data->noscroll_as_title = 1;
+  else
+    ih->data->noscroll_as_title = 0;
+  return 0;
+}
+
+static char* iMatrixGetNoScrollAsTitleAttrib(Ihandle* ih)
+{
+  return iupStrReturnBoolean(ih->data->noscroll_as_title);
+}
+
 static char* iMatrixGetNumColNoScrollAttrib(Ihandle* ih)
 {
   return iupStrReturnInt(ih->data->columns.num_noscroll - 1);  /* the attribute does not include the title */
@@ -1771,6 +1785,7 @@ static int iMatrixCreateMethod(Ihandle* ih, void **params)
   ih->data->lines.num = 1;
   ih->data->columns.num_noscroll = 1;
   ih->data->lines.num_noscroll = 1;
+  ih->data->noscroll_as_title = 0;
   ih->data->need_calcsize = 1;
   ih->data->need_redraw = 1;
   ih->data->lines.first = 1;
@@ -2203,6 +2218,7 @@ Iclass* iupMatrixNewClass(void)
   iupClassRegisterAttribute(ic, "NUMCOL", iMatrixGetNumColAttrib, iupMatrixSetNumColAttrib, NULL, NULL, IUPAF_NOT_MAPPED | IUPAF_NO_INHERIT);
   iupClassRegisterAttribute(ic, "NUMLIN_NOSCROLL", iMatrixGetNumLinNoScrollAttrib, iMatrixSetNumLinNoScrollAttrib, NULL, NULL, IUPAF_NOT_MAPPED | IUPAF_NO_INHERIT);
   iupClassRegisterAttribute(ic, "NUMCOL_NOSCROLL", iMatrixGetNumColNoScrollAttrib, iMatrixSetNumColNoScrollAttrib, NULL, NULL, IUPAF_NOT_MAPPED | IUPAF_NO_INHERIT);
+  iupClassRegisterAttribute(ic, "NOSCROLLASTITLE", iMatrixGetNoScrollAsTitleAttrib, iMatrixSetNoScrollAsTitleAttrib, IUPAF_SAMEASSYSTEM, "NO", IUPAF_NOT_MAPPED | IUPAF_NO_INHERIT);
   iupClassRegisterAttribute(ic, "NUMLIN_VISIBLE", iMatrixGetNumLinVisibleAttrib, NULL, IUPAF_SAMEASSYSTEM, "3", IUPAF_NOT_MAPPED | IUPAF_NO_INHERIT);
   iupClassRegisterAttribute(ic, "NUMCOL_VISIBLE", iMatrixGetNumColVisibleAttrib, NULL, IUPAF_SAMEASSYSTEM, "4", IUPAF_NOT_MAPPED | IUPAF_NO_INHERIT);
   iupClassRegisterAttribute(ic, "NUMLIN_VISIBLE_LAST", NULL, NULL, NULL, NULL, IUPAF_NOT_MAPPED | IUPAF_NO_INHERIT);

@@ -396,6 +396,9 @@ int iupMatrixEditShowXY(Ihandle* ih, int x, int y)
     iupMatrixEditHide(ih);
   }
 
+  if (ih->data->noscroll_as_title && (ih->data->lines.focus_cell < ih->data->lines.num_noscroll || ih->data->columns.focus_cell < ih->data->columns.num_noscroll))
+    return 0;
+
   ih->data->edit_lin = ih->data->lines.focus_cell;
   ih->data->edit_col = ih->data->columns.focus_cell;
 

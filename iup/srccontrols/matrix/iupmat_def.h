@@ -127,6 +127,7 @@ struct _IcontrolData
 
   ImatLinColData lines;
   ImatLinColData columns;
+  int noscroll_as_title; /* Non scrollable columns/lines shown as title columns/lines, default=0 */
 
   /* State */
   int has_focus;

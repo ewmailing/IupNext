@@ -1172,7 +1172,7 @@ void iupMatrixDrawCells(Ihandle* ih, int lin1, int col1, int lin2, int col2)
   int x1, y1, x2, y2, old_x2, old_y1, old_y2, toggle_centered;
   int col_alignment, lin, col, active, first_col, first_lin;
   int i, adjust_merged_col = 0, adjust_merged_lin = 0;
-  long framecolor, emptyarea_color = -1;
+  long framecolor, framehighlight, emptyarea_color = -1;
   IFnii mark_cb;
   IFnii dropcheck_cb;
   IFniiiiiiC draw_cb;
@@ -1300,6 +1300,7 @@ void iupMatrixDrawCells(Ihandle* ih, int lin1, int col1, int lin2, int col2)
   /***** Draw the cell values and frame */
   old_y1 = y1;
   framecolor = cdIupConvertColor(iupAttribGetStr(ih, "FRAMECOLOR"));
+  framehighlight = iupAttribGetInt(ih, "FRAMETITLEHIGHLIGHT");
   active = iupdrvIsActive(ih);
 
   mark_cb = (IFnii)IupGetCallback(ih, "MARK_CB");
@@ -1363,28 +1364,36 @@ void iupMatrixDrawCells(Ihandle* ih, int lin1, int col1, int lin2, int col2)
 
       iMatrixDrawBackground(ih, x1, x2, y1, y2, marked, active, lin, col);
 
-      iMatrixDrawFrameRectCell(ih, lin, col, x1, x2, y1, y2, framecolor);
-
-      if (dropcheck_cb)
+      if (ih->data->noscroll_as_title && lin < ih->data->lines.num_noscroll || col < ih->data->columns.num_noscroll)
       {
-        int ret = dropcheck_cb(ih, lin, col);
-        if (ret == IUP_DEFAULT)
-        {
-          iMatrixDrawDropdownButton(ih, x2, y1, y2, lin, col, marked, active);
+        iMatrixDrawBackground(ih, x1, x2, y1, y2, marked, active, lin, 0);
+        iMatrixDrawFrameRectTitle(ih, lin, 0, x1, x2, y1, y2, framecolor, framehighlight);
+      }
+      else
+      {
+        iMatrixDrawFrameRectCell(ih, lin, col, x1, x2, y1, y2, framecolor);
 
-          drop = IMAT_PADDING_W / 2 + IMAT_FEEDBACK_SIZE + IMAT_PADDING_W / 2;
-        }
-        else if (ret == IUP_CONTINUE)
+        if (dropcheck_cb)
         {
-          iMatrixDrawToggle(ih, x1, x2, y1, y2, lin, col, marked, active, toggle_centered);
-
-          if (toggle_centered)
+          int ret = dropcheck_cb(ih, lin, col);
+          if (ret == IUP_DEFAULT)
           {
-            y1 = last_y2;
-            continue; /* do not draw the cell contents */
-          }
+            iMatrixDrawDropdownButton(ih, x2, y1, y2, lin, col, marked, active);
 
-          drop = IMAT_PADDING_W / 2 + IMAT_FEEDBACK_SIZE + IMAT_PADDING_W / 2;
+            drop = IMAT_PADDING_W / 2 + IMAT_FEEDBACK_SIZE + IMAT_PADDING_W / 2;
+          }
+          else if (ret == IUP_CONTINUE)
+          {
+            iMatrixDrawToggle(ih, x1, x2, y1, y2, lin, col, marked, active, toggle_centered);
+
+            if (toggle_centered)
+            {
+              y1 = last_y2;
+              continue; /* do not draw the cell contents */
+            }
+
+            drop = IMAT_PADDING_W / 2 + IMAT_FEEDBACK_SIZE + IMAT_PADDING_W / 2;
+          }
         }
       }
 
