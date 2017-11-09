@@ -3255,11 +3255,12 @@ static int find_next_action_cb(Ihandle* ih_item)
 
         for (i = 1; i <= count; i++)
         {
+          char* str;
           char* filename = IupTreeGetUserId(projectTree, i);
           if (check_open(projectTree, filename, 0))
             continue;
 
-          char* str = readFile(filename);
+          str = readFile(filename);
           if (str)
           {
             int st1, ed1, st2, ed2;
