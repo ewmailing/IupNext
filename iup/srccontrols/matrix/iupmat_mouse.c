@@ -167,7 +167,7 @@ static void iMatrixMouseLeftPress(Ihandle* ih, int lin, int col, int shift, int 
     }
     else
     {
-      if (lin>0 && col>0)
+      if (lin>0 && col>0 && !(ih->data->noscroll_as_title && (lin < ih->data->lines.num_noscroll || col < ih->data->columns.num_noscroll)))
       {
         int ret;
 
@@ -231,7 +231,7 @@ static void iMatrixMouseLeftPress(Ihandle* ih, int lin, int col, int shift, int 
               int endLin, endCol;
               iupMatrixGetMergedRect(ih, merged, NULL, &endLin, NULL, &endCol);
 
-              if (lin == 0)
+              if (lin == 0 || (ih->data->noscroll_as_title && lin < ih->data->lines.num_noscroll))
                 iupMatrixMarkBlockInc(ih, 0, endCol);
               else
                 iupMatrixMarkBlockInc(ih, endLin, 0);
@@ -358,7 +358,7 @@ int iupMatrixMouseMove_CB(Ihandle* ih, int x, int y, char *status)
           int endLin, endCol;
           iupMatrixGetMergedRect(ih, merged, NULL, &endLin, NULL, &endCol);
 
-          if (lin == 0)
+          if (lin == 0 || (ih->data->noscroll_as_title && lin < ih->data->lines.num_noscroll))
             iupMatrixMarkBlockInc(ih, 0, endCol);
           else
             iupMatrixMarkBlockInc(ih, endLin, 0);
