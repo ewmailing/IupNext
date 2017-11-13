@@ -2011,7 +2011,7 @@ static int iPlotKeyPress_CB(Ihandle* ih, int c, int press)
     if (ih->data->show_cross_hair != IUP_PLOT_CROSSNONE)  // was shown, leave it there as reference
       iPlotRedrawInteract(ih);
 
-    return IUP_DEFAULT;
+    return IUP_IGNORE;  /* ignore processed keys */
   }
 
   if (ih->data->current_plot->mDataSetListCount == 0)
@@ -2022,22 +2022,26 @@ static int iPlotKeyPress_CB(Ihandle* ih, int c, int press)
     int x = ih->data->current_plot->mViewport.mX + ih->data->current_plot->mViewport.mWidth / 2;
     int y = ih->data->current_plot->mViewport.mY + ih->data->current_plot->mViewport.mHeight / 2;
     iPlotZoom(ih, x, y, 1);
+    return IUP_IGNORE;  /* ignore processed keys */
   }
   else if (c == K_minus)
   {
     int x = ih->data->current_plot->mViewport.mX + ih->data->current_plot->mViewport.mWidth / 2;
     int y = ih->data->current_plot->mViewport.mY + ih->data->current_plot->mViewport.mHeight / 2;
     iPlotZoom(ih, x, y, -1);
+    return IUP_IGNORE;  /* ignore processed keys */
   }
   else if (c == K_period)
   {
     iupPlotResetZoom(ih, 1);
+    return IUP_IGNORE;  /* ignore processed keys */
   }
   else if (c == K_LEFT || c == K_RIGHT)
   {
     float delta = 1.0f;
     if (c == K_LEFT) delta = -1.0f;
     iPlotScroll(ih, delta, false, false);
+    return IUP_IGNORE;  /* ignore processed keys */
   }
   else if (c == K_UP || c == K_DOWN || c == K_PGUP || c == K_PGDN)
   {
@@ -2048,6 +2052,7 @@ static int iPlotKeyPress_CB(Ihandle* ih, int c, int press)
     if (c == K_PGUP || c == K_PGDN) full_page = true;
 
     iPlotScroll(ih, delta, full_page, true);
+    return IUP_IGNORE;  /* ignore processed keys */
   }
   else if (c == K_DEL)
   {
@@ -2055,12 +2060,14 @@ static int iPlotKeyPress_CB(Ihandle* ih, int c, int press)
     {
       ih->data->current_plot->DeleteSelectedDataSetSamples();
       iPlotRedrawInteract(ih);
+      return IUP_IGNORE;  /* ignore processed keys */
     }
   }
   else if (c == K_ESC)
   {
     ih->data->current_plot->ClearDataSetSelection();
     iPlotRedrawInteract(ih);
+    return IUP_IGNORE;  /* ignore processed keys */
   }
 
   return IUP_DEFAULT;
