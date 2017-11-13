@@ -4817,7 +4817,7 @@ static int iMglPlotWheel_CB(Ihandle* ih, float delta)
 
 static int iMglPlotKeyPress_CB(Ihandle* ih, int c, int press)
 {
-  if(!press)
+  if (!press)
     return IUP_DEFAULT;
 
   switch(c)
@@ -4886,7 +4886,7 @@ static int iMglPlotKeyPress_CB(Ihandle* ih, int c, int press)
   }
 
   iMglPlotRepaint(ih, 1, 1);
-  return IUP_DEFAULT;
+  return IUP_IGNORE;  /* ignore processed keys */
 } 
 
 /******************************************************************************
