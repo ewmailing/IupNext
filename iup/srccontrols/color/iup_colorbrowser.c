@@ -610,7 +610,7 @@ static int iColorBrowserWheel_CB(Ihandle* ih, double delta)
   return IUP_DEFAULT;
 }
 
-static int iColorBrowserKeypress_CB(Ihandle* ih, int c, int press)
+static int iColorBrowserKeyPress_CB(Ihandle* ih, int c, int press)
 {
   int x, y, changing_hue = 0;
 
@@ -794,7 +794,7 @@ static int iColorBrowserCreateMethod(Ihandle* ih, void **params)
   IupSetCallback(ih, "BUTTON_CB",   (Icallback)iColorBrowserButton_CB);
   IupSetCallback(ih, "MOTION_CB",   (Icallback)iColorBrowserMotion_CB);
   IupSetCallback(ih, "FOCUS_CB",    (Icallback)iColorBrowserFocus_CB);
-  IupSetCallback(ih, "KEYPRESS_CB", (Icallback)iColorBrowserKeypress_CB);
+  IupSetCallback(ih, "KEYPRESS_CB", (Icallback)iColorBrowserKeyPress_CB);
   IupSetCallback(ih, "WHEEL_CB",    (Icallback)iColorBrowserWheel_CB);
 
   return IUP_NOERROR;
