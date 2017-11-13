@@ -889,7 +889,7 @@ static IFnii iMatrixOriginalKeyPress_CB = NULL;
 
 static int iMatrixExKeyPress_CB(Ihandle* ih, int c, int press)
 {
-  if (press)
+  if (!press)
   {
     switch (c)
     {
