@@ -1362,15 +1362,15 @@ void iupMatrixDrawCells(Ihandle* ih, int lin1, int col1, int lin2, int col2)
       /* If the cell is marked, then draw it with attenuation color */
       marked = iupMatrixGetMark(ih, lin, col, mark_cb);
 
-      iMatrixDrawBackground(ih, x1, x2, y1, y2, marked, active, lin, col);
-
       if (ih->data->noscroll_as_title && lin < ih->data->lines.num_noscroll || col < ih->data->columns.num_noscroll)
       {
         iMatrixDrawBackground(ih, x1, x2, y1, y2, marked, active, lin, 0);
-        iMatrixDrawFrameRectTitle(ih, lin, 0, x1, x2, y1, y2, framecolor, framehighlight);
+        iMatrixDrawFrameRectTitle(ih, lin, col, x1, x2, y1, y2, framecolor, framehighlight);
       }
       else
       {
+        iMatrixDrawBackground(ih, x1, x2, y1, y2, marked, active, lin, col);
+
         iMatrixDrawFrameRectCell(ih, lin, col, x1, x2, y1, y2, framecolor);
 
         if (dropcheck_cb)
