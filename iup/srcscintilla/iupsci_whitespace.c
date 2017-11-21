@@ -38,7 +38,7 @@ static int iScintillaSetViewWSAttrib(Ihandle *ih, const char *value)
 {
   if (iupStrEqualNoCase(value, "INVISIBLE"))
     IupScintillaSendMessage(ih, SCI_SETVIEWWS, SCWS_INVISIBLE, 0);
-  if (iupStrEqualNoCase(value, "VISIBLEALWAYS"))
+  else if (iupStrEqualNoCase(value, "VISIBLEALWAYS"))
     IupScintillaSendMessage(ih, SCI_SETVIEWWS, SCWS_VISIBLEALWAYS, 0);
   else if (iupStrEqualNoCase(value, "VISIBLEAFTERINDENT"))
     IupScintillaSendMessage(ih, SCI_SETVIEWWS, SCWS_VISIBLEAFTERINDENT, 0);
@@ -158,10 +158,49 @@ static char* iScintillaGetEolVisibleAttrib(Ihandle* ih)
   return iupStrReturnBoolean(visible);
 }
 
+static int iScintillaSetEolModeAttrib(Ihandle *ih, const char *value)
+{
+  if (iupStrEqualNoCase(value, "CR"))
+    IupScintillaSendMessage(ih, SCI_SETEOLMODE, SC_EOL_CR, 0);
+  else if (iupStrEqualNoCase(value, "CRLF"))
+    IupScintillaSendMessage(ih, SCI_SETEOLMODE, SC_EOL_CRLF, 0);
+  else
+    IupScintillaSendMessage(ih, SCI_SETEOLMODE, SC_EOL_LF, 0);
+
+  IupScintillaSendMessage(ih, SCI_SETEOLMODE, iupStrBoolean(value), 0);
+  return 0;
+}
+
+static char* iScintillaGetEolModeAttrib(Ihandle* ih)
+{
+  int eolmode = (int)IupScintillaSendMessage(ih, SCI_GETEOLMODE, 0, 0);
+  if (eolmode == SC_EOL_CR)
+    return "CR";
+  else if (eolmode == SC_EOL_CRLF)
+    return "CRLF";
+  else
+    return "LF";
+}
+
+static char* iScintillaGetEolAttrib(Ihandle* ih)
+{
+  int eolmode = (int)IupScintillaSendMessage(ih, SCI_GETEOLMODE, 0, 0);
+  if (eolmode == SC_EOL_CR)
+    return "\r";
+  else if (eolmode == SC_EOL_CRLF)
+    return "\r\n";
+  else
+    return "\n";
+}
+
 static int iScintillaSetFixEolAttrib(Ihandle *ih, const char *value)
 {
-  (void)value;
-  IupScintillaSendMessage(ih, SCI_CONVERTEOLS, SC_EOL_LF, 0);
+  int eolmode = SC_EOL_LF;
+  if (iupStrEqualNoCase(value, "CR"))
+    eolmode = SC_EOL_CR;
+  else if (iupStrEqualNoCase(value, "CRLF"))
+    eolmode = SC_EOL_CRLF;
+  IupScintillaSendMessage(ih, SCI_CONVERTEOLS, eolmode, 0);
   return 0;
 }
 
@@ -176,4 +215,6 @@ void iupScintillaRegisterWhiteSpace(Iclass* ic)
 
   iupClassRegisterAttribute(ic, "EOLVISIBLE", iScintillaGetEolVisibleAttrib, iScintillaSetEolVisibleAttrib, NULL, NULL, IUPAF_NO_INHERIT);
   iupClassRegisterAttribute(ic, "FIXEOL", NULL, iScintillaSetFixEolAttrib, NULL, NULL, IUPAF_WRITEONLY | IUPAF_NO_INHERIT);
+  iupClassRegisterAttribute(ic, "EOLMODE", iScintillaGetEolModeAttrib, iScintillaSetEolModeAttrib, NULL, NULL, IUPAF_NO_INHERIT);
+  iupClassRegisterAttribute(ic, "EOL", iScintillaGetEolAttrib, NULL, NULL, NULL, IUPAF_READONLY|IUPAF_NO_INHERIT);
 }

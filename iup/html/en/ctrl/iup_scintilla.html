@@ -527,10 +527,15 @@ support this information then an empty string is returned.&nbsp;</p>
 
 <h4>Line Endings</h4>
 
+<p><strong>EOL</strong> (<font size="3">non inheritable</font>): Returns the 
+current end of line. Can be &quot;\r&quot;, &quot;\r\n&quot; or &quot;\n&quot;. (since 3.24)</p>
+<p><strong>EOLMODE</strong> (<font size="3">non inheritable</font>): End of line 
+mode. Can be CR (&quot;\r&quot;), CRLF (&quot;\r\n&quot;) or LF (&quot;\n&quot;). Default: LF. (since 3.24)</p>
 <p><strong>EOLVISIBLE</strong> (<font size="3">non inheritable</font>): 
 End of line visibility. Default: No. (since 3.22)</p>
 <p><strong>FIXEOL</strong> (<font size="3">non inheritable, write 
-only</font>): Fix the line ends to use only &quot;\n&quot;. (since 3.22)</p>
+only</font>): Fix the line ends to use only the given mde. Can be CR (&quot;\r&quot;), 
+CRLF (&quot;\r\n&quot;) or LF (&quot;\n&quot;). (since 3.22, options other than LF since 3.24)</p>
 
 <h4>Margins</h4>
 

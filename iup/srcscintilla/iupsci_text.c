@@ -68,6 +68,7 @@ static char* iScintillaGetLineAttribId(Ihandle* ih, int line)
   int len = (int)IupScintillaSendMessage(ih, SCI_LINELENGTH, line, 0);
   char* str = iupStrGetMemory(len+1); 
   IupScintillaSendMessage(ih, SCI_GETLINE, line, (sptr_t)str);
+  str[len] = 0;
   return str;
 }
 
@@ -86,6 +87,17 @@ static int iScintillaSetReadOnlyAttrib(Ihandle* ih, const char* value)
   return 0;
 }
 
+static void iScintillAppendNewLine(Ihandle* ih)
+{
+  int eolmode = (int)IupScintillaSendMessage(ih, SCI_GETEOLMODE, 0, 0);
+  const char* eol = "\n";
+  if (eolmode == SC_EOL_CR)
+    eol = "\r";
+  else if (eolmode == SC_EOL_CRLF)
+    eol = "\r\n";
+  IupScintillaSendMessage(ih, SCI_ADDTEXT, strlen(eol), (sptr_t)eol);
+}
+
 static int iScintillaSetPrependTextAttrib(Ihandle* ih, const char* value)
 {
   int len = (int)strlen(value);
@@ -94,7 +106,7 @@ static int iScintillaSetPrependTextAttrib(Ihandle* ih, const char* value)
   IupScintillaSendMessage(ih, SCI_ADDTEXT, len, (sptr_t)value);
 
   if(ih->data->append_newline)
-    IupScintillaSendMessage(ih, SCI_ADDTEXT, 1, (sptr_t)"\n");
+    iScintillAppendNewLine(ih);
   ih->data->ignore_change = 0;
 
   return 0;
@@ -106,7 +118,7 @@ static int iScintillaSetAppendTextAttrib(Ihandle* ih, const char* value)
 
   ih->data->ignore_change = 1;
   if(ih->data->append_newline)
-    IupScintillaSendMessage(ih, SCI_APPENDTEXT, 1, (sptr_t)"\n");
+    iScintillAppendNewLine(ih);
 
   IupScintillaSendMessage(ih, SCI_APPENDTEXT, len, (sptr_t)value);
   ih->data->ignore_change = 0;

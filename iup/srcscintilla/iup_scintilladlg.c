@@ -425,8 +425,13 @@ static void removeTrailingSpaces(Ihandle *multitext)
     if (len == 0)
       continue;
 
-    if (text[len - 1] == '\n')
+    if (text[len - 1] == '\n' || text[len - 1] == '\r')
+    {
       len--;
+
+      if (text[len - 1] == '\r')
+        len--;
+    }
 
     for (j = len - 1; j >= 0; j--)
     {
@@ -445,19 +450,37 @@ static void removeTrailingSpaces(Ihandle *multitext)
 
 static void changeEolToSpace(Ihandle *multitext)
 {
-  char *c;
+  int lineCount = IupGetInt(multitext, "LINECOUNT");
+  int i;
 
-  do
+  for (i = lineCount-1; i >= 0; i--)
   {
-    char *text = IupGetAttribute(multitext, "VALUE");
-    c = strchr(text, '\n');
-    if (c)
+    int pos, count;
+    char *text = IupGetAttributeId(multitext, "LINE", i);
+    int len = (int)strlen(text);
+    if (len == 0)
+      continue;
+
+    count = 0;
+    if (text[len - 1] == '\n' || text[len - 1] == '\r')
     {
-      int pos = (int)(c - text);
-      IupSetStrf(multitext, "DELETERANGE", "%d,%d", pos, 1);
-      IupSetAttributeId(multitext, "INSERT", pos, " ");
+      len--;
+      count++;
+
+      if (text[len - 1] == '\r')
+      {
+        len--;
+        count++;
+      }
     }
-  } while (c);
+
+    if (count == 0)
+      continue;
+
+    IupTextConvertLinColToPos(multitext, i, len, &pos);
+    IupSetStrf(multitext, "DELETERANGE", "%d,%d", pos, count);
+    IupSetAttributeId(multitext, "INSERT", pos, " ");
+  }
 }
 
 static const char* strFileTitle(const char *filename)
@@ -3056,10 +3079,12 @@ static int item_eoltospace_action_cb(Ihandle* ih_item)
   return IUP_DEFAULT;
 }
 
-static int item_fixeol_action_cb(Ihandle* ih_item)
+static int item_eol_action_cb(Ihandle* ih_item)
 {
   Ihandle* multitext = iScintillaDlgGetCurrentMultitext(ih_item);
-  IupSetAttribute(multitext, "FIXEOL", NULL);
+  char* eol = iupAttribGet(ih_item, "EOL");
+  IupSetStrAttribute(multitext, "EOLMODE", eol);
+  IupSetStrAttribute(multitext, "FIXEOL", eol);
   return IUP_DEFAULT;
 }
 
@@ -4453,7 +4478,7 @@ static int iScintillaDlgCreateMethod(Ihandle* ih, void** params)
     *item_close_proj, *item_add_new_file, *item_add_exist_file, *item_add_open_file, *item_open_proj_file, *item_open_all_proj_file, *item_remove_proj_file;
   Ihandle *item_togglemark, *item_nextmark, *item_previousmark, *item_clearmarks, *item_cutmarked, *item_copymarked, *item_pastetomarked, *item_removemarked,
     *item_invertmarks, *item_tabtospace, *item_allspacetotab, *item_leadingspacetotab;
-  Ihandle *item_trimleading, *item_trimtrailing, *item_trimtraillead, *item_eoltospace, *item_fixeol, *item_removespaceeol;
+  Ihandle *item_trimleading, *item_trimtrailing, *item_trimtraillead, *item_eoltospace, *item_eol_cr, *item_eol_crlf, *item_eol_lf, *item_removespaceeol;
   Ihandle *item_undo, *item_redo, *item_pagesetup, *item_print;
   Ihandle *case_menu, *item_uppercase, *item_lowercase;
   Ihandle *btn_cut, *btn_copy, *btn_paste, *btn_find, *btn_new, *btn_open, *btn_save;
@@ -4752,8 +4777,17 @@ static int iScintillaDlgCreateMethod(Ihandle* ih, void** params)
   item_eoltospace = IupItem("End of Lines to Spaces", NULL);
   IupSetCallback(item_eoltospace, "ACTION", (Icallback)item_eoltospace_action_cb);
 
-  item_fixeol = IupItem("Fix End of Lines", NULL);
-  IupSetCallback(item_fixeol, "ACTION", (Icallback)item_fixeol_action_cb);
+  item_eol_cr = IupItem("CR (Macintosh)", NULL);
+  IupSetAttribute(item_eol_cr, "EOL", "CR");
+  IupSetCallback(item_eol_cr, "ACTION", (Icallback)item_eol_action_cb);
+
+  item_eol_crlf = IupItem("CRLF (Windows)", NULL);
+  IupSetAttribute(item_eol_crlf, "EOL", "CRLF");
+  IupSetCallback(item_eol_crlf, "ACTION", (Icallback)item_eol_action_cb);
+
+  item_eol_lf = IupItem("LF (UNIX)", NULL);
+  IupSetAttribute(item_eol_lf, "EOL", "LF");
+  IupSetCallback(item_eol_lf, "ACTION", (Icallback)item_eol_action_cb);
 
   item_removespaceeol = IupItem("Remove Unnecessary Blanks and EOL", NULL);
   IupSetCallback(item_removespaceeol, "ACTION", (Icallback)item_removespaceeol_action_cb);
@@ -4908,21 +4942,25 @@ static int iScintillaDlgCreateMethod(Ihandle* ih, void** params)
     item_invertmarks,
     NULL)),
     IupSubmenu("Blank Operations", IupMenu(
-    item_trimtrailing,
-    item_trimleading,
-    item_trimtraillead,
-    item_eoltospace,
-    item_fixeol,
-    item_removespaceeol,
-    IupSeparator(),
-    item_tabtospace,
-    item_allspacetotab,
-    item_leadingspacetotab,
-    NULL)),
+      item_trimtrailing,
+      item_trimleading,
+      item_trimtraillead,
+      item_eoltospace,
+      item_removespaceeol,
+      IupSeparator(),
+      item_tabtospace,
+      item_allspacetotab,
+      item_leadingspacetotab,
+      NULL)),
+    IupSubmenu("End of Lines", IupMenu(
+      item_eol_lf,
+      item_eol_crlf,
+      item_eol_cr,
+      NULL)),
     IupSubmenu("Convert Case to", case_menu = IupMenu(
-    item_uppercase,
-    item_lowercase,
-    NULL)),
+      item_uppercase,
+      item_lowercase,
+      NULL)),
     IupSeparator(),
     item_select_all,
     NULL);
