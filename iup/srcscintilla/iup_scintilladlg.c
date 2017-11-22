@@ -908,6 +908,7 @@ static int multitext_updateselection_cb(Ihandle* multitext)
   return IUP_DEFAULT;
 }
 
+static void iScintillaDlgSetConfigMultitext(Ihandle* ih, Ihandle* config, Ihandle* multitext);
 static int item_paste_action_cb(Ihandle* item_paste);
 static int item_case_action_cb(Ihandle* ih_item);
 static int dropfiles_cb(Ihandle* multitext, const char* filename, int num, int x, int y);
@@ -929,6 +930,7 @@ static Ihandle* iScintillaDlgNewMultitext(Ihandle* ih_item)
   Ihandle* ih = IupGetDialog(ih_item);
   Ihandle* tabs = IupGetDialogChild(ih, "TABS");
   Ihandle* item_window1 = IupGetDialogChild(ih, "ITEM_WINDOW1");
+  Ihandle* config = iScintillaDlgGetConfig(ih);
   int count;
   IFnn cb;
 
@@ -982,6 +984,8 @@ static Ihandle* iScintillaDlgNewMultitext(Ihandle* ih_item)
     else
       IupRefreshChildren(tabs);
   }
+
+  iScintillaDlgSetConfigMultitext(ih, config, multitext);
 
   IupSetAttribute(tabs, "VALUE_HANDLE", (char*)multitext);
 

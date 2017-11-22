@@ -2213,6 +2213,7 @@ static int multitext_map_cb(Ihandle* multitext)
 static int newtext_cb(Ihandle* ih, Ihandle *multitext)
 {
   (void)ih;
+  /* this is called before the multitext is mapped */
 
   IupSetCallback(multitext, "VALUECHANGED_CB", (Icallback)multitext_valuechanged_cb);
   IupSetCallback(multitext, "LINESCHANGED_CB", (Icallback)multitext_lineschanged_cb);
