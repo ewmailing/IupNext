@@ -196,7 +196,8 @@ MARGIN (at the line number margin), START (start of wrapped line), END (end of
 wrapped line) or NONE. Default: NONE.</span></p>
 <h4>Text Retrieval and Modification</h4>
 <p><strong>APPEND</strong> (<font size="3">non inheritable, </font>write-only):
-  Inserts a text at the <strong>end</strong> of the current text. If APPENDNEWLINE=YES, a "\n" character will be 
+  Inserts a text at the <strong>end</strong> of the current text. If APPENDNEWLINE=YES, an 
+end of line character will be 
 automatically inserted before the appended text if the current text is not empty 
 (APPENDNEWLINE default is YES).</p>
 
@@ -221,24 +222,26 @@ the inserted text.</p>
 
 <p><strong>LINE<em>id</em></strong> (<font size="3">non inheritable, </font>
 read-only): returns the text of the line, considering the &quot;id&quot; as the line 
-number. It includes the &quot;\n&quot; 
+number. It includes the end of line 
 character if the line has one. Number lines starts at 0.</p>
 
 <p><strong>LINECOUNT</strong> (<font size="3">non inheritable, </font>read-only): returns the number of lines in the 
 text.</p>
 
-<p><strong>LINEVALUE</strong> (<font size="3">non inheritable, </font>read-only): returns the text of the line where 
-the caret is. It does not include the &quot;\n&quot; character.</p>
+<p><strong>LINEVALUE</strong> (<font size="3">non inheritable, </font>
+read-only): returns the text of the line where the caret is. It does not include 
+the end of line character.</p>
 
   
 <p><strong>PREPEND</strong> (<font size="3">non inheritable, </font>write-only):
-  Inserts a text at the <strong>begin</strong> of the current text. If APPENDNEWLINE=YES, a "\n" character will be 
+  Inserts a text at the <strong>begin</strong> of the current text. If APPENDNEWLINE=YES, an 
+end of line character will be 
 automatically inserted after the prepended text if the current text is not empty 
 (APPENDNEWLINE default is YES).</p>
 
   
 <p><b>VALUE </b>(<font size="3">non inheritable</font>):
-  Text entered by the user. The &quot;\n&quot; character indicates a new line. After the element is mapped and if there 
+  Text entered by the user. The end of line character indicates a new line. After the element is mapped and if there 
 is no text will return the empty string "". This replaces all the text in the 
 document with the zero terminated text string you pass in.</p>
 
@@ -528,7 +531,7 @@ support this information then an empty string is returned.&nbsp;</p>
 <h4>Line Endings</h4>
 
 <p><strong>EOL</strong> (<font size="3">non inheritable</font>): Returns the 
-current end of line. Can be &quot;\r&quot;, &quot;\r\n&quot; or &quot;\n&quot;. (since 3.24)</p>
+current end of line character(s). Can be &quot;\r&quot;, &quot;\r\n&quot; or &quot;\n&quot;. (since 3.24)</p>
 <p><strong>EOLMODE</strong> (<font size="3">non inheritable</font>): End of line 
 mode. Can be CR (&quot;\r&quot;), CRLF (&quot;\r\n&quot;) or LF (&quot;\n&quot;). Default: LF. (since 3.24)</p>
 <p><strong>EOLVISIBLE</strong> (<font size="3">non inheritable</font>): 
