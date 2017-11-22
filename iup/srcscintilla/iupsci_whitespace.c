@@ -166,8 +166,6 @@ static int iScintillaSetEolModeAttrib(Ihandle *ih, const char *value)
     IupScintillaSendMessage(ih, SCI_SETEOLMODE, SC_EOL_CRLF, 0);
   else
     IupScintillaSendMessage(ih, SCI_SETEOLMODE, SC_EOL_LF, 0);
-
-  IupScintillaSendMessage(ih, SCI_SETEOLMODE, iupStrBoolean(value), 0);
   return 0;
 }
 
