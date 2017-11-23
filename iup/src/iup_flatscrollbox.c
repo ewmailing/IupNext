@@ -154,10 +154,16 @@ static int iFlatScrollBoxGetChildPosition(Ihandle* ih, Ihandle* child, int *posx
 {
   while (child->parent && child != ih)
   {
+    int off_x, off_y;
+
     *posx += child->x;
     *posy += child->y;
 
     child = iupChildTreeGetNativeParent(child);
+
+    IupGetIntInt(child, "CLIENTOFFSET", &off_x, &off_y);
+    *posx += off_x;
+    *posy += off_y;
   }
 
   if (!child->parent)
@@ -171,7 +177,8 @@ static int iFlatScrollBoxSetScrollToChildHandleAttrib(Ihandle* ih, const char* v
   Ihandle* child = (Ihandle*)value;
   if (iupObjectCheck(child))
   {
-    int posx = 0, posy = 0;
+    int posx = iupAttribGetInt(ih, "POSX");
+    int posy = iupAttribGetInt(ih, "POSY");
     if (iFlatScrollBoxGetChildPosition(ih, child, &posx, &posy))
       iupFlatScrollBarSetPos(ih, posx, posy);
   }
