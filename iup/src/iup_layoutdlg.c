@@ -1488,7 +1488,7 @@ static void iLayoutDrawElementTree(IdrawCanvas* dc, int showhidden, int dlgvisib
         native_parent_y += ih->y + dy;
 
         /* if ih is a Tabs, then draw only the active child */
-        if (IupClassMatch(ih, "tabs"))
+        if (IupClassMatch(ih, "tabs") || IupClassMatch(ih, "flattabs"))
         {
           child = (Ihandle*)IupGetAttribute(ih, "VALUE_HANDLE");
           if (child)
@@ -2652,7 +2652,7 @@ static Ihandle* iLayoutGetElementByPos(Ihandle* ih, int native_parent_x, int nat
           native_parent_y += ih->y + dy;
 
           /* if ih is a Tabs, then find only the active child */
-          if (IupClassMatch(ih, "tabs"))
+          if (IupClassMatch(ih, "tabs") || IupClassMatch(ih, "flattabs"))
           {
             child = (Ihandle*)IupGetAttribute(ih, "VALUE_HANDLE");
             if (child)
