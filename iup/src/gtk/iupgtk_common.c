@@ -454,12 +454,37 @@ void iupgtkSetBgColor(InativeHandle* handle, unsigned char r, unsigned char g, u
       GTK_IS_TEXT_VIEW(handle) ||
       GTK_IS_ENTRY(handle) ||
       GTK_IS_COMBO_BOX(handle))
-    is_txt = 1;
+      is_txt = 1;
 
   iupgdkRGBASet(&rgba, r, g, b);
   dark_rgba = gtkDarkerRGBA(&rgba);
   light_rgba = gtkLighterRGBA(&rgba);
 
+#if GTK_CHECK_VERSION(3, 16, 0)
+  {
+    char *bg, *bg_light, *bg_dark;
+    char *css;
+    GtkCssProvider *provider;
+
+    bg = gdk_rgba_to_string(&rgba);
+    bg_light = gdk_rgba_to_string(&light_rgba);
+    bg_dark = gdk_rgba_to_string(&dark_rgba);
+    
+    /* style background color using CSS */
+    provider = gtk_css_provider_new();
+    css = g_strdup_printf("*:not(selection) { background-color: %s; background-image: none; }"
+                          "*:hover    { background-color: %s; }"
+                          "*:active   { background-color: %s; }"
+                          "*:disabled { background-color: %s; }",
+                           bg, bg_light, bg_dark, is_txt ? bg_light : bg);
+    gtk_style_context_add_provider(gtk_widget_get_style_context(handle), GTK_STYLE_PROVIDER(provider), GTK_STYLE_PROVIDER_PRIORITY_USER);
+    gtk_css_provider_load_from_data(provider, css, -1, NULL);
+    
+    g_free(bg); g_free(bg_light); g_free(bg_dark);
+    g_free(css);
+    g_object_unref(provider);
+  }
+#else
   gtk_widget_override_background_color(handle, GTK_STATE_FLAG_NORMAL, &rgba);
   gtk_widget_override_background_color(handle, GTK_STATE_ACTIVE, &dark_rgba);
   gtk_widget_override_background_color(handle, GTK_STATE_PRELIGHT, &light_rgba);
@@ -468,6 +493,7 @@ void iupgtkSetBgColor(InativeHandle* handle, unsigned char r, unsigned char g, u
     gtk_widget_override_background_color(handle, GTK_STATE_INSENSITIVE, &light_rgba);
   else
     gtk_widget_override_background_color(handle, GTK_STATE_INSENSITIVE, &rgba);
+#endif
 #else
   GtkRcStyle *rc_style;  
   GdkColor color;
