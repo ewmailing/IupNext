@@ -64,7 +64,7 @@ static unsigned char pixmap_cursor [ ] =
 
 /* draw a rectangle that has w=600 always, white background and a red X */
 #ifdef USE_IUPDRAW
-static void drawTest_Lines(Ihandle *ih, int posx)
+static void drawTest(Ihandle *ih, int posx)  //_Lines
 {
   int w, h;
 
@@ -89,10 +89,15 @@ static void drawTest_Lines(Ihandle *ih, int posx)
   IupSetAttribute(ih, "DRAWSTYLE", "STROKE");
   IupDrawRectangle(ih, 10, 10, 14, 14);
 
+  IupDrawArc(ih, 30, 10, 50, 30, 45, 135);
+
+  IupSetAttribute(ih, "DRAWSTYLE", "FILL");
+  IupDrawArc(ih, 60, 10, 80, 30, 45, 135);
+
   IupDrawEnd(ih);
 }
 
-static void drawTest(Ihandle *ih, int posx)
+static void drawTest1(Ihandle *ih, int posx)
 {
   int w, h;
 

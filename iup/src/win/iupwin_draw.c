@@ -572,16 +572,16 @@ void iupdrvDrawLine(IdrawCanvas* dc, int x1, int y1, int x2, int y2, unsigned ch
   DeleteObject(hPen);
 }
 
-#define IUP_DEG2RAD  0.01745329252  /* degrees to radians (rad = CD_DEG2RAD * deg) */
+#define IUP_DEG2RAD  0.01745329252  /* degrees to radians (rad = DEG2RAD * deg) */
 
-static int winDrawCalcArc(int c1, int c2, double a, int start)
+static int winDrawCalcArc(int c1, int c2, double a, int horiz)
 {
   double proj, off;
-  if (start)
+  if (horiz)
     proj = cos(IUP_DEG2RAD * a);
   else
-    proj = sin(IUP_DEG2RAD * a);
-  off = (c2 + c1) / 2.0 + (c2 - c1 + 1)*proj / 2.0;
+    proj = - sin(IUP_DEG2RAD * a);
+  off = (c2 + c1) / 2.0 + (c2 - c1 + 1) * proj / 2.0;
   return iupROUND(off);
 }
 
@@ -593,8 +593,8 @@ void iupdrvDrawArc(IdrawCanvas* dc, int x1, int y1, int x2, int y2, double a1, d
   iupDrawCheckSwapCoord(y1, y2);
 
   XStartArc = winDrawCalcArc(x1, x2, a1, 1);
-  XEndArc = winDrawCalcArc(x1, x2, a2, 0);
-  YStartArc = winDrawCalcArc(y1, y2, a1, 1);
+  XEndArc = winDrawCalcArc(x1, x2, a2, 1);
+  YStartArc = winDrawCalcArc(y1, y2, a1, 0);
   YEndArc = winDrawCalcArc(y1, y2, a2, 0);
 
   if (style==IUP_DRAW_FILL)

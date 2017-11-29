@@ -216,6 +216,28 @@ void iupdrvDrawLine(IdrawCanvas* dc, int x1, int y1, int x2, int y2, unsigned ch
   cairo_stroke(dc->image_cr);
 }
 
+#define IUP_DEG2RAD  0.01745329252  /* degrees to radians (rad = DEG2RAD * deg) */
+
+static void iFixAngles(double *a1, double *a2)
+{
+  /* Cairo angles are clock-wise by default, in radians */
+
+  /* change orientation */
+  *a1 *= -1;
+  *a2 *= -1;
+
+  /* swap, so the start angle is the smaller */
+  {
+    double t = *a1;
+    *a1 = *a2;
+    *a2 = t;
+  }
+
+  /* convert to radians */
+  *a1 *= IUP_DEG2RAD;
+  *a2 *= IUP_DEG2RAD;
+}
+
 void iupdrvDrawArc(IdrawCanvas* dc, int x1, int y1, int x2, int y2, double a1, double a2, unsigned char r, unsigned char g, unsigned char b, int style, int line_width)
 {
   int xc, yc, w, h;
@@ -239,8 +261,13 @@ void iupdrvDrawArc(IdrawCanvas* dc, int x1, int y1, int x2, int y2, double a1, d
   xc = x1 + w/2;
   yc = y1 + h/2;
 
+  iFixAngles(&a1, &a2);
+
   if (w == h)
   {
+    if (style == IUP_DRAW_FILL)
+      cairo_move_to(dc->image_cr, xc, yc);
+
     cairo_arc(dc->image_cr, xc, yc, 0.5*w, a1, a2);
 
     if (style==IUP_DRAW_FILL)
@@ -255,6 +282,9 @@ void iupdrvDrawArc(IdrawCanvas* dc, int x1, int y1, int x2, int y2, double a1, d
     cairo_translate(dc->image_cr, xc, yc);
     cairo_scale(dc->image_cr, w/h, 1.0);
     cairo_translate(dc->image_cr, -xc, -yc);
+
+    if (style == IUP_DRAW_FILL)
+      cairo_move_to(dc->image_cr, xc, yc);
 
     cairo_arc(dc->image_cr, xc, yc, 0.5*h, a1, a2);
 

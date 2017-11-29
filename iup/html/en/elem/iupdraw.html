@@ -74,7 +74,8 @@ iup.DrawRectangle<span class="auto-style2">(</span><strong>ih</strong>: ihandle<
 iup.Draw<span class="auto-style2">Arc(</span><strong>ih</strong>: ihandle<span class="auto-style2">, <strong>x1</strong>, <strong>y1</strong>, <strong>x2</strong>, <strong>y2, a1, a2</strong>: number)</span> [in Lua]
 <strong>ih</strong>:DrawArc(<span class="auto-style2"><strong>x1</strong>, <strong>y1</strong>, <strong>x2</strong>, <strong>y2</strong>: number</span>) [in Lua]</pre>
 <p>Draws an arc inside a rectangle between the two angles in degrees. When 
-filled will draw a pie shape with the vertex at the center of the rectangle.</p>
+filled will draw a pie shape with the vertex at the center of the rectangle. 
+Angles are counter-clock wise relative to the 3 o'clock position.</p>
 <pre>void IupDrawPolygon(Ihandle* <strong>ih</strong>, int* <strong>points</strong>, int <strong>count</strong>); [in C]
 iup.DrawPolygon<span class="auto-style2">(</span><strong>ih</strong>: ihandle<span class="auto-style2"><strong>, points</strong>: table of number)</span> [in Lua]
 <strong>ih</strong>:DrawPolygon(<span class="auto-style2"><strong>points</strong>: table of number</span>) [in Lua]</pre>
