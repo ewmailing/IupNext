@@ -101,6 +101,8 @@ imagergba(<strong>width</strong>, <strong>height</strong>, <strong>pixel0</stron
   <p><b>BPP </b>(read-only): returns the number of bits per pixel in the image. 
 	Images created with <b>IupImage</b> returns 8, with <b>IupImageRGB</b> 
 	returns 24 and with <b>IupImageRGBA</b> returns 32. (since 3.0)</p>
+<p><strong>CLEARCACHE</strong> (write-only): clears the internal native image 
+cache, so WID can be dynamically changed. (since 3.24)</p>
 
   <p><b>CHANNELS </b>(read-only): returns the number of channels in the image. 
 	Images created with <b>IupImage</b> returns 1, with <b>IupImageRGB</b> 

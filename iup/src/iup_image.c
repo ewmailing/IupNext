@@ -875,6 +875,12 @@ static void iImageClearCache(Ihandle* ih)
 
 /******************************************************************************/
 
+static int iImageSetClearCacheAttrib(Ihandle *ih, const char* value)
+{
+  iImageClearCache(ih);
+  (void)value;
+  return 0;
+}
 
 static char* iImageGetWidthAttrib(Ihandle *ih)
 {
@@ -1030,6 +1036,8 @@ static Iclass* iImageNewClassBase(char* name)
   iupClassRegisterAttribute(ic, "CHANNELS", NULL, NULL, NULL, NULL, IUPAF_READONLY|IUPAF_NO_INHERIT);
 
   iupClassRegisterAttribute(ic, "HOTSPOT", NULL, NULL, "0:0", NULL, IUPAF_NO_INHERIT);
+
+  iupClassRegisterAttribute(ic, "CLEARCACHE", NULL, iImageSetClearCacheAttrib, NULL, NULL, IUPAF_WRITEONLY | IUPAF_NOT_MAPPED | IUPAF_NO_INHERIT);
 
   return ic;
 }
