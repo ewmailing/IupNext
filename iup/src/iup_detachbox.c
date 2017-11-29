@@ -282,17 +282,17 @@ static int iDetachBoxAction_CB(Ihandle* bar)
 
     for (i = 0; i < count; i++)
     {
-      iupdrvDrawRectangle(dc, x+1, y+1, x+2, y+2, bg_r, bg_g, bg_b, IUP_DRAW_FILL);
-      iupdrvDrawRectangle(dc, x, y, x+1, y+1, r, g, b, IUP_DRAW_FILL);
+      iupdrvDrawRectangle(dc, x + 1, y + 1, x + 2, y + 2, bg_r, bg_g, bg_b, IUP_DRAW_FILL, 1);
+      iupdrvDrawRectangle(dc, x, y, x + 1, y + 1, r, g, b, IUP_DRAW_FILL, 1);
 
       if(i < count - 1)
       {
-        iupdrvDrawRectangle(dc, x+3, y+3, x+4, y+4, bg_r, bg_g, bg_b, IUP_DRAW_FILL);
-        iupdrvDrawRectangle(dc, x+2, y+2, x+3, y+3, r, g, b, IUP_DRAW_FILL);
+        iupdrvDrawRectangle(dc, x + 3, y + 3, x + 4, y + 4, bg_r, bg_g, bg_b, IUP_DRAW_FILL, 1);
+        iupdrvDrawRectangle(dc, x + 2, y + 2, x + 3, y + 3, r, g, b, IUP_DRAW_FILL, 1);
       }
 
-      iupdrvDrawRectangle(dc, x+5, y+1, x+6, y+2, bg_r, bg_g, bg_b, IUP_DRAW_FILL);
-      iupdrvDrawRectangle(dc, x+4, y, x+5, y+1, r, g, b, IUP_DRAW_FILL);
+      iupdrvDrawRectangle(dc, x + 5, y + 1, x + 6, y + 2, bg_r, bg_g, bg_b, IUP_DRAW_FILL, 1);
+      iupdrvDrawRectangle(dc, x + 4, y, x + 5, y + 1, r, g, b, IUP_DRAW_FILL, 1);
 
       if (ih->data->orientation == IDBOX_VERT)
         y += 4;
@@ -319,7 +319,7 @@ static int iDetachBoxAction_CB(Ihandle* bar)
       y = ih->data->barsize/2-1;
     }
 
-    iupdrvDrawRectangle(dc, x, y, x+w, y+h, r, g, b, IUP_DRAW_FILL);
+    iupdrvDrawRectangle(dc, x, y, x + w, y + h, r, g, b, IUP_DRAW_FILL, 1);
   }
   
   iupdrvDrawFlush(dc);

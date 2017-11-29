@@ -1285,13 +1285,13 @@ static void iLayoutDrawElement(IdrawCanvas* dc, Ihandle* ih, int marked, int nat
   {
     r = br, g = bg, b = bb;
     iupStrToRGB(bgcolor, &r, &g, &b);
-    iupdrvDrawRectangle(dc, x, y, x + w - 1, y + h - 1, r, g, b, IUP_DRAW_FILL);
+    iupdrvDrawRectangle(dc, x, y, x + w - 1, y + h - 1, r, g, b, IUP_DRAW_FILL, 1);
   }
 
   if (ih->iclass->nativetype == IUP_TYPEVOID)
-    iupdrvDrawRectangle(dc, x, y, x + w - 1, y + h - 1, fvr, fvg, fvb, IUP_DRAW_STROKE_DASH);
+    iupdrvDrawRectangle(dc, x, y, x + w - 1, y + h - 1, fvr, fvg, fvb, IUP_DRAW_STROKE_DASH, 1);
   else
-    iupdrvDrawRectangle(dc, x, y, x + w - 1, y + h - 1, fr, fg, fb, IUP_DRAW_STROKE);
+    iupdrvDrawRectangle(dc, x, y, x + w - 1, y + h - 1, fr, fg, fb, IUP_DRAW_STROKE, 1);
 
   iupdrvDrawSetClipRect(dc, x, y, x + w - 1, y + h - 1);
 
@@ -1302,14 +1302,14 @@ static void iLayoutDrawElement(IdrawCanvas* dc, Ihandle* ih, int marked, int nat
 
     if (ih->currentwidth == pw && ih->currentwidth == ih->naturalwidth)
     {
-      iupdrvDrawLine(dc, x + 1, y + 1, x + w - 2, y + 1, fmr, fmg, fmb, IUP_DRAW_STROKE);
-      iupdrvDrawLine(dc, x + 1, y + h - 2, x + w - 2, y + h - 2, fmr, fmg, fmb, IUP_DRAW_STROKE);
+      iupdrvDrawLine(dc, x + 1, y + 1, x + w - 2, y + 1, fmr, fmg, fmb, IUP_DRAW_STROKE, 1);
+      iupdrvDrawLine(dc, x + 1, y + h - 2, x + w - 2, y + h - 2, fmr, fmg, fmb, IUP_DRAW_STROKE, 1);
     }
 
     if (ih->currentheight == ph && ih->currentheight == ih->naturalheight)
     {
-      iupdrvDrawLine(dc, x + 1, y + 1, x + 1, y + h - 2, fmr, fmg, fmb, IUP_DRAW_STROKE);
-      iupdrvDrawLine(dc, x + w - 2, y + 1, x + w - 2, y + h - 2, fmr, fmg, fmb, IUP_DRAW_STROKE);
+      iupdrvDrawLine(dc, x + 1, y + 1, x + 1, y + h - 2, fmr, fmg, fmb, IUP_DRAW_STROKE, 1);
+      iupdrvDrawLine(dc, x + w - 2, y + 1, x + w - 2, y + h - 2, fmr, fmg, fmb, IUP_DRAW_STROKE, 1);
     }
   }
   else if (ih->iclass->nativetype != IUP_TYPEVOID)
@@ -1407,12 +1407,12 @@ static void iLayoutDrawElement(IdrawCanvas* dc, Ihandle* ih, int marked, int nat
         if (iupStrEqualNoCase(IupGetAttribute(ih, "ORIENTATION"), "VERTICAL"))
         {
           int ph = (int)(((max - val)*(h - 5)) / (max - min));
-          iupdrvDrawRectangle(dc, x + 2, y + 2, x + w - 3, y + ph, r, g, b, IUP_DRAW_FILL);
+          iupdrvDrawRectangle(dc, x + 2, y + 2, x + w - 3, y + ph, r, g, b, IUP_DRAW_FILL, 1);
         }
         else
         {
           int pw = (int)(((val - min)*(w - 5)) / (max - min));
-          iupdrvDrawRectangle(dc, x + 2, y + 2, x + pw, y + h - 3, r, g, b, IUP_DRAW_FILL);
+          iupdrvDrawRectangle(dc, x + 2, y + 2, x + pw, y + h - 3, r, g, b, IUP_DRAW_FILL, 1);
         }
       }
       else if (IupClassMatch(ih, "val"))
@@ -1425,12 +1425,12 @@ static void iLayoutDrawElement(IdrawCanvas* dc, Ihandle* ih, int marked, int nat
         if (iupStrEqualNoCase(IupGetAttribute(ih, "ORIENTATION"), "VERTICAL"))
         {
           int ph = (int)(((max - val)*(h - 5)) / (max - min));
-          iupdrvDrawRectangle(dc, x + 2, y + ph - 1, x + w - 3, y + ph + 1, r, g, b, IUP_DRAW_FILL);
+          iupdrvDrawRectangle(dc, x + 2, y + ph - 1, x + w - 3, y + ph + 1, r, g, b, IUP_DRAW_FILL, 1);
         }
         else
         {
           int pw = (int)(((val - min)*(w - 5)) / (max - min));
-          iupdrvDrawRectangle(dc, x + pw - 1, y + 2, x + pw + 1, y + h - 3, r, g, b, IUP_DRAW_FILL);
+          iupdrvDrawRectangle(dc, x + pw - 1, y + 2, x + pw + 1, y + h - 3, r, g, b, IUP_DRAW_FILL, 1);
         }
       }
     }
@@ -1512,11 +1512,11 @@ static void iLayoutDrawDialog(iLayoutDialog* layoutdlg, int showhidden, int show
   int w, h;
 
   iupdrvDrawGetSize(dc, &w, &h);
-  iupdrvDrawRectangle(dc, 0, 0, w - 1, h - 1, 255, 255, 255, IUP_DRAW_FILL);
+  iupdrvDrawRectangle(dc, 0, 0, w - 1, h - 1, 255, 255, 255, IUP_DRAW_FILL, 1);
 
   /* draw the dialog */
   IupGetIntInt(layoutdlg->dialog, "CLIENTSIZE", &w, &h);
-  iupdrvDrawRectangle(dc, 0, 0, w - 1, h - 1, 0, 0, 0, IUP_DRAW_STROKE);
+  iupdrvDrawRectangle(dc, 0, 0, w - 1, h - 1, 0, 0, 0, IUP_DRAW_STROKE, 1);
 
   if (layoutdlg->dialog->firstchild)
   {

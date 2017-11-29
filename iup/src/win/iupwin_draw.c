@@ -514,7 +514,7 @@ static int iDrawGetLineStyle(int style)
     return PS_SOLID;
 }
 
-void iupdrvDrawRectangle(IdrawCanvas* dc, int x1, int y1, int x2, int y2, unsigned char r, unsigned char g, unsigned char b, int style)
+void iupdrvDrawRectangle(IdrawCanvas* dc, int x1, int y1, int x2, int y2, unsigned char r, unsigned char g, unsigned char b, int style, int line_width)
 {
   SetDCBrushColor(dc->hBitmapDC, RGB(r,g,b));
 
@@ -524,7 +524,7 @@ void iupdrvDrawRectangle(IdrawCanvas* dc, int x1, int y1, int x2, int y2, unsign
     SetRect(&rect, x1, y1, x2+1, y2+1);
     FillRect(dc->hBitmapDC, &rect, (HBRUSH)GetStockObject(DC_BRUSH));
   }
-  else if (style == IUP_DRAW_STROKE)
+  else if (style == IUP_DRAW_STROKE && line_width == 1)
   {
     RECT rect;
     SetRect(&rect, x1, y1, x2+1, y2+1);
@@ -533,7 +533,7 @@ void iupdrvDrawRectangle(IdrawCanvas* dc, int x1, int y1, int x2, int y2, unsign
   else
   {
     POINT line_poly[5];
-    HPEN hPen = CreatePen(iDrawGetLineStyle(style), 1, RGB(r, g, b));
+    HPEN hPen = CreatePen(iDrawGetLineStyle(style), line_width, RGB(r, g, b));
     HPEN hPenOld = SelectObject(dc->hBitmapDC, hPen);
     line_poly[0].x = x1;
     line_poly[0].y = y1;
@@ -551,10 +551,10 @@ void iupdrvDrawRectangle(IdrawCanvas* dc, int x1, int y1, int x2, int y2, unsign
   }
 }
 
-void iupdrvDrawLine(IdrawCanvas* dc, int x1, int y1, int x2, int y2, unsigned char r, unsigned char g, unsigned char b, int style)
+void iupdrvDrawLine(IdrawCanvas* dc, int x1, int y1, int x2, int y2, unsigned char r, unsigned char g, unsigned char b, int style, int line_width)
 {
   POINT line_poly[2];
-  HPEN hPen = CreatePen(iDrawGetLineStyle(style), 1, RGB(r, g, b));
+  HPEN hPen = CreatePen(iDrawGetLineStyle(style), line_width, RGB(r, g, b));
   HPEN hPenOld = SelectObject(dc->hBitmapDC, hPen);
 
   line_poly[0].x = x1;
@@ -581,7 +581,7 @@ static int winDrawCalcArc(int c1, int c2, double a, int start)
   return iupROUND(off);
 }
 
-void iupdrvDrawArc(IdrawCanvas* dc, int x1, int y1, int x2, int y2, double a1, double a2, unsigned char r, unsigned char g, unsigned char b, int style)
+void iupdrvDrawArc(IdrawCanvas* dc, int x1, int y1, int x2, int y2, double a1, double a2, unsigned char r, unsigned char g, unsigned char b, int style, int line_width)
 {
   int XStartArc = winDrawCalcArc(x1, x2, a1, 1);
   int XEndArc = winDrawCalcArc(x1, x2, a2, 0);
@@ -601,7 +601,7 @@ void iupdrvDrawArc(IdrawCanvas* dc, int x1, int y1, int x2, int y2, double a1, d
   }
   else
   {
-    HPEN hPen = CreatePen(iDrawGetLineStyle(style), 1, RGB(r, g, b));
+    HPEN hPen = CreatePen(iDrawGetLineStyle(style), line_width, RGB(r, g, b));
     HPEN hPenOld = SelectObject(dc->hBitmapDC, hPen);
     Arc(dc->hBitmapDC, x1, y1, x2+1, y2+1, XStartArc, YStartArc, XEndArc, YEndArc);
     SelectObject(dc->hBitmapDC, hPenOld);
@@ -609,7 +609,7 @@ void iupdrvDrawArc(IdrawCanvas* dc, int x1, int y1, int x2, int y2, double a1, d
   }
 }
 
-void iupdrvDrawPolygon(IdrawCanvas* dc, int* points, int count, unsigned char r, unsigned char g, unsigned char b, int style)
+void iupdrvDrawPolygon(IdrawCanvas* dc, int* points, int count, unsigned char r, unsigned char g, unsigned char b, int style, int line_width)
 {
   if (style==IUP_DRAW_FILL)
   {
@@ -624,7 +624,7 @@ void iupdrvDrawPolygon(IdrawCanvas* dc, int* points, int count, unsigned char r,
   }
   else
   {
-    HPEN hPen = CreatePen(iDrawGetLineStyle(style), 1, RGB(r, g, b));
+    HPEN hPen = CreatePen(iDrawGetLineStyle(style), line_width, RGB(r, g, b));
     HPEN hPenOld = SelectObject(dc->hBitmapDC, hPen);
     Polyline(dc->hBitmapDC, (POINT*)points, count);
     SelectObject(dc->hBitmapDC, hPenOld);

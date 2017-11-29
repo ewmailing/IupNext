@@ -142,7 +142,7 @@ static int iFlatFrameRedraw_CB(Ihandle* ih)
       for (i = 0; i < title_line; i++)
         iupdrvDrawLine(dc, frame_width, frame_width + title_height - 1 - i,
                            ih->currentwidth - 1 - frame_width, frame_width + title_height - 1 - i,
-                           r, g, b, IUP_DRAW_STROKE);
+                           r, g, b, IUP_DRAW_STROKE, 1);
     }
 
     iupFlatDrawIcon(ih, dc, frame_width, frame_width,
