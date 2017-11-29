@@ -139,7 +139,7 @@ static void iDrawVerticalLineW1(IdrawCanvas* dc, int x, int y1, int y2)
 {
   /* Used only when lineWidth=1 */
   /* Use 0.5 to draw full pixel lines, add 1 to include the last pixel */
-  if (y1 > y2) { int t = y2; y2 = y1; y1 = t; }
+  iupDrawCheckSwapCoord(y1, y2);
   cairo_move_to(dc->image_cr, x + 0.5, y1);
   cairo_line_to(dc->image_cr, x + 0.5, y2 + 1);
 }
@@ -148,7 +148,7 @@ static void iDrawHorizontalLineW1(IdrawCanvas* dc, int x1, int x2, int y)
 {
   /* Used only when lineWidth=1 */
   /* Use 0.5 to draw full pixel lines, add 1 to include the last pixel */
-  if (x1 > x2) { int t = x2; x2 = x1; x1 = t; }
+  iupDrawCheckSwapCoord(x1, x2);
   cairo_move_to(dc->image_cr, x1, y + 0.5);
   cairo_line_to(dc->image_cr, x2 + 1, y + 0.5);
 }
@@ -162,7 +162,10 @@ void iupdrvDrawRectangle(IdrawCanvas* dc, int x1, int y1, int x2, int y2, unsign
 
   if (style==IUP_DRAW_FILL)
   {
-    cairo_rectangle(dc->image_cr, x1, y1, x2-x1+1, y2-y1+1);
+    iupDrawCheckSwapCoord(x1, x2);
+    iupDrawCheckSwapCoord(y1, y2);
+
+    cairo_rectangle(dc->image_cr, x1, y1, x2 - x1 + 1, y2 - y1 + 1);
     cairo_fill(dc->image_cr);
   }
   else
@@ -228,8 +231,11 @@ void iupdrvDrawArc(IdrawCanvas* dc, int x1, int y1, int x2, int y2, double a1, d
     iDrawSetLineStyle(dc, style);
   }
 
-  w = x2-x1+1;
-  h = y2-y1+1;
+  iupDrawCheckSwapCoord(x1, x2);
+  iupDrawCheckSwapCoord(y1, y2);
+
+  w = x2 - x1 + 1;
+  h = y2 - y1 + 1;
   xc = x1 + w/2;
   yc = y1 + h/2;
 
@@ -288,7 +294,10 @@ void iupdrvDrawPolygon(IdrawCanvas* dc, int* points, int count, unsigned char r,
 
 void iupdrvDrawSetClipRect(IdrawCanvas* dc, int x1, int y1, int x2, int y2)
 {
-  cairo_rectangle(dc->image_cr, x1, y1, x2-x1+1, y2-y1+1);
+  iupDrawCheckSwapCoord(x1, x2);
+  iupDrawCheckSwapCoord(y1, y2);
+
+  cairo_rectangle(dc->image_cr, x1, y1, x2 - x1 + 1, y2 - y1 + 1);
   cairo_clip(dc->image_cr);
 }
 
@@ -350,6 +359,10 @@ void iupdrvDrawImage(IdrawCanvas* dc, const char* name, int make_inactive, int x
 void iupdrvDrawSelectRect(IdrawCanvas* dc, int x1, int y1, int x2, int y2)
 {
   cairo_set_source_rgba(dc->image_cr, 0, 0, 1, 0.60);
+
+  iupDrawCheckSwapCoord(x1, x2);
+  iupDrawCheckSwapCoord(y1, y2);
+
   cairo_rectangle(dc->image_cr, x1, y1, x2 - x1 + 1, y2 - y1 + 1);
   cairo_fill(dc->image_cr);
 }
@@ -357,5 +370,9 @@ void iupdrvDrawSelectRect(IdrawCanvas* dc, int x1, int y1, int x2, int y2)
 void iupdrvDrawFocusRect(IdrawCanvas* dc, int x1, int y1, int x2, int y2)
 {
   GtkStyleContext* context = gtk_widget_get_style_context(dc->widget);
+
+  iupDrawCheckSwapCoord(x1, x2);
+  iupDrawCheckSwapCoord(y1, y2);
+
   gtk_render_focus(context, dc->image_cr, x1, y1, x2 - x1 + 1, y2 - y1 + 1);
 }

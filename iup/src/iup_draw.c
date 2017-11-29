@@ -343,8 +343,8 @@ void iupFlatDrawBorder(IdrawCanvas* dc, int xmin, int xmax, int ymin, int ymax, 
   if (!color || border_width == 0 || xmin == xmax || ymin == ymax)
     return;
 
-  if (xmin > xmax) { int _t = xmin; xmin = xmax; xmax = _t; }
-  if (ymin > ymax) { int _t = ymin; ymin = ymax; ymax = _t; }
+  iupDrawCheckSwapCoord(xmin, xmax);
+  iupDrawCheckSwapCoord(ymin, ymax);
 
   iupStrToRGB(color, &r, &g, &b);
   if (!active)
@@ -372,8 +372,8 @@ void iupFlatDrawBox(IdrawCanvas* dc, int xmin, int xmax, int ymin, int ymax, con
   if (!color || xmin == xmax || ymin == ymax)
     return;
 
-  if (xmin > xmax) { int _t = xmin; xmin = xmax; xmax = _t; }
-  if (ymin > ymax) { int _t = ymin; ymin = ymax; ymax = _t; }
+  iupDrawCheckSwapCoord(xmin, xmax);
+  iupDrawCheckSwapCoord(ymin, ymax);
 
   iupStrToRGB(color, &r, &g, &b);
   if (!active)

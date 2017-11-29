@@ -136,14 +136,17 @@ void iupdrvDrawRectangle(IdrawCanvas* dc, int x1, int y1, int x2, int y2, unsign
   iupgdkColorSet(&color, r, g, b);
   gdk_gc_set_rgb_fg_color(dc->pixmap_gc, &color);
 
+  iupDrawCheckSwapCoord(x1, x2);
+  iupDrawCheckSwapCoord(y1, y2);
+
   if (style==IUP_DRAW_FILL)
-    gdk_draw_rectangle(dc->pixmap, dc->pixmap_gc, TRUE, x1, y1, x2-x1+1, y2-y1+1);
+    gdk_draw_rectangle(dc->pixmap, dc->pixmap_gc, TRUE, x1, y1, x2 - x1 + 1, y2 - y1 + 1);
   else
   {
     iDrawSetLineWidth(dc, line_width);
     iDrawSetLineStyle(dc, style);
 
-    gdk_draw_rectangle(dc->pixmap, dc->pixmap_gc, FALSE, x1, y1, x2-x1, y2-y1);  /* outlined rectangle is actually of size w+1,h+1 */
+    gdk_draw_rectangle(dc->pixmap, dc->pixmap_gc, FALSE, x1, y1, x2 - x1, y2 - y1);  /* outlined rectangle is actually of size w+1,h+1 */
   }
 }
 
@@ -164,6 +167,9 @@ void iupdrvDrawArc(IdrawCanvas* dc, int x1, int y1, int x2, int y2, double a1, d
   GdkColor color;
   iupgdkColorSet(&color, r, g, b);
   gdk_gc_set_rgb_fg_color(dc->pixmap_gc, &color);
+
+  iupDrawCheckSwapCoord(x1, x2);
+  iupDrawCheckSwapCoord(y1, y2);
 
   if (style != IUP_DRAW_FILL)
   {
@@ -192,10 +198,15 @@ void iupdrvDrawPolygon(IdrawCanvas* dc, int* points, int count, unsigned char r,
 void iupdrvDrawSetClipRect(IdrawCanvas* dc, int x1, int y1, int x2, int y2)
 {
   GdkRectangle rect;
-  rect.x      = x1;
-  rect.y      = y1;
-  rect.width  = x2-x1+1;
-  rect.height = y2-y1+1;
+
+  iupDrawCheckSwapCoord(x1, x2);
+  iupDrawCheckSwapCoord(y1, y2);
+
+  rect.x = x1;
+  rect.y = y1;
+  rect.width = x2 - x1 + 1;
+  rect.height = y2 - y1 + 1;
+
   gdk_gc_set_clip_rectangle(dc->pixmap_gc, &rect);
 }
 
@@ -246,6 +257,10 @@ void iupdrvDrawSelectRect(IdrawCanvas* dc, int x1, int y1, int x2, int y2)
   GdkColor color;
   iupgdkColorSet(&color, 255, 255, 255);
   gdk_gc_set_rgb_fg_color(dc->pixmap_gc, &color);
+
+  iupDrawCheckSwapCoord(x1, x2);
+  iupDrawCheckSwapCoord(y1, y2);
+
   gdk_gc_set_function(dc->pixmap_gc, GDK_XOR);
   gdk_draw_rectangle(dc->pixmap, dc->pixmap_gc, TRUE, x1, y1, x2 - x1 + 1, y2 - y1 + 1);
   gdk_gc_set_function(dc->pixmap_gc, GDK_COPY);
@@ -253,6 +268,9 @@ void iupdrvDrawSelectRect(IdrawCanvas* dc, int x1, int y1, int x2, int y2)
 
 void iupdrvDrawFocusRect(IdrawCanvas* dc, int x1, int y1, int x2, int y2)
 {
+  iupDrawCheckSwapCoord(x1, x2);
+  iupDrawCheckSwapCoord(y1, y2);
+
   dc->draw_focus = 1;  /* draw focus on the next flush */
   dc->focus_x1 = x1;
   dc->focus_y1 = y1;
