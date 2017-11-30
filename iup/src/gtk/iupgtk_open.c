@@ -180,9 +180,9 @@ static void gtkSetGlobalAttrib(void)
 #if GTK_CHECK_VERSION(3, 0, 0)
 static void gtkSetGlobalColorAttrib(const char* name, GdkRGBA *color)
 {
-  iupGlobalSetDefaultColorAttrib(name, (int)iupCOLORDoubleTO8(color->red), 
-                                       (int)iupCOLORDoubleTO8(color->green), 
-                                       (int)iupCOLORDoubleTO8(color->blue));
+  iupGlobalSetDefaultColorAttrib(name, (int)iupgtkColorFromDouble(color->red), 
+                                       (int)iupgtkColorFromDouble(color->green), 
+                                       (int)iupgtkColorFromDouble(color->blue));
 }
 #else
 static void gtkSetGlobalColorAttrib(const char* name, GdkColor *color)

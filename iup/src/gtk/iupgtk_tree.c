@@ -613,7 +613,7 @@ int iupgtkGetColor(const char* value, GdkColor *color)
   unsigned char r, g, b;
   if (iupStrToRGB(value, &r, &g, &b))
   {
-    iupgdkColorSet(color, r, g, b);
+    iupgdkColorSetRGB(color, r, g, b);
     return 1;
   }
   return 0;
@@ -1088,7 +1088,7 @@ static int gtkTreeSetColorAttrib(Ihandle* ih, int id, const char* value)
   if (!iupStrToRGB(value, &r, &g, &b))
     return 0;
 
-  iupgdkColorSet(&color, r, g, b);
+  iupgdkColorSetRGB(&color, r, g, b);
   gtk_tree_store_set(store, &iterItem, IUPGTK_NODE_COLOR, &color, -1);
 
   return 0;
@@ -1875,7 +1875,7 @@ static int gtkTreeSetBgColorAttrib(Ihandle* ih, const char* value)
     GtkCellRenderer* renderer_txt = (GtkCellRenderer*)iupAttribGet(ih, "_IUPGTK_RENDERER_TEXT");
     GtkCellRenderer* renderer_img = (GtkCellRenderer*)iupAttribGet(ih, "_IUPGTK_RENDERER_IMG");
     GdkColor color;
-    iupgdkColorSet(&color, r, g, b);
+    iupgdkColorSetRGB(&color, r, g, b);
     if (renderer_chk) g_object_set(G_OBJECT(renderer_chk), "cell-background-gdk", &color, NULL);
     g_object_set(G_OBJECT(renderer_txt), "cell-background-gdk", &color, NULL);
     g_object_set(G_OBJECT(renderer_img), "cell-background-gdk", &color, NULL);
@@ -1899,7 +1899,7 @@ static int gtkTreeSetFgColorAttrib(Ihandle* ih, const char* value)
   {
     GtkCellRenderer* renderer_txt = (GtkCellRenderer*)iupAttribGet(ih, "_IUPGTK_RENDERER_TEXT");
     GdkColor color;
-    iupgdkColorSet(&color, r, g, b);
+    iupgdkColorSetRGB(&color, r, g, b);
     g_object_set(G_OBJECT(renderer_txt), "foreground-gdk", &color, NULL);
     g_object_get(G_OBJECT(renderer_txt), "foreground-gdk", &color, NULL);
     color.blue = 0;
@@ -2016,9 +2016,9 @@ static void gtkTreeCellTextEditingStarted(GtkCellRenderer *cell, GtkCellEditable
 
   gtk_tree_model_get(model, &iterItem, IUPGTK_NODE_COLOR, &color, -1);
   if (color)
-    iupgtkSetFgColor(GTK_WIDGET(editable), iupCOLORDoubleTO8(color->red), 
-                                               iupCOLORDoubleTO8(color->green), 
-                                               iupCOLORDoubleTO8(color->blue));
+    iupgtkSetFgColor(GTK_WIDGET(editable), iupgtkColorFromDouble(color->red), 
+                                               iupgtkColorFromDouble(color->green), 
+                                               iupgtkColorFromDouble(color->blue));
 
   (void)cell;
 }

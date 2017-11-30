@@ -24,8 +24,6 @@ typedef struct _IdrawCanvas IdrawCanvas;
 
 enum{ IUP_DRAW_FILL, IUP_DRAW_STROKE, IUP_DRAW_STROKE_DASH, IUP_DRAW_STROKE_DOT };
 
-#define iupDrawCheckSwapCoord(_c1, _c2) { if (_c1 > _c2) { int t = _c2; _c2 = _c1; _c1 = t; } }   /* make sure _c1 is smaller than _c2 */
-
 /** Creates a draw canvas based on an IupCanvas.
  * This will create an image for offscreen drawing.
  * \ingroup draw */
@@ -50,25 +48,25 @@ void iupdrvDrawGetSize(IdrawCanvas* dc, int *w, int *h);
 
 /** Draws a line.
  * \ingroup draw */
-void iupdrvDrawLine(IdrawCanvas* dc, int x1, int y1, int x2, int y2, unsigned char r, unsigned char g, unsigned char b, int style, int line_width);
+void iupdrvDrawLine(IdrawCanvas* dc, int x1, int y1, int x2, int y2, long color, int style, int line_width);
 
 /** Draws a filled/hollow rectangle.
  * \ingroup draw */
-void iupdrvDrawRectangle(IdrawCanvas* dc, int x1, int y1, int x2, int y2, unsigned char r, unsigned char g, unsigned char b, int style, int line_width);
+void iupdrvDrawRectangle(IdrawCanvas* dc, int x1, int y1, int x2, int y2, long color, int style, int line_width);
 
 /** Draws a filled/hollow arc.
  * \ingroup draw */
-void iupdrvDrawArc(IdrawCanvas* dc, int x1, int y1, int x2, int y2, double a1, double a2, unsigned char r, unsigned char g, unsigned char b, int style, int line_width);
+void iupdrvDrawArc(IdrawCanvas* dc, int x1, int y1, int x2, int y2, double a1, double a2, long color, int style, int line_width);
 
 /** Draws a filled/hollow polygon.
  * points are arranged xyxyxy...
  * \ingroup draw */
-void iupdrvDrawPolygon(IdrawCanvas* dc, int* points, int count, unsigned char r, unsigned char g, unsigned char b, int style, int line_width);
+void iupdrvDrawPolygon(IdrawCanvas* dc, int* points, int count, long color, int style, int line_width);
 
 /** Draws a text.
  * x,y is at left,top corner of the text.
  * \ingroup draw */
-void iupdrvDrawText(IdrawCanvas* dc, const char* text, int len, int x, int y, int w, int h, unsigned char r, unsigned char g, unsigned char b, const char* font, int align);
+void iupdrvDrawText(IdrawCanvas* dc, const char* text, int len, int x, int y, int w, int h, long color, const char* font, int align);
 
 /** Draws an image.
  * x,y is at left,top corner of the image.
@@ -97,6 +95,22 @@ void iupdrvDrawParentBackground(IdrawCanvas* dc, Ihandle* ih);
 
 
 /**********************************************************************************************************/
+
+
+#define iupDrawCheckSwapCoord(_c1, _c2) { if (_c1 > _c2) { int t = _c2; _c2 = _c1; _c1 = t; } }   /* make sure _c1 is smaller than _c2 */
+
+long iupDrawStrToColor(const char* str, long c_def);
+
+long iupDrawColor(unsigned char red, unsigned char green, unsigned char blue, unsigned char alpha);
+
+#define iupDrawAlpha(_c)    (unsigned char)(~(((_c) >> 24) & 0xFF))   /* 0=transparent, 255=opaque (default is opaque, internally stored as 0) */
+#define iupDrawRed(_c)      (unsigned char)(((_c) >> 16) & 0xFF)
+#define iupDrawGreen(_c)    (unsigned char)(((_c) >>  8) & 0xFF)
+#define iupDrawBlue(_c)     (unsigned char)(((_c) >>  0) & 0xFF)
+
+
+/**********************************************************************************************************/
+
 
 enum{ IUP_IMGPOS_LEFT, IUP_IMGPOS_RIGHT, IUP_IMGPOS_TOP, IUP_IMGPOS_BOTTOM };
 

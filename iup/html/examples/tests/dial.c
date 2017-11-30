@@ -57,6 +57,8 @@ static int button_release(Ihandle* ih, double a)
   return IUP_DEFAULT;
 } 
 
+void dial_led_load(void);
+
 void DialTest(void)
 {
   char *error = NULL;
@@ -64,14 +66,7 @@ void DialTest(void)
 
   error = IupLoad("dial.led");
   if (error)
-  {
-    error = IupLoad("../test/dial.led");
-    if (error)
-    {
-      IupMessage("%s\n", error);
-      return;
-    }
-  }
+    dial_led_load();
 
   dlg = IupGetHandle("dlg");
   dial_h = IupGetHandle("dial_h");

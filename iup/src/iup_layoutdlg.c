@@ -1262,16 +1262,12 @@ static void iLayoutDrawElement(IdrawCanvas* dc, Ihandle* ih, int marked, int nat
 {
   int x, y, w, h;
   char *bgcolor;
-  unsigned char r, g, b;
-  unsigned char br, bg, bb,
-    fr, fg, fb,
-    fmr, fmg, fmb,
-    fvr, fvg, fvb;
+  long color, fg, fg_void, bg, fg_max;
 
-  br = 255, bg = 255, bb = 255;  /* background color */
-  fr = 0, fg = 0, fb = 0;        /* foreground color */
-  fvr = 164, fvg = 164, fvb = 164;  /* foreground color for void elements */
-  fmr = 255, fmg = 0, fmb = 0;      /* foreground color for elements that are maximizing parent size */
+  bg = iupDrawColor(255, 255, 255, 255);  /* background color */
+  fg = iupDrawColor(0, 0, 0, 255);        /* foreground color */
+  fg_void = iupDrawColor(164, 164, 164, 255);  /* foreground color for void elements */
+  fg_max = iupDrawColor(255, 0, 0, 255);      /* foreground color for elements that are maximizing parent size */
 
   x = ih->x + native_parent_x;
   y = ih->y + native_parent_y;
@@ -1283,15 +1279,14 @@ static void iLayoutDrawElement(IdrawCanvas* dc, Ihandle* ih, int marked, int nat
   bgcolor = IupGetAttribute(ih, "BGCOLOR");
   if (bgcolor && ih->iclass->nativetype != IUP_TYPEVOID)
   {
-    r = br, g = bg, b = bb;
-    iupStrToRGB(bgcolor, &r, &g, &b);
-    iupdrvDrawRectangle(dc, x, y, x + w - 1, y + h - 1, r, g, b, IUP_DRAW_FILL, 1);
+    color = iupDrawStrToColor(bgcolor, bg);
+    iupdrvDrawRectangle(dc, x, y, x + w - 1, y + h - 1, color, IUP_DRAW_FILL, 1);
   }
 
   if (ih->iclass->nativetype == IUP_TYPEVOID)
-    iupdrvDrawRectangle(dc, x, y, x + w - 1, y + h - 1, fvr, fvg, fvb, IUP_DRAW_STROKE_DASH, 1);
+    iupdrvDrawRectangle(dc, x, y, x + w - 1, y + h - 1, fg_void, IUP_DRAW_STROKE_DASH, 1);
   else
-    iupdrvDrawRectangle(dc, x, y, x + w - 1, y + h - 1, fr, fg, fb, IUP_DRAW_STROKE, 1);
+    iupdrvDrawRectangle(dc, x, y, x + w - 1, y + h - 1, fg, IUP_DRAW_STROKE, 1);
 
   iupdrvDrawSetClipRect(dc, x, y, x + w - 1, y + h - 1);
 
@@ -1302,14 +1297,14 @@ static void iLayoutDrawElement(IdrawCanvas* dc, Ihandle* ih, int marked, int nat
 
     if (ih->currentwidth == pw && ih->currentwidth == ih->naturalwidth)
     {
-      iupdrvDrawLine(dc, x + 1, y + 1, x + w - 2, y + 1, fmr, fmg, fmb, IUP_DRAW_STROKE, 1);
-      iupdrvDrawLine(dc, x + 1, y + h - 2, x + w - 2, y + h - 2, fmr, fmg, fmb, IUP_DRAW_STROKE, 1);
+      iupdrvDrawLine(dc, x + 1, y + 1, x + w - 2, y + 1, fg_max, IUP_DRAW_STROKE, 1);
+      iupdrvDrawLine(dc, x + 1, y + h - 2, x + w - 2, y + h - 2, fg_max, IUP_DRAW_STROKE, 1);
     }
 
     if (ih->currentheight == ph && ih->currentheight == ih->naturalheight)
     {
-      iupdrvDrawLine(dc, x + 1, y + 1, x + 1, y + h - 2, fmr, fmg, fmb, IUP_DRAW_STROKE, 1);
-      iupdrvDrawLine(dc, x + w - 2, y + 1, x + w - 2, y + h - 2, fmr, fmg, fmb, IUP_DRAW_STROKE, 1);
+      iupdrvDrawLine(dc, x + 1, y + 1, x + 1, y + h - 2, fg_max, IUP_DRAW_STROKE, 1);
+      iupdrvDrawLine(dc, x + w - 2, y + 1, x + w - 2, y + h - 2, fg_max, IUP_DRAW_STROKE, 1);
     }
   }
   else if (ih->iclass->nativetype != IUP_TYPEVOID)
@@ -1389,30 +1384,28 @@ static void iLayoutDrawElement(IdrawCanvas* dc, Ihandle* ih, int marked, int nat
     {
       int len;
       iupStrNextLine(title, &len);  /* get the size of the first line */
-      r = fr, g = fg, b = fb;
-      iupStrToRGB(IupGetAttribute(ih, "FGCOLOR"), &r, &g, &b);
-      iupdrvDrawText(dc, title, len, x + 1, y + 1, w, h, r, g, b, IupGetAttribute(ih, "FONT"), IUP_ALIGN_ALEFT);
+      color = iupDrawStrToColor(IupGetAttribute(ih, "FGCOLOR"), fg);
+      iupdrvDrawText(dc, title, len, x + 1, y + 1, w, h, color, IupGetAttribute(ih, "FONT"), IUP_ALIGN_ALEFT);
     }
 
     if (ih->iclass->childtype == IUP_CHILDNONE &&
         !title && !image)
     {
-      if (IupClassMatch(ih, "progressbar"))
+      if (IupClassMatch(ih, "progressbar") || IupClassMatch(ih, "gauge"))
       {
         double min = IupGetDouble(ih, "MIN");
         double max = IupGetDouble(ih, "MAX");
         double val = IupGetDouble(ih, "VALUE");
-        r = fr, g = fg, b = fb;
-        iupStrToRGB(IupGetAttribute(ih, "FGCOLOR"), &r, &g, &b);
+        color = iupDrawStrToColor(IupGetAttribute(ih, "FGCOLOR"), fg);
         if (iupStrEqualNoCase(IupGetAttribute(ih, "ORIENTATION"), "VERTICAL"))
         {
           int ph = (int)(((max - val)*(h - 5)) / (max - min));
-          iupdrvDrawRectangle(dc, x + 2, y + 2, x + w - 3, y + ph, r, g, b, IUP_DRAW_FILL, 1);
+          iupdrvDrawRectangle(dc, x + 2, y + 2, x + w - 3, y + ph, color, IUP_DRAW_FILL, 1);
         }
         else
         {
           int pw = (int)(((val - min)*(w - 5)) / (max - min));
-          iupdrvDrawRectangle(dc, x + 2, y + 2, x + pw, y + h - 3, r, g, b, IUP_DRAW_FILL, 1);
+          iupdrvDrawRectangle(dc, x + 2, y + 2, x + pw, y + h - 3, color, IUP_DRAW_FILL, 1);
         }
       }
       else if (IupClassMatch(ih, "val"))
@@ -1420,17 +1413,16 @@ static void iLayoutDrawElement(IdrawCanvas* dc, Ihandle* ih, int marked, int nat
         double min = IupGetDouble(ih, "MIN");
         double max = IupGetDouble(ih, "MAX");
         double val = IupGetDouble(ih, "VALUE");
-        r = fr, g = fg, b = fb;
-        iupStrToRGB(IupGetAttribute(ih, "FGCOLOR"), &r, &g, &b);
+        color = iupDrawStrToColor(IupGetAttribute(ih, "FGCOLOR"), fg);
         if (iupStrEqualNoCase(IupGetAttribute(ih, "ORIENTATION"), "VERTICAL"))
         {
           int ph = (int)(((max - val)*(h - 5)) / (max - min));
-          iupdrvDrawRectangle(dc, x + 2, y + ph - 1, x + w - 3, y + ph + 1, r, g, b, IUP_DRAW_FILL, 1);
+          iupdrvDrawRectangle(dc, x + 2, y + ph - 1, x + w - 3, y + ph + 1, color, IUP_DRAW_FILL, 1);
         }
         else
         {
           int pw = (int)(((val - min)*(w - 5)) / (max - min));
-          iupdrvDrawRectangle(dc, x + pw - 1, y + 2, x + pw + 1, y + h - 3, r, g, b, IUP_DRAW_FILL, 1);
+          iupdrvDrawRectangle(dc, x + pw - 1, y + 2, x + pw + 1, y + h - 3, color, IUP_DRAW_FILL, 1);
         }
       }
     }
@@ -1512,11 +1504,11 @@ static void iLayoutDrawDialog(iLayoutDialog* layoutdlg, int showhidden, int show
   int w, h;
 
   iupdrvDrawGetSize(dc, &w, &h);
-  iupdrvDrawRectangle(dc, 0, 0, w - 1, h - 1, 255, 255, 255, IUP_DRAW_FILL, 1);
+  iupdrvDrawRectangle(dc, 0, 0, w - 1, h - 1, iupDrawColor(255, 255, 255, 255), IUP_DRAW_FILL, 1);
 
   /* draw the dialog */
   IupGetIntInt(layoutdlg->dialog, "CLIENTSIZE", &w, &h);
-  iupdrvDrawRectangle(dc, 0, 0, w - 1, h - 1, 0, 0, 0, IUP_DRAW_STROKE, 1);
+  iupdrvDrawRectangle(dc, 0, 0, w - 1, h - 1, iupDrawColor(0, 0, 0, 255), IUP_DRAW_STROKE, 1);
 
   if (layoutdlg->dialog->firstchild)
   {

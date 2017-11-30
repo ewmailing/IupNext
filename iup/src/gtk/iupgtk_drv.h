@@ -11,8 +11,8 @@
 extern "C" {
 #endif
 
-#define iupCOLORDoubleTO8(_x) ((unsigned char)(_x*255))  /* 1.0*255 = 255 */
-#define iupCOLOR8ToDouble(_x) ((double)_x/255.0)
+#define iupgtkColorFromDouble(_x) ((unsigned char)(_x*255))  /* 1.0*255 = 255 */
+#define iupgtkColorToDouble(_x) ((double)_x/255.0)
 
 
 
@@ -25,7 +25,7 @@ gboolean iupgtkShowHelp(GtkWidget *widget, GtkWidgetHelpType *arg1, Ihandle* ih)
 int iupgtkSetMnemonicTitle(Ihandle* ih, GtkLabel* label, const char* value);
 void iupgtkUpdateMnemonic(Ihandle* ih);
 
-void iupgdkColorSet(GdkColor* color, unsigned char r, unsigned char g, unsigned char b);
+void iupgdkColorSetRGB(GdkColor* color, unsigned char r, unsigned char g, unsigned char b);
 void iupgtkSetBgColor(InativeHandle* handle, unsigned char r, unsigned char g, unsigned char b);
 void iupgtkSetFgColor(InativeHandle* handle, unsigned char r, unsigned char g, unsigned char b);
 

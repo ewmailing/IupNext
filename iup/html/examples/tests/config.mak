@@ -124,6 +124,7 @@ endif
 USE_IUPCONTROLS = Yes
 SRC += colorbrowser.c
 SRC += dial.c
+SRC += dial_led.c
 SRC += colorbar.c
 SRC += cells_numbering.c
 SRC += cells_degrade.c

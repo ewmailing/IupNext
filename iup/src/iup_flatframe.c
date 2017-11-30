@@ -136,13 +136,14 @@ static int iFlatFrameRedraw_CB(Ihandle* ih)
     {
       int i;
       char* title_line_color = iupAttribGetStr(ih, "TITLELINECOLOR");
-      unsigned char r = 0, g = 0, b = 0;
-      iupStrToRGB(title_line_color, &r, &g, &b);
+      long color = iupDrawStrToColor(title_line_color, 0);
+
+      /* don't use DRAWLINEWIDTH so we can control spacing */
 
       for (i = 0; i < title_line; i++)
         iupdrvDrawLine(dc, frame_width, frame_width + title_height - 1 - i,
                            ih->currentwidth - 1 - frame_width, frame_width + title_height - 1 - i,
-                           r, g, b, IUP_DRAW_STROKE, 1);
+                           color, IUP_DRAW_STROKE, 1);
     }
 
     iupFlatDrawIcon(ih, dc, frame_width, frame_width,

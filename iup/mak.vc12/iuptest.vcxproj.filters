@@ -87,5 +87,6 @@
     <ClCompile Include="..\html\examples\tests\webbrowser.c" />
     <ClCompile Include="..\html\examples\tests\flattabs.c" />
     <ClCompile Include="..\html\examples\tests\flatscrollbox.c" />
+    <ClCompile Include="..\html\examples\tests\dial_led.c" />
   </ItemGroup>
 </Project>

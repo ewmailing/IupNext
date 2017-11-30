@@ -294,11 +294,11 @@ void* iupdrvImageCreateCursor(Ihandle *ih)
 
     r = 255; g = 255; b = 255;
     iupStrToRGB(iupAttribGet(ih, "1"), &r, &g, &b );
-    iupgdkColorSet(&fg, r, g, b);
+    iupgdkColorSetRGB(&fg, r, g, b);
 
     r = 0; g = 0; b = 0;
     iupStrToRGB(iupAttribGet(ih, "2"), &r, &g, &b );
-    iupgdkColorSet(&bg, r, g, b);
+    iupgdkColorSetRGB(&bg, r, g, b);
 
     sbits = (char*)malloc(2*size_bytes);
     if (!sbits) return NULL;

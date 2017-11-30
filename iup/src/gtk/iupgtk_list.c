@@ -307,7 +307,7 @@ static int gtkListSetBgColorAttrib(Ihandle* ih, const char* value)
     if (renderer)
     {
       GdkColor color;
-      iupgdkColorSet(&color, r, g, b);
+      iupgdkColorSetRGB(&color, r, g, b);
       g_object_set(G_OBJECT(renderer), "cell-background-gdk", &color, NULL);
     }
   }
@@ -336,7 +336,7 @@ static int gtkListSetFgColorAttrib(Ihandle* ih, const char* value)
     if (renderer)
     {
       GdkColor color;
-      iupgdkColorSet(&color, r, g, b);
+      iupgdkColorSetRGB(&color, r, g, b);
       g_object_set(G_OBJECT(renderer), "foreground-gdk", &color, NULL);
     }
   }

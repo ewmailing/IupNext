@@ -381,9 +381,9 @@ void iupdrvSetActive(Ihandle* ih, int enable)
 #if GTK_CHECK_VERSION(3, 0, 0)
 static void iupgdkRGBASet(GdkRGBA* rgba, unsigned char r, unsigned char g, unsigned char b)
 {
-  rgba->red = iupCOLOR8ToDouble(r);
-  rgba->green = iupCOLOR8ToDouble(g);
-  rgba->blue = iupCOLOR8ToDouble(b);
+  rgba->red = iupgtkColorToDouble(r);
+  rgba->green = iupgtkColorToDouble(g);
+  rgba->blue = iupgtkColorToDouble(b);
   rgba->alpha = 1.0;
 }
 
@@ -498,7 +498,7 @@ void iupgtkSetBgColor(InativeHandle* handle, unsigned char r, unsigned char g, u
   GtkRcStyle *rc_style;  
   GdkColor color;
 
-  iupgdkColorSet(&color, r, g, b);
+  iupgdkColorSetRGB(&color, r, g, b);
 
   rc_style = gtk_widget_get_modifier_style(handle);
 
@@ -529,7 +529,7 @@ void iupgtkSetFgColor(InativeHandle* handle, unsigned char r, unsigned char g, u
   GtkRcStyle *rc_style;  
   GdkColor color;
 
-  iupgdkColorSet(&color, r, g, b);
+  iupgdkColorSetRGB(&color, r, g, b);
 
   rc_style = gtk_widget_get_modifier_style(handle);  
 
@@ -681,7 +681,7 @@ int iupdrvBaseSetCursorAttrib(Ihandle* ih, const char* value)
   return 0;
 }
 
-void iupgdkColorSet(GdkColor* color, unsigned char r, unsigned char g, unsigned char b)
+void iupgdkColorSetRGB(GdkColor* color, unsigned char r, unsigned char g, unsigned char b)
 {
   color->red = iupCOLOR8TO16(r);
   color->green = iupCOLOR8TO16(g);

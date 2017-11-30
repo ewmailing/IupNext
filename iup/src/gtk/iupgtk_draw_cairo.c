@@ -153,12 +153,9 @@ static void iDrawHorizontalLineW1(IdrawCanvas* dc, int x1, int x2, int y)
   cairo_line_to(dc->image_cr, x2 + 1, y + 0.5);
 }
 
-void iupdrvDrawRectangle(IdrawCanvas* dc, int x1, int y1, int x2, int y2, unsigned char r, unsigned char g, unsigned char b, int style, int line_width)
+void iupdrvDrawRectangle(IdrawCanvas* dc, int x1, int y1, int x2, int y2, long color, int style, int line_width)
 {
-  cairo_set_source_rgba(dc->image_cr, iupCOLOR8ToDouble(r),
-                                       iupCOLOR8ToDouble(g),
-                                       iupCOLOR8ToDouble(b),
-                                       1.0);
+  cairo_set_source_rgba(dc->image_cr, iupgtkColorToDouble(iupDrawRed(color)), iupgtkColorToDouble(iupDrawGreen(color)), iupgtkColorToDouble(iupDrawBlue(color)), iupgtkColorToDouble(iupDrawAlpha(color)));
 
   if (style==IUP_DRAW_FILL)
   {
@@ -193,12 +190,9 @@ void iupdrvDrawRectangle(IdrawCanvas* dc, int x1, int y1, int x2, int y2, unsign
   }
 }
 
-void iupdrvDrawLine(IdrawCanvas* dc, int x1, int y1, int x2, int y2, unsigned char r, unsigned char g, unsigned char b, int style, int line_width)
+void iupdrvDrawLine(IdrawCanvas* dc, int x1, int y1, int x2, int y2, long color, int style, int line_width)
 {
-  cairo_set_source_rgba(dc->image_cr, iupCOLOR8ToDouble(r),
-                                       iupCOLOR8ToDouble(g),
-                                       iupCOLOR8ToDouble(b),
-                                       1.0);
+  cairo_set_source_rgba(dc->image_cr, iupgtkColorToDouble(iupDrawRed(color)), iupgtkColorToDouble(iupDrawGreen(color)), iupgtkColorToDouble(iupDrawBlue(color)), iupgtkColorToDouble(iupDrawAlpha(color)));
 
   iDrawSetLineWidth(dc, line_width);
   iDrawSetLineStyle(dc, style);
@@ -238,14 +232,11 @@ static void iFixAngles(double *a1, double *a2)
   *a2 *= IUP_DEG2RAD;
 }
 
-void iupdrvDrawArc(IdrawCanvas* dc, int x1, int y1, int x2, int y2, double a1, double a2, unsigned char r, unsigned char g, unsigned char b, int style, int line_width)
+void iupdrvDrawArc(IdrawCanvas* dc, int x1, int y1, int x2, int y2, double a1, double a2, long color, int style, int line_width)
 {
   int xc, yc, w, h;
 
-  cairo_set_source_rgba(dc->image_cr, iupCOLOR8ToDouble(r),
-                                       iupCOLOR8ToDouble(g),
-                                       iupCOLOR8ToDouble(b),
-                                       1.0);
+  cairo_set_source_rgba(dc->image_cr, iupgtkColorToDouble(iupDrawRed(color)), iupgtkColorToDouble(iupDrawGreen(color)), iupgtkColorToDouble(iupDrawBlue(color)), iupgtkColorToDouble(iupDrawAlpha(color)));
 
   if (style != IUP_DRAW_FILL)
   {
@@ -297,14 +288,11 @@ void iupdrvDrawArc(IdrawCanvas* dc, int x1, int y1, int x2, int y2, double a1, d
   }
 }
 
-void iupdrvDrawPolygon(IdrawCanvas* dc, int* points, int count, unsigned char r, unsigned char g, unsigned char b, int style, int line_width)
+void iupdrvDrawPolygon(IdrawCanvas* dc, int* points, int count, long color, int style, int line_width)
 {
   int i;
 
-  cairo_set_source_rgba(dc->image_cr, iupCOLOR8ToDouble(r),
-                                       iupCOLOR8ToDouble(g),
-                                       iupCOLOR8ToDouble(b),
-                                       1.0);
+  cairo_set_source_rgba(dc->image_cr, iupgtkColorToDouble(iupDrawRed(color)), iupgtkColorToDouble(iupDrawGreen(color)), iupgtkColorToDouble(iupDrawBlue(color)), iupgtkColorToDouble(iupDrawAlpha(color)));
 
   if (style!=IUP_DRAW_FILL)
   {
@@ -336,7 +324,7 @@ void iupdrvDrawResetClip(IdrawCanvas* dc)
   cairo_reset_clip(dc->image_cr);
 }
 
-void iupdrvDrawText(IdrawCanvas* dc, const char* text, int len, int x, int y, int w, int h, unsigned char r, unsigned char g, unsigned char b, const char* font, int align)
+void iupdrvDrawText(IdrawCanvas* dc, const char* text, int len, int x, int y, int w, int h, long color, const char* font, int align)
 {
   PangoLayout* fontlayout = (PangoLayout*)iupgtkGetPangoLayout(font);
   PangoAlignment alignment = PANGO_ALIGN_LEFT;
@@ -353,10 +341,7 @@ void iupdrvDrawText(IdrawCanvas* dc, const char* text, int len, int x, int y, in
 
   pango_layout_set_alignment(fontlayout, alignment);
 
-  cairo_set_source_rgba(dc->image_cr, iupCOLOR8ToDouble(r),
-                                       iupCOLOR8ToDouble(g),
-                                       iupCOLOR8ToDouble(b),
-                                       1.0);
+  cairo_set_source_rgba(dc->image_cr, iupgtkColorToDouble(iupDrawRed(color)), iupgtkColorToDouble(iupDrawGreen(color)), iupgtkColorToDouble(iupDrawBlue(color)), iupgtkColorToDouble(iupDrawAlpha(color)));
 
   pango_cairo_update_layout(dc->image_cr, fontlayout);
 

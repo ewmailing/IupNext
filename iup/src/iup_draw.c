@@ -20,6 +20,36 @@
 #include "iup_image.h"
 
 
+long iupDrawColor(unsigned char r, unsigned char g, unsigned char b, unsigned char a)
+{
+  a = ~a;
+  return (((unsigned long)a) << 24) |
+    (((unsigned long)r) << 16) |
+    (((unsigned long)g) << 8) |
+    (((unsigned long)b) << 0);
+}
+
+static long iupDrawColorMakeInactive(long color, const char* bgcolor)
+{
+  unsigned char bg_r = 0, bg_g = 0, bg_b = 0;
+  unsigned char r = iupDrawRed(color), g = iupDrawGreen(color), b = iupDrawBlue(color), a = iupDrawAlpha(color);
+  iupStrToRGB(bgcolor, &bg_r, &bg_g, &bg_b);
+  iupImageColorMakeInactive(&r, &g, &b, bg_r, bg_g, bg_b);
+  return iupDrawColor(r, g, b, a);
+}
+
+long iupDrawStrToColor(const char* str, long c_def)
+{
+  unsigned char r, g, b, a;
+  if (iupStrToRGBA(str, &r, &g, &b, &a))
+    return iupDrawColor(r, g, b, a);
+  else
+    return c_def;
+}
+
+
+/***********************************************************************************************/
+
 
 void IupDrawBegin(Ihandle* ih)
 {
@@ -105,7 +135,7 @@ static int iDrawGetLineWidth(Ihandle* ih)
 void IupDrawLine(Ihandle* ih, int x1, int y1, int x2, int y2)
 {
   IdrawCanvas* dc;
-  unsigned char r = 0, g = 0, b = 0;
+  long color = 0;
   int style, line_width;
 
   iupASSERT(iupObjectCheck(ih));
@@ -116,18 +146,18 @@ void IupDrawLine(Ihandle* ih, int x1, int y1, int x2, int y2)
   if (!dc)
     return;
 
-  IupGetRGB(ih, "DRAWCOLOR", &r, &g, &b);
+  color = iupDrawStrToColor(IupGetAttribute(ih, "DRAWCOLOR"), 0);
 
   line_width = iDrawGetLineWidth(ih);
   style = iDrawGetStyle(ih);
 
-  iupdrvDrawLine(dc, x1, y1, x2, y2, r, g, b, style, line_width);
+  iupdrvDrawLine(dc, x1, y1, x2, y2, color, style, line_width);
 }
 
 void IupDrawRectangle(Ihandle* ih, int x1, int y1, int x2, int y2)
 {
   IdrawCanvas* dc;
-  unsigned char r = 0, g = 0, b = 0;
+  long color;
   int style, line_width;
 
   iupASSERT(iupObjectCheck(ih));
@@ -138,18 +168,18 @@ void IupDrawRectangle(Ihandle* ih, int x1, int y1, int x2, int y2)
   if (!dc)
     return;
 
-  IupGetRGB(ih, "DRAWCOLOR", &r, &g, &b);
+  color = iupDrawStrToColor(IupGetAttribute(ih, "DRAWCOLOR"), 0);
 
   line_width = iDrawGetLineWidth(ih);
   style = iDrawGetStyle(ih);
 
-  iupdrvDrawRectangle(dc, x1, y1, x2, y2, r, g, b, style, line_width);
+  iupdrvDrawRectangle(dc, x1, y1, x2, y2, color, style, line_width);
 }
 
 void IupDrawArc(Ihandle* ih, int x1, int y1, int x2, int y2, double a1, double a2)
 {
   IdrawCanvas* dc;
-  unsigned char r = 0, g = 0, b = 0;
+  long color = 0;
   int style, line_width;
 
   iupASSERT(iupObjectCheck(ih));
@@ -160,18 +190,18 @@ void IupDrawArc(Ihandle* ih, int x1, int y1, int x2, int y2, double a1, double a
   if (!dc)
     return;
 
-  IupGetRGB(ih, "DRAWCOLOR", &r, &g, &b);
+  color = iupDrawStrToColor(IupGetAttribute(ih, "DRAWCOLOR"), 0);
 
   line_width = iDrawGetLineWidth(ih);
   style = iDrawGetStyle(ih);
 
-  iupdrvDrawArc(dc, x1, y1, x2, y2, a1, a2, r, g, b, style, line_width);
+  iupdrvDrawArc(dc, x1, y1, x2, y2, a1, a2, color, style, line_width);
 }
 
 void IupDrawPolygon(Ihandle* ih, int* points, int count)
 {
   IdrawCanvas* dc;
-  unsigned char r = 0, g = 0, b = 0;
+  long color = 0;
   int style, line_width;
 
   iupASSERT(iupObjectCheck(ih));
@@ -182,12 +212,12 @@ void IupDrawPolygon(Ihandle* ih, int* points, int count)
   if (!dc)
     return;
 
-  IupGetRGB(ih, "DRAWCOLOR", &r, &g, &b);
+  color = iupDrawStrToColor(IupGetAttribute(ih, "DRAWCOLOR"), 0);
 
   line_width = iDrawGetLineWidth(ih);
   style = iDrawGetStyle(ih);
 
-  iupdrvDrawPolygon(dc, points, count, r, g, b, style, line_width);
+  iupdrvDrawPolygon(dc, points, count, color, style, line_width);
 }
 
 char* iupFlatGetTextSize(Ihandle* ih, const char* str, int *w, int *h)
@@ -204,7 +234,7 @@ char* iupFlatGetTextSize(Ihandle* ih, const char* str, int *w, int *h)
 void IupDrawText(Ihandle* ih, const char* text, int len, int x, int y)
 {
   IdrawCanvas* dc;
-  unsigned char r = 0, g = 0, b = 0;
+  long color = 0;
   char* font;
   int align, w, h;
 
@@ -220,7 +250,7 @@ void IupDrawText(Ihandle* ih, const char* text, int len, int x, int y)
   if (!dc)
     return;
 
-  IupGetRGB(ih, "DRAWCOLOR", &r, &g, &b);
+  color = iupDrawStrToColor(IupGetAttribute(ih, "DRAWCOLOR"), 0);
 
   align = iupFlatGetHorizontalAlignment(IupGetAttribute(ih, "TEXTALIGNMENT"));
 
@@ -230,7 +260,7 @@ void IupDrawText(Ihandle* ih, const char* text, int len, int x, int y)
     len = (int)strlen(text);
 
   if (len != 0)
-    iupdrvDrawText(dc, text, len, x, y, w, h, r, g, b, font, align);
+    iupdrvDrawText(dc, text, len, x, y, w, h, color, font, align);
 }
 
 void IupDrawGetTextSize(Ihandle* ih, const char* str, int *w, int *h)
@@ -324,85 +354,73 @@ void IupDrawFocusRect(Ihandle* ih, int x1, int y1, int x2, int y2)
 
 void iupdrvDrawParentBackground(IdrawCanvas* dc, Ihandle* ih)
 {
-  unsigned char r = 0, g = 0, b = 0;
+  long color;
   int w, h;
-  char* color = iupBaseNativeParentGetBgColorAttrib(ih);
-  iupStrToRGB(color, &r, &g, &b);
+  char* color_str = iupBaseNativeParentGetBgColorAttrib(ih);
+  color = iupDrawStrToColor(color_str, 0);
   iupdrvDrawGetSize(dc, &w, &h);
-  iupdrvDrawRectangle(dc, 0, 0, w - 1, h - 1, r, g, b, IUP_DRAW_FILL, 1);
+  iupdrvDrawRectangle(dc, 0, 0, w - 1, h - 1, color, IUP_DRAW_FILL, 1);
 }
 
 
 /***********************************************************************************************/
 
 
-void iupFlatDrawBorder(IdrawCanvas* dc, int xmin, int xmax, int ymin, int ymax, int border_width, const char* color, const char* bgcolor, int active)
+void iupFlatDrawBorder(IdrawCanvas* dc, int xmin, int xmax, int ymin, int ymax, int border_width, const char* fgcolor, const char* bgcolor, int active)
 {
-  unsigned char r = 0, g = 0, b = 0;
+  long color = 0;
 
-  if (!color || border_width == 0 || xmin == xmax || ymin == ymax)
+  if (!fgcolor || border_width == 0 || xmin == xmax || ymin == ymax)
     return;
 
   iupDrawCheckSwapCoord(xmin, xmax);
   iupDrawCheckSwapCoord(ymin, ymax);
 
-  iupStrToRGB(color, &r, &g, &b);
+  color = iupDrawStrToColor(fgcolor, 0);
   if (!active)
-  {
-    unsigned char bg_r = 0, bg_g = 0, bg_b = 0;
-    iupStrToRGB(bgcolor, &bg_r, &bg_g, &bg_b);
-    iupImageColorMakeInactive(&r, &g, &b, bg_r, bg_g, bg_b);
-  }
+    color = iupDrawColorMakeInactive(color, bgcolor);
 
-  iupdrvDrawRectangle(dc, xmin, ymin, xmax, ymax, r, g, b, IUP_DRAW_STROKE, 1);
+  iupdrvDrawRectangle(dc, xmin, ymin, xmax, ymax, color, IUP_DRAW_STROKE, 1);
   while (border_width > 1)
   {
     border_width--;
     iupdrvDrawRectangle(dc, xmin + border_width,
                         ymin + border_width,
                         xmax - border_width,
-                        ymax - border_width, r, g, b, IUP_DRAW_STROKE, 1);
+                        ymax - border_width, color, IUP_DRAW_STROKE, 1);
   }
 }
 
-void iupFlatDrawBox(IdrawCanvas* dc, int xmin, int xmax, int ymin, int ymax, const char* color, const char* bgcolor, int active)
+void iupFlatDrawBox(IdrawCanvas* dc, int xmin, int xmax, int ymin, int ymax, const char* fgcolor, const char* bgcolor, int active)
 {
-  unsigned char r = 0, g = 0, b = 0;
+  long color;
 
-  if (!color || xmin == xmax || ymin == ymax)
+  if (!fgcolor || xmin == xmax || ymin == ymax)
     return;
 
   iupDrawCheckSwapCoord(xmin, xmax);
   iupDrawCheckSwapCoord(ymin, ymax);
 
-  iupStrToRGB(color, &r, &g, &b);
+  color = iupDrawStrToColor(fgcolor, 0);
   if (!active)
-  {
-    unsigned char bg_r = 0, bg_g = 0, bg_b = 0;
-    iupStrToRGB(bgcolor, &bg_r, &bg_g, &bg_b);
-    iupImageColorMakeInactive(&r, &g, &b, bg_r, bg_g, bg_b);
-  }
+    color = iupDrawColorMakeInactive(color, bgcolor);
 
-  iupdrvDrawRectangle(dc, xmin, ymin, xmax, ymax, r, g, b, IUP_DRAW_FILL, 1);
+  iupdrvDrawRectangle(dc, xmin, ymin, xmax, ymax, color, IUP_DRAW_FILL, 1);
 }
 
-static void iFlatDrawText(IdrawCanvas* dc, int x, int y, int w, int h, const char* str, const char* font, const char* text_align, const char* color, const char* bgcolor, int active)
+static void iFlatDrawText(IdrawCanvas* dc, int x, int y, int w, int h, const char* str, const char* font, const char* text_align, const char* fgcolor, const char* bgcolor, int active)
 {
-  unsigned char r = 0, g = 0, b = 0;
+  long color;
   int align = iupFlatGetHorizontalAlignment(text_align);
 
-  if (!color || !str || str[0] == 0)
+  if (!fgcolor || !str || str[0] == 0)
     return;
 
-  iupStrToRGB(color, &r, &g, &b);
+  color = iupDrawStrToColor(fgcolor, 0);
   if (!active)
-  {
-    unsigned char bg_r = 0, bg_g = 0, bg_b = 0;
-    iupStrToRGB(bgcolor, &bg_r, &bg_g, &bg_b);
-    iupImageColorMakeInactive(&r, &g, &b, bg_r, bg_g, bg_b);
-  }
+    color = iupDrawColorMakeInactive(color, bgcolor);
 
-  iupdrvDrawText(dc, str, (int)strlen(str), x, y, w, h, r, g, b, font, align);
+  iupdrvDrawText(dc, str, (int)strlen(str), x, y, w, h, color, font, align);
 }
 
 static void iFlatGetIconPosition(int icon_width, int icon_height, int *x, int *y, int width, int height, int horiz_alignment, int vert_alignment, int horiz_padding, int vert_padding)
@@ -580,7 +598,7 @@ int iupFlatGetImagePosition(const char* value)
   return img_position;
 }
 
-void iupFlatDrawArrow(IdrawCanvas* dc, int x, int y, int size, const char* color, const char* bgcolor, int active, int dir)
+void iupFlatDrawArrow(IdrawCanvas* dc, int x, int y, int size, const char* color_str, const char* bgcolor, int active, int dir)
 {
   int points[6];
 
@@ -588,15 +606,9 @@ void iupFlatDrawArrow(IdrawCanvas* dc, int x, int y, int size, const char* color
   int off2 = iupRound((double)size * 0.87);
   int half = size / 2;
 
-  unsigned char r = 0, g = 0, b = 0;
-
-  iupStrToRGB(color, &r, &g, &b);
+  long color = iupDrawStrToColor(color_str, 0);
   if (!active)
-  {
-    unsigned char bg_r = 0, bg_g = 0, bg_b = 0;
-    iupStrToRGB(bgcolor, &bg_r, &bg_g, &bg_b);
-    iupImageColorMakeInactive(&r, &g, &b, bg_r, bg_g, bg_b);
-  }
+    color = iupDrawColorMakeInactive(color, bgcolor);
 
   switch (dir)
   {
@@ -634,8 +646,8 @@ void iupFlatDrawArrow(IdrawCanvas* dc, int x, int y, int size, const char* color
     break;
   }
 
-  iupdrvDrawPolygon(dc, points, 3, r, g, b, IUP_DRAW_FILL, 1);
-  iupdrvDrawPolygon(dc, points, 3, r, g, b, IUP_DRAW_STROKE, 1);
+  iupdrvDrawPolygon(dc, points, 3, color, IUP_DRAW_FILL, 1);
+  iupdrvDrawPolygon(dc, points, 3, color, IUP_DRAW_STROKE, 1);
 }
 
 static char* iFlatDrawGetImageName(Ihandle* ih, const char* baseattrib, const char* state)

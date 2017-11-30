@@ -164,7 +164,7 @@ static int gtkColorDlgPopup(Ihandle* ih, int x, int y)
   ret = iStrToRGBA(iupAttribGet(ih, "VALUE"), &r, &g, &b, &a);
 
   g_object_get(dialog, "color-selection", &colorsel, NULL);
-  iupgdkColorSet(&color, r, g, b);
+  iupgdkColorSetRGB(&color, r, g, b);
   gtk_color_selection_set_current_color(colorsel, &color);
 
   value = iupAttribGetStr(ih, "ALPHA");

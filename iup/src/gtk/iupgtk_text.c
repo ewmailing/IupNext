@@ -269,7 +269,7 @@ static void gtkTextParseCharacterFormat(Ihandle* formattag, GtkTextTag* tag)
     if (iupStrToRGB(format, &r, &g, &b))
     {
       GdkColor color;
-      iupgdkColorSet(&color, r, g, b);
+      iupgdkColorSetRGB(&color, r, g, b);
       g_object_set(G_OBJECT(tag), "foreground-gdk", &color, NULL);
     }
   }
@@ -281,7 +281,7 @@ static void gtkTextParseCharacterFormat(Ihandle* formattag, GtkTextTag* tag)
     if (iupStrToRGB(format, &r, &g, &b))
     {
       GdkColor color;
-      iupgdkColorSet(&color, r, g, b);
+      iupgdkColorSetRGB(&color, r, g, b);
       g_object_set(G_OBJECT(tag), "background-gdk", &color, NULL);
     }
   }
