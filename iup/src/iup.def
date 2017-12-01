@@ -570,6 +570,8 @@ iupdrvDrawUpdateSize
 iupdrvDrawImage
 iupdrvDrawSelectRect
 iupdrvDrawFocusRect
+iupDrawStrToColor
+iupDrawColor
 iupGetFontInfo
 iupRadioFindToggleParent
 iupLayoutApplyMinMaxSize
