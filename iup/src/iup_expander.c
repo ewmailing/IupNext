@@ -1506,6 +1506,13 @@ static void iExpanderSetChildrenPositionMethod(Ihandle* ih, int x, int y)
 
 static void iExpanderChildAddedMethod(Ihandle* ih, Ihandle* child)
 {
+  if (ih->firstchild == child) /* it was inserted before the bar */
+  {
+    ih->firstchild = child->brother; /* the actual bar */
+    child->brother = ih->firstchild->brother;
+    ih->firstchild->brother = child;
+  }
+
   iExpanderOpenCloseChild(ih, 0, 0, ih->data->state);
   (void)child;
 }
