@@ -119,15 +119,15 @@ static int gtkButtonSetAlignmentAttrib(Ihandle* ih, const char* value)
     xalign = 1.0f;
     alignment = PANGO_ALIGN_RIGHT;
   }
-  else if (iupStrEqualNoCase(value1, "ACENTER"))
-  {
-    xalign = 0.5f;
-    alignment = PANGO_ALIGN_CENTER;
-  }
-  else /* "ALEFT" */
+  else if (iupStrEqualNoCase(value1, "ALEFT"))
   {
     xalign = 0;
     alignment = PANGO_ALIGN_LEFT;
+  }
+  else /* ACENTER (default) */
+  {
+    xalign = 0.5f;
+    alignment = PANGO_ALIGN_CENTER;
   }
 
   if (iupStrEqualNoCase(value2, "ABOTTOM"))

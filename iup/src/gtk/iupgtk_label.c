@@ -116,7 +116,7 @@ static int gtkLabelSetAlignmentAttrib(Ihandle* ih, const char* value)
       xalign = 0.5f;
       alignment = PANGO_ALIGN_CENTER;
     }
-    else /* "ALEFT" */
+    else /* "ALEFT" (default) */
     {
       xalign = 0;
       alignment = PANGO_ALIGN_LEFT;

@@ -223,10 +223,10 @@ static int gtkToggleSetAlignmentAttrib(Ihandle* ih, const char* value)
 
   if (iupStrEqualNoCase(value1, "ARIGHT"))
     xalign = 1.0f;
-  else if (iupStrEqualNoCase(value1, "ACENTER"))
-    xalign = 0.5f;
-  else /* "ALEFT" */
+  else if (iupStrEqualNoCase(value1, "ALEFT"))
     xalign = 0;
+  else /* "ACENTER" (default) */
+    xalign = 0.5f;
 
   if (iupStrEqualNoCase(value2, "ABOTTOM"))
     yalign = 1.0f;
