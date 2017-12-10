@@ -34,11 +34,13 @@
 #define min(a, b) ( (a < b) ? (a) : (b) )
 #endif
 
-#define ICB_RAD2DEG  57.2957795131  /* degrees to radians (deg = ICB_RAD2DEG * rad) */
+#define IUP_RAD2DEG  57.295779513   /* radians to degrees (deg = IUP_RAD2DEG * rad) */
+
 #define ICB_DEFAULTSIZE   181  /* default size */
 #define ICB_SPACE  4           /* size of the spacing */
 #define ICB_HUEWIDTH  20       /* width of the hue ring */
 #define ICB_MARKSIZE  8        /* size of the cursor mark */
+
 enum {ICB_INSIDE_NONE, ICB_INSIDE_HUE, ICB_INSIDE_SI};
 
 
@@ -194,7 +196,7 @@ static void iColorBrowserRenderImageHue(Ihandle* ih)
         unsigned char* b = blue + offset;
 
         h = atan2((double)yl, (double)xl);
-        h = h * CD_RAD2DEG;
+        h = h * IUP_RAD2DEG;
         s = 1.0;   /* maximum saturation */
         i = 0.5f;   /* choose I where S is maximum */
 
@@ -352,7 +354,7 @@ static void iColorBrowserSetCursorSI(Ihandle* ih, int x, int y)
 static void iColorBrowserUpdateCursorHue(Ihandle* ih)
 {
   int rc = ih->data->R-ICB_SPACE-ICB_HUEWIDTH/2;
-  double angle = ih->data->hue / ICB_RAD2DEG;
+  double angle = ih->data->hue / IUP_RAD2DEG;
   double cos_angle = cos(angle);
   double sin_angle = sin(angle);
   double x = rc*cos_angle + ih->data->xc;
@@ -365,7 +367,7 @@ static void iColorBrowserSetCursorHue(Ihandle* ih, int x, int y)
 {
   int xl = x - ih->data->xc;
   int yl = y - ih->data->yc;
-  ih->data->hue = atan2((double)yl, (double)xl) * CD_RAD2DEG;
+  ih->data->hue = atan2((double)yl, (double)xl) * IUP_RAD2DEG;
   ih->data->hue = fmod(ih->data->hue, 360.0);
   if (ih->data->hue < 0.0)
     ih->data->hue += 360.0;
