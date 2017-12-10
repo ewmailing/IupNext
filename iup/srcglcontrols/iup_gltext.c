@@ -62,9 +62,10 @@ static int iGLTextACTION(Ihandle* ih)
 
 static void iGLTextSetTextAlignemnt(Ihandle* ih, Ihandle* text)
 {
-  char value1[30] = "ALEFT", value2[30] = "";
+  char value1[30], value2[30];
   char* value = iupAttribGetStr(ih, "ALIGNMENT");
   iupStrToStrStr(value, value1, value2, ':');
+  if (value1[0] == 0) strcpy(value1, "ALEFT");
   IupSetStrAttribute(text, "ALIGNMENT", value1);
 }
 
