@@ -138,7 +138,4 @@
       <Filter>inc</Filter>
     </ClInclude>
   </ItemGroup>
-  <ItemGroup>
-    <None Include="..\src\iupgtk.def" />
-  </ItemGroup>
 </Project>

@@ -144,9 +144,6 @@
   <ItemGroup>
     <ClInclude Include="..\src\gtk\iupgtk_drv.h" />
   </ItemGroup>
-  <ItemGroup>
-    <None Include="..\src\iupgtk.def" />
-  </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">
   </ImportGroup>
