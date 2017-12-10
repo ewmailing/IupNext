@@ -558,7 +558,7 @@ iupdrvDrawCreateCanvas
 iupdrvDrawKillCanvas
 iupdrvDrawFlush
 iupdrvDrawGetSize
-iupdrvDrawParentBackground
+iupDrawParentBackground
 iupdrvDrawRectangle
 iupdrvDrawLine
 iupdrvDrawArc
@@ -572,6 +572,12 @@ iupdrvDrawSelectRect
 iupdrvDrawFocusRect
 iupDrawStrToColor
 iupDrawColor
+iupDrawCalcShadows
+iupDrawSetColor
+iupDrawRaiseRect
+iupDrawVertSunkenMark
+iupDrawHorizSunkenMark
+iupDrawSunkenRect
 iupGetFontInfo
 iupRadioFindToggleParent
 iupLayoutApplyMinMaxSize

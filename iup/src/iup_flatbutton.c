@@ -67,7 +67,7 @@ static int iFlatButtonRedraw_CB(Ihandle* ih)
   IdrawCanvas* dc = iupdrvDrawCreateCanvas(ih);
   int make_inactive = 0;
 
-  iupdrvDrawParentBackground(dc, ih);
+  iupDrawParentBackground(dc, ih);
 
   if (!bgcolor)
     bgcolor = iupBaseNativeParentGetBgColorAttrib(ih);

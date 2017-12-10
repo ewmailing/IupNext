@@ -23,7 +23,7 @@
 #include "iup_varg.h"
 
 
-#define RAD2DEG  57.296   /* radians to degrees */
+#define IUP_RAD2DEG  57.295779513   /* radians to degrees (deg = IUP_RAD2DEG * rad) */
 
 
 static void iParamSetDoublePrec(Ihandle* ih, const char* name, double num, int prec)
@@ -240,7 +240,7 @@ static int iParamValAction_CB(Ihandle *self)
       else
         old_angle = iupAttribGetDouble(param, "_IUPGP_OLD_ANGLE");
 
-      val = old_angle + val*RAD2DEG;
+      val = old_angle + val*IUP_RAD2DEG;
 
       if (iupAttribGetInt(param, "INTERVAL"))
       {
@@ -926,7 +926,7 @@ static Ihandle* iParamCreateCtrlBox(Ihandle* param, const char *type)
         aux = IupCreate("dial");  /* Use IupCreate to avoid depending on the IupControls library */
         if (aux)  /* If IupControls library is not available it will fail */
         {
-          IupSetDouble(aux, "VALUE", iupAttribGetDouble(param, "VALUE")/RAD2DEG);
+          IupSetDouble(aux, "VALUE", iupAttribGetDouble(param, "VALUE")/IUP_RAD2DEG);
           IupSetAttribute(aux, "SIZE", "50x10");
         }
       }

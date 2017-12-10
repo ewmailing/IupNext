@@ -89,10 +89,6 @@ void iupdrvDrawSelectRect(IdrawCanvas* dc, int x1, int y1, int x2, int y2);
  * \ingroup draw */
 void iupdrvDrawFocusRect(IdrawCanvas* dc, int x1, int y1, int x2, int y2);
 
-/** Draws a filled rectangle with the parent background color.
-* \ingroup draw */
-void iupdrvDrawParentBackground(IdrawCanvas* dc, Ihandle* ih);
-
 
 /**********************************************************************************************************/
 
@@ -100,13 +96,22 @@ void iupdrvDrawParentBackground(IdrawCanvas* dc, Ihandle* ih);
 #define iupDrawCheckSwapCoord(_c1, _c2) { if (_c1 > _c2) { int t = _c2; _c2 = _c1; _c1 = t; } }   /* make sure _c1 is smaller than _c2 */
 
 long iupDrawStrToColor(const char* str, long c_def);
-
 long iupDrawColor(unsigned char red, unsigned char green, unsigned char blue, unsigned char alpha);
+void iupDrawCalcShadows(long bgcolor, long *light_shadow, long *mid_shadow, long *dark_shadow);
 
 #define iupDrawAlpha(_c)    (unsigned char)(~(((_c) >> 24) & 0xFF))   /* 0=transparent, 255=opaque (default is opaque, internally stored as 0) */
 #define iupDrawRed(_c)      (unsigned char)(((_c) >> 16) & 0xFF)
 #define iupDrawGreen(_c)    (unsigned char)(((_c) >>  8) & 0xFF)
 #define iupDrawBlue(_c)     (unsigned char)(((_c) >>  0) & 0xFF)
+
+void iupDrawSetColor(Ihandle *ih, const char* name, long color);
+void iupDrawRaiseRect(Ihandle *ih, int x1, int y1, int x2, int y2, long light_shadow, long mid_shadow, long dark_shadow);
+void iupDrawVertSunkenMark(Ihandle *ih, int x, int y1, int y2, long light_shadow, long dark_shadow);
+void iupDrawHorizSunkenMark(Ihandle *ih, int x1, int x2, int y, long light_shadow, long dark_shadow);
+void iupDrawSunkenRect(Ihandle *ih, int x1, int y1, int x2, int y2, long light_shadow, long mid_shadow, long dark_shadow);
+
+void iupDrawParentBackground(IdrawCanvas* dc, Ihandle* ih);
+char* iupDrawGetTextSize(Ihandle* ih, const char* str, int *w, int *h);
 
 
 /**********************************************************************************************************/
@@ -117,8 +122,6 @@ enum{ IUP_IMGPOS_LEFT, IUP_IMGPOS_RIGHT, IUP_IMGPOS_TOP, IUP_IMGPOS_BOTTOM };
 int iupFlatGetHorizontalAlignment(const char* value);
 int iupFlatGetVerticalAlignment(const char* value);
 int iupFlatGetImagePosition(const char* value);
-
-char* iupFlatGetTextSize(Ihandle* ih, const char* str, int *w, int *h);
 
 const char* iupFlatGetImageName(Ihandle* ih, const char* baseattrib, const char* basevalue, int press, int highlight, int active, int *make_inactive);
 const char* iupFlatGetImageNameId(Ihandle* ih, const char* baseattrib, int id, const char* basevalue, int press, int highlight, int active, int *make_inactive);

@@ -228,7 +228,7 @@ static void iFlatTabsGetIconSize(Ihandle* ih, int pos, int *w, int *h)
       int spacing = iupAttribGetInt(ih, "TABSIMAGESPACING");
       int text_w, text_h;
 
-      iupFlatGetTextSize(ih, title, &text_w, &text_h);
+      iupDrawGetTextSize(ih, title, &text_w, &text_h);
 
       if (img_position == IUP_IMGPOS_RIGHT ||
           img_position == IUP_IMGPOS_LEFT)
@@ -244,7 +244,7 @@ static void iFlatTabsGetIconSize(Ihandle* ih, int pos, int *w, int *h)
     }
   }
   else if (title)
-    iupFlatGetTextSize(ih, title, w, h);
+    iupDrawGetTextSize(ih, title, w, h);
 }
 
 static void iFlatTabsSetTabFont(Ihandle* ih, int pos)
@@ -347,7 +347,7 @@ static int iFlatTabsGetExtraWidthId(Ihandle* ih, int i, int img_position, int ho
       int spacing = iupAttribGetInt(ih, "TABSIMAGESPACING");
       int text_w, text_h;
 
-      iupFlatGetTextSize(ih, title, &text_w, &text_h);
+      iupDrawGetTextSize(ih, title, &text_w, &text_h);
 
       if (img_position == IUP_IMGPOS_RIGHT ||
           img_position == IUP_IMGPOS_LEFT)
@@ -357,7 +357,7 @@ static int iFlatTabsGetExtraWidthId(Ihandle* ih, int i, int img_position, int ho
     }
   }
   else if (title)
-    iupFlatGetTextSize(ih, title, &w, NULL);
+    iupDrawGetTextSize(ih, title, &w, NULL);
 
   w += 2 * horiz_padding;
 
@@ -391,12 +391,7 @@ static int iFlatTabsGetExtraActive(Ihandle* ih, int id)
 static void iFlatTabsGetAlignment(const char* alignment, int *horiz_alignment, int *vert_alignment)
 {
   char value1[30], value2[30];
-
-  if (!alignment)
-    return;
-
   iupStrToStrStr(alignment, value1, value2, ':');
-
   *horiz_alignment = iupFlatGetHorizontalAlignment(value1);
   *vert_alignment = iupFlatGetVerticalAlignment(value2);
 }
