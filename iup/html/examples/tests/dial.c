@@ -79,12 +79,22 @@ void DialTest(void)
 
   IupSetCallback(dial_h, "HELP_CB", help_cb);
   IupSetCallback(dial_v, "HELP_CB", help_cb);
+  IupSetAttribute(dial_h, "FGCOLOR", "0 128 0");
+  IupSetAttribute(dial_v, "FGCOLOR", "96 120 232");
+  IupSetAttribute(dial_c, "FGCOLOR", "96 120 232");
+//  IupSetAttribute(dial_h, "SIZE", "160x40");
+//  IupSetAttribute(dial_v, "SIZE", "40x160");
+//  IupSetAttribute(dial_c, "SIZE", "160x160");
+//   IupSetAttribute(dial_h, "BGCOLOR", "255 0 128");
+//    IupSetAttribute(dial_v, "BGCOLOR", "255 0 128");
+  //  IupSetAttribute(dial_c, "BGCOLOR", "255 0 128");
 
   IupSetAttribute(dial_h, "EXPAND", "HORIZONTAL");
   IupSetAttribute(dial_v, "EXPAND", "VERTICAL");
 
 //  IupSetAttribute(dlg, "HELPBUTTON", "YES");
 //  IupSetAttribute(dlg, "DIALOGFRAME", "YES");
+//  IupSetAttribute(dlg, "BGCOLOR", "255 0 128");
 
   IupShow(dlg);
 }

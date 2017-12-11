@@ -624,6 +624,8 @@ void SampleTest(void)
 //  _vbox_1 = IupBackgroundBox(_vbox_1);
 //  IupSetCallback(_vbox_1, "ACTION", drawbg_cb);
 
+//  IupSetAttribute(_vbox_1, "ACTIVE", "NO");
+
   dlg = IupDialog(_vbox_1);
   IupSetHandle("dlg",dlg);
 //  IupSetAttribute(dlg,"MENU","mnu");

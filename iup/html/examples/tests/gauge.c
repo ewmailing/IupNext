@@ -277,6 +277,7 @@ void GaugeTest(void)
   dlg = IupDialog(vbox);
   
   IupSetAttribute(dlg, "TITLE", "IupGauge Test");
+//  IupSetAttribute(dlg, "BGCOLOR", "255 0 128");
 
   IupSetCallback(btn_pause, "ACTION", (Icallback) btn_pause_cb);
   IupSetCallback(btn_restart, "ACTION", (Icallback) btn_restart_cb);
