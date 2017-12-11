@@ -255,6 +255,8 @@ IupFlatTabsV
 IupMessageV
 IupGetParamV
 IupParamBoxV
+IupDial
+IupGauge
 
 iupdrvSetVisible
 iupdrvSetFontAttrib

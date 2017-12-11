@@ -123,8 +123,6 @@
     <ClCompile Include="..\srccontrols\iup_cells.c" />
     <ClCompile Include="..\srccontrols\iup_colorbar.c" />
     <ClCompile Include="..\srccontrols\iup_controls.c" />
-    <ClCompile Include="..\srccontrols\iup_dial.c" />
-    <ClCompile Include="..\srccontrols\iup_gauge.c" />
   </ItemGroup>
   <ItemGroup>
     <CustomBuildStep Include="..\srccontrols\iupcontrols.def" />

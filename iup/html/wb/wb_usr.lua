@@ -1383,6 +1383,14 @@ wb_usr.tree =
               link= "elem/iupdatepick.html"
             },
             {
+              name= {nl= "IupDial"},
+              link= "elem/iupdial.html"
+            },
+            {
+              name= {nl= "IupGauge"},
+              link= "elem/iupgauge.html"
+            },
+            {
               name= {nl= "IupLabel"},
               link= "elem/iuplabel.html"
             },
@@ -1470,14 +1478,6 @@ wb_usr.tree =
                 {
                   name= {nl= "IupColorBrowser"},
                   link= "ctrl/iupcolorbrowser.html"
-                },
-                {
-                  name= {nl= "IupDial"},
-                  link= "ctrl/iupdial.html"
-                },
-                {
-                  name= {nl= "IupGauge"},
-                  link= "ctrl/iupgauge.html"
                 },
                 {
                   name= {nl= "IupMatrix"},

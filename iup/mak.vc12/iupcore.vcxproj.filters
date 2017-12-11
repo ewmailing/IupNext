@@ -271,6 +271,12 @@
     <ClCompile Include="..\src\iup_flatscrollbar.c">
       <Filter>src_controls</Filter>
     </ClCompile>
+    <ClCompile Include="..\src\iup_dial.c">
+      <Filter>src_controls</Filter>
+    </ClCompile>
+    <ClCompile Include="..\src\iup_gauge.c">
+      <Filter>src_controls</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="..\src\iup_array.h">

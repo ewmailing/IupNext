@@ -38,6 +38,8 @@ Iclass* iupLinkNewClass(void);
 Iclass* iupFlatButtonNewClass(void);
 Iclass* iupFlatFrameNewClass(void);
 Iclass* iupFlatTabsNewClass(void);
+Iclass* iupDialNewClass(void);
+Iclass* iupGaugeNewClass(void);
 
 Iclass* iupMenuNewClass(void);
 Iclass* iupItemNewClass(void);

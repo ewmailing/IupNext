@@ -98,6 +98,7 @@
     <ClCompile Include="..\src\iup_classbase.c" />
     <ClCompile Include="..\src\iup_config.c" />
     <ClCompile Include="..\src\iup_detachbox.c" />
+    <ClCompile Include="..\src\iup_dial.c" />
     <ClCompile Include="..\src\iup_dlglist.c" />
     <ClCompile Include="..\src\iup_draw.c" />
     <ClCompile Include="..\src\iup_expander.c" />
@@ -115,6 +116,7 @@
     <ClCompile Include="..\src\iup_focus.c" />
     <ClCompile Include="..\src\iup_font.c" />
     <ClCompile Include="..\src\iup_func.c" />
+    <ClCompile Include="..\src\iup_gauge.c" />
     <ClCompile Include="..\src\iup_globalattrib.c" />
     <ClCompile Include="..\src\iup_gridbox.c" />
     <ClCompile Include="..\src\iup_key.c" />

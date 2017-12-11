@@ -297,7 +297,6 @@ void GaugeTest(void)
 int main(int argc, char* argv[])
 {
   IupOpen(&argc, &argv);
-  IupControlsOpen();
 
   GaugeTest();
 
