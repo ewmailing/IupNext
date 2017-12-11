@@ -211,7 +211,7 @@ void IupDrawText(Ihandle* ih, const char* text, int len, int x, int y)
 
   color = iupDrawStrToColor(IupGetAttribute(ih, "DRAWCOLOR"), 0);
 
-  align = iupFlatGetHorizontalAlignment(IupGetAttribute(ih, "TEXTALIGNMENT"));
+  align = iupFlatGetHorizontalAlignment(IupGetAttribute(ih, "DRAWTEXTALIGNMENT"));
 
   font = iupDrawGetTextSize(ih, text, &w, &h);
 
@@ -324,11 +324,10 @@ long iupDrawColor(unsigned char r, unsigned char g, unsigned char b, unsigned ch
     (((unsigned long)b) << 0);
 }
 
-static long iupDrawColorMakeInactive(long color, const char* bgcolor)
+long iupDrawColorMakeInactive(long color, long bgcolor)
 {
-  unsigned char bg_r = 0, bg_g = 0, bg_b = 0;
   unsigned char r = iupDrawRed(color), g = iupDrawGreen(color), b = iupDrawBlue(color), a = iupDrawAlpha(color);
-  iupStrToRGB(bgcolor, &bg_r, &bg_g, &bg_b);
+  unsigned char bg_r = iupDrawRed(bgcolor), bg_g = iupDrawGreen(bgcolor), bg_b = iupDrawBlue(bgcolor);
   iupImageColorMakeInactive(&r, &g, &b, bg_r, bg_g, bg_b);
   return iupDrawColor(r, g, b, a);
 }
@@ -366,14 +365,14 @@ static void iDrawBorderLine(Ihandle* ih, int x1, int y1, int x2, int y2, long co
 
 void iupDrawRaiseRect(Ihandle *ih, int x1, int y1, int x2, int y2, long light_shadow, long mid_shadow, long dark_shadow)
 {
-  iDrawBorderLine(ih, x1, y2 - 1, x1, y1, light_shadow);
+  iDrawBorderLine(ih, x1, y1, x1, y2 - 1, light_shadow);
   iDrawBorderLine(ih, x1, y1, x2 - 1, y1, light_shadow);
+
+  iDrawBorderLine(ih, x1 + 1, y2 - 1, x2 - 1, y2 - 1, mid_shadow);
+  iDrawBorderLine(ih, x2 - 1, y1 + 1, x2 - 1, y2 - 2, mid_shadow);
 
   iDrawBorderLine(ih, x1, y2, x2, y2, dark_shadow);
   iDrawBorderLine(ih, x2, y1, x2, y2, dark_shadow);
-
-  iDrawBorderLine(ih, x1 + 1, y2 - 1, x2 - 1, y2 - 1, mid_shadow);
-  iDrawBorderLine(ih, x2 - 1, y2 - 2, x2 - 1, y1 + 1, mid_shadow);
 }
 
 void iupDrawVertSunkenMark(Ihandle *ih, int x, int y1, int y2, long light_shadow, long dark_shadow)
@@ -469,6 +468,14 @@ char* iupDrawGetTextSize(Ihandle* ih, const char* str, int *w, int *h)
 
 /***********************************************************************************************/
 
+static long iFlatDrawColorMakeInactive(long color, const char* bgcolor)
+{
+  unsigned char bg_r = 0, bg_g = 0, bg_b = 0;
+  unsigned char r = iupDrawRed(color), g = iupDrawGreen(color), b = iupDrawBlue(color), a = iupDrawAlpha(color);
+  iupStrToRGB(bgcolor, &bg_r, &bg_g, &bg_b);
+  iupImageColorMakeInactive(&r, &g, &b, bg_r, bg_g, bg_b);
+  return iupDrawColor(r, g, b, a);
+}
 
 void iupFlatDrawBorder(IdrawCanvas* dc, int xmin, int xmax, int ymin, int ymax, int border_width, const char* fgcolor, const char* bgcolor, int active)
 {
@@ -482,7 +489,7 @@ void iupFlatDrawBorder(IdrawCanvas* dc, int xmin, int xmax, int ymin, int ymax, 
 
   color = iupDrawStrToColor(fgcolor, 0);
   if (!active)
-    color = iupDrawColorMakeInactive(color, bgcolor);
+    color = iFlatDrawColorMakeInactive(color, bgcolor);
 
   iupdrvDrawRectangle(dc, xmin, ymin, xmax, ymax, color, IUP_DRAW_STROKE, 1);
   while (border_width > 1)
@@ -507,7 +514,7 @@ void iupFlatDrawBox(IdrawCanvas* dc, int xmin, int xmax, int ymin, int ymax, con
 
   color = iupDrawStrToColor(fgcolor, 0);
   if (!active)
-    color = iupDrawColorMakeInactive(color, bgcolor);
+    color = iFlatDrawColorMakeInactive(color, bgcolor);
 
   iupdrvDrawRectangle(dc, xmin, ymin, xmax, ymax, color, IUP_DRAW_FILL, 1);
 }
@@ -522,7 +529,7 @@ static void iFlatDrawText(IdrawCanvas* dc, int x, int y, int w, int h, const cha
 
   color = iupDrawStrToColor(fgcolor, 0);
   if (!active)
-    color = iupDrawColorMakeInactive(color, bgcolor);
+    color = iFlatDrawColorMakeInactive(color, bgcolor);
 
   iupdrvDrawText(dc, str, (int)strlen(str), x, y, w, h, color, font, align);
 }
@@ -712,7 +719,7 @@ void iupFlatDrawArrow(IdrawCanvas* dc, int x, int y, int size, const char* color
 
   long color = iupDrawStrToColor(color_str, 0);
   if (!active)
-    color = iupDrawColorMakeInactive(color, bgcolor);
+    color = iFlatDrawColorMakeInactive(color, bgcolor);
 
   switch (dir)
   {

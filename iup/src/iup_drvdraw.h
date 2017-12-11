@@ -98,6 +98,7 @@ void iupdrvDrawFocusRect(IdrawCanvas* dc, int x1, int y1, int x2, int y2);
 long iupDrawStrToColor(const char* str, long c_def);
 long iupDrawColor(unsigned char red, unsigned char green, unsigned char blue, unsigned char alpha);
 void iupDrawCalcShadows(long bgcolor, long *light_shadow, long *mid_shadow, long *dark_shadow);
+long iupDrawColorMakeInactive(long color, long bgcolor);
 
 #define iupDrawAlpha(_c)    (unsigned char)(~(((_c) >> 24) & 0xFF))   /* 0=transparent, 255=opaque (default is opaque, internally stored as 0) */
 #define iupDrawRed(_c)      (unsigned char)(((_c) >> 16) & 0xFF)
