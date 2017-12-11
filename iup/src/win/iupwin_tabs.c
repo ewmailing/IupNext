@@ -1230,6 +1230,8 @@ static void winTabsDrawItem(Ihandle* ih, DRAWITEMSTRUCT *drawitem)
   COLORREF fgcolor;
   COLORREF bgcolor;
 
+  /* called only when SHOWCLOSE=Yes */
+
   /* If there are no tab items, skip this message */
   if (drawitem->itemID == -1)
     return;

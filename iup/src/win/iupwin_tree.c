@@ -2857,6 +2857,8 @@ static int winTreeWmNotify(Ihandle* ih, NMHDR* msg_info, int *result)
       if (!itemData)
         return 0;
 
+      /* disabled state is not being reported by uItemState, so it is ignored here */
+
       if (customdraw->nmcd.uItemState & CDIS_SELECTED)
       {
         iupwinGetColor(iupAttribGetStr(ih, "HLCOLOR"), &customdraw->clrTextBk);

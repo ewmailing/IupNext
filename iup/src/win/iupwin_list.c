@@ -1660,6 +1660,8 @@ static void winListDrawItem(Ihandle* ih, DRAWITEMSTRUCT *drawitem)
   RECT rect;
   COLORREF fgcolor, bgcolor;
 
+  /* called only when SHOWIMAGE=Yes */
+
   int x = drawitem->rcItem.left;
   int y = drawitem->rcItem.top;
   int width = drawitem->rcItem.right - drawitem->rcItem.left;
