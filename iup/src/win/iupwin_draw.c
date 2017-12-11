@@ -720,9 +720,9 @@ void iupdrvDrawFocusRect(IdrawCanvas* dc, int x1, int y1, int x2, int y2)
   iupDrawCheckSwapCoord(y1, y2);
 
   rect.left = x1;  
-  rect.right = x2;
+  rect.right = x2 + 1;
   rect.top = y1;
-  rect.bottom = y2;
+  rect.bottom = y2 + 1;
 
   DrawFocusRect(dc->hBitmapDC, &rect);
 }
