@@ -154,7 +154,7 @@ static int iFlatButtonRedraw_CB(Ihandle* ih)
 
 
   if (ih->data->has_focus)
-    iupdrvDrawFocusRect(dc, border_width, border_width, ih->currentwidth - border_width, ih->currentheight - border_width);
+    iupdrvDrawFocusRect(dc, border_width, border_width, ih->currentwidth - 1 - border_width, ih->currentheight - 1 - border_width);
 
   iupdrvDrawFlush(dc);
 
