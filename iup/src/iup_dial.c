@@ -163,16 +163,18 @@ static void iDialDrawVertical(Ihandle* ih)
 
 static void iDialDrawHorizontalShading(Ihandle* ih, int *xmin, int *xmax)
 {
+  long fgcolor;
   int border = ih->data->flat ? 1 : 2;
   double delta = (0.5 * M_PI - 0.0) / IDIAL_NCOLORS;
   double a, xc = ih->data->w / 2.0;
   *xmin = *xmax = ih->data->w / 2;
   for (a = 0.0; a < 0.5 * M_PI; a += delta)
   {
+
     int x0 = (int)(xc - ih->data->radius * cos(a));
     int x1 = (int)(xc - ih->data->radius * cos(a + delta));  /* x1 is always bigger than x0 here (cos is decreasing) */
     iupAttribSet(ih, "DRAWSTYLE", "FILL");
-    long fgcolor = iDialGetFgColor(ih, a);
+    fgcolor = iDialGetFgColor(ih, a);
     iupDrawSetColor(ih, "DRAWCOLOR", fgcolor);
     IupDrawRectangle(ih, x0, IDIAL_SPACE + 1, x1, ih->data->h - 1 - IDIAL_SPACE - border);
 
@@ -186,7 +188,7 @@ static void iDialDrawHorizontalShading(Ihandle* ih, int *xmin, int *xmax)
     int x0 = (int)(xc + ih->data->radius * fabs(cos(a)));
     int x1 = (int)(xc + ih->data->radius * fabs(cos(a + delta)));  /* x1 is always bigger than x0 here (abs(cos) is increasing) */
     iupAttribSet(ih, "DRAWSTYLE", "FILL");
-    long fgcolor = iDialGetFgColor(ih, a);
+    fgcolor = iDialGetFgColor(ih, a);
     iupDrawSetColor(ih, "DRAWCOLOR", fgcolor);
     IupDrawRectangle(ih, x0, IDIAL_SPACE + 1, x1, ih->data->h - 1 - IDIAL_SPACE - border);
 
@@ -275,14 +277,15 @@ static void iDialDrawCircular(Ihandle* ih)
   int i, xc = ih->data->w / 2, 
          yc = ih->data->h / 2,
          r;
+  int x1, y1, x2, y2;
 
   ih->data->radius = (dialmin(ih->data->w, ih->data->h) - 2 * IDIAL_SPACE) / 2.0;
   r = (int)ih->data->radius;
 
-  int x1 = xc - r;
-  int y1 = yc - r;
-  int x2 = xc + r;
-  int y2 = yc + r;
+  x1 = xc - r;
+  y1 = yc - r;
+  x2 = xc + r;
+  y2 = yc + r;
 
   iupAttribSet(ih, "DRAWSTYLE", "FILL");
   iupDrawSetColor(ih, "DRAWCOLOR", ih->data->bgcolor);
