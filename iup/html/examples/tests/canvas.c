@@ -89,10 +89,20 @@ static void drawTest(Ihandle *ih, int posx)  //_Lines
   IupSetAttribute(ih, "DRAWSTYLE", "STROKE");
   IupDrawRectangle(ih, 10, 10, 14, 14);
 
-  IupDrawArc(ih, 30, 10, 50, 30, 45, 135);
+  IupSetAttribute(ih, "DRAWCOLOR", "255 0 0");
+  IupDrawRectangle(ih, 30, 10, 50, 30);
 
+  IupSetAttribute(ih, "DRAWCOLOR", "0 0 0");
+  //  IupDrawArc(ih, 30, 10, 50, 30, 45, 135);
+  IupDrawArc(ih, 30, 10, 50, 30, 0, 360);
+
+  IupSetAttribute(ih, "DRAWCOLOR", "255 0 0");
+  IupDrawRectangle(ih, 60, 10, 80, 30);
+
+  IupSetAttribute(ih, "DRAWCOLOR", "0 0 0");
   IupSetAttribute(ih, "DRAWSTYLE", "FILL");
-  IupDrawArc(ih, 60, 10, 80, 30, 45, 135);
+//  IupDrawArc(ih, 60, 10, 80, 30, 45, 135);
+  IupDrawArc(ih, 60, 10, 80, 30, 0, 360);
 
   IupDrawEnd(ih);
 }
