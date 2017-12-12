@@ -79,6 +79,8 @@ void DialTest(void)
 
   IupSetCallback(dial_h, "HELP_CB", help_cb);
   IupSetCallback(dial_v, "HELP_CB", help_cb);
+  IupSetAttribute(dial_c, "UNIT", "DEGREES");
+  
 //  IupSetAttribute(dial_h, "FGCOLOR", "0 128 0");
 //  IupSetAttribute(dial_v, "FGCOLOR", "96 120 232");
 //  IupSetAttribute(dial_c, "FGCOLOR", "96 120 232");

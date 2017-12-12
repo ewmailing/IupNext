@@ -43,23 +43,26 @@ dial(<strong>orientation</strong>) [in LED] </pre>
 
 
 <p><strong>FLAT</strong>: use a 1 pixel flat border instead of the default 3 
-pixels sunken border. Can be Yes or No. Default: No.</p>
+pixels sunken border. Can be Yes or No. Default: No. (since 3.24)</p>
 <p><strong>FLATCOLOR:</strong> color of the border when FLAT=Yes. Default: &quot;164 
-164 164&quot;.</p>
+164 164&quot;. (since 3.24)</p>
 
 
 <p><a href="../attrib/iup_fgcolor.html">FGCOLOR</a>: foreground color. The 
-default value is &quot;64 64 64&quot;. </p>
+default value is &quot;64 64 64&quot;. (appears in circular dial since 3.24)</p>
 <p> <a href="../attrib/iup_size.html">SIZE</a> (<font SIZE="3">non inheritable</font>): 
 the initial size is &quot;16x80&quot;, &quot;80x16&quot; or &quot;40x35&quot; according to the dial orientation. Set 
 to NULL to allow the automatic layout use smaller values.</p>
 <p><strong>ORIENTATION</strong> (creation only) (<font SIZE="3">non inheritable</font>):&nbsp; dial layout configuration &quot;VERTICAL&quot;, 
-  &quot;HORIZONTAL&quot; or &quot;CIRCULAR&quot;. Default: &quot;HORIZONTAL&quot;.</p>
+  &quot;HORIZONTAL&quot; or &quot;CIRCULAR&quot;. Default: &quot;HORIZONTAL&quot;. 
+Vertical increments when moved up, and decrements when moved down. Horizontal 
+increments when moved right, and decrements when moved left. Circular increments 
+when moved counter clock wise, and decrements when moved clock wise. </p>
 <p><strong>UNIT</strong>: unit of the angle. Can be &quot;DEGREES&quot; 
   or &quot;RADIANS&quot;. Default is &quot;RADIANS&quot;. Used only in the 
 callbacks.</p>
 <p><strong>VALUE </strong>(<font SIZE="3">non inheritable</font>):
-  The dial angular value in radians. 
+  The dial angular value in radians always. 
   The value is reset to zero when the interaction is started, except for 
 ORIENTATION=CIRCULAR. When orientation is vertical or horizontal, the dial measures relative 
 angles. When orientation is circular the dial measure absolute angles, where the origin 
@@ -163,7 +166,10 @@ for every repetition.</p>
 PI/100 (1.8 degrees). Press the Home key in the circular dial to reset to 0.</p>
 <h3><a name="Examples">Examples</a></h3>
 <p><a href="../../examples/">Browse for Example Files</a></p>
-<p align="center"><img src="images/iupdial.png"></p>
+
+<p align="center"><img src="images/iupdial.png"><br>Regular</p>
+
+<p align="center"><img src="images/iupdial2.png"><br>Flat=Yes and fgcolor</p>
 <h3><a name="SeeAlso">See Also</a></h3>
 
 <p><a href="../elem/iupcanvas.html">IupCanvas</a></p>
