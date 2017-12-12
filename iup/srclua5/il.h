@@ -64,6 +64,8 @@ int iupflatframelua_open(lua_State * L);
 int iupanimatedlabellua_open(lua_State * L);
 int iupcalendarlua_open(lua_State * L);
 int iupdatepicklua_open(lua_State * L);
+int iupgaugelua_open(lua_State * L);
+int iupdiallua_open(lua_State * L);
 
 void iupgetparamlua_open (lua_State * L);
 void iupconfiglua_open(lua_State * L);

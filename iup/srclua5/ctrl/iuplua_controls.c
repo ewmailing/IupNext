@@ -22,9 +22,7 @@ int iupcontrolslua_open(lua_State * L)
 
   iuplua_get_env(L);
 
-  iupgaugelua_open(L);
   iupmatrixlua_open(L);
-  iupdiallua_open(L);
   iupcolorbrowserlua_open(L);
   iupcellslua_open(L);
   iupcolorbarlua_open(L);

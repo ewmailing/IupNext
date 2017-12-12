@@ -5,13 +5,12 @@ local ctrl = {
   nick = "dial",
   parent = iup.WIDGET,
   creation = "S",
-  subdir = "ctrl",
+  subdir = "elem",
   callback = {
-     mousemove_cb = "d",       -- already registered by the val, but has conflict with matrix, so we must set it here again
+--     mousemove_cb = "d",       -- already registered by the val
 --     button_press_cb = "d",    -- already registered by the val
 --     button_release_cb = "d",  -- already registered by the val
   },
-  include = "iupcontrols.h",
 }
 
 function ctrl.createElement(class, param)

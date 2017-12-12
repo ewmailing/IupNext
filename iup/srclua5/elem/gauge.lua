@@ -6,8 +6,7 @@ local ctrl = {
   parent = iup.WIDGET,
   creation = "",
   callback = {},
-  subdir = "ctrl",
-  include = "iupcontrols.h",
+  subdir = "elem",
 }
 
 function ctrl.createElement(class, param)

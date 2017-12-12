@@ -22,12 +22,6 @@
     <ClCompile Include="..\..\srclua5\ctrl\il_colorbrowser.c">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="..\..\srclua5\ctrl\il_dial.c">
-      <Filter>Source Files</Filter>
-    </ClCompile>
-    <ClCompile Include="..\..\srclua5\ctrl\il_gauge.c">
-      <Filter>Source Files</Filter>
-    </ClCompile>
     <ClCompile Include="..\..\srclua5\ctrl\il_matrix.c">
       <Filter>Source Files</Filter>
     </ClCompile>
@@ -52,12 +46,6 @@
       <Filter>Lua</Filter>
     </None>
     <None Include="..\..\srclua5\ctrl\colorbrowser.lua">
-      <Filter>Lua</Filter>
-    </None>
-    <None Include="..\..\srclua5\ctrl\dial.lua">
-      <Filter>Lua</Filter>
-    </None>
-    <None Include="..\..\srclua5\ctrl\gauge.lua">
       <Filter>Lua</Filter>
     </None>
     <None Include="..\..\srclua5\ctrl\matrix.lua">
