@@ -100,17 +100,18 @@ static char* iBackgroundBoxGetClientSizeAttrib(Ihandle* ih)
 
 static void iBackgroundBoxComputeNaturalSizeMethod(Ihandle* ih, int *w, int *h, int *children_expand)
 {
+  if (iupAttribGetBoolean(ih, "CANVASBOX"))
+  {
+    /* use this to overwrite container behavior in iupBaseComputeNaturalSize */
+    *children_expand = ih->expand;
+  }
+
   if (ih->firstchild)
   {
     /* update child natural size first */
     iupBaseComputeNaturalSize(ih->firstchild);
 
-    if (iupAttribGetBoolean(ih, "CANVASBOX"))
-    {
-      /* use this to overwrite container behavior in iupBaseComputeNaturalSize */
-      *children_expand = ih->expand;
-    }
-    else
+    if (!iupAttribGetBoolean(ih, "CANVASBOX"))
     {
       int border = iBackgroundBoxGetBorder(ih);
       int width = ih->firstchild->naturalwidth + 2 * border;
