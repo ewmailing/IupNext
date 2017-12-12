@@ -185,7 +185,8 @@ void iupdrvDrawArc(IdrawCanvas* dc, int x1, int y1, int x2, int y2, double a1, d
     iDrawSetLineStyle(dc, style);
   }
 
-  gdk_draw_arc(dc->pixmap, dc->pixmap_gc, style == IUP_DRAW_FILL, x1, y1, x2 - x1 + 1, y2 - y1 + 1, iupRound(a1 * 64), iupRound((a2 - a1) * 64));    /* angle = 1/64ths of a degree */
+  /* using x2-x1+1 was resulting in a pixel larger arc */
+  gdk_draw_arc(dc->pixmap, dc->pixmap_gc, style == IUP_DRAW_FILL, x1, y1, x2 - x1, y2 - y1, iupRound(a1 * 64), iupRound((a2 - a1) * 64));    /* angle = 1/64ths of a degree */
 }
 
 void iupdrvDrawPolygon(IdrawCanvas* dc, int* points, int count, long color, int style, int line_width)

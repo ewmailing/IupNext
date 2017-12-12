@@ -234,7 +234,7 @@ static void iFixAngles(double *a1, double *a2)
 
 void iupdrvDrawArc(IdrawCanvas* dc, int x1, int y1, int x2, int y2, double a1, double a2, long color, int style, int line_width)
 {
-  int xc, yc, w, h;
+  double xc, yc, w, h;
 
   cairo_set_source_rgba(dc->image_cr, iupgtkColorToDouble(iupDrawRed(color)), iupgtkColorToDouble(iupDrawGreen(color)), iupgtkColorToDouble(iupDrawBlue(color)), iupgtkColorToDouble(iupDrawAlpha(color)));
 
@@ -247,10 +247,11 @@ void iupdrvDrawArc(IdrawCanvas* dc, int x1, int y1, int x2, int y2, double a1, d
   iupDrawCheckSwapCoord(x1, x2);
   iupDrawCheckSwapCoord(y1, y2);
 
-  w = x2 - x1 + 1;
-  h = y2 - y1 + 1;
-  xc = x1 + w/2;
-  yc = y1 + h/2;
+  /* using x2-x1+1 was resulting in a pixel larger arc */
+  w = x2 - x1;
+  h = y2 - y1;
+  xc = x1 + w/2.0;
+  yc = y1 + h/2.0;
 
   iFixAngles(&a1, &a2);
 
