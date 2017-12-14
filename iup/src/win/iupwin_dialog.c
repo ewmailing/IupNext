@@ -408,6 +408,34 @@ static int winDialogGetChildPosX(Ihandle* child)
   return caption_x;
 }
 
+static int winDialogDrawBackground(Ihandle* ih, HDC hdc, int force_bgcolor)
+{
+  HBITMAP hBitmap = (HBITMAP)iupAttribGet(ih, "_IUPWIN_BACKGROUND_BITMAP");
+  if (hBitmap)
+  {
+    RECT rect;
+    HBRUSH hBrush = CreatePatternBrush(hBitmap);
+    GetClientRect(ih->handle, &rect);
+    FillRect(hdc, &rect, hBrush);
+    DeleteObject(hBrush);
+    return 1;
+  }
+  else
+  {
+    unsigned char r, g, b;
+    char* color = force_bgcolor? iupAttribGetStr(ih, "BGCOLOR"): iupAttribGet(ih, "_IUPWIN_BACKGROUND_COLOR");
+    if (iupStrToRGB(color, &r, &g, &b))
+    {
+      RECT rect;
+      SetDCBrushColor(hdc, RGB(r, g, b));
+      GetClientRect(ih->handle, &rect);
+      FillRect(hdc, &rect, (HBRUSH)GetStockObject(DC_BRUSH));
+      return 1;
+    }
+  }
+  return 0;
+}
+
 static void winDialogCustomFrameHitTest(Ihandle* ih, LPARAM lp, LRESULT *result)
 {
   RECT rcWindow;
@@ -502,40 +530,37 @@ static int winDialogCustomFrameProc(Ihandle* ih, UINT msg, WPARAM wp, LPARAM lp,
       break;
     }
   case WM_PAINT:
+  {
+    IFn cb = (IFn)IupGetCallback(ih, "CUSTOMFRAMEDRAW_CB");
+
+    PAINTSTRUCT ps;
+    HDC hdc = BeginPaint(ih->handle, &ps);
+
+    if (cb)
     {
-      IFn cb = (IFn)IupGetCallback(ih, "CUSTOMFRAMEDRAW_CB");
-      if (cb)
-      {
-        PAINTSTRUCT ps;
-        HDC hdc = BeginPaint(ih->handle, &ps);
-        iupAttribSet(ih, "HDC_WMPAINT", (char*)hdc);
-        iupAttribSetStrf(ih, "CLIPRECT", "%d %d %d %d", ps.rcPaint.left, ps.rcPaint.top, ps.rcPaint.right - ps.rcPaint.left, ps.rcPaint.bottom - ps.rcPaint.top);
+      iupAttribSet(ih, "HDC_WMPAINT", (char*)hdc);
+      iupAttribSetStrf(ih, "CLIPRECT", "0 0 %d %d", 0, 0, ih->currentwidth, ih->currentheight);
 
-        cb(ih);
+      cb(ih);
 
-        iupAttribSet(ih, "CLIPRECT", NULL);
-        iupAttribSet(ih, "HDC_WMPAINT", NULL);
-        EndPaint(ih->handle, &ps);
-
-        *result = 0;
-        return 1;
-      }
-
-      break;
+      iupAttribSet(ih, "CLIPRECT", NULL);
+      iupAttribSet(ih, "HDC_WMPAINT", NULL);
     }
+    else
+      winDialogDrawBackground(ih, hdc, 1);
+
+    EndPaint(ih->handle, &ps);
+
+    *result = 0;
+    return 1;
+  }
   case WM_ERASEBKGND:
     {
-      IFn cb = (IFn)IupGetCallback(ih, "CUSTOMFRAMEDRAW_CB");
-      if (cb)
-      {
-        InvalidateRect(ih->handle, NULL, FALSE);
+      InvalidateRect(ih->handle, NULL, FALSE);
 
-        /* return non zero value */
-        *result = 1;
-        return 1;
-      }
-
-      break;
+      /* return non zero value */
+      *result = 1;
+      return 1;
     }
   case WM_NCCALCSIZE:
     {
@@ -817,38 +842,11 @@ static int winDialogBaseProc(Ihandle* ih, UINT msg, WPARAM wp, LPARAM lp, LRESUL
     }
   case WM_ERASEBKGND:
     {
-      HBITMAP hBitmap = (HBITMAP)iupAttribGet(ih, "_IUPWIN_BACKGROUND_BITMAP");
-      if (hBitmap)
+      if (winDialogDrawBackground(ih, (HDC)wp, 0))
       {
-        RECT rect;
-        HDC hdc = (HDC)wp;
-
-        HBRUSH hBrush = CreatePatternBrush(hBitmap);
-        GetClientRect(ih->handle, &rect);
-        FillRect(hdc, &rect, hBrush);
-        DeleteObject(hBrush);
-
         /* return non zero value */
         *result = 1;
         return 1;
-      }
-      else
-      {
-        unsigned char r, g, b;
-        char* color = iupAttribGet(ih, "_IUPWIN_BACKGROUND_COLOR");
-        if (iupStrToRGB(color, &r, &g, &b))
-        {
-          RECT rect;
-          HDC hdc = (HDC)wp;
-
-          SetDCBrushColor(hdc, RGB(r, g, b));
-          GetClientRect(ih->handle, &rect);
-          FillRect(hdc, &rect, (HBRUSH)GetStockObject(DC_BRUSH));
-
-          /* return non zero value */
-          *result = 1;
-          return 1;
-        }
       }
       break;
     }
