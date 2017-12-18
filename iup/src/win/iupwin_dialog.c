@@ -529,6 +529,33 @@ static int winDialogCustomFrameProc(Ihandle* ih, UINT msg, WPARAM wp, LPARAM lp,
 
       break;
     }
+  case WM_NCCALCSIZE:
+  {
+    if (wp == TRUE)
+    {
+      *result = 0;
+      return 1;
+    }
+
+    break;
+  }
+  case WM_NCHITTEST:
+  {
+    winDialogCustomFrameHitTest(ih, lp, result);
+
+    if (*result != 0)
+      return 1;
+
+    break;
+  }
+  case WM_ERASEBKGND:
+  {
+    InvalidateRect(ih->handle, NULL, FALSE);
+
+    /* return non zero value */
+    *result = 1;
+    return 1;
+  }
   case WM_PAINT:
   {
     IFn cb = (IFn)IupGetCallback(ih, "CUSTOMFRAMEDRAW_CB");
@@ -554,33 +581,6 @@ static int winDialogCustomFrameProc(Ihandle* ih, UINT msg, WPARAM wp, LPARAM lp,
     *result = 0;
     return 1;
   }
-  case WM_ERASEBKGND:
-    {
-      InvalidateRect(ih->handle, NULL, FALSE);
-
-      /* return non zero value */
-      *result = 1;
-      return 1;
-    }
-  case WM_NCCALCSIZE:
-    {
-      if (wp == TRUE)
-      {
-        *result = 0;
-        return 1;
-      }
-
-      break;
-    }
-  case WM_NCHITTEST:
-    {
-      winDialogCustomFrameHitTest(ih, lp, result);
-
-      if (*result != 0)
-        return 1;
-
-      break;
-    }
   case WM_XBUTTONDBLCLK:
   case WM_LBUTTONDBLCLK:
   case WM_MBUTTONDBLCLK:
