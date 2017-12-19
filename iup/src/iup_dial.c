@@ -564,8 +564,6 @@ static int iDialResize_CB(Ihandle* ih, int w, int h)
   if (ih->data->num_div < 3) 
     ih->data->num_div = 3;
 
-  IupUpdate(ih);
-
   return IUP_DEFAULT;
 }
 
