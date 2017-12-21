@@ -1,5 +1,4 @@
 EXPORTS
-IupColorbar
 IupColorBrowser
 IupCells 
 IupMatrix

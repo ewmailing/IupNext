@@ -12,7 +12,7 @@ SRCMATRIX = iupmat_key.c iupmat_mark.c iupmat_aux.c iupmat_mem.c iupmat_mouse.c 
             iupmat_scroll.c iupmat_edit.c iupmat_ex.c
 SRCMATRIX := $(addprefix matrix/, $(SRCMATRIX))
 
-SRC = iup_cells.c iup_colorbar.c iup_controls.c \
+SRC = iup_cells.c iup_controls.c \
       iup_matrixlist.c \
       $(SRCCOLOR) $(SRCMATRIX)
 

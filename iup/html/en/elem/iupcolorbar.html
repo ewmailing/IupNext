@@ -24,9 +24,8 @@
   It can select one or two colors. The primary color is selected with the left mouse button, and the secondary color is 
   selected with the right mouse button. You can double click a cell to change its color and you can double click the 
   preview area to switch between primary and secondary colors.</p>
-<p>This is an additional control that depends on the CD library. It is included 
-in the 
-<a href="../iupcontrols.html">IupControls</a> library.</p>
+<p>(Migrated from the IupControls library since IUP 3.24, it does not depend on 
+the CD library anymore.)</p>
 <p>It inherits from
   <a href="../elem/iupcanvas.html">IupCanvas</a>. </p>
 <p>Originally implemented by André 
@@ -42,16 +41,20 @@ colorbar() [in LED] </pre>
 <h3><a name="Attributes">Attributes</a></h3>
 
 
-<p><b>BUFFERIZE</b> (<font SIZE="3">non inheritable</font>)<b>:</b> Disables the 
-automatic redrawing of the control, so many attributes can be 
-  changed without many redraws. Default: &quot;NO&quot;. When set to &quot;NO&quot; the 
-control is redrawn.</p>
 <p><b>CELL</b><em>n</em><b>:</b> Contains the color of the &quot;n&quot; cell. &quot;n&quot; can be from 0 to NUM_CELLS-1.</p>
 <p><b>NUM_CELLS</b> (<font SIZE="3">non inheritable</font>)<b>:</b> Contains the number of color cells. Default:
   &quot;16&quot;. The maximum number of colors is 256. The default colors use the same set of
   <strong>IupImage</strong>.</p>
 <p><b>COUNT</b> (read-only) (<font SIZE="3">non inheritable</font>)<b>:</b> same 
 as <b>NUM_CELLS</b> but it is read-only. (since 3.3)</p>
+
+
+<p><strong>FLAT</strong>: use a 1 pixel flat border instead of the default 3 
+pixels sunken border. When enabled is the same as setting SHADOWED=NO. Can be Yes or No. Default: No. (since 3.24)</p>
+<p><strong>FLATCOLOR:</strong> color of the border when FLAT=Yes and the preview 
+area borders. Default: &quot;0 0 0&quot;. (since 3.24)</p>
+
+
 <p><b>NUM_PARTS</b> (<font SIZE="3">non inheritable</font>)<b>:</b> Contains the number of lines or columns. Default:
   &quot;1&quot;. </p>
 <p><b>ORIENTATION:</b> Controls the orientation. It can be 
@@ -72,7 +75,8 @@ must define SIZE or RASTERSIZE.</p>
 <p><b>SQUARED</b>: Controls the aspect ratio of the color cells. Non square cells 
   expand equally to occupy all of the control area. Default: &quot;YES&quot;. 
 </p>
-<p><b>SHADOWED:</b> Controls the 3D effect of the color cells. Default:
+<p><b>SHADOWED:</b> Controls the 3D effect of the color cells. When enabled is 
+the same as setting FLAT=NO. Default:
   &quot;YES&quot;. </p>
 <p><b>TRANSPARENCY</b>: Contains a color that will be not rendered in the color 
 palette. The color cell will have a white and gray chess pattern. It can be used 

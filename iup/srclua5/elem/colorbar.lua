@@ -5,7 +5,7 @@ local ctrl = {
   nick = "colorbar",
   parent = iup.WIDGET,
   creation = "",
-  subdir = "ctrl",
+  subdir = "elem",
   callback = {
     select_cb = "nn",
     cell_cb = {"n", ret = "s"},
@@ -13,7 +13,6 @@ local ctrl = {
     extended_cb = "n",
    },
   funcname = "Colorbar",
-  include = "iupcontrols.h",
 }
 
 iup.PRIMARY = -1

@@ -150,4 +150,5 @@ void iupRegisterInternalClasses(void)
   iupRegisterClass(iupFlatScrollBoxNewClass());
   iupRegisterClass(iupDialNewClass());
   iupRegisterClass(iupGaugeNewClass());
+  iupRegisterClass(iupColorbarNewClass());
 }

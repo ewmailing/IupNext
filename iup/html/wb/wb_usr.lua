@@ -1374,9 +1374,13 @@ wb_usr.tree =
                 },
                 {
                   name= {nl= "IupDraw"},
-                  link= "elem/iupdraw.html"
+                  link= "func/iupdraw.html"
                 },
               }
+            },
+            {
+              name= {nl= "IupColorbar"},
+              link= "elem/iupcolorbar.html"
             },
             {
               name= {nl= "IupDatePick"},
@@ -1470,10 +1474,6 @@ wb_usr.tree =
                 {
                   name= {nl= "IupCells"},
                   link= "ctrl/iupcells.html"
-                },
-                {
-                  name= {nl= "IupColorbar"},
-                  link= "ctrl/iupcolorbar.html"
                 },
                 {
                   name= {nl= "IupColorBrowser"},

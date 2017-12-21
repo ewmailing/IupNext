@@ -249,6 +249,9 @@ Ihandle*  IupLink       (const char* url, const char* title);
 Ihandle*  IupAnimatedLabel(Ihandle* animation);
 Ihandle*  IupDatePick   (void);
 Ihandle*  IupCalendar   (void);
+Ihandle*  IupColorbar   (void);
+Ihandle*  IupGauge      (void);
+Ihandle*  IupDial       (const char* type);
 
 /* Old controls, use SPIN attribute of IupText */
 Ihandle*  IupSpin       (void);
@@ -432,6 +435,11 @@ enum{IUP_SBUP,   IUP_SBDN,    IUP_SBPGUP,   IUP_SBPGDN,    IUP_SBPOSV, IUP_SBDRA
 #define IUP_GETPARAM_CANCEL IUP_GETPARAM_BUTTON2
 #define IUP_GETPARAM_HELP   IUP_GETPARAM_BUTTON3
 
+/************************************************************************/
+/*                   Used by IupColorbar                                */
+/************************************************************************/
+#define IUP_PRIMARY -1
+#define IUP_SECONDARY -2
 
 /************************************************************************/
 /*                   Record Input Modes                                 */

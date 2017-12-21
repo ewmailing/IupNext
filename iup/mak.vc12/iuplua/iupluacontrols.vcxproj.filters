@@ -16,9 +16,6 @@
     <ClCompile Include="..\..\srclua5\ctrl\il_cells.c">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="..\..\srclua5\ctrl\il_colorbar.c">
-      <Filter>Source Files</Filter>
-    </ClCompile>
     <ClCompile Include="..\..\srclua5\ctrl\il_colorbrowser.c">
       <Filter>Source Files</Filter>
     </ClCompile>
@@ -40,9 +37,6 @@
       <Filter>Source Files</Filter>
     </None>
     <None Include="..\..\srclua5\ctrl\cells.lua">
-      <Filter>Lua</Filter>
-    </None>
-    <None Include="..\..\srclua5\ctrl\colorbar.lua">
       <Filter>Lua</Filter>
     </None>
     <None Include="..\..\srclua5\ctrl\colorbrowser.lua">

@@ -14,10 +14,8 @@ extern "C" {
 
 
 Iclass* iupCellsNewClass(void);
-Iclass* iupColorbarNewClass(void);
 Iclass* iupColorBrowserNewClass(void);
 Iclass* iupMatrixNewClass(void);
-Iclass* iupTabsNewClass(void);
 Iclass* iupColorBrowserDlgNewClass(void);
 Iclass* iupMatrixListNewClass(void);
 

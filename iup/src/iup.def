@@ -257,6 +257,7 @@ IupGetParamV
 IupParamBoxV
 IupDial
 IupGauge
+IupColorbar
 
 iupdrvSetVisible
 iupdrvSetFontAttrib

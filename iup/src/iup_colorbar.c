@@ -9,30 +9,26 @@
 #include <string.h>
 
 #include "iup.h"
-#include "iupcontrols.h"
 #include "iupcbs.h"
 #include "iupkey.h"
 
-#include <cd.h>
-#include <cdiup.h>
-#include <cddbuf.h>
+#include "iupdraw.h"
+#include "iup_drvdraw.h"
 
 #include "iup_object.h"
 #include "iup_attrib.h"
 #include "iup_str.h"
 #include "iup_drv.h"
 #include "iup_stdcontrols.h"
-#include "iup_controls.h"
 #include "iup_image.h"
-#include "iup_cdutil.h"
 #include "iup_register.h"
 
 
 #define ICOLORBAR_DEFAULT_NUM_CELLS 16  /* default number of cells */
 #define ICOLORBAR_NO_COLOR 0xff000000   /* no color                */
 #define ICOLORBAR_DELTA 5               /* preview margin          */
-#define ICOLORBAR_RENDER_ALL  -1
-#define ICOLORBAR_RENDER_NONE -2
+#define ICOLORBAR_PRIMARY -1
+#define ICOLORBAR_SECONDARY -2
 
 
 struct _IcontrolData
@@ -41,8 +37,7 @@ struct _IcontrolData
 
   int w;                  /* size of the canvas - width                             */
   int h;                  /* size of the canvas - height                            */
-  cdCanvas* cd_canvas;    /* image canvas for double buffering                      */
-  long int colors[256];   /* CD color vector                                        */
+  long colors[256];       /* color vector                                           */
   int num_cells;          /* number of cells at the widgets                         */
   int num_parts;          /* number of sections used to split the colors cells area */
   int vertical;           /* vertical orientation flag                              */
@@ -52,14 +47,14 @@ struct _IcontrolData
   long light_shadow;      /* }                                                      */
   long mid_shadow;        /* } 3D shadowed color                                    */
   long dark_shadow;       /* }                                                      */
-  int bufferize;          /* bufferation flag                                       */
-  long int transparency;  /* transparency color                                     */
-  int show_secondary;     /* secondary color selction flag                          */
+  long transparency;      /* transparency color                                     */
+  int show_secondary;     /* secondary color selection flag                          */
   int preview_size;       /* preview size (pixels) 0=disabled, -1=automatic         */
   int fgcolor_idx;        /* current primary index selected                         */
   int bgcolor_idx;        /* current secondary index selected                       */
   int focus_cell;         /* cell with focus                                        */
   int has_focus;          /* 1 if the control has the focus, else 0                 */
+  long flatcolor;
 };
 
 /* Default colors used for a widget */
@@ -75,52 +70,36 @@ static struct {
 };
 
 
-/* This function draw the 3D cell effect. */
-static void iColorbarDrawSunken(Ihandle* ih, int xmin, int xmax, int ymin, int ymax)
-{
-  if (!ih->data->shadowed) return;
-  cdIupDrawSunkenRect(ih->data->cd_canvas, xmin, ymin, xmax, ymax, ih->data->light_shadow, ih->data->mid_shadow, ih->data->dark_shadow);
-}
-
 /* This function is used to draw a box for a cell. */
 static void iColorbarDrawBox(Ihandle* ih, int xmin, int xmax, int ymin, int ymax, int idx)
 {
-  long int color = ih->data->colors[idx];
-  cdCanvasInteriorStyle(ih->data->cd_canvas, CD_SOLID);
+  long color = ih->data->colors[idx];
+
+  iupAttribSet(ih, "DRAWSTYLE", "FILL");
 
   if (color == ih->data->transparency)
   { 
     int xm = (xmin+xmax)/2;
     int ym = (ymin+ymax)/2;
-    cdCanvasForeground(ih->data->cd_canvas,0xeeeeee);
-    cdCanvasBox(ih->data->cd_canvas,xmin, xm, ymin, ym);
-    cdCanvasBox(ih->data->cd_canvas,xm, xmax, ym, ymax);
-    cdCanvasForeground(ih->data->cd_canvas,0xcccccc);
-    cdCanvasBox(ih->data->cd_canvas,xmin, xm, ym, ymax);
-    cdCanvasBox(ih->data->cd_canvas,xm, xmax, ymin, ym);
+    iupDrawSetColor(ih, "DRAWCOLOR", iupDrawColor(238, 238, 238, 255));
+    IupDrawRectangle(ih, xmin, ymin, xm, ym);
+    IupDrawRectangle(ih, xm, ym, xmax, ymax);
+    iupDrawSetColor(ih, "DRAWCOLOR", iupDrawColor(204, 204, 204, 255));
+    IupDrawRectangle(ih, xmin, ym, xm, ymax);
+    IupDrawRectangle(ih, xm, ymin, xmax, ym);
   }
   else
   {
     if (!iupdrvIsActive(ih))
-    {
-      unsigned char r, g, b, bg_r, bg_g, bg_b;
-      cdDecodeColor(color, &r, &g, &b);
-      cdDecodeColor(ih->data->bgcolor, &bg_r, &bg_g, &bg_b);
-      iupImageColorMakeInactive(&r, &g, &b, bg_r, bg_g, bg_b);
-      color = cdEncodeColor(r, g, b);
-    }
-    cdCanvasForeground(ih->data->cd_canvas,color);
-    cdCanvasBegin(ih->data->cd_canvas,CD_FILL);
-    cdCanvasVertex(ih->data->cd_canvas,xmin, ymin); cdCanvasVertex(ih->data->cd_canvas,xmin, ymax);
-    cdCanvasVertex(ih->data->cd_canvas,xmax, ymax); cdCanvasVertex(ih->data->cd_canvas,xmax, ymin);
-    cdCanvasEnd(ih->data->cd_canvas);
+      color = iupDrawColorMakeInactive(color, ih->data->bgcolor);
+
+    iupDrawSetColor(ih, "DRAWCOLOR", color);
+    IupDrawRectangle(ih, xmin, ymin, xmax, ymax);
   }
 
-  cdCanvasForeground(ih->data->cd_canvas,CD_BLACK);
-  cdCanvasBegin(ih->data->cd_canvas,CD_CLOSED_LINES);
-  cdCanvasVertex(ih->data->cd_canvas,xmin, ymin); cdCanvasVertex(ih->data->cd_canvas,xmin, ymax);
-  cdCanvasVertex(ih->data->cd_canvas,xmax, ymax); cdCanvasVertex(ih->data->cd_canvas,xmax, ymin);
-  cdCanvasEnd(ih->data->cd_canvas);
+  iupDrawSetColor(ih, "DRAWCOLOR", iupDrawColor(0, 0, 0, 255));
+  iupAttribSet(ih, "DRAWSTYLE", "STROKE");
+  IupDrawRectangle(ih, xmin, ymin, xmax, ymax);
 }
 
 /* This function is used to get the largest square of a cell bounding box. */
@@ -148,18 +127,21 @@ static void iColorbarGetPreviewLimit(Ihandle* ih, int* xmin, int* xmax, int* ymi
 {
   int num_itens = ih->data->num_cells / ih->data->num_parts + 1;  /* include space for preview area */
 
-  *xmin = 0; *ymin = 0;
+  *xmin = 0; 
+
   if (ih->data->vertical)
   { 
-    *xmax = ih->data->w;
+    *xmax = ih->data->w - 1;
+    *ymax = ih->data->h - 1;
     if (ih->data->preview_size > 0)
-      *ymax = *ymin + ih->data->preview_size;
+      *ymin = *ymax - ih->data->preview_size;
     else
-      *ymax = ih->data->h / num_itens;
+      *ymin = *ymax - ih->data->h / num_itens;
   }
   else
   { 
-    *ymax = ih->data->h;
+    *ymin = 0;
+    *ymax = ih->data->h - 1;
     if (ih->data->preview_size > 0)
       *xmax = *xmin + ih->data->preview_size;
     else
@@ -172,19 +154,25 @@ static void iColorbarGetPreviewLimit(Ihandle* ih, int* xmin, int* xmax, int* ymi
 /* This function is used to get a cell bounding box. */
 static void iColorbarGetCellLimit(Ihandle* ih, int idx, int* xmin, int* xmax, int* ymin, int* ymax)
 {
-  int delta, dummy;
+  int delta;
   int wcell, hcell;
-  int px = 0, py = 0;
+  int preview_w = 0, preview_h = 0;
+  int p_xmax = 0, p_ymin = ih->data->h - 1;
   int posx, posy;
   int num_itens = ih->data->num_cells / ih->data->num_parts;
 
   if (ih->data->preview_size != 0)
-    iColorbarGetPreviewLimit(ih, &dummy, &px, &dummy, &py);
+  {
+    int p_xmin, p_ymax;
+    iColorbarGetPreviewLimit(ih, &p_xmin, &p_xmax, &p_ymin, &p_ymax);
+    preview_w = p_xmax - p_xmin + 1;
+    preview_h = p_ymax - p_ymin + 1;
+  }
 
   if (ih->data->vertical)  /* Vertical orientation */
   { 
     wcell = ih->data->w / ih->data->num_parts;
-    hcell = (ih->data->h - py) / num_itens;
+    hcell = (ih->data->h - preview_h) / num_itens;
     posx = idx / num_itens;
     posy = idx % num_itens;
     if (ih->data->squared)
@@ -192,16 +180,16 @@ static void iColorbarGetCellLimit(Ihandle* ih, int idx, int* xmin, int* xmax, in
       wcell = wcell < hcell ? wcell : hcell;
       hcell = wcell;
     }
-    delta = (ih->data->w - (ih->data->num_parts*wcell)) / 2;
-    *xmin = delta + (posx+0)*wcell; 
-    *xmax = delta + (posx+1)*wcell;
-    *ymin = py + (posy+0)*hcell;
-    *ymax = py + (posy+1)*hcell;
+    delta = (ih->data->w - (ih->data->num_parts * wcell)) / 2;
+    *xmin = delta  + (posx + 0) * wcell;
+    *xmax = delta  + (posx + 1) * wcell;
+    *ymin = p_ymin - (posy + 1) * hcell;
+    *ymax = p_ymin - (posy + 0) * hcell;
   }
   else  /* Horizontal orientation */
   {  
     hcell = ih->data->h / ih->data->num_parts;
-    wcell = (ih->data->w - px) / num_itens;
+    wcell = (ih->data->w - preview_w) / num_itens;
     posx = idx % num_itens;
     posy = idx / num_itens;
     if (ih->data->squared)
@@ -210,10 +198,10 @@ static void iColorbarGetCellLimit(Ihandle* ih, int idx, int* xmin, int* xmax, in
       hcell = wcell;
     }
     delta = (ih->data->h - (ih->data->num_parts * hcell)) / 2;
-    *xmin = px + (posx + 0) * wcell; 
-    *xmax = px + (posx + 1) * wcell;
-    *ymin = delta + (posy + 0) * hcell;
-    *ymax = delta + (posy + 1) * hcell;
+    *xmin = p_xmax + (posx + 0) * wcell;
+    *xmax = p_xmax + (posx + 1) * wcell;
+    *ymin = delta  + (posy + 0) * hcell;
+    *ymax = delta  + (posy + 1) * hcell;
   }
 }
 
@@ -223,18 +211,15 @@ static int iColorbarGetIndexColor(Ihandle* ih, int x, int y)
   int i;
   int xmin, ymin;
   int xmax, ymax;
-  int result = -9; 
 
   for (i = 0; i < ih->data->num_cells; i++)
   { 
     iColorbarGetCellLimit(ih, i, &xmin, &xmax, &ymin, &ymax);
     if (x > xmin && x < xmax && y > ymin && y < ymax)
-    { 
-      result = i;
-      break;
-    }
+      return i;
   }
-  return result;
+
+  return -1;
 }
 
 /* This function is used to repaint the preview area. */
@@ -260,13 +245,13 @@ static void iColorbarRenderPreview(Ihandle* ih)
     xhalf = 2 * (xmax - xmin - 2 * delta) / 3 + delta;
     yhalf = 2 * (ymax - ymin - 2 * delta) / 3 + delta;
 
-    iColorbarDrawBox(ih, xmax - xhalf, xmax - delta, ymin + delta, ymin + yhalf, bg);
-    iColorbarDrawBox(ih, xmin + delta, xmin + xhalf, ymax - yhalf, ymax - delta, fg);
+    iColorbarDrawBox(ih, xmax - xhalf, xmax - delta, 
+                         ymax - yhalf, ymax - delta, bg);  /* secondary bellow */
+    iColorbarDrawBox(ih, xmin + delta, xmin + xhalf, 
+                         ymin + delta, ymin + yhalf, fg);  /* primary above */
   }
   else
-  { 
     iColorbarDrawBox(ih, xmin + delta, xmax - delta, ymin + delta, ymax - delta, fg);
-  }
 }
 
 static void iColorbarDrawFocusCell(Ihandle* ih)
@@ -281,10 +266,7 @@ static void iColorbarDrawFocusCell(Ihandle* ih)
   ymin += delta;
   ymax -= delta;
 
-  {
-    cdCanvas* cd_canvas_front = (cdCanvas*)IupGetAttribute(ih, "_CD_CANVAS");  /* front buffer canvas */
-    IupCdDrawFocusRect(ih, cd_canvas_front, xmin, ymin, xmax, ymax);
-  }
+  IupDrawFocusRect(ih, xmin, ymin, xmax, ymax);
 }
 
 /* This function is used to repaint a cell. */
@@ -301,7 +283,9 @@ static void iColorbarRenderCell(Ihandle* ih, int idx)
   ymax -= delta;
   
   iColorbarDrawBox(ih, xmin, xmax, ymin, ymax, idx);
-  iColorbarDrawSunken(ih, xmin, xmax, ymin, ymax);
+  
+  if (ih->data->shadowed)
+    iupDrawSunkenRect(ih, xmin, ymin, xmax, ymax, ih->data->light_shadow, ih->data->mid_shadow, ih->data->dark_shadow);
 }
 
 /* This function loops all cells, repainting them. */
@@ -312,36 +296,15 @@ static void iColorbarRenderCells(Ihandle* ih)
     iColorbarRenderCell(ih, i);
 }
 
-static void iColorbarRepaint(Ihandle* ih)
-{
-  /* Checking errors or not initialized conditions */
-  if (ih->data->cd_canvas == NULL)
-    return;
-
-  /* If object is buffering, it will be not drawn */
-  if (ih->data->bufferize == 1)
-    return;
-
-  cdCanvasActivate(ih->data->cd_canvas);
-
-  /* update render */
-  cdCanvasBackground(ih->data->cd_canvas, ih->data->bgcolor);
-  cdCanvasClear(ih->data->cd_canvas);
-  iColorbarRenderPreview(ih);
-  iColorbarRenderCells(ih);
-
-  /* update display */
-  cdCanvasFlush(ih->data->cd_canvas);
-  if (ih->data->has_focus)
-    iColorbarDrawFocusCell(ih);
-}
-
 static int iColorbarCheckPreview(Ihandle* ih, int x, int y)
 {
   int xmin,  ymin;
   int xmax,  ymax;
   int xhalf, yhalf;
   int delta = ICOLORBAR_DELTA;
+
+  if (ih->data->preview_size == 0)
+    return 0;
 
   iColorbarGetPreviewLimit(ih, &xmin, &xmax, &ymin, &ymax);
 
@@ -350,17 +313,19 @@ static int iColorbarCheckPreview(Ihandle* ih, int x, int y)
     xhalf = 2 * (xmax - xmin - 2 * delta) / 3 + delta;
     yhalf = 2 * (ymax - ymin - 2 * delta) / 3 + delta;
 
-    if (x > xmin+delta && x < xmin+xhalf && y > ymax-yhalf && y < ymax-delta)
-      return IUP_PRIMARY;
-    if (x > xmax-xhalf && x < xmax-delta && y > ymin+delta && y < ymin+yhalf)
-      return IUP_SECONDARY;
+    if (x > xmin + delta && x < xmin + xhalf && 
+        y > ymin + delta && y < ymin + yhalf)
+      return ICOLORBAR_PRIMARY;
+    if (x > xmax - xhalf && x < xmax - delta && 
+        y > ymax - yhalf && y < ymax - delta)
+      return ICOLORBAR_SECONDARY;
     if (x > xmin && x < xmax && y > ymin && y < ymax)
       return 1;  /* switch */
   }
   else
   { 
-    if (x > xmin+delta && x < xmax-delta && y > ymin+delta && y < ymax-delta)
-      return IUP_PRIMARY;
+    if (x > xmin + delta && x < xmax - delta && y > ymin + delta && y < ymax - delta)
+      return ICOLORBAR_PRIMARY;
   }
 
   return 0;
@@ -369,7 +334,7 @@ static int iColorbarCheckPreview(Ihandle* ih, int x, int y)
 static int iColorbarSetNumPartsAttrib(Ihandle* ih, const char* value)
 {
   if (iupStrToInt(value, &ih->data->num_parts))
-    iColorbarRepaint(ih);
+    IupUpdate(ih);
   return 0;
 }
 
@@ -386,7 +351,7 @@ static int iColorbarSetPrimaryCellAttrib(Ihandle* ih, const char* value)
     if (new_val > 0 && new_val < ih->data->num_cells)
     { 
       ih->data->fgcolor_idx = new_val;
-      iColorbarRepaint(ih);
+      IupUpdate(ih);
     }
   }
   return 0;
@@ -405,7 +370,7 @@ static int iColorbarSetSecondaryCellAttrib(Ihandle* ih, const char* value)
     if (new_val > 0 && new_val < ih->data->num_cells)
     { 
       ih->data->bgcolor_idx = new_val;
-      iColorbarRepaint(ih);
+      IupUpdate(ih);
     }
   }
 
@@ -415,24 +380,6 @@ static int iColorbarSetSecondaryCellAttrib(Ihandle* ih, const char* value)
 static char* iColorbarGetSecondaryCellAttrib(Ihandle* ih)
 {
   return iupStrReturnInt(ih->data->bgcolor_idx);
-}
-
-static int iColorbarSetBufferizeAttrib(Ihandle* ih, const char* value)
-{
-  if (iupStrBoolean(value))
-    ih->data->bufferize = 1;
-  else
-  { 
-    ih->data->bufferize = 0;
-    iColorbarRepaint(ih);
-  }
-
-  return 0;
-}
-
-static char* iColorbarGetBufferizeAttrib(Ihandle* ih)
-{
-  return iupStrReturnBoolean (ih->data->bufferize); 
 }
 
 static int iColorbarSetNumCellsAttrib(Ihandle* ih, const char* value)
@@ -450,7 +397,7 @@ static int iColorbarSetNumCellsAttrib(Ihandle* ih, const char* value)
       if (ih->data->bgcolor_idx >= ih->data->num_cells)
         ih->data->bgcolor_idx = ih->data->num_cells - 1;
 
-      iColorbarRepaint(ih);
+      IupUpdate(ih);
     }
   }
   return 0;
@@ -468,7 +415,7 @@ static int iColorbarSetOrientationAttrib(Ihandle* ih, const char* value)
   else
     ih->data->vertical = 1;
 
-  iColorbarRepaint(ih);
+  IupUpdate(ih);
   return 0;
 }
 
@@ -483,7 +430,7 @@ static char* iColorbarGetOrientationAttrib(Ihandle* ih)
 static int iColorbarSetSquaredAttrib(Ihandle* ih, const char* value)
 {
   ih->data->squared = iupStrBoolean(value);
-  iColorbarRepaint(ih);
+  IupUpdate(ih);
   return 0;
 }
 
@@ -495,7 +442,7 @@ static char* iColorbarGetSquaredAttrib(Ihandle* ih)
 static int iColorbarSetShadowedAttrib(Ihandle* ih, const char* value)
 {
   ih->data->shadowed = iupStrBoolean(value);
-  iColorbarRepaint(ih);
+  IupUpdate(ih);
   return 0;
 }
 
@@ -504,11 +451,29 @@ static char* iColorbarGetShadowedAttrib(Ihandle* ih)
   return iupStrReturnBoolean(ih->data->shadowed);
 }
 
+static int iColorbarSetFlatAttrib(Ihandle* ih, const char* value)
+{
+  ih->data->shadowed = !iupStrBoolean(value);
+  IupUpdate(ih);
+  return 0;
+}
+
+static char* iColorbarGetFlatAttrib(Ihandle* ih)
+{
+  return iupStrReturnBoolean(!ih->data->shadowed);
+}
+
 static int iColorbarSetShowSecondaryAttrib(Ihandle* ih, const char* value)
 {
   ih->data->show_secondary = iupStrBoolean(value);
-  iColorbarRepaint(ih);
+  IupUpdate(ih);
   return 0;
+}
+
+static int iColorbarSetFlatColorAttrib(Ihandle* ih, const char* value)
+{
+  ih->data->flatcolor = iupDrawStrToColor(value, ih->data->flatcolor);
+  return 1;
 }
 
 static char* iColorbarGetShowSecondaryAttrib(Ihandle* ih)
@@ -523,14 +488,19 @@ static int iColorbarSetShowPreviewAttrib(Ihandle* ih, const char* value)
   else
     ih->data->preview_size = 0;
   
-  iColorbarRepaint(ih);
+  IupUpdate(ih);
   return 1;
 }
 
 static int iColorbarSetPreviewSizeAttrib(Ihandle* ih, const char* value)
 {
-  if (iupStrToInt(value, &ih->data->preview_size))
-    iColorbarRepaint(ih);
+  if (!value)
+  {
+    ih->data->preview_size = -1;
+    IupUpdate(ih);
+  }
+  else if (iupStrToInt(value, &ih->data->preview_size))
+    IupUpdate(ih);
   return 0;
 }
 
@@ -546,8 +516,8 @@ static int iColorbarSetCellAttrib(Ihandle* ih, int id, const char* value)
 {
   if (id >= 0 || id < ih->data->num_cells)
   { 
-    ih->data->colors[id] = cdIupConvertColor(value);
-    iColorbarRepaint(ih);
+    ih->data->colors[id] = iupDrawStrToColor(value, ih->data->colors[id]);
+    IupUpdate(ih);
   }
 
   return 0;
@@ -561,7 +531,7 @@ static char* iColorbarGetCellAttrib(Ihandle* ih, int id)
     return NULL;
 
   color = ih->data->colors[id];
-  return iupStrReturnRGB(cdRed(color), cdGreen(color), cdBlue(color));
+  return iupStrReturnRGB(iupDrawRed(color), iupDrawGreen(color), iupDrawBlue(color));
 }
 
 static int iColorbarSetTransparencyAttrib(Ihandle* ih, const char* value)
@@ -569,32 +539,25 @@ static int iColorbarSetTransparencyAttrib(Ihandle* ih, const char* value)
   if (value == NULL)
     ih->data->transparency = ICOLORBAR_NO_COLOR;
   else
-    ih->data->transparency = cdIupConvertColor(value);
+    ih->data->transparency = iupDrawStrToColor(value, ih->data->transparency);
 
-  iColorbarRepaint(ih);
-  return 0;
-}
-
-static char* iColorbarGetTransparencyAttrib(Ihandle* ih)
-{
-  if (ih->data->transparency == ICOLORBAR_NO_COLOR)
-    return NULL;
-  else
-    return iupStrReturnRGB(cdRed(ih->data->transparency), cdGreen(ih->data->transparency), cdBlue(ih->data->transparency));
+  IupUpdate(ih);
+  return 1;
 }
 
 static int iColorbarSetBgColorAttrib(Ihandle* ih, const char* value)
 {
   if (!value)
-    value = iupControlBaseGetParentBgColor(ih);
+    value = iupBaseNativeParentGetBgColorAttrib(ih);
 
-  ih->data->bgcolor = cdIupConvertColor(value);
+  ih->data->bgcolor = iupDrawStrToColor(value, ih->data->bgcolor);
 
-  cdIupCalcShadows(ih->data->bgcolor, &ih->data->light_shadow, &ih->data->mid_shadow, &ih->data->dark_shadow);
+  iupDrawCalcShadows(ih->data->bgcolor, &ih->data->light_shadow, &ih->data->mid_shadow, &ih->data->dark_shadow);
+
   if (!iupdrvIsActive(ih))
     ih->data->light_shadow = ih->data->mid_shadow;
   
-  iColorbarRepaint(ih);
+  IupUpdate(ih);
   return 1;
 }
 
@@ -602,76 +565,43 @@ static int iColorbarSetActiveAttrib(Ihandle* ih, const char* value)
 {
   iupBaseSetActiveAttrib(ih, value);
 
-  cdIupCalcShadows(ih->data->bgcolor, &ih->data->light_shadow, &ih->data->mid_shadow, &ih->data->dark_shadow);
+  iupDrawCalcShadows(ih->data->bgcolor, &ih->data->light_shadow, &ih->data->mid_shadow, &ih->data->dark_shadow);
+
   if (!iupdrvIsActive(ih))
     ih->data->light_shadow = ih->data->mid_shadow;
 
-  iColorbarRepaint(ih);
+  IupUpdate(ih);
   return 0;   /* do not store value in hash table */
 }
 
 static int iColorbarRedraw_CB(Ihandle* ih)
 {
-  if (!ih->data->cd_canvas)
-    return IUP_DEFAULT;
+  IupDrawBegin(ih);
+  IupDrawGetSize(ih, &ih->data->w, &ih->data->h);
+  IupDrawParentBackground(ih);
 
-  cdCanvasActivate(ih->data->cd_canvas);
-
-  /* update display */
-  cdCanvasFlush(ih->data->cd_canvas);
-  if (ih->data->has_focus)
-    iColorbarDrawFocusCell(ih);
-
-  return IUP_DEFAULT;
-}
-
-static int iColorbarResize_CB(Ihandle* ih)
-{
-  /* update size */
-  cdCanvasActivate(ih->data->cd_canvas);
-  cdCanvasGetSize(ih->data->cd_canvas, &ih->data->w, &ih->data->h, NULL, NULL);
-
-  /* update render */
-  cdCanvasBackground(ih->data->cd_canvas, ih->data->bgcolor);
-  cdCanvasClear(ih->data->cd_canvas);
   iColorbarRenderPreview(ih);
   iColorbarRenderCells(ih);
 
+  if (ih->data->has_focus)
+    iColorbarDrawFocusCell(ih);
+
+  IupDrawEnd(ih);
+
   return IUP_DEFAULT;
 }
 
-static void iColorbarRenderPartsRepaint(Ihandle* ih, int preview, int idx)
+static int iColorbarResize_CB(Ihandle* ih, int w, int h)
 {
-  /* update render */
-  if (preview)
-    iColorbarRenderPreview(ih);
-  
-  if (idx != ICOLORBAR_RENDER_NONE)
-  {
-    if (idx == ICOLORBAR_RENDER_ALL)
-      iColorbarRenderCells(ih);
-    else
-      iColorbarRenderCell(ih, idx);
-  }
-
-  /* update display */
-  cdCanvasFlush(ih->data->cd_canvas);
-  if (ih->data->has_focus)
-    iColorbarDrawFocusCell(ih);
+  ih->data->w = w;
+  ih->data->h = h;
+  return IUP_DEFAULT;
 }
 
 static int iColorbarFocus_CB(Ihandle* ih, int focus)
 {
   ih->data->has_focus = focus;
-
-  if (ih->data->cd_canvas)
-  {
-    cdCanvasActivate(ih->data->cd_canvas);
-    cdCanvasFlush(ih->data->cd_canvas);
-    if (ih->data->has_focus)
-      iColorbarDrawFocusCell(ih);
-  }
-
+  IupUpdate(ih);
   return IUP_DEFAULT;
 }
 
@@ -684,14 +614,14 @@ static void iColorbarCallExtentedCb(Ihandle* ih, int idx)
   if (extended_cb(ih, idx) == IUP_IGNORE)
     return;
 
-  iColorbarRenderPartsRepaint(ih, 1, ICOLORBAR_RENDER_ALL);   /* the preview and all the cells are rendered */
+  IupUpdate(ih);
 }
     
 static void iColorbarCallSelectCb(Ihandle* ih, int idx, int type)
 { 
   IFnii select_cb;
 
-  if (type == IUP_SECONDARY && !ih->data->show_secondary)
+  if (type == ICOLORBAR_SECONDARY && !ih->data->show_secondary)
     return;
 
   select_cb = (IFnii)IupGetCallback(ih, "SELECT_CB");
@@ -701,12 +631,12 @@ static void iColorbarCallSelectCb(Ihandle* ih, int idx, int type)
   if (select_cb(ih, idx, type) == IUP_IGNORE)
     return;
 
-  if (type == IUP_PRIMARY)
+  if (type == ICOLORBAR_PRIMARY)
     ih->data->fgcolor_idx = idx;
   else
     ih->data->bgcolor_idx = idx;
 
-  iColorbarRenderPartsRepaint(ih, 1, ICOLORBAR_RENDER_NONE);   /* only the preview area is rendered */
+  IupUpdate(ih);
 }
 
 static void iColorbarCallCellCb(Ihandle* ih, int idx)
@@ -724,8 +654,8 @@ static void iColorbarCallCellCb(Ihandle* ih, int idx)
     if (idx == ih->data->fgcolor_idx || idx == ih->data->bgcolor_idx)
       preview = 1;
 
-    ih->data->colors[idx] = cdIupConvertColor(returned);
-    iColorbarRenderPartsRepaint(ih, preview, idx);   /* the preview and the cell are rendered */
+    ih->data->colors[idx] = iupDrawStrToColor(returned, ih->data->colors[idx]);
+    IupUpdate(ih);
   }
 }
 
@@ -763,8 +693,8 @@ static int iColorbarKeyPress_CB(Ihandle* ih, int c, int press)
     else
     {
       int cells_per_line = ih->data->num_cells / ih->data->num_parts;
-      if (ih->data->focus_cell > cells_per_line)
-        ih->data->focus_cell -= cells_per_line;
+      if (ih->data->focus_cell + cells_per_line < ih->data->num_cells - 1)
+        ih->data->focus_cell += cells_per_line;
     }
     break;
   case K_RIGHT:
@@ -789,8 +719,8 @@ static int iColorbarKeyPress_CB(Ihandle* ih, int c, int press)
     else
     {
       int cells_per_line = ih->data->num_cells / ih->data->num_parts;
-      if (ih->data->focus_cell+cells_per_line < ih->data->num_cells-1)
-        ih->data->focus_cell += cells_per_line;
+      if (ih->data->focus_cell > cells_per_line)
+        ih->data->focus_cell -= cells_per_line;
     }
     break;
   case K_HOME:
@@ -803,25 +733,17 @@ static int iColorbarKeyPress_CB(Ihandle* ih, int c, int press)
     iColorbarCallCellCb(ih, ih->data->focus_cell);
     return IUP_DEFAULT;
   case K_SP:
-    iColorbarCallSelectCb(ih, ih->data->focus_cell, IUP_PRIMARY);
+    iColorbarCallSelectCb(ih, ih->data->focus_cell, ICOLORBAR_PRIMARY);
     return IUP_DEFAULT;
   case K_cSP:
-    iColorbarCallSelectCb(ih, ih->data->focus_cell, IUP_SECONDARY);
+    iColorbarCallSelectCb(ih, ih->data->focus_cell, ICOLORBAR_SECONDARY);
     return IUP_DEFAULT;
   case K_sSP:
     iColorbarCallExtentedCb(ih, ih->data->focus_cell);
     return IUP_DEFAULT;
   }
 
-  if (ih->data->cd_canvas)
-  {
-    cdCanvasActivate(ih->data->cd_canvas);
-    cdCanvasFlush(ih->data->cd_canvas);
-
-    if (ih->data->has_focus)
-      iColorbarDrawFocusCell(ih);
-  }
-
+  IupUpdate(ih);
   return IUP_IGNORE;  /* to avoid arrow keys being processed by the system */
 }
 
@@ -831,8 +753,6 @@ static int iColorbarButton_CB(Ihandle* ih, int b, int m, int x, int y, char* r)
 
   if (m == 0)
     return IUP_DEFAULT;
-
-  y = cdIupInvertYAxis(y, ih->data->h);
 
   if (b == IUP_BUTTON1 && iup_isdouble(r)) 
   { 
@@ -857,11 +777,11 @@ static int iColorbarButton_CB(Ihandle* ih, int b, int m, int x, int y, char* r)
           ih->data->fgcolor_idx = ih->data->bgcolor_idx;
           ih->data->bgcolor_idx = idx;
 
-          iColorbarRenderPartsRepaint(ih, 1, ICOLORBAR_RENDER_NONE);   /* only the preview area is rendered */
+          IupUpdate(ih);
         }
         else
         {
-          if (ret == IUP_PRIMARY)
+          if (ret == ICOLORBAR_PRIMARY)
             idx = ih->data->fgcolor_idx;
           else
             idx = ih->data->bgcolor_idx;
@@ -885,7 +805,7 @@ static int iColorbarButton_CB(Ihandle* ih, int b, int m, int x, int y, char* r)
 
     ih->data->focus_cell = idx;
 
-    iColorbarCallSelectCb(ih, idx, IUP_PRIMARY);
+    iColorbarCallSelectCb(ih, idx, ICOLORBAR_PRIMARY);
   }
   else if (b == IUP_BUTTON3 && iup_isshift(r)) 
   { 
@@ -905,7 +825,7 @@ static int iColorbarButton_CB(Ihandle* ih, int b, int m, int x, int y, char* r)
 
     ih->data->focus_cell = idx;
 
-    iColorbarCallSelectCb(ih, idx, IUP_SECONDARY);
+    iColorbarCallSelectCb(ih, idx, ICOLORBAR_SECONDARY);
   }
 
   return IUP_DEFAULT;
@@ -914,24 +834,6 @@ static int iColorbarButton_CB(Ihandle* ih, int b, int m, int x, int y, char* r)
 
 /****************************************************************************/
 
-
-static int iColorbarMapMethod(Ihandle* ih)
-{
-  ih->data->cd_canvas = cdCreateCanvas(CD_IUPDBUFFER, ih);
-  if (!ih->data->cd_canvas)
-    return IUP_ERROR;
-
-  return IUP_NOERROR;
-}
-
-static void iColorbarUnMapMethod(Ihandle* ih)
-{
-  if (ih->data->cd_canvas)
-  {
-    cdKillCanvas(ih->data->cd_canvas);
-    ih->data->cd_canvas = NULL;
-  }
-}
 
 static int iColorbarCreateMethod(Ihandle* ih, void **params)
 {
@@ -956,16 +858,18 @@ static int iColorbarCreateMethod(Ihandle* ih, void **params)
   ih->data->fgcolor_idx  = 0;   /* black */
   ih->data->bgcolor_idx  = 15;  /* white */
   ih->data->transparency = ICOLORBAR_NO_COLOR;
-  ih->data->light_shadow = CD_WHITE;
-  ih->data->mid_shadow   = CD_GRAY;
-  ih->data->dark_shadow  = CD_DARK_GRAY;
+  ih->data->light_shadow = iupDrawColor(255, 255, 255, 255);
+  ih->data->mid_shadow = iupDrawColor(192, 192, 192, 255);
+  ih->data->dark_shadow = iupDrawColor(128, 128, 128, 255);
+  ih->data->flatcolor = iupDrawColor(0, 0, 0, 255);
 
   /* Initialization of the color vector */
   for (i = 0; i < ICOLORBAR_DEFAULT_NUM_CELLS; i++)
   {
-    ih->data->colors[i] = cdEncodeColor((unsigned char)default_colors[i].r,
-                                        (unsigned char)default_colors[i].g,
-                                        (unsigned char)default_colors[i].b);
+    ih->data->colors[i] = iupDrawColor((unsigned char)default_colors[i].r,
+                                       (unsigned char)default_colors[i].g,
+                                       (unsigned char)default_colors[i].b, 
+                                       255);
   }
 
   /* IupCanvas callbacks */
@@ -992,8 +896,6 @@ Iclass* iupColorbarNewClass(void)
   /* Class functions */
   ic->New = iupColorbarNewClass;
   ic->Create  = iColorbarCreateMethod;
-  ic->Map     = iColorbarMapMethod;
-  ic->UnMap   = iColorbarUnMapMethod;
 
   /* Do not need to set base attributes because they are inherited from IupCanvas */
 
@@ -1011,18 +913,19 @@ Iclass* iupColorbarNewClass(void)
   iupClassRegisterAttribute(ic, "PREVIEW_SIZE", iColorbarGetPreviewSizeAttrib, iColorbarSetPreviewSizeAttrib, NULL, NULL, IUPAF_NOT_MAPPED|IUPAF_NO_INHERIT);
   iupClassRegisterAttribute(ic, "PRIMARY_CELL", iColorbarGetPrimaryCellAttrib, iColorbarSetPrimaryCellAttrib, IUPAF_SAMEASSYSTEM, "0", IUPAF_NOT_MAPPED|IUPAF_NO_INHERIT);
   iupClassRegisterAttribute(ic, "SECONDARY_CELL", iColorbarGetSecondaryCellAttrib, iColorbarSetSecondaryCellAttrib, IUPAF_SAMEASSYSTEM, "15", IUPAF_NOT_MAPPED|IUPAF_NO_INHERIT);
-  iupClassRegisterAttribute(ic, "BUFFERIZE", iColorbarGetBufferizeAttrib, iColorbarSetBufferizeAttrib, NULL, NULL, IUPAF_NOT_MAPPED|IUPAF_NO_INHERIT);
 
   iupClassRegisterAttribute(ic, "ORIENTATION", iColorbarGetOrientationAttrib, iColorbarSetOrientationAttrib, IUPAF_SAMEASSYSTEM, "VERTICAL", IUPAF_NOT_MAPPED);
-  iupClassRegisterAttribute(ic, "TRANSPARENCY", iColorbarGetTransparencyAttrib, iColorbarSetTransparencyAttrib, NULL, NULL, IUPAF_NOT_MAPPED);
+  iupClassRegisterAttribute(ic, "TRANSPARENCY", NULL, iColorbarSetTransparencyAttrib, NULL, NULL, IUPAF_NOT_MAPPED);
   iupClassRegisterAttribute(ic, "SHOW_PREVIEW", NULL, iColorbarSetShowPreviewAttrib, IUPAF_SAMEASSYSTEM, "YES", IUPAF_NOT_MAPPED);
   iupClassRegisterAttribute(ic, "SHOW_SECONDARY", iColorbarGetShowSecondaryAttrib, iColorbarSetShowSecondaryAttrib, NULL, NULL, IUPAF_NOT_MAPPED);
   iupClassRegisterAttribute(ic, "SQUARED", iColorbarGetSquaredAttrib, iColorbarSetSquaredAttrib, IUPAF_SAMEASSYSTEM, "YES", IUPAF_NOT_MAPPED);
   iupClassRegisterAttribute(ic, "SHADOWED", iColorbarGetShadowedAttrib, iColorbarSetShadowedAttrib, IUPAF_SAMEASSYSTEM, "YES", IUPAF_NOT_MAPPED);
+  iupClassRegisterAttribute(ic, "FLAT", iColorbarGetFlatAttrib, iColorbarSetFlatAttrib, NULL, NULL, IUPAF_NOT_MAPPED);
+  iupClassRegisterAttribute(ic, "FLATCOLOR", NULL, iColorbarSetFlatColorAttrib, IUPAF_SAMEASSYSTEM, "0 0 0", IUPAF_NOT_MAPPED);
 
   /* Overwrite IupCanvas Attributes */
   iupClassRegisterAttribute(ic, "ACTIVE", iupBaseGetActiveAttrib, iColorbarSetActiveAttrib, IUPAF_SAMEASSYSTEM, "YES", IUPAF_DEFAULT);
-  iupClassRegisterAttribute(ic, "BGCOLOR", iupControlBaseGetBgColorAttrib, iColorbarSetBgColorAttrib, NULL, "255 255 255", IUPAF_NO_INHERIT);    /* overwrite canvas implementation, set a system default to force a new default */
+  iupClassRegisterAttribute(ic, "BGCOLOR", NULL, iColorbarSetBgColorAttrib, NULL, "255 255 255", IUPAF_NO_INHERIT);    /* overwrite canvas implementation, set a system default to force a new default */
 
   return ic;
 }

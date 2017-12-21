@@ -1375,6 +1375,7 @@ int iuplua_open(lua_State * L)
   iupflatscrollboxlua_open(L);
   iupgaugelua_open(L);
   iupdiallua_open(L);
+  iupcolorbarlua_open(L);
 
   return 0; /* nothing in stack */
 }
