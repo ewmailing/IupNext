@@ -363,7 +363,7 @@ static Ihandle* iLayoutTreeGetFirstChild(Ihandle* ih)
 {
   Ihandle* firstchild = ih->parent->firstchild;
 
-  while (firstchild && firstchild->flags & IUP_INTERNAL) //
+  while (firstchild && firstchild->flags & IUP_INTERNAL)
     firstchild = firstchild->brother;
 
   return firstchild;
@@ -409,7 +409,7 @@ static void iLayoutTreeAddChildren(Ihandle* tree, int parent_id, Ihandle* parent
 
   for (child = parent->firstchild; child; child = child->brother)
   {
-    if (!(child->flags & IUP_INTERNAL)) //
+    if (!(child->flags & IUP_INTERNAL))
     {
       last_child_id = iLayoutTreeAddNode(tree, last_child_id, child);
 
@@ -1064,8 +1064,8 @@ static int iLayoutMenuShowInternal_CB(Ihandle* ih)
     iupAttribSet(dlg, "SHOWINTERNAL", "No");
   else
     iupAttribSet(dlg, "SHOWINTERNAL", "Yes");
-  /* redraw canvas */
-  IupUpdate(IupGetBrother(layoutdlg->tree));
+  /* rebuild tree and redraw canvas */
+  iLayoutTreeRebuild(layoutdlg);
   return IUP_DEFAULT;
 }
 
@@ -1084,8 +1084,8 @@ static int iLayoutMenuUpdate_CB(Ihandle* ih)
 {
   Ihandle* dlg = IupGetDialog(ih);
   iLayoutDialog* layoutdlg = (iLayoutDialog*)iupAttribGet(dlg, "_IUP_LAYOUTDIALOG");
-  /* redraw canvas */
-  IupUpdate(IupGetBrother(layoutdlg->tree));
+  /* rebuild tree and redraw canvas */
+  iLayoutTreeRebuild(layoutdlg);
   return IUP_DEFAULT;
 }
 
@@ -3015,8 +3015,8 @@ Ihandle* IupLayoutDialog(Ihandle* dialog)
     IupSubmenu("&Layout", IupMenu(
     IupSetCallbacks(IupSetAttributes(IupItem("&Hierarchy", NULL), "AUTOTOGGLE=YES, VALUE=ON"), "ACTION", iLayoutMenuHierarchy_CB, NULL),
     IupSeparator(),
-    IupSetCallbacks(IupItem("Update\tF5", NULL), "ACTION", iLayoutMenuUpdate_CB, NULL),
-    IupSetCallbacks(IupSetAttributes(IupItem("Auto Update", NULL), "AUTOTOGGLE=YES, VALUE=OFF"), "ACTION", iLayoutMenuAutoUpdate_CB, NULL),
+    IupSetCallbacks(IupItem("Update (Tree and Draw)\tF5", NULL), "ACTION", iLayoutMenuUpdate_CB, NULL),
+    IupSetCallbacks(IupSetAttributes(IupItem("Auto Update (Draw Only)", NULL), "AUTOTOGGLE=YES, VALUE=OFF"), "ACTION", iLayoutMenuAutoUpdate_CB, NULL),
     IupSetCallbacks(IupSetAttributes(IupItem("Show Hidden", NULL), "AUTOTOGGLE=YES, VALUE=OFF"), "ACTION", iLayoutMenuShowHidden_CB, NULL),
     IupSetCallbacks(IupSetAttributes(IupItem("Show Internal", NULL), "AUTOTOGGLE=YES, VALUE=OFF"), "ACTION", iLayoutMenuShowInternal_CB, NULL),
     IupSeparator(),
