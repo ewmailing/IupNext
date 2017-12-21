@@ -253,19 +253,19 @@ void iupScintillaNotify(Ihandle *ih, SCNotification* pMsg)
         if (cb)
           cb(ih);
       }
-      else if (pMsg->updated & SC_UPDATE_SELECTION)
+      if (pMsg->updated & SC_UPDATE_SELECTION)
       {
         IFn cb = (IFn)IupGetCallback(ih, "UPDATESELECTION_CB");
         if (cb)
           cb(ih);
       }
-      else if (pMsg->updated & SC_UPDATE_V_SCROLL)
+      if (pMsg->updated & SC_UPDATE_V_SCROLL)
       {
         IFn cb = (IFn)IupGetCallback(ih, "UPDATEVSCROLL_CB");
         if (cb)
           cb(ih);
       }
-      else if (pMsg->updated & SC_UPDATE_H_SCROLL)
+      if (pMsg->updated & SC_UPDATE_H_SCROLL)
       {
         IFn cb = (IFn)IupGetCallback(ih, "UPDATEHSCROLL_CB");
         if (cb)
