@@ -286,6 +286,8 @@ static int iPlotDataSetValuesNumericSetValue_CB(Ihandle* ih_matrix, int lin, int
   Ihandle* ih = (Ihandle*)IupGetAttribute(ih_matrix, "PLOT");
   int plot_current = IupGetInt(ih_matrix, "PLOT_CURRENT");
   int ds = IupGetInt(ih_matrix, "DS");
+  int sample_index = lin - 1;
+  double x, y;
 
   IupSetInt(ih, "PLOT_CURRENT", plot_current);
   IupSetInt(ih, "CURRENT", ds);
@@ -293,21 +295,24 @@ static int iPlotDataSetValuesNumericSetValue_CB(Ihandle* ih_matrix, int lin, int
   if (col == 2 && IupGetInt(ih, "DS_STRXDATA"))
   {
     char* str_x;
-    double y;
-    IupPlotGetSampleStr(ih, ds, lin - 1, (const char**)&str_x, &y);
+    IupPlotGetSampleStr(ih, ds, sample_index, (const char**)&str_x, &y);
+    x = sample_index;
 
-    IupPlotSetSampleStr(ih, ds, lin - 1, str_x, new_value);
+    IupPlotSetSampleStr(ih, ds, sample_index, str_x, new_value);
   }
   else
   {
-    double x, y;
-    IupPlotGetSample(ih, ds, lin - 1, &x, &y);
+    IupPlotGetSample(ih, ds, sample_index, &x, &y);
 
     if (col == 1)
-      IupPlotSetSample(ih, ds, lin - 1, new_value, y);
+      IupPlotSetSample(ih, ds, sample_index, new_value, y);
     else
-      IupPlotSetSample(ih, ds, lin - 1, x, new_value);
+      IupPlotSetSample(ih, ds, sample_index, x, new_value);
   }
+
+  IFniidd editsample_cb = (IFniidd)IupGetCallback(ih, "EDITSAMPLE_CB");
+  if (editsample_cb)
+    editsample_cb(ih, ds, sample_index, x, y);
 
   return IUP_DEFAULT;
 }
@@ -317,17 +322,24 @@ static int iPlotDataSetValuesValueEdit_CB(Ihandle* ih_matrix, int lin, int col, 
   Ihandle* ih = (Ihandle*)IupGetAttribute(ih_matrix, "PLOT");
   int plot_current = IupGetInt(ih_matrix, "PLOT_CURRENT");
   int ds = IupGetInt(ih_matrix, "DS");
+  int sample_index = lin - 1;
 
   IupSetInt(ih, "PLOT_CURRENT", plot_current);
   IupSetInt(ih, "CURRENT", ds);
 
   if (col == 1 && IupGetInt(ih, "DS_STRXDATA"))
   {
-    char* s;
-    double y;
-    IupPlotGetSampleStr(ih, ds, lin - 1, (const char**)&s, &y);
+    char* str_x;
+    double x, y;
 
-    IupPlotSetSampleStr(ih, ds, lin - 1, new_value, y);
+    IupPlotGetSampleStr(ih, ds, sample_index, (const char**)&str_x, &y);
+    x = sample_index;
+
+    IupPlotSetSampleStr(ih, ds, sample_index, new_value, y);
+
+    IFniidd editsample_cb = (IFniidd)IupGetCallback(ih, "EDITSAMPLE_CB");
+    if (editsample_cb)
+      editsample_cb(ih, ds, sample_index, x, y);
   }
 
   return IUP_DEFAULT;
@@ -423,7 +435,7 @@ static int iPlotDataSetValues_CB(Ihandle* ih_item)
 
   IupSetCallback(button, "ACTION", (Icallback)iPlotDataSetValuesButton_CB);
 
-  IupSetAttribute(matrix, "PLOT", (char *)ih);
+  IupSetAttribute(matrix, "PLOT", (char*)ih);
   IupSetInt(matrix, "PLOT_CURRENT", plot_current);
   IupSetInt(matrix, "DS", ds);
 
@@ -817,6 +829,10 @@ static void iPlotPropertiesResetChanges(Ihandle* parambox)
 {
   Ihandle* ih = (Ihandle*)IupGetAttribute(parambox, "PLOT");
 
+  int plot_current = IupGetInt(parambox, "PLOT_CURRENT");
+  // make sure we are changing the right plot
+  IupSetInt(ih, "PLOT_CURRENT", plot_current);
+
   int i, count = IupGetInt(parambox, "PARAMCOUNT");
   for (i = count - 1; i >= 0; i--) // backwards to avoid dependencies
   {
@@ -838,11 +854,19 @@ static void iPlotPropertiesResetChanges(Ihandle* parambox)
 
   IupSetAttribute(parambox, "PLOT_CHANGED", NULL);
   IupSetAttribute(ih, "REDRAW", NULL);
+
+  Icallback cb = IupGetCallback(ih, "PROPERTIESCHANGED_CB");
+  if (cb)
+    cb(ih);
 }
 
 static void iPlotPropertiesApplyChanges(Ihandle* parambox)
 {
   Ihandle* ih = (Ihandle*)IupGetAttribute(parambox, "PLOT");
+
+  int plot_current = IupGetInt(parambox, "PLOT_CURRENT");
+  // make sure we are changing the right plot
+  IupSetInt(ih, "PLOT_CURRENT", plot_current);
 
   int i, count = IupGetInt(parambox, "PARAMCOUNT");
   for (i = count - 1; i >= 0; i--) // backwards to avoid dependencies
@@ -860,6 +884,10 @@ static void iPlotPropertiesApplyChanges(Ihandle* parambox)
 
   IupSetAttribute(parambox, "PLOT_CHANGED", NULL);
   IupSetAttribute(ih, "REDRAW", NULL);
+
+  Icallback cb = IupGetCallback(ih, "PROPERTIESCHANGED_CB");
+  if (cb)
+    cb(ih);
 }
 
 static void iPlotPropertiesCheckChanges(Ihandle* parambox)
@@ -990,6 +1018,9 @@ static int iPlotProperties_CB(Ihandle* ih_item)
   Ihandle* ih = (Ihandle*)IupGetAttribute(ih_item, "PLOT");
   Ihandle* parent = IupGetDialog(ih);
 
+  int plot_current = IupGetInt(ih_item, "PLOT_CURRENT");
+  IupSetInt(ih, "PLOT_CURRENT", plot_current);
+
   Ihandle* tree = IupTree();
   IupSetAttribute(tree, "ADDROOT", "NO");
   IupSetCallback(tree, "SELECTION_CB", (Icallback)iPlotPropertiesTreeSelection_CB);
@@ -1015,6 +1046,7 @@ static int iPlotProperties_CB(Ihandle* ih_item)
   iPlotPropertiesAddParamBox(ih, zbox, iplot_axisYticksnumber_attribs);  /* 14 */
 
   IupSetAttribute(zbox, "PLOT", (char*)ih);
+  IupSetInt(zbox, "PLOT_CURRENT", plot_current);
 
   Ihandle* dlg = IupDialog(IupHbox(tree, zbox, NULL));
   IupSetAttributeHandle(dlg, "PARENTDIALOG", parent);
@@ -1184,6 +1216,10 @@ static int iPlotDataSetProperties_CB(Ihandle* ih_item)
 
   IupSetAttribute(ih, "REDRAW", NULL);
 
+  IFni cb = (IFni)IupGetCallback(ih, "DSPROPERTIESCHANGED_CB");
+  if (cb)
+    cb(ih, ds);
+
   return IUP_DEFAULT;
 }
 
@@ -1234,7 +1270,6 @@ static Ihandle* iPlotCreateMenuContext(Ihandle* ih, int x, int y)
         ((ih->data->current_plot->mHighlightMode == IUP_PLOT_HIGHLIGHT_CURVE || ih->data->current_plot->mHighlightMode == IUP_PLOT_HIGHLIGHT_BOTH) && ih->data->current_plot->FindDataSetSegment((double)x, (double)y, ds, ds_name, sample1, rx1, ry1, sample2, rx2, ry2)))
     {
       // save plot info because it may have changed by the time the callback is called
-      IupSetInt(menu, "PLOT_CURRENT", ih->data->current_plot_index);
       IupSetInt(menu, "DS", ds);
 
       IupSetAttribute(itemProp, "ACTIVE", "YES");
@@ -1245,6 +1280,9 @@ static Ihandle* iPlotCreateMenuContext(Ihandle* ih, int x, int y)
       IupSetAttribute(itemProp, "ACTIVE", "NO");
       if (itemVal) IupSetAttribute(itemVal, "ACTIVE", "NO");
     }
+
+    // save plot info because it may have changed by the time the callback is called
+    IupSetInt(menu, "PLOT_CURRENT", ih->data->current_plot_index);
   }
 
   IupSetAttribute(menu, "PLOT", (char*)ih);
@@ -3296,6 +3334,7 @@ static Iclass* iPlotNewClass(void)
   iupClassRegisterCallback(ic, "DRAWSAMPLE_CB", "iiddi");
   iupClassRegisterCallback(ic, "PLOTMOTION_CB", "dds");
   iupClassRegisterCallback(ic, "PLOTBUTTON_CB", "iidds");
+  iupClassRegisterCallback(ic, "EDITSAMPLE_CB", "iidd");
   iupClassRegisterCallback(ic, "DELETE_CB", "iidd");
   iupClassRegisterCallback(ic, "DELETEBEGIN_CB", "");
   iupClassRegisterCallback(ic, "DELETEEND_CB", "");
@@ -3304,6 +3343,8 @@ static Iclass* iPlotNewClass(void)
   iupClassRegisterCallback(ic, "SELECTEND_CB", "");
   iupClassRegisterCallback(ic, "MENUCONTEXT_CB", "nii");
   iupClassRegisterCallback(ic, "MENUCONTEXTCLOSE_CB", "nii");
+  iupClassRegisterCallback(ic, "PROPERTIESCHANGED_CB", "");
+  iupClassRegisterCallback(ic, "DSPROPERTIESCHANGED_CB", "i");
 
   iupPlotRegisterAttributes(ic);
 
