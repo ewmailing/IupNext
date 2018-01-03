@@ -41,6 +41,399 @@
 
 static void gtkDialogSetMinMax(Ihandle* ih, int min_w, int min_h, int max_w, int max_h);
 
+
+/****************************************************************
+          Custom Frame Simulation 
+****************************************************************/
+
+#if !GTK_CHECK_VERSION(3, 10, 0)
+static int gtkDialogCustomFrameRestore(Ihandle* ih)
+{
+  if (iupAttribGet(ih, "_IUPDLG_OLD_MAXSIZE"))
+  {
+    int width = 0, height = 0, x = 0, y = 0;
+    IupGetIntInt(ih, "_IUPDLG_OLD_MAXPOS", &x, &y);
+    IupGetIntInt(ih, "_IUPDLG_OLD_MAXSIZE", &width, &height);
+    IupSetStrf(ih, "RASTERSIZE", "%dx%d", width, height);
+
+    iupAttribSet(ih, "_IUPDLG_OLD_MAXPOS", NULL);
+    iupAttribSet(ih, "_IUPDLG_OLD_MAXSIZE", NULL);
+    iupAttribSet(ih, "MAXIMIZED", NULL);
+
+    IupRefresh(ih);
+    IupFlush(); /* update size first */
+
+    iupdrvDialogSetPosition(ih, x, y);
+    return 1;
+  }
+  return 0;
+}
+
+static void gtkDialogCustomFrameMaximize(Ihandle* ih)
+{
+  int width = 0, height = 0, x = 0, y = 0;
+  iupdrvGetScreenSize(&width, &height);
+  iupdrvDialogGetPosition(ih, NULL, &x, &y);
+
+  iupAttribSetStrf(ih, "_IUPDLG_OLD_MAXPOS", "%dx%d", x, y);
+  iupAttribSetStrf(ih, "_IUPDLG_OLD_MAXSIZE", "%dx%d", ih->currentwidth, ih->currentheight);
+  IupSetStrf(ih, "RASTERSIZE", "%dx%d", width, height);
+  iupAttribSet(ih, "MAXIMIZED", "Yes");
+
+  IupRefresh(ih);
+
+  iupdrvDialogSetPosition(ih, 0, 0);
+}
+
+typedef enum
+{
+  IUP_DLG_EDGE_NORTH_WEST,
+  IUP_DLG_EDGE_NORTH,
+  IUP_DLG_EDGE_NORTH_EAST,
+  IUP_DLG_EDGE_WEST,
+  IUP_DLG_EDGE_EAST,
+  IUP_DLG_EDGE_SOUTH_WEST,
+  IUP_DLG_EDGE_SOUTH,
+  IUP_DLG_EDGE_SOUTH_EAST
+} iupWindowEdge;
+
+static int gtkDialogCustomFrameButton_CB(Ihandle* ih, int button, int pressed, int x, int y, char* status)
+{
+  int is_resizing = iupAttribGetInt(ih, "_IUPDLG_RESIZING");
+
+  if (button != IUP_BUTTON1 || iup_isdouble(status))
+    return IUP_DEFAULT;
+
+  if (pressed)
+  {
+    int border = 5;
+    int edge = -1;
+
+    if (x < border)
+    {
+      if (y < 2 * border)
+        edge = IUP_DLG_EDGE_NORTH_WEST;
+      else if (y > ih->currentheight - 2 * border)
+        edge = IUP_DLG_EDGE_SOUTH_WEST;
+      else
+        edge = IUP_DLG_EDGE_WEST;
+    }
+    else if (x > ih->currentwidth - border)
+    {
+      if (y < 2 * border)
+        edge = IUP_DLG_EDGE_NORTH_EAST;
+      else if (y > ih->currentheight - 2 * border)
+        edge = IUP_DLG_EDGE_SOUTH_EAST;
+      else
+        edge = IUP_DLG_EDGE_EAST;
+    }
+    else
+    {
+      if (y < border)
+      {
+        if (x < 2 * border)
+          edge = IUP_DLG_EDGE_NORTH_WEST;
+        else if (x > ih->currentwidth - 2 * border)
+          edge = IUP_DLG_EDGE_NORTH_EAST;
+        else
+          edge = IUP_DLG_EDGE_NORTH;
+      }
+      else if (y > ih->currentheight - border)
+      {
+        if (x < 2 * border)
+          edge = IUP_DLG_EDGE_SOUTH_WEST;
+        else if (x > ih->currentwidth - 2 * border)
+          edge = IUP_DLG_EDGE_SOUTH_EAST;
+        else
+          edge = IUP_DLG_EDGE_SOUTH;
+      }
+    }
+
+    if (edge != -1)
+    {
+      if (!is_resizing && pressed)  /* DRAG BEGIN */
+      {
+        int cur_start_x, cur_start_y, dlg_start_x, dlg_start_y;
+
+        iupAttribSet(ih, "_IUPDLG_RESIZING", "1");
+
+        IupGetIntInt(NULL, "CURSORPOS", &cur_start_x, &cur_start_y);
+        dlg_start_x = IupGetInt(ih, "X");
+        dlg_start_y = IupGetInt(ih, "Y");
+
+        iupAttribSetInt(ih, "_IUPDLG_START_X", dlg_start_x);
+        iupAttribSetInt(ih, "_IUPDLG_START_Y", dlg_start_y);
+        iupAttribSetInt(ih, "_IUPDLG_START_W", ih->currentwidth);
+        iupAttribSetInt(ih, "_IUPDLG_START_H", ih->currentheight);
+        iupAttribSetInt(ih, "_IUPDLG_CUR_START_X", cur_start_x);
+        iupAttribSetInt(ih, "_IUPDLG_CUR_START_Y", cur_start_y);
+
+        iupAttribSetInt(ih, "_IUPDLG_RESIZE_EDGE", edge);
+      }
+      else if (is_resizing)  /* DRAG END */
+      {
+        iupAttribSet(ih, "_IUPDLG_RESIZING", NULL);
+      }
+    }
+  }
+
+  (void)status;
+  return IUP_DEFAULT;
+}
+
+static void gtkDialogCustomFrameSetCursor(Ihandle* ih, const char* value)
+{
+  iupdrvBaseSetCursorAttrib(ih, value);
+  iupAttribSet(ih, "_IUPDLG_RESETCURSOR", "1");
+}
+
+static int gtkDialogCustomFrameMotion_CB(Ihandle* ih, int x, int y, char *status)
+{
+  int is_resizing = iupAttribGetInt(ih, "_IUPDLG_RESIZING");
+  int border = 5;
+  int set = 0;
+
+  if (x < border)
+  {
+    if (y < 2 * border)
+      gtkDialogCustomFrameSetCursor(ih, "RESIZE_NW");
+    else if (y > ih->currentheight - 2 * border)
+      gtkDialogCustomFrameSetCursor(ih, "RESIZE_SW");
+    else
+      gtkDialogCustomFrameSetCursor(ih, "RESIZE_W");
+
+    set = 1;
+  }
+  else if (x > ih->currentwidth - border)
+  {
+    if (y < 2 * border)
+      gtkDialogCustomFrameSetCursor(ih, "RESIZE_NE");
+    else if (y > ih->currentheight - 2 * border)
+      gtkDialogCustomFrameSetCursor(ih, "RESIZE_SE");
+    else
+      gtkDialogCustomFrameSetCursor(ih, "RESIZE_E");
+
+    set = 1;
+  }
+  else
+  {
+    if (y < border)
+    {
+      if (x < 2 * border)
+        gtkDialogCustomFrameSetCursor(ih, "RESIZE_NW");
+      else if (x > ih->currentwidth - 2 * border)
+        gtkDialogCustomFrameSetCursor(ih, "RESIZE_NE");
+      else
+        gtkDialogCustomFrameSetCursor(ih, "RESIZE_N");
+
+      set = 1;
+    }
+    else if (y > ih->currentheight - border)
+    {
+      if (x < 2 * border)
+        gtkDialogCustomFrameSetCursor(ih, "RESIZE_SW");
+      else if (x > ih->currentwidth - 2 * border)
+        gtkDialogCustomFrameSetCursor(ih, "RESIZE_SE");
+      else
+        gtkDialogCustomFrameSetCursor(ih, "RESIZE_S");
+
+      set = 1;
+    }
+  }
+
+  if (!is_resizing && !set && iupAttribGet(ih, "_IUPDLG_RESETCURSOR"))
+  {
+    iupdrvBaseSetCursorAttrib(ih, IupGetAttribute(ih, "CURSOR"));
+    iupAttribSet(ih, "_IUPDLG_RESETCURSOR", NULL);
+  }
+
+  if (is_resizing)
+  {
+    if (iup_isbutton1(status))  /* DRAG MOVE */
+    {
+      int cur_end_x, cur_end_y, cur_start_x, cur_start_y, dlg_start_x, dlg_start_y;
+      int width, height, dlg_start_w, dlg_start_h, diff_x, diff_y;
+      int edge = iupAttribGetInt(ih, "_IUPDLG_RESIZE_EDGE");
+
+      IupGetIntInt(NULL, "CURSORPOS", &cur_end_x, &cur_end_y);
+      dlg_start_x = iupAttribGetInt(ih, "_IUPDLG_START_X");
+      dlg_start_y = iupAttribGetInt(ih, "_IUPDLG_START_Y");
+      dlg_start_w = iupAttribGetInt(ih, "_IUPDLG_START_W");
+      dlg_start_h = iupAttribGetInt(ih, "_IUPDLG_START_H");
+      cur_start_x = iupAttribGetInt(ih, "_IUPDLG_CUR_START_X");
+      cur_start_y = iupAttribGetInt(ih, "_IUPDLG_CUR_START_Y");
+
+      x = dlg_start_x;
+      y = dlg_start_y;
+      width = dlg_start_w;
+      height = dlg_start_h;
+
+      diff_x = (cur_end_x - cur_start_x);
+      diff_y = (cur_end_y - cur_start_y);
+
+      switch (edge)
+      {
+      case IUP_DLG_EDGE_NORTH_WEST:
+        y += diff_y;
+        height -= diff_y;
+        x += diff_x;
+        width -= diff_x;
+        break;
+      case IUP_DLG_EDGE_NORTH:
+        y += diff_y;
+        height -= diff_y;
+        break;
+      case IUP_DLG_EDGE_NORTH_EAST:
+        y += diff_y;
+        height -= diff_y;
+        width += diff_x;
+        break;
+      case IUP_DLG_EDGE_WEST:
+        x += diff_x;
+        width -= diff_x;
+        break;
+      case IUP_DLG_EDGE_EAST:
+        width += diff_x;
+        break;
+      case IUP_DLG_EDGE_SOUTH_WEST:
+        x += diff_x;
+        width -= diff_x;
+        height += diff_y;
+        break;
+      case IUP_DLG_EDGE_SOUTH:
+        height += diff_y;
+        break;
+      case IUP_DLG_EDGE_SOUTH_EAST:
+        width += diff_x;
+        height += diff_y;
+        break;
+      }
+
+      if (width != dlg_start_w || height != dlg_start_h)
+      {
+        IupSetStrf(ih, "RASTERSIZE", "%dx%d", width, height);
+        IupRefresh(ih);
+      }
+
+      if (x != dlg_start_x || y != dlg_start_y)
+        iupdrvDialogSetPosition(ih, x, y);
+    }
+    else
+      iupAttribSet(ih, "_IUPDLG_RESIZING", NULL);
+  }
+
+  (void)status;
+  return IUP_DEFAULT;
+}
+#endif
+
+static int gtkDialogCustomFrameCaptionButton_CB(Ihandle* caption, int button, int pressed, int x, int y, char* status)
+{
+  Ihandle* ih = IupGetDialog(caption);
+  int is_moving = iupAttribGetInt(ih, "_IUPDLG_MOVING");
+
+  if (button != IUP_BUTTON1)
+    return IUP_DEFAULT;
+
+  if (iup_isdouble(status))
+  {
+    if (IupGetInt(ih, "MAXIMIZED"))
+      IupSetAttribute(ih, "PLACEMENT", NULL);
+    else
+      IupSetAttribute(ih, "PLACEMENT", "MAXIMIZED");
+    IupShow(ih);
+    return IUP_DEFAULT;
+  }
+
+  if (!is_moving && pressed)  /* DRAG BEGIN */
+  {
+    int cur_start_x, cur_start_y, dlg_start_x, dlg_start_y;
+
+    iupAttribSet(ih, "_IUPDLG_MOVING", "1");
+
+    IupGetIntInt(NULL, "CURSORPOS", &cur_start_x, &cur_start_y);
+    dlg_start_x = IupGetInt(ih, "X");
+    dlg_start_y = IupGetInt(ih, "Y");
+
+    iupAttribSetInt(ih, "_IUPDLG_START_X", dlg_start_x);
+    iupAttribSetInt(ih, "_IUPDLG_START_Y", dlg_start_y);
+    iupAttribSetInt(ih, "_IUPDLG_CUR_START_X", cur_start_x);
+    iupAttribSetInt(ih, "_IUPDLG_CUR_START_Y", cur_start_y);
+  }
+  else if (is_moving)  /* DRAG END */
+  {
+    iupAttribSet(ih, "_IUPDLG_MOVING", NULL);
+  }
+
+  (void)x;
+  (void)y;
+  return IUP_DEFAULT;
+}
+
+static int gtkDialogCustomFrameCaptionMotion_CB(Ihandle* caption, int x, int y, char *status)
+{
+  Ihandle* ih = IupGetDialog(caption);
+  int is_moving = iupAttribGetInt(ih, "_IUPDLG_MOVING");
+
+  if (iupAttribGet(ih, "_IUPDLG_RESETCURSOR") && !iupAttribGetInt(ih, "_IUPDLG_RESIZING"))
+  {
+    iupdrvBaseSetCursorAttrib(ih, IupGetAttribute(ih, "CURSOR"));
+    iupAttribSet(ih, "_IUPDLG_RESETCURSOR", NULL);
+  }
+
+  if (is_moving)
+  {
+    if (iup_isbutton1(status))  /* DRAG MOVE */
+    {
+      int cur_end_x, cur_end_y, cur_start_x, cur_start_y, dlg_start_x, dlg_start_y;
+
+      IupGetIntInt(NULL, "CURSORPOS", &cur_end_x, &cur_end_y);
+      dlg_start_x = iupAttribGetInt(ih, "_IUPDLG_START_X");
+      dlg_start_y = iupAttribGetInt(ih, "_IUPDLG_START_Y");
+      cur_start_x = iupAttribGetInt(ih, "_IUPDLG_CUR_START_X");
+      cur_start_y = iupAttribGetInt(ih, "_IUPDLG_CUR_START_Y");
+
+      x = dlg_start_x + (cur_end_x - cur_start_x);
+      y = dlg_start_y + (cur_end_y - cur_start_y);
+
+      iupdrvDialogSetPosition(ih, x, y);
+    }
+    else
+      iupAttribSet(ih, "_IUPDLG_MOVING", NULL);
+  }
+
+  return IUP_DEFAULT;
+}
+
+static void gtkDialogCustomFrameSimulate(Ihandle* ih, int reset_attrib)
+{
+  Ihandle* ih_caption = IupGetDialogChild(ih, "CUSTOMFRAMECAPTION");
+  if (ih_caption)
+  {
+    IupSetCallback(ih_caption, "BUTTON_CB", (Icallback)gtkDialogCustomFrameCaptionButton_CB);
+    IupSetCallback(ih_caption, "MOTION_CB", (Icallback)gtkDialogCustomFrameCaptionMotion_CB);
+
+    iupAttribSet(ih_caption, "HTTRANSPARENT", NULL);
+  }
+
+#if !GTK_CHECK_VERSION(3, 10, 0)
+  IupSetCallback(ih, "BUTTON_CB", (Icallback)gtkDialogCustomFrameButton_CB);
+  IupSetCallback(ih, "MOTION_CB", (Icallback)gtkDialogCustomFrameMotion_CB);
+#endif
+
+  if (reset_attrib)
+  {
+    iupAttribSet(ih, "RESIZE", "NO");
+    iupAttribSet(ih, "MENUBOX", "NO");
+    iupAttribSet(ih, "MAXBOX", "NO");
+    iupAttribSet(ih, "MINBOX", "NO");
+    iupAttribSet(ih, "BORDER", "NO");
+    iupAttribSet(ih, "TITLE", NULL);
+  }
+
+  iupAttribSet(ih, "MENU", NULL); /* can NOT have a menu */
+}
+
 /****************************************************************
                      Utilities
 ****************************************************************/
@@ -222,41 +615,6 @@ void iupdrvDialogGetDecoration(Ihandle* ih, int *border, int *caption, int *menu
 #endif
 }
 
-#if !GTK_CHECK_VERSION(3, 10, 0)
-static void gtkDialogCustomFrameRestore(Ihandle* ih)
-{
-  int width = 0, height = 0, x = 0, y = 0;
-  IupGetIntInt(ih, "_IUP_OLD_MAXPOS", &x, &y);
-  IupGetIntInt(ih, "_IUP_OLD_MAXSIZE", &width, &height);
-  IupSetStrf(ih, "RASTERSIZE", "%dx%d", width, height);
-
-  iupAttribSet(ih, "_IUP_OLD_MAXPOS", NULL);
-  iupAttribSet(ih, "_IUP_OLD_MAXSIZE", NULL);
-  iupAttribSet(ih, "MAXIMIZED", NULL);
-
-  IupRefresh(ih);
-  IupFlush(); /* update size first */
-
-  iupdrvDialogSetPosition(ih, x, y);
-}
-
-static void gtkDialogCustomFrameMaximize(Ihandle* ih)
-{
-  int width = 0, height = 0, x = 0, y = 0;
-  iupdrvGetScreenSize(&width, &height);
-  iupdrvDialogGetPosition(ih, NULL, &x, &y);
-
-  iupAttribSetStrf(ih, "_IUP_OLD_MAXPOS", "%dx%d", x, y);
-  iupAttribSetStrf(ih, "_IUP_OLD_MAXSIZE", "%dx%d", ih->currentwidth, ih->currentheight);
-  IupSetStrf(ih, "RASTERSIZE", "%dx%d", width, height);
-  iupAttribSet(ih, "MAXIMIZED", "Yes");
-
-  IupRefresh(ih);
-
-  iupdrvDialogSetPosition(ih, 0, 0);
-}
-#endif
-
 int iupdrvDialogSetPlacement(Ihandle* ih)
 {
   char* placement;
@@ -279,12 +637,10 @@ int iupdrvDialogSetPlacement(Ihandle* ih)
     gtk_window_deiconify((GtkWindow*)ih->handle);
 
 #if !GTK_CHECK_VERSION(3, 10, 0)
-    if (iupAttribGetBoolean(ih, "CUSTOMFRAME") && iupAttribGet(ih, "_IUP_OLD_MAXSIZE"))
-    {
-      gtkDialogCustomFrameRestore(ih);
+    if (iupAttribGetBoolean(ih, "CUSTOMFRAME") && gtkDialogCustomFrameRestore(ih))
       return 1;
-    }
 #endif
+
     return 0;
   }
 
@@ -293,6 +649,7 @@ int iupdrvDialogSetPlacement(Ihandle* ih)
   {
     gtkDialogCustomFrameMaximize(ih);
     iupAttribSet(ih, "PLACEMENT", NULL); /* reset to NORMAL */
+    ih->data->show_state = IUP_MAXIMIZE;
     return 1;
   }
 #endif
@@ -488,311 +845,6 @@ static gboolean gtkDialogWindowStateEvent(GtkWidget *widget, GdkEventWindowState
   return FALSE;
 }
 
-#if !GTK_CHECK_VERSION(3, 10, 0)
-static int gtkDialogCustomFrameButton_CB(Ihandle* ih, int button, int pressed, int x, int y, char* status)
-{
-  int is_resizing = iupAttribGetInt(ih, "_IUP_RESIZING");
-
-  if (button != IUP_BUTTON1 || iup_isdouble(status))
-    return IUP_DEFAULT;
-
-  if (pressed)
-  {
-    int border = 5;
-    int edge = -1;
-
-    if (x < border)
-    {
-      if (y < 2 * border)
-        edge = GDK_WINDOW_EDGE_NORTH_WEST;
-      else if (y > ih->currentheight - 2 * border)
-        edge = GDK_WINDOW_EDGE_SOUTH_WEST;
-      else
-        edge = GDK_WINDOW_EDGE_WEST;
-    }
-    else if (x > ih->currentwidth - border)
-    {
-      if (y < 2 * border)
-        edge = GDK_WINDOW_EDGE_NORTH_EAST;
-      else if (y > ih->currentheight - 2 * border)
-        edge = GDK_WINDOW_EDGE_SOUTH_EAST;
-      else
-        edge = GDK_WINDOW_EDGE_EAST;
-    }
-    else
-    {
-      if (y < border)
-      {
-        if (x < 2 * border)
-          edge = GDK_WINDOW_EDGE_NORTH_WEST;
-        else if (x > ih->currentwidth - 2 * border)
-          edge = GDK_WINDOW_EDGE_NORTH_EAST;
-        else
-          edge = GDK_WINDOW_EDGE_NORTH;
-      }
-      else if (y > ih->currentheight - border)
-      {
-        if (x < 2 * border)
-          edge = GDK_WINDOW_EDGE_SOUTH_WEST;
-        else if (x > ih->currentwidth - 2 * border)
-          edge = GDK_WINDOW_EDGE_SOUTH_EAST;
-        else
-          edge = GDK_WINDOW_EDGE_SOUTH;
-      }
-    }
-
-    if (edge != -1)
-    {
-      if (!is_resizing && pressed)  /* DRAG BEGIN */
-      {
-        int cur_start_x, cur_start_y, dlg_start_x, dlg_start_y;
-
-        iupAttribSet(ih, "_IUP_RESIZING", "1");
-
-        IupGetIntInt(NULL, "CURSORPOS", &cur_start_x, &cur_start_y);
-        dlg_start_x = IupGetInt(ih, "X");
-        dlg_start_y = IupGetInt(ih, "Y");
-
-        iupAttribSetInt(ih, "_IUP_DLG_START_X", dlg_start_x);
-        iupAttribSetInt(ih, "_IUP_DLG_START_Y", dlg_start_y);
-        iupAttribSetInt(ih, "_IUP_DLG_START_W", ih->currentwidth);
-        iupAttribSetInt(ih, "_IUP_DLG_START_H", ih->currentheight);
-        iupAttribSetInt(ih, "_IUP_CUR_START_X", cur_start_x);
-        iupAttribSetInt(ih, "_IUP_CUR_START_Y", cur_start_y);
-
-        iupAttribSetInt(ih, "_IUP_RESIZE_EDGE", edge);
-      }
-      else if (is_resizing)  /* DRAG END */
-      {
-        iupAttribSet(ih, "_IUP_RESIZING", NULL);
-      }
-    }
-  }
-
-  (void)status;
-  return IUP_DEFAULT;
-}
-
-static int gtkDialogCustomFrameSetCursor(Ihandle* ih, const char* value)
-{
-  iupdrvBaseSetCursorAttrib(ih, value);
-  iupAttribSet(ih, "_IUP_RESETCURSOR", "1");
-  return 1;
-}
-
-static int gtkDialogCustomFrameMotion_CB(Ihandle* ih, int x, int y, char *status)
-{
-  int is_resizing = iupAttribGetInt(ih, "_IUP_RESIZING");
-  int border = 5;
-  int set = 0;
-
-  if (x < border)
-  {
-    if (y < 2 * border)
-      set = gtkDialogCustomFrameSetCursor(ih, "RESIZE_NW");
-    else if (y > ih->currentheight - 2 * border)
-      set = gtkDialogCustomFrameSetCursor(ih, "RESIZE_SW");
-    else
-      set = gtkDialogCustomFrameSetCursor(ih, "RESIZE_W");
-  }
-  else if (x > ih->currentwidth - border)
-  {
-    if (y < 2 * border)
-      set = gtkDialogCustomFrameSetCursor(ih, "RESIZE_NE");
-    else if (y > ih->currentheight - 2 * border)
-      set = gtkDialogCustomFrameSetCursor(ih, "RESIZE_SE");
-    else
-      set = gtkDialogCustomFrameSetCursor(ih, "RESIZE_E");
-  }
-  else
-  {
-    if (y < border)
-    {
-      if (x < 2 * border)
-        set = gtkDialogCustomFrameSetCursor(ih, "RESIZE_NW");
-      else if (x > ih->currentwidth - 2 * border)
-        set = gtkDialogCustomFrameSetCursor(ih, "RESIZE_NE");
-      else
-        set = gtkDialogCustomFrameSetCursor(ih, "RESIZE_N");
-    }
-    else if (y > ih->currentheight - border)
-    {
-      if (x < 2 * border)
-        set = gtkDialogCustomFrameSetCursor(ih, "RESIZE_SW");
-      else if (x > ih->currentwidth - 2 * border)
-        set = gtkDialogCustomFrameSetCursor(ih, "RESIZE_SE");
-      else
-        set = gtkDialogCustomFrameSetCursor(ih, "RESIZE_S");
-    }
-  }
-
-  if (!is_resizing && !set && iupAttribGet(ih, "_IUP_RESETCURSOR"))
-  {
-    iupdrvBaseSetCursorAttrib(ih, IupGetAttribute(ih, "CURSOR"));
-    iupAttribSet(ih, "_IUP_RESETCURSOR", NULL);
-  }
-
-  if (is_resizing)
-  {
-    if (iup_isbutton1(status))  /* DRAG MOVE */
-    {
-      int cur_end_x, cur_end_y, cur_start_x, cur_start_y, dlg_start_x, dlg_start_y;
-      int width, height, dlg_start_w, dlg_start_h, diff_x, diff_y;
-      int edge = iupAttribGetInt(ih, "_IUP_RESIZE_EDGE");
-
-      IupGetIntInt(NULL, "CURSORPOS", &cur_end_x, &cur_end_y);
-      dlg_start_x = iupAttribGetInt(ih, "_IUP_DLG_START_X");
-      dlg_start_y = iupAttribGetInt(ih, "_IUP_DLG_START_Y");
-      dlg_start_w = iupAttribGetInt(ih, "_IUP_DLG_START_W");
-      dlg_start_h = iupAttribGetInt(ih, "_IUP_DLG_START_H");
-      cur_start_x = iupAttribGetInt(ih, "_IUP_CUR_START_X");
-      cur_start_y = iupAttribGetInt(ih, "_IUP_CUR_START_Y");
-
-      x = dlg_start_x;
-      y = dlg_start_y;
-      width = dlg_start_w;
-      height = dlg_start_h;
-
-      diff_x = (cur_end_x - cur_start_x);
-      diff_y = (cur_end_y - cur_start_y);
-
-      switch (edge)
-      {
-      case GDK_WINDOW_EDGE_NORTH_WEST:
-        y += diff_y;
-        height -= diff_y;
-        x += diff_x;
-        width -= diff_x;
-        break;
-      case GDK_WINDOW_EDGE_NORTH:
-        y += diff_y;
-        height -= diff_y;
-        break;
-      case GDK_WINDOW_EDGE_NORTH_EAST:
-        y += diff_y;
-        height -= diff_y;
-        width += diff_x;
-        break;
-      case GDK_WINDOW_EDGE_WEST:
-        x += diff_x;
-        width -= diff_x;
-        break;
-      case GDK_WINDOW_EDGE_EAST:
-        width += diff_x;
-        break;
-      case GDK_WINDOW_EDGE_SOUTH_WEST:
-        x += diff_x;
-        width -= diff_x;
-        height += diff_y;
-        break;
-      case GDK_WINDOW_EDGE_SOUTH:
-        height += diff_y;
-        break;
-      case GDK_WINDOW_EDGE_SOUTH_EAST:
-        width += diff_x;
-        height += diff_y;
-        break;
-      }
-
-      if (width != dlg_start_w || height != dlg_start_h)
-      {
-        IupSetStrf(ih, "RASTERSIZE", "%dx%d", width, height);
-        IupRefresh(ih);
-      }
-
-      if (x != dlg_start_x || y != dlg_start_y)
-        iupdrvDialogSetPosition(ih, x, y);
-    }
-    else
-      iupAttribSet(ih, "_IUP_RESIZING", NULL);
-  }
-
-
-  (void)status;
-  return IUP_DEFAULT;
-}
-#endif
-
-static int gtkDialogCustomFrameCaptionButton_CB(Ihandle* caption, int button, int pressed, int x, int y, char* status)
-{
-  Ihandle* ih = IupGetDialog(caption);
-  int is_moving = iupAttribGetInt(ih, "_IUP_MOVING");
-
-  if (button != IUP_BUTTON1)
-    return IUP_DEFAULT;
-
-  if (iup_isdouble(status))
-  {
-    if (IupGetInt(ih, "MAXIMIZED"))
-      IupSetAttribute(ih, "PLACEMENT", NULL);
-    else
-      IupSetAttribute(ih, "PLACEMENT", "MAXIMIZED");
-    IupShow(ih);
-    return IUP_DEFAULT;
-  }
-
-  if (!is_moving && pressed)  /* DRAG BEGIN */
-  {
-    int cur_start_x, cur_start_y, dlg_start_x, dlg_start_y;
-
-    iupAttribSet(ih, "_IUP_MOVING", "1");
-
-    IupGetIntInt(NULL, "CURSORPOS", &cur_start_x, &cur_start_y);
-    dlg_start_x = IupGetInt(ih, "X");
-    dlg_start_y = IupGetInt(ih, "Y");
-
-    iupAttribSetInt(ih, "_IUP_DLG_START_X", dlg_start_x);
-    iupAttribSetInt(ih, "_IUP_DLG_START_Y", dlg_start_y);
-    iupAttribSetInt(ih, "_IUP_CUR_START_X", cur_start_x);
-    iupAttribSetInt(ih, "_IUP_CUR_START_Y", cur_start_y);
-  }
-  else if (is_moving)  /* DRAG END */
-  {
-    iupAttribSet(ih, "_IUP_MOVING", NULL);
-  }
-
-  (void)x;
-  (void)y;
-  return IUP_DEFAULT;
-}
-
-static int gtkDialogCustomFrameCaptionMotion_CB(Ihandle* caption, int x, int y, char *status)
-{
-  Ihandle* ih = IupGetDialog(caption);
-  int is_moving = iupAttribGetInt(ih, "_IUP_MOVING");
-
-#if !GTK_CHECK_VERSION(3, 10, 0)
-  if (iupAttribGet(ih, "_IUP_RESETCURSOR") && !iupAttribGetInt(ih, "_IUP_RESIZING"))
-  {
-    iupdrvBaseSetCursorAttrib(ih, IupGetAttribute(ih, "CURSOR"));
-    iupAttribSet(ih, "_IUP_RESETCURSOR", NULL);
-  }
-#endif
-
-  if (is_moving)
-  {
-    if (iup_isbutton1(status))  /* DRAG MOVE */
-    {
-      int cur_end_x, cur_end_y, cur_start_x, cur_start_y, dlg_start_x, dlg_start_y;
-
-      IupGetIntInt(NULL, "CURSORPOS", &cur_end_x, &cur_end_y);
-      dlg_start_x = iupAttribGetInt(ih, "_IUP_DLG_START_X");
-      dlg_start_y = iupAttribGetInt(ih, "_IUP_DLG_START_Y");
-      cur_start_x = iupAttribGetInt(ih, "_IUP_CUR_START_X");
-      cur_start_y = iupAttribGetInt(ih, "_IUP_CUR_START_Y");
-
-      x = dlg_start_x + (cur_end_x - cur_start_x);
-      y = dlg_start_y + (cur_end_y - cur_start_y);
-
-      iupdrvDialogSetPosition(ih, x, y);
-    }
-    else
-      iupAttribSet(ih, "_IUP_MOVING", NULL);
-  }
-
-  return IUP_DEFAULT;
-}
-
 
 /****************************************************************
                      Idialog Methods
@@ -884,25 +936,12 @@ static int gtkDialogMapMethod(Ihandle* ih)
 
   if (iupAttribGetBoolean(ih, "CUSTOMFRAME"))
   {
-    Ihandle* ih_caption = IupGetDialogChild(ih, "CUSTOMFRAMECAPTION");
-    if (ih_caption)
-    {
-      IupSetCallback(ih_caption, "BUTTON_CB", (Icallback)gtkDialogCustomFrameCaptionButton_CB);
-      IupSetCallback(ih_caption, "MOTION_CB", (Icallback)gtkDialogCustomFrameCaptionMotion_CB);
-    }
-
 #if GTK_CHECK_VERSION(3, 10, 0)
+    gtkDialogCustomFrameSimulate(ih, 0);
+
     iupAttribSet(ih, "HIDETITLEBAR", "Yes");
 #else
-    iupAttribSet(ih, "RESIZE", "NO");
-    iupAttribSet(ih, "MENUBOX", "NO");
-    iupAttribSet(ih, "MAXBOX", "NO");
-    iupAttribSet(ih, "MINBOX", "NO");
-    iupAttribSet(ih, "BORDER", "NO");
-    iupAttribSet(ih, "TITLE", NULL);
-
-    IupSetCallback(ih, "BUTTON_CB", (Icallback)gtkDialogCustomFrameButton_CB);
-    IupSetCallback(ih, "MOTION_CB", (Icallback)gtkDialogCustomFrameMotion_CB);
+    gtkDialogCustomFrameSimulate(ih, 1);
 
     g_signal_connect(G_OBJECT(ih->handle), "button-press-event", G_CALLBACK(iupgtkButtonEvent), ih);
     g_signal_connect(G_OBJECT(ih->handle), "button-release-event", G_CALLBACK(iupgtkButtonEvent), ih);
@@ -1540,7 +1579,7 @@ void iupdrvDialogInitClass(Iclass* ic)
   iupClassRegisterAttribute(ic, "TRAY", NULL, gtkDialogSetTrayAttrib, NULL, NULL, IUPAF_NO_INHERIT);
   iupClassRegisterAttribute(ic, "TRAYIMAGE", NULL, gtkDialogSetTrayImageAttrib, NULL, NULL, IUPAF_NO_INHERIT);
   iupClassRegisterAttribute(ic, "TRAYTIP", NULL, gtkDialogSetTrayTipAttrib, NULL, NULL, IUPAF_NO_INHERIT);
-  iupClassRegisterAttribute(ic, "TRAYTIPMARKUP", NULL, NULL, IUPAF_SAMEASSYSTEM, NULL, IUPAF_NOT_MAPPED);
+  iupClassRegisterAttribute(ic, "TRAYTIPMARKUP", NULL, NULL, IUPAF_SAMEASSYSTEM, NULL, IUPAF_NO_INHERIT);
 #endif
   iupClassRegisterAttribute(ic, "CUSTOMFRAME", NULL, NULL, IUPAF_SAMEASSYSTEM, NULL, IUPAF_NOT_MAPPED);
 
@@ -1550,7 +1589,7 @@ void iupdrvDialogInitClass(Iclass* ic)
 
   /* Not Supported */
   iupClassRegisterAttribute(ic, "BRINGFRONT", NULL, NULL, NULL, NULL, IUPAF_NOT_SUPPORTED|IUPAF_NO_INHERIT);
-  iupClassRegisterAttribute(ic, "COMPOSITED", NULL, NULL, NULL, NULL, IUPAF_NOT_SUPPORTED|IUPAF_NOT_MAPPED);
+  iupClassRegisterAttribute(ic, "COMPOSITED", NULL, NULL, NULL, NULL, IUPAF_NOT_SUPPORTED|IUPAF_NO_INHERIT);
   iupClassRegisterAttribute(ic, "CONTROL", NULL, NULL, NULL, NULL, IUPAF_NOT_SUPPORTED|IUPAF_NO_INHERIT);
   iupClassRegisterAttribute(ic, "HELPBUTTON", NULL, NULL, NULL, NULL, IUPAF_NOT_SUPPORTED|IUPAF_NO_INHERIT);
   iupClassRegisterAttribute(ic, "TOOLBOX", NULL, NULL, NULL, NULL, IUPAF_NOT_SUPPORTED|IUPAF_NO_INHERIT);
