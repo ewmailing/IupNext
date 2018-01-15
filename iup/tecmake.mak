@@ -72,6 +72,9 @@ ifndef TEC_UNAME
   ifeq ($(TEC_SYSARCH), armv7l)
     TEC_SYSARCH:=arm
   endif
+  ifeq ($(TEC_SYSARCH), armv6l)
+    TEC_SYSARCH:=arm
+  endif
   
   # Compose
   TEC_SYSRELEASE:=$(TEC_SYSVERSION).$(TEC_SYSMINOR)
@@ -591,6 +594,7 @@ ifdef USE_CPP11
   CPPFLAGS += -std=c++11
   DEPFLAGS += -std=c++11
 endif
+
 ifeq "$(TEC_SYSNAME)" "Haiku"
   STDFLAGS += -Wno-multichar
   LIBS += be textencoding tracker
