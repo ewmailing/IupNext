@@ -514,7 +514,10 @@ static char* readFile(const char* filename)
   fseek(file, 0, SEEK_SET);
 
   if (size == 0)
+  {
+    fclose(file);
     return NULL;
+  }
 
   /* allocate memory for the file contents + nul terminator */
   str = malloc(size + 1);
