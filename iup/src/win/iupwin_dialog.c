@@ -996,7 +996,7 @@ static LRESULT CALLBACK winDialogMDIFrameWndProc(HWND hwnd, UINT msg, WPARAM wp,
   return DefFrameProc(hwnd, hWndClient, msg, wp, lp);
 }
 
-enum { IUPWIN_DIALOG, IUPWIN_DIALOGCONTROL, IUPWIN_MDIFRAME, IUPWIN_MDICHILD, IUPWIN_DIALOG_NOSAVEBITS };
+enum { IUPWIN_DIALOG, IUPWIN_DIALOGCONTROL, IUPWIN_MDIFRAME, IUPWIN_MDICHILD, IUPWIN_DIALOG_SAVEBITS };
 
 static void winDialogRegisterClass(int type)
 {
@@ -1019,8 +1019,8 @@ static void winDialogRegisterClass(int type)
   {
     if (type == IUPWIN_DIALOGCONTROL)
       name = TEXT("IupDialogControl");
-    else if (type == IUPWIN_DIALOG_NOSAVEBITS)
-      name = TEXT("IupDialogNoSaveBits");
+    else if (type == IUPWIN_DIALOG_SAVEBITS)
+      name = TEXT("IupDialogSaveBits");
     else
       name = TEXT("IupDialog");
     wndProc = (WNDPROC)winDialogWndProc;
@@ -1037,7 +1037,7 @@ static void winDialogRegisterClass(int type)
   else
     wndclass.hbrBackground  = (HBRUSH)(COLOR_BTNFACE+1);
 
-  if (type == IUPWIN_DIALOG)
+  if (type == IUPWIN_DIALOG_SAVEBITS)
     wndclass.style |= CS_SAVEBITS;
 
   if (type == IUPWIN_DIALOGCONTROL)
@@ -1055,7 +1055,7 @@ static void winDialogRelease(Iclass* ic)
     UnregisterClass(TEXT("IupDialogMDIChild"), iupwin_hinstance);
     UnregisterClass(TEXT("IupDialogMDIFrame"), iupwin_hinstance);
     UnregisterClass(TEXT("IupDialogControl"), iupwin_hinstance);
-    UnregisterClass(TEXT("IupDialogNoSaveBits"), iupwin_hinstance);
+    UnregisterClass(TEXT("IupDialogSaveBits"), iupwin_hinstance);
     UnregisterClass(TEXT("IupDialog"), iupwin_hinstance);
   }
 }
@@ -1078,9 +1078,6 @@ static int winDialogMapMethod(Ihandle* ih)
   title = iupAttribGet(ih, "TITLE"); 
   if (title)
     has_titlebar = 1;
-
-  if (!iupAttribGetBoolean(ih, "SAVEUNDER"))
-    classname = TEXT("IupDialogNoSaveBits");
 
   if (iupAttribGetBoolean(ih, "RESIZE"))
   {
@@ -1145,6 +1142,9 @@ static int winDialogMapMethod(Ihandle* ih)
 
     if (native_parent)
     {
+      if (iupAttribGetBoolean(ih, "SAVEUNDER"))
+        classname = TEXT("IupDialogSaveBits");
+
       dwStyle |= WS_POPUP;
 
       if (has_titlebar)
@@ -1862,7 +1862,7 @@ void iupdrvDialogInitClass(Iclass* ic)
     winDialogRegisterClass(IUPWIN_DIALOGCONTROL);
     winDialogRegisterClass(IUPWIN_MDIFRAME);
     winDialogRegisterClass(IUPWIN_MDICHILD);
-    winDialogRegisterClass(IUPWIN_DIALOG_NOSAVEBITS);
+    winDialogRegisterClass(IUPWIN_DIALOG_SAVEBITS);
 
     WM_HELPMSG = RegisterWindowMessage(HELPMSGSTRING);
   }

@@ -231,7 +231,8 @@ driver or in the GTK driver in Windows.</p>
 this attribute is true (YES), the dialog stores the original image of the 
 desktop region it occupies (if the system has enough memory to store the image). 
 In this case, when the dialog is closed or moved, a redrawing event is not 
-generated for the windows that were shadowed by it. Its default value is YES. To 
+generated for the windows that were shadowed by it. Its default value is YES if 
+the dialog has a parent dialog (since 3.24). To 
 save memory disable it for your main dialog. Not available in GTK.</p>
 <p><strong>XWINDOW</strong> [UNIX Only] (<font size="3">non inheritable, 
 read-only</font>): Returns the X-Windows Window (Drawable). Available in the 
