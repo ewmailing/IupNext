@@ -666,27 +666,48 @@ static int iMatrixExSetPasteDataAttrib(Ihandle *ih, const char* data)
   return 0;
 }
 
+static char* iMatrixReadFile(const char* filename)
+{
+  char* data;
+  long size;
+  FILE *file = fopen(filename, "rb");
+  if (!file)
+    return NULL;
+
+  fseek(file, 0, SEEK_END);
+  size = ftell(file);
+  if (size <= 0)
+  {
+    fclose(file);
+    return NULL;
+  }
+
+  data = (char*)malloc(size + 1);
+  if (!data)
+  {
+    fclose(file);
+    return NULL;
+  }
+
+  fseek(file, 0, SEEK_SET);
+  fread(data, size, 1, file);
+  data[size] = 0;
+  fclose(file);
+
+  return data;
+}
+
 static int iMatrixExSetPasteFileAttrib(Ihandle *ih, const char* value)
 {
-  size_t size;
   char* data, *paste_at;
   int lin = 0, col = 0;
 
-  FILE *file = fopen(value, "rb");
-  if (!file)
+  data = iMatrixReadFile(value);
+  if (!data)
   {
     iupAttribSet(ih, "LASTERROR", "IUP_ERRORFILEOPEN");
     return 0;
   }
-
-  fseek(file, 0, SEEK_END);
-  size = (size_t)ftell(file); 
-  fseek(file, 0, SEEK_SET);
-
-  data = (char*)malloc(size+1);
-  fread(data, size, 1, file);
-  data[size] = 0;
-  fclose(file);
 
   paste_at = iupAttribGet(ih, "PASTEFILEAT");
   if (paste_at)
