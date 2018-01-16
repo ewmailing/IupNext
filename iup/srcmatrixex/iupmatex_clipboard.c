@@ -702,13 +702,6 @@ static int iMatrixExSetPasteFileAttrib(Ihandle *ih, const char* value)
   char* data, *paste_at;
   int lin = 0, col = 0;
 
-  data = iMatrixReadFile(value);
-  if (!data)
-  {
-    iupAttribSet(ih, "LASTERROR", "IUP_ERRORFILEOPEN");
-    return 0;
-  }
-
   paste_at = iupAttribGet(ih, "PASTEFILEAT");
   if (paste_at)
   {
@@ -717,11 +710,15 @@ static int iMatrixExSetPasteFileAttrib(Ihandle *ih, const char* value)
     else
     {
       if (iupStrToIntInt(paste_at, &lin, &col, ':') != 2)
-      {
-        free(data);
         return 0;
-      }
     }
+  }
+
+  data = iMatrixReadFile(value);
+  if (!data)
+  {
+    iupAttribSet(ih, "LASTERROR", "IUP_ERRORFILEOPEN");
+    return 0;
   }
 
   iMatrixExPasteData(ih, data, lin, col, "PASTEFILE");
