@@ -1862,9 +1862,9 @@ static int iLayoutPropertiesList1_CB(Ihandle *list1, char *name, int item, int s
       IupSetAttribute(setbut, "ACTIVE", "Yes");
       IupSetAttribute(txt1, "READONLY", "No");
 
-      if (strstr(name, "COLOR") != NULL)
+      if (strstr(name, "COLOR") != NULL) /* if COLOR in attribute name, show the color selection button */
       {
-        IupStoreAttribute(colorbut, "BGCOLOR", value);
+        IupStoreAttribute(colorbut, "BGCOLOR", value);  /* set it even if it is NULL */
         IupSetAttribute(colorbut, "VISIBLE", "Yes");
       }
       else
