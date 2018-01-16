@@ -1373,6 +1373,19 @@ static char* winDialogGetClientSizeAttrib(Ihandle* ih)
   return iupStrReturnIntInt((int)(rect.right-rect.left), (int)(rect.bottom-rect.top), 'x');
 }
 
+static int winDialogSetTitleAttrib(Ihandle* ih, const char* value)
+{
+  if (!iupwin_comctl32ver6 && iupAttribGetBoolean(ih, "CUSTOMFRAME"))
+  {
+    LockWindowUpdate(ih->handle);
+    iupwinSetTitleAttrib(ih, value);
+    LockWindowUpdate(NULL);
+  }
+  else
+    iupwinSetTitleAttrib(ih, value);
+  return 1; 
+}
+
 static int winDialogSetBgColorAttrib(Ihandle* ih, const char* value)
 {
   unsigned char r, g, b;
@@ -1887,7 +1900,7 @@ void iupdrvDialogInitClass(Iclass* ic)
   iupClassRegisterAttribute(ic, "BGCOLOR", NULL, winDialogSetBgColorAttrib, IUPAF_SAMEASSYSTEM, "DLGBGCOLOR", IUPAF_DEFAULT);
 
   /* Special */
-  iupClassRegisterAttribute(ic, "TITLE", NULL, iupwinSetTitleAttrib, NULL, NULL, IUPAF_NO_DEFAULTVALUE|IUPAF_NO_INHERIT);
+  iupClassRegisterAttribute(ic, "TITLE", NULL, winDialogSetTitleAttrib, NULL, NULL, IUPAF_NO_DEFAULTVALUE | IUPAF_NO_INHERIT);
 
   /* Base Container */
   iupClassRegisterAttribute(ic, "CLIENTSIZE", winDialogGetClientSizeAttrib, iupDialogSetClientSizeAttrib, NULL, NULL, IUPAF_NO_SAVE|IUPAF_NO_DEFAULTVALUE|IUPAF_NO_INHERIT);  /* dialog is the only not read-only */
