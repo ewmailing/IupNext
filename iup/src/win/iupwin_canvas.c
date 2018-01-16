@@ -240,9 +240,25 @@ static void winCanvasGetScrollInfo(HWND hWnd, int *ipos, int *ipage, int flag, i
     *ipos = scrollinfo.nPos;
 }
 
+static void winCanvasCallScrollCallback(Ihandle* ih, int op)
+{
+  IFniff cb = (IFniff)IupGetCallback(ih, "SCROLL_CB");
+  if (cb)
+    cb(ih, op, (float)ih->data->posx, (float)ih->data->posy);
+  else
+  {
+    IFnff cb = (IFnff)IupGetCallback(ih, "ACTION");
+    if (cb)
+    {
+      /* REDRAW Now, but no children */
+      RedrawWindow(ih->handle, NULL, NULL, RDW_ERASE | RDW_INVALIDATE | RDW_INTERNALPAINT | RDW_UPDATENOW | RDW_NOCHILDREN);
+      /* cb(ih, (float)ih->data->posx, (float)ih->data->posy); */
+    }
+  }
+}
+
 static void winCanvasProcessHorScroll(Ihandle* ih, WORD winop)
 {
-  IFniff cb;
   double xmin, xmax, posx, linex;
   int ipagex, iposx, ilinex, op;
 
@@ -304,20 +320,11 @@ static void winCanvasProcessHorScroll(Ihandle* ih, WORD winop)
   SetScrollPos(ih->handle, SB_HORZ, iposx, TRUE);
   ih->data->posx = posx;
 
-  cb = (IFniff)IupGetCallback(ih,"SCROLL_CB");
-  if (cb)
-    cb(ih, op, (float)posx, (float)ih->data->posy);
-  else
-  {
-    IFnff cb = (IFnff)IupGetCallback(ih,"ACTION");
-    if (cb)
-      cb (ih, (float)posx, (float)ih->data->posy);
-  }
+  winCanvasCallScrollCallback(ih, op);
 }
 
 static void winCanvasProcessVerScroll(Ihandle* ih, WORD winop)
 {
-  IFniff cb;
   double ymin, ymax, posy, liney;
   int ipagey, iposy, iliney, op;
 
@@ -379,15 +386,7 @@ static void winCanvasProcessVerScroll(Ihandle* ih, WORD winop)
   SetScrollPos(ih->handle, SB_VERT, iposy, TRUE);
   ih->data->posy = posy;
 
-  cb = (IFniff)IupGetCallback(ih,"SCROLL_CB");
-  if (cb)
-    cb(ih, op, (float)ih->data->posx, (float)posy);
-  else
-  {
-    IFnff cb = (IFnff)IupGetCallback(ih,"ACTION");
-    if (cb)
-      cb(ih, (float)ih->data->posx, (float)posy);
-  }
+  winCanvasCallScrollCallback(ih, op);
 }
 
 static char* winCanvasGetDrawSizeAttrib(Ihandle* ih)
