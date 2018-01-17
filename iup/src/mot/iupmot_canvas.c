@@ -72,7 +72,11 @@ static void motCanvasScrollbarCallback(Widget w, XtPointer client_data, XtPointe
   {
     IFnff cb = (IFnff)IupGetCallback(ih,"ACTION");
     if (cb)
-      cb (ih, (float)posx, (float)posy);
+    {
+      /* REDRAW Now (since 3.24) - to allow a full native redraw process */
+      iupdrvRedrawNow(ih);
+      /* cb(ih, (float)posx, (float)posy); - OLD method */
+    }
   }
 }
 

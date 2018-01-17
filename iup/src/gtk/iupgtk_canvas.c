@@ -144,7 +144,11 @@ static void gtkCanvasAdjustHorizValueChanged(GtkAdjustment *adjustment, Ihandle 
   {
     IFnff cb = (IFnff)IupGetCallback(ih,"ACTION");
     if (cb)
-      cb(ih, (float)posx, (float)posy);
+    {
+      /* REDRAW Now (since 3.24) - to allow a full native redraw process */
+      iupdrvRedrawNow(ih);
+      /* cb(ih, (float)posx, (float)posy); - OLD method */
+    }
   }
 }
 
@@ -195,7 +199,11 @@ static void gtkCanvasAdjustVertValueChanged(GtkAdjustment *adjustment, Ihandle *
   {
     IFnff cb = (IFnff)IupGetCallback(ih,"ACTION");
     if (cb)
-      cb(ih, (float)posx, (float)posy);
+    {
+      /* REDRAW Now (since 3.24) - to allow a full native redraw process */
+      iupdrvRedrawNow(ih);
+      /* cb(ih, (float)posx, (float)posy); - OLD method */
+    }
   }
 }
 

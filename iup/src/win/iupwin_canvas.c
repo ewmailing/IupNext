@@ -250,9 +250,9 @@ static void winCanvasCallScrollCallback(Ihandle* ih, int op)
     IFnff cb = (IFnff)IupGetCallback(ih, "ACTION");
     if (cb)
     {
-      /* REDRAW Now, but no children */
-      RedrawWindow(ih->handle, NULL, NULL, RDW_ERASE | RDW_INVALIDATE | RDW_INTERNALPAINT | RDW_UPDATENOW | RDW_NOCHILDREN);
-      /* cb(ih, (float)ih->data->posx, (float)ih->data->posy); */
+      /* REDRAW Now (since 3.24) - to allow a full native redraw process */
+      iupdrvRedrawNow(ih);
+      /* cb(ih, (float)ih->data->posx, (float)ih->data->posy); - OLD method */
     }
   }
 }

@@ -41,7 +41,8 @@ int action(Ihandle *ih, float posx, float posy)
 int scroll_cb(Ihandle *ih, int op, float posx, float posy)
 {
   (void)op;
-  action(ih, posx, posy);
+  action(ih, posx, posy); /* works only with CD and OpenGL */
+  /* IupUpdate(ih) */
   return IUP_DEFAULT;
 }
 
