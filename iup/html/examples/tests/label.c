@@ -2,6 +2,7 @@
 #include <stdio.h>
 #include <string.h>
 #include "iup.h"
+#include "iupim.h"
 
 
 #define TEST_IMAGE_SIZE 20
@@ -226,6 +227,7 @@ void LabelTest(void)
   IupAppend(box2, label);
 
   label = IupAnimatedLabel(NULL);
+//  IupSetAttributeHandle(label, "ANIMATION", IupLoadAnimation("D:\\Downloads\\loading1.gif"));
   IupSetAttribute(label, "ANIMATION", "IUP_CircleProgressAnimation");
   IupSetAttribute(label, "START", "Yes");
   IupAppend(box2, label);

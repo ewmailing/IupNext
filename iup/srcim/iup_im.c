@@ -93,14 +93,14 @@ static void iSaveErrorMsg(int error)
   IupSetGlobal("IUPIM_LASTERROR", msg);
 }
 
-static Ihandle* iupLoadImageFile(imFile* ifile)
+static Ihandle* iupLoadImageFile(imFile* ifile, int index)
 {
   int i, error, width, height, color_mode, flags,
     data_type, has_alpha = 0;
   Ihandle* iup_image = NULL;
   void* image_data = NULL;
 
-  error = imFileReadImageInfo(ifile, 0, &width, &height, &color_mode, &data_type);
+  error = imFileReadImageInfo(ifile, index, &width, &height, &color_mode, &data_type);
   if (error)
     goto load_finish;
 
@@ -172,7 +172,7 @@ Ihandle* IupLoadImage(const char* file_name)
 
   ifile = imFileOpen(file_name, &error);
   if (!error)
-    iup_image = iupLoadImageFile(ifile);
+    iup_image = iupLoadImageFile(ifile, 0);
   else
     iSaveErrorMsg(error);
 
@@ -211,7 +211,7 @@ Ihandle* IupLoadAnimation(const char* file_name)
 
     for (i = 0; i < image_count; i++)
     {
-      Ihandle* iup_image = iupLoadImageFile(ifile);
+      Ihandle* iup_image = iupLoadImageFile(ifile, i);
       if (!iup_image)
         break;
 
@@ -254,6 +254,7 @@ Ihandle* IupLoadAnimationFrames(const char** file_name_list, int file_count)
   return animation;
 }
 
+#if 0
 /* Study. Not public yet */
 Ihandle* IupLoadImageRaw(const char* file_name, 
                          int width, int height, int data_type, int color_mode,
@@ -338,6 +339,7 @@ load_raw_finish:
   iSaveErrorMsg(error);
   return iup_image;
 }
+#endif
 
 int IupSaveImage(Ihandle* ih, const char* file_name, const char* format)
 {
