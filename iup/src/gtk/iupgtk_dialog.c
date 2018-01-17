@@ -1130,7 +1130,7 @@ static void gtkDialogSetMinMax(Ihandle* ih, int min_w, int min_h, int max_w, int
     geometry.max_width = max_w-decorwidth;
 
   geometry.max_height = 65535;
-  if (max_h > decorheight && max_w > geometry.min_height)
+  if (max_h > decorheight && max_h > geometry.min_height)
     geometry.max_height = max_h-decorheight;
 
   /* must set both at the same time, or GTK will assume its default */
