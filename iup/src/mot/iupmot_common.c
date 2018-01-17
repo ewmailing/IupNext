@@ -223,7 +223,7 @@ int iupdrvBaseSetZorderAttrib(Ihandle* ih, const char* value)
   if (iupdrvIsVisible(ih))
   {
     Widget widget = (Widget)iupAttribGet(ih, "_IUP_EXTRAPARENT");
-  if (!widget) widget = ih->handle;
+    if (!widget) widget = ih->handle;
 
     if (iupStrEqualNoCase(value, "TOP"))
       XRaiseWindow(iupmot_display, XtWindow(widget));
