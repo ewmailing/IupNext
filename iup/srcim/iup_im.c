@@ -35,6 +35,7 @@ static void iSaveErrorMsg(int error)
     {
     case IM_ERR_NONE:
       msg = NULL;
+      break;
     case IM_ERR_OPEN:
       msg = "Error Opening Image File.";
       break;
@@ -55,6 +56,7 @@ static void iSaveErrorMsg(int error)
       break;
     default:
       msg = "Unknown Error.";
+      break;
     }
   }
   else
@@ -63,6 +65,7 @@ static void iSaveErrorMsg(int error)
     {
     case IM_ERR_NONE:
       msg = NULL;
+      break;
     case IM_ERR_OPEN:
       msg = "Erro Abrindo Arquivo de Imagem.";
       break;
@@ -83,6 +86,7 @@ static void iSaveErrorMsg(int error)
       break;
     default:
       msg = "Erro Desconhecido.";
+      break;
     }
   }
 
