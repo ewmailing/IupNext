@@ -129,7 +129,10 @@ int IupConfigLoad(Ihandle* ih)
 
   line_file = iupLineFileOpen(filename);
   if (!line_file)
+  {
+    iupLineFileClose(line_file);
     return -1;
+  }
 
   do
   {
@@ -137,7 +140,10 @@ int IupConfigLoad(Ihandle* ih)
 
     int line_len = iupLineFileReadLine(line_file);
     if (line_len == -1)
+    {
+      iupLineFileClose(line_file);
       return -2;
+    }
 
     line_buffer = iupLineFileGetBuffer(line_file);
 
