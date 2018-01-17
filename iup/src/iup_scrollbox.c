@@ -34,7 +34,15 @@ static void iScrollBoxUpdateChildPos(Ihandle *ih)
     ih->iclass->SetChildrenPosition(ih, 0, 0);
 
     if (ih->firstchild->handle)
+    {
+      Icallback cb;
+
       iupLayoutUpdate(ih->firstchild);
+
+      cb = IupGetCallback(ih, "LAYOUTUPDATE_CB");
+      if (cb)
+        cb(ih);
+    }
   }
 }
 
@@ -387,6 +395,8 @@ Iclass* iupScrollBoxNewClass(void)
   ic->ComputeNaturalSize = iScrollBoxComputeNaturalSizeMethod;
   ic->SetChildrenCurrentSize = iScrollBoxSetChildrenCurrentSizeMethod;
   ic->SetChildrenPosition = iScrollBoxSetChildrenPositionMethod;
+
+  iupClassRegisterCallback(ic, "LAYOUTUPDATE_CB", "");
 
   /* Base Container */
   iupClassRegisterAttribute(ic, "EXPAND", iScrollBoxGetExpandAttrib, iScrollBoxSetExpandAttrib, IUPAF_SAMEASSYSTEM, "YES", IUPAF_NOT_MAPPED | IUPAF_NO_INHERIT);
