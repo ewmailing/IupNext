@@ -138,7 +138,10 @@ static char* iMatrixGetValueText(Ihandle* ih, int lin, int col)
   {
     /* only called in callback mode */
     sIFnii value_cb = (sIFnii)IupGetCallback(ih, "VALUE_CB");
-    value = value_cb(ih, lin, col);
+    if (value_cb)
+      value = value_cb(ih, lin, col);
+    else
+      value = NULL; /* application error!!!! value_cb must exist */
   }
   else
     value = ih->data->cells[lin][col].value;
