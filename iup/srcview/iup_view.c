@@ -659,6 +659,7 @@ static int destroyall_cb(Ihandle* self)
   Ihandle* ih_names[MAX_NAMES];
   Ihandle* list = (Ihandle*)IupGetAttribute(self, "mainList");
   int i, j=0, num_names = IupGetAllNames(names, MAX_NAMES); 
+  memset(ih_names, 0, MAX_NAMES * sizeof(Ihandle*));
   for (i = 0; i < num_names; i++)
   {
     ih = IupGetHandle(names[i]);
