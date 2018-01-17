@@ -689,6 +689,7 @@ void iupFlatScrollBarWheelUpdate(Ihandle* ih, float delta)
       {
         Ihandle* sb_vert = iFlatScrollBarGetVertical(ih);
         IupSetAttribute(sb_vert, "VISIBLE", "Yes");
+        IupSetAttribute(sb_vert, "ZORDER", "TOP");
       }
     }
   }
@@ -753,7 +754,10 @@ static int iFlatScrollBarSetDXAttrib(Ihandle* ih, const char *value)
           iupAttribSetInt(ih, "POSX", xmax - dx);
 
         if (!iupAttribGetBoolean(ih, "SHOWFLOATING"))
+        {
           IupSetAttribute(sb_horiz, "VISIBLE", "Yes");
+          IupSetAttribute(sb_horiz, "ZORDER", "TOP");
+        }
 
         iupAttribSet(ih, "XHIDDEN", "NO");
 
@@ -794,7 +798,10 @@ static int iFlatScrollBarSetDYAttrib(Ihandle* ih, const char *value)
           iupAttribSetInt(ih, "POSY", ymax - dy);
 
         if (!iupAttribGetBoolean(ih, "SHOWFLOATING"))
+        {
           IupSetAttribute(sb_vert, "VISIBLE", "Yes");
+          IupSetAttribute(sb_vert, "ZORDER", "TOP");
+        }
 
         iupAttribSet(ih, "YHIDDEN", "NO");
 
@@ -930,10 +937,8 @@ void iupFlatScrollBarSetChildrenPosition(Ihandle* ih)
   iupBaseSetPosition(sb_vert, ih->currentwidth - sb_size, 0);
   iupBaseSetPosition(sb_horiz, 0, ih->currentheight - sb_size);
 
-  if (IupGetInt(sb_vert, "VISIBLE"))
-    IupSetAttribute(sb_vert, "ZORDER", "TOP");
-  if (IupGetInt(sb_horiz, "VISIBLE"))
-    IupSetAttribute(sb_horiz, "ZORDER", "TOP");
+  IupSetAttribute(sb_vert, "ZORDER", "TOP");
+  IupSetAttribute(sb_horiz, "ZORDER", "TOP");
 }
 
 void iupFlatScrollBarMotionUpdate(Ihandle* ih, int x, int y)
@@ -951,6 +956,7 @@ void iupFlatScrollBarMotionUpdate(Ihandle* ih, int x, int y)
         {
           Ihandle* sb_vert = iFlatScrollBarGetVertical(ih);
           IupSetAttribute(sb_vert, "VISIBLE", "Yes");
+          IupSetAttribute(sb_vert, "ZORDER", "TOP");
         }
       }
     }
@@ -963,6 +969,7 @@ void iupFlatScrollBarMotionUpdate(Ihandle* ih, int x, int y)
         {
           Ihandle* sb_horiz = iFlatScrollBarGetHorizontal(ih);
           IupSetAttribute(sb_horiz, "VISIBLE", "Yes");
+          IupSetAttribute(sb_horiz, "ZORDER", "TOP");
         }
       }
     }
