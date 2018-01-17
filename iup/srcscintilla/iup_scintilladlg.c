@@ -502,7 +502,7 @@ static const char* strFileTitle(const char *filename)
 
 static char* readFile(const char* filename)
 {
-  int size;
+  long size;
   char* str;
   FILE* file = fopen(filename, "rb");
   if (!file)
@@ -511,9 +511,7 @@ static char* readFile(const char* filename)
   /* calculate file size */
   fseek(file, 0, SEEK_END);
   size = ftell(file);
-  fseek(file, 0, SEEK_SET);
-
-  if (size == 0)
+  if (size <= 0)
   {
     fclose(file);
     return NULL;
@@ -521,8 +519,16 @@ static char* readFile(const char* filename)
 
   /* allocate memory for the file contents + nul terminator */
   str = malloc(size + 1);
+  if (!str)
+  {
+    fclose(file);
+    return NULL;
+  }
+
   /* read all data at once */
+  fseek(file, 0, SEEK_SET);
   fread(str, size, 1, file);
+
   /* set the nul terminator */
   str[size] = 0;
 
