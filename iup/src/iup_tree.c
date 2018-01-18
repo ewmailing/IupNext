@@ -368,7 +368,7 @@ void iupTreeDelFromCache(Ihandle* ih, int id, int count)
   if (id < 0 || id > ih->data->node_count)
     return;
 
-  /* minimum sanity check for LASTADDNODE */
+  /* minimum safety check for LASTADDNODE */
   last_add_node = iupAttribGetInt(ih, "LASTADDNODE");
   if (last_add_node >= id && last_add_node < id+count)
     iupAttribSet(ih, "LASTADDNODE", NULL);

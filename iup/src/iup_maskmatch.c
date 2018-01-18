@@ -154,7 +154,7 @@ static void iMaskMatchCaptureResult (ImaskMatchVars * vars, ImaskCapt * capture)
     }
     else
     {
-      if (next) /* should always be valid - sanity check */
+      if (next) /* should always be valid - safety check */
       {
         if (capture->pos >= next->pos)
           (*vars->function)((char)capture->which_one, next->pos, capture->pos, vars->text, vars->user);
