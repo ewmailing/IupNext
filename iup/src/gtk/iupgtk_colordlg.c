@@ -24,17 +24,17 @@
 
 static char* gtkColorDlgPaletteToString(const char* palette)
 {
-  char iup_str[20], *gtk_str, *palette_p;
+  char iup_str[20], *gtk_str, *gtk_str_p, *palette_p;
   char* str = iupStrGetMemory(300);
   int off = 0, inc;
   GdkColor color;
 
-  gtk_str = iupStrDup(palette);
+  gtk_str_p = gtk_str = iupStrDup(palette);
   iupStrReplace(gtk_str, ':', 0);
 
   while (palette && *palette)
   {
-    if (!gdk_color_parse (gtk_str, &color))
+    if (!gdk_color_parse(gtk_str_p, &color))
       return NULL;
 
     inc = sprintf(iup_str, "%d %d %d;", (int)iupCOLOR16TO8(color.red), (int)iupCOLOR16TO8(color.green), (int)iupCOLOR16TO8(color.blue));
@@ -44,11 +44,12 @@ static char* gtkColorDlgPaletteToString(const char* palette)
     if (palette_p) 
     {
       palette_p++;
-      gtk_str += palette_p-palette;
+      gtk_str_p += palette_p - palette;
     }
     palette = palette_p;
   }
   str[off-1] = 0;  /* remove last separator */
+  free(gtk_str);
   return str;
 }
 
