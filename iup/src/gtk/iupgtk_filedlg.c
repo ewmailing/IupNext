@@ -232,12 +232,14 @@ static void gtkFileDlgUpdatePreview(GtkFileChooser *file_chooser, Ihandle* ih)
 {
   char *filename = gtk_file_chooser_get_preview_filename(file_chooser);
 
-  /* callback here always exists */
   IFnss cb = (IFnss)IupGetCallback(ih, "FILE_CB");
-  if (gtkIsFile(filename))
-    cb(ih, iupgtkStrConvertFromFilename(filename), "SELECT");
-  else
-    cb(ih, iupgtkStrConvertFromFilename(filename), "OTHER");
+  if (cb) /* safety check - callback here always exists */
+  {
+    if (gtkIsFile(filename))
+      cb(ih, iupgtkStrConvertFromFilename(filename), "SELECT");
+    else
+      cb(ih, iupgtkStrConvertFromFilename(filename), "OTHER");
+  }
 
   g_free (filename);
 
