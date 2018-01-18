@@ -80,7 +80,7 @@ const char* iupStrNextLine(const char* str, int *len);
  * \ingroup str */
 const char* iupStrNextValue(const char* str, int str_len, int *len, char sep);
 
-/** Returns the number of repetitions of the character occours in the string.
+/** Returns the number of repetitions of the character occurs in the string.
  * \ingroup str */
 int iupStrCountChar(const char *str, char c);
 
