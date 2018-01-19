@@ -4038,15 +4038,12 @@ void IupMglPlotAdd1D(Ihandle* ih, const char* inName, double inX)
 
   if (inName)
   {
-    Iarray* inNames = NULL;
-    if (sample_index == 0)
+    Iarray* inNames = (Iarray*)iupAttribGet(ih, "_IUP_MGLPLOT_NAMES");
+    if (!inNames)
     {
-      if (inNames) iupArrayDestroy(inNames);
       inNames =  iupArrayCreate(10, sizeof(char*));
       iupAttribSet(ih, "_IUP_MGLPLOT_NAMES", (char*)inNames);
     }
-    else
-      inNames = (Iarray*)iupAttribGet(ih, "_IUP_MGLPLOT_NAMES");
 
     if (inNames)
     {
