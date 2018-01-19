@@ -17,6 +17,7 @@ int  IupControlsOpen(void);
 Ihandle* IupCells(void);
 Ihandle* IupMatrix(const char *action);
 Ihandle* IupMatrixList(void);
+Ihandle* IupMatrixEx(void);
 
 /* available only when linking with "iupluamatrix" */
 void IupMatrixSetFormula(Ihandle* ih, int col, const char* formula, const char* init);

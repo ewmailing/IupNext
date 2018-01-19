@@ -23,6 +23,7 @@ int IupControlsOpen(void)
   iupRegisterClass(iupCellsNewClass());
   iupRegisterClass(iupMatrixNewClass());
   iupRegisterClass(iupMatrixListNewClass());
+  iupRegisterClass(iupMatrixExNewClass());
 
   IupSetGlobal("_IUP_CONTROLS_OPEN", "1");
 

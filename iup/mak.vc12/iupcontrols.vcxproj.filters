@@ -13,6 +13,9 @@
     <Filter Include="matrix\inc">
       <UniqueIdentifier>{b0b0cf9e-6c1e-4bf8-8729-8bba489cf041}</UniqueIdentifier>
     </Filter>
+    <Filter Include="matrixex">
+      <UniqueIdentifier>{615d6521-6a58-4085-9986-57152985d345}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="..\include\iupcontrols.h">
@@ -60,6 +63,9 @@
     <ClInclude Include="..\srccontrols\matrix\iupmat_scroll.h">
       <Filter>matrix\inc</Filter>
     </ClInclude>
+    <ClInclude Include="..\srccontrols\matrixex\iup_matrixex.h">
+      <Filter>matrixex</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="..\srccontrols\matrix\iupmat_aux.c">
@@ -104,6 +110,36 @@
       <Filter>matrix</Filter>
     </ClCompile>
     <ClCompile Include="..\srccontrols\iup_matrixlist.c" />
+    <ClCompile Include="..\srccontrols\matrixex\iupmatex_sort.c">
+      <Filter>matrixex</Filter>
+    </ClCompile>
+    <ClCompile Include="..\srccontrols\matrixex\iupmatex_undo.c">
+      <Filter>matrixex</Filter>
+    </ClCompile>
+    <ClCompile Include="..\srccontrols\matrixex\iupmatex_units.c">
+      <Filter>matrixex</Filter>
+    </ClCompile>
+    <ClCompile Include="..\srccontrols\matrixex\iupmatex_visible.c">
+      <Filter>matrixex</Filter>
+    </ClCompile>
+    <ClCompile Include="..\srccontrols\matrixex\iup_matrixex.c">
+      <Filter>matrixex</Filter>
+    </ClCompile>
+    <ClCompile Include="..\srccontrols\matrixex\iupmatex_busy.c">
+      <Filter>matrixex</Filter>
+    </ClCompile>
+    <ClCompile Include="..\srccontrols\matrixex\iupmatex_clipboard.c">
+      <Filter>matrixex</Filter>
+    </ClCompile>
+    <ClCompile Include="..\srccontrols\matrixex\iupmatex_copy.c">
+      <Filter>matrixex</Filter>
+    </ClCompile>
+    <ClCompile Include="..\srccontrols\matrixex\iupmatex_export.c">
+      <Filter>matrixex</Filter>
+    </ClCompile>
+    <ClCompile Include="..\srccontrols\matrixex\iupmatex_find.c">
+      <Filter>matrixex</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <CustomBuildStep Include="..\srccontrols\iupcontrols.def" />

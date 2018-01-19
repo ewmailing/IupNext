@@ -87,6 +87,7 @@
   <ItemGroup>
     <ClInclude Include="..\include\iupcontrols.h" />
     <ClInclude Include="..\srccontrols\iup_controls.h" />
+    <ClInclude Include="..\srccontrols\matrixex\iup_matrixex.h" />
     <ClInclude Include="..\srccontrols\matrix\iupmat_aux.h" />
     <ClInclude Include="..\srccontrols\matrix\iupmat_cd.h" />
     <ClInclude Include="..\srccontrols\matrix\iupmat_colres.h" />
@@ -103,6 +104,16 @@
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="..\srccontrols\iup_matrixlist.c" />
+    <ClCompile Include="..\srccontrols\matrixex\iupmatex_busy.c" />
+    <ClCompile Include="..\srccontrols\matrixex\iupmatex_clipboard.c" />
+    <ClCompile Include="..\srccontrols\matrixex\iupmatex_copy.c" />
+    <ClCompile Include="..\srccontrols\matrixex\iupmatex_export.c" />
+    <ClCompile Include="..\srccontrols\matrixex\iupmatex_find.c" />
+    <ClCompile Include="..\srccontrols\matrixex\iupmatex_sort.c" />
+    <ClCompile Include="..\srccontrols\matrixex\iupmatex_undo.c" />
+    <ClCompile Include="..\srccontrols\matrixex\iupmatex_units.c" />
+    <ClCompile Include="..\srccontrols\matrixex\iupmatex_visible.c" />
+    <ClCompile Include="..\srccontrols\matrixex\iup_matrixex.c" />
     <ClCompile Include="..\srccontrols\matrix\iupmat_aux.c" />
     <ClCompile Include="..\srccontrols\matrix\iupmat_colres.c" />
     <ClCompile Include="..\srccontrols\matrix\iupmat_draw.c" />

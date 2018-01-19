@@ -28,6 +28,9 @@
     <ClCompile Include="..\..\srclua5\ctrl\il_matrixlist.c">
       <Filter>Source Files</Filter>
     </ClCompile>
+    <ClCompile Include="..\..\srclua5\ctrl\il_matrixex.c">
+      <Filter>Source Files</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <None Include="..\..\srclua5\ctrl\iupluacontrols.def">
@@ -40,6 +43,9 @@
       <Filter>Lua</Filter>
     </None>
     <None Include="..\..\srclua5\ctrl\matrixlist.lua">
+      <Filter>Lua</Filter>
+    </None>
+    <None Include="..\..\srclua5\ctrl\matrixex.lua">
       <Filter>Lua</Filter>
     </None>
   </ItemGroup>

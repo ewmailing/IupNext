@@ -89,29 +89,14 @@
   Undo/Redo, Find, Sort, Column Visibility, Numeric Columns, Numeric Units, 
   Context Menu and others. </p>
 <p>
-  The extension can be used in two different ways: using a new control called
-  <strong>IupMatrixEx</strong>, or by calling <strong>IupMatrixExInit</strong> 
-  for an existing <strong>IupMatrix</strong> control.</p>
-<p>
   It can be used in callback mode or in standard more.</p>
+<p>This is an additional control that depends on the 
+<a href="../iupcontrols.html">IupControls</a> library. (Since IUP version 3.24 
+the separate library that contains IupMatrixEx was merged with the IupControls 
+library)</p>
 <p>
   Based on the DMatrix library created by Bruno Kassar and Luiz Cristóvão Gomez 
   Coelho.</p>
-  <h3>Initialization and Usage</h3>
-<p>
-The<span class="Apple-converted-space">&nbsp;</span><b>IupMatrixExOpen</b><span class="Apple-converted-space">&nbsp;</span>function 
-must be called after a<span class="Apple-converted-space">&nbsp;</span><b>IupOpen</b>, 
-so that the control can be used. The &quot;iupmatrixex.h&quot; file must also be 
-included in the source code. The program must be linked to the controls library 
-(iupmatrixex), and it depends on the <a href="../iupcontrols.html">Controls 
-Library</a>.</p>
-<p>To make the control available in Lua use require&quot;iupluamatrixex&quot; or manually 
-call the initialization function in C, 
-<b>iupmatrixexlua_open</b>, after calling <b>iuplua_open</b>.
-  &nbsp;When manually calling the function the iupluamatrixex.h file must also be included in the source code 
-and the program must be linked to the 
-Lua control 
-  library (iupluamatrixex).</p>
 
 
 <h3><a name="Creation">Creation</a></h3>
@@ -122,13 +107,6 @@ Lua control
 <p>
   This function returns the identifier of the 
   created editing component, or NULL if an error occurs.</p>
-
-
-<h3>Auxiliary Functions</h3>
-<pre>void <b>IupMatrixExInit</b>(Ihandle* <b>ih</b>); [in C]
-<b>iup.MatrixExInit</b>(<b>ih</b>: ihandle) [in Lua]</pre>
-<p>Register the new attributes and callbacks in a regular <strong>IupMatrix</strong> 
-control.</p>
 
 
 <h3><a name="Attributes">Attributes</a></h3>

@@ -25,6 +25,7 @@ int iupcontrolslua_open(lua_State * L)
   iupmatrixlua_open(L);
   iupcellslua_open(L);
   iupmatrixlistlua_open(L);
+  iupmatrixexlua_open(L);
 
   return 0;
 }

@@ -17,7 +17,6 @@
 #include "iupcontrols.h"
 #include "iup_plot.h"
 #include "iupim.h"
-#include "iupmatrixex.h"
 
 #include <cd.h>
 #include <cdiup.h>

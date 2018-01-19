@@ -13,7 +13,6 @@
 #include "iup.h"
 #include "iupcbs.h"
 #include "iupcontrols.h"
-#include "iupmatrixex.h"
 
 #include "iup_object.h"
 #include "iup_childtree.h"
@@ -1279,10 +1278,24 @@ static void iMatrixExSetClassUpdate(Iclass* ic)
   iupMatrixExSetClassUpdateUndo(ic);
 }
 
-static void iMatrixExInitAttribCb(Iclass* ic)
+Iclass* iupMatrixExNewClass(void)
 {
+  Iclass* ic = iupClassNew(iupRegisterFindClass("matrix"));
+
+  ic->name = "matrixex";
+  ic->format = "";
+  ic->nativetype = IUP_TYPECANVAS;
+  ic->childtype = IUP_CHILDNONE;
+  ic->is_interactive = 1;
+  ic->has_attrib_id = 2;   /* has attributes with IDs that must be parsed */
+
+  /* Class functions */
+  ic->New = iupMatrixExNewClass;
+  ic->Create  = iMatrixExCreateMethod;
+  ic->Destroy  = iMatrixExDestroyMethod;
+  
   iupClassRegisterAttribute(ic, "FREEZE", NULL, iMatrixExSetFreezeAttrib, NULL, NULL, IUPAF_NO_INHERIT);
-  iupClassRegisterAttribute(ic, "FREEZECOLOR", NULL, NULL, IUPAF_SAMEASSYSTEM, "0 0 255", IUPAF_NOT_MAPPED|IUPAF_NO_INHERIT);
+  iupClassRegisterAttribute(ic, "FREEZECOLOR", NULL, NULL, IUPAF_SAMEASSYSTEM, "0 0 255", IUPAF_NOT_MAPPED | IUPAF_NO_INHERIT);
 
   iupClassRegisterCallback(ic, "MENUCONTEXT_CB", "nii");
   iupClassRegisterCallback(ic, "MENUCONTEXTCLOSE_CB", "nii");
@@ -1302,48 +1315,8 @@ static void iMatrixExInitAttribCb(Iclass* ic)
   iupMatrixExRegisterUndo(ic);
   iupMatrixExRegisterFind(ic);
   iupMatrixExRegisterSort(ic);
-}
-
-static Iclass* iMatrixExNewClass(void)
-{
-  Iclass* ic = iupClassNew(iupRegisterFindClass("matrix"));
-
-  ic->name = "matrixex";
-  ic->format = "";
-  ic->nativetype = IUP_TYPECANVAS;
-  ic->childtype = IUP_CHILDNONE;
-  ic->is_interactive = 1;
-  ic->has_attrib_id = 2;   /* has attributes with IDs that must be parsed */
-
-  /* Class functions */
-  ic->New = iMatrixExNewClass;
-  ic->Create  = iMatrixExCreateMethod;
-  ic->Destroy  = iMatrixExDestroyMethod;
-  
-  iMatrixExInitAttribCb(ic);
 
   return ic;
-}
-
-void IupMatrixExInit(Ihandle* ih)
-{
-  if (ih->iclass->nativetype != IUP_TYPECANVAS || 
-      !IupClassMatch(ih, "matrix"))
-    return;
-
-  iMatrixExCreateMethod(ih, NULL);
-  IupSetCallback(ih, "DESTROY_CB", (Icallback)iMatrixExDestroyMethod);
-    
-  iMatrixExInitAttribCb(ih->iclass);
-}
-
-void IupMatrixExOpen(void)
-{
-  if (!IupGetGlobal("_IUP_MATRIXEX_OPEN"))
-  {
-    iupRegisterClass(iMatrixExNewClass());
-    IupSetGlobal("_IUP_MATRIXEX_OPEN", "1");
-  }
 }
 
 Ihandle* IupMatrixEx(void)

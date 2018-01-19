@@ -12,7 +12,6 @@
 #include "iup.h"
 #include "iupcbs.h"
 #include "iupcontrols.h"
-#include "iupmatrixex.h"
 
 #include "iup_object.h"
 #include "iup_childtree.h"

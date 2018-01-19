@@ -16,6 +16,7 @@ extern "C" {
 Iclass* iupCellsNewClass(void);
 Iclass* iupMatrixNewClass(void);
 Iclass* iupMatrixListNewClass(void);
+Iclass* iupMatrixExNewClass(void);
 
 char *iupControlBaseGetParentBgColor (Ihandle* ih);
 char *iupControlBaseGetBgColorAttrib(Ihandle* ih);

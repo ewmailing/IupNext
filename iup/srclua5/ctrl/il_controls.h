@@ -14,6 +14,7 @@ extern "C" {
 int iupcellslua_open (lua_State * L);
 int iupmatrixlua_open (lua_State * L);
 int iupmatrixlistlua_open(lua_State * L);
+int iupmatrixexlua_open(lua_State * L);
 
 #ifdef __cplusplus
 }

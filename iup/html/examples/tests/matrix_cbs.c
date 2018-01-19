@@ -4,7 +4,6 @@
 
 #include "iup.h"
 #include "iupcontrols.h"
-#include "iupmatrixex.h"
 #include <cd.h>
 
 
@@ -162,16 +161,17 @@ static int actioncb(Ihandle *h, int key, int lin, int col, int active, char* aft
 
 static Ihandle *create_mat(int mati)
 {
-  Ihandle *mat = IupMatrix(NULL); 
+  Ihandle *mat; 
   char name[30];
-
   sprintf(name, "mat%d", mati);
 
   if (mati==1)
   {
-    IupMatrixExInit(mat);
+    mat = IupMatrixEx();
     IupSetAttribute(mat,"UNDOREDO","Yes"); 
   }
+  else
+    mat = IupMatrix(NULL);
 
   IupSetHandle(name, mat);
   

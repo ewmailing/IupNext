@@ -1499,11 +1499,11 @@ wb_usr.tree =
                   name= {nl= "IupMatrixList"},
                   link= "ctrl/iupmatrixlist.html",
                 },
+                {
+                  name= {nl= "IupMatrixEx"},
+                  link= "ctrl/iupmatrixex.html",
+                },
               },
-            },
-            {
-              name= {nl= "IupMatrixEx"},
-              link= "ctrl/iupmatrixex.html",
             },
             {
               name= {nl= "IupGLCanvas"},

@@ -2,6 +2,7 @@ EXPORTS
 IupCells 
 IupMatrix
 IupMatrixList
+IupMatrixEx
 IupControlsOpen
 iupMatrixExGetCellValue
 iupMatrixExSetCellValue
