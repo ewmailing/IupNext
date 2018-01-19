@@ -813,8 +813,6 @@ namespace Iup
     MatrixEx() : Control(IupMatrixEx()) {}
     MatrixEx(Ihandle* _ih) : Control(_ih) {}
     MatrixEx(const Element& elem) : Control(elem.GetHandle()) {}
-
-    static void Open() { IupMatrixExOpen(); }
   };
   class GLControls
   {

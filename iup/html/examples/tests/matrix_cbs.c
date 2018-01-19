@@ -343,8 +343,6 @@ void MatrixCbsTest(void)
 {
   Ihandle *dlg, *bt;
 
-  IupMatrixExOpen();
- 
   IupSetFunction("removeline", (Icallback)removeline);
   IupSetFunction("addline", (Icallback)addline);
   IupSetFunction("removecol", (Icallback)removecol);

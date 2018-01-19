@@ -872,7 +872,6 @@ void PlotTest(void)
   int ii;
 
   IupPlotOpen();     /* init IupPlot library */
-  IupMatrixExOpen();
 
   /* create plots */
   for (ii = 0; ii < MAXPLOT; ii++)
