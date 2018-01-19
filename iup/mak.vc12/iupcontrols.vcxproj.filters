@@ -7,9 +7,6 @@
     <Filter Include="inc">
       <UniqueIdentifier>{bb5bc435-15dc-4e95-bee6-b954ea45919a}</UniqueIdentifier>
     </Filter>
-    <Filter Include="colorbrowser">
-      <UniqueIdentifier>{6cb35ec6-aa99-40e2-b8d4-a2462ef054d6}</UniqueIdentifier>
-    </Filter>
     <Filter Include="matrix">
       <UniqueIdentifier>{386d9a36-2756-40c8-bc10-683e353f0270}</UniqueIdentifier>
     </Filter>
@@ -23,9 +20,6 @@
     </ClInclude>
     <ClInclude Include="..\srccontrols\iup_controls.h">
       <Filter>inc</Filter>
-    </ClInclude>
-    <ClInclude Include="..\srccontrols\color\iup_colorhsi.h">
-      <Filter>colorbrowser</Filter>
     </ClInclude>
     <ClInclude Include="..\srccontrols\matrix\iupmat_aux.h">
       <Filter>matrix\inc</Filter>
@@ -68,15 +62,6 @@
     </ClInclude>
   </ItemGroup>
   <ItemGroup>
-    <ClCompile Include="..\srccontrols\color\iup_colorbrowser.c">
-      <Filter>colorbrowser</Filter>
-    </ClCompile>
-    <ClCompile Include="..\srccontrols\color\iup_colorbrowserdlg.c">
-      <Filter>colorbrowser</Filter>
-    </ClCompile>
-    <ClCompile Include="..\srccontrols\color\iup_colorhsi.c">
-      <Filter>colorbrowser</Filter>
-    </ClCompile>
     <ClCompile Include="..\srccontrols\matrix\iupmat_aux.c">
       <Filter>matrix</Filter>
     </ClCompile>

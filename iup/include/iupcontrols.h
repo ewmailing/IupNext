@@ -15,7 +15,6 @@ extern "C" {
 int  IupControlsOpen(void);
 
 Ihandle* IupCells(void);
-Ihandle *IupColorBrowser(void);
 Ihandle* IupMatrix(const char *action);
 Ihandle* IupMatrixList(void);
 

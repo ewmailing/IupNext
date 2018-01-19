@@ -151,4 +151,5 @@ void iupRegisterInternalClasses(void)
   iupRegisterClass(iupDialNewClass());
   iupRegisterClass(iupGaugeNewClass());
   iupRegisterClass(iupColorbarNewClass());
+  iupRegisterClass(iupColorBrowserNewClass());
 }

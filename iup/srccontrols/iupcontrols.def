@@ -1,10 +1,7 @@
 EXPORTS
-IupColorBrowser
 IupCells 
 IupMatrix
 IupMatrixList
-
 IupControlsOpen
-
 iupMatrixExGetCellValue
 iupMatrixExSetCellValue

@@ -97,6 +97,8 @@
     <ClCompile Include="..\src\iup_classattrib.c" />
     <ClCompile Include="..\src\iup_classbase.c" />
     <ClCompile Include="..\src\iup_colorbar.c" />
+    <ClCompile Include="..\src\iup_colorbrowser.c" />
+    <ClCompile Include="..\src\iup_colorhsi.c" />
     <ClCompile Include="..\src\iup_config.c" />
     <ClCompile Include="..\src\iup_detachbox.c" />
     <ClCompile Include="..\src\iup_dial.c" />
@@ -190,6 +192,7 @@
     <ClInclude Include="..\src\iup_childtree.h" />
     <ClInclude Include="..\src\iup_class.h" />
     <ClInclude Include="..\src\iup_classbase.h" />
+    <ClInclude Include="..\src\iup_colorhsi.h" />
     <ClInclude Include="..\src\iup_dlglist.h" />
     <ClInclude Include="..\src\iup_drv.h" />
     <ClInclude Include="..\src\iup_drvdraw.h" />

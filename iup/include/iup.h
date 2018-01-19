@@ -252,6 +252,7 @@ Ihandle*  IupCalendar   (void);
 Ihandle*  IupColorbar   (void);
 Ihandle*  IupGauge      (void);
 Ihandle*  IupDial       (const char* type);
+Ihandle*  IupColorBrowser(void);
 
 /* Old controls, use SPIN attribute of IupText */
 Ihandle*  IupSpin       (void);

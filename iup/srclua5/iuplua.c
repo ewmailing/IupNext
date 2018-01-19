@@ -1376,6 +1376,7 @@ int iuplua_open(lua_State * L)
   iupgaugelua_open(L);
   iupdiallua_open(L);
   iupcolorbarlua_open(L);
+  iupcolorbrowserlua_open(L);
 
   return 0; /* nothing in stack */
 }

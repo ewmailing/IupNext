@@ -1383,6 +1383,10 @@ wb_usr.tree =
               link= "elem/iupcolorbar.html"
             },
             {
+              name= {nl= "IupColorBrowser"},
+              link= "elem/iupcolorbrowser.html"
+            },
+            {
               name= {nl= "IupDatePick"},
               link= "elem/iupdatepick.html"
             },
@@ -1474,10 +1478,6 @@ wb_usr.tree =
                 {
                   name= {nl= "IupCells"},
                   link= "ctrl/iupcells.html"
-                },
-                {
-                  name= {nl= "IupColorBrowser"},
-                  link= "ctrl/iupcolorbrowser.html"
                 },
                 {
                   name= {nl= "IupMatrix"},
@@ -1933,11 +1933,6 @@ wb_usr.tree =
           name= {nl= "IupLog"},
           link= "func/iuplog.html"
         },
-        { link= "", name= {en= "" } },
-        {
-          name= {nl= "iupMask"},
-          link= "ctrl/iupmask.html"
-        }
       }
     },
     { link= "", name= {en= "" } },

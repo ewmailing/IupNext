@@ -101,6 +101,7 @@
     <ClCompile Include="..\..\srclua5\elem\il_cbox.c" />
     <ClCompile Include="..\..\srclua5\elem\il_clipboard.c" />
     <ClCompile Include="..\..\srclua5\elem\il_colorbar.c" />
+    <ClCompile Include="..\..\srclua5\elem\il_colorbrowser.c" />
     <ClCompile Include="..\..\srclua5\elem\il_colordlg.c" />
     <ClCompile Include="..\..\srclua5\elem\il_datepick.c" />
     <ClCompile Include="..\..\srclua5\elem\il_detachbox.c" />
@@ -171,6 +172,7 @@
     <None Include="..\..\srclua5\elem\cbox.lua" />
     <None Include="..\..\srclua5\elem\clipboard.lua" />
     <None Include="..\..\srclua5\elem\colorbar.lua" />
+    <None Include="..\..\srclua5\elem\colorbrowser.lua" />
     <None Include="..\..\srclua5\elem\colordlg.lua" />
     <None Include="..\..\srclua5\elem\datepick.lua" />
     <None Include="..\..\srclua5\elem\detachbox.lua" />

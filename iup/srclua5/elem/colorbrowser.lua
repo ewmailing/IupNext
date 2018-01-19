@@ -5,13 +5,12 @@ local ctrl = {
   nick = "colorbrowser",
   parent = iup.WIDGET,
   creation = "",
-  subdir = "ctrl",
+  subdir = "elem",
   callback = {
     drag_cb = "ccc",
     change_cb = "ccc",
   },
   funcname = "ColorBrowser",
-  include = "iupcontrols.h",
 }
 
 function ctrl.createElement(class, param)

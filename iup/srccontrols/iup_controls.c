@@ -21,9 +21,7 @@ int IupControlsOpen(void)
     return IUP_OPENED;
 
   iupRegisterClass(iupCellsNewClass());
-  iupRegisterClass(iupColorBrowserNewClass());
   iupRegisterClass(iupMatrixNewClass());
-  iupRegisterClass(iupColorBrowserDlgNewClass());
   iupRegisterClass(iupMatrixListNewClass());
 
   IupSetGlobal("_IUP_CONTROLS_OPEN", "1");
