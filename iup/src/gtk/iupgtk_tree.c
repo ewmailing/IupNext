@@ -1509,6 +1509,18 @@ static int gtkTreeSetValueAttrib(Ihandle* ih, const char* value)
 
     gtkTreeGetPreviousVisibleNode(ih, model, &iterItem, 1);
   }
+  else if (iupStrEqualNoCase(value, "CLEAR"))
+  {
+    GtkTreePath* pathFocus;
+    gtk_tree_view_get_cursor(GTK_TREE_VIEW(ih->handle), &pathFocus, NULL);
+    gtk_tree_model_get_iter(model, &iterItem, pathFocus);
+    gtk_tree_path_free(pathFocus);
+
+    iupAttribSet(ih, "_IUPTREE_IGNORE_SELECTION_CB", "1");
+    gtkTreeSelectNode(model, selection, &iterItem, 0);
+    iupAttribSet(ih, "_IUPTREE_IGNORE_SELECTION_CB", NULL);
+    return 0;
+  }
   else
   {
     if (!gtkTreeFindNodeFromString(ih, value, &iterItem))

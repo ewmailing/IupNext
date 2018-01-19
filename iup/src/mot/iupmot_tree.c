@@ -1374,6 +1374,13 @@ static int motTreeSetValueAttrib(Ihandle* ih, const char* value)
 
     wItem = motTreeGetPreviousVisibleNode(ih, wItemFocus, 1);
   }
+  else if (iupStrEqualNoCase(value, "CLEAR"))
+  {
+    /* clear previous selection */
+    XtVaSetValues(ih->handle, XmNselectedObjects, NULL, NULL);
+    XtVaSetValues(ih->handle, XmNselectedObjectCount, 0, NULL);
+    return 0;
+  }
   else
     wItem = iupTreeGetNodeFromString(ih, value);
 
