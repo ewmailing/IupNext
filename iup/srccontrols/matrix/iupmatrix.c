@@ -1703,13 +1703,13 @@ static int iMatrixFocus_CB(Ihandle* ih, int focus)
 
 static int iMatrixResize_CB(Ihandle* ih)
 {
-  int old_w = ih->data->old_w,
-    old_h = ih->data->old_h;
+  int old_w = ih->data->w,
+      old_h = ih->data->h;
 
   cdCanvasActivate(ih->data->cd_canvas);
-  cdCanvasGetSize(ih->data->cd_canvas, &(ih->data->old_w), &(ih->data->old_h), NULL, NULL);
+  cdCanvasGetSize(ih->data->cd_canvas, &(ih->data->w), &(ih->data->h), NULL, NULL);
 
-  if (old_w != ih->data->old_w || old_h != ih->data->old_h)
+  if (old_w != ih->data->w || old_h != ih->data->h)
   {
     ih->data->need_calcsize = 1;
 
@@ -1724,7 +1724,7 @@ static int iMatrixResize_CB(Ihandle* ih)
   if (ih->data->columns.num > 0 && ih->data->lines.num > 0)
   {
     IFnii cb = (IFnii)IupGetCallback(ih, "RESIZEMATRIX_CB");
-    if (cb) cb(ih, ih->data->old_w, ih->data->old_h);
+    if (cb) cb(ih, ih->data->w, ih->data->h);
   }
 
   return IUP_DEFAULT;
@@ -1916,8 +1916,7 @@ static int iMatrixGetNaturalHeight(Ihandle* ih, int *full_height)
 
 int iupMatrixGetWidth(Ihandle* ih)
 {
-  int w;
-  cdCanvasGetSize(ih->data->cd_canvas, &w, NULL, NULL, NULL);
+  int w = ih->data->w;
 
   if (iupFlatScrollBarGet(ih) & IUP_SB_VERT && !iupAttribGetBoolean(ih, "YHIDDEN"))
   {
@@ -1933,8 +1932,7 @@ int iupMatrixGetWidth(Ihandle* ih)
 
 int iupMatrixGetHeight(Ihandle* ih)
 {
-  int h;
-  cdCanvasGetSize(ih->data->cd_canvas, NULL, &h, NULL, NULL);
+  int h = ih->data->h;
 
   if (iupFlatScrollBarGet(ih) & IUP_SB_HORIZ && !iupAttribGetBoolean(ih, "XHIDDEN"))
   {

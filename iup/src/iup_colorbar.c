@@ -577,7 +577,7 @@ static int iColorbarSetActiveAttrib(Ihandle* ih, const char* value)
 static int iColorbarRedraw_CB(Ihandle* ih)
 {
   IupDrawBegin(ih);
-  IupDrawGetSize(ih, &ih->data->w, &ih->data->h);
+
   IupDrawParentBackground(ih);
 
   iColorbarRenderPreview(ih);
@@ -844,9 +844,6 @@ static int iColorbarCreateMethod(Ihandle* ih, void **params)
   free(ih->data);
   ih->data = iupALLOCCTRLDATA();
 
-  /* change the IupCanvas default values */
-  iupAttribSet(ih, "BORDER", "NO");
-
   /* default values */
   ih->data->num_cells = 16;
   ih->data->num_parts = 1;
@@ -904,6 +901,10 @@ Iclass* iupColorbarNewClass(void)
   iupClassRegisterCallback(ic, "SWITCH_CB",   "ii");
   iupClassRegisterCallback(ic, "SELECT_CB",   "ii");
   iupClassRegisterCallback(ic, "EXTENDED_CB", "i");
+
+  /* replace IupCanvas behavior */
+  iupClassRegisterReplaceAttribDef(ic, "BORDER", "NO", NULL);
+  iupClassRegisterReplaceAttribFlags(ic, "BORDER", IUPAF_READONLY | IUPAF_NO_INHERIT);
 
   /* IupColorbar only */
   iupClassRegisterAttributeId(ic, "CELL", iColorbarGetCellAttrib, iColorbarSetCellAttrib, IUPAF_NOT_MAPPED|IUPAF_NO_INHERIT);

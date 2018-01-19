@@ -336,7 +336,7 @@ static void iDialDrawCircular(Ihandle* ih)
 static int iDialRedraw_CB(Ihandle* ih)
 {
   IupDrawBegin(ih);
-  IupDrawGetSize(ih, &ih->data->w, &ih->data->h);
+
   IupDrawParentBackground(ih);
 
   ih->data->Draw(ih);
@@ -823,7 +823,6 @@ static int iDialCreateMethod(Ihandle* ih, void **params)
   ih->data = iupALLOCCTRLDATA();
 
   /* change the IupCanvas default values */
-  iupAttribSet(ih, "BORDER", "NO");
   IupSetAttribute(ih, "EXPAND", "NO");
 
   /* default values */
@@ -866,6 +865,10 @@ Iclass* iupDialNewClass(void)
   iupClassRegisterCallback(ic, "BUTTON_PRESS_CB", "d");
   iupClassRegisterCallback(ic, "BUTTON_RELEASE_CB", "d");
   iupClassRegisterCallback(ic, "VALUECHANGED_CB", "");
+
+  /* replace IupCanvas behavior */
+  iupClassRegisterReplaceAttribDef(ic, "BORDER", "NO", NULL);
+  iupClassRegisterReplaceAttribFlags(ic, "BORDER", IUPAF_READONLY | IUPAF_NO_INHERIT);
 
   /* IupDial only */
   iupClassRegisterAttribute(ic, "VALUE", iDialGetValueAttrib, iDialSetValueAttrib, NULL, NULL, IUPAF_NO_DEFAULTVALUE | IUPAF_NOT_MAPPED | IUPAF_NO_INHERIT);

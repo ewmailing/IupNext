@@ -131,7 +131,7 @@ struct _IcontrolData
 
   /* State */
   int has_focus;
-  int old_w, old_h;
+  int w, h;
   int callback_mode;
   int need_calcsize;
   int need_redraw;

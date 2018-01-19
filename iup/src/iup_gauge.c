@@ -108,6 +108,7 @@ static int iGaugeRedraw_CB(Ihandle* ih)
   long fgcolor = ih->data->fgcolor;
 
   IupDrawBegin(ih);
+
   IupDrawGetSize(ih, &w, &h);
 
   iupDrawSetColor(ih, "DRAWCOLOR", ih->data->bgcolor);
@@ -341,7 +342,6 @@ static int iGaugeCreateMethod(Ihandle* ih, void **params)
   ih->data = iupALLOCCTRLDATA();
 
   /* change the IupCanvas default values */
-  iupAttribSet(ih, "BORDER", "NO");
   IupSetAttribute(ih, "SIZE", IGAUGE_DEFAULTSIZE);
   IupSetAttribute(ih, "EXPAND", "NO");
 
@@ -377,6 +377,10 @@ Iclass* iupGaugeNewClass(void)
   ic->Create  = iGaugeCreateMethod;
 
   /* Do not need to set base attributes because they are inherited from IupCanvas */
+
+  /* replace IupCanvas behavior */
+  iupClassRegisterReplaceAttribDef(ic, "BORDER", "NO", NULL);
+  iupClassRegisterReplaceAttribFlags(ic, "BORDER", IUPAF_READONLY | IUPAF_NO_INHERIT);
 
   /* IupGauge only */
   iupClassRegisterAttribute(ic, "MIN", iGaugeGetMinAttrib, iGaugeSetMinAttrib, IUPAF_SAMEASSYSTEM, "0", IUPAF_NOT_MAPPED|IUPAF_NO_INHERIT);
