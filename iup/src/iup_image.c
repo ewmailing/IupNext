@@ -887,9 +887,16 @@ static int iImageSetReshapeAttrib(Ihandle *ih, const char* value)
   int w, h;
   if (iupStrToIntInt(value, &w, &h, 'x') == 2)
   {
-    unsigned char* imgdata = (unsigned char*)iupAttribGet(ih, "WID");
-    imgdata = (unsigned char *)realloc(imgdata, sizeof(unsigned char)*w*h * 3);
-    iupAttribSet(ih, "WID", (char*)imgdata);
+    int old_w = ih->currentwidth;
+    int old_h = ih->currentheight;
+
+    if (w*h > old_w*old_h)
+    {
+      /* must allocate more memory */
+      unsigned char* imgdata = (unsigned char*)iupAttribGet(ih, "WID");
+      imgdata = (unsigned char *)realloc(imgdata, sizeof(unsigned char)*w*h*3);
+      iupAttribSet(ih, "WID", (char*)imgdata);
+    }
 
     ih->currentwidth = w;
     ih->currentheight = h;
