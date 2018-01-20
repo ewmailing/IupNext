@@ -254,8 +254,8 @@ static Ihandle* iParseFunction(Iclass *ic)
   IPARSE_RETURN_IF_ERROR_FREE(iparse_error, attr);
 
   if (match)
-    attr = (char*)iupStrDup(iupLexName());
-
+    attr = iupLexGetName();
+  
   IPARSE_RETURN_IF_ERROR_FREE(iupLexMatch(IUPLEX_TK_BEGP), attr);
 
   ih = iParseControl(ic);
