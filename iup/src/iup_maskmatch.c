@@ -478,7 +478,7 @@ static long iMaskMatchLocal (const char *text, ImaskParsed * fsm, long start, ch
         if(found ^ negate)
         {
           iMaskPushStack (&next, temp);
-          state = temp;
+          /* state = temp; -- unused */
         }
       }
       else if (fsm[state].command == IMASK_BEGIN_CMD)
