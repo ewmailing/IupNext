@@ -309,7 +309,10 @@ static void changeTabsToSpaces(Ihandle *multitext)
 
     IupTextConvertPosToLinCol(multitext, i, &lin, &col);
 
-    spacesToNextTab = tabSize - (col + 1) % tabSize + 1;
+    if (tabSize == 0)
+      spacesToNextTab = 0;
+    else
+      spacesToNextTab = tabSize - (col + 1) % tabSize + 1;
 
     IupSetStrf(multitext, "DELETERANGE", "%d,%d", i, 1);
 
@@ -324,6 +327,9 @@ static void changeSpacesToTabs(Ihandle *multitext)
   int count = IupGetInt(multitext, "COUNT");
   int tabSize = IupGetInt(multitext, "TABSIZE");
   int lin, col, i;
+
+  if (tabSize == 0)
+    return;
 
   for (i = count - 1; i >= 0; i--)
   {
@@ -591,7 +597,7 @@ static void saveProjectFiles(Ihandle *projectTree, Ihandle *projectConfig)
   int i;
 
   /* clear everything before saving */
-  for (i = 1; i <= count; count++)
+  for (i = 1; i <= count; i++)
     IupConfigSetVariableStrId(projectConfig, "ProjectFiles", "File", i, NULL);
   IupConfigSetVariableStr(projectConfig, "ProjectFiles", "Count", NULL);
 
