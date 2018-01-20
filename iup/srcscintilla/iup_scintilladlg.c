@@ -1867,9 +1867,9 @@ static int item_print_action_cb(Ihandle* ih_item)
   return IUP_DEFAULT;
 }
 
-static int getListIndex(const char* value, const char* list[])
+static int getListIndex(const char* value, const char* list[], int count)
 {
-  int i, count = sizeof(list);
+  int i;
 
   if (!value)
     return 0;
@@ -1907,9 +1907,9 @@ static int item_pagesetup_action_cb(Ihandle* ih_item)
   color = IupConfigGetVariableStr(config, "ScintillaPrint", "Color");
   magnification = IupConfigGetVariableInt(config, "ScintillaPrint", "Magnification");
 
-  margin_units_index = getListIndex(margin_units, margin_units_list);
-  word_wrap_index = getListIndex(word_wrap, word_wrap_list);
-  color_index = getListIndex(color, color_list);
+  margin_units_index = getListIndex(margin_units, margin_units_list, sizeof(margin_units_list));
+  word_wrap_index = getListIndex(word_wrap, word_wrap_list, sizeof(word_wrap_list));
+  color_index = getListIndex(color, color_list, sizeof(color_list));
 
   if (IupGetParam("Page Setup", setparent_param_cb, IupGetDialog(ih_item),
     "Margin Left: %R\n"
