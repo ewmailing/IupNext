@@ -54,8 +54,7 @@ static struct {
   { "iup_plot",  0 },
   { "iup_pplot",  0 },
   { "iup_mglplot",  0 },
-  { "iup_scintilla",  0 },
-  { "iupmatrixex",  0 }
+  { "iup_scintilla",  0 }
 };
 
 enum headers { 
@@ -66,7 +65,6 @@ enum headers {
   IUPOLE_H,
   IUPWEB_H,
   IUPPLOT_H,
-  IUPPPLOT_H,
   IUPMGLPLOT_H,
   IUPSCINTILLA_H,
   IUPMATRIXEX_H 
@@ -158,18 +156,18 @@ elems[] =
   { "Spin",         code_empty,        check_empty,       0  },
   { "Spinbox",      code_elem,         check_elem,        0  },
   { "Split",        code_elemlist2,    check_elemlist2,   0  },
+  { "Gauge",        code_empty,        check_empty,       0 },
+  { "Colorbar",     code_empty,        check_empty,       0 },
+  { "ColorBrowser", code_empty,        check_empty,       0 },
+  { "Dial",         code_string,       check_string,      0 },
   { "Cells",        code_empty,        check_empty,       IUPCONTROLS_H },
-  { "Gauge",        code_empty,        check_empty,       IUPCONTROLS_H },
-  { "Colorbar",     code_empty,        check_empty,       IUPCONTROLS_H },
-  { "ColorBrowser", code_empty,        check_empty,       IUPCONTROLS_H },
-  { "Dial",         code_string,       check_string,      IUPCONTROLS_H },
   { "Matrix",       code_string,       check_cb,          IUPCONTROLS_H },
   { "MatrixList",   code_empty,        check_empty,       IUPCONTROLS_H },
+  { "MatrixEx",     code_empty,        check_empty,       IUPCONTROLS_H },
   { "GLCanvas",     code_string,       check_cb,          IUPGL_H },
-  { "MatrixEx",     code_empty,        check_empty,       IUPMATRIXEX_H },
+  { "GLBackgroundBox", code_elem,      check_elem,        IUPGL_H  },
   { "OleControl",   code_string,       check_cb,          IUPOLE_H },
   { "Plot",         code_empty,        check_empty,       IUPPLOT_H },
-  { "PPlot",        code_empty,        check_empty,       IUPPPLOT_H },
   { "MglPlot",      code_empty,        check_empty,       IUPMGLPLOT_H },
   { "Scintilla",    code_empty,        check_empty,       IUPSCINTILLA_H },
   { "WebBrowser",   code_empty,        check_empty,       IUPWEB_H },
@@ -187,7 +185,6 @@ elems[] =
   { "GLExpander",   code_elem,         check_elem,        IUPGLCONTROLS_H },
   { "GLScrollBox",  code_elem,         check_elem,        IUPGLCONTROLS_H },
   { "GLSizeBox",    code_elem,         check_elem,        IUPGLCONTROLS_H },
-  { "GLBackgroundBox", code_elem,      check_elem,        IUPGL_H  },
   { "@@@",          code_iupCpi,       check_iupCpi,      0  }
 };
 #define nelems (sizeof(elems)/sizeof(elems[0]))

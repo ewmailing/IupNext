@@ -134,11 +134,6 @@ SRC += matrix.c
 SRC += matrix_cbs.c
 SRC += matrix_cbmode.c
 SRC += matrixlist.c
-ifneq ($(findstring Win, $(TEC_SYSNAME)), )
-  LIBS += iupmatrixex
-else
-  SLIB += $(IUP_LIB)/libiupmatrixex.a
-endif
 
 LINKER = g++
 DEFINES += PLOT_TEST
