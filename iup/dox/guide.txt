@@ -4,4 +4,4 @@ replace h2> por h3>
 replace h1> por h2>
 edit index.html 
   change <h2>IUP</h2>
-  to <h1>SDK</h1>
+  to <h1>Internal SDK</h1>
