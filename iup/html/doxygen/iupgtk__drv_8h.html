@@ -22,10 +22,10 @@
 <table class="memberdecls">
 <tr><td colspan="2"><h3><a name="define-members"></a>
 Defines</h3></td></tr>
-<tr><td class="memItemLeft" align="right" valign="top"><a class="anchor" id="a45da2223db79359ae64232f1f8f7b50d"></a><!-- doxytag: member="iupgtk_drv.h::iupCOLORDoubleTO8" ref="a45da2223db79359ae64232f1f8f7b50d" args="(_x)" -->
-#define&nbsp;</td><td class="memItemRight" valign="bottom"><b>iupCOLORDoubleTO8</b>(_x)&nbsp;&nbsp;&nbsp;((unsigned char)(_x*255))</td></tr>
-<tr><td class="memItemLeft" align="right" valign="top"><a class="anchor" id="a07a71ce631e94dc90eb89f5bd364ea9b"></a><!-- doxytag: member="iupgtk_drv.h::iupCOLOR8ToDouble" ref="a07a71ce631e94dc90eb89f5bd364ea9b" args="(_x)" -->
-#define&nbsp;</td><td class="memItemRight" valign="bottom"><b>iupCOLOR8ToDouble</b>(_x)&nbsp;&nbsp;&nbsp;((double)_x/255.0)</td></tr>
+<tr><td class="memItemLeft" align="right" valign="top"><a class="anchor" id="a2c0b77cfa8e5864582f92bb9643b1740"></a><!-- doxytag: member="iupgtk_drv.h::iupgtkColorFromDouble" ref="a2c0b77cfa8e5864582f92bb9643b1740" args="(_x)" -->
+#define&nbsp;</td><td class="memItemRight" valign="bottom"><b>iupgtkColorFromDouble</b>(_x)&nbsp;&nbsp;&nbsp;((unsigned char)(_x*255))</td></tr>
+<tr><td class="memItemLeft" align="right" valign="top"><a class="anchor" id="a484a4fd75fcb5bc0886b25f8686f5b92"></a><!-- doxytag: member="iupgtk_drv.h::iupgtkColorToDouble" ref="a484a4fd75fcb5bc0886b25f8686f5b92" args="(_x)" -->
+#define&nbsp;</td><td class="memItemRight" valign="bottom"><b>iupgtkColorToDouble</b>(_x)&nbsp;&nbsp;&nbsp;((double)_x/255.0)</td></tr>
 <tr><td class="memItemLeft" align="right" valign="top"><a class="anchor" id="a91b3044279d1f159de94d0f2de3a7579"></a><!-- doxytag: member="iupgtk_drv.h::iupGTK_PANGOUNITS2PIXELS" ref="a91b3044279d1f159de94d0f2de3a7579" args="(_x)" -->
 #define&nbsp;</td><td class="memItemRight" valign="bottom"><b>iupGTK_PANGOUNITS2PIXELS</b>(_x)&nbsp;&nbsp;&nbsp;(((_x) + PANGO_SCALE/2) / PANGO_SCALE)</td></tr>
 <tr><td class="memItemLeft" align="right" valign="top"><a class="anchor" id="a336464a486f082b55ffc5232205bc0ef"></a><!-- doxytag: member="iupgtk_drv.h::iupGTK_PIXELS2PANGOUNITS" ref="a336464a486f082b55ffc5232205bc0ef" args="(_x)" -->
@@ -44,8 +44,8 @@ gboolean&nbsp;</td><td class="memItemRight" valign="bottom"><b>iupgtkShowHelp</b
 int&nbsp;</td><td class="memItemRight" valign="bottom"><b>iupgtkSetMnemonicTitle</b> (Ihandle *ih, GtkLabel *label, const char *value)</td></tr>
 <tr><td class="memItemLeft" align="right" valign="top"><a class="anchor" id="a12b9c4d2cc8ee7fca72c5c2a06288f80"></a><!-- doxytag: member="iupgtk_drv.h::iupgtkUpdateMnemonic" ref="a12b9c4d2cc8ee7fca72c5c2a06288f80" args="(Ihandle *ih)" -->
 void&nbsp;</td><td class="memItemRight" valign="bottom"><b>iupgtkUpdateMnemonic</b> (Ihandle *ih)</td></tr>
-<tr><td class="memItemLeft" align="right" valign="top"><a class="anchor" id="a7ade486b959eff65471c6f3535767aff"></a><!-- doxytag: member="iupgtk_drv.h::iupgdkColorSet" ref="a7ade486b959eff65471c6f3535767aff" args="(GdkColor *color, unsigned char r, unsigned char g, unsigned char b)" -->
-void&nbsp;</td><td class="memItemRight" valign="bottom"><b>iupgdkColorSet</b> (GdkColor *color, unsigned char r, unsigned char g, unsigned char b)</td></tr>
+<tr><td class="memItemLeft" align="right" valign="top"><a class="anchor" id="af8a2a783496398ed36b48eece7db9bd1"></a><!-- doxytag: member="iupgtk_drv.h::iupgdkColorSetRGB" ref="af8a2a783496398ed36b48eece7db9bd1" args="(GdkColor *color, unsigned char r, unsigned char g, unsigned char b)" -->
+void&nbsp;</td><td class="memItemRight" valign="bottom"><b>iupgdkColorSetRGB</b> (GdkColor *color, unsigned char r, unsigned char g, unsigned char b)</td></tr>
 <tr><td class="memItemLeft" align="right" valign="top"><a class="anchor" id="a9444748b4a09b6ea397bc6995df4e223"></a><!-- doxytag: member="iupgtk_drv.h::iupgtkSetBgColor" ref="a9444748b4a09b6ea397bc6995df4e223" args="(InativeHandle *handle, unsigned char r, unsigned char g, unsigned char b)" -->
 void&nbsp;</td><td class="memItemRight" valign="bottom"><b>iupgtkSetBgColor</b> (<a class="el" href="group__object.html#gad7c818b0280c1947556ca9cb3ce948b8">InativeHandle</a> *handle, unsigned char r, unsigned char g, unsigned char b)</td></tr>
 <tr><td class="memItemLeft" align="right" valign="top"><a class="anchor" id="aedda619630334b919acaa80944a037cf"></a><!-- doxytag: member="iupgtk_drv.h::iupgtkSetFgColor" ref="aedda619630334b919acaa80944a037cf" args="(InativeHandle *handle, unsigned char r, unsigned char g, unsigned char b)" -->
@@ -128,7 +128,7 @@ gboolean&nbsp;</td><td class="memItemRight" valign="bottom"><b>iupgtkDialogDelet
 <hr/><a name="_details"></a><h3>Detailed Description</h3>
 <p>See Copyright Notice in "iup.h" </p>
 </div>
-<hr class="footer"/><address class="footer"><small>Generated on Wed Oct 11 2017 23:11:58 for SDK by&nbsp;
+<hr class="footer"/><address class="footer"><small>Generated on Mon Jan 22 2018 11:52:53 for SDK by&nbsp;
 <a href="http://www.doxygen.org/index.html">
 <img class="footer" src="doxygen.png" alt="doxygen"/></a> 1.7.1 </small></address>
 </body>
