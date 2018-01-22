@@ -299,6 +299,9 @@ static void changeTabsToSpaces(Ihandle *multitext)
   int tabSize = IupGetInt(multitext, "TABSIZE");
   int lin, col, i, j;
 
+  if (tabSize == 0)
+    return;
+
   for (i = count - 1; i >= 0; i--)
   {
     int spacesToNextTab;
@@ -307,14 +310,10 @@ static void changeTabsToSpaces(Ihandle *multitext)
     if (c != '\t')
       continue;
 
-    IupTextConvertPosToLinCol(multitext, i, &lin, &col);
-
-    if (tabSize == 0)
-      spacesToNextTab = 0;
-    else
-      spacesToNextTab = tabSize - (col + 1) % tabSize + 1;
-
     IupSetStrf(multitext, "DELETERANGE", "%d,%d", i, 1);
+
+    IupTextConvertPosToLinCol(multitext, i, &lin, &col);
+    spacesToNextTab = tabSize - (col + 1) % tabSize + 1;
 
     for (j = 0; j < spacesToNextTab; j++)
       IupSetAttributeId(multitext, "INSERT", i + j, " ");
@@ -365,6 +364,9 @@ static void changeLeadingSpacesToTabs(Ihandle *multitext)
   int lineCount = IupGetInt(multitext, "LINECOUNT");
   int tabSize = IupGetInt(multitext, "TABSIZE");
   int pos, i, j;
+
+  if (tabSize == 0)
+    return;
 
   for (i = 0; i < lineCount; i++)
   {
@@ -4002,7 +4004,7 @@ static int item_tab_action_cb(Ihandle* ih_item)
   int tabSize = IupConfigGetVariableIntDef(config, "ScintillaFormat", "TabSize", 8);
 
   if (IupGetParam("Tab Settings", setparent_param_cb, IupGetDialog(ih_item),
-    "Size: %i\n"
+    "Size: %i[1,]\n"
     "Replace by Whitespace: %b\n",
     &tabSize, &replaceBySpace, NULL))
   {
