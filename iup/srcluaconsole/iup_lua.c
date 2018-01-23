@@ -98,7 +98,6 @@ static void iuplua_openlibs(lua_State *L)
 #endif
 #ifndef IUPLUA_NO_CD
   iupcontrolslua_open(L);
-  iupmatrixexlua_open(L);
   iup_plotlua_open(L);
   cdlua_open(L);
   cdluaiup_open(L);
