@@ -227,7 +227,8 @@ void LabelTest(void)
   IupAppend(box2, label);
 
   label = IupAnimatedLabel(NULL);
-//  IupSetAttributeHandle(label, "ANIMATION", IupLoadAnimation("D:\\Downloads\\loading1.gif"));
+  //label = IupAnimatedLabel(IupLoadAnimation("D:\\tecgraf\\iup\\html\\examples\\tests\\loading.gif"));
+  //IupSetAttributeHandle(label, "ANIMATION", IupLoadAnimation("D:\\tecgraf\iup\\html\\examples\\tests\\loading.gif"));
   IupSetAttribute(label, "ANIMATION", "IUP_CircleProgressAnimation");
   IupSetAttribute(label, "START", "Yes");
   IupAppend(box2, label);
