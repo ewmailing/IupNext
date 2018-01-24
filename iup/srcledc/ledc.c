@@ -160,6 +160,7 @@ elems[] =
   { "Colorbar",     code_empty,        check_empty,       0 },
   { "ColorBrowser", code_empty,        check_empty,       0 },
   { "Dial",         code_string,       check_string,      0 },
+  { "AnimatedLabel",code_elem,         check_elem,        0  },
   { "Cells",        code_empty,        check_empty,       IUPCONTROLS_H },
   { "Matrix",       code_string,       check_cb,          IUPCONTROLS_H },
   { "MatrixList",   code_empty,        check_empty,       IUPCONTROLS_H },
