@@ -209,7 +209,7 @@ int iupdrvMenuPopup(Ihandle* ih, int x, int y)
   {
     /* search for a valid handle */
     Ihandle* dlg = iupDlgListFirst();
-    do 
+    while (dlg)
     {
       if (dlg->handle)
       {
@@ -220,7 +220,7 @@ int iupdrvMenuPopup(Ihandle* ih, int x, int y)
           break;
       }
       dlg = iupDlgListNext();
-    } while (dlg);
+    } 
   }
 
   /* Necessary to avoid tray dialogs to lock popup menus (they get sticky after the 1st time) */
