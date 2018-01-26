@@ -579,6 +579,7 @@ static int winCanvasMsgProc(Ihandle* ih, UINT msg, WPARAM wp, LPARAM lp, LRESULT
       *result = 0;
       return 1;
     }
+    break;
   case WM_HSCROLL:
     /* only process the scrollbar if not a MDI client AND a standard scrollbar */
     if (!iupAttribGetBoolean(ih, "MDICLIENT") && lp == 0)
@@ -587,6 +588,7 @@ static int winCanvasMsgProc(Ihandle* ih, UINT msg, WPARAM wp, LPARAM lp, LRESULT
       *result = 0;
       return 1;
     }
+    break;
   case WM_SETFOCUS:
     if (!iupAttribGetBoolean(ih, "CANFOCUS"))
     {
