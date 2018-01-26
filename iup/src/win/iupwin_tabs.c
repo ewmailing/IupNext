@@ -436,14 +436,18 @@ static LRESULT CALLBACK winTabsPageWndProc(HWND hWnd, UINT msg, WPARAM wp, LPARA
   {
   case WM_ERASEBKGND:
     {
-      RECT rect;
-      HDC hDC = (HDC)wp;
       Ihandle* ih = iupwinHandleGet(hWnd);
-      GetClientRect(ih->handle, &rect); 
-      winTabsDrawPageBackground(ih, hDC, &rect);
+      if (ih) /* should never happen */
+      {
+        RECT rect;
+        HDC hDC = (HDC)wp;
+        GetClientRect(ih->handle, &rect);
+        winTabsDrawPageBackground(ih, hDC, &rect);
 
-      /* return non zero value */
-      return 1;
+        /* return non zero value */
+        return 1;
+      }
+      break;
     }
   case WM_COMMAND:
   case WM_CTLCOLORSCROLLBAR:
