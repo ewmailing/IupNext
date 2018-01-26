@@ -113,7 +113,7 @@ int IupMainLoop(void)
     }
   } while (ret);
 
-  win_main_loop--;
+  win_main_loop--;   /* just for the record, should never pass here */
   return IUP_NOERROR;
 }
 
