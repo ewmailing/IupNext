@@ -962,12 +962,13 @@ static int winListSetScrollToPosAttrib(Ihandle* ih, const char* value)
 
 static int winListSetImageAttrib(Ihandle* ih, int id, const char* value)
 {
-  HBITMAP hBitmap = iupImageGetImage(value, ih, 0);
+  HBITMAP hBitmap;
   int pos = iupListGetPosAttrib(ih, id);
 
   if (!ih->data->show_image || pos < 0)
     return 0;
 
+  hBitmap = iupImageGetImage(value, ih, 0);
   winListSetItemData(ih, pos, NULL, hBitmap);
 
   iupdrvRedrawNow(ih);
@@ -1574,7 +1575,6 @@ static LRESULT CALLBACK winListComboListWndProc(HWND hwnd, UINT msg, WPARAM wp, 
 
 static int winListMsgProc(Ihandle* ih, UINT msg, WPARAM wp, LPARAM lp, LRESULT *result)
 {
-
   if (ih->data->is_dropdown)
   {
     switch (msg)
@@ -1637,6 +1637,7 @@ static int winListMsgProc(Ihandle* ih, UINT msg, WPARAM wp, LPARAM lp, LRESULT *
       *result = 0;
       return 1;
     }
+    break;
   case WM_SETFOCUS:
   case WM_KILLFOCUS:
   case WM_MOUSELEAVE:
