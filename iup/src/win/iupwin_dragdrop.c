@@ -418,7 +418,8 @@ static HRESULT STDMETHODCALLTYPE IwinDataObject_GetData(IwinDataObject* pThis, L
 
   /* fill data */
   cbDragData = (IFnsVi)IupGetCallback(pThis->ih, "DRAGDATA_CB");
-  cbDragData(pThis->ih, iupwinStrFromSystem(type), pData, size);
+  if (cbDragData)
+    cbDragData(pThis->ih, iupwinStrFromSystem(type), pData, size);
 
   GlobalUnlock(pStgMedium->hGlobal);
 
@@ -794,8 +795,6 @@ static void winGetClipboardFormatName(CLIPFORMAT cf, TCHAR* name, int len)
     lstrcpy(name, TEXT("BITMAP"));
   else if (cf == CF_METAFILEPICT)
     lstrcpy(name, TEXT("METAFILEPICT"));
-  else if (cf == CF_TIFF)
-    lstrcpy(name, TEXT("TIFF"));
   else if (cf == CF_TIFF)
     lstrcpy(name, TEXT("TIFF"));
   else if (cf == CF_DIB)
