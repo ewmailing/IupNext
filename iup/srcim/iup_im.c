@@ -198,16 +198,8 @@ Ihandle* IupLoadAnimation(const char* file_name)
   ifile = imFileOpen(file_name, &error);
   if (!error)
   {
-    double fps;
     int image_count, i;
     imFileGetInfo(ifile, NULL, NULL, &image_count);
-
-    fps = imFileGetAttribReal(ifile, "FPS", 0);
-    if (fps)
-    {
-      int frametime = iupRound(1000.0 / fps);
-      IupSetInt(animation, "FRAMETIME", frametime);
-    }
 
     for (i = 0; i < image_count; i++)
     {
@@ -216,7 +208,18 @@ Ihandle* IupLoadAnimation(const char* file_name)
         break;
 
       if (!animation)
+      {
+        double fps;
+
         animation = IupUser();
+
+        fps = imFileGetAttribReal(ifile, "FPS", 0);
+        if (fps)
+        {
+          int frametime = iupRound(1000.0 / fps);
+          IupSetInt(animation, "FRAMETIME", frametime);
+        }
+      }
 
       IupAppend(animation, iup_image);
     }
