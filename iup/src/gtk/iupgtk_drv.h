@@ -82,7 +82,10 @@ PangoLayout* iupgtkGetPangoLayout(const char* value);
 
 
 /* open */
-char* iupgtkGetNativeWindowHandle(Ihandle* ih);
+char* iupgtkGetNativeWidgetHandle(GtkWidget *widget);
+char* iupgtkGetNativeWindowHandleAttrib(Ihandle* ih);
+const char* iupgtkGetNativeWindowHandleName(void);
+const char* iupgtkGetNativeFontIdName(void);
 void iupgtkPushVisualAndColormap(void* visual, void* colormap);
 void* iupgtkGetNativeGraphicsContext(GtkWidget* widget);
 void iupgtkReleaseNativeGraphicsContext(GtkWidget* widget, void* gc);
