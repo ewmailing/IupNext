@@ -5,6 +5,7 @@
  */
 
 #include <stdlib.h>
+#include <memory.h>
 
 #include "iup.h"
 
