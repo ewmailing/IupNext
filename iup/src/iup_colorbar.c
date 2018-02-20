@@ -641,20 +641,15 @@ static void iColorbarCallSelectCb(Ihandle* ih, int idx, int type)
 
 static void iColorbarCallCellCb(Ihandle* ih, int idx)
 {
-  char* returned;
+  char* ret;
   sIFni cell_cb = (sIFni)IupGetCallback(ih, "CELL_CB");
   if (!cell_cb)
     return;
 
-  returned = cell_cb(ih, idx);  /* the application can change the color */
-  if (returned) 
+  ret = cell_cb(ih, idx);  /* the application can change the color */
+  if (ret) 
   {
-    int preview = 0;
-    /* check if the preview area should be rendered */
-    if (idx == ih->data->fgcolor_idx || idx == ih->data->bgcolor_idx)
-      preview = 1;
-
-    ih->data->colors[idx] = iupDrawStrToColor(returned, ih->data->colors[idx]);
+    ih->data->colors[idx] = iupDrawStrToColor(ret, ih->data->colors[idx]);
     IupUpdate(ih);
   }
 }
