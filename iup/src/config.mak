@@ -73,7 +73,8 @@ ifdef USE_GTK
   CHECK_GTK = Yes
   DEFINES += GTK_DISABLE_DEPRECATED 
   ifdef USE_GTK3
-    DEFINES += GDK_DISABLE_DEPRECATED GSEAL_ENABLE
+    DEFINES += GDK_DISABLE_DEPRECATED
+    DEFINES += GSEAL_ENABLE
   endif
   INCLUDES += gtk
   SRC += gtk/iupgtk_focus.c gtk/iupgtk_clipboard.c gtk/iupgtk_val.c \
