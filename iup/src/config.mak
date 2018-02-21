@@ -92,7 +92,7 @@ ifdef USE_GTK
   ifdef USE_GTK3
     SRC += gtk/iupgtk_draw_cairo.c
   else
-    SRC += gtk/iupgtk_draw.c
+    SRC += gtk/iupgtk_draw_gdk.c
   endif
   
   ifneq ($(findstring Win, $(TEC_SYSNAME)), )

@@ -24,9 +24,6 @@
     <ClCompile Include="..\src\gtk\iupgtk_dragdrop.c">
       <Filter>src</Filter>
     </ClCompile>
-    <ClCompile Include="..\src\gtk\iupgtk_draw.c">
-      <Filter>src</Filter>
-    </ClCompile>
     <ClCompile Include="..\src\gtk\iupgtk_focus.c">
       <Filter>src</Filter>
     </ClCompile>
@@ -128,6 +125,9 @@
     </ClCompile>
     <ClCompile Include="..\src\iup_datepick.c">
       <Filter>src_controls</Filter>
+    </ClCompile>
+    <ClCompile Include="..\src\gtk\iupgtk_draw_gdk.c">
+      <Filter>src</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
