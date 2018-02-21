@@ -52,10 +52,6 @@ int resize_cb(Ihandle *ih, int w, int h)
   IupSetfAttribute(ih, "DX", "%d", w);
   IupSetfAttribute(ih, "DY", "%d", h);
   
-  /* refresh scrollbar in IUP 2.x */
-  IupStoreAttribute(ih, "POSX", IupGetAttribute(ih, "POSX"));
-  IupStoreAttribute(ih, "POSY", IupGetAttribute(ih, "POSY"));
-
   if (!cdcanvas)
     return IUP_DEFAULT;
 
