@@ -25,11 +25,11 @@ extern "C" {
  * \ingroup drv */
 
 
-/** Retrieve the main desktop full size.
+/** Retrieve the main desktop full size (size of the main monitor).
  * \ingroup drvinfo */
 void iupdrvGetFullSize(int *width, int *height);
 
-/** Retrieve the main desktop available size.
+/** Retrieve the main desktop available size (full size less taskbar/menubar space).
  * \ingroup drvinfo */
 void iupdrvGetScreenSize(int *width, int *height);
 
@@ -38,11 +38,6 @@ void iupdrvGetScreenSize(int *width, int *height);
  * to be after the taskbar/menubar.
  * \ingroup drvinfo */
 void iupdrvAddScreenOffset(int *x, int *y, int add);
-
-/** Retrieve the main desktop size when there are multiple monitors.
- * Useful only when in GTK.
- * \ingroup drvinfo */
-int iupdrvCheckMainScreen(int *width, int *height);
 
 /** Retrieve the default desktop bits per pixel.
  * \ingroup drvinfo */

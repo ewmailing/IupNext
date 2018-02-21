@@ -105,6 +105,13 @@ ifdef USE_GTK
     else
       USE_X11 = Yes
       SRC += gtk/iupgtk_help.c mot/iupunix_info.c
+      
+      ifdef USE_GTK3
+        SRC += gtk/iupgtk_info.c
+      else
+        # Because of iupdrvGetScreenSize limitation
+        SRC += mot/iupx11_info.c
+      endif
     endif
   endif
   
@@ -125,7 +132,7 @@ ifdef USE_MOTIF
          mot/iupmot_list.c mot/iupmot_tree.c mot/iupmot_dragdrop.c mot/iupmot_str.c \
          mot/iupmot_calendar.c iup_datepick.c
          
-  SRC += mot/iupunix_help.c mot/iupunix_info.c
+  SRC += mot/iupunix_help.c mot/iupunix_info.c mot/iupx11_info.c
   USE_X11 = Yes
 
   INCLUDES += mot
