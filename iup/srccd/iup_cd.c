@@ -37,7 +37,7 @@ static void cdcreatecanvasIUP(cdCanvas* canvas, Ihandle *ih_canvas)
     if (!data)
       return;
   }
-  else
+  else  /* CD_BASE_WIN or CD_BASE_X */
   {
 #ifdef WIN32
     data = IupGetAttribute(ih_canvas, "HWND");  /* new IUP 3 attribute, works for Windows and GTK */
