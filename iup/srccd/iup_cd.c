@@ -31,7 +31,8 @@ static void cdcreatecanvasIUP(cdCanvas* canvas, Ihandle *ih_canvas)
 #endif
   char* data;
 
-  if (cdBaseDriver()==CD_BASE_GDK || cdBaseDriver()==CD_BASE_HAIKU)
+  if (cdBaseDriver() == CD_BASE_GDK || /* this is also used by the Cairo driver when in GTK3 */
+      cdBaseDriver() == CD_BASE_HAIKU)
   {
     data = IupGetAttribute(ih_canvas, "DRAWABLE");  /* new IUP 3 attribute, works for GTK only */
     if (!data)

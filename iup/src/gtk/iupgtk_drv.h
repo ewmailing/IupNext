@@ -82,13 +82,13 @@ PangoLayout* iupgtkGetPangoLayout(const char* value);
 
 
 /* open */
-char* iupgtkGetNativeWidgetHandle(GtkWidget *widget);  /* Used only in Canvas, Dialog and FileDlg - for drawing with CD or OpenGL (not used for IupDraw) */
-char* iupgtkGetNativeWindowHandleAttrib(Ihandle* ih);  /* Used only in Canvas and Dialog - for drawing with CD or OpenGL (not used for IupDraw) */
-const char* iupgtkGetNativeWindowHandleName(void);  /* Used only in Canvas, Dialog and FileDlg - for drawing with CD or OpenGL (not used for IupDraw) */
+char* iupgtkGetNativeWidgetHandle(GtkWidget *widget);  /* Used only in Canvas, Dialog and FileDlg - for drawing with CD/GDK or OpenGL (not used for IupDraw) */
+char* iupgtkGetNativeWindowHandleAttrib(Ihandle* ih);  /* Used only in Canvas and Dialog - for drawing with CD/GDK or OpenGL (not used for IupDraw) */
+const char* iupgtkGetNativeWindowHandleName(void);  /* Used only in Canvas, Dialog and FileDlg - for drawing with CD/GDK or OpenGL (not used for IupDraw) */
 const char* iupgtkGetNativeFontIdName(void); /* Attribute available for IupGLUseFont - for drawing with OpenGL */
 void iupgtkPushVisualAndColormap(void* visual, void* colormap); /* Used in Canvas, for GLCanvas VISUAL attribute (GTK 2 Only) - for drawing with OpenGL */
-void* iupgtkGetNativeGraphicsContext(GtkWidget* widget); /* Used in FileDlg PREVIEWDC attribute - for drawing with CD */
-void iupgtkReleaseNativeGraphicsContext(GtkWidget* widget, void* gc); /* Used in FileDlg PREVIEWDC attribute - for drawing with CD */
+void* iupgtkGetNativeGraphicsContext(GtkWidget* widget); /* Used in FileDlg PREVIEWDC attribute - for drawing with CD/GDK */
+void iupgtkReleaseNativeGraphicsContext(GtkWidget* widget, void* gc); /* Used in FileDlg PREVIEWDC attribute - for drawing with CD/GDK */
 
 
 /* dialog */

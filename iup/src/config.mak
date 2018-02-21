@@ -23,7 +23,6 @@ else
     ifeq ($(findstring Win, $(TEC_SYSNAME)), )
       # Force definition if not in Windows
       USE_MOTIF = Yes
-      USE_X11 = Yes
     endif
   endif
 endif
@@ -103,7 +102,14 @@ ifdef USE_GTK
       SRC += gtk/iupmac_help.c gtk/iupmac_info.c
       DEFINES += GTK_MAC
     else
-      USE_X11 = Yes
+      #GDK_NULL = Yes
+      ifdef GDK_NULL 
+        #to completely remove X11 calls
+        #works only for GTK3
+        DEFINES += GDK_NULL
+      else
+        USE_X11 = Yes
+      endif
       SRC += gtk/iupgtk_help.c mot/iupunix_info.c
       
       ifdef USE_GTK3

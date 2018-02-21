@@ -47,6 +47,10 @@ is used, the CD main library must be rebuilt with the same parameter.</p>
 <h4>Dependencies</h4>
 <p>GTK is in fact composed of several libraries. The GTK package contains the 
 GDK library and depends on the ATK, Cairo, Glib and Pango libraries.</p>
+<h4>X11 Dependencies (since 3.25)</h4>
+<p>When using GTK 3, the X11 usage is drastically reduced. It is not necessary 
+at all, although it is still there for backward compatibility. To completely 
+remove the X11 dependencies define GDK_NULL in "iup/src/config.mak".</p>
 <h4>UTF-8</h4>
 <p>GTK uses UTF-8 as its charset for all displayed text, so IUP will 
 automatically convert all strings to (SetAttribute) and from (GetAttribute) 

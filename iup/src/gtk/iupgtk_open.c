@@ -21,7 +21,46 @@
 #include "iupgtk_drv.h"
 
 
-#if defined(GDK_WINDOWING_QUARTZ)   /******************************** MacOSX ************************************/
+#if defined(GDK_NULL)   /******************************** Dummy definitions ************************************/
+
+char* iupgtkGetNativeWidgetHandle(GtkWidget *widget)
+{
+  return NULL;
+}
+
+const char* iupgtkGetNativeWindowHandleName(void)
+{
+  return "????";
+}
+
+const char* iupgtkGetNativeFontIdName(void)
+{
+  return "????";
+}
+
+void* iupgtkGetNativeGraphicsContext(GtkWidget* widget)
+{
+  return NULL;
+}
+
+void iupgtkReleaseNativeGraphicsContext(GtkWidget* widget, void* gc)
+{
+}
+
+void* iupdrvGetDisplay(void)
+{
+  return NULL;
+}
+
+void iupgtkPushVisualAndColormap(void* visual, void* colormap)
+{
+}
+
+static void gtkSetGlobalAttrib(void)
+{
+}
+
+#elif defined(GDK_WINDOWING_QUARTZ)   /******************************** MacOSX ************************************/
 #include <gdk/gdk.h>
 
 char* iupgtkGetNativeWidgetHandle(GtkWidget *widget)
