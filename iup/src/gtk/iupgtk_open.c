@@ -20,7 +20,8 @@
 
 #include "iupgtk_drv.h"
 
-#ifdef GTK_MAC
+
+#if defined(GDK_WINDOWING_QUARTZ)   /******************************** MacOSX ************************************/
 #include <gdk/gdk.h>
 
 char* iupgtkGetNativeWidgetHandle(GtkWidget *widget)
@@ -80,8 +81,7 @@ static void gtkSetGlobalAttrib(void)
 {
 }
 
-#else
-#ifdef WIN32   /******************************** WIN32 ************************************/
+#elif defined(GDK_WINDOWING_WIN32)   /******************************** Windows ************************************/
 #include <gdk/gdkwin32.h>
 
 char* iupgtkGetNativeWidgetHandle(GtkWidget *widget)
@@ -128,7 +128,7 @@ static void gtkSetGlobalAttrib(void)
 {
 }
 
-#else          /******************************** X11 ************************************/
+#elif defined(GDK_WINDOWING_X11)          /******************************** X11 ************************************/
 #include <gdk/gdkx.h>
 
 char* iupgtkGetNativeWidgetHandle(GtkWidget *widget)
@@ -205,10 +205,9 @@ static void gtkSetGlobalAttrib(void)
 
 #endif
 
-#endif
-
 char* iupgtkGetNativeWindowHandleAttrib(Ihandle* ih)
 {
+  /* Used only in Canvas and Dialog */
   return iupgtkGetNativeWidgetHandle(ih->handle);
 }
 
