@@ -143,7 +143,9 @@ struct _IcontrolData
   int hidden_text_marks, editnext;
   int use_title_size;   /* use title contents when calculating cell size */
   int limit_expand; /* limit expand to maximum size */
-  int undo_redo, show_fill_value;
+  int undo_redo, 
+      flat,
+      show_fill_value;
 
   /* Mouse and Keyboard AUX */
   int button1edit;

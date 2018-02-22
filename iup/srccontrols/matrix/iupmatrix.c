@@ -940,6 +940,22 @@ static int iMatrixSetNeedRedraw(Ihandle* ih)
   return 1;
 }
 
+static int iMatrixSetFlatAttrib(Ihandle* ih, const char* value)
+{
+  if (iupStrBoolean(value))
+    ih->data->flat = 1;
+  else
+    ih->data->flat = 0;
+
+  IupUpdate(ih);
+  return 0; /* do not store value in hash table */
+}
+
+static char* iMatrixGetFlatAttrib(Ihandle* ih)
+{
+  return iupStrReturnBoolean(ih->data->flat);
+}
+
 static void iMatrixClearAttribFlags(Ihandle* ih, unsigned char *flags, int lin, int col)
 {
   int is_marked = (*flags) & IMAT_IS_MARKED;
@@ -2195,6 +2211,7 @@ Iclass* iupMatrixNewClass(void)
   iupClassRegisterAttribute(ic, "TOGGLECENTERED", NULL, (IattribSetFunc)iMatrixSetNeedRedraw, NULL, NULL, IUPAF_NO_INHERIT);
   iupClassRegisterAttribute(ic, "TOGGLEIMAGEON", NULL, (IattribSetFunc)iMatrixSetNeedRedraw, NULL, NULL, IUPAF_IHANDLENAME | IUPAF_NO_INHERIT);
   iupClassRegisterAttribute(ic, "TOGGLEIMAGEOFF", NULL, (IattribSetFunc)iMatrixSetNeedRedraw, NULL, NULL, IUPAF_IHANDLENAME | IUPAF_NO_INHERIT);
+  iupClassRegisterAttribute(ic, "FLAT", iMatrixGetFlatAttrib, iMatrixSetFlatAttrib, NULL, NULL, IUPAF_NOT_MAPPED);
 
   iupClassRegisterAttributeId2(ic, "MERGE", iMatrixGetMergeAttrib, iMatrixSetMergeAttrib, IUPAF_NOT_MAPPED | IUPAF_NO_INHERIT);
   iupClassRegisterAttribute(ic, "MERGESPLIT", NULL, iMatrixSetMergeSplitAttrib, NULL, NULL, IUPAF_WRITEONLY | IUPAF_NOT_MAPPED | IUPAF_NO_INHERIT);

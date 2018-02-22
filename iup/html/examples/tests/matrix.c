@@ -180,6 +180,7 @@ static Ihandle* create_matrix(void)
   IupSetAttribute(mat, "TYPE4:2", "FILL");
   IupSetAttribute(mat, "4:2", "60");
   IupSetAttribute(mat, "SHOWFILLVALUE", "Yes");
+//  IupSetAttribute(mat, "FLAT", "Yes");
 
   {
     Ihandle* image = IupImageRGBA(TEST_IMAGE_SIZE, TEST_IMAGE_SIZE, image_data_32);

@@ -237,8 +237,11 @@ static unsigned long iMatrixDrawSetTypeColor(Ihandle* ih, const char* color, int
   return cdCanvasForeground(ih->data->cd_canvas, cdEncodeColor(r, g, b));
 }
 
-static int iMatrixDrawFrameVertLineHighlight(Ihandle* ih, int lin, int col, int x, int y1, int y2, long framecolor)
+static int iMatrixDrawFrameVertLineTitleHighlight(Ihandle* ih, int lin, int col, int x, int y1, int y2, long framecolor)
 {
+  if (ih->data->flat)
+    return 1;
+
   if (col > 0)
   {
     int transp = iupMatrixGetFrameVertColor(ih, lin, col - 1, &framecolor, 0); /* framecolor is ignored here */
@@ -254,6 +257,9 @@ static int iMatrixDrawFrameVertLineHighlight(Ihandle* ih, int lin, int col, int 
 
 static int iMatrixDrawFrameHorizLineTitleHighlight(Ihandle* ih, int lin, int col, int x1, int x2, int y, long framecolor)
 {
+  if (ih->data->flat)
+    return 1;
+
   if (lin > 0)
   {
     int transp = iupMatrixGetFrameHorizColor(ih, lin - 1, col, &framecolor, 0); /* framecolor is ignored here */
@@ -338,7 +344,7 @@ static void iMatrixDrawFrameRectTitle(Ihandle* ih, int lin, int col, int x1, int
 
   /* Titles have a bright vertical line near the frame, at left */
   if (framehighlight)
-    iMatrixDrawFrameVertLineHighlight(ih, lin, col, x1, y1 + 1, y2 - 1, framecolor);
+    iMatrixDrawFrameVertLineTitleHighlight(ih, lin, col, x1, y1 + 1, y2 - 1, framecolor);
 
 
   /********************* HORIZONTAL *************************/
