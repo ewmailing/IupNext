@@ -2075,7 +2075,12 @@ static int winTreeSetValueAttrib(Ihandle* ih, const char* value)
   else if(iupStrEqualNoCase(value, "PREVIOUS"))
     hItem = (HTREEITEM)SendMessage(ih->handle, TVM_GETNEXTITEM, TVGN_PREVIOUSVISIBLE, (LPARAM)hItemFocus);
   else if (iupStrEqualNoCase(value, "CLEAR"))
+  {
     winTreeSelectNode(ih, hItemFocus, 0);
+
+    if (ih->data->mark_mode == ITREE_MARK_SINGLE)
+      iupAttribSet(ih, "_IUP_UNSELECTEDNODE", (char*)hItemFocus);
+  }
   else
     hItem = iupTreeGetNodeFromString(ih, value);
 
