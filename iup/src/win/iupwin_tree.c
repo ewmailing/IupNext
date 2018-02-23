@@ -811,7 +811,11 @@ static int winTreeCallBranchLeafCb(Ihandle* ih, HTREEITEM hItem)
   /* Get Children: branch or leaf */
   item.mask = TVIF_HANDLE|TVIF_PARAM|TVIF_STATE; 
   item.hItem = hItem;
-  SendMessage(ih->handle, TVM_GETITEM, 0, (LPARAM)(LPTVITEM)&item);
+
+  /* check if item still exists */
+  if (!SendMessage(ih->handle, TVM_GETITEM, 0, (LPARAM)(LPTVITEM)&item))
+    return IUP_IGNORE;  
+  
   itemData = (winTreeItemData*)item.lParam;
 
   if (itemData->kind == ITREE_BRANCH)
