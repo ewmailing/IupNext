@@ -459,6 +459,41 @@ wb_usr.tree =
         },
       }
     },
+    {
+      name= {en= "7 GUIs"},
+      link= "7gui/7gui.html",
+      folder=
+      {
+        {
+          name= {en= "1. Counter"},
+          link= "7gui/7gui.html#task1"
+        },
+        {
+          name= {en= "2. Temperature Converter"},
+          link= "7gui/7gui.html#task2"
+        },
+        {
+          name= {en= "3. Flight Booker"},
+          link= "7gui/7gui.html#task3"
+        },
+        {
+          name= {en= "4. Timer"},
+          link= "7gui/7gui.html#task4"
+        },
+        {
+          name= {en= "5. CRUD"},
+          link= "7gui/7gui.html#task5"
+        },
+        {
+          name= {en= "6. Circle Drawer"},
+          link= "7gui/7gui.html#task6"
+        },
+        {
+          name= {en= "7. Cells"},
+          link= "7gui/7gui.html#task7"
+        },
+      }    
+    },
     { link= "", name= {en= "" } },
     {
       name= {en= "System"},
