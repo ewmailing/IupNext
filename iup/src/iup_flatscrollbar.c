@@ -165,6 +165,7 @@ static void iFlatScrollBarDrawVertical(Ihandle* sb_ih, IdrawCanvas* dc, int acti
   range = height - 1 - 2 * arrow_size;
 
   d = (dy * range) / ymax;
+  if (d < sb_size) d = sb_size;
   pos = (posy * range) / ymax;
   pos += arrow_size;
 
@@ -243,6 +244,7 @@ static void iFlatScrollBarDrawHorizontal(Ihandle* sb_ih, IdrawCanvas* dc, int ac
   range = width - 1 - 2 * arrow_size;
 
   d = (dx * range) / xmax;
+  if (d < sb_size) d = sb_size;
   pos = (posx * range) / xmax;
   pos += arrow_size;
 
@@ -354,6 +356,7 @@ static int iFlatScrollBarGetHandler(Ihandle* sb_ih, int x, int y)
 
     range = height - 1 - 2 * arrow_size;
     d = (dy * range) / ymax;
+    if (d < sb_size) d = sb_size;
     pos = (posy * range) / ymax;
     pos += arrow_size;
 
@@ -381,6 +384,7 @@ static int iFlatScrollBarGetHandler(Ihandle* sb_ih, int x, int y)
 
     range = width - 1 - 2 * arrow_size;
     d = (dx * range) / xmax;
+    if (d < sb_size) d = sb_size;
     pos = (posx * range) / xmax;
     pos += arrow_size;
 
