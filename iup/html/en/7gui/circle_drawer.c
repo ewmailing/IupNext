@@ -3,230 +3,242 @@
 #include <iup.h>
 #include "iupdraw.h"
 
-enum { CREATE, REMOVE, CHANGE_RADIUS };
 
-typedef struct _Circle{
+/*********************************** Circle List ****************************************/
+
+#define DEF_RADIUS 30
+#define MAX_RADIUS 100
+#define MAX_CIRCLES 80
+
+typedef struct _Circle
+{
   int x;
   int y;
   int r;
-  int rOriginal;
-  int rLast;
   int id;
 } Circle;
 
-typedef struct _Operation{
-  int type;
-  Circle circle;
-} Operation;
-
-#define DEF_RADIUS 30
-#define MAX 80
-
-static Circle circles[MAX];
+static Circle circlesList[MAX_CIRCLES];
 static int circlesCount = 0;
-static int lastId = 0;
-static int highlightedCircle = -1;
 
-static Operation undoRedoList[MAX];
-static int operationCount = 0;
-static int currentOperationId = 0;
-
-static void addOperation(int type, Circle circle)
+static int circles_add(int x, int y)
 {
-  if (currentOperationId < operationCount - 1)
-    operationCount = currentOperationId + 1;
-  undoRedoList[operationCount].type = type;
-  undoRedoList[operationCount].circle = circle;
-  currentOperationId = operationCount;
-  ++operationCount;
-}
+  static int lastId = 0;
 
-static void undo()
-{
-  Operation currentOperation = undoRedoList[currentOperationId];
+  if (circlesCount == MAX_CIRCLES)
+    return -1;
 
-  if (currentOperationId < 0)
-    return;
+  circlesList[circlesCount].x = x;
+  circlesList[circlesCount].y = y;
+  circlesList[circlesCount].r = DEF_RADIUS;
+  circlesList[circlesCount].id = lastId;  /* each circle has an unique id */
 
-  switch (currentOperation.type)
-  {
-    case CREATE:
-      remove(currentOperation.circle.id);
-      break;
-    case REMOVE:
-      insert(currentOperation.circle);
-      break;
-    case CHANGE_RADIUS:
-      update(currentOperation.circle.id, currentOperation.circle.rLast);
-      break;
-  }
-  currentOperationId--;
-}
-
-static void redo()
-{
-  Operation currentOperation;
-
-  if (currentOperationId + 1 == operationCount)
-    return;
-
-  currentOperation = undoRedoList[currentOperationId + 1];
-
-  switch (currentOperation.type)
-  {
-    case CREATE:
-      insert(currentOperation.circle);
-      break;
-    case REMOVE:
-      remove(currentOperation.circle.id);
-      break;
-    case CHANGE_RADIUS:
-      update(currentOperation.circle.id, currentOperation.circle.r);
-      break;
-  }
-  currentOperationId++;
-}
-
-static int undoLeft()
-{
-  if (currentOperationId < 0)
-    return 0;
-
-  return 1;
-}
-
-static int redoLeft()
-{
-  if (currentOperationId + 1 == operationCount)
-    return 0;
-
-  return 1;
-}
-
-static int getCount()
-{
-  return circlesCount;
-}
-
-static int getLasId()
-{
-  return lastId;
-}
-
-static Circle get(int id)
-{
-  int i;
-  for (i = 0; i < circlesCount; i++)
-  {
-    if (circles[i].id == id)
-      break;
-  }
-  return circles[i];
-}
-
-static int create(int x, int y, int r)
-{
-  Circle circle;
-  if (circlesCount >= 50)
-    return 0;
-  circles[circlesCount].x = x;
-  circles[circlesCount].y = y;
-  circles[circlesCount].r = r;
-  circles[circlesCount].rOriginal = r;
-  circles[circlesCount].rLast = r;
-  circles[circlesCount].id = lastId;
-  ++circlesCount;
-  ++lastId;
+  circlesCount++;
+  lastId++;
   return lastId - 1;
 }
 
-static int insert(Circle circle)
+static int circles_insert(Circle circle)
 {
-  int i;
-  if (circlesCount >= 50)
-    return 0;
-  for (i = circlesCount - 1; i >= 0; i--)
-  {
-    if (circle.id > circles[i].id)
-      break;
-    circles[i + 1] = circles[i];
-  }
-  circles[i + 1] = circle;
-  ++circlesCount;
+  if (circlesCount == MAX_CIRCLES)
+    return -1;
+
+  circlesList[circlesCount] = circle;
+  circlesCount++;
   return 1;
 }
 
-static int remove(int id)
+static void circles_remove(Circle circle)
 {
   int i, j;
   for (i = 0; i < circlesCount; i++)
   {
-    if (circles[i].id == id)
+    if (circlesList[i].id == circle.id)
       break;
   }
 
   for (j = i; j < circlesCount; j++)
-    circles[j] = circles[j + 1];
-  --circlesCount;
-  return 1;
+    circlesList[j] = circlesList[j + 1];
+
+  circlesCount--;
 }
 
-static int update(int id, int r)
+static void circles_update(Circle circle)
 {
   int i;
   for (i = 0; i < circlesCount; i++)
   {
-    if (circles[i].id == id)
+    if (circlesList[i].id == circle.id)
       break;
   }
-  circles[i].rLast = circles[i].r;
-  circles[i].r = r;
-  return 1;
+
+  circlesList[i].r = circle.r;
 }
 
-static int pick(int x, int y)
+static int circles_pick(int x, int y)
 {
   int i;
-  double dist, dx, dy;
-  int selectedCircle = -1;
+  int min_r = MAX_RADIUS;
+  int id = -1;
+
   for (i = 0; i < circlesCount; i++)
   {
-    double dx = circles[i].x - x;
-    double dy = circles[i].y - y;
-    double d = sqrt((dx*dx) + (dy*dy));
-    if (d < circles[i].r)
+    int dx = circlesList[i].x - x;
+    int dy = circlesList[i].y - y;
+    int r = dx*dx + dy*dy;
+
+    r = (int)sqrt((double)r);
+
+    if (r < circlesList[i].r)
     {
-      if (selectedCircle < 0)
+      if (id < 0)
       {
-        selectedCircle = circles[i].id;
-        dist = d;
+        id = circlesList[i].id;
+        min_r = r;
       }
-      else if (d < dist)
-        selectedCircle = circles[i].id;
+      else if (r < min_r)
+        id = circlesList[i].id;
     }
   }
 
-  return selectedCircle;
+  return id;
+}
+
+static Circle circles_find(int id)
+{
+  int i;
+  for (i = 0; i < circlesCount; i++)
+  {
+    if (circlesList[i].id == id)
+      break;
+  }
+  return circlesList[i];
+}
+
+
+/************************************* Operation List ************************************************/
+
+#define MAX_OPERATIONS 200
+
+enum { OP_CREATE, OP_REMOVE, OP_UPDATE };
+
+typedef struct _Operation
+{
+  int type;
+  Circle circle;
+} Operation;
+
+static Operation operationsList[MAX_OPERATIONS];
+static int operationsCount = 0;
+static int currentOperation = -1;
+
+static void op_add(int type, Circle circle)
+{
+  if (operationsCount == MAX_OPERATIONS)
+    return;
+
+  if (currentOperation < operationsCount - 1)
+    operationsCount = currentOperation + 1;
+
+  operationsList[operationsCount].type = type;
+  operationsList[operationsCount].circle = circle;
+  currentOperation = operationsCount;
+
+  operationsCount++;
+}
+
+static void op_undo(void)
+{
+  Operation op;
+
+  if (currentOperation < 0)
+    return;
+
+  op = operationsList[currentOperation];
+
+  switch (op.type)
+  {
+    case OP_CREATE:
+      circles_remove(op.circle);
+      break;
+    case OP_REMOVE:
+      circles_insert(op.circle);
+      break;
+    case OP_UPDATE:
+      circles_update(op.circle);
+      break;
+  }
+
+  currentOperation--;
+}
+
+static void op_redo(void)
+{
+  Operation op;
+
+  if (currentOperation + 1 == operationsCount)
+    return;
+
+  op = operationsList[currentOperation + 1];
+
+  switch (op.type)
+  {
+    case OP_CREATE:
+      circles_insert(op.circle);
+      break;
+    case OP_REMOVE:
+      circles_remove(op.circle);
+      break;
+    case OP_UPDATE:
+      circles_update(op.circle);
+      break;
+  }
+
+  currentOperation++;
+}
+
+static int op_has_undo(void)
+{
+  if (currentOperation < 0)
+    return 0;
+
+  return 1;
+}
+
+static int op_has_redo(void)
+{
+  if (currentOperation + 1 == operationsCount)
+    return 0;
+
+  return 1;
+}
+
+
+/*********************************************** Interface ****************************************/
+
+void update_buttons(Ihandle* ih)
+{
+  Ihandle *undoButton = IupGetDialogChild(ih, "UNDO");
+  Ihandle *redoButton = IupGetDialogChild(ih, "REDO");
+
+  if (op_has_undo())
+    IupSetAttribute(undoButton, "ACTIVE", "YES");
+  else
+    IupSetAttribute(undoButton, "ACTIVE", "NO");
+
+  if (op_has_redo())
+    IupSetAttribute(redoButton, "ACTIVE", "YES");
+  else
+    IupSetAttribute(redoButton, "ACTIVE", "NO");
 }
 
 int bt_undo_cb(Ihandle *self)
 {
   Ihandle *canvas = IupGetDialogChild(self, "CANVAS");
-  Ihandle *undoButton = IupGetDialogChild(self, "UNDO");
-  Ihandle *redoButton = IupGetDialogChild(self, "REDO");
 
-  undo();
+  op_undo();
 
-  if (undoLeft())
-    IupSetAttribute(undoButton, "ACTIVE", "YES");
-  else
-    IupSetAttribute(undoButton, "ACTIVE", "NO");
-
-
-  if (redoLeft())
-    IupSetAttribute(redoButton, "ACTIVE", "YES");
-  else
-    IupSetAttribute(redoButton, "ACTIVE", "NO");
+  update_buttons(self);
 
   IupUpdate(canvas);
 
@@ -236,81 +248,70 @@ int bt_undo_cb(Ihandle *self)
 int bt_redo_cb(Ihandle *self)
 {
   Ihandle *canvas = IupGetDialogChild(self, "CANVAS");
-  Ihandle *undoButton = IupGetDialogChild(self, "UNDO");
-  Ihandle *redoButton = IupGetDialogChild(self, "REDO");
 
-  redo();
+  op_redo();
 
-  if (undoLeft())
-    IupSetAttribute(undoButton, "ACTIVE", "YES");
-  else
-    IupSetAttribute(undoButton, "ACTIVE", "NO");
-
-
-  if (redoLeft())
-    IupSetAttribute(redoButton, "ACTIVE", "YES");
-  else
-    IupSetAttribute(redoButton, "ACTIVE", "NO");
+  update_buttons(self);
 
   IupUpdate(canvas);
 
   return IUP_DEFAULT;
 }
-static int motion_cb(Ihandle *ih, int x, int y, char* status)
-{
-  highlightedCircle = pick(x, y);
-  IupUpdate(ih);
-  return IUP_DEFAULT;
-}
 
-static int button_cb(Ihandle *ih, int but, int pressed, int x, int y, char* status)
+static int canvas_button_cb(Ihandle *ih, int but, int pressed, int x, int y, char* status)
 {
-  Ihandle *dial = IupGetDialog(ih);
+  Ihandle *dlg = IupGetDialog(ih);
 
   if (but == IUP_BUTTON1 && pressed)
   {
-    Ihandle *undoButton = IupGetDialogChild(ih, "UNDO");
-    Ihandle *redoButton = IupGetDialogChild(ih, "REDO");
-    int id = create(x, y, DEF_RADIUS);
-    addOperation(CREATE, get(id));
-    /***********************************************************************************/
-    for (int i = 0; i < operationCount; i++)
+    int id = circles_pick(x, y);
+    if (id >= 0)
+      IupSetInt(ih, "HIGHLIGHTEDCIRCLE", id);
+    else
     {
-      printf("list[%d] = %d\n", i, undoRedoList[i].circle.id);
+      id = circles_add(x, y);
+      op_add(OP_CREATE, circles_find(id));
+
+      update_buttons(ih);
     }
-    printf("Count = %d\n", operationCount);
-    printf("Operation Ind = %d\n", operationCount);
-    /***********************************************************************************/
 
-    if (undoLeft())
-      IupSetAttribute(undoButton, "ACTIVE", "YES");
-    else
-      IupSetAttribute(undoButton, "ACTIVE", "NO");
-
-    if (redoLeft())
-      IupSetAttribute(redoButton, "ACTIVE", "YES");
-    else
-      IupSetAttribute(redoButton, "ACTIVE", "NO");
+    IupUpdate(ih);
   }
   else if (but == IUP_BUTTON3 && pressed)
   {
-    int id = pick(x, y);
-    if (id >= 0)
+    int highlightedCircle = IupGetInt(ih, "HIGHLIGHTEDCIRCLE");
+    int id = circles_pick(x, y);
+    if (id == highlightedCircle)
     {
-      Ihandle *configDial = (Ihandle *)IupGetAttribute(dial, "CONFIGDIAL");
-      IupSetInt(configDial, "CIRCLEID", id);
-      IupPopup(IupGetAttribute(dial, "CONFIGDIAL"), IUP_CENTER, IUP_CENTER);
-      highlightedCircle = -1;
+      Circle c = circles_find(id);
+      int new_r, old_r = c.r;
+      Ihandle *configDialog = (Ihandle *)IupGetAttribute(dlg, "CONFIGDIALOG");
+      Ihandle *val = IupGetDialogChild(configDialog, "VAL");
+      Ihandle *lbl = IupGetDialogChild(configDialog, "LBL");
+
+      IupSetStrf(lbl, "TITLE", "Adjust the diameter of the circle at (%d, %d)", c.x, c.y);
+      IupSetInt(val, "VALUE", old_r);
+      IupSetInt(configDialog, "CIRCLEID", id);
+
+      IupPopup(configDialog, IUP_CENTERPARENT, IUP_CENTERPARENT);
+
+      new_r = IupGetInt(val, "VALUE");
+      if (new_r != old_r)
+      {
+        op_add(OP_UPDATE, c);
+
+        update_buttons(ih);
+      }
     }
   }
-  IupUpdate(ih);
 
+  (void)status;
   return IUP_DEFAULT;
 }
 
-static int action(Ihandle *ih, float posx, float posy)
+static int canvas_action(Ihandle *ih)
 {
-  int i, w, h;
+  int i, w, h, highlightedCircle;
 
   IupDrawBegin(ih);
 
@@ -323,9 +324,11 @@ static int action(Ihandle *ih, float posx, float posy)
   IupSetAttribute(ih, "DRAWCOLOR", "0 0 0");
   IupSetAttribute(ih, "DRAWSTYLE", "STROKE");
 
-  for (i = 0; i < getCount(); i++)
+  highlightedCircle = IupGetInt(ih, "HIGHLIGHTEDCIRCLE");
+
+  for (i = 0; i < circlesCount; i++)
   {
-    Circle circle = circles[i];
+    Circle circle = circlesList[i];
 
     if (highlightedCircle == circle.id)
     {
@@ -338,8 +341,8 @@ static int action(Ihandle *ih, float posx, float posy)
       IupSetAttribute(ih, "DRAWSTYLE", "STROKE");
     }
 
-    IupDrawArc(ih, circles[i].x - circles[i].r, circles[i].y - circles[i].r,
-               circles[i].x + circles[i].r, circles[i].y + circles[i].r, 0., 360.);
+    IupDrawArc(ih, circlesList[i].x - circlesList[i].r, circlesList[i].y - circlesList[i].r,
+                   circlesList[i].x + circlesList[i].r, circlesList[i].y + circlesList[i].r, 0., 360.);
   }
 
   IupDrawEnd(ih);
@@ -348,59 +351,51 @@ static int action(Ihandle *ih, float posx, float posy)
 
 int val_valuechanged_cb(Ihandle *self)
 {
-  Ihandle* dial = IupGetDialog(self);
+  Ihandle* dlg = IupGetDialog(self);
   Ihandle* canvas = (Ihandle *)IupGetAttribute(self, "CANVAS");
-  Ihandle *undoButton = (Ihandle *)IupGetDialogChild(self, "UNDO");
-  Ihandle *redoButton = (Ihandle *)IupGetDialogChild(self, "REDO");
-  int circleId = IupGetInt(dial, "CIRCLEID");
-  double value = IupGetDouble(self, "VALUE");
-  Circle circle = get(circleId);
-  int rOriginal = circle.rOriginal;
+  int circleId = IupGetInt(dlg, "CIRCLEID");
+  int r = IupGetInt(self, "VALUE");
+  Circle circle = circles_find(circleId);
 
-  update(circleId, rOriginal*value);
-
-  addOperation(CHANGE_RADIUS, get(circleId));
-
-  if (undoLeft())
-    IupSetAttribute(undoButton, "ACTIVE", "YES");
-  else
-    IupSetAttribute(undoButton, "ACTIVE", "NO");
-
-  if (redoLeft)
-    IupSetAttribute(redoButton, "ACTIVE", "YES");
-  else
-    IupSetAttribute(redoButton, "ACTIVE", "NO");
+  circle.r = r;
+  circles_update(circle);
 
   IupUpdate(canvas);
 
   return IUP_DEFAULT;
 }
 
-Ihandle *createCircleConfigDial()
+Ihandle *createCircleConfigDialog(Ihandle* parent_dlg)
 {
-  Ihandle *dial, *val, *vbox, *box;
+  Ihandle *dlg, *val, *lbl, *box;
+
+  lbl = IupLabel(NULL);
+  IupSetAttribute(lbl, "EXPAND", "HORIZONTAL");
+  IupSetAttribute(lbl, "TITLE", "Adjust the diameter of the circle at (100, 100)");
+  IupSetAttribute(lbl, "NAME", "LBL");
 
   val = IupVal("HORIZONTAL");
   IupSetAttribute(val, "EXPAND", "HORIZONTAL");
-  IupSetAttribute(val, "MIN", "0.5");
-  IupSetAttribute(val, "MAX", "1.5");
-  IupSetAttribute(val, "VALUE", "1");
+  IupSetAttribute(val, "MIN", "0");
+  IupSetInt(val, "MAX", MAX_RADIUS);
+  IupSetAttribute(val, "NAME", "VAL");
 
-  box = IupVbox(IupFill(), val, IupFill(), NULL);
+  box = IupVbox(IupFill(), lbl, val, IupFill(), NULL);
   IupSetAttribute(box, "ALIGMENT", "ACENTER");
 
   IupSetAttribute(box, "NMARGIN", "10x10");
-  dial = IupDialog(box);
-  IupSetAttribute(dial, "SIZE", "100x60");
+  dlg = IupDialog(box);
+  IupSetAttribute(dlg, "TITLE", "Circle Config");
+  IupSetAttributeHandle(dlg, "PARENTDIALOG", parent_dlg);
 
   IupSetCallback(val, "VALUECHANGED_CB", (Icallback)val_valuechanged_cb);
 
-  return dial;
+  return dlg;
 }
 
 int main(int argc, char **argv)
 {
-  Ihandle *dlg, *hbox, *vbox, *configDial;
+  Ihandle *dlg, *hbox, *vbox, *configDialog;
   Ihandle *undoButton, *redoButton, *canvas;
 
   IupOpen(&argc, &argv);
@@ -418,6 +413,7 @@ int main(int argc, char **argv)
   canvas = IupCanvas(NULL);
   IupSetAttribute(canvas, "NAME", "CANVAS");
   IupSetAttribute(canvas, "EXPAND", "YES");
+  IupSetInt(canvas, "HIGHLIGHTEDCIRCLE", -1);
 
   hbox = IupHbox(IupFill(), undoButton, redoButton, IupFill(), NULL);
 
@@ -432,17 +428,14 @@ int main(int argc, char **argv)
   /* Registers callbacks */
   IupSetCallback(undoButton, "ACTION", (Icallback)bt_undo_cb);
   IupSetCallback(redoButton, "ACTION", (Icallback)bt_redo_cb);
-  IupSetCallback(canvas, "ACTION", (Icallback)action);
-  IupSetCallback(canvas, "BUTTON_CB", (Icallback)button_cb);
-  IupSetCallback(canvas, "MOTION_CB", (Icallback)motion_cb);
+  IupSetCallback(canvas, "ACTION", (Icallback)canvas_action);
+  IupSetCallback(canvas, "BUTTON_CB", (Icallback)canvas_button_cb);
 
-  configDial = createCircleConfigDial();
+  configDialog = createCircleConfigDialog(dlg);
 
-  IupSetAttribute(configDial, "CANVAS", (char *)canvas);
-  IupSetAttribute(configDial, "UNDO", (char *)undo);
-  IupSetAttribute(configDial, "REDO", (char *)redo);
+  IupSetAttribute(configDialog, "CANVAS", (char *)canvas);
 
-  IupSetAttribute(dlg, "CONFIGDIAL", (char *)configDial);
+  IupSetAttribute(dlg, "CONFIGDIALOG", (char *)configDialog);
 
   IupShowXY(dlg, IUP_CENTER, IUP_CENTER);
 

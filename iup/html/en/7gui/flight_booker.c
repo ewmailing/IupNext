@@ -10,10 +10,10 @@ int bt_book_cb(Ihandle *self)
   int flightType = IupGetInt(list, "VALUE");
 
   if (flightType == 1)
-    IupMessagef("Atenção!", "You have booked a one-way flight on %s.", IupGetAttribute(startDate, "VALUE"));
+    IupMessagef("Attention!", "You have booked a one-way flight on %s.", IupGetAttribute(startDate, "VALUE"));
   else
-    IupMessagef("Atenção!", "You have booked a return flight on %s"
-                            " and %s.", IupGetAttribute(startDate, "VALUE"), IupGetAttribute(endDate, "VALUE"));
+    IupMessagef("Attention!", "You have booked a return flight on %s"
+                              " and %s.", IupGetAttribute(startDate, "VALUE"), IupGetAttribute(endDate, "VALUE"));
 
   return IUP_DEFAULT;
 }

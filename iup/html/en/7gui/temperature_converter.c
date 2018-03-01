@@ -3,17 +3,17 @@
 
 int txt_celcius_cb(Ihandle *self)
 {
-  Ihandle* farenheit = IupGetDialogChild(self, "FARENHEIT");
+  Ihandle* fahrenheit = IupGetDialogChild(self, "FAHRENHEIT");
   double value = IupGetFloat(self, "VALUE");;
 
   value = value * (9./5.) + 32;
 
-  IupSetStrf(farenheit, "VALUE", "%.2lf", value);
+  IupSetStrf(fahrenheit, "VALUE", "%.2lf", value);
 
   return IUP_DEFAULT;
 }
 
-int txt_farenheit_cb(Ihandle *self)
+int txt_fahrenheit_cb(Ihandle *self)
 {
   Ihandle* celcius = IupGetDialogChild(self, "CELCIUS");
   double value = IupGetFloat(self, "VALUE");;
@@ -32,7 +32,7 @@ int main(int argc, char **argv)
   IupOpen(&argc, &argv);
   
   labelC = IupLabel("Celsius =");
-  labelF = IupLabel("Farenheit");
+  labelF = IupLabel("Fahrenheit");
 
   tempC = IupText(NULL);
   IupSetAttribute(tempC, "SIZE", "50");
@@ -40,7 +40,7 @@ int main(int argc, char **argv)
   IupSetAttribute(tempC, "MASK", IUP_MASK_FLOAT);
   tempF = IupText(NULL);
   IupSetAttribute(tempF, "SIZE", "50");
-  IupSetAttribute(tempF, "NAME", "FARENHEIT");
+  IupSetAttribute(tempF, "NAME", "FAHRENHEIT");
   IupSetAttribute(tempF, "MASK", IUP_MASK_FLOAT);
   hbox = IupHbox(
     tempC,
@@ -59,7 +59,7 @@ int main(int argc, char **argv)
 
   /* Registers callbacks */
   IupSetCallback(tempC, "VALUECHANGED_CB", (Icallback)txt_celcius_cb);
-  IupSetCallback(tempF, "VALUECHANGED_CB", (Icallback)txt_farenheit_cb);
+  IupSetCallback(tempF, "VALUECHANGED_CB", (Icallback)txt_fahrenheit_cb);
 
   IupShowXY(dlg, IUP_CENTER, IUP_CENTER);
 
