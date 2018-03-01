@@ -155,6 +155,7 @@ static void op_undo(void)
     return;
 
   op = operationsList[currentOperation];
+  currentOperation--;
 
   switch (op.type)
   {
@@ -165,11 +166,12 @@ static void op_undo(void)
       circles_insert(op.circle);
       break;
     case OP_UPDATE:
+      op = operationsList[currentOperation];
+      currentOperation--; /* return 2 to get the old value */
+
       circles_update(op.circle);
       break;
   }
-
-  currentOperation--;
 }
 
 static void op_redo(void)
@@ -179,7 +181,8 @@ static void op_redo(void)
   if (currentOperation + 1 == operationsCount)
     return;
 
-  op = operationsList[currentOperation + 1];
+  currentOperation++;
+  op = operationsList[currentOperation];
 
   switch (op.type)
   {
@@ -190,11 +193,12 @@ static void op_redo(void)
       circles_remove(op.circle);
       break;
     case OP_UPDATE:
+      currentOperation++; /* increment 2 to get the new value */
+      op = operationsList[currentOperation];
+
       circles_update(op.circle);
       break;
   }
-
-  currentOperation++;
 }
 
 static int op_has_undo(void)
@@ -283,13 +287,13 @@ static int canvas_button_cb(Ihandle *ih, int but, int pressed, int x, int y, cha
     int id = circles_pick(x, y);
     if (id == highlightedCircle)
     {
-      Circle c = circles_find(id);
-      int new_r, old_r = c.r;
+      Circle circle = circles_find(id);
+      int new_r, old_r = circle.r;
       Ihandle *configDialog = (Ihandle *)IupGetAttribute(dlg, "CONFIGDIALOG");
       Ihandle *val = IupGetDialogChild(configDialog, "VAL");
       Ihandle *lbl = IupGetDialogChild(configDialog, "LBL");
 
-      IupSetStrf(lbl, "TITLE", "Adjust the diameter of the circle at (%d, %d)", c.x, c.y);
+      IupSetStrf(lbl, "TITLE", "Adjust the diameter of the circle at (%d, %d)", circle.x, circle.y);
       IupSetInt(val, "VALUE", old_r);
       IupSetInt(configDialog, "CIRCLEID", id);
 
@@ -298,7 +302,9 @@ static int canvas_button_cb(Ihandle *ih, int but, int pressed, int x, int y, cha
       new_r = IupGetInt(val, "VALUE");
       if (new_r != old_r)
       {
-        op_add(OP_UPDATE, c);
+        op_add(OP_UPDATE, circle); /* add both old and new */
+        circle.r = new_r;
+        op_add(OP_UPDATE, circle);
 
         update_buttons(ih);
       }
