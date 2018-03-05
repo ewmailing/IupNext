@@ -57,7 +57,7 @@ static void circles_remove(Circle circle)
       break;
   }
 
-  for (j = i; j < circlesCount; j++)
+  for (j = i; j < circlesCount - 1; j++)
     circlesList[j] = circlesList[j + 1];
 
   circlesCount--;
