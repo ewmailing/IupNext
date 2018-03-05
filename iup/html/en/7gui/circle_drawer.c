@@ -1,7 +1,7 @@
 #include <stdlib.h>
 #include <math.h>
 #include <iup.h>
-#include "iupdraw.h"
+#include <iupdraw.h>
 
 
 /*********************************** Circle List ****************************************/
