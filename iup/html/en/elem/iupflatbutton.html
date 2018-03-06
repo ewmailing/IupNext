@@ -338,6 +338,14 @@ changed. </p>
 <p>When TOGGLE=Yes, the button that is a child of an <strong>IupRadio</strong> automatically receives a name when 
 its is mapped into the native system. 
 (since 3.16)</p>
+<p>To replace a <strong>IupButton</strong> by a <strong>IupFlatButton</strong> 
+you must change the function call (<strong>IupFlatButton</strong> does not 
+includes the action callback in the constructor) and change the ACTION callback 
+name to FLAT_ACTION. To replace a <strong>IupToggle</strong> by a <strong>
+IupFlatButton</strong> you must do the same, and set TOGGLE=Yes. But notice that 
+there will be no check box nor radio button. Finally notice that the name of the 
+secondary image attributes are different (for instance IMINACTIVE is 
+IMAGEINACTIVE, IMPRESS is IMAGEPRESS, and so on).</p>
 
 
 <h3><a name="Examples">Examples</a></h3>

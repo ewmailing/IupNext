@@ -62,6 +62,7 @@ void TextSpinTest(void);
 void TextTest(void);
 void SpinTest(void);
 void SampleTest(void);
+void FlatSampleTest(void);
 void ProgressbarTest(void);
 void ProgressDlgTest(void);
 void PreDialogsTest(void);
@@ -172,7 +173,8 @@ static TestItems test_list[] = {
   {"Progressbar", ProgressbarTest},
   {"ProgressDlg", ProgressDlgTest},
   {"Sample", SampleTest},
-  {"Sbox", SboxTest},
+  { "FlatSample", FlatSampleTest },
+  { "Sbox", SboxTest },
   { "Scintilla", ScintillaTest },
   {"ScrollBox", ScrollBoxTest},
   { "FlatScrollBox", FlatScrollBoxTest },

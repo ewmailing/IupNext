@@ -227,7 +227,7 @@ static void show_menu(Ihandle* ih)
   Ihandle* menu_file = IupMenu(
     IupSetAttributes(IupItem("Item with Image", "item_cb"), "IMAGE=image_tec"),
     IupSetAttributes(IupItem("Toggle using VALUE", NULL), "VALUE=ON, KEY=K_V"), 
-    IupSetAttributes(IupItem("Auto &Toggle", "item_cb"), "AUTOTOGGLE=YES, VALUE=OFF, IMAGE=image_test, IMPRESS=image_test_pressed"), 
+    IupSetAttributes(IupItem("Auto &Toggle", "item_cb"), "AUTOTOGGLE=YES, VALUE=OFF, IMAGE=image_test, IMAGEPRESS=image_test_pressed"), 
     IupSeparator(), 
     IupItem("E&xit (Close)", NULL), 
     NULL);
@@ -412,11 +412,12 @@ static int drawbg_cb(Ihandle* ih)
   return IUP_DEFAULT;
 }
 
-//#define IupFrame myFrame
 static Ihandle* myFrame(Ihandle* child)
 {
-  return IupVbox(child, NULL);
+  return IupSetAttributes(IupFlatFrame(child), "TITLELINE=No, TITLEALIGNMENT=ALEFT, FRAMECOLOR=\"192 192 192\"");
+//  return IupVbox(child, NULL);
 }
+#define IupFlatFrame myFrame
 
 static int dialog_custom_minimize(Ihandle* ih)
 {
@@ -447,7 +448,7 @@ static int dialog_custom_close(Ihandle* ih)
   return IUP_DEFAULT;
 }
 
-void SampleTest(void)
+void FlatSampleTest(void)
 {
   Ihandle *mnu, *_hbox_1, *_cnv_1, *_vbox_1, *dlg, *img, 
     *_frm_1, *_frm_2, *_frm_3, *_frm_4, *_frm_5, *pbar, *val, *tabs,
@@ -481,17 +482,17 @@ void SampleTest(void)
     NULL);
   IupSetHandle("mnu",mnu);
 
-  _frm_1 = IupFrame(
+  _frm_1 = IupFlatFrame(
     IupVbox(
-      set_callbacks(IupSetAttributes(IupButton("Button Text", NULL), "PADDING=5x5, TIP=\"Button TIP\"")), 
-      IupSetCallbacks(set_callbacks(IupSetAttributes(IupButton("Text", NULL), "IMAGE=img1, PADDING=5x5")),"ACTION", action1_cb, NULL), 
-      IupSetCallbacks(set_callbacks(IupSetAttributes(IupButton(NULL, NULL), "IMAGE=img1")),"ACTION", action2_cb, NULL), 
-      IupSetCallbacks(set_callbacks(IupSetAttributes(IupButton("", NULL), "IMAGE=img1,IMPRESS=img2")),"ACTION", action3_cb, NULL), 
-      IupSetCallbacks(set_callbacks(IupSetAttributes(IupButton(NULL, NULL), "BGCOLOR=\"255 0 128\", SIZE=20x10")),"ACTION", action3_cb, NULL), 
+      set_callbacks(IupSetAttributes(IupFlatButton("Button Text"), "PADDING=5x5, TIP=\"Button TIP\"")), 
+      IupSetCallbacks(set_callbacks(IupSetAttributes(IupFlatButton("Text"), "IMAGE=img1, PADDING=5x5")),"FLAT_ACTION", action1_cb, NULL), 
+      IupSetCallbacks(set_callbacks(IupSetAttributes(IupFlatButton(NULL), "IMAGE=img1")),"FLAT_ACTION", action2_cb, NULL), 
+      IupSetCallbacks(set_callbacks(IupSetAttributes(IupFlatButton(NULL), "IMAGE=img1,IMAGEPRESS=img2")), "FLAT_ACTION", action3_cb, NULL),
+      IupSetCallbacks(set_callbacks(IupSetAttributes(IupFlatButton(NULL), "BGCOLOR=\"255 0 128\", SIZE=20x10")),"FLAT_ACTION", action3_cb, NULL), 
       NULL));
-  IupSetAttribute(_frm_1,"TITLE","IupButton");
+  IupSetAttribute(_frm_1,"TITLE","IupFlatButton");
 
-  _frm_2 = IupFrame(
+  _frm_2 = IupFlatFrame(
     IupVbox(
       IupSetAttributes(IupLabel("Label Text"), "TIP=\"Label TIP\""),
       IupSetAttributes(IupLabel(NULL), "SEPARATOR=HORIZONTAL, NAME=SAMP_SEP"),
@@ -499,17 +500,17 @@ void SampleTest(void)
       NULL));
   IupSetAttribute(_frm_2,"TITLE","IupLabel");
 
-  _frm_3 = IupFrame(
+  _frm_3 = IupFlatFrame(
     IupVbox(
-      set_callbacks(IupSetAttributes(IupToggle("Toggle Text", NULL), "VALUE=ON, TIP=\"Toggle TIP\"")),
-      set_callbacks(IupSetAttributes(IupToggle(NULL, NULL), "VALUE=ON,IMAGE=img1,IMPRESS=img2")),
-      set_callbacks(IupSetAttributes(IupToggle(NULL, NULL), "VALUE=ON,IMAGE=img1")),
-      IupSetAttributes(IupFrame(IupRadio(IupVbox(
-        set_callbacks(IupToggle("Toggle Text", NULL)), 
-        set_callbacks(IupToggle("Toggle Text", NULL)), 
+      set_callbacks(IupSetAttributes(IupFlatButton("Toggle Text"), "VALUE=ON, TIP=\"Toggle TIP\", TOGGLE=Yes")),
+      set_callbacks(IupSetAttributes(IupFlatButton(NULL), "VALUE=ON,IMAGE=img1,IMAGEPRESS=img2, TOGGLE=Yes")),
+      set_callbacks(IupSetAttributes(IupFlatButton(NULL), "VALUE=ON,IMAGE=img1, TOGGLE=Yes")),
+      IupSetAttributes(IupFlatFrame(IupRadio(IupVbox(
+        IupSetAttributes(set_callbacks(IupFlatButton("Toggle Text")), "TOGGLE=Yes"),
+        IupSetAttributes(set_callbacks(IupFlatButton("Toggle Text")), "TOGGLE=Yes"),
         NULL))), "TITLE=IupRadio"),
       NULL));
-  IupSetAttribute(_frm_3,"TITLE","IupToggle");
+  IupSetAttribute(_frm_3,"TITLE","IupFlatButton(Toggle)");
 
   _text_1 = IupText( NULL);
   IupSetAttribute(_text_1,"VALUE","Single Line Text");
@@ -522,7 +523,7 @@ void SampleTest(void)
   IupSetAttribute(_ml_1,"SIZE","80x40");
   IupSetAttribute(_ml_1,"TIP","Multiline TIP");
 
-  _frm_4 = IupFrame(IupVbox(
+  _frm_4 = IupFlatFrame(IupVbox(
     set_callbacks(_text_1),
     set_callbacks(_ml_1),
     NULL));
@@ -555,7 +556,7 @@ void SampleTest(void)
   IupSetAttribute(_list_3,"3","Item 3 Text");
   IupSetAttribute(_list_3,"TIP","List 3");
 
-  _frm_5 =  IupFrame(IupVbox(
+  _frm_5 =  IupFlatFrame(IupVbox(
       set_callbacks(_list_1),
       set_callbacks(_list_2),
       set_callbacks(_list_3),
@@ -574,12 +575,15 @@ void SampleTest(void)
   IupSetAttribute(val,"TIP","Valuator TIP");
   set_callbacks(val);
   
-  pbar = IupProgressBar();
+  pbar = IupGauge();
   IupSetFloat(pbar, "VALUE", 0.5);
-  IupSetAttribute(pbar,"TIP","ProgressBar TIP");
+  IupSetAttribute(pbar,"TIP","IupGauge TIP");
+  IupSetAttribute(pbar, "FLAT", "Yes");
+  IupSetAttribute(pbar, "SHOWTEXT", "No");
+  IupSetAttribute(pbar, "RASTERSIZE", "200x30");
   set_callbacks(pbar);
 
-  tabs = IupTabs(IupVbox(IupLabel("Tab0"), NULL), IupVbox(IupLabel("Tab1"), NULL), IupVbox(IupLabel("Tab2"), NULL), NULL);
+  tabs = IupFlatTabs(IupVbox(IupLabel("Tab0"), NULL), IupVbox(IupLabel("Tab1"), NULL), IupVbox(IupLabel("Tab2"), NULL), NULL);
   IupSetAttribute(tabs,"TABTITLE0","Tab Title 0");
   IupSetAttribute(tabs,"TABTITLE1","Tab Title 1");
   IupSetAttributeHandle(tabs,"TABIMAGE1", load_image_LogoTecgraf());
@@ -606,16 +610,16 @@ void SampleTest(void)
 
   _vbox_1 = IupVbox(
     _hbox_1,
-    IupHbox(IupSetAttributes(IupFrame(IupHbox(val, NULL)), "TITLE=IupVal"),
-            IupSetAttributes(IupFrame(IupHbox(pbar, NULL)), "TITLE=IupProgressBar"),
-            IupSetAttributes(IupFrame(IupHbox(tabs, NULL)), "TITLE=IupTabs"),
+    IupHbox(IupSetAttributes(IupFlatFrame(IupHbox(val, NULL)), "TITLE=IupVal"),
+            IupSetAttributes(IupFlatFrame(IupHbox(pbar, NULL)), "TITLE=IupGauge"),
+            IupSetAttributes(IupFlatFrame(IupHbox(tabs, NULL)), "TITLE=IupFlatTabs"),
             NULL),
 #ifdef IUP_CONTROLS
-    IupHbox(IupSetAttributes(IupFrame(IupHbox(create_matrix(), NULL)), "TITLE=IupMatrix"),
+    IupHbox(IupSetAttributes(IupFlatFrame(IupHbox(create_matrix(), NULL)), "TITLE=IupMatrix"),
             NULL),
 #endif
-    IupHbox(IupSetAttributes(IupFrame(IupHbox(_cnv_1, NULL)), "TITLE=IupCanvas"),
-            IupSetAttributes(IupFrame(IupHbox(tree, NULL)), "TITLE=IupTree"),
+    IupHbox(IupSetAttributes(IupFlatFrame(IupHbox(_cnv_1, NULL)), "TITLE=IupCanvas"),
+            IupSetAttributes(IupFlatFrame(IupHbox(tree, NULL)), "TITLE=IupTree"),
             NULL),
     NULL);
   IupSetAttribute(_vbox_1,"MARGIN","5x5");
@@ -649,9 +653,9 @@ void SampleTest(void)
     Ihandle* label;
     Ihandle* caption_bar = IupSetAttributes(IupBackgroundBox(IupHbox(
       label = IupSetAttributes(IupLabel("Custom Dialog Title"), "EXPAND=HORIZONTAL, HTTRANSPARENT=Yes, NAME=CUSTOMFRAMECAPTION"),
-      IupSetCallbacks(IupSetAttributes(IupButton("_", NULL), "RASTERSIZE=50, FLAT=Yes, CANFOCUS=NO, FONTSTYLE=Bold"), "ACTION", dialog_custom_minimize, NULL),
-      IupSetCallbacks(IupSetAttributes(IupButton("Max", NULL), "RASTERSIZE=50"), "ACTION", dialog_custom_maximize, NULL),
-      IupSetCallbacks(IupSetAttributes(IupButton(" X ", NULL), "RASTERSIZE=50"), "ACTION", dialog_custom_close, NULL),
+      IupSetCallbacks(IupSetAttributes(IupFlatButton("_"), "RASTERSIZE=50, CANFOCUS=NO, FONTSTYLE=Bold"), "FLAT_ACTION", dialog_custom_minimize, NULL),
+      IupSetCallbacks(IupSetAttributes(IupFlatButton("Max"), "RASTERSIZE=50"), "FLAT_ACTION", dialog_custom_maximize, NULL),
+      IupSetCallbacks(IupSetAttributes(IupFlatButton(" X "), "RASTERSIZE=50"), "FLAT_ACTION", dialog_custom_close, NULL),
       NULL)), "HTTRANSPARENT=Yes, BGCOLOR=\"100 150 255\"");
     IupInsert(_vbox_1, NULL, caption_bar);
 
