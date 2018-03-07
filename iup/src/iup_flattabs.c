@@ -574,9 +574,9 @@ static int iFlatTabsRedraw_CB(Ihandle* ih)
 
       if (show_lines && current_child == child)
       {
-        iupdrvDrawLine(dc, tab_x, 0, tab_x + tab_w - 1, 0, line_color, IUP_DRAW_STROKE, 1); /* tab top horizontal */
+        iupdrvDrawLine(dc, tab_x, 0, tab_x + tab_w, 0, line_color, IUP_DRAW_STROKE, 1); /* tab top horizontal */
         iupdrvDrawLine(dc, tab_x, 0, tab_x, title_height - 1, line_color, IUP_DRAW_STROKE, 1); /* tab left vertical */
-        iupdrvDrawLine(dc, tab_x + tab_w - 1, 0, tab_x + tab_w - 1, title_height - 1, line_color, IUP_DRAW_STROKE, 1); /* tab right vertical */
+        iupdrvDrawLine(dc, tab_x + tab_w, 0, tab_x + tab_w, title_height - 1, line_color, IUP_DRAW_STROKE, 1); /* tab right vertical */
       }
 
       icon_width = tab_w;
