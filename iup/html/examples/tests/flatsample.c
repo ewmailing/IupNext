@@ -583,12 +583,12 @@ void FlatSampleTest(void)
   IupSetAttribute(pbar, "RASTERSIZE", "200x30");
   set_callbacks(pbar);
 
-  tabs = IupFlatTabs(IupVbox(IupLabel("Tab0"), NULL), IupVbox(IupLabel("Tab1"), NULL), IupVbox(IupLabel("Tab2"), NULL), NULL);
+  tabs = IupFlatTabs(IupBackgroundBox(IupSetAttributes(IupLabel("Tab0"), "SIZE=160x15")), IupBackgroundBox(IupLabel("Tab1")), IupBackgroundBox(IupLabel("Tab2")), NULL);
   IupSetAttribute(tabs,"TABTITLE0","Tab Title 0");
   IupSetAttribute(tabs,"TABTITLE1","Tab Title 1");
   IupSetAttributeHandle(tabs,"TABIMAGE1", load_image_LogoTecgraf());
   IupSetAttribute(tabs,"TABTITLE2","Tab Title 2");
-  IupSetAttribute(tabs,"RASTERSIZE","300x50");
+//  IupSetAttribute(tabs,"RASTERSIZE","300x50");
   IupSetAttribute(tabs,"TIP","Tabs TIP");
 //  IupSetAttribute(tabs,"TABPADDING","5x5");
   set_callbacks(tabs);
@@ -596,7 +596,7 @@ void FlatSampleTest(void)
   tree = IupTree();
   IupSetAttribute(tree, "SHOWRENAME",   "YES");
   IupSetAttribute(tree,"RASTERSIZE","100x150");
-  IupSetAttribute(tree,"TIP","Treee TIP");
+  IupSetAttribute(tree,"TIP","Tree TIP");
   set_callbacks(tree);
 
   _cnv_1 = IupCanvas(NULL);
