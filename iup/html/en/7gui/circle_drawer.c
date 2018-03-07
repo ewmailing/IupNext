@@ -347,8 +347,8 @@ static int canvas_action(Ihandle *ih)
       IupSetAttribute(ih, "DRAWSTYLE", "STROKE");
     }
 
-    IupDrawArc(ih, circlesList[i].x - circlesList[i].r, circlesList[i].y - circlesList[i].r,
-                   circlesList[i].x + circlesList[i].r, circlesList[i].y + circlesList[i].r, 0., 360.);
+    IupDrawArc(ih, circle.x - circle.r, circle.y - circle.r,
+                   circle.x + circle.r, circle.y + circle.r, 0., 360.);
   }
 
   IupDrawEnd(ih);

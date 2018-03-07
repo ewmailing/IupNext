@@ -34,8 +34,6 @@ function timer:action_cb()
     gauge.value = (totaltime + elapsedTime) / 1000.
 	print(gauge.value.." - "..type(gauge.value))
   end
-  
-  return iup.default
 end
 
 function val:valuechanged_cb()
@@ -49,8 +47,6 @@ function val:valuechanged_cb()
   else
     gauge.value = gauge.max
   end
-
-  return iup.default
 end
 
 function button:action()
@@ -64,8 +60,6 @@ function button:action()
   gauge.max = 60
 
   timer.run = "YES"
-
-  return iup.default
 end
 
 dlg:showxy( iup.CENTER, iup.CENTER )

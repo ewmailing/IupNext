@@ -20,7 +20,6 @@ dlg = iup.dialog{iup.hbox{txt_count, btn_count; ngap = "10"}, title = "Counter",
 function btn_count:action()
   addCount()
   txt_count.value = getCount()
-  return iup.DEFAULT
 end
 
 dlg:showxy( iup.CENTER, iup.CENTER )

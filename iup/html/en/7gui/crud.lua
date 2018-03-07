@@ -105,7 +105,6 @@ end
 
 function txt_filter:valuechanged_cb()	
 	loadList(self.value)
-	return iup.default
 end
 
 function btn_create:action()
@@ -116,7 +115,6 @@ function btn_create:action()
 	txt_surname.value = ""
 	loadList()
 	updateButtonsState()
-  return iup.DEFAULT
 end
 
 function btn_update:action()
@@ -129,7 +127,6 @@ function btn_update:action()
 	txt_surname.value = ""
 	loadList()
 	updateButtonsState()
-	return iup.DEFAULT
 end
 
 function btn_delete:action()
@@ -140,7 +137,6 @@ function btn_delete:action()
 	txt_surname.value = ""
 	loadList()
 	updateButtonsState()
-	return iup.DEFAULT
 end
 
 dlg:showxy( iup.CENTER, iup.CENTER )

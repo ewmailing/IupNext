@@ -53,7 +53,7 @@ function matrix:value_cb(lin, col)
 		local elin, ecol
 		elin, ecol = string.match(editcell, "(%d):(%d)")
 		if elin == lin and ecol == col and isFormula(lin, col) then
-		  return getFormula(lin, col);
+		  return getFormula(lin, col)
 		end
 	end
 	if lin == 0 and col == 0 then
@@ -82,7 +82,6 @@ function matrix:value_edit_cb(lin, col, newValue)
 		formula[lin][col] = newvalue
 		runFormula(lin, col)
 	end
-	return iup.DEFAULT
 end
 
 dlg:showxy( iup.CENTER, iup.CENTER )

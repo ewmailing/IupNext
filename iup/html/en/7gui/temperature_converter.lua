@@ -30,12 +30,10 @@ dlg:showxy( iup.CENTER, iup.CENTER )
 
 function txt_celcius:valuechanged_cb()
 	txt_fahrenheit.value = celcius2fahrenheit(attrib2number(txt_celcius.value))
-	return iup.default
 end
 
 function txt_fahrenheit:valuechanged_cb()
 	txt_celcius.value = fahrenheit2celcius(attrib2number(txt_fahrenheit.value))
-	return iup.default
 end
 
 if (iup.MainLoopLevel()==0) then

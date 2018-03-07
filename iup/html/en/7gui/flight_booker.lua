@@ -66,17 +66,13 @@ btn_book = iup.button{title = "Book", expand = "HORIZONTAL"}
 dlg = iup.dialog{iup.vbox{lst_flight, txt_startDate, txt_returnDate, btn_book; gap="10"}, title = "Book Flight", size = "150", margin = "10x10"}
 
 function btn_book:action()
-
   local flightType = lst_flight.value
-
   if lst_flight.value == "1" then
     iup.Message("Atention!", "You have booked a one-way flight on "..txt_startDate.value..".")
   else
     iup.Message("Atention!", "You have booked a return flight on "..txt_startDate.value..
                             " and "..txt_returnDate.value..".")
  end
-
-  return iup.DEFAULT
 end
 
 function lst_flight:valuechanged_cb()
@@ -118,7 +114,6 @@ function txt_startDate:valuechanged_cb()
 	else
 		btn_book.active = "NO"
 	end
-	return iup.default
 end
 
 function txt_returnDate:valuechanged_cb()
@@ -130,7 +125,6 @@ function txt_returnDate:valuechanged_cb()
 	else
 		btn_book.active = "NO"
 	end
-	return iup.default
 end
 
 dlg:showxy( iup.CENTER, iup.CENTER )
