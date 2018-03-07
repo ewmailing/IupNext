@@ -244,6 +244,7 @@ int main(int argc, char **argv)
   IupSetAttribute(lst_names, "NAME", "LST_NAMES");
   IupSetAttribute(lst_names, "EXPAND", "YES");
   IupSetAttribute(lst_names, "SIZE", "60x");
+  IupSetAttribute(lst_names, "VISIBLELINES", "6");
   lbl_name = IupLabel("Name:");
   IupSetAttribute(lbl_name, "NAME", "LBL_NAME");
   IupSetAttribute(lbl_name, "SIZE", "35");
@@ -291,9 +292,8 @@ int main(int argc, char **argv)
   IupSetAttribute(box, "NMARGIN", "10x10");
 
   dlg = IupDialog(box);
-  IupSetAttribute(dlg, "TITLE", "Crud");
+  IupSetAttribute(dlg, "TITLE", "CRUD");
   IupSetAttribute(dlg, "GAP", "10");
-  IupSetAttribute(dlg, "SIZE", "250x180");
 
   /* Registers callbacks */
   IupSetCallback(btn_create, "ACTION", (Icallback)btn_create_cb);

@@ -438,6 +438,9 @@
     <ClCompile Include="..\html\en\7gui\circle_drawer.c">
       <Filter>7GUI</Filter>
     </ClCompile>
+    <ClCompile Include="..\html\en\7gui\crud.c">
+      <Filter>7GUI</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <None Include="..\html\examples\Lua\alarm.wlua">

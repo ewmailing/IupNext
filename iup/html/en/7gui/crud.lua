@@ -54,7 +54,7 @@ vbx_input = iup.vbox{hbx_name, hbx_surname}
 hbox = iup.hbox{lst_names, vbx_input; homogeneous = "YES"}
 box = iup.vbox{hbx_filter, hbox, hbx_buttons; nmargin = "10x10"}
 
-dlg = iup.dialog{box, title = "CRUD", gap = "10", xsize = "250x180"}
+dlg = iup.dialog{box, title = "CRUD", gap = "10"}
 
 function trim (str)
 return string.gsub(str, "^%s*(.-)%s*$", "%1")
