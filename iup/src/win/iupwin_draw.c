@@ -575,13 +575,14 @@ void iupdrvDrawLine(IdrawCanvas* dc, int x1, int y1, int x2, int y2, long color,
 
 static int winDrawCalcArc(int c1, int c2, double a, int horiz)
 {
-  double proj, off;
+  double proj;
+  int pos;
   if (horiz)
     proj = cos(IUP_DEG2RAD * a);
   else
     proj = - sin(IUP_DEG2RAD * a);
-  off = (c2 + c1) / 2.0 + (c2 - c1 + 1) * proj / 2.0;
-  return iupROUND(off);
+  pos = (c2 + c1) / 2 + iupROUND((c2 - c1 + 1) * proj / 2.0);
+  return pos;
 }
 
 void iupdrvDrawArc(IdrawCanvas* dc, int x1, int y1, int x2, int y2, double a1, double a2, long color, int style, int line_width)
