@@ -313,6 +313,7 @@ void FlatButtonTest(void)
 //  IupSetAttribute(button, "ALIGNMENT", "ALEFT:ATOP");
   IupSetAttribute(button, "NAME", "button1");
   IupSetAttribute(button, "CANFOCUS", "NO");
+  IupSetAttribute(button, "SHOWBORDER", "Yes");
   if (toggle) IupSetAttribute(button, "TOGGLE", "Yes");
   set_callbacks(button);
   IupAppend(box1, button);

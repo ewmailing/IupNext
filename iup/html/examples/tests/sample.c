@@ -449,7 +449,7 @@ static int dialog_custom_close(Ihandle* ih)
 
 void SampleTest(void)
 {
-  Ihandle *mnu, *_hbox_1, *_cnv_1, *_vbox_1, *dlg, *img, 
+  Ihandle *mnu, *_hbox_1, *_cnv_1, *_vbox_1, *dlg, *img, *dial,
     *_frm_1, *_frm_2, *_frm_3, *_frm_4, *_frm_5, *pbar, *val, *tabs,
     *_list_1, *_list_2, *_list_3, *_text_1, *_ml_1, *tree;
 
@@ -487,7 +487,7 @@ void SampleTest(void)
       IupSetCallbacks(set_callbacks(IupSetAttributes(IupButton("Text", NULL), "IMAGE=img1, PADDING=5x5")),"ACTION", action1_cb, NULL), 
       IupSetCallbacks(set_callbacks(IupSetAttributes(IupButton(NULL, NULL), "IMAGE=img1")),"ACTION", action2_cb, NULL), 
       IupSetCallbacks(set_callbacks(IupSetAttributes(IupButton("", NULL), "IMAGE=img1,IMPRESS=img2")),"ACTION", action3_cb, NULL), 
-      IupSetCallbacks(set_callbacks(IupSetAttributes(IupButton(NULL, NULL), "BGCOLOR=\"255 0 128\", SIZE=20x10")),"ACTION", action3_cb, NULL), 
+      IupSetCallbacks(set_callbacks(IupSetAttributes(IupButton(NULL, NULL), "BGCOLOR=\"255 0 128\", RASTERSIZE=40x40")),"ACTION", action3_cb, NULL), 
       NULL));
   IupSetAttribute(_frm_1,"TITLE","IupButton");
 
@@ -589,10 +589,13 @@ void SampleTest(void)
 //  IupSetAttribute(tabs,"TABPADDING","5x5");
   set_callbacks(tabs);
 
+  dial = IupDial("HORIZONTAL");
+  IupSetAttribute(dial, "RASTERSIZE", "200x30");
+
   tree = IupTree();
   IupSetAttribute(tree, "SHOWRENAME",   "YES");
   IupSetAttribute(tree,"RASTERSIZE","100x150");
-  IupSetAttribute(tree,"TIP","Treee TIP");
+  IupSetAttribute(tree,"TIP","Tree TIP");
   set_callbacks(tree);
 
   _cnv_1 = IupCanvas(NULL);
@@ -608,6 +611,7 @@ void SampleTest(void)
     _hbox_1,
     IupHbox(IupSetAttributes(IupFrame(IupHbox(val, NULL)), "TITLE=IupVal"),
             IupSetAttributes(IupFrame(IupHbox(pbar, NULL)), "TITLE=IupProgressBar"),
+            IupSetAttributes(IupFrame(IupHbox(dial, NULL)), "TITLE=IupDial"),
             IupSetAttributes(IupFrame(IupHbox(tabs, NULL)), "TITLE=IupTabs"),
             NULL),
 #ifdef IUP_CONTROLS

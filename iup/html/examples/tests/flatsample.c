@@ -414,7 +414,7 @@ static int drawbg_cb(Ihandle* ih)
 
 static Ihandle* myFrame(Ihandle* child)
 {
-  return IupSetAttributes(IupFlatFrame(child), "TITLELINE=No, TITLEALIGNMENT=ALEFT, FRAMECOLOR=\"192 192 192\"");
+  return IupSetAttributes(IupFlatFrame(child), "FRAMECOLOR=\"192 192 192\", FRAME=CROSSTITLE");
 //  return IupVbox(child, NULL);
 }
 #define IupFlatFrame myFrame
@@ -450,7 +450,7 @@ static int dialog_custom_close(Ihandle* ih)
 
 void FlatSampleTest(void)
 {
-  Ihandle *mnu, *_hbox_1, *_cnv_1, *_vbox_1, *dlg, *img, 
+  Ihandle *mnu, *_hbox_1, *_cnv_1, *_vbox_1, *dlg, *img, *dial,
     *_frm_1, *_frm_2, *_frm_3, *_frm_4, *_frm_5, *pbar, *val, *tabs,
     *_list_1, *_list_2, *_list_3, *_text_1, *_ml_1, *tree;
 
@@ -484,11 +484,11 @@ void FlatSampleTest(void)
 
   _frm_1 = IupFlatFrame(
     IupVbox(
-      set_callbacks(IupSetAttributes(IupFlatButton("Button Text"), "PADDING=5x5, TIP=\"Button TIP\"")), 
+      set_callbacks(IupSetAttributes(IupFlatButton("Button Text"), "PADDING=5x5, SHOWBORDER=Yes, TIP=\"Button TIP\"")), 
       IupSetCallbacks(set_callbacks(IupSetAttributes(IupFlatButton("Text"), "IMAGE=img1, PADDING=5x5")),"FLAT_ACTION", action1_cb, NULL), 
       IupSetCallbacks(set_callbacks(IupSetAttributes(IupFlatButton(NULL), "IMAGE=img1")),"FLAT_ACTION", action2_cb, NULL), 
       IupSetCallbacks(set_callbacks(IupSetAttributes(IupFlatButton(NULL), "IMAGE=img1,IMAGEPRESS=img2")), "FLAT_ACTION", action3_cb, NULL),
-      IupSetCallbacks(set_callbacks(IupSetAttributes(IupFlatButton(NULL), "BGCOLOR=\"255 0 128\", SIZE=20x10")),"FLAT_ACTION", action3_cb, NULL), 
+      IupSetCallbacks(set_callbacks(IupSetAttributes(IupFlatButton(NULL), "FGCOLOR=\"255 0 128\", RASTERSIZE=40x40")),"FLAT_ACTION", action3_cb, NULL), 
       NULL));
   IupSetAttribute(_frm_1,"TITLE","IupFlatButton");
 
@@ -510,7 +510,7 @@ void FlatSampleTest(void)
         IupSetAttributes(set_callbacks(IupFlatButton("Toggle Text")), "TOGGLE=Yes"),
         NULL))), "TITLE=IupRadio"),
       NULL));
-  IupSetAttribute(_frm_3,"TITLE","IupFlatButton(Toggle)");
+  IupSetAttribute(_frm_3,"TITLE","IupFlatButton");
 
   _text_1 = IupText( NULL);
   IupSetAttribute(_text_1,"VALUE","Single Line Text");
@@ -583,6 +583,10 @@ void FlatSampleTest(void)
   IupSetAttribute(pbar, "RASTERSIZE", "200x30");
   set_callbacks(pbar);
 
+  dial = IupDial("HORIZONTAL");
+  IupSetAttribute(dial, "RASTERSIZE", "200x30");
+  IupSetAttribute(dial, "FLAT", "Yes");
+
   tabs = IupFlatTabs(IupBackgroundBox(IupSetAttributes(IupLabel("Tab0"), "SIZE=160x15")), IupBackgroundBox(IupLabel("Tab1")), IupBackgroundBox(IupLabel("Tab2")), NULL);
   IupSetAttribute(tabs,"TABTITLE0","Tab Title 0");
   IupSetAttribute(tabs,"TABTITLE1","Tab Title 1");
@@ -612,6 +616,7 @@ void FlatSampleTest(void)
     _hbox_1,
     IupHbox(IupSetAttributes(IupFlatFrame(IupHbox(val, NULL)), "TITLE=IupVal"),
             IupSetAttributes(IupFlatFrame(IupHbox(pbar, NULL)), "TITLE=IupGauge"),
+            IupSetAttributes(IupFlatFrame(IupHbox(dial, NULL)), "TITLE=IupDial"),
             IupSetAttributes(IupFlatFrame(IupHbox(tabs, NULL)), "TITLE=IupFlatTabs"),
             NULL),
 #ifdef IUP_CONTROLS
