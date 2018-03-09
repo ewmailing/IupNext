@@ -424,7 +424,7 @@ static int iFlatTabsRedraw_CB(Ihandle* ih)
   char* bgcolor = iupAttribGetStr(ih, "BGCOLOR");
   char* forecolor = iupAttribGetStr(ih, "FORECOLOR");
   char* highcolor = iupAttribGetStr(ih, "HIGHCOLOR");
-  char* tabs_bgcolor = iupAttribGet(ih, "TABSBACKCOLOR");
+  char* tabs_bgcolor = iupAttribGet(ih, "TABSBACKCOLOR");  /* don't get with default value, if NULL will use from parent */
   char* tabs_forecolor = iupAttribGetStr(ih, "TABSFORECOLOR");
   char* tabs_highcolor = iupAttribGetStr(ih, "TABSHIGHCOLOR");
   int img_position = iupFlatGetImagePosition(iupAttribGetStr(ih, "TABSIMAGEPOSITION"));
