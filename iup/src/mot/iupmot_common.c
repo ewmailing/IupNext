@@ -290,6 +290,7 @@ int iupdrvBaseSetBgColorAttrib(Ihandle* ih, const char* value)
     iupmotSetBgColor(ih->handle, color);
 
     /* update internal image cache for controls that have the IMAGE attribute */
+    iupAttribSet(ih, "BGCOLOR", value);
     iupImageUpdateParent(ih);
   }
   return 1;

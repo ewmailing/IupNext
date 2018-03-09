@@ -376,9 +376,8 @@ static int iFlatButtonSetPaddingAttrib(Ihandle* ih, const char* value)
 
 static int iFlatButtonSetBgColorAttrib(Ihandle* ih, const char* value)
 {
-  iupAttribSet(ih, "BGCOLOR", value);
-  iupImageUpdateParent(ih);
-  iupdrvRedrawNow(ih);
+  (void)value;
+  iupdrvPostRedraw(ih);
   return 1;
 }
 

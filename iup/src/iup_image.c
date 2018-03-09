@@ -804,7 +804,7 @@ Ihandle* iupImageGetHandle(const char* name)
   return NULL;
 }
 
-void iupImageUpdateParent(Ihandle *ih)  /* ih here is the element that contains images */
+void iupImageUpdateParent(Ihandle *ih)  /* ih here is the native element that contains images */
 {
   /* Called when BGCOLOR is changed */
   /* it will re-create the image, if the case */
