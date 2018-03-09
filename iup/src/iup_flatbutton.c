@@ -48,7 +48,22 @@ struct _IcontrolData
 
 /****************************************************************/
 
-
+static char* iFlatGetDarkerBgColor(Ihandle* ih)
+{
+  char* value = iupAttribGet(ih, "DARK_DLGBGCOLOR");
+  if (!value)
+  {
+    unsigned char r, g, b;
+    iupStrToRGB(IupGetGlobal("DLGBGCOLOR"), &r, &g, &b);
+    r = (r * 90) / 100;
+    g = (g * 90) / 100;
+    b = (b * 90) / 100;
+    iupAttribSetStrf(ih, "DARK_DLGBGCOLOR", "%d %d %d", r, g, b);
+    return iupAttribGet(ih, "DARK_DLGBGCOLOR");
+  }
+  else
+    return value;
+}
 static int iFlatButtonRedraw_CB(Ihandle* ih)
 {
   char *image = iupAttribGet(ih, "IMAGE");
@@ -56,13 +71,13 @@ static int iFlatButtonRedraw_CB(Ihandle* ih)
   int active = IupGetInt(ih, "ACTIVE");  /* native implementation */
   int selected = iupAttribGetInt(ih, "VALUE");
   char* fgcolor = iupAttribGetStr(ih, "FGCOLOR");
-  char* bgcolor = iupAttribGetStr(ih, "BGCOLOR");
+  char* bgcolor = iupAttribGet(ih, "BGCOLOR");  /* don't get with default value, if NULL will use from parent */
   char* bgimage = iupAttribGet(ih, "BACKIMAGE");
   char* fgimage = iupAttribGet(ih, "FRONTIMAGE");
   char* text_align = iupAttribGetStr(ih, "TEXTALIGNMENT");
   const char* draw_image;
   int border_width = ih->data->border_width;
-  int draw_border = 0;
+  int draw_border = iupAttribGetBoolean(ih, "SHOWBORDER");
   int image_pressed;
   IdrawCanvas* dc = iupdrvDrawCreateCanvas(ih);
   int make_inactive = 0;
@@ -70,7 +85,12 @@ static int iFlatButtonRedraw_CB(Ihandle* ih)
   iupDrawParentBackground(dc, ih);
 
   if (!bgcolor)
-    bgcolor = iupBaseNativeParentGetBgColorAttrib(ih);
+  {
+    if (draw_border)
+      bgcolor = iFlatGetDarkerBgColor(ih);
+    else
+      bgcolor = iupBaseNativeParentGetBgColorAttrib(ih);
+  }
 
   if (ih->data->pressed || (selected && !ih->data->highlighted))
   {
@@ -649,6 +669,7 @@ Iclass* iupFlatButtonNewClass(void)
   iupClassRegisterAttribute(ic, "HIGHLIGHTED", iFlatButtonGetHighlightedAttrib, NULL, NULL, NULL, IUPAF_READONLY | IUPAF_NO_INHERIT);
   iupClassRegisterAttribute(ic, "PRESSED", iFlatButtonGetPressedAttrib, NULL, NULL, NULL, IUPAF_READONLY | IUPAF_NO_INHERIT);
   iupClassRegisterAttribute(ic, "HASFOCUS", iFlatButtonGetHasFocusAttrib, NULL, NULL, NULL, IUPAF_READONLY | IUPAF_NO_INHERIT);
+  iupClassRegisterAttribute(ic, "SHOWBORDER", NULL, NULL, NULL, NULL, IUPAF_NO_INHERIT);
 
   iupClassRegisterAttribute(ic, "BORDERCOLOR", NULL, NULL, IUPAF_SAMEASSYSTEM, "50 150 255", IUPAF_DEFAULT);  /* inheritable */
   iupClassRegisterAttribute(ic, "BORDERPSCOLOR", NULL, NULL, NULL, NULL, IUPAF_DEFAULT);  /* inheritable */
