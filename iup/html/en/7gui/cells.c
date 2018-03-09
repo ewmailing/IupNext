@@ -129,10 +129,13 @@ static double cellDataSumCells(CellData* c)
 
 static void cellDataCalcFormula(CellData* c)
 {
-  cellDataSetDependenciesDirty(c);
-
   if (c->calcFormula == FORM_CALC)
+  {
     c->parseError = ERR_RECURSE;
+    return;
+  }
+
+  cellDataSetDependenciesDirty(c);
 
   if (c->parseError == ERR_NONE)
   {
@@ -140,8 +143,13 @@ static void cellDataCalcFormula(CellData* c)
     {
     case OP_SUM:
       c->calcFormula = FORM_CALC;
+
       c->number = cellDataSumCells(c);
-      c->calcFormula = FORM_READY;
+
+      if (c->parseError == ERR_NONE)
+        c->calcFormula = FORM_READY;
+      else
+        c->calcFormula = FORM_DIRTY;
       break;
     }
   }
@@ -150,7 +158,7 @@ static void cellDataCalcFormula(CellData* c)
 static double cellDataGetNumber(int lin, int col)
 {
   CellData* c = &(data[lin][col]);
-  if (c->value[0] == '=' && c->calcFormula == FORM_DIRTY)
+  if (c->value[0] == '=' && c->calcFormula != FORM_READY)
     cellDataCalcFormula(c);
 
   return c->number;
@@ -333,7 +341,13 @@ static char* matrix_value_cb(Ihandle *self, int lin, int col)
   }
 
   if (cellDataIsNumber(lin - 1, col - 1))
-    sprintf(text, "%.2lf", cellDataGetNumber(lin - 1, col - 1));
+  {
+    double number = cellDataGetNumber(lin - 1, col - 1);
+    if (cellDataIsNumber(lin - 1, col - 1))
+      sprintf(text, "%.2lf", number);
+    else
+      return cellDataGetString(lin - 1, col - 1);
+  }
   else
     return cellDataGetString(lin - 1, col - 1);
 
