@@ -266,6 +266,8 @@ static int action3_cb(Ihandle* ih)
   (void)ih;
   printf("ACTION3\n");
 //  IupSetAttribute(IupGetChild(IupGetDialog(ih), 0), "BGCOLOR", "128 0 0");
+  IupSetAttribute(IupGetChild(IupGetDialog(ih), 0), "ACTIVE", "NO");
+
   return IUP_DEFAULT;
 }
 
