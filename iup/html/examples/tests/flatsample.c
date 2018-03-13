@@ -247,14 +247,14 @@ static void show_menu(Ihandle* ih)
 
 static int action1_cb(Ihandle* ih)
 {
-//  IupSetAttribute(IupGetDialog(ih), "BACKGROUND", "255 128 128");
+  IupSetAttribute(IupGetDialog(ih), "BACKGROUND", "255 128 128");
   show_menu(ih);
   return IUP_DEFAULT;
 }
 
 static int action2_cb(Ihandle* ih)
 {
-  IupSetAttribute(IupGetDialog(ih), "BGCOLOR", "0 128 0");
+  IupSetAttribute(IupGetDialog(ih), "BGCOLOR", "0 128 0");   // at the dialog
 //  IupSetAttribute(IupGetDialog(ih), "RASTERSIZE", "600x300");
 //  IupRefresh(IupGetDialog(ih));
 //  IupFlush();
@@ -263,9 +263,12 @@ static int action2_cb(Ihandle* ih)
 
 static int action3_cb(Ihandle* ih)
 {
-  (void)ih;
-  printf("ACTION3\n");
-//  IupSetAttribute(IupGetChild(IupGetDialog(ih), 0), "BGCOLOR", "128 0 0");
+  IupSetAttribute(IupGetChild(IupGetDialog(ih), 0), "BGCOLOR", "128 0 0");  // at the dialog first child
+  return IUP_DEFAULT;
+}
+
+static int action4_cb(Ihandle* ih)
+{
   IupSetAttribute(IupGetChild(IupGetDialog(ih), 0), "ACTIVE", "NO");
   return IUP_DEFAULT;
 }
@@ -489,7 +492,7 @@ void FlatSampleTest(void)
       IupSetCallbacks(set_callbacks(IupSetAttributes(IupFlatButton("Text"), "IMAGE=img1, PADDING=5x5")),"FLAT_ACTION", action1_cb, NULL), 
       IupSetCallbacks(set_callbacks(IupSetAttributes(IupFlatButton(NULL), "IMAGE=img1")),"FLAT_ACTION", action2_cb, NULL), 
       IupSetCallbacks(set_callbacks(IupSetAttributes(IupFlatButton(NULL), "IMAGE=img1,IMAGEPRESS=img2")), "FLAT_ACTION", action3_cb, NULL),
-      IupSetCallbacks(set_callbacks(IupSetAttributes(IupFlatButton(NULL), "FGCOLOR=\"255 0 128\", RASTERSIZE=40x40")),"FLAT_ACTION", action3_cb, NULL), 
+      IupSetCallbacks(set_callbacks(IupSetAttributes(IupFlatButton(NULL), "FGCOLOR=\"255 0 128\", RASTERSIZE=40x40")),"FLAT_ACTION", action4_cb, NULL), 
       NULL));
   IupSetAttribute(_frm_1,"TITLE","IupFlatButton");
 
@@ -536,7 +539,12 @@ void FlatSampleTest(void)
   IupSetAttribute(_list_1,"1","Item 1 Text");
   IupSetAttribute(_list_1,"2","Item 2 Text");
   IupSetAttribute(_list_1,"3","Item 3 Text");
-  IupSetAttribute(_list_1,"TIP","List 1");
+  IupSetAttribute(_list_1, "4", "Item 4 Text");
+  IupSetAttribute(_list_1, "5", "Item 5 Text");
+  IupSetAttribute(_list_1, "6", "Item 6 Text");
+  IupSetAttribute(_list_1, "7", "Item 7 Text");
+  IupSetAttribute(_list_1, "TIP", "List 1");
+  IupSetAttribute(_list_1, "VISIBLELINES", "3");
 
   _list_2 = IupList( NULL);
   IupSetAttribute(_list_2,"DROPDOWN","YES");
@@ -552,10 +560,15 @@ void FlatSampleTest(void)
   IupSetAttribute(_list_3,"EDITBOX","YES");
 //  IupSetAttribute(_list_3,"EXPAND","YES");
   IupSetAttribute(_list_3,"VALUE","3");
-  IupSetAttribute(_list_3,"1","Item 1 Text");
+  IupSetAttribute(_list_3, "VISIBLELINES", "3");
+  IupSetAttribute(_list_3, "1", "Item 1 Text");
   IupSetAttribute(_list_3,"2","Item 2 Text");
   IupSetAttribute(_list_3,"3","Item 3 Text");
-  IupSetAttribute(_list_3,"TIP","List 3");
+  IupSetAttribute(_list_3, "4", "Item 4 Text");
+  IupSetAttribute(_list_3, "5", "Item 5 Text");
+  IupSetAttribute(_list_3, "6", "Item 6 Text");
+  IupSetAttribute(_list_3, "7", "Item 7 Text");
+  IupSetAttribute(_list_3, "TIP", "List 3");
 
   _frm_5 =  IupFlatFrame(IupVbox(
       set_callbacks(_list_1),
@@ -703,6 +716,14 @@ void FlatSampleTest(void)
   IupSetAttribute(tree, "ADDLEAF2",     "equilateral");  /* ... */
   IupSetAttribute(tree, "ADDLEAF3",     "isoceles");
   IupSetAttribute(tree, "ADDLEAF4",     "scalenus");
+  IupSetAttribute(tree, "INSERTBRANCH2", "More");  /* new id=6 */
+  IupSetAttribute(tree, "ADDLEAF6", "item 1");  /* ... */
+  IupSetAttribute(tree, "ADDLEAF7", "item 2");  /* ... */
+  IupSetAttribute(tree, "ADDLEAF8", "item 3");  /* ... */
+  IupSetAttribute(tree, "ADDLEAF9", "item 4");  /* ... */
+  IupSetAttribute(tree, "ADDLEAF10", "item 5");  /* ... */
+  IupSetAttribute(tree, "ADDLEAF11", "item 6");  /* ... */
+  IupSetAttribute(tree, "ADDLEAF12", "item 7");  /* ... */
 
   IupShow(dlg);
 
