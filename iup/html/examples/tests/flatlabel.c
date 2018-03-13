@@ -129,7 +129,7 @@ void FlatLabelTest(void)
   IupAppend(box1, label);
 //  IupSetCallback(label, "ENTERWINDOW_CB", (Icallback)enterwindow_cb);
 //  IupSetCallback(label, "LEAVEWINDOW_CB", (Icallback)leavewindow_cb);
-  IupSetAttribute(label, "PADDING", "20x20");
+//  IupSetAttribute(label, "PADDING", "20x20");
 
   label = IupLabel(NULL);
   IupSetAttribute(label, "SEPARATOR", "HORIZONTAL");
@@ -140,7 +140,8 @@ void FlatLabelTest(void)
   label = IupFlatLabel(NULL);
   IupSetAttribute(label, "TITLE", "Text &Label\nSecond Line");
   IupSetAttribute(label, "FGCOLOR", "0 0 255");
-  IupSetAttribute(label, "RASTERSIZE", "150x70");
+  IupSetAttribute(label, "RASTERSIZE", "250x100");
+//  IupSetAttribute(label, "RASTERSIZE", "150x70");
 //  IupSetAttribute(label, "RASTERSIZE", "30x70");
 //  IupSetAttribute(label, "WORDWRAP", "YES");
 //  IupSetAttribute(label, "ELLIPSIS", "YES");
@@ -151,9 +152,11 @@ void FlatLabelTest(void)
 
   label = IupFlatLabel(NULL);
   IupSetAttribute(label, "TITLE", "Text\nSecond Line");
-  IupSetAttribute(label, "RASTERSIZE", "150x70");
+//  IupSetAttribute(label, "RASTERSIZE", "150x70");
+  IupSetAttribute(label, "RASTERSIZE", "250x100");
   IupSetAttribute(label, "ALIGNMENT", "ACENTER:ACENTER");
-  IupSetAttribute(label, "FONT", "Helvetica, Underline 14");
+  IupSetAttribute(label, "FONT", "Helvetica, 12");
+//  IupSetAttribute(label, "FONT", "Helvetica, Underline 14");
 //  IupSetAttribute(label, "FONTSIZE", "14");
 //  IupSetAttribute(label, "FONTSTYLE", "Italic");
 //  IupSetAttribute(label, "FONTSTYLE", "Bold");
@@ -162,10 +165,10 @@ void FlatLabelTest(void)
 //  IupSetCallback(label, "LEAVEWINDOW_CB", (Icallback)leavewindow_cb);
 
   label = IupFlatLabel(NULL);
-  IupSetAttribute(label, "TITLE", "Text\n<b>Second Line</b>");
-  IupSetAttribute(label, "RASTERSIZE", "150x70");
+  IupSetAttribute(label, "TITLE", "Text\nSecond Line");
+//  IupSetAttribute(label, "RASTERSIZE", "150x70");
+  IupSetAttribute(label, "RASTERSIZE", "250x100");
   IupSetAttribute(label, "ALIGNMENT", "ARIGHT:ABOTTOM");
-  IupSetAttribute(label, "MARKUP", "YES");
 //  IupSetCallback(label, "ENTERWINDOW_CB", enter1_cb);
   IupAppend(box1, label);
 //  IupSetCallback(label, "ENTERWINDOW_CB", (Icallback)enterwindow_cb);
@@ -202,18 +205,21 @@ void FlatLabelTest(void)
 
   fill = IupFill();
   IupSetAttribute(fill, "SIZE", "20");
-  IupAppend(box2, fill);
+  //IupAppend(box2, fill);
 
   label = IupFlatLabel(NULL);
   IupSetAttributeHandle(label, "IMAGE", image1);
-  IupSetAttribute(label, "RASTERSIZE", "150x50");
+//  IupSetAttribute(label, "RASTERSIZE", "150x50");
+  IupSetAttribute(label, "RASTERSIZE", "250x100");
+  IupSetAttribute(label, "ALIGNMENT", "ALEFT");
   IupAppend(box2, label);
 
   image2 = IupImageRGB(TEST_IMAGE_SIZE, TEST_IMAGE_SIZE, image_data_24);
 
   label = IupFlatLabel(NULL);
   IupSetAttributeHandle(label, "IMAGE", image2);
-  IupSetAttribute(label, "RASTERSIZE", "150x50");
+//  IupSetAttribute(label, "RASTERSIZE", "150x50");
+  IupSetAttribute(label, "RASTERSIZE", "250x100");
   IupSetAttribute(label, "ALIGNMENT", "ACENTER");
   IupAppend(box2, label);
 
@@ -221,7 +227,8 @@ void FlatLabelTest(void)
 
   label = IupFlatLabel(NULL);
   IupSetAttributeHandle(label, "IMAGE", image3);
-  IupSetAttribute(label, "RASTERSIZE", "150x50");
+  IupSetAttribute(label, "RASTERSIZE", "250x100");
+//  IupSetAttribute(label, "RASTERSIZE", "150x50");
   IupSetAttribute(label, "ALIGNMENT", "ARIGHT");
   IupSetCallback(label, "BUTTON_CB", (Icallback)button_cb);
   IupAppend(box2, label);
