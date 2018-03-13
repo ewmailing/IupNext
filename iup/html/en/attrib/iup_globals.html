@@ -78,6 +78,13 @@ IupGetParam</strong>). Local attributes may overwrite the default. Default: 2.</
 output by some controls (<strong>IupMatrixEx,</strong> <strong>
 IupGetParam</strong> and <strong>IupPlot</strong>). Can be &quot;.&quot; or &quot;,&quot; only. 
 Default uses the one defined by the system locale.</p>
+<h3>SB_BGCOLOR [GTK and Motif Only]<span class="style2"> (since 3.25)</span></h3>
+<p>By default the scrollbars will not be affected by the BGCOLOR in native 
+controls. If set to Yes, the system will try to render scrollbars in the same 
+color of the BGCOLOR, but notice that this may affect scrollbars visibility. Up 
+to version 3.24, IUP by default changed the background color of the scrollbars 
+in GTK and Motif. This affects <strong>IupCanvas</strong>, <strong>IupList</strong>,
+<strong>IupText</strong> and <strong>IupTree</strong>.</p>
 <h3>SHOWMENUIMAGES [GTK Only] <span class="style2">(since 3.5)</span></h3>
 <p>Force the display of images in menus. Default: Yes</p>
 <h3>OVERLAYSCROLLBAR [GTK Only] <span class="style2">(since 3.19)</span></h3>
