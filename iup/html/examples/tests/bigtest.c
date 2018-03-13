@@ -38,6 +38,7 @@ void GLCanvasCubeTest(void);
 void HboxTest(void);
 void IdleTest(void);
 void LabelTest(void);
+void FlatLabelTest(void);
 void ListTest(void);
 void MatrixTest(void);
 void MatrixCbModeTest(void);
@@ -155,7 +156,8 @@ static TestItems test_list[] = {
   {"Hbox", HboxTest},
   {"Idle", IdleTest},
   {"Label", LabelTest},
-  {"Link", LinkTest},
+  { "FlatLabel", FlatLabelTest },
+  { "Link", LinkTest },
   {"List", ListTest},
   {"Matrix", MatrixTest},
   {"MatrixCbMode", MatrixCbModeTest},

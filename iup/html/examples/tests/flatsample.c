@@ -498,11 +498,11 @@ void FlatSampleTest(void)
 
   _frm_2 = IupFlatFrame(
     IupVbox(
-      IupSetAttributes(IupLabel("Label Text"), "TIP=\"Label TIP\""),
+      IupSetAttributes(IupFlatLabel("Label Text"), "TIP=\"Label TIP\""),
       IupSetAttributes(IupLabel(NULL), "SEPARATOR=HORIZONTAL, NAME=SAMP_SEP"),
-      IupSetAttributes(IupLabel(NULL), "IMAGE=img1"),
+      IupSetAttributes(IupFlatLabel(NULL), "IMAGE=img1"),
       NULL));
-  IupSetAttribute(_frm_2,"TITLE","IupLabel");
+  IupSetAttribute(_frm_2,"TITLE","IupFlatLabel");
 
   _frm_3 = IupFlatFrame(
     IupVbox(
@@ -601,7 +601,7 @@ void FlatSampleTest(void)
   IupSetAttribute(dial, "RASTERSIZE", "200x30");
   IupSetAttribute(dial, "FLAT", "Yes");
 
-  tabs = IupFlatTabs(IupBackgroundBox(IupSetAttributes(IupLabel("Tab0"), "SIZE=160x15")), IupBackgroundBox(IupLabel("Tab1")), IupBackgroundBox(IupLabel("Tab2")), NULL);
+  tabs = IupFlatTabs(IupBackgroundBox(IupSetAttributes(IupFlatLabel("Tab0"), "SIZE=160x15")), IupBackgroundBox(IupFlatLabel("Tab1")), IupBackgroundBox(IupFlatLabel("Tab2")), NULL);
   IupSetAttribute(tabs,"TABTITLE0","Tab Title 0");
   IupSetAttribute(tabs,"TABTITLE1","Tab Title 1");
   IupSetAttributeHandle(tabs,"TABIMAGE1", load_image_LogoTecgraf());
@@ -671,7 +671,7 @@ void FlatSampleTest(void)
   {
     Ihandle* label;
     Ihandle* caption_bar = IupSetAttributes(IupBackgroundBox(IupHbox(
-      label = IupSetAttributes(IupLabel("Custom Dialog Title"), "EXPAND=HORIZONTAL, HTTRANSPARENT=Yes, NAME=CUSTOMFRAMECAPTION"),
+      label = IupSetAttributes(IupFlatLabel("Custom Dialog Title"), "EXPAND=HORIZONTAL, HTTRANSPARENT=Yes, NAME=CUSTOMFRAMECAPTION"),
       IupSetCallbacks(IupSetAttributes(IupFlatButton("_"), "RASTERSIZE=50, CANFOCUS=NO, FONTSTYLE=Bold"), "FLAT_ACTION", dialog_custom_minimize, NULL),
       IupSetCallbacks(IupSetAttributes(IupFlatButton("Max"), "RASTERSIZE=50"), "FLAT_ACTION", dialog_custom_maximize, NULL),
       IupSetCallbacks(IupSetAttributes(IupFlatButton(" X "), "RASTERSIZE=50"), "FLAT_ACTION", dialog_custom_close, NULL),

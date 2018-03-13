@@ -1,5 +1,5 @@
 /** \file
- * \brief Button Control
+ * \brief FlatButton Control
  *
  * See Copyright Notice in "iup.h"
  */
