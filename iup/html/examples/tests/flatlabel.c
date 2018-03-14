@@ -211,7 +211,7 @@ void FlatLabelTest(void)
   IupSetAttributeHandle(label, "IMAGE", image1);
 //  IupSetAttribute(label, "RASTERSIZE", "150x50");
   IupSetAttribute(label, "RASTERSIZE", "250x100");
-  IupSetAttribute(label, "ALIGNMENT", "ALEFT");
+//  IupSetAttribute(label, "ALIGNMENT", "ALEFT");
   IupAppend(box2, label);
 
   image2 = IupImageRGB(TEST_IMAGE_SIZE, TEST_IMAGE_SIZE, image_data_24);
@@ -231,13 +231,6 @@ void FlatLabelTest(void)
 //  IupSetAttribute(label, "RASTERSIZE", "150x50");
   IupSetAttribute(label, "ALIGNMENT", "ARIGHT");
   IupSetCallback(label, "BUTTON_CB", (Icallback)button_cb);
-  IupAppend(box2, label);
-
-  label = IupAnimatedLabel(NULL);
-  //label = IupAnimatedLabel(IupLoadAnimation("D:\\tecgraf\\iup\\html\\examples\\tests\\loading.gif"));
-  //IupSetAttributeHandle(label, "ANIMATION", IupLoadAnimation("D:\\tecgraf\iup\\html\\examples\\tests\\loading.gif"));
-  IupSetAttribute(label, "ANIMATION", "IUP_CircleProgressAnimation");
-  IupSetAttribute(label, "START", "Yes");
   IupAppend(box2, label);
 
   label = IupLabel(NULL);
