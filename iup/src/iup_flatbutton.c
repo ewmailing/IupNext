@@ -109,7 +109,7 @@ static int iFlatButtonRedraw_CB(Ihandle* ih)
     draw_border = 1;
   }
 
-  /* draw border - can still be disabled setting border_width=0 */
+  /* draw border - can still be removed by setting border_width=0 */
   if (draw_border)
   {
     char* bordercolor = iupAttribGetStr(ih, "BORDERCOLOR");
@@ -657,7 +657,7 @@ Iclass* iupFlatButtonNewClass(void)
   /* Special */
   iupClassRegisterAttribute(ic, "TITLE", NULL, NULL, NULL, NULL, IUPAF_NO_DEFAULTVALUE | IUPAF_NO_INHERIT);
 
-  /* IupButton only */
+  /* IupFlatButton */
   iupClassRegisterAttribute(ic, "VALUE", NULL, iFlatButtonSetValueAttrib, NULL, NULL, IUPAF_NO_INHERIT);
   iupClassRegisterAttribute(ic, "RADIO", iFlatButtonGetRadioAttrib, NULL, NULL, NULL, IUPAF_READONLY | IUPAF_NO_INHERIT);
   iupClassRegisterAttribute(ic, "TOGGLE", NULL, NULL, NULL, NULL, IUPAF_NO_INHERIT);

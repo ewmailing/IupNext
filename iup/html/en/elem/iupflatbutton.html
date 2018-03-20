@@ -177,7 +177,9 @@ foreground image name of the element in pressed state. If it is not defined then
 the FRONTIMAGE is used.</p>
 <p><strong>HASFOCUS </strong> (read-only): returns the button state if has 
 focus. Can be Yes or No. (since 3.21)</p>
-<p><strong>HLCOLOR</strong>: color used to indicate a highlight state. Default: &quot;200 225 245&quot;.</p>
+<p><strong>HLCOLOR</strong>: background color used to indicate a highlight state. 
+Pre-defined to &quot;200 225 245&quot;. Can be set to NULL. If NULL BGCOLOR will 
+be used instead.</p>
 <p><strong>HIGHLIGHTED </strong> (read-only): returns the button state if 
 highlighted. Can be Yes or No. (since 3.21)</p>
 <p><strong>IMAGE</strong> (<font SIZE="3">non inheritable</font>):
@@ -209,7 +211,9 @@ LEFT, RIGHT, TOP, BOTTOM. Default: LEFT.</p>
 a different name to avoid inheritance problems. Default value: &quot;0x0&quot;.</p>
 <p><strong>PRESSED </strong> (read-only): returns the button state if pressed. 
 Can be Yes or No. (since 3.21)</p>
-<p><strong>PSCOLOR</strong>: color used to indicate a press state. Default: &quot;150 200 235&quot;.</p>
+<p><strong>PSCOLOR</strong>: background color used to indicate a press state. 
+Pre-defined to &quot;150 200 235&quot;. Can be set to NULL. If NULL BGCOLOR will 
+be used instead.</p>
 
 
 <p><strong>RADIO</strong> (read-only): returns if the toggle is inside a radio. 
