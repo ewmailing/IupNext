@@ -1552,6 +1552,8 @@ void iupPlotDataSet::DrawDataPie(const iupPlotTrafoBase *inTrafoX, const iupPlot
         strcat(theBuf, " %");
         iPlotDrawText(canvas, px, py, text_alignment, theBuf);
         break;
+      default:  /* IUP_PLOT_NONE */
+        break;
       }
     }
 
