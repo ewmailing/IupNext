@@ -1547,11 +1547,13 @@ void iupPlotDataSet::DrawDataPie(const iupPlotTrafoBase *inTrafoX, const iupPlot
         iPlotDrawText(canvas, px, py, text_alignment, theBuf);
         break;
       case IUP_PLOT_PERCENT:
+      {
         double percent = (theY*100.) / sum;
         iupStrPrintfDoubleLocale(theBuf, inAxisY.mTick.mFormatString, percent, IupGetGlobal("DEFAULTDECIMALSYMBOL"));
         strcat(theBuf, " %");
         iPlotDrawText(canvas, px, py, text_alignment, theBuf);
         break;
+      }
       default:  /* IUP_PLOT_NONE */
         break;
       }
