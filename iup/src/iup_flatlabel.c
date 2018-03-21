@@ -32,7 +32,6 @@ struct _IcontrolData
   int horiz_padding, vert_padding;  /* button margin */
   int spacing, img_position;        /* used when both text and image are displayed */
   int horiz_alignment, vert_alignment;  
-  int border_width;
 };
 
 
@@ -50,7 +49,6 @@ static int iFlatLabelRedraw_CB(Ihandle* ih)
   char* fgimage = iupAttribGet(ih, "FRONTIMAGE");
   char* text_align = iupAttribGetStr(ih, "TEXTALIGNMENT");
   const char* draw_image;
-  int border_width = ih->data->border_width;
   IdrawCanvas* dc = iupdrvDrawCreateCanvas(ih);
   int make_inactive = 0;
 
@@ -62,27 +60,27 @@ static int iFlatLabelRedraw_CB(Ihandle* ih)
   if (bgimage) /* draw background */
   {
     draw_image = iupFlatGetImageName(ih, "BACKIMAGE", bgimage, 0, 0, active, &make_inactive);
-    iupdrvDrawImage(dc, draw_image, make_inactive, border_width, border_width);
+    iupdrvDrawImage(dc, draw_image, make_inactive, 0, 0);
   }
   else
-    iupFlatDrawBox(dc, border_width, ih->currentwidth - 1 - border_width,
-                           border_width, ih->currentheight - 1 - border_width,
+    iupFlatDrawBox(dc, 0, ih->currentwidth - 1,
+                           0, ih->currentheight - 1,
                            bgcolor, NULL, 1);  /* background is always active */
 
   draw_image = iupFlatGetImageName(ih, "IMAGE", image, 0, 0, active, &make_inactive);
-  iupFlatDrawIcon(ih, dc, border_width, border_width,
-                  ih->currentwidth - 2 * border_width, ih->currentheight - 2 * border_width,
+  iupFlatDrawIcon(ih, dc, 0, 0,
+                  ih->currentwidth, ih->currentheight,
                   ih->data->img_position, ih->data->spacing, ih->data->horiz_alignment, ih->data->vert_alignment, ih->data->horiz_padding, ih->data->vert_padding,
                   draw_image, make_inactive, title, text_align, fgcolor, bgcolor, active);
 
   if (fgimage)
   {
     draw_image = iupFlatGetImageName(ih, "FRONTIMAGE", fgimage, 0, 0, active, &make_inactive);
-    iupdrvDrawImage(dc, draw_image, make_inactive, border_width, border_width);
+    iupdrvDrawImage(dc, draw_image, make_inactive, 0, 0);
   }
   else if (!image && !title)
   {
-    int space = border_width + 2;
+    int space = 2;
     iupFlatDrawBorder(dc, space, ih->currentwidth - 1 - space,
                               space, ih->currentheight - 1 - space,
                               1, "0 0 0", bgcolor, active);
@@ -182,18 +180,6 @@ static char* iFlatLabelGetSpacingAttrib(Ihandle *ih)
   return iupStrReturnInt(ih->data->spacing);
 }
 
-static int iFlatLabelSetBorderWidthAttrib(Ihandle* ih, const char* value)
-{
-  iupStrToInt(value, &ih->data->border_width);
-  if (ih->handle)
-    iupdrvRedrawNow(ih);
-  return 0;
-}
-
-static char* iFlatLabelGetBorderWidthAttrib(Ihandle *ih)
-{
-  return iupStrReturnInt(ih->data->border_width);
-}
 
 /*****************************************************************************************/
 
@@ -215,7 +201,6 @@ static int iFlatLabelCreateMethod(Ihandle* ih, void** params)
 
   /* non zero default values */
   ih->data->spacing = 2;
-  ih->data->border_width = 1;
   ih->data->horiz_alignment = IUP_ALIGN_ACENTER;
   ih->data->vert_alignment = IUP_ALIGN_ACENTER;
 
@@ -266,9 +251,6 @@ static void iFlatLabelComputeNaturalSizeMethod(Ihandle* ih, int *w, int *h, int 
 
     *w += 2 * ih->data->horiz_padding;
     *h += 2 * ih->data->vert_padding;
-
-    *w += 2 * ih->data->border_width;
-    *h += 2 * ih->data->border_width;
   }
 
   (void)children_expand; /* unset if not a container */
