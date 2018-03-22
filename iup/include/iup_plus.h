@@ -412,6 +412,14 @@ namespace Iup
     FlatButton(Ihandle* _ih) : Control(_ih) {}
     FlatButton(const Element& elem) : Control(elem.GetHandle()) {}
   };
+  class DropButton : public Control
+  {
+  public:
+    DropButton() : Control(IupDropButton(0)) {}
+    DropButton(Control child) : Control(IupDropButton(child.GetHandle())) {}
+    DropButton(Ihandle* _ih) : Control(_ih) {}
+    DropButton(const Element& elem) : Control(elem.GetHandle()) {}
+  };
   class FlatLabel : public Control
   {
   public:

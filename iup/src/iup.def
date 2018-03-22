@@ -216,6 +216,7 @@ IupSetStrAttributeId2
 IupSetStrfId2
 IupSetStrGlobal
 IupFlatButton
+IupDropButton
 IupFlatLabel
 IupFlatFrame
 IupAnimatedLabel
