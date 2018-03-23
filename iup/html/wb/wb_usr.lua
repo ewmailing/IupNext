@@ -1487,6 +1487,10 @@ wb_usr.tree =
               link= "elem/iuptoggle.html"
             },
             {
+              name= {nl= "IupFlatToggle"},
+              link= "elem/iupflattoggle.html"
+            },
+            {
               name= {nl= "IupTree"},
               link= "elem/iuptree.html",
 

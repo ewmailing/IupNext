@@ -506,15 +506,15 @@ void FlatSampleTest(void)
 
   _frm_3 = IupFlatFrame(
     IupVbox(
-      set_callbacks(IupSetAttributes(IupFlatButton("Toggle Text"), "VALUE=ON, TIP=\"Toggle TIP\", TOGGLE=Yes")),
-      set_callbacks(IupSetAttributes(IupFlatButton(NULL), "VALUE=ON,IMAGE=img1,IMAGEPRESS=img2, TOGGLE=Yes")),
-      set_callbacks(IupSetAttributes(IupFlatButton(NULL), "VALUE=ON,IMAGE=img1, TOGGLE=Yes")),
+      set_callbacks(IupSetAttributes(IupFlatToggle("Toggle Text"), "VALUE=ON, TIP=\"Toggle TIP\", TOGGLE=Yes")),
+      set_callbacks(IupSetAttributes(IupFlatToggle(NULL), "VALUE=ON,IMAGE=img1,IMAGEPRESS=img2, TOGGLE=Yes")),
+      set_callbacks(IupSetAttributes(IupFlatToggle(NULL), "VALUE=ON,IMAGE=img1, TOGGLE=Yes")),
       IupSetAttributes(IupFlatFrame(IupRadio(IupVbox(
-        IupSetAttributes(set_callbacks(IupFlatButton("Toggle Text")), "TOGGLE=Yes"),
-        IupSetAttributes(set_callbacks(IupFlatButton("Toggle Text")), "TOGGLE=Yes"),
+      IupSetAttributes(set_callbacks(IupFlatToggle("Toggle Text")), "TOGGLE=Yes"),
+        IupSetAttributes(set_callbacks(IupFlatToggle("Toggle Text")), "TOGGLE=Yes"),
         NULL))), "TITLE=IupRadio"),
       NULL));
-  IupSetAttribute(_frm_3,"TITLE","IupFlatButton");
+  IupSetAttribute(_frm_3,"TITLE","IupFlatToggle");
 
   _text_1 = IupText( NULL);
   IupSetAttribute(_text_1,"VALUE","Single Line Text");

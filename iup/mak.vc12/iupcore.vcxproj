@@ -118,6 +118,7 @@
     </ClCompile>
     <ClCompile Include="..\src\iup_flatscrollbox.c" />
     <ClCompile Include="..\src\iup_flattabs.c" />
+    <ClCompile Include="..\src\iup_flattoggle.c" />
     <ClCompile Include="..\src\iup_focus.c" />
     <ClCompile Include="..\src\iup_font.c" />
     <ClCompile Include="..\src\iup_func.c" />

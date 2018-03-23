@@ -26,6 +26,7 @@ void CanvasCDDBufferTest(void);
 void CanvasCDSimpleTest(void);
 void DialogTest(void);
 void FlatButtonTest(void);
+void FlatToggleTest(void);
 void DropButtonTest(void);
 void FrameTest(void);
 void FlatFrameTest(void);
@@ -192,7 +193,8 @@ static TestItems test_list[] = {
   {"TextSpin", TextSpinTest},
   {"Timer", TimerTest},
   {"Toggle", ToggleTest},
-  {"Tray", TrayTest},
+  { "FlatToggle", FlatToggleTest },
+  { "Tray", TrayTest },
   {"Tree", TreeTest},
   {"Val", ValTest},
   {"Vbox", VboxTest},

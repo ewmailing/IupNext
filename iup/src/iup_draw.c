@@ -756,6 +756,41 @@ void iupFlatDrawArrow(IdrawCanvas* dc, int x, int y, int size, const char* color
   iupdrvDrawPolygon(dc, points, 3, color, IUP_DRAW_STROKE, 1);
 }
 
+void iupFlatDrawCheckMark(IdrawCanvas* dc, int xmin, int xmax, int ymin, int ymax, const char* color_str, const char* bgcolor, int active)
+{
+  int points[6];
+
+  long color = iupDrawStrToColor(color_str, 0);
+  if (!active)
+    color = iFlatDrawColorMakeInactive(color, bgcolor);
+
+    points[0] = xmin + 2;
+    points[1] = ymin + (ymax - ymin) / 2;
+    points[2] = xmin + (xmax - xmin) / 2;
+    points[3] = ymax - 2;
+    points[4] = xmax - 2;
+    points[5] = ymin + 2;
+
+  iupdrvDrawPolygon(dc, points, 3, color, IUP_DRAW_STROKE, 2);
+}
+
+void iupFlatDrawDrawCircle(IdrawCanvas* dc, int xc, int yc, int radius, int fill, char *fgcolor, char *bgcolor, int active)
+{
+  int x1, y1, x2, y2;
+  int style = (fill) ? IUP_DRAW_FILL : IUP_DRAW_STROKE;
+
+  long color = iupDrawStrToColor(fgcolor, 0);
+  if (!active)
+    color = iFlatDrawColorMakeInactive(color, bgcolor);
+
+  x1 = xc - radius;
+  y1 = yc - radius;
+  x2 = xc + radius;
+  y2 = yc + radius;
+
+  iupdrvDrawArc(dc, x1, y1, x2, y2, 0.0, 360, color, style, 1);
+}
+
 static char* iFlatDrawGetImageName(Ihandle* ih, const char* baseattrib, const char* state)
 {
   char attrib[1024];
