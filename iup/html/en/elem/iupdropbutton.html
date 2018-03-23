@@ -397,9 +397,19 @@ attribute handle from the dialog, using
 <a href="../func/iupgetattributehandle.html">IupGetAttributeHandle</a>. After 
 performing some operation on the drop child, use SHOWDROPDOWN=NO on the drop 
 button, you may also update its TITLE, just like a regular IupList with 
-DROPDOWN=Yes, but this will not be performed automatically by the drop button.</p>
-
-
+DROPDOWN=Yes, but this will not be performed automatically by the drop button. 
+For example, set on the IupList used as drop child:</p>
+<pre>static int list_cb(Ihandle* list, char *text, int item, int state)
+{
+  if (state == 1)
+  {
+    Ihandle* ih = IupGetAttributeHandle(IupGetDialog(list), "DROPBUTTON");
+    IupSetAttribute(ih, "SHOWDROPDOWN", "No");
+    IupSetStrAttribute(ih, "TITLE", text);
+  }
+  return IUP_DEFAULT;
+}
+</pre>
 <h3><a name="Examples">Examples</a></h3>
 
 <p><a href="../../examples/">Browse for Example Files</a></p>
