@@ -300,7 +300,7 @@ static Ihandle* CreateMatrixList(void)
   //  IupSetAttribute(mlist, "COLUMNORDER", "LABEL");
   //  IupSetAttribute(mlist, "ACTIVE", "NO");
   //  IupSetAttribute(mlist, "FOCUSCOLOR", "BGCOLOR");
-  IupSetAttribute(mlist, "SHOWDELETE", "Yes");
+//  IupSetAttribute(mlist, "SHOWDELETE", "Yes");
   //  IupSetAttribute(mlist, "EXPAND", "Yes");
 
   IupSetAttribute(mlist, "EDITABLE", "Yes");
@@ -348,7 +348,7 @@ static Ihandle* CreateMatrixList(void)
   IupSetAttribute(mlist, "IMAGEVALUE2", "ON");
   IupSetAttribute(mlist, "IMAGEVALUE3", "ON");
 
-  //  IupSetAttribute(mlist, "FLATSCROLLBAR", "VERTICAL");
+  IupSetAttribute(mlist, "FLATSCROLLBAR", "VERTICAL");
   //  IupSetAttribute(mlist, "SHOWFLOATING", "Yes");
   //IupSetAttribute(mlist, "EXPAND", "VERTICAL");
 
@@ -424,6 +424,7 @@ void DropButtonTest(void)
 //  IupSetAttribute(button, "ALIGNMENT", "ACENTER:ACENTER");
   IupSetAttribute(button, "FONT", "Helvetica, Underline 14");
   IupSetAttribute(button, "NAME", "button2");
+  IupSetAttribute(button, "DROPPOSITION", "TOPRIGHT");
   if (toggle) IupSetAttribute(button, "TOGGLE", "Yes");
   set_callbacks(button);
   IupAppend(box1, button);
@@ -437,6 +438,7 @@ void DropButtonTest(void)
   IupSetAttribute(button, "NAME", "button3");
   IupSetAttribute(button, "CANFOCUS", "NO");
   IupSetAttribute(button, "DROPONARROW", "NO");
+  IupSetAttribute(button, "DROPPOSITION", "TOPLEFT");
   if (toggle) IupSetAttribute(button, "TOGGLE", "Yes");
   set_callbacks(button);
   IupAppend(box1, button);
@@ -541,6 +543,7 @@ void DropButtonTest(void)
   button = IupDropButton(NULL);
   IupSetAttributeHandle(button, "IMAGE", image3);
   IupSetAttribute(button, "DROPCHILD_HANDLE", (char*)CreateMatrixList());
+  IupSetAttribute(button, "DROPPOSITION", "BOTTOMRIGHT");
   IupSetAttribute(button, "TITLE", "Text3");
 //  IupSetAttribute(button, "RASTERSIZE", "200x100");
 //  IupSetAttribute(button, "ALIGNMENT", "ARIGHT");
@@ -563,10 +566,6 @@ void DropButtonTest(void)
 //  IupSetAttribute(dlg, "BGCOLOR", "173 177 194");  // Motif BGCOLOR for documentation
 
   IupSetAttributeHandle(dlg, "STARTFOCUS", button);
-
-  //DROPPOSITION =TOPLEFT
-  //DROPPOSITION = BOTTOMRIGHT
-  //DROPPOSITION = TOPRIGHT
 
   IupShow(dlg);
 }
