@@ -621,6 +621,8 @@ void iupFlatDrawIcon(Ihandle* ih, IdrawCanvas* dc, int icon_x, int icon_y, int i
   int x, y, width, height;
   char* font;
 
+  iupdrvDrawSetClipRect(dc, icon_x, icon_y, icon_x + icon_width, icon_y + icon_height);
+
   if (imagename)
   {
     if (title)
@@ -670,6 +672,8 @@ void iupFlatDrawIcon(Ihandle* ih, IdrawCanvas* dc, int icon_x, int icon_y, int i
 
     iFlatDrawText(dc, x + icon_x, y + icon_y, width, height, title, font, text_align, fgcolor, bgcolor, active);
   }
+
+  iupdrvDrawResetClip(dc);
 }
 
 int iupFlatGetHorizontalAlignment(const char* value)
