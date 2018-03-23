@@ -48,22 +48,7 @@ struct _IcontrolData
 
 /****************************************************************/
 
-static char* iFlatGetDarkerBgColor(Ihandle* ih)
-{
-  char* value = iupAttribGet(ih, "DARK_DLGBGCOLOR");
-  if (!value)
-  {
-    unsigned char r, g, b;
-    iupStrToRGB(IupGetGlobal("DLGBGCOLOR"), &r, &g, &b);
-    r = (r * 90) / 100;
-    g = (g * 90) / 100;
-    b = (b * 90) / 100;
-    iupAttribSetStrf(ih, "DARK_DLGBGCOLOR", "%d %d %d", r, g, b);
-    return iupAttribGet(ih, "DARK_DLGBGCOLOR");
-  }
-  else
-    return value;
-}
+
 static int iFlatButtonRedraw_CB(Ihandle* ih)
 {
   char *image = iupAttribGet(ih, "IMAGE");
@@ -87,7 +72,7 @@ static int iFlatButtonRedraw_CB(Ihandle* ih)
   if (!bgcolor)
   {
     if (draw_border)
-      bgcolor = iFlatGetDarkerBgColor(ih);
+      bgcolor = iupFlatGetDarkerBgColor(ih);
     else
       bgcolor = iupBaseNativeParentGetBgColorAttrib(ih);
   }
@@ -126,7 +111,6 @@ static int iFlatButtonRedraw_CB(Ihandle* ih)
       if (hlcolor)
         bordercolor = hlcolor;
     }
-
 
     iupFlatDrawBorder(dc, 0, ih->currentwidth - 1, 
                               0, ih->currentheight - 1, 

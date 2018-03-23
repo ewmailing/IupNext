@@ -55,23 +55,6 @@ enum { IUP_POS_BOTTOMLEFT, IUP_POS_TOPLEFT, IUP_POS_BOTTOMRIGHT, IUP_POS_TOPRIGH
 /****************************************************************/
 
 
-static char* iFlatGetDarkerBgColor(Ihandle* ih)
-{
-  char* value = iupAttribGet(ih, "DARK_DLGBGCOLOR");
-  if (!value)
-  {
-    unsigned char r, g, b;
-    iupStrToRGB(IupGetGlobal("DLGBGCOLOR"), &r, &g, &b);
-    r = (r * 90) / 100;
-    g = (g * 90) / 100;
-    b = (b * 90) / 100;
-    iupAttribSetStrf(ih, "DARK_DLGBGCOLOR", "%d %d %d", r, g, b);
-    return iupAttribGet(ih, "DARK_DLGBGCOLOR");
-  }
-  else
-    return value;
-}
-
 static int iDropButtonRedraw_CB(Ihandle* ih)
 {
   char *image = iupAttribGet(ih, "IMAGE");
@@ -97,7 +80,7 @@ static int iDropButtonRedraw_CB(Ihandle* ih)
   if (!bgcolor)
   {
     if (draw_border)
-      bgcolor = iFlatGetDarkerBgColor(ih);
+      bgcolor = iupFlatGetDarkerBgColor(ih);
     else
       bgcolor = iupBaseNativeParentGetBgColorAttrib(ih);
   }
@@ -904,7 +887,7 @@ Iclass* iupDropButtonNewClass(void)
 
   iupClassRegisterAttribute(ic, "ARROWIMAGES", NULL, NULL, NULL, NULL, IUPAF_NO_INHERIT);
   iupClassRegisterAttribute(ic, "ARROWSIZE", iDropButtonGetArrowSizeAttrib, iDropButtonSetArrowSizeAttrib, IUPAF_SAMEASSYSTEM, "24", IUPAF_NO_INHERIT);
-  iupClassRegisterAttribute(ic, "ARROWPADDING", iDropButtonGetArrowPaddingAttrib, iDropButtonSetArrowPaddingAttrib, IUPAF_SAMEASSYSTEM, "5", IUPAF_NO_INHERIT);
+  iupClassRegisterAttribute(ic, "ARROWPADDING", iDropButtonGetArrowPaddingAttrib, iDropButtonSetArrowPaddingAttrib, IUPAF_SAMEASSYSTEM, "4", IUPAF_NO_INHERIT);
   iupClassRegisterAttribute(ic, "ARROWACTIVE", NULL, NULL, IUPAF_SAMEASSYSTEM, "Yes", IUPAF_NO_INHERIT);
   iupClassRegisterAttribute(ic, "ARROWCOLOR", NULL, NULL, NULL, NULL, IUPAF_NO_INHERIT);
 

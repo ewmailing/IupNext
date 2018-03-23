@@ -239,8 +239,8 @@ void FlatToggleTest(void)
   IupSetCallback(toggle3, "FLAT_LEAVEWINDOW_CB", (Icallback)leavewindow_cb);
   
   IupSetAttribute(toggle1, "IMAGE",   "image1");            
-  IupSetAttribute(toggle1, "IMPRESS", "image1p");
-  IupSetAttribute(toggle1, "IMINACTIVE", "image1i");
+  IupSetAttribute(toggle1, "IMAGEPRESS", "image1p");
+  IupSetAttribute(toggle1, "IMAGEINACTIVE", "image1i");
   IupSetAttribute(toggle1, "NAME", "1");
   //  IupSetAttribute(toggle1, "FLAT", "Yes");
     IupSetAttribute(toggle1, "PADDING",   "10x10");            
