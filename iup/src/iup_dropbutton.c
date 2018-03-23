@@ -743,6 +743,8 @@ static int iDropButtonCreateMethod(Ihandle* ih, void** params)
   ih->data->vert_alignment = IUP_ALIGN_ACENTER;
   ih->data->arrow_size = 24;
   ih->data->arrow_padding = 5;
+  ih->data->horiz_padding = 3;
+  ih->data->vert_padding = 3;
 
   /* initial values - don't use default so they can be set to NULL */
   iupAttribSet(ih, "HLCOLOR", "200 225 245");
@@ -774,10 +776,11 @@ static void iDropButtonComputeNaturalSizeMethod(Ihandle* ih, int *w, int *h, int
     iupImageGetInfo(bgimage, w, h, NULL);
   else
   {
+    int visiblecolumns;
     char* image = iupAttribGet(ih, "IMAGE");
     char* title = iupAttribGet(ih, "TITLE");
 
-    *w = 0,
+    *w = 0;
     *h = 0;
 
     if (image)
@@ -804,6 +807,13 @@ static void iDropButtonComputeNaturalSizeMethod(Ihandle* ih, int *w, int *h, int
     }
     else if (title)
       iupdrvFontGetMultiLineStringSize(ih, title, w, h);
+
+    visiblecolumns = iupAttribGetInt(ih, "VISIBLECOLUMNS");
+    if (visiblecolumns)
+    {
+      *w = iupdrvFontGetStringWidth(ih, "WWWWWWWWWW");
+      *w = (visiblecolumns*(*w)) / 10;
+    }
 
     *w += 2 * ih->data->horiz_padding;
     *h += 2 * ih->data->vert_padding;
@@ -853,7 +863,7 @@ Iclass* iupDropButtonNewClass(void)
 
   /* IupDropButton */
   iupClassRegisterAttribute(ic, "ALIGNMENT", iDropButtonGetAlignmentAttrib, iDropButtonSetAlignmentAttrib, "ALEFT:ACENTER", NULL, IUPAF_NOT_MAPPED | IUPAF_NO_INHERIT);
-  iupClassRegisterAttribute(ic, "PADDING", iDropButtonGetPaddingAttrib, iDropButtonSetPaddingAttrib, IUPAF_SAMEASSYSTEM, "0x0", IUPAF_NOT_MAPPED);
+  iupClassRegisterAttribute(ic, "PADDING", iDropButtonGetPaddingAttrib, iDropButtonSetPaddingAttrib, IUPAF_SAMEASSYSTEM, "3x3", IUPAF_NOT_MAPPED);
   iupClassRegisterAttribute(ic, "SPACING", iDropButtonGetSpacingAttrib, iDropButtonSetSpacingAttrib, IUPAF_SAMEASSYSTEM, "2", IUPAF_NOT_MAPPED | IUPAF_NO_INHERIT);
   iupClassRegisterAttribute(ic, "HIGHLIGHTED", iDropButtonGetHighlightedAttrib, NULL, NULL, NULL, IUPAF_READONLY | IUPAF_NO_INHERIT);
   iupClassRegisterAttribute(ic, "PRESSED", iDropButtonGetPressedAttrib, NULL, NULL, NULL, IUPAF_READONLY | IUPAF_NO_INHERIT);
@@ -906,6 +916,7 @@ Iclass* iupDropButtonNewClass(void)
   iupClassRegisterAttribute(ic, "DROPONARROW", NULL, NULL, IUPAF_SAMEASSYSTEM, "Yes", IUPAF_NO_INHERIT);
   iupClassRegisterAttribute(ic, "SHOWDROPDOWN", NULL, iDropButtonSetShowDropdownAttrib, NULL, NULL, IUPAF_WRITEONLY | IUPAF_NO_INHERIT);
   iupClassRegisterAttribute(ic, "DROPPOSITION", NULL, NULL, IUPAF_SAMEASSYSTEM, "BOTTOMLEFT", IUPAF_NO_INHERIT);
+  iupClassRegisterAttribute(ic, "VISIBLECOLUMNS", NULL, NULL, NULL, NULL, IUPAF_NOT_MAPPED | IUPAF_NO_INHERIT);
 
   return ic;
 }
