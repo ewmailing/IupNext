@@ -1858,7 +1858,7 @@ Iclass* iupFlatTabsNewClass(void)
 
   ic->name = "flattabs";
   ic->format = "g"; /* array of Ihandle */
-  ic->nativetype = IUP_TYPECONTROL;
+  ic->nativetype = IUP_TYPECANVAS;
   ic->childtype = IUP_CHILDMANY;
   ic->is_interactive = 1;
   ic->has_attrib_id = 1;

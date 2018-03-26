@@ -253,7 +253,7 @@ Iclass* iupFlatFrameNewClass(void)
 
   ic->name = "flatframe";
   ic->format = "h"; /* one Ihandle* */
-  ic->nativetype = IUP_TYPECONTROL;
+  ic->nativetype = IUP_TYPECANVAS;
   ic->childtype = IUP_CHILDMANY+1;   /* one child */
   ic->is_interactive = 0;
 

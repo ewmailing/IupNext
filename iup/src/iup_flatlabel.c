@@ -268,7 +268,7 @@ Iclass* iupFlatLabelNewClass(void)
   ic->format = "s"; /* one string */
   ic->nativetype = IUP_TYPECANVAS;
   ic->childtype = IUP_CHILDNONE;
-  ic->is_interactive = 1;
+  ic->is_interactive = 0;
 
   /* Class functions */
   ic->New = iupFlatLabelNewClass;
