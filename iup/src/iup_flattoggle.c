@@ -18,6 +18,7 @@
 #include "iup_stdcontrols.h"
 #include "iup_register.h"
 #include "iup_drvdraw.h"
+#include "iup_drvinfo.h"
 #include "iup_key.h"
 
 
@@ -144,8 +145,8 @@ static int iFlatToggleRedraw_CB(Ihandle* ih)
   }
   else if (draw_image)
     iupFlatDrawBox(dc, border_width, ih->currentwidth - 1 - border_width,
-                    border_width, ih->currentheight - 1 - border_width,
-                    bgcolor, NULL, 1);  /* background is always active */
+                       border_width, ih->currentheight - 1 - border_width,
+                       bgcolor, NULL, 1);  /* background is always active */
 
   if (draw_image)
     iupFlatDrawIcon(ih, dc, border_width, border_width,
@@ -185,7 +186,7 @@ static int iFlatToggleRedraw_CB(Ihandle* ih)
       iupFlatDrawDrawCircle(dc, button_position + ih->data->check_size / 2, ih->currentheight / 2, ih->data->check_size / 2 - BUTTON_GAP, 0, fgcolor, fgcolor, active);
     else
       iupFlatDrawBorder(dc, button_position + BUTTON_GAP, button_position + BUTTON_GAP + ih->data->check_size - 2 * BUTTON_GAP, (ih->currentheight - (ih->data->check_size - 2 * BUTTON_GAP)) / 2,
-                          ((ih->currentheight - (ih->data->check_size - 2*BUTTON_GAP)) / 2) + (ih->data->check_size - 2*BUTTON_GAP), 1,
+                          ((ih->currentheight - (ih->data->check_size - 2*BUTTON_GAP)) / 2) + (ih->data->check_size - 2*BUTTON_GAP), 2,
                           fgcolor, bgcolor, active);
   }
 
@@ -220,13 +221,14 @@ static int iFlatToggleRedraw_CB(Ihandle* ih)
 static void iFlatToggleNotify(Ihandle* ih)
 {
   IFni cb = (IFni)IupGetCallback(ih, "FLAT_ACTION");
-  char *value = iupAttribGet(ih, "VALUE");
-  int v = iupAttribGetInt(ih, "VALUE");
-  if (iupStrEqualNoCase(value, "NOTDEF"))
-    v = -1;
   if (cb)
   {
-    int ret = cb(ih, v);
+    char *value = iupAttribGet(ih, "VALUE");
+    int ret, v = iupAttribGetInt(ih, "VALUE");
+    if (iupStrEqualNoCase(value, "NOTDEF"))
+      v = -1;
+
+    ret = cb(ih, v);
     if (ret == IUP_CLOSE)
       IupExitLoop();
   }
@@ -414,12 +416,29 @@ static int iFlatToggleSetPaddingAttrib(Ihandle* ih, const char* value)
   return 0;
 }
 
+static int iFlatToggleGetDefaultCheckSize(void)
+{
+  int dpi = iupRound(iupdrvGetScreenDpi());
+  if (dpi > 120)
+    return 24;
+  else
+    return 16;
+}
+
 static int iFlatToggleSetCheckSizeAttrib(Ihandle* ih, const char* value)
 {
-  iupStrToInt(value, &ih->data->check_size);
+  if (!value)
+    ih->data->check_size = iFlatToggleGetDefaultCheckSize();
+  else
+    iupStrToInt(value, &ih->data->check_size);
   if (ih->handle)
     iupdrvRedrawNow(ih);
   return 0;
+}
+
+static char* iFlatToggleGetCheckSizeAttrib(Ihandle* ih)
+{
+  return iupStrReturnInt(ih->data->check_size);
 }
 
 static int iFlatToggleSetBgColorAttrib(Ihandle* ih, const char* value)
@@ -441,11 +460,6 @@ static char* iFlatToggleGetBgColorAttrib(Ihandle* ih)
 static char* iFlatToggleGetPaddingAttrib(Ihandle* ih)
 {
   return iupStrReturnIntInt(ih->data->horiz_padding, ih->data->vert_padding, 'x');
-}
-
-static char* iFlatToggleGetCheckSizeAttrib(Ihandle* ih)
-{
-  return iupStrReturnIntInt(ih->data->check_size, ih->data->check_size, 'x');
 }
 
 static int iFlatToggleSetImagePositionAttrib(Ihandle* ih, const char* value)
@@ -555,7 +569,6 @@ static char* iFlatToggleGetHasFocusAttrib(Ihandle* ih)
 
 /*****************************************************************************************/
 
-
 static int iFlatToggleCreateMethod(Ihandle* ih, void** params)
 {
   if (params && params[0])
@@ -576,7 +589,7 @@ static int iFlatToggleCreateMethod(Ihandle* ih, void** params)
   ih->data->border_width = 1;
   ih->data->horiz_alignment = IUP_ALIGN_ACENTER;
   ih->data->vert_alignment = IUP_ALIGN_ACENTER;
-  ih->data->check_size = 16;
+  ih->data->check_size = iFlatToggleGetDefaultCheckSize();
 
   /* initial values - don't use default so they can be set to NULL */
   iupAttribSet(ih, "HLCOLOR", "200 225 245");
@@ -741,7 +754,7 @@ Iclass* iupFlatToggleNewClass(void)
   iupClassRegisterAttribute(ic, "FRONTIMAGEINACTIVE", NULL, NULL, NULL, NULL, IUPAF_IHANDLENAME | IUPAF_NO_DEFAULTVALUE | IUPAF_NO_INHERIT);
 
   iupClassRegisterAttribute(ic, "CHECKRIGHT", NULL, NULL, NULL, NULL, IUPAF_NO_INHERIT);
-  iupClassRegisterAttribute(ic, "CHECKSIZE", iFlatToggleGetCheckSizeAttrib, iFlatToggleSetCheckSizeAttrib, IUPAF_SAMEASSYSTEM, "16", IUPAF_NOT_MAPPED);
+  iupClassRegisterAttribute(ic, "CHECKSIZE", iFlatToggleGetCheckSizeAttrib, iFlatToggleSetCheckSizeAttrib, NULL, NULL, IUPAF_NOT_MAPPED);
 
   return ic;
 }
