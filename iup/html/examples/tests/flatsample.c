@@ -558,16 +558,17 @@ void FlatSampleTest(void)
   IupSetAttribute(_list_1, "VISIBLELINES", "3");
 
   _list_2 = IupList( NULL);
-//  IupSetAttribute(_list_2,"DROPDOWN","YES");
 //  IupSetAttribute(_list_2,"EXPAND","YES");
   IupSetAttribute(_list_2, "VALUE", "1");
   IupSetAttribute(_list_2,"1","Item 1 Text");
   IupSetAttribute(_list_2,"2","Item 2 Text - Very Large Item");
   IupSetAttribute(_list_2,"3","Item 3 Text");
   IupSetCallback(_list_2, "ACTION", (Icallback)list_cb);
-  _list_2 = IupDropButton(_list_2);
+  _list_2 = IupDropButton(_list_2);  /* mimicking the IupList with DROPDOWN=Yes */
   IupSetAttribute(_list_2, "TITLE", "Item 1 Text");
   IupSetAttribute(_list_2, "VISIBLECOLUMNS", "6");
+  IupSetAttribute(_list_2, "SHOWBORDER", "Yes");
+  IupSetAttribute(_list_2, "DROPONARROW", "NO");
 
   IupSetAttribute(_list_2,"TIP","List 2");
 

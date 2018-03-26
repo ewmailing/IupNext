@@ -396,9 +396,9 @@ obtain the drop button handle from the handle of the dialog get the &quot;DROPBU
 attribute handle from the dialog, using
 <a href="../func/iupgetattributehandle.html">IupGetAttributeHandle</a>. After 
 performing some operation on the drop child, use SHOWDROPDOWN=NO on the drop 
-button, you may also update its TITLE, just like a regular IupList with 
+button, you may also update its TITLE, just like a regular <strong>IupList</strong> with 
 DROPDOWN=Yes, but this will not be performed automatically by the drop button. 
-For example, set on the IupList used as drop child:</p>
+For example, set the ACTION callback on the IupList used as drop child:</p>
 <pre>static int list_cb(Ihandle* list, char *text, int item, int state)
 {
   if (state == 1)
@@ -408,8 +408,11 @@ For example, set on the IupList used as drop child:</p>
     IupSetStrAttribute(ih, "TITLE", text);
   }
   return IUP_DEFAULT;
-}
-</pre>
+}</pre>
+<p>Additionally to mimic a <strong>IupList</strong> with DROPDOWN=Yes set 
+SHOWBORDER=Yes and DROPONARROW=NO on the drop button. But notice that the 
+natural size will not use the largest item in the drop child list, so you can 
+use EXPAND=HORIZONTAL or set VISIBLECOLUMNS, both on the drop button.</p>
 <h3><a name="Examples">Examples</a></h3>
 
 <p><a href="../../examples/">Browse for Example Files</a></p>
