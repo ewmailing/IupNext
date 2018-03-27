@@ -768,17 +768,17 @@ void iupFlatDrawCheckMark(IdrawCanvas* dc, int xmin, int xmax, int ymin, int yma
   if (!active)
     color = iFlatDrawColorMakeInactive(color, bgcolor);
 
-    points[0] = xmin + 2;
-    points[1] = ymin + (ymax - ymin) / 2;
-    points[2] = xmin + (xmax - xmin) / 2;
-    points[3] = ymax - 2;
-    points[4] = xmax - 2;
-    points[5] = ymin + 2;
+    points[0] = xmin;
+    points[1] = (ymax + ymin) / 2;
+    points[2] = (xmax + xmin) / 2;
+    points[3] = ymax;
+    points[4] = xmax;
+    points[5] = ymin;
 
   iupdrvDrawPolygon(dc, points, 3, color, IUP_DRAW_STROKE, 2);
 }
 
-void iupFlatDrawDrawCircle(IdrawCanvas* dc, int xc, int yc, int radius, int fill, char *fgcolor, char *bgcolor, int active)
+void iupFlatDrawDrawCircle(IdrawCanvas* dc, int xc, int yc, int radius, int fill, int line_width, char *fgcolor, char *bgcolor, int active)
 {
   int x1, y1, x2, y2;
   int style = (fill) ? IUP_DRAW_FILL : IUP_DRAW_STROKE;
@@ -792,7 +792,7 @@ void iupFlatDrawDrawCircle(IdrawCanvas* dc, int xc, int yc, int radius, int fill
   x2 = xc + radius;
   y2 = yc + radius;
 
-  iupdrvDrawArc(dc, x1, y1, x2, y2, 0.0, 360, color, style, 1);
+  iupdrvDrawArc(dc, x1, y1, x2, y2, 0.0, 360, color, style, line_width);
 }
 
 static char* iFlatDrawGetImageName(Ihandle* ih, const char* baseattrib, const char* state)
