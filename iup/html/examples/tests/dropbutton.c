@@ -378,6 +378,28 @@ static Ihandle* CreateList(void)
   return list;
 }
 
+static int text_kcr_cb(Ihandle* text)
+{
+  Ihandle* ih = IupGetAttributeHandle(IupGetDialog(text), "DROPBUTTON");
+  IupSetAttribute(ih, "SHOWDROPDOWN", "No");
+  IupSetStrAttribute(ih, "TITLE", IupGetAttribute(text, "VALUE"));
+  return IUP_DEFAULT;
+}
+
+static Ihandle* CreateListText(void)
+{
+  Ihandle* list = CreateList();
+  Ihandle* text = IupText(NULL);
+  IupSetAttribute(text, "EXPAND", "HORIZONTAL");
+  IupSetAttribute(list, "NAME", "DB-LIST");
+  IupSetAttribute(text, "NAME", "DB-TEXT");
+  IupSetCallback(text, "K_CR", (Icallback)text_kcr_cb);
+  IupSetCallback(list, "GETFOCUS_CB", (Icallback)getfocus_cb);
+  IupSetCallback(text, "GETFOCUS_CB", (Icallback)getfocus_cb);
+  Ihandle* vbox = IupVbox(text, list, NULL);
+  return vbox;
+}
+
 void DropButtonTest(void)
 {
   Ihandle *dlg, *button, *label, *image1, *image1i, *image1p, *image2, *image3, 
@@ -445,7 +467,7 @@ void DropButtonTest(void)
 
   button = IupDropButton(NULL);
   IupSetAttribute(button, "RASTERSIZE", "60x30");
-  IupSetAttribute(button, "DROPCHILD_HANDLE", (char*)CreateList());
+  IupSetAttribute(button, "DROPCHILD_HANDLE", (char*)CreateListText());
   IupSetAttribute(button, "FGCOLOR", "255 128 92");
   IupSetAttribute(button, "ARROWCOLOR", "0 0 0");
   IupSetAttribute(button, "NAME", "color");
