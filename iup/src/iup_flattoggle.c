@@ -22,7 +22,8 @@
 #include "iup_key.h"
 
 
-#define BUTTON_GAP 2
+#define ITOGGLE_SPACE  3
+#define ITOGGLE_MARGIN 2
 
 /* from IupRadio implementation */
 Ihandle *iupRadioFindToggleParent(Ihandle* ih_toggle);
@@ -37,7 +38,7 @@ struct _IcontrolData
   int spacing, img_position;        /* used when both text and image are displayed */
   int horiz_alignment, vert_alignment;
   int border_width;
-  int check_size;
+  int check_size, check_spacing;
 
   /* aux */
   int has_focus,
@@ -58,7 +59,8 @@ static int iFlatToggleRedraw_CB(Ihandle* ih)
   int selected = (notdef) ? -1 : iupAttribGetInt(ih, "VALUE");
   char* fgcolor = iupAttribGetStr(ih, "FGCOLOR");
   char* bgcolor = iupAttribGetStr(ih, "BGCOLOR");
-  char* btcolor = "255 255 255";
+  char* check_fgcolor = iupAttribGet(ih, "CHECKFGCOLOR");
+  char* check_bgcolor = iupAttribGetStr(ih, "CHECKBGCOLOR");
   char* bgimage = iupAttribGet(ih, "BACKIMAGE");
   char* fgimage = iupAttribGet(ih, "FRONTIMAGE");
   char* text_align = iupAttribGetStr(ih, "TEXTALIGNMENT");
@@ -67,11 +69,9 @@ static int iFlatToggleRedraw_CB(Ihandle* ih)
   const char* draw_image;
   int border_width = ih->data->border_width;
   int draw_border = iupAttribGetBoolean(ih, "SHOWBORDER");
-  int image_pressed;
+  int image_pressed, icon_position, check_position, icon_width;
   IdrawCanvas* dc = iupdrvDrawCreateCanvas(ih);
   int make_inactive = 0;
-  int button_position = (check_right) ? ih->currentwidth - ih->data->check_size : 0;
-  int icon_position = (check_right) ? 0 : ih->data->check_size;
 
   iupDrawParentBackground(dc, ih);
 
@@ -83,12 +83,24 @@ static int iFlatToggleRedraw_CB(Ihandle* ih)
       bgcolor = iupBaseNativeParentGetBgColorAttrib(ih);
   }
 
-  if (selected)
+  if (!check_fgcolor)
+    check_fgcolor = fgcolor;
+
+  check_position = 0;
+  icon_position = ih->data->check_size + ih->data->check_spacing;
+  if (check_right)
   {
-    char* presscolor = iupAttribGetStr(ih, "PSCOLOR");
-    if (presscolor)
-      btcolor = presscolor;
+    check_position = ih->currentwidth - ih->data->check_size;
+    icon_position = 0;
   }
+  icon_width = ih->currentwidth - ih->data->check_size - ih->data->check_spacing;
+
+  //if (selected)
+  //{
+  //  char* presscolor = iupAttribGetStr(ih, "PSCOLOR");
+  //  if (presscolor)
+  //    btcolor = presscolor;
+  //}
 
   if (ih->data->pressed || (selected && !ih->data->highlighted))
   {
@@ -126,8 +138,8 @@ static int iFlatToggleRedraw_CB(Ihandle* ih)
     }
 
     iupFlatDrawBorder(dc, 0, ih->currentwidth - 1,
-                      0, ih->currentheight - 1,
-                      border_width, bordercolor, bgcolor, active);
+                          0, ih->currentheight - 1,
+                          border_width, bordercolor, bgcolor, active);
   }
 
   /* simulate pressed when selected and has images (but colors and borders are not included) */
@@ -135,60 +147,23 @@ static int iFlatToggleRedraw_CB(Ihandle* ih)
   if (selected && !ih->data->pressed && (bgimage || image))
     image_pressed = 1;
 
-  draw_image = iupFlatGetImageName(ih, "IMAGE", image, image_pressed, ih->data->highlighted, active, &make_inactive);
-
   /* draw background */
   if (bgimage)
   {
     draw_image = iupFlatGetImageName(ih, "BACKIMAGE", bgimage, image_pressed, ih->data->highlighted, active, &make_inactive);
     iupdrvDrawImage(dc, draw_image, make_inactive, border_width, border_width);
   }
-  else if (draw_image)
+  else 
     iupFlatDrawBox(dc, border_width, ih->currentwidth - 1 - border_width,
                        border_width, ih->currentheight - 1 - border_width,
                        bgcolor, NULL, 1);  /* background is always active */
 
-  if (draw_image)
-    iupFlatDrawIcon(ih, dc, border_width, border_width,
-                    ih->currentwidth - 2 * border_width, ih->currentheight - 2 * border_width,
-                    ih->data->img_position, ih->data->spacing, ih->data->horiz_alignment, ih->data->vert_alignment, ih->data->horiz_padding, ih->data->vert_padding,
-                    draw_image, make_inactive, title, text_align, fgcolor, bgcolor, active);
-  else
-  {
-    iupFlatDrawIcon(ih, dc, border_width + icon_position, border_width,
-                    ih->currentwidth - (2 * border_width) - ih->data->check_size, ih->currentheight - 2 * border_width,
-                    ih->data->img_position, ih->data->spacing, ih->data->horiz_alignment, ih->data->vert_alignment, ih->data->horiz_padding, ih->data->vert_padding,
-                    draw_image, make_inactive, title, text_align, fgcolor, bgcolor, active);
-
-    if (selected)
-    {
-      if (radio)
-        iupFlatDrawDrawCircle(dc, button_position + ih->data->check_size / 2, ih->currentheight / 2, ih->data->check_size / 2 - 2 * BUTTON_GAP, 1, btcolor, btcolor, active);
-      else if (selected == -1)
-        iupFlatDrawBox(dc, button_position + 2 * BUTTON_GAP, button_position + 2 * BUTTON_GAP + ih->data->check_size - 4 * BUTTON_GAP, (ih->currentheight - (ih->data->check_size - 4 * BUTTON_GAP)) / 2,
-                        ((ih->currentheight - (ih->data->check_size - 4*BUTTON_GAP)) / 2) + (ih->data->check_size - 4*BUTTON_GAP),
-                        btcolor, btcolor, active);
-      else
-        iupFlatDrawCheckMark(dc, button_position + BUTTON_GAP, button_position + BUTTON_GAP + ih->data->check_size - 2 * BUTTON_GAP, (ih->currentheight - (ih->data->check_size - 2 * BUTTON_GAP)) / 2,
-                              ((ih->currentheight - (ih->data->check_size - 2*BUTTON_GAP)) / 2) + (ih->data->check_size - 2*BUTTON_GAP), fgcolor, bgcolor, active);
-    }
-    else
-    {
-      if (radio)
-        iupFlatDrawDrawCircle(dc, button_position + ih->data->check_size / 2, ih->currentheight / 2, ih->data->check_size / 2 - BUTTON_GAP, 1, btcolor, btcolor, active);
-      else
-        iupFlatDrawBox(dc, button_position + BUTTON_GAP, button_position + BUTTON_GAP + ih->data->check_size - 2 * BUTTON_GAP, (ih->currentheight - (ih->data->check_size - 2 * BUTTON_GAP)) / 2,
-                        ((ih->currentheight - (ih->data->check_size - 2*BUTTON_GAP)) / 2) + (ih->data->check_size - 2*BUTTON_GAP),
-                        btcolor, btcolor, active);
-    }
-
-    if (radio)
-      iupFlatDrawDrawCircle(dc, button_position + ih->data->check_size / 2, ih->currentheight / 2, ih->data->check_size / 2 - BUTTON_GAP, 0, fgcolor, fgcolor, active);
-    else
-      iupFlatDrawBorder(dc, button_position + BUTTON_GAP, button_position + BUTTON_GAP + ih->data->check_size - 2 * BUTTON_GAP, (ih->currentheight - (ih->data->check_size - 2 * BUTTON_GAP)) / 2,
-                          ((ih->currentheight - (ih->data->check_size - 2*BUTTON_GAP)) / 2) + (ih->data->check_size - 2*BUTTON_GAP), 2,
-                          fgcolor, bgcolor, active);
-  }
+  /* draw icon */
+  draw_image = iupFlatGetImageName(ih, "IMAGE", image, image_pressed, ih->data->highlighted, active, &make_inactive);
+  iupFlatDrawIcon(ih, dc, border_width + icon_position, border_width,
+                          icon_width - 2 * border_width, ih->currentheight - 2 * border_width,
+                          ih->data->img_position, ih->data->spacing, ih->data->horiz_alignment, ih->data->vert_alignment, ih->data->horiz_padding, ih->data->vert_padding,
+                          draw_image, make_inactive, title, text_align, fgcolor, bgcolor, active);
 
   if (fgimage)
   {
@@ -197,16 +172,56 @@ static int iFlatToggleRedraw_CB(Ihandle* ih)
   }
   else if (!image && !title)
   {
-    int space = border_width + 2;
-    iupFlatDrawBorder(dc, space, ih->currentwidth - 1 - space,
-                      space, ih->currentheight - 1 - space,
-                      1, "0 0 0", bgcolor, active);
+    int space = border_width + ITOGGLE_MARGIN;
+    iupFlatDrawBorder(dc, space + icon_position, icon_width - 1 - space,
+                          space, ih->currentheight - 1 - space,
+                          1, "0 0 0", bgcolor, active);
     space++;
-    iupFlatDrawBox(dc, space, ih->currentwidth - 1 - space,
-                   space, ih->currentheight - 1 - space,
-                   fgcolor, bgcolor, active);
+    iupFlatDrawBox(dc, space + icon_position, icon_width - 1 - space,
+                       space, ih->currentheight - 1 - space,
+                       fgcolor, bgcolor, active);
   }
 
+  if (ih->data->check_size)
+  {
+    int xc = check_position + ih->data->check_size / 2;
+    int yc = ih->currentheight / 2;
+    int radius = ih->data->check_size / 2 - ITOGGLE_MARGIN;
+    int check_xmin = check_position + ITOGGLE_MARGIN;
+    int check_ymin = (ih->currentheight - ih->data->check_size) / 2 + ITOGGLE_MARGIN;
+    int check_box_size = ih->data->check_size - 2 * ITOGGLE_MARGIN;
+
+    /* check background */
+    if (radio)
+      iupFlatDrawDrawCircle(dc, xc, yc, radius, 1, 1, check_bgcolor, bgcolor, active);
+    else
+      iupFlatDrawBox(dc, check_xmin, check_xmin + check_box_size,
+                         check_ymin, check_ymin + check_box_size,
+                         check_bgcolor, bgcolor, active);
+
+    /* check border */
+    if (radio)
+      iupFlatDrawDrawCircle(dc, xc, yc, radius, 0, 2, check_fgcolor, bgcolor, active);
+    else
+      iupFlatDrawBorder(dc, check_xmin, check_xmin + check_box_size,
+                            check_ymin, check_ymin + check_box_size, 
+                            2, check_fgcolor, bgcolor, active);
+
+    /* check mark */
+    if (selected)
+    {
+      if (radio)
+        iupFlatDrawDrawCircle(dc, xc, yc, radius - ITOGGLE_SPACE, 1, 1, check_fgcolor, check_bgcolor, active);
+      else if (selected == -1)
+        iupFlatDrawBox(dc, check_xmin + ITOGGLE_SPACE, check_xmin + check_box_size - ITOGGLE_SPACE,
+                           check_ymin + ITOGGLE_SPACE, check_ymin + check_box_size - ITOGGLE_SPACE,
+                           check_fgcolor, check_bgcolor, active);
+      else
+        iupFlatDrawCheckMark(dc, check_xmin + ITOGGLE_SPACE, check_xmin + check_box_size - ITOGGLE_SPACE,
+                                 check_ymin + ITOGGLE_SPACE, check_ymin + check_box_size - ITOGGLE_SPACE, 
+                                 check_fgcolor, check_bgcolor, active);
+    }
+  }
 
   if (ih->data->has_focus)
     iupdrvDrawFocusRect(dc, border_width, border_width, ih->currentwidth - 1 - border_width, ih->currentheight - 1 - border_width);
@@ -441,6 +456,19 @@ static char* iFlatToggleGetCheckSizeAttrib(Ihandle* ih)
   return iupStrReturnInt(ih->data->check_size);
 }
 
+static int iFlatToggleSetCheckSpacingAttrib(Ihandle* ih, const char* value)
+{
+  iupStrToInt(value, &ih->data->check_spacing);
+  if (ih->handle)
+    iupdrvRedrawNow(ih);
+  return 0;
+}
+
+static char* iFlatToggleGetCheckSpacingAttrib(Ihandle* ih)
+{
+  return iupStrReturnInt(ih->data->check_spacing);
+}
+
 static int iFlatToggleSetBgColorAttrib(Ihandle* ih, const char* value)
 {
   (void)value;
@@ -590,6 +618,7 @@ static int iFlatToggleCreateMethod(Ihandle* ih, void** params)
   ih->data->horiz_alignment = IUP_ALIGN_ACENTER;
   ih->data->vert_alignment = IUP_ALIGN_ACENTER;
   ih->data->check_size = iFlatToggleGetDefaultCheckSize();
+  ih->data->check_spacing = 5;
 
   /* initial values - don't use default so they can be set to NULL */
   iupAttribSet(ih, "HLCOLOR", "200 225 245");
@@ -755,6 +784,9 @@ Iclass* iupFlatToggleNewClass(void)
 
   iupClassRegisterAttribute(ic, "CHECKRIGHT", NULL, NULL, NULL, NULL, IUPAF_NO_INHERIT);
   iupClassRegisterAttribute(ic, "CHECKSIZE", iFlatToggleGetCheckSizeAttrib, iFlatToggleSetCheckSizeAttrib, NULL, NULL, IUPAF_NOT_MAPPED);
+  iupClassRegisterAttribute(ic, "CHECKSPACING", iFlatToggleGetCheckSpacingAttrib, iFlatToggleSetCheckSpacingAttrib, IUPAF_SAMEASSYSTEM, "5", IUPAF_NOT_MAPPED);
+  iupClassRegisterAttribute(ic, "CHECKBGCOLOR", NULL, NULL, IUPAF_SAMEASSYSTEM, "TXTBGCOLOR", IUPAF_NO_INHERIT);
+  iupClassRegisterAttribute(ic, "CHECKFGCOLOR", NULL, NULL, NULL, NULL, IUPAF_NO_INHERIT);
 
   return ic;
 }

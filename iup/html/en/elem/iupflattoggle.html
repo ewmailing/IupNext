@@ -118,16 +118,16 @@ not defined it will use the background color of the native parent. </p>
 <p><strong>BORDERCOLOR</strong>: color used for borders. Default: &quot;50 150 255&quot;. 
 This is for the <strong>IupFlatToggle</strong> drawn border.</p>
 <p><strong>BORDERPSCOLOR</strong>: color used for borders when pressed or 
-selected. Default use BORDERCOLOR. (since 3.19)</p>
+selected. Default use BORDERCOLOR.</p>
 <p><strong>BORDERHLCOLOR</strong>: color used for borders when highlighted. 
-Default use BORDERCOLOR. (since 3.19)</p>
+Default use BORDERCOLOR.</p>
 <p><strong>BORDERWIDTH</strong>: line width used for borders. Default: &quot;1&quot;. Any borders can be 
 hidden by simply setting 
 this value to 0. This is for the <strong>IupFlatToggle</strong> drawn border.</p>
 <p><strong>SHOWBORDER</strong>: by default borders are drawn only when the 
 button is highlighted, if SHOWBORDER=Yes borders are always show. When 
 SHOWBORDER=Yes and BGCOLOR is not defined, the actual BGCOLOR will be a darker 
-version of the background color of the native parent. (since 3.25)</p>
+version of the background color of the native parent.</p>
 
 <p><strong>CANFOCUS</strong> (creation only)<strong> </strong>(<font size="3">non inheritable</font>): 
 enables the focus traversal of the control. In Windows the button will respect 
@@ -137,13 +137,18 @@ CANFOCUS in opposite to the other controls. Default: YES.</p>
 check box when visible. Default depends on the resolution: 16 (dpi &lt;= 120), or 
 24 (dpi &gt; 120).</font></p>
 
-<p><strong>CHECKRIGHT</strong> (<font size="3">non inheritable</font>): place the check button at the 
-right of the text. Can be "YES" or "NO". Default: "NO".</p>
+<p><strong>CHECKRIGHT</strong> (<font size="3">non inheritable</font>): place the check box at the 
+right. Can be "YES" or "NO". Default: "NO".</p>
+<p><strong>CHECKSPACING</strong> (<font size="3">non inheritable</font>): 
+spacing between the check box and the image+text. The space occupies the 
+image+text area. Default: 5</p>
 
 
 
   
-<p><strong>PROPAGATEFOCUS </strong>(<font size="3">non inheritable</font>): enables the focus callback forwarding to the next native parent with FOCUS_CB defined. Default: NO. (since 3.23)</p>
+<p><strong>PROPAGATEFOCUS </strong>(<font size="3">non inheritable</font>): 
+enables the focus callback forwarding to the next native parent with FOCUS_CB 
+defined. Default: NO.</p>
 
 <p>
 <a href="../attrib/iup_expand.html" style="font-family: tahoma, verdana, arial, helvetica, geneva, sans-serif; font-size: medium; font-style: normal; font-variant: normal; font-weight: normal; letter-spacing: normal; line-height: 20.7999992370605px; orphans: auto; text-align: start; text-indent: 0px; text-transform: none; white-space: normal; widows: 1; word-spacing: 0px; -webkit-text-stroke-width: 0px; background-color: rgb(255, 255, 255);">
@@ -185,12 +190,12 @@ then the FRONTIMAGE is used.</p>
 foreground image name of the element in pressed state. If it is not defined then 
 the FRONTIMAGE is used.</p>
 <p><strong>HASFOCUS </strong> (read-only): returns the button state if has 
-focus. Can be Yes or No. (since 3.21)</p>
+focus. Can be Yes or No.</p>
 <p><strong>HLCOLOR</strong>: background color used to indicate a highlight state. 
 Pre-defined to &quot;200 225 245&quot;. Can be set to NULL. If NULL BGCOLOR will 
 be used instead.</p>
 <p><strong>HIGHLIGHTED </strong> (read-only): returns the button state if 
-highlighted. Can be Yes or No. (since 3.21)</p>
+highlighted. Can be Yes or No.</p>
 <p><strong>IMAGE</strong> (<font SIZE="3">non inheritable</font>):
   Image name. Use
 	<a href="../func/iupsethandle.html">IupSetHandle</a> or
@@ -219,7 +224,7 @@ LEFT, RIGHT, TOP, BOTTOM. Default: LEFT.</p>
   the <strong>IupHbox</strong> and <strong>IupVbox</strong> containers, but uses 
 a different name to avoid inheritance problems. Default value: &quot;0x0&quot;.</p>
 <p><strong>PRESSED </strong> (read-only): returns the button state if pressed. 
-Can be Yes or No. (since 3.21)</p>
+Can be Yes or No.</p>
 <p><strong>PSCOLOR</strong>: background color used to indicate a press state. 
 Pre-defined to &quot;150 200 235&quot;. Can be set to NULL. If NULL BGCOLOR will 
 be used instead.</p>
@@ -231,7 +236,7 @@ Can be &quot;YES&quot; or &quot;NO&quot;.</p>
 
 <p><strong>IGNORERADIO</strong> (<font size="3">non inheritable</font>): when 
 set the toggle will not behave as a radio when inside an <strong>IupRadio</strong> 
-hierarchy. (since 3.21)</p>
+hierarchy.</p>
 
 
 <p><strong>SPACING </strong>(<font SIZE="3">non inheritable</font>): spacing between the 
@@ -239,10 +244,10 @@ image and the text. Default: &quot;2&quot;.</p>
 
   
   <p><a href="../attrib/iup_title.html">TITLE</a> (<font SIZE="3">non inheritable</font>): 
-	Label's text. The '\n' character is accepted for line change.</p>
+	toggle text. The '\n' character is accepted for line change.</p>
 <p><strong>TEXTALIGNMENT </strong>(<font size="3">non inheritable</font>): 
 Horizontal text alignment for multiple lines. Can be: ALEFT, ARIGHT or ACENTER. 
-Default: ALEFT. (since 3.22)</p>
+Default: ALEFT.</p>
 
 
 
@@ -289,7 +294,7 @@ but redefines a few of them. Including ACTION, BUTTON_CB, FOCUS_CB,
 LEAVEWINDOW_CB, and ENTERWINDOW_CB. To allow the application to use those 
 callbacks the same callbacks are exported with the &quot;FLAT_&quot; prefix using the same 
 parameters, except the FLAT_ACTION callback that now mimics the <strong>
-IupButton</strong> 
+IupToggle</strong> 
 ACTION. They are all called before the internal callbacks and if they return 
 IUP_IGNORE the internal callbacks are not processed.</p>
 <p><strong>FLAT_ACTION</strong>:
@@ -339,11 +344,11 @@ supported.</p>
 <h3><a name="Notes">Notes</a></h3>
 
 
-<p>The <strong>IupFlatToggle</strong> can contain text and image simultaneously. 
+<p>The <strong>IupFlatToggle</strong> can contain the check box, text and image simultaneously. 
 </p>
 <p>The natural size will be a combination of the size of the image and the 
 title, if any, plus PADDING and SPACING (if both image and title are present), 
-and the check mark if visible.</p>
+and the check box if visible.</p>
 <p>Borders are drawn only when the button is highlighted reproducing the 
 behavior of the <strong>IupButton</strong> when FLAT=Yes.</p>
 
@@ -355,9 +360,8 @@ behavior of the <strong>IupButton</strong> when FLAT=Yes.</p>
 container. They must be inserted before creation, and their behavior can not be 
 changed. </p>
 
-<p>The toggle that is a child of an <strong>IupRadio</strong> automatically receives a name when 
-its is mapped into the native system. 
-(since 3.16)</p>
+<p>The toggle that is a child of an <strong>IupRadio</strong> automatically 
+receives a name when its is mapped into the native system.</p>
 <p>To replace a <strong>IupToggle</strong> by a <strong>IupFlatToggle</strong> 
 you must change the function call (<strong>IupFlatToggle</strong> does not 
 includes the action callback in the constructor) and change the ACTION callback 
