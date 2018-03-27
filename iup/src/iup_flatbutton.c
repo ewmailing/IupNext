@@ -113,8 +113,8 @@ static int iFlatButtonRedraw_CB(Ihandle* ih)
     }
 
     iupFlatDrawBorder(dc, 0, ih->currentwidth - 1, 
-                              0, ih->currentheight - 1, 
-                              border_width, bordercolor, bgcolor, active);
+                          0, ih->currentheight - 1, 
+                          border_width, bordercolor, bgcolor, active);
   }
 
   /* simulate pressed when selected and has images (but colors and borders are not included) */
@@ -130,21 +130,22 @@ static int iFlatButtonRedraw_CB(Ihandle* ih)
   }
   else
     iupFlatDrawBox(dc, border_width, ih->currentwidth - 1 - border_width,
-                           border_width, ih->currentheight - 1 - border_width,
-                           bgcolor, NULL, 1);  /* background is always active */
+                       border_width, ih->currentheight - 1 - border_width,
+                       bgcolor, NULL, 1);  /* background is always active */
 
+  /* draw icon */
   draw_image = iupFlatGetImageName(ih, "IMAGE", image, image_pressed, ih->data->highlighted, active, &make_inactive);
   iupFlatDrawIcon(ih, dc, border_width, border_width,
-                  ih->currentwidth - 2 * border_width, ih->currentheight - 2 * border_width,
-                  ih->data->img_position, ih->data->spacing, ih->data->horiz_alignment, ih->data->vert_alignment, ih->data->horiz_padding, ih->data->vert_padding,
-                  draw_image, make_inactive, title, text_align, fgcolor, bgcolor, active);
+                          ih->currentwidth - 2 * border_width, ih->currentheight - 2 * border_width,
+                          ih->data->img_position, ih->data->spacing, ih->data->horiz_alignment, ih->data->vert_alignment, ih->data->horiz_padding, ih->data->vert_padding,
+                          draw_image, make_inactive, title, text_align, fgcolor, bgcolor, active);
 
   if (fgimage)
   {
     draw_image = iupFlatGetImageName(ih, "FRONTIMAGE", fgimage, image_pressed, ih->data->highlighted, active, &make_inactive);
     iupdrvDrawImage(dc, draw_image, make_inactive, border_width, border_width);
   }
-  else if (!image && !title)
+  else if (!image && !title)  /* color only button */
   {
     int space = border_width + 2;
     iupFlatDrawBorder(dc, space, ih->currentwidth - 1 - space,
