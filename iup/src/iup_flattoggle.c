@@ -189,37 +189,50 @@ static int iFlatToggleRedraw_CB(Ihandle* ih)
     int radius = ih->data->check_size / 2 - ITOGGLE_MARGIN;
     int check_xmin = check_position + ITOGGLE_MARGIN;
     int check_ymin = (ih->currentheight - ih->data->check_size) / 2 + ITOGGLE_MARGIN;
-    int check_box_size = ih->data->check_size - 2 * ITOGGLE_MARGIN;
+    int check_size = ih->data->check_size - 2 * ITOGGLE_MARGIN;
+    char* check_image = iupAttribGet(ih, "CHECKIMAGE");
 
-    /* check background */
-    if (radio)
-      iupFlatDrawDrawCircle(dc, xc, yc, radius, 1, 1, check_bgcolor, bgcolor, active);
-    else
-      iupFlatDrawBox(dc, check_xmin, check_xmin + check_box_size,
-                         check_ymin, check_ymin + check_box_size,
-                         check_bgcolor, bgcolor, active);
-
-    /* check border */
-    if (radio)
-      iupFlatDrawDrawCircle(dc, xc, yc, radius, 0, 2, check_fgcolor, bgcolor, active);
-    else
-      iupFlatDrawBorder(dc, check_xmin, check_xmin + check_box_size,
-                            check_ymin, check_ymin + check_box_size, 
-                            2, check_fgcolor, bgcolor, active);
-
-    /* check mark */
-    if (selected)
+    if (check_image)
     {
+      if (selected == -1)
+        draw_image = iupFlatGetImageName(ih, "CHECKIMAGENOTDEF", check_image, ih->data->pressed, ih->data->highlighted, active, &make_inactive);
+      else if (selected)
+        draw_image = iupFlatGetImageName(ih, "CHECKIMAGEON", check_image, ih->data->pressed, ih->data->highlighted, active, &make_inactive);
+
+      iupdrvDrawImage(dc, draw_image, make_inactive, check_xmin, check_ymin);
+    }
+    else
+    {
+      /* check background */
       if (radio)
-        iupFlatDrawDrawCircle(dc, xc, yc, radius - ITOGGLE_SPACE, 1, 1, check_fgcolor, check_bgcolor, active);
-      else if (selected == -1)
-        iupFlatDrawBox(dc, check_xmin + ITOGGLE_SPACE, check_xmin + check_box_size - ITOGGLE_SPACE,
-                           check_ymin + ITOGGLE_SPACE, check_ymin + check_box_size - ITOGGLE_SPACE,
-                           check_fgcolor, check_bgcolor, active);
+        iupFlatDrawDrawCircle(dc, xc, yc, radius, 1, 1, check_bgcolor, bgcolor, active);
       else
-        iupFlatDrawCheckMark(dc, check_xmin + ITOGGLE_SPACE, check_xmin + check_box_size - ITOGGLE_SPACE,
-                                 check_ymin + ITOGGLE_SPACE, check_ymin + check_box_size - ITOGGLE_SPACE, 
-                                 check_fgcolor, check_bgcolor, active);
+        iupFlatDrawBox(dc, check_xmin, check_xmin + check_size,
+        check_ymin, check_ymin + check_size,
+        check_bgcolor, bgcolor, active);
+
+      /* check border */
+      if (radio)
+        iupFlatDrawDrawCircle(dc, xc, yc, radius, 0, 2, check_fgcolor, bgcolor, active);
+      else
+        iupFlatDrawBorder(dc, check_xmin, check_xmin + check_size,
+        check_ymin, check_ymin + check_size,
+        2, check_fgcolor, bgcolor, active);
+
+      /* check mark */
+      if (selected)
+      {
+        if (radio)
+          iupFlatDrawDrawCircle(dc, xc, yc, radius - ITOGGLE_SPACE, 1, 1, check_fgcolor, check_bgcolor, active);
+        else if (selected == -1)
+          iupFlatDrawBox(dc, check_xmin + ITOGGLE_SPACE, check_xmin + check_size - ITOGGLE_SPACE,
+          check_ymin + ITOGGLE_SPACE, check_ymin + check_size - ITOGGLE_SPACE,
+          check_fgcolor, check_bgcolor, active);
+        else
+          iupFlatDrawCheckMark(dc, check_xmin + ITOGGLE_SPACE, check_xmin + check_size - ITOGGLE_SPACE,
+          check_ymin + ITOGGLE_SPACE, check_ymin + check_size - ITOGGLE_SPACE,
+          check_fgcolor, check_bgcolor, active);
+      }
     }
   }
 
@@ -787,6 +800,21 @@ Iclass* iupFlatToggleNewClass(void)
   iupClassRegisterAttribute(ic, "CHECKSPACING", iFlatToggleGetCheckSpacingAttrib, iFlatToggleSetCheckSpacingAttrib, IUPAF_SAMEASSYSTEM, "5", IUPAF_NOT_MAPPED);
   iupClassRegisterAttribute(ic, "CHECKBGCOLOR", NULL, NULL, IUPAF_SAMEASSYSTEM, "TXTBGCOLOR", IUPAF_NO_INHERIT);
   iupClassRegisterAttribute(ic, "CHECKFGCOLOR", NULL, NULL, NULL, NULL, IUPAF_NO_INHERIT);
+
+  iupClassRegisterAttribute(ic, "CHECKIMAGE", NULL, NULL, NULL, NULL, IUPAF_IHANDLENAME | IUPAF_NO_DEFAULTVALUE | IUPAF_NO_INHERIT);
+  iupClassRegisterAttribute(ic, "CHECKIMAGEPRESS", NULL, NULL, NULL, NULL, IUPAF_IHANDLENAME | IUPAF_NO_DEFAULTVALUE | IUPAF_NO_INHERIT);
+  iupClassRegisterAttribute(ic, "CHECKIMAGEHIGHLIGHT", NULL, NULL, NULL, NULL, IUPAF_IHANDLENAME | IUPAF_NO_DEFAULTVALUE | IUPAF_NO_INHERIT);
+  iupClassRegisterAttribute(ic, "CHECKIMAGEINACTIVE", NULL, NULL, NULL, NULL, IUPAF_IHANDLENAME | IUPAF_NO_DEFAULTVALUE | IUPAF_NO_INHERIT);
+
+  iupClassRegisterAttribute(ic, "CHECKIMAGEON", NULL, NULL, NULL, NULL, IUPAF_IHANDLENAME | IUPAF_NO_DEFAULTVALUE | IUPAF_NO_INHERIT);
+  iupClassRegisterAttribute(ic, "CHECKIMAGEONPRESS", NULL, NULL, NULL, NULL, IUPAF_IHANDLENAME | IUPAF_NO_DEFAULTVALUE | IUPAF_NO_INHERIT);
+  iupClassRegisterAttribute(ic, "CHECKIMAGEONHIGHLIGHT", NULL, NULL, NULL, NULL, IUPAF_IHANDLENAME | IUPAF_NO_DEFAULTVALUE | IUPAF_NO_INHERIT);
+  iupClassRegisterAttribute(ic, "CHECKIMAGEONINACTIVE", NULL, NULL, NULL, NULL, IUPAF_IHANDLENAME | IUPAF_NO_DEFAULTVALUE | IUPAF_NO_INHERIT);
+
+  iupClassRegisterAttribute(ic, "CHECKIMAGENOTDEF", NULL, NULL, NULL, NULL, IUPAF_IHANDLENAME | IUPAF_NO_DEFAULTVALUE | IUPAF_NO_INHERIT);
+  iupClassRegisterAttribute(ic, "CHECKIMAGENOTDEFPRESS", NULL, NULL, NULL, NULL, IUPAF_IHANDLENAME | IUPAF_NO_DEFAULTVALUE | IUPAF_NO_INHERIT);
+  iupClassRegisterAttribute(ic, "CHECKIMAGENOTDEFHIGHLIGHT", NULL, NULL, NULL, NULL, IUPAF_IHANDLENAME | IUPAF_NO_DEFAULTVALUE | IUPAF_NO_INHERIT);
+  iupClassRegisterAttribute(ic, "CHECKIMAGENOTDEFINACTIVE", NULL, NULL, NULL, NULL, IUPAF_IHANDLENAME | IUPAF_NO_DEFAULTVALUE | IUPAF_NO_INHERIT);
 
   return ic;
 }
