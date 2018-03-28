@@ -60,8 +60,6 @@ static int iFlatToggleRedraw_CB(Ihandle* ih)
   int selected = (notdef) ? -1 : iupAttribGetInt(ih, "VALUE");
   char* fgcolor = iupAttribGetStr(ih, "FGCOLOR");
   char* bgcolor = iupAttribGetStr(ih, "BGCOLOR");
-  char* check_fgcolor = iupAttribGet(ih, "CHECKFGCOLOR");
-  char* check_bgcolor = iupAttribGetStr(ih, "CHECKBGCOLOR");
   char* bgimage = iupAttribGet(ih, "BACKIMAGE");
   char* fgimage = iupAttribGet(ih, "FRONTIMAGE");
   char* text_align = iupAttribGetStr(ih, "TEXTALIGNMENT");
@@ -84,40 +82,39 @@ static int iFlatToggleRedraw_CB(Ihandle* ih)
       bgcolor = iupBaseNativeParentGetBgColorAttrib(ih);
   }
 
-  if (!check_fgcolor)
-    check_fgcolor = fgcolor;
-
-  check_position = 0;
-  icon_position = ih->data->check_size + ih->data->check_spacing;
-  if (check_right)
+  if (ih->data->check_size)
   {
-    check_position = ih->currentwidth - ih->data->check_size;
+    check_position = 0;
+    icon_position = ih->data->check_size + ih->data->check_spacing;
+    if (check_right)
+    {
+      check_position = ih->currentwidth - ih->data->check_size;
+      icon_position = 0;
+    }
+    icon_width = ih->currentwidth - ih->data->check_size - ih->data->check_spacing;
+  }
+  else
+  {
+    if (ih->data->pressed || (selected && !ih->data->highlighted))
+    {
+      char* presscolor = iupAttribGetStr(ih, "PSCOLOR");
+      if (presscolor)
+        bgcolor = presscolor;
+
+      draw_border = 1;
+    }
+    else if (ih->data->highlighted)
+    {
+      char* hlcolor = iupAttribGetStr(ih, "HLCOLOR");
+      if (hlcolor)
+        bgcolor = hlcolor;
+
+      draw_border = 1;
+    }
+
+    check_position = 0;
     icon_position = 0;
-  }
-  icon_width = ih->currentwidth - ih->data->check_size - ih->data->check_spacing;
-
-  //if (selected)
-  //{
-  //  char* presscolor = iupAttribGetStr(ih, "PSCOLOR");
-  //  if (presscolor)
-  //    btcolor = presscolor;
-  //}
-
-  if (ih->data->pressed || (selected && !ih->data->highlighted))
-  {
-    char* presscolor = iupAttribGetStr(ih, "PSCOLOR");
-    if (presscolor)
-      bgcolor = presscolor;
-
-    draw_border = 1;
-  }
-  else if (ih->data->highlighted)
-  {
-    char* hlcolor = iupAttribGetStr(ih, "HLCOLOR");
-    if (hlcolor)
-      bgcolor = hlcolor;
-
-    draw_border = 1;
+    icon_width = ih->currentwidth;
   }
 
   /* draw border - can still be disabled setting border_width=0 */
@@ -204,21 +201,43 @@ static int iFlatToggleRedraw_CB(Ihandle* ih)
     }
     else
     {
+      char* check_fgcolor = iupAttribGet(ih, "CHECKFGCOLOR");
+      char* check_bgcolor = iupAttribGetStr(ih, "CHECKBGCOLOR");
+      char* bordercolor   = iupAttribGetStr(ih, "BORDERCOLOR");
+
+      if (!check_fgcolor)
+        check_fgcolor = fgcolor;
+
+      if (ih->data->pressed || (selected && !ih->data->highlighted))
+      {
+        char* presscolor = iupAttribGetStr(ih, "CHECKPSCOLOR");
+        if (presscolor)
+          check_fgcolor = presscolor;
+      }
+      else if (ih->data->highlighted)
+      {
+        char* hlcolor = iupAttribGetStr(ih, "CHECKHLCOLOR");
+        if (hlcolor)
+          check_fgcolor = hlcolor;
+        else
+          check_fgcolor = bordercolor; /* only when highlighted */
+      }
+
       /* check background */
       if (radio)
         iupFlatDrawDrawCircle(dc, xc, yc, radius, 1, 1, check_bgcolor, bgcolor, active);
       else
         iupFlatDrawBox(dc, check_xmin, check_xmin + check_size,
-        check_ymin, check_ymin + check_size,
-        check_bgcolor, bgcolor, active);
+                           check_ymin, check_ymin + check_size,
+                           check_bgcolor, bgcolor, active);
 
       /* check border */
       if (radio)
         iupFlatDrawDrawCircle(dc, xc, yc, radius, 0, 2, check_fgcolor, bgcolor, active);
       else
         iupFlatDrawBorder(dc, check_xmin, check_xmin + check_size,
-        check_ymin, check_ymin + check_size,
-        2, check_fgcolor, bgcolor, active);
+                              check_ymin, check_ymin + check_size,
+                              2, check_fgcolor, bgcolor, active);
 
       /* check mark */
       if (selected)
@@ -227,12 +246,12 @@ static int iFlatToggleRedraw_CB(Ihandle* ih)
           iupFlatDrawDrawCircle(dc, xc, yc, radius - ITOGGLE_SPACE, 1, 1, check_fgcolor, check_bgcolor, active);
         else if (selected == -1)
           iupFlatDrawBox(dc, check_xmin + ITOGGLE_SPACE, check_xmin + check_size - ITOGGLE_SPACE,
-          check_ymin + ITOGGLE_SPACE, check_ymin + check_size - ITOGGLE_SPACE,
-          check_fgcolor, check_bgcolor, active);
+                             check_ymin + ITOGGLE_SPACE, check_ymin + check_size - ITOGGLE_SPACE,
+                             check_fgcolor, check_bgcolor, active);
         else
           iupFlatDrawCheckMark(dc, check_xmin + ITOGGLE_SPACE, check_xmin + check_size - ITOGGLE_SPACE,
-          check_ymin + ITOGGLE_SPACE, check_ymin + check_size - ITOGGLE_SPACE,
-          check_fgcolor, check_bgcolor, active);
+                                   check_ymin + ITOGGLE_SPACE, check_ymin + check_size - ITOGGLE_SPACE,
+                                   check_fgcolor, check_bgcolor, active);
       }
     }
   }
@@ -713,9 +732,13 @@ static void iFlatToggleComputeNaturalSizeMethod(Ihandle* ih, int *w, int *h, int
     *w += 2 * ih->data->border_width;
     *h += 2 * ih->data->border_width;
 
-    *w += ih->data->check_size;
-    if (ih->data->check_size > *h)
-      *h = ih->data->check_size;
+    if (ih->data->check_size)
+    {
+      *w += ih->data->check_size;
+      *w += ih->data->check_spacing;
+      if (ih->data->check_size > *h)
+        *h = ih->data->check_size;
+    }
   }
 
   (void)children_expand; /* unset if not a container */
@@ -801,6 +824,8 @@ Iclass* iupFlatToggleNewClass(void)
   iupClassRegisterAttribute(ic, "CHECKSPACING", iFlatToggleGetCheckSpacingAttrib, iFlatToggleSetCheckSpacingAttrib, IUPAF_SAMEASSYSTEM, "5", IUPAF_NOT_MAPPED);
   iupClassRegisterAttribute(ic, "CHECKBGCOLOR", NULL, NULL, IUPAF_SAMEASSYSTEM, "TXTBGCOLOR", IUPAF_NO_INHERIT);
   iupClassRegisterAttribute(ic, "CHECKFGCOLOR", NULL, NULL, NULL, NULL, IUPAF_NO_INHERIT);
+  iupClassRegisterAttribute(ic, "CHECKHLCOLOR", NULL, NULL, NULL, NULL, IUPAF_NO_INHERIT);
+  iupClassRegisterAttribute(ic, "CHECKPSCOLOR", NULL, NULL, NULL, NULL, IUPAF_NO_INHERIT);
 
   iupClassRegisterAttribute(ic, "CHECKIMAGE", NULL, NULL, NULL, NULL, IUPAF_IHANDLENAME | IUPAF_NO_DEFAULTVALUE | IUPAF_NO_INHERIT);
   iupClassRegisterAttribute(ic, "CHECKIMAGEPRESS", NULL, NULL, NULL, NULL, IUPAF_IHANDLENAME | IUPAF_NO_DEFAULTVALUE | IUPAF_NO_INHERIT);

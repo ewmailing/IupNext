@@ -122,7 +122,9 @@ selected. Default use BORDERCOLOR.</p>
 Default use BORDERCOLOR.</p>
 <p><strong>BORDERWIDTH</strong>: line width used for borders. Default: &quot;1&quot;. Any borders can be 
 hidden by simply setting 
-this value to 0. This is for the <strong>IupFlatToggle</strong> drawn border.</p>
+this value to 0. This is for the <strong>IupFlatToggle</strong> drawn border. <font size="3"> 
+When the check box is shown the borders are not shown, and the background is not 
+highlighted.</font></p>
 <p><strong>SHOWBORDER</strong>: by default borders are drawn only when the 
 button is highlighted, if SHOWBORDER=Yes borders are always show. When 
 SHOWBORDER=Yes and BGCOLOR is not defined, the actual BGCOLOR will be a darker 
@@ -134,7 +136,8 @@ CANFOCUS in opposite to the other controls. Default: YES.</p>
 
 <p><strong>CHECKSIZE</strong><font size="3"> (non inheritable): size of the 
 check box when visible. Default depends on the resolution: 16 (dpi &lt;= 120), or 
-24 (dpi &gt; 120). Set it to 0 to hide the check box.</font></p>
+24 (dpi &gt; 120). Set it to 0 to hide the check box. When the check box is 
+shown the borders are not shown, and the background is not highlighted.</font></p>
 
 <p><strong>CHECKRIGHT</strong> (<font size="3">non inheritable</font>): place the check box at the 
 right. Can be "YES" or "NO". Default: "NO".</p>
@@ -375,7 +378,9 @@ supported.</p>
 title, if any, plus PADDING and SPACING (if both image and title are present), 
 and the check box if visible.</p>
 <p>Borders are drawn only when the button is highlighted reproducing the 
-behavior of the <strong>IupButton</strong> when FLAT=Yes.</p>
+behavior of the <strong>IupButton</strong> when FLAT=Yes. <font size="3"> When 
+the check box is shown the borders are not shown, and the background is not 
+highlighted.</font></p>
 
 
 <p>Buttons are activated using Enter or Space keys.</p>
