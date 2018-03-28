@@ -19,6 +19,7 @@
 #include "iup_layout.h"
 #include "iup_register.h"
 #include "iup_drvdraw.h"
+#include "iup_draw.h"
 #include "iup_image.h"
 
 

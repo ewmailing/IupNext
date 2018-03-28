@@ -468,5 +468,8 @@
     <ClInclude Include="..\src\iup_colorhsi.h">
       <Filter>inc</Filter>
     </ClInclude>
+    <ClInclude Include="..\src\iup_draw.h">
+      <Filter>inc</Filter>
+    </ClInclude>
   </ItemGroup>
 </Project>

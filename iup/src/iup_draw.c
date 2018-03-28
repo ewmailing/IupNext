@@ -16,6 +16,7 @@
 #include "iup_str.h"
 #include "iup_drvfont.h"
 #include "iup_drvdraw.h"
+#include "iup_draw.h"
 #include "iup_assert.h"
 #include "iup_image.h"
 

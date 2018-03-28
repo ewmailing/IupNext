@@ -1,5 +1,5 @@
 /** \file
- * \brief Standard Controls Class Initialization functions.
+ * \brief Standard Controls Class Initialization functions (not exported API)
  *
  * See Copyright Notice in "iup.h"
  */
