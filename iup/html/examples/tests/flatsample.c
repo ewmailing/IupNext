@@ -518,7 +518,7 @@ void FlatSampleTest(void)
   _frm_3 = IupFlatFrame(
     IupVbox(
       set_callbacks(IupSetAttributes(IupFlatToggle("Toggle Text"), "VALUE=ON, TIP=\"Toggle TIP\", TOGGLE=Yes")),
-      set_callbacks(IupSetAttributes(IupFlatToggle(NULL), "VALUE=ON,IMAGE=img1,IMAGEPRESS=img2, TOGGLE=Yes")),
+      set_callbacks(IupSetAttributes(IupFlatToggle(NULL), "VALUE=ON,IMAGE=img1,IMAGEPRESS=img2, TOGGLE=Yes, CHECKSIZE=0")),
       set_callbacks(IupSetAttributes(IupFlatToggle(NULL), "VALUE=ON,IMAGE=img1, TOGGLE=Yes")),
       IupSetAttributes(IupFlatFrame(IupRadio(IupVbox(
       IupSetAttributes(set_callbacks(IupFlatToggle("Toggle Text")), "TOGGLE=Yes"),
