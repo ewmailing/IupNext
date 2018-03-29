@@ -116,7 +116,11 @@ ifdef USE_GTK
         SRC += gtk/iupgtk_info.c
       else
         # Because of iupdrvGetScreenSize limitation
-        SRC += mot/iupx11_info.c
+        ifdef GDK_NULL 
+          SRC += gtk/iupgtk_info.c
+        else
+          SRC += mot/iupx11_info.c
+        endif
       endif
     endif
   endif
