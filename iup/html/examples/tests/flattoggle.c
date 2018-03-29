@@ -210,7 +210,7 @@ void FlatToggleTest(void)
 
   toggle1 = IupFlatToggle(NULL);
   toggle2 = IupFlatToggle(NULL);
-  toggle3 = IupFlatToggle("&Text FlatToggle");
+  toggle3 = IupFlatToggle("&Text Toggle");
 //  toggle4 = IupFlatToggle("blue foreground color");
   toggle4 = IupFlatToggle("&Radio Text");
   toggle5 = IupFlatToggle("red background color");
@@ -238,7 +238,8 @@ void FlatToggleTest(void)
   IupSetCallback(toggle3, "FLAT_ENTERWINDOW_CB", (Icallback)enterwindow_cb);
   IupSetCallback(toggle3, "FLAT_LEAVEWINDOW_CB", (Icallback)leavewindow_cb);
   
-  IupSetAttribute(toggle1, "IMAGE",   "image1");            
+  IupSetAttribute(toggle1, "CHECKSIZE", "0");
+  IupSetAttribute(toggle1, "IMAGE", "image1");
   IupSetAttribute(toggle1, "IMAGEPRESS", "image1p");
   IupSetAttribute(toggle1, "IMAGEINACTIVE", "image1i");
   IupSetAttribute(toggle1, "NAME", "1");
@@ -255,7 +256,8 @@ void FlatToggleTest(void)
   IupSetAttribute(toggle2, "FLAT", "Yes");
 //  IupSetAttribute(toggle2, "CANFOCUS", "NO");
 
-//  IupSetAttribute(toggle3, "CANFOCUS", "NO");
+  IupSetAttribute(toggle3, "CHECKSIZE", "0");
+  //  IupSetAttribute(toggle3, "CANFOCUS", "NO");
   IupSetAttribute(toggle3, "NAME", "3");
   IupSetAttribute(toggle4, "NAME", "4");
   IupSetAttribute(toggle5, "NAME", "5");
