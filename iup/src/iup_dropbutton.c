@@ -647,13 +647,9 @@ static char* iDropButtonGetDropChildAttrib(Ihandle* ih)
   return IupGetName(ih->data->dropchild);
 }
 
-static char* iDropButtonGetFrameCountAttrib(Ihandle* ih)
-{
-  return iupStrReturnInt(IupGetChildCount(ih->data->dropchild));
-}
-
 
 /*****************************************************************************************/
+
 
 static int iDropButtonDialogFocusCB(Ihandle* dlg, int focus)
 {
