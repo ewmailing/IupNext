@@ -370,7 +370,7 @@ static Ihandle* CreateList(void)
 {
   Ihandle* list = IupList(NULL);
   IupSetAttributes(list, "1=\"Banana\", 2=\"Apple\", 3=\"Orange\", 4=\"Strawberry\", 5=\"Grape\","
-                   "XXX_VALUE=2, XXX_BGCOLOR=\"192 64 192\"");
+                   "VALUE=1, XXX_BGCOLOR=\"192 64 192\"");
   IupSetAttribute(list, "VISIBLEITEMS", "20");
   //  IupSetAttribute(list, "VISIBLECOLUMNS", "7");
   IupSetAttribute(list, "VISIBLELINES", "4");

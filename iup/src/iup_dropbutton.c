@@ -257,6 +257,9 @@ static int iDropButtonGetDropPosition(Ihandle* ih)
 
 static void iDropButtonShowDrop(Ihandle* ih)
 {
+  if (!ih->data->dropchild)
+    return;
+    
   if (ih->data->dropped)
   {
     int drop_pos = iDropButtonGetDropPosition(ih);
@@ -270,6 +273,7 @@ static void iDropButtonShowDrop(Ihandle* ih)
     x = IupGetInt(ih, "X");
     y = IupGetInt(ih, "Y");
 
+    /* update drop dialog size before calc pos */
     IupRefresh(ih->data->dropdialog);
 
     switch (drop_pos)
@@ -290,27 +294,40 @@ static void iDropButtonShowDrop(Ihandle* ih)
       break;
     }
 
+    iupdrvRedrawNow(ih);
+
+    //printf("Drop-Show\n");
     IupShowXY(ih->data->dropdialog, x, y);
+
+//    IupUpdateChildren(ih->data->dropdialog);
+    iupdrvRedrawNow(ih->data->dropdialog);
   }
   else
+  {
+    //printf("Drop-Hide\n");
     IupHide(ih->data->dropdialog);
-
-  iupdrvRedrawNow(ih);
+    iupdrvRedrawNow(ih);
+  }
 }
 
 static void iDropButtonNotify(Ihandle* ih, int pressed)
 {
   int drop_onarrow = iupAttribGetBoolean(ih, "DROPONARROW");
 
+//printf("iDropButtonNotify(%d)\n", pressed);
+
   if (pressed && (ih->data->over_arrow || !drop_onarrow))
   {
     int arrow_active = iupAttribGetBoolean(ih, "ARROWACTIVE");
-    if (arrow_active)
+    if (arrow_active && ih->data->dropchild)
     {
       IFni cb;
 
       if (iupAttribGet(ih, "_IUPDROP_CLOSE_ON_FOCUS"))
+      {
+        //printf("iDropButtonNotify(Abort after Close on Focus)\n");
         return;
+      }
 
       cb = (IFni)IupGetCallback(ih, "DROPDOWN_CB");
       if (cb)
@@ -321,6 +338,7 @@ static void iDropButtonNotify(Ihandle* ih, int pressed)
       }
 
       ih->data->dropped = !ih->data->dropped;
+      //printf("ShowDrop 1\n");
       iDropButtonShowDrop(ih);
     }
 
@@ -337,15 +355,19 @@ static void iDropButtonNotify(Ihandle* ih, int pressed)
         IupExitLoop();
     }
 
-    if (ih->data->dropped)
+    if (ih->data->dropped && ih->data->dropchild)
     {
       ih->data->dropped = 0;
+      //printf("ShowDrop 2\n");
       iDropButtonShowDrop(ih);
     }
   }
 
   if (!pressed)
+  {
     iupAttribSet(ih, "_IUPDROP_CLOSE_ON_FOCUS", NULL);
+    //printf("iDropButtonNotify(Clear Close on Focus)\n");
+  }
 
   iupdrvRedrawNow(ih);
 }
@@ -462,9 +484,13 @@ static int iDropButtonActivate_CB(Ihandle* ih)
 
 static int iDropButtonSetShowDropdownAttrib(Ihandle* ih, const char* value)
 {
-  iupAttribSet(ih, "_IUPDROP_CLOSE_ON_FOCUS", NULL);
-  ih->data->dropped = iupStrBoolean(value);
-  iDropButtonShowDrop(ih);
+  if (ih->data->dropchild)
+  {
+    iupAttribSet(ih, "_IUPDROP_CLOSE_ON_FOCUS", NULL);
+    ih->data->dropped = iupStrBoolean(value);
+    //printf("ShowDrop 5\n");
+    iDropButtonShowDrop(ih);
+  }
   return 0;
 }
 
@@ -505,10 +531,11 @@ static int iDropButtonSetPaddingAttrib(Ihandle* ih, const char* value)
   return 0;
 }
 
-static int iDropButtonSetBgColorAttrib(Ihandle* ih, const char* value)
+static int iDropButtonSetAttribPostRedraw(Ihandle* ih, const char* value)
 {
   (void)value;
-  iupdrvPostRedraw(ih);
+  if (ih->handle)
+    iupdrvPostRedraw(ih);
   return 1;
 }
 
@@ -662,11 +689,15 @@ static int iDropButtonDialogFocusCB(Ihandle* dlg, int focus)
       cb(ih, 0);
 
     if (ih->data->highlighted)
+    {
       iupAttribSet(ih, "_IUPDROP_CLOSE_ON_FOCUS", "1");
+      //printf("iDropButtonDialogFocusCB(Close on Focus=1)\n");
+    }
     else
       iupAttribSet(ih, "_IUPDROP_CLOSE_ON_FOCUS", NULL);
 
     ih->data->dropped = 0;
+    //printf("ShowDrop 3\n");
     iDropButtonShowDrop(ih);
   }
   return IUP_DEFAULT;
@@ -680,6 +711,7 @@ static int iDropButtonDialogKeyEscCB(Ihandle* dlg)
     cb(ih, 0);
 
   ih->data->dropped = 0;
+  //printf("ShowDrop 4\n");
   iDropButtonShowDrop(ih);
   return IUP_DEFAULT;
 }
@@ -839,7 +871,7 @@ Iclass* iupDropButtonNewClass(void)
   iupClassRegisterAttribute(ic, "ACTIVE", iupBaseGetActiveAttrib, iDropButtonSetActiveAttrib, IUPAF_SAMEASSYSTEM, "YES", IUPAF_DEFAULT);
 
   /* Special */
-  iupClassRegisterAttribute(ic, "TITLE", NULL, NULL, NULL, NULL, IUPAF_NO_DEFAULTVALUE | IUPAF_NO_INHERIT);
+  iupClassRegisterAttribute(ic, "TITLE", NULL, iDropButtonSetAttribPostRedraw, NULL, NULL, IUPAF_NO_DEFAULTVALUE | IUPAF_NO_INHERIT);
 
   /* IupDropButton */
   iupClassRegisterAttribute(ic, "ALIGNMENT", iDropButtonGetAlignmentAttrib, iDropButtonSetAlignmentAttrib, "ALEFT:ACENTER", NULL, IUPAF_NOT_MAPPED | IUPAF_NO_INHERIT);
@@ -855,7 +887,7 @@ Iclass* iupDropButtonNewClass(void)
   iupClassRegisterAttribute(ic, "BORDERHLCOLOR", NULL, NULL, NULL, NULL, IUPAF_DEFAULT);  /* inheritable */
   iupClassRegisterAttribute(ic, "BORDERWIDTH", iDropButtonGetBorderWidthAttrib, iDropButtonSetBorderWidthAttrib, IUPAF_SAMEASSYSTEM, "1", IUPAF_DEFAULT);  /* inheritable */
   iupClassRegisterAttribute(ic, "FGCOLOR", NULL, NULL, "DLGFGCOLOR", NULL, IUPAF_NOT_MAPPED);  /* force the new default value */
-  iupClassRegisterAttribute(ic, "BGCOLOR", iDropButtonGetBgColorAttrib, iDropButtonSetBgColorAttrib, IUPAF_SAMEASSYSTEM, "DLGBGCOLOR", IUPAF_NO_SAVE | IUPAF_DEFAULT);
+  iupClassRegisterAttribute(ic, "BGCOLOR", iDropButtonGetBgColorAttrib, iDropButtonSetAttribPostRedraw, IUPAF_SAMEASSYSTEM, "DLGBGCOLOR", IUPAF_NO_SAVE | IUPAF_DEFAULT);
   iupClassRegisterAttribute(ic, "HLCOLOR", NULL, NULL, NULL, NULL, IUPAF_DEFAULT);  /* inheritable */
   iupClassRegisterAttribute(ic, "PSCOLOR", NULL, NULL, NULL, NULL, IUPAF_DEFAULT);  /* inheritable */
 
