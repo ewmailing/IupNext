@@ -265,8 +265,9 @@ static int dropshow_cb(Ihandle *ih, int state)
   printf("DROPSHOW_CB(%d)\n", state);
   if (state == 1)
   {
+//    Ihandle* child = IupGetAttributeHandle(ih, "DROPCHILD");
     Ihandle* child = (Ihandle*)IupGetAttribute(ih, "DROPCHILD_HANDLE");
-    printf("child(%p - %s)\n", child, IupGetClassName(child));
+//    printf("child(%p - %s)\n", child, IupGetClassName(child));
     IupSetAttribute(child, "REDRAW", "ALL");
   }
   return IUP_DEFAULT;

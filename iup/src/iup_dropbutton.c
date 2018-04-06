@@ -38,7 +38,7 @@ struct _IcontrolData
   int border_width;
   int arrow_size, arrow_padding;
 
-  /* aux */
+  /* draw aux - state */
   int has_focus,
       highlighted,
       pressed, 
@@ -261,7 +261,11 @@ static void iDropButtonShowDrop(Ihandle* ih)
 
   if (!ih->data->dropchild)
     return;
-    
+
+  cb = (IFni)IupGetCallback(ih, "DROPDOWN_CB");
+  if (cb)
+    cb(ih, ih->data->dropped);
+
   if (ih->data->dropped)
   {
     int drop_pos = iDropButtonGetDropPosition(ih);
@@ -297,14 +301,12 @@ static void iDropButtonShowDrop(Ihandle* ih)
     }
 
     iupdrvRedrawNow(ih);
-
-    //printf("Drop-Show\n");
     IupShowXY(ih->data->dropdialog, x, y);
   }
   else
   {
-    //printf("Drop-Hide\n");
     IupHide(ih->data->dropdialog);
+    iupdrvRedrawNow(ih);
   }
 
   cb = (IFni)IupGetCallback(ih, "DROPSHOW_CB");
@@ -314,69 +316,50 @@ static void iDropButtonShowDrop(Ihandle* ih)
 
 static void iDropButtonNotify(Ihandle* ih, int pressed)
 {
-  int drop_onarrow = iupAttribGetBoolean(ih, "DROPONARROW");
-
-//printf("iDropButtonNotify(%d)\n", pressed);
-
-  if (pressed && (ih->data->over_arrow || !drop_onarrow))
+  if (pressed && ih->data->over_arrow)
   {
     int arrow_active = iupAttribGetBoolean(ih, "ARROWACTIVE");
     if (arrow_active && ih->data->dropchild)
     {
-      IFni cb;
-
       if (iupAttribGet(ih, "_IUPDROP_CLOSE_ON_FOCUS"))
-      {
-        //printf("iDropButtonNotify(Abort after Close on Focus)\n");
         return;
-      }
-
-      cb = (IFni)IupGetCallback(ih, "DROPDOWN_CB");
-      if (cb)
-      {
-        int ret = cb(ih, !ih->data->dropped);
-        if (ret == IUP_IGNORE)
-          return;
-      }
 
       ih->data->dropped = !ih->data->dropped;
-      //printf("ShowDrop Button1-press\n");
       iDropButtonShowDrop(ih);
     }
 
     return;
   }
 
-  if (!pressed && !ih->data->over_arrow && drop_onarrow)
+  if (!pressed && !ih->data->over_arrow)
   {
-    Icallback cb = IupGetCallback(ih, "FLAT_ACTION");
+    Icallback cb;
+
+    if (ih->data->dropped && ih->data->dropchild)
+    {
+      ih->data->dropped = 0;
+      iDropButtonShowDrop(ih);
+    }
+
+    cb = IupGetCallback(ih, "FLAT_ACTION");
     if (cb)
     {
       int ret = cb(ih);
       if (ret == IUP_CLOSE)
         IupExitLoop();
     }
-
-    if (ih->data->dropped && ih->data->dropchild)
-    {
-      ih->data->dropped = 0;
-      //printf("ShowDrop Button1-release\n");
-      iDropButtonShowDrop(ih);
-    }
   }
 
   if (!pressed)
-  {
     iupAttribSet(ih, "_IUPDROP_CLOSE_ON_FOCUS", NULL);
-    //printf("iDropButtonNotify(Clear Close on Focus)\n");
-  }
 
   iupdrvRedrawNow(ih);
 }
 
 static int iDropButtonMotion_CB(Ihandle* ih, int x, int y, char* status)
 {
-  int over_arrow;
+  int drop_onarrow = iupAttribGetBoolean(ih, "DROPONARROW");
+  int over_arrow = 1;
   IFniis cb = (IFniis)IupGetCallback(ih, "FLAT_MOTION_CB");
   if (cb)
   {
@@ -384,10 +367,8 @@ static int iDropButtonMotion_CB(Ihandle* ih, int x, int y, char* status)
       return IUP_DEFAULT;
   }
 
-  if (x > ih->currentwidth - ih->data->arrow_size)
-    over_arrow = 1;
-  else
-    over_arrow = 0;
+  if (drop_onarrow && (x < ih->currentwidth - ih->data->arrow_size))
+      over_arrow = 0;
 
   if (over_arrow != ih->data->over_arrow)
   {
@@ -409,10 +390,11 @@ static int iDropButtonButton_CB(Ihandle* ih, int button, int pressed, int x, int
 
   if (button == IUP_BUTTON1)
   {
-    if (x > ih->currentwidth - ih->data->arrow_size)
-      ih->data->over_arrow = 1;
-    else
+    int drop_onarrow = iupAttribGetBoolean(ih, "DROPONARROW");
+    if (drop_onarrow && (x < ih->currentwidth - ih->data->arrow_size))
       ih->data->over_arrow = 0;
+    else
+      ih->data->over_arrow = 1;
 
     ih->data->pressed = pressed;
 
@@ -490,7 +472,6 @@ static int iDropButtonSetShowDropdownAttrib(Ihandle* ih, const char* value)
   {
     iupAttribSet(ih, "_IUPDROP_CLOSE_ON_FOCUS", NULL);
     ih->data->dropped = iupStrBoolean(value);
-    //printf("ShowDrop set SHOWDROPDOWN(%d)\n", ih->data->dropped);
     iDropButtonShowDrop(ih);
   }
   return 0;
@@ -645,6 +626,10 @@ static void iDropButtonSetDropChild(Ihandle* ih, Ihandle* dropchild)
     if (ih->data->dropchild)
       IupDetach(ih->data->dropchild);
 
+    /* make sure it has at least one name */
+    if (!iupAttribGetHandleName(dropchild))
+      iupAttribSetHandleName(dropchild);
+
     ih->data->dropchild = dropchild;
 
     IupAppend(ih->data->dropdialog, ih->data->dropchild);
@@ -680,26 +665,32 @@ static char* iDropButtonGetDropChildAttrib(Ihandle* ih)
 /*****************************************************************************************/
 
 
+static int iDropButtonMouseOnTop(Ihandle* ih)
+{
+  int cur_x, cur_y;
+  int x = IupGetInt(ih, "X");
+  int y = IupGetInt(ih, "Y");
+  IupGetIntInt(NULL, "CURSORPOS", &cur_x, &cur_y);
+  if (cur_x < x || cur_y < y ||
+      cur_x > x + ih->currentwidth || cur_y > y + ih->currentheight)
+    return 0;
+  else
+    return 1;
+}
+
 static int iDropButtonDialogFocusCB(Ihandle* dlg, int focus)
 {
   Ihandle* ih = IupGetAttributeHandle(dlg, "DROPBUTTON");
   /* when drop dialog loses its focus it must be closed */
   if (!focus && ih->data->dropped)
   {
-    IFni cb = (IFni)IupGetCallback(ih, "DROPDOWN_CB");
-    if (cb)
-      cb(ih, 0);
-
-    if (ih->data->highlighted)
-    {
+    /* count not use highlighted because in GTK we get a leavewindow when clicking the button and the dialog is dropped */
+    if (iDropButtonMouseOnTop(ih))
       iupAttribSet(ih, "_IUPDROP_CLOSE_ON_FOCUS", "1");
-      //printf("iDropButtonDialogFocusCB(Close on Focus=1)\n");
-    }
     else
       iupAttribSet(ih, "_IUPDROP_CLOSE_ON_FOCUS", NULL);
 
     ih->data->dropped = 0;
-    //printf("ShowDrop-FOCUS_CB\n");
     iDropButtonShowDrop(ih);
   }
   return IUP_DEFAULT;
@@ -708,12 +699,7 @@ static int iDropButtonDialogFocusCB(Ihandle* dlg, int focus)
 static int iDropButtonDialogKeyEscCB(Ihandle* dlg)
 {
   Ihandle* ih = IupGetAttributeHandle(dlg, "DROPBUTTON");
-  IFni cb = (IFni)IupGetCallback(ih, "DROPDOWN_CB");
-  if (cb)
-    cb(ih, 0);
-
   ih->data->dropped = 0;
-  //printf("ShowDrop-Esc\n");
   iDropButtonShowDrop(ih);
   return IUP_DEFAULT;
 }
