@@ -367,6 +367,20 @@ child loses its focus and is automatically closed, the return value is ignored.<
 
   
     
+<p><b>DROPSHOW_CB</b>: Action generated right after the drop child is shown or hidden.</p>
+
+  
+    
+<pre>int function (Ihandle *<strong>ih</strong>, int <strong>state</strong>); [in C]<br><strong>ih</strong>:dropdown_cb(<strong>state</strong>: boolean) -&gt; (ret: number) [in Lua]</pre>
+
+<p class="info"><strong>ih</strong>:
+  identifier of the element that activated the 
+  event.<br>
+
+	<strong>state</strong>: the current state of the drop child 1=shown, 0=hidden.</p>
+
+  
+    
 <hr class="style1">
 
 <p> 

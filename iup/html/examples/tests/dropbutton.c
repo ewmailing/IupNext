@@ -260,11 +260,24 @@ static int dropdown_cb(Ihandle *ih, int state)
   return IUP_DEFAULT;
 }
 
+static int dropshow_cb(Ihandle *ih, int state)
+{
+  printf("DROPSHOW_CB(%d)\n", state);
+  if (state == 1)
+  {
+    Ihandle* child = (Ihandle*)IupGetAttribute(ih, "DROPCHILD_HANDLE");
+    printf("child(%p - %s)\n", child, IupGetClassName(child));
+    IupSetAttribute(child, "REDRAW", "ALL");
+  }
+  return IUP_DEFAULT;
+}
+
 static void set_callbacks(Ihandle* button)
 {
   IupSetCallback(button, "FLAT_ACTION",       action_cb);
 //  IupSetCallback(button, "FLAT_BUTTON_CB",    (Icallback)button_cb);
   IupSetCallback(button, "DROPDOWN_CB", (Icallback)dropdown_cb);
+  IupSetCallback(button, "DROPSHOW_CB", (Icallback)dropshow_cb);
 
   //IupSetCallback(button, "K_ANY",        (Icallback)k_any);
   IupSetCallback(button, "HELP_CB",      (Icallback)help_cb);
@@ -351,6 +364,7 @@ static Ihandle* CreateMatrixList(void)
   IupSetAttribute(mlist, "FLATSCROLLBAR", "VERTICAL");
   //  IupSetAttribute(mlist, "SHOWFLOATING", "Yes");
   //IupSetAttribute(mlist, "EXPAND", "VERTICAL");
+  IupSetAttribute(mlist, "REDRAW", "ALL");
 
   return mlist;
 }

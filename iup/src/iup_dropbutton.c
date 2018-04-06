@@ -257,6 +257,8 @@ static int iDropButtonGetDropPosition(Ihandle* ih)
 
 static void iDropButtonShowDrop(Ihandle* ih)
 {
+  IFni cb;
+
   if (!ih->data->dropchild)
     return;
     
@@ -298,16 +300,16 @@ static void iDropButtonShowDrop(Ihandle* ih)
 
     //printf("Drop-Show\n");
     IupShowXY(ih->data->dropdialog, x, y);
-
-//    IupUpdateChildren(ih->data->dropdialog);
-    iupdrvRedrawNow(ih->data->dropdialog);
   }
   else
   {
     //printf("Drop-Hide\n");
     IupHide(ih->data->dropdialog);
-    iupdrvRedrawNow(ih);
   }
+
+  cb = (IFni)IupGetCallback(ih, "DROPSHOW_CB");
+  if (cb)
+    cb(ih, ih->data->dropped);
 }
 
 static void iDropButtonNotify(Ihandle* ih, int pressed)
@@ -338,7 +340,7 @@ static void iDropButtonNotify(Ihandle* ih, int pressed)
       }
 
       ih->data->dropped = !ih->data->dropped;
-      //printf("ShowDrop 1\n");
+      //printf("ShowDrop Button1-press\n");
       iDropButtonShowDrop(ih);
     }
 
@@ -358,7 +360,7 @@ static void iDropButtonNotify(Ihandle* ih, int pressed)
     if (ih->data->dropped && ih->data->dropchild)
     {
       ih->data->dropped = 0;
-      //printf("ShowDrop 2\n");
+      //printf("ShowDrop Button1-release\n");
       iDropButtonShowDrop(ih);
     }
   }
@@ -488,7 +490,7 @@ static int iDropButtonSetShowDropdownAttrib(Ihandle* ih, const char* value)
   {
     iupAttribSet(ih, "_IUPDROP_CLOSE_ON_FOCUS", NULL);
     ih->data->dropped = iupStrBoolean(value);
-    //printf("ShowDrop 5\n");
+    //printf("ShowDrop set SHOWDROPDOWN(%d)\n", ih->data->dropped);
     iDropButtonShowDrop(ih);
   }
   return 0;
@@ -697,7 +699,7 @@ static int iDropButtonDialogFocusCB(Ihandle* dlg, int focus)
       iupAttribSet(ih, "_IUPDROP_CLOSE_ON_FOCUS", NULL);
 
     ih->data->dropped = 0;
-    //printf("ShowDrop 3\n");
+    //printf("ShowDrop-FOCUS_CB\n");
     iDropButtonShowDrop(ih);
   }
   return IUP_DEFAULT;
@@ -711,7 +713,7 @@ static int iDropButtonDialogKeyEscCB(Ihandle* dlg)
     cb(ih, 0);
 
   ih->data->dropped = 0;
-  //printf("ShowDrop 4\n");
+  //printf("ShowDrop-Esc\n");
   iDropButtonShowDrop(ih);
   return IUP_DEFAULT;
 }
@@ -866,6 +868,7 @@ Iclass* iupDropButtonNewClass(void)
   iupClassRegisterCallback(ic, "FLAT_ENTERWINDOW_CB", "ii");
   iupClassRegisterCallback(ic, "FLAT_LEAVEWINDOW_CB", "");
   iupClassRegisterCallback(ic, "DROPDOWN_CB", "i");
+  iupClassRegisterCallback(ic, "DROPSHOW_CB", "i");
 
   /* Overwrite Visual */
   iupClassRegisterAttribute(ic, "ACTIVE", iupBaseGetActiveAttrib, iDropButtonSetActiveAttrib, IUPAF_SAMEASSYSTEM, "YES", IUPAF_DEFAULT);
