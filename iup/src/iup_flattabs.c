@@ -1352,7 +1352,7 @@ static int iFlatTabsSetValueAttrib(Ihandle* ih, const char* value)
 static char* iFlatTabsGetValueAttrib(Ihandle* ih)
 {
   Ihandle* child = (Ihandle*)iFlatTabsGetValueHandleAttrib(ih);
-  return IupGetName(child);
+  return IupGetName(child);  /* Name is guarantied at AddedMethod */
 }
 
 static int iFlatTabsSetTabVisibleAttrib(Ihandle* ih, int pos, const char* value)
