@@ -15,7 +15,7 @@ local ctrl = {
 int iupluascripterdlglua_open(lua_State* L)
 {
   if (iuplua_opencall_internal(L))
-    IupLuaScripterDlgOpen();
+    IupLuaScripterDlgOpen(L);
     
   iuplua_get_env(L);
   iup_luascripterdlglua_open(L);

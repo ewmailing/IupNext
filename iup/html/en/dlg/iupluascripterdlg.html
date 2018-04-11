@@ -197,7 +197,7 @@ int main(int argc, char **argv)
   createargtable(L, argv, argc);  /* create table 'arg' */
 
   iuplua_open(L);
-  IupLuaScripterDlgOpen();
+  IupLuaScripterDlgOpen(L);
 
   IupSetGlobal("GLOBALLAYOUTDLGKEY", "Yes");
 

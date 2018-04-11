@@ -11,7 +11,7 @@
 extern "C" {
 #endif
 
-void IupLuaScripterDlgOpen(void);
+void IupLuaScripterDlgOpen(lua_State * L);
 
 Ihandle* IupLuaScripterDlg(void);
 

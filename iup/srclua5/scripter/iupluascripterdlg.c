@@ -2239,13 +2239,6 @@ static int iLuaScripterDlgCreateMethod(Ihandle* ih, void** params)
 
   L = (lua_State*)IupGetGlobal("_IUP_LUA_DEFAULT_STATE");
 
-#if LUA_VERSION_NUM < 502
-  lua_pushliteral(L, LUA_RELEASE "  " LUA_COPYRIGHT);
-#else
-  lua_pushliteral(L, LUA_COPYRIGHT);
-#endif
-  lua_setglobal(L, "_COPYRIGHT");  /* set global _COPYRIGHT */
-
   IupSetAttribute(ih, "LUASTATE", (char*)L);
   IupSetAttribute(ih, "EXTRAFILTERS", "Lua Files|*.lua|");
 
@@ -2290,19 +2283,6 @@ static int iLuaScripterDlgCreateMethod(Ihandle* ih, void** params)
   menu = IupGetAttributeHandle(ih, "MENU");
   IupInsert(menu, IupGetChild(menu, IupGetChildCount(menu) - 1), luaMenu);
 
-#ifdef IUPLUA_USELOH
-#include "debugger.loh"
-#include "console.loh"
-#else
-#ifdef IUPLUA_USELH
-#include "debugger.lh"
-#include "console.lh"
-#else
-  iuplua_dofile(L, "console.lua");
-  iuplua_dofile(L, "debugger.lua");
-#endif
-#endif
-
   iuplua_push_name(L, "ConsoleInit");
   iuplua_pushihandle(L, IupGetDialogChild(ih, "TXT_CMDLINE"));
   iuplua_pushihandle(L, IupGetDialogChild(ih, "MTL_OUTPUT"));
@@ -2342,12 +2322,32 @@ Ihandle* IupLuaScripterDlg(void)
   return IupCreate("luascripterdlg");
 }
 
-void IupLuaScripterDlgOpen(void)
+void IupLuaScripterDlgOpen(lua_State *L)
 {
   if (!IupGetGlobal("_IUP_LUASCRIPTERDLG_OPEN"))
   {
     IupScintillaOpen();
     IupImageLibOpen();
+
+#if LUA_VERSION_NUM < 502
+    lua_pushliteral(L, LUA_RELEASE "  " LUA_COPYRIGHT);
+#else
+    lua_pushliteral(L, LUA_COPYRIGHT);
+#endif
+    lua_setglobal(L, "_COPYRIGHT");  /* set global _COPYRIGHT */
+
+#ifdef IUPLUA_USELOH
+#include "debugger.loh"
+#include "console.loh"
+#else
+#ifdef IUPLUA_USELH
+#include "debugger.lh"
+#include "console.lh"
+#else
+    iuplua_dofile(L, "console.lua");
+    iuplua_dofile(L, "debugger.lua");
+#endif
+#endif
 
     iupRegisterClass(iupLuaScripterDlgNewClass());
     IupSetGlobal("_IUP_LUASCRIPTERDLG_OPEN", "1");
