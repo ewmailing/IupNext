@@ -5,19 +5,6 @@ if (not loadstring) then
   loadstring = load
 end
 
-function iup.ConsoleInit(txt_cmdline, mtl_output)
-  console.cmdList = {}
-  console.currentListInd = 0
-
-  console.txtCmdLine = txt_cmdline 
-  console.mtlOutput = mtl_output   
-  
-  console.hold_caret = false
-
-  console.mtlOutput.value = _COPYRIGHT .. "\n" ..
-                            "IUP " .. iup._VERSION .. "  " .. iup._COPYRIGHT
-end
-
 
 --------------------- Command History ---------------------
 
@@ -261,3 +248,121 @@ function iup.ConsolePrintStack()
  
 end
 
+
+--------------------- Construction ---------------------
+
+
+local function txt_cmdline_kany_cb(txt_cmdLine, c)
+  if c == iup.K_CR then
+    iup.ConsoleEnterCommand()
+    return IUP_IGNORE
+  elseif c == iup.K_ESC then
+    txt_cmdLine.value = ""
+    return IUP_IGNORE
+  elseif c == iup.K_UP then
+    iup.ConsoleKeyUpCommand()
+    return IUP_IGNORE
+  elseif c == iup.K_DOWN then
+    iup.ConsoleKeyDownCommand()
+    return IUP_IGNORE
+  end
+  return IUP_CONTINUE
+end
+
+local function btn_tools_action_cb(btn_tools)
+  local item_listfuncs = iup.item{
+    title = "List Global Functions",
+    action = iup.ConsoleListFuncs,
+  }
+
+  local item_listvars = iup.item{
+    title = "List Global Variables", 
+    action = iup.ConsoleListVars,
+  }
+
+  local item_printstack = iup.item{
+    title = "Print Stack", 
+    action = iup.ConsolePrintStack,
+  }
+
+  local item_clear = iup.item{
+    title = "Clear Output", 
+    action = function() console.mtlOutput.value = "" end
+    }
+
+  local tools_menu = iup.menu{
+    item_listfuncs, 
+    item_listvars, 
+    item_printstack, 
+    iup.separator{}, 
+    item_clear,
+  }
+
+  local x = btn_tools.x
+  local y = btn_tools.y
+  local elem_width, elem_height = string.match(btn_tools.rastersize, "(%d*)x(%d*)")
+  y = tonumber(y) + tonumber(elem_height)
+
+  iup.Popup(tools_menu, x, y)
+
+  iup.Destroy(tools_menu)
+end
+
+function iup.ConsoleCreate(parent)
+  local txt_cmdLine = iup.text{
+    expand = "HORIZONTAL",
+    k_any = txt_cmdline_kany_cb,
+  }
+
+  local mtl_output = iup.multiline{
+    expand = "YES",
+    readonly = "YES",
+    bgcolor = "224 224 2254",
+  }
+
+  local btn_tools = iup.button{
+    action = btn_tools_action_cb,
+    image = "IUP_ToolsSettings",
+    flat = "Yes",
+    tip = "Console Tools",
+    canfocus = "No",
+  }
+
+  local console_bts = iup.hbox{
+    txt_cmdLine, 
+    btn_tools;
+    margin = "5x5",
+    gap = "5",
+    alignment = "ACENTER",
+  }
+
+  local frm_consolebts = iup.frame{
+    console_bts;
+    title = "Command Line:",
+  }
+
+  local console_box = iup.vbox{
+    frm_consolebts, 
+    mtl_output;
+    margin = "5x5",
+    gap = "5",
+    tabtitle = "Console",
+  }
+
+  iup.Append(parent, console_box)
+
+  iup.ConsoleInit(txt_cmdLine, mtl_output)
+end
+
+function iup.ConsoleInit(txt_cmdLine, mtl_output)
+  console.cmdList = {}
+  console.currentListInd = 0
+
+  console.txtCmdLine = txt_cmdLine 
+  console.mtlOutput = mtl_output   
+  
+  console.hold_caret = false
+
+  console.mtlOutput.value = _COPYRIGHT .. "\n" ..
+                            "IUP " .. iup._VERSION .. "  " .. iup._COPYRIGHT
+end

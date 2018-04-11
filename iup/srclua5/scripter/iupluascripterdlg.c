@@ -1222,97 +1222,6 @@ static int item_currentline_cb(Ihandle *ih_item)
   return IUP_DEFAULT;
 }
         
-static int txt_cmdline_kany_cb(Ihandle *ih, int c)
-{
-  lua_State* L = (lua_State*)IupGetAttribute(ih, "LUASTATE");
-
-  switch (c)
-  {
-    case K_CR:
-      iuplua_push_name(L, "ConsoleEnterCommand");
-      iuplua_call_raw(L, 0, 0);
-      return IUP_IGNORE;
-    case K_ESC:
-      IupSetAttribute(ih, IUP_VALUE, "");
-      return IUP_IGNORE;
-    case K_UP:
-      iuplua_push_name(L, "ConsoleKeyUpCommand");
-      iuplua_call_raw(L, 0, 0);
-      return IUP_IGNORE;
-    case K_DOWN:
-      iuplua_push_name(L, "ConsoleKeyDownCommand");
-      iuplua_call_raw(L, 0, 0);
-      return IUP_IGNORE;
-  }
-  return IUP_CONTINUE;
-}
-
-static int item_listfuncs_action_cb(Ihandle *ih_item)
-{
-  Ihandle* ih = (Ihandle*)IupGetAttribute(ih_item, "MAINDIALOG");
-  lua_State* L = (lua_State*)IupGetAttribute(ih, "LUASTATE");
-  iuplua_push_name(L, "ConsoleListFuncs");
-  iuplua_call_raw(L, 0, 0);
-  return IUP_DEFAULT;
-}
-
-static int item_listvars_action_cb(Ihandle *ih_item)
-{
-  Ihandle* ih = (Ihandle*)IupGetAttribute(ih_item, "MAINDIALOG");
-  lua_State* L = (lua_State*)IupGetAttribute(ih, "LUASTATE");
-  iuplua_push_name(L, "ConsoleListVars");
-  iuplua_call_raw(L, 0, 0);
-  return IUP_DEFAULT;
-}
-
-static int item_printstack_action_cb(Ihandle *ih_item)
-{
-  Ihandle* ih = (Ihandle*)IupGetAttribute(ih_item, "MAINDIALOG");
-  lua_State* L = (lua_State*)IupGetAttribute(ih, "LUASTATE");
-  iuplua_push_name(L, "ConsolePrintStack");
-  iuplua_call_raw(L, 0, 0);
-  return IUP_DEFAULT;
-}
-
-static int item_clear_action_cb(Ihandle *ih_item)
-{
-  Ihandle* ih = (Ihandle*)IupGetAttribute(ih_item, "MAINDIALOG");
-  Ihandle* mtlOutput = IupGetDialogChild(ih, "MTL_OUTPUT");
-  IupSetAttribute(mtlOutput, "VALUE", "");
-  return IUP_DEFAULT;
-}
-
-static int btn_tools_action_cb(Ihandle *ih)
-{
-  int x, y;
-  Ihandle* item_listfuncs, *item_listvars, *item_printstack, *item_clear, *tools_menu;
-
-  item_listfuncs = IupItem("List Global Functions", NULL);
-  IupSetCallback(item_listfuncs, "ACTION", (Icallback)item_listfuncs_action_cb);
-
-  item_listvars = IupItem("List Global Variables", NULL);
-  IupSetCallback(item_listvars, "ACTION", (Icallback)item_listvars_action_cb);
-
-  item_printstack = IupItem("Print Stack", NULL);
-  IupSetCallback(item_printstack, "ACTION", (Icallback)item_printstack_action_cb);
-
-  item_clear = IupItem("Clear Output", NULL);
-  IupSetCallback(item_clear, "ACTION", (Icallback)item_clear_action_cb);
-
-  tools_menu = IupMenu(item_listfuncs, item_listvars, item_printstack, IupSeparator(), item_clear, NULL);
-  IupSetAttribute(tools_menu, "MAINDIALOG", (char*)IupGetDialog(ih));
-
-  x = IupGetInt(ih, "X");
-  y = IupGetInt(ih, "Y");
-  y += IupGetInt2(ih, "RASTERSIZE");
-
-  IupPopup(tools_menu, x, y);
-
-  IupDestroy(tools_menu);
-
-  return IUP_DEFAULT;
-}
-
 static int but_printlocal_cb(Ihandle *ih)
 {
   lua_State* L = (lua_State*)IupGetAttribute(ih, "LUASTATE");
@@ -1589,44 +1498,6 @@ static int tree_globals_map(Ihandle* ih)
 
 /********************************** Main *****************************************/
 
-static Ihandle *buildTabConsole(void)
-{
-  Ihandle *txt_cmdLine, *btn_tools, *console_bts;
-  Ihandle *frm_consolebts, *ml_output, *output;
-
-  txt_cmdLine = IupText(NULL);
-  IupSetAttribute(txt_cmdLine, "EXPAND", "HORIZONTAL");
-  IupSetAttribute(txt_cmdLine, "NAME", "TXT_CMDLINE");
-  IupSetCallback(txt_cmdLine, "K_ANY", (Icallback)txt_cmdline_kany_cb);
-
-  btn_tools = IupButton(NULL, NULL);
-  IupSetCallback(btn_tools, "ACTION", (Icallback)btn_tools_action_cb);
-  IupSetAttribute(btn_tools, "IMAGE", "IUP_ToolsSettings");
-  IupSetAttribute(btn_tools, "FLAT", "Yes");
-  IupSetAttribute(btn_tools, "TIP", "Console Tools");
-  IupSetAttribute(btn_tools, "CANFOCUS", "No");
-
-  console_bts = IupHbox(txt_cmdLine, btn_tools, NULL);
-  IupSetAttribute(console_bts, "MARGIN", "5x5");
-  IupSetAttribute(console_bts, "GAP", "5");
-  IupSetAttribute(console_bts, "ALIGNMENT", "ACENTER");
-
-  frm_consolebts = IupFrame(console_bts);
-  IupSetAttribute(frm_consolebts, "TITLE", "Command Line:");
-
-  ml_output = IupMultiLine(NULL);
-  IupSetAttribute(ml_output, "NAME", "MTL_OUTPUT");
-  IupSetAttribute(ml_output, "EXPAND", "YES");
-  IupSetAttribute(ml_output, "READONLY", "YES");
-  IupSetAttribute(ml_output, "BGCOLOR", "224 224 2254");
-
-  output = IupVbox(frm_consolebts, ml_output, NULL);
-  IupSetAttribute(output, "MARGIN", "5x5");
-  IupSetAttribute(output, "GAP", "5");
-  IupSetAttribute(output, "TABTITLE", "Console");
-
-  return output;
-}
 
 static Ihandle *buildTabDebug(void)
 {
@@ -2235,7 +2106,7 @@ static int iLuaScripterDlgCreateMethod(Ihandle* ih, void** params)
 {
   lua_State *L;
   Ihandle *menu, *luaMenu;
-  Ihandle *tabConsole, *tabDebug, *tabBreaks, *tabWatch, *panelTabs;
+  Ihandle *tabDebug, *tabBreaks, *tabWatch, *panelTabs;
 
   L = (lua_State*)IupGetGlobal("_IUP_LUA_DEFAULT_STATE");
 
@@ -2264,8 +2135,6 @@ static int iLuaScripterDlgCreateMethod(Ihandle* ih, void** params)
 
   luaMenu = buildLuaMenu();
 
-  tabConsole = buildTabConsole();
-
   tabBreaks = buildTabBreaks();
 
   tabDebug = buildTabDebug();
@@ -2273,7 +2142,11 @@ static int iLuaScripterDlgCreateMethod(Ihandle* ih, void** params)
   tabWatch = buildTabWatch();
 
   panelTabs = IupGetDialogChild(ih, "PANEL_TABS");
-  IupAppend(panelTabs, tabConsole);
+
+  iuplua_push_name(L, "ConsoleCreate");
+  iuplua_pushihandle(L, panelTabs);
+  iuplua_call_raw(L, 1, 0);
+
   IupAppend(panelTabs, tabBreaks);
   IupAppend(panelTabs, tabDebug);
   IupAppend(panelTabs, tabWatch);
@@ -2282,11 +2155,6 @@ static int iLuaScripterDlgCreateMethod(Ihandle* ih, void** params)
 
   menu = IupGetAttributeHandle(ih, "MENU");
   IupInsert(menu, IupGetChild(menu, IupGetChildCount(menu) - 1), luaMenu);
-
-  iuplua_push_name(L, "ConsoleInit");
-  iuplua_pushihandle(L, IupGetDialogChild(ih, "TXT_CMDLINE"));
-  iuplua_pushihandle(L, IupGetDialogChild(ih, "MTL_OUTPUT"));
-  iuplua_call_raw(L, 2, 0);
 
   iuplua_push_name(L, "DebuggerInit");
   iuplua_pushihandle(L, ih);
