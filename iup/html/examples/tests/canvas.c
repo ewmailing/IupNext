@@ -84,16 +84,27 @@ static void drawTest(Ihandle *ih, int posx)  //_Lines
   IupDrawLine(ih, 5, 10, 19, 10);
   IupDrawLine(ih, 5, 14, 19, 14);
 
-  /* Stroke or Fill Rectangle, both must cover guide lines */
+  /* Stroke Rectangle, must cover guide lines */
   IupSetAttribute(ih, "DRAWCOLOR", "0 0 0");
   IupSetAttribute(ih, "DRAWSTYLE", "STROKE");
   IupDrawRectangle(ih, 10, 10, 14, 14);
+
+  /* Guide Lines */
+  IupSetAttribute(ih, "DRAWCOLOR", "255 0 0");
+  IupDrawLine(ih, 10, 5 + 30, 10, 19 + 30);
+  IupDrawLine(ih, 14, 5 + 30, 14, 19 + 30);
+  IupDrawLine(ih, 5, 10 + 30, 19, 10 + 30);
+  IupDrawLine(ih, 5, 14 + 30, 19, 14 + 30);
+
+  /* Fill Rectangle, must cover guide lines */
+  IupSetAttribute(ih, "DRAWCOLOR", "0 0 0");
+  IupSetAttribute(ih, "DRAWSTYLE", "FILL");
+  IupDrawRectangle(ih, 10, 10 + 30, 14, 14 + 30);
 
   IupSetAttribute(ih, "DRAWCOLOR", "255 0 0");
   IupDrawRectangle(ih, 30, 10, 50, 30);
 
   IupSetAttribute(ih, "DRAWCOLOR", "0 0 0");
-  //  IupDrawArc(ih, 30, 10, 50, 30, 45, 135);
   IupDrawArc(ih, 30, 10, 50, 30, 0, 360);
 
   IupSetAttribute(ih, "DRAWCOLOR", "255 0 0");
@@ -101,8 +112,21 @@ static void drawTest(Ihandle *ih, int posx)  //_Lines
 
   IupSetAttribute(ih, "DRAWCOLOR", "0 0 0");
   IupSetAttribute(ih, "DRAWSTYLE", "FILL");
-//  IupDrawArc(ih, 60, 10, 80, 30, 45, 135);
   IupDrawArc(ih, 60, 10, 80, 30, 0, 360);
+
+
+  IupSetAttribute(ih, "DRAWCOLOR", "255 0 0");
+  IupDrawRectangle(ih, 30, 10 + 30, 50, 30 + 30);
+
+  IupSetAttribute(ih, "DRAWCOLOR", "0 0 0");
+  IupDrawArc(ih, 30, 10 + 30, 50, 30 + 30, 45, 135);
+
+  IupSetAttribute(ih, "DRAWCOLOR", "255 0 0");
+  IupDrawRectangle(ih, 60, 10 + 30, 80, 30 + 30);
+
+  IupSetAttribute(ih, "DRAWCOLOR", "0 0 0");
+  IupSetAttribute(ih, "DRAWSTYLE", "FILL");
+  IupDrawArc(ih, 60, 10 + 30, 80, 30 + 30, 45, 135);
 
   IupDrawEnd(ih);
 }
