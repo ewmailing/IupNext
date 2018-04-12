@@ -290,10 +290,10 @@ have an extra of 0. Returns -1 if an error occurred. (since 3.18)</p>
 <hr>
 <pre>void <b>IupPlotSetSample</b>(Ihandle *<b>ih</b>, int <b>ds_index</b>, int <b>sample_index</b>, double <b>x</b>, double <b>y</b>); [in C]
 void <b>IupPlotSetSampleStr</b>(Ihandle *<b>ih</b>, int <b>ds_index</b>, int <b>sample_index</b>, const char* <b>x</b>, double <b>y</b>);
-<b>iup.PlotSetSample</b>(<b>ih</b>: ihandle, <b>ds_index, sample_index</b>: number) -&gt; (<b>x, y</b>: number) [in Lua]
-or <b>ih:SetSample</b>(<b>ds_index, sample_index</b>: number) -&gt; (<b>x, y</b>: number) [in Lua]
-<b>iup.PlotSetSampleStr</b>(<b>ih</b>: ihandle, <b>ds_index, sample_index</b>: number) -&gt; (<b>x</b>: string<b>, y</b>: number)
-or <b>ih:SetSampleStr</b>(<b>ds_index, sample_index</b>: number) -&gt; (<b>x</b>: string<b>, y</b>: number)</pre>
+<b>iup.PlotSetSample</b>(<b>ih</b>: ihandle, <b>ds_index, sample_index, x, y: </b>number) [in Lua]
+or <b>ih:SetSample</b>(<b>ds_index, sample_index, x, y</b>: number) [in Lua]
+<b>iup.PlotSetSampleStr</b>(<b>ih</b>: ihandle, <b>ds_index, sample_index, x</b>: string<b>, y</b>: number) [in Lua]
+or <b>ih:SetSampleStr</b>(<b>ds_index, sample_index</b>: number, <b>x</b>: string<b>, y</b>: number) [in Lua]</pre>
 <p>Changes the sample value in a dataset at the given <strong>sample_index</strong>. 
 Can be used only after the dataset is added to the plot. </p>
 <hr>
