@@ -845,40 +845,48 @@ gboolean iupgtkButtonEvent(GtkWidget *widget, GdkEventButton *evt, Ihandle *ih)
   return FALSE;
 }
 
+static void igtkSendKey(GdkWindow* window, GdkEventType type, guint keyval, guint state, gint keycode, gint group)
+{
+  GdkEvent* evt = gdk_event_new(type);
+
+  evt->key.window = g_object_ref(window);
+  evt->key.keyval = keyval;
+  evt->key.state = state;
+  evt->key.hardware_keycode = (guint16)keycode;
+  evt->key.group = (guint8)group;
+
+  gtk_main_do_event(evt);
+  gdk_event_free(evt);
+}
+
 void iupdrvSendKey(int key, int press)
 {
   Ihandle* focus;
+  guint keyval, state;
   gint nkeys = 0; 
   GdkKeymapKey *keys; 
-  GdkEventKey evt;
-  memset(&evt, 0, sizeof(GdkEventKey));
-  evt.send_event = TRUE;
+  GdkWindow* window;
 
   focus = IupGetFocus();
   if (!focus)
     return;
-  evt.window = iupgtkGetWindow(focus->handle);
 
-  iupdrvKeyEncode(key, &evt.keyval, &evt.state);
-  if (!evt.keyval)
+  iupdrvKeyEncode(key, &keyval, &state);
+  if (!keyval)
     return;
 
-  if (!gdk_keymap_get_entries_for_keyval(gdk_keymap_get_default(), evt.keyval, &keys, &nkeys))
+  if (!gdk_keymap_get_entries_for_keyval(gdk_keymap_get_default(), keyval, &keys, &nkeys))
     return;
-  evt.hardware_keycode = (guint16)keys[0].keycode;
-  evt.group = (guint8)keys[0].group; 
+
+  window = iupgtkGetWindow(focus->handle);
 
   if (press & 0x01)
-  {
-    evt.type = GDK_KEY_PRESS;
-    gdk_event_put((GdkEvent*)&evt);
-  }
+    igtkSendKey(window, GDK_KEY_PRESS, keyval, state, keys[0].keycode, keys[0].group);
 
   if (press & 0x02)
-  {
-    evt.type = GDK_KEY_RELEASE;
-    gdk_event_put((GdkEvent*)&evt);
-  }
+    igtkSendKey(window, GDK_KEY_RELEASE, keyval, state, keys[0].keycode, keys[0].group);
+
+  g_free(keys);
 }
 
 void iupdrvWarpPointer(int x, int y)
@@ -904,6 +912,8 @@ void iupdrvSendMouse(int x, int y, int bt, int status)
   {
     GtkWidget* grab_widget;
     gint origin_x, origin_y;
+
+    /* TODO check gdk_event_set_pointer_emulated */
 
 #if GTK_CHECK_VERSION(3, 0, 0)
     GdkDeviceManager* device_manager = gdk_display_get_device_manager(gdk_display_get_default());
