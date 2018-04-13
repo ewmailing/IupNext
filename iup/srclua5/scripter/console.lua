@@ -1,5 +1,13 @@
 
-local console = {}
+local console = {
+  cmdList = {},
+  currentListInd = 0,
+
+  txtCmdLine = nil,
+  mtlOutput = nil,
+  
+  hold_caret = false,
+}
 
 if (not loadstring) then
   loadstring = load
@@ -355,14 +363,9 @@ function iup.ConsoleCreate(parent)
 end
 
 function iup.ConsoleInit(txt_cmdLine, mtl_output)
-  console.cmdList = {}
-  console.currentListInd = 0
-
   console.txtCmdLine = txt_cmdLine 
   console.mtlOutput = mtl_output   
   
-  console.hold_caret = false
-
   console.mtlOutput.value = _COPYRIGHT .. "\n" ..
                             "IUP " .. iup._VERSION .. "  " .. iup._COPYRIGHT
 end

@@ -2109,10 +2109,12 @@ static int iLuaScripterDlgCreateMethod(Ihandle* ih, void** params)
   Ihandle *tabDebug, *tabBreaks, *tabWatch, *panelTabs;
 
   L = (lua_State*)IupGetGlobal("_IUP_LUA_DEFAULT_STATE");
-
   IupSetAttribute(ih, "LUASTATE", (char*)L);
+
+  /* File Open/Save filters */
   IupSetAttribute(ih, "EXTRAFILTERS", "Lua Files|*.lua|");
 
+  /* Additional hot keys */
   IupSetCallback(ih, "K_F5", (Icallback)item_debug_action_cb);
   IupSetCallback(ih, "K_cF5", (Icallback)item_run_action_cb);
   IupSetCallback(ih, "K_sF5", (Icallback)item_stop_action_cb);
@@ -2123,6 +2125,7 @@ static int iLuaScripterDlgCreateMethod(Ihandle* ih, void** params)
   IupSetCallback(ih, "K_F9", (Icallback)but_togglebreak_cb);
   IupSetCallback(ih, "K_F8", (Icallback)item_toggle_folding_action_cb);
 
+  /* cofiguring the IupScintillaDlg */
   IupSetCallback(ih, "EXIT_CB", (Icallback)exit_cb);
   IupSetCallback(ih, "MARKERCHANGED_CB", (Icallback)marker_changed_cb);
   IupSetCallback(ih, "RESTOREMARKERS_CB", (Icallback)restoremarkers_cb);
@@ -2131,9 +2134,12 @@ static int iLuaScripterDlgCreateMethod(Ihandle* ih, void** params)
   IupSetCallback(ih, "NEWTEXT_CB", (Icallback)newtext_cb);
   IupSetCallback(ih, "NEWFILENAME_CB", (Icallback)newfilename_cb);
 
+  /* Additional toolbar buttons */
   appendToolbarDebugButtons(ih);
 
   luaMenu = buildLuaMenu();
+  menu = IupGetAttributeHandle(ih, "MENU");
+  IupInsert(menu, IupGetChild(menu, IupGetChildCount(menu) - 1), luaMenu);
 
   tabBreaks = buildTabBreaks();
 
@@ -2152,9 +2158,6 @@ static int iLuaScripterDlgCreateMethod(Ihandle* ih, void** params)
   IupAppend(panelTabs, tabWatch);
 
   IupSetAttribute(panelTabs, "VALUEPOS", "1"); /* show Console by default */
-
-  menu = IupGetAttributeHandle(ih, "MENU");
-  IupInsert(menu, IupGetChild(menu, IupGetChildCount(menu) - 1), luaMenu);
 
   iuplua_push_name(L, "DebuggerInit");
   iuplua_pushihandle(L, ih);
