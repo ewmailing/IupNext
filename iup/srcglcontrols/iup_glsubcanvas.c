@@ -150,6 +150,13 @@ int iupGLSubCanvasSetTransform(Ihandle* ih, Ihandle* gl_parent)
   glLoadIdentity();
   glTranslatef(0.375, 0.375, 0.0);  /* render all primitives at integer positions */
 
+  /* An optimum compromise that allows all primitives to be specified at integer positions, 
+     while still ensuring predictable rasterization, is to translate x and y by 0.375. 
+     Such a translation keeps polygon and pixel image edges safely away from the centers of pixels, 
+     while moving line vertices close enough to the pixel centers.
+     From: OpenGL Programming Guide (Red Book) - Appendix G "Programming Tips" - OpenGL Correctness Tips
+  */
+
   return 1;
 }
 
