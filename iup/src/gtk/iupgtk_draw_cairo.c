@@ -62,6 +62,8 @@ IdrawCanvas* iupdrvDrawCreateCanvas(Ihandle* ih)
   dc->image_cr = cairo_create(surface);
   cairo_surface_destroy(surface);
 
+  iupAttribSet(ih, "DRAWDRIVER", "CAIRO");
+
   return dc;
 }
 
@@ -138,7 +140,7 @@ static void iDrawSetLineWidth(IdrawCanvas* dc, int line_width)
 
 static void iDrawVerticalLineW1(IdrawCanvas* dc, int x, int y1, int y2)
 {
-  /* Used only when lineWidth=1 */
+  /* Used only when line_width=1 */
   /* Use 0.5 to draw full pixel lines, add 1 to include the last pixel */
   iupDrawCheckSwapCoord(y1, y2);
   cairo_move_to(dc->image_cr, x + 0.5, y1);
@@ -147,7 +149,7 @@ static void iDrawVerticalLineW1(IdrawCanvas* dc, int x, int y1, int y2)
 
 static void iDrawHorizontalLineW1(IdrawCanvas* dc, int x1, int x2, int y)
 {
-  /* Used only when lineWidth=1 */
+  /* Used only when line_width=1 */
   /* Use 0.5 to draw full pixel lines, add 1 to include the last pixel */
   iupDrawCheckSwapCoord(x1, x2);
   cairo_move_to(dc->image_cr, x1, y + 0.5);

@@ -57,6 +57,8 @@ IdrawCanvas* iupdrvDrawCreateCanvas(Ihandle* ih)
   dc->pixmap = gdk_pixmap_new(dc->wnd, dc->w, dc->h, gdk_drawable_get_depth(dc->wnd));
   dc->pixmap_gc = gdk_gc_new(dc->pixmap);
 
+  iupAttribSet(ih, "DRAWDRIVER", "GDK");
+
   return dc;
 }
 
