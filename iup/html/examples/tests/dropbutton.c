@@ -411,8 +411,7 @@ static Ihandle* CreateListText(void)
   IupSetCallback(text, "K_CR", (Icallback)text_kcr_cb);
   IupSetCallback(list, "GETFOCUS_CB", (Icallback)getfocus_cb);
   IupSetCallback(text, "GETFOCUS_CB", (Icallback)getfocus_cb);
-  Ihandle* vbox = IupVbox(text, list, NULL);
-  return vbox;
+  return IupVbox(text, list, NULL);
 }
 
 void DropButtonTest(void)

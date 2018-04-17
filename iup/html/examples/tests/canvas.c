@@ -128,6 +128,12 @@ static void drawTest(Ihandle *ih, int posx)  //_Lines
   IupSetAttribute(ih, "DRAWSTYLE", "FILL");
   IupDrawArc(ih, 60, 10 + 30, 80, 30 + 30, 45, 135);
 
+  IupDrawLine(ih, 20, 70 - 2, 20, 70 + 2);
+  IupDrawLine(ih, 20 - 2, 70, 20 + 2, 70);
+
+  IupSetAttribute(ih, "DRAWFONT", "Helvetica, -30");
+  IupDrawText(ih, IupGetAttribute(ih, "DRAWDRIVER"), 0, 20, 70);
+
   IupDrawEnd(ih);
 }
 
@@ -440,8 +446,9 @@ void CanvasTest(void)
   IupAppend(box, canvas);
   IupSetAttribute(canvas, "RASTERSIZE", "300x200");
 //  IupSetAttribute(canvas, "EXPAND", "NO");
+  IupSetAttribute(canvas, "BORDER", "NO");
   IupSetAttribute(canvas, "TIP", "Canvas Tip");
-  IupSetAttribute(canvas, "SCROLLBAR", "HORIZONTAL");
+//  IupSetAttribute(canvas, "SCROLLBAR", "HORIZONTAL");
   //IupSetAttribute(canvas, "BGCOLOR", "0 255 0");
 //  IupSetAttribute(canvas, "SCROLLBAR", "NO");
 //  IupSetAttribute(canvas, "XAUTOHIDE", "NO");
