@@ -100,11 +100,6 @@ used for clipping. Format: "%d %d %d %d"="x1 y1 x2 y2".</p>
   than created at run time.</p>
 
   
-<p><a href="../attrib/iup_expand.html">EXPAND</a> (<font size="3">non inheritable</font>):
-  The default value is "YES". The natural size is the size of 1 
-  character.</p>
-
-  
 <p><strong>DROPFILESTARGET</strong> [Windows and GTK Only] (<font SIZE="3">non inheritable</font>): Enable or disable the drop of 
 files. Default: NO, but if DROPFILES_CB is defined when the element is mapped 
 then it will be automatically enabled.</p>
@@ -115,6 +110,14 @@ then it will be automatically enabled.</p>
 
 <p class="info">Notice that the drawing area size is not the same as RASTERSIZE. 
 The SCROLLBAR and BORDER attributes affect the size of the drawing area.</p>
+
+  
+<p><strong>DRAWDRIVER</strong> (read-only): returns the name of the draw driver 
+in use by the IupDraw API. Can be: X11 (Motif), GDK (GTK), Cairo (GTK), D2D 
+(Windows), GDI+ (Windows) or GDI (Windows). (since 3.25)</p>
+<p><a href="../attrib/iup_expand.html">EXPAND</a> (<font size="3">non inheritable</font>):
+  The default value is "YES". The natural size is the size of 1 
+  character.</p>
 
   
 <p><b>HDC_WMPAINT</b> [Windows Only] (<font size="3">non inheritable</font>): 
