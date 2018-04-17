@@ -150,6 +150,7 @@ void iupdrvClose(void)
   iupwinHandleFinish();
   iupwinBrushFinish();
   iupwinStrRelease();
+  iupwinDrawFinish();
 
   if (IupGetGlobal("_IUPWIN_OLEINITIALIZE"))
 	  OleUninitialize();
