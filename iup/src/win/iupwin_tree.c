@@ -2450,6 +2450,12 @@ static int winTreeMsgProc(Ihandle* ih, UINT msg, WPARAM wp, LPARAM lp, LRESULT *
       if (iupwinBaseMsgProc(ih, msg, wp, lp, result)==1)
         return 1;
 
+      if (!iupObjectCheck(ih))
+      {
+        *result = 0;
+        return 1;
+      }
+
       if (wp == VK_RETURN)
       {
         HTREEITEM hItemFocus = iupdrvTreeGetFocusNode(ih);

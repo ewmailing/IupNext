@@ -237,6 +237,12 @@ static int winValMsgProc(Ihandle* ih, UINT msg, WPARAM wp, LPARAM lp, LRESULT *r
       if (iupwinBaseMsgProc(ih, msg, wp, lp, result)==1)
         return 1;
 
+      if (!iupObjectCheck(ih))
+      {
+        *result = 0;
+        return 1;
+      }
+
       if (GetKeyState(VK_CONTROL) & 0x8000)  /* handle Ctrl+Arrows */
       {
         if (wp == VK_UP || wp == VK_LEFT)

@@ -1330,6 +1330,11 @@ static int winListEditProc(Ihandle* ih, HWND cbedit, UINT msg, WPARAM wp, LPARAM
   if (msg==WM_KEYDOWN) /* process K_ANY before text callbacks */
   {
     ret = iupwinBaseMsgProc(ih, msg, wp, lp, result);
+    if (!iupObjectCheck(ih))
+    {
+      *result = 0;
+      return 1;
+    }
 
     if (ret) 
     {
