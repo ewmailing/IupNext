@@ -438,7 +438,7 @@ static LRESULT CALLBACK winTabsPageWndProc(HWND hWnd, UINT msg, WPARAM wp, LPARA
   case WM_ERASEBKGND:
     {
       Ihandle* ih = iupwinHandleGet(hWnd);
-      if (ih) /* should never happen */
+      if (iupObjectCheck(ih)) /* should always be ok */
       {
         RECT rect;
         HDC hDC = (HDC)wp;

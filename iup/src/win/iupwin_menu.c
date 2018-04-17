@@ -227,7 +227,7 @@ int iupdrvMenuPopup(Ihandle* ih, int x, int y)
   if (hWndActive)
   {
     Ihandle* dlg = iupwinHandleGet(hWndActive);
-    if (dlg && iupAttribGetBoolean(dlg, "TRAY"))
+    if (iupObjectCheck(dlg) && iupAttribGetBoolean(dlg, "TRAY"))
     {
       /* To display a context menu for a notification icon, 
          the current window must be the foreground window. */

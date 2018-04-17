@@ -899,7 +899,7 @@ static LRESULT CALLBACK winDialogWndProc(HWND hwnd, UINT msg, WPARAM wp, LPARAM 
 {   
   LRESULT result;
   Ihandle *ih = iupwinHandleGet(hwnd); 
-  if (!ih)
+  if (!iupObjectCheck(ih))
   {
     /* the first time WM_GETMINMAXINFO is called, Ihandle is not associated yet */
     if (msg == WM_GETMINMAXINFO && winMinMaxHandle)
@@ -921,7 +921,7 @@ static LRESULT CALLBACK winDialogMDIChildWndProc(HWND hwnd, UINT msg, WPARAM wp,
 {   
   LRESULT result;
   Ihandle *ih = iupwinHandleGet(hwnd); 
-  if (!ih)
+  if (!iupObjectCheck(ih))
   {
     /* the first time WM_GETMINMAXINFO is called, Ihandle is not associated yet */
     if (msg == WM_GETMINMAXINFO && winMinMaxHandle)
@@ -954,7 +954,7 @@ static LRESULT CALLBACK winDialogMDIFrameWndProc(HWND hwnd, UINT msg, WPARAM wp,
   LRESULT result;
   HWND hWndClient = NULL;
   Ihandle *ih = iupwinHandleGet(hwnd); 
-  if (!ih)
+  if (!iupObjectCheck(ih))
   {
     /* the first time WM_GETMINMAXINFO is called, Ihandle is not associated yet */
     if (msg == WM_GETMINMAXINFO && winMinMaxHandle)
@@ -1428,7 +1428,7 @@ static char* winDialogGetMdiActiveAttrib(Ihandle *ih)
   {
     HWND hchild = (HWND)SendMessage(client->handle, WM_MDIGETACTIVE, 0, 0);
     Ihandle* child = iupwinHandleGet(hchild); 
-    if (child)
+    if (iupObjectCheck(child))
     {
       iupwin_mdinext = NULL;
       iupwin_mdifirst = hchild;
@@ -1460,7 +1460,7 @@ static char* winDialogGetMdiNextAttrib(Ihandle *ih)
     }
 
     child = iupwinHandleGet(hchild); 
-    if (child)
+    if (iupObjectCheck(child))
     {
       iupwin_mdinext = hchild;
       return IupGetName(child);

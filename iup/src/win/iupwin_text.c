@@ -1716,7 +1716,8 @@ static int winTextMsgProc(Ihandle* ih, UINT msg, WPARAM wp, LPARAM lp, LRESULT *
     ret = iupwinBaseMsgProc(ih, msg, wp, lp, result);
     if (ret) 
     {
-      iupAttribSet(ih, "_IUPWIN_IGNORE_CHAR", "1");
+      if (iupObjectCheck(ih))
+        iupAttribSet(ih, "_IUPWIN_IGNORE_CHAR", "1");
       *result = 0;
       return 1;
     }

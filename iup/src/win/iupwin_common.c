@@ -235,7 +235,7 @@ int iupwinBaseMsgProc(Ihandle* ih, UINT msg, WPARAM wp, LPARAM lp, LRESULT *resu
       else
         child = iupwinHandleGet((HWND)help_info->hItemHandle);
 
-      if (child)
+      if (iupObjectCheck(child))
       {
         Icallback cb = (Icallback) IupGetCallback(child, "HELP_CB");
         if (cb) 
@@ -391,7 +391,7 @@ LRESULT CALLBACK iupwinBaseWndProc(HWND hwnd, UINT msg, WPARAM wp, LPARAM lp)
   WNDPROC oldProc;
 
   ih = iupwinHandleGet(hwnd); 
-  if (!ih)
+  if (!iupObjectCheck(ih))
     return DefWindowProc(hwnd, msg, wp, lp);  /* should never happen */
 
   /* retrieve the control previous procedure for subclassing */
@@ -433,7 +433,7 @@ static Ihandle* winContainerWmCommandGetIhandle(Ihandle *ih, WPARAM wp, LPARAM l
     else
     {
       child = iupwinHandleGet((HWND)lp);       /* control */
-      if (!child)
+      if (!iupObjectCheck(child))
         child = iupwinHandleGet(GetParent((HWND)lp));       /* control */
     }
   }
@@ -483,7 +483,7 @@ int iupwinBaseContainerMsgProc(Ihandle* ih, UINT msg, WPARAM wp, LPARAM lp, LRES
   case WM_CTLCOLORSTATIC:
     {
       Ihandle* child = iupwinHandleGet((HWND)lp);
-      if (child && winCheckParent(child, ih))
+      if (iupObjectCheck(child) && winCheckParent(child, ih))
       {
         IFctlColor cb = (IFctlColor)IupGetCallback(child, "_IUPWIN_CTLCOLOR_CB");
         if (cb)
@@ -503,7 +503,7 @@ int iupwinBaseContainerMsgProc(Ihandle* ih, UINT msg, WPARAM wp, LPARAM lp, LRES
       else
       {
         child = iupwinHandleGet(drawitem->hwndItem); 
-        if (child && !winCheckParent(child, ih))
+        if (iupObjectCheck(child) && !winCheckParent(child, ih))
           child = NULL;
       }
 
@@ -523,7 +523,7 @@ int iupwinBaseContainerMsgProc(Ihandle* ih, UINT msg, WPARAM wp, LPARAM lp, LRES
   case WM_VSCROLL:
     {
       Ihandle *child = iupwinHandleGet((HWND)lp);
-      if (child && winCheckParent(child, ih))
+      if (iupObjectCheck(child) && winCheckParent(child, ih))
       {
         IFni cb = (IFni)IupGetCallback(child, "_IUPWIN_CUSTOMSCROLL_CB");
         if (cb)
@@ -541,7 +541,7 @@ int iupwinBaseContainerMsgProc(Ihandle* ih, UINT msg, WPARAM wp, LPARAM lp, LRES
         break;
 
       child = iupwinHandleGet(msg_info->hwndFrom);
-      if (child && winCheckParent(child, ih))
+      if (iupObjectCheck(child) && winCheckParent(child, ih))
       {
         IFnotify cb = (IFnotify)IupGetCallback(child, "_IUPWIN_NOTIFY_CB");
         if (cb)
@@ -579,7 +579,7 @@ int iupwinBaseContainerMsgProc(Ihandle* ih, UINT msg, WPARAM wp, LPARAM lp, LRES
       if (hChild)
       {
         Ihandle* child = iupwinHandleGet(hChild);
-        if (child && IupClassMatch(child, "canvas"))  /* will check of all canvas based control classes */
+        if (iupObjectCheck(child) && IupClassMatch(child, "canvas"))  /* will check of all canvas based control classes */
           SendMessage(child->handle, WM_MOUSEWHEEL, wp, lp);
       }
     }
@@ -592,7 +592,7 @@ int iupwinBaseContainerMsgProc(Ihandle* ih, UINT msg, WPARAM wp, LPARAM lp, LRES
       {
         DRAGLISTINFO* lpDrag = (DRAGLISTINFO*) lp;
         Ihandle *child = iupwinHandleGet(lpDrag->hWnd);
-        if (child && winCheckParent(child, ih))
+        if (iupObjectCheck(child) && winCheckParent(child, ih))
         {
           *result = iupwinListDND(child, lpDrag->uNotification, lpDrag->ptCursor);
           return 1;

@@ -738,7 +738,7 @@ static void winCanvasRegisterClass(void)
   wndclass.lpfnWndProc    = (WNDPROC)DefWindowProc;
   wndclass.hCursor        = LoadCursor(NULL, IDC_ARROW);
   wndclass.style          = CS_DBLCLKS | CS_OWNDC | CS_HREDRAW | CS_VREDRAW; /* using CS_OWNDC will minimize the work of Activate in the CD library */
-  wndclass.hbrBackground  = NULL;  /* remove the background to optimize redraw */
+  wndclass.hbrBackground = NULL;  /* remove the background to optimize redraw */
    
   RegisterClass(&wndclass);
 }

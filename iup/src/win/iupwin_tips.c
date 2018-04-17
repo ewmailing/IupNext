@@ -236,7 +236,7 @@ void iupwinTipsGetDispInfo(LPARAM lp)
 
   tips_info = (NMTTDISPINFO*)lp;
   ih = iupwinHandleGet(tips_info->hdr.hwndFrom);  /* hwndFrom is the tooltip window */
-  if (!ih) 
+  if (!iupObjectCheck(ih))
     return;
 
   tips_hwnd = (HWND)iupAttribGet(ih, "_IUPWIN_TIPSWIN");

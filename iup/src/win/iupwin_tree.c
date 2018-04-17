@@ -2140,7 +2140,7 @@ static LRESULT CALLBACK winTreeEditWndProc(HWND hwnd, UINT msg, WPARAM wp, LPARA
   Ihandle *ih;
 
   ih = iupwinHandleGet(hwnd); 
-  if (!ih)
+  if (!iupObjectCheck(ih))
     return DefWindowProc(hwnd, msg, wp, lp);  /* should never happen */
 
   /* retrieve the control previous procedure for subclassing */
