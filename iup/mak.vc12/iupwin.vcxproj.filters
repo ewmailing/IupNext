@@ -13,6 +13,12 @@
     <Filter Include="windows">
       <UniqueIdentifier>{20045022-ddfd-4b01-aacf-93d90875de25}</UniqueIdentifier>
     </Filter>
+    <Filter Include="wdl">
+      <UniqueIdentifier>{3634ec66-71ac-4c2a-ac1e-cbee22f7cafe}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="wdl\dummy">
+      <UniqueIdentifier>{38a5a2d0-d31e-4a6b-b8aa-a732b2ffc455}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="..\src\win\iupwin_brush.h">
@@ -32,6 +38,39 @@
     </ClInclude>
     <ClInclude Include="..\src\win\iupwin_str.h">
       <Filter>inc</Filter>
+    </ClInclude>
+    <ClInclude Include="..\src\win\wdl\backend-d2d.h">
+      <Filter>wdl</Filter>
+    </ClInclude>
+    <ClInclude Include="..\src\win\wdl\backend-dwrite.h">
+      <Filter>wdl</Filter>
+    </ClInclude>
+    <ClInclude Include="..\src\win\wdl\backend-gdix.h">
+      <Filter>wdl</Filter>
+    </ClInclude>
+    <ClInclude Include="..\src\win\wdl\backend-wic.h">
+      <Filter>wdl</Filter>
+    </ClInclude>
+    <ClInclude Include="..\src\win\wdl\lock.h">
+      <Filter>wdl</Filter>
+    </ClInclude>
+    <ClInclude Include="..\src\win\wdl\memstream.h">
+      <Filter>wdl</Filter>
+    </ClInclude>
+    <ClInclude Include="..\src\win\wdl\misc.h">
+      <Filter>wdl</Filter>
+    </ClInclude>
+    <ClInclude Include="..\src\win\wdl\wdl.h">
+      <Filter>wdl</Filter>
+    </ClInclude>
+    <ClInclude Include="..\src\win\wdl\dummy\d2d1.h">
+      <Filter>wdl\dummy</Filter>
+    </ClInclude>
+    <ClInclude Include="..\src\win\wdl\dummy\gdiplus.h">
+      <Filter>wdl\dummy</Filter>
+    </ClInclude>
+    <ClInclude Include="..\src\win\wdl\dummy\dwrite.h">
+      <Filter>wdl\dummy</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>
@@ -145,6 +184,63 @@
     </ClCompile>
     <ClCompile Include="..\src\win\iupwindows_help.c">
       <Filter>windows</Filter>
+    </ClCompile>
+    <ClCompile Include="..\src\win\wdl\backend-d2d.c">
+      <Filter>wdl</Filter>
+    </ClCompile>
+    <ClCompile Include="..\src\win\wdl\backend-dwrite.c">
+      <Filter>wdl</Filter>
+    </ClCompile>
+    <ClCompile Include="..\src\win\wdl\backend-gdix.c">
+      <Filter>wdl</Filter>
+    </ClCompile>
+    <ClCompile Include="..\src\win\wdl\backend-wic.c">
+      <Filter>wdl</Filter>
+    </ClCompile>
+    <ClCompile Include="..\src\win\wdl\bitblt.c">
+      <Filter>wdl</Filter>
+    </ClCompile>
+    <ClCompile Include="..\src\win\wdl\brush.c">
+      <Filter>wdl</Filter>
+    </ClCompile>
+    <ClCompile Include="..\src\win\wdl\cachedimage.c">
+      <Filter>wdl</Filter>
+    </ClCompile>
+    <ClCompile Include="..\src\win\wdl\canvas.c">
+      <Filter>wdl</Filter>
+    </ClCompile>
+    <ClCompile Include="..\src\win\wdl\draw.c">
+      <Filter>wdl</Filter>
+    </ClCompile>
+    <ClCompile Include="..\src\win\wdl\fill.c">
+      <Filter>wdl</Filter>
+    </ClCompile>
+    <ClCompile Include="..\src\win\wdl\font.c">
+      <Filter>wdl</Filter>
+    </ClCompile>
+    <ClCompile Include="..\src\win\wdl\image.c">
+      <Filter>wdl</Filter>
+    </ClCompile>
+    <ClCompile Include="..\src\win\wdl\init.c">
+      <Filter>wdl</Filter>
+    </ClCompile>
+    <ClCompile Include="..\src\win\wdl\memstream.c">
+      <Filter>wdl</Filter>
+    </ClCompile>
+    <ClCompile Include="..\src\win\wdl\misc.c">
+      <Filter>wdl</Filter>
+    </ClCompile>
+    <ClCompile Include="..\src\win\wdl\path.c">
+      <Filter>wdl</Filter>
+    </ClCompile>
+    <ClCompile Include="..\src\win\wdl\string.c">
+      <Filter>wdl</Filter>
+    </ClCompile>
+    <ClCompile Include="..\src\win\iupwin_draw_gdi.c">
+      <Filter>src</Filter>
+    </ClCompile>
+    <ClCompile Include="..\src\win\iupwin_draw_wdl.c">
+      <Filter>src</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
