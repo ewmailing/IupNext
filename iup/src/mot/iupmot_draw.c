@@ -61,6 +61,8 @@ IdrawCanvas* iupdrvDrawCreateCanvas(Ihandle* ih)
   dc->pixmap = XCreatePixmap(iupmot_display, dc->wnd, dc->w, dc->h, depth);
   dc->pixmap_gc = XCreateGC(iupmot_display, dc->pixmap, 0, NULL);
 
+  iupAttribSet(ih, "DRAWDRIVER", "X11");
+
   return dc;
 }
 
