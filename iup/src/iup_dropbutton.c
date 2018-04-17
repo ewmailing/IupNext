@@ -72,6 +72,7 @@ static int iDropButtonRedraw_CB(Ihandle* ih)
   int image_pressed;
   int drop_onarrow = iupAttribGetBoolean(ih, "DROPONARROW");
   int arrow_active = iupAttribGetBoolean(ih, "ARROWACTIVE");
+  int arrow_images = iupAttribGetInt(ih, "ARROWIMAGES");
   IdrawCanvas* dc = iupdrvDrawCreateCanvas(ih);
   int make_inactive = 0;
   char* bgcolor_button, *bgcolor_arrow;
@@ -211,7 +212,6 @@ static int iDropButtonRedraw_CB(Ihandle* ih)
                        fgcolor, bgcolor_button, active);
   }
 
-  int arrow_images = iupAttribGetInt(ih, "ARROWIMAGES");
   if (arrow_images)
   {
     int make_inactive;
