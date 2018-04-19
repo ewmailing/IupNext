@@ -22,6 +22,11 @@
 
 /* No need to test for UTF8MODE here */
 
+#ifdef _MSC_VER
+/* warning C4996: 'GetVersionExW': was declared deprecated */
+#pragma warning( disable : 4996 )
+#endif
+
 /* other method, when replaced should do it in CD also (cdwinp.cpp) */
 static BOOL winCheckWindowsVersion(DWORD major, DWORD minor) 
 {

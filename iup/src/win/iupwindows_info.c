@@ -17,6 +17,11 @@
 #include "iup_varg.h"
 
 
+#ifdef _MSC_VER
+/* warning C4996: 'GetVersionExW': was declared deprecated */
+#pragma warning( disable : 4996 )
+#endif
+
 char* iupdrvLocaleInfo(void)
 {
   CPINFOEXA info;
