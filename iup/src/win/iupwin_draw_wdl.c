@@ -43,7 +43,8 @@ void iupwinDrawInit(void)
 {
   iupwinDrawThemeInit();
 
-/*  wdPreInitialize(NULL, NULL, WD_DISABLE_D2D); */ /* uncomment to force GDI+ always */
+  /* uncomment to force GDI+ always */
+//  wdPreInitialize(NULL, NULL, WD_DISABLE_D2D);
 
   wdInitialize(wdl_flags);
 }
@@ -124,15 +125,36 @@ void iupdrvDrawGetSize(IdrawCanvas* dc, int *w, int *h)
   if (h) *h = dc->h;
 }
 
-static int iDrawGetLineStyle(int style)
+static WD_HSTROKESTYLE iDrawSetLineStyle(int style, int line_width)
 {
-  // TODO
   if (style == IUP_DRAW_STROKE_DASH)
-    return PS_DASH;
+  {
+    if (line_width == 1)
+    {
+      float dashes[2] = { 9.0f, 6.0f };
+      return wdCreateStrokeStyleCustom(dashes, 2, WD_LINECAP_FLAT, WD_LINEJOIN_MITER);
+    }
+    else
+      return wdCreateStrokeStyle(WD_DASHSTYLE_DASH, WD_LINECAP_FLAT, WD_LINEJOIN_MITER);
+  }
   else if (style == IUP_DRAW_STROKE_DOT)
-    return PS_DOT;
+  {
+    if (line_width == 1)
+    {
+      float dashes[2] = { 2.0f, 2.0f };
+      return wdCreateStrokeStyleCustom(dashes, 2, WD_LINECAP_FLAT, WD_LINEJOIN_MITER);
+    }
+    else
+      return wdCreateStrokeStyle(WD_DASHSTYLE_DOT, WD_LINECAP_FLAT, WD_LINEJOIN_MITER);
+  }
   else
-    return PS_SOLID;
+    return NULL;
+}
+
+static void iDrawRelaseStyle(WD_HSTROKESTYLE stroke_style)
+{
+  if (stroke_style)
+    wdDestroyStrokeStyle(stroke_style);
 }
 
 #define iupInt2Float(_x) ((float)_x)
@@ -143,17 +165,16 @@ void iupdrvDrawRectangle(IdrawCanvas* dc, int x1, int y1, int x2, int y2, long c
 {
   WD_HBRUSH brush = wdCreateSolidBrush(dc->hCanvas, iupColor2ARGB(color));
 
+  iupDrawCheckSwapCoord(x1, x2);
+  iupDrawCheckSwapCoord(y1, y2);
+
   if (style == IUP_DRAW_FILL)
-  {
-    iupDrawCheckSwapCoord(x1, x2);
-    iupDrawCheckSwapCoord(y1, y2);
     wdFillRect(dc->hCanvas, brush, iupInt2Float(x1 - 0.5f), iupInt2Float(y1 - 0.5f), iupInt2Float(x2 + 0.5f), iupInt2Float(y2 + 0.5f));
-  }
   else
   {
-    iupDrawCheckSwapCoord(x1, x2);
-    iupDrawCheckSwapCoord(y1, y2);
-    wdDrawRect(dc->hCanvas, brush, iupInt2Float(x1), iupInt2Float(y1), iupInt2Float(x2), iupInt2Float(y2), iupInt2FloatW(line_width));
+    WD_HSTROKESTYLE stroke_style = iDrawSetLineStyle(style, line_width);
+    wdDrawRectStyled(dc->hCanvas, brush, iupInt2Float(x1), iupInt2Float(y1), iupInt2Float(x2), iupInt2Float(y2), iupInt2FloatW(line_width), stroke_style);
+    iDrawRelaseStyle(stroke_style);
   }
 
   wdDestroyBrush(brush);
@@ -162,17 +183,19 @@ void iupdrvDrawRectangle(IdrawCanvas* dc, int x1, int y1, int x2, int y2, long c
 void iupdrvDrawLine(IdrawCanvas* dc, int x1, int y1, int x2, int y2, long color, int style, int line_width)
 {
   WD_HBRUSH brush = wdCreateSolidBrush(dc->hCanvas, iupColor2ARGB(color));
+  WD_HSTROKESTYLE stroke_style = iDrawSetLineStyle(style, line_width);
   if (wdBackend() == WD_BACKEND_D2D)
   {
     if (x1 == x2)
-      wdDrawLine(dc->hCanvas, brush, iupInt2Float(x1), iupInt2Float(y1 - 0.5f), iupInt2Float(x2), iupInt2Float(y2 + 0.5f), iupInt2FloatW(line_width));
+      wdDrawLineStyled(dc->hCanvas, brush, iupInt2Float(x1), iupInt2Float(y1 - 0.5f), iupInt2Float(x2), iupInt2Float(y2 + 0.5f), iupInt2FloatW(line_width), stroke_style);
     else if (y1 == y2)
-      wdDrawLine(dc->hCanvas, brush, iupInt2Float(x1 - 0.5f), iupInt2Float(y1), iupInt2Float(x2 + 0.5f), iupInt2Float(y2), iupInt2FloatW(line_width));
+      wdDrawLineStyled(dc->hCanvas, brush, iupInt2Float(x1 - 0.5f), iupInt2Float(y1), iupInt2Float(x2 + 0.5f), iupInt2Float(y2), iupInt2FloatW(line_width), stroke_style);
     else
-      wdDrawLine(dc->hCanvas, brush, iupInt2Float(x1), iupInt2Float(y1), iupInt2Float(x2), iupInt2Float(y2), iupInt2FloatW(line_width));
+      wdDrawLineStyled(dc->hCanvas, brush, iupInt2Float(x1), iupInt2Float(y1), iupInt2Float(x2), iupInt2Float(y2), iupInt2FloatW(line_width), stroke_style);
   }
   else
-    wdDrawLine(dc->hCanvas, brush, iupInt2Float(x1), iupInt2Float(y1), iupInt2Float(x2), iupInt2Float(y2), iupInt2FloatW(line_width));
+    wdDrawLineStyled(dc->hCanvas, brush, iupInt2Float(x1), iupInt2Float(y1), iupInt2Float(x2), iupInt2Float(y2), iupInt2FloatW(line_width), stroke_style);
+  iDrawRelaseStyle(stroke_style);
   wdDestroyBrush(brush);
 }
 
@@ -204,10 +227,12 @@ void iupdrvDrawArc(IdrawCanvas* dc, int x1, int y1, int x2, int y2, double a1, d
   }
   else
   {
+    WD_HSTROKESTYLE stroke_style = iDrawSetLineStyle(style, line_width);
     if (sweepAngle == 360.0f)
-      wdDrawEllipse(dc->hCanvas, brush, xc, yc, rx, ry, iupInt2FloatW(line_width));
+      wdDrawEllipseStyled(dc->hCanvas, brush, xc, yc, rx, ry, iupInt2FloatW(line_width), stroke_style);
     else
-      wdDrawEllipseArc(dc->hCanvas, brush, xc, yc, rx, ry, baseAngle, sweepAngle, iupInt2FloatW(line_width));
+      wdDrawEllipseArcStyled(dc->hCanvas, brush, xc, yc, rx, ry, baseAngle, sweepAngle, iupInt2FloatW(line_width), stroke_style);
+    iDrawRelaseStyle(stroke_style);
   }
 
   wdDestroyBrush(brush);
@@ -232,7 +257,11 @@ void iupdrvDrawPolygon(IdrawCanvas* dc, int* points, int count, long color, int 
   if (style == IUP_DRAW_FILL)
     wdFillPath(dc->hCanvas, brush, path);
   else
-    wdDrawPath(dc->hCanvas, brush, path, iupInt2FloatW(line_width));
+  {
+    WD_HSTROKESTYLE stroke_style = iDrawSetLineStyle(style, line_width);
+    wdDrawPathStyled(dc->hCanvas, brush, path, iupInt2FloatW(line_width), stroke_style);
+    iDrawRelaseStyle(stroke_style);
+  }
 
   wdDestroyPath(path);
   wdDestroyBrush(brush);
@@ -339,10 +368,6 @@ void iupdrvDrawFocusRect(IdrawCanvas* dc, int x1, int y1, int x2, int y2)
   iupdrvDrawRectangle(dc, x1, y1, x2, y2, iupDrawColor(0, 0, 0, 255), IUP_DRAW_STROKE_DOT, 1);
 #endif
 }
-
-// TODO
-// - line style  ID2D1Factory::CreateStrokeStyle
-// https://msdn.microsoft.com/en-us/library/windows/desktop/dd317105(v=vs.85).aspx
 
 // TODO
 // - Image with Alpha GDI+

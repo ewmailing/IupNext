@@ -159,7 +159,7 @@ else
          win/iupwin_tabs.c win/iupwin_menu.c win/iupwin_list.c win/iupwin_tree.c \
          win/iupwin_calendar.c win/iupwin_datepick.c
          
-  #USE_WDL := Yes
+  USE_WDL := Yes
   ifdef USE_WDL
     INCLUDES += win/wdl
     DEFINES += COBJMACROS _UNICODE
