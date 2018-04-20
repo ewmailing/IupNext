@@ -85,6 +85,12 @@ represent sizes using width and height adopt the &quot;WxH&quot; definition, for
 &quot;640x480&quot;. Position usually adopt &quot;x,y&quot; definition, range is usually &quot;x1-x2&quot; but 
 can also be &quot;x1:x2&quot;, so there are variations that for compatibility reasons were 
 maintained. Cell specification is always &quot;lin:col&quot;.</p>
+<p>Color values are in the &quot;R G B A&quot; format. Each component from 0 to 255. Alpha is optional and assumed to be 255 if not specified. But it is only 
+supported in custom controls drawn by IUP, example IupGauge, IupDial, all IupFlat* 
+controls, 
+and only when using OpenGL, Cairo or Direct2D draw drivers. Alpha is never supported when using X11, 
+GDI or GDK draw drivers. Color values can also be specified in hexadecimal 
+notation in the format &quot;#RRGGBBAA&quot;.</p>
 
 <p>With <strong>IupSetAttribute</strong> you can also store application pointers that can be 
 strings or not. This can be very useful, for instance, used inside 
