@@ -184,8 +184,9 @@ void iupdrvDrawLine(IdrawCanvas* dc, int x1, int y1, int x2, int y2, long color,
 {
   WD_HBRUSH brush = wdCreateSolidBrush(dc->hCanvas, iupColor2ARGB(color));
   WD_HSTROKESTYLE stroke_style = iDrawSetLineStyle(style, line_width);
-  if (wdBackend() == WD_BACKEND_D2D)
+  if (wdBackend() == WD_BACKEND_D2D && line_width == 1)
   {
+    /* compensate Direct2D horizontal and vertical lines when line_width == 1 */
     if (x1 == x2)
       wdDrawLineStyled(dc->hCanvas, brush, iupInt2Float(x1), iupInt2Float(y1 - 0.5f), iupInt2Float(x2), iupInt2Float(y2 + 0.5f), iupInt2FloatW(line_width), stroke_style);
     else if (y1 == y2)
@@ -282,6 +283,11 @@ void iupdrvDrawResetClip(IdrawCanvas* dc)
   wdSetClip(dc->hCanvas, NULL, NULL);
 }
 
+static int iCompensatePosX(float font_height)
+{
+  return iupRound(font_height / 7.);  /* 15% */
+}
+
 void iupdrvDrawText(IdrawCanvas* dc, const char* text, int len, int x, int y, int w, int h, long color, const char* font, int align)
 {
   WD_RECT rect;
@@ -302,6 +308,14 @@ void iupdrvDrawText(IdrawCanvas* dc, const char* text, int len, int x, int y, in
     flag = WD_STR_RIGHTALIGN;
   else if (align == IUP_ALIGN_ACENTER)
     flag = WD_STR_CENTERALIGN;
+
+  if (wdBackend() == WD_BACKEND_GDIPLUS)
+  {
+    /* compensate GDI+ internal padding */
+    WD_FONTMETRICS metrics;
+    wdFontMetrics(wdFont, &metrics);
+    rect.x0 -= iCompensatePosX(metrics.fLeading);
+  }
 
   wdDrawString(dc->hCanvas, wdFont, &rect, wtext, len, brush, flag | WD_STR_TOPALIGN | WD_STR_NOWRAP);
 
@@ -361,7 +375,7 @@ void iupdrvDrawFocusRect(IdrawCanvas* dc, int x1, int y1, int x2, int y2)
   rect.top = y1;
   rect.bottom = y2;
 
-  hDC = wdStartGdi(dc->hCanvas, TRUE);  /* TODO wdStartGdi is crashing */
+  hDC = wdStartGdi(dc->hCanvas, TRUE);  /* TODO wdStartGdi is crashing for D2D */
   DrawFocusRect(hDC, &rect);
   wdEndGdi(dc->hCanvas, hDC);
 #else
