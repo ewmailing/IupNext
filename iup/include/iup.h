@@ -189,7 +189,9 @@ Ihandle*  IupCreatep(const char *classname, void* first, ...);
 /*                        Elements                                      */
 /************************************************************************/
 
-Ihandle*  IupFill       (void);
+Ihandle*  IupFill (void);
+Ihandle*  IupSpace(void);
+
 Ihandle*  IupRadio      (Ihandle* child);
 Ihandle*  IupVbox       (Ihandle* child, ...);
 Ihandle*  IupVboxv      (Ihandle* *children);

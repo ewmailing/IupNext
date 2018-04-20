@@ -157,6 +157,7 @@ elems[] =
   { "Link",         code_string2,      check_string2,     0  },
   { "Cbox",         code_elemlist,     check_elemlist,    0  },
   { "FlatSeparator",code_empty,        check_empty,       0  },
+  { "Space",        code_empty,        check_empty,       0  },
   { "Spin",         code_empty,        check_empty,       0  },
   { "Spinbox",      code_elem,         check_elem,        0  },
   { "Split",        code_elemlist2,    check_elemlist2,   0  },

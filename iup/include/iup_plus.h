@@ -426,6 +426,13 @@ namespace Iup
     FlatSeparator(Ihandle* _ih) : Control(_ih) {}
     FlatSeparator(const Element& elem) : Control(elem.GetHandle()) {}
   };
+  class Space : public Control
+  {
+  public:
+    Space() : Control(IupSpace()) {}
+    Space(Ihandle* _ih) : Control(_ih) {}
+    Space(const Element& elem) : Control(elem.GetHandle()) {}
+  };
   class DropButton : public Control
   {
   public:

@@ -72,6 +72,7 @@ int iupcolorbrowserlua_open (lua_State * L);
 int iupflatlabellua_open(lua_State * L);
 int iupdropbuttonlua_open(lua_State * L);
 int iupflatseparatorlua_open(lua_State * L);
+int iuppspacelua_open(lua_State * L);
 
 void iupgetparamlua_open (lua_State * L);
 void iupconfiglua_open(lua_State * L);

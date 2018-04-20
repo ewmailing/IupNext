@@ -46,6 +46,7 @@ Iclass* iupDialNewClass(void);
 Iclass* iupGaugeNewClass(void);
 Iclass* iupColorbarNewClass(void);
 Iclass* iupColorBrowserNewClass(void);
+Iclass* iupSpaceNewClass(void);
 
 Iclass* iupMenuNewClass(void);
 Iclass* iupItemNewClass(void);

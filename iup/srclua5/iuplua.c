@@ -1371,6 +1371,7 @@ int iuplua_open(lua_State * L)
   iupdropbuttonlua_open(L);
   iupflatframelua_open(L);
   iupflatseparatorlua_open(L);
+  iuppspacelua_open(L);
   iupconfiglua_open(L);
   iupanimatedlabellua_open(L);
   iupcalendarlua_open(L);

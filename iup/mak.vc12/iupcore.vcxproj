@@ -142,6 +142,7 @@
     <ClCompile Include="..\src\iup_recplay.c" />
     <ClCompile Include="..\src\iup_register.c" />
     <ClCompile Include="..\src\iup_show.c" />
+    <ClCompile Include="..\src\iup_space.c" />
     <ClCompile Include="..\src\iup_str.c" />
     <ClCompile Include="..\src\iup_strmessage.c" />
     <ClCompile Include="..\src\iup_table.c" />

@@ -1206,12 +1206,17 @@ wb_usr.tree =
           folder=
           {
             {
-              name= {nl= "IupCbox"},
-              link= "elem/iupcbox.html"
-            },
-            {
               name= {nl= "IupFill"},
               link= "elem/iupfill.html"
+            },
+            {
+              name= {nl= "IupSpace"},
+              link= "elem/iupspace.html"
+            },
+            { link= "", name= {en= "" } },
+            {
+              name= {nl= "IupCbox"},
+              link= "elem/iupcbox.html"
             },
             {
               name= {nl= "IupGridBox"},

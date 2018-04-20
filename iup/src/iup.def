@@ -217,6 +217,7 @@ IupSetStrfId2
 IupSetStrGlobal
 IupFlatButton
 IupFlatSeparator
+IupSpace
 IupFlatToggle
 IupDropButton
 IupFlatLabel

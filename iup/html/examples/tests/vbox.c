@@ -17,7 +17,7 @@ void VboxTest(void)
   (
     vbox_1 = IupVbox
     (
-      IupFill(),
+      IupSetAttributes(IupSpace(), "SIZE=x20"),
       btn_11=IupButton("1", NULL),
       btn_12=IupButton("2", NULL),
       btn_13=IupButton("3", NULL),

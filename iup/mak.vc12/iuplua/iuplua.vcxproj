@@ -142,6 +142,7 @@
     <ClCompile Include="..\..\srclua5\elem\il_sbox.c" />
     <ClCompile Include="..\..\srclua5\elem\il_scrollbox.c" />
     <ClCompile Include="..\..\srclua5\elem\il_separator.c" />
+    <ClCompile Include="..\..\srclua5\elem\il_space.c" />
     <ClCompile Include="..\..\srclua5\elem\il_spin.c" />
     <ClCompile Include="..\..\srclua5\elem\il_spinbox.c" />
     <ClCompile Include="..\..\srclua5\elem\il_split.c" />
@@ -217,6 +218,7 @@
     <None Include="..\..\srclua5\elem\sbox.lua" />
     <None Include="..\..\srclua5\elem\scrollbox.lua" />
     <None Include="..\..\srclua5\elem\separator.lua" />
+    <None Include="..\..\srclua5\elem\space.lua" />
     <None Include="..\..\srclua5\elem\spin.lua" />
     <None Include="..\..\srclua5\elem\spinbox.lua" />
     <None Include="..\..\srclua5\elem\split.lua" />
