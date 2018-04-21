@@ -406,38 +406,12 @@ gdix_canvas_apply_string_flags(gdix_canvas_t* c, DWORD flags)
     gdix_vtable->fn_SetStringFormatTrimming(c->string_format, trim);
 }
 
-gdix_strokestyle_t* 
-gdix_strokestyle_alloc(UINT dashesCountAlloc)
-{
-    gdix_strokestyle_t* s;
-
-    s = (gdix_strokestyle_t*)malloc(sizeof(gdix_strokestyle_t));
-    if (s == NULL) {
-        WD_TRACE("gdix_strokestyle_alloc: malloc() failed.");
-        return NULL;
-    }
-
-    memset(s, 0, sizeof(gdix_strokestyle_t));
-
-    if (dashesCountAlloc)
-    {
-        s->dashes = (float*)malloc(dashesCountAlloc * sizeof(float));
-        if (s->dashes == NULL) {
-          WD_TRACE("gdix_strokestyle_alloc: malloc() failed.");
-          free(s);
-          return NULL;
-        }
-    }
-
-    return s;
-}
-
 void 
 gdix_setpen(dummy_GpPen* pen, dummy_GpBrush* brush, float width, gdix_strokestyle_t* style)
 {
     if (style)
     {
-        if (style->dashes)
+        if (style->dashesCount > 0)
             gdix_vtable->fn_SetPenDashArray(pen, style->dashes, style->dashesCount);
 
         gdix_vtable->fn_SetPenDashStyle(pen, style->dashStyle);

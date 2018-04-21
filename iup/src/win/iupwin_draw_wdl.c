@@ -44,7 +44,7 @@ void iupwinDrawInit(void)
   iupwinDrawThemeInit();
 
   /* uncomment to force GDI+ always */
-//  wdPreInitialize(NULL, NULL, WD_DISABLE_D2D);
+/*  wdPreInitialize(NULL, NULL, WD_DISABLE_D2D); */
 
   wdInitialize(wdl_flags);
 }
