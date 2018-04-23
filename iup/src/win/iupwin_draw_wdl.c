@@ -44,7 +44,7 @@ void iupwinDrawInit(void)
   iupwinDrawThemeInit();
 
   /* uncomment to force GDI+ always */
-/*  wdPreInitialize(NULL, NULL, WD_DISABLE_D2D); */
+//  wdPreInitialize(NULL, NULL, WD_DISABLE_D2D);
 
   wdInitialize(wdl_flags);
 }
@@ -78,7 +78,7 @@ IdrawCanvas* iupdrvDrawCreateCanvas(Ihandle* ih)
   ps.rcPaint.right = x + w;
   ps.rcPaint.bottom = y + h;
 
-  dc->hCanvas = wdCreateCanvasWithPaintStruct(dc->hWnd, &ps, 0);
+  dc->hCanvas = wdCreateCanvasWithPaintStruct(dc->hWnd, &ps, WD_CANVAS_DOUBLEBUFFER);
 
   if (wdBackend() == WD_BACKEND_D2D)
     iupAttribSet(ih, "DRAWDRIVER", "D2D");
