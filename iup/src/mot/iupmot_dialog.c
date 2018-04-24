@@ -559,7 +559,7 @@ static int motDialogSetBackgroundAttrib(Ihandle* ih, const char* value)
     return 1;
   else                                     
   {
-    Pixmap pixmap = (Pixmap)iupImageGetImage(value, ih, 0);
+    Pixmap pixmap = (Pixmap)iupImageGetImage(value, ih, 0, NULL);
     if (pixmap)
     {
       Widget dialog_manager = (Widget)iupAttribGet(ih, "_IUPMOT_DLGCONTAINER");

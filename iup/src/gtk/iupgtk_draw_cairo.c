@@ -123,7 +123,7 @@ static void iDrawSetLineStyle(IdrawCanvas* dc, int style)
     cairo_set_dash(dc->image_cr, 0, 0, 0);
   else
   {
-    double dashes[2] = { 6.0, 2.0 };
+    double dashes[2] = { 12.0, 4.0 };
     double dots[2] = { 2.0, 2.0 };
 
     if (style == IUP_DRAW_STROKE_DASH)
@@ -364,10 +364,10 @@ void iupdrvDrawText(IdrawCanvas* dc, const char* text, int len, int x, int y, in
   pango_cairo_show_layout(dc->image_cr, fontlayout);
 }
 
-void iupdrvDrawImage(IdrawCanvas* dc, const char* name, int make_inactive, int x, int y)
+void iupdrvDrawImage(IdrawCanvas* dc, const char* name, int make_inactive, const char* bgcolor, int x, int y)
 {
   int bpp, img_w, img_h;
-  GdkPixbuf* pixbuf = iupImageGetImage(name, dc->ih, make_inactive);
+  GdkPixbuf* pixbuf = iupImageGetImage(name, dc->ih, make_inactive, bgcolor);
   if (!pixbuf)
     return;
 

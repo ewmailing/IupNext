@@ -60,7 +60,7 @@ static void winLabelDrawImage(Ihandle* ih, HDC hDC, int rect_width, int rect_hei
     }
   }
 
-  hBitmap = iupImageGetImage(name, ih, make_inactive);
+  hBitmap = iupImageGetImage(name, ih, make_inactive, NULL);
   if (!hBitmap)
     return;
 

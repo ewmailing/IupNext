@@ -340,7 +340,7 @@ static int winTabsGetImageIndex(Ihandle* ih, const char* name)
   int width, height;
   Iarray* bmp_array;
   HBITMAP *bmp_array_data, hMask=NULL;
-  HBITMAP bmp = iupImageGetImage(name, ih, 0);
+  HBITMAP bmp = iupImageGetImage(name, ih, 0, NULL);
   if (!bmp)
     return -1;
 
@@ -1135,9 +1135,9 @@ static void winTabsDrawTab(Ihandle* ih, HDC hDC, int p, int width, int height, C
   /* Create the close button image */
   high_p = iupAttribGetInt(ih, "_IUPTABS_CLOSEHIGH");
   if (high_p == p)
-    hBitmapClose = iupImageGetImage("IMGCLOSEHIGH", ih, 0);
+    hBitmapClose = iupImageGetImage("IMGCLOSEHIGH", ih, 0, NULL);
   else
-    hBitmapClose = iupImageGetImage("IMGCLOSE", ih, 0);
+    hBitmapClose = iupImageGetImage("IMGCLOSE", ih, 0, NULL);
   if (!hBitmapClose)
   {
     if (str && str != value) free(str);

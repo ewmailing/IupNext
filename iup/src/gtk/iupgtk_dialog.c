@@ -1283,7 +1283,7 @@ static int gtkDialogSetOpacityAttrib(Ihandle *ih, const char *value)
 
 static int gtkDialogSetOpacityImageAttrib(Ihandle *ih, const char *value)
 {
-  GdkPixbuf* pixbuf = iupImageGetImage(value, ih, 0);
+  GdkPixbuf* pixbuf = iupImageGetImage(value, ih, 0, NULL);
   if (pixbuf)
   {
 #if GTK_CHECK_VERSION(3, 0, 0)
@@ -1361,7 +1361,7 @@ static int gtkDialogSetBackgroundAttrib(Ihandle* ih, const char* value)
   }
   else
   {
-    GdkPixbuf* pixbuf = iupImageGetImage(value, ih, 0);
+    GdkPixbuf* pixbuf = iupImageGetImage(value, ih, 0, NULL);
     if (pixbuf)
     {
 #if GTK_CHECK_VERSION(3, 0, 0)

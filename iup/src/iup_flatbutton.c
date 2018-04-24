@@ -127,7 +127,7 @@ static int iFlatButtonRedraw_CB(Ihandle* ih)
   if (bgimage)
   {
     draw_image = iupFlatGetImageName(ih, "BACKIMAGE", bgimage, image_pressed, ih->data->highlighted, active, &make_inactive);
-    iupdrvDrawImage(dc, draw_image, make_inactive, border_width, border_width);
+    iupdrvDrawImage(dc, draw_image, make_inactive, bgcolor, border_width, border_width);
   }
   else
     iupFlatDrawBox(dc, border_width, ih->currentwidth - 1 - border_width,
@@ -144,7 +144,7 @@ static int iFlatButtonRedraw_CB(Ihandle* ih)
   if (fgimage)
   {
     draw_image = iupFlatGetImageName(ih, "FRONTIMAGE", fgimage, image_pressed, ih->data->highlighted, active, &make_inactive);
-    iupdrvDrawImage(dc, draw_image, make_inactive, border_width, border_width);
+    iupdrvDrawImage(dc, draw_image, make_inactive, bgcolor, border_width, border_width);
   }
   else if (!image && !title)  /* color only button */
   {

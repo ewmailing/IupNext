@@ -225,6 +225,7 @@ static void drawTest(Ihandle *ih, int posx)  //_Lines
   IupSetAttribute(ih, "DRAWFONT", "Helvetica, -30");
   IupDrawText(ih, "Text", 0, 20, 70);
 
+//  IupSetAttribute(ih, "DRAWLINEWIDTH", "3");
   IupSetAttribute(ih, "DRAWSTYLE", "STROKE");
   IupDrawLine(ih, 10, 105, 100, 105);
   IupSetAttribute(ih, "DRAWSTYLE", "STROKE_DASH");
@@ -232,9 +233,9 @@ static void drawTest(Ihandle *ih, int posx)  //_Lines
   IupSetAttribute(ih, "DRAWSTYLE", "STROKE_DOT");
   IupDrawLine(ih, 10, 105 + 10, 100, 105 + 10);
 
-  IupDrawImage(ih, "Test8bpp", 0, 110, 10);
-  IupDrawImage(ih, "Test24bpp", 0, 110, 40);
-  IupDrawImage(ih, "Test32bpp", 0, 110, 70);
+  IupDrawImage(ih, "Test8bpp", 110, 10);
+  IupDrawImage(ih, "Test24bpp", 110, 40);
+  IupDrawImage(ih, "Test32bpp", 110, 70);
 
   IupSetAttribute(ih, "DRAWFONT", "Helvetica, Bold -15");
   IupDrawText(ih, IupGetAttribute(ih, "DRAWDRIVER"), 0, 60, 120);

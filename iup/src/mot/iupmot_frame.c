@@ -104,7 +104,7 @@ static int motFrameSetBackgroundAttrib(Ihandle* ih, const char* value)
   }
   else
   {
-    Pixmap pixmap = (Pixmap)iupImageGetImage(value, ih, 0);
+    Pixmap pixmap = (Pixmap)iupImageGetImage(value, ih, 0, NULL);
     if (pixmap)
     {
       Widget child_manager = (Widget)iupAttribGet(ih, "_IUPMOT_FRAMECONTAINER");

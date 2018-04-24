@@ -422,11 +422,11 @@ static int winItemSetImageAttrib(Ihandle* ih, const char* value)
   if (ih->handle == (InativeHandle*)-1) 
     return 1;
 
-  hBitmapUnchecked = iupImageGetImage(value, ih, 0);
+  hBitmapUnchecked = iupImageGetImage(value, ih, 0, NULL);
 
   impress = iupAttribGet(ih, "IMPRESS");
   if (impress)
-    hBitmapChecked = iupImageGetImage(impress, ih, 0);
+    hBitmapChecked = iupImageGetImage(impress, ih, 0, NULL);
   else
     hBitmapChecked = hBitmapUnchecked;
 
@@ -442,10 +442,10 @@ static int winItemSetImpressAttrib(Ihandle* ih, const char* value)
   HBITMAP hBitmapUnchecked, hBitmapChecked;
 
   char *image = iupAttribGet(ih, "IMPRESS");
-  hBitmapUnchecked = iupImageGetImage(image, ih, 0);
+  hBitmapUnchecked = iupImageGetImage(image, ih, 0, NULL);
 
   if (value)
-    hBitmapChecked = iupImageGetImage(value, ih, 0);
+    hBitmapChecked = iupImageGetImage(value, ih, 0, NULL);
   else
     hBitmapChecked = hBitmapUnchecked;
 
@@ -500,7 +500,7 @@ static int winItemSetTitleImageAttrib(Ihandle* ih, const char* value)
   if (ih->handle == (InativeHandle*)-1)
     return 1;
 
-  hBitmap = iupImageGetImage(value, ih, 0);
+  hBitmap = iupImageGetImage(value, ih, 0, NULL);
 
   {
     MENUITEMINFO menuiteminfo;

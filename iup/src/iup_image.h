@@ -25,7 +25,7 @@ void  iupdrvImageGetData(void* handle, unsigned char* imgdata);   /* only for IU
 void* iupImageGetMask(const char* name);
 void* iupImageGetIcon(const char* name);
 void* iupImageGetCursor(const char* name);
-void* iupImageGetImage(const char* name, Ihandle* parent, int make_inactive);
+void* iupImageGetImage(const char* name, Ihandle* parent, int make_inactive, const char* bgcolor);
 void iupImageGetInfo(const char* name, int *w, int *h, int *bpp);
 void iupImageRemoveFromCache(Ihandle* ih, void* handle);
 

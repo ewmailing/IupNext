@@ -674,7 +674,7 @@ static int winTreeGetImageIndex(Ihandle* ih, const char* name)
   int count, i;
   Iarray* bmpArray;
   HBITMAP *bmpArrayData;
-  HBITMAP bmp = iupImageGetImage(name, ih, 0);
+  HBITMAP bmp = iupImageGetImage(name, ih, 0, NULL);
   if (!bmp)
     return -1;
 

@@ -539,7 +539,7 @@ static int iColorBrowserRedraw_CB(Ihandle* ih)
   IupDrawParentBackground(ih);
 
   name = IupGetAttribute(ih, "ICB_IMAGE");
-  IupDrawImage(ih, name, 0, 0, 0);
+  IupDrawImage(ih, name, 0, 0);
 
   if (active)
   {

@@ -44,7 +44,9 @@ void iupwinDrawInit(void)
   iupwinDrawThemeInit();
 
   /* uncomment to force GDI+ always */
-//  wdPreInitialize(NULL, NULL, WD_DISABLE_D2D);
+#if 0
+  wdPreInitialize(NULL, NULL, WD_DISABLE_D2D);
+#endif
 
   wdInitialize(wdl_flags);
 }
@@ -125,27 +127,17 @@ void iupdrvDrawGetSize(IdrawCanvas* dc, int *w, int *h)
   if (h) *h = dc->h;
 }
 
-static WD_HSTROKESTYLE iDrawSetLineStyle(int style, int line_width)
+static WD_HSTROKESTYLE iDrawSetLineStyle(int style)
 {
   if (style == IUP_DRAW_STROKE_DASH)
   {
-    if (line_width == 1)
-    {
-      float dashes[2] = { 9.0f, 6.0f };
-      return wdCreateStrokeStyleCustom(dashes, 2, WD_LINECAP_FLAT, WD_LINEJOIN_MITER);
-    }
-    else
-      return wdCreateStrokeStyle(WD_DASHSTYLE_DASH, WD_LINECAP_FLAT, WD_LINEJOIN_MITER);
+    float dashes[2] = { 12.0f, 4.0f };
+    return wdCreateStrokeStyleCustom(dashes, 2, WD_LINECAP_FLAT, WD_LINEJOIN_MITER);
   }
   else if (style == IUP_DRAW_STROKE_DOT)
   {
-    if (line_width == 1)
-    {
-      float dashes[2] = { 2.0f, 2.0f };
-      return wdCreateStrokeStyleCustom(dashes, 2, WD_LINECAP_FLAT, WD_LINEJOIN_MITER);
-    }
-    else
-      return wdCreateStrokeStyle(WD_DASHSTYLE_DOT, WD_LINECAP_FLAT, WD_LINEJOIN_MITER);
+    float dashes[2] = { 2.0f, 2.0f };
+    return wdCreateStrokeStyleCustom(dashes, 2, WD_LINECAP_FLAT, WD_LINEJOIN_MITER);
   }
   else
     return NULL;
@@ -172,7 +164,7 @@ void iupdrvDrawRectangle(IdrawCanvas* dc, int x1, int y1, int x2, int y2, long c
     wdFillRect(dc->hCanvas, brush, iupInt2Float(x1 - 0.5f), iupInt2Float(y1 - 0.5f), iupInt2Float(x2 + 0.5f), iupInt2Float(y2 + 0.5f));
   else
   {
-    WD_HSTROKESTYLE stroke_style = iDrawSetLineStyle(style, line_width);
+    WD_HSTROKESTYLE stroke_style = iDrawSetLineStyle(style);
     wdDrawRectStyled(dc->hCanvas, brush, iupInt2Float(x1), iupInt2Float(y1), iupInt2Float(x2), iupInt2Float(y2), iupInt2FloatW(line_width), stroke_style);
     iDrawRelaseStyle(stroke_style);
   }
@@ -183,7 +175,7 @@ void iupdrvDrawRectangle(IdrawCanvas* dc, int x1, int y1, int x2, int y2, long c
 void iupdrvDrawLine(IdrawCanvas* dc, int x1, int y1, int x2, int y2, long color, int style, int line_width)
 {
   WD_HBRUSH brush = wdCreateSolidBrush(dc->hCanvas, iupColor2ARGB(color));
-  WD_HSTROKESTYLE stroke_style = iDrawSetLineStyle(style, line_width);
+  WD_HSTROKESTYLE stroke_style = iDrawSetLineStyle(style);
   if (wdBackend() == WD_BACKEND_D2D && line_width == 1)
   {
     /* compensate Direct2D horizontal and vertical lines when line_width == 1 */
@@ -228,7 +220,7 @@ void iupdrvDrawArc(IdrawCanvas* dc, int x1, int y1, int x2, int y2, double a1, d
   }
   else
   {
-    WD_HSTROKESTYLE stroke_style = iDrawSetLineStyle(style, line_width);
+    WD_HSTROKESTYLE stroke_style = iDrawSetLineStyle(style);
     if (sweepAngle == 360.0f)
       wdDrawEllipseStyled(dc->hCanvas, brush, xc, yc, rx, ry, iupInt2FloatW(line_width), stroke_style);
     else
@@ -259,7 +251,7 @@ void iupdrvDrawPolygon(IdrawCanvas* dc, int* points, int count, long color, int 
     wdFillPath(dc->hCanvas, brush, path);
   else
   {
-    WD_HSTROKESTYLE stroke_style = iDrawSetLineStyle(style, line_width);
+    WD_HSTROKESTYLE stroke_style = iDrawSetLineStyle(style);
     wdDrawPathStyled(dc->hCanvas, brush, path, iupInt2FloatW(line_width), stroke_style);
     iDrawRelaseStyle(stroke_style);
   }
@@ -323,13 +315,21 @@ void iupdrvDrawText(IdrawCanvas* dc, const char* text, int len, int x, int y, in
   wdDestroyFont(wdFont);
 }
 
-void iupdrvDrawImage(IdrawCanvas* dc, const char* name, int make_inactive, int x, int y)
+void iupdrvDrawImage(IdrawCanvas* dc, const char* name, int make_inactive, const char* bgcolor, int x, int y)
 {
   UINT width, height;
-  static WD_HIMAGE hImage = NULL;
+  WD_HIMAGE hImage = NULL;
   WD_RECT rect;
+  HBITMAP hBitmap;
 
-  HBITMAP hBitmap = (HBITMAP)iupImageGetImage(name, dc->ih, make_inactive);
+  if (wdBackend() == WD_BACKEND_GDIPLUS)
+    iupAttribSet(dc->ih, "FLAT_ALPHA", "1");
+
+  hBitmap = (HBITMAP)iupImageGetImage(name, dc->ih, make_inactive, bgcolor);
+
+  if (wdBackend() == WD_BACKEND_GDIPLUS)
+    iupAttribSet(dc->ih, "FLAT_ALPHA", NULL);
+
   if (!hBitmap)
     return;
 
@@ -387,3 +387,7 @@ void iupdrvDrawFocusRect(IdrawCanvas* dc, int x1, int y1, int x2, int y2)
 // - Image with Alpha GDI+
 // - Image Lock
 // https://msdn.microsoft.com/en-us/library/windows/desktop/ee690187(v=vs.85).aspx
+//WD_HIMAGE wdLoadImageFromFile(const WCHAR* pszPath);
+//WD_HIMAGE wdLoadImageFromResource(HINSTANCE hInstance, const WCHAR* pszResType, const WCHAR* pszResName);
+//WD_HIMAGE wdCreateImageFromBuffer(UINT uWidth, UINT uHeight, const BYTE* pucBuffer,
+//                                  BOOL bHasAlpha, const COLORREF* cPalette);

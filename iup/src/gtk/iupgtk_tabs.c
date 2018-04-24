@@ -200,7 +200,7 @@ static int gtkTabsSetTabImageAttrib(Ihandle* ih, int pos, const char* value)
   {
     if (value)
     {
-      GdkPixbuf* pixbuf = iupImageGetImage(value, ih, 0);
+      GdkPixbuf* pixbuf = iupImageGetImage(value, ih, 0, NULL);
       if (pixbuf)
         gtk_image_set_from_pixbuf((GtkImage*)tab_image, pixbuf);
     }
@@ -404,7 +404,7 @@ static void gtkTabsChildAddedMethod(Ihandle* ih, Ihandle* child)
 
     if (tabimage)
     {
-      GdkPixbuf* pixbuf = iupImageGetImage(tabimage, ih, 0);
+      GdkPixbuf* pixbuf = iupImageGetImage(tabimage, ih, 0, NULL);
 
       tab_image = gtk_image_new();
 

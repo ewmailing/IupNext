@@ -83,7 +83,7 @@ static void winToggleSetBitmap(Ihandle* ih, const char* name, int make_inactive)
   /* called only when (ih->data->type==IUP_TOGGLE_IMAGE && !iupwin_comctl32ver6 && !ih->data->flat) */
   if (name)
   {
-    HBITMAP bitmap = iupImageGetImage(name, ih, make_inactive);
+    HBITMAP bitmap = iupImageGetImage(name, ih, make_inactive, NULL);
     SendMessage(ih->handle, BM_SETIMAGE, (WPARAM)IMAGE_BITMAP, (LPARAM)bitmap);
   }
   else
@@ -179,7 +179,7 @@ static void winToggleDrawImage(Ihandle* ih, HDC hDC, int rect_width, int rect_he
       name = iupAttribGet(ih, "IMAGE");
   }
 
-  hBitmap = iupImageGetImage(name, ih, make_inactive);
+  hBitmap = iupImageGetImage(name, ih, make_inactive, NULL);
   if (!hBitmap)
     return;
 

@@ -112,7 +112,7 @@ static void iDrawSetLineStyle(IdrawCanvas* dc, int style)
     gcval.line_style = LineSolid;
   else
   {
-    char dashes[2] = { 6, 2 };
+    char dashes[2] = { 12, 4 };
     char dots[2] = { 2, 2 };
 
     if (style == IUP_DRAW_STROKE_DASH)
@@ -305,11 +305,11 @@ void iupdrvDrawText(IdrawCanvas* dc, const char* text, int len, int x, int y, in
   }
 }
 
-void iupdrvDrawImage(IdrawCanvas* dc, const char* name, int make_inactive, int x, int y)
+void iupdrvDrawImage(IdrawCanvas* dc, const char* name, int make_inactive, const char* bgcolor, int x, int y)
 {
   int img_w, img_h;
   int bpp;
-  Pixmap pixmap = (Pixmap)iupImageGetImage(name, dc->ih, make_inactive);
+  Pixmap pixmap = (Pixmap)iupImageGetImage(name, dc->ih, make_inactive, bgcolor);
   if (!pixmap)
     return;
 

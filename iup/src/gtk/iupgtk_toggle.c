@@ -84,7 +84,7 @@ static void gtkToggleSetPixbuf(Ihandle* ih, const char* name, int make_inactive)
 
   if (name)
   {
-    GdkPixbuf* pixbuf = iupImageGetImage(name, ih, make_inactive);
+    GdkPixbuf* pixbuf = iupImageGetImage(name, ih, make_inactive, NULL);
     GdkPixbuf* old_pixbuf = gtk_image_get_pixbuf(image);
     if (pixbuf != old_pixbuf)
       gtk_image_set_from_pixbuf(image, pixbuf);

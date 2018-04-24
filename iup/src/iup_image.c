@@ -585,10 +585,10 @@ void* iupImageGetCursor(const char* name)
   return cursor;
 }
 
-void* iupImageGetImage(const char* name, Ihandle* ih_parent, int make_inactive)
+void* iupImageGetImage(const char* name, Ihandle* ih_parent, int make_inactive, const char* bgcolor)
 {
   char cache_name[100] = "_IUPIMAGE_IMAGE";
-  char* bgcolor;
+  char* img_bgcolor;
   void* handle;
   Ihandle *ih;
   int bg_concat = 0;
@@ -629,9 +629,14 @@ void* iupImageGetImage(const char* name, Ihandle* ih_parent, int make_inactive)
   if (handle)
     return handle;
 
-  bgcolor = iupAttribGet(ih, "BGCOLOR");
-  if (ih_parent && !bgcolor)
-    bgcolor = IupGetAttribute(ih_parent, "BGCOLOR"); /* Use IupGetAttribute to use inheritance and native implementation */
+  img_bgcolor = iupAttribGet(ih, "BGCOLOR");
+  if (ih_parent && !img_bgcolor)
+  {
+    if (!bgcolor)
+      bgcolor = IupGetAttribute(ih_parent, "BGCOLOR"); /* Use IupGetAttribute to use inheritance and native implementation */
+  }
+  else
+    bgcolor = img_bgcolor;
 
   if (make_inactive)
     strcat(cache_name, "_INACTIVE");

@@ -1359,7 +1359,7 @@ static void iLayoutDrawElement(IdrawCanvas* dc, Ihandle* ih, int marked, int nat
 
       iupImageGetInfo(image, &img_w, &img_h, NULL);
 
-      iupdrvDrawImage(dc, image, 0, x + 1, y + 1);
+      iupdrvDrawImage(dc, image, 0, bgcolor, x + 1, y + 1);
 
       position = IupGetAttribute(ih, "IMAGEPOSITION");  /* used only for buttons */
       if (position &&

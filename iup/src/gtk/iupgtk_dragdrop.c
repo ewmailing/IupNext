@@ -194,7 +194,7 @@ static void gtkDragBegin(GtkWidget *widget, GdkDragContext *drag_context, Ihandl
   value = iupAttribGet(ih, "DRAGCURSOR");
   if (value)
   {
-    GdkPixbuf* pixbuf = iupImageGetImage(value, ih, 0);
+    GdkPixbuf* pixbuf = iupImageGetImage(value, ih, 0, NULL);
     if (pixbuf)
       gtk_drag_source_set_icon_pixbuf(widget, pixbuf);
   }

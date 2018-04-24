@@ -127,14 +127,25 @@ void iupdrvDrawGetSize(IdrawCanvas* dc, int *w, int *h)
   if (h) *h = dc->h;
 }
 
-static int iDrawGetLineStyle(int style)
+static HPEN iDrawCreatePen(long color, int style, int line_width)
 {
+  DWORD dashes[2] = { 12-1, 4+1 };
+  DWORD dots[2] = { 2-1, 2+1 };
+  DWORD* dash_array = NULL;
+  LOGBRUSH LogBrush;
+  LogBrush.lbStyle = BS_SOLID;
+  LogBrush.lbColor = RGB(iupDrawRed(color), iupDrawGreen(color), iupDrawBlue(color));
+  LogBrush.lbHatch = 0;
+
   if (style == IUP_DRAW_STROKE_DASH)
-    return PS_DASH;
+    dash_array = dashes;
   else if (style == IUP_DRAW_STROKE_DOT)
-    return PS_DOT;
+    dash_array = dots;
+
+  if (style == IUP_DRAW_STROKE)
+    return ExtCreatePen(PS_GEOMETRIC | PS_SOLID, line_width, &LogBrush, 0, NULL);
   else
-    return PS_SOLID;
+    return ExtCreatePen(PS_GEOMETRIC | PS_USERSTYLE, line_width, &LogBrush, 2, dash_array);
 }
 
 void iupdrvDrawRectangle(IdrawCanvas* dc, int x1, int y1, int x2, int y2, long color, int style, int line_width)
@@ -160,7 +171,7 @@ void iupdrvDrawRectangle(IdrawCanvas* dc, int x1, int y1, int x2, int y2, long c
   else
   {
     POINT line_poly[5];
-    HPEN hPen = CreatePen(iDrawGetLineStyle(style), line_width, RGB(iupDrawRed(color),iupDrawGreen(color),iupDrawBlue(color)));
+    HPEN hPen = iDrawCreatePen(color, style, line_width);
     HPEN hPenOld = SelectObject(dc->hBitmapDC, hPen);
     line_poly[0].x = x1;
     line_poly[0].y = y1;
@@ -181,7 +192,7 @@ void iupdrvDrawRectangle(IdrawCanvas* dc, int x1, int y1, int x2, int y2, long c
 void iupdrvDrawLine(IdrawCanvas* dc, int x1, int y1, int x2, int y2, long color, int style, int line_width)
 {
   POINT line_poly[2];
-  HPEN hPen = CreatePen(iDrawGetLineStyle(style), line_width, RGB(iupDrawRed(color),iupDrawGreen(color),iupDrawBlue(color)));
+  HPEN hPen = iDrawCreatePen(color, style, line_width);
   HPEN hPenOld = SelectObject(dc->hBitmapDC, hPen);
 
   line_poly[0].x = x1;
@@ -234,7 +245,7 @@ void iupdrvDrawArc(IdrawCanvas* dc, int x1, int y1, int x2, int y2, double a1, d
   }
   else
   {
-    HPEN hPen = CreatePen(iDrawGetLineStyle(style), line_width, RGB(iupDrawRed(color),iupDrawGreen(color),iupDrawBlue(color)));
+    HPEN hPen = iDrawCreatePen(color, style, line_width);
     HPEN hPenOld = SelectObject(dc->hBitmapDC, hPen);
     Arc(dc->hBitmapDC, x1, y1, x2 + 1, y2 + 1, XStartArc, YStartArc, XEndArc, YEndArc);
     SelectObject(dc->hBitmapDC, hPenOld);
@@ -257,7 +268,7 @@ void iupdrvDrawPolygon(IdrawCanvas* dc, int* points, int count, long color, int 
   }
   else
   {
-    HPEN hPen = CreatePen(iDrawGetLineStyle(style), line_width, RGB(iupDrawRed(color),iupDrawGreen(color),iupDrawBlue(color)));
+    HPEN hPen = iDrawCreatePen(color, style, line_width);
     HPEN hPenOld = SelectObject(dc->hBitmapDC, hPen);
     Polyline(dc->hBitmapDC, (POINT*)points, count);
     SelectObject(dc->hBitmapDC, hPenOld);
@@ -310,11 +321,11 @@ void iupdrvDrawText(IdrawCanvas* dc, const char* text, int len, int x, int y, in
   SelectObject(dc->hBitmapDC, hOldFont);
 }
 
-void iupdrvDrawImage(IdrawCanvas* dc, const char* name, int make_inactive, int x, int y)
+void iupdrvDrawImage(IdrawCanvas* dc, const char* name, int make_inactive, const char* bgcolor, int x, int y)
 {
   int bpp, img_w, img_h;
   HBITMAP hMask = NULL;
-  HBITMAP hBitmap = (HBITMAP)iupImageGetImage(name, dc->ih, make_inactive);
+  HBITMAP hBitmap = (HBITMAP)iupImageGetImage(name, dc->ih, make_inactive, bgcolor);
   if (!hBitmap)
     return;
 

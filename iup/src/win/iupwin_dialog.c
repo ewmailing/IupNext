@@ -1405,7 +1405,7 @@ static int winDialogSetBackgroundAttrib(Ihandle* ih, const char* value)
     return 1;
   else
   {
-    HBITMAP hBitmap = iupImageGetImage(value, ih, 0);
+    HBITMAP hBitmap = iupImageGetImage(value, ih, 0, NULL);
     if (hBitmap)
     {
       iupAttribSet(ih, "_IUPWIN_BACKGROUND_COLOR", NULL);
@@ -1484,7 +1484,7 @@ static int winDialogSetOpacityAttrib(Ihandle *ih, const char *value)
 
 static int winDialogSetOpacityImageAttrib(Ihandle *ih, const char *value)
 {
-  HBITMAP hBitmap = (HBITMAP)iupImageGetImage(value, ih, 0);
+  HBITMAP hBitmap = (HBITMAP)iupImageGetImage(value, ih, 0, NULL);
   if (!hBitmap)
     return 0;
   else

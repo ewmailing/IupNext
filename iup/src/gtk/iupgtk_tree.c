@@ -1772,7 +1772,7 @@ static int gtkTreeSetImageExpandedAttrib(Ihandle* ih, int id, const char* value)
 {
   int kind;
   GtkTreeStore*  store = GTK_TREE_STORE(gtk_tree_view_get_model(GTK_TREE_VIEW(ih->handle)));
-  GdkPixbuf* pixExpand = iupImageGetImage(value, ih, 0);
+  GdkPixbuf* pixExpand = iupImageGetImage(value, ih, 0, NULL);
   GtkTreeIter iterItem;
   if (!gtkTreeFindNode(ih, id, &iterItem))
     return 0;
@@ -1795,7 +1795,7 @@ static int gtkTreeSetImageExpandedAttrib(Ihandle* ih, int id, const char* value)
 static int gtkTreeSetImageAttrib(Ihandle* ih, int id, const char* value)
 {
   GtkTreeStore* store = GTK_TREE_STORE(gtk_tree_view_get_model(GTK_TREE_VIEW(ih->handle)));
-  GdkPixbuf* pixImage = iupImageGetImage(value, ih, 0);
+  GdkPixbuf* pixImage = iupImageGetImage(value, ih, 0, NULL);
   GtkTreeIter iterItem;
   if (!gtkTreeFindNode(ih, id, &iterItem))
     return 0;
@@ -1822,7 +1822,7 @@ static int gtkTreeSetImageAttrib(Ihandle* ih, int id, const char* value)
 
 static int gtkTreeSetImageBranchExpandedAttrib(Ihandle* ih, const char* value)
 {
-  ih->data->def_image_expanded = iupImageGetImage(value, ih, 0);
+  ih->data->def_image_expanded = iupImageGetImage(value, ih, 0, NULL);
 
   /* Update all images */
   gtkTreeUpdateImages(ih, ITREE_UPDATEIMAGE_EXPANDED);
@@ -1832,7 +1832,7 @@ static int gtkTreeSetImageBranchExpandedAttrib(Ihandle* ih, const char* value)
 
 static int gtkTreeSetImageBranchCollapsedAttrib(Ihandle* ih, const char* value)
 {
-  ih->data->def_image_collapsed = iupImageGetImage(value, ih, 0);
+  ih->data->def_image_collapsed = iupImageGetImage(value, ih, 0, NULL);
 
   /* Update all images */
   gtkTreeUpdateImages(ih, ITREE_UPDATEIMAGE_COLLAPSED);
@@ -1842,7 +1842,7 @@ static int gtkTreeSetImageBranchCollapsedAttrib(Ihandle* ih, const char* value)
 
 static int gtkTreeSetImageLeafAttrib(Ihandle* ih, const char* value)
 {
-  ih->data->def_image_leaf = iupImageGetImage(value, ih, 0);
+  ih->data->def_image_leaf = iupImageGetImage(value, ih, 0, NULL);
 
   /* Update all images */
   gtkTreeUpdateImages(ih, ITREE_UPDATEIMAGE_LEAF);
@@ -2966,9 +2966,9 @@ static int gtkTreeMapMethod(Ihandle* ih)
   gtk_widget_realize(ih->handle);
 
   /* Initialize the default images */
-  ih->data->def_image_leaf = iupImageGetImage(iupAttribGetStr(ih, "IMAGELEAF"), ih, 0);
-  ih->data->def_image_collapsed = iupImageGetImage(iupAttribGetStr(ih, "IMAGEBRANCHCOLLAPSED"), ih, 0);
-  ih->data->def_image_expanded = iupImageGetImage(iupAttribGetStr(ih, "IMAGEBRANCHEXPANDED"), ih, 0);
+  ih->data->def_image_leaf = iupImageGetImage(iupAttribGetStr(ih, "IMAGELEAF"), ih, 0, NULL);
+  ih->data->def_image_collapsed = iupImageGetImage(iupAttribGetStr(ih, "IMAGEBRANCHCOLLAPSED"), ih, 0, NULL);
+  ih->data->def_image_expanded = iupImageGetImage(iupAttribGetStr(ih, "IMAGEBRANCHEXPANDED"), ih, 0, NULL);
 
   if (iupAttribGetInt(ih, "ADDROOT"))
     iupdrvTreeAddNode(ih, -1, ITREE_BRANCH, "", 0);

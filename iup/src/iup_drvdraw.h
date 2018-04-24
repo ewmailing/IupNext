@@ -71,7 +71,7 @@ void iupdrvDrawText(IdrawCanvas* dc, const char* text, int len, int x, int y, in
 /** Draws an image.
  * x,y is at left,top corner of the image.
  * \ingroup drvdraw */
-void iupdrvDrawImage(IdrawCanvas* dc, const char* name, int make_inactive, int x, int y);
+void iupdrvDrawImage(IdrawCanvas* dc, const char* name, int make_inactive, const char* bgcolor, int x, int y);
 
 /** Sets a rectangle clipping area.
  * \ingroup drvdraw */

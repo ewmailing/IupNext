@@ -451,7 +451,7 @@ void iupmotSetPixmap(Ihandle* ih, const char* name, const char* prop, int make_i
   if (name)
   {
     Pixmap old_pixmap;
-    Pixmap pixmap = (Pixmap)iupImageGetImage(name, ih, make_inactive);
+    Pixmap pixmap = (Pixmap)iupImageGetImage(name, ih, make_inactive, NULL);
     if (!pixmap) 
       pixmap = XmUNSPECIFIED_PIXMAP;
     XtVaGetValues(ih->handle, prop, &old_pixmap, NULL);

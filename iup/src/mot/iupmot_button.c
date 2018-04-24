@@ -143,7 +143,7 @@ static int motButtonSetBackgroundAttrib(Ihandle* ih, const char* value)
       return 1;
     else
     {
-      Pixmap pixmap = (Pixmap)iupImageGetImage(value, ih, 0);
+      Pixmap pixmap = (Pixmap)iupImageGetImage(value, ih, 0, NULL);
       if (pixmap)
       {
         XtVaSetValues(ih->handle, XmNbackgroundPixmap, pixmap, NULL);

@@ -164,7 +164,7 @@ static int gtkClipboardSetImageAttrib(Ihandle *ih, const char *value)
     return 0;
   }
 
-  pixbuf = (GdkPixbuf*)iupImageGetImage(value, ih, 0);
+  pixbuf = (GdkPixbuf*)iupImageGetImage(value, ih, 0, NULL);
   if (pixbuf)
     gtk_clipboard_set_image (clipboard, pixbuf);
 #endif

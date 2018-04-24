@@ -61,7 +61,7 @@ static int iFlatLabelRedraw_CB(Ihandle* ih)
   if (bgimage) /* draw background */
   {
     draw_image = iupFlatGetImageName(ih, "BACKIMAGE", bgimage, 0, 0, active, &make_inactive);
-    iupdrvDrawImage(dc, draw_image, make_inactive, 0, 0);
+    iupdrvDrawImage(dc, draw_image, make_inactive, bgcolor, 0, 0);
   }
   else
     iupFlatDrawBox(dc, 0, ih->currentwidth - 1,
@@ -77,7 +77,7 @@ static int iFlatLabelRedraw_CB(Ihandle* ih)
   if (fgimage)
   {
     draw_image = iupFlatGetImageName(ih, "FRONTIMAGE", fgimage, 0, 0, active, &make_inactive);
-    iupdrvDrawImage(dc, draw_image, make_inactive, 0, 0);
+    iupdrvDrawImage(dc, draw_image, make_inactive, bgcolor, 0, 0);
   }
   else if (!image && !title)
   {

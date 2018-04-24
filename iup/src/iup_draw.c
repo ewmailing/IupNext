@@ -83,7 +83,7 @@ void IupDrawParentBackground(Ihandle* ih)
 
 static int iDrawGetStyle(Ihandle* ih)
 {
-  char* style = IupGetAttribute(ih, "DRAWSTYLE");
+  char* style = iupAttribGetStr(ih, "DRAWSTYLE");
   if (iupStrEqualNoCase(style, "FILL"))
     return IUP_DRAW_FILL;
   else if (iupStrEqualNoCase(style, "STROKE_DASH"))
@@ -96,7 +96,7 @@ static int iDrawGetStyle(Ihandle* ih)
 
 static int iDrawGetLineWidth(Ihandle* ih)
 {
-  int line_width = IupGetInt(ih, "DRAWLINEWIDTH");
+  int line_width = iupAttribGetInt(ih, "DRAWLINEWIDTH");
   if (line_width == 0)
     return 1;
   else
@@ -117,7 +117,7 @@ void IupDrawLine(Ihandle* ih, int x1, int y1, int x2, int y2)
   if (!dc)
     return;
 
-  color = iupDrawStrToColor(IupGetAttribute(ih, "DRAWCOLOR"), 0);
+  color = iupDrawStrToColor(iupAttribGetStr(ih, "DRAWCOLOR"), 0);
 
   line_width = iDrawGetLineWidth(ih);
   style = iDrawGetStyle(ih);
@@ -139,7 +139,7 @@ void IupDrawRectangle(Ihandle* ih, int x1, int y1, int x2, int y2)
   if (!dc)
     return;
 
-  color = iupDrawStrToColor(IupGetAttribute(ih, "DRAWCOLOR"), 0);
+  color = iupDrawStrToColor(iupAttribGetStr(ih, "DRAWCOLOR"), 0);
 
   line_width = iDrawGetLineWidth(ih);
   style = iDrawGetStyle(ih);
@@ -161,7 +161,7 @@ void IupDrawArc(Ihandle* ih, int x1, int y1, int x2, int y2, double a1, double a
   if (!dc)
     return;
 
-  color = iupDrawStrToColor(IupGetAttribute(ih, "DRAWCOLOR"), 0);
+  color = iupDrawStrToColor(iupAttribGetStr(ih, "DRAWCOLOR"), 0);
 
   line_width = iDrawGetLineWidth(ih);
   style = iDrawGetStyle(ih);
@@ -183,7 +183,7 @@ void IupDrawPolygon(Ihandle* ih, int* points, int count)
   if (!dc)
     return;
 
-  color = iupDrawStrToColor(IupGetAttribute(ih, "DRAWCOLOR"), 0);
+  color = iupDrawStrToColor(iupAttribGetStr(ih, "DRAWCOLOR"), 0);
 
   line_width = iDrawGetLineWidth(ih);
   style = iDrawGetStyle(ih);
@@ -210,9 +210,9 @@ void IupDrawText(Ihandle* ih, const char* text, int len, int x, int y)
   if (!dc)
     return;
 
-  color = iupDrawStrToColor(IupGetAttribute(ih, "DRAWCOLOR"), 0);
+  color = iupDrawStrToColor(iupAttribGetStr(ih, "DRAWCOLOR"), 0);
 
-  align = iupFlatGetHorizontalAlignment(IupGetAttribute(ih, "DRAWTEXTALIGNMENT"));
+  align = iupFlatGetHorizontalAlignment(iupAttribGetStr(ih, "DRAWTEXTALIGNMENT"));
 
   font = iupDrawGetTextSize(ih, text, &w, &h);
 
@@ -237,9 +237,11 @@ void IupDrawGetImageInfo(const char* name, int *w, int *h, int *bpp)
   iupImageGetInfo(name, w, h, bpp);
 }
 
-void IupDrawImage(Ihandle* ih, const char* name, int make_inactive, int x, int y)
+void IupDrawImage(Ihandle* ih, const char* name, int x, int y)
 {
   IdrawCanvas* dc;
+  char* bgcolor;
+  int make_inactive;
 
   iupASSERT(iupObjectCheck(ih));
   if (!iupObjectCheck(ih))
@@ -249,7 +251,10 @@ void IupDrawImage(Ihandle* ih, const char* name, int make_inactive, int x, int y
   if (!dc)
     return;
 
-  iupdrvDrawImage(dc, name, make_inactive, x, y);
+  bgcolor = iupAttribGetStr(ih, "DRAWBGCOLOR");
+  make_inactive = iupAttribGetInt(ih, "DRAWMAKEINACTIVE");
+
+  iupdrvDrawImage(dc, name, make_inactive, bgcolor, x, y);
 }
 
 void IupDrawSetClipRect(Ihandle* ih, int x1, int y1, int x2, int y2)
@@ -452,7 +457,7 @@ void iupDrawParentBackground(IdrawCanvas* dc, Ihandle* ih)
 
 char* iupDrawGetTextSize(Ihandle* ih, const char* str, int *w, int *h)
 {
-  char*font = IupGetAttribute(ih, "DRAWFONT");
+  char*font = iupAttribGetStr(ih, "DRAWFONT");
   if (!font)
     font = IupGetAttribute(ih, "FONT");
 
@@ -653,7 +658,7 @@ void iupFlatDrawIcon(Ihandle* ih, IdrawCanvas* dc, int icon_x, int icon_y, int i
                                   img_width, img_height, txt_width, txt_height,
                                   &img_x, &img_y, &txt_x, &txt_y);
 
-      iupdrvDrawImage(dc, imagename, make_inactive, img_x + icon_x, img_y + icon_y);
+      iupdrvDrawImage(dc, imagename, make_inactive, bgcolor, img_x + icon_x, img_y + icon_y);
       iFlatDrawText(dc, txt_x + icon_x, txt_y + icon_y, txt_width, txt_height, title, font, text_align, fgcolor, bgcolor, active);
     }
     else
@@ -662,7 +667,7 @@ void iupFlatDrawIcon(Ihandle* ih, IdrawCanvas* dc, int icon_x, int icon_y, int i
 
       iFlatGetIconPosition(icon_width, icon_height, &x, &y, width, height, horiz_alignment, vert_alignment, horiz_padding, vert_padding);
 
-      iupdrvDrawImage(dc, imagename, make_inactive, x + icon_x, y + icon_y);
+      iupdrvDrawImage(dc, imagename, make_inactive, bgcolor, x + icon_x, y + icon_y);
     }
   }
   else if (title)

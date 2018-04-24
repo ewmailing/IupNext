@@ -100,7 +100,7 @@ static int motClipboardSetImageAttrib(Ihandle *ih, const char *value)
     return 0;
   }
 
-  pixmap = (Pixmap)iupImageGetImage(value, ih, 0);
+  pixmap = (Pixmap)iupImageGetImage(value, ih, 0, NULL);
 
   XmClipboardCopy(iupmot_display, window, item_id, "PIXMAP", (char*)&pixmap, sizeof(Pixmap), 0, NULL);
   XmClipboardEndCopy(iupmot_display, window, item_id);

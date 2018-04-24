@@ -968,7 +968,7 @@ static int winListSetImageAttrib(Ihandle* ih, int id, const char* value)
   if (!ih->data->show_image || pos < 0)
     return 0;
 
-  hBitmap = iupImageGetImage(value, ih, 0);
+  hBitmap = iupImageGetImage(value, ih, 0, NULL);
   winListSetItemData(ih, pos, NULL, hBitmap);
 
   iupdrvRedrawNow(ih);

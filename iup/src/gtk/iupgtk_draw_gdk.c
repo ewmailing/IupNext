@@ -115,7 +115,7 @@ static void iDrawSetLineStyle(IdrawCanvas* dc, int style)
     gcval.line_style = GDK_LINE_SOLID;
   else
   {
-    gint8 dashes[2] = { 6, 2 };
+    gint8 dashes[2] = { 12, 4 };
     gint8 dots[2] = { 2, 2 };
 
     if (style == IUP_DRAW_STROKE_DASH)
@@ -254,10 +254,10 @@ void iupdrvDrawText(IdrawCanvas* dc, const char* text, int len, int x, int y, in
   gdk_draw_layout(dc->pixmap, dc->pixmap_gc, x, y, fontlayout);
 }
 
-void iupdrvDrawImage(IdrawCanvas* dc, const char* name, int make_inactive, int x, int y)
+void iupdrvDrawImage(IdrawCanvas* dc, const char* name, int make_inactive, const char* bgcolor, int x, int y)
 {
   int bpp, img_w, img_h;
-  GdkPixbuf* pixbuf = iupImageGetImage(name, dc->ih, make_inactive);
+  GdkPixbuf* pixbuf = iupImageGetImage(name, dc->ih, make_inactive, bgcolor);
   if (!pixbuf)
     return;
 

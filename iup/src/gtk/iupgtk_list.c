@@ -905,7 +905,7 @@ static char* gtkListGetReadOnlyAttrib(Ihandle* ih)
 static int gtkListSetImageAttrib(Ihandle* ih, int id, const char* value)
 {
   GtkTreeModel* model = gtkListGetModel(ih);
-  GdkPixbuf* pixImage = iupImageGetImage(value, ih, 0);
+  GdkPixbuf* pixImage = iupImageGetImage(value, ih, 0, NULL);
   GtkTreeIter iter;
   int pos = iupListGetPosAttrib(ih, id);
 

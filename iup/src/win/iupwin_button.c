@@ -112,7 +112,7 @@ static HBITMAP winButtonGetBitmap(Ihandle* ih, UINT itemState, int *shift, int *
       name = iupAttribGet(ih, "IMAGE");
   }
 
-  hBitmap = iupImageGetImage(name, ih, make_inactive);
+  hBitmap = iupImageGetImage(name, ih, make_inactive, NULL);
 
   /* must use this info, since image can be a driver image loaded from resources */
   iupdrvImageGetInfo(hBitmap, w, h, bpp);
