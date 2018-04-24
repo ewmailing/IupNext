@@ -166,7 +166,7 @@ else
     WDL := win/wdl/backend-d2d.c win/wdl/backend-dwrite.c win/wdl/backend-gdix.c win/wdl/backend-wic.c \
            win/wdl/bitblt.c win/wdl/brush.c win/wdl/cachedimage.c win/wdl/canvas.c win/wdl/draw.c \
            win/wdl/fill.c win/wdl/font.c win/wdl/image.c win/wdl/init.c win/wdl/memstream.c \
-           win/wdl/misc.c win/wdl/path.c win/wdl/string.c
+           win/wdl/misc.c win/wdl/path.c win/wdl/string.c win/wdl/strokestyle.c
     SRC += win/iupwin_draw_wdl.c $(WDL)
   else
     SRC += win/iupwin_draw_gdi.c
