@@ -19,6 +19,7 @@
 #include "iup_image.h"
 #include "iup_drvdraw.h"
 #include "iup_draw.h"
+#include "iup_str.h"
 
 #include "iupwin_drv.h"
 #include "iupwin_info.h"
@@ -315,38 +316,108 @@ void iupdrvDrawText(IdrawCanvas* dc, const char* text, int len, int x, int y, in
   wdDestroyFont(wdFont);
 }
 
-void iupdrvDrawImage(IdrawCanvas* dc, const char* name, int make_inactive, const char* bgcolor, int x, int y)
+static WD_HIMAGE wdlGetImage(const char* name, Ihandle* ih_parent, int make_inactive, const char* bgcolor)
 {
-  UINT width, height;
   WD_HIMAGE hImage = NULL;
-  WD_RECT rect;
+#if 0
   HBITMAP hBitmap;
 
+  /* GDI+ does not support HBITMAP with alpha */
   if (wdBackend() == WD_BACKEND_GDIPLUS)
-    iupAttribSet(dc->ih, "FLAT_ALPHA", "1");
+    iupAttribSet(ih_parent, "FLAT_ALPHA", "1");
 
-  hBitmap = (HBITMAP)iupImageGetImage(name, dc->ih, make_inactive, bgcolor);
+  hBitmap = (HBITMAP)iupImageGetImage(name, ih_parent, make_inactive, bgcolor);
 
   if (wdBackend() == WD_BACKEND_GDIPLUS)
-    iupAttribSet(dc->ih, "FLAT_ALPHA", NULL);
+    iupAttribSet(ih_parent, "FLAT_ALPHA", NULL);
 
   if (!hBitmap)
-    return;
+    return NULL;
 
   hImage = wdCreateImageFromHBITMAP(hBitmap);
-  if (!hImage)
-    return;
+#else
+  int width, height, channels;
+  unsigned char* data;
+  Ihandle* ih = IupGetHandle(name);
+  if (!ih)
+    return NULL;
 
-  wdGetImageSize(hImage, &width, &height);
+  width = IupGetInt(ih, "WIDTH");
+  height = IupGetInt(ih, "HEIGHT");
+  channels = IupGetInt(ih, "CHANNELS");
+  data = (unsigned char*)iupAttribGet(ih, "WID");
 
-  rect.x0 = iupInt2Float(x);
-  rect.y0 = iupInt2Float(y);
-  rect.x1 = iupInt2Float(x + width);
-  rect.y1 = iupInt2Float(y + height);
+  if (channels == 4)
+    hImage = wdCreateImageFromBuffer(width, height, data, TRUE, NULL);
+  else if (channels == 3)
+    hImage = wdCreateImageFromBuffer(width, height, data, FALSE, NULL);
+  else
+  {
+    COLORREF cPalette[256];
+    iupColor colors[256];
+    int i, colors_count;
+    unsigned char bg_r = 0, bg_g = 0, bg_b = 0;
 
-  wdBitBltImage(dc->hCanvas, hImage, &rect, NULL);
+    char* img_bgcolor = iupAttribGet(ih, "BGCOLOR");
+    if (ih_parent && !img_bgcolor)
+    {
+      if (!bgcolor)
+        bgcolor = IupGetAttribute(ih_parent, "BGCOLOR"); /* Use IupGetAttribute to use inheritance and native implementation */
+    }
+    else
+      bgcolor = img_bgcolor;
 
-  wdDestroyImage(hImage);
+    iupStrToRGB(bgcolor, &bg_r, &bg_g, &bg_b);
+    iupImageInitColorTable(ih, colors, &colors_count);
+
+    for (i = 0; i < colors_count; i++)
+    {
+      if (colors[i].a == 0) /* full transparent alpha */
+        cPalette[i] = RGB(bg_r, bg_g, bg_b);
+      else
+        cPalette[i] = RGB(colors[i].r, colors[i].g, colors[i].b);
+
+      if (make_inactive)
+        iupImageColorMakeInactive(&(colors[i].r), &(colors[i].g), &(colors[i].b), bg_r, bg_g, bg_b);
+    }
+
+    hImage = wdCreateImageFromBuffer(width, height, data, FALSE, cPalette);
+  }
+
+#endif
+  return hImage;
+}
+
+void iupdrvDrawImage(IdrawCanvas* dc, const char* name, int make_inactive, const char* bgcolor, int x, int y)
+{
+  WD_HIMAGE hImage = wdlGetImage(name, dc->ih, make_inactive, bgcolor);
+  if (hImage)
+  {
+#if 1
+    UINT width, height;
+    WD_RECT rect;
+    wdGetImageSize(hImage, &width, &height);
+
+    rect.x0 = iupInt2Float(x);
+    rect.y0 = iupInt2Float(y);
+    rect.x1 = iupInt2Float(x + width);
+    rect.y1 = iupInt2Float(y + height);
+
+    wdBitBltImage(dc->hCanvas, hImage, &rect, NULL);
+
+    wdDestroyImage(hImage);
+#else
+    WD_HCACHEDIMAGE hCachedImage = wdCreateCachedImage(dc->hCanvas, hImage);
+    wdDestroyImage(hImage);
+
+    if (!hCachedImage)
+      return;
+
+    wdBitBltCachedImage(dc->hCanvas, hCachedImage, x, y);   /* TODO bug in GetPixelSize */
+
+    wdDestroyCachedImage(hCachedImage);
+#endif
+  }
 }
 
 void iupdrvDrawSelectRect(IdrawCanvas* dc, int x1, int y1, int x2, int y2)
@@ -382,12 +453,3 @@ void iupdrvDrawFocusRect(IdrawCanvas* dc, int x1, int y1, int x2, int y2)
   iupdrvDrawRectangle(dc, x1, y1, x2, y2, iupDrawColor(0, 0, 0, 255), IUP_DRAW_STROKE_DOT, 1);
 #endif
 }
-
-// TODO
-// - Image with Alpha GDI+
-// - Image Lock
-// https://msdn.microsoft.com/en-us/library/windows/desktop/ee690187(v=vs.85).aspx
-//WD_HIMAGE wdLoadImageFromFile(const WCHAR* pszPath);
-//WD_HIMAGE wdLoadImageFromResource(HINSTANCE hInstance, const WCHAR* pszResType, const WCHAR* pszResName);
-//WD_HIMAGE wdCreateImageFromBuffer(UINT uWidth, UINT uHeight, const BYTE* pucBuffer,
-//                                  BOOL bHasAlpha, const COLORREF* cPalette);

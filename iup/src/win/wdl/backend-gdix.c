@@ -139,6 +139,7 @@ gdix_init(void)
     GPA(GetPathLastPoint, (dummy_GpPath*, dummy_GpPointF*));
     GPA(AddPathArc, (dummy_GpPath*, float, float, float, float, float, float));
     GPA(AddPathLine, (dummy_GpPath*, float, float, float, float));
+    GPA(SetPenDashOffset, (dummy_GpPen*, float));
 
     /* Font functions */
     GPA(CreateFontFromLogfontW, (HDC, const LOGFONTW*, dummy_GpFont**));
@@ -160,6 +161,9 @@ gdix_init(void)
     GPA(DisposeImage, (dummy_GpImage*));
     GPA(GetImageWidth, (dummy_GpImage*, UINT*));
     GPA(GetImageHeight, (dummy_GpImage*, UINT*));
+    GPA(CreateBitmapFromScan0, (UINT, UINT, INT, dummy_GpPixelFormat format, BYTE*, dummy_GpBitmap**));
+    GPA(BitmapLockBits, (dummy_GpBitmap*, const dummy_GpRectI*, UINT, dummy_GpPixelFormat, dummy_GpBitmapData*));
+    GPA(BitmapUnlockBits, (dummy_GpBitmap*, dummy_GpBitmapData*));
 
     /* Cached bitmap functions */
     GPA(CreateCachedBitmap, (dummy_GpBitmap*, dummy_GpGraphics*, dummy_GpCachedBitmap**));
@@ -412,7 +416,10 @@ gdix_setpen(dummy_GpPen* pen, dummy_GpBrush* brush, float width, gdix_strokestyl
     if (style)
     {
         if (style->dashesCount > 0)
+        {
+            gdix_vtable->fn_SetPenDashOffset(pen, 0.5f);
             gdix_vtable->fn_SetPenDashArray(pen, style->dashes, style->dashesCount);
+        }
 
         gdix_vtable->fn_SetPenDashStyle(pen, style->dashStyle);
         gdix_vtable->fn_SetPenStartCap(pen, style->lineCap);
