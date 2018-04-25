@@ -450,17 +450,15 @@ static int winImageInitDibColors(iupColor* colors, RGBQUAD* bmpcolors, int color
     bmpcolors[i].rgbRed   = colors[i].r;
     bmpcolors[i].rgbGreen = colors[i].g;
     bmpcolors[i].rgbBlue  = colors[i].b;
-    bmpcolors[i].rgbReserved = colors[i].a;
+    bmpcolors[i].rgbReserved = 0;
 
-    if (bmpcolors[i].rgbReserved == 0) /* full transparent alpha */
+    if (colors[i].a == 0) /* full transparent alpha */
     {
       bmpcolors[i].rgbBlue = bg_b; 
       bmpcolors[i].rgbGreen = bg_g; 
       bmpcolors[i].rgbRed = bg_r;
       ret = 1;
     }
-    else
-      bmpcolors[i].rgbReserved = 0; /* clear non transparent mark */
 
     if (make_inactive)
       iupImageColorMakeInactive(&(bmpcolors[i].rgbRed), &(bmpcolors[i].rgbGreen), &(bmpcolors[i].rgbBlue), 
