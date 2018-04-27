@@ -164,6 +164,7 @@ static void drawTest(Ihandle *ih, int posx)  //_Lines
 
   /* white background */
   IupSetAttribute(ih, "DRAWCOLOR", "255 255 255");
+//  IupSetAttribute(ih, "DRAWCOLOR", "255 0 255"); /* pink */
   IupSetAttribute(ih, "DRAWSTYLE", "FILL");
   IupDrawRectangle(ih, 0, 0, w - 1, h - 1);
 
