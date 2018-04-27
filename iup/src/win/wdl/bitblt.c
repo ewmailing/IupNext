@@ -94,7 +94,7 @@ wdBitBltImage(WD_HCANVAS hCanvas, const WD_HIMAGE hImage,
 
 void
 wdBitBltCachedImage(WD_HCANVAS hCanvas, const WD_HCACHEDIMAGE hCachedImage,
-                    int x, int y)
+                    float x, float y)
 {
     if(d2d_enabled()) {
         d2d_canvas_t* c = (d2d_canvas_t*) hCanvas;
@@ -104,10 +104,10 @@ wdBitBltCachedImage(WD_HCANVAS hCanvas, const WD_HCACHEDIMAGE hCachedImage,
 
         sz = dummy_ID2D1Bitmap_GetPixelSize(b);
 
-        dest.left = (float)x - D2D_BASEDELTA_X;
-        dest.top = (float)y - D2D_BASEDELTA_X;
-        dest.right = (float)(x + sz.width) - D2D_BASEDELTA_X;
-        dest.bottom = (float)(y + sz.height) - D2D_BASEDELTA_X;
+        dest.left = x - D2D_BASEDELTA_X;
+        dest.top = y - D2D_BASEDELTA_X;
+        dest.right = (x + sz.width) - D2D_BASEDELTA_X;
+        dest.bottom = (y + sz.height) - D2D_BASEDELTA_X;
 
         dummy_ID2D1RenderTarget_DrawBitmap(c->target, b, &dest, 1.0f,
                 dummy_D2D1_BITMAP_INTERPOLATION_MODE_LINEAR, NULL);
@@ -115,7 +115,7 @@ wdBitBltCachedImage(WD_HCANVAS hCanvas, const WD_HCACHEDIMAGE hCachedImage,
         gdix_canvas_t* c = (gdix_canvas_t*) hCanvas;
         dummy_GpCachedBitmap* cb = (dummy_GpCachedBitmap*) hCachedImage;
 
-        gdix_vtable->fn_DrawCachedBitmap(c->graphics, cb, x, y);
+        gdix_vtable->fn_DrawCachedBitmap(c->graphics, cb, (INT)x, (INT)y);
     }
 }
 

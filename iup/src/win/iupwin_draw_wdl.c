@@ -320,17 +320,7 @@ static WD_HIMAGE wdlGetImage(const char* name, Ihandle* ih_parent, int make_inac
 {
   WD_HIMAGE hImage = NULL;
 #if 0
-  HBITMAP hBitmap;
-
-  /* GDI+ does not support HBITMAP with alpha */
-  if (wdBackend() == WD_BACKEND_GDIPLUS)
-    iupAttribSet(ih_parent, "FLAT_ALPHA", "1");
-
-  hBitmap = (HBITMAP)iupImageGetImage(name, ih_parent, make_inactive, bgcolor);
-
-  if (wdBackend() == WD_BACKEND_GDIPLUS)
-    iupAttribSet(ih_parent, "FLAT_ALPHA", NULL);
-
+  HBITMAP hBitmap = (HBITMAP)iupImageGetImage(name, ih_parent, make_inactive, bgcolor);
   if (!hBitmap)
     return NULL;
 
@@ -348,9 +338,9 @@ static WD_HIMAGE wdlGetImage(const char* name, Ihandle* ih_parent, int make_inac
   data = (unsigned char*)iupAttribGet(ih, "WID");
 
   if (channels == 4)
-    hImage = wdCreateImageFromBuffer(width, height, data, TRUE, NULL);
+    hImage = wdCreateImageFromBuffer(width, height, 0, data, WD_PIXELFORMAT_R8G8B8A8, NULL, 0);
   else if (channels == 3)
-    hImage = wdCreateImageFromBuffer(width, height, data, FALSE, NULL);
+    hImage = wdCreateImageFromBuffer(width, height, 0, data, WD_PIXELFORMAT_R8G8B8, NULL, 0);
   else
   {
     COLORREF cPalette[256];
@@ -381,7 +371,7 @@ static WD_HIMAGE wdlGetImage(const char* name, Ihandle* ih_parent, int make_inac
         iupImageColorMakeInactive(&(colors[i].r), &(colors[i].g), &(colors[i].b), bg_r, bg_g, bg_b);
     }
 
-    hImage = wdCreateImageFromBuffer(width, height, data, FALSE, cPalette);
+    hImage = wdCreateImageFromBuffer(width, height, 0, data, WD_PIXELFORMAT_PALETTE, cPalette, colors_count);
   }
 
 #endif
@@ -413,7 +403,7 @@ void iupdrvDrawImage(IdrawCanvas* dc, const char* name, int make_inactive, const
     if (!hCachedImage)
       return;
 
-    wdBitBltCachedImage(dc->hCanvas, hCachedImage, x, y);   /* TODO bug in GetPixelSize */
+    wdBitBltCachedImage(dc->hCanvas, hCachedImage, x, y);   /* TODO bug in GetPixelSize is crashing in D2D */
 
     wdDestroyCachedImage(hCachedImage);
 #endif
@@ -446,7 +436,7 @@ void iupdrvDrawFocusRect(IdrawCanvas* dc, int x1, int y1, int x2, int y2)
   rect.top = y1;
   rect.bottom = y2;
 
-  hDC = wdStartGdi(dc->hCanvas, TRUE);  /* TODO wdStartGdi is crashing for D2D */
+  hDC = wdStartGdi(dc->hCanvas, TRUE);  /* TODO wdStartGdi is crashing in D2D */
   DrawFocusRect(hDC, &rect);
   wdEndGdi(dc->hCanvas, hDC);
 #else
