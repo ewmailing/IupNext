@@ -251,6 +251,9 @@
     <ClCompile Include="..\src\win\wdl\strokestyle.c">
       <Filter>wdl</Filter>
     </ClCompile>
+    <ClCompile Include="..\src\win\iupwin_image_wdl.c">
+      <Filter>src_controls</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <None Include="..\src\iup.def" />
