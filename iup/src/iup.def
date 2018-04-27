@@ -295,6 +295,7 @@ iupdrvFontGetStringWidth
 iupdrvFontGetMultiLineStringSize
 iupdrvFontGetTextSize
 iupdrvFontGetCharSize
+iupdrvFontGetFontDim
 iupdrvPaintFocusRect
 iupdrvPostRedraw
 iupdrvRedrawNow

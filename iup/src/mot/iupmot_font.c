@@ -438,6 +438,18 @@ void iupdrvFontGetTextSize(const char* font, const char* str, int *w, int *h)
     motFontGetTextSize(motfont, str, w, h);
 }
 
+void iupdrvFontGetFontDim(const char* font, int *max_width, int *line_height, int *ascent, int *descent)
+{
+  ImotFont *motfont = motFindFont(NULL, font);
+  if (motfont)
+  {
+    if (max_width) *max_width = motfont->fontstruct->max_bounds.width;
+    if (line_height) *line_height = motfont->fontstruct->ascent + motfont->fontstruct->descent;
+    if (ascent)    *ascent = motfont->fontstruct->ascent;
+    if (descent)   *descent = motfont->fontstruct->descent;
+  }
+}
+
 void iupdrvFontGetCharSize(Ihandle* ih, int *charwidth, int *charheight)
 {
   ImotFont* motfont = motGetFont(ih);

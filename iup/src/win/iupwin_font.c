@@ -30,6 +30,7 @@ typedef struct IwinFont_
   char font[200];
   HFONT hFont;
   int charwidth, charheight;
+  int max_width, ascent, descent;
 } IwinFont;
 
 static Iarray* win_fonts = NULL;
@@ -101,6 +102,10 @@ static IwinFont* winFindFont(const char *font)
        in CD is "maximum" width. */
     fonts[i].charwidth = tm.tmAveCharWidth; 
     fonts[i].charheight = tm.tmHeight;
+
+    fonts[i].max_width = tm.tmMaxCharWidth;
+    fonts[i].ascent = tm.tmAscent;
+    fonts[i].descent = tm.tmDescent;
 
     SelectObject(hdc, oldfont);
     ReleaseDC(NULL, hdc);
@@ -306,6 +311,18 @@ void iupdrvFontGetTextSize(const char* font, const char* str, int *w, int *h)
   IwinFont* winfont = winFindFont(font);
   if (winfont)
     winFontGetTextSize(NULL, winfont, str, w, h);
+}
+
+void iupdrvFontGetFontDim(const char* font, int *max_width, int *line_height, int *ascent, int *descent)
+{
+  IwinFont* winfont = winFindFont(font);
+  if (winfont)
+  {
+    if (max_width) *max_width = winfont->max_width;
+    if (line_height) *line_height = winfont->charheight;
+    if (ascent)    *ascent = winfont->ascent;
+    if (descent)   *descent = winfont->descent;
+  }
 }
 
 int iupdrvFontGetStringWidth(Ihandle* ih, const char* str)

@@ -415,6 +415,32 @@ void iupdrvFontGetTextSize(const char* font, const char* str, int *w, int *h)
     gtkFontGetTextSize(NULL, gtkfont, str, w, h);
 }
 
+void iupdrvFontGetFontDim(const char* font, int *max_width, int *line_height, int *ascent, int *descent)
+{
+  IgtkFont *gtkfont = gtkFindFont(font);
+  if (gtkfont)
+  {
+    PangoFontMetrics* metrics;
+    int charwidth, charheight, charascent, chardescent;
+
+    if (!gtkfont->fontdesc)
+      return;
+
+    metrics = pango_context_get_metrics(gtk_fonts_context, gtkfont->fontdesc, pango_context_get_language(gtk_fonts_context));
+    charascent = pango_font_metrics_get_ascent(metrics);
+    chardescent = pango_font_metrics_get_descent(metrics);
+    charheight = charascent + chardescent;
+    charwidth = pango_font_metrics_get_approximate_char_width(metrics);
+
+    if (max_width)   *max_width = (((charwidth)+PANGO_SCALE / 2) / PANGO_SCALE);
+    if (line_height) *line_height = (((charheight)+PANGO_SCALE / 2) / PANGO_SCALE);
+    if (ascent)      *ascent = (((charascent)+PANGO_SCALE / 2) / PANGO_SCALE);
+    if (descent)     *descent = (((chardescent)+PANGO_SCALE / 2) / PANGO_SCALE);
+
+    pango_font_metrics_unref(metrics);
+  }
+}
+
 int iupdrvFontGetStringWidth(Ihandle* ih, const char* str)
 {
   IgtkFont* gtkfont;

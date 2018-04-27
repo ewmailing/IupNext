@@ -42,6 +42,10 @@ void iupdrvFontGetMultiLineStringSize(Ihandle* ih, const char* str, int *w, int 
 *\ingroup drvfont */
 void iupdrvFontGetTextSize(const char* font, const char* str, int *w, int *h);
 
+/** Returns information about the font. \n
+*\ingroup drvfont */
+void iupdrvFontGetFontDim(const char* font, int *max_width, int *line_height, int *ascent, int *descent);
+
 /** Returns the System default font.
  * \ingroup drvfont */
 char* iupdrvGetSystemFont(void);
