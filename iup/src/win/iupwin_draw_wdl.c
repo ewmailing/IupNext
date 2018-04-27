@@ -40,6 +40,13 @@ struct _IdrawCanvas{
 /* must be the same in wdInitialize and wdTerminate */
 const DWORD wdl_flags = WD_INIT_COREAPI | WD_INIT_IMAGEAPI | WD_INIT_STRINGAPI;
 
+static int wdlImageDestroy(Ihandle* ih)
+{
+  WD_HIMAGE hImage = (WD_HIMAGE)ih;
+  wdDestroyImage(hImage);
+  return 0;
+}
+
 void iupwinDrawInit(void)
 {
   iupwinDrawThemeInit();
@@ -50,6 +57,8 @@ void iupwinDrawInit(void)
 #endif
 
   wdInitialize(wdl_flags);
+
+  IupSetFunction("_IUPIMAGE_WD_IMAGEDESTROY", wdlImageDestroy);
 }
 
 void iupwinDrawFinish(void)
@@ -316,21 +325,21 @@ void iupdrvDrawText(IdrawCanvas* dc, const char* text, int len, int x, int y, in
   wdDestroyFont(wdFont);
 }
 
-static WD_HIMAGE wdlGetImage(const char* name, Ihandle* ih_parent, int make_inactive, const char* bgcolor)
+static WD_HIMAGE wdlImageLoad(const char* name)
 {
-  WD_HIMAGE hImage = NULL;
-#if 0
-  HBITMAP hBitmap = (HBITMAP)iupImageGetImage(name, ih_parent, make_inactive, bgcolor);
-  if (!hBitmap)
-    return NULL;
+  WD_HIMAGE hImage = wdLoadImageFromResource(iupwin_hinstance, RT_BITMAP, iupwinStrToSystem(name));
+  if (!hImage && iupwin_dll_hinstance)
+    hImage = wdLoadImageFromResource(iupwin_dll_hinstance, RT_BITMAP, iupwinStrToSystem(name));
+  if (!hImage)
+    hImage = wdLoadImageFromFile(iupwinStrToSystemFilename(name));
+  return hImage;
+}
 
-  hImage = wdCreateImageFromHBITMAP(hBitmap);
-#else
+static WD_HIMAGE wdlImageCreateImage(Ihandle *ih, const char* bgcolor, int make_inactive)
+{
   int width, height, channels;
   unsigned char* data;
-  Ihandle* ih = IupGetHandle(name);
-  if (!ih)
-    return NULL;
+  WD_HIMAGE hImage = NULL;
 
   width = IupGetInt(ih, "WIDTH");
   height = IupGetInt(ih, "HEIGHT");
@@ -347,15 +356,6 @@ static WD_HIMAGE wdlGetImage(const char* name, Ihandle* ih_parent, int make_inac
     iupColor colors[256];
     int i, colors_count;
     unsigned char bg_r = 0, bg_g = 0, bg_b = 0;
-
-    char* img_bgcolor = iupAttribGet(ih, "BGCOLOR");
-    if (ih_parent && !img_bgcolor)
-    {
-      if (!bgcolor)
-        bgcolor = IupGetAttribute(ih_parent, "BGCOLOR"); /* Use IupGetAttribute to use inheritance and native implementation */
-    }
-    else
-      bgcolor = img_bgcolor;
 
     iupStrToRGB(bgcolor, &bg_r, &bg_g, &bg_b);
     iupImageInitColorTable(ih, colors, &colors_count);
@@ -374,13 +374,106 @@ static WD_HIMAGE wdlGetImage(const char* name, Ihandle* ih_parent, int make_inac
     hImage = wdCreateImageFromBuffer(width, height, 0, data, WD_PIXELFORMAT_PALETTE, cPalette, colors_count);
   }
 
-#endif
   return hImage;
+}
+
+static void wdlImageSetHandleFromLoaded(const char* name, void* handle)
+{
+  Ihandle* ih;
+  iupImageSetHandleFromLoaded(name, handle);
+  ih = IupGetHandle(name);
+  iupAttribSet(ih, "_IUPIMAGE_LOADED_HANDLE", NULL);
+  iupAttribSet(ih, "_IUPIMAGE_LOADED_WD_HANDLE", (char*)handle);
+}
+
+static WD_HIMAGE wdlImageGetImage(const char* name, Ihandle* ih_parent, int make_inactive, const char* bgcolor)
+{
+  char cache_name[100] = "_IUPIMAGE_WD_IMAGE";
+  char* img_bgcolor;
+  WD_HIMAGE handle;
+  Ihandle *ih;
+  int bg_concat = 0;
+
+  if (!name)
+    return NULL;
+
+  ih = iupImageGetImageFromName(name);
+  if (!ih)
+  {
+    const char* native_name = NULL;
+
+    /* Check in the system resources. */
+    handle = wdlImageLoad(name);
+    if (handle)
+    {
+      wdlImageSetHandleFromLoaded(name, handle);  /* next time iupImageGetImageFromName will return the new handle */
+      return handle;
+    }
+
+    /* Check in the stock images. */
+    iupImageStockGet(name, &ih, &native_name);
+    if (native_name)
+    {
+      handle = wdlImageLoad(native_name);
+      if (handle)
+      {
+        wdlImageSetHandleFromLoaded(name, handle);  /* next time iupImageGetImageFromName will return the new handle */
+        return handle;
+      }
+    }
+
+    if (!ih)
+      return NULL;
+  }
+
+  handle = (WD_HIMAGE)iupAttribGet(ih, "_IUPIMAGE_LOADED_WD_HANDLE");
+  if (handle)
+    return handle;
+
+  img_bgcolor = iupAttribGet(ih, "BGCOLOR");
+  if (ih_parent && !img_bgcolor)
+  {
+    if (!bgcolor)
+      bgcolor = IupGetAttribute(ih_parent, "BGCOLOR"); /* Use IupGetAttribute to use inheritance and native implementation */
+  }
+  else
+    bgcolor = img_bgcolor;
+
+  if (make_inactive)
+    strcat(cache_name, "_INACTIVE");
+
+  if (iupAttribGet(ih, "_IUP_BGCOLOR_DEPEND") && bgcolor)
+  {
+    strcat(cache_name, "(");
+    strcat(cache_name, bgcolor);
+    strcat(cache_name, ")");
+    bg_concat = 1;
+  }
+
+  /* Check for an already created native image */
+  handle = (void*)iupAttribGet(ih, cache_name);
+  if (handle)
+    return handle;
+
+  /* Creates the native image */
+  handle = wdlImageCreateImage(ih, bgcolor, make_inactive);
+
+  if (iupAttribGet(ih, "_IUP_BGCOLOR_DEPEND") && bgcolor && !bg_concat)  /* _IUP_BGCOLOR_DEPEND could be set during creation */
+  {
+    strcat(cache_name, "(");
+    strcat(cache_name, bgcolor);
+    strcat(cache_name, ")");
+  }
+
+  /* save the native image in the cache */
+  iupAttribSet(ih, cache_name, (char*)handle);
+
+  return handle;
 }
 
 void iupdrvDrawImage(IdrawCanvas* dc, const char* name, int make_inactive, const char* bgcolor, int x, int y)
 {
-  WD_HIMAGE hImage = wdlGetImage(name, dc->ih, make_inactive, bgcolor);
+  WD_HIMAGE hImage = wdlImageGetImage(name, dc->ih, make_inactive, bgcolor);
   if (hImage)
   {
 #if 1
@@ -394,12 +487,8 @@ void iupdrvDrawImage(IdrawCanvas* dc, const char* name, int make_inactive, const
     rect.y1 = iupInt2Float(y + height);
 
     wdBitBltImage(dc->hCanvas, hImage, &rect, NULL);
-
-    wdDestroyImage(hImage);
 #else
     WD_HCACHEDIMAGE hCachedImage = wdCreateCachedImage(dc->hCanvas, hImage);
-    wdDestroyImage(hImage);
-
     if (!hCachedImage)
       return;
 

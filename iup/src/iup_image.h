@@ -50,12 +50,16 @@ void* iupdrvImageCreateImageRaw(int width, int height, int bpp, iupColor* colors
 int iupdrvImageGetRawInfo(void* handle, int *w, int *h, int *bpp, iupColor* colors, int *colors_count);
 void iupdrvImageGetRawData(void* handle, unsigned char* imgdata);
 
+void iupImageSetHandleFromLoaded(const char* name, void* handle);
+Ihandle* iupImageGetImageFromName(const char* name);
+
 void iupImageStockInit(void);
 void iupImageStockFinish(void);
 typedef Ihandle* (*iupImageStockCreateFunc)(void);
 void iupImageStockSet(const char *name, iupImageStockCreateFunc func, const char* native_name);
 void iupImageStockLoadAll(void);  /* Used only in IupView */
 int iupImageStockGetSize(void);
+void iupImageStockGet(const char* name, Ihandle* *ih, const char* *native_name);
 
 
 #ifdef __cplusplus
