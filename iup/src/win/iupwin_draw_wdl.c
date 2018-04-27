@@ -39,6 +39,7 @@ struct _IdrawCanvas{
 
   HWND hWnd;
   WD_HCANVAS hCanvas;
+  HDC hDC;
 };
 
 /* must be the same in wdInitialize and wdTerminate */
@@ -78,13 +79,27 @@ IdrawCanvas* iupdrvDrawCreateCanvas(Ihandle* ih)
   dc->w = rect.right - rect.left;
   dc->h = rect.bottom - rect.top;
 
-  ps.hdc = (HDC)iupAttribGet(ih, "HDC_WMPAINT");
+  /* valid only inside the ACTION callback of an IupCanvas */
   rcPaint = iupAttribGetStr(ih, "CLIPRECT");
-  sscanf(rcPaint, "%d %d %d %d", &x, &y, &w, &h);
-  ps.rcPaint.left = x;
-  ps.rcPaint.top = y;
-  ps.rcPaint.right = x + w;
-  ps.rcPaint.bottom = y + h;
+  if (rcPaint)
+  {
+    ps.hdc = (HDC)iupAttribGet(ih, "HDC_WMPAINT");
+    dc->hDC = NULL;
+    sscanf(rcPaint, "%d %d %d %d", &x, &y, &w, &h);
+    ps.rcPaint.left = x;
+    ps.rcPaint.top = y;
+    ps.rcPaint.right = x + w;
+    ps.rcPaint.bottom = y + h;
+  }
+  else
+  {
+    ps.hdc = GetDC(dc->hWnd);
+    dc->hDC = ps.hdc;
+    ps.rcPaint.left = 0;
+    ps.rcPaint.top = 0;
+    ps.rcPaint.right = dc->w;
+    ps.rcPaint.bottom = dc->h;
+  }
 
   dc->hCanvas = wdCreateCanvasWithPaintStruct(dc->hWnd, &ps, WD_CANVAS_DOUBLEBUFFER);
 
@@ -100,6 +115,9 @@ IdrawCanvas* iupdrvDrawCreateCanvas(Ihandle* ih)
 
 void iupdrvDrawKillCanvas(IdrawCanvas* dc)
 {
+  if (dc->hDC)
+    DeleteDC(dc->hDC);
+
   wdDestroyCanvas(dc->hCanvas);
   free(dc);
 }
