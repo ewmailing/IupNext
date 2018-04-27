@@ -131,6 +131,7 @@ void iupdrvImageGetData(void* handle, unsigned char* imgdata)
     }
     else if (bmih->biBitCount == 16)
     {
+      /* default mask if BI_BITFIELDS is not used */
       bmask = 0x001F;
       gmask = 0x03E0;
       rmask = 0x7C00;
@@ -154,9 +155,10 @@ void iupdrvImageGetData(void* handle, unsigned char* imgdata)
         }
         else
         {
-          *line_data++ = *bits++;
-          *line_data++ = *bits++;
-          *line_data++ = *bits++;
+          line_data[2] = *bits++;  /* blue */
+          line_data[1] = *bits++;  /* green */
+          line_data[0] = *bits++;  /* red */
+          line_data += 3;
 
           if (bmih->biBitCount == 32)
             *line_data++ = *bits++;
