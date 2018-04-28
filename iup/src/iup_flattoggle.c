@@ -23,7 +23,8 @@
 #include "iup_key.h"
 
 
-#define ITOGGLE_SPACE  3
+#define ITOGGLE_BORDER 2
+#define ITOGGLE_SPACE  1
 #define ITOGGLE_MARGIN 2
 
 /* from IupRadio implementation */
@@ -233,24 +234,24 @@ static int iFlatToggleRedraw_CB(Ihandle* ih)
 
       /* check border */
       if (radio)
-        iupFlatDrawDrawCircle(dc, xc, yc, radius, 0, 2, check_fgcolor, bgcolor, active);
+        iupFlatDrawDrawCircle(dc, xc, yc, radius, 0, ITOGGLE_BORDER, check_fgcolor, bgcolor, active);
       else
         iupFlatDrawBorder(dc, check_xmin, check_xmin + check_size,
                               check_ymin, check_ymin + check_size,
-                              2, check_fgcolor, bgcolor, active);
+                              ITOGGLE_BORDER, check_fgcolor, bgcolor, active);
 
       /* check mark */
       if (selected)
       {
         if (radio)
-          iupFlatDrawDrawCircle(dc, xc, yc, radius - ITOGGLE_SPACE, 1, 1, check_fgcolor, check_bgcolor, active);
+          iupFlatDrawDrawCircle(dc, xc, yc, radius - ITOGGLE_SPACE - ITOGGLE_BORDER, 1, 1, check_fgcolor, check_bgcolor, active);
         else if (selected == -1)
-          iupFlatDrawBox(dc, check_xmin + ITOGGLE_SPACE, check_xmin + check_size - ITOGGLE_SPACE,
-                             check_ymin + ITOGGLE_SPACE, check_ymin + check_size - ITOGGLE_SPACE,
+          iupFlatDrawBox(dc, check_xmin + ITOGGLE_SPACE + ITOGGLE_BORDER, check_xmin + check_size - ITOGGLE_SPACE - ITOGGLE_BORDER,
+                             check_ymin + ITOGGLE_SPACE + ITOGGLE_BORDER, check_ymin + check_size - 2 * ITOGGLE_SPACE - ITOGGLE_BORDER,
                              check_fgcolor, check_bgcolor, active);
         else
-          iupFlatDrawCheckMark(dc, check_xmin + ITOGGLE_SPACE, check_xmin + check_size - ITOGGLE_SPACE,
-                                   check_ymin + ITOGGLE_SPACE, check_ymin + check_size - ITOGGLE_SPACE,
+          iupFlatDrawCheckMark(dc, check_xmin + ITOGGLE_SPACE + ITOGGLE_BORDER, check_xmin + check_size - ITOGGLE_SPACE - ITOGGLE_BORDER,
+                                   check_ymin + ITOGGLE_SPACE + ITOGGLE_BORDER, check_ymin + check_size - 2 * ITOGGLE_SPACE - ITOGGLE_BORDER,
                                    check_fgcolor, check_bgcolor, active);
       }
     }
