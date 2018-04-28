@@ -195,12 +195,62 @@ static double cdtextorientation(cdCtxCanvas *ctxcanvas, double angle)
 
 static void cdtext(cdCtxCanvas *ctxcanvas, int x, int y, const char *s, int len)
 {
-  int w, h, xmin, xmax, ymin, ymax;
+  int w, h, desc, dir = -1;
+  char* font;
 
-  cdCanvasGetTextBox(ctxcanvas->canvas, x, y, s, &xmin, &xmax, &ymin, &ymax);
+  font = getFontName(ctxcanvas);
+  iupdrvFontGetFontDim(font, NULL, NULL, NULL, &desc);
+  iupdrvFontGetTextSize(font, s, &w, &h);
 
-  w = xmax - xmin;
-  h = ymax - ymin;
+  /* move to top-left corner of the text */
+  switch (ctxcanvas->canvas->text_alignment)
+  {
+  case CD_BASE_RIGHT:
+  case CD_NORTH_EAST:
+  case CD_EAST:
+  case CD_SOUTH_EAST:
+    x = x - w;
+    break;
+  case CD_BASE_CENTER:
+  case CD_CENTER:
+  case CD_NORTH:
+  case CD_SOUTH:
+    x = x - w / 2;
+    break;
+  case CD_BASE_LEFT:
+  case CD_NORTH_WEST:
+  case CD_WEST:
+  case CD_SOUTH_WEST:
+    x = x;
+    break;
+  }
+
+  if (ctxcanvas->canvas->invert_yaxis)
+    dir = 1;
+
+  switch (ctxcanvas->canvas->text_alignment)
+  {
+  case CD_BASE_LEFT:
+  case CD_BASE_CENTER:
+  case CD_BASE_RIGHT:
+    y = y - (dir*h - desc);
+    break;
+  case CD_SOUTH_EAST:
+  case CD_SOUTH_WEST:
+  case CD_SOUTH:
+    y = y - (dir*h);
+    break;
+  case CD_NORTH_EAST:
+  case CD_NORTH:
+  case CD_NORTH_WEST:
+    y = y;
+    break;
+  case CD_CENTER:
+  case CD_EAST:
+  case CD_WEST:
+    y = y - (dir*(h / 2));
+    break;
+  }
 
   if (ctxcanvas->dc)
     iupdrvDrawText(ctxcanvas->dc, s, len, x, y, w, h, ctxcanvas->canvas->foreground, getFontName(ctxcanvas), 1);
