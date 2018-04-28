@@ -26,34 +26,6 @@ struct _cdCtxCanvas
   IdrawCanvas* dc;
 };
 
-static char *getFontName(cdCtxCanvas *ctxcanvas)
-{
-  int is_italic = 0, is_bold = 0;   /* default is CD_PLAIN */
-  int is_strikeout = 0, is_underline = 0;
-  static char font[1024];
-
-  strcpy(font, ctxcanvas->canvas->native_font);
-
-  if (font[0] == 0)
-  {
-    if (ctxcanvas->canvas->font_style & CD_BOLD)
-      is_bold = 1;
-
-    if (ctxcanvas->canvas->font_style & CD_ITALIC)
-      is_italic = 1;
-
-    if (ctxcanvas->canvas->font_style & CD_UNDERLINE)
-      is_underline = 1;
-
-    if (ctxcanvas->canvas->font_style & CD_STRIKEOUT)
-      is_strikeout = 1;
-
-    sprintf(font, "%s, %s%s%d", ctxcanvas->canvas->font_type_face, is_bold ? "Bold " : "", is_italic ? "Italic " : "", ctxcanvas->canvas->font_size);
-  }
-
-  return font;
-}
-
 static void cdkillcanvas(cdCtxCanvas *ctxcanvas)
 {
   memset(ctxcanvas, 0, sizeof(cdCtxCanvas));
@@ -64,16 +36,16 @@ static int cdactivate(cdCtxCanvas *ctxcanvas)
 {
   int w, h;
 
-  ctxcanvas->canvas->bpp = IupGetInt(NULL, "SCREENDEPTH");
-  ctxcanvas->canvas->xres = IupGetDouble(NULL, "SCREENDPI") / 25.4;
-  ctxcanvas->canvas->yres = ctxcanvas->canvas->xres;
-
   if (ctxcanvas->dc)
     iupdrvDrawKillCanvas(ctxcanvas->dc);
 
   ctxcanvas->dc = iupdrvDrawCreateCanvas(ctxcanvas->ih);
 
   iupdrvDrawGetSize(ctxcanvas->dc, &w, &h);
+
+  ctxcanvas->canvas->bpp = IupGetInt(NULL, "SCREENDEPTH");
+  ctxcanvas->canvas->xres = IupGetDouble(NULL, "SCREENDPI") / 25.4;
+  ctxcanvas->canvas->yres = ctxcanvas->canvas->xres;
 
   ctxcanvas->canvas->w = w;
   ctxcanvas->canvas->h = h;
@@ -117,6 +89,34 @@ static int cdfont(cdCtxCanvas *ctxcanvas, const char *type_face, int style, int 
   return 1;
 }
 
+static char *getFontName(cdCtxCanvas *ctxcanvas)
+{
+  int is_italic = 0, is_bold = 0;   /* default is CD_PLAIN */
+  int is_strikeout = 0, is_underline = 0;
+  static char font[1024];
+
+  strcpy(font, ctxcanvas->canvas->native_font);
+
+  if (font[0] == 0)
+  {
+    if (ctxcanvas->canvas->font_style & CD_BOLD)
+      is_bold = 1;
+
+    if (ctxcanvas->canvas->font_style & CD_ITALIC)
+      is_italic = 1;
+
+    if (ctxcanvas->canvas->font_style & CD_UNDERLINE)
+      is_underline = 1;
+
+    if (ctxcanvas->canvas->font_style & CD_STRIKEOUT)
+      is_strikeout = 1;
+
+    sprintf(font, "%s, %s%s%d", ctxcanvas->canvas->font_type_face, is_bold ? "Bold " : "", is_italic ? "Italic " : "", ctxcanvas->canvas->font_size);
+  }
+
+  return font;
+}
+
 static void cdgetfontdim(cdCtxCanvas* ctxcanvas, int *max_width, int *line_height, int *ascent, int *descent)
 {
   iupdrvFontGetFontDim(getFontName(ctxcanvas), max_width, line_height, ascent, descent);
@@ -133,77 +133,32 @@ static void cdgettextsize(cdCtxCanvas* ctxcanvas, const char *s, int len, int *w
 /* primitives                                         */
 /******************************************************/
 
+static int cd2iup_linestyle(cdCtxCanvas *ctxcanvas)
+{
+  if (ctxcanvas->canvas->line_style == CD_DASHED)
+    return IUP_DRAW_STROKE_DASH;
+  else if (ctxcanvas->canvas->line_style == CD_DOTTED)
+    return IUP_DRAW_STROKE_DOT;
+  else
+    return IUP_DRAW_STROKE;
+}
 
 static void cdline(cdCtxCanvas *ctxcanvas, int px1, int py1, int px2, int py2)
 {
-  long color = cdCanvasForeground(ctxcanvas->canvas, CD_QUERY);
-  int lineStyle = cdCanvasLineStyle(ctxcanvas->canvas, CD_QUERY);
-  int lineWidth = cdCanvasLineWidth(ctxcanvas->canvas, CD_QUERY);
-  int drvStyle;
-  if (lineStyle == CD_DASHED)
-    drvStyle = IUP_DRAW_STROKE_DASH;
-  else if (lineStyle == CD_DOTTED)
-    drvStyle = IUP_DRAW_STROKE_DOT;
-  else
-    drvStyle = IUP_DRAW_STROKE;
   if (ctxcanvas->dc)
-    iupdrvDrawLine(ctxcanvas->dc, px1, py1, px2, py2, color, drvStyle, lineWidth);
+    iupdrvDrawLine(ctxcanvas->dc, px1, py1, px2, py2, ctxcanvas->canvas->foreground, cd2iup_linestyle(ctxcanvas), ctxcanvas->canvas->line_width);
 }
 
 static void cdrect(cdCtxCanvas *ctxcanvas, int xmin, int xmax, int ymin, int ymax)
 {
-  long color = cdCanvasForeground(ctxcanvas->canvas, CD_QUERY);
-  int lineStyle = cdCanvasLineStyle(ctxcanvas->canvas, CD_QUERY);
-  int lineWidth = cdCanvasLineWidth(ctxcanvas->canvas, CD_QUERY);
-  int drvStyle;
-  if (lineStyle == CD_DASHED)
-    drvStyle = IUP_DRAW_STROKE_DASH;
-  else if (lineStyle == CD_DOTTED)
-    drvStyle = IUP_DRAW_STROKE_DOT;
-  else
-    drvStyle = IUP_DRAW_STROKE;
   if (ctxcanvas->dc)
-    iupdrvDrawRectangle(ctxcanvas->dc, xmin, ymin, xmax, ymax, color, drvStyle, lineWidth);
+    iupdrvDrawRectangle(ctxcanvas->dc, xmin, ymin, xmax, ymax, ctxcanvas->canvas->foreground, cd2iup_linestyle(ctxcanvas), ctxcanvas->canvas->line_width);
 }
 
 static void cdbox(cdCtxCanvas *ctxcanvas, int xmin, int xmax, int ymin, int ymax)
 {
-  long color = cdCanvasForeground(ctxcanvas->canvas, CD_QUERY);
-  int interiorStyle = cdCanvasInteriorStyle(ctxcanvas->canvas, CD_QUERY);
-  int style = IUP_DRAW_FILL;
-  int lineWidth = cdCanvasLineWidth(ctxcanvas->canvas, CD_QUERY);
-
-  if (interiorStyle != CD_SOLID)
-    style = IUP_DRAW_STROKE;
-
   if (ctxcanvas->dc)
-    iupdrvDrawRectangle(ctxcanvas->dc, xmin, ymin, xmax, ymax, color, style, lineWidth);
-}
-
-static void arc(double xc, double yc, double w, double h, double a1, double a2,
-                double *center, double *first_end_point,
-                double *second_end_point, double *dx_start, double *dy_start,
-                double *dx_end, double *dy_end)
-{
-  double width, height;
-
-  center[0] = xc;
-  center[1] = yc;
-
-  width = w / 2;
-  height = h / 2;
-
-  first_end_point[0] = center[0] + width;
-  first_end_point[1] = center[1];
-
-  second_end_point[0] = center[0];
-  second_end_point[1] = center[1] + height;
-
-  *dx_start = width*cos(a1*CD_DEG2RAD);
-  *dy_start = height*sin(a1*CD_DEG2RAD);
-
-  *dx_end = width*cos(a2*CD_DEG2RAD);
-  *dy_end = height*sin(a2*CD_DEG2RAD);
+    iupdrvDrawRectangle(ctxcanvas->dc, xmin, ymin, xmax, ymax, ctxcanvas->canvas->foreground, IUP_DRAW_FILL, ctxcanvas->canvas->line_width);
 }
 
 static void cdarc(cdCtxCanvas *ctxcanvas, int xc, int yc, int w, int h, double a1, double a2)
@@ -214,18 +169,8 @@ static void cdarc(cdCtxCanvas *ctxcanvas, int xc, int yc, int w, int h, double a
   int y1 = yc - ry;
   int x2 = xc + rx;
   int y2 = yc + ry;
-  long color = cdCanvasForeground(ctxcanvas->canvas, CD_QUERY);
-  int lineStyle = cdCanvasLineStyle(ctxcanvas->canvas, CD_QUERY);
-  int lineWidth = cdCanvasLineWidth(ctxcanvas->canvas, CD_QUERY);
-  int drvStyle;
-  if (lineStyle == CD_DASHED)
-    drvStyle = IUP_DRAW_STROKE_DASH;
-  else if (lineStyle == CD_DOTTED)
-    drvStyle = IUP_DRAW_STROKE_DOT;
-  else
-    drvStyle = IUP_DRAW_STROKE;
   if (ctxcanvas->dc)
-    iupdrvDrawArc(ctxcanvas->dc, x1, y1, x2, y2, a1, a2, color, drvStyle, lineWidth);
+    iupdrvDrawArc(ctxcanvas->dc, x1, y1, x2, y2, a1, a2, ctxcanvas->canvas->foreground, cd2iup_linestyle(ctxcanvas), ctxcanvas->canvas->line_width);
 }
 
 static void cdsector(cdCtxCanvas *ctxcanvas, int xc, int yc, int w, int h, double a1, double a2)
@@ -236,28 +181,21 @@ static void cdsector(cdCtxCanvas *ctxcanvas, int xc, int yc, int w, int h, doubl
   int y1 = yc - ry;
   int x2 = xc + rx;
   int y2 = yc + ry;
-  long color = cdCanvasForeground(ctxcanvas->canvas, CD_QUERY);
-  int lineWidth = cdCanvasLineWidth(ctxcanvas->canvas, CD_QUERY);
   if (ctxcanvas->dc)
-    iupdrvDrawArc(ctxcanvas->dc, x1, y1, x2, y2, a1, a2, color, IUP_DRAW_FILL, lineWidth);
+    iupdrvDrawArc(ctxcanvas->dc, x1, y1, x2, y2, a1, a2, ctxcanvas->canvas->foreground, IUP_DRAW_FILL, ctxcanvas->canvas->line_width);
 }
 
-static void cdchord(cdCtxCanvas *ctxcanvas, int xc, int yc, int w, int h, double a1, double a2)
+static double cdtextorientation(cdCtxCanvas *ctxcanvas, double angle)
 {
-  /* can NOT be NULL, but it is not supported */
   (void)ctxcanvas;
-  (void)xc;
-  (void)yc;
-  (void)w;
-  (void)h;
-  (void)a1;
-  (void)a2;
+  (void)angle;
+  /* disable text orientation changes */
+  return 0;
 }
 
 static void cdtext(cdCtxCanvas *ctxcanvas, int x, int y, const char *s, int len)
 {
   int w, h, xmin, xmax, ymin, ymax;
-  long color = cdCanvasForeground(ctxcanvas->canvas, CD_QUERY);
 
   cdCanvasGetTextBox(ctxcanvas->canvas, x, y, s, &xmin, &xmax, &ymin, &ymax);
 
@@ -265,54 +203,45 @@ static void cdtext(cdCtxCanvas *ctxcanvas, int x, int y, const char *s, int len)
   h = ymax - ymin;
 
   if (ctxcanvas->dc)
-    iupdrvDrawText(ctxcanvas->dc, s, len, x, y, w, h, color, getFontName(ctxcanvas), 1);
+    iupdrvDrawText(ctxcanvas->dc, s, len, x, y, w, h, ctxcanvas->canvas->foreground, getFontName(ctxcanvas), 1);
 }
 
 static void cdpoly(cdCtxCanvas *ctxcanvas, int mode, cdPoint* poly, int n)
 {
-  int *points;
-  int i, j;
   int style;
-  int nVertex = n;
-  long color = cdCanvasForeground(ctxcanvas->canvas, CD_QUERY);
-  int lineStyle = cdCanvasLineStyle(ctxcanvas->canvas, CD_QUERY);
-  int lineWidth = cdCanvasLineWidth(ctxcanvas->canvas, CD_QUERY);
-  int interiorStyle = cdCanvasInteriorStyle(ctxcanvas->canvas, CD_QUERY);
-  int drvStyle;
-  if (lineStyle == CD_DASHED)
-    drvStyle = IUP_DRAW_STROKE_DASH;
-  else if (lineStyle == CD_DOTTED)
-    drvStyle = IUP_DRAW_STROKE_DOT;
-  else
-    drvStyle = IUP_DRAW_STROKE;
 
-  if (mode == CD_CLOSED_LINES || interiorStyle != CD_SOLID)
-    nVertex++;
-
-  points = (int*)malloc(nVertex * 2 * sizeof(int));
-
-  for (i = 0, j = 0; i < n; i++)
+  if (mode == CD_BEZIER)
   {
-    points[j] = poly[i].x;
-    points[j + 1] = poly[i].y;
-    j = j + 2;
+    cdSimPolyBezier(ctxcanvas->canvas, poly, n);
+    return;
   }
 
-  if (mode == CD_CLOSED_LINES || interiorStyle != CD_SOLID)
+  if (mode == CD_PATH)
   {
-    points[j] = poly[0].x;
-    points[j+1] = poly[0].y;
+    cdSimPolyPath(ctxcanvas->canvas, poly, n);
+    return;
   }
 
-  if (mode == CD_FILL && interiorStyle == CD_SOLID)
-    style = IUP_DRAW_FILL;
+  if (mode == CD_CLIP || mode == CD_REGION)
+    return;
+
+  if (mode == CD_CLOSED_LINES || mode == CD_FILL)
+  {
+    poly[n].x = poly[0].x;
+    poly[n].y = poly[0].y;
+    n++;
+  }
+
+  if (mode == CD_FILL && ctxcanvas->canvas->interior_style == CD_HOLLOW)
+    mode = CD_CLOSED_LINES;
+
+  if (mode == CD_FILL)
+    style = IUP_DRAW_STROKE;
   else
-    style = drvStyle;
+    style = cd2iup_linestyle(ctxcanvas);
 
   if (ctxcanvas->dc)
-    iupdrvDrawPolygon(ctxcanvas->dc, points, nVertex, color, style, lineWidth);
-
-  free(points);
+    iupdrvDrawPolygon(ctxcanvas->dc, (int*)poly, n, ctxcanvas->canvas->foreground, style, ctxcanvas->canvas->line_width);
 }
 
 
@@ -499,7 +428,7 @@ static void cdinittable(cdCanvas* canvas)
   canvas->cxBox = cdbox;
   canvas->cxArc = cdarc;
   canvas->cxSector = cdsector;
-  canvas->cxChord = cdchord;
+  canvas->cxChord = cdSimChord;
   canvas->cxText = cdtext;
   canvas->cxPutImageRectRGBA = cdputimagerectrgba;
   canvas->cxPutImageRectRGB = cdputimagerectrgb;
@@ -508,6 +437,7 @@ static void cdinittable(cdCanvas* canvas)
 
   canvas->cxGetFontDim = cdgetfontdim;
   canvas->cxGetTextSize = cdgettextsize;
+  canvas->cxTextOrientation = cdtextorientation;
 
   canvas->cxKillCanvas = cdkillcanvas;
   canvas->cxDeactivate = cddeactivate;
