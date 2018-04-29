@@ -89,7 +89,17 @@ void iupdrvDrawUpdateSize(IdrawCanvas* dc)
   }
 }
 
-void iupdrvPaintFocusRect(Ihandle* ih, void* _gc, int x, int y, int w, int h);
+static void gdkDrawFocusRect(Ihandle* ih, int x, int y, int w, int h)
+{
+  GdkWindow* window = iupgtkGetWindow(ih->handle);
+  GtkStyle *style = gtk_widget_get_style(ih->handle);
+#if GTK_CHECK_VERSION(2, 18, 0)
+  GtkStateType state = gtk_widget_get_state(ih->handle);
+#else
+  GtkStateType state = GTK_WIDGET_STATE(ih->handle);
+#endif
+  gtk_paint_focus(style, window, state, NULL, ih->handle, NULL, x, y, w, h);
+}
 
 void iupdrvDrawFlush(IdrawCanvas* dc)
 {
@@ -97,7 +107,7 @@ void iupdrvDrawFlush(IdrawCanvas* dc)
 
   if (dc->draw_focus)
   {
-    iupdrvPaintFocusRect(dc->ih, NULL, dc->focus_x1, dc->focus_y1, dc->focus_x2 - dc->focus_x1 + 1, dc->focus_y2 - dc->focus_y1 + 1);
+    gdkDrawFocusRect(dc->ih, dc->focus_x1, dc->focus_y1, dc->focus_x2 - dc->focus_x1 + 1, dc->focus_y2 - dc->focus_y1 + 1);
     dc->draw_focus = 0;
   }
 }

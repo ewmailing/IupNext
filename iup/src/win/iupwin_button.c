@@ -381,7 +381,7 @@ static void winButtonDrawItem(Ihandle* ih, DRAWITEMSTRUCT *drawitem)
       iupAttribGetBoolean(ih, "CANFOCUS"))
   {
     border--;
-    iupdrvPaintFocusRect(ih, hDC, border, border, width - 2 * border, height - 2 * border);
+    iupwinDrawFocusRect(hDC, border, border, width - 2 * border, height - 2 * border);
   }
 
   iupwinDrawDestroyBitmapDC(&bmpDC);

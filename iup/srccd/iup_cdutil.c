@@ -15,8 +15,9 @@
 #include "iup_attrib.h"
 #include "iup_str.h"
 #include "iup_drv.h"
-#include "iup_cdutil.h"
 #include "iup_image.h"
+
+#include "iup_cdutil.h"
 
 
 long cdIupConvertColor(const char *color)

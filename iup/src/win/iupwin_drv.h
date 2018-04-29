@@ -137,6 +137,8 @@ int iupwinGetParentBgColor(Ihandle* ih, COLORREF* cr);
 int iupwinSetAutoRedrawAttrib(Ihandle* ih, const char* value);
 void iupwinSetMnemonicTitle(Ihandle *ih, int pos, const char* value);
 
+void iupwinDrawFocusRect(HDC hDC, int x, int y, int w, int h);
+
 int iupwinGetScreenRes(void);
 /* 1 point = 1/72 inch */
 /* pixel = (point/72)*(pixel/inch) */
