@@ -28,6 +28,8 @@ another toolkit like CD. </p>
 <p>To use the functions in C/C++ you must include the &quot;iupdraw.h&quot; header.</p>
 <p>Internally IupDraw uses several drawing APIs: GDI, Direct2D, GDI+ (in 
 Windows); X11 (in Motif), GDK and Cairo (in GTK). </p>
+<p>All drivers are double buffered, so drawing occurs offscreen and he final 
+result is displayed in <strong>IupDrawEnd</strong> only.</p>
 <p>Direct2D and GDI+ are accessed using the
 <a href="https://github.com/mity/windrawlib">WinDrawLib</a> library by Martin 
 Mitáš. This library is embedded in IUP source code and uses dynamically load to 
@@ -48,7 +50,7 @@ iup.DrawBegin<span class="auto-style2">(</span><strong>ih</strong>: ihandle<span
 <pre>void IupDrawEnd(Ihandle* <strong>ih</strong>); [in C]
 iup.DrawEnd<span class="auto-style2">(</span><strong>ih</strong>: ihandle<span class="auto-style2">)</span> [in Lua]
 <strong>ih</strong>:DrawEnd() [in Lua]</pre>
-<p>Terminates the drawing process.</p>
+<p>Terminates the drawing process and actually draw on screen.</p>
 <pre>void IupDrawSetClipRect(Ihandle* <strong>ih</strong>, int <strong>x1</strong>, int <strong>y1</strong>, int <strong>x2</strong>, int <strong>y2</strong>); [in C]
 iup.DrawSetClipRect<span class="auto-style2">(</span><strong>ih</strong>: ihandle<span class="auto-style2">, <strong>x1</strong>, <strong>y1</strong>, <strong>x2</strong>, <strong>y2</strong>: number)</span> [in Lua]
 <strong>ih</strong>:DrawSetClipRect(<span class="auto-style2"><strong>x1</strong>, <strong>y1</strong>, <strong>x2</strong>, <strong>y2</strong>: number</span>) [in Lua]</pre>
