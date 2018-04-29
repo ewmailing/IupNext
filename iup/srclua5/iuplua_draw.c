@@ -132,7 +132,9 @@ static int DrawGetSize(lua_State *L)
 static int DrawGetTextSize(lua_State *L)
 {
   int w, h;
-  IupDrawGetTextSize(iuplua_checkihandle(L, 1), luaL_checkstring(L, 2), &w, &h);
+  size_t len;
+  const char* text = luaL_checklstring(L, 2, &len);
+  IupDrawGetTextSize(iuplua_checkihandle(L, 1), text, (int)len, &w, &h);
   lua_pushinteger(L, w);
   lua_pushinteger(L, h);
   return 2;

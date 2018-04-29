@@ -364,7 +364,7 @@ int iupdrvSetFontAttrib(Ihandle* ih, const char* value)
   return 1;
 }
 
-static void gtkFontGetTextSize(Ihandle* ih, IgtkFont* gtkfont, const char* str, int *w, int *h)
+static void gtkFontGetTextSize(Ihandle* ih, IgtkFont* gtkfont, const char* str, int len, int *w, int *h)
 {
   int max_w = 0;
 
@@ -389,10 +389,10 @@ static void gtkFontGetTextSize(Ihandle* ih, IgtkFont* gtkfont, const char* str, 
     if (iupAttribGetBoolean(ih, "MARKUP"))
     {
       pango_layout_set_attributes(gtkfont->layout, NULL);
-      pango_layout_set_markup(gtkfont->layout, iupgtkStrConvertToSystem(str), -1);
+      pango_layout_set_markup(gtkfont->layout, iupgtkStrConvertToSystem(str), len);
     }
     else
-      pango_layout_set_text(gtkfont->layout, iupgtkStrConvertToSystem(str), -1);
+      pango_layout_set_text(gtkfont->layout, iupgtkStrConvertToSystem(str), len);
 
     pango_layout_get_pixel_size(gtkfont->layout, &max_w, &dummy_h);
   }
@@ -405,14 +405,14 @@ void iupdrvFontGetMultiLineStringSize(Ihandle* ih, const char* str, int *w, int 
 {
   IgtkFont* gtkfont = gtkFontGet(ih);
   if (gtkfont)
-    gtkFontGetTextSize(ih, gtkfont, str, w, h);
+    gtkFontGetTextSize(ih, gtkfont, str, (int)strlen(str), w, h);
 }
 
-void iupdrvFontGetTextSize(const char* font, const char* str, int *w, int *h)
+void iupdrvFontGetTextSize(const char* font, const char* str, int len, int *w, int *h)
 {
   IgtkFont *gtkfont = gtkFindFont(font);
   if (gtkfont)
-    gtkFontGetTextSize(NULL, gtkfont, str, w, h);
+    gtkFontGetTextSize(NULL, gtkfont, str, len, w, h);
 }
 
 void iupdrvFontGetFontDim(const char* font, int *max_width, int *line_height, int *ascent, int *descent)

@@ -81,51 +81,41 @@ static void cdclear(cdCtxCanvas* ctxcanvas)
 
 static int cdfont(cdCtxCanvas *ctxcanvas, const char *type_face, int style, int size)
 {
-  /* dummy - must be defined */
-  (void)ctxcanvas;
-  (void)type_face;
-  (void)style;
-  (void)size;
-  return 1;
-}
-
-static char *getFontName(cdCtxCanvas *ctxcanvas)
-{
   int is_italic = 0, is_bold = 0;   /* default is CD_PLAIN */
   int is_strikeout = 0, is_underline = 0;
-  static char font[1024];
+  char font[1024];
 
-  strcpy(font, ctxcanvas->canvas->native_font);
+  if (style & CD_BOLD)
+    is_bold = 1;
 
-  if (font[0] == 0)
-  {
-    if (ctxcanvas->canvas->font_style & CD_BOLD)
-      is_bold = 1;
+  if (style & CD_ITALIC)
+    is_italic = 1;
 
-    if (ctxcanvas->canvas->font_style & CD_ITALIC)
-      is_italic = 1;
+  if (style & CD_UNDERLINE)
+    is_underline = 1;
 
-    if (ctxcanvas->canvas->font_style & CD_UNDERLINE)
-      is_underline = 1;
+  if (style & CD_STRIKEOUT)
+    is_strikeout = 1;
 
-    if (ctxcanvas->canvas->font_style & CD_STRIKEOUT)
-      is_strikeout = 1;
+  sprintf(font, "%s, %s%s%d", type_face, is_bold ? "Bold " : "", is_italic ? "Italic " : "", size);
 
-    sprintf(font, "%s, %s%s%d", ctxcanvas->canvas->font_type_face, is_bold ? "Bold " : "", is_italic ? "Italic " : "", ctxcanvas->canvas->font_size);
-  }
+  /* store in native font and manually save font parameters */
+  strcpy(ctxcanvas->canvas->native_font, font);
+  strcpy(ctxcanvas->canvas->font_type_face, type_face);
+  ctxcanvas->canvas->font_style = style;
+  ctxcanvas->canvas->font_size = size;
 
-  return font;
+  return 0;
 }
 
 static void cdgetfontdim(cdCtxCanvas* ctxcanvas, int *max_width, int *line_height, int *ascent, int *descent)
 {
-  iupdrvFontGetFontDim(getFontName(ctxcanvas), max_width, line_height, ascent, descent);
+  iupdrvFontGetFontDim(ctxcanvas->canvas->native_font, max_width, line_height, ascent, descent);
 }
 
 static void cdgettextsize(cdCtxCanvas* ctxcanvas, const char *s, int len, int *width, int *height)
 {
-  (void)len;
-  iupdrvFontGetTextSize(getFontName(ctxcanvas), s, width, height);
+  iupdrvFontGetTextSize(ctxcanvas->canvas->native_font, s, len, width, height);
 }
 
 
@@ -196,11 +186,9 @@ static double cdtextorientation(cdCtxCanvas *ctxcanvas, double angle)
 static void cdtext(cdCtxCanvas *ctxcanvas, int x, int y, const char *s, int len)
 {
   int w, h, desc, dir = -1;
-  char* font;
 
-  font = getFontName(ctxcanvas);
-  iupdrvFontGetFontDim(font, NULL, NULL, NULL, &desc);
-  iupdrvFontGetTextSize(font, s, &w, &h);
+  iupdrvFontGetFontDim(ctxcanvas->canvas->native_font, NULL, NULL, NULL, &desc);
+  iupdrvFontGetTextSize(ctxcanvas->canvas->native_font, s, len, &w, &h);
 
   /* move to top-left corner of the text */
   switch (ctxcanvas->canvas->text_alignment)
@@ -253,7 +241,7 @@ static void cdtext(cdCtxCanvas *ctxcanvas, int x, int y, const char *s, int len)
   }
 
   if (ctxcanvas->dc)
-    iupdrvDrawText(ctxcanvas->dc, s, len, x, y, w, h, ctxcanvas->canvas->foreground, getFontName(ctxcanvas), 1);
+    iupdrvDrawText(ctxcanvas->dc, s, len, x, y, w, h, ctxcanvas->canvas->foreground, ctxcanvas->canvas->native_font, 0);
 }
 
 static void cdpoly(cdCtxCanvas *ctxcanvas, int mode, cdPoint* poly, int n)
@@ -483,8 +471,8 @@ static void cdinittable(cdCanvas* canvas)
   canvas->cxPutImageRectRGBA = cdputimagerectrgba;
   canvas->cxPutImageRectRGB = cdputimagerectrgb;
   canvas->cxPutImageRectMap = cdputimagerectmap;
-  canvas->cxFont = cdfont;
 
+  canvas->cxFont = cdfont;
   canvas->cxGetFontDim = cdgetfontdim;
   canvas->cxGetTextSize = cdgettextsize;
   canvas->cxTextOrientation = cdtextorientation;
@@ -498,7 +486,10 @@ static void cdinittable(cdCanvas* canvas)
 
 static cdContext cdIupDrawContext =
 {
-  CD_CAP_ALL & ~(CD_CAP_PLAY | CD_CAP_YAXIS | CD_CAP_FPRIMTIVES),
+  CD_CAP_ALL & ~(CD_CAP_PLAY | CD_CAP_YAXIS | CD_CAP_FPRIMTIVES | CD_CAP_GETIMAGERGB |
+                 CD_CAP_IMAGESRV | CD_CAP_BACKOPACITY | CD_CAP_WRITEMODE | CD_CAP_HATCH | CD_CAP_STIPPLE | CD_CAP_PATTERN |
+                 CD_CAP_LINECAP | CD_CAP_LINEJOIN | CD_CAP_PATH | CD_CAP_BEZIER |
+                 CD_CAP_PALETTE | CD_CAP_TEXTORIENTATION | CD_CAP_CLIPPOLY | CD_CAP_REGION | CD_CAP_CHORD),
   CD_CTX_WINDOW,
   cdcreatecanvas,
   cdinittable,
@@ -510,4 +501,3 @@ cdContext* cdContextIupDraw(void)
 {
   return &cdIupDrawContext;
 }
-

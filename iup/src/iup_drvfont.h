@@ -38,12 +38,13 @@ int iupdrvFontGetStringWidth(Ihandle* ih, const char* str);
  * \ingroup drvfont */
 void iupdrvFontGetMultiLineStringSize(Ihandle* ih, const char* str, int *w, int *h);
 
-/** Same as \ref iupdrvFontGetMultiLineStringSize but not associated with a control. \n
-*\ingroup drvfont */
-void iupdrvFontGetTextSize(const char* font, const char* str, int *w, int *h);
+/** Same as \ref iupdrvFontGetMultiLineStringSize but not associated with a control. 
+ * Used in IupDraw.\n
+ *\ingroup drvfont */
+void iupdrvFontGetTextSize(const char* font, const char* str, int len, int *w, int *h);
 
 /** Returns information about the font. \n
-*\ingroup drvfont */
+ *\ingroup drvfont */
 void iupdrvFontGetFontDim(const char* font, int *max_width, int *line_height, int *ascent, int *descent);
 
 /** Returns the System default font.

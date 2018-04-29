@@ -35,7 +35,7 @@ void IupDrawSelectRect(Ihandle* ih, int x1, int y1, int x2, int y2);
 void IupDrawFocusRect(Ihandle* ih, int x1, int y1, int x2, int y2);
 
 void IupDrawGetSize(Ihandle* ih, int *w, int *h);
-void IupDrawGetTextSize(Ihandle* ih, const char* str, int *w, int *h);
+void IupDrawGetTextSize(Ihandle* ih, const char* text, int len, int *w, int *h);
 void IupDrawGetImageInfo(const char* name, int *w, int *h, int *bpp);
 
 

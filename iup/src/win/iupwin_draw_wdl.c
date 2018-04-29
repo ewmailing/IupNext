@@ -50,7 +50,7 @@ void iupwinDrawInit(void)
   iupwinDrawThemeInit();
 
 #if 0
-  wdPreInitialize(NULL, NULL, WD_DISABLE_D2D);  /* force GDI+ always */
+  wdPreInitialize(NULL, NULL, WD_DISABLE_D2D);  /* to force GDI+ */
 #endif
 
   wdInitialize(wdl_flags);
@@ -307,8 +307,8 @@ static int iCompensatePosX(float font_height)
 void iupdrvDrawText(IdrawCanvas* dc, const char* text, int len, int x, int y, int w, int h, long color, const char* font, int align)
 {
   WD_RECT rect;
-  WCHAR *wtext = iupwinStrChar2Wide(text);
   DWORD flag;
+  WCHAR *wtext = iupwinStrToSystemLen(text, &len);
   WD_HBRUSH brush = wdCreateSolidBrush(dc->hCanvas, iupColor2ARGB(color));
  
   HFONT hFont = (HFONT)iupwinGetHFont(font);

@@ -39,7 +39,7 @@ void iupDrawHorizSunkenMark(Ihandle *ih, int x1, int x2, int y, long light_shado
 void iupDrawSunkenRect(Ihandle *ih, int x1, int y1, int x2, int y2, long light_shadow, long mid_shadow, long dark_shadow);
 
 void iupDrawParentBackground(IdrawCanvas* dc, Ihandle* ih);
-char* iupDrawGetTextSize(Ihandle* ih, const char* str, int *w, int *h);
+char* iupDrawGetTextSize(Ihandle* ih, const char* str, int len, int *w, int *h);
 
 
 /**********************************************************************************************************/

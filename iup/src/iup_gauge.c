@@ -69,7 +69,7 @@ static void iGaugeDrawText(Ihandle* ih, int xmid, int w, int h, long fgcolor)
     text = buffer;
   }
 
-  IupDrawGetTextSize(ih, text, &text_w, &text_h);
+  IupDrawGetTextSize(ih, text, 0, &text_w, &text_h);
   x -= text_w / 2;
   y -= text_h / 2;
   xmin = x;

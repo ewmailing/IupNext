@@ -241,7 +241,7 @@ static void winFontReleaseDC(Ihandle* ih, HDC hdc)
     ReleaseDC(ih->handle, hdc);  /* handle can be NULL here */
 }
 
-static void winFontGetTextSize(Ihandle* ih, IwinFont* winfont, const char* str, int *w, int *h)
+static void winFontGetTextSize(Ihandle* ih, IwinFont* winfont, const char* str, int len, int *w, int *h)
 {
   int max_w = 0;
 
@@ -262,7 +262,7 @@ static void winFontGetTextSize(Ihandle* ih, IwinFont* winfont, const char* str, 
   if (str[0])
   {
     SIZE size;
-    int len, wlen;
+    int l_len, sum_len = 0;
     const char *nextstr;
     const char *curstr = str;
 
@@ -272,13 +272,16 @@ static void winFontGetTextSize(Ihandle* ih, IwinFont* winfont, const char* str, 
 
     do
     {
-      nextstr = iupStrNextLine(curstr, &len);
-      if (len)
+      nextstr = iupStrNextLine(curstr, &l_len);
+      if (sum_len + l_len > len)
+        l_len = len - sum_len;
+
+      if (l_len)
       {
 #ifdef UNICODE
-        wlen = MultiByteToWideChar(iupwinStrGetUTF8Mode() ? CP_UTF8 : CP_ACP, 0, curstr, len, 0, 0);
+        int wlen = MultiByteToWideChar(iupwinStrGetUTF8Mode() ? CP_UTF8 : CP_ACP, 0, curstr, l_len, 0, 0);
 #else
-        wlen = len;
+        int wlen = l_len;
 #endif
 
         size.cx = 0;
@@ -287,6 +290,10 @@ static void winFontGetTextSize(Ihandle* ih, IwinFont* winfont, const char* str, 
 
         wstr += wlen + 1;
       }
+
+      sum_len += l_len;
+      if (sum_len == len)
+        break;
 
       curstr = nextstr;
     } while (*nextstr);
@@ -303,14 +310,14 @@ void iupdrvFontGetMultiLineStringSize(Ihandle* ih, const char* str, int *w, int 
 {
   IwinFont* winfont = winFontGet(ih);
   if (winfont)
-    winFontGetTextSize(ih, winfont, str, w, h);
+    winFontGetTextSize(ih, winfont, str, (int)strlen(str), w, h);
 }
 
-void iupdrvFontGetTextSize(const char* font, const char* str, int *w, int *h)
+void iupdrvFontGetTextSize(const char* font, const char* str, int len, int *w, int *h)
 {
   IwinFont* winfont = winFindFont(font);
   if (winfont)
-    winFontGetTextSize(NULL, winfont, str, w, h);
+    winFontGetTextSize(NULL, winfont, str, len, w, h);
 }
 
 void iupdrvFontGetFontDim(const char* font, int *max_width, int *line_height, int *ascent, int *descent)

@@ -264,7 +264,7 @@ void iupdrvDrawText(IdrawCanvas* dc, const char* text, int len, int x, int y, in
   }
   else
   {
-    int i, line_height, len;
+    int i, line_height, l_len, sum_len = 0;
     const char *p, *q;
 
     line_height = xfont->ascent + xfont->descent;
@@ -274,30 +274,40 @@ void iupdrvDrawText(IdrawCanvas* dc, const char* text, int len, int x, int y, in
     {
       q = strchr(p, '\n');
       if (q)
-        len = (int)(q - p);  /* Cut the string to contain only one line */
+        l_len = (int)(q - p);  /* Cut the string to contain only one line */
       else
-        len = (int)strlen(p);  /* use the remaining characters */
+        l_len = (int)strlen(p);  /* use the remaining characters */
 
-      off_x = 0;
-      if (align == IUP_ALIGN_ARIGHT)
-      {
-        width = XTextWidth(xfont, p, len);
-        off_x = w - width;
-        if (off_x < 0) off_x = 0;
-      }
-      else if (align == IUP_ALIGN_ACENTER)
-      {
-        width = XTextWidth(xfont, p, len);
-        off_x = (w - width) / 2;
-        if (off_x < 0) off_x = 0;
-      }
+      if (sum_len + l_len > len)
+        l_len = len - sum_len;
 
-      /* Draw the line */
-      XDrawString(iupmot_display, dc->pixmap, dc->pixmap_gc, x + off_x, y + xfont->ascent, p, len);
+      if (l_len)
+      {
+        off_x = 0;
+        if (align == IUP_ALIGN_ARIGHT)
+        {
+          width = XTextWidth(xfont, p, l_len);
+          off_x = w - width;
+          if (off_x < 0) off_x = 0;
+        }
+        else if (align == IUP_ALIGN_ACENTER)
+        {
+          width = XTextWidth(xfont, p, l_len);
+          off_x = (w - width) / 2;
+          if (off_x < 0) off_x = 0;
+        }
+
+        /* Draw the line */
+        XDrawString(iupmot_display, dc->pixmap, dc->pixmap_gc, x + off_x, y + xfont->ascent, p, l_len);
+      }
 
       /* Advance the string */
       if (q)
         p = q + 1;
+
+      sum_len += l_len;
+      if (sum_len == len)
+        break;
 
       /* Advance a line */
       y += line_height;

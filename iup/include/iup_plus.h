@@ -380,7 +380,7 @@ namespace Iup
     void DrawSelectRect(int x1, int y1, int x2, int y2) { IupDrawSelectRect(ih, x1, y1, x2, y2); }
     void DrawFocusRect(int x1, int y1, int x2, int y2) { IupDrawFocusRect(ih, x1, y1, x2, y2); }
     void DrawGetSize(int &w, int &h) { IupDrawGetSize(ih, &w, &h); }
-    void DrawGetTextSize(const char* str, int &w, int &h) { IupDrawGetTextSize(ih, str, &w, &h); }
+    void DrawGetTextSize(const char* str, int len, int &w, int &h) { IupDrawGetTextSize(ih, str, len, &w, &h); }
     void DrawGetImageInfo(const char* name, int &w, int &h, int &bpp) { IupDrawGetImageInfo(name, &w, &h, &bpp); }
   };
   class Link : public Control
@@ -599,11 +599,11 @@ namespace Iup
     void DrawArc(int x1, int y1, int x2, int y2, double a1, double a2) { IupDrawArc(ih, x1, y1, x2, y2, a1, a2); }
     void DrawPolygon(int* points, int count) { IupDrawPolygon(ih, points, count); }
     void DrawText(const char* text, int len, int x, int y) { IupDrawText(ih, text, len, x, y); }
-    void DrawImage(const char* name, int make_inactive, int x, int y) { IupDrawImage(ih, name, make_inactive, x, y); }
+    void DrawImage(const char* name, int x, int y) { IupDrawImage(ih, name, x, y); }
     void DrawSelectRect(int x1, int y1, int x2, int y2) { IupDrawSelectRect(ih, x1, y1, x2, y2); }
     void DrawFocusRect(int x1, int y1, int x2, int y2) { IupDrawFocusRect(ih, x1, y1, x2, y2); }
     void DrawGetSize(int &w, int &h) { IupDrawGetSize(ih, &w, &h); }
-    void DrawGetTextSize(const char* str, int &w, int &h) { IupDrawGetTextSize(ih, str, &w, &h); }
+    void DrawGetTextSize(const char* str, int len, int &w, int &h) { IupDrawGetTextSize(ih, str, len, &w, &h); }
     void DrawGetImageInfo(const char* name, int &w, int &h, int &bpp) { IupDrawGetImageInfo(name, &w, &h, &bpp); }
   };
 

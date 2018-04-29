@@ -210,9 +210,9 @@ void FlatToggleTest(void)
 
   toggle1 = IupFlatToggle(NULL);
   toggle2 = IupFlatToggle(NULL);
-  toggle3 = IupFlatToggle("&Text Toggle");
+  toggle3 = IupFlatToggle("Text Toggle");
 //  toggle4 = IupFlatToggle("blue foreground color");
-  toggle4 = IupFlatToggle("&Radio Text");
+  toggle4 = IupFlatToggle("Radio Text");
   toggle5 = IupFlatToggle("red background color");
   toggle6 = IupFlatToggle("multiple lines\nsecond line");
   toggle7 = IupFlatToggle("INACTIVE");
