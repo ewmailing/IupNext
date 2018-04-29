@@ -187,6 +187,8 @@ static void cdtext(cdCtxCanvas *ctxcanvas, int x, int y, const char *s, int len)
 {
   int w, h, desc, dir = -1;
 
+  /* cxText method is called for single lines only */
+
   iupdrvFontGetFontDim(ctxcanvas->canvas->native_font, NULL, NULL, NULL, &desc);
   iupdrvFontGetTextSize(ctxcanvas->canvas->native_font, s, len, &w, &h);
 
@@ -241,7 +243,7 @@ static void cdtext(cdCtxCanvas *ctxcanvas, int x, int y, const char *s, int len)
   }
 
   if (ctxcanvas->dc)
-    iupdrvDrawText(ctxcanvas->dc, s, len, x, y, w, h, ctxcanvas->canvas->foreground, ctxcanvas->canvas->native_font, 0);
+    iupdrvDrawText(ctxcanvas->dc, s, len, x, y, w, h, ctxcanvas->canvas->foreground, ctxcanvas->canvas->native_font, 0);  /* left alignment - unused, multiline alignment is done by CD */
 }
 
 static void cdpoly(cdCtxCanvas *ctxcanvas, int mode, cdPoint* poly, int n)
