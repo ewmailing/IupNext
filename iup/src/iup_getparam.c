@@ -156,7 +156,7 @@ static int iParamTextAction_CB(Ihandle *self, int c, char *after)
   int ret = IUP_DEFAULT;
   (void)c;
 
-  if (!IupGetInt(self, "MULTILINE") && (iupStrLineCount(after) > 1))
+  if (!IupGetInt(self, "MULTILINE") && (iupStrLineCount(after, (int)strlen(after)) > 1))
   {
     /* get only the first line */
     int len;

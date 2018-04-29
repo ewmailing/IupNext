@@ -241,7 +241,7 @@ static char* iLayoutGetElementTreeTitle(Ihandle* ih)
   {
     char buffer[51];
 
-    if (iupStrLineCount(title) > 1)
+    if (iupStrLineCount(title, (int)strlen(title)) > 1)
     {
       int len;
       iupStrNextLine(title, &len); /* get the size of the first line */

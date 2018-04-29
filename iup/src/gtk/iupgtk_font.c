@@ -398,7 +398,7 @@ static void gtkFontGetTextSize(Ihandle* ih, IgtkFont* gtkfont, const char* str, 
   }
 
   if (w) *w = max_w;
-  if (h) *h = gtkfont->charheight * iupStrLineCount(str);
+  if (h) *h = gtkfont->charheight * iupStrLineCount(str, len);
 }
 
 void iupdrvFontGetMultiLineStringSize(Ihandle* ih, const char* str, int *w, int *h)

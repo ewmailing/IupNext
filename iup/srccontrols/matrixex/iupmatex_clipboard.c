@@ -416,7 +416,7 @@ static int iMatrixExSetCopyDataAttrib(Ihandle *ih, const char* value)
 static int iMatrixExStrGetDataSize(const char* data, int *num_lin, int *num_col, char *sep)
 {
   int len = (int)strlen(data);
-  *num_lin = iupStrLineCount(data);
+  *num_lin = iupStrLineCount(data, len);
   if (data[len-1] == '\n')
     (*num_lin)--;  /* avoid an empty last line */
 

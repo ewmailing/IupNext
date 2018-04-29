@@ -203,31 +203,42 @@ const char* iupStrNextValue(const char* str, int str_len, int *len, char sep)
     return str;  /* no next value */
 }
 
-int iupStrLineCount(const char* str)
+int iupStrLineCount(const char* str, int len)
 {
-  int num_lin = 1;
+  int line_count = 1, count = 0;
 
   if (!str)
-    return num_lin;
+    return line_count;
 
   while(*str != 0)
   {
-    while(*str!=0 && *str!='\n' && *str!='\r')
+    while (*str != 0 && *str != '\n' && *str != '\r')
+    {
       str++;
+      count++;
+    }
+
+    if (count >= len)
+      return line_count;
 
     if (*str=='\r' && *(str+1)=='\n')   /* DOS line end */
     {
-      num_lin++;
-      str+=2;
+      line_count++;
+      str += 2;
+      count += 2;
     }
     else if (*str=='\n' || *str=='\r')   /* UNIX or MAC line end */
     {
-      num_lin++;
+      line_count++;
       str++;
+      count++;
     }
+
+    if (count >= len)
+      return line_count;
   }
 
-  return num_lin;
+  return line_count;
 }
 
 int iupStrCountChar(const char *str, char c)
@@ -1021,15 +1032,16 @@ void iupStrToMac(char* str)
 char* iupStrToDos(const char* str)
 {
 	char *auxstr, *newstr;
-	int num_lin;
+	int line_count, len;
 
   if (!str) return NULL;
 
-  num_lin = iupStrLineCount(str);
-  if (num_lin == 1)
+  len = (int)strlen(str);
+  line_count = iupStrLineCount(str, len);
+  if (line_count == 1)
     return (char*)str;
 
-	newstr = malloc(num_lin + strlen(str) + 1);
+	newstr = malloc(line_count + len + 1);
   auxstr = newstr;
 	while(*str)
 	{

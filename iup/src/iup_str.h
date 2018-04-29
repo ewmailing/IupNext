@@ -66,7 +66,7 @@ int iupStrFalse(const char* str);
 /** Returns the number of lines in a string.
  * It works for UNIX, DOS and MAC line ends.
  * \ingroup str */
-int iupStrLineCount(const char* str);
+int iupStrLineCount(const char* str, int len);
 
 /** Returns a pointer to the next line and the size of the current line.
  * It works for UNIX, DOS and MAC line ends. The size does not includes the line end.

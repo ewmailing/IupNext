@@ -243,7 +243,7 @@ static void winFontReleaseDC(Ihandle* ih, HDC hdc)
 
 static void winFontGetTextSize(Ihandle* ih, IwinFont* winfont, const char* str, int len, int *w, int *h)
 {
-  int max_w = 0;
+  int max_w = 0, line_count = 1;
 
   if (!winfont)
   {
@@ -295,6 +295,9 @@ static void winFontGetTextSize(Ihandle* ih, IwinFont* winfont, const char* str, 
       if (sum_len == len)
         break;
 
+      if (*nextstr)
+        line_count++;
+
       curstr = nextstr;
     } while (*nextstr);
 
@@ -303,7 +306,7 @@ static void winFontGetTextSize(Ihandle* ih, IwinFont* winfont, const char* str, 
   }
 
   if (w) *w = max_w;
-  if (h) *h = winfont->charheight * iupStrLineCount(str);
+  if (h) *h = winfont->charheight * line_count;
 }
 
 void iupdrvFontGetMultiLineStringSize(Ihandle* ih, const char* str, int *w, int *h)

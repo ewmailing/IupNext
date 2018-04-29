@@ -540,7 +540,7 @@ int iupGLFontGetStringWidth(Ihandle* ih, const char* str, int len)
 
 void iupGLFontGetMultiLineStringSize(Ihandle* ih, const char* str, int *w, int *h)
 {
-  int max_w = 0;
+  int max_w = 0, line_count = 1;
   IglFont* glfont;
 
   if (!ih->handle)
@@ -574,6 +574,7 @@ void iupGLFontGetMultiLineStringSize(Ihandle* ih, const char* str, int *w, int *
     do
     {
       nextstr = iupStrNextLine(curstr, &len);
+
       if (len)
       {
         iGLFontConvertToUTF8(curstr, len);
@@ -581,12 +582,15 @@ void iupGLFontGetMultiLineStringSize(Ihandle* ih, const char* str, int *w, int *
         max_w = iupMAX(max_w, size);
       }
 
+      if (*nextstr)
+        line_count++;
+
       curstr = nextstr;
     } while (*nextstr);
   }
 
   if (w) *w = max_w;
-  if (h) *h = glfont->charheight * iupStrLineCount(str);
+  if (h) *h = glfont->charheight * line_count;
 }
 
 int iupGLFontSetFontAttrib(Ihandle* ih, const char* value)

@@ -242,7 +242,7 @@ void iupdrvDrawText(IdrawCanvas* dc, const char* text, int len, int x, int y, in
   XSetForeground(iupmot_display, dc->pixmap_gc, iupmotColorGetPixel(iupDrawRed(color),iupDrawGreen(color),iupDrawBlue(color)));
   XSetFont(iupmot_display, dc->pixmap_gc, xfont->fid);
 
-  num_line = iupStrLineCount(text);
+  num_line = iupStrLineCount(text, len);
 
   if (num_line == 1)
   {
