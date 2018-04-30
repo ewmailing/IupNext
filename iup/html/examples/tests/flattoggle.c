@@ -243,7 +243,6 @@ void FlatToggleTest(void)
   IupSetAttribute(toggle1, "IMAGEPRESS", "image1p");
   IupSetAttribute(toggle1, "IMAGEINACTIVE", "image1i");
   IupSetAttribute(toggle1, "NAME", "1");
-  //  IupSetAttribute(toggle1, "FLAT", "Yes");
     IupSetAttribute(toggle1, "PADDING",   "10x10");            
 //  IupSetAttribute(toggle1, "RASTERSIZE",   "160x160");
   //  IupSetAttribute(toggle1, "CANFOCUS", "NO");
@@ -253,7 +252,6 @@ void FlatToggleTest(void)
 //  IupSetAttribute(toggle2, "ALIGNMENT",  "ARIGHT");            
   IupSetAttribute(toggle2, "IMAGE",   "image2");
   IupSetAttribute(toggle2, "NAME", "2");
-  IupSetAttribute(toggle2, "FLAT", "Yes");
 //  IupSetAttribute(toggle2, "CANFOCUS", "NO");
 
   IupSetAttribute(toggle3, "CHECKSIZE", "0");
@@ -268,8 +266,8 @@ void FlatToggleTest(void)
   IupSetAttribute(toggle8, "FONT",    "Courier, Bold 14"); 
   IupSetAttribute(toggle9, "3STATE",  "YES");             
   IupSetAttribute(toggle6, "TIP", "FlatToggle Tip");
-  IupSetAttribute(toggle7, "RIGHTBUTTON", "YES");
-  IupSetAttribute(toggle5, "RIGHTBUTTON", "YES");
+  IupSetAttribute(toggle7, "CHECKRIGHT", "YES");
+  IupSetAttribute(toggle5, "CHECKRIGHT", "YES");
 
   /* Creating box that contains the toggles */
   box = IupHbox(
