@@ -337,7 +337,7 @@ char* iupgtkGetFontIdAttrib(Ihandle *ih)
   else
   {
 #if GTK_CHECK_VERSION(3, 0, 0)
-    return NULL;  /* TODO: check gtkglarea for GTK3 support, not available yet. */
+    return NULL;  /* TODO: not available yet. */
 #else
     /* both functions are marked as deprecated in GDK (since 2.22) */
     GdkFont* gdk_font = gdk_font_from_description(gtkfont->fontdesc);
@@ -366,7 +366,7 @@ int iupdrvSetFontAttrib(Ihandle* ih, const char* value)
 
 static void gtkFontGetTextSize(Ihandle* ih, IgtkFont* gtkfont, const char* str, int len, int *w, int *h)
 {
-  int max_w = 0;
+  int max_w = 0, line_count;
 
   if (!gtkfont)
   {
@@ -382,23 +382,27 @@ static void gtkFontGetTextSize(Ihandle* ih, IgtkFont* gtkfont, const char* str, 
     return;
   }
 
+  if (h)
+    line_count = iupStrLineCount(str, len);
+
   if (str[0])
   {
     int dummy_h;
+    char* text = iupgtkStrConvertToSystemLen(str, &len);
 
     if (iupAttribGetBoolean(ih, "MARKUP"))
     {
       pango_layout_set_attributes(gtkfont->layout, NULL);
-      pango_layout_set_markup(gtkfont->layout, iupgtkStrConvertToSystem(str), len);
+      pango_layout_set_markup(gtkfont->layout, text, len);
     }
     else
-      pango_layout_set_text(gtkfont->layout, iupgtkStrConvertToSystem(str), len);
+      pango_layout_set_text(gtkfont->layout, text, len);
 
     pango_layout_get_pixel_size(gtkfont->layout, &max_w, &dummy_h);
   }
 
   if (w) *w = max_w;
-  if (h) *h = gtkfont->charheight * iupStrLineCount(str, len);
+  if (h) *h = gtkfont->charheight * line_count;
 }
 
 void iupdrvFontGetMultiLineStringSize(Ihandle* ih, const char* str, int *w, int *h)
@@ -445,7 +449,7 @@ int iupdrvFontGetStringWidth(Ihandle* ih, const char* str)
 {
   IgtkFont* gtkfont;
   int len, w;
-  const char* line_end;
+  const char* line_end, *text;
 
   if (!str || str[0]==0)
     return 0;
@@ -461,15 +465,15 @@ int iupdrvFontGetStringWidth(Ihandle* ih, const char* str)
   else
     len = (int)strlen(str);
 
-  str = iupgtkStrConvertToSystemLen(str, &len);
+  text = iupgtkStrConvertToSystemLen(str, &len);
 
   if (iupAttribGetBoolean(ih, "MARKUP"))
   {
     pango_layout_set_attributes(gtkfont->layout, NULL);
-    pango_layout_set_markup(gtkfont->layout, str, len);
+    pango_layout_set_markup(gtkfont->layout, text, len);
   }
   else
-    pango_layout_set_text(gtkfont->layout, str, len);
+    pango_layout_set_text(gtkfont->layout, text, len);
 
   pango_layout_get_pixel_size(gtkfont->layout, &w, NULL);
   return w;
