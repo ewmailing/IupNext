@@ -33,8 +33,12 @@ ifdef DBG
 endif  
 
 INCLUDES = ../include .
+
 # Windows XP minimum
 WIN32VER = 0x0501
+
+# Draw driver with alpha and anti-aliasing in Windows and Linux always
+USE_NEW_DRAW := Yes
 
 SRC = iup_array.c iup_callback.c iup_dlglist.c iup_attrib.c iup_focus.c iup_font.c \
       iup_globalattrib.c iup_object.c iup_key.c iup_layout.c iup_ledlex.c iup_names.c \
@@ -92,7 +96,11 @@ ifdef USE_GTK
   ifdef USE_GTK3
     SRC += gtk/iupgtk_draw_cairo.c
   else
-    SRC += gtk/iupgtk_draw_gdk.c
+    ifdef USE_NEW_DRAW
+      SRC += gtk/iupgtk_draw_cairo.c
+    else
+      SRC += gtk/iupgtk_draw_gdk.c
+    endif
   endif
   
   ifneq ($(findstring Win, $(TEC_SYSNAME)), )
@@ -159,8 +167,7 @@ else
          win/iupwin_tabs.c win/iupwin_menu.c win/iupwin_list.c win/iupwin_tree.c \
          win/iupwin_calendar.c win/iupwin_datepick.c
          
-  USE_WDL := Yes
-  ifdef USE_WDL
+  ifdef USE_NEW_DRAW
     INCLUDES += win/wdl
     DEFINES += COBJMACROS _UNICODE
     WDL := win/wdl/backend-d2d.c win/wdl/backend-dwrite.c win/wdl/backend-gdix.c win/wdl/backend-wic.c \

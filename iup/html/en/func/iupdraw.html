@@ -37,6 +37,13 @@ import Direct 2D and GDI+ functions in C, so no extra libraries are need to be
 linked by the application. It uses the same MIT <a href="windrawlib.txt">license</a> 
 used by IUP. We would like to thank Martin Mitáš for sharing such important 
 tool. (since 3.25)</p>
+<p>Since IUP version 3.25, the default draw driver is Direct 2D in Windows, and 
+Cairo in Linux (even in GTK 2). In Windows XP, there is no Direct 2D then GDI+ 
+is used. So since 3.25 DRAWCOLOR supports alpha and primitives have 
+anti-aliasing in Windows and Linux. The GDI driver and the GDK can still be 
+used, but the IUP main library must be re-compiled, see &quot;iup/src/config.mak&quot;. 
+The canvas has a new attribute called DRAWDRIVER that returns: GDI, D2D, GDI+, 
+X11, GDK or CAIRO.</p>
 <p>IMPORTANT: all functions can be used only in <strong>IupCanvas</strong> or
 <strong>IupBackgroundBox</strong> and inside the ACTION callback. To force a 
 redraw anytime use the functions <a href="../func/iupupdate.html">IupUpdate</a> 
@@ -62,7 +69,8 @@ iup.Draw<span class="auto-style2">ResetClip(</span><strong>ih</strong>: ihandle<
 <h3>Primitives</h3>
 <p>The primitives color is controlled by the attribute <strong>DRAWCOLOR</strong>.
 <span style="color: rgb(0, 0, 0); font-family: tahoma, verdana, arial, helvetica, geneva, sans-serif; font-size: medium; font-style: normal; font-variant: normal; font-weight: normal; letter-spacing: normal; line-height: 20.8px; orphans: auto; text-align: start; text-indent: 0px; text-transform: none; white-space: normal; widows: 1; word-spacing: 0px; -webkit-text-stroke-width: 0px; display: inline !important; float: none; background-color: rgb(255, 255, 255);">
-Default: &quot;0 0 0&quot;.</span></p>
+Default: &quot;0 0 0&quot;. Since version 3.25 the alpha component is also 
+supported, if not specified 255 (opaque) is assumed.</span></p>
 <p>Rectangle, Arc and Polygon can be filled or stroked. When stroked the line 
 style can be continuous, dashed or dotted. These are controlled by the attribute 
 <strong>DRAWSTYLE</strong>. Can have values: FILL, STROKE, STROKE_DASH or STROKE_DOT. Default: 
