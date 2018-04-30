@@ -245,8 +245,6 @@ void iupdrvDrawText(IdrawCanvas* dc, const char* text, int len, int x, int y, in
   PangoLayout* fontlayout = (PangoLayout*)iupgtkGetPangoLayout(font);
   PangoAlignment alignment = PANGO_ALIGN_LEFT;
   GdkColor c;
-  (void)w; /* unused */
-  (void)h; /* unused */
 
   iupgdkColorSet(&c, color);
   gdk_gc_set_rgb_fg_color(dc->pixmap_gc, &c);
@@ -260,8 +258,13 @@ void iupdrvDrawText(IdrawCanvas* dc, const char* text, int len, int x, int y, in
     alignment = PANGO_ALIGN_CENTER;
 
   pango_layout_set_alignment(fontlayout, alignment);
+  pango_layout_set_width(fontlayout, iupGTK_PIXELS2PANGOUNITS(w));
+  pango_layout_set_height(fontlayout, iupGTK_PIXELS2PANGOUNITS(h));
 
   gdk_draw_layout(dc->pixmap, dc->pixmap_gc, x, y, fontlayout);
+
+  pango_layout_set_width(fontlayout, -1);
+  pango_layout_set_height(fontlayout, -1);
 }
 
 void iupdrvDrawImage(IdrawCanvas* dc, const char* name, int make_inactive, const char* bgcolor, int x, int y)
