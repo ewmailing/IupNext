@@ -97,7 +97,7 @@ static int cdfont(cdCtxCanvas *ctxcanvas, const char *type_face, int style, int 
   if (style & CD_STRIKEOUT)
     is_strikeout = 1;
 
-  sprintf(font, "%s, %s%s%d", type_face, is_bold ? "Bold " : "", is_italic ? "Italic " : "", size);
+  sprintf(font, "%s, %s%s%s%s%d", type_face, is_bold ? "Bold " : "", is_italic ? "Italic " : "", is_underline ? "Underline " : "", is_strikeout ? "Strikeout " : "", size);
 
   /* store in native font and manually save font parameters */
   strcpy(ctxcanvas->canvas->native_font, font);
@@ -503,3 +503,12 @@ cdContext* cdContextIupDraw(void)
 {
   return &cdIupDrawContext;
 }
+
+/* TODO:
+- image zoom
+- text orientation
+- hatch
+- line cap, line join
+- path
+- bezier
+*/
