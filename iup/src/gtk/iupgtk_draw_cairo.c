@@ -23,10 +23,8 @@
 
 #include "iupgtk_drv.h"
 
-/* This was build for GTK3 only */
-#if !GTK_CHECK_VERSION(3, 0, 0)
-#error This module is for GTK 3.x only
-#endif
+/* This was build for GTK3 only, 
+   but since 3.25 work with GTK2 too. */
 
 struct _IdrawCanvas
 {
@@ -36,6 +34,11 @@ struct _IdrawCanvas
   GtkWidget* widget;
   int release_cr;
   cairo_t *cr, *image_cr;
+#if !GTK_CHECK_VERSION(3, 0, 0)
+  GdkWindow* wnd;
+  int draw_focus,
+    focus_x1, focus_y1, focus_x2, focus_y2;
+#endif
 };
 
 IdrawCanvas* iupdrvDrawCreateCanvas(Ihandle* ih)
@@ -54,9 +57,17 @@ IdrawCanvas* iupdrvDrawCreateCanvas(Ihandle* ih)
     GdkWindow* wnd = (GdkWindow*)IupGetAttribute(ih, "DRAWABLE");
     dc->cr = gdk_cairo_create(wnd);
     dc->release_cr = 1;
+#if !GTK_CHECK_VERSION(3, 0, 0)
+    dc->wnd = wnd;
+#endif
   }
+
+#if !GTK_CHECK_VERSION(3, 0, 0)
+  gdk_drawable_get_size(dc->wnd, &dc->w, &dc->h);
+#else
   dc->w = gtk_widget_get_allocated_width(dc->widget);
   dc->h = gtk_widget_get_allocated_height(dc->widget);
+#endif
 
   surface = cairo_surface_create_similar(cairo_get_target(dc->cr), CAIRO_CONTENT_COLOR_ALPHA, dc->w, dc->h);
   dc->image_cr = cairo_create(surface);
@@ -78,8 +89,13 @@ void iupdrvDrawKillCanvas(IdrawCanvas* dc)
 
 void iupdrvDrawUpdateSize(IdrawCanvas* dc)
 {
-  int w = gtk_widget_get_allocated_width(dc->widget);
-  int h = gtk_widget_get_allocated_height(dc->widget);
+  int w, h;
+#if !GTK_CHECK_VERSION(3, 0, 0)
+  gdk_drawable_get_size(dc->wnd, &w, &h);
+#else
+  w = gtk_widget_get_allocated_width(dc->widget);
+  h = gtk_widget_get_allocated_height(dc->widget);
+#endif
 
   if (w != dc->w || h != dc->h)
   {
@@ -96,6 +112,20 @@ void iupdrvDrawUpdateSize(IdrawCanvas* dc)
   }
 }
 
+#if !GTK_CHECK_VERSION(3, 0, 0)
+static void gdkDrawFocusRect(Ihandle* ih, int x, int y, int w, int h)
+{
+  GdkWindow* window = iupgtkGetWindow(ih->handle);
+  GtkStyle *style = gtk_widget_get_style(ih->handle);
+#if GTK_CHECK_VERSION(2, 18, 0)
+  GtkStateType state = gtk_widget_get_state(ih->handle);
+#else
+  GtkStateType state = GTK_WIDGET_STATE(ih->handle);
+#endif
+  gtk_paint_focus(style, window, state, NULL, ih->handle, NULL, x, y, w, h);
+}
+#endif
+
 void iupdrvDrawFlush(IdrawCanvas* dc)
 {
   /* flush the writing in the image */
@@ -109,6 +139,14 @@ void iupdrvDrawFlush(IdrawCanvas* dc)
 
   cairo_set_operator(dc->cr, CAIRO_OPERATOR_SOURCE);
   cairo_paint(dc->cr);  /* paints the current source everywhere within the current clip region. */
+
+#if !GTK_CHECK_VERSION(3, 0, 0)
+  if (dc->draw_focus)
+  {
+    gdkDrawFocusRect(dc->ih, dc->focus_x1, dc->focus_y1, dc->focus_x2 - dc->focus_x1 + 1, dc->focus_y2 - dc->focus_y1 + 1);
+    dc->draw_focus = 0;
+  }
+#endif
 }
 
 void iupdrvDrawGetSize(IdrawCanvas* dc, int *w, int *h)
@@ -343,8 +381,6 @@ void iupdrvDrawText(IdrawCanvas* dc, const char* text, int len, int x, int y, in
 {
   PangoLayout* fontlayout = (PangoLayout*)iupgtkGetPangoLayout(font);
   PangoAlignment alignment = PANGO_ALIGN_LEFT;
-  (void)w; /* unused */
-  (void)h; /* unused */
 
   text = iupgtkStrConvertToSystemLen(text, &len);
   pango_layout_set_text(fontlayout, text, len);
@@ -355,6 +391,8 @@ void iupdrvDrawText(IdrawCanvas* dc, const char* text, int len, int x, int y, in
     alignment = PANGO_ALIGN_CENTER;
 
   pango_layout_set_alignment(fontlayout, alignment);
+  pango_layout_set_width(fontlayout, iupGTK_PIXELS2PANGOUNITS(w));
+  pango_layout_set_height(fontlayout, iupGTK_PIXELS2PANGOUNITS(h));
 
   cairo_set_source_rgba(dc->image_cr, iupgtkColorToDouble(iupDrawRed(color)), iupgtkColorToDouble(iupDrawGreen(color)), iupgtkColorToDouble(iupDrawBlue(color)), iupgtkColorToDouble(iupDrawAlpha(color)));
 
@@ -362,6 +400,9 @@ void iupdrvDrawText(IdrawCanvas* dc, const char* text, int len, int x, int y, in
 
   cairo_move_to(dc->image_cr, x, y);
   pango_cairo_show_layout(dc->image_cr, fontlayout);
+
+  pango_layout_set_width(fontlayout, -1);
+  pango_layout_set_height(fontlayout, -1);
 }
 
 void iupdrvDrawImage(IdrawCanvas* dc, const char* name, int make_inactive, const char* bgcolor, int x, int y)
@@ -400,10 +441,20 @@ void iupdrvDrawSelectRect(IdrawCanvas* dc, int x1, int y1, int x2, int y2)
 
 void iupdrvDrawFocusRect(IdrawCanvas* dc, int x1, int y1, int x2, int y2)
 {
+#if GTK_CHECK_VERSION(3, 0, 0)
   GtkStyleContext* context = gtk_widget_get_style_context(dc->widget);
+#endif
 
   iupDrawCheckSwapCoord(x1, x2);
   iupDrawCheckSwapCoord(y1, y2);
 
+#if !GTK_CHECK_VERSION(3, 0, 0)
+  dc->draw_focus = 1;  /* draw focus on the next flush */
+  dc->focus_x1 = x1;
+  dc->focus_y1 = y1;
+  dc->focus_x2 = x2;
+  dc->focus_y2 = y2;
+#else
   gtk_render_focus(context, dc->image_cr, x1, y1, x2 - x1 + 1, y2 - y1 + 1);
+#endif
 }
