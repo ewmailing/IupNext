@@ -69,7 +69,7 @@ static int iFlatToggleRedraw_CB(Ihandle* ih)
   const char* draw_image;
   int border_width = ih->data->border_width;
   int draw_border = iupAttribGetBoolean(ih, "SHOWBORDER");
-  int image_pressed, icon_position, check_position, icon_width;
+  int image_pressed, icon_left, check_left, icon_width, icon_right;
   IdrawCanvas* dc = iupdrvDrawCreateCanvas(ih);
   int make_inactive = 0;
 
@@ -85,12 +85,14 @@ static int iFlatToggleRedraw_CB(Ihandle* ih)
 
   if (ih->data->check_size)
   {
-    check_position = 0;
-    icon_position = ih->data->check_size + ih->data->check_spacing;
+    check_left = 0;
+    icon_left = ih->data->check_size + ih->data->check_spacing;
+    icon_right = ih->currentwidth - 1;
     if (check_right)
     {
-      check_position = ih->currentwidth - ih->data->check_size;
-      icon_position = 0;
+      check_left = ih->currentwidth - ih->data->check_size;
+      icon_left = 0;
+      icon_right = ih->currentwidth -1 - ih->data->check_size - ih->data->check_spacing;
     }
     icon_width = ih->currentwidth - ih->data->check_size - ih->data->check_spacing;
   }
@@ -113,8 +115,9 @@ static int iFlatToggleRedraw_CB(Ihandle* ih)
       draw_border = 1;
     }
 
-    check_position = 0;
-    icon_position = 0;
+    check_left = 0;
+    icon_left = 0;
+    icon_right = ih->currentwidth - 1;
     icon_width = ih->currentwidth;
   }
 
@@ -159,7 +162,7 @@ static int iFlatToggleRedraw_CB(Ihandle* ih)
 
   /* draw icon */
   draw_image = iupFlatGetImageName(ih, "IMAGE", image, image_pressed, ih->data->highlighted, active, &make_inactive);
-  iupFlatDrawIcon(ih, dc, border_width + icon_position, border_width,
+  iupFlatDrawIcon(ih, dc, border_width + icon_left, border_width,
                           icon_width - 2 * border_width, ih->currentheight - 2 * border_width,
                           ih->data->img_position, ih->data->spacing, ih->data->horiz_alignment, ih->data->vert_alignment, ih->data->horiz_padding, ih->data->vert_padding,
                           draw_image, make_inactive, title, text_align, fgcolor, bgcolor, active);
@@ -167,26 +170,26 @@ static int iFlatToggleRedraw_CB(Ihandle* ih)
   if (fgimage)
   {
     draw_image = iupFlatGetImageName(ih, "FRONTIMAGE", fgimage, image_pressed, ih->data->highlighted, active, &make_inactive);
-    iupdrvDrawImage(dc, draw_image, make_inactive, bgcolor, border_width, border_width);
+    iupdrvDrawImage(dc, draw_image, make_inactive, bgcolor, border_width, border_width + icon_left);
   }
   else if (!image && !title)
   {
     int space = border_width + ITOGGLE_MARGIN;
-    iupFlatDrawBorder(dc, space + icon_position, icon_width - 1 - space,
+    iupFlatDrawBorder(dc, space + icon_left, icon_right - space,
                           space, ih->currentheight - 1 - space,
                           1, "0 0 0", bgcolor, active);
     space++;
-    iupFlatDrawBox(dc, space + icon_position, icon_width - 1 - space,
+    iupFlatDrawBox(dc, space + icon_left, icon_right - space,
                        space, ih->currentheight - 1 - space,
                        fgcolor, bgcolor, active);
   }
 
   if (ih->data->check_size)
   {
-    int xc = check_position + ih->data->check_size / 2;
+    int xc = check_left + ih->data->check_size / 2;
     int yc = ih->currentheight / 2;
     int radius = ih->data->check_size / 2 - ITOGGLE_MARGIN;
-    int check_xmin = check_position + ITOGGLE_MARGIN;
+    int check_xmin = check_left + ITOGGLE_MARGIN;
     int check_ymin = (ih->currentheight - ih->data->check_size) / 2 + ITOGGLE_MARGIN;
     int check_size = ih->data->check_size - 2 * ITOGGLE_MARGIN;
     char* check_image = iupAttribGet(ih, "CHECKIMAGE");
@@ -258,7 +261,8 @@ static int iFlatToggleRedraw_CB(Ihandle* ih)
   }
 
   if (ih->data->has_focus)
-    iupdrvDrawFocusRect(dc, border_width, border_width, ih->currentwidth - 1 - border_width, ih->currentheight - 1 - border_width);
+    iupdrvDrawFocusRect(dc, border_width + icon_left, border_width, 
+                            icon_right - border_width, ih->currentheight - 1 - border_width);
 
   iupdrvDrawFlush(dc);
 
