@@ -106,12 +106,14 @@ Ctrl+'-' that change the FONTSIZE and refresh the layout of the dialog. If
 element sizes are NOT set using RASTERSIZE their sizes will be automatically 
 increased and decreased. Images are not changed.</span></font></p>
 <h3><b><a name="IMAGEAUTOSCALE">IMAGEAUTOSCALE</a> <span class="style2">(since 3.16)</span></b></h3>
-<p>Automatically scale all images, except stock images, by a given real factor. 
+<p>If defined automatically scale all images, except stock images, by a given real factor. 
 If &quot;DPI&quot; value is used then the factor will be automatically calculated from the 
 ratio between screen resolution and IMAGESDPI.&nbsp; </p>
 <h3><a name="IMAGESDPI">IMAGESDPI</a><span class="style2"> (since 3.16)</span></h3>
 <p>Defines the resolution of the images of the application. Common values are 
 96, 144, 192, and 288 DPI. Default: 96. Used when IMAGEAUTOSCALE=DPI.</p>
+<h3>IMAGESTOCKAUTOSCALE <b><span class="style2">(since 3.25)</span></b></h3>
+<p>Stock images are automatically scaled by default. Default: Yes.</p>
 <h3>IMAGESTOCKSIZE <b><span class="style2">(since 3.16)</span></b></h3>
 <p>Force a size for stock images by controlling the image height. If that image 
 size is not available the stock image is resized to match the given size. By 

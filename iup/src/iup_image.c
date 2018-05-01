@@ -109,20 +109,21 @@ static void iDataStretch(int src_width, int src_height, unsigned char *src_map, 
   free(XTab);
 }
 
-static void iImageResize(Ihandle* ih, int width, int height, int bpp)
+static void iImageResize(Ihandle* ih, int new_width, int new_height)
 {
   unsigned char* imgdata = (unsigned char*)iupAttribGet(ih, "WID");
   int channels = iupAttribGetInt(ih, "CHANNELS");
-  int count = width*height*channels;
+  int bpp = iupAttribGetInt(ih, "BPP");
+  int count = new_width*new_height*channels;
   unsigned char* new_imgdata = (unsigned char *)malloc(count);
 
   if (bpp == 8)
-    iDataStretch(ih->currentwidth, ih->currentheight, imgdata, width, height, new_imgdata);
+    iDataStretch(ih->currentwidth, ih->currentheight, imgdata, new_width, new_height, new_imgdata);
   else
-    iDataResize(ih->currentwidth, ih->currentheight, imgdata, width, height, new_imgdata, channels);
+    iDataResize(ih->currentwidth, ih->currentheight, imgdata, new_width, new_height, new_imgdata, channels);
 
-  ih->currentwidth = width;
-  ih->currentheight = height;
+  ih->currentwidth = new_width;
+  ih->currentheight = new_height;
 
   free(imgdata);
   iupAttribSet(ih, "WID", (char*)new_imgdata);
@@ -145,6 +146,8 @@ static Itable *istock_table = NULL;   /* the image hash table indexed by the nam
 void iupImageStockInit(void)
 {
   istock_table = iupTableCreate(IUPTABLE_STRINGINDEXED);
+
+  IupSetGlobal("IMAGESTOCKAUTOSCALE", "Yes");
 }
 
 void iupImageStockFinish(void)
@@ -240,15 +243,15 @@ void iupImageStockGet(const char* name, Ihandle* *ih, const char* *native_name)
       *native_name = istock->native_name;
     else if (istock->func)
     {
-      int stock_size, bpp;
+      int stock_size;
+      int autoscale = IupGetInt(NULL, "IMAGESTOCKAUTOSCALE");
 
       istock->image = istock->func();
       *ih = istock->image;
 
       stock_size = iupImageStockGetSize();
-      bpp = IupGetInt(istock->image, "BPP");
 
-      if (istock->image->currentheight != stock_size && istock->can_resize)
+      if (autoscale && istock->can_resize && istock->image->currentheight != stock_size)
       {
         int new_height = stock_size;
         int new_width = stock_size;
@@ -258,7 +261,7 @@ void iupImageStockGet(const char* name, Ihandle* *ih, const char* *native_name)
         iupAttribSet(istock->image, "SCALED", "Yes");
         iupAttribSetStrf(istock->image, "ORIGINALSCALE", "%dx%d", istock->image->currentwidth, istock->image->currentheight);
 
-        iImageResize(istock->image, new_width, new_height, bpp);
+        iImageResize(istock->image, new_width, new_height);
       }
     }
   }
@@ -482,7 +485,6 @@ Ihandle* iupImageGetImageFromName(const char* name)
   Ihandle* ih = IupGetHandle(name);
   if (ih && !iupAttribGet(ih, "_IUPIMAGE_LOADED_HANDLE") && !iupAttribGet(ih, "_IUPIMAGE_LOADED_WD_HANDLE"))
   {
-    int bpp = IupGetInt(ih, "BPP");
     char* autoscale = iupAttribGet(ih, "AUTOSCALE");
     if (!autoscale) autoscale = IupGetGlobal("IMAGEAUTOSCALE");
     if (autoscale && !iupAttribGet(ih, "SCALED"))
@@ -520,7 +522,7 @@ Ihandle* iupImageGetImageFromName(const char* name)
         iupAttribSet(ih, "SCALED", "Yes");
         iupAttribSetStrf(ih, "ORIGINALSCALE", "%dx%d", ih->currentwidth, ih->currentheight);
 
-        iImageResize(ih, new_width, new_height, bpp);
+        iImageResize(ih, new_width, new_height);
 
         if (hotspot)
         {
@@ -1024,12 +1026,10 @@ static int iImageSetResizeAttrib(Ihandle *ih, const char* value)
 
   if (iupStrToIntInt(value, &w, &h, 'x') == 2)
   {
-    int bpp = IupGetInt(ih, "BPP");
-    
     iupAttribSet(ih, "SCALED", "Yes");
     iupAttribSetStrf(ih, "ORIGINALSCALE", "%dx%d", ih->currentwidth, ih->currentheight);
 
-    iImageResize(ih, w, h, bpp);
+    iImageResize(ih, w, h);
   }
   return 0;
 }
