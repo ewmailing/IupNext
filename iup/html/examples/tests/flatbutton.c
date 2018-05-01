@@ -407,7 +407,6 @@ void FlatButtonTest(void)
 //  IupSetAttributeHandle(button, "IMAGEPRESS", image1p);
   IupSetAttribute(button, "TIP", "Image Label");
   IupSetAttribute(button, "NAME", "button4");
-  IupSetAttribute(button, "PADDING", "5x5");
   if (toggle) IupSetAttribute(button, "TOGGLE", "Yes");
   set_callbacks(button);
   IupAppend(box2, button);

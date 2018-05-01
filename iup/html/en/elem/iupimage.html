@@ -224,19 +224,10 @@ many others. The Motif driver supports the X-Windows bitmap. For example:</p>
 	<a href="../executables.html">IupView</a> 
 	is also capable of converting several image formats into an <strong>IupImage</strong>, and 
 	save IUP images as LED, Lua or ICO.</p>
-  <p>
-  The
-  <a target="_top" href="http://www.tecgraf.puc-rio.br/edpatt">EdPatt</a> and 
-	the
-  <a href="http://www.tecgraf.puc-rio.br/~scuri/imlab">IMLAB</a> applications 
-	can load and save images in simplified LED format. They allow operations 
-	such as importing GIF images and exporting them as IUP images. <b>EdPatt</b> 
-	allows you to manually edit the images, and also have support for images in 
-	IupLua.</p>
   <h4>
   IupLua Old Constructor</h4>
 
-  <p>In Lua, the 8bpp image can also be created using an unnamed table, using a 
+  <p>In Lua, the 8 bpp image can also be created using an unnamed table, using a 
 	series of tables for each line. Width and height will be guessed from the 
 	tables sizes. For example:</p>
 
@@ -307,7 +298,7 @@ example:</p>
 }</pre>
 <p>Although in Lua they are still referenced as index 1, so img.<strong>colors</strong>[1] 
 returns the color of the index 0 in the image.</p>
-<p>Here is the same image but using 24bpp:</p>
+<p>Here is the same image but using 24 bpp:</p>
 <pre>img = iup.imagergb{
   width = 11,
   height = 11,
