@@ -159,7 +159,7 @@ static void winToggleDrawImage(Ihandle* ih, HDC hDC, int rect_width, int rect_he
       ypad = ih->data->vert_padding + border;
   int horiz_alignment, vert_alignment;
   int x, y, width, height, bpp;
-  HBITMAP hBitmap, hMask = NULL;
+  HBITMAP hBitmap;
   char *name;
   int make_inactive = 0;
 
@@ -214,13 +214,7 @@ static void winToggleDrawImage(Ihandle* ih, HDC hDC, int rect_width, int rect_he
     }
   }
 
-  if (bpp == 8)
-    hMask = iupdrvImageCreateMask(IupGetHandle(name));
-
-  iupwinDrawBitmap(hDC, hBitmap, hMask, x, y, width, height, bpp);
-
-  if (hMask)
-    DeleteObject(hMask);
+  iupwinDrawBitmap(hDC, hBitmap, x, y, width, height, width, height, bpp);
 }
 
 static void winToggleDrawItem(Ihandle* ih, DRAWITEMSTRUCT *drawitem)

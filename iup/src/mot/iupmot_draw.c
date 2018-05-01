@@ -315,7 +315,7 @@ void iupdrvDrawText(IdrawCanvas* dc, const char* text, int len, int x, int y, in
   }
 }
 
-void iupdrvDrawImage(IdrawCanvas* dc, const char* name, int make_inactive, const char* bgcolor, int x, int y)
+void iupdrvDrawImage(IdrawCanvas* dc, const char* name, int make_inactive, const char* bgcolor, int x, int y, int w, int h)
 {
   int img_w, img_h;
   int bpp;
@@ -327,6 +327,10 @@ void iupdrvDrawImage(IdrawCanvas* dc, const char* name, int make_inactive, const
   iupdrvImageGetInfo((void*)pixmap, &img_w, &img_h, &bpp);
 
   XCopyArea(iupmot_display, pixmap, dc->pixmap, dc->pixmap_gc, 0, 0, img_w, img_h, x, y);
+
+  /* zoom not supported */
+  (void)w;
+  (void)h;
 }
 
 void iupdrvDrawSelectRect(IdrawCanvas* dc, int x1, int y1, int x2, int y2)

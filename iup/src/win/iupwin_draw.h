@@ -15,7 +15,7 @@ extern "C" {
 void iupwinDrawInit(void);
 void iupwinDrawFinish(void);
 
-void iupwinDrawBitmap(HDC hDC, HBITMAP hBitmap, HBITMAP hMask, int x, int y, int width, int height, int bpp);
+void iupwinDrawBitmap(HDC hDC, HBITMAP hBitmap, int x, int y, int w, int h, int img_w, int img_h, int bpp);
 void iupwinDrawText(HDC hDC, const char* text, int x, int y, int width, int height, HFONT hFont, COLORREF fgcolor, int style);
 
 void iupwinDrawParentBackground(Ihandle* ih, HDC hDC, RECT* rect);

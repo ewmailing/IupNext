@@ -259,7 +259,7 @@ void IupDrawGetImageInfo(const char* name, int *w, int *h, int *bpp)
   iupImageGetInfo(name, w, h, bpp);
 }
 
-void IupDrawImage(Ihandle* ih, const char* name, int x, int y)
+void IupDrawImage(Ihandle* ih, const char* name, int x, int y, int w, int h)
 {
   IdrawCanvas* dc;
   char* bgcolor;
@@ -276,7 +276,7 @@ void IupDrawImage(Ihandle* ih, const char* name, int x, int y)
   bgcolor = iupAttribGetStr(ih, "DRAWBGCOLOR");
   make_inactive = iupAttribGetInt(ih, "DRAWMAKEINACTIVE");
 
-  iupdrvDrawImage(dc, name, make_inactive, bgcolor, x, y);
+  iupdrvDrawImage(dc, name, make_inactive, bgcolor, x, y, w, h);
 }
 
 void IupDrawSetClipRect(Ihandle* ih, int x1, int y1, int x2, int y2)
@@ -669,7 +669,7 @@ void iupFlatDrawIcon(Ihandle* ih, IdrawCanvas* dc, int icon_x, int icon_y, int i
                                   img_width, img_height, txt_width, txt_height,
                                   &img_x, &img_y, &txt_x, &txt_y);
 
-      iupdrvDrawImage(dc, imagename, make_inactive, bgcolor, img_x + icon_x, img_y + icon_y);
+      iupdrvDrawImage(dc, imagename, make_inactive, bgcolor, img_x + icon_x, img_y + icon_y, img_width, img_height);
       iFlatDrawText(dc, txt_x + icon_x, txt_y + icon_y, txt_width, txt_height, title, font, text_align, fgcolor, bgcolor, active);
     }
     else
@@ -678,7 +678,7 @@ void iupFlatDrawIcon(Ihandle* ih, IdrawCanvas* dc, int icon_x, int icon_y, int i
 
       iFlatGetIconPosition(icon_width, icon_height, &x, &y, width, height, horiz_alignment, vert_alignment, horiz_padding, vert_padding);
 
-      iupdrvDrawImage(dc, imagename, make_inactive, bgcolor, x + icon_x, y + icon_y);
+      iupdrvDrawImage(dc, imagename, make_inactive, bgcolor, x + icon_x, y + icon_y, width, height);
     }
   }
   else if (title)

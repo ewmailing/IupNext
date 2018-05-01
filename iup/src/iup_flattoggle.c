@@ -153,7 +153,7 @@ static int iFlatToggleRedraw_CB(Ihandle* ih)
   if (bgimage)
   {
     draw_image = iupFlatGetImageName(ih, "BACKIMAGE", bgimage, image_pressed, ih->data->highlighted, active, &make_inactive);
-    iupdrvDrawImage(dc, draw_image, make_inactive, bgcolor, border_width, border_width);
+    iupdrvDrawImage(dc, draw_image, make_inactive, bgcolor, border_width, border_width, 0, 0);
   }
   else 
     iupFlatDrawBox(dc, border_width, ih->currentwidth - 1 - border_width,
@@ -170,7 +170,7 @@ static int iFlatToggleRedraw_CB(Ihandle* ih)
   if (fgimage)
   {
     draw_image = iupFlatGetImageName(ih, "FRONTIMAGE", fgimage, image_pressed, ih->data->highlighted, active, &make_inactive);
-    iupdrvDrawImage(dc, draw_image, make_inactive, bgcolor, border_width, border_width + icon_left);
+    iupdrvDrawImage(dc, draw_image, make_inactive, bgcolor, border_width, border_width + icon_left, 0, 0);
   }
   else if (!image && !title)
   {
@@ -201,7 +201,7 @@ static int iFlatToggleRedraw_CB(Ihandle* ih)
       else if (selected)
         draw_image = iupFlatGetImageName(ih, "CHECKIMAGEON", check_image, ih->data->pressed, ih->data->highlighted, active, &make_inactive);
 
-      iupdrvDrawImage(dc, draw_image, make_inactive, bgcolor, check_xmin, check_ymin);
+      iupdrvDrawImage(dc, draw_image, make_inactive, bgcolor, check_xmin, check_ymin, 0, 0);
     }
     else
     {

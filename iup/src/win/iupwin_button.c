@@ -84,12 +84,11 @@ static int winButtonCalcAlignPosY(int vert_alignment, int rect_height, int heigh
   return y;
 }
 
-static HBITMAP winButtonGetBitmap(Ihandle* ih, UINT itemState, int *shift, int *w, int *h, int *bpp, HBITMAP *hMask)
+static HBITMAP winButtonGetBitmap(Ihandle* ih, UINT itemState, int *shift, int *w, int *h, int *bpp)
 {
   char *name;
   int make_inactive = 0;
   HBITMAP hBitmap;
-  *hMask = NULL;
 
   if (itemState & ODS_DISABLED)
   {
@@ -117,9 +116,6 @@ static HBITMAP winButtonGetBitmap(Ihandle* ih, UINT itemState, int *shift, int *
   /* must use this info, since image can be a driver image loaded from resources */
   iupdrvImageGetInfo(hBitmap, w, h, bpp);
 
-  if (*bpp == 8)
-    *hMask = iupdrvImageCreateMask(IupGetHandle(name));
-
   return hBitmap;
 }
 
@@ -132,7 +128,7 @@ static void winButtonDrawImageText(Ihandle* ih, HDC hDC, int rect_width, int rec
       img_x, img_y, img_width, img_height, 
       bpp, shift = 0, style = 0;
   HFONT hFont = (HFONT)iupwinGetHFontAttrib(ih);
-  HBITMAP hBitmap, hMask;
+  HBITMAP hBitmap;
   COLORREF fgcolor;
 
   char* title = iupAttribGet(ih, "TITLE");
@@ -145,7 +141,7 @@ static void winButtonDrawImageText(Ihandle* ih, HDC hDC, int rect_width, int rec
   else
     fgcolor = ih->data->fgcolor;
 
-  hBitmap = winButtonGetBitmap(ih, itemState, NULL, &img_width, &img_height, &bpp, &hMask);
+  hBitmap = winButtonGetBitmap(ih, itemState, NULL, &img_width, &img_height, &bpp);
   if (!hBitmap)
     return;
 
@@ -235,11 +231,8 @@ static void winButtonDrawImageText(Ihandle* ih, HDC hDC, int rect_width, int rec
   else if (ih->data->horiz_alignment == IUP_ALIGN_ARIGHT)
     style |= DT_RIGHT;
 
-  iupwinDrawBitmap(hDC, hBitmap, hMask, img_x, img_y, img_width, img_height, bpp);
+  iupwinDrawBitmap(hDC, hBitmap, img_x, img_y, img_width, img_height, img_width, img_height, bpp);
   iupwinDrawText(hDC, title, txt_x, txt_y, txt_width, txt_height, hFont, fgcolor, style);
-
-  if (hMask)
-    DeleteObject(hMask);
 }
 
 static void winButtonDrawImage(Ihandle* ih, HDC hDC, int rect_width, int rect_height, int border, UINT itemState)
@@ -247,22 +240,19 @@ static void winButtonDrawImage(Ihandle* ih, HDC hDC, int rect_width, int rect_he
   int xpad = ih->data->horiz_padding + border, 
       ypad = ih->data->vert_padding + border;
   int x, y, width, height, bpp, shift = 0;
-  HBITMAP hBitmap, hMask;
+  HBITMAP hBitmap;
 
   if (itemState & ODS_SELECTED && !iupwin_comctl32ver6)
     shift = 1;
 
-  hBitmap = winButtonGetBitmap(ih, itemState, &shift, &width, &height, &bpp, &hMask);
+  hBitmap = winButtonGetBitmap(ih, itemState, &shift, &width, &height, &bpp);
   if (!hBitmap)
     return;
 
   x = winButtonCalcAlignPosX(ih->data->horiz_alignment, rect_width, width, xpad, shift);
   y = winButtonCalcAlignPosY(ih->data->vert_alignment, rect_height, height, ypad, shift);
 
-  iupwinDrawBitmap(hDC, hBitmap, hMask, x, y, width, height, bpp);
-
-  if (hMask)
-    DeleteObject(hMask);
+  iupwinDrawBitmap(hDC, hBitmap, x, y, width, height, width, height, bpp);
 }
 
 static void winButtonDrawText(Ihandle* ih, HDC hDC, int rect_width, int rect_height, int border, UINT itemState)

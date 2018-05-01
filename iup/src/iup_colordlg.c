@@ -240,7 +240,7 @@ static void iColorDrawTransparentRectangle(Ihandle* color_cnv, int xmin, int ymi
     }
 
     iupAttribSetHandleName(image);
-    IupDrawImage(color_cnv, iupAttribGetHandleName(image), xmin, ymin);
+    IupDrawImage(color_cnv, iupAttribGetHandleName(image), xmin, ymin, 0, 0);
 
     IupDestroy(image);
   }

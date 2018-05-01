@@ -181,8 +181,7 @@ void* iupdrvImageCreateImage(Ihandle *ih, const char* bgcolor, int make_inactive
       }
 
       if (make_inactive)
-          iupImageColorMakeInactive(&(colors[i].r), &(colors[i].g), &(colors[i].b), 
-                                    bg_r, bg_g, bg_b);
+        iupImageColorMakeInactive(&(colors[i].r), &(colors[i].g), &(colors[i].b), bg_r, bg_g, bg_b);
 
       color2pixel[i] = iupmotColorGetPixel(colors[i].r, colors[i].g, colors[i].b);
     }
@@ -215,6 +214,7 @@ void* iupdrvImageCreateImage(Ihandle *ih, const char* bgcolor, int make_inactive
           unsigned char a = *(pixel_data+3);
           if (a != 255)
           {
+            /* flat alpha */
             r = iupALPHABLEND(r, bg_r, a);
             g = iupALPHABLEND(g, bg_g, a);
             b = iupALPHABLEND(b, bg_b, a);
@@ -318,7 +318,7 @@ void* iupdrvImageCreateCursor(Ihandle *ih)
   return (void*)cursor;
 }
 
-void* iupdrvImageCreateMask(Ihandle *ih)
+static Pixmap motImageCreateMask(Ihandle *ih)
 {
   int bpp,y,x,
       width = ih->currentwidth,
@@ -332,10 +332,10 @@ void* iupdrvImageCreateMask(Ihandle *ih)
 
   bpp = iupAttribGetInt(ih, "BPP");
   if (bpp > 8)
-    return NULL;
+    return 0;
 
   bits = (char*)malloc(size_bytes);
-  if (!bits) return NULL;
+  if (!bits) return 0;
   memset(bits, 0, size_bytes);
 
   iupImageInitNonBgColors(ih, colors);
@@ -360,7 +360,33 @@ void* iupdrvImageCreateMask(Ihandle *ih)
                                bits, width, height);
 
   free(bits);
-  return (void*)mask;
+  return mask;
+}
+
+Pixmap iupmotImageGetMask(const char* name)
+{
+  Pixmap mask;
+  Ihandle *ih;
+
+  if (!name)
+    return 0;
+
+  ih = iupImageGetImageFromName(name);
+  if (!ih)
+    return 0;
+
+  /* Check for an already created icon */
+  mask = (Pixmap)iupAttribGet(ih, "_IUPIMAGE_MASK");
+  if (mask)
+    return mask;
+
+  /* Not created, tries to create the mask */
+  mask = motImageCreateMask(ih);
+
+  /* save the mask */
+  iupAttribSet(ih, "_IUPIMAGE_MASK", (char*)mask);
+
+  return mask;
 }
 
 void* iupdrvImageLoad(const char* name, int type)

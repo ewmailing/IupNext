@@ -92,7 +92,7 @@ static int DrawImage(lua_State *L)
   else
     name = luaL_checkstring(L, 2);
 
-  IupDrawImage(iuplua_checkihandle(L, 1), name, (int)luaL_checkinteger(L, 3), (int)luaL_checkinteger(L, 4));
+  IupDrawImage(iuplua_checkihandle(L, 1), name, (int)luaL_checkinteger(L, 3), (int)luaL_checkinteger(L, 4), (int)luaL_optinteger(L, 5, 0), (int)luaL_optinteger(L, 6, 0));
   return 0;
 }
 

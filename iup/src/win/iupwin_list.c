@@ -1712,23 +1712,12 @@ static void winListDrawItem(Ihandle* ih, DRAWITEMSTRUCT *drawitem)
   if (itemdata->hBitmap)
   {
     int bpp, img_w, img_h;
-    HBITMAP hMask = NULL;
 
     iupdrvImageGetInfo(itemdata->hBitmap, &img_w, &img_h, &bpp);
 
-    if (bpp == 8)
-    {
-      char name[50];
-      sprintf(name, "IMAGE%d", (int)drawitem->itemID+1);
-      hMask = iupdrvImageCreateMask(IupGetAttributeHandle(ih, name));
-    }
-
     x = 0;
     y = (height - img_h)/2;  /* vertically centered */
-    iupwinDrawBitmap(hDC, itemdata->hBitmap, hMask, x, y, img_w, img_h, bpp);
-
-    if (hMask)
-      DeleteObject(hMask);
+    iupwinDrawBitmap(hDC, itemdata->hBitmap, x, y, img_w, img_h, img_w, img_h, bpp);
   }
 
   /* If the item has the focus, draw the focus rectangle */

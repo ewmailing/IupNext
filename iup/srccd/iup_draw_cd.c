@@ -334,12 +334,9 @@ static void cdputimagerectrgba(cdCtxCanvas* ctxcanvas, int width, int height, co
   }
 
   if (ctxcanvas->dc)
-    iupdrvDrawImage(ctxcanvas->dc, "_IUPDRAW_CD_IMAGE", 0, NULL, x, dy);
-  IupDestroy(image);
+    iupdrvDrawImage(ctxcanvas->dc, "_IUPDRAW_CD_IMAGE", 0, NULL, x, dy, w, h);
 
-  /* zoom is not supported */
-  (void)w;
-  (void)h;
+  IupDestroy(image);
 }
 
 static void cdputimagerectrgb(cdCtxCanvas* ctxcanvas, int width, int height, const unsigned char *red,
@@ -374,13 +371,9 @@ static void cdputimagerectrgb(cdCtxCanvas* ctxcanvas, int width, int height, con
   }
 
   if (ctxcanvas->dc)
-    iupdrvDrawImage(ctxcanvas->dc, "_IUPDRAW_CD_IMAGE", 0, NULL, x, dy);
+    iupdrvDrawImage(ctxcanvas->dc, "_IUPDRAW_CD_IMAGE", 0, NULL, x, dy, w, h);
 
   IupDestroy(image);
-
-  /* zoom is not supported */
-  (void)w;
-  (void)h;
 }
 
 static void cdputimagerectmap(cdCtxCanvas *ctxcanvas, int iw, int ih, const unsigned char *index, const long *colors,
@@ -420,13 +413,9 @@ static void cdputimagerectmap(cdCtxCanvas *ctxcanvas, int iw, int ih, const unsi
   }
 
   if (ctxcanvas->dc)
-    iupdrvDrawImage(ctxcanvas->dc, "_IUPDRAW_CD_IMAGE", 0, NULL, x, dy);
+    iupdrvDrawImage(ctxcanvas->dc, "_IUPDRAW_CD_IMAGE", 0, NULL, x, dy, w, h);
 
   IupDestroy(image);
-
-  /* zoom is not supported */
-  (void)w;
-  (void)h;
 }
 
 /******************************************************/
@@ -507,10 +496,8 @@ cdContext* cdContextIupDraw(void)
 }
 
 /* TODO:
-- image zoom
 - text orientation
-- hatch
+- hatch, stipple, pattern
 - line cap, line join
-- path
-- bezier
+- path, bezier
 */

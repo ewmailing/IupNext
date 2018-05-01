@@ -169,7 +169,7 @@ static int iDropButtonRedraw_CB(Ihandle* ih)
   if (bgimage)
   {
     draw_image = iupFlatGetImageName(ih, "BACKIMAGE", bgimage, image_pressed, ih->data->highlighted, active, &make_inactive);
-    iupdrvDrawImage(dc, draw_image, make_inactive, bgcolor, border_width, border_width);
+    iupdrvDrawImage(dc, draw_image, make_inactive, bgcolor, border_width, border_width, 0, 0);
   }
   else
   {
@@ -198,7 +198,7 @@ static int iDropButtonRedraw_CB(Ihandle* ih)
   if (fgimage)
   {
     draw_image = iupFlatGetImageName(ih, "FRONTIMAGE", fgimage, image_pressed, ih->data->highlighted, active, &make_inactive);
-    iupdrvDrawImage(dc, draw_image, make_inactive, bgcolor, border_width, border_width);
+    iupdrvDrawImage(dc, draw_image, make_inactive, bgcolor, border_width, border_width, 0, 0);
   }
   else if (!image && !title) /* color only button */
   {
@@ -220,7 +220,7 @@ static int iDropButtonRedraw_CB(Ihandle* ih)
     image = iupFlatGetImageName(ih, "ARROWIMAGE", NULL, arrow_active ? ih->data->pressed : 0, arrow_active ? ih->data->highlighted : 0, arrow_active, &make_inactive);
     iupdrvDrawImage(dc, image, make_inactive, bgcolor,
                     ih->currentwidth - 1 - ih->data->arrow_size - border_width + ih->data->arrow_padding, 
-                    (ih->currentheight - ih->data->arrow_size) / 2 + ih->data->arrow_padding);
+                    (ih->currentheight - ih->data->arrow_size) / 2 + ih->data->arrow_padding, 0, 0);
   }
   else
   {

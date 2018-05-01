@@ -201,8 +201,7 @@ void* iupdrvImageCreateImage(Ihandle *ih, const char* bgcolor, int make_inactive
           colors[i].a = 255;
         }
 
-        iupImageColorMakeInactive(&(colors[i].r), &(colors[i].g), &(colors[i].b), 
-                                  bg_r, bg_g, bg_b);
+        iupImageColorMakeInactive(&(colors[i].r), &(colors[i].g), &(colors[i].b), bg_r, bg_g, bg_b);
       }
     }
 
@@ -259,8 +258,7 @@ void* iupdrvImageCreateImage(Ihandle *ih, const char* bgcolor, int make_inactive
               *a = 255;
           }
 
-          iupImageColorMakeInactive(r, g, b, 
-                                    bg_r, bg_g, bg_b);
+          iupImageColorMakeInactive(r, g, b, bg_r, bg_g, bg_b);
         }
       }
     }
@@ -345,7 +343,8 @@ void* iupdrvImageCreateCursor(Ihandle *ih)
   return cursor;
 }
 
-void* iupdrvImageCreateMask(Ihandle *ih)
+#if 0  /* OLD unused code - kept for reference */
+void* iupgtkImageCreateMask(Ihandle *ih)
 {
 #if GTK_CHECK_VERSION(3, 0, 0)
   (void)ih;
@@ -391,6 +390,7 @@ void* iupdrvImageCreateMask(Ihandle *ih)
   return mask;
 #endif
 }
+#endif
 
 #if !GTK_CHECK_VERSION(3, 10, 0) /* Stock Items deprecated in GTK 3.10 */
 static GdkPixbuf* gtkImageRenderPixbuf(GtkIconSet* icon_set, int render_icon_size, int dir)

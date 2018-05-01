@@ -405,7 +405,7 @@ void iupdrvDrawText(IdrawCanvas* dc, const char* text, int len, int x, int y, in
   pango_layout_set_height(fontlayout, -1);
 }
 
-void iupdrvDrawImage(IdrawCanvas* dc, const char* name, int make_inactive, const char* bgcolor, int x, int y)
+void iupdrvDrawImage(IdrawCanvas* dc, const char* name, int make_inactive, const char* bgcolor, int x, int y, int w, int h)
 {
   int bpp, img_w, img_h;
   GdkPixbuf* pixbuf = iupImageGetImage(name, dc->ih, make_inactive, bgcolor);
@@ -415,10 +415,21 @@ void iupdrvDrawImage(IdrawCanvas* dc, const char* name, int make_inactive, const
   /* must use this info, since image can be a driver image loaded from resources */
   iupdrvImageGetInfo(pixbuf, &img_w, &img_h, &bpp);
 
+  if (w == 0) w = img_w;
+  if (h == 0) h = img_h;
+
   cairo_save (dc->image_cr);
 
   cairo_rectangle(dc->image_cr, x, y, img_w, img_h);
   cairo_clip(dc->image_cr);
+
+  if (w != img_w || h != img_h)
+  {
+    /* Scale *before* setting the source surface (1) */
+    cairo_translate(dc->image_cr, x, y);
+    cairo_scale(dc->image_cr, (double)w / img_w, (double)h / img_h);
+    cairo_translate(dc->image_cr, -x, -y);
+  }
 
   gdk_cairo_set_source_pixbuf(dc->image_cr, pixbuf, x, y);
   cairo_paint(dc->image_cr);  /* paints the current source everywhere within the current clip region. */

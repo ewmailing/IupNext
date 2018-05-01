@@ -267,7 +267,7 @@ void iupdrvDrawText(IdrawCanvas* dc, const char* text, int len, int x, int y, in
   pango_layout_set_height(fontlayout, -1);
 }
 
-void iupdrvDrawImage(IdrawCanvas* dc, const char* name, int make_inactive, const char* bgcolor, int x, int y)
+void iupdrvDrawImage(IdrawCanvas* dc, const char* name, int make_inactive, const char* bgcolor, int x, int y, int w, int h)
 {
   int bpp, img_w, img_h;
   GdkPixbuf* pixbuf = iupImageGetImage(name, dc->ih, make_inactive, bgcolor);
@@ -278,6 +278,10 @@ void iupdrvDrawImage(IdrawCanvas* dc, const char* name, int make_inactive, const
   iupdrvImageGetInfo(pixbuf, &img_w, &img_h, &bpp);
 
   gdk_draw_pixbuf(dc->pixmap, dc->pixmap_gc, pixbuf, 0, 0, x, y, img_w, img_h, GDK_RGB_DITHER_NORMAL, 0, 0);
+
+  /* zoom not supported */
+  (void)w;
+  (void)h;
 }
 
 void iupdrvDrawSelectRect(IdrawCanvas* dc, int x1, int y1, int x2, int y2)

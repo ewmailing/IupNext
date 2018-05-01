@@ -111,9 +111,9 @@ are relative the top-left corner of the text. Strings with multiple line are
 accepted using '\n&quot; as line separator. Horizontal text alignment for multiple 
 lines can be controlled using <strong>DRAWTEXTALIGNMENT</strong> attribute: ALEFT (default), ARIGHT 
 and ACENTER options (since 3.22).</p>
-<pre>void IupDrawImage(Ihandle* <strong>ih</strong>, const char* <strong>name</strong>, int <strong>x</strong>, int <strong>y</strong>); [in C]
-iup.Draw<span class="auto-style2">Image(</span><strong>ih</strong>: ihandle<span class="auto-style2"><strong>, name</strong>: string or <strong>image</strong>: ihandle<strong>, x</strong>, <strong>y</strong>: number)</span> [in Lua]
-<strong>ih</strong>:DrawImage(<strong>name</strong><span class="auto-style2">: string or <strong>image</strong>: ihandle<strong>, x</strong>, <strong>y</strong>: number</span>) [in Lua]</pre>
+<pre>void IupDrawImage(Ihandle* <strong>ih</strong>, const char* <strong>name</strong>, int <strong>x</strong>, int <strong>y</strong>, int <strong>w</strong>, int <strong>h</strong>); [in C]
+iup.Draw<span class="auto-style2">Image(</span><strong>ih</strong>: ihandle<span class="auto-style2"><strong>, name</strong>: string or <strong>image</strong>: ihandle<strong>, x</strong>, <strong>y, w, h</strong>: number)</span> [in Lua]
+<strong>ih</strong>:DrawImage(<strong>name</strong><span class="auto-style2">: string or <strong>image</strong>: ihandle<strong>, x</strong>, <strong>y, w, h</strong>: number</span>) [in Lua]</pre>
 <p>Draws an image given its name. The coordinates are relative the top-left 
 corner of the image. The image name follows the same behavior as the IMAGE 
 attribute used by many controls.
@@ -123,7 +123,9 @@ associate an image to a name. See also<span class="Apple-converted-space">&nbsp;
 Lua, the name parameter can be the actual image handle. The DRAWMAKEINACTIVE 
 attribute can be used to force the image to be draw with an inactive state 
 appearance. The DRAWBGCOLOR can be used to control the inactive state background 
-color or when transparency is flatten.</span></span><br></p>
+color or when transparency is flatten. w and h are optional and can be 0, then 
+the image size will be used and no zoom will be performed (since 3.25). Image 
+zoom is not supported in X11 and GDK.</span></span><br></p>
 <pre>void IupDrawSelectRect(Ihandle* <strong>ih</strong>, int <strong>x1</strong>, int <strong>y1</strong>, int <strong>x2</strong>, int <strong>y2</strong>); [in C]
 iup.DrawSelectRect<span class="auto-style2">(</span><strong>ih</strong>: ihandle<span class="auto-style2">, <strong>x1</strong>, <strong>y1</strong>, <strong>x2</strong>, <strong>y2</strong>: number)</span> [in Lua]
 <strong>ih</strong>:DrawSelectRect(<span class="auto-style2"><strong>x1</strong>, <strong>y1</strong>, <strong>x2</strong>, <strong>y2</strong>: number</span>) [in Lua]</pre>

@@ -321,10 +321,9 @@ void iupdrvDrawText(IdrawCanvas* dc, const char* text, int len, int x, int y, in
   SelectObject(dc->hBitmapDC, hOldFont);
 }
 
-void iupdrvDrawImage(IdrawCanvas* dc, const char* name, int make_inactive, const char* bgcolor, int x, int y)
+void iupdrvDrawImage(IdrawCanvas* dc, const char* name, int make_inactive, const char* bgcolor, int x, int y, int w, int h)
 {
   int bpp, img_w, img_h;
-  HBITMAP hMask = NULL;
   HBITMAP hBitmap = (HBITMAP)iupImageGetImage(name, dc->ih, make_inactive, bgcolor);
   if (!hBitmap)
     return;
@@ -332,13 +331,10 @@ void iupdrvDrawImage(IdrawCanvas* dc, const char* name, int make_inactive, const
   /* must use this info, since image can be a driver image loaded from resources */
   iupdrvImageGetInfo(hBitmap, &img_w, &img_h, &bpp);
 
-  if (bpp == 8)
-    hMask = iupdrvImageCreateMask(IupGetHandle(name));
+  if (w == 0) w = img_w;
+  if (h == 0) h = img_h;
 
-  iupwinDrawBitmap(dc->hBitmapDC, hBitmap, hMask, x, y, img_w, img_h, bpp);
-
-  if (hMask)
-    DeleteObject(hMask);
+  iupwinDrawBitmap(dc->hBitmapDC, hBitmap, x, y, w, h, img_w, img_h, bpp);
 }
 
 void iupdrvDrawSelectRect(IdrawCanvas* dc, int x1, int y1, int x2, int y2)

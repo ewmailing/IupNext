@@ -126,6 +126,7 @@ int iupwinClassExist(const TCHAR* name);
 /*      Utilities    */
 /*********************/
 
+
 int iupwinSetTitleAttrib(Ihandle* ih, const char* value);
 TCHAR* iupwinGetWindowText(HWND hWnd);
 

@@ -262,10 +262,13 @@ void iupwinDrawText(HDC hDC, const char* text, int x, int y, int width, int heig
   SetBkMode(hDC, OPAQUE);
 }
 
-void iupwinDrawBitmap(HDC hDC, HBITMAP hBitmap, HBITMAP hMask, int x, int y, int width, int height, int bpp)
+void iupwinDrawBitmap(HDC hDC, HBITMAP hBitmap, int x, int y, int w, int h, int img_w, int img_h, int bpp)
 {
   HDC hMemDC = CreateCompatibleDC(hDC);
   HBITMAP oldBitmap = (HBITMAP)SelectObject(hMemDC, hBitmap);
+
+  if (w == 0) w = img_w;
+  if (h == 0) h = img_h;
 
   if (bpp == 32 && winAlphaBlend)
   {
@@ -275,18 +278,15 @@ void iupwinDrawBitmap(HDC hDC, HBITMAP hBitmap, HBITMAP hMask, int x, int y, int
     blendfunc.SourceConstantAlpha = 0xFF;
     blendfunc.AlphaFormat = AC_SRC_ALPHA;
 
-    winAlphaBlend(hDC, x, y, width, height, 
-                  hMemDC, 0, 0, width, height, 
-                  blendfunc);
+    winAlphaBlend(hDC, x, y, w, h, hMemDC, 0, 0, img_w, img_h, blendfunc);
   }
-  else if (bpp == 8 && hMask)
-    MaskBlt(hDC, x, y, width, height, 
-            hMemDC, 0, 0, 
-            hMask, 0, 0, MAKEROP4(SRCCOPY, 0xAA0000));
   else
-    BitBlt(hDC, x, y, width, height, 
-           hMemDC, 0, 0, 
-           SRCCOPY);
+  {
+    if (w == img_w && h == img_h)
+      BitBlt(hDC, x, y, img_w, img_h, hMemDC, 0, 0, SRCCOPY);
+    else
+      StretchBlt(hDC, x, y, w, h, hMemDC, 0, 0, img_w, img_h, SRCCOPY);
+  }
 
   SelectObject(hMemDC, oldBitmap);
   DeleteDC(hMemDC);

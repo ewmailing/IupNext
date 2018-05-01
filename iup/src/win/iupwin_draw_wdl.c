@@ -339,7 +339,7 @@ void iupdrvDrawText(IdrawCanvas* dc, const char* text, int len, int x, int y, in
   wdDestroyFont(wdFont);
 }
 
-void iupdrvDrawImage(IdrawCanvas* dc, const char* name, int make_inactive, const char* bgcolor, int x, int y)
+void iupdrvDrawImage(IdrawCanvas* dc, const char* name, int make_inactive, const char* bgcolor, int x, int y, int w, int h)
 {
   WD_HIMAGE hImage = iupwinWdlImageGetImage(name, dc->ih, make_inactive, bgcolor);
   if (hImage)
@@ -353,14 +353,18 @@ void iupdrvDrawImage(IdrawCanvas* dc, const char* name, int make_inactive, const
 
     wdDestroyCachedImage(hCachedImage);
 #else
-    UINT width, height;
+    UINT img_w, img_h;
     WD_RECT rect;
-    wdGetImageSize(hImage, &width, &height);
+
+    wdGetImageSize(hImage, &img_w, &img_h);
+
+    if (w == 0) w = img_w;
+    if (h == 0) h = img_h;
 
     rect.x0 = iupInt2Float(x);
     rect.y0 = iupInt2Float(y);
-    rect.x1 = iupInt2Float(x + width);
-    rect.y1 = iupInt2Float(y + height);
+    rect.x1 = iupInt2Float(x + w);
+    rect.y1 = iupInt2Float(y + h);
 
     wdBitBltImage(dc->hCanvas, hImage, &rect, NULL);
 #endif

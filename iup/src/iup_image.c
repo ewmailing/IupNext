@@ -541,32 +541,6 @@ Ihandle* iupImageGetImageFromName(const char* name)
   return ih;
 }
 
-void* iupImageGetMask(const char* name)
-{
-  void* mask;
-  Ihandle *ih;
-
-  if (!name)
-    return NULL;
-
-  ih = iupImageGetImageFromName(name);
-  if (!ih)
-    return NULL;
-  
-  /* Check for an already created icon */
-  mask = iupAttribGet(ih, "_IUPIMAGE_MASK");
-  if (mask)
-    return mask;
-
-  /* Not created, tries to create the mask */
-  mask = iupdrvImageCreateMask(ih);
-
-  /* save the mask */
-  iupAttribSet(ih, "_IUPIMAGE_MASK", (char*)mask);
-
-  return mask;
-}
-
 void* iupImageGetIcon(const char* name)
 {
   void* icon;

@@ -339,7 +339,7 @@ static int winTabsGetImageIndex(Ihandle* ih, const char* name)
   int count, i, bpp, ret;
   int width, height;
   Iarray* bmp_array;
-  HBITMAP *bmp_array_data, hMask=NULL;
+  HBITMAP *bmp_array_data;
   HBITMAP bmp = iupImageGetImage(name, ih, 0, NULL);
   if (!bmp)
     return -1;
@@ -377,21 +377,9 @@ static int winTabsGetImageIndex(Ihandle* ih, const char* name)
       return i;
   }
 
-  if (bpp == 8)
-  {
-    Ihandle* image = IupGetHandle(name);
-    if (image)
-    {
-      iupAttribSet(image, "_IUPIMG_NO_INVERT", "1");
-      hMask = iupdrvImageCreateMask(image);
-      iupAttribSet(image, "_IUPIMG_NO_INVERT", NULL);
-    }
-  }
-
   bmp_array_data = iupArrayInc(bmp_array);
   bmp_array_data[i] = bmp;
-  ret = ImageList_Add(image_list, bmp, hMask);  /* the bmp is duplicated at the list */
-  DeleteObject(hMask);
+  ret = ImageList_Add(image_list, bmp, NULL);  /* the bmp is duplicated at the list */
   return ret;
 }
 
@@ -1102,7 +1090,7 @@ static void winTabsDrawRotateText(HDC hDC, char* text, int x, int y, HFONT hFont
 
 static void winTabsDrawTab(Ihandle* ih, HDC hDC, int p, int width, int height, COLORREF fgcolor)
 {
-  HBITMAP hBitmapClose, hCloseMask = NULL;
+  HBITMAP hBitmapClose;
   HFONT hFont = (HFONT)iupwinGetHFontAttrib(ih);
 	TCHAR title[256] = TEXT("");
 	TCITEM tci;
@@ -1145,8 +1133,6 @@ static void winTabsDrawTab(Ihandle* ih, HDC hDC, int p, int width, int height, C
   }
 
   iupdrvImageGetInfo(hBitmapClose, NULL, NULL, &bpp);
-  if (bpp == 8)
-    hCloseMask = iupdrvImageCreateMask(IupGetHandle("IMGCLOSE"));
 
   /* Draw image tab, title tab and close image */
   if (ih->data->type == ITABS_BOTTOM || ih->data->type == ITABS_TOP)
@@ -1218,10 +1204,7 @@ static void winTabsDrawTab(Ihandle* ih, HDC hDC, int p, int width, int height, C
     y++;
   }
 
-  iupwinDrawBitmap(hDC, hBitmapClose, hCloseMask, x, y, ITABS_CLOSE_SIZE, ITABS_CLOSE_SIZE, bpp);
-
-  if (hCloseMask)
-    DeleteObject(hCloseMask);
+  iupwinDrawBitmap(hDC, hBitmapClose, x, y, ITABS_CLOSE_SIZE, ITABS_CLOSE_SIZE, ITABS_CLOSE_SIZE, ITABS_CLOSE_SIZE, bpp);
 
   if (str && str != value) free(str);
 }

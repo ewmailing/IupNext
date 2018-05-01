@@ -11,7 +11,6 @@
 extern "C" {
 #endif
 
-void* iupdrvImageCreateMask(Ihandle *ih);
 void* iupdrvImageCreateIcon(Ihandle *ih);
 void* iupdrvImageCreateCursor(Ihandle *ih);
 void* iupdrvImageCreateImage(Ihandle *ih, const char* bgcolor, int make_inactive);
@@ -22,7 +21,6 @@ void  iupdrvImageDestroy(void* handle, int type);
 int   iupdrvImageGetInfo(void* handle, int *w, int *h, int *bpp);  /* only for IUPIMAGE_IMAGE */
 void  iupdrvImageGetData(void* handle, unsigned char* imgdata);   /* only for IUPIMAGE_IMAGE */
 
-void* iupImageGetMask(const char* name);
 void* iupImageGetIcon(const char* name);
 void* iupImageGetCursor(const char* name);
 void* iupImageGetImage(const char* name, Ihandle* parent, int make_inactive, const char* bgcolor);

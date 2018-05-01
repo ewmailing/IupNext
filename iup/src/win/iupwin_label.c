@@ -84,10 +84,7 @@ static void winLabelDrawImage(Ihandle* ih, HDC hDC, int rect_width, int rect_hei
   x += xpad;
   y += ypad;
 
-  if (bpp == 8)
-    hMask = iupdrvImageCreateMask(IupGetHandle(name));
-
-  iupwinDrawBitmap(hDC, hBitmap, hMask, x, y, width, height, bpp);
+  iupwinDrawBitmap(hDC, hBitmap, x, y, width, height, width, height, bpp);
 
   if (hMask)
     DeleteObject(hMask);

@@ -463,26 +463,18 @@ static int winImageInitDibColors(iupColor* colors, RGBQUAD* bmpcolors, int color
     }
 
     if (make_inactive)
-      iupImageColorMakeInactive(&(bmpcolors[i].rgbRed), &(bmpcolors[i].rgbGreen), &(bmpcolors[i].rgbBlue), 
-                                bg_r, bg_g, bg_b);
+      iupImageColorMakeInactive(&(bmpcolors[i].rgbRed), &(bmpcolors[i].rgbGreen), &(bmpcolors[i].rgbBlue), bg_r, bg_g, bg_b);
   }
 
   return ret;
 }
 
-static HBITMAP winImageCreateBitmap(Ihandle *ih, int width, int height, int bpp, BYTE** bits, 
-                                    unsigned char bg_r, unsigned char bg_g, unsigned char bg_b, int make_inactive)
+static HBITMAP winImageCreateBitmap(Ihandle *ih, int width, int height, int dmp_bpp, BYTE** bits,
+                                    unsigned char bg_r, unsigned char bg_g, unsigned char bg_b, int make_inactive, iupColor* colors, int colors_count)
 {
   HDC hDC;
-  int colors_count;
   HBITMAP hBitmap;
   BITMAPINFOHEADER* bmih;  /* bitmap info header */
-  iupColor colors[256];
-
-  if (bpp == 32 || bpp == 24)
-    colors_count = 0;
-  else /* bpp == 8 */
-    iupImageInitColorTable(ih, colors, &colors_count);
 
   bmih = malloc(sizeof(BITMAPINFOHEADER) + sizeof(RGBQUAD)*colors_count);
   if (!bmih)
@@ -493,7 +485,7 @@ static HBITMAP winImageCreateBitmap(Ihandle *ih, int width, int height, int bpp,
   bmih->biWidth  = width;
   bmih->biHeight = height;
   bmih->biPlanes = 1; /* not the same as PLANES */
-  bmih->biBitCount = (WORD)bpp;
+  bmih->biBitCount = (WORD)dmp_bpp;
   bmih->biCompression = BI_RGB;
   bmih->biClrUsed = colors_count;
 
@@ -525,14 +517,35 @@ void* iupdrvImageCreateImage(Ihandle *ih, const char* bgcolor, int make_inactive
   unsigned char *imgdata = (unsigned char*)iupAttribGetStr(ih, "WID");
   HBITMAP hBitmap;
   BYTE* bits;   /* DIB bitmap bits, created in CreateDIBSection and filled here */
+  int colors_count = 0;
+  iupColor colors[256];
+  int dmp_bpp = bpp;
 
   iupStrToRGB(bgcolor, &bg_r, &bg_g, &bg_b);
 
-  hBitmap = winImageCreateBitmap(ih, width, height, bpp, &bits, bg_r, bg_g, bg_b, make_inactive);
+  if (bpp == 8)
+  {
+    if (iupImageInitColorTable(ih, colors, &colors_count) && !flat_alpha) /* has alpha */
+    {
+      if (make_inactive)
+      {
+        int i;
+        for (i = 0; i < colors_count; i++)
+        {
+          iupImageColorMakeInactive(&(colors[i].r), &(colors[i].g), &(colors[i].b), bg_r, bg_g, bg_b);
+        }
+      }
+
+      dmp_bpp = 32;    /* convert to 32 bpp */
+      colors_count = 0;
+    }
+  }
+
+  hBitmap = winImageCreateBitmap(ih, width, height, dmp_bpp, &bits, bg_r, bg_g, bg_b, make_inactive, colors, colors_count);
   if (!hBitmap)
     return NULL;
 
-  bmp_line_size = ((width * bpp + 31) / 32) * 4;    /* DWORD aligned, 4 bytes boundary in a N bpp image */
+  bmp_line_size = ((width * dmp_bpp + 31) / 32) * 4;    /* DWORD aligned, 4 bytes boundary in a N bpp image */
   data_line_size = width*channels;
 
   /* windows bitmaps are bottom up */
@@ -558,9 +571,10 @@ void* iupdrvImageCreateImage(Ihandle *ih, const char* bgcolor, int make_inactive
 
         if (channels == 4)  /* bpp==32 */
         {
+          *a = *(dat + 3);
+
           if (flat_alpha)
           {
-            *a = *(dat+3);
             *r = iupALPHABLEND(*r, bg_r, *a);
             *g = iupALPHABLEND(*g, bg_g, *a);
             *b = iupALPHABLEND(*b, bg_b, *a);
@@ -572,15 +586,13 @@ void* iupdrvImageCreateImage(Ihandle *ih, const char* bgcolor, int make_inactive
 
           if (!flat_alpha)
           {
-            *a = *(dat+3);
-
             /* RGB in RGBA DIBs are pre-multiplied by alpha to AlphaBlend usage. */
             *r = iupALPHAPRE(*r,*a);
             *g = iupALPHAPRE(*g,*a);
             *b = iupALPHAPRE(*b,*a);
           }
         }
-        else
+        else /* bpp==24 */
         {
           if (make_inactive)
             iupImageColorMakeInactive(r, g, b, bg_r, bg_g, bg_b);
@@ -588,7 +600,31 @@ void* iupdrvImageCreateImage(Ihandle *ih, const char* bgcolor, int make_inactive
       }
       else /* bpp == 8 */
       {
-        bits[x] = imgdata[x];
+        if (dmp_bpp == 32)
+        {
+          int offset = 4*x;
+          /* Windows Bitmap order is BGRA */
+          BYTE *b = &bits[offset],
+               *g = b + 1,
+               *r = g + 1,
+               *a = r + 1,
+               index = imgdata[x];
+
+          *r = colors[index].r;
+          *g = colors[index].g;
+          *b = colors[index].b;
+          if (colors[index].a == 0)  /* full transparent alpha */
+            *a = 0;
+          else
+            *a = 255;
+
+          /* RGB in RGBA DIBs are pre-multiplied by alpha to AlphaBlend usage. */
+          *r = iupALPHAPRE(*r, *a);
+          *g = iupALPHAPRE(*g, *a);
+          *b = iupALPHAPRE(*b, *a);
+        }
+        else
+          bits[x] = imgdata[x];
       }
     }
 
@@ -602,7 +638,7 @@ void* iupdrvImageCreateImage(Ihandle *ih, const char* bgcolor, int make_inactive
   return hBitmap;
 }
 
-static HBITMAP winImageCreateBitmask(Ihandle *ih, int invert)
+static HBITMAP winImageCreateBitmask(Ihandle *ih)
 {
   int y, x, mask_line_size,data_line_size, colors_count, set,
       width = ih->currentwidth,
@@ -653,19 +689,12 @@ static HBITMAP winImageCreateBitmask(Ihandle *ih, int invert)
     imgdata += data_line_size;
   }
 
-  if (invert)
-  {
-    int k, size = height * mask_line_size;
-    for (k = 0; k < size; k++)
-      bitmask[k] = ~bitmask[k];
-  }
-  
   hBitmap = CreateBitmap(width, height, 1, 1, bitmask);
   free(bitmask);
   return hBitmap;
 }
 
-static HICON winImageCreateIcon(Ihandle *ih, int is_cursor)
+static HICON winImageCreateCursorIcon(Ihandle *ih, int is_cursor)
 {
   HBITMAP hBitmap, hBitmapMask;
   ICONINFO iconinfo;
@@ -697,7 +726,7 @@ static HICON winImageCreateIcon(Ihandle *ih, int is_cursor)
   }
 
   /* Transparency mask */
-  hBitmapMask = winImageCreateBitmask(ih, 0);
+  hBitmapMask = winImageCreateBitmask(ih);
   if (!hBitmapMask)
   {
     DeleteObject(hBitmap);
@@ -737,20 +766,12 @@ static HICON winImageCreateIcon(Ihandle *ih, int is_cursor)
 
 void* iupdrvImageCreateIcon(Ihandle *ih)
 {
-  return winImageCreateIcon(ih, 0);
+  return winImageCreateCursorIcon(ih, 0);
 }
 
 void* iupdrvImageCreateCursor(Ihandle *ih)
 {
-  return winImageCreateIcon(ih, 1);
-}
-
-void* iupdrvImageCreateMask(Ihandle *ih)
-{
-  int invert = 1;
-  if (!ih) return NULL;
-  if (iupAttribGet(ih, "_IUPIMG_NO_INVERT")) invert = 0;
-  return (void*)winImageCreateBitmask(ih, invert);
+  return winImageCreateCursorIcon(ih, 1);
 }
 
 void* iupdrvImageLoad(const char* name, int type)
