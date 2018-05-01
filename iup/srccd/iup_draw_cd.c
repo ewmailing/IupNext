@@ -252,7 +252,7 @@ static void cdpoly(cdCtxCanvas *ctxcanvas, int mode, cdPoint* poly, int n)
 
   if (mode == CD_BEZIER)
   {
-    cdSimPolyBezier(ctxcanvas->canvas, poly, n);
+    /* cdSimPolyBezier(ctxcanvas->canvas, poly, n); not exported in CD yet */
     return;
   }
 
