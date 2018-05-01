@@ -1,0 +1,105 @@
+
+<html>
+
+<head>
+<meta http-equiv="Content-Language" content="en-us">
+<meta http-equiv="Content-Type" content="text/html; charset=iso-8859-1">
+<title>CD_IUPDRAW</title>
+<link rel="stylesheet" type="text/css" href="../../style.css">
+<style type="text/css">
+.auto-style1 {
+	text-align: center;
+}
+</style>
+</head>
+
+<body>
+
+<h2 class="auto-style1">CD_IUPDRAW - IupDraw Driver (iupdraw_cd.h)</h2>
+
+  <p>This CD driver allows to draw onto an IUP canvas using the CD API but 
+  internally uses the <a href="iupdraw.html">IupDraw</a> API.</p>
+
+<h3>Use</h3>
+
+  <p>The canvas is created by means of a call to the function <strong>cdCreateCanvas</strong>(CD_IUPDRAW, 
+  Data), after which other CD functions can be called as usual. This function creates a CD canvas based on the 
+  existing IUP canvas. The parameter <font face="Courier">Data</font> is a pointer to a handle of the IUP canvas (<font face="Courier">Ihandle*</font>). 
+  For use with CDLUA, a canvas created with IUPLUA must necessarily be passed as parameter.</p>
+  <p>Any amount of such canvases may exist simultaneously, but they should not use the same IUP canvas. It is important 
+  to note that a call to function <strong>cdKillCanvas</strong> is required to <b>close</b> the file properly.</p>
+  <p>The CD canvas is automatically stored in the IUP canvas as the <strong>&quot;<font face="Courier">_CD_CANVAS</font>&quot;</strong> 
+  attribute. </p>
+<p>&nbsp;The driver is automatically double buffered. But it will work only 
+inside the ACTION callback, although it can be created in any situation. Inside 
+the ACTION callback the application must call <strong>cdCanvasActivate</strong> 
+and <strong>cdCanvasDeactivate</strong>.</p>
+  
+
+
+  <p>To use this driver, it must be linked with the &quot;<b><font face="Courier">iupcd</font></b>&quot; 
+	library available in the 
+	IUP distribution. </p>
+  <p>In Lua, it is necessary to call function <strong><font face="Courier">cdluaiup_open() </font></strong>after a call 
+  to function <strong><font face="Courier">cdlua_open()</font></strong>, apart from linking with the &quot;<strong><font face="Courier">iupluacd</font></strong>&quot; 
+	library. This is not necessary if you do require&quot;iupluacd&quot;.</p>
+
+<h3>Behavior of Functions</h3>
+<h4>Control</h4>
+<ul>
+  <li><strong>Flush</strong>: draws the contents of the image into the window. </li>
+	<li><strong>Play</strong>: 
+  does nothing, returns <font face="Courier">CD_ERROR</font>. </li>
+</ul>
+<h4>Coordinate System and Clipping</h4>
+<ul>
+  <li>
+  <strong>UpdateYAxis</strong>: the orientation of axis Y is the opposite to its 
+  orientation in the CD library. </li>
+</ul>
+<h4>Primitives</h4>
+<ul>
+  <li>Floating point primitives are NOT supported.</li>
+  <li><strong>Begin</strong>: does not supports CD_BEZIER, and CD_PATH is 
+  simulated.</li>
+</ul>
+<h4>Attributes </h4>
+<ul>
+  <li>
+  <strong>
+  WriteMode</strong>: does nothing. There is no support for XOR or NOT_XOR.</li>
+	<li><strong>BackOpacity</strong>: does nothing. It is always transparent.</li>
+	<li><strong>Hatch</strong>: does nothing.&nbsp; </li>
+	<li><strong>
+  Stipple</strong>: does nothing.&nbsp; </li>
+  <li><strong>
+  Pattern</strong>: does nothing. </li>
+  <li><strong>
+  LineStyle</strong>: Does not supports CD_DASH_DOT_DOT nor CD_CUSTOM. Does not 
+  supports line cap nor line join.</li>
+  <li><strong>
+  TextAlignment</strong>: is simulated.</li>
+	<li><strong>Clipping</strong>: only rectangular clipping is supported.</li>
+</ul>
+<h4>Colors </h4>
+<ul>
+  <li><strong>Palette</strong>: does nothing.</li>
+  <li>
+  <strong>
+  Foreground</strong> &amp;
+  <strong>Background</strong>: accepts the transparency information encoded in the 
+  color.</li>
+</ul>
+<h4>Client Images </h4>
+<ul>
+  <li><strong>GetImageRGB</strong>: does nothing.</li>
+</ul>
+<h4>Server Images </h4>
+<ul>
+    <li>All functions do nothing.</li>
+</ul>
+<h4>&nbsp;</h4>
+
+</body>
+
+</html>

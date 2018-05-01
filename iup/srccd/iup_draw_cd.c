@@ -454,6 +454,8 @@ static void cdcreatecanvas(cdCanvas* canvas, Ihandle *ih)
   ctxcanvas->canvas->bpp = IupGetInt(NULL, "SCREENDEPTH");
   ctxcanvas->canvas->xres = IupGetDouble(NULL, "SCREENDPI") / 25.4;
   ctxcanvas->canvas->yres = ctxcanvas->canvas->xres;
+
+  IupSetAttribute(ih, "_CD_CANVAS", (char*)canvas);
 }
 
 static void cdinittable(cdCanvas* canvas)

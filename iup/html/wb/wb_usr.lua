@@ -1419,7 +1419,15 @@ wb_usr.tree =
                 },
                 {
                   name= {nl= "IupDraw"},
-                  link= "func/iupdraw.html"
+                  link= "func/iupdraw.html",
+
+                  folder=
+                  {
+                    {
+                      name= {nl= "CD_IUPDRAW"},
+                      link= "func/iupdraw_cd.html"
+                    },
+                  }
                 },
               }
             },
