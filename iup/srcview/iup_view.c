@@ -565,8 +565,24 @@ static int layoutdlg_cb(Ihandle* self)
       if (dialog)
         IupShow(IupLayoutDialog(dialog));
       else
-        IupMessage("Error", "Will only hide dialogs.");
+        IupMessage("Error", "The element must be a dialog or be inside a dialog.");
     }
+  }
+  else
+    IupMessage("Error", "No elements.");
+
+  return IUP_DEFAULT;
+}
+
+static int propertiesdlg_cb(Ihandle* self)
+{
+  Ihandle* list = (Ihandle*)IupGetAttribute(self, "mainList");
+  char* name = IupGetAttribute(list, IupGetAttribute(list, "VALUE"));
+
+  if (name) /* the list may be empty */
+  {
+    Ihandle* elem = IupGetHandle(name);
+    IupShow(IupElementPropertiesDialog(elem));
   }
   else
     IupMessage("Error", "No elements.");
@@ -944,7 +960,8 @@ static Ihandle* mainDialog(void)
     IupSubmenu("Element", IupMenu(
       IupSetCallbacks(IupItem("Show...", NULL), "ACTION", (Icallback)showelem_cb, NULL),
       IupSetCallbacks(IupItem("Hide...", NULL), "ACTION", (Icallback)hideelem_cb, NULL),
-      IupSetCallbacks(IupItem("Layout Dialog...", NULL), "ACTION", (Icallback)layoutdlg_cb, NULL),
+      IupSetCallbacks(IupItem("Layout...", NULL), "ACTION", (Icallback)layoutdlg_cb, NULL),
+      IupSetCallbacks(IupItem("Properties...", NULL), "ACTION", (Icallback)propertiesdlg_cb, NULL),
       IupSeparator(),
       IupSetCallbacks(IupItem("Destroy All...", NULL), "ACTION", (Icallback)destroyall_cb, NULL),
       IupSetCallbacks(IupItem("Show All Images...", NULL), "ACTION", (Icallback)showallimages_cb, NULL),
