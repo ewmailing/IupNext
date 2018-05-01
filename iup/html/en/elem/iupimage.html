@@ -128,6 +128,10 @@ Image contents is ignored and it will contain trash after the reshape. (since 3.
 <p><strong>RESIZE</strong> (write-only): given a new size if format &quot;<i>width</i>x<i>height</i>&quot;, 
 changes WIDTH and HEIGHT attributes, and resizes the image contents using 
 bilinear interpolation. Works only for RGB and RGBA images. (since 3.24)</p>
+<p><strong>SCALED</strong> (read-only): returns Yes if the image has been 
+resized. (since 3.25)</p>
+<p><strong>ORIGINALSCALE</strong> (read-only): returns the width and height 
+before the image was scaled. (since 3.25)</p>
 
   <p><b>WID </b>(read-only): returns the internal pixels data pointer. (since 
 	3.0)</p>

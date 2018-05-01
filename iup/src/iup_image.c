@@ -78,14 +78,48 @@ static void iDataResize(int src_width, int src_height, unsigned char *src_map, i
   free(T);
 }
 
-static void iImageResize(Ihandle* ih, int width, int height)
+static void iDataStretch(int src_width, int src_height, unsigned char *src_map, int dst_width, int dst_height, unsigned char *dst_map)
+{
+  int x, y, offset;
+  double factor;
+  unsigned char *line_map;
+  int* XTab = (int*)malloc(dst_width*sizeof(int));
+
+  /* initialize conversion tables to speed up the stretch process */
+  factor = (double)(src_width - 1) / (double)(dst_width - 1);
+  for (x = 0; x < dst_width; x++)
+    XTab[x] = (int)(factor * x + 0.5);
+
+  factor = (double)(src_height - 1) / (double)(dst_height - 1);
+
+  line_map = src_map;
+
+  for (y = 0; y < dst_height; y++)
+  {
+    for (x = 0; x < dst_width; x++)
+    {
+      offset = XTab[x];
+      *(dst_map++) = line_map[offset];
+    }
+
+    offset = ((int)(factor * y + 0.5)) * src_width;
+    line_map = src_map + offset;
+  }
+
+  free(XTab);
+}
+
+static void iImageResize(Ihandle* ih, int width, int height, int bpp)
 {
   unsigned char* imgdata = (unsigned char*)iupAttribGet(ih, "WID");
   int channels = iupAttribGetInt(ih, "CHANNELS");
   int count = width*height*channels;
   unsigned char* new_imgdata = (unsigned char *)malloc(count);
 
-  iDataResize(ih->currentwidth, ih->currentheight, imgdata, width, height, new_imgdata, channels);
+  if (bpp == 8)
+    iDataStretch(ih->currentwidth, ih->currentheight, imgdata, width, height, new_imgdata);
+  else
+    iDataResize(ih->currentwidth, ih->currentheight, imgdata, width, height, new_imgdata, channels);
 
   ih->currentwidth = width;
   ih->currentheight = height;
@@ -194,14 +228,17 @@ void iupImageStockGet(const char* name, Ihandle* *ih, const char* *native_name)
       stock_size = iupImageStockGetSize();
       bpp = IupGetInt(istock->image, "BPP");
 
-      if (istock->image->currentheight != stock_size && bpp > 8)
+      if (istock->image->currentheight != stock_size)
       {
         int new_height = stock_size;
         int new_width = stock_size;
         if (istock->image->currentwidth != istock->image->currentheight)
           new_width = (new_height * istock->image->currentwidth) / istock->image->currentheight;
 
-        iImageResize(istock->image, new_width, new_height);
+        iupAttribSet(istock->image, "SCALED", "Yes");
+        iupAttribSetStrf(istock->image, "ORIGINALSCALE", "%dx%d", istock->image->currentwidth, istock->image->currentheight);
+
+        iImageResize(istock->image, new_width, new_height, bpp);
       }
     }
   }
@@ -428,7 +465,7 @@ Ihandle* iupImageGetImageFromName(const char* name)
     int bpp = IupGetInt(ih, "BPP");
     char* autoscale = iupAttribGet(ih, "AUTOSCALE");
     if (!autoscale) autoscale = IupGetGlobal("IMAGEAUTOSCALE");
-    if (autoscale && bpp > 8 && !iupAttribGet(ih, "SCALED"))
+    if (autoscale && !iupAttribGet(ih, "SCALED"))
     {
       double scale = 0;
 
@@ -460,8 +497,10 @@ Ihandle* iupImageGetImageFromName(const char* name)
         int new_width = iupRound(scale*ih->currentwidth);
         int new_height = iupRound(scale*ih->currentheight);
 
-        iImageResize(ih, new_width, new_height);
-        iupAttribSet(ih, "SCALED", "1");
+        iupAttribSet(ih, "SCALED", "Yes");
+        iupAttribSetStrf(ih, "ORIGINALSCALE", "%dx%d", ih->currentwidth, ih->currentheight);
+
+        iImageResize(ih, new_width, new_height, bpp);
 
         if (hotspot)
         {
@@ -966,8 +1005,11 @@ static int iImageSetResizeAttrib(Ihandle *ih, const char* value)
   if (iupStrToIntInt(value, &w, &h, 'x') == 2)
   {
     int bpp = IupGetInt(ih, "BPP");
-    if (bpp > 8)
-      iImageResize(ih, w, h);
+    
+    iupAttribSet(ih, "SCALED", "Yes");
+    iupAttribSetStrf(ih, "ORIGINALSCALE", "%dx%d", ih->currentwidth, ih->currentheight);
+
+    iImageResize(ih, w, h, bpp);
   }
   return 0;
 }
@@ -1130,6 +1172,8 @@ static Iclass* iImageNewClassBase(char* name)
   iupClassRegisterAttribute(ic, "CLEARCACHE", NULL, iImageSetClearCacheAttrib, NULL, NULL, IUPAF_WRITEONLY | IUPAF_NOT_MAPPED | IUPAF_NO_INHERIT);
   iupClassRegisterAttribute(ic, "RESHAPE", NULL, iImageSetReshapeAttrib, NULL, NULL, IUPAF_WRITEONLY | IUPAF_NOT_MAPPED | IUPAF_NO_INHERIT);
   iupClassRegisterAttribute(ic, "RESIZE", NULL, iImageSetResizeAttrib, NULL, NULL, IUPAF_WRITEONLY | IUPAF_NOT_MAPPED | IUPAF_NO_INHERIT);
+  iupClassRegisterAttribute(ic, "SCALED", NULL, NULL, NULL, NULL, IUPAF_READONLY | IUPAF_NO_INHERIT);
+  iupClassRegisterAttribute(ic, "ORIGINALSCALE", NULL, NULL, NULL, NULL, IUPAF_READONLY | IUPAF_NO_INHERIT);
 
   return ic;
 }
