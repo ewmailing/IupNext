@@ -2150,7 +2150,7 @@ IupSetAttribute(dlg, "MINBOX", "NO");
 IupSetAttribute(dlg, "MAXBOX", "NO");
 IupSetAttributeHandle(dlg, "DEFAULTENTER", close);
 IupSetAttributeHandle(dlg, "DEFAULTESC", close);
-IupSetAttributeHandle(dlg, "PARENTDIALOG", parent);
+if (parent) IupSetAttributeHandle(dlg, "PARENTDIALOG", parent);
 IupSetAttribute(dlg, "ICON", IupGetGlobal("ICON"));
 iupAttribSet(dlg, "_IUP_PROPLIST1", (char*)list1);
 iupAttribSet(dlg, "_IUP_PROPLIST2", (char*)list2);
