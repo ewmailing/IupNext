@@ -143,7 +143,7 @@ else
 ifdef USE_MOTIF
   SRC += mot/iupmot_common.c mot/iupmot_color.c mot/iupmot_focus.c mot/iupmot_font.c \
          mot/iupmot_key.c mot/iupmot_loop.c mot/iupmot_open.c mot/iupmot_tips.c \
-         mot/iupmot_globalattrib.c mot/iupmot_dialog.c mot/iupmot_messagedlg.c mot/iupmot_draw.c \
+         mot/iupmot_globalattrib.c mot/iupmot_dialog.c mot/iupmot_messagedlg.c mot/iupmot_draw_x11.c \
          mot/iupmot_timer.c mot/iupmot_image.c mot/iupmot_label.c mot/iupmot_canvas.c \
          mot/iupmot_fontdlg.c mot/iupmot_filedlg.c mot/iupmot_frame.c \
          mot/iupmot_button.c mot/iupmot_toggle.c mot/iupmot_progressbar.c mot/iupmot_clipboard.c \

@@ -86,7 +86,7 @@
     <ClCompile Include="..\src\mot\iupmot_color.c" />
     <ClCompile Include="..\src\mot\iupmot_common.c" />
     <ClCompile Include="..\src\mot\iupmot_dragdrop.c" />
-    <ClCompile Include="..\src\mot\iupmot_draw.c" />
+    <ClCompile Include="..\src\mot\iupmot_draw_x11.c" />
     <ClCompile Include="..\src\mot\iupmot_focus.c" />
     <ClCompile Include="..\src\mot\iupmot_font.c" />
     <ClCompile Include="..\src\mot\iupmot_globalattrib.c" />
