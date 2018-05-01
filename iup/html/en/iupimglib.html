@@ -49,7 +49,7 @@ when associated with a control.</p>
 	48x48. GTK images displayed here are just a sample with the 24x24-32bpp 
 	pixels size, they actually depends on the current GTK theme used by the 
 	system. Since GTK 3.10 access to stock images directly becomes deprecated, 
-	so starting in IUP 3.23 the IupImageLib now contains the base set of GTK 
+	so starting in IUP 3.23 the IupImageLib in GTK3 will contain the base set of GTK 
 	images and they will be not affected by the current GTK theme. </p>
 <p>In Windows and GTK, to force a specific height for the images use the 
 IMAGESTOCKSIZE global attribute (since 3.16), it can have the following values 
@@ -165,7 +165,8 @@ Although their C source code is still available.</p>
 </div>
 <h3>Logo Group 32x32</h3>
     <p>These images are 32x32-32bpp pixels size (or just 32 pixels height) images that 
-	can be used in Labels, usually inside toolbars.</p>
+	can be used in Labels, usually inside toolbars. These images are not 
+	automatically resized when loaded (since 3.25).</p>
 <table align="center">
   <tr>
     <td align="center" class="style1">
@@ -221,7 +222,8 @@ Although their C source code is still available.</p>
 
 <h3>Logo Group 48x48<span class="style3"> (since 3.3)</span></h3>
     <p>These images are 48x48-32bpp pixels size (or just 48 pixels height) images that 
-	can be used in Labels, usually inside dialogs.</p>
+	can be used in Labels, usually inside dialogs. These images are not 
+	automatically resized when loaded (since 3.25).</p>
 <p><span class="style3"> NOT included in the 
 pre-compiled library, but available as C source code.</span></p>
 <table align="center">
@@ -279,7 +281,8 @@ pre-compiled library, but available as C source code.</span></p>
 <h3>Icon Group 48x48<span class="style3"> (since 3.3)</span></h3>
  
 <p>Here are other images available in the IUP stock library, commonly used by 
-the respective systems. All images are 48x48-32bpp pixels size.</p>
+the respective systems. All images are 48x48-32bpp pixels size. These images are 
+not automatically resized when loaded (since 3.25).</p>
 <p><span class="style3"> NOT included in the 
 pre-compiled library, but available as C source code.</span></p>
  
@@ -475,14 +478,14 @@ available for download here:</span></p>
 <h3><a name="Notes">Notes</a></h3>
 
 <p>All images are available as PNG files in the &quot;iup/html/en/imglib/*&quot;
-<a href="imglib">folder</a>. Except for the GTK images that are only sample 
-images.</p>
+<a href="imglib">folder</a>.</p>
 
-<p>Use the <a href="executables.html">IupView</a> application to export PNG 
+<p>Use the <a href="executables.html">IupView</a> application can import images 
+in several formats, and can export 
 images to C, LED or Lua.</p>
-<p>All 8bpp images are from the old ImageLib and since Motif does not have any 
+<p>All 8 bpp images are from the old ImageLib and since Motif does not have any 
 stock images, we selected this set to be used in Motif. Although the IUP Motif 
-driver supports 32bpp images.</p>
+driver supports 32 bpp images.</p>
 <p>The pre-compiled library does not include images larger than 48x48 
 (inclusive). If you want to use them you must include their source code, or 
 re-compile the library defining
@@ -490,7 +493,6 @@ re-compile the library defining
 mso-fareast-font-family:&quot;Times New Roman&quot;;color:black;mso-ansi-language:PT-BR;
 mso-fareast-language:PT-BR;mso-bidi-language:AR-SA">USE_IUP_IMGLIB_LARGE during 
 compilation, for example: &quot;make USE_IUP_IMGLIB_LARGE=1&quot;.</span></p>
-<p>Not available in AIX.</p>
 
 <p>All &quot;Windows&quot; images copyright Microsoft and were extracted from the Visual 
 Studio 2013 Image Library. Their use <b>must</b> be used consistently with their 

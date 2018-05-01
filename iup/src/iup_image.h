@@ -57,6 +57,7 @@ void iupImageStockInit(void);
 void iupImageStockFinish(void);
 typedef Ihandle* (*iupImageStockCreateFunc)(void);
 void iupImageStockSet(const char *name, iupImageStockCreateFunc func, const char* native_name);
+void iupImageStockSetNoResize(const char *name, iupImageStockCreateFunc func, const char* native_name);
 void iupImageStockLoadAll(void);  /* Used only in IupView */
 int iupImageStockGetSize(void);
 void iupImageStockGet(const char* name, Ihandle* *ih, const char* *native_name);

@@ -137,6 +137,7 @@ typedef struct _IimageStock
   iupImageStockCreateFunc func;
   Ihandle* image;            /* cache image */
   const char* native_name;   /* used to map to GTK stock images */
+  int can_resize;
 } IimageStock;
 
 static Itable *istock_table = NULL;   /* the image hash table indexed by the name string */
@@ -173,6 +174,25 @@ void iupImageStockSet(const char *name, iupImageStockCreateFunc func, const char
   istock->func = func;
   istock->image = NULL;
   istock->native_name = native_name;
+  istock->can_resize = 1;
+
+  if (iupStrEqualNoCasePartial(name, "IUP_Logo") || iupStrEqualNoCasePartial(name, "IUP_Icon"))
+    istock->can_resize = 0;
+
+  iupTableSet(istock_table, name, (void*)istock, IUPTABLE_POINTER);
+}
+
+void iupImageStockSetNoResize(const char *name, iupImageStockCreateFunc func, const char* native_name)
+{
+  IimageStock* istock = (IimageStock*)iupTableGet(istock_table, name);
+  if (istock)
+    free(istock);  /* overwrite a previous registration */
+
+  istock = (IimageStock*)malloc(sizeof(IimageStock));
+  istock->func = func;
+  istock->image = NULL;
+  istock->native_name = native_name;
+  istock->can_resize = 0;
 
   iupTableSet(istock_table, name, (void*)istock, IUPTABLE_POINTER);
 }
@@ -228,7 +248,7 @@ void iupImageStockGet(const char* name, Ihandle* *ih, const char* *native_name)
       stock_size = iupImageStockGetSize();
       bpp = IupGetInt(istock->image, "BPP");
 
-      if (istock->image->currentheight != stock_size)
+      if (istock->image->currentheight != stock_size && istock->can_resize)
       {
         int new_height = stock_size;
         int new_width = stock_size;
