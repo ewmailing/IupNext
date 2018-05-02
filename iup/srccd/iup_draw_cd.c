@@ -243,7 +243,7 @@ static void cdtext(cdCtxCanvas *ctxcanvas, int x, int y, const char *s, int len)
   }
 
   if (ctxcanvas->dc)
-    iupdrvDrawText(ctxcanvas->dc, s, len, x, y, w, h, ctxcanvas->canvas->foreground, ctxcanvas->canvas->native_font, 0);  /* left alignment - unused, multiline alignment is done by CD */
+    iupdrvDrawText(ctxcanvas->dc, s, len, x, y, w, h, ctxcanvas->canvas->foreground, ctxcanvas->canvas->native_font, IUPDRAW_ALIGN_LEFT);  /* left alignment - unused, multiline alignment is done by CD */
 }
 
 static void cdpoly(cdCtxCanvas *ctxcanvas, int mode, cdPoint* poly, int n)
@@ -494,10 +494,3 @@ cdContext* cdContextIupDraw(void)
 {
   return &cdIupDrawContext;
 }
-
-/* TODO:
-- text orientation
-- hatch, stipple, pattern
-- line cap, line join
-- path, bezier
-*/

@@ -206,8 +206,6 @@ void iupdrvDrawLine(IdrawCanvas* dc, int x1, int y1, int x2, int y2, long color,
   DeleteObject(hPen);
 }
 
-#define IUP_DEG2RAD  0.01745329252  /* degrees to radians (rad = DEG2RAD * deg) */
-
 static int winDrawCalcArc(int c1, int c2, double a, int horiz)
 {
   double proj;
@@ -293,7 +291,7 @@ void iupdrvDrawResetClip(IdrawCanvas* dc)
   SelectClipRgn(dc->hBitmapDC, NULL);
 }
 
-void iupdrvDrawText(IdrawCanvas* dc, const char* text, int len, int x, int y, int w, int h, long color, const char* font, int align)
+void iupdrvDrawText(IdrawCanvas* dc, const char* text, int len, int x, int y, int w, int h, long color, const char* font, int flags)
 {
   RECT rect;
   TCHAR* wtext;
@@ -311,9 +309,9 @@ void iupdrvDrawText(IdrawCanvas* dc, const char* text, int len, int x, int y, in
   wtext = iupwinStrToSystemLen(text, &len);
 
   uFormat = DT_LEFT;
-  if (align == IUP_ALIGN_ARIGHT)
+  if (flags == IUPDRAW_ALIGN_RIGHT)
     uFormat = DT_RIGHT;
-  else if (align == IUP_ALIGN_ACENTER)
+  else if (flags == IUPDRAW_ALIGN_CENTER)
     uFormat = DT_CENTER;
 
   DrawText(dc->hBitmapDC, wtext, len, &rect, uFormat);

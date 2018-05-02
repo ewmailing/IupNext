@@ -233,7 +233,7 @@ void iupdrvDrawResetClip(IdrawCanvas* dc)
   XSetClipMask(iupmot_display, dc->pixmap_gc, None);
 }
 
-void iupdrvDrawText(IdrawCanvas* dc, const char* text, int len, int x, int y, int w, int h, long color, const char* font, int align)
+void iupdrvDrawText(IdrawCanvas* dc, const char* text, int len, int x, int y, int w, int h, long color, const char* font, int flags)
 {
   int num_line, width, off_x;
   XFontStruct* xfont = (XFontStruct*)iupmotGetFontStruct(font);
@@ -247,13 +247,13 @@ void iupdrvDrawText(IdrawCanvas* dc, const char* text, int len, int x, int y, in
   if (num_line == 1)
   {
     off_x = 0;
-    if (align == IUP_ALIGN_ARIGHT)
+    if (flags == IUPDRAW_ALIGN_RIGHT)
     {
       width = XTextWidth(xfont, text, len);
       off_x = w - width;
       if (off_x < 0) off_x = 0;
     }
-    else if (align == IUP_ALIGN_ACENTER)
+    else if (flags == IUPDRAW_ALIGN_CENTER)
     {
       width = XTextWidth(xfont, text, len);
       off_x = (w - width) / 2;
@@ -284,13 +284,13 @@ void iupdrvDrawText(IdrawCanvas* dc, const char* text, int len, int x, int y, in
       if (l_len)
       {
         off_x = 0;
-        if (align == IUP_ALIGN_ARIGHT)
+        if (flags == IUPDRAW_ALIGN_RIGHT)
         {
           width = XTextWidth(xfont, p, l_len);
           off_x = w - width;
           if (off_x < 0) off_x = 0;
         }
-        else if (align == IUP_ALIGN_ACENTER)
+        else if (flags == IUPDRAW_ALIGN_CENTER)
         {
           width = XTextWidth(xfont, p, l_len);
           off_x = (w - width) / 2;

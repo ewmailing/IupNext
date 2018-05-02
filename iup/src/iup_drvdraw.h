@@ -63,10 +63,14 @@ void iupdrvDrawArc(IdrawCanvas* dc, int x1, int y1, int x2, int y2, double a1, d
  * \ingroup drvdraw */
 void iupdrvDrawPolygon(IdrawCanvas* dc, int* points, int count, long color, int style, int line_width);
 
+#define IUPDRAW_ALIGN_LEFT   0
+#define IUPDRAW_ALIGN_CENTER 1
+#define IUPDRAW_ALIGN_RIGHT  2
+
 /** Draws a text.
  * x,y is at left,top corner of the text.
  * \ingroup drvdraw */
-void iupdrvDrawText(IdrawCanvas* dc, const char* text, int len, int x, int y, int w, int h, long color, const char* font, int align);
+void iupdrvDrawText(IdrawCanvas* dc, const char* text, int len, int x, int y, int w, int h, long color, const char* font, int flags);
 
 /** Draws an image.
  * x,y is at left,top corner of the image.

@@ -74,7 +74,7 @@ static IwinFont* winFindFont(const char *font)
   if (height_pixels == 0)
     return NULL;
 
-  hFont = CreateFont(height_pixels, 0,0,0,
+  hFont = CreateFont(height_pixels, 0, 0, 0,
                     (is_bold) ? FW_BOLD : FW_NORMAL,
                     is_italic, is_underline, is_strikeout,
                     DEFAULT_CHARSET,OUT_TT_PRECIS,

@@ -18,6 +18,8 @@ extern "C"
  * \ingroup util */
 
 
+#define IUP_DEG2RAD  0.01745329252  /* degrees to radians (rad = DEG2RAD * deg) */
+
 /** Swap integer coordinates if c1 > c2.
 * \ingroup auxdraw */
 #define iupDrawCheckSwapCoord(_c1, _c2) { if (_c1 > _c2) { int t = _c2; _c2 = _c1; _c1 = t; } }   /* make sure _c1 is smaller than _c2 */

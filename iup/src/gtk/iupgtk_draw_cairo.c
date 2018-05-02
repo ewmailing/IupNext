@@ -256,8 +256,6 @@ void iupdrvDrawLine(IdrawCanvas* dc, int x1, int y1, int x2, int y2, long color,
   cairo_stroke(dc->image_cr);
 }
 
-#define IUP_DEG2RAD  0.01745329252  /* degrees to radians (rad = DEG2RAD * deg) */
-
 static void iFixAngles(double *a1, double *a2)
 {
   /* Cairo angles are clock-wise by default, in radians */
@@ -377,7 +375,7 @@ void iupdrvDrawResetClip(IdrawCanvas* dc)
   cairo_reset_clip(dc->image_cr);
 }
 
-void iupdrvDrawText(IdrawCanvas* dc, const char* text, int len, int x, int y, int w, int h, long color, const char* font, int align)
+void iupdrvDrawText(IdrawCanvas* dc, const char* text, int len, int x, int y, int w, int h, long color, const char* font, int flags)
 {
   PangoLayout* fontlayout = (PangoLayout*)iupgtkGetPangoLayout(font);
   PangoAlignment alignment = PANGO_ALIGN_LEFT;
@@ -385,9 +383,9 @@ void iupdrvDrawText(IdrawCanvas* dc, const char* text, int len, int x, int y, in
   text = iupgtkStrConvertToSystemLen(text, &len);
   pango_layout_set_text(fontlayout, text, len);
 
-  if (align == IUP_ALIGN_ARIGHT)
+  if (flags == IUPDRAW_ALIGN_RIGHT)
     alignment = PANGO_ALIGN_RIGHT;
-  else if (align == IUP_ALIGN_ACENTER)
+  else if (flags == IUPDRAW_ALIGN_CENTER)
     alignment = PANGO_ALIGN_CENTER;
 
   pango_layout_set_alignment(fontlayout, alignment);

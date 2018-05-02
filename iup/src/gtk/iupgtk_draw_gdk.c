@@ -240,7 +240,7 @@ void iupdrvDrawResetClip(IdrawCanvas* dc)
   gdk_gc_set_clip_region(dc->pixmap_gc, NULL);
 }
 
-void iupdrvDrawText(IdrawCanvas* dc, const char* text, int len, int x, int y, int w, int h, long color, const char* font, int align)
+void iupdrvDrawText(IdrawCanvas* dc, const char* text, int len, int x, int y, int w, int h, long color, const char* font, int flags)
 {
   PangoLayout* fontlayout = (PangoLayout*)iupgtkGetPangoLayout(font);
   PangoAlignment alignment = PANGO_ALIGN_LEFT;
@@ -252,9 +252,9 @@ void iupdrvDrawText(IdrawCanvas* dc, const char* text, int len, int x, int y, in
   text = iupgtkStrConvertToSystemLen(text, &len);
   pango_layout_set_text(fontlayout, text, len);
 
-  if (align == IUP_ALIGN_ARIGHT)
+  if (flags == IUPDRAW_ALIGN_RIGHT)
     alignment = PANGO_ALIGN_RIGHT;
-  else if (align == IUP_ALIGN_ACENTER)
+  else if (flags == IUPDRAW_ALIGN_CENTER)
     alignment = PANGO_ALIGN_CENTER;
 
   pango_layout_set_alignment(fontlayout, alignment);

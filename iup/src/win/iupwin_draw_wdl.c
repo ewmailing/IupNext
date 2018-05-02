@@ -304,13 +304,13 @@ static int iCompensatePosX(float font_height)
   return iupRound(font_height / 7.);  /* 15% */
 }
 
-void iupdrvDrawText(IdrawCanvas* dc, const char* text, int len, int x, int y, int w, int h, long color, const char* font, int align)
+void iupdrvDrawText(IdrawCanvas* dc, const char* text, int len, int x, int y, int w, int h, long color, const char* font, int flags)
 {
   WD_RECT rect;
   DWORD flag;
   WCHAR *wtext = iupwinStrToSystemLen(text, &len);
   WD_HBRUSH brush = wdCreateSolidBrush(dc->hCanvas, iupColor2ARGB(color));
- 
+
   HFONT hFont = (HFONT)iupwinGetHFont(font);
   WD_HFONT wdFont = wdCreateFontWithGdiHandle(hFont);
 
@@ -320,9 +320,9 @@ void iupdrvDrawText(IdrawCanvas* dc, const char* text, int len, int x, int y, in
   rect.y1 = iupInt2Float(y + h);
 
   flag = WD_STR_LEFTALIGN;
-  if (align == IUP_ALIGN_ARIGHT)
+  if (flags == IUPDRAW_ALIGN_RIGHT)
     flag = WD_STR_RIGHTALIGN;
-  else if (align == IUP_ALIGN_ACENTER)
+  else if (flags == IUPDRAW_ALIGN_CENTER)
     flag = WD_STR_CENTERALIGN;
 
   if (wdBackend() == WD_BACKEND_GDIPLUS)
