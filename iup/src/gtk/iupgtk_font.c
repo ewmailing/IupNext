@@ -409,7 +409,7 @@ void iupdrvFontGetMultiLineStringSize(Ihandle* ih, const char* str, int *w, int 
 {
   IgtkFont* gtkfont = gtkFontGet(ih);
   if (gtkfont)
-    gtkFontGetTextSize(ih, gtkfont, str, (int)strlen(str), w, h);
+    gtkFontGetTextSize(ih, gtkfont, str, str? (int)strlen(str): 0, w, h);
 }
 
 void iupdrvFontGetTextSize(const char* font, const char* str, int len, int *w, int *h)

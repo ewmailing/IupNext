@@ -313,7 +313,7 @@ void iupdrvFontGetMultiLineStringSize(Ihandle* ih, const char* str, int *w, int 
 {
   IwinFont* winfont = winFontGet(ih);
   if (winfont)
-    winFontGetTextSize(ih, winfont, str, (int)strlen(str), w, h);
+    winFontGetTextSize(ih, winfont, str, str? (int)strlen(str): 0, w, h);
 }
 
 void iupdrvFontGetTextSize(const char* font, const char* str, int len, int *w, int *h)
