@@ -163,27 +163,27 @@ void iuplua_register_cb(lua_State *L, const char* name, lua_CFunction func, cons
 void iuplua_pushihandle_raw(lua_State *L, Ihandle *h);
 
 /** Returns an array of string stored in a Lua table. 
- If count is 0, table size is used. Else table size must match count. */
+ If count is -1, table size is used. Else table size must match count. */
 char** iuplua_checkstring_array(lua_State *L, int pos, int count);
 
 /** Returns an array of int stored in a Lua table.
- If count is 0, table size is used. Else table size must match count. */
+ If count is -1, table size is used. Else table size must match count. */
 int* iuplua_checkint_array(lua_State *L, int pos, int count);
 
 /** Returns an array of float stored in a Lua table.
- If count is 0, table size is used. Else table size must match count. */
+ If count is -1, table size is used. Else table size must match count. */
 float* iuplua_checkfloat_array(lua_State *L, int pos, int count);
 
 /** Returns an array of double stored in a Lua table.
-If count is 0, table size is used. Else table size must match count. */
+If count is -1, table size is used. Else table size must match count. */
 double* iuplua_checkdouble_array(lua_State *L, int pos, int count);
 
 /** Returns an array of unsigned char stored in a Lua table.
- If count is 0, table size is used. Else table size must match count. */
+ If count is -1, table size is used. Else table size must match count. */
 unsigned char* iuplua_checkuchar_array(lua_State *L, int pos, int count);
 
 /** Returns an array of Ihandle* stored in a Lua table.
- If count is 0, table size is used. Else table size must match count. */
+ If count is -1, table size is used. Else table size must match count. */
 Ihandle** iuplua_checkihandle_array(lua_State *L, int pos, int count);
 
 /** Same as iuplua_checkihandle but also accepts nil. */

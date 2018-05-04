@@ -233,6 +233,16 @@ void FlatLabelTest(void)
   IupSetCallback(label, "BUTTON_CB", (Icallback)button_cb);
   IupAppend(box2, label);
 
+  label = IupFlatLabel(NULL);
+  IupSetAttribute(label, "TITLE", "Very Long Text with_many characters and lots of words.");
+//  IupSetAttribute(label, "TEXTELLIPSIS", "Yes");
+  IupSetAttribute(label, "TEXTWRAP", "Yes");
+  IupSetAttribute(label, "RASTERSIZE", "250x100");
+  //  IupSetAttribute(label, "RASTERSIZE", "250x100");
+  //  IupSetAttribute(label, "RASTERSIZE", "150x50");
+//  IupSetAttribute(label, "ALIGNMENT", "ARIGHT");
+  IupAppend(box2, label);
+
   label = IupLabel(NULL);
   IupSetAttribute(label, "SEPARATOR", "VERTICAL");
 

@@ -224,7 +224,11 @@ static void drawTest(Ihandle *ih, int posx)  //_Lines
   IupDrawLine(ih, 20 - 2, 70, 20 + 2, 70);
 
   IupSetAttribute(ih, "DRAWFONT", "Helvetica, -30");
-  IupDrawText(ih, "Text", 0, 20, 70);
+//  IupDrawText(ih, "Text", 0, 20, 70, -1, -1);
+//  IupSetAttribute(ih, "DRAWTEXTWRAP", "Yes");
+//  IupSetAttribute(ih, "DRAWTEXTELLIPSIS", "Yes");
+//  IupSetAttribute(ih, "DRAWTEXTCLIP", "Yes");
+//  IupDrawText(ih, "Very Large Text", 0, 20, 70, 50, 70);
 
 //  IupSetAttribute(ih, "DRAWLINEWIDTH", "3");
   IupSetAttribute(ih, "DRAWSTYLE", "STROKE");
@@ -234,12 +238,13 @@ static void drawTest(Ihandle *ih, int posx)  //_Lines
   IupSetAttribute(ih, "DRAWSTYLE", "STROKE_DOT");
   IupDrawLine(ih, 10, 105 + 10, 100, 105 + 10);
 
-  IupDrawImage(ih, "Test8bpp", 110, 10, 0, 0);
-  IupDrawImage(ih, "Test24bpp", 110, 40, 0, 0);
-  IupDrawImage(ih, "Test32bpp", 110, 70, 0, 0);
+  IupDrawImage(ih, "Test8bpp", 110, 10, -1, -1);
+  IupDrawImage(ih, "Test24bpp", 110, 40, -1, -1);
+  IupDrawImage(ih, "Test32bpp", 110, 70, -1, -1);
+//  IupDrawImage(ih, "Test32bpp", 110, 70, 60, 60);
 
   IupSetAttribute(ih, "DRAWFONT", "Helvetica, Bold -15");
-  IupDrawText(ih, IupGetAttribute(ih, "DRAWDRIVER"), 0, 60, 120);
+  IupDrawText(ih, IupGetAttribute(ih, "DRAWDRIVER"), 0, 60, 120, -1, -1);
 
   IupDrawEnd(ih);
 }
@@ -267,7 +272,7 @@ static void drawTest1(Ihandle *ih, int posx)
 
   IupSetAttribute(ih, "DRAWCOLOR", "0 0 0");
   IupSetAttribute(ih, "DRAWFONT", "Times, 28");
-  IupDrawText(ih, "This is a test", 0, w / 2, h / 2);
+  IupDrawText(ih, "This is a test", 0, w / 2, h / 2, -1, -1);
 
   IupDrawEnd(ih); 
 }

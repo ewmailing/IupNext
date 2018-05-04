@@ -43,7 +43,7 @@ int IupGetAllClasses(char** list, int n)
   int i = 0;
   char* name = iupTableFirst(iregister_table);
 
-  if (!list || !n)
+  if (!list || n==0 || n==-1)
     return iupTableCount(iregister_table);
 
   while (name)

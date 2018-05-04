@@ -276,6 +276,16 @@ image and the text. Default: &quot;2&quot;.</p>
 <p><strong>TEXTALIGNMENT </strong>(<font size="3">non inheritable</font>): 
 Horizontal text alignment for multiple lines. Can be: ALEFT, ARIGHT or ACENTER. 
 Default: ALEFT.</p>
+<p><strong>TEXTWRAP </strong>(<font size="3">non inheritable</font>): For single 
+line texts if the text is larger than its box the line will be automatically 
+broken in multiple lines. Notice that this is done internally by the system, the 
+element natural size will still use only a single line. For the remaining lines 
+to be visible the element should use EXPAND=VERTICAL or set a SIZE/RASTERSIZE 
+with enough height for the wrapped lines. (since 3.25)</p>
+<p><strong>TEXTELLIPSIS </strong>(<font size="3">non inheritable</font>): 
+If the text is larger that its box, an ellipsis (&quot;...&quot;) will be placed near the 
+last visible part of the text and replace the invisible part. It will be ignored 
+when TEXTWRAP=Yes. (since 3.25)</p>
 
 
 

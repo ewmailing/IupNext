@@ -53,6 +53,7 @@ int iupFlatGetHorizontalAlignment(const char* value);
 int iupFlatGetVerticalAlignment(const char* value);
 int iupFlatGetImagePosition(const char* value);
 char* iupFlatGetDarkerBgColor(Ihandle* ih);
+int iupDrawGetTextFlags(Ihandle* ih, const char* align_name, const char* wrap_name, const char* ellipsis_name);
 
 const char* iupFlatGetImageName(Ihandle* ih, const char* baseattrib, const char* basevalue, int press, int highlight, int active, int *make_inactive);
 const char* iupFlatGetImageNameId(Ihandle* ih, const char* baseattrib, int id, const char* basevalue, int press, int highlight, int active, int *make_inactive);
@@ -63,7 +64,7 @@ void iupFlatDrawBox(IdrawCanvas* dc, int xmin, int xmax, int ymin, int ymax, con
 
 void iupFlatDrawIcon(Ihandle* ih, IdrawCanvas* dc, int icon_x, int icon_y, int icon_width, int icon_height,
                      int img_position, int spacing, int horiz_alignment, int vert_alignment, int horiz_padding, int vert_padding,
-                     const char* imagename, int make_inactive, const char* title, const char* text_align, const char* fgcolor, const char* bgcolor, int active);
+                     const char* imagename, int make_inactive, const char* title, int text_flags, const char* fgcolor, const char* bgcolor, int active);
 
 enum { IUPDRAW_ARROW_LEFT, IUPDRAW_ARROW_RIGHT, IUPDRAW_ARROW_TOP, IUPDRAW_ARROW_BOTTOM };
 void iupFlatDrawArrow(IdrawCanvas* dc, int x, int y, int size, const char* color, const char* bgcolor, int active, int dir);

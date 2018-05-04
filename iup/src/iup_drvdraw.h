@@ -63,9 +63,12 @@ void iupdrvDrawArc(IdrawCanvas* dc, int x1, int y1, int x2, int y2, double a1, d
  * \ingroup drvdraw */
 void iupdrvDrawPolygon(IdrawCanvas* dc, int* points, int count, long color, int style, int line_width);
 
-#define IUPDRAW_ALIGN_LEFT   0
-#define IUPDRAW_ALIGN_CENTER 1
-#define IUPDRAW_ALIGN_RIGHT  2
+#define IUP_DRAW_LEFT     0x0000
+#define IUP_DRAW_CENTER   0x0001
+#define IUP_DRAW_RIGHT    0x0002
+#define IUP_DRAW_WRAP     0x0004
+#define IUP_DRAW_ELLIPSIS 0x0008
+#define IUP_DRAW_CLIP     0x0010
 
 /** Draws a text.
  * x,y is at left,top corner of the text.
@@ -84,6 +87,10 @@ void iupdrvDrawSetClipRect(IdrawCanvas* dc, int x1, int y1, int x2, int y2);
 /** Removes clipping.
  * \ingroup drvdraw */
 void iupdrvDrawResetClip(IdrawCanvas* dc);
+
+/** Returns the last rectangle set in iupdrvDrawSetClipRect.
+* \ingroup drvdraw */
+void iupdrvDrawGetClipRect(IdrawCanvas* dc, int *x1, int *y1, int *x2, int *y2);
 
 /** Draws a selection rectangle.
  * \ingroup drvdraw */

@@ -159,6 +159,7 @@ int iupBaseNoSaveCheck(Ihandle* ih, const char* name);
  */
 
 #define iupMAX(_a,_b) ((_a)>(_b)?(_a):(_b))
+#define iupMIN(_a,_b) ((_a)<(_b)?(_a):(_b))
 #define iupROUND(_x) ((int)((_x)>0? (_x)+0.5: (_x)-0.5))
 int     iupRound(double x);
 

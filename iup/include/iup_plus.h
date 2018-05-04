@@ -369,13 +369,14 @@ namespace Iup
     void DrawBegin() { IupDrawBegin(ih); }
     void DrawEnd() { IupDrawEnd(ih); }
     void DrawSetClipRect(int x1, int y1, int x2, int y2) { IupDrawSetClipRect(ih, x1, y1, x2, y2); }
+    void DrawGetClipRect(int *x1, int *y1, int *x2, int *y2) { IupDrawGetClipRect(ih, x1, y1, x2, y2); }
     void DrawResetClip() { IupDrawResetClip(ih); }
     void DrawParentBackground() { IupDrawParentBackground(ih); }
     void DrawLine(int x1, int y1, int x2, int y2) { IupDrawLine(ih, x1, y1, x2, y2); }
     void DrawRectangle(int x1, int y1, int x2, int y2) { IupDrawRectangle(ih, x1, y1, x2, y2); }
     void DrawArc(int x1, int y1, int x2, int y2, double a1, double a2) { IupDrawArc(ih, x1, y1, x2, y2, a1, a2); }
     void DrawPolygon(int* points, int count) { IupDrawPolygon(ih, points, count); }
-    void DrawText(const char* text, int len, int x, int y) { IupDrawText(ih, text, len, x, y); }
+    void DrawText(const char* text, int len, int x, int y, int w, int h) { IupDrawText(ih, text, len, x, y, w, h); }
     void DrawImage(const char* name, int x, int y, int w, int h) { IupDrawImage(ih, name, x, y, h, h); }
     void DrawSelectRect(int x1, int y1, int x2, int y2) { IupDrawSelectRect(ih, x1, y1, x2, y2); }
     void DrawFocusRect(int x1, int y1, int x2, int y2) { IupDrawFocusRect(ih, x1, y1, x2, y2); }
@@ -592,13 +593,14 @@ namespace Iup
     void DrawBegin() { IupDrawBegin(ih); }
     void DrawEnd() { IupDrawEnd(ih); }
     void DrawSetClipRect(int x1, int y1, int x2, int y2) { IupDrawSetClipRect(ih, x1, y1, x2, y2); }
+    void DrawGetClipRect(int *x1, int *y1, int *x2, int *y2) { IupDrawGetClipRect(ih, x1, y1, x2, y2); }
     void DrawResetClip() { IupDrawResetClip(ih); }
     void DrawParentBackground() { IupDrawParentBackground(ih); }
     void DrawLine(int x1, int y1, int x2, int y2) { IupDrawLine(ih, x1, y1, x2, y2); }
     void DrawRectangle(int x1, int y1, int x2, int y2) { IupDrawRectangle(ih, x1, y1, x2, y2); }
     void DrawArc(int x1, int y1, int x2, int y2, double a1, double a2) { IupDrawArc(ih, x1, y1, x2, y2, a1, a2); }
     void DrawPolygon(int* points, int count) { IupDrawPolygon(ih, points, count); }
-    void DrawText(const char* text, int len, int x, int y) { IupDrawText(ih, text, len, x, y); }
+    void DrawText(const char* text, int len, int x, int y, int w, int h) { IupDrawText(ih, text, len, x, y, w, h); }
     void DrawImage(const char* name, int x, int y, int w, int h) { IupDrawImage(ih, name, x, y, h, h); }
     void DrawSelectRect(int x1, int y1, int x2, int y2) { IupDrawSelectRect(ih, x1, y1, x2, y2); }
     void DrawFocusRect(int x1, int y1, int x2, int y2) { IupDrawFocusRect(ih, x1, y1, x2, y2); }

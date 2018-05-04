@@ -89,7 +89,7 @@ static int iFlatFrameRedraw_CB(Ihandle* ih)
   int frame_width = iupAttribGetInt(ih, "FRAMEWIDTH");
   int frame = iFlatFrameGetFrame(ih);
   IdrawCanvas* dc = iupdrvDrawCreateCanvas(ih);
-  char* text_align = iupAttribGetStr(ih, "TITLETEXTALIGNMENT");
+  int text_flags = iupDrawGetTextFlags(ih, "TITLETEXTALIGNMENT", "TITLETEXTWRAP", "TITLETEXTELLIPSIS");
   int active = IupGetInt(ih, "ACTIVE");
   int title_w, title_h;
 
@@ -171,7 +171,7 @@ static int iFlatFrameRedraw_CB(Ihandle* ih)
     iupFlatDrawIcon(ih, dc, frame_width + x_off, frame_width,
                     ih->currentwidth - 2 * frame_width, title_h - title_line,
                     img_position, spacing, title_alignment, IUP_ALIGN_ATOP, horiz_padding, vert_padding,
-                    titleimage, make_inactive, title, text_align, titlecolor, NULL, active);
+                    titleimage, make_inactive, title, text_flags, titlecolor, NULL, active);
   }
 
   iupdrvDrawFlush(dc);
@@ -291,6 +291,8 @@ Iclass* iupFlatFrameNewClass(void)
   iupClassRegisterAttribute(ic, "TITLEALIGNMENT", NULL, NULL, "ACENTER", NULL, IUPAF_NOT_MAPPED | IUPAF_NO_INHERIT);
   iupClassRegisterAttribute(ic, "TITLEPADDING", NULL, NULL, IUPAF_SAMEASSYSTEM, "0x0", IUPAF_NOT_MAPPED | IUPAF_NO_INHERIT);
   iupClassRegisterAttribute(ic, "TITLETEXTALIGNMENT", NULL, NULL, IUPAF_SAMEASSYSTEM, "ALEFT", IUPAF_NOT_MAPPED | IUPAF_NO_INHERIT);
+  iupClassRegisterAttribute(ic, "TITLETEXTWRAP", NULL, NULL, NULL, NULL, IUPAF_NO_INHERIT);
+  iupClassRegisterAttribute(ic, "TITLETEXTELLIPSIS", NULL, NULL, NULL, NULL, IUPAF_NO_INHERIT);
 
   iupClassRegisterAttribute(ic, "FRAME", NULL, NULL, IUPAF_SAMEASSYSTEM, "YES", IUPAF_NO_INHERIT);
   iupClassRegisterAttribute(ic, "FRAMECOLOR", NULL, NULL, IUPAF_SAMEASSYSTEM, "DLGFGCOLOR", IUPAF_NO_INHERIT);

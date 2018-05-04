@@ -237,6 +237,7 @@ IupDrawGetTextSize
 IupDrawImage
 IupDrawGetImageInfo
 IupDrawSetClipRect
+IupDrawGetClipRect
 IupDrawResetClip
 IupDrawSelectRect
 IupDrawFocusRect
@@ -574,6 +575,7 @@ iupdrvDrawLine
 iupdrvDrawArc
 iupdrvDrawPolygon
 iupdrvDrawResetClip
+iupdrvDrawGetClipRect
 iupdrvDrawSetClipRect
 iupdrvDrawText
 iupdrvDrawUpdateSize

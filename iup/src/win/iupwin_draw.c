@@ -267,9 +267,6 @@ void iupwinDrawBitmap(HDC hDC, HBITMAP hBitmap, int x, int y, int w, int h, int 
   HDC hMemDC = CreateCompatibleDC(hDC);
   HBITMAP oldBitmap = (HBITMAP)SelectObject(hMemDC, hBitmap);
 
-  if (w == 0) w = img_w;
-  if (h == 0) h = img_h;
-
   if (bpp == 32 && winAlphaBlend)
   {
     BLENDFUNCTION blendfunc;

@@ -60,7 +60,7 @@ static int iFlatButtonRedraw_CB(Ihandle* ih)
   char* bgcolor = iupAttribGet(ih, "BGCOLOR");  /* don't get with default value, if NULL will use from parent */
   char* bgimage = iupAttribGet(ih, "BACKIMAGE");
   char* fgimage = iupAttribGet(ih, "FRONTIMAGE");
-  char* text_align = iupAttribGetStr(ih, "TEXTALIGNMENT");
+  int text_flags = iupDrawGetTextFlags(ih, "TEXTALIGNMENT", "TEXTWRAP", "TEXTELLIPSIS");
   const char* draw_image;
   int border_width = ih->data->border_width;
   int draw_border = iupAttribGetBoolean(ih, "SHOWBORDER");
@@ -127,7 +127,7 @@ static int iFlatButtonRedraw_CB(Ihandle* ih)
   if (bgimage)
   {
     draw_image = iupFlatGetImageName(ih, "BACKIMAGE", bgimage, image_pressed, ih->data->highlighted, active, &make_inactive);
-    iupdrvDrawImage(dc, draw_image, make_inactive, bgcolor, border_width, border_width, 0, 0);
+    iupdrvDrawImage(dc, draw_image, make_inactive, bgcolor, border_width, border_width, -1, -1);
   }
   else
     iupFlatDrawBox(dc, border_width, ih->currentwidth - 1 - border_width,
@@ -139,12 +139,12 @@ static int iFlatButtonRedraw_CB(Ihandle* ih)
   iupFlatDrawIcon(ih, dc, border_width, border_width,
                           ih->currentwidth - 2 * border_width, ih->currentheight - 2 * border_width,
                           ih->data->img_position, ih->data->spacing, ih->data->horiz_alignment, ih->data->vert_alignment, ih->data->horiz_padding, ih->data->vert_padding,
-                          draw_image, make_inactive, title, text_align, fgcolor, bgcolor, active);
+                          draw_image, make_inactive, title, text_flags, fgcolor, bgcolor, active);
 
   if (fgimage)
   {
     draw_image = iupFlatGetImageName(ih, "FRONTIMAGE", fgimage, image_pressed, ih->data->highlighted, active, &make_inactive);
-    iupdrvDrawImage(dc, draw_image, make_inactive, bgcolor, border_width, border_width, 0, 0);
+    iupdrvDrawImage(dc, draw_image, make_inactive, bgcolor, border_width, border_width, -1, -1);
   }
   else if (!image && !title)  /* color only button */
   {
@@ -673,6 +673,8 @@ Iclass* iupFlatButtonNewClass(void)
   
   iupClassRegisterAttribute(ic, "IMAGEPOSITION", iFlatButtonGetImagePositionAttrib, iFlatButtonSetImagePositionAttrib, IUPAF_SAMEASSYSTEM, "LEFT", IUPAF_NOT_MAPPED | IUPAF_NO_INHERIT);
   iupClassRegisterAttribute(ic, "TEXTALIGNMENT", NULL, NULL, IUPAF_SAMEASSYSTEM, "ALEFT", IUPAF_NOT_MAPPED | IUPAF_NO_INHERIT);
+  iupClassRegisterAttribute(ic, "TEXTWRAP", NULL, NULL, NULL, NULL, IUPAF_NO_INHERIT);
+  iupClassRegisterAttribute(ic, "TEXTELLIPSIS", NULL, NULL, NULL, NULL, IUPAF_NO_INHERIT);
 
   iupClassRegisterAttribute(ic, "BACKIMAGE", NULL, NULL, NULL, NULL, IUPAF_IHANDLENAME | IUPAF_NO_DEFAULTVALUE | IUPAF_NO_INHERIT);
   iupClassRegisterAttribute(ic, "BACKIMAGEPRESS", NULL, NULL, NULL, NULL, IUPAF_IHANDLENAME | IUPAF_NO_DEFAULTVALUE | IUPAF_NO_INHERIT);

@@ -66,6 +66,11 @@ iup.DrawSetClipRect<span class="auto-style2">(</span><strong>ih</strong>: ihandl
 iup.Draw<span class="auto-style2">ResetClip(</span><strong>ih</strong>: ihandle<span class="auto-style2">)</span> [in Lua]
 <strong>ih</strong>:DrawResetClip() [in Lua]</pre>
 <p>Reset the clipping area to none.</p>
+<pre>void IupDrawGetClipRect(Ihandle* <strong>ih</strong>, int *<strong>x1</strong>, int *<strong>y1</strong>, int *<strong>x2</strong>, int *<strong>y2</strong>); [in C]
+iup.DrawGetClipRect<span class="auto-style2">(</span><strong>ih</strong>: ihandle<span class="auto-style2">) -&gt; <strong>x1</strong>, <strong>y1</strong>, <strong>x2</strong>, <strong>y2</strong>: number</span> [in Lua]
+<strong>ih</strong>:DrawGetClipRect() -&gt; <span class="auto-style2"><strong>x1</strong>, <strong>y1</strong>, <strong>x2</strong>, <strong>y2</strong>: number</span> [in Lua]</pre>
+<p>Returns the previous rectangular clipping region set by IupDrawSetClipRect, 
+if clipping was reset returns 0 in all values. (since 3.25)</p>
 <h3>Primitives</h3>
 <p>The primitives color is controlled by the attribute <strong>DRAWCOLOR</strong>.
 <span style="color: rgb(0, 0, 0); font-family: tahoma, verdana, arial, helvetica, geneva, sans-serif; font-size: medium; font-style: normal; font-variant: normal; font-weight: normal; letter-spacing: normal; line-height: 20.8px; orphans: auto; text-align: start; text-indent: 0px; text-transform: none; white-space: normal; widows: 1; word-spacing: 0px; -webkit-text-stroke-width: 0px; display: inline !important; float: none; background-color: rgb(255, 255, 255);">
@@ -100,30 +105,42 @@ iup.DrawPolygon<span class="auto-style2">(</span><strong>ih</strong>: ihandle<sp
 <strong>ih</strong>:DrawPolygon(<span class="auto-style2"><strong>points</strong>: table of number</span>) [in Lua]</pre>
 <p>Draws a polygon. Coordinates are stored in the array in the sequence: x1, y1, 
 x2, y2, ...</p>
-<pre>void IupDrawText(Ihandle* <strong>ih</strong>, const char* <strong>str</strong>, int <strong>len</strong>, int <strong>x</strong>, int <strong>y</strong>); [in C]
-iup.Draw<span class="auto-style2">Text(</span><strong>ih</strong>: ihandle<span class="auto-style2"><strong>, str</strong>: string</span><span class="auto-style2">, <strong>x</strong>, <strong>y</strong>: number)</span> [in Lua]
-<strong>ih</strong>:DrawText(<span class="auto-style2"><strong>str</strong>: string, <strong>x</strong>, <strong>y</strong>: number</span>) [in Lua]</pre>
+<pre>void IupDrawText(Ihandle* <strong>ih</strong>, const char* <strong>str</strong>, int <strong>len</strong>, int <strong>x</strong>, int <strong>y</strong>, int <strong>w</strong>, int <strong>h</strong>); [in C]
+iup.Draw<span class="auto-style2">Text(</span><strong>ih</strong>: ihandle<span class="auto-style2"><strong>, str</strong>: string</span><span class="auto-style2">, <strong>x</strong>, <strong>y[, w, h]</strong>: number)</span> [in Lua]
+<strong>ih</strong>:DrawText(<span class="auto-style2"><strong>str</strong>: string, <strong>x</strong>, <strong>y[, w, h]</strong>: number</span>) [in Lua]</pre>
 <p>Draws a text in the given position using the font defined by <strong>DRAWFONT</strong> (since 
 3.22), if not defined then use
 <a href="../attrib/iup_font.html">FONT</a>. The size of the string is used only 
-in C. Can be 0 so <strong>strlen</strong> is used internally. The coordinates 
+in C. Can be -1 so <strong>strlen</strong> is used internally. The coordinates 
 are relative the top-left corner of the text. Strings with multiple line are 
 accepted using '\n&quot; as line separator. Horizontal text alignment for multiple 
 lines can be controlled using <strong>DRAWTEXTALIGNMENT</strong> attribute: ALEFT (default), ARIGHT 
-and ACENTER options (since 3.22).</p>
+and ACENTER options (since 3.22). For single line texts if the text is larger 
+than its box and <strong>DRAWTEXTWRAP</strong>=Yes, then the line will be 
+automatically broken in multiple lines. Notice that this is done internally by 
+the system, the element natural size will still use only a single line. For the 
+remaining lines to be visible the element should use EXPAND=VERTICAL or set a 
+SIZE/RASTERSIZE with enough height for the wrapped lines. (since 
+3.25) If the text is larger that its box and <strong>DRAWTEXTELLIPSIS</strong>=Yes, 
+an ellipsis (&quot;...&quot;) will be placed near the last visible part of the text and 
+replace the invisible part. It will be ignored when WRAP=Yes (since 3.25). <span style="color: rgb(0, 0, 0); font-family: tahoma, verdana, arial, helvetica, geneva, sans-serif; font-size: medium; font-style: normal; font-variant: normal; font-weight: normal; letter-spacing: normal; line-height: 20.8px; orphans: auto; text-align: start; text-indent: 0px; text-transform: none; white-space: normal; widows: 1; word-spacing: 0px; -webkit-text-stroke-width: 0px; display: inline !important; float: none; background-color: rgb(255, 255, 255);"><span class="Apple-converted-space">
+w and h are optional and can be -1 or 0, the text size will be used, so WRAP nor ELLIPSIS 
+will not produce any changes. The text is not automatically clipped to the 
+rectangle, if <strong>DRAWTEXTCLIP</strong>=Yes it will be clipped but depending 
+on the driver may affect the clipping set by IupDrawSetClipRect (since 3.25).</span></span></p>
 <pre>void IupDrawImage(Ihandle* <strong>ih</strong>, const char* <strong>name</strong>, int <strong>x</strong>, int <strong>y</strong>, int <strong>w</strong>, int <strong>h</strong>); [in C]
-iup.Draw<span class="auto-style2">Image(</span><strong>ih</strong>: ihandle<span class="auto-style2"><strong>, name</strong>: string or <strong>image</strong>: ihandle<strong>, x</strong>, <strong>y, w, h</strong>: number)</span> [in Lua]
-<strong>ih</strong>:DrawImage(<strong>name</strong><span class="auto-style2">: string or <strong>image</strong>: ihandle<strong>, x</strong>, <strong>y, w, h</strong>: number</span>) [in Lua]</pre>
+iup.Draw<span class="auto-style2">Image(</span><strong>ih</strong>: ihandle<span class="auto-style2"><strong>, name</strong>: string or <strong>image</strong>: ihandle<strong>, x</strong>, <strong>y[, w, h]</strong>: number)</span> [in Lua]
+<strong>ih</strong>:DrawImage(<strong>name</strong><span class="auto-style2">: string or <strong>image</strong>: ihandle<strong>, x</strong>, <strong>y[, w, h]</strong>: number</span>) [in Lua]</pre>
 <p>Draws an image given its name. The coordinates are relative the top-left 
 corner of the image. The image name follows the same behavior as the IMAGE 
 attribute used by many controls.
 <span style="color: rgb(0, 0, 0); font-family: tahoma, verdana, arial, helvetica, geneva, sans-serif; font-size: medium; font-style: normal; font-variant: normal; font-weight: normal; letter-spacing: normal; line-height: 20.8px; orphans: auto; text-align: start; text-indent: 0px; text-transform: none; white-space: normal; widows: 1; word-spacing: 0px; -webkit-text-stroke-width: 0px; display: inline !important; float: none; background-color: rgb(255, 255, 255);">
 Use<span class="Apple-converted-space">&nbsp;</span></span><a href="../func/iupsethandle.html" style="font-family: tahoma, verdana, arial, helvetica, geneva, sans-serif; font-size: medium; font-style: normal; font-variant: normal; font-weight: normal; letter-spacing: normal; line-height: 20.8px; orphans: auto; text-align: start; text-indent: 0px; text-transform: none; white-space: normal; widows: 1; word-spacing: 0px; -webkit-text-stroke-width: 0px; background-color: rgb(255, 255, 255);">IupSetHandle</a><span style="color: rgb(0, 0, 0); font-family: tahoma, verdana, arial, helvetica, geneva, sans-serif; font-size: medium; font-style: normal; font-variant: normal; font-weight: normal; letter-spacing: normal; line-height: 20.8px; orphans: auto; text-align: start; text-indent: 0px; text-transform: none; white-space: normal; widows: 1; word-spacing: 0px; -webkit-text-stroke-width: 0px; display: inline !important; float: none; background-color: rgb(255, 255, 255);"><span class="Apple-converted-space">&nbsp;</span>or<span class="Apple-converted-space">&nbsp;</span></span><a href="../func/iupsetattributehandle.html" style="font-family: tahoma, verdana, arial, helvetica, geneva, sans-serif; font-size: medium; font-style: normal; font-variant: normal; font-weight: normal; letter-spacing: normal; line-height: 20.8px; orphans: auto; text-align: start; text-indent: 0px; text-transform: none; white-space: normal; widows: 1; word-spacing: 0px; -webkit-text-stroke-width: 0px; background-color: rgb(255, 255, 255);">IupSetAttributeHandle</a><span style="color: rgb(0, 0, 0); font-family: tahoma, verdana, arial, helvetica, geneva, sans-serif; font-size: medium; font-style: normal; font-variant: normal; font-weight: normal; letter-spacing: normal; line-height: 20.8px; orphans: auto; text-align: start; text-indent: 0px; text-transform: none; white-space: normal; widows: 1; word-spacing: 0px; -webkit-text-stroke-width: 0px; display: inline !important; float: none; background-color: rgb(255, 255, 255);"><span class="Apple-converted-space">&nbsp;</span>to 
 associate an image to a name. See also<span class="Apple-converted-space">&nbsp;</span></span><a href="iupimage.html" style="font-family: tahoma, verdana, arial, helvetica, geneva, sans-serif; font-size: medium; font-style: normal; font-variant: normal; font-weight: normal; letter-spacing: normal; line-height: 20.8px; orphans: auto; text-align: start; text-indent: 0px; text-transform: none; white-space: normal; widows: 1; word-spacing: 0px; -webkit-text-stroke-width: 0px; background-color: rgb(255, 255, 255);">IupImage</a><span style="color: rgb(0, 0, 0); font-family: tahoma, verdana, arial, helvetica, geneva, sans-serif; font-size: medium; font-style: normal; font-variant: normal; font-weight: normal; letter-spacing: normal; line-height: 20.8px; orphans: auto; text-align: start; text-indent: 0px; text-transform: none; white-space: normal; widows: 1; word-spacing: 0px; -webkit-text-stroke-width: 0px; display: inline !important; float: none; background-color: rgb(255, 255, 255);">.<span class="Apple-converted-space">&nbsp;In 
-Lua, the name parameter can be the actual image handle. The DRAWMAKEINACTIVE 
+Lua, the name parameter can be the actual image handle. The <strong>DRAWMAKEINACTIVE</strong> 
 attribute can be used to force the image to be draw with an inactive state 
-appearance. The DRAWBGCOLOR can be used to control the inactive state background 
-color or when transparency is flatten. w and h are optional and can be 0, then 
+appearance. The <strong>DRAWBGCOLOR</strong> can be used to control the inactive state background 
+color or when transparency is flatten. w and h are optional and can be -1 or 0, then 
 the image size will be used and no zoom will be performed (since 3.25). Image 
 zoom is not supported in X11 and GDK.</span></span><br></p>
 <pre>void IupDrawSelectRect(Ihandle* <strong>ih</strong>, int <strong>x1</strong>, int <strong>y1</strong>, int <strong>x2</strong>, int <strong>y2</strong>); [in C]

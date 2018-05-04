@@ -118,6 +118,17 @@ static void cdgettextsize(cdCtxCanvas* ctxcanvas, const char *s, int len, int *w
   iupdrvFontGetTextSize(ctxcanvas->canvas->native_font, s, len, width, height);
 }
 
+static int cdclip(cdCtxCanvas *ctxcanvas, int mode)
+{
+  if (mode == CD_CLIPAREA)
+    iupdrvDrawSetClipRect(ctxcanvas->dc, ctxcanvas->canvas->clip_rect.xmin, ctxcanvas->canvas->clip_rect.ymin, ctxcanvas->canvas->clip_rect.xmax, ctxcanvas->canvas->clip_rect.ymax);
+  else if (mode == CD_CLIPOFF)
+    iupdrvDrawResetClip(ctxcanvas->dc);
+  else if (mode == CD_CLIPPOLYGON || mode == CD_CLIPREGION)
+    return ctxcanvas->canvas->clip_mode;
+  return mode;
+}
+
 
 /******************************************************/
 /* primitives                                         */
@@ -243,7 +254,7 @@ static void cdtext(cdCtxCanvas *ctxcanvas, int x, int y, const char *s, int len)
   }
 
   if (ctxcanvas->dc)
-    iupdrvDrawText(ctxcanvas->dc, s, len, x, y, w, h, ctxcanvas->canvas->foreground, ctxcanvas->canvas->native_font, IUPDRAW_ALIGN_LEFT);  /* left alignment - unused, multiline alignment is done by CD */
+    iupdrvDrawText(ctxcanvas->dc, s, len, x, y, w, h, ctxcanvas->canvas->foreground, ctxcanvas->canvas->native_font, IUP_DRAW_LEFT);  /* left alignment - unused, multiline alignment is done by CD */
 }
 
 static void cdpoly(cdCtxCanvas *ctxcanvas, int mode, cdPoint* poly, int n)
@@ -465,6 +476,7 @@ static void cdinittable(cdCanvas* canvas)
   canvas->cxPutImageRectRGB = cdputimagerectrgb;
   canvas->cxPutImageRectMap = cdputimagerectmap;
 
+  canvas->cxClip = cdclip;
   canvas->cxFont = cdfont;
   canvas->cxGetFontDim = cdgetfontdim;
   canvas->cxGetTextSize = cdgettextsize;

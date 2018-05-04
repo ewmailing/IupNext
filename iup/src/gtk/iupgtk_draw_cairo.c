@@ -39,6 +39,8 @@ struct _IdrawCanvas
   int draw_focus,
     focus_x1, focus_y1, focus_x2, focus_y2;
 #endif
+
+  int clip_x1, clip_y1, clip_x2, clip_y2;
 };
 
 IdrawCanvas* iupdrvDrawCreateCanvas(Ihandle* ih)
@@ -131,8 +133,9 @@ void iupdrvDrawFlush(IdrawCanvas* dc)
   /* flush the writing in the image */
   cairo_show_page(dc->image_cr);
 
+  cairo_reset_clip(dc->cr); /* reset the current clipping */
   cairo_rectangle(dc->cr, 0, 0, dc->w, dc->h);
-  cairo_clip(dc->cr);
+  cairo_clip(dc->cr);  /* intersect with the current clipping */
 
   /* creates a pattern from the image and sets it as source in the canvas. */
   cairo_set_source_surface(dc->cr, cairo_get_target(dc->image_cr), 0, 0);
@@ -361,18 +364,44 @@ void iupdrvDrawPolygon(IdrawCanvas* dc, int* points, int count, long color, int 
     cairo_stroke(dc->image_cr);
 }
 
+void iupdrvDrawGetClipRect(IdrawCanvas* dc, int *x1, int *y1, int *x2, int *y2)
+{
+  if (x1) *x1 = dc->clip_x1;
+  if (y1) *y1 = dc->clip_y1;
+  if (x2) *x2 = dc->clip_x2;
+  if (y2) *y2 = dc->clip_y2;
+}
+
 void iupdrvDrawSetClipRect(IdrawCanvas* dc, int x1, int y1, int x2, int y2)
 {
-  iupDrawCheckSwapCoord(x1, x2);
-  iupDrawCheckSwapCoord(y1, y2);
+  if (x1 == 0 && y1 == 0 && x2 == 0 && y2 == 0)
+  {
+    iupdrvDrawResetClip(dc);
+    return;
+  }
 
+  /* make it an empty region */
+  if (x1 >= x2) x1 = x2;
+  if (y1 >= y2) y1 = y2;
+
+  cairo_reset_clip(dc->image_cr);  /* reset the current clipping */
   cairo_rectangle(dc->image_cr, x1, y1, x2 - x1 + 1, y2 - y1 + 1);
-  cairo_clip(dc->image_cr);
+  cairo_clip(dc->image_cr);  /* intersect with the current clipping */
+
+  dc->clip_x1 = x1;
+  dc->clip_y1 = y1;
+  dc->clip_x2 = x2;
+  dc->clip_y2 = y2;
 }
 
 void iupdrvDrawResetClip(IdrawCanvas* dc)
 {
   cairo_reset_clip(dc->image_cr);
+
+  dc->clip_x1 = 0;
+  dc->clip_y1 = 0;
+  dc->clip_x2 = 0;
+  dc->clip_y2 = 0;
 }
 
 void iupdrvDrawText(IdrawCanvas* dc, const char* text, int len, int x, int y, int w, int h, long color, const char* font, int flags)
@@ -383,24 +412,49 @@ void iupdrvDrawText(IdrawCanvas* dc, const char* text, int len, int x, int y, in
   text = iupgtkStrConvertToSystemLen(text, &len);
   pango_layout_set_text(fontlayout, text, len);
 
-  if (flags == IUPDRAW_ALIGN_RIGHT)
+  if (flags & IUP_DRAW_RIGHT)
     alignment = PANGO_ALIGN_RIGHT;
-  else if (flags == IUPDRAW_ALIGN_CENTER)
+  else if (flags & IUP_DRAW_CENTER)
     alignment = PANGO_ALIGN_CENTER;
 
   pango_layout_set_alignment(fontlayout, alignment);
-  pango_layout_set_width(fontlayout, iupGTK_PIXELS2PANGOUNITS(w));
-  pango_layout_set_height(fontlayout, iupGTK_PIXELS2PANGOUNITS(h));
 
+  if (flags & IUP_DRAW_WRAP)
+  {
+    pango_layout_set_width(fontlayout, iupGTK_PIXELS2PANGOUNITS(w));
+    pango_layout_set_height(fontlayout, iupGTK_PIXELS2PANGOUNITS(h));
+  }
+  else if (flags & IUP_DRAW_ELLIPSIS)
+  {
+    pango_layout_set_width(fontlayout, iupGTK_PIXELS2PANGOUNITS(w));
+    pango_layout_set_height(fontlayout, iupGTK_PIXELS2PANGOUNITS(h));
+    pango_layout_set_ellipsize(fontlayout, PANGO_ELLIPSIZE_END);
+  }
+  
   cairo_set_source_rgba(dc->image_cr, iupgtkColorToDouble(iupDrawRed(color)), iupgtkColorToDouble(iupDrawGreen(color)), iupgtkColorToDouble(iupDrawBlue(color)), iupgtkColorToDouble(iupDrawAlpha(color)));
+
+  if (flags & IUP_DRAW_CLIP)
+  {
+    cairo_save(dc->image_cr);
+    cairo_rectangle(dc->image_cr, x, y, w, h);
+    cairo_clip(dc->image_cr); /* intersect with the current clipping */
+  }
 
   pango_cairo_update_layout(dc->image_cr, fontlayout);
 
   cairo_move_to(dc->image_cr, x, y);
   pango_cairo_show_layout(dc->image_cr, fontlayout);
 
-  pango_layout_set_width(fontlayout, -1);
-  pango_layout_set_height(fontlayout, -1);
+  /* restore settings */
+  if ((flags & IUP_DRAW_WRAP) || (flags & IUP_DRAW_ELLIPSIS))
+  {
+    pango_layout_set_width(fontlayout, -1);
+    pango_layout_set_height(fontlayout, -1);
+  }
+  if (flags & IUP_DRAW_ELLIPSIS)
+    pango_layout_set_ellipsize(fontlayout, PANGO_ELLIPSIZE_NONE);
+  if (flags & IUP_DRAW_CLIP)
+    cairo_restore(dc->image_cr);
 }
 
 void iupdrvDrawImage(IdrawCanvas* dc, const char* name, int make_inactive, const char* bgcolor, int x, int y, int w, int h)
@@ -413,13 +467,13 @@ void iupdrvDrawImage(IdrawCanvas* dc, const char* name, int make_inactive, const
   /* must use this info, since image can be a driver image loaded from resources */
   iupdrvImageGetInfo(pixbuf, &img_w, &img_h, &bpp);
 
-  if (w == 0) w = img_w;
-  if (h == 0) h = img_h;
+  if (w == -1 || w == 0) w = img_w;
+  if (h == -1 || h == 0) h = img_h;
 
   cairo_save (dc->image_cr);
 
-  cairo_rectangle(dc->image_cr, x, y, img_w, img_h);
-  cairo_clip(dc->image_cr);
+  cairo_rectangle(dc->image_cr, x, y, w, h);
+  cairo_clip(dc->image_cr); /* intersect with the current clipping */
 
   if (w != img_w || h != img_h)
   {
@@ -433,7 +487,7 @@ void iupdrvDrawImage(IdrawCanvas* dc, const char* name, int make_inactive, const
   cairo_paint(dc->image_cr);  /* paints the current source everywhere within the current clip region. */
 
   /* must restore clipping */
-  cairo_restore (dc->image_cr);
+  cairo_restore(dc->image_cr);
 }
 
 void iupdrvDrawSelectRect(IdrawCanvas* dc, int x1, int y1, int x2, int y2)

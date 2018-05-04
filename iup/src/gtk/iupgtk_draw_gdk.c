@@ -34,6 +34,8 @@ struct _IdrawCanvas{
 
   int draw_focus, 
     focus_x1, focus_y1, focus_x2, focus_y2;
+
+  int clip_x1, clip_y1, clip_x2, clip_y2;
 };
 
 static void iupgdkColorSet(GdkColor* c, long color)
@@ -220,12 +222,27 @@ void iupdrvDrawPolygon(IdrawCanvas* dc, int* points, int count, long color, int 
     gdk_draw_lines(dc->pixmap, dc->pixmap_gc, (GdkPoint*)points, count);
 }
 
+void iupdrvDrawGetClipRect(IdrawCanvas* dc, int *x1, int *y1, int *x2, int *y2)
+{
+  if (x1) *x1 = dc->clip_x1;
+  if (y1) *y1 = dc->clip_y1;
+  if (x2) *x2 = dc->clip_x2;
+  if (y2) *y2 = dc->clip_y2;
+}
+
 void iupdrvDrawSetClipRect(IdrawCanvas* dc, int x1, int y1, int x2, int y2)
 {
   GdkRectangle rect;
 
-  iupDrawCheckSwapCoord(x1, x2);
-  iupDrawCheckSwapCoord(y1, y2);
+  if (x1 == 0 && y1 == 0 && x2 == 0 && y2 == 0)
+  {
+    iupdrvDrawResetClip(dc);
+    return;
+  }
+
+  /* make it an empty region */
+  if (x1 >= x2) x1 = x2;
+  if (y1 >= y2) y1 = y2;
 
   rect.x = x1;
   rect.y = y1;
@@ -233,11 +250,21 @@ void iupdrvDrawSetClipRect(IdrawCanvas* dc, int x1, int y1, int x2, int y2)
   rect.height = y2 - y1 + 1;
 
   gdk_gc_set_clip_rectangle(dc->pixmap_gc, &rect);
+
+  dc->clip_x1 = x1;
+  dc->clip_y1 = y1;
+  dc->clip_x2 = x2;
+  dc->clip_y2 = y2;
 }
 
 void iupdrvDrawResetClip(IdrawCanvas* dc)
 {
   gdk_gc_set_clip_region(dc->pixmap_gc, NULL);
+
+  dc->clip_x1 = 0;
+  dc->clip_y1 = 0;
+  dc->clip_x2 = 0;
+  dc->clip_y2 = 0;
 }
 
 void iupdrvDrawText(IdrawCanvas* dc, const char* text, int len, int x, int y, int w, int h, long color, const char* font, int flags)
@@ -252,19 +279,47 @@ void iupdrvDrawText(IdrawCanvas* dc, const char* text, int len, int x, int y, in
   text = iupgtkStrConvertToSystemLen(text, &len);
   pango_layout_set_text(fontlayout, text, len);
 
-  if (flags == IUPDRAW_ALIGN_RIGHT)
+  if (flags & IUP_DRAW_RIGHT)
     alignment = PANGO_ALIGN_RIGHT;
-  else if (flags == IUPDRAW_ALIGN_CENTER)
+  else if (flags & IUP_DRAW_CENTER)
     alignment = PANGO_ALIGN_CENTER;
 
+  if (flags & IUP_DRAW_WRAP)
+  {
+    pango_layout_set_width(fontlayout, iupGTK_PIXELS2PANGOUNITS(w));
+    pango_layout_set_height(fontlayout, iupGTK_PIXELS2PANGOUNITS(h));
+  }
+  else if (flags & IUP_DRAW_ELLIPSIS)
+  {
+    pango_layout_set_width(fontlayout, iupGTK_PIXELS2PANGOUNITS(w));
+    pango_layout_set_height(fontlayout, iupGTK_PIXELS2PANGOUNITS(h));
+    pango_layout_set_ellipsize(fontlayout, PANGO_ELLIPSIZE_END);
+  }
+
   pango_layout_set_alignment(fontlayout, alignment);
-  pango_layout_set_width(fontlayout, iupGTK_PIXELS2PANGOUNITS(w));
-  pango_layout_set_height(fontlayout, iupGTK_PIXELS2PANGOUNITS(h));
+
+  if (flags & IUP_DRAW_CLIP)
+  {
+    GdkRectangle rect;
+    rect.x = x;
+    rect.y = y;
+    rect.width = w;
+    rect.height = h;
+    gdk_gc_set_clip_rectangle(dc->pixmap_gc, &rect);
+  }
 
   gdk_draw_layout(dc->pixmap, dc->pixmap_gc, x, y, fontlayout);
 
-  pango_layout_set_width(fontlayout, -1);
-  pango_layout_set_height(fontlayout, -1);
+  if ((flags & IUP_DRAW_WRAP) || (flags & IUP_DRAW_ELLIPSIS))
+  {
+    pango_layout_set_width(fontlayout, -1);
+    pango_layout_set_height(fontlayout, -1);
+  }
+  if (flags & IUP_DRAW_ELLIPSIS)
+    pango_layout_set_ellipsize(fontlayout, PANGO_ELLIPSIZE_NONE);
+
+  if (flags & IUP_DRAW_CLIP)
+    gdk_gc_set_clip_region(dc->pixmap_gc, NULL);
 }
 
 void iupdrvDrawImage(IdrawCanvas* dc, const char* name, int make_inactive, const char* bgcolor, int x, int y, int w, int h)

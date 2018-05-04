@@ -34,6 +34,8 @@ struct _IdrawCanvas{
   int release_dc;
   HBITMAP hBitmap, hOldBitmap;
   HDC hBitmapDC, hDC;
+
+  int clip_x1, clip_y1, clip_x2, clip_y2;
 };
 
 void iupwinDrawInit(void)
@@ -274,28 +276,53 @@ void iupdrvDrawPolygon(IdrawCanvas* dc, int* points, int count, long color, int 
   }
 }
 
+void iupdrvDrawGetClipRect(IdrawCanvas* dc, int *x1, int *y1, int *x2, int *y2)
+{
+  if (x1) *x1 = dc->clip_x1;
+  if (y1) *y1 = dc->clip_y1;
+  if (x2) *x2 = dc->clip_x2;
+  if (y2) *y2 = dc->clip_y2;
+}
+
 void iupdrvDrawSetClipRect(IdrawCanvas* dc, int x1, int y1, int x2, int y2)
 {
   HRGN clip_hrgn;
 
-  iupDrawCheckSwapCoord(x1, x2);
-  iupDrawCheckSwapCoord(y1, y2);
+  if (x1 == 0 && y1 == 0 && x2 == 0 && y2 == 0)
+  {
+    iupdrvDrawResetClip(dc);
+    return;
+  }
+
+  /* make it an empty region */
+  if (x1 >= x2) x1 = x2;
+  if (y1 >= y2) y1 = y2;
 
   clip_hrgn = CreateRectRgn(x1, y1, x2 + 1, y2 + 1);
   SelectClipRgn(dc->hBitmapDC, clip_hrgn);
   DeleteObject(clip_hrgn);
+
+  dc->clip_x1 = x1;
+  dc->clip_y1 = y1;
+  dc->clip_x2 = x2;
+  dc->clip_y2 = y2;
 }
 
 void iupdrvDrawResetClip(IdrawCanvas* dc)
 {
   SelectClipRgn(dc->hBitmapDC, NULL);
+
+  dc->clip_x1 = 0;
+  dc->clip_y1 = 0;
+  dc->clip_x2 = 0;
+  dc->clip_y2 = 0;
 }
 
 void iupdrvDrawText(IdrawCanvas* dc, const char* text, int len, int x, int y, int w, int h, long color, const char* font, int flags)
 {
   RECT rect;
   TCHAR* wtext;
-  UINT uFormat;
+  UINT uFormat = 0;
 
   HFONT hOldFont, hFont = (HFONT)iupwinGetHFont(font);
   SetTextColor(dc->hBitmapDC, RGB(iupDrawRed(color),iupDrawGreen(color),iupDrawBlue(color)));
@@ -308,11 +335,19 @@ void iupdrvDrawText(IdrawCanvas* dc, const char* text, int len, int x, int y, in
 
   wtext = iupwinStrToSystemLen(text, &len);
 
-  uFormat = DT_LEFT;
-  if (flags == IUPDRAW_ALIGN_RIGHT)
+  uFormat |= DT_LEFT;
+  if (flags & IUP_DRAW_RIGHT)
     uFormat = DT_RIGHT;
-  else if (flags == IUPDRAW_ALIGN_CENTER)
+  else if (flags & IUP_DRAW_CENTER)
     uFormat = DT_CENTER;
+
+  if (flags & IUP_DRAW_WRAP)
+    uFormat |= DT_WORDBREAK;
+  else if (flags & IUP_DRAW_ELLIPSIS)
+    uFormat |= DT_END_ELLIPSIS;
+
+  if (!(flags & IUP_DRAW_CLIP))
+    uFormat |= DT_NOCLIP;
 
   DrawText(dc->hBitmapDC, wtext, len, &rect, uFormat);
 
@@ -329,8 +364,8 @@ void iupdrvDrawImage(IdrawCanvas* dc, const char* name, int make_inactive, const
   /* must use this info, since image can be a driver image loaded from resources */
   iupdrvImageGetInfo(hBitmap, &img_w, &img_h, &bpp);
 
-  if (w == 0) w = img_w;
-  if (h == 0) h = img_h;
+  if (w == -1 || w == 0) w = img_w;
+  if (h == -1 || h == 0) h = img_h;
 
   iupwinDrawBitmap(dc->hBitmapDC, hBitmap, x, y, w, h, img_w, img_h, bpp);
 }

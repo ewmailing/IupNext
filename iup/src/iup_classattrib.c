@@ -662,7 +662,7 @@ int IupGetClassAttributes(const char* classname, char** names, int n)
   if (!ic)
     return -1;
 
-  if (!names || !n)
+  if (!names || n==0 || n==-1)
     return iupTableCount(ic->attrib_func);
 
   name = iupTableFirst(ic->attrib_func);
@@ -699,7 +699,7 @@ int IupGetClassCallbacks(const char* classname, char** names, int n)
   if (!ic)
     return -1;
 
-  if (!names || !n)
+  if (!names || n == 0 || n == -1)
     return iupTableCount(ic->attrib_func);
 
   name = iupTableFirst(ic->attrib_func);

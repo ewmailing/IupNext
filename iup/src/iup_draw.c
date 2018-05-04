@@ -197,7 +197,7 @@ char* iupDrawGetTextSize(Ihandle* ih, const char* text, int len, int *w, int *h)
   if (!font)
     font = IupGetAttribute(ih, "FONT");
 
-  if (len == 0)
+  if (len == 0 || len == -1)
     len = (int)strlen(text);
 
   if (len == 0)
@@ -212,12 +212,24 @@ char* iupDrawGetTextSize(Ihandle* ih, const char* text, int len, int *w, int *h)
   return font;
 }
 
-void IupDrawText(Ihandle* ih, const char* text, int len, int x, int y)
+int iupDrawGetTextFlags(Ihandle* ih, const char* align_name, const char* wrap_name, const char* ellipsis_name)
+{
+  int flags = iupFlatGetHorizontalAlignment(iupAttribGetStr(ih, align_name));
+  int wrap = iupAttribGetBoolean(ih, wrap_name);
+  int ellipsis = iupAttribGetBoolean(ih, ellipsis_name);
+  if (wrap)
+    flags |= IUP_DRAW_WRAP;
+  if (ellipsis)
+    flags |= IUP_DRAW_ELLIPSIS;
+  return flags;
+}
+
+void IupDrawText(Ihandle* ih, const char* text, int len, int x, int y, int w, int h)
 {
   IdrawCanvas* dc;
   long color = 0;
   char* font;
-  int align, w, h;
+  int text_flags;
 
   iupASSERT(iupObjectCheck(ih));
   if (!iupObjectCheck(ih))
@@ -233,15 +245,20 @@ void IupDrawText(Ihandle* ih, const char* text, int len, int x, int y)
 
   color = iupDrawStrToColor(iupAttribGetStr(ih, "DRAWCOLOR"), 0);
 
-  align = iupFlatGetHorizontalAlignment(iupAttribGetStr(ih, "DRAWTEXTALIGNMENT"));
+  text_flags = iupDrawGetTextFlags(ih, "DRAWTEXTALIGNMENT", "DRAWTEXTWRAP", "DRAWTEXTELLIPSIS");
+  if (iupAttribGetBoolean(ih, "DRAWTEXTCLIP"))
+    text_flags |= IUP_DRAW_CLIP;
 
   if (len == 0)
     len = (int)strlen(text);
 
   if (len != 0)
   {
-    font = iupDrawGetTextSize(ih, text, len, &w, &h);
-    iupdrvDrawText(dc, text, len, x, y, w, h, color, font, align);
+    int txt_w, txt_h;
+    font = iupDrawGetTextSize(ih, text, len, &txt_w, &txt_h);
+    if (w == -1 || w == 0) w = txt_w;
+    if (h == -1 || h == 0) h = txt_h;
+    iupdrvDrawText(dc, text, len, x, y, w, h, color, font, text_flags);
   }
 }
 
@@ -249,6 +266,10 @@ void IupDrawGetTextSize(Ihandle* ih, const char* text, int len, int *w, int *h)
 {
   iupASSERT(iupObjectCheck(ih));
   if (!iupObjectCheck(ih))
+    return;
+
+  iupASSERT(text);
+  if (!text)
     return;
 
   iupDrawGetTextSize(ih, text, len, w, h);
@@ -292,6 +313,21 @@ void IupDrawSetClipRect(Ihandle* ih, int x1, int y1, int x2, int y2)
     return;
 
   iupdrvDrawSetClipRect(dc, x1, y1, x2, y2);
+}
+
+void IupDrawGetClipRect(Ihandle* ih, int *x1, int *y1, int *x2, int *y2)
+{
+  IdrawCanvas* dc;
+
+  iupASSERT(iupObjectCheck(ih));
+  if (!iupObjectCheck(ih))
+    return;
+
+  dc = (IdrawCanvas*)iupAttribGet(ih, "_IUP_DRAW_DC");
+  if (!dc)
+    return;
+
+  iupdrvDrawGetClipRect(dc, x1, y1, x2, y2);
 }
 
 void IupDrawResetClip(Ihandle* ih)
@@ -531,10 +567,9 @@ void iupFlatDrawBox(IdrawCanvas* dc, int xmin, int xmax, int ymin, int ymax, con
   iupdrvDrawRectangle(dc, xmin, ymin, xmax, ymax, color, IUP_DRAW_FILL, 1);
 }
 
-static void iFlatDrawText(IdrawCanvas* dc, int x, int y, int w, int h, const char* str, const char* font, const char* text_align, const char* fgcolor, const char* bgcolor, int active)
+static void iFlatDrawText(IdrawCanvas* dc, int x, int y, int w, int h, const char* str, const char* font, int text_flags, const char* fgcolor, const char* bgcolor, int active)
 {
   long color;
-  int align = iupFlatGetHorizontalAlignment(text_align);
 
   if (!fgcolor || !str || str[0] == 0)
     return;
@@ -543,7 +578,7 @@ static void iFlatDrawText(IdrawCanvas* dc, int x, int y, int w, int h, const cha
   if (!active)
     color = iFlatDrawColorMakeInactive(color, bgcolor);
 
-  iupdrvDrawText(dc, str, (int)strlen(str), x, y, w, h, color, font, align);
+  iupdrvDrawText(dc, str, (int)strlen(str), x, y, w, h, color, font, text_flags);
 }
 
 static void iFlatGetIconPosition(int icon_width, int icon_height, int *x, int *y, int width, int height, int horiz_alignment, int vert_alignment, int horiz_padding, int vert_padding)
@@ -633,32 +668,58 @@ static void iFlatGetImageTextPosition(int x, int y, int img_position, int spacin
 
 void iupFlatDrawIcon(Ihandle* ih, IdrawCanvas* dc, int icon_x, int icon_y, int icon_width, int icon_height,
                      int img_position, int spacing, int horiz_alignment, int vert_alignment, int horiz_padding, int vert_padding,
-                     const char* imagename, int make_inactive, const char* title, const char* text_align, const char* fgcolor, const char* bgcolor, int active)
+                     const char* imagename, int make_inactive, const char* title, int text_flags, const char* fgcolor, const char* bgcolor, int active)
 {
   int x, y, width, height;
+  int txt_width, txt_height;
   char* font;
+  int clip_x1, clip_y1, clip_x2, clip_y2;
 
-  iupdrvDrawSetClipRect(dc, icon_x, icon_y, icon_x + icon_width, icon_y + icon_height);
+  iupdrvDrawGetClipRect(dc, &clip_x1, &clip_y1, &clip_x2, &clip_y2);
+  if (clip_x1 != 0 || clip_y1 != 0 || clip_x2 != 0 || clip_y2)
+    iupdrvDrawSetClipRect(dc, iupMAX(icon_x, clip_x1), iupMAX(icon_y, clip_y1), iupMIN(icon_x + icon_width, clip_x2), iupMIN(icon_y + icon_height, clip_y2));  /* intersect */
+  else
+    iupdrvDrawSetClipRect(dc, icon_x, icon_y, icon_x + icon_width, icon_y + icon_height);
 
   if (imagename)
   {
+    int img_width, img_height;
+
     if (title)
     {
       int img_x, img_y, txt_x, txt_y;
-      int txt_width, txt_height;
-      int img_width, img_height;
 
       font = iupDrawGetTextSize(ih, title, 0, &txt_width, &txt_height);
-
       iupImageGetInfo(imagename, &img_width, &img_height, NULL);
 
+      /* first combine image and text */
       if (img_position == IUP_IMGPOS_RIGHT || img_position == IUP_IMGPOS_LEFT)
       {
+        int max_txt_width = icon_width - img_width - spacing;
+        if (max_txt_width < 0) max_txt_width = 0;
+
+        /* the text can be larger than the icon space, so wrap and ellipsis can work */
+        txt_width = iupMIN(max_txt_width, txt_width);
+        if (text_flags & IUP_DRAW_WRAP)
+          txt_height = icon_height;
+        else
+          txt_height = iupMIN(icon_height, txt_height);
+
         width = img_width + txt_width + spacing;
         height = iupMAX(img_height, txt_height);
       }
       else
       {
+        int max_txt_height = icon_height - img_height - spacing;
+        if (max_txt_height < 0) max_txt_height = 0;
+
+        /* the text can be larger than the icon space, so wrap and ellipsis can work */
+        txt_width = iupMIN(icon_width, txt_width);
+        if (text_flags & IUP_DRAW_WRAP)
+          txt_height = max_txt_height;
+        else
+          txt_height = iupMIN(max_txt_height, txt_height);
+
         width = iupMAX(img_width, txt_width);
         height = img_height + txt_height + spacing;
       }
@@ -666,31 +727,42 @@ void iupFlatDrawIcon(Ihandle* ih, IdrawCanvas* dc, int icon_x, int icon_y, int i
       iFlatGetIconPosition(icon_width, icon_height, &x, &y, width, height, horiz_alignment, vert_alignment, horiz_padding, vert_padding);
 
       iFlatGetImageTextPosition(x, y, img_position, spacing,
-                                  img_width, img_height, txt_width, txt_height,
-                                  &img_x, &img_y, &txt_x, &txt_y);
+                                img_width, img_height, txt_width, txt_height,
+                                &img_x, &img_y, &txt_x, &txt_y);
 
-      iupdrvDrawImage(dc, imagename, make_inactive, bgcolor, img_x + icon_x, img_y + icon_y, img_width, img_height);
-      iFlatDrawText(dc, txt_x + icon_x, txt_y + icon_y, txt_width, txt_height, title, font, text_align, fgcolor, bgcolor, active);
+      iupdrvDrawImage(dc, imagename, make_inactive, bgcolor, img_x + icon_x, img_y + icon_y, img_width, img_height);  /* no zoom */
+      iFlatDrawText(dc, txt_x + icon_x, txt_y + icon_y, txt_width, txt_height, title, font, text_flags, fgcolor, bgcolor, active);
     }
     else
     {
-      iupImageGetInfo(imagename, &width, &height, NULL);
+      iupImageGetInfo(imagename, &img_width, &img_height, NULL);
+
+      /* if image is larger than the icon space, then the position can be negative, clipping will crop the result */
+      width = img_width;
+      height = img_height;
 
       iFlatGetIconPosition(icon_width, icon_height, &x, &y, width, height, horiz_alignment, vert_alignment, horiz_padding, vert_padding);
 
-      iupdrvDrawImage(dc, imagename, make_inactive, bgcolor, x + icon_x, y + icon_y, width, height);
+      iupdrvDrawImage(dc, imagename, make_inactive, bgcolor, x + icon_x, y + icon_y, img_width, img_height);  /* no zoom */
     }
   }
   else if (title)
   {
-    font = iupDrawGetTextSize(ih, title, 0, &width, &height);
+    font = iupDrawGetTextSize(ih, title, 0, &txt_width, &txt_height);
+
+    /* the text can be larger than the icon space, so wrap and ellipsis can work */
+    width = iupMIN(icon_width, txt_width);
+    if (text_flags & IUP_DRAW_WRAP)
+      height = icon_height;
+    else
+      height = iupMIN(icon_height, txt_height);
 
     iFlatGetIconPosition(icon_width, icon_height, &x, &y, width, height, horiz_alignment, vert_alignment, horiz_padding, vert_padding);
 
-    iFlatDrawText(dc, x + icon_x, y + icon_y, width, height, title, font, text_align, fgcolor, bgcolor, active);
+    iFlatDrawText(dc, x + icon_x, y + icon_y, width, height, title, font, text_flags, fgcolor, bgcolor, active);
   }
 
-  iupdrvDrawResetClip(dc);
+  iupdrvDrawSetClipRect(dc, clip_x1, clip_y1, clip_x2, clip_y2);
 }
 
 int iupFlatGetHorizontalAlignment(const char* value)

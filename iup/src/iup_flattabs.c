@@ -430,7 +430,7 @@ static int iFlatTabsRedraw_CB(Ihandle* ih)
   char* tabs_highcolor = iupAttribGetStr(ih, "TABSHIGHCOLOR");
   int img_position = iupFlatGetImagePosition(iupAttribGetStr(ih, "TABSIMAGEPOSITION"));
   char* alignment = iupAttribGetStr(ih, "TABSALIGNMENT");
-  char* text_align = iupAttribGetStr(ih, "TABSTEXTALIGNMENT");
+  int text_flags = iupDrawGetTextFlags(ih, "TABSTEXTALIGNMENT", "TABSTEXTWRAP", "TABSTEXTELLIPSIS");
   int active = IupGetInt(ih, "ACTIVE");  /* native implementation */
   int spacing = iupAttribGetInt(ih, "TABSIMAGESPACING");
   int horiz_padding, vert_padding, scroll_pos;
@@ -445,6 +445,7 @@ static int iFlatTabsRedraw_CB(Ihandle* ih)
   int tab_highlighted = iupAttribGetInt(ih, "_IUPFTABS_HIGHLIGHTED");
   int extra_width;
   int extra_buttons = iupAttribGetInt(ih, "EXTRABUTTONS");
+  int scroll_width = title_height / 2;
 
   IdrawCanvas* dc = iupdrvDrawCreateCanvas(ih);
 
@@ -472,10 +473,7 @@ static int iFlatTabsRedraw_CB(Ihandle* ih)
 
   scroll_pos = iupAttribGetInt(ih, "_IUPFTABS_SCROLLPOS");
   if (scroll_pos > 0)
-  {
-    int scroll_width = title_height / 2;
     tab_x += scroll_width;
-  }
 
   child = ih->firstchild;
   for (pos = 0; pos < scroll_pos; pos++)
@@ -559,7 +557,6 @@ static int iFlatTabsRedraw_CB(Ihandle* ih)
       reset_clip = 0;
       if (title_width > ih->currentwidth - extra_width) /* has right scroll button */
       {
-        int scroll_width = title_height / 2;
         if (tab_x + tab_w > ih->currentwidth - extra_width - scroll_width)
         {
           iupdrvDrawSetClipRect(dc, tab_x, 0, ih->currentwidth - extra_width - scroll_width, title_height);
@@ -587,7 +584,7 @@ static int iFlatTabsRedraw_CB(Ihandle* ih)
       iupFlatDrawIcon(ih, dc, tab_x, 0,
                       icon_width, title_height,
                       img_position, spacing, horiz_alignment, vert_alignment, horiz_padding, vert_padding,
-                      tab_image, make_inactive, tab_title, text_align, foreground_color, background_color, tab_active);
+                      tab_image, make_inactive, tab_title, text_flags, foreground_color, background_color, tab_active);
 
       if (show_close)
       {
@@ -609,7 +606,7 @@ static int iFlatTabsRedraw_CB(Ihandle* ih)
         }
 
         imagename = iupFlatGetImageName(ih, "CLOSEIMAGE", NULL, pos == tab_close_press, pos == tab_close_high, tab_active, &make_inactive);
-        iupdrvDrawImage(dc, imagename, make_inactive, background_color, close_x, close_y, 0, 0);
+        iupdrvDrawImage(dc, imagename, make_inactive, background_color, close_x, close_y, -1, -1);
       }
 
       /* goto next tab area */
@@ -705,7 +702,7 @@ static int iFlatTabsRedraw_CB(Ihandle* ih)
       iupFlatDrawIcon(ih, dc, extra_x, 0,
                       extra_w, title_height - 1,
                       img_position, spacing, extra_horiz_alignment, extra_vert_alignment, horiz_padding, vert_padding,
-                      extra_image, make_inactive, extra_title, text_align, extra_forecolor, tabs_bgcolor, extra_active);
+                      extra_image, make_inactive, extra_title, text_flags, extra_forecolor, tabs_bgcolor, extra_active);
 
       right_extra_width += extra_w;
     }
@@ -1946,6 +1943,8 @@ Iclass* iupFlatTabsNewClass(void)
   iupClassRegisterAttribute(ic, "TABSALIGNMENT", NULL, iFlatTabsSetAttribPostRedraw, "ACENTER:ACENTER", NULL, IUPAF_NO_INHERIT);
   iupClassRegisterAttribute(ic, "TABSPADDING", NULL, iFlatTabsSetAttribPostRedraw, IUPAF_SAMEASSYSTEM, "10x10", IUPAF_NO_INHERIT);
   iupClassRegisterAttribute(ic, "TABSTEXTALIGNMENT", NULL, NULL, IUPAF_SAMEASSYSTEM, "ALEFT", IUPAF_NO_INHERIT);
+  iupClassRegisterAttribute(ic, "TABSTEXTWRAP", NULL, NULL, NULL, NULL, IUPAF_NO_INHERIT);
+  iupClassRegisterAttribute(ic, "TABSTEXTELLIPSIS", NULL, NULL, NULL, NULL, IUPAF_NO_INHERIT);
 
   iupClassRegisterAttribute(ic, "SHOWCLOSE", NULL, NULL, NULL, NULL, IUPAF_NO_INHERIT);
   iupClassRegisterAttribute(ic, "CLOSEIMAGE", NULL, iFlatTabsSetAttribPostRedraw, IUPAF_SAMEASSYSTEM, "IMGFLATCLOSE", IUPAF_IHANDLENAME | IUPAF_NO_INHERIT);

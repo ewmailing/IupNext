@@ -45,7 +45,7 @@ int IupGetAllAttributes(Ihandle* ih, char** names, int n)
   if (!iupObjectCheck(ih))
     return 0;
 
-  if (!names || !n)
+  if (!names || n == 0 || n == -1)
     return iupTableCount(ih->attrib);
 
   name = iupTableFirst(ih->attrib);

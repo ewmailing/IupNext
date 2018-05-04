@@ -33,6 +33,8 @@ struct _IdrawCanvas{
   Window wnd;
   Pixmap pixmap;
   GC pixmap_gc, gc;
+
+  int clip_x1, clip_y1, clip_x2, clip_y2;
 };
 
 static void motDrawGetGeometry(Display *dpy, Drawable wnd, int *_w, int *_h, int *_d)
@@ -213,12 +215,27 @@ void iupdrvDrawPolygon(IdrawCanvas* dc, int* points, int count, long color, int 
   free(pnt);
 }
 
+void iupdrvDrawGetClipRect(IdrawCanvas* dc, int *x1, int *y1, int *x2, int *y2)
+{
+  if (x1) *x1 = dc->clip_x1;
+  if (y1) *y1 = dc->clip_y1;
+  if (x2) *x2 = dc->clip_x2;
+  if (y2) *y2 = dc->clip_y2;
+}
+
 void iupdrvDrawSetClipRect(IdrawCanvas* dc, int x1, int y1, int x2, int y2)
 {
   XRectangle rect;
 
-  iupDrawCheckSwapCoord(x1, x2);
-  iupDrawCheckSwapCoord(y1, y2);
+  if (x1 == 0 && y1 == 0 && x2 == 0 && y2 == 0)
+  {
+    iupdrvDrawResetClip(dc);
+    return;
+  }
+
+  /* make it an empty region */
+  if (x1 >= x2) x1 = x2;
+  if (y1 >= y2) y1 = y2;
 
   rect.x = (short)x1;
   rect.y      = (short)y1;
@@ -226,34 +243,55 @@ void iupdrvDrawSetClipRect(IdrawCanvas* dc, int x1, int y1, int x2, int y2)
   rect.height = (unsigned short)(y2 - y1 + 1);
 
   XSetClipRectangles(iupmot_display, dc->pixmap_gc, 0, 0, &rect, 1, Unsorted);
+
+  dc->clip_x1 = x1;
+  dc->clip_y1 = y1;
+  dc->clip_x2 = x2;
+  dc->clip_y2 = y2;
 }
 
 void iupdrvDrawResetClip(IdrawCanvas* dc)
 {
   XSetClipMask(iupmot_display, dc->pixmap_gc, None);
+
+  dc->clip_x1 = 0;
+  dc->clip_y1 = 0;
+  dc->clip_x2 = 0;
+  dc->clip_y2 = 0;
 }
 
 void iupdrvDrawText(IdrawCanvas* dc, const char* text, int len, int x, int y, int w, int h, long color, const char* font, int flags)
 {
   int num_line, width, off_x;
   XFontStruct* xfont = (XFontStruct*)iupmotGetFontStruct(font);
-  (void)h;  /* unused */
+
+  /* IUP_DRAW_ELLIPSIS and IUP_DRAW_WRAP are not supported */
 
   XSetForeground(iupmot_display, dc->pixmap_gc, iupmotColorGetPixel(iupDrawRed(color),iupDrawGreen(color),iupDrawBlue(color)));
   XSetFont(iupmot_display, dc->pixmap_gc, xfont->fid);
 
   num_line = iupStrLineCount(text, len);
 
+  if (flags & IUP_DRAW_CLIP)
+  {
+    XRectangle rect;
+    rect.x = (short)x;
+    rect.y = (short)y;
+    rect.width = (unsigned short)w;
+    rect.height = (unsigned short)h;
+    XSetClipRectangles(iupmot_display, dc->pixmap_gc, 0, 0, &rect, 1, Unsorted);
+  }
+
   if (num_line == 1)
   {
     off_x = 0;
-    if (flags == IUPDRAW_ALIGN_RIGHT)
+    if (flags & IUP_DRAW_RIGHT)
     {
       width = XTextWidth(xfont, text, len);
       off_x = w - width;
       if (off_x < 0) off_x = 0;
     }
-    else if (flags == IUPDRAW_ALIGN_CENTER)
+    else if (flags & IUP_DRAW_CENTER)
     {
       width = XTextWidth(xfont, text, len);
       off_x = (w - width) / 2;
@@ -284,13 +322,13 @@ void iupdrvDrawText(IdrawCanvas* dc, const char* text, int len, int x, int y, in
       if (l_len)
       {
         off_x = 0;
-        if (flags == IUPDRAW_ALIGN_RIGHT)
+        if (flags & IUP_DRAW_RIGHT)
         {
           width = XTextWidth(xfont, p, l_len);
           off_x = w - width;
           if (off_x < 0) off_x = 0;
         }
-        else if (flags == IUPDRAW_ALIGN_CENTER)
+        else if (flags & IUP_DRAW_CENTER)
         {
           width = XTextWidth(xfont, p, l_len);
           off_x = (w - width) / 2;
@@ -313,6 +351,9 @@ void iupdrvDrawText(IdrawCanvas* dc, const char* text, int len, int x, int y, in
       y += line_height;
     }
   }
+
+  if (flags & IUP_DRAW_CLIP)
+    XSetClipMask(iupmot_display, dc->pixmap_gc, None);
 }
 
 void iupdrvDrawImage(IdrawCanvas* dc, const char* name, int make_inactive, const char* bgcolor, int x, int y, int w, int h)
