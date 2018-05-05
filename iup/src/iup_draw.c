@@ -581,24 +581,21 @@ static void iFlatDrawText(IdrawCanvas* dc, int x, int y, int w, int h, const cha
   iupdrvDrawText(dc, str, (int)strlen(str), x, y, w, h, color, font, text_flags);
 }
 
-static void iFlatGetIconPosition(int icon_width, int icon_height, int *x, int *y, int width, int height, int horiz_alignment, int vert_alignment, int horiz_padding, int vert_padding)
+static void iFlatGetIconPosition(int icon_width, int icon_height, int *x, int *y, int width, int height, int horiz_alignment, int vert_alignment)
 {
   if (horiz_alignment == IUP_ALIGN_ARIGHT)
-    *x = icon_width - (width + 2 * horiz_padding);
+    *x = icon_width - width;
   else if (horiz_alignment == IUP_ALIGN_ACENTER)
-    *x = (icon_width - (width + 2 * horiz_padding)) / 2;
+    *x = (icon_width - width) / 2;
   else  /* ALEFT */
     *x = 0;
 
   if (vert_alignment == IUP_ALIGN_ABOTTOM)
-    *y = icon_height - (height + 2 * vert_padding);
+    *y = icon_height - height;
   else if (vert_alignment == IUP_ALIGN_ACENTER)
-    *y = (icon_height - (height + 2 * vert_padding)) / 2;
+    *y = (icon_height - height) / 2;
   else  /* ATOP */
     *y = 0;
-
-  *x += horiz_padding;
-  *y += vert_padding;
 }
 
 static void iFlatGetImageTextPosition(int x, int y, int img_position, int spacing,
@@ -666,6 +663,61 @@ static void iFlatGetImageTextPosition(int x, int y, int img_position, int spacin
   }
 }
 
+void iupFlatDrawGetIconSize(Ihandle* ih, int img_position, int spacing, int horiz_padding, int vert_padding,
+                     const char* imagename, const char* title, int *w, int *h)
+{
+  if (imagename)
+  {
+    int img_width, img_height;
+    iupImageGetInfo(imagename, &img_width, &img_height, NULL);
+
+    if (title)
+    {
+      int txt_width, txt_height;
+      iupDrawGetTextSize(ih, title, 0, &txt_width, &txt_height);
+
+      if (img_position == IUP_IMGPOS_RIGHT || img_position == IUP_IMGPOS_LEFT)
+      {
+        *w = img_width + txt_width + spacing;
+        *h = iupMAX(img_height, txt_height);
+      }
+      else
+      {
+        *w = iupMAX(img_width, txt_width);
+        *h = img_height + txt_height + spacing;
+      }
+    }
+    else
+    {
+      *w = img_width;
+      *h = img_height;
+    }
+  }
+  else if (title)
+  {
+    int txt_width, txt_height;
+    iupDrawGetTextSize(ih, title, 0, &txt_width, &txt_height);
+
+    *w = txt_width;
+    *h = txt_height;
+  }
+  else
+  {
+    *w = 0;
+    *h = 0;
+  }
+
+  *w += 2 * horiz_padding;
+  *h += 2 * vert_padding;
+
+  /* leave room for focus feedback */
+  if (ih->iclass->is_interactive && iupAttribGetBoolean(ih, "CANFOCUS"))
+  {
+    *w += 2 * 2;
+    *h += 2 * 2;
+  }
+}
+
 void iupFlatDrawIcon(Ihandle* ih, IdrawCanvas* dc, int icon_x, int icon_y, int icon_width, int icon_height,
                      int img_position, int spacing, int horiz_alignment, int vert_alignment, int horiz_padding, int vert_padding,
                      const char* imagename, int make_inactive, const char* title, int text_flags, const char* fgcolor, const char* bgcolor, int active)
@@ -681,16 +733,22 @@ void iupFlatDrawIcon(Ihandle* ih, IdrawCanvas* dc, int icon_x, int icon_y, int i
   else
     iupdrvDrawSetClipRect(dc, icon_x, icon_y, icon_x + icon_width, icon_y + icon_height);
 
+  /* clipping allows the padding area to be drawn */
+  icon_width -= 2 * horiz_padding;
+  icon_height -= 2 * vert_padding;
+  icon_x += horiz_padding;
+  icon_y += vert_padding;
+
   if (imagename)
   {
     int img_width, img_height;
+    iupImageGetInfo(imagename, &img_width, &img_height, NULL);
 
     if (title)
     {
       int img_x, img_y, txt_x, txt_y;
 
       font = iupDrawGetTextSize(ih, title, 0, &txt_width, &txt_height);
-      iupImageGetInfo(imagename, &img_width, &img_height, NULL);
 
       /* first combine image and text */
       if (img_position == IUP_IMGPOS_RIGHT || img_position == IUP_IMGPOS_LEFT)
@@ -724,26 +782,24 @@ void iupFlatDrawIcon(Ihandle* ih, IdrawCanvas* dc, int icon_x, int icon_y, int i
         height = img_height + txt_height + spacing;
       }
 
-      iFlatGetIconPosition(icon_width, icon_height, &x, &y, width, height, horiz_alignment, vert_alignment, horiz_padding, vert_padding);
+      iFlatGetIconPosition(icon_width, icon_height, &x, &y, width, height, horiz_alignment, vert_alignment);
 
       iFlatGetImageTextPosition(x, y, img_position, spacing,
                                 img_width, img_height, txt_width, txt_height,
                                 &img_x, &img_y, &txt_x, &txt_y);
 
-      iupdrvDrawImage(dc, imagename, make_inactive, bgcolor, img_x + icon_x, img_y + icon_y, img_width, img_height);  /* no zoom */
-      iFlatDrawText(dc, txt_x + icon_x, txt_y + icon_y, txt_width, txt_height, title, font, text_flags, fgcolor, bgcolor, active);
+      iupdrvDrawImage(dc, imagename, make_inactive, bgcolor, icon_x + img_x, icon_y + img_y, img_width, img_height);  /* no zoom */
+      iFlatDrawText(dc, icon_x + txt_x, icon_y + txt_y, txt_width, txt_height, title, font, text_flags, fgcolor, bgcolor, active);
     }
     else
     {
-      iupImageGetInfo(imagename, &img_width, &img_height, NULL);
-
       /* if image is larger than the icon space, then the position can be negative, clipping will crop the result */
       width = img_width;
       height = img_height;
 
-      iFlatGetIconPosition(icon_width, icon_height, &x, &y, width, height, horiz_alignment, vert_alignment, horiz_padding, vert_padding);
+      iFlatGetIconPosition(icon_width, icon_height, &x, &y, width, height, horiz_alignment, vert_alignment);
 
-      iupdrvDrawImage(dc, imagename, make_inactive, bgcolor, x + icon_x, y + icon_y, img_width, img_height);  /* no zoom */
+      iupdrvDrawImage(dc, imagename, make_inactive, bgcolor, icon_x + x, icon_y + y, img_width, img_height);  /* no zoom */
     }
   }
   else if (title)
@@ -757,9 +813,9 @@ void iupFlatDrawIcon(Ihandle* ih, IdrawCanvas* dc, int icon_x, int icon_y, int i
     else
       height = iupMIN(icon_height, txt_height);
 
-    iFlatGetIconPosition(icon_width, icon_height, &x, &y, width, height, horiz_alignment, vert_alignment, horiz_padding, vert_padding);
+    iFlatGetIconPosition(icon_width, icon_height, &x, &y, width, height, horiz_alignment, vert_alignment);
 
-    iFlatDrawText(dc, x + icon_x, y + icon_y, width, height, title, font, text_flags, fgcolor, bgcolor, active);
+    iFlatDrawText(dc, icon_x + x, icon_y + y, width, height, title, font, text_flags, fgcolor, bgcolor, active);
   }
 
   iupdrvDrawSetClipRect(dc, clip_x1, clip_y1, clip_x2, clip_y2);

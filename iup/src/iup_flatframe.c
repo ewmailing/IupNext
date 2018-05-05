@@ -23,50 +23,17 @@
 #include "iup_image.h"
 
 
-static void iFlatFrameGetIconSize(Ihandle* ih, int *w, int *h)
+
+static void iFlatFrameGetTitleSize(Ihandle* ih, int frame, int *width, int *height)
 {
-  char* image = iupAttribGet(ih, "IMAGE");
+  int img_position = iupFlatGetImagePosition(iupAttribGetStr(ih, "TITLEIMAGEPOSITION"));
+  int spacing = iupAttribGetInt(ih, "TITLEIMAGESPACING");
+  char* imagename = iupAttribGet(ih, "TITLEIMAGE");
   char* title = iupAttribGet(ih, "TITLE");
   int horiz_padding = 0, vert_padding = 0;
   IupGetIntInt(ih, "TITLEPADDING", &horiz_padding, &vert_padding);
 
-  *w = 0;
-  *h = 0;
-
-  if (image)
-  {
-    iupImageGetInfo(image, w, h, NULL);
-
-    if (title)
-    {
-      int img_position = iupFlatGetImagePosition(iupAttribGetStr(ih, "TITLEIMAGEPOSITION"));
-      int spacing = iupAttribGetInt(ih, "TITLEIMAGESPACING");
-      int text_w, text_h;
-      iupdrvFontGetMultiLineStringSize(ih, title, &text_w, &text_h);
-
-      if (img_position == IUP_IMGPOS_RIGHT ||
-          img_position == IUP_IMGPOS_LEFT)
-      {
-        *w += text_w + spacing;
-        *h = iupMAX(*h, text_h);
-      }
-      else
-      {
-        *w = iupMAX(*w, text_w);
-        *h += text_h + spacing;
-      }
-    }
-  }
-  else if (title)
-    iupdrvFontGetMultiLineStringSize(ih, title, w, h);
-
-  *w += 2 * horiz_padding;
-  *h += 2 * vert_padding;
-}
-
-static void iFlatFrameGetTitleSize(Ihandle* ih, int frame, int *width, int *height)
-{
-  iFlatFrameGetIconSize(ih, width, height);
+  iupFlatDrawGetIconSize(ih, img_position, spacing, horiz_padding, vert_padding, imagename, title, width, height);
 
   if (frame != 2 && *height != 0 && iupAttribGetBoolean(ih, "TITLELINE"))
     *height += iupAttribGetInt(ih, "TITLELINEWIDTH");
@@ -293,6 +260,7 @@ Iclass* iupFlatFrameNewClass(void)
   iupClassRegisterAttribute(ic, "TITLETEXTALIGNMENT", NULL, NULL, IUPAF_SAMEASSYSTEM, "ALEFT", IUPAF_NOT_MAPPED | IUPAF_NO_INHERIT);
   iupClassRegisterAttribute(ic, "TITLETEXTWRAP", NULL, NULL, NULL, NULL, IUPAF_NO_INHERIT);
   iupClassRegisterAttribute(ic, "TITLETEXTELLIPSIS", NULL, NULL, NULL, NULL, IUPAF_NO_INHERIT);
+  iupClassRegisterAttribute(ic, "TITLETEXTCLIP", NULL, NULL, NULL, NULL, IUPAF_NO_INHERIT);
 
   iupClassRegisterAttribute(ic, "FRAME", NULL, NULL, IUPAF_SAMEASSYSTEM, "YES", IUPAF_NO_INHERIT);
   iupClassRegisterAttribute(ic, "FRAMECOLOR", NULL, NULL, IUPAF_SAMEASSYSTEM, "DLGFGCOLOR", IUPAF_NO_INHERIT);

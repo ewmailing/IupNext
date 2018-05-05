@@ -86,8 +86,9 @@ horizontal and vertical offsets, respectively, in pixels. Default: 0x0.</p>
 <p><b>COUNT</b> (read-only)<b>:</b> 
 returns the number of tabs. Same value returned by <strong>IupGetChildCount</strong>.</p>
 <p><a href="../attrib/iup_expand.html">EXPAND</a>: The default value is &quot;YES&quot;.</p>
-<p><strong>FIXEDWIDTH</strong>: forces all tabs to use the same width. Default: 
-No.</p>
+<p><strong>FIXEDWIDTH</strong>: forces all tabs to use the same width, given by 
+the attribute. It does not include padding, nor the close button space if any, 
+i.e. padding and close button space will be added to the fixed width.</p>
 <p><b>SHOWCLOSE</b>: <span id="result_box1" class="short_text" lang="en">
 <span class="hps">enables</span> <span class="hps">the close button on each</span>
 <span class="hps">tab.</span></span><span id="result_box0" class="" lang="en"><span class="">
@@ -102,7 +103,8 @@ the other tabs by a line. Can be Yes or No. Default: Yes.</p>
 tab is removed or hidden, so a new tab is made current internally. (since 3.22)</p>
   <p><b>TABSPADDING</b>: internal margin of the tab title. Works just like the 
 	MARGIN attribute of the IupHbox and IupVbox containers, but uses a different 
-  name to avoid inheritance problems. Default value: &quot;10x10&quot;.</p>
+  name to avoid inheritance problems. Alignment does not includes the padding 
+  area. Default value: &quot;10x10&quot;.</p>
 <p><strong>TABSFORECOLOR</strong>: text color of the tabs that are not the 
 current tab. Default: the global attribute DLGFGCOLOR.</p>
 <p><strong>TABSBACKCOLOR</strong>: background color of the tabs that are not the 
@@ -141,7 +143,8 @@ text when both are displayed. Can be: LEFT, RIGHT, TOP, BOTTOM. Default: LEFT.</
 Default: &quot;2&quot;.</p>
 <p><strong>TABSALIGNMENT</strong>: horizontal and vertical alignment of the set 
 image+text. Possible values: &quot;ALEFT&quot;, &quot;ACENTER&quot; and &quot;ARIGHT&quot;,&nbsp; 
-combined to &quot;ATOP&quot;, &quot;ACENTER&quot; and &quot;ABOTTOM&quot;. Default: &quot;ACENTER:ACENTER&quot;. Partial 
+combined to &quot;ATOP&quot;, &quot;ACENTER&quot; and &quot;ABOTTOM&quot;. 
+Alignment does not includes the padding area. Default: &quot;ACENTER:ACENTER&quot;. Partial 
 values are also accepted, like &quot;ARIGHT&quot; or &quot;:ATOP&quot;, the other value will be 
 obtained from the default value. </p>
 <h4>Tab Attributes (<font SIZE="3">non inheritable</font>)</h4>

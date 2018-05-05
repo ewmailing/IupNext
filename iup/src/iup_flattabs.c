@@ -211,43 +211,6 @@ static void iFlatTabsSetCurrentTab(Ihandle* ih, Ihandle* child)
     iupdrvPostRedraw(ih);
 }
 
-static void iFlatTabsGetIconSize(Ihandle* ih, int pos, int *w, int *h)
-{
-  char* image = iupAttribGetId(ih, "TABIMAGE", pos);
-  char* title = iupAttribGetId(ih, "TABTITLE", pos);
-
-  *w = 0;
-  *h = 0;
-
-  if (image)
-  {
-    iupImageGetInfo(image, w, h, NULL);
-
-    if (title)
-    {
-      int img_position = iupFlatGetImagePosition(iupAttribGetStr(ih, "TABSIMAGEPOSITION"));
-      int spacing = iupAttribGetInt(ih, "TABSIMAGESPACING");
-      int text_w, text_h;
-
-      iupDrawGetTextSize(ih, title, 0, &text_w, &text_h);
-
-      if (img_position == IUP_IMGPOS_RIGHT ||
-          img_position == IUP_IMGPOS_LEFT)
-      {
-        *w += text_w + spacing;
-        *h = iupMAX(*h, text_h);
-      }
-      else
-      {
-        *w = iupMAX(*w, text_w);
-        *h += text_h + spacing;
-      }
-    }
-  }
-  else if (title)
-    iupDrawGetTextSize(ih, title, 0, w, h);
-}
-
 static void iFlatTabsSetTabFont(Ihandle* ih, int pos)
 {
   char* font = iupAttribGetId(ih, "TABFONT", pos);
@@ -262,21 +225,26 @@ static void iFlatTabsSetTabFont(Ihandle* ih, int pos)
 
 static void iFlatTabsGetTabSize(Ihandle* ih, int fixedwidth, int horiz_padding, int vert_padding, int show_close, int pos, int *tab_w, int *tab_h)
 {
+  int img_position = iupFlatGetImagePosition(iupAttribGetStr(ih, "TABSIMAGEPOSITION"));
+  int spacing = iupAttribGetInt(ih, "TABSIMAGESPACING");
+  char* imagename = iupAttribGetId(ih, "TABIMAGE", pos);
+  char* title = iupAttribGetId(ih, "TABTITLE", pos);
+
   iFlatTabsSetTabFont(ih, pos);
 
-  iFlatTabsGetIconSize(ih, pos, tab_w, tab_h);
+  iupFlatDrawGetIconSize(ih, img_position, spacing, horiz_padding, vert_padding, imagename, title, tab_w, tab_h);
 
   if (fixedwidth)
+  {
     *tab_w = fixedwidth;
-
-  (*tab_w) += 2 * horiz_padding;
-  (*tab_h) += 2 * vert_padding;
+    *tab_w += 2 * horiz_padding;
+  }
 
   if (show_close)
-    (*tab_w) += ITABS_CLOSE_SPACING + ITABS_CLOSE_SIZE + ITABS_CLOSE_BORDER;
+    *tab_w += ITABS_CLOSE_SPACING + ITABS_CLOSE_SIZE + ITABS_CLOSE_BORDER;
 }
 
-static int iFlatTabsGetTitleHeight(Ihandle* ih, int *title_width, int scrolled_width)
+static int iFlatTabsGetTitleHeight(Ihandle* ih, int *title_width, int has_scrolled_width)
 {
   int vert_padding, horiz_padding;
   int title_height = 0, tab_w, tab_h, pos;
@@ -295,7 +263,7 @@ static int iFlatTabsGetTitleHeight(Ihandle* ih, int *title_width, int scrolled_w
     int tabvisible = iupAttribGetBooleanId(ih, "TABVISIBLE", pos);
     if (tabvisible)
     {
-      if (title_width && pos == scroll_pos && scrolled_width)
+      if (title_width && pos == scroll_pos && has_scrolled_width)
         *title_width = 0;
 
       iFlatTabsGetTabSize(ih, fixedwidth, horiz_padding, vert_padding, show_close, pos, &tab_w, &tab_h);
@@ -332,35 +300,14 @@ static void iFlatTabsSetExtraFont(Ihandle* ih, int id)
 
 static int iFlatTabsGetExtraWidthId(Ihandle* ih, int i, int img_position, int horiz_padding)
 {
-  char* image = iupAttribGetId(ih, "EXTRAIMAGE", i);
+  char* imagename = iupAttribGetId(ih, "EXTRAIMAGE", i);
   char* title = iupAttribGetId(ih, "EXTRATITLE", i);
-
-  int w = 0;
+  int spacing = iupAttribGetInt(ih, "TABSIMAGESPACING");
+  int w, h;
 
   iFlatTabsSetExtraFont(ih, i);
 
-  if (image)
-  {
-    iupImageGetInfo(image, &w, NULL, NULL);
-
-    if (title)
-    {
-      int spacing = iupAttribGetInt(ih, "TABSIMAGESPACING");
-      int text_w, text_h;
-
-      iupDrawGetTextSize(ih, title, 0, &text_w, &text_h);
-
-      if (img_position == IUP_IMGPOS_RIGHT ||
-          img_position == IUP_IMGPOS_LEFT)
-        w += text_w + spacing;
-      else
-        w = iupMAX(w, text_w);
-    }
-  }
-  else if (title)
-    iupDrawGetTextSize(ih, title, 0, &w, NULL);
-
-  w += 2 * horiz_padding;
+  iupFlatDrawGetIconSize(ih, img_position, spacing, horiz_padding, 0, imagename, title, &w, &h);   /* vert_padding not used */
 
   return w;
 }
@@ -1945,6 +1892,7 @@ Iclass* iupFlatTabsNewClass(void)
   iupClassRegisterAttribute(ic, "TABSTEXTALIGNMENT", NULL, NULL, IUPAF_SAMEASSYSTEM, "ALEFT", IUPAF_NO_INHERIT);
   iupClassRegisterAttribute(ic, "TABSTEXTWRAP", NULL, NULL, NULL, NULL, IUPAF_NO_INHERIT);
   iupClassRegisterAttribute(ic, "TABSTEXTELLIPSIS", NULL, NULL, NULL, NULL, IUPAF_NO_INHERIT);
+  iupClassRegisterAttribute(ic, "TABSTEXTCLIP", NULL, NULL, NULL, NULL, IUPAF_NO_INHERIT);
 
   iupClassRegisterAttribute(ic, "SHOWCLOSE", NULL, NULL, NULL, NULL, IUPAF_NO_INHERIT);
   iupClassRegisterAttribute(ic, "CLOSEIMAGE", NULL, iFlatTabsSetAttribPostRedraw, IUPAF_SAMEASSYSTEM, "IMGFLATCLOSE", IUPAF_IHANDLENAME | IUPAF_NO_INHERIT);

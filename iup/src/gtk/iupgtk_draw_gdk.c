@@ -127,8 +127,8 @@ static void iDrawSetLineStyle(IdrawCanvas* dc, int style)
     gcval.line_style = GDK_LINE_SOLID;
   else
   {
-    gint8 dashes[2] = { 12, 4 };
-    gint8 dots[2] = { 2, 2 };
+    gint8 dashes[2] = { 9, 3 };
+    gint8 dots[2] = { 1, 2 };
 
     if (style == IUP_DRAW_STROKE_DASH)
       gdk_gc_set_dashes(dc->pixmap_gc, 0, dashes, 2);

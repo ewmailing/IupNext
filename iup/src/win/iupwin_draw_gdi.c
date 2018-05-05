@@ -131,8 +131,8 @@ void iupdrvDrawGetSize(IdrawCanvas* dc, int *w, int *h)
 
 static HPEN iDrawCreatePen(long color, int style, int line_width)
 {
-  DWORD dashes[2] = { 12-1, 4+1 };
-  DWORD dots[2] = { 2-1, 2+1 };
+  DWORD dashes[2] = { 9-1, 3+1 };
+  DWORD dots[2] = { 1-1, 2+1 };
   DWORD* dash_array = NULL;
   LOGBRUSH LogBrush;
   LogBrush.lbStyle = BS_SOLID;

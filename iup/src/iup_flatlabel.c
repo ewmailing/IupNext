@@ -220,39 +220,10 @@ static void iFlatLabelComputeNaturalSizeMethod(Ihandle* ih, int *w, int *h, int 
     iupImageGetInfo(bgimage, w, h, NULL);
   else
   {
-    char* image = iupAttribGet(ih, "IMAGE");
+    char* imagename = iupAttribGet(ih, "IMAGE");
     char* title = iupAttribGet(ih, "TITLE");
 
-    *w = 0,
-    *h = 0;
-
-    if (image)
-    {
-      iupImageGetInfo(image, w, h, NULL);
-
-      if (title)
-      {
-        int text_w, text_h;
-        iupdrvFontGetMultiLineStringSize(ih, title, &text_w, &text_h);
-
-        if (ih->data->img_position == IUP_IMGPOS_RIGHT ||
-            ih->data->img_position == IUP_IMGPOS_LEFT)
-        {
-          *w += text_w + ih->data->spacing;
-          *h = iupMAX(*h, text_h);
-        }
-        else
-        {
-          *w = iupMAX(*w, text_w);
-          *h += text_h + ih->data->spacing;
-        }
-      }
-    }
-    else if (title)
-      iupdrvFontGetMultiLineStringSize(ih, title, w, h);
-
-    *w += 2 * ih->data->horiz_padding;
-    *h += 2 * ih->data->vert_padding;
+    iupFlatDrawGetIconSize(ih, ih->data->img_position, ih->data->spacing, ih->data->horiz_padding, ih->data->vert_padding, imagename, title, w, h);
   }
 
   (void)children_expand; /* unset if not a container */
@@ -298,6 +269,7 @@ Iclass* iupFlatLabelNewClass(void)
   iupClassRegisterAttribute(ic, "TEXTALIGNMENT", NULL, NULL, IUPAF_SAMEASSYSTEM, "ALEFT", IUPAF_NOT_MAPPED | IUPAF_NO_INHERIT);
   iupClassRegisterAttribute(ic, "TEXTWRAP", NULL, NULL, NULL, NULL, IUPAF_NO_INHERIT);
   iupClassRegisterAttribute(ic, "TEXTELLIPSIS", NULL, NULL, NULL, NULL, IUPAF_NO_INHERIT);
+  iupClassRegisterAttribute(ic, "TEXTCLIP", NULL, NULL, NULL, NULL, IUPAF_NO_INHERIT);
 
   iupClassRegisterAttribute(ic, "BACKIMAGE", NULL, iFlatLabelSetAttribPostRedraw, NULL, NULL, IUPAF_IHANDLENAME | IUPAF_NO_DEFAULTVALUE | IUPAF_NO_INHERIT);
   iupClassRegisterAttribute(ic, "BACKIMAGEINACTIVE", NULL, NULL, NULL, NULL, IUPAF_IHANDLENAME | IUPAF_NO_DEFAULTVALUE | IUPAF_NO_INHERIT);

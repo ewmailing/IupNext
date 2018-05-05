@@ -164,8 +164,8 @@ static void iDrawSetLineStyle(IdrawCanvas* dc, int style)
     cairo_set_dash(dc->image_cr, 0, 0, 0);
   else
   {
-    double dashes[2] = { 12.0, 4.0 };
-    double dots[2] = { 2.0, 2.0 };
+    double dashes[2] = { 9.0, 3.0 };
+    double dots[2] = { 1.0, 2.0 };
 
     if (style == IUP_DRAW_STROKE_DASH)
       cairo_set_dash(dc->image_cr, dashes, 2, 0);

@@ -83,7 +83,7 @@ but redefines a few attributes.</p>
 vertical alignment of the set image+text. Possible values: &quot;ALEFT&quot;, &quot;ACENTER&quot; and &quot;ARIGHT&quot;,&nbsp; 
 combined to &quot;ATOP&quot;, &quot;ACENTER&quot; and &quot;ABOTTOM&quot;. Default: &quot;ALEFT:ACENTER&quot;. Partial 
 values are also accepted, like &quot;ARIGHT&quot; or &quot;:ATOP&quot;, the other value will be 
-obtained from the default value. </p>
+obtained from the default value. Alignment does not includes the padding area. </p>
 
 
   <p><strong>BACKIMAGE</strong> (<font SIZE="3">non inheritable</font>):
@@ -147,7 +147,8 @@ LEFT, RIGHT, TOP, BOTTOM. Default: LEFT.</p>
   
 <p><b>PADDING</b>: internal margin. Works just like the MARGIN attribute of 
   the <strong>IupHbox</strong> and <strong>IupVbox</strong> containers, but uses 
-a different name to avoid inheritance problems. Default value: &quot;0x0&quot;.</p>
+a different name to avoid inheritance problems. Default value: &quot;0x0&quot;. 
+Alignment does not includes the padding area. </p>
 
 
 <p><strong>SPACING </strong>(<font SIZE="3">non inheritable</font>): spacing between the 

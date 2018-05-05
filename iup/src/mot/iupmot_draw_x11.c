@@ -114,8 +114,8 @@ static void iDrawSetLineStyle(IdrawCanvas* dc, int style)
     gcval.line_style = LineSolid;
   else
   {
-    char dashes[2] = { 12, 4 };
-    char dots[2] = { 2, 2 };
+    char dashes[2] = { 9, 3 };
+    char dots[2] = { 1, 2 };
 
     if (style == IUP_DRAW_STROKE_DASH)
       XSetDashes(iupmot_display, dc->pixmap_gc, 0, dashes, 2);

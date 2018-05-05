@@ -157,12 +157,12 @@ static WD_HSTROKESTYLE iDrawSetLineStyle(int style)
 {
   if (style == IUP_DRAW_STROKE_DASH)
   {
-    float dashes[2] = { 12.0f, 4.0f };
+    float dashes[2] = { 9.0f, 3.0f };
     return wdCreateStrokeStyleCustom(dashes, 2, WD_LINECAP_FLAT, WD_LINEJOIN_MITER);
   }
   else if (style == IUP_DRAW_STROKE_DOT)
   {
-    float dashes[2] = { 2.0f, 2.0f };
+    float dashes[2] = { 1.0f, 2.0f };
     return wdCreateStrokeStyleCustom(dashes, 2, WD_LINECAP_FLAT, WD_LINEJOIN_MITER);
   }
   else
