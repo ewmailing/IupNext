@@ -63,13 +63,19 @@ flattabs(<strong>child</strong>, ...) [in LED]</pre>
 
 
 <p>Inherits all attributes and callbacks of the <a href="../elem/iupcanvas.html">IupCanvas</a>, 
-but redefines a few attributes. CANFOCUS, BORDER and SCROLLBAR are always NO.</p>
+but redefines a few attributes. BORDER and SCROLLBAR are always NO.</p>
 
 
   <p>
 <a href="../attrib/iup_bgcolor.html">BGCOLOR</a>: background color for the 
   current Tab and the children. Default: &quot;255 255 255&quot;. It is non inheritable, 
   but when set will internally propagate to the children (since 3.25).</p>
+
+<p><strong>CANFOCUS</strong> (creation only)<strong> </strong>(<font size="3">non inheritable</font>): 
+enables the focus traversal of the control. Default: YES.</p>
+
+<p><strong>PROPAGATEFOCUS </strong>(<font size="3">non inheritable</font>): enables the focus callback forwarding to the next native parent with FOCUS_CB defined. Default: NO. (since 3.23)</p>
+
 <p>
 <strong>FORECOLOR</strong>: text color for the current Tab. Default: 
 &quot;50 150 255&quot;.</p>
@@ -89,6 +95,8 @@ returns the number of tabs. Same value returned by <strong>IupGetChildCount</str
 <p><strong>FIXEDWIDTH</strong>: forces all tabs to use the same width, given by 
 the attribute. It does not include padding, nor the close button space if any, 
 i.e. padding and close button space will be added to the fixed width.</p>
+<p><strong>HASFOCUS </strong> (read-only): returns the tabs state if it has 
+focus. Can be Yes or No. (since 3.25)</p>
 <p><b>SHOWCLOSE</b>: <span id="result_box1" class="short_text" lang="en">
 <span class="hps">enables</span> <span class="hps">the close button on each</span>
 <span class="hps">tab.</span></span><span id="result_box0" class="" lang="en"><span class="">
@@ -291,7 +299,8 @@ if TABIMAGEn is changed.</p>
 
 
 <p>Inherits all callbacks of the <a href="../elem/iupcanvas.html">IupCanvas</a>, 
-but redefines a few of them. Including BUTTON_CB, MOTION_CB, and LEAVEWINDOW_CB. 
+but redefines a few of them. Including BUTTON_CB, MOTION_CB, GETFOCUS_CB, 
+KILLFOCUS_CB and LEAVEWINDOW_CB. 
 To allow the application to use those callbacks the same callbacks are exported 
 with the &quot;FLAT_&quot; prefix using the same parameters. They are all called before the internal callbacks and if they return 
 IUP_IGNORE the internal callbacks are not processed. In FLATBUTTON_CB and 
@@ -361,11 +370,8 @@ not the same as BUTTON_CB)<br><strong>pressed</strong>:
 <p><a href="../call/iup_map_cb.html">MAP_CB</a>, 
 <a href="../call/iup_unmap_cb.html">UNMAP_CB</a>, 
 <a href="../call/iup_destroy_cb.html">DESTROY_CB</a>, 
-<a href="../call/iup_getfocus_cb.html">GETFOCUS_CB</a>,
-  <a href="../call/iup_killfocus_cb.html">KILLFOCUS_CB</a>, 
 <a href="../call/iup_enterwindow_cb.html">ENTERWINDOW_CB</a>,
-  <a href="../call/iup_leavewindow_cb.html">LEAVEWINDOW_CB</a>, 
-<a href="../call/iup_k_any.html">K_ANY</a>,
+  <a href="../call/iup_k_any.html">K_ANY</a>,
   <a href="../call/iup_help_cb.html">HELP_CB</a>: All common callbacks are 
 supported.</p>
   
@@ -385,6 +391,8 @@ To proper functioning we strongly recommend using a
 to control the focus behavior call 
 <strong>IupSetFocus</strong> 
   in the TABCHANGE_CB callback. </p>
+<p>When flattabs has the focus, the current tab can be changed using the left 
+and right arrow keys. (since 3.25)</p>
 <p>Differences from <a href="iuptabs.html">IupTabs</a>:</p>
 <ul>
 	<li>Appearance can be controlled for global features and for individual 

@@ -6,6 +6,7 @@
 
 #include <stdlib.h>
 #include <stdio.h>
+#include <string.h>
 #include <iup.h>
 #include <iupdraw.h>
 
@@ -277,11 +278,19 @@ static Ihandle* set_callbacks(Ihandle* ih)
 {
   IupSetCallback(ih, "VALUECHANGED_CB", (Icallback)valuechanged_cb);
 
-  IupSetCallback(ih, "GETFOCUS_CB", (Icallback)getfocus_cb);
-  IupSetCallback(ih, "KILLFOCUS_CB", (Icallback)killfocus_cb);
+  if (strcmp(IupGetClassName(ih), "flattabs") == 0)
+  {
+    IupSetCallback(ih, "FLAT_GETFOCUS_CB", (Icallback)getfocus_cb);
+    IupSetCallback(ih, "FLAT_KILLFOCUS_CB", (Icallback)killfocus_cb);
+  }
+  else
+  {
+    IupSetCallback(ih, "GETFOCUS_CB", (Icallback)getfocus_cb);
+    IupSetCallback(ih, "KILLFOCUS_CB", (Icallback)killfocus_cb);
+  }
 
-//  IupSetCallback(ih, "ENTERWINDOW_CB", (Icallback)enterwindow_cb);
-//  IupSetCallback(ih, "LEAVEWINDOW_CB", (Icallback)leavewindow_cb);
+//  IupSetCallback(ih, "FLAT_ENTERWINDOW_CB", (Icallback)enterwindow_cb);
+//  IupSetCallback(ih, "FLAT_LEAVEWINDOW_CB", (Icallback)leavewindow_cb);
 
   IupSetCallback(ih, "K_ANY", (Icallback)k_any);
 //  IupSetCallback(ih, "HELP_CB", (Icallback)help_cb);

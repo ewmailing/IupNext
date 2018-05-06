@@ -127,7 +127,7 @@ static void iFlatTabsInitializeImages(void)
 static int iFlatTabsGetExtraWidth(Ihandle* ih, int extra_buttons, int img_position, int horiz_padding);
 static void iFlatTabsGetTabSize(Ihandle* ih, int fixedwidth, int horiz_padding, int vert_padding, int show_close, int pos, int *tab_w, int *tab_h);
 
-static void iFlatTabsCheckVisibleTab(Ihandle* ih, Ihandle* child)
+static void iFlatTabsUpdateScrollPos(Ihandle* ih, Ihandle* child)
 {
   int child_pos = IupGetChildPos(ih, child);
   int scroll_pos = iupAttribGetInt(ih, "_IUPFTABS_SCROLLPOS");
@@ -204,7 +204,7 @@ static void iFlatTabsSetCurrentTab(Ihandle* ih, Ihandle* child)
   {
     IupSetAttribute(child, "VISIBLE", "Yes");
 
-    iFlatTabsCheckVisibleTab(ih, child);
+    iFlatTabsUpdateScrollPos(ih, child);
   }
 
   if (ih->handle)
@@ -532,6 +532,9 @@ static int iFlatTabsRedraw_CB(Ihandle* ih)
                       icon_width, title_height,
                       img_position, spacing, horiz_alignment, vert_alignment, horiz_padding, vert_padding,
                       tab_image, make_inactive, tab_title, text_flags, foreground_color, background_color, tab_active);
+
+      if (current_child == child && iupAttribGetInt(ih, "HASFOCUS"))
+        iupdrvDrawFocusRect(dc, tab_x + 3, 3, tab_x + icon_width - 3, title_height - 3);
 
       if (show_close)
       {
@@ -895,14 +898,6 @@ static void iFlatTabsToggleExpand(Ihandle* ih)
   }
 }
 
-static int iFlatTabsKillFocus_CB(Ihandle* ih)
-{
-  ih->currentheight = IupGetInt2(ih, "MAXSIZE");
-  iupLayoutUpdate(ih);
-  IupSetCallback(ih, "KILLFOCUS_CB", NULL);
-  return IUP_DEFAULT;
-}
-
 static int iFlatTabsButton_CB(Ihandle* ih, int button, int pressed, int x, int y, char* status)
 {
   IFniiiis cb = (IFniiiis)IupGetCallback(ih, "FLAT_BUTTON_CB");
@@ -936,7 +931,7 @@ static int iFlatTabsButton_CB(Ihandle* ih, int button, int pressed, int x, int y
           int prev_pos = IupGetChildPos(ih, prev_child);
           int ret = iFlatTabsCallTabChange(ih, prev_child, prev_pos, child);
           if (ret == IUP_DEFAULT)
-            iFlatTabsSetCurrentTab(ih, child);
+            iFlatTabsSetCurrentTab(ih, child);   /* iFlatTabsFindTab already returns a visible tab */
         }
 
         if (iupAttribGetBoolean(ih, "EXPANDBUTTON") && !iupAttribGetBoolean(ih, "EXPANDBUTTONSTATE"))
@@ -944,7 +939,6 @@ static int iFlatTabsButton_CB(Ihandle* ih, int button, int pressed, int x, int y
           ih->currentheight = iupAttribGetInt(ih, "_IUP_FULLHEIGHT");
           IupSetAttribute(ih, "ZORDER", "TOP");
           iupLayoutUpdate(ih);
-          IupSetCallback(ih, "KILLFOCUS_CB", (Icallback)iFlatTabsKillFocus_CB);
         }
       }
     }
@@ -1219,6 +1213,83 @@ static int iFlatTabsLeaveWindow_CB(Ihandle* ih)
   return IUP_DEFAULT;
 }
 
+static int iFlatTabsGetFocus_CB(Ihandle* ih)
+{
+  Icallback cb = IupGetCallback(ih, "FLAT_GETFOCUS_CB");
+  if (cb)
+  {
+    if (cb(ih) == IUP_IGNORE)
+      return IUP_DEFAULT;
+  }
+
+  iupAttribSet(ih, "HASFOCUS", "Yes");
+  iupdrvRedrawNow(ih);
+
+  return IUP_DEFAULT;
+}
+
+static int iFlatTabsKillFocus_CB(Ihandle* ih)
+{
+  Icallback cb = IupGetCallback(ih, "FLAT_KILLFOCUS_CB");
+  if (cb)
+  {
+    if (cb(ih) == IUP_IGNORE)
+      return IUP_DEFAULT;
+  }
+
+  if (iupAttribGetBoolean(ih, "EXPANDBUTTON") && !iupAttribGetBoolean(ih, "EXPANDBUTTONSTATE"))
+  {
+    ih->currentheight = IupGetInt2(ih, "MAXSIZE");
+    iupLayoutUpdate(ih);
+  }
+
+  iupAttribSet(ih, "HASFOCUS", "No");
+  iupdrvRedrawNow(ih);
+
+  return IUP_DEFAULT;
+}
+
+static int iFlatTabsKLeft_CB(Ihandle* ih)
+{
+  if (iupAttribGetInt(ih, "HASFOCUS"))
+  {
+    Ihandle* child = iFlatTabsGetCurrentTab(ih);
+    int pos = IupGetChildPos(ih, child);
+    while (pos != -1 && pos > 0) /* found child */
+    {
+      pos--;
+      child = IupGetChild(ih, pos);
+      if (child && iupAttribGetBooleanId(ih, "TABVISIBLE", pos))
+      {
+        iFlatTabsSetCurrentTab(ih, child);
+        break;
+      }
+    }
+  }
+  return IUP_DEFAULT;
+}
+
+static int iFlatTabsKRight_CB(Ihandle* ih)
+{
+  if (iupAttribGetInt(ih, "HASFOCUS"))
+  {
+    Ihandle* child = iFlatTabsGetCurrentTab(ih);
+    int pos = IupGetChildPos(ih, child);
+    int count = IupGetChildCount(ih);
+    while (pos != -1 && pos < count-1) /* found child */
+    {
+      pos++;
+      child = IupGetChild(ih, pos);
+      if (child && iupAttribGetBooleanId(ih, "TABVISIBLE", pos))
+      {
+        iFlatTabsSetCurrentTab(ih, child);
+        break;
+      }
+    }
+  }
+  return IUP_DEFAULT;
+}
+
 
 /*****************************************************************************************/
 
@@ -1235,12 +1306,13 @@ static int iFlatTabsSetValueHandleAttrib(Ihandle* ih, const char* value)
   if (current_child != child)
   {
     int pos = IupGetChildPos(ih, child);
-    if (pos != -1) /* found child */
+    if (pos != -1 && iupAttribGetBooleanId(ih, "TABVISIBLE", pos)) /* found child and NOT current and it is visible */
       iFlatTabsSetCurrentTab(ih, child);
   }
 
   return 0;
 }
+
 
 static char* iFlatTabsGetValueHandleAttrib(Ihandle* ih)
 {
@@ -1262,7 +1334,7 @@ static int iFlatTabsSetValuePosAttrib(Ihandle* ih, const char* value)
 
   child = IupGetChild(ih, pos);
   current_child = iFlatTabsGetCurrentTab(ih);
-  if (child && current_child != child)  /* found child and NOT current */
+  if (child && current_child != child && iupAttribGetBooleanId(ih, "TABVISIBLE", pos))  /* found child and NOT current and visible */
     iFlatTabsSetCurrentTab(ih, child);
 
   return 0;
@@ -1650,7 +1722,7 @@ static void iFlatTabsChildAddedMethod(Ihandle* ih, Ihandle* child)
   iupAttribSetStr(child, "BGCOLOR", bgcolor);
 
   current_child = iFlatTabsGetCurrentTab(ih);
-  if (!current_child)
+  if (!current_child && iupAttribGetBooleanId(ih, "TABVISIBLE", pos))
     iFlatTabsSetCurrentTab(ih, child);
   else
   {
@@ -1792,7 +1864,11 @@ static int iFlatTabsCreateMethod(Ihandle* ih, void **params)
   IupSetCallback(ih, "BUTTON_CB", (Icallback)iFlatTabsButton_CB);
   IupSetCallback(ih, "MOTION_CB", (Icallback)iFlatTabsMotion_CB);
   IupSetCallback(ih, "LEAVEWINDOW_CB", (Icallback)iFlatTabsLeaveWindow_CB);
+  IupSetCallback(ih, "GETFOCUS_CB", (Icallback)iFlatTabsGetFocus_CB);  /* can NOT use FOCUS_CB because tabs is a container and will affect PROPAGATEFOCUS */
+  IupSetCallback(ih, "KILLFOCUS_CB", (Icallback)iFlatTabsKillFocus_CB);
   IupSetCallback(ih, "RESIZE_CB", (Icallback)iFlatTabsResize_CB);
+  IupSetCallback(ih, "K_LEFT", (Icallback)iFlatTabsKLeft_CB);
+  IupSetCallback(ih, "K_RIGHT", (Icallback)iFlatTabsKRight_CB);
 
   return IUP_NOERROR;
 }
@@ -1829,6 +1905,8 @@ Iclass* iupFlatTabsNewClass(void)
   iupClassRegisterCallback(ic, "FLAT_BUTTON_CB", "iiiis");
   iupClassRegisterCallback(ic, "FLAT_MOTION_CB", "iis");
   iupClassRegisterCallback(ic, "FLAT_LEAVEWINDOW_CB", "");
+  iupClassRegisterCallback(ic, "FLAT_GETFOCUS_CB", "");
+  iupClassRegisterCallback(ic, "FLAT_KILLFOCUS_CB", "");
 
   /* Base Container */
   iupClassRegisterAttribute(ic, "EXPAND", iupBaseContainerGetExpandAttrib, NULL, IUPAF_SAMEASSYSTEM, "YES", IUPAF_NOT_MAPPED | IUPAF_NO_INHERIT);
@@ -1853,6 +1931,7 @@ Iclass* iupFlatTabsNewClass(void)
   iupClassRegisterAttribute(ic, "COUNT", iFlatTabsGetCountAttrib, NULL, NULL, NULL, IUPAF_READONLY | IUPAF_NOT_MAPPED | IUPAF_NO_INHERIT);
   iupClassRegisterAttribute(ic, "FIXEDWIDTH", NULL, iFlatTabsSetAttribPostRedraw, NULL, NULL, IUPAF_NO_INHERIT);
   iupClassRegisterAttribute(ic, "TABCHANGEONCHECK", NULL, NULL, NULL, NULL, IUPAF_NO_INHERIT);
+  iupClassRegisterAttribute(ic, "HASFOCUS", NULL, NULL, NULL, NULL, IUPAF_READONLY | IUPAF_NO_INHERIT);
 
   /* IupFlatTabs Child only */
   iupClassRegisterAttributeId(ic, "TABTITLE", NULL, (IattribSetIdFunc)iFlatTabsSetAttribPostRedraw, IUPAF_NO_INHERIT);
