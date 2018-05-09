@@ -745,25 +745,6 @@ int iupdrvGetScrollbarSize(void)
   return size;
 }
 
-void iupdrvPaintFocusRect(Ihandle* ih, void* _gc, int x, int y, int w, int h)
-{
-#if GTK_CHECK_VERSION(3, 0, 0)
-  cairo_t* cr = (cairo_t*)_gc;
-  GtkStyleContext* context = gtk_widget_get_style_context(ih->handle);
-  gtk_render_focus(context, cr, x, y, w, h);
-#else
-  GdkWindow* window = iupgtkGetWindow(ih->handle);
-  GtkStyle *style = gtk_widget_get_style(ih->handle);
-#if GTK_CHECK_VERSION(2, 18, 0)
-  GtkStateType state = gtk_widget_get_state(ih->handle);
-#else
-  GtkStateType state = GTK_WIDGET_STATE(ih->handle);
-#endif
-  gtk_paint_focus(style, window, state, NULL, ih->handle, NULL, x, y, w, h);
-#endif
-  (void)_gc;
-}
-
 void iupdrvBaseRegisterCommonAttrib(Iclass* ic)
 {
   iupClassRegisterAttribute(ic, iupgtkGetNativeFontIdName(), iupgtkGetFontIdAttrib, NULL, NULL, NULL, IUPAF_NOT_MAPPED | IUPAF_NO_INHERIT | IUPAF_NO_STRING);
@@ -1086,6 +1067,8 @@ void iupgtkClearSizeStyleCSS(GtkWidget* widget)
   gtk_css_provider_load_from_data(GTK_CSS_PROVIDER(provider), str, -1, NULL);
   gtk_style_context_add_provider(context, GTK_STYLE_PROVIDER(provider), GTK_STYLE_PROVIDER_PRIORITY_APPLICATION);
   g_object_unref(provider);
+#else
+  (void)widget;
 #endif
 }
 

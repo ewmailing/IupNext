@@ -419,16 +419,6 @@ int iupdrvBaseSetCursorAttrib(Ihandle* ih, const char* value)
   return 0;
 }
 
-#include <Xm/XmP.h>
-#include <Xm/DrawP.h>
-
-void iupdrvPaintFocusRect(Ihandle* ih, void* _gc, int x, int y, int w, int h)
-{
-  Drawable wnd = (Drawable)IupGetAttribute(ih, "XWINDOW");  /* Use IupGetAttribute to consult the native implemetation */
-  GC gc = (GC)_gc;
-  XmeDrawHighlight(iupmot_display, wnd, gc, x, y, w, h, 1);
-}
-
 void iupdrvBaseRegisterCommonAttrib(Iclass* ic)
 {
   iupClassRegisterAttribute(ic, "XMFONTLIST", iupmotGetFontListAttrib, NULL, NULL, NULL, IUPAF_NOT_MAPPED|IUPAF_NO_INHERIT|IUPAF_NO_STRING);

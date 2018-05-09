@@ -11,5 +11,5 @@ EXPORTS
   cdIupDrawVertSunkenMark
   cdIupDrawHorizSunkenMark
   cdIupDrawImage
-  IupCdDrawFocusRect
+  cdIupDrawFocusRect
   IupCdSetFont

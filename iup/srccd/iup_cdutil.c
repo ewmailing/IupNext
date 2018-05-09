@@ -322,28 +322,10 @@ void IupCdSetFont(Ihandle* ih, cdCanvas *canvas, const char* font)
   }
 }
 
-void IupCdDrawFocusRect(Ihandle* ih, cdCanvas *canvas, int x1, int y1, int x2, int y2)
+void cdIupDrawFocusRect(cdCanvas *canvas, int x1, int y1, int x2, int y2)
 {
-  int y, x, w, h;
-
-#ifdef WIN32
-  void* gc = cdCanvasGetAttribute(canvas, "HDC");
-  if (!gc)
-    gc = cdCanvasGetAttribute(canvas, "GC");  /* for Cairo running in Windows */
-#else
-  void* gc = cdCanvasGetAttribute(canvas, "GC");  /* works for X11, GDK and Cairo */
-#endif
-
-  cdCanvasUpdateYAxis(canvas, &y1);
-  cdCanvasUpdateYAxis(canvas, &y2);
-  y = y1;
-  if (y2<y1) y = y2;
-  x = x1;
-  if (x2<x1) x = x2;
-
-  w = abs(x2 - x1) + 1;
-  h = abs(y2 - y1) + 1;
-
-  iupdrvPaintFocusRect(ih, gc, x, y, w, h);
+  cdCanvasLineStyle(canvas, CD_DOTTED);
+  cdCanvasForeground(canvas, CD_BLACK);
+  cdCanvasRect(canvas, x1, x2, y1, y2);
 }
 

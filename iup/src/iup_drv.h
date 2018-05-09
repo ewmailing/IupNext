@@ -74,16 +74,6 @@ void iupdrvRedrawNow(Ihandle *ih);
  * \ingroup drv */
 void iupdrvReparent(Ihandle* ih);
 
-/** Draws a focus rectangle
- * gc is:
- * - HDC in Win32
- * - GC in Motif
- * - unused in GTK2
- * - cairo_t in GTK3
- * When using CD, use the "GC" CD canvas attribute.
- * \ingroup drv */
-void iupdrvPaintFocusRect(Ihandle* ih, void* gc, int x, int y, int w, int h);
-
 /** Size of the scrollbar.
  * \ingroup drv */
 int iupdrvGetScrollbarSize(void);

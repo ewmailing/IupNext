@@ -804,6 +804,7 @@ static void iMatrixDrawTitleCorner(Ihandle* ih)
 static void iMatrixDrawFocus(Ihandle* ih)
 {
   int x1, y1, x2, y2, dx, dy;
+  cdCanvas* cd_canvas_front;
 
   if (iupAttribGetBoolean(ih, "HIDEFOCUS"))
     return;
@@ -820,15 +821,21 @@ static void iMatrixDrawFocus(Ihandle* ih)
   x2 = x1 + dx - 1;
   y2 = y1 + dy - 1;
 
-  if (ih->data->columns.focus_cell == 1 && ih->data->columns.dt[0].size == 0)
-    x1++;
-  if (ih->data->lines.focus_cell == 1 && ih->data->lines.dt[0].size == 0)
-    y1++;
-
+  if (ih->data->noscroll_as_title && (ih->data->columns.focus_cell < ih->data->columns.num_noscroll || ih->data->lines.focus_cell < ih->data->lines.num_noscroll))
   {
-    cdCanvas* cd_canvas_front = (cdCanvas*)IupGetAttribute(ih, "_CD_CANVAS");  /* front buffer canvas */
-    IupCdDrawFocusRect(ih, cd_canvas_front, x1, iupMATRIX_INVERTYAXIS(ih, y1), x2, iupMATRIX_INVERTYAXIS(ih, y2));
+    x1++;
+    y1++;
   }
+  else
+  {
+    if (ih->data->columns.focus_cell == 1 && ih->data->columns.dt[0].size == 0)
+      x1++;
+    if (ih->data->lines.focus_cell == 1 && ih->data->lines.dt[0].size == 0)
+      y1++;
+  }
+
+  cd_canvas_front = (cdCanvas*)IupGetAttribute(ih, "_CD_CANVAS");  /* front buffer canvas */
+  cdIupDrawFocusRect(cd_canvas_front, x1, iupMATRIX_INVERTYAXIS(ih, y1), x2, iupMATRIX_INVERTYAXIS(ih, y2));
 }
 
 

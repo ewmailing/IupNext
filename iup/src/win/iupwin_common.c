@@ -1192,17 +1192,3 @@ void iupwinDrawFocusRect(HDC hDC, int x, int y, int w, int h)
 
   DrawFocusRect(hDC, &rect);
 }
-
-void iupdrvPaintFocusRect(Ihandle* ih, void* gc, int x, int y, int w, int h)
-{
-  HDC hDC = (HDC)gc;
-  RECT rect;
-
-  rect.left = x;
-  rect.top = y;
-  rect.right = x + w;
-  rect.bottom = y + h;
-
-  DrawFocusRect(hDC, &rect);
-  (void)ih;
-}
