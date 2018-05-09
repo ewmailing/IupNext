@@ -86,10 +86,14 @@ void CharacTest(void);
 void LinkTest(void);
 void ExpanderTest(void);
 void CalendarTest(void);
+#ifndef NO_SCINTILLA_TEST
 void ScintillaTest(void);
+#endif
 void DetachBoxTest(void);
 void CboxTest(void);
+#ifndef NO_WEBBROWSER_TEST
 void WebBrowserTest(void);
+#endif
 void MglLabelTest(void);
 void MatrixListTest(void);
 void MglPlotModesTest(void);
@@ -180,8 +184,10 @@ static TestItems test_list[] = {
   {"Sample", SampleTest},
   { "FlatSample", FlatSampleTest },
   { "Sbox", SboxTest },
+#ifndef NO_SCINTILLA_TEST
   { "Scintilla", ScintillaTest },
-  {"ScrollBox", ScrollBoxTest},
+#endif
+  { "ScrollBox", ScrollBoxTest },
   { "FlatScrollBox", FlatScrollBoxTest },
   { "Split", SplitTest },
   {"Scanf", ScanfTest},
@@ -199,7 +205,9 @@ static TestItems test_list[] = {
   {"Val", ValTest},
   {"Vbox", VboxTest},
   {"Zbox", ZboxTest},
+#ifndef NO_WEBBROWSER_TEST
   { "WebBrowser", WebBrowserTest },
+#endif
 };
 
 static int k_enter_cb(Ihandle*ih)
