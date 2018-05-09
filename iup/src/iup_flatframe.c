@@ -32,8 +32,9 @@ static void iFlatFrameGetTitleSize(Ihandle* ih, int frame, int *width, int *heig
   char* title = iupAttribGet(ih, "TITLE");
   int horiz_padding = 0, vert_padding = 0;
   IupGetIntInt(ih, "TITLEPADDING", &horiz_padding, &vert_padding);
+  double text_orientation = iupAttribGetDouble(ih, "TITLETEXTORIENTATION");
 
-  iupFlatDrawGetIconSize(ih, img_position, spacing, horiz_padding, vert_padding, imagename, title, width, height);
+  iupFlatDrawGetIconSize(ih, img_position, spacing, horiz_padding, vert_padding, imagename, title, width, height, text_orientation);
 
   if (frame != 2 && *height != 0 && iupAttribGetBoolean(ih, "TITLELINE"))
     *height += iupAttribGetInt(ih, "TITLELINEWIDTH");
@@ -57,6 +58,7 @@ static int iFlatFrameRedraw_CB(Ihandle* ih)
   int frame = iFlatFrameGetFrame(ih);
   IdrawCanvas* dc = iupdrvDrawCreateCanvas(ih);
   int text_flags = iupDrawGetTextFlags(ih, "TITLETEXTALIGNMENT", "TITLETEXTWRAP", "TITLETEXTELLIPSIS");
+  double text_orientation = iupAttribGetDouble(ih, "TITLETEXTORIENTATION");
   int active = IupGetInt(ih, "ACTIVE");
   int title_w, title_h;
 
@@ -138,7 +140,7 @@ static int iFlatFrameRedraw_CB(Ihandle* ih)
     iupFlatDrawIcon(ih, dc, frame_width + x_off, frame_width,
                     ih->currentwidth - 2 * frame_width, title_h - title_line,
                     img_position, spacing, title_alignment, IUP_ALIGN_ATOP, horiz_padding, vert_padding,
-                    titleimage, make_inactive, title, text_flags, titlecolor, NULL, active);
+                    titleimage, make_inactive, title, text_flags, text_orientation, titlecolor, NULL, active);
   }
 
   iupdrvDrawFlush(dc);
@@ -261,6 +263,7 @@ Iclass* iupFlatFrameNewClass(void)
   iupClassRegisterAttribute(ic, "TITLETEXTWRAP", NULL, NULL, NULL, NULL, IUPAF_NO_INHERIT);
   iupClassRegisterAttribute(ic, "TITLETEXTELLIPSIS", NULL, NULL, NULL, NULL, IUPAF_NO_INHERIT);
   iupClassRegisterAttribute(ic, "TITLETEXTCLIP", NULL, NULL, NULL, NULL, IUPAF_NO_INHERIT);
+  iupClassRegisterAttribute(ic, "TITLETEXTORIENTATION", NULL, NULL, NULL, NULL, IUPAF_NO_INHERIT);
 
   iupClassRegisterAttribute(ic, "FRAME", NULL, NULL, IUPAF_SAMEASSYSTEM, "YES", IUPAF_NO_INHERIT);
   iupClassRegisterAttribute(ic, "FRAMECOLOR", NULL, NULL, IUPAF_SAMEASSYSTEM, "DLGFGCOLOR", IUPAF_NO_INHERIT);

@@ -336,20 +336,25 @@ static int iCompensatePosX(float font_height)
   return iupRound(font_height / 7.);  /* 15% */
 }
 
-void iupdrvDrawText(IdrawCanvas* dc, const char* text, int len, int x, int y, int w, int h, long color, const char* font, int flags)
+void iupdrvDrawText(IdrawCanvas* dc, const char* text, int len, int x, int y, int w, int h, long color, const char* font, int flags, double text_orientation)
 {
   WD_RECT rect;
   DWORD dwFlags = WD_STR_TOPALIGN;
   WCHAR *wtext = iupwinStrToSystemLen(text, &len);
   WD_HBRUSH brush = wdCreateSolidBrush(dc->hCanvas, iupColor2ARGB(color));
+  int layout_center = flags & IUP_DRAW_LAYOUTCENTER;
 
   HFONT hFont = (HFONT)iupwinGetHFont(font);
   WD_HFONT wdFont = wdCreateFontWithGdiHandle(hFont);
+  int layout_w = w, layout_h = h;
+
+  if (text_orientation && layout_center)
+    iupDrawGetTextInnerBounds(w, h, text_orientation, &layout_w, &layout_h);
 
   rect.x0 = iupInt2Float(x);
-  rect.x1 = iupInt2Float(x + w);
+  rect.x1 = iupInt2Float(x + layout_w);
   rect.y0 = iupInt2Float(y);
-  rect.y1 = iupInt2Float(y + h);
+  rect.y1 = iupInt2Float(y + layout_h);
 
   dwFlags |= WD_STR_LEFTALIGN;
   if (flags & IUP_DRAW_RIGHT)
@@ -373,6 +378,17 @@ void iupdrvDrawText(IdrawCanvas* dc, const char* text, int len, int x, int y, in
     rect.x0 -= iCompensatePosX(metrics.fLeading);
   }
 
+  if (text_orientation)
+  {
+    if (layout_center)
+    {
+      wdRotateWorld(dc->hCanvas, iupInt2Float(x + layout_w / 2), iupInt2Float(y + layout_h / 2), (float)-text_orientation);  /* counterclockwise */
+      wdTranslateWorld(dc->hCanvas, iupInt2Float(w - layout_w) / 2, iupInt2Float(h - layout_h) / 2);  /* append the transform */
+    }
+    else
+      wdRotateWorld(dc->hCanvas, iupInt2Float(x), iupInt2Float(y), (float)-text_orientation);  /* counterclockwise */
+  }
+
   if (!(flags & IUP_DRAW_CLIP))
     dwFlags |= WD_STR_NOCLIP;
 
@@ -380,6 +396,10 @@ void iupdrvDrawText(IdrawCanvas* dc, const char* text, int len, int x, int y, in
 
   wdDestroyBrush(brush);
   wdDestroyFont(wdFont);
+
+  /* restore settings */
+  if (text_orientation)
+    wdResetWorld(dc->hCanvas);
 }
 
 void iupdrvDrawImage(IdrawCanvas* dc, const char* name, int make_inactive, const char* bgcolor, int x, int y, int w, int h)
@@ -434,6 +454,6 @@ void iupdrvDrawFocusRect(IdrawCanvas* dc, int x1, int y1, int x2, int y2)
   DrawFocusRect(hDC, &rect);
   wdEndGdi(dc->hCanvas, hDC);
 #else
-  iupdrvDrawRectangle(dc, x1, y1, x2, y2, iupDrawColor(0, 0, 0, 255), IUP_DRAW_STROKE_DOT, 1);
+  iupdrvDrawRectangle(dc, x1, y1, x2, y2, iupDrawColor(0, 0, 0, 224), IUP_DRAW_STROKE_DOT, 1);
 #endif
 }

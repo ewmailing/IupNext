@@ -318,20 +318,67 @@ void iupdrvDrawResetClip(IdrawCanvas* dc)
   dc->clip_y2 = 0;
 }
 
-void iupdrvDrawText(IdrawCanvas* dc, const char* text, int len, int x, int y, int w, int h, long color, const char* font, int flags)
+static void gdiRotateWorld(HDC hDC, int xc, int yc, double angle)
+{
+  XFORM xForm;
+
+  SetGraphicsMode(hDC, GM_ADVANCED);
+  ModifyWorldTransform(hDC, NULL, MWT_IDENTITY);
+
+  xForm.eM11 = (FLOAT)cos(angle);
+  xForm.eM12 = (FLOAT)sin(angle);
+  xForm.eM21 = (FLOAT)-xForm.eM12;
+  xForm.eM22 = (FLOAT)xForm.eM11;
+  xForm.eDx = (FLOAT)xc;
+  xForm.eDy = (FLOAT)yc;
+  ModifyWorldTransform(hDC, &xForm, MWT_LEFTMULTIPLY);
+
+  xForm.eM11 = (FLOAT)1;
+  xForm.eM12 = (FLOAT)0;
+  xForm.eM21 = (FLOAT)0;
+  xForm.eM22 = (FLOAT)1;
+  xForm.eDx = (FLOAT)-xc;
+  xForm.eDy = (FLOAT)-yc;
+  ModifyWorldTransform(hDC, &xForm, MWT_LEFTMULTIPLY);
+}
+
+static void gdiTranslateWorld(HDC hDC, int x, int y)
+{
+  XFORM xForm;
+  xForm.eM11 = (FLOAT)1;
+  xForm.eM12 = (FLOAT)0;
+  xForm.eM21 = (FLOAT)0;
+  xForm.eM22 = (FLOAT)1;
+  xForm.eDx = (FLOAT)x;
+  xForm.eDy = (FLOAT)y;
+  ModifyWorldTransform(hDC, &xForm, MWT_RIGHTMULTIPLY);
+}
+
+static void gdiResetWorld(HDC hDC)
+{
+  ModifyWorldTransform(hDC, NULL, MWT_IDENTITY);
+  SetGraphicsMode(hDC, GM_COMPATIBLE);
+}
+
+void iupdrvDrawText(IdrawCanvas* dc, const char* text, int len, int x, int y, int w, int h, long color, const char* font, int flags, double text_orientation)
 {
   RECT rect;
   TCHAR* wtext;
   UINT uFormat = 0;
+  int layout_w = w, layout_h = h;
+  int layout_center = flags & IUP_DRAW_LAYOUTCENTER;
 
   HFONT hOldFont, hFont = (HFONT)iupwinGetHFont(font);
   SetTextColor(dc->hBitmapDC, RGB(iupDrawRed(color),iupDrawGreen(color),iupDrawBlue(color)));
   hOldFont = SelectObject(dc->hBitmapDC, hFont);
 
+  if (text_orientation && layout_center)
+    iupDrawGetTextInnerBounds(w, h, text_orientation, &layout_w, &layout_h);
+
   rect.left = x;
-  rect.right = x + w;
+  rect.right = x + layout_w;
   rect.top = y;
-  rect.bottom = y + h;
+  rect.bottom = y + layout_h;
 
   wtext = iupwinStrToSystemLen(text, &len);
 
@@ -349,9 +396,23 @@ void iupdrvDrawText(IdrawCanvas* dc, const char* text, int len, int x, int y, in
   if (!(flags & IUP_DRAW_CLIP))
     uFormat |= DT_NOCLIP;
 
+  if (text_orientation)
+  {
+    if (layout_center)
+    {
+      gdiRotateWorld(dc->hBitmapDC, x + layout_w / 2, y + layout_h / 2, -IUP_DEG2RAD*text_orientation);  /* counterclockwise */
+      gdiTranslateWorld(dc->hBitmapDC, (w - layout_w) / 2, (h - layout_h) / 2);  /* append the transform */
+    }
+    else
+      gdiRotateWorld(dc->hBitmapDC, x, y, -IUP_DEG2RAD*text_orientation);  /* counterclockwise */
+  }
+
   DrawText(dc->hBitmapDC, wtext, len, &rect, uFormat);
 
+  /* restore settings */
   SelectObject(dc->hBitmapDC, hOldFont);
+  if (text_orientation)
+    gdiResetWorld(dc->hBitmapDC);
 }
 
 void iupdrvDrawImage(IdrawCanvas* dc, const char* name, int make_inactive, const char* bgcolor, int x, int y, int w, int h)

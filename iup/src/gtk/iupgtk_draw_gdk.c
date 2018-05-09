@@ -267,11 +267,17 @@ void iupdrvDrawResetClip(IdrawCanvas* dc)
   dc->clip_y2 = 0;
 }
 
-void iupdrvDrawText(IdrawCanvas* dc, const char* text, int len, int x, int y, int w, int h, long color, const char* font, int flags)
+void iupdrvDrawText(IdrawCanvas* dc, const char* text, int len, int x, int y, int w, int h, long color, const char* font, int flags, double text_orientation)
 {
   PangoLayout* fontlayout = (PangoLayout*)iupgtkGetPangoLayout(font);
   PangoAlignment alignment = PANGO_ALIGN_LEFT;
   GdkColor c;
+  PangoContext* fontcontext = NULL;
+  int layout_w = w, layout_h = h;
+  int layout_center = flags & IUP_DRAW_LAYOUTCENTER;
+
+  if (text_orientation && layout_center)
+    iupDrawGetTextInnerBounds(w, h, text_orientation, &layout_w, &layout_h);
 
   iupgdkColorSet(&c, color);
   gdk_gc_set_rgb_fg_color(dc->pixmap_gc, &c);
@@ -286,13 +292,13 @@ void iupdrvDrawText(IdrawCanvas* dc, const char* text, int len, int x, int y, in
 
   if (flags & IUP_DRAW_WRAP)
   {
-    pango_layout_set_width(fontlayout, iupGTK_PIXELS2PANGOUNITS(w));
-    pango_layout_set_height(fontlayout, iupGTK_PIXELS2PANGOUNITS(h));
+    pango_layout_set_width(fontlayout, iupGTK_PIXELS2PANGOUNITS(layout_w));
+    pango_layout_set_height(fontlayout, iupGTK_PIXELS2PANGOUNITS(layout_h));
   }
   else if (flags & IUP_DRAW_ELLIPSIS)
   {
-    pango_layout_set_width(fontlayout, iupGTK_PIXELS2PANGOUNITS(w));
-    pango_layout_set_height(fontlayout, iupGTK_PIXELS2PANGOUNITS(h));
+    pango_layout_set_width(fontlayout, iupGTK_PIXELS2PANGOUNITS(layout_w));
+    pango_layout_set_height(fontlayout, iupGTK_PIXELS2PANGOUNITS(layout_h));
     pango_layout_set_ellipsize(fontlayout, PANGO_ELLIPSIZE_END);
   }
 
@@ -308,8 +314,38 @@ void iupdrvDrawText(IdrawCanvas* dc, const char* text, int len, int x, int y, in
     gdk_gc_set_clip_rectangle(dc->pixmap_gc, &rect);
   }
 
+  if (text_orientation)
+  {
+    PangoRectangle rect;
+    PangoMatrix fontmatrix = PANGO_MATRIX_INIT;
+    fontcontext = pango_layout_get_context(fontlayout);
+
+    pango_matrix_rotate(&fontmatrix, text_orientation);
+
+    pango_context_set_matrix(fontcontext, &fontmatrix);
+    pango_layout_context_changed(fontlayout);
+
+    pango_layout_get_pixel_extents(fontlayout, NULL, &rect);
+#if PANGO_VERSION_CHECK(1,16,0)
+    pango_matrix_transform_pixel_rectangle(&fontmatrix, &rect);
+#endif
+
+    /* Adjust the position considering the Pango rectangle transformed */
+    if (layout_center)
+    {
+      x += (w - rect.width) / 2;
+      y += (h - rect.height) / 2;
+    }
+    else
+    {
+      x += (int)rect.x;
+      y += (int)rect.y;
+    }
+  }
+
   gdk_draw_layout(dc->pixmap, dc->pixmap_gc, x, y, fontlayout);
 
+  /* restore settings */
   if ((flags & IUP_DRAW_WRAP) || (flags & IUP_DRAW_ELLIPSIS))
   {
     pango_layout_set_width(fontlayout, -1);
@@ -317,9 +353,10 @@ void iupdrvDrawText(IdrawCanvas* dc, const char* text, int len, int x, int y, in
   }
   if (flags & IUP_DRAW_ELLIPSIS)
     pango_layout_set_ellipsize(fontlayout, PANGO_ELLIPSIZE_NONE);
-
   if (flags & IUP_DRAW_CLIP)
     gdk_gc_set_clip_region(dc->pixmap_gc, NULL);
+  if (text_orientation)
+    pango_context_set_matrix(fontcontext, NULL);
 }
 
 void iupdrvDrawImage(IdrawCanvas* dc, const char* name, int make_inactive, const char* bgcolor, int x, int y, int w, int h)

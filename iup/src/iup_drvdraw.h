@@ -69,11 +69,12 @@ void iupdrvDrawPolygon(IdrawCanvas* dc, int* points, int count, long color, int 
 #define IUP_DRAW_WRAP     0x0004
 #define IUP_DRAW_ELLIPSIS 0x0008
 #define IUP_DRAW_CLIP     0x0010
+#define IUP_DRAW_LAYOUTCENTER 0x0020
 
 /** Draws a text.
  * x,y is at left,top corner of the text.
  * \ingroup drvdraw */
-void iupdrvDrawText(IdrawCanvas* dc, const char* text, int len, int x, int y, int w, int h, long color, const char* font, int flags);
+void iupdrvDrawText(IdrawCanvas* dc, const char* text, int len, int x, int y, int w, int h, long color, const char* font, int flags, double text_orientation);
 
 /** Draws an image.
  * x,y is at left,top corner of the image.

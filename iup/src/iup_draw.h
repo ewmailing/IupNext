@@ -41,7 +41,8 @@ void iupDrawHorizSunkenMark(Ihandle *ih, int x1, int x2, int y, long light_shado
 void iupDrawSunkenRect(Ihandle *ih, int x1, int y1, int x2, int y2, long light_shadow, long mid_shadow, long dark_shadow);
 
 void iupDrawParentBackground(IdrawCanvas* dc, Ihandle* ih);
-char* iupDrawGetTextSize(Ihandle* ih, const char* str, int len, int *w, int *h);
+char* iupDrawGetTextSize(Ihandle* ih, const char* str, int len, int *w, int *h, double text_orientation);
+void iupDrawGetTextInnerBounds(int o_w, int o_h, double text_orientation, int *w, int *h);
 
 
 /**********************************************************************************************************/
@@ -63,10 +64,10 @@ void iupFlatDrawBorder(IdrawCanvas* dc, int xmin, int xmax, int ymin, int ymax, 
 void iupFlatDrawBox(IdrawCanvas* dc, int xmin, int xmax, int ymin, int ymax, const char* color, const char* bgcolor, int active);
 
 void iupFlatDrawGetIconSize(Ihandle* ih, int img_position, int spacing, int horiz_padding, int vert_padding,
-                            const char* imagename, const char* title, int *w, int *h);
+                            const char* imagename, const char* title, int *w, int *h, double text_orientation);
 void iupFlatDrawIcon(Ihandle* ih, IdrawCanvas* dc, int icon_x, int icon_y, int icon_width, int icon_height,
                      int img_position, int spacing, int horiz_alignment, int vert_alignment, int horiz_padding, int vert_padding,
-                     const char* imagename, int make_inactive, const char* title, int text_flags, const char* fgcolor, const char* bgcolor, int active);
+                     const char* imagename, int make_inactive, const char* title, int text_flags, double text_orientation, const char* fgcolor, const char* bgcolor, int active);
 
 enum { IUPDRAW_ARROW_LEFT, IUPDRAW_ARROW_RIGHT, IUPDRAW_ARROW_TOP, IUPDRAW_ARROW_BOTTOM };
 void iupFlatDrawArrow(IdrawCanvas* dc, int x, int y, int size, const char* color, const char* bgcolor, int active, int dir);

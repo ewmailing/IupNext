@@ -220,12 +220,20 @@ static void drawTest(Ihandle *ih, int posx)  //_Lines
   IupSetAttribute(ih, "DRAWSTYLE", "FILL");
   IupDrawArc(ih, 60, 10 + 30, 80, 30 + 30, 45, 135);
 
+  IupSetAttribute(ih, "DRAWCOLOR", "255 0 0");
   IupDrawLine(ih, 20, 70 - 2, 20, 70 + 2);
   IupDrawLine(ih, 20 - 2, 70, 20 + 2, 70);
 
+  IupSetAttribute(ih, "DRAWCOLOR", "0 0 0");
   IupSetAttribute(ih, "DRAWFONT", "Helvetica, -30");
-//  IupDrawText(ih, "Text", 0, 20, 70, -1, -1);
-//  IupSetAttribute(ih, "DRAWTEXTWRAP", "Yes");
+//  IupSetAttribute(ih, "DRAWTEXTORIENTATION", "60");
+//  IupSetAttribute(ih, "DRAWTEXTLAYOUTCENTER", "Yes");
+  IupDrawGetTextSize(ih, "Text", -1, &w, &h);
+  IupSetAttribute(ih, "DRAWSTYLE", "STROKE");
+  IupDrawRectangle(ih, 20, 70, 20 + w, 70 + h);
+  IupDrawText(ih, "Text", 0, 20, 70, -1, -1);
+  IupSetAttribute(ih, "DRAWTEXTORIENTATION", "0");
+  //  IupSetAttribute(ih, "DRAWTEXTWRAP", "Yes");
 //  IupSetAttribute(ih, "DRAWTEXTELLIPSIS", "Yes");
 //  IupSetAttribute(ih, "DRAWTEXTCLIP", "Yes");
 //  IupDrawText(ih, "Very Large Text", 0, 20, 70, 50, 70);

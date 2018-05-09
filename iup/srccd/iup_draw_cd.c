@@ -186,17 +186,10 @@ static void cdsector(cdCtxCanvas *ctxcanvas, int xc, int yc, int w, int h, doubl
     iupdrvDrawArc(ctxcanvas->dc, x1, y1, x2, y2, a1, a2, ctxcanvas->canvas->foreground, IUP_DRAW_FILL, ctxcanvas->canvas->line_width);
 }
 
-static double cdtextorientation(cdCtxCanvas *ctxcanvas, double angle)
-{
-  (void)ctxcanvas;
-  (void)angle;
-  /* disable text orientation changes */
-  return 0;
-}
-
 static void cdtext(cdCtxCanvas *ctxcanvas, int x, int y, const char *s, int len)
 {
-  int w, h, desc, dir = -1;
+  int w, h, desc;
+  int ox = x, oy = y;
 
   /* cxText method is called for single lines only */
 
@@ -226,20 +219,17 @@ static void cdtext(cdCtxCanvas *ctxcanvas, int x, int y, const char *s, int len)
     break;
   }
 
-  if (ctxcanvas->canvas->invert_yaxis)
-    dir = 1;
-
   switch (ctxcanvas->canvas->text_alignment)
   {
   case CD_BASE_LEFT:
   case CD_BASE_CENTER:
   case CD_BASE_RIGHT:
-    y = y - (dir*h - desc);
+    y = y - h + desc;
     break;
   case CD_SOUTH_EAST:
   case CD_SOUTH_WEST:
   case CD_SOUTH:
-    y = y - (dir*h);
+    y = y - h;
     break;
   case CD_NORTH_EAST:
   case CD_NORTH:
@@ -249,12 +239,19 @@ static void cdtext(cdCtxCanvas *ctxcanvas, int x, int y, const char *s, int len)
   case CD_CENTER:
   case CD_EAST:
   case CD_WEST:
-    y = y - (dir*(h / 2));
+    y = y - h / 2;
     break;
   }
 
+  if (ctxcanvas->canvas->text_orientation)
+  {
+    double cos_angle = cos(ctxcanvas->canvas->text_orientation*CD_DEG2RAD);
+    double sin_angle = sin(ctxcanvas->canvas->text_orientation*CD_DEG2RAD);
+    cdRotatePoint(ctxcanvas->canvas, x, y, ox, oy, &x, &y, sin_angle, cos_angle);
+  }
+
   if (ctxcanvas->dc)
-    iupdrvDrawText(ctxcanvas->dc, s, len, x, y, w, h, ctxcanvas->canvas->foreground, ctxcanvas->canvas->native_font, IUP_DRAW_LEFT);  /* left alignment - unused, multiline alignment is done by CD */
+    iupdrvDrawText(ctxcanvas->dc, s, len, x, y, w, h, ctxcanvas->canvas->foreground, ctxcanvas->canvas->native_font, IUP_DRAW_LEFT, ctxcanvas->canvas->text_orientation);  /* left alignment - unused, multiline alignment is done by CD, layout is NOT centered */
 }
 
 static void cdpoly(cdCtxCanvas *ctxcanvas, int mode, cdPoint* poly, int n)
@@ -301,15 +298,9 @@ static void cdpoly(cdCtxCanvas *ctxcanvas, int mode, cdPoint* poly, int n)
 /******************************************************/
 
 
-static void sFixImageY(cdCanvas* canvas, int *topdown, int *y, int h)
+static void sFixImageY(int *y, int h)
 {
-  if (canvas->invert_yaxis)
-    *topdown = 0;
-  else
-    *topdown = 1;
-
-  if (!(*topdown))
-    *y -= (h - 1);  /* move Y to top-left corner, since it was at the bottom of the image */
+  *y -= (h - 1);  /* move Y to top-left corner, since it was at the bottom of the image */
 }
 
 static void cdputimagerectrgba(cdCtxCanvas* ctxcanvas, int width, int height, const unsigned char *red,
@@ -317,11 +308,11 @@ static void cdputimagerectrgba(cdCtxCanvas* ctxcanvas, int width, int height, co
 {
   int i, j, count;
   Ihandle *image;
-  int topdown, pos;
+  int pos;
   unsigned char *rgba;
   int dy = y;
 
-  sFixImageY(ctxcanvas->canvas, &topdown, &dy, height);
+  sFixImageY(&dy, height);
 
   image = IupImageRGBA(width, height, NULL);
   IupSetHandle("_IUPDRAW_CD_IMAGE", image);
@@ -332,10 +323,7 @@ static void cdputimagerectrgba(cdCtxCanvas* ctxcanvas, int width, int height, co
   {
     for (j = xmin; j <= xmax; j++)
     {
-      if (topdown)
-        pos = i*width + j;
-      else
-        pos = (ymax + ymin - i)*width + j;
+      pos = (ymax + ymin - i)*width + j;
 
       rgba[count++] = red[pos];
       rgba[count++] = green[pos];
@@ -355,11 +343,11 @@ static void cdputimagerectrgb(cdCtxCanvas* ctxcanvas, int width, int height, con
 {
   int i, j, count;
   Ihandle *image;
-  int topdown, pos;
+  int pos;
   unsigned char *rgb;
   int dy = y;
 
-  sFixImageY(ctxcanvas->canvas, &topdown, &dy, height);
+  sFixImageY(&dy, height);
 
   image = IupImageRGB(width, height, NULL);
   IupSetHandle("_IUPDRAW_CD_IMAGE", image);
@@ -370,10 +358,7 @@ static void cdputimagerectrgb(cdCtxCanvas* ctxcanvas, int width, int height, con
   {
     for (j = xmin; j <= xmax; j++)
     {
-      if (topdown)
-        pos = i*width + j;
-      else
-        pos = (ymax + ymin - i)*width + j;
+      pos = (ymax + ymin - i)*width + j;
 
       rgb[count++] = red[pos];
       rgb[count++] = green[pos];
@@ -391,13 +376,13 @@ static void cdputimagerectmap(cdCtxCanvas *ctxcanvas, int iw, int ih, const unsi
                               int x, int y, int w, int h, int xmin, int xmax, int ymin, int ymax)
 {
   int i, j, count;
-  int topdown, pos;
+  int pos;
   Ihandle *image;
   unsigned char *map;
   int dy = y;
   char name[60];
 
-  sFixImageY(ctxcanvas->canvas, &topdown, &dy, ih);
+  sFixImageY(&dy, ih);
 
   image = IupImage(iw, ih, NULL);
   IupSetHandle("_IUPDRAW_CD_IMAGE", image);
@@ -414,10 +399,7 @@ static void cdputimagerectmap(cdCtxCanvas *ctxcanvas, int iw, int ih, const unsi
   {
     for (j = xmin; j <= xmax; j++)
     {
-      if (topdown)
-        pos = i*iw + j;
-      else
-        pos = (ymax + ymin - i)*iw + j;
+      pos = (ymax + ymin - i)*iw + j;
 
       map[count++] = index[pos];
     }
@@ -480,7 +462,6 @@ static void cdinittable(cdCanvas* canvas)
   canvas->cxFont = cdfont;
   canvas->cxGetFontDim = cdgetfontdim;
   canvas->cxGetTextSize = cdgettextsize;
-  canvas->cxTextOrientation = cdtextorientation;
 
   canvas->cxKillCanvas = cdkillcanvas;
   canvas->cxDeactivate = cddeactivate;

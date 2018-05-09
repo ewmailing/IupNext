@@ -67,6 +67,7 @@ static int iDropButtonRedraw_CB(Ihandle* ih)
   char* bgimage = iupAttribGet(ih, "BACKIMAGE");
   char* fgimage = iupAttribGet(ih, "FRONTIMAGE");
   int text_flags = iupDrawGetTextFlags(ih, "TEXTALIGNMENT", "TEXTWRAP", "TEXTELLIPSIS");
+  double text_orientation = iupAttribGetDouble(ih, "TEXTORIENTATION");
   const char* draw_image;
   int border_width = ih->data->border_width;
   int draw_border = iupAttribGetBoolean(ih, "SHOWBORDER");
@@ -198,7 +199,7 @@ static int iDropButtonRedraw_CB(Ihandle* ih)
   iupFlatDrawIcon(ih, dc, border_width, border_width,
                   ih->currentwidth - 2 * border_width - ih->data->arrow_size, ih->currentheight - 2 * border_width,
                   ih->data->img_position, ih->data->spacing, ih->data->horiz_alignment, ih->data->vert_alignment, ih->data->horiz_padding, ih->data->vert_padding,
-                  draw_image, make_inactive, title, text_flags, fgcolor, bgcolor_button, active);
+                  draw_image, make_inactive, title, text_flags, text_orientation, fgcolor, bgcolor_button, active);
 
   if (fgimage)
   {
@@ -800,8 +801,9 @@ static void iDropButtonComputeNaturalSizeMethod(Ihandle* ih, int *w, int *h, int
 
     char* imagename = iupAttribGet(ih, "IMAGE");
     char* title = iupAttribGet(ih, "TITLE");
+    double text_orientation = iupAttribGetDouble(ih, "TEXTORIENTATION");
 
-    iupFlatDrawGetIconSize(ih, ih->data->img_position, ih->data->spacing, ih->data->horiz_padding, ih->data->vert_padding, imagename, title, w, h);
+    iupFlatDrawGetIconSize(ih, ih->data->img_position, ih->data->spacing, ih->data->horiz_padding, ih->data->vert_padding, imagename, title, w, h, text_orientation);
 
     visiblecolumns = iupAttribGetInt(ih, "VISIBLECOLUMNS");
     if (visiblecolumns)
@@ -883,6 +885,7 @@ Iclass* iupDropButtonNewClass(void)
   iupClassRegisterAttribute(ic, "TEXTWRAP", NULL, NULL, NULL, NULL, IUPAF_NO_INHERIT);
   iupClassRegisterAttribute(ic, "TEXTELLIPSIS", NULL, NULL, NULL, NULL, IUPAF_NO_INHERIT);
   iupClassRegisterAttribute(ic, "TEXTCLIP", NULL, NULL, NULL, NULL, IUPAF_NO_INHERIT);
+  iupClassRegisterAttribute(ic, "TEXTORIENTATION", NULL, NULL, NULL, NULL, IUPAF_NO_INHERIT);
 
   iupClassRegisterAttribute(ic, "BACKIMAGE", NULL, NULL, NULL, NULL, IUPAF_IHANDLENAME | IUPAF_NO_DEFAULTVALUE | IUPAF_NO_INHERIT);
   iupClassRegisterAttribute(ic, "BACKIMAGEPRESS", NULL, NULL, NULL, NULL, IUPAF_IHANDLENAME | IUPAF_NO_DEFAULTVALUE | IUPAF_NO_INHERIT);

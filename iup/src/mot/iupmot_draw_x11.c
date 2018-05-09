@@ -260,12 +260,13 @@ void iupdrvDrawResetClip(IdrawCanvas* dc)
   dc->clip_y2 = 0;
 }
 
-void iupdrvDrawText(IdrawCanvas* dc, const char* text, int len, int x, int y, int w, int h, long color, const char* font, int flags)
+void iupdrvDrawText(IdrawCanvas* dc, const char* text, int len, int x, int y, int w, int h, long color, const char* font, int flags, double text_orientation)
 {
   int num_line, width, off_x;
   XFontStruct* xfont = (XFontStruct*)iupmotGetFontStruct(font);
 
-  /* IUP_DRAW_ELLIPSIS and IUP_DRAW_WRAP are not supported */
+  /* IUP_DRAW_LAYOUTCENTER, IUP_DRAW_ELLIPSIS and IUP_DRAW_WRAP are not supported */
+  (void)text_orientation;  /* not supported */
 
   XSetForeground(iupmot_display, dc->pixmap_gc, iupmotColorGetPixel(iupDrawRed(color),iupDrawGreen(color),iupDrawBlue(color)));
   XSetFont(iupmot_display, dc->pixmap_gc, xfont->fid);
@@ -352,6 +353,7 @@ void iupdrvDrawText(IdrawCanvas* dc, const char* text, int len, int x, int y, in
     }
   }
 
+  /* restore settings */
   if (flags & IUP_DRAW_CLIP)
     XSetClipMask(iupmot_display, dc->pixmap_gc, None);
 }

@@ -64,6 +64,7 @@ static int iFlatToggleRedraw_CB(Ihandle* ih)
   char* bgimage = iupAttribGet(ih, "BACKIMAGE");
   char* fgimage = iupAttribGet(ih, "FRONTIMAGE");
   int text_flags = iupDrawGetTextFlags(ih, "TEXTALIGNMENT", "TEXTWRAP", "TEXTELLIPSIS");
+  double text_orientation = iupAttribGetDouble(ih, "TEXTORIENTATION");
   int check_right = iupAttribGetInt(ih, "CHECKRIGHT");
   Ihandle* radio = iupRadioFindToggleParent(ih);
   const char* draw_image;
@@ -169,7 +170,7 @@ static int iFlatToggleRedraw_CB(Ihandle* ih)
   iupFlatDrawIcon(ih, dc, border_width + icon_left, border_width,
                           icon_width - 2 * border_width, ih->currentheight - 2 * border_width,
                           ih->data->img_position, ih->data->spacing, ih->data->horiz_alignment, ih->data->vert_alignment, ih->data->horiz_padding, ih->data->vert_padding,
-                          draw_image, make_inactive, title, text_flags, fgcolor, bgcolor, active);
+                          draw_image, make_inactive, title, text_flags, text_orientation, fgcolor, bgcolor, active);
 
   if (fgimage)
   {
@@ -710,8 +711,9 @@ static void iFlatToggleComputeNaturalSizeMethod(Ihandle* ih, int *w, int *h, int
   {
     char* imagename = iupAttribGet(ih, "IMAGE");
     char* title = iupAttribGet(ih, "TITLE");
+    double text_orientation = iupAttribGetDouble(ih, "TEXTORIENTATION");
 
-    iupFlatDrawGetIconSize(ih, ih->data->img_position, ih->data->spacing, ih->data->horiz_padding, ih->data->vert_padding, imagename, title, w, h);
+    iupFlatDrawGetIconSize(ih, ih->data->img_position, ih->data->spacing, ih->data->horiz_padding, ih->data->vert_padding, imagename, title, w, h, text_orientation);
 
     *w += 2 * ih->data->border_width;
     *h += 2 * ih->data->border_width;
@@ -793,6 +795,7 @@ Iclass* iupFlatToggleNewClass(void)
   iupClassRegisterAttribute(ic, "TEXTWRAP", NULL, NULL, NULL, NULL, IUPAF_NO_INHERIT);
   iupClassRegisterAttribute(ic, "TEXTELLIPSIS", NULL, NULL, NULL, NULL, IUPAF_NO_INHERIT);
   iupClassRegisterAttribute(ic, "TEXTCLIP", NULL, NULL, NULL, NULL, IUPAF_NO_INHERIT);
+  iupClassRegisterAttribute(ic, "TEXTORIENTATION", NULL, NULL, NULL, NULL, IUPAF_NO_INHERIT);
 
   iupClassRegisterAttribute(ic, "BACKIMAGE", NULL, NULL, NULL, NULL, IUPAF_IHANDLENAME | IUPAF_NO_DEFAULTVALUE | IUPAF_NO_INHERIT);
   iupClassRegisterAttribute(ic, "BACKIMAGEPRESS", NULL, NULL, NULL, NULL, IUPAF_IHANDLENAME | IUPAF_NO_DEFAULTVALUE | IUPAF_NO_INHERIT);

@@ -461,6 +461,7 @@ static Ihandle* CreateTabs(int tab)
 //  IupSetAttribute(tabs, "SHOWCLOSE", "yes");
 //  IupSetAttribute(tabs, "TABSPADDING", "10x50");
 //  IupSetAttribute(tabs, "TABSFONTSIZE", "36");
+//  IupSetAttribute(tabs, "TABSTEXTORIENTATION", "90");
 
   IupSetAttribute(tabs, "TABFONTSTYLE4", "Bold");
 

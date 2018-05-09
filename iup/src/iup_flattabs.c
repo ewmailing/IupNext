@@ -229,10 +229,11 @@ static void iFlatTabsGetTabSize(Ihandle* ih, int fixedwidth, int horiz_padding, 
   int spacing = iupAttribGetInt(ih, "TABSIMAGESPACING");
   char* imagename = iupAttribGetId(ih, "TABIMAGE", pos);
   char* title = iupAttribGetId(ih, "TABTITLE", pos);
+  double text_orientation = iupAttribGetDouble(ih, "TABSTEXTORIENTATION");
 
   iFlatTabsSetTabFont(ih, pos);
 
-  iupFlatDrawGetIconSize(ih, img_position, spacing, horiz_padding, vert_padding, imagename, title, tab_w, tab_h);
+  iupFlatDrawGetIconSize(ih, img_position, spacing, horiz_padding, vert_padding, imagename, title, tab_w, tab_h, text_orientation);
 
   if (fixedwidth)
   {
@@ -303,11 +304,12 @@ static int iFlatTabsGetExtraWidthId(Ihandle* ih, int i, int img_position, int ho
   char* imagename = iupAttribGetId(ih, "EXTRAIMAGE", i);
   char* title = iupAttribGetId(ih, "EXTRATITLE", i);
   int spacing = iupAttribGetInt(ih, "TABSIMAGESPACING");
+  double text_orientation = iupAttribGetDouble(ih, "TABSTEXTORIENTATION");
   int w, h;
 
   iFlatTabsSetExtraFont(ih, i);
 
-  iupFlatDrawGetIconSize(ih, img_position, spacing, horiz_padding, 0, imagename, title, &w, &h);   /* vert_padding not used */
+  iupFlatDrawGetIconSize(ih, img_position, spacing, horiz_padding, 0, imagename, title, &w, &h, text_orientation);   /* vert_padding not used */
 
   return w;
 }
@@ -378,6 +380,7 @@ static int iFlatTabsRedraw_CB(Ihandle* ih)
   int img_position = iupFlatGetImagePosition(iupAttribGetStr(ih, "TABSIMAGEPOSITION"));
   char* alignment = iupAttribGetStr(ih, "TABSALIGNMENT");
   int text_flags = iupDrawGetTextFlags(ih, "TABSTEXTALIGNMENT", "TABSTEXTWRAP", "TABSTEXTELLIPSIS");
+  double text_orientation = iupAttribGetDouble(ih, "TABSTEXTORIENTATION");
   int active = IupGetInt(ih, "ACTIVE");  /* native implementation */
   int spacing = iupAttribGetInt(ih, "TABSIMAGESPACING");
   int horiz_padding, vert_padding, scroll_pos;
@@ -531,7 +534,7 @@ static int iFlatTabsRedraw_CB(Ihandle* ih)
       iupFlatDrawIcon(ih, dc, tab_x, 0,
                       icon_width, title_height,
                       img_position, spacing, horiz_alignment, vert_alignment, horiz_padding, vert_padding,
-                      tab_image, make_inactive, tab_title, text_flags, foreground_color, background_color, tab_active);
+                      tab_image, make_inactive, tab_title, text_flags, text_orientation, foreground_color, background_color, tab_active);
 
       if (current_child == child && iupAttribGetInt(ih, "HASFOCUS"))
         iupdrvDrawFocusRect(dc, tab_x + 3, 3, tab_x + icon_width - 3, title_height - 3);
@@ -652,7 +655,7 @@ static int iFlatTabsRedraw_CB(Ihandle* ih)
       iupFlatDrawIcon(ih, dc, extra_x, 0,
                       extra_w, title_height - 1,
                       img_position, spacing, extra_horiz_alignment, extra_vert_alignment, horiz_padding, vert_padding,
-                      extra_image, make_inactive, extra_title, text_flags, extra_forecolor, tabs_bgcolor, extra_active);
+                      extra_image, make_inactive, extra_title, text_flags, text_orientation, extra_forecolor, tabs_bgcolor, extra_active);
 
       right_extra_width += extra_w;
     }
@@ -1262,7 +1265,7 @@ static int iFlatTabsKLeft_CB(Ihandle* ih)
       if (child && iupAttribGetBooleanId(ih, "TABVISIBLE", pos))
       {
         iFlatTabsSetCurrentTab(ih, child);
-        break;
+        return IUP_IGNORE;
       }
     }
   }
@@ -1283,7 +1286,7 @@ static int iFlatTabsKRight_CB(Ihandle* ih)
       if (child && iupAttribGetBooleanId(ih, "TABVISIBLE", pos))
       {
         iFlatTabsSetCurrentTab(ih, child);
-        break;
+        return IUP_IGNORE;
       }
     }
   }
@@ -1972,6 +1975,7 @@ Iclass* iupFlatTabsNewClass(void)
   iupClassRegisterAttribute(ic, "TABSTEXTWRAP", NULL, NULL, NULL, NULL, IUPAF_NO_INHERIT);
   iupClassRegisterAttribute(ic, "TABSTEXTELLIPSIS", NULL, NULL, NULL, NULL, IUPAF_NO_INHERIT);
   iupClassRegisterAttribute(ic, "TABSTEXTCLIP", NULL, NULL, NULL, NULL, IUPAF_NO_INHERIT);
+  iupClassRegisterAttribute(ic, "TABSTEXTORIENTATION", NULL, NULL, NULL, NULL, IUPAF_NO_INHERIT);
 
   iupClassRegisterAttribute(ic, "SHOWCLOSE", NULL, NULL, NULL, NULL, IUPAF_NO_INHERIT);
   iupClassRegisterAttribute(ic, "CLOSEIMAGE", NULL, iFlatTabsSetAttribPostRedraw, IUPAF_SAMEASSYSTEM, "IMGFLATCLOSE", IUPAF_IHANDLENAME | IUPAF_NO_INHERIT);

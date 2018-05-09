@@ -28,7 +28,7 @@ another toolkit like CD. </p>
 <p>To use the functions in C/C++ you must include the &quot;iupdraw.h&quot; header.</p>
 <p>Internally IupDraw uses several drawing APIs: GDI, Direct2D, GDI+ (in 
 Windows); X11 (in Motif), GDK and Cairo (in GTK). </p>
-<p>All drivers are double buffered, so drawing occurs offscreen and he final 
+<p>All drivers are double buffered, so drawing occurs off-screen and the final 
 result is displayed in <strong>IupDrawEnd</strong> only.</p>
 <p>Direct2D and GDI+ are accessed using the
 <a href="https://github.com/mity/windrawlib">WinDrawLib</a> library by Martin 
@@ -41,7 +41,8 @@ tool. (since 3.25)</p>
 Cairo in Linux (even in GTK 2). In Windows XP, there is no Direct 2D then GDI+ 
 is used. So since 3.25 DRAWCOLOR supports alpha and primitives have 
 anti-aliasing in Windows and Linux. The GDI driver and the GDK can still be 
-used, but the IUP main library must be re-compiled, see &quot;iup/src/config.mak&quot;. 
+used, but the IUP main library must be re-compiled, see the USE_NEW_DRAW 
+definition in &quot;iup/src/config.mak&quot;. 
 The canvas has a new attribute called DRAWDRIVER that returns: GDI, D2D, GDI+, 
 X11, GDK or CAIRO.</p>
 <p>IMPORTANT: all functions can be used only in <strong>IupCanvas</strong> or
@@ -127,7 +128,12 @@ replace the invisible part. It will be ignored when WRAP=Yes (since 3.25). <span
 w and h are optional and can be -1 or 0, the text size will be used, so WRAP nor ELLIPSIS 
 will not produce any changes. The text is not automatically clipped to the 
 rectangle, if <strong>DRAWTEXTCLIP</strong>=Yes it will be clipped but depending 
-on the driver may affect the clipping set by IupDrawSetClipRect (since 3.25).</span></span></p>
+on the driver may affect the clipping set by IupDrawSetClipRect (since 3.25). 
+The text can be draw in any angle using <strong>DRAWTEXTORIENTATION</strong>, in degrees and 
+counterclockwise (since 3.25), its layout is not centered inside the given 
+rectangle when text is oriented, to center the layout use <strong>
+DRAWTEXTLAYOUTCENTER</strong>=Yes. Text orientation, ellipsis and wrap are not 
+supported in X11.</span></span></p>
 <pre>void IupDrawImage(Ihandle* <strong>ih</strong>, const char* <strong>name</strong>, int <strong>x</strong>, int <strong>y</strong>, int <strong>w</strong>, int <strong>h</strong>); [in C]
 iup.Draw<span class="auto-style2">Image(</span><strong>ih</strong>: ihandle<span class="auto-style2"><strong>, name</strong>: string or <strong>image</strong>: ihandle<strong>, x</strong>, <strong>y[, w, h]</strong>: number)</span> [in Lua]
 <strong>ih</strong>:DrawImage(<strong>name</strong><span class="auto-style2">: string or <strong>image</strong>: ihandle<strong>, x</strong>, <strong>y[, w, h]</strong>: number</span>) [in Lua]</pre>

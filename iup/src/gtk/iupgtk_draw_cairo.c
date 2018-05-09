@@ -404,10 +404,15 @@ void iupdrvDrawResetClip(IdrawCanvas* dc)
   dc->clip_y2 = 0;
 }
 
-void iupdrvDrawText(IdrawCanvas* dc, const char* text, int len, int x, int y, int w, int h, long color, const char* font, int flags)
+void iupdrvDrawText(IdrawCanvas* dc, const char* text, int len, int x, int y, int w, int h, long color, const char* font, int flags, double text_orientation)
 {
   PangoLayout* fontlayout = (PangoLayout*)iupgtkGetPangoLayout(font);
   PangoAlignment alignment = PANGO_ALIGN_LEFT;
+  int layout_w = w, layout_h = h;
+  int layout_center = flags & IUP_DRAW_LAYOUTCENTER;
+
+  if (text_orientation && layout_center)
+    iupDrawGetTextInnerBounds(w, h, text_orientation, &layout_w, &layout_h);
 
   text = iupgtkStrConvertToSystemLen(text, &len);
   pango_layout_set_text(fontlayout, text, len);
@@ -421,13 +426,13 @@ void iupdrvDrawText(IdrawCanvas* dc, const char* text, int len, int x, int y, in
 
   if (flags & IUP_DRAW_WRAP)
   {
-    pango_layout_set_width(fontlayout, iupGTK_PIXELS2PANGOUNITS(w));
-    pango_layout_set_height(fontlayout, iupGTK_PIXELS2PANGOUNITS(h));
+    pango_layout_set_width(fontlayout, iupGTK_PIXELS2PANGOUNITS(layout_w));
+    pango_layout_set_height(fontlayout, iupGTK_PIXELS2PANGOUNITS(layout_h));
   }
   else if (flags & IUP_DRAW_ELLIPSIS)
   {
-    pango_layout_set_width(fontlayout, iupGTK_PIXELS2PANGOUNITS(w));
-    pango_layout_set_height(fontlayout, iupGTK_PIXELS2PANGOUNITS(h));
+    pango_layout_set_width(fontlayout, iupGTK_PIXELS2PANGOUNITS(layout_w));
+    pango_layout_set_height(fontlayout, iupGTK_PIXELS2PANGOUNITS(layout_h));
     pango_layout_set_ellipsize(fontlayout, PANGO_ELLIPSIZE_END);
   }
   
@@ -438,6 +443,24 @@ void iupdrvDrawText(IdrawCanvas* dc, const char* text, int len, int x, int y, in
     cairo_save(dc->image_cr);
     cairo_rectangle(dc->image_cr, x, y, w, h);
     cairo_clip(dc->image_cr); /* intersect with the current clipping */
+  }
+
+  if (text_orientation)
+  {
+    if (layout_center)
+    {
+      cairo_translate(dc->image_cr, (w - layout_w) / 2, (h - layout_h) / 2);   /* transformations in Cairo is always prepend */
+
+      cairo_translate(dc->image_cr, x + layout_w / 2, y + layout_h / 2);
+      cairo_rotate(dc->image_cr, -text_orientation*IUP_DEG2RAD);  /* counterclockwise */
+      cairo_translate(dc->image_cr, -(x + layout_w / 2), -(y + layout_h / 2));
+    }
+    else
+    {
+      cairo_translate(dc->image_cr, x, y);
+      cairo_rotate(dc->image_cr, -text_orientation*IUP_DEG2RAD);  /* counterclockwise */
+      cairo_translate(dc->image_cr, -x, -y);
+    }
   }
 
   pango_cairo_update_layout(dc->image_cr, fontlayout);
@@ -453,6 +476,8 @@ void iupdrvDrawText(IdrawCanvas* dc, const char* text, int len, int x, int y, in
   }
   if (flags & IUP_DRAW_ELLIPSIS)
     pango_layout_set_ellipsize(fontlayout, PANGO_ELLIPSIZE_NONE);
+  if (text_orientation)
+    cairo_identity_matrix(dc->image_cr);
   if (flags & IUP_DRAW_CLIP)
     cairo_restore(dc->image_cr);
 }
@@ -492,7 +517,7 @@ void iupdrvDrawImage(IdrawCanvas* dc, const char* name, int make_inactive, const
 
 void iupdrvDrawSelectRect(IdrawCanvas* dc, int x1, int y1, int x2, int y2)
 {
-  cairo_set_source_rgba(dc->image_cr, 0, 0, 1, 0.60);
+  cairo_set_source_rgba(dc->image_cr, 0, 0, 1, 0.6);  /* 0, 0, 255, 153 (blue semi-transparent) */
 
   iupDrawCheckSwapCoord(x1, x2);
   iupDrawCheckSwapCoord(y1, y2);
@@ -504,6 +529,7 @@ void iupdrvDrawSelectRect(IdrawCanvas* dc, int x1, int y1, int x2, int y2)
 
 void iupdrvDrawFocusRect(IdrawCanvas* dc, int x1, int y1, int x2, int y2)
 {
+#if 0
 #if GTK_CHECK_VERSION(3, 0, 0)
   GtkStyleContext* context = gtk_widget_get_style_context(dc->widget);
 #endif
@@ -519,5 +545,8 @@ void iupdrvDrawFocusRect(IdrawCanvas* dc, int x1, int y1, int x2, int y2)
   dc->focus_y2 = y2;
 #else
   gtk_render_focus(context, dc->image_cr, x1, y1, x2 - x1 + 1, y2 - y1 + 1);
+#endif
+#else
+  iupdrvDrawRectangle(dc, x1, y1, x2, y2, iupDrawColor(0, 0, 0, 224), IUP_DRAW_STROKE_DOT, 1);
 #endif
 }

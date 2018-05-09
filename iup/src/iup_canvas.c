@@ -187,6 +187,8 @@ Iclass* iupCanvasNewClass(void)
   iupClassRegisterAttribute(ic, "DRAWTEXTWRAP", NULL, NULL, NULL, NULL, IUPAF_NO_INHERIT);
   iupClassRegisterAttribute(ic, "DRAWTEXTELLIPSIS", NULL, NULL, NULL, NULL, IUPAF_NO_INHERIT);
   iupClassRegisterAttribute(ic, "DRAWTEXTCLIP", NULL, NULL, NULL, NULL, IUPAF_NO_INHERIT);
+  iupClassRegisterAttribute(ic, "DRAWTEXTORIENTATION", NULL, NULL, NULL, NULL, IUPAF_NO_INHERIT);
+  iupClassRegisterAttribute(ic, "DRAWTEXTLAYOUTCENTER", NULL, NULL, NULL, NULL, IUPAF_NO_INHERIT);
   iupClassRegisterAttribute(ic, "DRAWLINEWIDTH", NULL, NULL, NULL, NULL, IUPAF_NO_INHERIT);
   iupClassRegisterAttribute(ic, "DRAWBGCOLOR", NULL, NULL, NULL, NULL, IUPAF_NO_INHERIT);  /* used only for images */
   iupClassRegisterAttribute(ic, "DRAWMAKEINACTIVE", NULL, NULL, NULL, NULL, IUPAF_NO_INHERIT);  /* used only for images */
