@@ -14,7 +14,7 @@
 #include "SciLexer.h"
 
 #include <gtk/gtk.h>
-#include <ScintillaWidget.h>
+#include "ScintillaWidget.h"
 
 #include "iup.h"
 #include "iup_scintilla.h"
