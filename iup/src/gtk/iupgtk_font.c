@@ -366,7 +366,7 @@ int iupdrvSetFontAttrib(Ihandle* ih, const char* value)
 
 static void gtkFontGetTextSize(Ihandle* ih, IgtkFont* gtkfont, const char* str, int len, int *w, int *h)
 {
-  int max_w = 0, line_count;
+  int max_w = 0, line_count = 1;
 
   if (!gtkfont)
   {

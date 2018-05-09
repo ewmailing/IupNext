@@ -1162,6 +1162,8 @@ static int gtkTextSetCueBannerAttrib(Ihandle *ih, const char *value)
 #if GTK_CHECK_VERSION(3, 2, 0)
     gtk_entry_set_placeholder_text(GTK_ENTRY(ih->handle), iupgtkStrConvertToSystem(value));
     return 1;
+#else
+    (void)value;
 #endif
   }
   return 0;

@@ -73,7 +73,11 @@ void iupdrvGetFullSize(int *width, int *height)
 int iupdrvGetScreenDepth(void)
 {
   GdkVisual* visual = gdk_visual_get_system();
+#if GTK_CHECK_VERSION(2, 22, 0)
   return gdk_visual_get_depth(visual);
+#else
+  return visual->depth;
+#endif
 }
 
 double iupdrvGetScreenDpi(void)
