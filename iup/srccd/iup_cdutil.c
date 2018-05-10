@@ -327,5 +327,6 @@ void cdIupDrawFocusRect(cdCanvas *canvas, int x1, int y1, int x2, int y2)
   cdCanvasLineStyle(canvas, CD_DOTTED);
   cdCanvasForeground(canvas, CD_BLACK);
   cdCanvasRect(canvas, x1, x2, y1, y2);
+  cdCanvasLineStyle(canvas, CD_CONTINUOUS);
 }
 
