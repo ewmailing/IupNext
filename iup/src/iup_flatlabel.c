@@ -61,8 +61,12 @@ static int iFlatLabelRedraw_CB(Ihandle* ih)
 
   if (bgimage) /* draw background */
   {
+    int backimage_zoom = iupAttribGetBoolean(ih, "BACKIMAGEZOOM");
     draw_image = iupFlatGetImageName(ih, "BACKIMAGE", bgimage, 0, 0, active, &make_inactive);
-    iupdrvDrawImage(dc, draw_image, make_inactive, bgcolor, 0, 0, -1, -1);
+    if (backimage_zoom)
+      iupdrvDrawImage(dc, draw_image, make_inactive, bgcolor, 0, 0, ih->currentwidth, ih->currentheight);
+    else
+      iupdrvDrawImage(dc, draw_image, make_inactive, bgcolor, 0, 0, -1, -1);
   }
   else
     iupFlatDrawBox(dc, 0, ih->currentwidth - 1,
@@ -276,7 +280,8 @@ Iclass* iupFlatLabelNewClass(void)
 
   iupClassRegisterAttribute(ic, "BACKIMAGE", NULL, iFlatLabelSetAttribPostRedraw, NULL, NULL, IUPAF_IHANDLENAME | IUPAF_NO_DEFAULTVALUE | IUPAF_NO_INHERIT);
   iupClassRegisterAttribute(ic, "BACKIMAGEINACTIVE", NULL, NULL, NULL, NULL, IUPAF_IHANDLENAME | IUPAF_NO_DEFAULTVALUE | IUPAF_NO_INHERIT);
-  
+
+  iupClassRegisterAttribute(ic, "BACKIMAGEZOOM", NULL, NULL, NULL, NULL, IUPAF_NO_INHERIT);
   iupClassRegisterAttribute(ic, "FITTOBACKIMAGE", NULL, NULL, NULL, NULL, IUPAF_NO_INHERIT);
 
   iupClassRegisterAttribute(ic, "FRONTIMAGE", NULL, iFlatLabelSetAttribPostRedraw, NULL, NULL, IUPAF_IHANDLENAME | IUPAF_NO_DEFAULTVALUE | IUPAF_NO_INHERIT);

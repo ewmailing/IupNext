@@ -170,8 +170,12 @@ static int iDropButtonRedraw_CB(Ihandle* ih)
   /* draw background */
   if (bgimage)
   {
+    int backimage_zoom = iupAttribGetBoolean(ih, "BACKIMAGEZOOM");
     draw_image = iupFlatGetImageName(ih, "BACKIMAGE", bgimage, image_pressed, ih->data->highlighted, active, &make_inactive);
-    iupdrvDrawImage(dc, draw_image, make_inactive, bgcolor, border_width, border_width, -1, -1);
+    if (backimage_zoom)
+      iupdrvDrawImage(dc, draw_image, make_inactive, bgcolor, border_width, border_width, ih->currentwidth - border_width, ih->currentheight - border_width);
+    else
+      iupdrvDrawImage(dc, draw_image, make_inactive, bgcolor, border_width, border_width, -1, -1);
   }
   else
   {
@@ -813,11 +817,11 @@ static void iDropButtonComputeNaturalSizeMethod(Ihandle* ih, int *w, int *h, int
       *w += 2 * ih->data->horiz_padding;
     }
 
-    *w += 2 * ih->data->border_width;
-    *h += 2 * ih->data->border_width;
-
     *w += ih->data->arrow_size;
   }
+
+  *w += 2 * ih->data->border_width;
+  *h += 2 * ih->data->border_width;
 
   (void)children_expand; /* unset if not a container */
 }
@@ -892,6 +896,7 @@ Iclass* iupDropButtonNewClass(void)
   iupClassRegisterAttribute(ic, "BACKIMAGEHIGHLIGHT", NULL, NULL, NULL, NULL, IUPAF_IHANDLENAME | IUPAF_NO_DEFAULTVALUE | IUPAF_NO_INHERIT);
   iupClassRegisterAttribute(ic, "BACKIMAGEINACTIVE", NULL, NULL, NULL, NULL, IUPAF_IHANDLENAME | IUPAF_NO_DEFAULTVALUE | IUPAF_NO_INHERIT);
   
+  iupClassRegisterAttribute(ic, "BACKIMAGEZOOM", NULL, NULL, NULL, NULL, IUPAF_NO_INHERIT);
   iupClassRegisterAttribute(ic, "FITTOBACKIMAGE", NULL, NULL, NULL, NULL, IUPAF_NO_INHERIT);
 
   iupClassRegisterAttribute(ic, "FRONTIMAGE", NULL, NULL, NULL, NULL, IUPAF_IHANDLENAME | IUPAF_NO_DEFAULTVALUE | IUPAF_NO_INHERIT);

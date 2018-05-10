@@ -153,8 +153,12 @@ static int iFlatToggleRedraw_CB(Ihandle* ih)
   /* draw background */
   if (bgimage)
   {
+    int backimage_zoom = iupAttribGetBoolean(ih, "BACKIMAGEZOOM");
     draw_image = iupFlatGetImageName(ih, "BACKIMAGE", bgimage, image_pressed, ih->data->highlighted, active, &make_inactive);
-    iupdrvDrawImage(dc, draw_image, make_inactive, bgcolor, border_width, border_width, -1, -1);
+    if (backimage_zoom)
+      iupdrvDrawImage(dc, draw_image, make_inactive, bgcolor, border_width, border_width, ih->currentwidth - border_width, ih->currentheight - border_width);
+    else
+      iupdrvDrawImage(dc, draw_image, make_inactive, bgcolor, border_width, border_width, -1, -1);
   }
   else 
     iupFlatDrawBox(dc, border_width, ih->currentwidth - 1 - border_width,
@@ -715,9 +719,6 @@ static void iFlatToggleComputeNaturalSizeMethod(Ihandle* ih, int *w, int *h, int
 
     iupFlatDrawGetIconSize(ih, ih->data->img_position, ih->data->spacing, ih->data->horiz_padding, ih->data->vert_padding, imagename, title, w, h, text_orientation);
 
-    *w += 2 * ih->data->border_width;
-    *h += 2 * ih->data->border_width;
-
     if (ih->data->check_size)
     {
       *w += ih->data->check_size;
@@ -726,6 +727,9 @@ static void iFlatToggleComputeNaturalSizeMethod(Ihandle* ih, int *w, int *h, int
         *h = ih->data->check_size;
     }
   }
+
+  *w += 2 * ih->data->border_width;
+  *h += 2 * ih->data->border_width;
 
   (void)children_expand; /* unset if not a container */
 }
@@ -802,6 +806,7 @@ Iclass* iupFlatToggleNewClass(void)
   iupClassRegisterAttribute(ic, "BACKIMAGEHIGHLIGHT", NULL, NULL, NULL, NULL, IUPAF_IHANDLENAME | IUPAF_NO_DEFAULTVALUE | IUPAF_NO_INHERIT);
   iupClassRegisterAttribute(ic, "BACKIMAGEINACTIVE", NULL, NULL, NULL, NULL, IUPAF_IHANDLENAME | IUPAF_NO_DEFAULTVALUE | IUPAF_NO_INHERIT);
 
+  iupClassRegisterAttribute(ic, "BACKIMAGEZOOM", NULL, NULL, NULL, NULL, IUPAF_NO_INHERIT);
   iupClassRegisterAttribute(ic, "FITTOBACKIMAGE", NULL, NULL, NULL, NULL, IUPAF_NO_INHERIT);
 
   iupClassRegisterAttribute(ic, "FRONTIMAGE", NULL, NULL, NULL, NULL, IUPAF_IHANDLENAME | IUPAF_NO_DEFAULTVALUE | IUPAF_NO_INHERIT);
