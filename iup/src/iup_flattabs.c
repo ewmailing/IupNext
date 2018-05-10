@@ -1439,6 +1439,17 @@ static int iFlatTabsSetAttribPostRedraw(Ihandle* ih, const char* value)
   return 1;
 }
 
+static int iFlatTabsSetTabOrientationAttrib(Ihandle* ih, const char* value)
+{
+  if (iupStrEqualNoCase(value, "VERTICAL"))
+    iupAttribSet(ih, "TABSTEXTORIENTATION", "90");
+  else
+    iupAttribSet(ih, "TABSTEXTORIENTATION", NULL);
+  if (ih->handle)
+    iupdrvPostRedraw(ih);
+  return 1;
+}
+
 static int iFlatTabsSetTabFontStyleAttrib(Ihandle* ih, int id, const char* value)
 {
   int size = 0;
@@ -1976,6 +1987,7 @@ Iclass* iupFlatTabsNewClass(void)
   iupClassRegisterAttribute(ic, "TABSTEXTELLIPSIS", NULL, NULL, NULL, NULL, IUPAF_NO_INHERIT);
   iupClassRegisterAttribute(ic, "TABSTEXTCLIP", NULL, NULL, NULL, NULL, IUPAF_NO_INHERIT);
   iupClassRegisterAttribute(ic, "TABSTEXTORIENTATION", NULL, NULL, NULL, NULL, IUPAF_NO_INHERIT);
+  iupClassRegisterAttribute(ic, "TABORIENTATION", NULL, iFlatTabsSetTabOrientationAttrib, IUPAF_SAMEASSYSTEM, "HORIZONTAL", IUPAF_NOT_MAPPED | IUPAF_NO_INHERIT);
 
   iupClassRegisterAttribute(ic, "SHOWCLOSE", NULL, NULL, NULL, NULL, IUPAF_NO_INHERIT);
   iupClassRegisterAttribute(ic, "CLOSEIMAGE", NULL, iFlatTabsSetAttribPostRedraw, IUPAF_SAMEASSYSTEM, "IMGFLATCLOSE", IUPAF_IHANDLENAME | IUPAF_NO_INHERIT);
