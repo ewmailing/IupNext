@@ -140,6 +140,10 @@ static int cd2iup_linestyle(cdCtxCanvas *ctxcanvas)
     return IUP_DRAW_STROKE_DASH;
   else if (ctxcanvas->canvas->line_style == CD_DOTTED)
     return IUP_DRAW_STROKE_DOT;
+  else if (ctxcanvas->canvas->line_style == CD_DASH_DOT)
+    return IUP_DRAW_STROKE_DASH_DOT;
+  else if (ctxcanvas->canvas->line_style == CD_DASH_DOT_DOT)
+    return IUP_DRAW_STROKE_DASH_DOT_DOT;
   else
     return IUP_DRAW_STROKE;
 }

@@ -131,23 +131,35 @@ void iupdrvDrawGetSize(IdrawCanvas* dc, int *w, int *h)
 
 static HPEN iDrawCreatePen(long color, int style, int line_width)
 {
-  DWORD dashes[2] = { 9-1, 3+1 };
-  DWORD dots[2] = { 1-1, 2+1 };
-  DWORD* dash_array = NULL;
   LOGBRUSH LogBrush;
   LogBrush.lbStyle = BS_SOLID;
   LogBrush.lbColor = RGB(iupDrawRed(color), iupDrawGreen(color), iupDrawBlue(color));
   LogBrush.lbHatch = 0;
 
-  if (style == IUP_DRAW_STROKE_DASH)
-    dash_array = dashes;
-  else if (style == IUP_DRAW_STROKE_DOT)
-    dash_array = dots;
-
-  if (style == IUP_DRAW_STROKE)
+  if (style == IUP_DRAW_STROKE || style == IUP_DRAW_FILL)
     return ExtCreatePen(PS_GEOMETRIC | PS_SOLID, line_width, &LogBrush, 0, NULL);
-  else
-    return ExtCreatePen(PS_GEOMETRIC | PS_USERSTYLE, line_width, &LogBrush, 2, dash_array);
+  else if (style == IUP_DRAW_STROKE_DASH)
+  {
+    /* for some reason, dashes and spaces in GDI must be changed -1 and +1 to be exactly what specified */
+    DWORD dashes[2] = { 9-1, 3+1 };
+    return ExtCreatePen(PS_GEOMETRIC | PS_USERSTYLE, line_width, &LogBrush, 2, dashes);
+  }
+  else if (style == IUP_DRAW_STROKE_DOT)
+  {
+    DWORD dashes[2] = { 1-1, 2+1 };
+    return ExtCreatePen(PS_GEOMETRIC | PS_USERSTYLE, line_width, &LogBrush, 2, dashes);
+  }
+  else if (style == IUP_DRAW_STROKE_DASH_DOT)
+  {
+    DWORD dashes[4] = { 7-1, 3+1, 1-1, 3+1 };
+    return ExtCreatePen(PS_GEOMETRIC | PS_USERSTYLE, line_width, &LogBrush, 4, dashes);
+  }
+  else if (style == IUP_DRAW_STROKE_DASH_DOT_DOT)
+  {
+    DWORD dashes[6] = { 7-1, 3+1, 1-1, 3+1, 1-1, 3+1 };
+    return ExtCreatePen(PS_GEOMETRIC | PS_USERSTYLE, line_width, &LogBrush, 6, dashes);
+  }
+  return NULL;
 }
 
 void iupdrvDrawRectangle(IdrawCanvas* dc, int x1, int y1, int x2, int y2, long color, int style, int line_width)

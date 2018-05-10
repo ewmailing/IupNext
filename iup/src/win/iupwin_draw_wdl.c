@@ -165,6 +165,16 @@ static WD_HSTROKESTYLE iDrawSetLineStyle(int style)
     float dashes[2] = { 1.0f, 2.0f };
     return wdCreateStrokeStyleCustom(dashes, 2, WD_LINECAP_FLAT, WD_LINEJOIN_MITER);
   }
+  else if (style == IUP_DRAW_STROKE_DASH_DOT)
+  {
+    float dashes[4] = { 7.0f, 3.0f, 1.0f, 3.0f };
+    return wdCreateStrokeStyleCustom(dashes, 4, WD_LINECAP_FLAT, WD_LINEJOIN_MITER);
+  }
+  else if (style == IUP_DRAW_STROKE_DASH_DOT_DOT)
+  {
+    float dashes[6] = { 7.0f, 3.0f, 1.0f, 3.0f, 1.0f, 3.0f };
+    return wdCreateStrokeStyleCustom(dashes, 6, WD_LINECAP_FLAT, WD_LINEJOIN_MITER);
+  }
   else
     return NULL;
 }

@@ -91,7 +91,11 @@ static int iDrawGetStyle(Ihandle* ih)
     return IUP_DRAW_STROKE_DASH;
   else if (iupStrEqualNoCase(style, "STROKE_DOT"))
     return IUP_DRAW_STROKE_DOT;
-  else 
+  else if (iupStrEqualNoCase(style, "STROKE_DASH_DOT"))
+    return IUP_DRAW_STROKE_DASH_DOT;
+  else if (iupStrEqualNoCase(style, "STROKE_DASH_DOT_DOT"))
+    return IUP_DRAW_STROKE_DASH_DOT_DOT;
+  else
     return IUP_DRAW_STROKE;
 }
 
@@ -318,7 +322,7 @@ void IupDrawText(Ihandle* ih, const char* text, int len, int x, int y, int w, in
   if (iupAttribGetBoolean(ih, "DRAWTEXTLAYOUTCENTER"))
     text_flags |= IUP_DRAW_LAYOUTCENTER;
 
-  if (len == 0)
+  if (len == 0 || len == -1)
     len = (int)strlen(text);
 
   if (len != 0)

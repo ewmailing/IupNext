@@ -114,13 +114,26 @@ static void iDrawSetLineStyle(IdrawCanvas* dc, int style)
     gcval.line_style = LineSolid;
   else
   {
-    char dashes[2] = { 9, 3 };
-    char dots[2] = { 1, 2 };
-
     if (style == IUP_DRAW_STROKE_DASH)
+    {
+      char dashes[2] = { 9, 3 };
       XSetDashes(iupmot_display, dc->pixmap_gc, 0, dashes, 2);
-    else
-      XSetDashes(iupmot_display, dc->pixmap_gc, 0, dots, 2);
+    }
+    else if (style == IUP_DRAW_STROKE_DOT)
+    {
+      char dashes[2] = { 1, 2 };
+      XSetDashes(iupmot_display, dc->pixmap_gc, 0, dashes, 2);
+    }
+    else if (style == IUP_DRAW_STROKE_DASH_DOT)
+    {
+      char dashes[4] = { 7, 3, 1, 3 };
+      XSetDashes(iupmot_display, dc->pixmap_gc, 0, dashes, 4);
+    }
+    else if (style == IUP_DRAW_STROKE_DASH_DOT_DOT)
+    {
+      char dashes[6] = { 7, 3, 1, 3, 1, 3 };
+      XSetDashes(iupmot_display, dc->pixmap_gc, 0, dashes, 6);
+    }
 
     gcval.line_style = LineOnOffDash;
   }

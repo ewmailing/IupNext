@@ -240,11 +240,15 @@ static void drawTest(Ihandle *ih, int posx)  //_Lines
 
 //  IupSetAttribute(ih, "DRAWLINEWIDTH", "3");
   IupSetAttribute(ih, "DRAWSTYLE", "STROKE");
-  IupDrawLine(ih, 10, 105, 100, 105);
+  IupDrawLine(ih, 10, 110, 100, 110);
   IupSetAttribute(ih, "DRAWSTYLE", "STROKE_DASH");
-  IupDrawLine(ih, 10, 105 + 5, 100, 105 + 5);
+  IupDrawLine(ih, 10, 110 + 5, 100, 110 + 5);
   IupSetAttribute(ih, "DRAWSTYLE", "STROKE_DOT");
-  IupDrawLine(ih, 10, 105 + 10, 100, 105 + 10);
+  IupDrawLine(ih, 10, 110 + 10, 100, 110 + 10);
+  IupSetAttribute(ih, "DRAWSTYLE", "STROKE_DASH_DOT");
+  IupDrawLine(ih, 10, 110 + 15, 100, 110 + 15);
+  IupSetAttribute(ih, "DRAWSTYLE", "STROKE_DASH_DOT_DOT");
+  IupDrawLine(ih, 10, 110 + 20, 100, 110 + 20);
 
   IupDrawImage(ih, "Test8bpp", 110, 10, -1, -1);
   IupDrawImage(ih, "Test24bpp", 110, 40, -1, -1);
@@ -252,7 +256,7 @@ static void drawTest(Ihandle *ih, int posx)  //_Lines
 //  IupDrawImage(ih, "Test32bpp", 110, 70, 60, 60);
 
   IupSetAttribute(ih, "DRAWFONT", "Helvetica, Bold -15");
-  IupDrawText(ih, IupGetAttribute(ih, "DRAWDRIVER"), 0, 60, 120, -1, -1);
+  IupDrawText(ih, IupGetAttribute(ih, "DRAWDRIVER"), -1, 70, 135, -1, -1);
 
   IupDrawEnd(ih);
 }
