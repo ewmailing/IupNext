@@ -190,6 +190,32 @@ static void cdsector(cdCtxCanvas *ctxcanvas, int xc, int yc, int w, int h, doubl
     iupdrvDrawArc(ctxcanvas->dc, x1, y1, x2, y2, a1, a2, ctxcanvas->canvas->foreground, IUP_DRAW_FILL, ctxcanvas->canvas->line_width);
 }
 
+/* TODO: not exported in CD dll yet */
+static void x_cdRotatePoint(cdCanvas* canvas, int x, int y, int cx, int cy, int *rx, int *ry, double sin_theta, double cos_theta)
+{
+  double t;
+
+  /* translate to (cx,cy) */
+  x = x - cx;
+  y = y - cy;
+
+  /* rotate */
+  if (canvas->invert_yaxis)
+  {
+    t = (x * cos_theta) + (y * sin_theta); *rx = _cdRound(t);
+    t = -(x * sin_theta) + (y * cos_theta); *ry = _cdRound(t);
+  }
+  else
+  {
+    t = (x * cos_theta) - (y * sin_theta); *rx = _cdRound(t);
+    t = (x * sin_theta) + (y * cos_theta); *ry = _cdRound(t);
+  }
+
+  /* translate back */
+  *rx = *rx + cx;
+  *ry = *ry + cy;
+}
+
 static void cdtext(cdCtxCanvas *ctxcanvas, int x, int y, const char *s, int len)
 {
   int w, h, desc;
@@ -251,7 +277,7 @@ static void cdtext(cdCtxCanvas *ctxcanvas, int x, int y, const char *s, int len)
   {
     double cos_angle = cos(ctxcanvas->canvas->text_orientation*CD_DEG2RAD);
     double sin_angle = sin(ctxcanvas->canvas->text_orientation*CD_DEG2RAD);
-    cdRotatePoint(ctxcanvas->canvas, x, y, ox, oy, &x, &y, sin_angle, cos_angle);
+    x_cdRotatePoint(ctxcanvas->canvas, x, y, ox, oy, &x, &y, sin_angle, cos_angle);
   }
 
   if (ctxcanvas->dc)
@@ -264,7 +290,7 @@ static void cdpoly(cdCtxCanvas *ctxcanvas, int mode, cdPoint* poly, int n)
 
   if (mode == CD_BEZIER)
   {
-    /* cdSimPolyBezier(ctxcanvas->canvas, poly, n); not exported in CD yet */
+    /* cdSimPolyBezier(ctxcanvas->canvas, poly, n); TODO: not exported in CD dll yet */
     return;
   }
 
