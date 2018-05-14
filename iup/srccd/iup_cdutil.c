@@ -324,9 +324,12 @@ void IupCdSetFont(Ihandle* ih, cdCanvas *canvas, const char* font)
 
 void cdIupDrawFocusRect(cdCanvas *canvas, int x1, int y1, int x2, int y2)
 {
+  int style = cdCanvasLineStyle(canvas, CD_QUERY);
+  long foreground = cdCanvasForeground(canvas, CD_QUERY);
   cdCanvasLineStyle(canvas, CD_DOTTED);
   cdCanvasForeground(canvas, CD_BLACK);
   cdCanvasRect(canvas, x1, x2, y1, y2);
-  cdCanvasLineStyle(canvas, CD_CONTINUOUS);
+  cdCanvasLineStyle(canvas, style);
+  cdCanvasForeground(canvas, foreground);
 }
 
