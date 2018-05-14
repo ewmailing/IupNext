@@ -1261,7 +1261,7 @@ void iupMatrixDrawCells(Ihandle* ih, int lin1, int col1, int lin2, int col2)
     x1 += ih->data->columns.dt[col].size;
   if (adjust_merged_col)
   {
-    for (col = first_col; col > col1; col--)
+    for (col = first_col-1; col >= col1; col--)
       x1 -= ih->data->columns.dt[col].size;
   }
 
@@ -1272,7 +1272,7 @@ void iupMatrixDrawCells(Ihandle* ih, int lin1, int col1, int lin2, int col2)
     y1 += ih->data->lines.dt[lin].size;
   if (adjust_merged_lin)
   {
-    for (lin = first_lin; lin > lin1; lin--)
+    for (lin = first_lin-1; lin >= lin1; lin--)
       y1 -= ih->data->lines.dt[lin].size;
   }
 
