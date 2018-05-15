@@ -228,7 +228,7 @@ static Ihandle* create_matrix(void)
   IupSetAttribute(mat, "NUMLIN_VISIBLE", "5");
 //  IupSetAttribute(mat,"EDITNEXT","COLCR");
 
-  IupSetAttribute(mat, "COLRESDRAG", "Yes");
+  IupSetAttribute(mat, "RESIZEDRAG", "Yes");
 
   IupSetAttribute(mat, "NUMCOL_NOSCROLL", "1");
   IupSetAttribute(mat, "NOSCROLLASTITLE", "Yes");
