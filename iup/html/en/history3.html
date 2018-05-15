@@ -117,6 +117,10 @@ version 3.x.</p>
 	<span
             style="color: #000000"><span class="hist_new">New:</span> 
 	DASH_DOT and DASH_DOT_DOT line styles for <strong>IupDraw</strong> lines.</span></span></font></li>
+	<li><strong><font SIZE="3"><span style="color: #008000">
+	<span
+            style="color: #000000"><span class="hist_new">New:</span> 
+	</span></span></font></strong>RESIZEDRAG attribute for <strong>IupMatrix</strong>.</li>
 
 	<li>
 	<font SIZE="3">
@@ -185,6 +189,29 @@ Mitáš.</li>
 	IupGetAllDialogs, IupGetAllNames, IupGetAllAttributes, IupGetAllClasses, 
 	IupGetClassAttributes, IupGetClassCallbacks now also accepts -1 for count 
 	(same as 0).</li>
+	<li>
+	<font SIZE="3">
+	<b>
+	<span class="hist_changed" style="color: rgb(0, 128, 0); font-weight: bold;">
+	<strong>Changed:</strong></span><span class="auto-style1"> 
+	<span class="style3"><span class="Apple-converted-space">
+	<span class="style7"><strong>[ATENTION]</strong></span> </span>removed compatibility with the old CD API from </span>
+	IupMatrix</span></b><span class="auto-style1">. All CD calls inside
+	<span style="color: rgb(0, 0, 0); font-family: tahoma, verdana, arial, helvetica, geneva, sans-serif; font-size: medium; font-style: normal; font-variant-ligatures: normal; font-variant-caps: normal; letter-spacing: normal; orphans: 2; text-align: start; text-indent: 0px; text-transform: none; white-space: normal; widows: 2; word-spacing: 0px; -webkit-text-stroke-width: 0px; background-color: rgb(255, 255, 255); text-decoration-style: initial; text-decoration-color: initial;">
+	DRAW_CB</span><strong style="color: rgb(0, 0, 0); font-family: tahoma, verdana, arial, helvetica, geneva, sans-serif; font-size: medium; font-style: normal; font-variant-ligatures: normal; font-variant-caps: normal; letter-spacing: normal; orphans: 2; text-align: start; text-indent: 0px; text-transform: none; white-space: normal; widows: 2; word-spacing: 0px; -webkit-text-stroke-width: 0px; background-color: rgb(255, 255, 255); text-decoration-style: initial; text-decoration-color: initial;">
+	</strong>must use the cdCanvas* API. Applications should check their code if 
+	using the DRAW_CB callback.</span></font></li>
+	<li>
+	<font SIZE="3">
+	<b>
+	<span class="hist_changed" style="color: rgb(0, 128, 0); font-weight: bold;">
+	<strong>Changed:</strong></span><span class="auto-style1"> 
+	<span class="Apple-converted-space"><span class="style7"><strong>[ATENTION]</strong></span> </span>
+	IupMatrix</span></b><span class="auto-style1"> 
+	now uses the IupDraw API through the new CD_IUPDRAW driver. The DRAW_CB 
+	callback still works but may have limited support for CD primitives because 
+	of the new driver limitations. Applications should check their code if using 
+	the DRAW_CB callback.</span></font></li>
 	<li>
 	<font SIZE="3"><span style="color: #008000">
 	<span

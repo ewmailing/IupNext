@@ -478,6 +478,26 @@ char* iupMatrixGetFgColorStr(Ihandle* ih, int lin, int col)
     return iupStrReturnRGB(r, g, b);
 }
 
+/* Color attenuation factor in a marked cell, 20% darker */
+#define IMAT_ATENUATION(_x)    ((unsigned char)(((_x)*8)/10))
+
+static void iMatrixAddMarkedAttenuation(Ihandle* ih, unsigned char *r, unsigned char *g, unsigned char *b)
+{
+  char* hlcolor = iupAttribGetStr(ih, "HLCOLOR");
+  unsigned char hl_r, hl_g, hl_b;
+  if (iupStrToRGB(hlcolor, &hl_r, &hl_g, &hl_b))
+  {
+    unsigned char a = (unsigned char)iupAttribGetInt(ih, "HLCOLORALPHA");
+    *r = iupALPHABLEND(*r, hl_r, a);
+    *g = iupALPHABLEND(*g, hl_g, a);
+    *b = iupALPHABLEND(*b, hl_b, a);
+  }
+
+  *r = IMAT_ATENUATION(*r);
+  *g = IMAT_ATENUATION(*g);
+  *b = IMAT_ATENUATION(*b);
+}
+
 void iupMatrixGetFgRGB(Ihandle* ih, int lin, int col, unsigned char *r, unsigned char *g, unsigned char *b, int marked, int active)
 {
   /* called from Draw only */
@@ -495,7 +515,7 @@ void iupMatrixGetFgRGB(Ihandle* ih, int lin, int col, unsigned char *r, unsigned
   }
 
   if (marked)
-    iupMatrixAddMarkedAttenuation(ih, r, g, b);
+    iMatrixAddMarkedAttenuation(ih, r, g, b);
 
   if (!active)
   {
@@ -511,7 +531,7 @@ void iupMatrixGetTypeRGB(Ihandle* ih, const char* color, unsigned char *r, unsig
   iupStrToRGB(color, r, g, b);
 
   if (marked)
-    iupMatrixAddMarkedAttenuation(ih, r, g, b);
+    iMatrixAddMarkedAttenuation(ih, r, g, b);
 
   if (!active)
   {
@@ -560,7 +580,7 @@ void iupMatrixGetBgRGB(Ihandle* ih, int lin, int col, unsigned char *r, unsigned
   }
 
   if (marked)
-    iupMatrixAddMarkedAttenuation(ih, r, g, b);
+    iMatrixAddMarkedAttenuation(ih, r, g, b);
 
   if (!active)
   {

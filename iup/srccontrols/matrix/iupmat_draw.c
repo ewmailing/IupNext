@@ -172,23 +172,12 @@ static void iMatrixDrawResetCellClipping(Ihandle* ih)
 static int iMatrixDrawCallDrawCB(Ihandle* ih, int lin, int col, int x1, int x2, int y1, int y2, IFniiiiiiC draw_cb)
 {
   int ret;
-  cdCanvas* old_cnv;
 
   iMatrixDrawSetCellClipping(ih, x1, x2, y1, y2);
-
-  old_cnv = cdActiveCanvas();
-  if (old_cnv != ih->data->cd_canvas) /* backward compatibility code */
-    cdActivate(ih->data->cd_canvas);
 
   ret = draw_cb(ih, lin, col, x1, x2, iupMATRIX_INVERTYAXIS(ih, y1), iupMATRIX_INVERTYAXIS(ih, y2), ih->data->cd_canvas);
 
   iMatrixDrawResetCellClipping(ih);
-
-  if (old_cnv && old_cnv != ih->data->cd_canvas) /* backward compatibility code */
-  {
-    cdActivate(old_cnv);
-    cdCanvasActivate(ih->data->cd_canvas);
-  }
 
   if (ret == IUP_DEFAULT)
     return 0;
@@ -804,7 +793,6 @@ static void iMatrixDrawTitleCorner(Ihandle* ih)
 static void iMatrixDrawFocus(Ihandle* ih)
 {
   int x1, y1, x2, y2, dx, dy;
-  cdCanvas* cd_canvas_front;
 
   if (iupAttribGetBoolean(ih, "HIDEFOCUS"))
     return;
@@ -834,34 +822,32 @@ static void iMatrixDrawFocus(Ihandle* ih)
       y1++;
   }
 
-  cd_canvas_front = (cdCanvas*)IupGetAttribute(ih, "_CD_CANVAS");  /* front buffer canvas */
-  cdIupDrawFocusRect(cd_canvas_front, x1, iupMATRIX_INVERTYAXIS(ih, y1), x2, iupMATRIX_INVERTYAXIS(ih, y2));
+  {
+#ifdef USE_OLD_DRAW
+    cdCanvas* cnv = (cdCanvas*)IupGetAttribute(ih, "_CD_CANVAS");  /* front buffer canvas */
+#else
+    cdCanvas* cnv = ih->data->cd_canvas;
+#endif
+    cdIupDrawFocusRect(cnv, x1, iupMATRIX_INVERTYAXIS(ih, y1), x2, iupMATRIX_INVERTYAXIS(ih, y2));
+  }
+}
+
+static void iMatrixDrawColRes(Ihandle* ih)
+{
+#ifdef USE_OLD_DRAW
+  cdCanvas* cnv = (cdCanvas*)IupGetAttribute(ih, "_CD_CANVAS");  /* front buffer canvas */
+#else
+  cdCanvas* cnv = ih->data->cd_canvas;
+#endif
+  cdCanvasForeground(cnv, ih->data->colres_color);
+  cdCanvasLine(cnv, ih->data->colres_x, ih->data->colres_y1,
+                ih->data->colres_x, ih->data->colres_y2);
 }
 
 
 /**************************************************************************/
 /* Exported functions                                                     */
 /**************************************************************************/
-
-/* Color attenuation factor in a marked cell, 20% darker */
-#define IMAT_ATENUATION(_x)    ((unsigned char)(((_x)*8)/10))
-
-void iupMatrixAddMarkedAttenuation(Ihandle* ih, unsigned char *r, unsigned char *g, unsigned char *b)
-{
-  char* hlcolor = iupAttribGetStr(ih, "HLCOLOR");
-  unsigned char hl_r, hl_g, hl_b;
-  if (iupStrToRGB(hlcolor, &hl_r, &hl_g, &hl_b))
-  {
-    unsigned char a = (unsigned char)iupAttribGetInt(ih, "HLCOLORALPHA");
-    *r = iupALPHABLEND(*r, hl_r, a);
-    *g = iupALPHABLEND(*g, hl_g, a);
-    *b = iupALPHABLEND(*b, hl_b, a);
-  }
-
-  *r = IMAT_ATENUATION(*r);
-  *g = IMAT_ATENUATION(*g);
-  *b = IMAT_ATENUATION(*b);
-}
 
 void iupMatrixDrawSetDropFeedbackArea(int *x1, int *y1, int *x2, int *y2)
 {
@@ -949,7 +935,7 @@ static int iMatrixAdjustVisibleLinToMergedCells(Ihandle *ih, int *lin1, int col1
    Line titles marked will be draw with the appropriate feedback.
    -> lin1 - First line to have its title drawn
    -> lin2 - Last line to have its title drawn */
-void iupMatrixDrawTitleLines(Ihandle* ih, int lin1, int lin2)
+static void iMatrixDrawTitleLines(Ihandle* ih, int lin1, int lin2)
 {
   int x1, y1, x2, y2, first_lin, adjust_merged_lin = 0;
   int lin, col_alignment, active, framehighlight;
@@ -1063,7 +1049,7 @@ void iupMatrixDrawTitleLines(Ihandle* ih, int lin1, int lin2)
    Column titles marked will be draw with the appropriate feedback.
    -> col1 - First column to have its title drawn
    -> col2 - Last column to have its title drawn */
-void iupMatrixDrawTitleColumns(Ihandle* ih, int col1, int col2)
+static void iMatrixDrawTitleColumns(Ihandle* ih, int col1, int col2)
 {
   int x1, y1, x2, y2, first_col, adjust_merged_col = 0;
   int col, active, col_alignment, lin_alignment, framehighlight;
@@ -1180,7 +1166,7 @@ void iupMatrixDrawTitleColumns(Ihandle* ih, int col1, int col2)
    automatically the background color of them.
    - lin1, col1 : cell coordinates that mark the left top corner of the area to be redrawn
    - lin2, col2 : cell coordinates that mark the right bottom corner of the area to be redrawn */
-void iupMatrixDrawCells(Ihandle* ih, int lin1, int col1, int lin2, int col2)
+static void iMatrixDrawCells(Ihandle* ih, int lin1, int col1, int lin2, int col2)
 {
   int x1, y1, x2, y2, old_x2, old_y1, old_y2, toggle_centered;
   int col_alignment, lin, col, active, first_col, first_lin;
@@ -1440,25 +1426,25 @@ static void iMatrixDrawMatrix(Ihandle* ih)
 
   /* If there are columns, then draw their titles */
   if (ih->data->columns.num_noscroll > 1)
-    iupMatrixDrawTitleColumns(ih, 1, ih->data->columns.num_noscroll - 1);
-  iupMatrixDrawTitleColumns(ih, ih->data->columns.first, ih->data->columns.last);
+    iMatrixDrawTitleColumns(ih, 1, ih->data->columns.num_noscroll - 1);
+  iMatrixDrawTitleColumns(ih, ih->data->columns.first, ih->data->columns.last);
 
   /* If there are lines, then draw their titles */
   if (ih->data->lines.num_noscroll > 1)
-    iupMatrixDrawTitleLines(ih, 1, ih->data->lines.num_noscroll - 1);
-  iupMatrixDrawTitleLines(ih, ih->data->lines.first, ih->data->lines.last);
+    iMatrixDrawTitleLines(ih, 1, ih->data->lines.num_noscroll - 1);
+  iMatrixDrawTitleLines(ih, ih->data->lines.first, ih->data->lines.last);
 
   /* If there are ordinary cells, then draw them */
   if (ih->data->columns.num_noscroll > 1 && ih->data->lines.num_noscroll > 1)
-    iupMatrixDrawCells(ih, 1, 1,
+    iMatrixDrawCells(ih, 1, 1,
     ih->data->lines.num_noscroll - 1, ih->data->columns.num_noscroll - 1);
   if (ih->data->columns.num_noscroll > 1)
-    iupMatrixDrawCells(ih, ih->data->lines.first, 1,
+    iMatrixDrawCells(ih, ih->data->lines.first, 1,
     ih->data->lines.last, ih->data->columns.num_noscroll - 1);
   if (ih->data->lines.num_noscroll > 1)
-    iupMatrixDrawCells(ih, 1, ih->data->columns.first,
+    iMatrixDrawCells(ih, 1, ih->data->columns.first,
     ih->data->lines.num_noscroll - 1, ih->data->columns.last);
-  iupMatrixDrawCells(ih, ih->data->lines.first, ih->data->columns.first,
+  iMatrixDrawCells(ih, ih->data->lines.first, ih->data->columns.first,
                      ih->data->lines.last, ih->data->columns.last);
 
   if (iupAttribGetBoolean(ih, "FRAMEBORDER"))
@@ -1510,8 +1496,80 @@ static void iMatrixDrawMatrix(Ihandle* ih)
   }
 }
 
+void iupMatrixDrawCells(Ihandle* ih, int lin1, int col1, int lin2, int col2)
+{
+#ifdef USE_OLD_DRAW
+  iMatrixDrawCells(ih, lin1, col1, lin2, col2);
+#else
+  (void)ih;
+  (void)lin1;
+  (void)col1;
+  (void)lin2;
+  (void)col2;
+#endif
+}
+
+void iupMatrixDrawTitleColumns(Ihandle* ih, int col1, int col2)
+{
+#ifdef USE_OLD_DRAW
+  iMatrixDrawTitleColumns(ih, col1, col2);
+#else
+  (void)ih;
+  (void)col1;
+  (void)col2;
+#endif
+}
+
+void iupMatrixDrawTitleLines(Ihandle* ih, int lin1, int lin2)
+{
+#ifdef USE_OLD_DRAW
+  iMatrixDrawTitleLines(ih, lin1, lin2);
+#else
+  (void)ih;
+  (void)lin1;
+  (void)lin2;
+#endif
+}
+
 void iupMatrixDraw(Ihandle* ih, int update)
 {
+#ifdef USE_OLD_DRAW
+  cdCanvasActivate(ih->data->cd_canvas);
+
+  if (ih->data->need_calcsize)
+    iupMatrixAuxCalcSizes(ih);
+
+  iMatrixDrawMatrix(ih);
+
+  ih->data->need_redraw = 0;
+#endif
+
+  if (update)
+    iupMatrixDrawUpdate(ih);
+}
+
+void iupMatrixDrawUpdate(Ihandle* ih)
+{
+#ifdef USE_OLD_DRAW
+  cdCanvasFlush(ih->data->cd_canvas);
+
+  if (ih->data->has_focus)
+    iMatrixDrawFocus(ih);
+
+  if (ih->data->colres_feedback)
+    iMatrixDrawColRes(ih);
+
+  if (!ih->data->edit_hide_onfocus && ih->data->editing)
+    IupUpdate(ih->data->datah);
+#else
+  iupdrvRedrawNow(ih);
+#endif
+}
+
+#ifndef USE_OLD_DRAW
+void iupMatrixDrawCB(Ihandle* ih)
+{
+  /* called only from the ACTION callback */
   cdCanvasActivate(ih->data->cd_canvas);
 
   if (ih->data->need_calcsize)
@@ -1521,23 +1579,24 @@ void iupMatrixDraw(Ihandle* ih, int update)
 
   ih->data->need_redraw = 0;
 
-  if (update)
-    iupMatrixDrawUpdate(ih);
-}
-
-void iupMatrixDrawUpdate(Ihandle* ih)
-{
-  cdCanvasFlush(ih->data->cd_canvas);
-
   if (ih->data->has_focus)
     iMatrixDrawFocus(ih);
+
+  if (ih->data->colres_feedback)
+    iMatrixDrawColRes(ih);
+
+  cdCanvasFlush(ih->data->cd_canvas);
+
+  cdCanvasDeactivate(ih->data->cd_canvas);
 
   if (!ih->data->edit_hide_onfocus && ih->data->editing)
     IupUpdate(ih->data->datah);
 }
+#endif
 
 int iupMatrixDrawSetRedrawAttrib(Ihandle* ih, const char* value)
 {
+#ifdef USE_OLD_DRAW
   int type;
 
   if (value == NULL)
@@ -1585,28 +1644,28 @@ int iupMatrixDrawSetRedrawAttrib(Ihandle* ih, const char* value)
       if (min == 0)
       {
         if (ih->data->columns.num_noscroll > 1)
-          iupMatrixDrawTitleColumns(ih, 1, ih->data->columns.num_noscroll - 1);
-        iupMatrixDrawTitleColumns(ih, ih->data->columns.first, ih->data->columns.last);
+          iMatrixDrawTitleColumns(ih, 1, ih->data->columns.num_noscroll - 1);
+        iMatrixDrawTitleColumns(ih, ih->data->columns.first, ih->data->columns.last);
       }
 
-      iupMatrixDrawTitleLines(ih, min, max);
+      iMatrixDrawTitleLines(ih, min, max);
       if (ih->data->columns.num_noscroll > 1)
-        iupMatrixDrawCells(ih, min, 1, max, ih->data->columns.num_noscroll - 1);
-      iupMatrixDrawCells(ih, min, ih->data->columns.first, max, ih->data->columns.last);
+        iMatrixDrawCells(ih, min, 1, max, ih->data->columns.num_noscroll - 1);
+      iMatrixDrawCells(ih, min, ih->data->columns.first, max, ih->data->columns.last);
     }
     else
     {
       if (min == 0)
       {
         if (ih->data->lines.num_noscroll > 1)
-          iupMatrixDrawTitleLines(ih, 1, ih->data->lines.num_noscroll - 1);
-        iupMatrixDrawTitleLines(ih, ih->data->lines.first, ih->data->lines.last);
+          iMatrixDrawTitleLines(ih, 1, ih->data->lines.num_noscroll - 1);
+        iMatrixDrawTitleLines(ih, ih->data->lines.first, ih->data->lines.last);
       }
 
-      iupMatrixDrawTitleColumns(ih, min, max);
+      iMatrixDrawTitleColumns(ih, min, max);
       if (ih->data->lines.num_noscroll > 1)
-        iupMatrixDrawCells(ih, 1, min, ih->data->lines.num_noscroll - 1, max);
-      iupMatrixDrawCells(ih, ih->data->lines.first, min, ih->data->lines.last, max);
+        iMatrixDrawCells(ih, 1, min, ih->data->lines.num_noscroll - 1, max);
+      iMatrixDrawCells(ih, ih->data->lines.first, min, ih->data->lines.last, max);
     }
   }
   else
@@ -1621,5 +1680,9 @@ int iupMatrixDrawSetRedrawAttrib(Ihandle* ih, const char* value)
 
   ih->data->need_redraw = 0;
   iupMatrixDrawUpdate(ih);
+#else
+  IupUpdate(ih);
+  (void)value;
+#endif
   return 0;
 }
