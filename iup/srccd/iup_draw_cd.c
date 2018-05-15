@@ -72,11 +72,7 @@ static void cdflush(cdCtxCanvas *ctxcanvas)
 static void cdclear(cdCtxCanvas* ctxcanvas)
 {
   if (ctxcanvas->dc)
-  {
-    int w, h;
-    iupdrvDrawGetSize(ctxcanvas->dc, &w, &h);
-    iupdrvDrawRectangle(ctxcanvas->dc, 0, 0, w - 1, h - 1, cdCanvasBackground(ctxcanvas->canvas, CD_QUERY), CD_FILL, 1);
-  }
+    iupdrvDrawRectangle(ctxcanvas->dc, 0, 0, ctxcanvas->canvas->w - 1, ctxcanvas->canvas->h - 1, cdCanvasBackground(ctxcanvas->canvas, CD_QUERY), CD_FILL, 1);
 }
 
 static int cdfont(cdCtxCanvas *ctxcanvas, const char *type_face, int style, int size)

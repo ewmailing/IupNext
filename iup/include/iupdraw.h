@@ -16,7 +16,7 @@ extern "C" {
 void IupDrawBegin(Ihandle* ih);
 void IupDrawEnd(Ihandle* ih);
 
-/* all primitives can be called only between calls to Begin and End */
+/* all functions can be called only between calls to Begin and End */
 
 void IupDrawSetClipRect(Ihandle* ih, int x1, int y1, int x2, int y2);
 void IupDrawGetClipRect(Ihandle* ih, int *x1, int *y1, int *x2, int *y2);
