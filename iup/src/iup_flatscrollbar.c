@@ -41,13 +41,15 @@ static Ihandle* iFlatScrollBarGetHorizontal(Ihandle *ih)
 static void iFlatScrollBarRedrawVertical(Ihandle* ih)
 {
   Ihandle* sb_vert = iFlatScrollBarGetVertical(ih);
-  IupUpdate(sb_vert);
+  if (sb_vert->handle)
+    iupdrvRedrawNow(sb_vert);
 }
 
 static void iFlatScrollBarRedrawHorizontal(Ihandle* ih)
 {
   Ihandle* sb_horiz = iFlatScrollBarGetHorizontal(ih);
-  IupUpdate(sb_horiz);
+  if (sb_horiz->handle)
+    iupdrvRedrawNow(sb_horiz);
 }
 
 static void iFlatScrollBarNormalizePos(int *pos, int max, int d)
@@ -578,7 +580,7 @@ static int iFlatScrollBarButton_CB(Ihandle* sb_ih, int button, int press, int x,
 
     if (handler != SB_NONE)
     {
-      IupUpdate(sb_ih);
+      iupdrvRedrawNow(sb_ih);
       return IUP_DEFAULT;
     }
   }
@@ -606,7 +608,7 @@ static int iFlatScrollBarButton_CB(Ihandle* sb_ih, int button, int press, int x,
 
     if (handler != SB_NONE)
     {
-      IupUpdate(sb_ih);
+      iupdrvRedrawNow(sb_ih);
       return IUP_DEFAULT;
     }
   }
@@ -657,7 +659,7 @@ static int iFlatScrollBarMotion_CB(Ihandle *sb_ih, int x, int y, char* status)
   }
 
   if (redraw)
-    IupUpdate(sb_ih);
+    iupdrvRedrawNow(sb_ih);
 
   return IUP_DEFAULT;
 }
@@ -668,7 +670,7 @@ static int iFlatScrollBarLeaveWindow_CB(Ihandle* sb_ih)
   if (handler != SB_NONE)
   {
     iupAttribSetInt(sb_ih, "_IUP_HIGHLIGHT_HANDLER", SB_NONE);
-    IupUpdate(sb_ih);
+    iupdrvRedrawNow(sb_ih);
   }
   return IUP_DEFAULT;
 }
