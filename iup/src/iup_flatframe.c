@@ -30,9 +30,9 @@ static void iFlatFrameGetTitleSize(Ihandle* ih, int frame, int *width, int *heig
   int spacing = iupAttribGetInt(ih, "TITLEIMAGESPACING");
   char* imagename = iupAttribGet(ih, "TITLEIMAGE");
   char* title = iupAttribGet(ih, "TITLE");
+  double text_orientation = iupAttribGetDouble(ih, "TITLETEXTORIENTATION");
   int horiz_padding = 0, vert_padding = 0;
   IupGetIntInt(ih, "TITLEPADDING", &horiz_padding, &vert_padding);
-  double text_orientation = iupAttribGetDouble(ih, "TITLETEXTORIENTATION");
 
   iupFlatDrawGetIconSize(ih, img_position, spacing, horiz_padding, vert_padding, imagename, title, width, height, text_orientation);
 
