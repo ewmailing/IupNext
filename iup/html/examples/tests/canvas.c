@@ -226,17 +226,21 @@ static void drawTest(Ihandle *ih, int posx)  //_Lines
 
   IupSetAttribute(ih, "DRAWCOLOR", "0 0 0");
   IupSetAttribute(ih, "DRAWFONT", "Helvetica, -30");
-//  IupSetAttribute(ih, "DRAWTEXTORIENTATION", "60");
+  //IupSetAttribute(ih, "DRAWTEXTALIGNMENT", "ACENTER");
+  //  IupSetAttribute(ih, "DRAWTEXTORIENTATION", "60");
 //  IupSetAttribute(ih, "DRAWTEXTLAYOUTCENTER", "Yes");
   IupDrawGetTextSize(ih, "Text", -1, &w, &h);
   IupSetAttribute(ih, "DRAWSTYLE", "STROKE");
   IupDrawRectangle(ih, 20, 70, 20 + w, 70 + h);
+//  IupDrawSetClipRect(ih, 20, 70, 20 + w, 70 + h);
   IupDrawText(ih, "Text", 0, 20, 70, -1, -1);
+//  IupDrawText(ih, "Very Large Text", 0, 20, 70, w, h);
   IupSetAttribute(ih, "DRAWTEXTORIENTATION", "0");
   //  IupSetAttribute(ih, "DRAWTEXTWRAP", "Yes");
 //  IupSetAttribute(ih, "DRAWTEXTELLIPSIS", "Yes");
 //  IupSetAttribute(ih, "DRAWTEXTCLIP", "Yes");
-//  IupDrawText(ih, "Very Large Text", 0, 20, 70, 50, 70);
+//  IupDrawText(ih, "Very Large Text", 0, 20, 70, w, h);
+//  IupDrawResetClip(ih);
 
 //  IupSetAttribute(ih, "DRAWLINEWIDTH", "3");
   IupSetAttribute(ih, "DRAWSTYLE", "STROKE");

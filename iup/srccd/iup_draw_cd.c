@@ -114,6 +114,12 @@ static void cdgettextsize(cdCtxCanvas* ctxcanvas, const char *s, int len, int *w
   iupdrvFontGetTextSize(ctxcanvas->canvas->native_font, s, len, width, height);
 }
 
+static void cdcliparea(cdCtxCanvas *ctxcanvas, int xmin, int xmax, int ymin, int ymax)
+{
+  if (ctxcanvas->canvas->clip_mode == CD_CLIPAREA)
+    iupdrvDrawSetClipRect(ctxcanvas->dc, xmin, ymin, xmax, ymax);
+}
+
 static int cdclip(cdCtxCanvas *ctxcanvas, int mode)
 {
   if (mode == CD_CLIPAREA)
@@ -485,6 +491,7 @@ static void cdinittable(cdCanvas* canvas)
   canvas->cxPutImageRectMap = cdputimagerectmap;
 
   canvas->cxClip = cdclip;
+  canvas->cxClipArea = cdcliparea;
   canvas->cxFont = cdfont;
   canvas->cxGetFontDim = cdgetfontdim;
   canvas->cxGetTextSize = cdgettextsize;

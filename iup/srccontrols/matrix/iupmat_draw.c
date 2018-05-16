@@ -517,6 +517,8 @@ static void iMatrixDrawText(Ihandle* ih, int x1, int x2, int y1, int y2, int col
   /* Set the color used to draw the text */
   iMatrixDrawSetFgColor(ih, lin, col, marked, active);
 
+  IupCdSetFont(ih, ih->data->cd_canvas, iupMatrixGetFont(ih, lin, col));
+
   /* Set the clip area to the cell region informed, the text maybe greater than the cell */
   if (hidden_text_marks)
   {
@@ -525,12 +527,8 @@ static void iMatrixDrawText(Ihandle* ih, int x1, int x2, int y1, int y2, int col
   }
   else
   {
-    if (lin == 3 && col == 2)
-      lin = lin;
     iMatrixDrawSetCellClipping(ih, x1, x2, y1, y2);
   }
-
-  IupCdSetFont(ih, ih->data->cd_canvas, iupMatrixGetFont(ih, lin, col));
 
   /* Create an space between text and cell frame */
   x1 += IMAT_PADDING_W / 2;       x2 -= IMAT_PADDING_W / 2;
