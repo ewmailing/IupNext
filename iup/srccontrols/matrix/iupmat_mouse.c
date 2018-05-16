@@ -269,10 +269,14 @@ int iupMatrixMouseButton_CB(Ihandle* ih, int button, int press, int x, int y, ch
 
   iupMatrixGetCellFromXY(ih, x, y, &lin, &col);
 
+  ih->data->button1press = 0;
+
   if (button == IUP_BUTTON1)
   {
     if (press)
     {
+      ih->data->button1press = 1;
+
       iupMatrixKeyResetHomeEndCount(ih);
 
       if (iupMatrixColResStart(ih, x, y))
@@ -334,7 +338,7 @@ int iupMatrixMouseMove_CB(Ihandle* ih, int x, int y, char *status)
 
   has_lincol = iupMatrixGetCellFromXY(ih, x, y, &lin, &col);
 
-  if (iup_isbutton1(status) && ih->data->mark_block && ih->data->mark_multiple && ih->data->mark_mode != IMAT_MARK_NO)
+  if (iup_isbutton1(status) && ih->data->button1press && ih->data->mark_block && ih->data->mark_multiple && ih->data->mark_mode != IMAT_MARK_NO)
   {
     if ((x < ih->data->columns.dt[0].size || x < IMAT_DRAG_SCROLL_DELTA) && (ih->data->columns.first > ih->data->columns.num_noscroll))
       iupMATRIX_ScrollLeft(ih);

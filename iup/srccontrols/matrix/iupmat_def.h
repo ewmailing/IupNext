@@ -148,7 +148,7 @@ struct _IcontrolData
       show_fill_value;
 
   /* Mouse and Keyboard AUX */
-  int button1edit;
+  int button1edit, button1press;
   int homekeycount, endkeycount;  /* numbers of times that key was pressed */
 
   /* ColRes AUX */
