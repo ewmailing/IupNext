@@ -69,11 +69,11 @@ ifndef TEC_UNAME
   ifeq ($(TEC_SYSARCH), amd64)
     TEC_SYSARCH:=x64
   endif
-  ifeq ($(TEC_SYSARCH), armv7l)
+  ifneq ($(findstring armv, $(TEC_SYSARCH)), )
     TEC_SYSARCH:=arm
   endif
-  ifeq ($(TEC_SYSARCH), armv6l)
-    TEC_SYSARCH:=arm
+  ifneq ($(findstring aarch64, $(TEC_SYSARCH)), )
+    TEC_SYSARCH:=arm64
   endif
   
   # Compose
@@ -120,9 +120,15 @@ ifndef TEC_UNAME
       TEC_UNAME:=$(TEC_UNAME)_ia64
     endif
     
-    # arm Linux (Raspberry Pi)
+    # arm Linux
     ifeq ($(TEC_SYSARCH), arm)
       TEC_UNAME:=$(TEC_UNAME)_arm
+    endif    
+    ifeq ($(TEC_SYSARCH), arm64)
+      # Our dynamic library build is not working in arm64
+      NO_DYNAMIC ?= Yes 
+      BUILD_64=Yes
+      TEC_UNAME:=$(TEC_UNAME)_arm64
     endif    
     
     # Linux Distribution
@@ -130,7 +136,7 @@ ifndef TEC_UNAME
     TEC_DISTVERSION=$(shell lsb_release -rs|cut -f1 -d.)
     TEC_DIST:=$(TEC_DISTNAME)$(TEC_DISTVERSION)
     
-    # arm Linux (Raspberry Pi)
+    # arm Linux (Raspberry Pi) -- NOT GOOD must be improved
     ifeq ($(TEC_SYSARCH), arm)
 	    # Raspbian GNU/Linux 7 (wheezy)
       TEC_DISTNAME=Raspbian
@@ -235,6 +241,11 @@ endif
 
 # Itanium Exception
 ifeq ($(TEC_SYSARCH), ia64)
+  TEC_BYTEORDER = TEC_LITTLEENDIAN
+  TEC_WORDSIZE = TEC_64
+endif
+
+ifeq ($(TEC_SYSARCH), arm64)
   TEC_BYTEORDER = TEC_LITTLEENDIAN
   TEC_WORDSIZE = TEC_64
 endif
