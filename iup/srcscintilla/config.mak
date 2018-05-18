@@ -71,6 +71,10 @@ else
   LIBS += imm32
   DEFINES += UNICODE
   
+  ifdef SCINTILLA_NEW
+    LIBS += msimg32
+  endif
+  
   ifneq ($(findstring gcc, $(TEC_UNAME)), )
     DEFINES += _WIN32 DISABLE_D2D NO_CXX11_REGEX
   endif
