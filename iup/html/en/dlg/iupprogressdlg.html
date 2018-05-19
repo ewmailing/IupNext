@@ -79,10 +79,10 @@ set the state attribute to PROCESSING.</p>
 Default: 30 (since 3.21)</p>
 <p><strong>MINCLOCK</strong>: minimum time between counts to an actual screen 
 update in milliseconds. So if each count increment is too fast this avoids 
-updating the screen too often. Default: 250 (since 3.21)</p>
+updating the screen too often. Must at least has passed the minimum time for a 
+screen update. Default: 250 (since 3.21)</p>
 <p><strong>MINPERCENT</strong>: minimum percent between counts to an actual 
-screen update. So if each count increment is too fast and the minimum clock has 
-not reached yet, but the application would like to update the screen anyway 
+screen update, when the minimum clock has not reached yet. So if each count increment is too fast, but the application would like to update the screen anyway 
 after the percent of the total progress has passed this minimum value. So at 
 least some screen updates will occur. Default: 10 (since 3.21)</p>
 <h3><a name="Callbacks">Callbacks</a></h3>
