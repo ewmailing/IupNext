@@ -131,10 +131,18 @@ static IgtkFont* gtkFindFont(const char *font)
       char new_font[200];
       if (size<0)
       {
-        double res = ((double)gdk_screen_get_width(gdk_screen_get_default()) / (double)gdk_screen_get_width_mm(gdk_screen_get_default())); /* pixels/mm */
-        /* 1 point = 1/72 inch     1 inch = 25.4 mm */
-        /* pixel = ((point/72)*25.4)*pixel/mm */
-        size = iupRound((-size / res)*2.83464567); /* from pixels to points */
+#if GTK_CHECK_VERSION(2, 10, 0)
+        double res = gdk_screen_get_resolution(gdk_screen_get_default()); /* dpi */
+#else
+        double res = ((double)gdk_screen_get_width(gdk_screen_get_default()) / 
+                      (double)gdk_screen_get_width_mm(gdk_screen_get_default())); /* pixels/mm */
+        res *= 25.4; /* dpi */
+#endif
+        /* The default value is 96, meaning that a 10 point font will be 13 pixels high. 
+           (10 * 96 / 72 = 13.3) */
+        /* 1 point = 1/72 inch  */
+        /* points = (pixels*72)/dpi */
+        size = iupRound((-size * 72.0) / res); /* from pixels to points */
       }
 
       sprintf(new_font, "%s, %s%s%d", typeface, is_bold?"Bold ":"", is_italic?"Italic ":"", size);

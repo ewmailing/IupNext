@@ -990,12 +990,12 @@ void iupFlatDrawCheckMark(IdrawCanvas* dc, int xmin, int xmax, int ymin, int yma
   if (!active)
     color = iFlatDrawColorMakeInactive(color, bgcolor);
 
-    points[0] = xmin;
-    points[1] = (ymax + ymin) / 2;
-    points[2] = (xmax + xmin) / 2;
-    points[3] = ymax;
-    points[4] = xmax;
-    points[5] = ymin;
+  points[0] = xmin;
+  points[1] = (ymax + ymin) / 2;
+  points[2] = (xmax + xmin) / 2;
+  points[3] = ymax;
+  points[4] = xmax;
+  points[5] = ymin;
 
   iupdrvDrawPolygon(dc, points, 3, color, IUP_DRAW_STROKE, 2);
 }
