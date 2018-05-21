@@ -191,12 +191,12 @@ static void winTextParseParagraphFormat(Ihandle* formattag, PARAFORMAT2 *parafor
 
     while (format)
     {
-      str = iupStrDupUntil((char**)&format, ' ');
+      str = iupStrDupUntil((const char**)&format, ' ');
       if (!str) break;
       pos = atoi(str)*convert2twips;
       free(str);
 
-      str = iupStrDupUntil((char**)&format, ' ');
+      str = iupStrDupUntil((const char**)&format, ' ');
       if (!str) break;
 
       if (iupStrEqualNoCase(str, "DECIMAL"))

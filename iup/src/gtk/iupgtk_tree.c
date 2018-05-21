@@ -35,6 +35,15 @@
 #include "iupgtk_drv.h"
 
 
+/* TODO:
+  Replace:
+    cell-background-gdk
+    foreground-gdk
+  By:
+    cell-background-rgba
+    foreground-rgba
+*/
+
 /* IMPORTANT: 
 
   GtkTreeStore uses the "user_data" field of the GtkTreeIter 

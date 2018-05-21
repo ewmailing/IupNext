@@ -34,6 +34,15 @@
 #define PANGO_WEIGHT_SEMIBOLD 600
 #endif
 
+/* TODO:
+  Replace:
+    background-gdk
+    foreground-gdk
+  By:
+    background-rgba
+    foreground-rgba
+*/
+
 void iupdrvTextAddSpin(int *w, int h)
 {
 #if GTK_CHECK_VERSION(3, 0, 0)
@@ -88,12 +97,12 @@ static void gtkTextParseParagraphFormat(Ihandle* formattag, GtkTextTag* tag)
 
     while (format)
     {
-      str = iupStrDupUntil((char**)&format, ' ');
+      str = iupStrDupUntil((const char**)&format, ' ');
       if (!str) break;
       pos = atoi(str);
       free(str);
 
-      str = iupStrDupUntil((char**)&format, ' ');
+      str = iupStrDupUntil((const char**)&format, ' ');
       if (!str) break;
 
 /*      if (iupStrEqualNoCase(str, "DECIMAL"))    unsupported for now

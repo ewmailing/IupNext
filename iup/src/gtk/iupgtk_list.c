@@ -34,6 +34,15 @@
 #include "iupgtk_drv.h"
 
 
+/* TODO:
+  Replace:
+    cell-background-gdk
+    foreground-gdk
+  By:
+    cell-background-rgba
+    foreground-rgba
+*/
+
 enum
 {
   IUPGTK_LIST_IMAGE,  /* "pixbuf" */

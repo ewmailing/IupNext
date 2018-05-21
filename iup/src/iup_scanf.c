@@ -53,19 +53,19 @@ int IupScanf (const char *format, ...)
 
   va_start(va,format);
   REQUIRE_ARG((s1=s=(char *)iupStrDup(format)) != NULL);
-  title=iupStrDupUntil(&s,'\n');
+  title = iupStrDupUntil((const char**)&s, '\n');
   REQUIRE_ARG(title != NULL);
   for (i=0; i<fields_in_count; ++i)
   {
     int n;
-    prompt[i]=iupStrDupUntil(&s,'%');
+    prompt[i] = iupStrDupUntil((const char**)&s, '%');
     REQUIRE_ARG(prompt[i] != NULL);
     n=sscanf(s,"%d.%d",width+i,scroll+i);
     REQUIRE_ARG(n == 2);
     s=strchr(s,'%');
     REQUIRE_ARG(s != NULL);
     if (outf) free(outf);
-    outf = iupStrDupUntil(&s, '\n');
+    outf = iupStrDupUntil((const char**)&s, '\n');
     text[i]=ALLOC(width[i]+1,char);
     REQUIRE_ARG(text[i] != NULL);
 
