@@ -713,7 +713,9 @@ static int winTreeGetImageIndex(Ihandle* ih, const char* name)
 
   bmpArrayData = iupArrayInc(bmpArray);
   bmpArrayData[i] = bmp;
-  return ImageList_Add(image_list, bmp, NULL);  /* the bmp is duplicated at the list */
+
+  i = ImageList_Add(image_list, bmp, NULL);  /* the bmp is duplicated at the list */
+  return i;
 }
 
 static void winTreeSetToggleState(Ihandle* ih, HTREEITEM hItem, int state)
@@ -3258,6 +3260,8 @@ void iupdrvTreeInitClass(Iclass* ic)
   iupClassRegisterAttributeId(ic, "COPYNODE", NULL, winTreeSetCopyNodeAttrib, IUPAF_NOT_MAPPED|IUPAF_WRITEONLY|IUPAF_NO_INHERIT);
 
   /* necessary because transparent background does not work when not using visual styles */
-  if (!iupwin_comctl32ver6)  /* Used by iupdrvImageCreateImage */
+  /* since 3.25 must set all flat because of the empty image
+     a full transparent image is drawing as black. */
+  /* if (!iupwin_comctl32ver6) */  /* Used by iupdrvImageCreateImage */
     iupClassRegisterAttribute(ic, "FLAT_ALPHA", NULL, NULL, IUPAF_SAMEASSYSTEM, "YES", IUPAF_NOT_MAPPED|IUPAF_NO_INHERIT);
 }
