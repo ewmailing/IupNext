@@ -338,7 +338,7 @@ int iupImageInitColorTable(Ihandle *ih, iupColor* colors, int *colors_count)
   char *value;
   unsigned char red, green, blue;
   int i, has_alpha = 0;
-  static iupColor default_colors[] = {
+  static iupColor default_colors[16] = {
     { 0,0,0,255 }, { 128,0,0,255 }, { 0,128,0,255 }, { 128,128,0,255 },    
     { 0,0,128,255 }, { 128,0,128,255 }, { 0,128,128,255 }, { 192,192,192,255 },    
     { 128,128,128,255 }, { 255,0,0,255 }, { 0,255,0,255 }, { 255,255,0,255 },
