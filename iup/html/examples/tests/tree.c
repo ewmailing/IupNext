@@ -564,9 +564,10 @@ static void init_tree_nodes(void)
   IupSetAttribute(tree, "RASTERSIZE", NULL);   /* remove the minimum size limitation */
   IupSetAttribute(tree, "COLOR8", "92 92 255");
 //  IupSetAttribute(tree, "TITLEFONT8", "Courier, 14");
+  IupSetAttribute(tree, "IMAGE7", "IMGEMPTY");
   IupSetAttributeHandle(tree, "IMAGE8", load_image_LogoTecgraf());
-  IupSetAttributeHandle(tree, "IMAGE7", load_image_TestImage());
-  IupSetAttribute(tree, "IMAGE6", IupGetAttribute(tree, "IMAGE8"));
+//  IupSetAttributeHandle(tree, "IMAGE7", load_image_TestImage());
+//  IupSetAttribute(tree, "IMAGE6", IupGetAttribute(tree, "IMAGE8"));
 
   IupSetAttribute(tree, "USERDATA0", "0");
   IupSetAttribute(tree, "USERDATA1", "1");
