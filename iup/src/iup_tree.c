@@ -179,6 +179,7 @@ static void iTreeInitializeImages(void)
   IupSetAttribute(image_paper, "5", "187 187 187");
 
   IupSetAttribute(image_empty, "0", "BGCOLOR");
+  IupSetAttribute(image_empty, "FLAT_ALPHA", "Yes"); /* necessary for Windows */
 
   IupSetHandle("IMGLEAF",      image_leaf);
   IupSetHandle("IMGCOLLAPSED", image_collapsed);
