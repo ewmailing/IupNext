@@ -137,7 +137,7 @@ static void iTreeInitializeImages(void)
   image_expanded  = IupImage(ITREE_IMG_WIDTH, ITREE_IMG_HEIGHT, img_expanded);
   image_blank     = IupImage(ITREE_IMG_WIDTH, ITREE_IMG_HEIGHT, img_blank);
   image_paper     = IupImage(ITREE_IMG_WIDTH, ITREE_IMG_HEIGHT, img_paper);
-  image_empty     = IupImage(ITREE_IMG_WIDTH/2, ITREE_IMG_HEIGHT, NULL);
+  image_empty     = IupImage(ITREE_IMG_WIDTH, ITREE_IMG_HEIGHT, NULL);
 
   IupSetAttribute(image_leaf, "0", "BGCOLOR");
   IupSetAttribute(image_leaf, "1", "192 192 192");
