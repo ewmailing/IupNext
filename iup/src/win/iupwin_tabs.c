@@ -336,7 +336,7 @@ int iupdrvTabsGetCurrentTab(Ihandle* ih)
 static int winTabsGetImageIndex(Ihandle* ih, const char* name)
 {
   HIMAGELIST image_list;
-  int count, i, bpp, ret;
+  int count, i, ret;
   int width, height;
   Iarray* bmp_array;
   HBITMAP *bmp_array_data;
@@ -356,15 +356,13 @@ static int winTabsGetImageIndex(Ihandle* ih, const char* name)
   bmp_array_data = iupArrayGetData(bmp_array);
 
   /* must use this info, since image can be a driver image loaded from resources */
-  iupdrvImageGetInfo(bmp, &width, &height, &bpp);
+  iupdrvImageGetInfo(bmp, &width, &height, NULL);
 
   image_list = (HIMAGELIST)SendMessage(ih->handle, TCM_GETIMAGELIST, 0, 0);
   if (!image_list)
   {
-    UINT flags = ILC_COLOR32 | (bpp == 8 ? ILC_MASK : 0);
-
     /* create the image list if does not exist */
-    image_list = ImageList_Create(width, height, flags, 0, 50);
+    image_list = ImageList_Create(width, height, ILC_COLOR32, 0, 50);
     SendMessage(ih->handle, TCM_SETIMAGELIST, 0, (LPARAM)image_list);
   }
 
