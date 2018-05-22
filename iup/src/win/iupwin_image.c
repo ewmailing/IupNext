@@ -610,18 +610,21 @@ void* iupdrvImageCreateImage(Ihandle *ih, const char* bgcolor, int make_inactive
                *a = r + 1,
                index = imgdata[x];
 
-          *r = colors[index].r;
-          *g = colors[index].g;
-          *b = colors[index].b;
-          if (colors[index].a == 0)  /* full transparent alpha */
-            *a = 0;
-          else
-            *a = 255;
-
           /* RGB in RGBA DIBs are pre-multiplied by alpha to AlphaBlend usage. */
-          *r = iupALPHAPRE(*r, *a);
-          *g = iupALPHAPRE(*g, *a);
-          *b = iupALPHAPRE(*b, *a);
+          if (colors[index].a == 0)  /* full transparent alpha */
+          {
+            *r = 0;
+            *g = 0;
+            *b = 0;
+            *a = 0;
+          }
+          else
+          {
+            *r = colors[index].r;
+            *g = colors[index].g;
+            *b = colors[index].b;
+            *a = 255;
+          }
         }
         else
           bits[x] = imgdata[x];
