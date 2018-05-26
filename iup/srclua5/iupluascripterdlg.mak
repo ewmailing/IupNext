@@ -64,7 +64,7 @@ GC := $(addprefix scripter/il_, $(GC))
 $(GC) : scripter/il_%.c : scripter/%.lua generator.lua
 	$(LUABIN) generator.lua $<
 
-SRC := iupluascripterdlg.c iupluascripterdlg_images.c $(GC)
+SRC := iupluascripterdlg.c iupluascripter_debugger.c iupluascripterdlg_images.c $(GC)
 
 ifneq ($(findstring MacOS, $(TEC_UNAME)), )
   USE_IUPLUA:=

@@ -12,6 +12,9 @@
 .auto-style1 {
 	text-decoration: underline;
 }
+.auto-style2 {
+	font-size: medium;
+}
 </style>
 </head>
 <body>
@@ -152,7 +155,7 @@ you can inspect variables and the stack. (since 3.23)</p>
 But you can only set breakpoints when you step in the string and its contents 
 are displayed in a new document. This temporary document is automatically closed 
 when the debug is ended. (since 3.23)</p>
-<p>During the debug the list of global variables or expressions in <strong>Watch</strong> is 
+<p>During the debug, the list of global variables or expressions in <strong>Watch</strong> is 
 also updated with the respective values. When not in debug the list contains 
 only the text of the variables or expressions to be watched. (since 3.23)</p>
 <p>When a <strong>Project</strong> is used all Lua parameters and breakpoints 
@@ -259,11 +262,50 @@ int main(int argc, char **argv)
   </table>
   </center>
 </div>
+<h3>Console Tab &amp; Debugger Tabs Modules<span class="auto-style2"> (since 3.25)</span></h3>
+<p>The Console Tab and the Debugger Tabs can be used as independent modules in 
+another application dialog. The library must be initialized in the same way by 
+calling IupLuaScripterDlgOpen in C or by calling require&quot;iupluascripterdlg" 
+in Lua. After that the module are ready to be used.</p>
+<p>The Console module is used by calling <strong>iup.ConsoleCreate(</strong>panelTabs<strong>)</strong> 
+to create the console tab. panelTabs is a IupZbox, IupTabs or IupFlatTabs where the 
+console will be inserted.&nbsp; </p>
+<p>The&nbsp; Debugger Tabs module is used by calling <strong>iup.DebugCreate(</strong>panelTabs, 
+multitextTabs<strong>)</strong> 
+to create the breakpoints tab, the locals/stack tab and the watch tab. 
+multitextTabs is a IupZbox, IupTabs or IupFlatTabs where each IupScintilla that 
+contains a source file is located. The panelTabs and the multitextTabs must 
+already be inserted in the application dialog. Additionally the application can also call <strong>iup.DebuggerAddToolbarButtons(toolbar)</strong> 
+to add toolbar buttons for debugging, call <strong>iup.DebuggerAddMenuItems(</strong>lua_menu<strong>)</strong> 
+to add menu items for debugging, and call <strong>iup.DebuggerAddHotKeys(</strong>ih<strong>)</strong> 
+to add the debugging hot keys, all the same as in the IupLuaScripterDlg.</p>
+<p>But the Debug Tabs module has a few constrains:</p>
+<p>- There must be a container (IupTabs, IupFlatTabs or IupZbox) with several IupScintilla 
+controls as children to contains the source codes being debugged. 
+Margins 2, 3 and 4 are used for debugging. Each IupScintilla should have its 
+file name in the FILENAME attribute if it is associated with a file.</p>
+<p>- The list of global variables to be watched and the list of breakpoints are 
+stored by the application. After preparing the list with the FILENAMEi and LINEi 
+attributes, call the <strong>iup.DebuggerInitBreakpointsList()</strong> function 
+to initialize the list. The process for the the globals are similar but involves 
+more calls to Lua, additionally to the call to iup.DebuggerInitGlobalsTree() at 
+the end. See the "iupluascripterdlg.c" for more details. In the IupLuaScripterDlg 
+the lists and parameters are stored in a IupConfig configuration file, but both 
+modules are independent of the configuration file, so the application is 
+responsible for saving and restoring the lists.</p>
+<p>- Some features are dependent on IupScintillaDlg attributes. These attributes 
+are isolated in several functions in "debugger.lua", to remove the 
+IupScintillaDlg dependency these functions must be re-defined in Lua. Such as: 
+iup.DebuggerNewFile, iup.DebuggerOpenFile, iup.DebuggerForceCloseFile, 
+iup.DebuggerUpdateTitle, iup.DebuggerSaveFile and iup.DebuggerToggleMarker.</p>
+<p>Other functions of both modules are available directly in Lua. Take a look of 
+the IupLuaScripterDlg code in the folder "iup/srclua5/scripter", more 
+specifically the "console.lua" and "debugger.lua" modules.</p>
 <h3><a name="SeeAlso">See Also</a></h3>
 <p>
 <a href="../ctrl/iup_scintilla.html">
 IupScintilla</a>,
-<a href="iupdialog.html">IupDialog</a></p>
+<a href="iupdialog.html">IupDialog</a>, <a href="iupscintilladlg.html">IupScintillaDlg</a><font size="4"> </font></p>
 
 </body>
 

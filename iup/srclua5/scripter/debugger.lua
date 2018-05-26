@@ -24,21 +24,64 @@ local debugger = {
   breakpoints = {},
 
   main_dialog = nil,
+  panel_tabs = nil,
+  multitext_tabs = nil,
+  console_pos = 0,
+  debug_pos = 0,
 }
 
-function iup.DebuggerInit(main_dialog)
-  debugger.main_dialog = main_dialog
+function iup.DebuggerInit(panelTabs, multitextTabs)
+  debugger.main_dialog = iup.GetDialog(panelTabs)
+  debugger.multitext_tabs = multitextTabs
+  debugger.panel_tabs = panelTabs
+  debugger.console_pos = panelTabs.count - 4
+  debugger.debug_pos = panelTabs.count - 2
+
+  debugger.panel_tabs.valuepos = debugger.console_pos -- show console tab
+end
+
+function iup.DebuggerShowConsoleTab()
+  debugger.panel_tabs.valuepos = debugger.console_pos -- show console tab
+end
+
+function iup.DebuggerShowDebugTab()
+  debugger.panel_tabs.valuepos = debugger.debug_pos -- show debug tab
 end
 
 function iup.DebuggerGetCurrentMultitext()
-  local tabs = iup.GetDialogChild(debugger.main_dialog, "TABS")
-  return tabs.value_handle
+  return debugger.multitext_tabs.value_handle
 end
 
-function iup.DebuggerFindMultitext(filename)
-  local tabs = iup.GetDialogChild(debugger.main_dialog, "TABS")
+-----------  IupScintillaDlg Usage  ---------------------
 
-  local multitext = iup.GetChild(tabs, 0)
+function iup.DebuggerNewFile()
+  debugger.main_dialog.newfile = nil
+end
+
+function iup.DebuggerOpenFile(filename)
+  debugger.main_dialog.openfile = filename
+end
+
+function iup.DebuggerForceCloseFile(pos)
+  debugger.main_dialog.forceclosefile = pos
+end
+
+function iup.DebuggerUpdateTitle()
+  debugger.main_dialog.updatetitle = "Yes"
+end
+
+function iup.DebuggerSaveFile()
+  debugger.main_dialog.savefile = nil
+end
+
+function iup.DebuggerToggleMarker(lin)
+  debugger.main_dialog["togglemarker"..lin] = 2 -- margin=2
+end
+
+-----------------------------------------__________----
+
+function iup.DebuggerFindMultitext(filename)
+  local multitext = iup.GetChild(debugger.multitext_tabs, 0)
   while multitext do
     if multitext.filename == filename then
       return multitext
@@ -49,7 +92,7 @@ function iup.DebuggerFindMultitext(filename)
 end
 
 function iup.DebuggerRestoreBreakpoints(multitext, m_filename)
-  local list_break = iup.GetDialogChild(debugger.main_dialog, "LIST_BREAK")
+  local list_break = iup.GetDialogChild(debugger.main_dialog, "DEBUG_LIST_BREAK")
 
   local index = 1
   local filename = list_break["FILENAME" .. index]
@@ -65,19 +108,18 @@ function iup.DebuggerRestoreBreakpoints(multitext, m_filename)
 end
 
 function iup.DebuggerOpenMultitext(filename, source)
-  local tabs = iup.GetDialogChild(debugger.main_dialog, "TABS")
-  local old_count = tonumber(tabs.count)
+  local old_count = tonumber(debugger.multitext_tabs.count)
 
   local s = string.sub(filename, 1, 6)
   if s == "string" then
-    debugger.main_dialog.newfile = nil
+    iup.DebuggerNewFile()
   else
-    debugger.main_dialog.openfile = filename
+    iup.DebuggerOpenFile(filename)
   end
 
-  local count = tonumber(tabs.count)
+  local count = tonumber(debugger.multitext_tabs.count)
   if count > old_count then
-    local multitext = iup.GetChild(tabs, old_count)
+    local multitext = iup.GetChild(debugger.multitext_tabs, old_count)
 
     if s == "string" then
       multitext.filename = filename
@@ -96,16 +138,14 @@ function iup.DebuggerOpenMultitext(filename, source)
 end
 
 function iup.DebuggerCloseTemporary()
-  local tabs = iup.GetDialogChild(debugger.main_dialog, "TABS")
-
-  local multitext = iup.GetChild(tabs, 0)
+  local multitext = iup.GetChild(debugger.multitext_tabs, 0)
   local pos = 0
   while multitext do
     if multitext.temporary == "Yes" then
       local temp = multitext
       multitext = iup.GetBrother(multitext)
 
-      iup.SetAttribute(debugger.main_dialog, "FORCECLOSEFILE", pos)
+      iup.DebuggerForceCloseFile(pos)
     else
       multitext = iup.GetBrother(multitext)
       pos = pos + 1
@@ -114,9 +154,7 @@ function iup.DebuggerCloseTemporary()
 end
 
 function iup.DebuggerSetAttribAllMultitext(name, value)
-  local tabs = iup.GetDialogChild(debugger.main_dialog, "TABS")
-
-  local multitext = iup.GetChild(tabs, 0)
+  local multitext = iup.GetChild(debugger.multitext_tabs, 0)
   while multitext do
     multitext[name] = value 
     multitext = iup.GetBrother(multitext)
@@ -226,22 +264,22 @@ function iup.DebuggerSetState(st)
   iup.DebuggerSetAttribAllMultitext("MARKERDELETEALL", "2") -- clear all line highlight (margin=2)
   iup.DebuggerSetAttribAllMultitext("MARKERDELETEALL", "3") -- clear all line arrow (margin=3)
 
-  iup.DebuggerSetDialogChildAttrib("ITM_RUN", "ACTIVE", run)
-  iup.DebuggerSetDialogChildAttrib("ITM_STOP", "ACTIVE", stop)
-  iup.DebuggerSetDialogChildAttrib("ITM_PAUSE", "ACTIVE", pause)
-  iup.DebuggerSetDialogChildAttrib("ITM_DEBUG", "ACTIVE", dbg)
-  iup.DebuggerSetDialogChildAttrib("ITM_STEPINTO", "ACTIVE", step)
-  iup.DebuggerSetDialogChildAttrib("ITM_STEPOVER", "ACTIVE", step)
-  iup.DebuggerSetDialogChildAttrib("ITM_STEPOUT", "ACTIVE", step)
-  iup.DebuggerSetDialogChildAttrib("ITM_CURRENTLINE", "ACTIVE", curline)
-  iup.DebuggerSetDialogChildAttrib("BTN_RUN", "ACTIVE", run)
-  iup.DebuggerSetDialogChildAttrib("BTN_STOP", "ACTIVE", stop)
-  iup.DebuggerSetDialogChildAttrib("BTN_PAUSE", "ACTIVE", pause)
-  iup.DebuggerSetDialogChildAttrib("BTN_DEBUG", "ACTIVE", dbg)
-  iup.DebuggerSetDialogChildAttrib("BTN_STEPINTO", "ACTIVE", step)
-  iup.DebuggerSetDialogChildAttrib("BTN_STEPOVER", "ACTIVE", step)
-  iup.DebuggerSetDialogChildAttrib("BTN_STEPOUT", "ACTIVE", step)
-  iup.DebuggerSetDialogChildAttrib("BTN_CURRENTLINE", "ACTIVE", curline)
+  iup.DebuggerSetDialogChildAttrib("DEBUG_ITM_RUN", "ACTIVE", run)
+  iup.DebuggerSetDialogChildAttrib("DEBUG_ITM_STOP", "ACTIVE", stop)
+  iup.DebuggerSetDialogChildAttrib("DEBUG_ITM_PAUSE", "ACTIVE", pause)
+  iup.DebuggerSetDialogChildAttrib("DEBUG_ITM_DEBUG", "ACTIVE", dbg)
+  iup.DebuggerSetDialogChildAttrib("DEBUG_ITM_STEPINTO", "ACTIVE", step)
+  iup.DebuggerSetDialogChildAttrib("DEBUG_ITM_STEPOVER", "ACTIVE", step)
+  iup.DebuggerSetDialogChildAttrib("DEBUG_ITM_STEPOUT", "ACTIVE", step)
+  iup.DebuggerSetDialogChildAttrib("DEBUG_ITM_CURRENTLINE", "ACTIVE", curline)
+  iup.DebuggerSetDialogChildAttrib("DEBUG_BTN_RUN", "ACTIVE", run)
+  iup.DebuggerSetDialogChildAttrib("DEBUG_BTN_STOP", "ACTIVE", stop)
+  iup.DebuggerSetDialogChildAttrib("DEBUG_BTN_PAUSE", "ACTIVE", pause)
+  iup.DebuggerSetDialogChildAttrib("DEBUG_BTN_DEBUG", "ACTIVE", dbg)
+  iup.DebuggerSetDialogChildAttrib("DEBUG_BTN_STEPINTO", "ACTIVE", step)
+  iup.DebuggerSetDialogChildAttrib("DEBUG_BTN_STEPOVER", "ACTIVE", step)
+  iup.DebuggerSetDialogChildAttrib("DEBUG_BTN_STEPOUT", "ACTIVE", step)
+  iup.DebuggerSetDialogChildAttrib("DEBUG_BTN_CURRENTLINE", "ACTIVE", curline)
 end                   
 
 function iup.DebuggerHighlightLine(filename, line, source)
@@ -279,9 +317,8 @@ function iup.DebuggerGetMultitext(filename, find, open, source)
     if find then
       multitext = iup.DebuggerFindMultitext(filename)
       if open then
-        local tabs = iup.GetDialogChild(debugger.main_dialog, "TABS")
-        tabs.value = multitext
-        debugger.main_dialog.updatetitle = "Yes"
+        debugger.multitext_tabs.value = multitext
+        iup.DebuggerUpdateTitle()
 
         if not multitext then
           multitext = iup.DebuggerOpenMultitext(filename, source)
@@ -413,7 +450,7 @@ function iup.DebuggerRemoveBreakpoint(list_break, index)
 
   if count == 1 then
     -- update buttons, it is now empty
-    iup.DebuggerSetDialogChildAttrib("REMOVE_BREAK", "ACTIVE", "NO")
+    iup.DebuggerSetDialogChildAttrib("DEBUG_REMOVE_BREAK", "ACTIVE", "NO")
   else
     iup.DebuggerRestoreLastListValue(list_break, last_value)
   end
@@ -446,7 +483,7 @@ function iup.DebuggerAddBreakpoint(list_break, filename, line)
 
   if count == 1 then
     -- update buttons, it was empty
-    iup.DebuggerSetDialogChildAttrib("REMOVE_BREAK", "ACTIVE", "Yes")
+    iup.DebuggerSetDialogChildAttrib("DEBUG_REMOVE_BREAK", "ACTIVE", "Yes")
   end
 
   -- select the new item
@@ -463,7 +500,7 @@ end
 
 function iup.DebuggerBreakpointsChanged(multitext, start_lin, num_lin)
   local filename = multitext.filename
-  local list_break = iup.GetDialogChild(debugger.main_dialog, "LIST_BREAK")
+  local list_break = iup.GetDialogChild(debugger.main_dialog, "DEBUG_LIST_BREAK")
   local last_value = list_break.value
 
   local file_breaks = debugger.breakpoints[filename]
@@ -512,14 +549,14 @@ function iup.DebuggerBreakpointsChanged(multitext, start_lin, num_lin)
   local count = tonumber(list_break.count)
   if count == 0 then
     -- update buttons, it is now empty
-    iup.DebuggerSetDialogChildAttrib("REMOVE_BREAK", "ACTIVE", "NO")
+    iup.DebuggerSetDialogChildAttrib("DEBUG_REMOVE_BREAK", "ACTIVE", "NO")
   else
     iup.DebuggerRestoreLastListValue(list_break, last_value)
   end
 end
 
 function iup.DebuggerRemoveAllBreakpoints()
-  local list_break = iup.GetDialogChild(debugger.main_dialog, "LIST_BREAK")
+  local list_break = iup.GetDialogChild(debugger.main_dialog, "DEBUG_LIST_BREAK")
 
   -- update all multitext
   iup.DebuggerSetAttribAllMultitext("MARKERDELETEALL", "1") -- margin=1
@@ -542,7 +579,7 @@ function iup.DebuggerRemoveAllBreakpoints()
   end
 
   -- update buttons
-  iup.DebuggerSetDialogChildAttrib("REMOVE_BREAK", "ACTIVE", "NO")
+  iup.DebuggerSetDialogChildAttrib("DEBUG_REMOVE_BREAK", "ACTIVE", "NO")
 end
 
 function iup.DebuggerInitBreakpointsList(list_break)
@@ -574,11 +611,11 @@ function iup.DebuggerInitBreakpointsList(list_break)
 
   -- update buttons
   if index > 1 then
-    iup.DebuggerSetDialogChildAttrib("REMOVE_BREAK", "ACTIVE", "Yes")
+    iup.DebuggerSetDialogChildAttrib("DEBUG_REMOVE_BREAK", "ACTIVE", "Yes")
 
     list_break.value = 1 -- select first item on list
   else
-    iup.DebuggerSetDialogChildAttrib("REMOVE_BREAK", "ACTIVE", "NO")
+    iup.DebuggerSetDialogChildAttrib("DEBUG_REMOVE_BREAK", "ACTIVE", "NO")
   end
 end
 
@@ -591,7 +628,7 @@ function iup.DebuggerAddBreakpointList()
   local status, filename, line = iup.GetParam("Add Breakpoint", setparent_param_cb, "Filename: %s\nLine: %i[1,]\n", suggest_filename, suggest_lin + 1)
 
   if (status) then
-    local list_break = iup.GetDialogChild(debugger.main_dialog, "LIST_BREAK")
+    local list_break = iup.GetDialogChild(debugger.main_dialog, "DEBUG_LIST_BREAK")
 
     if iup.DebuggerHasBreakpoint(filename, line) then
       iup.MessageError(debugger.main_dialog, "Breakpoint already exists.")
@@ -621,14 +658,14 @@ end
 
 
 function iup.DebuggerClearLocalVariablesTree()
-  iup.DebuggerSetDialogChildAttrib("PRINT_LOCAL", "ACTIVE", "NO")
-  iup.DebuggerSetDialogChildAttrib("SET_LOCAL", "ACTIVE", "NO")
+  iup.DebuggerSetDialogChildAttrib("DEBUG_PRINT_LOCAL", "ACTIVE", "NO")
+  iup.DebuggerSetDialogChildAttrib("DEBUG_SET_LOCAL", "ACTIVE", "NO")
 
-  iup.DebuggerSetDialogChildAttrib("TREE_LOCAL", "DELNODE", "ALL")
+  iup.DebuggerSetDialogChildAttrib("DEBUG_TREE_LOCAL", "DELNODE", "ALL")
 end
 
 function iup.DebuggerSetLocalVariable()
-  local tree_local = iup.GetDialogChild(debugger.main_dialog, "TREE_LOCAL")
+  local tree_local = iup.GetDialogChild(debugger.main_dialog, "DEBUG_TREE_LOCAL")
   local id = tree_local.value
   if (not id or tonumber(id) < 0) then
     iup.MessageError(debugger.main_dialog, "Select a variable on the list.")
@@ -664,7 +701,7 @@ function iup.DebuggerSetLocalVariable()
       end
     end
   
-    local list_stack = iup.GetDialogChild(debugger.main_dialog, "LIST_STACK")
+    local list_stack = iup.GetDialogChild(debugger.main_dialog, "DEBUG_LIST_STACK")
     local index = tonumber(list_stack.value)
 
     -- here there are 4 levels on top of the stack: 
@@ -681,11 +718,10 @@ function iup.DebuggerSetLocalVariable()
 end
 
 function iup.DebuggerPrintLocalVariable()
-  local tree_local = iup.GetDialogChild(debugger.main_dialog, "TREE_LOCAL")
+  local tree_local = iup.GetDialogChild(debugger.main_dialog, "DEBUG_TREE_LOCAL")
   local id = tree_local.value
 
-  local panelTabs = iup.GetDialogChild(debugger.main_dialog, "PANEL_TABS")
-  panelTabs.valuepos = 1 -- show console tab
+  iup.DebuggerShowConsoleTab()
 
   local userdata = iup.TreeGetUserId(tree_local, id)
   local pos = userdata.pos
@@ -696,11 +732,10 @@ function iup.DebuggerPrintLocalVariable()
 end
 
 function iup.DebuggerPrintAllLocalVariables()
-  local tree_local = iup.GetDialogChild(debugger.main_dialog, "TREE_LOCAL")
+  local tree_local = iup.GetDialogChild(debugger.main_dialog, "DEBUG_TREE_LOCAL")
   local count = tonumber(tree_local.rootcount) -- print all at root only
 
-  local panelTabs = iup.GetDialogChild(debugger.main_dialog, "PANEL_TABS")
-  panelTabs.valuepos = 1 -- show console tab
+  iup.DebuggerShowConsoleTab()
 
   local id = 0
   for i = 0, count-1 do
@@ -763,9 +798,9 @@ function iup.DebuggerLocalVariablesTreeAction(tree_local, id)
   local userdata = iup.TreeGetUserId(tree_local, id)
   local valueType = type(userdata.value)
   if valueType == "string" or valueType == "number" or valueType == "boolean" then
-    iup.DebuggerSetDialogChildAttrib("SET_LOCAL", "ACTIVE", "Yes")
+    iup.DebuggerSetDialogChildAttrib("DEBUG_SET_LOCAL", "ACTIVE", "Yes")
   else
-    iup.DebuggerSetDialogChildAttrib("SET_LOCAL", "ACTIVE", "No")
+    iup.DebuggerSetDialogChildAttrib("DEBUG_SET_LOCAL", "ACTIVE", "No")
   end
 end
 
@@ -796,7 +831,7 @@ function iup.DebuggerLocalVariablesBranchOpenAction(tree_local, id)
     end
   end
 
-  iup.DebuggerSetDialogChildAttrib("TREE_LOCAL", "DELNODE"..dummy_id, "SELECTED")
+  iup.DebuggerSetDialogChildAttrib("DEBUG_TREE_LOCAL", "DELNODE"..dummy_id, "SELECTED")
 end
 
 function iup.DebuggerGetTreeTitle(tree, id, name, value)
@@ -858,7 +893,7 @@ function iup.DebuggerUpdateLocalVariablesTree(level)
 
   iup.DebuggerClearLocalVariablesTree()
 
-  local tree_local = iup.GetDialogChild(debugger.main_dialog, "TREE_LOCAL")
+  local tree_local = iup.GetDialogChild(debugger.main_dialog, "DEBUG_TREE_LOCAL")
 
   pos = 1
   name, value = debug.getlocal(level, pos)
@@ -899,8 +934,8 @@ function iup.DebuggerUpdateLocalVariablesTree(level)
   end
 
   if (id > 0) then
-    iup.DebuggerSetDialogChildAttrib("PRINT_LOCAL", "ACTIVE", "Yes")
-    iup.DebuggerSetDialogChildAttrib("SET_LOCAL", "ACTIVE", "Yes")
+    iup.DebuggerSetDialogChildAttrib("DEBUG_PRINT_LOCAL", "ACTIVE", "Yes")
+    iup.DebuggerSetDialogChildAttrib("DEBUG_SET_LOCAL", "ACTIVE", "Yes")
 
     tree_local.value = 1 -- select first item on list
   end
@@ -912,7 +947,7 @@ function iup.DebuggerShowTip(word, line)
     return
   end
 
-  local list_stack = iup.GetDialogChild(debugger.main_dialog, "LIST_STACK")
+  local list_stack = iup.GetDialogChild(debugger.main_dialog, "DEBUG_LIST_STACK")
   local index = tonumber(list_stack.value)
 
   -- here there are 4 levels on top of the stack: 
@@ -1002,17 +1037,16 @@ function iup.DebuggerStackListActivate(list_stack, index)
 end
 
 function iup.DebuggerClearStackList()
-  iup.DebuggerSetDialogChildAttrib("PRINT_LEVEL", "ACTIVE", "NO")
+  iup.DebuggerSetDialogChildAttrib("DEBUG_PRINT_LEVEL", "ACTIVE", "NO")
 
-  iup.DebuggerSetDialogChildAttrib("LIST_STACK", "REMOVEITEM", "ALL")
+  iup.DebuggerSetDialogChildAttrib("DEBUG_LIST_STACK", "REMOVEITEM", "ALL")
 end
 
 function iup.DebuggerPrintStackLevel()
-  local list_stack = iup.GetDialogChild(debugger.main_dialog, "LIST_STACK")
+  local list_stack = iup.GetDialogChild(debugger.main_dialog, "DEBUG_LIST_STACK")
   local index = list_stack.value
 
-  local panelTabs = iup.GetDialogChild(debugger.main_dialog, "PANEL_TABS")
-  panelTabs.valuepos = 1 -- show console tab
+  iup.DebuggerShowConsoleTab()
 
   local defined = list_stack["DEFINED" .. index]
 
@@ -1021,11 +1055,10 @@ function iup.DebuggerPrintStackLevel()
 end
 
 function iup.DebuggerPrintAllStackLevel()
-  local list_stack = iup.GetDialogChild(debugger.main_dialog, "LIST_STACK")
+  local list_stack = iup.GetDialogChild(debugger.main_dialog, "DEBUG_LIST_STACK")
   local count = tonumber(list_stack.count)
 
-  local panelTabs = iup.GetDialogChild(debugger.main_dialog, "PANEL_TABS")
-  panelTabs.valuepos = 1 -- show console tab
+  iup.DebuggerShowConsoleTab()
 
   for index = 1, count do
     local defined = list_stack["DEFINED" .. index]
@@ -1047,7 +1080,7 @@ function iup.DebuggerUpdateStackList()
 
   iup.DebuggerClearStackList()
 
-  local list_stack = iup.GetDialogChild(debugger.main_dialog, "LIST_STACK")
+  local list_stack = iup.GetDialogChild(debugger.main_dialog, "DEBUG_LIST_STACK")
   
   info = debug.getinfo(level)--, "Snl") -- source, name, namewhat, what, currentline, linedefined
   while  info ~= nil do
@@ -1116,7 +1149,7 @@ function iup.DebuggerUpdateStackList()
   end
   
   if level > startLevel then
-    iup.DebuggerSetDialogChildAttrib("PRINT_LEVEL", "ACTIVE", "YES")
+    iup.DebuggerSetDialogChildAttrib("DEBUG_PRINT_LEVEL", "ACTIVE", "YES")
 
     list_stack.value = 1 -- select first item on list (startLevel)
     iup.DebuggerUpdateLocalVariablesTree(startLevel)
@@ -1167,9 +1200,9 @@ function iup.DebuggerGlobalsTreeAction(tree_global, id)
   local userdata = iup.TreeGetUserId(tree_global, id)
   local name = userdata.globalname
   if iup.DebuggerIsExpression(name) then
-    iup.DebuggerSetDialogChildAttrib("SET_GLOBAL", "ACTIVE", "NO")
+    iup.DebuggerSetDialogChildAttrib("DEBUG_SET_GLOBAL", "ACTIVE", "NO")
   else
-    iup.DebuggerSetDialogChildAttrib("SET_GLOBAL", "ACTIVE", "YES")
+    iup.DebuggerSetDialogChildAttrib("DEBUG_SET_GLOBAL", "ACTIVE", "YES")
   end
 end
 
@@ -1204,12 +1237,12 @@ function iup.DebuggerGlobalVariablesBranchOpenAction(tree_global, id)
     end
   end
 
-  iup.DebuggerSetDialogChildAttrib("TREE_GLOBAL", "DELNODE"..dummy_id, "SELECTED")
+  iup.DebuggerSetDialogChildAttrib("DEBUG_TREE_GLOBAL", "DELNODE"..dummy_id, "SELECTED")
 end
 
 function iup.DebuggerInitGlobalsTree(tree_global)
   if not tree_global then 
-    tree_global = iup.GetDialogChild(debugger.main_dialog, "TREE_GLOBAL")
+    tree_global = iup.GetDialogChild(debugger.main_dialog, "DEBUG_TREE_GLOBAL")
   end
 
   local count = tonumber(tree_global.rootcount)
@@ -1219,8 +1252,8 @@ function iup.DebuggerInitGlobalsTree(tree_global)
     local userdata = iup.TreeGetUserId(tree_global, id)
     local name = userdata.globalname
     tree_global["TITLE"..id] = name
-    tree_global["IMAGE"..id] = "IMGEMPTY"
-    tree_global["IMAGEEXPANDED"..id] = "IMGEMPTY"
+    tree_global["IMAGE"..id] = "IUP_TreeEmpty"
+    tree_global["IMAGEEXPANDED"..id] = "IUP_TreeEmpty"
     tree_global["DELNODE"..id] = "CHILDREN"
 
     id = tree_global["NEXT"..id]
@@ -1230,22 +1263,22 @@ function iup.DebuggerInitGlobalsTree(tree_global)
 
   local count = tonumber(tree_global.rootcount)
   if (count > 0) then
-    iup.DebuggerSetDialogChildAttrib("PRINT_GLOBAL", "ACTIVE", "Yes")
-    iup.DebuggerSetDialogChildAttrib("SET_GLOBAL", "ACTIVE", "Yes")
-    iup.DebuggerSetDialogChildAttrib("REMOVE_GLOBAL", "ACTIVE", "Yes")
+    iup.DebuggerSetDialogChildAttrib("DEBUG_PRINT_GLOBAL", "ACTIVE", "Yes")
+    iup.DebuggerSetDialogChildAttrib("DEBUG_SET_GLOBAL", "ACTIVE", "Yes")
+    iup.DebuggerSetDialogChildAttrib("DEBUG_REMOVE_GLOBAL", "ACTIVE", "Yes")
 
     tree_global.value = 1 -- select first item on list
     iup.DebuggerGlobalsTreeAction(tree_global, tree_global.value)
   else
-    iup.DebuggerSetDialogChildAttrib("PRINT_GLOBAL", "ACTIVE", "NO")
-    iup.DebuggerSetDialogChildAttrib("SET_GLOBAL", "ACTIVE", "NO")
-    iup.DebuggerSetDialogChildAttrib("REMOVE_GLOBAL", "ACTIVE", "NO")
+    iup.DebuggerSetDialogChildAttrib("DEBUG_PRINT_GLOBAL", "ACTIVE", "NO")
+    iup.DebuggerSetDialogChildAttrib("DEBUG_SET_GLOBAL", "ACTIVE", "NO")
+    iup.DebuggerSetDialogChildAttrib("DEBUG_REMOVE_GLOBAL", "ACTIVE", "NO")
   end
 end
 
 function iup.DebuggerUpdateGlobalsTree()
   -- this is called only during debug
-  local tree_global = iup.GetDialogChild(debugger.main_dialog, "TREE_GLOBAL")
+  local tree_global = iup.GetDialogChild(debugger.main_dialog, "DEBUG_TREE_GLOBAL")
   local count = tonumber(tree_global.rootcount) -- print all at root only
 
   -- clear all secondary branches (including "dummy")
@@ -1275,14 +1308,14 @@ function iup.DebuggerSetGlobalsTreeItem(tree_global, id, name, value)
   tree_global["TITLE"..id] = iup.DebuggerGetTreeTitle(tree_global, id, name, value)
   
   if type(value) == "table" then
-    tree_global["IMAGE"..id] = "IUP_treeplus"
-    tree_global["IMAGEEXPANDED"..id] = "IUP_treeminus"
+    tree_global["IMAGE"..id] = "IUP_TreePlus"
+    tree_global["IMAGEEXPANDED"..id] = "IUP_TreeMinus"
 
     -- restore "dummy"
     tree_global["ADDLEAF"..id] = "dummy"
   else
-    tree_global["IMAGE"..id] = "IMGEMPTY"
-    tree_global["IMAGEEXPANDED"..id] = "IMGEMPTY"
+    tree_global["IMAGE"..id] = "IUP_TreeEmpty"
+    tree_global["IMAGEEXPANDED"..id] = "IUP_TreeEmpty"
   end
 end
 
@@ -1293,15 +1326,15 @@ function iup.DebuggerAddGlobalsTreeItem(tree_global, id, name, value)
   if type(value) == "table" then
     tree_global["INSERTBRANCH"..id] = iup.DebuggerGetTreeTitle(tree_global, id, name, value)
     lastAddedNode = tree_global.lastaddnode
-    tree_global["IMAGE"..lastAddedNode] = "IUP_treeplus"
-    tree_global["IMAGEEXPANDED"..lastAddedNode] = "IUP_treeminus"
+    tree_global["IMAGE"..lastAddedNode] = "IUP_TreePlus"
+    tree_global["IMAGEEXPANDED"..lastAddedNode] = "IUP_TreeMinus"
     
     tree_global["ADDLEAF"..lastAddedNode] = "dummy"
   else
     tree_global["INSERTBRANCH"..id] = iup.DebuggerGetTreeTitle(tree_global, id, name, value)
     lastAddedNode = tree_global.lastaddnode
-    tree_global["IMAGE"..lastAddedNode] = "IMGEMPTY"
-    tree_global["IMAGEEXPANDED"..lastAddedNode] = "IMGEMPTY"
+    tree_global["IMAGE"..lastAddedNode] = "IUP_TreeEmpty"
+    tree_global["IMAGEEXPANDED"..lastAddedNode] = "IUP_TreeEmpty"
   end
   
   userdata.globalname = name
@@ -1328,8 +1361,8 @@ function iup.DebuggerAddGlobal(tree_global, name)
     
     tree_global["INSERTBRANCH"..id] = name
     local lastAddedNode = tree_global.lastaddnode
-    tree_global["IMAGE"..lastAddedNode] = "IMGEMPTY"
-    tree_global["IMAGEEXPANDED"..lastAddedNode] = "IMGEMPTY"
+    tree_global["IMAGE"..lastAddedNode] = "IUP_TreeEmpty"
+    tree_global["IMAGEEXPANDED"..lastAddedNode] = "IUP_TreeEmpty"
     
     iup.TreeSetUserId(tree_global, lastAddedNode, userdata)
     return lastAddedNode
@@ -1339,15 +1372,15 @@ end
 function iup.DebuggerAddGlobalVariable()
   local status, newName = iup.GetParam("Add Global", setparent_param_cb, "Name = ".."%s\n", "")
   if (status) then
-    local tree_global = iup.GetDialogChild(debugger.main_dialog, "TREE_GLOBAL")
+    local tree_global = iup.GetDialogChild(debugger.main_dialog, "DEBUG_TREE_GLOBAL")
     local count = tonumber(tree_global.rootcount)
    
     local lastAddedNode = iup.DebuggerAddGlobal(tree_global, newName)
 
     if (count == 0) then
-      iup.DebuggerSetDialogChildAttrib("PRINT_GLOBAL", "ACTIVE", "Yes")
-      iup.DebuggerSetDialogChildAttrib("SET_GLOBAL", "ACTIVE", "Yes")
-      iup.DebuggerSetDialogChildAttrib("REMOVE_GLOBAL", "ACTIVE", "Yes")
+      iup.DebuggerSetDialogChildAttrib("DEBUG_PRINT_GLOBAL", "ACTIVE", "Yes")
+      iup.DebuggerSetDialogChildAttrib("DEBUG_SET_GLOBAL", "ACTIVE", "Yes")
+      iup.DebuggerSetDialogChildAttrib("DEBUG_REMOVE_GLOBAL", "ACTIVE", "Yes")
     end
     
     iup.DebuggerGlobalsTreeAction(tree_global, lastAddedNode)
@@ -1355,7 +1388,7 @@ function iup.DebuggerAddGlobalVariable()
 end
 
 function iup.DebuggerRemoveGlobalVariable()
-  local tree_global = iup.GetDialogChild(debugger.main_dialog, "TREE_GLOBAL")
+  local tree_global = iup.GetDialogChild(debugger.main_dialog, "DEBUG_TREE_GLOBAL")
   local id = tree_global.value
   if (not id or tonumber(id) < 0) then
     iup.MessageError(debugger.main_dialog, "Select a variable or expression on the list.")
@@ -1384,9 +1417,9 @@ function iup.DebuggerRemoveGlobalVariable()
 
   local count = tonumber(tree_global.rootcount)
   if (count == 0) then
-    iup.DebuggerSetDialogChildAttrib("PRINT_GLOBAL", "ACTIVE", "No")
-    iup.DebuggerSetDialogChildAttrib("SET_GLOBAL", "ACTIVE", "No")
-    iup.DebuggerSetDialogChildAttrib("REMOVE_GLOBAL", "ACTIVE", "No")
+    iup.DebuggerSetDialogChildAttrib("DEBUG_PRINT_GLOBAL", "ACTIVE", "No")
+    iup.DebuggerSetDialogChildAttrib("DEBUG_SET_GLOBAL", "ACTIVE", "No")
+    iup.DebuggerSetDialogChildAttrib("DEBUG_REMOVE_GLOBAL", "ACTIVE", "No")
   else
 
     iup.DebuggerGlobalsTreeAction(tree_global, tree_global.value)
@@ -1394,17 +1427,17 @@ function iup.DebuggerRemoveGlobalVariable()
 end
 
 function iup.DebuggerRemoveAllGlobalVariable()
-  local tree_global = iup.GetDialogChild(debugger.main_dialog, "TREE_GLOBAL")
+  local tree_global = iup.GetDialogChild(debugger.main_dialog, "DEBUG_TREE_GLOBAL")
 
   tree_global["DELNODE"] = "ALL"
 
-  iup.DebuggerSetDialogChildAttrib("PRINT_GLOBAL", "ACTIVE", "No")
-  iup.DebuggerSetDialogChildAttrib("SET_GLOBAL", "ACTIVE", "No")
-  iup.DebuggerSetDialogChildAttrib("REMOVE_GLOBAL", "ACTIVE", "No")
+  iup.DebuggerSetDialogChildAttrib("DEBUG_PRINT_GLOBAL", "ACTIVE", "No")
+  iup.DebuggerSetDialogChildAttrib("DEBUG_SET_GLOBAL", "ACTIVE", "No")
+  iup.DebuggerSetDialogChildAttrib("DEBUG_REMOVE_GLOBAL", "ACTIVE", "No")
 end
 
 function iup.DebuggerSetGlobalVariable()
-  local tree_global = iup.GetDialogChild(debugger.main_dialog, "TREE_GLOBAL")
+  local tree_global = iup.GetDialogChild(debugger.main_dialog, "DEBUG_TREE_GLOBAL")
   local id = tree_global.value
   if (not id or tonumber(id) < 0) then
     iup.MessageError(debugger.main_dialog, "Select a variable on the list.")
@@ -1462,18 +1495,17 @@ function iup.DebuggerSetGlobalVariable()
       iup.DebuggerSetGlobalsTreeItem(tree_global, id, name, newValue)
     else
       tree_global["TITLE"..id] = name
-      tree_global["IMAGE"..id] = "IMGEMPTY"
-      tree_global["IMAGEEXPANDED"..id] = "IMGEMPTY"
+      tree_global["IMAGE"..id] = "IUP_TreeEmpty"
+      tree_global["IMAGEEXPANDED"..id] = "IUP_TreeEmpty"
     end
   end
 end
 
 function iup.DebuggerPrintGlobalVariable()
-  local tree_global = iup.GetDialogChild(debugger.main_dialog, "TREE_GLOBAL")
+  local tree_global = iup.GetDialogChild(debugger.main_dialog, "DEBUG_TREE_GLOBAL")
   local id = tree_global.value
 
-  local panelTabs = iup.GetDialogChild(debugger.main_dialog, "CSUTOM_TABS")
-  panelTabs.valuepos = 1 -- show console tab
+  iup.DebuggerShowConsoleTab()
   
   local userdata = iup.TreeGetUserId(tree_global, id)
   
@@ -1490,11 +1522,10 @@ function iup.DebuggerPrintGlobalVariable()
 end
 
 function iup.DebuggerPrintAllGlobalVariables()
-  local tree_global = iup.GetDialogChild(debugger.main_dialog, "TREE_GLOBAL")
+  local tree_global = iup.GetDialogChild(debugger.main_dialog, "DEBUG_TREE_GLOBAL")
   local count = tonumber(tree_global.rootcount) -- print all at root only
 
-  local panelTabs = iup.GetDialogChild(debugger.main_dialog, "PANEL_TABS")
-  panelTabs.valuepos = 1 -- show console tab
+  iup.DebuggerShowConsoleTab()
 
   local id = 0
   for i = 0, count-1 do
@@ -1695,8 +1726,7 @@ end
 function iup.DebuggerStartDebug(filename)
   debugger.startFile = filename
 
-  local panelTabs = iup.GetDialogChild(debugger.main_dialog, "PANEL_TABS")
-  panelTabs.valuepos = 3 -- show debug tab
+  iup.DebuggerShowDebugTab()
 
   iup.ConsolePrint("-- Debug start")
 
@@ -1714,8 +1744,7 @@ function iup.DebuggerEndDebug(stop)
 
   iup.DebuggerSetState(DEBUG_INACTIVE)
 
-  local panelTabs = iup.GetDialogChild(debugger.main_dialog, "PANEL_TABS")
-  panelTabs.valuepos = 1 -- show console tab
+  iup.DebuggerShowConsoleTab()
 
   if stop then
     iup.ConsolePrint("-- Debug stop!")

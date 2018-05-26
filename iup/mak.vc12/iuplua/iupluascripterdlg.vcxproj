@@ -20,6 +20,7 @@
     <ClCompile Include="..\..\srclua5\scripter\il_luascripterdlg.c" />
     <ClCompile Include="..\..\srclua5\scripter\iupluascripterdlg.c" />
     <ClCompile Include="..\..\srclua5\scripter\iupluascripterdlg_images.c" />
+    <ClCompile Include="..\..\srclua5\scripter\iupluascripter_debugger.c" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="..\..\include\iupluascripterdlg.h" />

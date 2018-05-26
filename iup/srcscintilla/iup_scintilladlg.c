@@ -90,7 +90,7 @@ static void saveMarkers(Ihandle* config, Ihandle* multitext)
 
 static void saveAllMarkers(Ihandle* ih, Ihandle* config)
 {
-  Ihandle* tabs = IupGetDialogChild(ih, "TABS");
+  Ihandle* tabs = IupGetDialogChild(ih, "MULTITEXT_TABS");
   Ihandle* multitext;
 
   for (multitext = tabs->firstchild; multitext; multitext = multitext->brother)
@@ -567,7 +567,7 @@ static Ihandle* iScintillaDlgGetProjectConfig(Ihandle* ih)
 
 static void saveProjectOpenFiles(Ihandle *ih, Ihandle *projectConfig)
 {
-  Ihandle* tabs = IupGetDialogChild(ih, "TABS");
+  Ihandle* tabs = IupGetDialogChild(ih, "MULTITEXT_TABS");
   Ihandle* multitext;
   char* filename;
   int i;
@@ -643,7 +643,7 @@ static int iScintillaDlgCloseMultitext(Ihandle* multitext, int check);
 static void removeFileFromProject(Ihandle *projectConfig, Ihandle *projectTree, int id)
 {
   char *filename = IupTreeGetUserId(projectTree, id);
-  Ihandle* tabs = IupGetDialogChild(projectTree, "TABS");
+  Ihandle* tabs = IupGetDialogChild(projectTree, "MULTITEXT_TABS");
   Ihandle *multitext;
   char* m_filename;
 
@@ -945,7 +945,7 @@ static void multitext_add_menuitem(Ihandle* item_window1)
 static Ihandle* iScintillaDlgNewMultitext(Ihandle* ih_item)
 {
   Ihandle* ih = IupGetDialog(ih_item);
-  Ihandle* tabs = IupGetDialogChild(ih, "TABS");
+  Ihandle* tabs = IupGetDialogChild(ih, "MULTITEXT_TABS");
   Ihandle* item_window1 = IupGetDialogChild(ih, "ITEM_WINDOW1");
   Ihandle* config = iScintillaDlgGetConfig(ih);
   int count;
@@ -1055,7 +1055,7 @@ static int iScintillaDlgCloseMultitext(Ihandle* multitext, int check)
 
 static Ihandle* iScintillaDlgGetCurrentMultitext(Ihandle* ih)
 {
-  Ihandle* tabs = IupGetDialogChild(ih, "TABS");
+  Ihandle* tabs = IupGetDialogChild(ih, "MULTITEXT_TABS");
   if (!tabs) return (Ihandle*)iupAttribGetInherit(ih, "MULTITEXT"); /* from the context menu */
   return (Ihandle*)IupGetAttribute(tabs, "VALUE_HANDLE");
 }
@@ -1076,7 +1076,7 @@ static void open_file(Ihandle* ih_item, const char* filename, int check_empty)
   if (str)
   {
     Ihandle* ih = IupGetDialog(ih_item);
-    Ihandle* tabs = IupGetDialogChild(ih_item, "TABS");
+    Ihandle* tabs = IupGetDialogChild(ih_item, "MULTITEXT_TABS");
     Ihandle* multitext = iScintillaDlgNewMultitext(ih_item);
     Ihandle* config = iScintillaDlgGetConfig(ih_item);
     Ihandle* projectConfig = iScintillaDlgGetProjectConfig(ih);
@@ -1350,7 +1350,7 @@ static int check_inproject(Ihandle* projectTree, const char* check_filename)
 
 static Ihandle* check_open(Ihandle* ih, const char* check_filename, int save)
 {
-  Ihandle* tabs = IupGetDialogChild(ih, "TABS");
+  Ihandle* tabs = IupGetDialogChild(ih, "MULTITEXT_TABS");
   Ihandle* multitext;
 
   for (multitext = tabs->firstchild; multitext; multitext = multitext->brother)
@@ -1380,7 +1380,7 @@ static int dropfiles_cb(Ihandle* ih, const char* filename, int num, int x, int y
 
   if (last)
   {
-    Ihandle* tabs = IupGetDialogChild(ih, "TABS");
+    Ihandle* tabs = IupGetDialogChild(ih, "MULTITEXT_TABS");
     if (IupGetChildCount(tabs) == 1)
     {
       Ihandle* multitext = IupGetChild(tabs, 0);
@@ -1400,7 +1400,7 @@ static int dropfiles_cb(Ihandle* ih, const char* filename, int num, int x, int y
     if (remove_empty)
     {
       /* do it only after all files are dropped, to avoid destruction of the dropped target during callback calls */
-      Ihandle* tabs = IupGetDialogChild(ih, "TABS");
+      Ihandle* tabs = IupGetDialogChild(ih, "MULTITEXT_TABS");
       Ihandle* multitext = IupGetChild(tabs, 0);
       iScintillaDlgCloseMultitext(multitext, 0);
       remove_empty = 0;
@@ -1491,7 +1491,7 @@ static int edit_menu_open_cb(Ihandle* ih_menu)
 
 static int window_menu_open_cb(Ihandle* ih_menu)
 {
-  Ihandle* tabs = IupGetDialogChild(ih_menu, "TABS");
+  Ihandle* tabs = IupGetDialogChild(ih_menu, "MULTITEXT_TABS");
   Ihandle* item_window1 = IupGetDialogChild(tabs, "ITEM_WINDOW1");
   Ihandle* current_multitext = (Ihandle*)IupGetAttribute(tabs, "VALUE_HANDLE");
   Ihandle* m_multitext, *item_windowN;
@@ -1705,7 +1705,7 @@ static int item_savecopy_action_cb(Ihandle* ih_item)
 
 static int item_saveall_action_cb(Ihandle* ih_item)
 {
-  Ihandle* tabs = IupGetDialogChild(ih_item, "TABS");
+  Ihandle* tabs = IupGetDialogChild(ih_item, "MULTITEXT_TABS");
   Ihandle *projectConfig = iScintillaDlgGetProjectConfig(ih_item);
   Ihandle* multitext;
 
@@ -1738,8 +1738,8 @@ static int item_save_action_cb(Ihandle* ih_item)
 static int item_closeall_action_cb(Ihandle* ih_item)
 {
   Ihandle* multitext, *tmp;
-  Ihandle* tabs = IupGetDialogChild(ih_item, "TABS");
-  if (!tabs) tabs = (Ihandle*)iupAttribGetInherit(ih_item, "TABS");  /* from the context menu */
+  Ihandle* tabs = IupGetDialogChild(ih_item, "MULTITEXT_TABS");
+  if (!tabs) tabs = (Ihandle*)iupAttribGetInherit(ih_item, "MULTITEXT_TABS");  /* from the context menu */
 
   for (multitext = tabs->firstchild; multitext; /* increment before destroy */)
   {
@@ -1777,7 +1777,7 @@ static int item_close_action_cb(Ihandle* ih_item)
 
 static int item_closeall_butthis_action_cb(Ihandle* ih_item)
 {
-  Ihandle* tabs = (Ihandle*)iupAttribGetInherit(ih_item, "TABS");  /* from the context menu */
+  Ihandle* tabs = (Ihandle*)iupAttribGetInherit(ih_item, "MULTITEXT_TABS");  /* from the context menu */
   Ihandle* this_multitext = (Ihandle*)iupAttribGetInherit(ih_item, "MULTITEXT");  /* from the context menu */
   Ihandle* multitext, *tmp;
 
@@ -2061,7 +2061,7 @@ static int tabs_rightclick_cb(Ihandle* tabs, int pos)
     item_addtoproject,
     NULL);
 
-  iupAttribSet(menu, "TABS", (char*)tabs);
+  iupAttribSet(menu, "MULTITEXT_TABS", (char*)tabs);
   iupAttribSet(menu, "MULTITEXT", (char*)multitext);
 
   IupPopup(menu, IUP_MOUSEPOS, IUP_MOUSEPOS);
@@ -2098,7 +2098,7 @@ static int find_close_action_cb(Ihandle* bt_close);
 static int close_exit_action_cb(Ihandle* ih_item)
 {
   Ihandle* ih = IupGetDialog(ih_item);
-  Ihandle* tabs = IupGetDialogChild(ih, "TABS");
+  Ihandle* tabs = IupGetDialogChild(ih, "MULTITEXT_TABS");
   Ihandle* config = iScintillaDlgGetConfig(ih);
   Ihandle* find_dlg = (Ihandle*)IupGetAttribute(ih, "FIND_DIALOG");
   Ihandle* panelSplit = IupGetDialogChild(ih, "PANEL_SPLIT");
@@ -2170,7 +2170,7 @@ static int tree_showrename_cb(Ihandle* projectTree, int id)
 
 static int tree_rename_cb(Ihandle* projectTree, int id, char* new_name)
 {
-  Ihandle* tabs = IupGetDialogChild(projectTree, "TABS");
+  Ihandle* tabs = IupGetDialogChild(projectTree, "MULTITEXT_TABS");
   Ihandle* multitext;
   char* filename, *m_filename;
   Ihandle* config = iScintillaDlgGetConfig(projectTree);
@@ -2361,7 +2361,7 @@ static void tree_project_clear(Ihandle* projectTree)
 static int list_search_dblclick_cb(Ihandle *ih, int index, char *t)
 {
   Ihandle* projectTree = IupGetDialogChild(ih, "PROJECTTREE");
-  Ihandle* tabs = IupGetDialogChild(ih, "TABS");
+  Ihandle* tabs = IupGetDialogChild(ih, "MULTITEXT_TABS");
   char *filename = IupGetAttributeId(ih, "FILENAME", index);
   int lin = IupGetIntId(ih, "LINE", index);
   int col = IupGetIntId(ih, "COL", index);
@@ -2425,7 +2425,7 @@ static int item_new_proj_action_cb(Ihandle* ih_item)
 {
   Ihandle* ih = IupGetDialog(ih_item);
   IFnn cb = (IFnn)IupGetCallback(ih, "CONFIGLOAD_CB");
-  Ihandle* tabs = IupGetDialogChild(ih_item, "TABS");
+  Ihandle* tabs = IupGetDialogChild(ih_item, "MULTITEXT_TABS");
   Ihandle* projectTree = IupGetDialogChild(ih_item, "PROJECTTREE");
   Ihandle* multitext;
   char* filename;
@@ -2831,7 +2831,7 @@ static int item_savesession_action_cb(Ihandle *ih_item)
 
   if (IupGetInt(filedlg, "STATUS") != -1)
   {
-    Ihandle* tabs = IupGetDialogChild(ih, "TABS");
+    Ihandle* tabs = IupGetDialogChild(ih, "MULTITEXT_TABS");
     char* filename = IupGetAttribute(filedlg, "VALUE");
     int i, count = IupGetChildCount(tabs);
 
@@ -3238,7 +3238,7 @@ static int find_next_action_cb(Ihandle* ih_item)
   {
     char* str_to_find;
     Ihandle* ih = IupGetAttributeHandle(find_dlg, "PARENTDIALOG");
-    Ihandle* tabs = IupGetDialogChild(ih, "TABS");
+    Ihandle* tabs = IupGetDialogChild(ih, "MULTITEXT_TABS");
     Ihandle* projectTree = IupGetDialogChild(ih, "PROJECTTREE");
     Ihandle* sciDummy = IupGetDialogChild(find_dlg, "SCI_DUMMY");
     Ihandle* currentMultitext = iScintillaDlgGetCurrentMultitext(ih);
@@ -3386,7 +3386,7 @@ static int find_all_action_cb(Ihandle* bt_replace)
   {
     char* str_to_find;
     Ihandle* ih = IupGetAttributeHandle(find_dlg, "PARENTDIALOG");
-    Ihandle* tabs = IupGetDialogChild(ih, "TABS");
+    Ihandle* tabs = IupGetDialogChild(ih, "MULTITEXT_TABS");
     Ihandle* projectTree = IupGetDialogChild(ih, "PROJECTTREE");
     Ihandle* panelTabs = IupGetDialogChild(ih, "PANEL_TABS");
     Ihandle* listSearch = IupGetDialogChild(ih, "LIST_SEARCH");
@@ -3519,7 +3519,7 @@ static int find_replace_all_action_cb(Ihandle* bt_replace)
     char* str_to_find;
     char* str_to_replace;
     Ihandle* ih = IupGetAttributeHandle(find_dlg, "PARENTDIALOG");
-    Ihandle* tabs = IupGetDialogChild(ih, "TABS");
+    Ihandle* tabs = IupGetDialogChild(ih, "MULTITEXT_TABS");
     Ihandle* currentMultitext = iScintillaDlgGetCurrentMultitext(ih);
     Ihandle* multitext = currentMultitext;
     Ihandle* replace_txt = IupGetDialogChild(find_dlg, "REPLACE_TEXT");
@@ -3968,7 +3968,7 @@ static int item_case_action_cb(Ihandle* ih_item)
 
 static int item_font_action_cb(Ihandle* ih_item)
 {
-  Ihandle* tabs = IupGetDialogChild(ih_item, "TABS");
+  Ihandle* tabs = IupGetDialogChild(ih_item, "MULTITEXT_TABS");
   Ihandle* multitext;
   Ihandle* config = iScintillaDlgGetConfig(ih_item);
   Ihandle* fontdlg = IupFontDlg();
@@ -3996,7 +3996,7 @@ static int item_font_action_cb(Ihandle* ih_item)
 
 static int item_tab_action_cb(Ihandle* ih_item)
 {
-  Ihandle* tabs = IupGetDialogChild(ih_item, "TABS");
+  Ihandle* tabs = IupGetDialogChild(ih_item, "MULTITEXT_TABS");
   Ihandle* multitext;
   Ihandle* config = iScintillaDlgGetConfig(ih_item);
 
@@ -4051,7 +4051,7 @@ static int item_restorezoom_action_cb(Ihandle* ih_item)
 
 static int item_wordwrap_action_cb(Ihandle* ih_item)
 {
-  Ihandle* tabs = IupGetDialogChild(ih_item, "TABS");
+  Ihandle* tabs = IupGetDialogChild(ih_item, "MULTITEXT_TABS");
   Ihandle* multitext;
   Ihandle* config = iScintillaDlgGetConfig(ih_item);
   char *value = IupGetAttribute(ih_item, "VALUE");
@@ -4071,7 +4071,7 @@ static int item_wordwrap_action_cb(Ihandle* ih_item)
 
 static int item_showwhite_action_cb(Ihandle* ih_item)
 {
-  Ihandle* tabs = IupGetDialogChild(ih_item, "TABS");
+  Ihandle* tabs = IupGetDialogChild(ih_item, "MULTITEXT_TABS");
   Ihandle* multitext;
   Ihandle* config = iScintillaDlgGetConfig(ih_item);
   char *value = IupGetAttribute(ih_item, "VALUE");
@@ -4102,7 +4102,7 @@ static int item_panel_action_cb(Ihandle* ih_item)
 
 static int item_showeol_action_cb(Ihandle* ih_item)
 {
-  Ihandle* tabs = IupGetDialogChild(ih_item, "TABS");
+  Ihandle* tabs = IupGetDialogChild(ih_item, "MULTITEXT_TABS");
   Ihandle* multitext;
   Ihandle* config = iScintillaDlgGetConfig(ih_item);
   char *value = IupGetAttribute(ih_item, "VALUE");
@@ -4121,7 +4121,7 @@ static int item_showeol_action_cb(Ihandle* ih_item)
 
 static int item_toolbar_action_cb(Ihandle* ih_item)
 {
-  Ihandle* tabs = IupGetDialogChild(ih_item, "TABS");
+  Ihandle* tabs = IupGetDialogChild(ih_item, "MULTITEXT_TABS");
   Ihandle* toolbar = IupGetChild(IupGetParent(tabs), 0);
   Ihandle* config = iScintillaDlgGetConfig(tabs);
 
@@ -4133,7 +4133,7 @@ static int item_toolbar_action_cb(Ihandle* ih_item)
 
 static int item_statusbar_action_cb(Ihandle* ih_item)
 {
-  Ihandle* tabs = IupGetDialogChild(ih_item, "TABS");
+  Ihandle* tabs = IupGetDialogChild(ih_item, "MULTITEXT_TABS");
   Ihandle* statusbar = IupGetBrother(tabs);
   Ihandle* config = iScintillaDlgGetConfig(tabs);
 
@@ -4145,7 +4145,7 @@ static int item_statusbar_action_cb(Ihandle* ih_item)
 
 static int item_linenumber_action_cb(Ihandle* ih_item)
 {
-  Ihandle* tabs = IupGetDialogChild(ih_item, "TABS");
+  Ihandle* tabs = IupGetDialogChild(ih_item, "MULTITEXT_TABS");
   Ihandle* multitext;
   Ihandle* config = iScintillaDlgGetConfig(ih_item);
   char *value = IupGetAttribute(ih_item, "VALUE");
@@ -4164,7 +4164,7 @@ static int item_linenumber_action_cb(Ihandle* ih_item)
 
 static int item_bookmark_action_cb(Ihandle* ih_item)
 {
-  Ihandle* tabs = IupGetDialogChild(ih_item, "TABS");
+  Ihandle* tabs = IupGetDialogChild(ih_item, "MULTITEXT_TABS");
   Ihandle* multitext;
   Ihandle* config = iScintillaDlgGetConfig(ih_item);
   char *value = IupGetAttribute(ih_item, "VALUE");
@@ -4183,7 +4183,7 @@ static int item_bookmark_action_cb(Ihandle* ih_item)
 
 static int item_windowN_action_cb(Ihandle* ih_item)
 {
-  Ihandle* tabs = IupGetDialogChild(ih_item, "TABS");
+  Ihandle* tabs = IupGetDialogChild(ih_item, "MULTITEXT_TABS");
   int pos = IupGetChildPos(IupGetParent(ih_item), ih_item);
   IupSetInt(tabs, "VALUEPOS", pos);
   return IUP_DEFAULT;
@@ -4191,7 +4191,7 @@ static int item_windowN_action_cb(Ihandle* ih_item)
 
 static int item_windows_action_cb(Ihandle* ih_item)
 {
-  Ihandle* tabs = IupGetDialogChild(ih_item, "TABS");
+  Ihandle* tabs = IupGetDialogChild(ih_item, "MULTITEXT_TABS");
   int pos = IupGetInt(tabs, "VALUEPOS");
   Ihandle* multitext;
   int ret, count = 0, max_lin;
@@ -4306,7 +4306,7 @@ static void iScintillaDlgSetConfig(Ihandle* ih, Ihandle* config)
   IFnn cb = (IFnn)IupGetCallback(ih, "CONFIGLOAD_CB");
   Ihandle* recent_menu = (Ihandle*)iupAttribGet(ih, "_IUP_RECENTMENU");
   Ihandle* recent_proj_menu = (Ihandle*)iupAttribGet(ih, "_IUP_PROJ_RECENTMENU");
-  Ihandle* tabs = IupGetDialogChild(ih, "TABS");
+  Ihandle* tabs = IupGetDialogChild(ih, "MULTITEXT_TABS");
   Ihandle* multitext;
   const char* value;
 
@@ -4447,7 +4447,7 @@ static int iScintillaDlgSetForceCloseFileAttrib(Ihandle* ih, const char* value)
   int pos;
   if (iupStrToInt(value, &pos))
   {
-    Ihandle* tabs = IupGetDialogChild(ih, "TABS");
+    Ihandle* tabs = IupGetDialogChild(ih, "MULTITEXT_TABS");
     Ihandle* multitext = IupGetChild(tabs, pos);
 
     iScintillaDlgCloseMultitext(multitext, 0);
@@ -4463,7 +4463,7 @@ static int iScintillaDlgSetCloseFileAttrib(Ihandle* ih, const char* value)
   int pos;
   if (iupStrToInt(value, &pos))
   {
-    Ihandle* tabs = IupGetDialogChild(ih, "TABS");
+    Ihandle* tabs = IupGetDialogChild(ih, "MULTITEXT_TABS");
     Ihandle* multitext = IupGetChild(tabs, pos);
 
     iScintillaDlgCloseMultitext(multitext, 1);
@@ -4512,7 +4512,7 @@ static int iScintillaDlgCreateMethod(Ihandle* ih, void** params)
   Ihandle *panelFrame, *panelTabs, *listSearch, *panelSplit;
 
   tabs = IupFlatTabs(NULL);
-  IupSetAttribute(tabs, "NAME", "TABS");
+  IupSetAttribute(tabs, "NAME", "MULTITEXT_TABS");
   IupSetAttribute(tabs, "SHOWCLOSE", "YES");
   IupSetAttribute(tabs, "TABCHANGEONCHECK", "YES");
   IupSetAttribute(tabs, "TABTITLE0", "Untitled");

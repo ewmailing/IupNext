@@ -30,8 +30,14 @@
 #define BREAKPOINT_MARGIN "15"
 #define FOLDING_MARGIN "20"
 
-
+/* from _images.c */
 void load_all_images_step_images(void);
+
+/* from _debugger.c */
+void iupLuaScripterDebuggerCreateTabs(Ihandle* panelTabs);
+void iupLuaScripterDebuggerAddToolbarButtons(Ihandle *toolbar);
+void iupLuaScripterDebuggerAddMenuItems(Ihandle *lua_menu);
+void iupLuaScripterDebuggerAddHotKeys(Ihandle *ih);
 
 
 /********************************** Utilities *****************************************/
@@ -167,63 +173,10 @@ static char *filterList(const char *text, const char *list)
   return retList;
 }
 
-
-/********************************** Callbacks *****************************************/
-
-
 static Ihandle* get_config(Ihandle* ih)
 {
   Ihandle* config = (Ihandle*)IupGetAttribute(IupGetDialog(ih), "CONFIG_HANDLE");
   return config;
-}
-
-static int exit_cb(Ihandle *ih)
-{
-  lua_State* L = (lua_State*)IupGetAttribute(ih, "LUASTATE");
-
-  char* exit_loop = IupGetGlobal("EXITLOOP");
-  if (exit_loop && !iupStrBoolean(exit_loop))
-  {
-    /* assume we are inside the iupluascripter application */
-    IupSetGlobal("EXITLOOP", NULL);
-    IupExitLoop();
-  }
-
-  iuplua_push_name(L, "DebuggerExit");
-  iuplua_call_raw(L, 0, 0); /* this may trigger a Lua error which will abort the function with a goto, must sure you do nothing after that */
-  return IUP_DEFAULT;
-}
-
-static int restoremarkers_cb(Ihandle *ih, Ihandle *multitext)
-{
-  int i, line;
-  char *filename;
-
-  /* called when a new multitext is created/loaded */
-  
-  char* m_filename = IupGetAttribute(multitext, "FILENAME");
-  Ihandle* listBreak = IupGetDialogChild(ih, "LIST_BREAK");
-
-  IupSetInt(multitext, "MARKERDELETEALL", 1);
-
-  if (!m_filename)
-    return IUP_DEFAULT;
-
-  i = 1;
-  filename = IupGetAttributeId(listBreak, "FILENAME", i);
-  while (filename != NULL)
-  {
-    if (iupStrEqual(filename, m_filename))
-    {
-      line = IupGetIntId(listBreak, "LINE", i);
-      IupSetIntId(multitext, "MARKERADD", line - 1, 1);
-    }
-
-    i++;
-    filename = IupGetAttributeId(listBreak, "FILENAME", i);
-  }
-
-  return IUP_DEFAULT;
 }
 
 static void remove_breakpoint(Ihandle *listBreak, const char* m_filename, int m_line, lua_State* L)
@@ -259,37 +212,9 @@ static void add_breakpoint(Ihandle *listBreak, const char* filename, int line, l
   iuplua_call_raw(L, 3, 0);
 }
 
-static int marker_changed_cb(Ihandle *ih, Ihandle *multitext, int lin, int margin)
-{
-  if (margin == 2)
-  {
-    lua_State* L = (lua_State*)IupGetAttribute(ih, "LUASTATE");
-    unsigned int markerMask = (unsigned int)IupGetIntId(multitext, "MARKERGET", lin);
-    int has_breakpoint = markerMask & 0x0002; /* 0010 - marker=1 */
-    Ihandle* listBreak = IupGetDialogChild(ih, "LIST_BREAK");
-
-    char* filename = IupGetAttribute(multitext, "FILENAME");
-    if (!filename)
-    {
-      IupMessageError(IupGetDialog(ih), "Must have a filename to add a breakpoint.");
-      return IUP_DEFAULT;
-    }
-
-    if (has_breakpoint)
-      remove_breakpoint(listBreak, filename, lin + 1, L);
-    else
-      add_breakpoint(listBreak, filename, lin + 1, L);
-  }
-  else if (margin == 3)
-    IupSetfAttribute(multitext, "FOLDTOGGLE", "%d", lin);
-
-  (void)ih;
-  return IUP_DEFAULT;
-}
-
 static void save_globals(Ihandle *ih, Ihandle* config)
 {
-  Ihandle* treeGlobals = IupGetDialogChild(ih, "TREE_GLOBAL");
+  Ihandle* treeGlobals = IupGetDialogChild(ih, "DEBUG_TREE_GLOBAL");
   lua_State* L = (lua_State*)IupGetAttribute(ih, "LUASTATE");
   int i, count, id;
   const char *value;
@@ -319,7 +244,7 @@ static void save_globals(Ihandle *ih, Ihandle* config)
 
 static void save_breakpoints(Ihandle *ih, Ihandle* config)
 {
-  Ihandle* listBreak = IupGetDialogChild(ih, "LIST_BREAK");
+  Ihandle* listBreak = IupGetDialogChild(ih, "DEBUG_LIST_BREAK");
   int i, line, count;
   char *filename;
   char data[10240];
@@ -344,18 +269,9 @@ static void save_breakpoints(Ihandle *ih, Ihandle* config)
     IupConfigSetVariableStrId(config, "LuaScripterBreakpoints", "FileLine", i, NULL);
 }
 
-static int configsave_cb(Ihandle *ih, Ihandle* config)
-{
-  save_breakpoints(ih, config);
-
-  save_globals(ih, config);
-
-  return IUP_DEFAULT;
-}
-
 static void load_globals(Ihandle *ih, Ihandle* config)
 {
-  Ihandle* treeGlobals = IupGetDialogChild(ih, "TREE_GLOBAL");
+  Ihandle* treeGlobals = IupGetDialogChild(ih, "DEBUG_TREE_GLOBAL");
   lua_State* L = (lua_State*)IupGetAttribute(ih, "LUASTATE");
   int i;
   const char* value;
@@ -385,7 +301,7 @@ static void load_globals(Ihandle *ih, Ihandle* config)
 
 static void load_breakpoints(Ihandle *ih, Ihandle* config)
 {
-  Ihandle* listBreak = IupGetDialogChild(ih, "LIST_BREAK");
+  Ihandle* listBreak = IupGetDialogChild(ih, "DEBUG_LIST_BREAK");
   lua_State* L = (lua_State*)IupGetAttribute(ih, "LUASTATE");
   int i, line;
   const char* value;
@@ -411,6 +327,133 @@ static void load_breakpoints(Ihandle *ih, Ihandle* config)
   iuplua_push_name(L, "DebuggerInitBreakpointsList");
   iuplua_pushihandle(L, listBreak);
   iuplua_call_raw(L, 1, 0);
+}
+
+static char* changeTabsForSpaces(const char *text, int tabsize)
+{
+  static char newText[1024];
+  int len = (int)strlen(text);
+  int i, j, charcount = 0;
+
+  for (i = 0; i < len; i++)
+  {
+    char c = text[i];
+
+    if (c == '\t')
+    {
+      int nWhites = tabsize - (charcount % tabsize);
+
+      for (j = 0; j < nWhites; j++)
+      {
+        newText[charcount] = ' ';
+        charcount++;
+      }
+      continue;
+    }
+
+    newText[charcount] = c;
+    charcount++;
+  }
+
+  newText[charcount] = '\0';
+
+  return newText;
+}
+
+static Ihandle* get_current_multitext(Ihandle* ih)
+{
+  Ihandle* tabs = IupGetDialogChild(ih, "MULTITEXT_TABS");
+  return (Ihandle*)IupGetAttribute(tabs, "VALUE_HANDLE");
+}
+
+
+/********************************** Callbacks *****************************************/
+
+
+static int exit_cb(Ihandle *ih)
+{
+  lua_State* L = (lua_State*)IupGetAttribute(ih, "LUASTATE");
+
+  char* exit_loop = IupGetGlobal("EXITLOOP");
+  if (exit_loop && !iupStrBoolean(exit_loop))
+  {
+    /* assume we are inside the iupluascripter application */
+    IupSetGlobal("EXITLOOP", NULL);
+    IupExitLoop();
+  }
+
+  iuplua_push_name(L, "DebuggerExit");
+  iuplua_call_raw(L, 0, 0); /* this may trigger a Lua error which will abort the function with a goto, must sure you do nothing after that */
+  return IUP_DEFAULT;
+}
+
+static int restoremarkers_cb(Ihandle *ih, Ihandle *multitext)
+{
+  int i, line;
+  char *filename;
+
+  /* called when a new multitext is created/loaded */
+
+  char* m_filename = IupGetAttribute(multitext, "FILENAME");
+  Ihandle* listBreak = IupGetDialogChild(ih, "DEBUG_LIST_BREAK");
+
+  IupSetInt(multitext, "MARKERDELETEALL", 1);
+
+  if (!m_filename)
+    return IUP_DEFAULT;
+
+  i = 1;
+  filename = IupGetAttributeId(listBreak, "FILENAME", i);
+  while (filename != NULL)
+  {
+    if (iupStrEqual(filename, m_filename))
+    {
+      line = IupGetIntId(listBreak, "LINE", i);
+      IupSetIntId(multitext, "MARKERADD", line - 1, 1);
+    }
+
+    i++;
+    filename = IupGetAttributeId(listBreak, "FILENAME", i);
+  }
+
+  return IUP_DEFAULT;
+}
+
+static int marker_changed_cb(Ihandle *ih, Ihandle *multitext, int lin, int margin)
+{
+  if (margin == 2)
+  {
+    lua_State* L = (lua_State*)IupGetAttribute(ih, "LUASTATE");
+    unsigned int markerMask = (unsigned int)IupGetIntId(multitext, "MARKERGET", lin);
+    int has_breakpoint = markerMask & 0x0002; /* 0010 - marker=1 */
+    Ihandle* listBreak = IupGetDialogChild(ih, "DEBUG_LIST_BREAK");
+
+    char* filename = IupGetAttribute(multitext, "FILENAME");
+    if (!filename)
+    {
+      IupMessageError(IupGetDialog(ih), "Must have a filename to add a breakpoint.");
+      return IUP_DEFAULT;
+    }
+
+    if (has_breakpoint)
+      remove_breakpoint(listBreak, filename, lin + 1, L);
+    else
+      add_breakpoint(listBreak, filename, lin + 1, L);
+  }
+  else if (margin == 3)
+    IupSetfAttribute(multitext, "FOLDTOGGLE", "%d", lin);
+
+  (void)ih;
+  return IUP_DEFAULT;
+}
+
+static int configsave_cb(Ihandle *ih, Ihandle* config)
+{
+  save_breakpoints(ih, config);
+
+  save_globals(ih, config);
+
+  return IUP_DEFAULT;
 }
 
 static int configload_cb(Ihandle *ih, Ihandle* config)
@@ -449,7 +492,7 @@ static int configload_cb(Ihandle *ih, Ihandle* config)
 
 static int newfilename_cb(Ihandle *ih, char* old_filename, char* new_filename)
 {
-  Ihandle* listBreak = IupGetDialogChild(ih, "LIST_BREAK");
+  Ihandle* listBreak = IupGetDialogChild(ih, "DEBUG_LIST_BREAK");
   int i, changed = 0;
   char* filename;
 
@@ -477,40 +520,9 @@ static int newfilename_cb(Ihandle *ih, char* old_filename, char* new_filename)
   return IUP_DEFAULT;
 }
 
-static char* changeTabsForSpaces(const char *text, int tabsize)
-{
-  static char newText[1024];
-  int len = (int)strlen(text);
-  int i, j, charcount = 0;
-
-  for (i = 0; i < len; i++)
-  {
-    char c = text[i];
-
-    if (c == '\t')
-    {
-      int nWhites = tabsize - (charcount % tabsize);
-
-      for (j = 0; j < nWhites; j++)
-      {
-        newText[charcount] = ' ';
-        charcount++;
-      }
-      continue;
-    }
-    
-    newText[charcount] = c;  
-    charcount++;
-  }
-
-  newText[charcount] = '\0';
-
-  return newText;
-}
-
 static int multitext_dwell_cb(Ihandle* multitext, int code, int pos, int x, int y)
 {
-  if (!IupGetInt(IupGetDialogChild(multitext, "ITM_DEBUG"), "ACTIVE")) /* can be called by the hot key in the dialog */
+  if (!IupGetInt(IupGetDialogChild(multitext, "DEBUG_ITM_DEBUG"), "ACTIVE")) /* can be called by the hot key in the dialog */
     return IUP_DEFAULT;
 
   if (code)
@@ -601,15 +613,9 @@ static int multitext_valuechanged_cb(Ihandle* multitext)
   return IUP_CONTINUE;
 }
 
-static Ihandle* get_current_multitext(Ihandle* ih)
-{
-  Ihandle* tabs = IupGetDialogChild(ih, "TABS");
-  return (Ihandle*)IupGetAttribute(tabs, "VALUE_HANDLE");
-}
-
 static int item_autocomplete_action_cb(Ihandle* ih_item)
 {
-  Ihandle* tabs = IupGetDialogChild(ih_item, "TABS");
+  Ihandle* tabs = IupGetDialogChild(ih_item, "MULTITEXT_TABS");
   Ihandle* multitext;
   Ihandle* config = get_config(ih_item);
 
@@ -646,7 +652,7 @@ static int setparent_param_cb(Ihandle* param_dialog, int param_index, void* user
 
 static int item_style_config_action_cb(Ihandle* ih_item)
 {
-  Ihandle* tabs = IupGetDialogChild(ih_item, "TABS");
+  Ihandle* tabs = IupGetDialogChild(ih_item, "MULTITEXT_TABS");
   Ihandle* multitext;
   Ihandle* config = get_config(ih_item);
   char commentColor[30], commentLineColor[30], numberColor[30], keywordColor[30],
@@ -695,7 +701,7 @@ static int item_style_config_action_cb(Ihandle* ih_item)
 
 static int item_folding_action_cb(Ihandle* ih)
 {
-  Ihandle* tabs = IupGetDialogChild(ih, "TABS");
+  Ihandle* tabs = IupGetDialogChild(ih, "MULTITEXT_TABS");
   Ihandle* multitext;
   Ihandle* config = get_config(ih);
 
@@ -1002,463 +1008,6 @@ static int item_options_action_cb(Ihandle* ih_item)
   return IUP_DEFAULT;
 }
 
-
-static void debug_set_state(lua_State *L, const char* state)
-{
-  iuplua_push_name(L, "DebuggerSetStateString");
-  lua_pushstring(L, state);
-  iuplua_call_raw(L, 1, 0);
-}
-
-static int debug_save_check(Ihandle* multitext, const char* filename)
-{
-  if (!filename || IupGetInt(multitext, "MODIFIED"))
-  {
-    if (IupMessageAlarm(IupGetDialog(multitext), "Attention!", "File must be saved for debugging.\n  Save it now? (No will cancel debug)", "YESNO") == 1)
-      IupSetAttribute(IupGetDialog(multitext), "SAVEFILE", NULL);
-    else
-      return 0;
-  }
-  return 1;
-}
-
-static void set_arguments(lua_State* L, const char* data)
-{
-  int i = 1, len = (int)strlen(data), value_len;
-  char value[100];
-
-  /* only positive indices will be set (non-zero) */
-
-  lua_createtable(L, 0, 0);
-  while (len > 0)
-  {
-    const char* next_value = iupStrNextValue(data, len, &value_len, ' ');
-
-    if (value_len)
-    {
-      if (data[0] == '\"' && data[value_len - 1] == '\"')
-      {
-        data++;
-        value_len -= 2;
-      }
-
-      memcpy(value, data, value_len);
-      value[value_len] = 0;
-
-      lua_pushstring(L, value);
-      lua_rawseti(L, -2, i);
-      i++;
-    }
-
-    data = next_value;
-    len -= value_len + 1;
-  }
-  lua_setglobal(L, "arg");
-}
-
-static int debug_is_active(lua_State* L)
-{
-  int ret;
-  iuplua_push_name(L, "DebuggerIsActive");
-  iuplua_call_raw(L, 0, 1);
-  ret = lua_toboolean(L, -1);
-  lua_pop(L, 1);  /* remove the result from the stack */
-  return ret;
-}
-
-static int item_debug_action_cb(Ihandle* ih_item)
-{
-  char* filename, *value;
-  Ihandle* multitext;
-  lua_State* L;
-  int end_debug = 1;
-  Ihandle* ih = IupGetDialog(ih_item);
-
-  if (!IupGetInt(IupGetDialogChild(ih, "ITM_DEBUG"), "ACTIVE")) /* can be called by the hot key in the dialog */
-    return IUP_DEFAULT;
-
-  L = (lua_State*)IupGetAttribute(ih, "LUASTATE");
-  multitext = get_current_multitext(ih);
-  filename = IupGetAttribute(multitext, "FILENAME");
-
-  if (debug_is_active(L)) /* already active, just continue */
-  {
-    debug_set_state(L, "DEBUG_ACTIVE");
-    return IUP_DEFAULT;
-  }
-
-  if (IupGetInt(NULL, "SHIFTKEY"))
-    end_debug = 0;
-
-  if (!debug_save_check(multitext, filename))
-    return IUP_DEFAULT;
-
-  iuplua_push_name(L, "DebuggerStartDebug");
-  if (end_debug)
-    lua_pushstring(L, filename);
-  else
-    lua_pushnil(L);
-  iuplua_call_raw(L, 1, 0);
-
-  value = IupGetAttribute(ih, "CURRENTDIRECTORY");
-  if (value && value[0]!=0) iupdrvSetCurrentDirectory(value);
-  value = IupGetAttribute(ih, "ARGUMENTS");
-  if (value && value[0] != 0) set_arguments(L, value);
-
-  iuplua_dofile(L, filename);
-
-  if (end_debug)
-  {
-    iuplua_push_name(L, "DebuggerEndDebug");
-    lua_pushboolean(L, 0);
-    iuplua_call_raw(L, 1, 0);
-  }
-
-  return IUP_DEFAULT;
-}
-
-static int item_run_action_cb(Ihandle *ih_item)
-{
-  Ihandle* multitext;
-  lua_State* L;
-  char* filename, *value;
-  Ihandle* ih = IupGetDialog(ih_item);
-
-  if (!IupGetInt(IupGetDialogChild(ih, "ITM_RUN"), "ACTIVE")) /* can be called by the hot key in the dialog */
-    return IUP_DEFAULT;
-
-  L = (lua_State*)IupGetAttribute(ih, "LUASTATE");
-  multitext = get_current_multitext(ih);
-  filename = IupGetAttribute(multitext, "FILENAME");
-
-  value = IupGetAttribute(ih, "CURRENTDIRECTORY");
-  if (value) iupdrvSetCurrentDirectory(value);
-  value = IupGetAttribute(ih, "ARGUMENTS");
-  if (value && value[0] != 0) set_arguments(L, value);
-
-  if (filename && !IupGetInt(multitext, "MODIFIED"))
-    iuplua_dofile(L, filename);
-  else
-  {
-    char* value = IupGetAttribute(multitext, "VALUE");
-    char* title = IupGetAttribute(ih, "TITLE");
-    iuplua_dostring(L, value, title);
-  }
-
-  return IUP_DEFAULT;
-}
-
-static int item_stop_action_cb(Ihandle *ih_item)
-{
-  lua_State* L;
-
-  if (!IupGetInt(IupGetDialogChild(ih_item, "ITM_STOP"), "ACTIVE")) /* can be called by the hot key in the dialog */
-  {
-    L = (lua_State*)IupGetAttribute(ih_item, "LUASTATE");
-
-    if (!debug_is_active(L))
-      item_debug_action_cb(ih_item);
-    return IUP_DEFAULT;
-  }
-
-  L = (lua_State*)IupGetAttribute(ih_item, "LUASTATE");
-  debug_set_state(L, "DEBUG_STOPPED");
-  return IUP_DEFAULT;
-}
-
-static int item_pause_action_cb(Ihandle *ih_item)
-{
-  lua_State* L;
-
-  if (!IupGetInt(IupGetDialogChild(ih_item, "ITM_PAUSE"), "ACTIVE")) /* can be called by the hot key in the dialog */
-    return IUP_IGNORE;  /* to avoid garbage in Scintilla when pressing the hot key */
-
-  L = (lua_State*)IupGetAttribute(ih_item, "LUASTATE");
-  debug_set_state(L, "DEBUG_PAUSED");
-  return IUP_DEFAULT;
-}
-
-static int item_stepinto_action_cb(Ihandle *ih_item)
-{
-  lua_State* L;
-
-  if (!IupGetInt(IupGetDialogChild(ih_item, "ITM_STEPINTO"), "ACTIVE")) /* can be called by the hot key in the dialog */
-    return IUP_DEFAULT;
-
-  L = (lua_State*)IupGetAttribute(ih_item, "LUASTATE");
-  debug_set_state(L, "DEBUG_STEP_INTO");
-  return IUP_DEFAULT;
-}
-
-static int item_stepover_action_cb(Ihandle *ih_item)
-{
-  lua_State* L;
-
-  if (!IupGetInt(IupGetDialogChild(ih_item, "ITM_STEPOVER"), "ACTIVE")) /* can be called by the hot key in the dialog */
-    return IUP_DEFAULT;
-
-  L = (lua_State*)IupGetAttribute(ih_item, "LUASTATE");
-  debug_set_state(L, "DEBUG_STEP_OVER");
-  return IUP_IGNORE; /* avoid system default behavior for F10 key */
-}
-
-static int item_stepout_action_cb(Ihandle *ih_item)
-{
-  lua_State* L;
-
-  if (!IupGetInt(IupGetDialogChild(ih_item, "ITM_STEPOUT"), "ACTIVE")) /* can be called by the hot key in the dialog */
-    return IUP_DEFAULT;
-
-  L = (lua_State*)IupGetAttribute(ih_item, "LUASTATE");
-  debug_set_state(L, "DEBUG_STEP_OUT");
-  return IUP_DEFAULT;
-}
-
-static int item_currentline_cb(Ihandle *ih_item)
-{
-  lua_State* L = (lua_State*)IupGetAttribute(ih_item, "LUASTATE");
-  iuplua_push_name(L, "DebuggerShowCurrentLine");
-  iuplua_call_raw(L, 0, 0);
-  return IUP_DEFAULT;
-}
-        
-static int but_printlocal_cb(Ihandle *ih)
-{
-  lua_State* L = (lua_State*)IupGetAttribute(ih, "LUASTATE");
-
-  if (IupGetInt(NULL, "SHIFTKEY"))
-    iuplua_push_name(L, "DebuggerPrintAllLocalVariables");
-  else
-    iuplua_push_name(L, "DebuggerPrintLocalVariable");
-
-  iuplua_call_raw(L, 0, 0);
-  return IUP_DEFAULT;
-}
-
-static int but_setlocal_cb(Ihandle *ih)
-{
-  lua_State* L = (lua_State*)IupGetAttribute(ih, "LUASTATE");
-  iuplua_push_name(L, "DebuggerSetLocalVariable");
-  iuplua_call_raw(L, 0, 0);
-  return IUP_DEFAULT;
-}
-
-static int tree_locals_action_cb(Ihandle *ih, int id, int v)
-{
-  lua_State* L;
-
-  if (v == 0)
-    return IUP_DEFAULT;
-
-  L = (lua_State*)IupGetAttribute(ih, "LUASTATE");
-  iuplua_push_name(L, "DebuggerLocalVariablesTreeAction");
-  iuplua_pushihandle(L, ih);
-  lua_pushinteger(L, id);
-  iuplua_call_raw(L, 2, 0);
-  return IUP_DEFAULT;
-}
-
-static int tree_locals_branchopen_cb(Ihandle *ih, int id)
-{
-  lua_State* L;
-
-  L = (lua_State*)IupGetAttribute(ih, "LUASTATE");
-  iuplua_push_name(L, "DebuggerLocalVariablesBranchOpenAction");
-  iuplua_pushihandle(L, ih);
-  lua_pushinteger(L, id);
-  iuplua_call_raw(L, 2, 0);
-  return IUP_DEFAULT;
-}
-
-static int tree_globals_action_cb(Ihandle *ih, int index, int v)
-{
-  lua_State* L;
-
-  if (v == 0)
-    return IUP_DEFAULT;
-
-  L = (lua_State*)IupGetAttribute(ih, "LUASTATE");
-  iuplua_push_name(L, "DebuggerGlobalsTreeAction");
-  iuplua_pushihandle(L, ih);
-  lua_pushinteger(L, index);
-  iuplua_call_raw(L, 2, 0);
-  return IUP_DEFAULT;
-}
-
-static int tree_globals_branchopen_cb(Ihandle *ih, int id)
-{
-  lua_State* L;
-
-  L = (lua_State*)IupGetAttribute(ih, "LUASTATE");
-  iuplua_push_name(L, "DebuggerGlobalVariablesBranchOpenAction");
-  iuplua_pushihandle(L, ih);
-  lua_pushinteger(L, id);
-  iuplua_call_raw(L, 2, 0);
-  return IUP_DEFAULT;
-}
-
-static int but_printglobal_cb(Ihandle *ih)
-{
-  lua_State* L = (lua_State*)IupGetAttribute(ih, "LUASTATE");
-
-  if (IupGetInt(NULL, "SHIFTKEY"))
-    iuplua_push_name(L, "DebuggerPrintAllGlobalVariables");
-  else
-    iuplua_push_name(L, "DebuggerPrintGlobalVariable");
-
-  iuplua_call_raw(L, 0, 0);
-  return IUP_DEFAULT;
-}
-
-static int but_setglobal_cb(Ihandle *ih)
-{
-  lua_State* L = (lua_State*)IupGetAttribute(ih, "LUASTATE");
-  iuplua_push_name(L, "DebuggerSetGlobalVariable");
-  iuplua_call_raw(L, 0, 0);
-  return IUP_DEFAULT;
-}
-
-static int but_addglobal_cb(Ihandle *ih)
-{
-  lua_State* L = (lua_State*)IupGetAttribute(ih, "LUASTATE");
-  iuplua_push_name(L, "DebuggerAddGlobalVariable");
-  iuplua_call_raw(L, 0, 0);
-  return IUP_DEFAULT;
-}
-
-static int but_removeglobal_cb(Ihandle *ih)
-{
-  lua_State* L = (lua_State*)IupGetAttribute(ih, "LUASTATE");
-
-  if (IupGetInt(NULL, "SHIFTKEY"))
-    iuplua_push_name(L, "DebuggerRemoveAllGlobalVariable");
-  else
-    iuplua_push_name(L, "DebuggerRemoveGlobalVariable");
-
-  iuplua_call_raw(L, 0, 0);
-  return IUP_DEFAULT;
-}
-
-static int list_stack_action_cb(Ihandle *ih, char *t, int index, int v)
-{
-  lua_State* L;
-  (void)t;
-
-  if (v == 0)
-    return IUP_DEFAULT;
-
-  L = (lua_State*)IupGetAttribute(ih, "LUASTATE");
-  iuplua_push_name(L, "DebuggerStackListAction");
-  iuplua_pushihandle(L, ih);
-  lua_pushinteger(L, index);
-  iuplua_call_raw(L, 2, 0);
-  return IUP_DEFAULT;
-}
-
-static int list_stack_dblclick_cb(Ihandle *ih, int index, char *t)
-{
-  lua_State* L = (lua_State*)IupGetAttribute(ih, "LUASTATE");
-  iuplua_push_name(L, "DebuggerStackListActivate");
-  iuplua_pushihandle(L, ih);
-  lua_pushinteger(L, index);
-  iuplua_call_raw(L, 2, 0);
-  (void)t;
-  return IUP_DEFAULT;
-}
-
-static int but_printlevel_cb(Ihandle *ih)
-{
-  lua_State* L = (lua_State*)IupGetAttribute(ih, "LUASTATE");
-
-  if (IupGetInt(NULL, "SHIFTKEY"))
-    iuplua_push_name(L, "DebuggerPrintAllStackLevel");
-  else
-    iuplua_push_name(L, "DebuggerPrintStackLevel");
-
-  iuplua_call_raw(L, 0, 0);
-
-  return IUP_DEFAULT;
-}
-
-static int list_breaks_dblclick_cb(Ihandle *ih, int index, char *t)
-{
-  lua_State* L = (lua_State*)IupGetAttribute(ih, "LUASTATE");
-  iuplua_push_name(L, "DebuggerBreaksListActivate");
-  iuplua_pushihandle(L, ih);
-  lua_pushinteger(L, index);
-  iuplua_call_raw(L, 2, 0);
-  (void)t;
-  return IUP_DEFAULT;
-}
-
-static int list_breaks_action_cb(Ihandle *ih, char *t, int index, int v)
-{
-  lua_State* L;
-  (void)t;
-
-  if (v == 0)
-    return IUP_DEFAULT;
-
-  L = (lua_State*)IupGetAttribute(ih, "LUASTATE");
-  iuplua_push_name(L, "DebuggerBreaksListAction");
-  iuplua_pushihandle(L, ih);
-  lua_pushinteger(L, index);
-  iuplua_call_raw(L, 2, 0);
-  return IUP_DEFAULT;
-}
-
-static int but_togglebreak_cb(Ihandle *ih)
-{
-  int lin, col;
-  Ihandle* multitext = get_current_multitext(ih);
-  int pos = IupGetInt(multitext, "CARETPOS");
-  IupTextConvertPosToLinCol(multitext, pos, &lin, &col);
-  IupSetAttributeId(IupGetDialog(ih), "TOGGLEMARKER", lin, "2");  /* margin=2 */  /* this will trigger the MARKERCHANGED_CB callback too */
-  return IUP_DEFAULT;
-}
-
-static int but_addbreak_cb(Ihandle* ih)
-{
-  lua_State* L = (lua_State*)IupGetAttribute(ih, "LUASTATE");
-  iuplua_push_name(L, "DebuggerAddBreakpointList");
-  iuplua_call_raw(L, 0, 0);
-  return IUP_DEFAULT;
-}
-
-static int but_removeallbreaks_cb(Ihandle *ih)
-{
-  lua_State* L = (lua_State*)IupGetAttribute(ih, "LUASTATE");
-  iuplua_push_name(L, "DebuggerRemoveAllBreakpoints");
-  iuplua_call_raw(L, 0, 0);
-  return IUP_DEFAULT;
-}
-
-static int but_removebreak_cb(Ihandle *ih)
-{
-  if (IupGetInt(NULL, "SHIFTKEY"))
-    but_removeallbreaks_cb(ih);
-  else
-  {
-    lua_State* L;
-    Ihandle* listBreak = IupGetDialogChild(ih, "LIST_BREAK");
-    int index = IupGetInt(listBreak, "VALUE");
-
-    if (index == 0)
-    {
-      IupMessageError(IupGetDialog(ih), "Must select a breakpoint on the list.");
-      return IUP_DEFAULT;
-    }
-
-    L = (lua_State*)IupGetAttribute(ih, "LUASTATE");
-    iuplua_push_name(L, "DebuggerRemoveBreakpoint");
-    iuplua_pushihandle(L, listBreak);
-    lua_pushinteger(L, index);
-    iuplua_call_raw(L, 2, 0);
-  }
-
-  return IUP_DEFAULT;
-}
-
 static int lua_menu_open_cb(Ihandle *ih_menu)
 {
   Ihandle* menu_foldall = IupGetDialogChild(ih_menu, "ITM_FOLD_ALL");
@@ -1487,455 +1036,6 @@ static int lua_menu_open_cb(Ihandle *ih_menu)
   return IUP_DEFAULT;
 }
 
-static int tree_globals_map(Ihandle* ih)
-{
-  Ihandle* config = get_config(ih);
-  /* must load also here because we need the tree mapped */
-  load_globals(ih, config);
-  return IUP_NOERROR;
-}
-
-
-/********************************** Main *****************************************/
-
-
-static Ihandle *buildTabDebug(void)
-{
-  Ihandle *tree_local, *button_printLocal, *button_setLocal, *vbox_local, *frame_local;
-  Ihandle *list_stack, *button_printLevel, *vbox_stack, *frame_stack, *debug;
-
-  tree_local = IupTree();
-  IupSetAttribute(tree_local, "EXPAND", "YES");
-  IupSetAttribute(tree_local, "NAME", "TREE_LOCAL");
-  IupSetAttribute(tree_local, "TIP", "List of local variables at selected stack level (ordered by pos)");
-  IupSetAttribute(tree_local, "ADDROOT", "NO");
-  IupSetAttribute(tree_local, "HIDELINES", "YES");
-  IupSetAttribute(tree_local, "HIDEBUTTONS", "YES");
-  IupSetAttribute(tree_local, "IMAGELEAF", "IMGEMPTY");
-  IupSetAttribute(tree_local, "IMAGEBRANCHCOLLAPSED", "IUP_treeplus");
-  IupSetAttribute(tree_local, "IMAGEBRANCHEXPANDED", "IUP_treeminus");
-  IupSetAttribute(tree_local, "ADDEXPANDED", "NO");
-  IupSetCallback(tree_local, "SELECTION_CB", (Icallback)tree_locals_action_cb);
-  IupSetCallback(tree_local, "BRANCHOPEN_CB", (Icallback)tree_locals_branchopen_cb);
-
-  button_printLocal = IupButton(NULL, NULL);
-  IupSetAttribute(button_printLocal, "ACTIVE", "NO");
-  IupSetAttribute(button_printLocal, "FLAT", "Yes");
-  IupSetAttribute(button_printLocal, "IMAGE", "IUP_Print");
-  IupSetAttribute(button_printLocal, "TIP", "Prints in the console debug information about the selected local variable.\nPress <Shift> to print all variables.");
-  IupSetAttribute(button_printLocal, "NAME", "PRINT_LOCAL");
-  IupSetCallback(button_printLocal, "ACTION", (Icallback)but_printlocal_cb);
-
-  button_setLocal = IupButton(NULL, NULL);
-  IupSetAttribute(button_setLocal, "IMAGE", "IUP_FileProperties");
-  IupSetAttribute(button_setLocal, "FLAT", "Yes");
-  IupSetAttribute(button_setLocal, "ACTIVE", "NO");
-  IupSetAttribute(button_setLocal, "TIP", "Changes the value of the selected local variable.\nOnly strings, numbers and booleans can be changed.");
-  IupSetAttribute(button_setLocal, "NAME", "SET_LOCAL");
-  IupSetCallback(button_setLocal, "ACTION", (Icallback)but_setlocal_cb);
-
-  vbox_local = IupVbox(button_printLocal, button_setLocal, NULL);
-  IupSetAttribute(vbox_local, "MARGIN", "0x0");
-  IupSetAttribute(vbox_local, "GAP", "4");
-  IupSetAttribute(vbox_local, "NORMALIZESIZE", "HORIZONTAL");
-
-  frame_local = IupFrame(IupHbox(tree_local, vbox_local, NULL));
-  IupSetAttribute(frame_local, "MARGIN", "4x4");
-  IupSetAttribute(frame_local, "GAP", "4");
-  IupSetAttribute(frame_local, "TITLE", "Locals:");
-
-  list_stack = IupList(NULL);
-  IupSetAttribute(list_stack, "EXPAND", "YES");
-  IupSetAttribute(list_stack, "NAME", "LIST_STACK");
-  IupSetAttribute(list_stack, "TIP", "List of call stack (ordered by level)");
-  IupSetCallback(list_stack, "ACTION", (Icallback)list_stack_action_cb);
-  IupSetCallback(list_stack, "DBLCLICK_CB", (Icallback)list_stack_dblclick_cb);
-  IupSetAttribute(list_stack, "VISIBLELINES", "3");
-
-  button_printLevel = IupButton(NULL, NULL);
-  IupSetAttribute(button_printLevel, "FLAT", "Yes");
-  IupSetAttribute(button_printLevel, "IMAGE", "IUP_Print");
-  IupSetAttribute(button_printLevel, "TIP", "Prints in the console debug information about the selected call stack level.\nPress <Shift> to print all levels.");
-  IupSetAttribute(button_printLevel, "ACTIVE", "NO");
-  IupSetAttribute(button_printLevel, "NAME", "PRINT_LEVEL");
-  IupSetCallback(button_printLevel, "ACTION", (Icallback)but_printlevel_cb);
-
-  vbox_stack = IupVbox(button_printLevel, NULL);
-  IupSetAttribute(vbox_stack, "MARGIN", "0x0");
-  IupSetAttribute(vbox_stack, "GAP", "4");
-  IupSetAttribute(vbox_stack, "NORMALIZESIZE", "HORIZONTAL");
-
-  frame_stack = IupFrame(IupHbox(list_stack, vbox_stack, NULL));
-  IupSetAttribute(frame_stack, "MARGIN", "4x4");
-  IupSetAttribute(frame_stack, "GAP", "4");
-  IupSetAttribute(frame_stack, "TITLE", "Call Stack:");
-
-  debug = IupHbox(frame_local, frame_stack, NULL);
-  IupSetAttribute(debug, "MARGIN", "0x0");
-  IupSetAttribute(debug, "GAP", "4");
-  IupSetAttribute(debug, "TABTITLE", "Debug");
-
-  return debug;
-}
-
-static Ihandle *buildTabWatch(void)
-{
-  Ihandle *tree_global, *button_printGlobal, *button_addGlobal, 
-    *button_removeGlobal, *button_setGlobal, *vbox_global, *frame_global, *watch;
-
-  tree_global = IupTree();
-  IupSetAttribute(tree_global, "EXPAND", "YES");
-  IupSetAttribute(tree_global, "NAME", "TREE_GLOBAL");
-  IupSetAttribute(tree_global, "TIP", "List of globals variables or expressions");
-  IupSetAttribute(tree_global, "ADDROOT", "NO");
-  IupSetAttribute(tree_global, "HIDELINES", "YES");
-  IupSetAttribute(tree_global, "HIDEBUTTONS", "YES");
-  IupSetAttribute(tree_global, "IMAGELEAF", "IMGEMPTY");
-  IupSetAttribute(tree_global, "IMAGEBRANCHCOLLAPSED", "IMGEMPTY");
-  IupSetAttribute(tree_global, "ADDEXPANDED", "NO");
-  IupSetAttribute(tree_global, "IMAGEBRANCHEXPANDED", "IMGEMPTY");
-  IupSetCallback(tree_global, "ACTION", (Icallback)tree_globals_action_cb);
-  IupSetCallback(tree_global, "BRANCHOPEN_CB", (Icallback)tree_globals_branchopen_cb);
-  IupSetCallback(tree_global, "MAP_CB", (Icallback)tree_globals_map);
-
-  button_printGlobal = IupButton(NULL, NULL);
-  IupSetAttribute(button_printGlobal, "FLAT", "Yes");
-  IupSetAttribute(button_printGlobal, "IMAGE", "IUP_Print");
-  IupSetAttribute(button_printGlobal, "ACTIVE", "NO");
-  IupSetAttribute(button_printGlobal, "TIP", "Prints in the console debug information about the selected global variable or expression.\nPress <Shift> to print all items.");
-  IupSetAttribute(button_printGlobal, "NAME", "PRINT_GLOBAL");
-  IupSetCallback(button_printGlobal, "ACTION", (Icallback)but_printglobal_cb);
-
-  button_setGlobal = IupButton(NULL, NULL);
-  IupSetAttribute(button_setGlobal, "IMAGE", "IUP_FileProperties");
-  IupSetAttribute(button_setGlobal, "FLAT", "Yes");
-  IupSetAttribute(button_setGlobal, "ACTIVE", "NO");
-  IupSetAttribute(button_setGlobal, "TIP", "Changes the value of the selected global variable.\nOnly strings, numbers and booleans can be changed.");
-  IupSetAttribute(button_setGlobal, "NAME", "SET_GLOBAL");
-  IupSetCallback(button_setGlobal, "ACTION", (Icallback)but_setglobal_cb);
-
-  button_addGlobal = IupButton(NULL, NULL);
-  IupSetAttribute(button_addGlobal, "FLAT", "Yes");
-  IupSetAttribute(button_addGlobal, "IMAGE", "IUP_plus");
-  IupSetAttribute(button_addGlobal, "TIP", "Add a global variable given its name.");
-  IupSetCallback(button_addGlobal, "ACTION", (Icallback)but_addglobal_cb);
-
-  button_removeGlobal = IupButton(NULL, NULL);
-  IupSetAttribute(button_removeGlobal, "FLAT", "Yes");
-  IupSetAttribute(button_removeGlobal, "IMAGE", "IUP_EditErase");
-  IupSetAttribute(button_removeGlobal, "NAME", "REMOVE_GLOBAL");
-  IupSetAttribute(button_removeGlobal, "TIP", "Removes the selected global variable or expression.\nPress <Shift> to remove all items.");
-  IupSetCallback(button_removeGlobal, "ACTION", (Icallback)but_removeglobal_cb);
-
-  vbox_global = IupVbox(button_printGlobal, button_setGlobal, button_addGlobal, button_removeGlobal, NULL);
-  IupSetAttribute(vbox_global, "MARGIN", "0x0");
-  IupSetAttribute(vbox_global, "GAP", "4");
-  IupSetAttribute(vbox_global, "NORMALIZESIZE", "HORIZONTAL");
-
-  frame_global = IupFrame(IupHbox(tree_global, vbox_global, NULL));
-  IupSetAttribute(frame_global, "MARGIN", "4x4");
-  IupSetAttribute(frame_global, "GAP", "4");
-  IupSetAttribute(frame_global, "TITLE", "Globals:");
-
-  watch = IupHbox(frame_global, NULL);
-  IupSetAttribute(watch, "MARGIN", "0x0");
-  IupSetAttribute(watch, "GAP", "4");
-  IupSetAttribute(watch, "TABTITLE", "Watch");
-
-  return watch;
-}
-
-static Ihandle *buildTabBreaks(void)
-{
-  Ihandle *button_addbreak, *button_removebreak, *hbox, *list, *vbox, *frame, *button_togglebreak;
-
-  button_togglebreak = IupButton(NULL, NULL);
-  IupSetAttribute(button_togglebreak, "IMAGE", "IUP_MediaRecord");
-  IupSetAttribute(button_togglebreak, "FLAT", "Yes");
-  IupSetAttribute(button_togglebreak, "TIP", "Toggle a breakpoint at current line. (F9)");
-  IupSetCallback(button_togglebreak, "ACTION", (Icallback)but_togglebreak_cb);
-
-  button_addbreak = IupButton(NULL, NULL);
-  IupSetAttribute(button_addbreak, "TIP", "Adds a breakpoint at given function and line.");
-  IupSetAttribute(button_addbreak, "FLAT", "Yes");
-  IupSetAttribute(button_addbreak, "IMAGE", "IUP_plus");
-  IupSetCallback(button_addbreak, "ACTION", (Icallback)but_addbreak_cb);
-
-  button_removebreak = IupButton(NULL, NULL);
-  IupSetAttribute(button_removebreak, "FLAT", "Yes");
-  IupSetAttribute(button_removebreak, "IMAGE", "IUP_EditErase");
-  IupSetAttribute(button_removebreak, "TIP", "Removes the selected breakpoint.\nPress <Shift> to remove all breakpoints.");
-  IupSetCallback(button_removebreak, "ACTION", (Icallback)but_removebreak_cb);
-  IupSetAttribute(button_removebreak, "NAME", "REMOVE_BREAK");
-  IupSetAttribute(button_removebreak, "ACTIVE", "NO");
-
-  vbox = IupVbox(button_togglebreak, button_addbreak, button_removebreak, NULL);
-  IupSetAttribute(vbox, "MARGIN", "0x0");
-  IupSetAttribute(vbox, "GAP", "4");
-  IupSetAttribute(vbox, "NORMALIZESIZE", "HORIZONTAL");
-
-  list = IupList(NULL);
-  IupSetAttribute(list, "EXPAND", "YES");
-  IupSetAttribute(list, "NAME", "LIST_BREAK");
-  IupSetCallback(list, "ACTION", (Icallback)list_breaks_action_cb);
-  IupSetCallback(list, "DBLCLICK_CB", (Icallback)list_breaks_dblclick_cb);
-  IupSetAttribute(list, "VISIBLELINES", "3");
-
-  frame = IupFrame(IupHbox(list, vbox, NULL));
-  IupSetAttribute(frame, "MARGIN", "4x4");
-  IupSetAttribute(frame, "GAP", "4");
-  IupSetAttribute(frame, "TITLE", "Breakpoints:");
-
-  hbox = IupVbox(frame, NULL);
-  IupSetAttribute(hbox, "MARGIN", "0x0");
-  IupSetAttribute(hbox, "GAP", "4");
-  IupSetAttribute(hbox, "TABTITLE", "Breaks");
-
-  return hbox;
-}
-
-static void appendToolbarDebugButtons(Ihandle *dialog)
-{
-  Ihandle *toolbar, *btn_debug, *btn_run, *btn_stop, *btn_pause, *btn_currentline;
-  Ihandle *btn_stepinto, *btn_stepover, *btn_stepout;
-
-  toolbar = IupGetChild(IupGetChild(dialog, 0), 0);
-
-  btn_debug = IupButton(NULL, NULL);
-  IupSetAttribute(btn_debug, "NAME", "BTN_DEBUG");
-  IupSetAttribute(btn_debug, "IMAGE", "IUP_MediaGoToEnd");
-  IupSetAttribute(btn_debug, "FLAT", "Yes");
-  IupSetCallback(btn_debug, "ACTION", (Icallback)item_debug_action_cb);
-  IupSetAttribute(btn_debug, "TIP", "Debug/Continue (F5)\nPress <Shift> to keep debug active after script finishes.");
-  IupSetAttribute(btn_debug, "CANFOCUS", "No");
-
-  btn_run = IupButton(NULL, NULL);
-  IupSetAttribute(btn_run, "NAME", "BTN_RUN");
-  IupSetAttribute(btn_run, "IMAGE", "IUP_MediaPlay");
-  IupSetAttribute(btn_run, "FLAT", "Yes");
-  IupSetCallback(btn_run, "ACTION", (Icallback)item_run_action_cb);
-  IupSetAttribute(btn_run, "TIP", "Run (Ctrl+F5)");
-  IupSetAttribute(btn_run, "CANFOCUS", "No");
-
-  btn_stop = IupButton(NULL, NULL);
-  IupSetAttribute(btn_stop, "NAME", "BTN_STOP");
-  IupSetAttribute(btn_stop, "ACTIVE", "NO");
-  IupSetAttribute(btn_stop, "IMAGE", "IUP_MediaStop");
-  IupSetAttribute(btn_stop, "FLAT", "Yes");
-  IupSetCallback(btn_stop, "ACTION", (Icallback)item_stop_action_cb);
-  IupSetAttribute(btn_stop, "TIP", "Stop (Shift+F5)");
-  IupSetAttribute(btn_stop, "CANFOCUS", "No");
-
-  btn_pause = IupButton(NULL, NULL);
-  IupSetAttribute(btn_pause, "NAME", "BTN_PAUSE");
-  IupSetAttribute(btn_pause, "ACTIVE", "NO");
-  IupSetAttribute(btn_pause, "IMAGE", "IUP_MediaPause");
-  IupSetAttribute(btn_pause, "FLAT", "Yes");
-  IupSetCallback(btn_pause, "ACTION", (Icallback)item_pause_action_cb);
-  IupSetAttribute(btn_pause, "TIP", "Pause (Ctrl+Break)");
-  IupSetAttribute(btn_pause, "CANFOCUS", "No");
-
-  btn_stepover = IupButton(NULL, NULL);
-  IupSetAttribute(btn_stepover, "NAME", "BTN_STEPOVER");
-  IupSetAttribute(btn_stepover, "ACTIVE", "NO");
-  IupSetAttribute(btn_stepover, "IMAGE", "IUP_stepover");
-  IupSetAttribute(btn_stepover, "FLAT", "Yes");
-  IupSetCallback(btn_stepover, "ACTION", (Icallback)item_stepover_action_cb);
-  IupSetAttribute(btn_stepover, "TIP", "Executes one step over the execution (F10).");
-  IupSetAttribute(btn_stepover, "CANFOCUS", "No");
-
-  btn_stepinto = IupButton(NULL, NULL);
-  IupSetAttribute(btn_stepinto, "NAME", "BTN_STEPINTO");
-  IupSetAttribute(btn_stepinto, "ACTIVE", "NO");
-  IupSetAttribute(btn_stepinto, "IMAGE", "IUP_stepinto");
-  IupSetAttribute(btn_stepinto, "FLAT", "Yes");
-  IupSetCallback(btn_stepinto, "ACTION", (Icallback)item_stepinto_action_cb);
-  IupSetAttribute(btn_stepinto, "TIP", "Executes one step into the execution (F11).");
-  IupSetAttribute(btn_stepinto, "CANFOCUS", "No");
-
-  btn_stepout = IupButton(NULL, NULL);
-  IupSetAttribute(btn_stepout, "NAME", "BTN_STEPOUT");
-  IupSetAttribute(btn_stepout, "ACTIVE", "NO");
-  IupSetAttribute(btn_stepout, "IMAGE", "IUP_stepout");
-  IupSetAttribute(btn_stepout, "FLAT", "Yes");
-  IupSetCallback(btn_stepout, "ACTION", (Icallback)item_stepout_action_cb);
-  IupSetAttribute(btn_stepout, "TIP", "Executes one step out of the execution (Shift+F11).");
-  IupSetAttribute(btn_stepout, "CANFOCUS", "No");
-
-  btn_currentline = IupButton(NULL, NULL);
-  IupSetAttribute(btn_currentline, "NAME", "BTN_CURRENTLINE");
-  IupSetAttribute(btn_currentline, "ACTIVE", "NO");
-  IupSetAttribute(btn_currentline, "IMAGE", "IUP_ArrowRight");
-  IupSetAttribute(btn_currentline, "FLAT", "Yes");
-  IupSetCallback(btn_currentline, "ACTION", (Icallback)item_currentline_cb);
-  IupSetAttribute(btn_currentline, "TIP", "Shows the debugger current line.");
-  IupSetAttribute(btn_currentline, "CANFOCUS", "No");
-
-  IupAppend(toolbar, IupSetAttributes(IupLabel(NULL), "SEPARATOR=VERTICAL"));
-  IupAppend(toolbar, btn_run);
-  IupAppend(toolbar, IupSetAttributes(IupLabel(NULL), "SEPARATOR=VERTICAL"));
-  IupAppend(toolbar, btn_debug);
-  IupAppend(toolbar, btn_stop);
-  IupAppend(toolbar, btn_pause);
-  IupAppend(toolbar, btn_stepover);
-  IupAppend(toolbar, btn_stepinto);
-  IupAppend(toolbar, btn_stepout);
-  IupAppend(toolbar, btn_currentline);
-}
-
-static Ihandle* buildLuaMenu(void)
-{
-  Ihandle *item_debug, *item_run, *item_stop, *item_pause, *item_stepinto, *item_autocomplete, *item_style_config,
-    *item_folding, *item_toggle_folding, *item_stepover, *item_stepout, *luaMenu, *item_currentline, *item_options,
-    *item_togglebreakpoint, *item_addbreakpoint, *item_removeallbreakpoints, *item_collapse, *item_expand, *item_toggle, *item_level,
-    *item_blockcomment, *item_blockuncomment, *item_linescomment, *item_linesuncomment;
-
-  item_run = IupItem("&Run\tCtrl+F5", NULL);
-  IupSetAttribute(item_run, "NAME", "ITM_RUN");
-  IupSetCallback(item_run, "ACTION", (Icallback)item_run_action_cb);
-  IupSetAttribute(item_run, "IMAGE", "IUP_MediaPlay");
-
-  item_debug = IupItem("&Debug/Continue\tF5", NULL);
-  IupSetAttribute(item_debug, "NAME", "ITM_DEBUG");
-  IupSetCallback(item_debug, "ACTION", (Icallback)item_debug_action_cb);
-  IupSetAttribute(item_debug, "IMAGE", "IUP_MediaGoToEnd");
-
-  item_stop = IupItem("&Stop\tShift+F5", NULL);
-  IupSetAttribute(item_stop, "NAME", "ITM_STOP");
-  IupSetCallback(item_stop, "ACTION", (Icallback)item_stop_action_cb);
-  IupSetAttribute(item_stop, "ACTIVE", "NO");
-  IupSetAttribute(item_stop, "IMAGE", "IUP_MediaStop");
-
-  item_pause = IupItem("&Pause\tCtrl+Break", NULL);
-  IupSetAttribute(item_pause, "NAME", "ITM_PAUSE");
-  IupSetCallback(item_pause, "ACTION", (Icallback)item_pause_action_cb);
-  IupSetAttribute(item_pause, "ACTIVE", "NO");
-  IupSetAttribute(item_pause, "IMAGE", "IUP_MediaPause");
-
-  item_stepover = IupItem("Step &Over\tF10", NULL);
-  IupSetAttribute(item_stepover, "NAME", "ITM_STEPOVER");
-  IupSetCallback(item_stepover, "ACTION", (Icallback)item_stepover_action_cb);
-  IupSetAttribute(item_stepover, "ACTIVE", "NO");
-  IupSetAttribute(item_stepover, "IMAGE", "IUP_stepover");
-
-  item_stepinto = IupItem("Step &Into\tF11", NULL);
-  IupSetAttribute(item_stepinto, "NAME", "ITM_STEPINTO");
-  IupSetCallback(item_stepinto, "ACTION", (Icallback)item_stepinto_action_cb);
-  IupSetAttribute(item_stepinto, "ACTIVE", "NO");
-  IupSetAttribute(item_stepinto, "IMAGE", "IUP_stepinto");
-
-  item_stepout = IupItem("Step Ou&t\tShift+F11", NULL);
-  IupSetAttribute(item_stepout, "NAME", "ITM_STEPOUT");
-  IupSetCallback(item_stepout, "ACTION", (Icallback)item_stepout_action_cb);
-  IupSetAttribute(item_stepout, "ACTIVE", "NO");
-  IupSetAttribute(item_stepout, "IMAGE", "IUP_stepout");
-
-  item_currentline = IupItem("Show Current Line", NULL);
-  IupSetAttribute(item_currentline, "NAME", "ITM_CURRENTLINE");
-  IupSetCallback(item_currentline, "ACTION", (Icallback)item_currentline_cb);
-  IupSetAttribute(item_currentline, "ACTIVE", "NO");
-  IupSetAttribute(item_currentline, "IMAGE", "IUP_ArrowRight");
-
-  item_autocomplete = IupItem("Auto Completion", NULL);
-  IupSetAttribute(item_autocomplete, "NAME", "ITM_AUTOCOMPLETE");
-  IupSetCallback(item_autocomplete, "ACTION", (Icallback)item_autocomplete_action_cb);
-
-  item_style_config = IupItem("Syntax Colors...", NULL);
-  IupSetAttribute(item_style_config, "NAME", "ITM_STYLE");
-  IupSetCallback(item_style_config, "ACTION", (Icallback)item_style_config_action_cb);
-
-  item_folding = IupItem("Folding", NULL);
-  IupSetAttribute(item_folding, "NAME", "ITM_FOLDING");
-  IupSetCallback(item_folding, "ACTION", (Icallback)item_folding_action_cb);
-
-  item_toggle_folding = IupItem("Toggle Fold\tF8", NULL);
-  IupSetAttribute(item_toggle_folding, "NAME", "ITM_TOGGLE_FOLDING");
-  IupSetCallback(item_toggle_folding, "ACTION", (Icallback)item_toggle_folding_action_cb);
-
-  item_collapse = IupItem("Collapse", NULL);
-  IupSetAttribute(item_collapse, "NAME", "ITM_COLLAPSE");
-  IupSetCallback(item_collapse, "ACTION", (Icallback)item_fold_collapse_action_cb);
-
-  item_expand = IupItem("Expand", NULL);
-  IupSetAttribute(item_expand, "NAME", "ITM_EXPAND");
-  IupSetCallback(item_expand, "ACTION", (Icallback)item_fold_expand_action_cb);
-
-  item_toggle = IupItem("Toggle", NULL);
-  IupSetAttribute(item_toggle, "NAME", "ITM_TOGGLE");
-  IupSetCallback(item_toggle, "ACTION", (Icallback)item_fold_toggle_action_cb);
-
-  item_level = IupItem("by Level...", NULL);
-  IupSetAttribute(item_level, "NAME", "ITM_LEVEL");
-  IupSetCallback(item_level, "ACTION", (Icallback)item_fold_level_action_cb);
-
-  item_blockcomment = IupItem("Block Comment", NULL);
-  IupSetCallback(item_blockcomment, "ACTION", (Icallback)item_blockcomment_action_cb);
-
-  item_blockuncomment = IupItem("Block Uncomment", NULL);
-  IupSetCallback(item_blockuncomment, "ACTION", (Icallback)item_blockuncomment_action_cb);
-
-  item_linescomment = IupItem("Lines Comment", NULL);
-  IupSetCallback(item_linescomment, "ACTION", (Icallback)item_linescomment_action_cb);
-
-  item_linesuncomment = IupItem("Lines Uncomment", NULL);
-  IupSetCallback(item_linesuncomment, "ACTION", (Icallback)item_linesuncomment_action_cb);
-
-  item_options = IupItem("Options...", NULL);
-  IupSetCallback(item_options, "ACTION", (Icallback)item_options_action_cb);
-
-  item_togglebreakpoint = IupItem("Toggle Breakpoint\tF9", NULL);
-  IupSetCallback(item_togglebreakpoint, "ACTION", (Icallback)but_togglebreak_cb);
-
-  item_addbreakpoint = IupItem("Add Breakpoint...", NULL);
-  IupSetCallback(item_addbreakpoint, "ACTION", (Icallback)but_addbreak_cb);
-
-  item_removeallbreakpoints = IupItem("Remove All Breakpoints", NULL);
-  IupSetCallback(item_removeallbreakpoints, "ACTION", (Icallback)but_removeallbreaks_cb);
-
-  luaMenu = IupMenu(
-    item_run,
-    IupSeparator(),
-    item_debug,
-    item_stop,
-    item_pause,
-    item_stepover,
-    item_stepinto,
-    item_stepout,
-    item_currentline,
-    IupSeparator(),
-    item_togglebreakpoint,
-    item_addbreakpoint,
-    item_removeallbreakpoints,
-    IupSeparator(),
-    item_folding,
-    item_toggle_folding,
-    IupSubmenu("Fold All",
-      IupSetAttributes(IupMenu(
-        item_collapse,
-        item_expand,
-        item_toggle,
-        item_level,
-        NULL), "NAME=ITM_FOLD_ALL")),
-    IupSeparator(),
-    IupSubmenu("Comments",
-      IupSetAttributes(IupMenu(
-        item_blockcomment,
-        item_blockuncomment,
-        item_linescomment,
-        item_linesuncomment,
-        NULL), "NAME=ITM_COMMENTS")),
-    IupSeparator(),
-    item_autocomplete,
-    IupSeparator(),
-    item_style_config,
-    item_options,
-    NULL);
-
-  IupSetCallback(luaMenu, "OPEN_CB", (Icallback)lua_menu_open_cb);
-
-  return IupSubmenu("&Lua", luaMenu);
-}
-
 static int multitext_map_cb(Ihandle* multitext)
 {
   Ihandle* config = get_config(multitext);
@@ -1951,7 +1051,7 @@ static int multitext_map_cb(Ihandle* multitext)
   IupSetAttribute(multitext, "STYLEFGCOLOR6", "164 0 164");  /* 6-String  */
   IupSetAttribute(multitext, "STYLEFGCOLOR7", "164 0 164");  /* 7-Character  */
   IupSetAttribute(multitext, "STYLEFGCOLOR10", "164 0 0");   /* 10-Operator  */
-                                                             /* 3, 8 and 9 - are not used */
+  /* 3, 8 and 9 - are not used */
   IupSetAttribute(multitext, "STYLEBOLD10", "YES");
 
   IupSetAttribute(multitext, "MARKERHIGHLIGHT", "YES");
@@ -2102,11 +1202,108 @@ static int newtext_cb(Ihandle* ih, Ihandle *multitext)
   return IUP_DEFAULT;
 }
 
+static int tree_globals_map(Ihandle* ih)
+{
+  Ihandle* config = get_config(ih);
+  /* must load also here because we need the tree mapped */
+  load_globals(ih, config);
+  return IUP_NOERROR;
+}
+
+
+/********************************** Main *****************************************/
+
+
+static Ihandle* buildLuaMenu(void)
+{
+  Ihandle *item_autocomplete, *item_style_config, *item_expand, *item_toggle, *item_level,
+    *item_folding, *item_toggle_folding, *luaMenu, *item_options, *item_collapse,
+    *item_blockcomment, *item_blockuncomment, *item_linescomment, *item_linesuncomment;
+
+  item_autocomplete = IupItem("Auto Completion", NULL);
+  IupSetAttribute(item_autocomplete, "NAME", "ITM_AUTOCOMPLETE");
+  IupSetCallback(item_autocomplete, "ACTION", (Icallback)item_autocomplete_action_cb);
+
+  item_style_config = IupItem("Syntax Colors...", NULL);
+  IupSetAttribute(item_style_config, "NAME", "ITM_STYLE");
+  IupSetCallback(item_style_config, "ACTION", (Icallback)item_style_config_action_cb);
+
+  item_folding = IupItem("Folding", NULL);
+  IupSetAttribute(item_folding, "NAME", "ITM_FOLDING");
+  IupSetCallback(item_folding, "ACTION", (Icallback)item_folding_action_cb);
+
+  item_toggle_folding = IupItem("Toggle Fold\tF8", NULL);
+  IupSetAttribute(item_toggle_folding, "NAME", "ITM_TOGGLE_FOLDING");
+  IupSetCallback(item_toggle_folding, "ACTION", (Icallback)item_toggle_folding_action_cb);
+
+  item_collapse = IupItem("Collapse", NULL);
+  IupSetAttribute(item_collapse, "NAME", "ITM_COLLAPSE");
+  IupSetCallback(item_collapse, "ACTION", (Icallback)item_fold_collapse_action_cb);
+
+  item_expand = IupItem("Expand", NULL);
+  IupSetAttribute(item_expand, "NAME", "ITM_EXPAND");
+  IupSetCallback(item_expand, "ACTION", (Icallback)item_fold_expand_action_cb);
+
+  item_toggle = IupItem("Toggle", NULL);
+  IupSetAttribute(item_toggle, "NAME", "ITM_TOGGLE");
+  IupSetCallback(item_toggle, "ACTION", (Icallback)item_fold_toggle_action_cb);
+
+  item_level = IupItem("by Level...", NULL);
+  IupSetAttribute(item_level, "NAME", "ITM_LEVEL");
+  IupSetCallback(item_level, "ACTION", (Icallback)item_fold_level_action_cb);
+
+  item_blockcomment = IupItem("Block Comment", NULL);
+  IupSetCallback(item_blockcomment, "ACTION", (Icallback)item_blockcomment_action_cb);
+
+  item_blockuncomment = IupItem("Block Uncomment", NULL);
+  IupSetCallback(item_blockuncomment, "ACTION", (Icallback)item_blockuncomment_action_cb);
+
+  item_linescomment = IupItem("Lines Comment", NULL);
+  IupSetCallback(item_linescomment, "ACTION", (Icallback)item_linescomment_action_cb);
+
+  item_linesuncomment = IupItem("Lines Uncomment", NULL);
+  IupSetCallback(item_linesuncomment, "ACTION", (Icallback)item_linesuncomment_action_cb);
+
+  item_options = IupItem("Options...", NULL);
+  IupSetCallback(item_options, "ACTION", (Icallback)item_options_action_cb);
+
+  luaMenu = IupMenu(
+    item_folding,
+    item_toggle_folding,
+    IupSubmenu("Fold All",
+      IupSetAttributes(IupMenu(
+        item_collapse,
+        item_expand,
+        item_toggle,
+        item_level,
+        NULL), "NAME=ITM_FOLD_ALL")),
+    IupSeparator(),
+    IupSubmenu("Comments",
+      IupSetAttributes(IupMenu(
+        item_blockcomment,
+        item_blockuncomment,
+        item_linescomment,
+        item_linesuncomment,
+        NULL), "NAME=ITM_COMMENTS")),
+    IupSeparator(),
+    item_autocomplete,
+    IupSeparator(),
+    item_style_config,
+    item_options,
+    NULL);
+
+  iupLuaScripterDebuggerAddMenuItems(luaMenu);
+
+  IupSetCallback(luaMenu, "OPEN_CB", (Icallback)lua_menu_open_cb);
+
+  return IupSubmenu("&Lua", luaMenu);
+}
+
 static int iLuaScripterDlgCreateMethod(Ihandle* ih, void** params)
 {
   lua_State *L;
   Ihandle *menu, *luaMenu;
-  Ihandle *tabDebug, *tabBreaks, *tabWatch, *panelTabs;
+  Ihandle *toolbar, *panelTabs, *multitextTabs;
 
   L = (lua_State*)IupGetGlobal("_IUP_LUA_DEFAULT_STATE");
   IupSetAttribute(ih, "LUASTATE", (char*)L);
@@ -2115,17 +1312,11 @@ static int iLuaScripterDlgCreateMethod(Ihandle* ih, void** params)
   IupSetAttribute(ih, "EXTRAFILTERS", "Lua Files|*.lua|");
 
   /* Additional hot keys */
-  IupSetCallback(ih, "K_F5", (Icallback)item_debug_action_cb);
-  IupSetCallback(ih, "K_cF5", (Icallback)item_run_action_cb);
-  IupSetCallback(ih, "K_sF5", (Icallback)item_stop_action_cb);
-  IupSetCallback(ih, "K_cPAUSE", (Icallback)item_pause_action_cb);
-  IupSetCallback(ih, "K_F10", (Icallback)item_stepover_action_cb);
-  IupSetCallback(ih, "K_F11", (Icallback)item_stepinto_action_cb);
-  IupSetCallback(ih, "K_sF11", (Icallback)item_stepout_action_cb);
-  IupSetCallback(ih, "K_F9", (Icallback)but_togglebreak_cb);
   IupSetCallback(ih, "K_F8", (Icallback)item_toggle_folding_action_cb);
 
-  /* cofiguring the IupScintillaDlg */
+  iupLuaScripterDebuggerAddHotKeys(ih);
+
+  /* configuring the IupScintillaDlg */
   IupSetCallback(ih, "EXIT_CB", (Icallback)exit_cb);
   IupSetCallback(ih, "MARKERCHANGED_CB", (Icallback)marker_changed_cb);
   IupSetCallback(ih, "RESTOREMARKERS_CB", (Icallback)restoremarkers_cb);
@@ -2135,36 +1326,72 @@ static int iLuaScripterDlgCreateMethod(Ihandle* ih, void** params)
   IupSetCallback(ih, "NEWFILENAME_CB", (Icallback)newfilename_cb);
 
   /* Additional toolbar buttons */
-  appendToolbarDebugButtons(ih);
+  toolbar = IupGetChild(IupGetChild(ih, 0), 0);
+  iupLuaScripterDebuggerAddToolbarButtons(toolbar);
 
   luaMenu = buildLuaMenu();
   menu = IupGetAttributeHandle(ih, "MENU");
   IupInsert(menu, IupGetChild(menu, IupGetChildCount(menu) - 1), luaMenu);
 
-  tabBreaks = buildTabBreaks();
-
-  tabDebug = buildTabDebug();
-
-  tabWatch = buildTabWatch();
-
   panelTabs = IupGetDialogChild(ih, "PANEL_TABS");
+  multitextTabs = IupGetDialogChild(ih, "MULTITEXT_TABS");
 
   iuplua_push_name(L, "ConsoleCreate");
   iuplua_pushihandle(L, panelTabs);
   iuplua_call_raw(L, 1, 0);
 
-  IupAppend(panelTabs, tabBreaks);
-  IupAppend(panelTabs, tabDebug);
-  IupAppend(panelTabs, tabWatch);
-
-  IupSetAttribute(panelTabs, "VALUEPOS", "1"); /* show Console by default */
+  iupLuaScripterDebuggerCreateTabs(panelTabs);
 
   iuplua_push_name(L, "DebuggerInit");
-  iuplua_pushihandle(L, ih);
-  iuplua_call_raw(L, 1, 0);
+  iuplua_pushihandle(L, panelTabs);
+  iuplua_pushihandle(L, multitextTabs);
+  iuplua_call_raw(L, 2, 0);
+
+  {
+    Ihandle* treeGlobals = IupGetDialogChild(ih, "DEBUG_TREE_GLOBAL");
+    IupSetCallback(treeGlobals, "MAP_CB", (Icallback)tree_globals_map);
+  }
 
   (void)params;
   return IUP_NOERROR;
+}
+
+static int iLuaScripterDebuggerCreate(lua_State *L)
+{
+  Ihandle* panelTabs = iuplua_checkihandle(L, 1);
+  Ihandle* multitextTabs = iuplua_checkihandle(L, 2);
+
+  IupSetAttribute(IupGetDialog(panelTabs), "LUASTATE", (char*)L);
+
+  iupLuaScripterDebuggerCreateTabs(panelTabs);
+
+  iuplua_push_name(L, "DebuggerInit");
+  iuplua_pushihandle(L, panelTabs);
+  iuplua_pushihandle(L, multitextTabs);
+  iuplua_call_raw(L, 2, 0);
+
+  return 0;
+}
+
+static int iLuaScripterDebuggerAddToolbarButtons(lua_State *L)
+{
+  Ihandle* toolbar = iuplua_checkihandle(L, 1);
+  iupLuaScripterDebuggerAddToolbarButtons(toolbar);
+  return 0;
+}
+
+static int iLuaScripterDebuggerAddMenuItems(lua_State *L)
+{
+  Ihandle* lua_menu = iuplua_checkihandle(L, 1);
+  iupLuaScripterDebuggerAddMenuItems(lua_menu);
+  return 0;
+}
+
+static int iLuaScripterDebuggerAddHotKeys(lua_State *L)
+{
+  Ihandle* ih = iuplua_checkihandle(L, 1);
+  iupLuaScripterDebuggerAddHotKeys(ih);
+  return 0;
 }
 
 static Iclass* iupLuaScripterDlgNewClass(void)
@@ -2219,6 +1446,11 @@ void IupLuaScripterDlgOpen(lua_State *L)
     iuplua_dofile(L, "debugger.lua");
 #endif
 #endif
+
+    iuplua_register(L, iLuaScripterDebuggerCreate, "DebuggerCreate");
+    iuplua_register(L, iLuaScripterDebuggerAddToolbarButtons, "DebuggerAddToolbarButtons");
+    iuplua_register(L, iLuaScripterDebuggerAddMenuItems, "DebuggerAddMenuItems");
+    iuplua_register(L, iLuaScripterDebuggerAddHotKeys, "DebuggerAddHotKeys");
 
     iupRegisterClass(iupLuaScripterDlgNewClass());
     IupSetGlobal("_IUP_LUASCRIPTERDLG_OPEN", "1");
