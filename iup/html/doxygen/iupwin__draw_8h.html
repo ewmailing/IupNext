@@ -41,8 +41,10 @@ typedef struct _iupwinBitmapDC&nbsp;</td><td class="memItemRight" valign="bottom
 Functions</h3></td></tr>
 <tr><td class="memItemLeft" align="right" valign="top"><a class="anchor" id="a32b8b36d6b72facb216dcb18558e9406"></a><!-- doxytag: member="iupwin_draw.h::iupwinDrawInit" ref="a32b8b36d6b72facb216dcb18558e9406" args="(void)" -->
 void&nbsp;</td><td class="memItemRight" valign="bottom"><b>iupwinDrawInit</b> (void)</td></tr>
-<tr><td class="memItemLeft" align="right" valign="top"><a class="anchor" id="aacc12f2e8cc22e67b69732f7cfd74dbe"></a><!-- doxytag: member="iupwin_draw.h::iupwinDrawBitmap" ref="aacc12f2e8cc22e67b69732f7cfd74dbe" args="(HDC hDC, HBITMAP hBitmap, HBITMAP hMask, int x, int y, int width, int height, int bpp)" -->
-void&nbsp;</td><td class="memItemRight" valign="bottom"><b>iupwinDrawBitmap</b> (HDC hDC, HBITMAP hBitmap, HBITMAP hMask, int x, int y, int width, int height, int bpp)</td></tr>
+<tr><td class="memItemLeft" align="right" valign="top"><a class="anchor" id="a2198be0525755ea2294080d02966b768"></a><!-- doxytag: member="iupwin_draw.h::iupwinDrawFinish" ref="a2198be0525755ea2294080d02966b768" args="(void)" -->
+void&nbsp;</td><td class="memItemRight" valign="bottom"><b>iupwinDrawFinish</b> (void)</td></tr>
+<tr><td class="memItemLeft" align="right" valign="top"><a class="anchor" id="a227bcfc4c3a716ae83f67490fce133a3"></a><!-- doxytag: member="iupwin_draw.h::iupwinDrawBitmap" ref="a227bcfc4c3a716ae83f67490fce133a3" args="(HDC hDC, HBITMAP hBitmap, int x, int y, int w, int h, int img_w, int img_h, int bpp)" -->
+void&nbsp;</td><td class="memItemRight" valign="bottom"><b>iupwinDrawBitmap</b> (HDC hDC, HBITMAP hBitmap, int x, int y, int w, int h, int img_w, int img_h, int bpp)</td></tr>
 <tr><td class="memItemLeft" align="right" valign="top"><a class="anchor" id="af38e91b5e27214df1a590b8ad04e0d61"></a><!-- doxytag: member="iupwin_draw.h::iupwinDrawText" ref="af38e91b5e27214df1a590b8ad04e0d61" args="(HDC hDC, const char *text, int x, int y, int width, int height, HFONT hFont, COLORREF fgcolor, int style)" -->
 void&nbsp;</td><td class="memItemRight" valign="bottom"><b>iupwinDrawText</b> (HDC hDC, const char *text, int x, int y, int width, int height, HFONT hFont, COLORREF fgcolor, int style)</td></tr>
 <tr><td class="memItemLeft" align="right" valign="top"><a class="anchor" id="a54fbd539f80aab4686fd160e8f19a4af"></a><!-- doxytag: member="iupwin_draw.h::iupwinDrawParentBackground" ref="a54fbd539f80aab4686fd160e8f19a4af" args="(Ihandle *ih, HDC hDC, RECT *rect)" -->
@@ -51,6 +53,8 @@ void&nbsp;</td><td class="memItemRight" valign="bottom"><b>iupwinDrawParentBackg
 void&nbsp;</td><td class="memItemRight" valign="bottom"><b>iupwinDrawButtonBorder</b> (HWND hWnd, HDC hDC, RECT *rect, UINT itemState)</td></tr>
 <tr><td class="memItemLeft" align="right" valign="top"><a class="anchor" id="a371230ee90411be4c2502308e87843dc"></a><!-- doxytag: member="iupwin_draw.h::iupwinDraw3StateButton" ref="a371230ee90411be4c2502308e87843dc" args="(HWND hWnd, HDC hDC, RECT *rect)" -->
 void&nbsp;</td><td class="memItemRight" valign="bottom"><b>iupwinDraw3StateButton</b> (HWND hWnd, HDC hDC, RECT *rect)</td></tr>
+<tr><td class="memItemLeft" align="right" valign="top"><a class="anchor" id="a27fb008fe0e7d9f377dca9a9fb64845c"></a><!-- doxytag: member="iupwin_draw.h::iupwinDrawThemeInit" ref="a27fb008fe0e7d9f377dca9a9fb64845c" args="(void)" -->
+void&nbsp;</td><td class="memItemRight" valign="bottom"><b>iupwinDrawThemeInit</b> (void)</td></tr>
 <tr><td class="memItemLeft" align="right" valign="top"><a class="anchor" id="ac528084edac10f302c383dce3fd76196"></a><!-- doxytag: member="iupwin_draw.h::iupwinDrawThemeFrameBorder" ref="ac528084edac10f302c383dce3fd76196" args="(HWND hWnd, HDC hDC, RECT *rect, UINT itemState)" -->
 void&nbsp;</td><td class="memItemRight" valign="bottom"><b>iupwinDrawThemeFrameBorder</b> (HWND hWnd, HDC hDC, RECT *rect, UINT itemState)</td></tr>
 <tr><td class="memItemLeft" align="right" valign="top"><a class="anchor" id="af4d82a3427699f7c91bb0ac9c18dc260"></a><!-- doxytag: member="iupwin_draw.h::iupwinDrawGetThemeTabsBgColor" ref="af4d82a3427699f7c91bb0ac9c18dc260" args="(HWND hWnd, COLORREF *color)" -->
@@ -71,7 +75,7 @@ int&nbsp;</td><td class="memItemRight" valign="bottom"><b>iupwinCustomDrawToDraw
 <hr/><a name="_details"></a><h3>Detailed Description</h3>
 <p>See Copyright Notice in "iup.h" </p>
 </div>
-<hr class="footer"/><address class="footer"><small>Generated on Mon Jan 22 2018 11:52:53 for SDK by&nbsp;
+<hr class="footer"/><address class="footer"><small>Generated on Sat May 26 2018 18:26:47 for SDK by&nbsp;
 <a href="http://www.doxygen.org/index.html">
 <img class="footer" src="doxygen.png" alt="doxygen"/></a> 1.7.1 </small></address>
 </body>

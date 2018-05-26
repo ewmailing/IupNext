@@ -34,7 +34,6 @@ Functions</h3></td></tr>
 <tr><td class="memItemLeft" align="right" valign="top">void&nbsp;</td><td class="memItemRight" valign="bottom"><a class="el" href="group__drvinfo.html#gae1beddf447d634adaec8b665d92ab215">iupdrvGetFullSize</a> (int *width, int *height)</td></tr>
 <tr><td class="memItemLeft" align="right" valign="top">void&nbsp;</td><td class="memItemRight" valign="bottom"><a class="el" href="group__drvinfo.html#ga7da5af77b71162a1891a6fec3b2bb90d">iupdrvGetScreenSize</a> (int *width, int *height)</td></tr>
 <tr><td class="memItemLeft" align="right" valign="top">void&nbsp;</td><td class="memItemRight" valign="bottom"><a class="el" href="group__drvinfo.html#ga9999a0dff0f3d41e5821f7c3d38d080b">iupdrvAddScreenOffset</a> (int *x, int *y, int add)</td></tr>
-<tr><td class="memItemLeft" align="right" valign="top">int&nbsp;</td><td class="memItemRight" valign="bottom"><a class="el" href="group__drvinfo.html#ga1a1c154aeea6f4cab3479be88fa988ea">iupdrvCheckMainScreen</a> (int *width, int *height)</td></tr>
 <tr><td class="memItemLeft" align="right" valign="top">int&nbsp;</td><td class="memItemRight" valign="bottom"><a class="el" href="group__drvinfo.html#ga0d8f21db0ddd7342b568e87242db8f58">iupdrvGetScreenDepth</a> (void)</td></tr>
 <tr><td class="memItemLeft" align="right" valign="top">double&nbsp;</td><td class="memItemRight" valign="bottom"><a class="el" href="group__drvinfo.html#ga798bcea338937e3b7cb80a875fa002c1">iupdrvGetScreenDpi</a> (void)</td></tr>
 <tr><td class="memItemLeft" align="right" valign="top">char *&nbsp;</td><td class="memItemRight" valign="bottom"><a class="el" href="group__drvinfo.html#ga29237eec11b8c39529bfd81b884cea88">iupdrvGetSystemVersion</a> (void)</td></tr>
@@ -77,7 +76,7 @@ Functions</h3></td></tr>
       </table>
 </div>
 <div class="memdoc">
-<p>Retrieve the main desktop full size. </p>
+<p>Retrieve the main desktop full size (size of the main monitor). </p>
 
 </div>
 </div>
@@ -105,7 +104,7 @@ Functions</h3></td></tr>
       </table>
 </div>
 <div class="memdoc">
-<p>Retrieve the main desktop available size. </p>
+<p>Retrieve the main desktop available size (full size less taskbar/menubar space). </p>
 
 </div>
 </div>
@@ -140,34 +139,6 @@ Functions</h3></td></tr>
 </div>
 <div class="memdoc">
 <p>Adds the main desktop offset because of a taskbar/menubar positioning. Only useful in Windows. In X-Windows the position of the origin 0,0 is already adjusted to be after the taskbar/menubar. </p>
-
-</div>
-</div>
-<a class="anchor" id="ga1a1c154aeea6f4cab3479be88fa988ea"></a><!-- doxytag: member="iup_drvinfo.h::iupdrvCheckMainScreen" ref="ga1a1c154aeea6f4cab3479be88fa988ea" args="(int *width, int *height)" -->
-<div class="memitem">
-<div class="memproto">
-      <table class="memname">
-        <tr>
-          <td class="memname">int iupdrvCheckMainScreen </td>
-          <td>(</td>
-          <td class="paramtype">int *&nbsp;</td>
-          <td class="paramname"> <em>width</em>, </td>
-        </tr>
-        <tr>
-          <td class="paramkey"></td>
-          <td></td>
-          <td class="paramtype">int *&nbsp;</td>
-          <td class="paramname"> <em>height</em></td><td>&nbsp;</td>
-        </tr>
-        <tr>
-          <td></td>
-          <td>)</td>
-          <td></td><td></td><td></td>
-        </tr>
-      </table>
-</div>
-<div class="memdoc">
-<p>Retrieve the main desktop size when there are multiple monitors. Useful only when in GTK. </p>
 
 </div>
 </div>
@@ -409,7 +380,7 @@ Functions</h3></td></tr>
 </div>
 </div>
 </div>
-<hr class="footer"/><address class="footer"><small>Generated on Mon Jan 22 2018 11:52:53 for SDK by&nbsp;
+<hr class="footer"/><address class="footer"><small>Generated on Sat May 26 2018 18:26:47 for SDK by&nbsp;
 <a href="http://www.doxygen.org/index.html">
 <img class="footer" src="doxygen.png" alt="doxygen"/></a> 1.7.1 </small></address>
 </body>

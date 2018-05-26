@@ -19,7 +19,7 @@
 </div>
 <div class="contents">
 
-<p>Image Resource Private Declarations.  
+<p>Image Resources (not exported API).  
 <a href="#_details">More...</a></p>
 <table class="memberdecls">
 <tr><td colspan="2"><h3><a name="define-members"></a>
@@ -40,8 +40,6 @@ Enumerations</h3></td></tr>
  }</td></tr>
 <tr><td colspan="2"><h3><a name="func-members"></a>
 Functions</h3></td></tr>
-<tr><td class="memItemLeft" align="right" valign="top"><a class="anchor" id="a5fec1293b099f36330c895aef0513fbf"></a><!-- doxytag: member="iup_image.h::iupdrvImageCreateMask" ref="a5fec1293b099f36330c895aef0513fbf" args="(Ihandle *ih)" -->
-void *&nbsp;</td><td class="memItemRight" valign="bottom"><b>iupdrvImageCreateMask</b> (Ihandle *ih)</td></tr>
 <tr><td class="memItemLeft" align="right" valign="top"><a class="anchor" id="a273913d62e78cfc3e573d855506aa34d"></a><!-- doxytag: member="iup_image.h::iupdrvImageCreateIcon" ref="a273913d62e78cfc3e573d855506aa34d" args="(Ihandle *ih)" -->
 void *&nbsp;</td><td class="memItemRight" valign="bottom"><b>iupdrvImageCreateIcon</b> (Ihandle *ih)</td></tr>
 <tr><td class="memItemLeft" align="right" valign="top"><a class="anchor" id="a2b2255ad940d8388cb52640ec49cd3b7"></a><!-- doxytag: member="iup_image.h::iupdrvImageCreateCursor" ref="a2b2255ad940d8388cb52640ec49cd3b7" args="(Ihandle *ih)" -->
@@ -56,20 +54,16 @@ void&nbsp;</td><td class="memItemRight" valign="bottom"><b>iupdrvImageDestroy</b
 int&nbsp;</td><td class="memItemRight" valign="bottom"><b>iupdrvImageGetInfo</b> (void *handle, int *w, int *h, int *bpp)</td></tr>
 <tr><td class="memItemLeft" align="right" valign="top"><a class="anchor" id="a8ca7c880a37fb0557de3d2161ebb9998"></a><!-- doxytag: member="iup_image.h::iupdrvImageGetData" ref="a8ca7c880a37fb0557de3d2161ebb9998" args="(void *handle, unsigned char *imgdata)" -->
 void&nbsp;</td><td class="memItemRight" valign="bottom"><b>iupdrvImageGetData</b> (void *handle, unsigned char *imgdata)</td></tr>
-<tr><td class="memItemLeft" align="right" valign="top"><a class="anchor" id="a48fd9c212a8bf2ecd45edfebc8e88a51"></a><!-- doxytag: member="iup_image.h::iupImageGetMask" ref="a48fd9c212a8bf2ecd45edfebc8e88a51" args="(const char *name)" -->
-void *&nbsp;</td><td class="memItemRight" valign="bottom"><b>iupImageGetMask</b> (const char *name)</td></tr>
 <tr><td class="memItemLeft" align="right" valign="top"><a class="anchor" id="a6523cb1ae9fce9bb8b0b2e9f3d926108"></a><!-- doxytag: member="iup_image.h::iupImageGetIcon" ref="a6523cb1ae9fce9bb8b0b2e9f3d926108" args="(const char *name)" -->
 void *&nbsp;</td><td class="memItemRight" valign="bottom"><b>iupImageGetIcon</b> (const char *name)</td></tr>
 <tr><td class="memItemLeft" align="right" valign="top"><a class="anchor" id="ac06d3314e5b5f2e67ba0f7147792dfb5"></a><!-- doxytag: member="iup_image.h::iupImageGetCursor" ref="ac06d3314e5b5f2e67ba0f7147792dfb5" args="(const char *name)" -->
 void *&nbsp;</td><td class="memItemRight" valign="bottom"><b>iupImageGetCursor</b> (const char *name)</td></tr>
-<tr><td class="memItemLeft" align="right" valign="top"><a class="anchor" id="a08baa59136ae3bb71c0d70d38e8ea685"></a><!-- doxytag: member="iup_image.h::iupImageGetImage" ref="a08baa59136ae3bb71c0d70d38e8ea685" args="(const char *name, Ihandle *parent, int make_inactive)" -->
-void *&nbsp;</td><td class="memItemRight" valign="bottom"><b>iupImageGetImage</b> (const char *name, Ihandle *parent, int make_inactive)</td></tr>
+<tr><td class="memItemLeft" align="right" valign="top"><a class="anchor" id="a65d7e7e7ae5603d471589d691cd8d82a"></a><!-- doxytag: member="iup_image.h::iupImageGetImage" ref="a65d7e7e7ae5603d471589d691cd8d82a" args="(const char *name, Ihandle *parent, int make_inactive, const char *bgcolor)" -->
+void *&nbsp;</td><td class="memItemRight" valign="bottom"><b>iupImageGetImage</b> (const char *name, Ihandle *parent, int make_inactive, const char *bgcolor)</td></tr>
 <tr><td class="memItemLeft" align="right" valign="top"><a class="anchor" id="a07960072e86fd0ccb7333aea93f648cb"></a><!-- doxytag: member="iup_image.h::iupImageGetInfo" ref="a07960072e86fd0ccb7333aea93f648cb" args="(const char *name, int *w, int *h, int *bpp)" -->
 void&nbsp;</td><td class="memItemRight" valign="bottom"><b>iupImageGetInfo</b> (const char *name, int *w, int *h, int *bpp)</td></tr>
-<tr><td class="memItemLeft" align="right" valign="top"><a class="anchor" id="af8ebbdfa0ca2338fa76010fc1c2c545f"></a><!-- doxytag: member="iup_image.h::iupImageUpdateParent" ref="af8ebbdfa0ca2338fa76010fc1c2c545f" args="(Ihandle *parent)" -->
-void&nbsp;</td><td class="memItemRight" valign="bottom"><b>iupImageUpdateParent</b> (Ihandle *parent)</td></tr>
-<tr><td class="memItemLeft" align="right" valign="top"><a class="anchor" id="ad87e1e0b6fcc4773193d77a0eefd49bf"></a><!-- doxytag: member="iup_image.h::iupImageClearFromCache" ref="ad87e1e0b6fcc4773193d77a0eefd49bf" args="(Ihandle *ih, void *handle)" -->
-void&nbsp;</td><td class="memItemRight" valign="bottom"><b>iupImageClearFromCache</b> (Ihandle *ih, void *handle)</td></tr>
+<tr><td class="memItemLeft" align="right" valign="top"><a class="anchor" id="a4ab59874ad2ddb367aa605c621a56056"></a><!-- doxytag: member="iup_image.h::iupImageRemoveFromCache" ref="a4ab59874ad2ddb367aa605c621a56056" args="(Ihandle *ih, void *handle)" -->
+void&nbsp;</td><td class="memItemRight" valign="bottom"><b>iupImageRemoveFromCache</b> (Ihandle *ih, void *handle)</td></tr>
 <tr><td class="memItemLeft" align="right" valign="top"><a class="anchor" id="aab40babb9e1235695e5c0c0d7dd7dc61"></a><!-- doxytag: member="iup_image.h::iupImageGetHandle" ref="aab40babb9e1235695e5c0c0d7dd7dc61" args="(const char *name)" -->
 Ihandle *&nbsp;</td><td class="memItemRight" valign="bottom"><b>iupImageGetHandle</b> (const char *name)</td></tr>
 <tr><td class="memItemLeft" align="right" valign="top"><a class="anchor" id="a3e60231979f3bc68bda89a19df9904bb"></a><!-- doxytag: member="iup_image.h::iupImageInitColorTable" ref="a3e60231979f3bc68bda89a19df9904bb" args="(Ihandle *ih, iupColor *colors, int *colors_count)" -->
@@ -86,21 +80,29 @@ void *&nbsp;</td><td class="memItemRight" valign="bottom"><b>iupdrvImageCreateIm
 int&nbsp;</td><td class="memItemRight" valign="bottom"><b>iupdrvImageGetRawInfo</b> (void *handle, int *w, int *h, int *bpp, iupColor *colors, int *colors_count)</td></tr>
 <tr><td class="memItemLeft" align="right" valign="top"><a class="anchor" id="ac91dd1f84e9cbde8f85aad2bf58ce1ef"></a><!-- doxytag: member="iup_image.h::iupdrvImageGetRawData" ref="ac91dd1f84e9cbde8f85aad2bf58ce1ef" args="(void *handle, unsigned char *imgdata)" -->
 void&nbsp;</td><td class="memItemRight" valign="bottom"><b>iupdrvImageGetRawData</b> (void *handle, unsigned char *imgdata)</td></tr>
+<tr><td class="memItemLeft" align="right" valign="top"><a class="anchor" id="ae143d21aaef29448d976688685f11633"></a><!-- doxytag: member="iup_image.h::iupImageSetHandleFromLoaded" ref="ae143d21aaef29448d976688685f11633" args="(const char *name, void *handle)" -->
+void&nbsp;</td><td class="memItemRight" valign="bottom"><b>iupImageSetHandleFromLoaded</b> (const char *name, void *handle)</td></tr>
+<tr><td class="memItemLeft" align="right" valign="top"><a class="anchor" id="ad33e626d7b2d1147bbb6acdf1a640cc7"></a><!-- doxytag: member="iup_image.h::iupImageGetImageFromName" ref="ad33e626d7b2d1147bbb6acdf1a640cc7" args="(const char *name)" -->
+Ihandle *&nbsp;</td><td class="memItemRight" valign="bottom"><b>iupImageGetImageFromName</b> (const char *name)</td></tr>
 <tr><td class="memItemLeft" align="right" valign="top"><a class="anchor" id="a43e8131b268a3d78420c9f80445d51f5"></a><!-- doxytag: member="iup_image.h::iupImageStockInit" ref="a43e8131b268a3d78420c9f80445d51f5" args="(void)" -->
 void&nbsp;</td><td class="memItemRight" valign="bottom"><b>iupImageStockInit</b> (void)</td></tr>
 <tr><td class="memItemLeft" align="right" valign="top"><a class="anchor" id="ae29e3f53fc1ef77308c8e3c554eaf297"></a><!-- doxytag: member="iup_image.h::iupImageStockFinish" ref="ae29e3f53fc1ef77308c8e3c554eaf297" args="(void)" -->
 void&nbsp;</td><td class="memItemRight" valign="bottom"><b>iupImageStockFinish</b> (void)</td></tr>
 <tr><td class="memItemLeft" align="right" valign="top"><a class="anchor" id="a4811c65f37ef279bc44970f158470ba8"></a><!-- doxytag: member="iup_image.h::iupImageStockSet" ref="a4811c65f37ef279bc44970f158470ba8" args="(const char *name, iupImageStockCreateFunc func, const char *native_name)" -->
 void&nbsp;</td><td class="memItemRight" valign="bottom"><b>iupImageStockSet</b> (const char *name, iupImageStockCreateFunc func, const char *native_name)</td></tr>
+<tr><td class="memItemLeft" align="right" valign="top"><a class="anchor" id="a0d467c1c18e83e50e78015de15016d80"></a><!-- doxytag: member="iup_image.h::iupImageStockSetNoResize" ref="a0d467c1c18e83e50e78015de15016d80" args="(const char *name, iupImageStockCreateFunc func, const char *native_name)" -->
+void&nbsp;</td><td class="memItemRight" valign="bottom"><b>iupImageStockSetNoResize</b> (const char *name, iupImageStockCreateFunc func, const char *native_name)</td></tr>
 <tr><td class="memItemLeft" align="right" valign="top"><a class="anchor" id="a5f78d004bfcce472aceab602028d69fc"></a><!-- doxytag: member="iup_image.h::iupImageStockLoadAll" ref="a5f78d004bfcce472aceab602028d69fc" args="(void)" -->
 void&nbsp;</td><td class="memItemRight" valign="bottom"><b>iupImageStockLoadAll</b> (void)</td></tr>
 <tr><td class="memItemLeft" align="right" valign="top"><a class="anchor" id="a00e8fbd93f2b4e934a5565f71bbb8476"></a><!-- doxytag: member="iup_image.h::iupImageStockGetSize" ref="a00e8fbd93f2b4e934a5565f71bbb8476" args="(void)" -->
 int&nbsp;</td><td class="memItemRight" valign="bottom"><b>iupImageStockGetSize</b> (void)</td></tr>
+<tr><td class="memItemLeft" align="right" valign="top"><a class="anchor" id="aa28d96d1d03d93701c4d8f71daf0b0ed"></a><!-- doxytag: member="iup_image.h::iupImageStockGet" ref="aa28d96d1d03d93701c4d8f71daf0b0ed" args="(const char *name, Ihandle **ih, const char **native_name)" -->
+void&nbsp;</td><td class="memItemRight" valign="bottom"><b>iupImageStockGet</b> (const char *name, Ihandle **ih, const char **native_name)</td></tr>
 </table>
 <hr/><a name="_details"></a><h3>Detailed Description</h3>
 <p>See Copyright Notice in "iup.h" </p>
 </div>
-<hr class="footer"/><address class="footer"><small>Generated on Mon Jan 22 2018 11:52:53 for SDK by&nbsp;
+<hr class="footer"/><address class="footer"><small>Generated on Sat May 26 2018 18:26:47 for SDK by&nbsp;
 <a href="http://www.doxygen.org/index.html">
 <img class="footer" src="doxygen.png" alt="doxygen"/></a> 1.7.1 </small></address>
 </body>
