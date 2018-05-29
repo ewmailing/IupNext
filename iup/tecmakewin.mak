@@ -26,8 +26,8 @@ TECMAKE  = $(TECMAKE_HOME)/tecmakewin.mak
 # If tecmake.bat is not used,
 # then at least define main system variables.
 
-WIN32UNAMES = vc15 vc14 vc12 vc11 vc10 vc9 vc8 vc7 vc6 owc1 bc55 bc56 bc6 gcc3 gcc4 mingw3 mingw4 dllw4 dllg4 dll dll7 dll8 dll9 dll10 dll11 dll12 dll14 dll15
-WIN64UNAMES = vc15_64 vc14_64 vc12_64 vc11_64 vc10_64 vc9_64 vc8_64 dll8_64 dll9_64 dll10_64 dll11_64 dll12_64 dll14_64 dll15_64 gcc4_64 mingw4_64 dllw4_64 dllg4_64
+WIN32UNAMES = vc15 vc14 vc12 vc11 vc10 vc9 vc8 vc7 vc6 owc1 bc55 bc56 bc6 gcc3 gcc4 mingw3 mingw4 mingw6 dllw4 dllw6 dllg4 dll dll7 dll8 dll9 dll10 dll11 dll12 dll14 dll15
+WIN64UNAMES = vc15_64 vc14_64 vc12_64 vc11_64 vc10_64 vc9_64 vc8_64 dll8_64 dll9_64 dll10_64 dll11_64 dll12_64 dll14_64 dll15_64 gcc4_64 mingw4_64 dllw4_64 mingw6_64 dllw6_64 dllg4_64
 
 ifdef TEC_UNAME
   ifneq ($(findstring $(TEC_UNAME), $(WIN32UNAMES)), )
@@ -350,6 +350,8 @@ BC6  ?= x:/lng/bc6
 MINGW3 ?= x:/lng/mingw3
 MINGW4 ?= x:/lng/mingw4
 MINGW4_64 ?= x:/lng/mingw4_64
+MINGW6 ?= x:/lng/mingw6
+MINGW6_64 ?= x:/lng/mingw6_64
 # The default location is in the PATH
 #GCC3 ?= x:/lng/gcc3
 #GCC4 ?= x:/lng/gcc4
@@ -919,7 +921,15 @@ endif
 
 ifeq "$(TEC_UNAME)" "mingw4_64"
   COMPILER = $(MINGW4_64)
-#  OLD_OPENGL = Yes
+  BUILD64 = Yes
+endif
+
+ifeq "$(TEC_UNAME)" "mingw6"
+  COMPILER = $(MINGW6)
+endif
+
+ifeq "$(TEC_UNAME)" "mingw6_64"
+  COMPILER = $(MINGW6_64)
   BUILD64 = Yes
 endif
 
@@ -937,7 +947,17 @@ endif
 ifeq "$(TEC_UNAME)" "dllw4_64"
   COMPILER = $(MINGW4_64)
   TEC_CC = gcc
-#  OLD_OPENGL = Yes
+  BUILD64 = Yes
+endif
+
+ifeq "$(TEC_UNAME)" "dllw6"
+  COMPILER = $(MINGW6)
+  TEC_CC = gcc
+endif
+
+ifeq "$(TEC_UNAME)" "dllw6_64"
+  COMPILER = $(MINGW6_64)
+  TEC_CC = gcc
   BUILD64 = Yes
 endif
 
@@ -950,6 +970,9 @@ endif
 ifeq "$(TEC_CC)" "gcc"
   WIN_OTHER = YES
   ifneq ($(findstring w4, $(TEC_UNAME)), )
+    WIN_OTHER :=
+  endif
+  ifneq ($(findstring w6, $(TEC_UNAME)), )
     WIN_OTHER :=
   endif
   ifdef BUILD64
