@@ -68,9 +68,9 @@ dlg = iup.dialog{iup.vbox{lst_flight, txt_startDate, txt_returnDate, btn_book; g
 function btn_book:action()
   local flightType = lst_flight.value
   if lst_flight.value == "1" then
-    iup.Message("Atention!", "You have booked a one-way flight on "..txt_startDate.value..".")
+    iup.Message("Attention!", "You have booked a one-way flight on "..txt_startDate.value..".")
   else
-    iup.Message("Atention!", "You have booked a return flight on "..txt_startDate.value..
+    iup.Message("Attention!", "You have booked a return flight on "..txt_startDate.value..
                             " and "..txt_returnDate.value..".")
  end
 end
