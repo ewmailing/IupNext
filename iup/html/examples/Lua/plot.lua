@@ -1,6 +1,7 @@
 
 require("iuplua")
 require("iuplua_plot")
+require("cdlua")
 
 plot = iup.plot{
 --    TITLE = "Plot Test",
