@@ -1505,7 +1505,7 @@ static int winDialogSetOpacityImageAttrib(Ihandle *ih, const char *value)
     UpdateLayeredWindow(ih->handle, hDC, NULL, &size, hMemDC, &ptSrc, RGB(0, 0, 0), &blend, ULW_ALPHA);
 
     SelectObject(hMemDC, oldBitmap);
-    DeleteDC(hMemDC);
+    DeleteDC(hMemDC);  /* to match CreateCompatibleDC */
     ReleaseDC(NULL, hDC);
 
     return 1;

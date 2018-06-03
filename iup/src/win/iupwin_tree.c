@@ -3141,7 +3141,7 @@ static int winTreeMapMethod(Ihandle* ih)
       SelectObject(hBitmapDC, hOldBitmap);
       ImageList_Add(image_list, hBitmap, NULL);
 
-      DeleteDC(hBitmapDC);
+      DeleteDC(hBitmapDC);  /* to match CreateCompatibleDC */
       ReleaseDC(ih->handle, hScreenDC);
       DeleteObject(hBitmap);
     }

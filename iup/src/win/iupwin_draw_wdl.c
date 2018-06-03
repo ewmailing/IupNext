@@ -118,7 +118,7 @@ IdrawCanvas* iupdrvDrawCreateCanvas(Ihandle* ih)
 void iupdrvDrawKillCanvas(IdrawCanvas* dc)
 {
   if (dc->hDC)
-    DeleteDC(dc->hDC);
+    ReleaseDC(dc->hWnd, dc->hDC);  /* to match GetDC */
 
   wdDestroyCanvas(dc->hCanvas);
   free(dc);

@@ -217,7 +217,7 @@ int iupdrvScintillaPrintAttrib(Ihandle* ih, const char* value)
 
   if (StartDoc(hdc, &di) < 0) 
   {
-    DeleteDC(hdc);
+    DeleteDC(hdc);  /* Use DeleteDC for printer */
     if (pdlg.hDevMode)
       GlobalFree(pdlg.hDevMode);
     if (pdlg.hDevNames)
@@ -291,7 +291,7 @@ int iupdrvScintillaPrintAttrib(Ihandle* ih, const char* value)
   IupScintillaSendMessage(ih, SCI_FORMATRANGE, FALSE, 0);
 
   EndDoc(hdc);
-  DeleteDC(hdc);
+  DeleteDC(hdc);  /* Use DeleteDC for printer */
 
   if (pdlg.hDevMode)
     GlobalFree(pdlg.hDevMode);

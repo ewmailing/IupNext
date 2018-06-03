@@ -84,9 +84,9 @@ void iupdrvDrawKillCanvas(IdrawCanvas* dc)
 {
   SelectObject(dc->hBitmapDC, dc->hOldBitmap);
   DeleteObject(dc->hBitmap);
-  DeleteDC(dc->hBitmapDC);
+  DeleteDC(dc->hBitmapDC);  /* to match CreateCompatibleDC */
   if (dc->release_dc)
-    DeleteDC(dc->hDC);
+    ReleaseDC(dc->hWnd, dc->hDC);  /* to match GetDC */
 
   free(dc);
 }
@@ -107,7 +107,7 @@ void iupdrvDrawUpdateSize(IdrawCanvas* dc)
 
     SelectObject(dc->hBitmapDC, dc->hOldBitmap);
     DeleteObject(dc->hBitmap);
-    DeleteDC(dc->hBitmapDC);
+    DeleteDC(dc->hBitmapDC);  /* to match CreateCompatibleDC */
 
     dc->hBitmap = CreateCompatibleBitmap(dc->hDC, dc->w, dc->h);
     dc->hBitmapDC = CreateCompatibleDC(dc->hDC);

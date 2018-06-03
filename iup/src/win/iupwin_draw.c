@@ -286,7 +286,7 @@ void iupwinDrawBitmap(HDC hDC, HBITMAP hBitmap, int x, int y, int w, int h, int 
   }
 
   SelectObject(hMemDC, oldBitmap);
-  DeleteDC(hMemDC);
+  DeleteDC(hMemDC);  /* to match CreateCompatibleDC */
 }
 
 static int winDrawGetStateId(int itemState)
@@ -351,7 +351,7 @@ void iupwinDrawDestroyBitmapDC(iupwinBitmapDC *bmpDC)
   BitBlt(bmpDC->hDC, bmpDC->x, bmpDC->y, bmpDC->w, bmpDC->h, bmpDC->hBitmapDC, 0, 0, SRCCOPY);
   SelectObject(bmpDC->hBitmapDC, bmpDC->hOldBitmap);
   DeleteObject(bmpDC->hBitmap);
-  DeleteDC(bmpDC->hBitmapDC);
+  DeleteDC(bmpDC->hBitmapDC);  /* to match CreateCompatibleDC */
 }
 
 int iupwinCustomDrawToDrawItem(Ihandle* ih, NMHDR* msg_info, int *result, IFdrawItem drawitem_cb)
