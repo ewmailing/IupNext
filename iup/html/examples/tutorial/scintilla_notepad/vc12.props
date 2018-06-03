@@ -2,11 +2,11 @@
 <Project ToolsVersion="4.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
   <ImportGroup Label="PropertySheets" />
   <PropertyGroup Label="UserMacros">
-    <IUP>d:\tecgraf\iup</IUP>
-    <CD>d:\tecgraf\cd</CD>
-    <IM>d:\tecgraf\im</IM>
-    <FREETYPE>d:\tecgraf\freetype</FREETYPE>
-    <ZLIB>d:\tecgraf\zlib</ZLIB>
+    <IUP>\tecgraf\iup</IUP>
+    <CD>\tecgraf\cd</CD>
+    <IM>\tecgraf\im</IM>
+    <FREETYPE>\tecgraf\freetype</FREETYPE>
+    <ZLIB>\tecgraf\zlib</ZLIB>
   </PropertyGroup>
   <PropertyGroup>
     <_PropertySheetDisplayName>Tecgraf vc12 Properties</_PropertySheetDisplayName>
