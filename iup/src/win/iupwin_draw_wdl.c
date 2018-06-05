@@ -329,10 +329,20 @@ void iupdrvDrawSetClipRect(IdrawCanvas* dc, int x1, int y1, int x2, int y2)
   if (x1 >= x2) x1 = x2;
   if (y1 >= y2) y1 = y2;
 
-  rect.x0 = iupInt2Float(x1);
-  rect.y0 = iupInt2Float(y1);
-  rect.x1 = iupInt2Float(x2);
-  rect.y1 = iupInt2Float(y2);
+  if (x1 == x2 || y1 == y2)
+  {
+    rect.x0 = iupInt2Float(x1);
+    rect.y0 = iupInt2Float(y1);
+    rect.x1 = iupInt2Float(x2);
+    rect.y1 = iupInt2Float(y2);
+  }
+  else
+  {
+    rect.x0 = iupInt2Float(x1 - 0.5f);
+    rect.y0 = iupInt2Float(y1 - 0.5f);
+    rect.x1 = iupInt2Float(x2 + 0.5f);
+    rect.y1 = iupInt2Float(y2 + 0.5f);
+  }
 
   wdSetClip(dc->hCanvas, &rect, NULL);
 
