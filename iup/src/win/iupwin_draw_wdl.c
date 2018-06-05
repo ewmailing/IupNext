@@ -104,6 +104,15 @@ IdrawCanvas* iupdrvDrawCreateCanvas(Ihandle* ih)
   }
 
   dc->hCanvas = wdCreateCanvasWithPaintStruct(dc->hWnd, &ps, WD_CANVAS_DOUBLEBUFFER);
+  if (!dc->hCanvas)
+  {
+    if (dc->hDC)
+      ReleaseDC(dc->hWnd, dc->hDC);  /* to match GetDC */
+
+    memset(dc, 0, sizeof(IdrawCanvas));
+    free(dc);
+    return NULL;
+  }
 
   if (wdBackend() == WD_BACKEND_D2D)
     iupAttribSet(ih, "DRAWDRIVER", "D2D");
@@ -121,6 +130,8 @@ void iupdrvDrawKillCanvas(IdrawCanvas* dc)
     ReleaseDC(dc->hWnd, dc->hDC);  /* to match GetDC */
 
   wdDestroyCanvas(dc->hCanvas);
+
+  memset(dc, 0, sizeof(IdrawCanvas));
   free(dc);
 }
 
