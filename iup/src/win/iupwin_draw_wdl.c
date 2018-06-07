@@ -103,7 +103,7 @@ IdrawCanvas* iupdrvDrawCreateCanvas(Ihandle* ih)
     ps.rcPaint.bottom = dc->h;
   }
 
-  dc->hCanvas = wdCreateCanvasWithPaintStruct(dc->hWnd, &ps, WD_CANVAS_DOUBLEBUFFER);
+  dc->hCanvas = wdCreateCanvasWithPaintStruct(dc->hWnd, &ps, WD_CANVAS_DOUBLEBUFFER | WD_CANVAS_NOGDICOMPAT);
   if (!dc->hCanvas)
   {
     if (dc->hDC)
