@@ -209,9 +209,11 @@ the event.<br>
   Action generated before a cell is drawn. 
   Allows to draw a custom cell contents. You must use the 
 <a target="_blank" href="http://www.tecgraf.puc-rio.br/cd/">CD</a> 
-  library primitives.&nbsp; The clipping is set for the bounding rectangle. The 
+  library primitives.&nbsp;The clipping is set for the bounding rectangle. The 
 callback is called after the cell background has been filled with the background 
-color. The focus feedback area is not included in the decoration size.</p>
+color. The focus feedback area is not included in the decoration size. CD 
+control functions like cdCanvasActivate, cdCanvasDeactivate, cdCanvasFlush, 
+cdCanvasClear, can NOT be called.</p>
 <pre>int function(Ihandle *<strong>ih</strong>, int <strong>lin</strong>, int <strong>col</strong>, int <strong>x1</strong>, int <strong>x2</strong>, int <strong>y1</strong>, int <strong>y2</strong>, cdCanvas* <strong>cnv</strong>); [in C]
 <strong>ih</strong>:draw_cb(<strong>lin, col, x1, x2, y1, y2</strong>: number, <strong>cnv</strong>: cdCanvas) -&gt; (<strong>ret</strong>: number) [in Lua]</pre>
 <p class="info"><strong>ih</strong>: identifier of the element that activated 
