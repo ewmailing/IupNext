@@ -29,7 +29,7 @@ child. Possible values: &quot;YES&quot; =
     &quot;YES&quot;.</p>
 <p><strong>ADDROOT</strong> (<font size="3">non inheritable</font>): 
 automatically adds an empty branch as the first node when the tree is mapped. 
-Default: &quot;YES&quot;. (Since 3.1)</p>
+But this does not prevents the tree to have more nodes at the first depth. Default: &quot;YES&quot;. (Since 3.1)</p>
 <p><strong>AUTOREDRAW</strong> [Windows] (<font size="3">non inheritable</font>): 
 automatically redraws the tree when something has change. Set to NO to add many 
 items to the tree without updating the display. Default: &quot;YES&quot;. (since 3.3)</p>
@@ -347,7 +347,8 @@ copied, except user data. Ignored if set before map. (since 3.0)</p>
 Ignored if set before map. Possible values:</p>
 <blockquote>
 <ul>
-  <li>&quot;ALL&quot;: deletes all nodes, id is ignored (Since 3.1)</li>
+  <li>&quot;ALL&quot;: deletes all nodes, id is ignored (Since 3.1). Notice that 
+  this will also deletes the root node.</li>
 	<li>&quot;SELECTED&quot;:
     deletes the specified node and its children</li>
   <li>&quot;CHILDREN&quot;:
