@@ -9,7 +9,7 @@ local ctrl = {
   include = "iupgl.h",
   subdir = "ctrl",
   callback = {
-    action = "ff",
+    action = "ff", -- must repeat this callback because of its non-exclusive name
     swapbuffers_cb = "",
   },
   extrafuncs = 1,

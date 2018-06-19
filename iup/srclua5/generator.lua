@@ -181,10 +181,9 @@ function write_initialization(o,t)
    for i,v in pairs(c) do
       local type = "NULL"
       -- Handle callbacks that have same names but different parameters
-      if i == "action" or 
-         i == "action_cb" or 
-         i == "edit_cb" or 
-         i == "mousemove_cb" then
+      if i == "action" or -- canvas, buttom, item, list, text, toggle, etc  
+         i == "action_cb" or -- matrix and timer
+         i == "mousemove_cb" then -- matrix and val
         type = '"'..string.lower(o)..'"'
       end
       io.write('  iuplua_register_cb(L, "',string.upper(i),'", (lua_CFunction)',o,'_',i,', ',type,');\n')

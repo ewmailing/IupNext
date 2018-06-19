@@ -66,7 +66,7 @@ int iuplistlua_open(lua_State * L)
   iuplua_register_cb(L, "DROPDOWN_CB", (lua_CFunction)list_dropdown_cb, NULL);
   iuplua_register_cb(L, "ACTION", (lua_CFunction)list_action, "list");
   iuplua_register_cb(L, "DBLCLICK_CB", (lua_CFunction)list_dblclick_cb, NULL);
-  iuplua_register_cb(L, "EDIT_CB", (lua_CFunction)list_edit_cb, "list");
+  iuplua_register_cb(L, "EDIT_CB", (lua_CFunction)list_edit_cb, NULL);
   iuplua_register_cb(L, "MULTISELECT_CB", (lua_CFunction)list_multiselect_cb, NULL);
 
 #ifdef IUPLUA_USELOH

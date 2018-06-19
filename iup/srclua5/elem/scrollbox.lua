@@ -8,6 +8,7 @@ local ctrl = {
   creation = "I",
   funcname = "ScrollBox",
   callback = {
+    action = "ff", -- must repeat this callback because of its non-exclusive name
     layoutupdate_cb = "",
   }
 }
