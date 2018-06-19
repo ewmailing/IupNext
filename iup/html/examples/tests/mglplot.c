@@ -53,12 +53,6 @@ static int select_cb(Ihandle* ih, int index, int sample_index, double x, double 
   return IUP_DEFAULT;
 }
 
-static int edit_cb(Ihandle* ih, int index, int sample_index, double x, double y, double *new_x, double *new_y)
-{
-  printf("EDIT_CB(%d, %d, %g, %g, %g, %g)\n", index, sample_index, x, y, *new_x, *new_y);
-  return IUP_DEFAULT;
-}
-
 static int postdraw_cb(Ihandle* ih)
 {
   IupMglPlotDrawText(ih, "My Inline Legend", 0.003f, 0.02f, 0);
@@ -306,7 +300,6 @@ static void InitPlots(void)
 //  IupSetCallback(plot[5], "SELECT_CB", (Icallback)select_cb);
   IupSetCallback(plot[5], "POSTDRAW_CB", (Icallback)postdraw_cb);
   IupSetCallback(plot[5], "PREDRAW_CB", (Icallback)predraw_cb);
-//  IupSetCallback(plot[5], "EDIT_CB", (Icallback)edit_cb);
 }
 
 static int tabs_get_index(void)

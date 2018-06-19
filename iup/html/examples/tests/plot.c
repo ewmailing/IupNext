@@ -50,12 +50,6 @@ static int select_cb(Ihandle* ih, int index, int sample_index, double x, double 
   return IUP_DEFAULT;
 }
 
-static int edit_cb(Ihandle* ih, int index, int sample_index, double x, double y, double *new_x, double *new_y)
-{
-  printf("EDIT_CB(%d, %d, %g, %g, %g, %g)\n", index, sample_index, x, y, *new_x, *new_y);
-  return IUP_DEFAULT;
-}
-
 static int postdraw_cb(Ihandle* ih, cdCanvas* cnv)
 {
   double ix, iy;
