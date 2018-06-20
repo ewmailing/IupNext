@@ -456,7 +456,6 @@ int iupKeyProcessNavigation(Ihandle* ih, int code, int shift)
 
       IupSetInt(IupGetDialog(ih), "FONTSIZE", new_size);
 
-      IupSetAttribute(IupGetDialog(ih), "SIZE", NULL);
       IupRefresh(ih);
     }
   }
