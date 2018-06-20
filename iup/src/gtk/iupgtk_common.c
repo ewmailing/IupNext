@@ -1072,6 +1072,13 @@ void iupgtkClearSizeStyleCSS(GtkWidget* widget)
 #endif
 }
 
+void iupdrvSetAccessibleTitle(Ihandle *ih, const char* title)
+{
+  /* AtkText Interface? */
+  (void)title;
+  (void)ih;
+}
+
 /* Deprecated but still used for GTK2:
   gdk_bitmap_create_from_data  (since 2.22)
   gdk_font_id

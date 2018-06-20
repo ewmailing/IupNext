@@ -15,6 +15,7 @@
 #include "iup_object.h"
 #include "iup_attrib.h"
 #include "iup_str.h"
+#include "iup_drv.h"
 #include "iup_drvfont.h"
 #include "iup_drvdraw.h"
 #include "iup_draw.h"
@@ -896,6 +897,9 @@ void iupFlatDrawIcon(Ihandle* ih, IdrawCanvas* dc, int icon_x, int icon_y, int i
   }
 
   iupdrvDrawSetClipRect(dc, clip_x1, clip_y1, clip_x2, clip_y2);
+
+  if (title && !iupAttribGet(ih, "SECONDARYTITLE"))
+    iupdrvSetAccessibleTitle(ih, title);  /* for accessibility */
 }
 
 int iupFlatGetHorizontalAlignment(const char* value)

@@ -107,6 +107,10 @@ void iupdrvKeyEncode(int key, unsigned int *keyval, unsigned int *state);
  * \ingroup drv */
 void iupdrvSleep(int time);
 
+/** Sets the accessibility text for screen readers.
+ * \ingroup drv */
+void iupdrvSetAccessibleTitle(Ihandle *ih, const char* title);
+
 
 /* Called only from IupOpen/IupClose. */
 int iupdrvOpen(int *argc, char ***argv);

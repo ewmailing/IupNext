@@ -691,9 +691,19 @@ void iupdrvSetActive(Ihandle* ih, int enable)
 
 int iupwinSetTitleAttrib(Ihandle* ih, const char* value)
 {
-  if (!value) value = "";
-  SetWindowText(ih->handle, iupwinStrToSystem(value));
+  if (!value)
+    SetWindowText(ih->handle, TEXT(""));
+  else
+    SetWindowText(ih->handle, iupwinStrToSystem(value));
   return 1;
+}
+
+void iupdrvSetAccessibleTitle(Ihandle *ih, const char* title)
+{
+  if (!title) 
+    SetWindowText(ih->handle, TEXT(""));
+  else
+    SetWindowText(ih->handle, iupwinStrToSystem(title));
 }
 
 void iupwinSetMnemonicTitle(Ihandle *ih, int pos, const char* value)

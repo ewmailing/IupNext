@@ -456,9 +456,13 @@ static int iFlatTabsRedraw_CB(Ihandle* ih)
         /* current tab is always drawn with these colors */
         background_color = bgcolor;
         foreground_color = forecolor;
+
+        iupAttribSet(ih, "SECONDARYTITLE", NULL);
       }
       else
       {
+        iupAttribSet(ih, "SECONDARYTITLE", "1");
+
         /* other tabs are drawn with these colors */
         if (tab_backcolor)
           background_color = tab_backcolor;
@@ -607,6 +611,8 @@ static int iFlatTabsRedraw_CB(Ihandle* ih)
     int extra_active, make_inactive, extra_x, extra_w;
     int extra_horiz_alignment, extra_vert_alignment;
 
+    iupAttribSet(ih, "SECONDARYTITLE", "1");
+
     for (i = 1; i <= extra_buttons; i++)
     {
       const char* extra_image = iupAttribGetId(ih, "EXTRAIMAGE", i);
@@ -660,6 +666,8 @@ static int iFlatTabsRedraw_CB(Ihandle* ih)
       right_extra_width += extra_w;
     }
   }
+
+  iupAttribSet(ih, "SECONDARYTITLE", NULL);
 
   /* lines around children */
   if (show_lines)

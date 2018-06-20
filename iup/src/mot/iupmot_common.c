@@ -686,3 +686,9 @@ void iupdrvSleep(int time)
   while(goal > clock());     
 }
 #endif
+
+void iupdrvSetAccessibleTitle(Ihandle *ih, const char* title)
+{
+  (void)title;
+  (void)ih;
+}
