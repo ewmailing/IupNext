@@ -278,6 +278,7 @@ void MatrixTest(void)
   box = IupVbox(mat = create_matrix(), NULL);
   IupSetAttribute(box, "MARGIN", "10x10");
 //  IupSetAttribute(box, "FONT", "Arial, 7");
+//  IupSetAttribute(mat, "FONT", "Arial, 17");
 
   dlg = IupDialog(box);
   IupSetAttribute(dlg, "TITLE", "IupMatrix Simple Test");

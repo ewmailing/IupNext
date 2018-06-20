@@ -1394,9 +1394,10 @@ static int iMatrixSetFontAttrib(Ihandle* ih, int lin, int col, const char* value
   {
     if (!value)
       value = IupGetGlobal("DEFAULTFONT");
+
     if (!iupdrvSetFontAttrib(ih, value))
       return 0;
-    iupAttribSetStr(ih, "FONT", value);
+
     return 1;
   }
 
@@ -2221,12 +2222,12 @@ Iclass* iupMatrixNewClass(void)
   iupClassRegisterAttributeId2(ic, "FGCOLOR", NULL, iMatrixSetFgColorAttrib, IUPAF_NOT_MAPPED);
   iupClassRegisterAttributeId2(ic, "TYPE", NULL, iMatrixSetTypeAttrib, IUPAF_NOT_MAPPED | IUPAF_NO_INHERIT);
   iupClassRegisterAttributeId2(ic, "FONT", iMatrixGetFontAttrib, iMatrixSetFontAttrib, IUPAF_NOT_MAPPED);
-  iupClassRegisterAttributeId2(ic, "FONTSTYLE", iMatrixGetFontStyleAttrib, iMatrixSetFontStyleAttrib, IUPAF_NOT_MAPPED);
-  iupClassRegisterAttributeId2(ic, "FONTSIZE", iMatrixGetFontSizeAttrib, iMatrixSetFontSizeAttrib, IUPAF_NOT_MAPPED);
-  iupClassRegisterAttributeId2(ic, "FRAMEHORIZCOLOR", NULL, iMatrixSetFrameHorizColorAttrib, IUPAF_NOT_MAPPED);
-  iupClassRegisterAttributeId2(ic, "FRAMEVERTCOLOR", NULL, iMatrixSetFrameVertColorAttrib, IUPAF_NOT_MAPPED);
-  iupClassRegisterAttributeId2(ic, "FRAMETITLEHORIZCOLOR", NULL, iMatrixSetFrameHorizColorAttrib, IUPAF_NOT_MAPPED);
-  iupClassRegisterAttributeId2(ic, "FRAMETITLEVERTCOLOR", NULL, iMatrixSetFrameVertColorAttrib, IUPAF_NOT_MAPPED);
+  iupClassRegisterAttributeId2(ic, "FONTSTYLE", iMatrixGetFontStyleAttrib, iMatrixSetFontStyleAttrib, IUPAF_NOT_MAPPED | IUPAF_NO_INHERIT);
+  iupClassRegisterAttributeId2(ic, "FONTSIZE", iMatrixGetFontSizeAttrib, iMatrixSetFontSizeAttrib, IUPAF_NOT_MAPPED | IUPAF_NO_INHERIT);
+  iupClassRegisterAttributeId2(ic, "FRAMEHORIZCOLOR", NULL, iMatrixSetFrameHorizColorAttrib, IUPAF_NOT_MAPPED | IUPAF_NO_INHERIT);
+  iupClassRegisterAttributeId2(ic, "FRAMEVERTCOLOR", NULL, iMatrixSetFrameVertColorAttrib, IUPAF_NOT_MAPPED | IUPAF_NO_INHERIT);
+  iupClassRegisterAttributeId2(ic, "FRAMETITLEHORIZCOLOR", NULL, iMatrixSetFrameHorizColorAttrib, IUPAF_NOT_MAPPED | IUPAF_NO_INHERIT);
+  iupClassRegisterAttributeId2(ic, "FRAMETITLEVERTCOLOR", NULL, iMatrixSetFrameVertColorAttrib, IUPAF_NOT_MAPPED | IUPAF_NO_INHERIT);
   iupClassRegisterAttribute(ic, "FRAMECOLOR", NULL, (IattribSetFunc)iMatrixSetNeedRedraw, IUPAF_SAMEASSYSTEM, "100 100 100", IUPAF_NO_INHERIT);
   iupClassRegisterAttribute(ic, "FRAMETITLEHIGHLIGHT", NULL, (IattribSetFunc)iMatrixSetNeedRedraw, IUPAF_SAMEASSYSTEM, "Yes", IUPAF_NO_INHERIT);
   iupClassRegisterAttribute(ic, "FRAMEBORDER", NULL, (IattribSetFunc)iMatrixSetNeedRedraw, NULL, NULL, IUPAF_NO_INHERIT);
