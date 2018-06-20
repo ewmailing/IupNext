@@ -600,13 +600,14 @@ int iupGLFontSetFontAttrib(Ihandle* ih, const char* value)
   if (!ih->handle)
     return iupdrvSetFontAttrib(ih, value);
 
+  if (!iupdrvSetFontAttrib(ih, value))
+    return 0;
+
   glfont = iGLFontCreateNativeFont(ih, value);
   if (glfont)
   {
     /* If FONT is changed, must update the SIZE attribute */
-    char* value = iupAttribGet(ih, "SIZE");
-    if (value)
-      IupSetStrAttribute(ih, "SIZE", value);
+    iupBaseUpdateAttribFromFont(ih);
 
     return 1;
   }
