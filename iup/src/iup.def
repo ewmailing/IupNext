@@ -485,6 +485,7 @@ iupBaseRegisterVisualAttrib
 iupBaseRegisterCommonAttrib
 iupBaseRegisterCommonCallbacks
 iupBaseGetWidAttrib
+iupBaseUpdateAttribFromFont
 iupBaseGetVisibleAttrib
 iupBaseGetSizeAttrib
 iupRound
