@@ -362,6 +362,42 @@ static void iupKeyActivate(Ihandle* ih)
     iupdrvActivate(ih);
 }
 
+static void iupSetFontSizeChildren(Ihandle *ih, int inc)
+{
+  /* if FONT is set at a child, 
+     then it will not inherit the value set at the dialog.
+     Must be manually increased or decreased. */
+  Ihandle* child = ih->firstchild;
+  while (child)
+  {
+    if (child->iclass->childtype == IUP_CHILDNONE &&  /* only for non-containers */
+        iupTableGet(child->attrib, "FONT"))  /* FONT must be defined */
+    {
+      int new_size;
+      int size = IupGetInt(child, "FONTSIZE");
+
+      if (inc)
+      {
+        new_size = (size * 11) / 10; /* 10% increase */
+        if (new_size == size) new_size++;
+        inc = 1;
+      }
+      else
+      {
+        new_size = (size * 9) / 10; /* 10% decrease */
+        if (new_size == size) new_size--;
+        inc = 0;
+      }
+
+      IupSetInt(child, "FONTSIZE", new_size);
+    }
+
+    iupSetFontSizeChildren(child, inc);
+
+    child = child->brother;
+  }
+}
+
 int iupKeyProcessNavigation(Ihandle* ih, int code, int shift)
 {
   /* this is called after K_ANY is processed, 
@@ -441,20 +477,25 @@ int iupKeyProcessNavigation(Ihandle* ih, int code, int shift)
     if (iupStrBoolean(IupGetGlobal("GLOBALLAYOUTRESIZEKEY")))
     {
       int new_size;
-      int size = IupGetInt(IupGetDialog(ih), "FONTSIZE");
+      Ihandle* dialog = IupGetDialog(ih);
+      int size = IupGetInt(dialog, "FONTSIZE");
+      int inc;
 
       if (iup_XkeyBase(code) == K_plus || iup_XkeyBase(code) == K_equal)
       {
         new_size = (size * 11) / 10; /* 10% increase */
         if (new_size == size) new_size++;
+        inc = 1;
       }
       else
       {
         new_size = (size * 9) / 10; /* 10% decrease */
         if (new_size == size) new_size--;
+        inc = 0;
       }
 
-      IupSetInt(IupGetDialog(ih), "FONTSIZE", new_size);
+      IupSetInt(dialog, "FONTSIZE", new_size);
+      iupSetFontSizeChildren(dialog, inc);
 
       IupRefresh(ih);
     }
