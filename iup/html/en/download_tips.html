@@ -51,27 +51,32 @@ http://sourceforge.net/projects/iup/files/</a>.<br>
 <a href="http://sourceforge.net/projects/luabinaries/files/">
 http://sourceforge.net/projects/luabinaries/files/</a>.</p>
 <h3><a name="build">Build Configuration</a></h3>
-<p>Libraries and executables were built using speed optimization. In UNIX the dynamic libraries were NOT built with 
-  the -fpic parameter. In MacOS X the dynamic libraries are in bundle format. The source code along with the 
-  &quot;config.mak&quot; files for <b>Tecmake</b> are also available.</p>
+<p>Libraries and executables were built using speed optimization. In UNIX the dynamic libraries 
+are built with 
+  the -fPIC parameter when in 64 bits. In MacOS X the dynamic libraries are in bundle format, 
+except for the Lua bindings. </p>
 <p>The DLLs were built using the <b>cdecl</b> calling convention. This should be 
 a problem for Visual Basic users.</p>
-<p>In Visual C++ 6 and 7 we use the single thread C Run Time Library for static libraries and the multi thread C RTL for DLLs. 
-  Because this were the default in Visual Studio for new projects. Since Visual C++ 8, both use the multithread C RTL.</p>
+<p>In Visual C++ we use the static multithread C Run Time Library for static libraries 
+(-MT) and the dynamic multi thread C RTL for DLLs (-MD). </p>
 <h3><a name="pack">Packaging</a></h3>
-<p>The package files available for download are named according to the platform where they were build.</p>
-<p>In UNIX all strings are based in the result of the command &quot;uname -a&quot;. The package name is a concatenation of the 
+<p>Some pre-compiled <strong>Binaries</strong> are available for download. They are named according to the platform where they were build.</p>
+<p>In <strong>UNIX</strong> all strings are based in the result of the command &quot;uname -a&quot;. The package name is a concatenation of the 
   platform <b>uname</b>, the system <b>major</b> version number and the system 
 <b>minor</b> version number. Some times a 
   suffix must be added to complement the name. The compiler used is always gcc. Binaries for 64-bits receive the suffix: &quot;_64&quot;. In Linux when 
 there are different versions of gcc for the same 
   uname, the platform name is created adding the major version number of the compiler added as a suffix: &quot;g3&quot; for gcc 3 and &quot;g4&quot; for gcc 
   4.</p>
-<p>In Windows the platform name is the <b>compiler</b> and its <b>major</b> version number. 
+<p>In <strong>Windows</strong> the platform name is the <b>compiler</b> and its <b>major</b> version number. 
 </p>
 <p>All library packages <strong>(*_lib*)</strong> contains pre-compiled binaries for the specified platform and includes. Packages with 
 <strong>&quot;_bin&quot;</strong> suffix 
   contains executables only.</p>
+<p>The <strong>Lua</strong> bindings are in a separate folder identified by the 
+Lua version (Lua51, Lua52, ...). The packages follows the same naming 
+convention. But notice that you will have to download the main package and the 
+Lua package in order to use the Lua bindings.</p>
 <p>The package name is a general reference for the platform. If you have the same platform it will work fine, but it 
   may also work in similar platforms.</p>
 <p>Here are some examples of packages: </p>
@@ -85,11 +90,13 @@ Linux&nbsp; with Kernel version 2.6 built with gcc 4.<br>
 <b>iup2_4_Win32_dll9_lib.tar.gz</b> = IUP 2.4 32-bits Dynamic Libraries (DLLs), 
 import libraries and Includes for Windows to use with Visual C++ 
 9 (2008).<br>
-<b>iup2_4_Docs_html.tar.gz</b> = IUP 2.4 documentation files in HTML format (the web site files can be browsed 
-    locally).<br>
 <b>iup2_4_Win32_bin.tar.gz</b> = IUP 2.4 32-bits Executables for Windows.</p>
-<p>The documentation files are in HTML format. They do not include the CHM and PDF versions. These two files are 
+<p>The <strong>Documentation</strong> files are in HTML format. Its package 
+contains all the documentation files available on the website. The same 
+documentation is also available in CHM and PDF formats. These two files are 
   provided as a separate download, but they all have the same documentation.</p>
+<p>The <strong>Source</strong> files are available in zip and tar.gz formats, 
+but they have the same contents.</p>
 <h3><a name="install">Installation</a></h3>
 <p>For any platform we recommend you to create a folder to contain the third party libraries you download. Then just 
   unpack the packages you download in that folder. The packages already contains a directory structure that separates 
@@ -106,7 +113,8 @@ import libraries and Includes for Windows to use with Visual C++
         cd\
         im\
         lua5.1\
-        lua52\</pre>
+        lua52\
+        lua53\</pre>
 <p>This structure will also made the process of building from sources more simple, since the projects and makefiles 
   will assume this structure .</p>
 <h3><a name="usage">Usage</a></h3>
