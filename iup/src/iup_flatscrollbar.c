@@ -170,7 +170,7 @@ static void iFlatScrollBarDrawVertical(Ihandle* sb_ih, IdrawCanvas* dc, int acti
 
   if (pressed != SB_NONE)
   {
-    char* presscolor = iupAttribGetStr(sb_ih->parent, "PRESSCOLOR");
+    char* presscolor = iupAttribGetStr(sb_ih->parent, "SB_PRESSCOLOR");
     if (presscolor)
     {
       if (pressed == IUP_SBDN)
@@ -183,7 +183,7 @@ static void iFlatScrollBarDrawVertical(Ihandle* sb_ih, IdrawCanvas* dc, int acti
   }
   else if (highlight != SB_NONE)
   {
-    char* hlcolor = iupAttribGetStr(sb_ih->parent, "HIGHCOLOR");
+    char* hlcolor = iupAttribGetStr(sb_ih->parent, "SB_HIGHCOLOR");
     if (hlcolor)
     {
       if (highlight == IUP_SBDN)
@@ -209,10 +209,10 @@ static void iFlatScrollBarDrawVertical(Ihandle* sb_ih, IdrawCanvas* dc, int acti
       int make_inactive;
       const char* image;
 
-      image = iupFlatGetImageName(sb_ih->parent, "IMAGETOP", NULL, pressed != SB_NONE, highlight != SB_NONE, active, &make_inactive);
+      image = iupFlatGetImageName(sb_ih->parent, "SB_IMAGETOP", NULL, pressed != SB_NONE, highlight != SB_NONE, active, &make_inactive);
       iupdrvDrawImage(dc, image, make_inactive, bgcolor, 0, 0, -1, -1);
 
-      image = iupFlatGetImageName(sb_ih->parent, "IMAGEBOTTOM", NULL, pressed != SB_NONE, highlight != SB_NONE, active, &make_inactive);
+      image = iupFlatGetImageName(sb_ih->parent, "SB_IMAGEBOTTOM", NULL, pressed != SB_NONE, highlight != SB_NONE, active, &make_inactive);
       iupdrvDrawImage(dc, image, make_inactive, bgcolor, height - 1 - arrow_size, 0, -1, -1);
     }
     else
@@ -244,7 +244,7 @@ static void iFlatScrollBarDrawHorizontal(Ihandle* sb_ih, IdrawCanvas* dc, int ac
 
   if (pressed != SB_NONE)
   {
-    char* presscolor = iupAttribGetStr(sb_ih->parent, "PRESSCOLOR");
+    char* presscolor = iupAttribGetStr(sb_ih->parent, "SB_PRESSCOLOR");
     if (presscolor)
     {
       if (pressed == IUP_SBRIGHT)
@@ -257,7 +257,7 @@ static void iFlatScrollBarDrawHorizontal(Ihandle* sb_ih, IdrawCanvas* dc, int ac
   }
   else if (highlight != SB_NONE)
   {
-    char* hlcolor = iupAttribGetStr(sb_ih->parent, "HIGHCOLOR");
+    char* hlcolor = iupAttribGetStr(sb_ih->parent, "SB_HIGHCOLOR");
     if (hlcolor)
     {
       if (highlight == IUP_SBRIGHT)
@@ -283,10 +283,10 @@ static void iFlatScrollBarDrawHorizontal(Ihandle* sb_ih, IdrawCanvas* dc, int ac
       int make_inactive;
       const char* image;
       
-      image = iupFlatGetImageName(sb_ih->parent, "IMAGELEFT", NULL, pressed != SB_NONE, highlight != SB_NONE, active, &make_inactive);
+      image = iupFlatGetImageName(sb_ih->parent, "SB_IMAGELEFT", NULL, pressed != SB_NONE, highlight != SB_NONE, active, &make_inactive);
       iupdrvDrawImage(dc, image, make_inactive, bgcolor, 0, 0, -1, -1);
 
-      image = iupFlatGetImageName(sb_ih->parent, "IMAGERIGHT", NULL, pressed != SB_NONE, highlight != SB_NONE, active, &make_inactive);
+      image = iupFlatGetImageName(sb_ih->parent, "SB_IMAGERIGHT", NULL, pressed != SB_NONE, highlight != SB_NONE, active, &make_inactive);
       iupdrvDrawImage(dc, image, make_inactive, bgcolor, width - 1 - arrow_size, 0, -1, -1);
     }
     else
@@ -307,8 +307,8 @@ static int iFlatScrollBarAction_CB(Ihandle* sb_ih)
   int ymax = iupAttribGetInt(sb_ih->parent, "YMAX");
   int dx = iupAttribGetInt(sb_ih->parent, "DX");
   int dy = iupAttribGetInt(sb_ih->parent, "DY");
-  char* fgcolor = iupAttribGetStr(sb_ih->parent, "FORECOLOR");
-  char* bgcolor = iupAttribGetStr(sb_ih->parent, "BACKCOLOR");
+  char* fgcolor = iupAttribGetStr(sb_ih->parent, "SB_FORECOLOR");
+  char* bgcolor = iupAttribGetStr(sb_ih->parent, "SB_BACKCOLOR");
   int highlight = iupAttribGetInt(sb_ih, "_IUP_HIGHLIGHT_HANDLER");
   int pressed = iupAttribGetInt(sb_ih, "_IUP_PRESSED_HANDLER");
   int active = IupGetInt(sb_ih->parent, "ACTIVE");
@@ -1083,31 +1083,31 @@ void iupFlatScrollBarRegister(Iclass* ic)
   iupClassRegisterAttribute(ic, "FLOATINGDELAY", NULL, NULL, IUPAF_SAMEASSYSTEM, "2000", IUPAF_NO_INHERIT);
 
   iupClassRegisterAttribute(ic, "SCROLLBARSIZE", NULL, NULL, IUPAF_SAMEASSYSTEM, "15", IUPAF_NO_INHERIT);
-  iupClassRegisterAttribute(ic, "FORECOLOR", NULL, NULL, IUPAF_SAMEASSYSTEM, "220 220 220", IUPAF_NO_INHERIT);
-  iupClassRegisterAttribute(ic, "BACKCOLOR", NULL, NULL, NULL, NULL, IUPAF_NO_INHERIT);
-  iupClassRegisterAttribute(ic, "HIGHCOLOR", NULL, NULL, IUPAF_SAMEASSYSTEM, "132 132 132", IUPAF_NO_INHERIT);
-  iupClassRegisterAttribute(ic, "PRESSCOLOR", NULL, NULL, IUPAF_SAMEASSYSTEM, "96 96 96", IUPAF_NO_INHERIT);
+  iupClassRegisterAttribute(ic, "SB_FORECOLOR", NULL, NULL, IUPAF_SAMEASSYSTEM, "220 220 220", IUPAF_NO_INHERIT);
+  iupClassRegisterAttribute(ic, "SB_BACKCOLOR", NULL, NULL, NULL, NULL, IUPAF_NO_INHERIT);
+  iupClassRegisterAttribute(ic, "SB_HIGHCOLOR", NULL, NULL, IUPAF_SAMEASSYSTEM, "132 132 132", IUPAF_NO_INHERIT);
+  iupClassRegisterAttribute(ic, "SB_PRESSCOLOR", NULL, NULL, IUPAF_SAMEASSYSTEM, "96 96 96", IUPAF_NO_INHERIT);
   iupClassRegisterAttribute(ic, "SHOWARROWS", NULL, NULL, IUPAF_SAMEASSYSTEM, "Yes", IUPAF_NO_INHERIT);
 
   iupClassRegisterAttribute(ic, "ARROWIMAGES", NULL, NULL, NULL, NULL, IUPAF_NO_INHERIT);
 
-  iupClassRegisterAttribute(ic, "IMAGELEFT", NULL, NULL, NULL, NULL, IUPAF_IHANDLENAME | IUPAF_NO_DEFAULTVALUE | IUPAF_NO_INHERIT);
-  iupClassRegisterAttribute(ic, "IMAGELEFTPRESS", NULL, NULL, NULL, NULL, IUPAF_IHANDLENAME | IUPAF_NO_DEFAULTVALUE | IUPAF_NO_INHERIT);
-  iupClassRegisterAttribute(ic, "IMAGELEFTHIGHLIGHT", NULL, NULL, NULL, NULL, IUPAF_IHANDLENAME | IUPAF_NO_DEFAULTVALUE | IUPAF_NO_INHERIT);
-  iupClassRegisterAttribute(ic, "IMAGELEFTINACTIVE", NULL, NULL, NULL, NULL, IUPAF_IHANDLENAME | IUPAF_NO_DEFAULTVALUE | IUPAF_NO_INHERIT);
+  iupClassRegisterAttribute(ic, "SB_IMAGELEFT", NULL, NULL, NULL, NULL, IUPAF_IHANDLENAME | IUPAF_NO_DEFAULTVALUE | IUPAF_NO_INHERIT);
+  iupClassRegisterAttribute(ic, "SB_IMAGELEFTPRESS", NULL, NULL, NULL, NULL, IUPAF_IHANDLENAME | IUPAF_NO_DEFAULTVALUE | IUPAF_NO_INHERIT);
+  iupClassRegisterAttribute(ic, "SB_IMAGELEFTHIGHLIGHT", NULL, NULL, NULL, NULL, IUPAF_IHANDLENAME | IUPAF_NO_DEFAULTVALUE | IUPAF_NO_INHERIT);
+  iupClassRegisterAttribute(ic, "SB_IMAGELEFTINACTIVE", NULL, NULL, NULL, NULL, IUPAF_IHANDLENAME | IUPAF_NO_DEFAULTVALUE | IUPAF_NO_INHERIT);
 
-  iupClassRegisterAttribute(ic, "IMAGERIGHT", NULL, NULL, NULL, NULL, IUPAF_IHANDLENAME | IUPAF_NO_DEFAULTVALUE | IUPAF_NO_INHERIT);
-  iupClassRegisterAttribute(ic, "IMAGERIGHTPRESS", NULL, NULL, NULL, NULL, IUPAF_IHANDLENAME | IUPAF_NO_DEFAULTVALUE | IUPAF_NO_INHERIT);
-  iupClassRegisterAttribute(ic, "IMAGERIGHTHIGHLIGHT", NULL, NULL, NULL, NULL, IUPAF_IHANDLENAME | IUPAF_NO_DEFAULTVALUE | IUPAF_NO_INHERIT);
-  iupClassRegisterAttribute(ic, "IMAGERIGHTINACTIVE", NULL, NULL, NULL, NULL, IUPAF_IHANDLENAME | IUPAF_NO_DEFAULTVALUE | IUPAF_NO_INHERIT);
+  iupClassRegisterAttribute(ic, "SB_IMAGERIGHT", NULL, NULL, NULL, NULL, IUPAF_IHANDLENAME | IUPAF_NO_DEFAULTVALUE | IUPAF_NO_INHERIT);
+  iupClassRegisterAttribute(ic, "SB_IMAGERIGHTPRESS", NULL, NULL, NULL, NULL, IUPAF_IHANDLENAME | IUPAF_NO_DEFAULTVALUE | IUPAF_NO_INHERIT);
+  iupClassRegisterAttribute(ic, "SB_IMAGERIGHTHIGHLIGHT", NULL, NULL, NULL, NULL, IUPAF_IHANDLENAME | IUPAF_NO_DEFAULTVALUE | IUPAF_NO_INHERIT);
+  iupClassRegisterAttribute(ic, "SB_IMAGERIGHTINACTIVE", NULL, NULL, NULL, NULL, IUPAF_IHANDLENAME | IUPAF_NO_DEFAULTVALUE | IUPAF_NO_INHERIT);
 
-  iupClassRegisterAttribute(ic, "IMAGETOP", NULL, NULL, NULL, NULL, IUPAF_IHANDLENAME | IUPAF_NO_DEFAULTVALUE | IUPAF_NO_INHERIT);
-  iupClassRegisterAttribute(ic, "IMAGETOPPRESS", NULL, NULL, NULL, NULL, IUPAF_IHANDLENAME | IUPAF_NO_DEFAULTVALUE | IUPAF_NO_INHERIT);
-  iupClassRegisterAttribute(ic, "IMAGETOPHIGHLIGHT", NULL, NULL, NULL, NULL, IUPAF_IHANDLENAME | IUPAF_NO_DEFAULTVALUE | IUPAF_NO_INHERIT);
-  iupClassRegisterAttribute(ic, "IMAGETOPINACTIVE", NULL, NULL, NULL, NULL, IUPAF_IHANDLENAME | IUPAF_NO_DEFAULTVALUE | IUPAF_NO_INHERIT);
+  iupClassRegisterAttribute(ic, "SB_IMAGETOP", NULL, NULL, NULL, NULL, IUPAF_IHANDLENAME | IUPAF_NO_DEFAULTVALUE | IUPAF_NO_INHERIT);
+  iupClassRegisterAttribute(ic, "SB_IMAGETOPPRESS", NULL, NULL, NULL, NULL, IUPAF_IHANDLENAME | IUPAF_NO_DEFAULTVALUE | IUPAF_NO_INHERIT);
+  iupClassRegisterAttribute(ic, "SB_IMAGETOPHIGHLIGHT", NULL, NULL, NULL, NULL, IUPAF_IHANDLENAME | IUPAF_NO_DEFAULTVALUE | IUPAF_NO_INHERIT);
+  iupClassRegisterAttribute(ic, "SB_IMAGETOPINACTIVE", NULL, NULL, NULL, NULL, IUPAF_IHANDLENAME | IUPAF_NO_DEFAULTVALUE | IUPAF_NO_INHERIT);
 
-  iupClassRegisterAttribute(ic, "IMAGEBOTTOM", NULL, NULL, NULL, NULL, IUPAF_IHANDLENAME | IUPAF_NO_DEFAULTVALUE | IUPAF_NO_INHERIT);
-  iupClassRegisterAttribute(ic, "IMAGEBOTTOMPRESS", NULL, NULL, NULL, NULL, IUPAF_IHANDLENAME | IUPAF_NO_DEFAULTVALUE | IUPAF_NO_INHERIT);
-  iupClassRegisterAttribute(ic, "IMAGEBOTTOMHIGHLIGHT", NULL, NULL, NULL, NULL, IUPAF_IHANDLENAME | IUPAF_NO_DEFAULTVALUE | IUPAF_NO_INHERIT);
-  iupClassRegisterAttribute(ic, "IMAGEBOTTOMINACTIVE", NULL, NULL, NULL, NULL, IUPAF_IHANDLENAME | IUPAF_NO_DEFAULTVALUE | IUPAF_NO_INHERIT);
+  iupClassRegisterAttribute(ic, "SB_IMAGEBOTTOM", NULL, NULL, NULL, NULL, IUPAF_IHANDLENAME | IUPAF_NO_DEFAULTVALUE | IUPAF_NO_INHERIT);
+  iupClassRegisterAttribute(ic, "SB_IMAGEBOTTOMPRESS", NULL, NULL, NULL, NULL, IUPAF_IHANDLENAME | IUPAF_NO_DEFAULTVALUE | IUPAF_NO_INHERIT);
+  iupClassRegisterAttribute(ic, "SB_IMAGEBOTTOMHIGHLIGHT", NULL, NULL, NULL, NULL, IUPAF_IHANDLENAME | IUPAF_NO_DEFAULTVALUE | IUPAF_NO_INHERIT);
+  iupClassRegisterAttribute(ic, "SB_IMAGEBOTTOMINACTIVE", NULL, NULL, NULL, NULL, IUPAF_IHANDLENAME | IUPAF_NO_DEFAULTVALUE | IUPAF_NO_INHERIT);
 }

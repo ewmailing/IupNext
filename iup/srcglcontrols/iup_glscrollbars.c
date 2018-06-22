@@ -134,7 +134,7 @@ static void iGLScrollbarsDrawVertical(Ihandle* ih, int active, const char* fgcol
 
   if (pressed)
   {
-    char* presscolor = iupAttribGetStr(ih, "PRESSCOLOR");
+    char* presscolor = iupAttribGetStr(ih, "SB_PRESSCOLOR");
     if (presscolor)
     {
       if (pressed == SB_INC_Y)
@@ -147,7 +147,7 @@ static void iGLScrollbarsDrawVertical(Ihandle* ih, int active, const char* fgcol
   }
   else if (highlight)
   {
-    char* hlcolor = iupAttribGetStr(ih, "HIGHCOLOR");
+    char* hlcolor = iupAttribGetStr(ih, "SB_HIGHCOLOR");
     if (hlcolor)
     {
       if (highlight == SB_INC_Y)
@@ -198,7 +198,7 @@ static void iGLScrollbarsDrawHorizontal(Ihandle* ih, int active, const char* fgc
 
   if (pressed)
   {
-    char* presscolor = iupAttribGetStr(ih, "PRESSCOLOR");
+    char* presscolor = iupAttribGetStr(ih, "SB_PRESSCOLOR");
     if (presscolor)
     {
       if (pressed == SB_INC_X)
@@ -211,7 +211,7 @@ static void iGLScrollbarsDrawHorizontal(Ihandle* ih, int active, const char* fgc
   }
   else if (highlight)
   {
-    char* hlcolor = iupAttribGetStr(ih, "HIGHCOLOR");
+    char* hlcolor = iupAttribGetStr(ih, "SB_HIGHCOLOR");
     if (hlcolor)
     {
       if (highlight == SB_INC_X)
@@ -258,8 +258,8 @@ void iupGLScrollbarsDraw(Ihandle* ih, int active)
   int sb_ymax = iupAttribGetInt(ih, "YMAX");
   int sb_dx = iupAttribGetInt(ih, "DX");
   int sb_dy = iupAttribGetInt(ih, "DY");
-  char* fgcolor = iupAttribGetStr(ih, "FORECOLOR");
-  char* bgcolor = iupAttribGetStr(ih, "BACKCOLOR");
+  char* fgcolor = iupAttribGetStr(ih, "SB_FORECOLOR");
+  char* bgcolor = iupAttribGetStr(ih, "SB_BACKCOLOR");
   int highlight = iupAttribGetInt(ih, "_IUP_HIGHLIGHT_HANDLER");
   int pressed = iupAttribGetInt(ih, "_IUP_PRESSED_HANDLER");
 
@@ -629,8 +629,8 @@ void iupGLScrollbarsRegisterAttrib(Iclass* ic)
   /* behave as AUTOHIDE is always Yes (unused) */
   /* behave as SCROLLBAR is always Yes (unused) */
 
-  iupClassRegisterAttribute(ic, "HIGHCOLOR", NULL, NULL, IUPAF_SAMEASSYSTEM, "90 190 255", IUPAF_NO_INHERIT);
-  iupClassRegisterAttribute(ic, "FORECOLOR", NULL, NULL, IUPAF_SAMEASSYSTEM, "110 210 230", IUPAF_NO_INHERIT);
-  iupClassRegisterAttribute(ic, "PRESSCOLOR", NULL, NULL, IUPAF_SAMEASSYSTEM, "50 150 255", IUPAF_NO_INHERIT);
-  iupClassRegisterAttribute(ic, "BACKCOLOR", NULL, NULL, IUPAF_SAMEASSYSTEM, "200 225 245", IUPAF_NO_INHERIT);
+  iupClassRegisterAttribute(ic, "SB_HIGHCOLOR", NULL, NULL, IUPAF_SAMEASSYSTEM, "90 190 255", IUPAF_NO_INHERIT);
+  iupClassRegisterAttribute(ic, "SB_FORECOLOR", NULL, NULL, IUPAF_SAMEASSYSTEM, "110 210 230", IUPAF_NO_INHERIT);
+  iupClassRegisterAttribute(ic, "SB_PRESSCOLOR", NULL, NULL, IUPAF_SAMEASSYSTEM, "50 150 255", IUPAF_NO_INHERIT);
+  iupClassRegisterAttribute(ic, "SB_BACKCOLOR", NULL, NULL, IUPAF_SAMEASSYSTEM, "200 225 245", IUPAF_NO_INHERIT);
 }
