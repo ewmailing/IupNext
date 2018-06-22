@@ -1168,20 +1168,10 @@ static int iLayoutMenuHide_CB(Ihandle* ih)
   return IUP_DEFAULT;
 }
 
-static void iLayoutDialogLoad(Ihandle* parent_dlg, iLayoutDialog* layoutdlg, int only_visible)
+static int iLayoutDialogGetDialogs(Ihandle* *dlg_list, char* *dlg_list_str, int count, int only_visible)
 {
-  int ret, count, i;
-  Ihandle* *dlg_list;
-  char* *dlg_list_str;
+  int i;
   Ihandle *dlg;
-
-  if (only_visible)
-    count = iupDlgListVisibleCount();
-  else
-    count = iupDlgListCount();
-
-  dlg_list = (Ihandle**)malloc(count*sizeof(Ihandle*));
-  dlg_list_str = (char**)malloc(count*sizeof(char*));
 
   for (dlg = iupDlgListFirst(), i = 0; dlg && i < count; dlg = iupDlgListNext())
   {
@@ -1194,12 +1184,31 @@ static void iLayoutDialogLoad(Ihandle* parent_dlg, iLayoutDialog* layoutdlg, int
     }
   }
 
+  return i;
+}
+
+static void iLayoutDialogLoad(Ihandle* dlg, iLayoutDialog* layoutdlg, int only_visible)
+{
+  int ret, count, i;
+  Ihandle* *dlg_list;
+  char* *dlg_list_str;
+
+  if (only_visible)
+    count = iupDlgListVisibleCount();
+  else
+    count = iupDlgListCount();
+
+  dlg_list = (Ihandle**)malloc(count*sizeof(Ihandle*));
+  dlg_list_str = (char**)malloc(count*sizeof(char*));
+
+  i = iLayoutDialogGetDialogs(dlg_list, dlg_list_str, count, only_visible);
+
   iupASSERT(i == count);
   if (i != count)
     count = i;
 
   IupStoreGlobal("_IUP_OLD_PARENTDIALOG", IupGetGlobal("PARENTDIALOG"));
-  IupSetAttributeHandle(NULL, "PARENTDIALOG", parent_dlg);
+  IupSetAttributeHandle(NULL, "PARENTDIALOG", dlg);
 
   ret = IupListDialog(1, "Dialogs", count, (const char**)dlg_list_str, 1, 15, count < 15 ? count + 1 : 15, NULL);
 
@@ -1218,19 +1227,13 @@ static void iLayoutDialogLoad(Ihandle* parent_dlg, iLayoutDialog* layoutdlg, int
     IupGetIntInt(layoutdlg->dialog, "CLIENTSIZE", &w, &h);
     if (w && h)
     {
-      int scrollbar = IupGetInt(NULL, "SCROLLBARSIZE");
-      int pw = 0, ph = 0;
-      int prop = IupGetInt(IupGetParent(layoutdlg->tree), "VALUE");
-      int status = IupGetInt2(IupGetBrother(IupGetParent(layoutdlg->tree)), "RASTERSIZE");
-      w = (w * 1000) / (1000 - prop);
-      IupGetIntInt(parent_dlg, "CLIENTSIZE", &pw, &ph);
-      ph -= status + scrollbar;
-      pw -= scrollbar;
-      if (w > pw || h > ph)
-      {
-        IupSetfAttribute(parent_dlg, "CLIENTSIZE", "%dx%d", w + scrollbar + 10, h + scrollbar + status + 10);
-        IupShow(parent_dlg);
-      }
+      Ihandle* canvas = IupGetBrother(layoutdlg->tree);
+      IupSetfAttribute(canvas, "USERSIZE", "%dx%d", w, h);
+      IupSetAttribute(dlg, "RASTERSIZE", NULL);
+
+      IupShow(dlg);
+
+      IupSetAttribute(canvas, "USERSIZE", NULL);
     }
   }
 
@@ -2996,7 +2999,7 @@ Ihandle* IupLayoutDialog(Ihandle* dialog)
   tree = IupTree();
   layoutdlg->tree = tree;
   IupSetAttribute(tree, "NAME", "TREE");
-//  IupSetAttribute(tree, "RASTERSIZE", NULL);
+  IupSetAttribute(tree, "RASTERSIZE", NULL);
   IupSetAttribute(tree, "USERSIZE", "200x");
   IupSetAttribute(tree, "SHOWDRAGDROP", "Yes");
   IupSetCallback(tree, "SELECTION_CB", (Icallback)iLayoutTreeSelection_CB);
@@ -3064,7 +3067,7 @@ Ihandle* IupLayoutDialog(Ihandle* dialog)
 
   {
     int w = 0, h = 0;
-    IupGetIntInt(layoutdlg->dialog, "RASTERSIZE", &w, &h);
+    IupGetIntInt(layoutdlg->dialog, "CLIENTSIZE", &w, &h);
     if (w && h)
       IupSetfAttribute(canvas, "USERSIZE", "%dx%d", w, h);
     else
@@ -3072,6 +3075,8 @@ Ihandle* IupLayoutDialog(Ihandle* dialog)
   }
 
   IupMap(dlg);
+
+  IupSetAttribute(canvas, "USERSIZE", NULL);
 
   iLayoutTreeRebuild(layoutdlg);
 
