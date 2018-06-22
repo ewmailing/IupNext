@@ -268,6 +268,8 @@ void FlatToggleTest(void)
   IupSetAttribute(toggle6, "TIP", "FlatToggle Tip");
   IupSetAttribute(toggle7, "CHECKRIGHT", "YES");
   IupSetAttribute(toggle5, "CHECKRIGHT", "YES");
+//  IupSetAttribute(toggle6, "CHECKALIGN", "ATOP");
+//  IupSetAttribute(toggle6, "CHECKALIGN", "ABOTTOM");
 
   /* Creating box that contains the toggles */
   box = IupHbox(

@@ -65,7 +65,7 @@ static int iFlatToggleRedraw_CB(Ihandle* ih)
   char* fgimage = iupAttribGet(ih, "FRONTIMAGE");
   int text_flags = iupDrawGetTextFlags(ih, "TEXTALIGNMENT", "TEXTWRAP", "TEXTELLIPSIS");
   double text_orientation = iupAttribGetDouble(ih, "TEXTORIENTATION");
-  int check_right = iupAttribGetInt(ih, "CHECKRIGHT");
+  int check_at_right = iupAttribGetInt(ih, "CHECKRIGHT");
   Ihandle* radio = iupRadioFindToggleParent(ih);
   const char* draw_image;
   int border_width = ih->data->border_width;
@@ -89,7 +89,7 @@ static int iFlatToggleRedraw_CB(Ihandle* ih)
     check_left = 0;
     icon_left = ih->data->check_size + ih->data->check_spacing;
     icon_right = ih->currentwidth - 1;
-    if (check_right)
+    if (check_at_right)
     {
       check_left = ih->currentwidth - ih->data->check_size;
       icon_left = 0;
@@ -195,6 +195,7 @@ static int iFlatToggleRedraw_CB(Ihandle* ih)
 
   if (ih->data->check_size)
   {
+    int check_alig = iupFlatGetVerticalAlignment(iupAttribGetStr(ih, "CHECKALIGN"));
     int xc = check_left + ih->data->check_size / 2;
     int yc = ih->currentheight / 2;
     int radius = ih->data->check_size / 2 - ITOGGLE_MARGIN;
@@ -202,6 +203,17 @@ static int iFlatToggleRedraw_CB(Ihandle* ih)
     int check_ymin = (ih->currentheight - ih->data->check_size) / 2 + ITOGGLE_MARGIN;
     int check_size = ih->data->check_size - 2 * ITOGGLE_MARGIN;
     char* check_image = iupAttribGet(ih, "CHECKIMAGE");
+
+    if (check_alig == IUP_ALIGN_ABOTTOM)
+    {
+      check_ymin = ih->currentheight - 1 - ITOGGLE_MARGIN;
+      yc = ih->currentheight - 1 - ITOGGLE_MARGIN - ih->data->check_size / 2;
+    }
+    else if (check_alig == IUP_ALIGN_ATOP)
+    {
+      check_ymin = ITOGGLE_MARGIN;
+      yc = ih->data->check_size / 2;
+    }
 
     if (check_image)
     {
@@ -817,6 +829,7 @@ Iclass* iupFlatToggleNewClass(void)
   iupClassRegisterAttribute(ic, "CHECKRIGHT", NULL, NULL, NULL, NULL, IUPAF_NO_INHERIT);
   iupClassRegisterAttribute(ic, "CHECKSIZE", iFlatToggleGetCheckSizeAttrib, iFlatToggleSetCheckSizeAttrib, NULL, NULL, IUPAF_NOT_MAPPED);
   iupClassRegisterAttribute(ic, "CHECKSPACING", iFlatToggleGetCheckSpacingAttrib, iFlatToggleSetCheckSpacingAttrib, IUPAF_SAMEASSYSTEM, "5", IUPAF_NOT_MAPPED);
+  iupClassRegisterAttribute(ic, "CHECKALIGN", NULL, NULL, IUPAF_SAMEASSYSTEM, "ACENTER", IUPAF_NO_INHERIT);
   iupClassRegisterAttribute(ic, "CHECKBGCOLOR", NULL, NULL, IUPAF_SAMEASSYSTEM, "TXTBGCOLOR", IUPAF_NO_INHERIT);
   iupClassRegisterAttribute(ic, "CHECKFGCOLOR", NULL, NULL, NULL, NULL, IUPAF_NO_INHERIT);
   iupClassRegisterAttribute(ic, "CHECKHLCOLOR", NULL, NULL, NULL, NULL, IUPAF_NO_INHERIT);
