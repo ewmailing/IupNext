@@ -2944,13 +2944,6 @@ static int iLayoutDialogKAny_CB(Ihandle* dlg, int key)
   return IUP_DEFAULT;
 }
 
-static int iLayoutDialogShow_CB(Ihandle* dlg, int state)
-{
-  if (state == IUP_SHOW)
-    IupSetAttribute(dlg, "RASTERSIZE", NULL);
-  return IUP_DEFAULT;
-}
-
 static int iLayoutDialogClose_CB(Ihandle* dlg)
 {
   if (IupGetInt(dlg, "DESTROYWHENCLOSED"))
@@ -3003,7 +2996,8 @@ Ihandle* IupLayoutDialog(Ihandle* dialog)
   tree = IupTree();
   layoutdlg->tree = tree;
   IupSetAttribute(tree, "NAME", "TREE");
-  IupSetAttribute(tree, "RASTERSIZE", NULL);
+//  IupSetAttribute(tree, "RASTERSIZE", NULL);
+  IupSetAttribute(tree, "USERSIZE", "200x");
   IupSetAttribute(tree, "SHOWDRAGDROP", "Yes");
   IupSetCallback(tree, "SELECTION_CB", (Icallback)iLayoutTreeSelection_CB);
   IupSetCallback(tree, "EXECUTELEAF_CB", (Icallback)iLayoutTreeExecuteLeaf_CB);
@@ -3055,11 +3049,11 @@ Ihandle* IupLayoutDialog(Ihandle* dialog)
 
   dlg = IupDialog(IupVbox(split, status, NULL));
   IupSetAttribute(dlg, "TITLE", "Dialog Layout");
+  IupSetAttribute(dlg, "SHRINK", "Yes");
   IupSetAttribute(dlg, "PARENTDIALOG", IupGetGlobal("PARENTDIALOG"));
   IupSetAttribute(dlg, "TREE", (char*)tree);
   IupSetAttribute(dlg, "ICON", IupGetGlobal("ICON"));
   IupSetCallback(dlg, "DESTROY_CB", iLayoutDialogDestroy_CB);
-  IupSetCallback(dlg, "SHOW_CB", (Icallback)iLayoutDialogShow_CB);
   IupSetCallback(dlg, "K_ANY", (Icallback)iLayoutDialogKAny_CB);
   IupSetCallback(dlg, "CLOSE_CB", iLayoutDialogClose_CB);
   iupAttribSet(dlg, "_IUP_LAYOUTDIALOG", (char*)layoutdlg);
@@ -3072,9 +3066,9 @@ Ihandle* IupLayoutDialog(Ihandle* dialog)
     int w = 0, h = 0;
     IupGetIntInt(layoutdlg->dialog, "RASTERSIZE", &w, &h);
     if (w && h)
-      IupSetfAttribute(dlg, "RASTERSIZE", "%dx%d", (int)(w*1.3), h);
+      IupSetfAttribute(canvas, "USERSIZE", "%dx%d", w, h);
     else
-      IupSetAttribute(dlg, "SIZE", "HALFxHALF");
+      IupSetAttribute(canvas, "USERSIZE", "600x400");
   }
 
   IupMap(dlg);
