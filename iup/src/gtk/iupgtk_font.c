@@ -98,7 +98,7 @@ static IgtkFont* gtkFindFont(const char *font)
 
   /* not found, create a new one */
   {
-    int size = 0, is_pango = 0;
+    int size = 8, is_pango = 0;
     int is_bold = 0,
       is_italic = 0;
     char typeface[1024];
