@@ -460,7 +460,7 @@ function item_statusbar:action()
 end
 
 function item_about:action()
-  iup.Message("About", "   Simple Notepad\n\nAutors:\n   Gustavo Lyrio\n   Antonio Scuri")
+  iup.Message("About", "   Simple Notepad\n\nAuthors:\n   Gustavo Lyrio\n   Antonio Scuri")
 end
 
 

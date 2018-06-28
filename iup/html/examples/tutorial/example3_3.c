@@ -114,7 +114,7 @@ int font_cb(void)
 
 int about_cb(void) 
 {
-  IupMessage("About", "   Simple Notepad\n\nAutors:\n   Gustavo Lyrio\n   Antonio Scuri");
+  IupMessage("About", "   Simple Notepad\n\nAuthors:\n   Gustavo Lyrio\n   Antonio Scuri");
   return IUP_DEFAULT;
 }
 

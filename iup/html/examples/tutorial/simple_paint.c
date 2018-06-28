@@ -1686,7 +1686,7 @@ int item_help_action_cb(void)
 
 int item_about_action_cb(void)
 {
-  IupMessage("About", "   Simple Paint\n\nAutors:\n   Gustavo Lyrio\n   Antonio Scuri");
+  IupMessage("About", "   Simple Paint\n\nAuthors:\n   Gustavo Lyrio\n   Antonio Scuri");
   return IUP_DEFAULT;
 }
 

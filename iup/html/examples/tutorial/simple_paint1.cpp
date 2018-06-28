@@ -2035,7 +2035,7 @@ int SimplePaint::ItemHelpActionCallback(Ihandle*)
 
 int SimplePaint::ItemAboutActionCallback(Ihandle*)
 {
-  IupMessage("About", "   Simple Paint\n\nAutors:\n   Gustavo Lyrio\n   Antonio Scuri");
+  IupMessage("About", "   Simple Paint\n\nAuthors:\n   Gustavo Lyrio\n   Antonio Scuri");
   return IUP_DEFAULT;
 }
 

@@ -1682,7 +1682,7 @@ int item_help_action_cb(void)
 
 int item_about_action_cb(void)
 {
-  IupMessage("About", "   Scintilla Notepad\n\nAutors:\n   Camilo Freire\n   Antonio Scuri");
+  IupMessage("About", "   Scintilla Notepad\n\nAuthors:\n   Camilo Freire\n   Antonio Scuri");
   return IUP_DEFAULT;
 }
 

@@ -369,7 +369,7 @@ int item_font_action_cb(Ihandle* item_font)
 
 int item_about_action_cb(void)
 {
-  IupMessage("About", "   Simple Notepad\n\nAutors:\n   Gustavo Lyrio\n   Antonio Scuri");
+  IupMessage("About", "   Simple Notepad\n\nAuthors:\n   Gustavo Lyrio\n   Antonio Scuri");
   return IUP_DEFAULT;
 }
 
