@@ -170,7 +170,7 @@ static IgtkFont* gtkFindFont(const char *font)
   fonts[i].charwidth = iupGTK_PANGOUNITS2PIXELS(fonts[i].charwidth);
   pango_font_metrics_unref(metrics); 
 
-  gtkFontUpdateLayout(&(fonts[i]), fonts[i].layout);
+  gtkFontUpdateLayout(&(fonts[i]), fonts[i].layout);  /* for strikeout and underline */
 
   return &fonts[i];
 }
@@ -227,7 +227,7 @@ static void gtkFontUpdateWidget(Ihandle* ih, GtkWidget* widget, PangoFontDescrip
   {
     /* TODO: This is NOT working. */
     PangoLayout* layout = gtk_entry_get_layout(GTK_ENTRY(widget));
-    gtkFontUpdateLayout(gtkfont, layout);
+    gtkFontUpdateLayout(gtkfont, layout);  /* for strikeout and underline */
   }
 }
 
