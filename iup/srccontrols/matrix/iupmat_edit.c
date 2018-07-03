@@ -151,7 +151,7 @@ static void iMatrixEditInitMenu(Ihandle* ih_menu)
 
       char* img = IupGetAttributeId(ih_menu, "IMAGE", i);
       if (img)
-        IupSetAttribute(item, "IMAGE", img);
+        IupSetStrAttribute(item, "IMAGE", img);
 
       IupSetCallback(item, "ACTION", (Icallback)iMatrixMenuItemAction_CB);
 

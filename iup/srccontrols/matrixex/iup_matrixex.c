@@ -963,7 +963,7 @@ static int iMatrixExKeyPress_CB(Ihandle* ih, int c, int press)
           else if (iupStrEqualNoCase(direction, "TOPLEFT"))
             iupAttribSet(ih, "FINDDIRECTION", "BOTTOMRIGHT");
 
-          IupSetAttribute(ih, "FIND", find);
+          IupSetStrAttribute(ih, "FIND", find);
         }
         return IUP_IGNORE;
       }
@@ -979,7 +979,7 @@ static int iMatrixExKeyPress_CB(Ihandle* ih, int c, int press)
           else if (iupStrEqualNoCase(direction, "BOTTOMRIGHT"))
             iupAttribSet(ih, "FINDDIRECTION", "TOPLEFT");
 
-          IupSetAttribute(ih, "FIND", find);
+          IupSetStrAttribute(ih, "FIND", find);
         }
         return IUP_IGNORE;
       }
