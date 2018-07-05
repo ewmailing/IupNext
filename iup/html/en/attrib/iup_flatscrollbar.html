@@ -51,10 +51,13 @@ scrollbar is shown only when used, over the space it occupied. Move the mouse ov
 the scrollbar area to show the 
 scrollbars. They are automatically hidden after not being used by the time defined in 
 FLOATINGDELAY.</p>
+<p><strong>SHOWTRANSPARENT</strong> (<font SIZE="3">non inheritable</font>): 
+This makes the flat scrollbar semi transparent and only interactive trough its 
+handler. It implies in SHOWARROWS=NO and SHOWFLATING=Yes. (since 3.26)</p>
 <p><strong>FLOATINGDELAY</strong> (<font SIZE="3">non inheritable</font>): time 
 to hide the scrollbar when SHOWFLOATING=Yes in milliseconds. Default: 2000.</p>
 <p><strong>ARROWIMAGES</strong> (<font SIZE="3">non inheritable</font>): replace 
-the drawn arrows by the following images. Default: No.</p>
+the drawn arrows by the following images.</p>
 <p><strong>SB_IMAGELEFT, SB_IMAGERIGHT, SB_IMAGETOP, SB_IMAGEBOTTOM</strong> (<font SIZE="3">non inheritable</font>):
   Arrow image name (the attribute is relative to where the arrow is pointing). Use
 	<a href="../func/iupsethandle.html">IupSetHandle</a> or

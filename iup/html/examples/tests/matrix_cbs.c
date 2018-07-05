@@ -250,6 +250,7 @@ static Ihandle *create_mat(int mati)
 
   IupSetAttribute(mat, "FLATSCROLLBAR", "Yes");
 //  IupSetAttribute(mat, "SHOWFLOATING", "Yes");
+  IupSetAttribute(mat, "SHOWTRANSPARENT", "Yes");
 
   return mat;
 }
