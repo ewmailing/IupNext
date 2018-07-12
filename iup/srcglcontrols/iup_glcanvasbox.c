@@ -338,7 +338,7 @@ static void iGLCanvasBoxComputeNaturalSizeMethod(Ihandle* ih, int *w, int *h, in
     iupBaseComputeNaturalSize(child);
   }
 
-  /* use this to overwrite container behavior in iupBaseComputeNaturalSize */
+  /* Also set expand to its own expand so it will not depend on children */
   *children_expand = ih->expand;
 
   (void)w;

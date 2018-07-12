@@ -102,7 +102,7 @@ static void iBackgroundBoxComputeNaturalSizeMethod(Ihandle* ih, int *w, int *h, 
 {
   if (iupAttribGetBoolean(ih, "CANVASBOX"))
   {
-    /* use this to overwrite container behavior in iupBaseComputeNaturalSize */
+    /* Also set expand to its own expand so it will not depend on children */
     *children_expand = ih->expand;
   }
 

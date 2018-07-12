@@ -185,20 +185,21 @@ static int iScrollBoxSetExpandAttrib(Ihandle* ih, const char* value)
 
 static void iScrollBoxComputeNaturalSizeMethod(Ihandle* ih, int *w, int *h, int *children_expand)
 {
-  if (ih->firstchild)
+  Ihandle* child = ih->firstchild;
+  if (child)
   {
     /* update child natural size first */
-    iupBaseComputeNaturalSize(ih->firstchild);
+    iupBaseComputeNaturalSize(child);
   }
 
   if (!iupAttribGetBoolean(ih, "CANVASBOX"))
   {
     /* ScrollBox size does not depends on the child size,
      its natural size must be 0 to be free of restrictions. */
-    if (ih->currentwidth == 0 && ih->currentheight == 0 && ih->firstchild)
+    if (ih->currentwidth == 0 && ih->currentheight == 0 && child)
     {
-      *w = ih->firstchild->naturalwidth;
-      *h = ih->firstchild->naturalheight;
+      *w = child->naturalwidth;
+      *h = child->naturalheight;
     }
     else
     {
