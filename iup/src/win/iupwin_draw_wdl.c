@@ -155,10 +155,11 @@ void iupdrvDrawKillCanvas(IdrawCanvas* dc)
     return;
   }
 
+  wdSetClip(dc->hCanvas, NULL, NULL); /* must reset clip before destroy */
+  wdDestroyCanvas(dc->hCanvas);
+
   if (dc->hDC)
     ReleaseDC(dc->hWnd, dc->hDC);  /* to match GetDC */
-
-  wdDestroyCanvas(dc->hCanvas);
 
   memset(dc, 0, sizeof(IdrawCanvas));
   free(dc);
