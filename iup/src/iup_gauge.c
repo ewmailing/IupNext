@@ -73,29 +73,29 @@ static void iGaugeDrawText(Ihandle* ih, int xmid, int w, int h, long fgcolor)
   x -= text_w / 2;
   y -= text_h / 2;
   xmin = x;
-  ymin = y + text_h;
-  xmax = xmin + text_w;
-  ymax = y;
+  xmax = x + text_w;
+  ymin = y;
+  ymax = y + text_h;
 
   if(xmid < xmin)
   {
     iupDrawSetColor(ih, "DRAWCOLOR", fgcolor);
-    IupDrawText(ih, text, 0, x, y, -1, -1);
+    IupDrawText(ih, text, 0, x, y, text_w, text_h);
   }
   else if(xmid > xmax)
   {
     iupDrawSetColor(ih, "DRAWCOLOR", ih->data->bgcolor);
-    IupDrawText(ih, text, 0, x, y, -1, -1);
+    IupDrawText(ih, text, 0, x, y, text_w, text_h);
   }
   else
   {
     IupDrawSetClipRect(ih, xmin, ymin, xmid, ymax);
     iupDrawSetColor(ih, "DRAWCOLOR", ih->data->bgcolor);
-    IupDrawText(ih, text, 0, x, y, -1, -1);
+    IupDrawText(ih, text, 0, x, y, text_w, text_h);
 
     IupDrawSetClipRect(ih, xmid, ymin, xmax, ymax);
     iupDrawSetColor(ih, "DRAWCOLOR", fgcolor);
-    IupDrawText(ih, text, 0, x, y, -1, -1);
+    IupDrawText(ih, text, 0, x, y, text_w, text_h);
     IupDrawResetClip(ih);
   }
 }
