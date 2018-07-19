@@ -127,8 +127,8 @@ static void iHboxComputeNaturalSizeMethod(Ihandle* ih, int *w, int *h, int *chil
     children_natural_width = children_natural_maxwidth*children_count;
 
   /* compute the Hbox contents natural size */
-  total_natural_width  = children_natural_width + (children_count-1)*ih->data->gap + 2*ih->data->margin_x;
-  total_natural_height = children_natural_maxheight + 2*ih->data->margin_y;
+  total_natural_width  = children_natural_width + (children_count-1)*ih->data->gap + 2*ih->data->margin_horiz;
+  total_natural_height = children_natural_maxheight + 2*ih->data->margin_vert;
 
   /* Store to be used in iHboxCalcEmptyWidth */
   ih->data->total_natural_size = total_natural_width;
@@ -152,7 +152,7 @@ static int iHboxCalcHomogeneousWidth(Ihandle *ih)
     return 0;
 
   /* equal spaces for all elements */
-  homogeneous_width = (ih->currentwidth - (children_count-1)*ih->data->gap - 2*ih->data->margin_x)/children_count;
+  homogeneous_width = (ih->currentwidth - (children_count-1)*ih->data->gap - 2*ih->data->margin_horiz)/children_count;
   if (homogeneous_width<0) homogeneous_width = 0;
   return homogeneous_width;
 }
@@ -199,7 +199,7 @@ static void iHboxSetChildrenCurrentSizeMethod(Ihandle* ih, int shrink)
       empty_w0 = iHboxCalcEmptyWidth(ih, IUP_EXPAND_W0);
   }
 
-  client_height = ih->currentheight - 2*ih->data->margin_y;
+  client_height = ih->currentheight - 2*ih->data->margin_vert;
   if (client_height<0) client_height=0;
 
   for (child = ih->firstchild; child; child = child->brother)
@@ -234,10 +234,10 @@ static void iHboxSetChildrenPositionMethod(Ihandle* ih, int x, int y)
   int dy, client_height;
   Ihandle* child;
 
-  x += ih->data->margin_x;
-  y += ih->data->margin_y;
+  x += ih->data->margin_horiz;
+  y += ih->data->margin_vert;
 
-  client_height = ih->currentheight - 2*ih->data->margin_y;
+  client_height = ih->currentheight - 2*ih->data->margin_vert;
   if (client_height<0) client_height=0;
 
   for (child = ih->firstchild; child; child = child->brother)
