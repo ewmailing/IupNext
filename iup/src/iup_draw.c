@@ -789,7 +789,7 @@ void iupFlatDrawGetIconSize(Ihandle* ih, int img_position, int spacing, int hori
   *h += 2 * vert_padding;
 
   /* leave room for focus feedback */
-  if (ih->iclass->is_interactive && iupAttribGetBoolean(ih, "CANFOCUS"))
+  if (ih->iclass->is_interactive && iupAttribGetBoolean(ih, "CANFOCUS") && iupAttribGetBoolean(ih, "FOCUSFEEDBACK"))
   {
     *w += 2 * 2;
     *h += 2 * 2;
