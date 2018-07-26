@@ -75,6 +75,7 @@ static int iDropButtonRedraw_CB(Ihandle* ih)
   int drop_onarrow = iupAttribGetBoolean(ih, "DROPONARROW");
   int arrow_active = iupAttribGetBoolean(ih, "ARROWACTIVE");
   int arrow_images = iupAttribGetInt(ih, "ARROWIMAGES");
+  int focus_feedback = iupAttribGetBoolean(ih, "FOCUSFEEDBACK");
   IdrawCanvas* dc = iupdrvDrawCreateCanvas(ih);
   int make_inactive = 0;
   char* bgcolor_button, *bgcolor_arrow;
@@ -196,7 +197,7 @@ static int iDropButtonRedraw_CB(Ihandle* ih)
   }
 
   /* reserve space for focus feedback (after background draw) */
-  if (iupAttribGetBoolean(ih, "CANFOCUS"))
+  if (iupAttribGetBoolean(ih, "CANFOCUS") && focus_feedback)
     border_width++;
 
   draw_image = iupFlatGetImageName(ih, "IMAGE", image, image_pressed, ih->data->highlighted, active, &make_inactive);
@@ -243,7 +244,7 @@ static int iDropButtonRedraw_CB(Ihandle* ih)
                          ih->data->arrow_size - 2 * ih->data->arrow_padding, arrow_color, bgcolor_arrow, arrow_active, IUPDRAW_ARROW_BOTTOM);
   }
 
-  if (ih->data->has_focus)
+  if (ih->data->has_focus && focus_feedback)
   {
     border_width--;
     iupdrvDrawFocusRect(dc, border_width, border_width, ih->currentwidth - 1 - border_width, ih->currentheight - 1 - border_width);
@@ -869,6 +870,7 @@ Iclass* iupDropButtonNewClass(void)
   iupClassRegisterAttribute(ic, "PRESSED", iDropButtonGetPressedAttrib, NULL, NULL, NULL, IUPAF_READONLY | IUPAF_NO_INHERIT);
   iupClassRegisterAttribute(ic, "HASFOCUS", iDropButtonGetHasFocusAttrib, NULL, NULL, NULL, IUPAF_READONLY | IUPAF_NO_INHERIT);
   iupClassRegisterAttribute(ic, "SHOWBORDER", NULL, NULL, NULL, NULL, IUPAF_NO_INHERIT);
+  iupClassRegisterAttribute(ic, "FOCUSFEEDBACK", NULL, NULL, IUPAF_SAMEASSYSTEM, "YES", IUPAF_NOT_MAPPED | IUPAF_NO_INHERIT);
 
   iupClassRegisterAttribute(ic, "BORDERCOLOR", NULL, NULL, IUPAF_SAMEASSYSTEM, "50 150 255", IUPAF_DEFAULT);  /* inheritable */
   iupClassRegisterAttribute(ic, "BORDERPSCOLOR", NULL, NULL, NULL, NULL, IUPAF_DEFAULT);  /* inheritable */
