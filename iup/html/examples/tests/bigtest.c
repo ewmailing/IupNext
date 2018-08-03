@@ -48,6 +48,7 @@ void MatrixCbsTest(void);
 void MdiTest(void);
 void VboxTest(void);
 void GridBoxTest(void);
+void MultiBoxTest(void);
 void MenuTest(void);
 void ColorBrowserTest(void);
 void ColorbarTest(void);
@@ -159,7 +160,8 @@ static TestItems test_list[] = {
   {"GetColor", GetColorTest},
   {"GetParam", GetParamTest},
   {"GridBox", GridBoxTest},
-  {"Help", HelpTest},
+  { "MultiBox", MultiBoxTest },
+  { "Help", HelpTest },
   {"Hbox", HboxTest},
   {"Idle", IdleTest},
   {"Label", LabelTest},

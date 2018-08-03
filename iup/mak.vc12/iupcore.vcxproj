@@ -135,6 +135,7 @@
     <ClCompile Include="..\src\iup_mask.c" />
     <ClCompile Include="..\src\iup_maskmatch.c" />
     <ClCompile Include="..\src\iup_maskparse.c" />
+    <ClCompile Include="..\src\iup_multibox.c" />
     <ClCompile Include="..\src\iup_names.c" />
     <ClCompile Include="..\src\iup_object.c" />
     <ClCompile Include="..\src\iup_open.c" />

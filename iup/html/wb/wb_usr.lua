@@ -1223,6 +1223,10 @@ wb_usr.tree =
               link= "elem/iupgridbox.html"
             },
             {
+              name= {nl= "IupMultiBox"},
+              link= "elem/iupmultibox.html"
+            },
+            {
               name= {nl= "IupHbox"},
               link= "elem/iuphbox.html"
             },

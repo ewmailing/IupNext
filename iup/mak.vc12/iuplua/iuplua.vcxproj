@@ -132,6 +132,7 @@
     <ClCompile Include="..\..\srclua5\elem\il_list.c" />
     <ClCompile Include="..\..\srclua5\elem\il_menu.c" />
     <ClCompile Include="..\..\srclua5\elem\il_messagedlg.c" />
+    <ClCompile Include="..\..\srclua5\elem\il_multibox.c" />
     <ClCompile Include="..\..\srclua5\elem\il_multiline.c" />
     <ClCompile Include="..\..\srclua5\elem\il_normalizer.c" />
     <ClCompile Include="..\..\srclua5\elem\il_param.c" />
@@ -208,6 +209,7 @@
     <None Include="..\..\srclua5\elem\list.lua" />
     <None Include="..\..\srclua5\elem\menu.lua" />
     <None Include="..\..\srclua5\elem\messagedlg.lua" />
+    <None Include="..\..\srclua5\elem\multibox.lua" />
     <None Include="..\..\srclua5\elem\multiline.lua" />
     <None Include="..\..\srclua5\elem\normalizer.lua" />
     <None Include="..\..\srclua5\elem\param.lua" />

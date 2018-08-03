@@ -704,6 +704,16 @@ namespace Iup
     GridBox(const GridBox& box) : Container(box.GetHandle()) {}
     GridBox(Ihandle* _ih) : Container(_ih) {}
   };
+  class MultiBox : public Container
+  {
+  public:
+    MultiBox() : Container(IupMultiBox(0)) {}
+    MultiBox(Control child0, Control child1 = (Ihandle*)0, Control child2 = (Ihandle*)0, Control child3 = (Ihandle*)0, Control child4 = (Ihandle*)0, Control child5 = (Ihandle*)0, Control child6 = (Ihandle*)0, Control child7 = (Ihandle*)0, Control child8 = (Ihandle*)0, Control child9 = (Ihandle*)0)
+      : Container(IupMultiBox(0), child0, child1, child2, child3, child4, child5, child6, child7, child8, child9) {}
+    MultiBox(const Control *child_array, int count) : Container(IupMultiBox(0), child_array, count) {}
+    MultiBox(const MultiBox& box) : Container(box.GetHandle()) {}
+    MultiBox(Ihandle* _ih) : Container(_ih) {}
+  };
   class ParamBox : public Container
   {
   public:

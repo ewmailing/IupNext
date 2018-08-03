@@ -1345,6 +1345,7 @@ int iuplua_open(lua_State * L)
   iupspinboxlua_open(L);
   iupscrollboxlua_open(L);
   iupgridboxlua_open(L);
+  iupmultiboxlua_open(L);
   iupexpanderlua_open(L);
   iuplinklua_open(L);
   iupcboxlua_open(L);

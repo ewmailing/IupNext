@@ -184,6 +184,7 @@
     <ClCompile Include="..\html\examples\tests\menu.c" />
     <ClCompile Include="..\html\examples\tests\mgllabel.c" />
     <ClCompile Include="..\html\examples\tests\mglplot.c" />
+    <ClCompile Include="..\html\examples\tests\multibox.c" />
     <ClCompile Include="..\html\examples\tests\ole.cpp" />
     <ClCompile Include="..\html\examples\tests\plot.c" />
     <ClCompile Include="..\html\examples\tests\predialogs.c" />

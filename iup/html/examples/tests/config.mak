@@ -81,6 +81,7 @@ SRC += clipboard.c
 SRC += split.c
 SRC += link.c
 SRC += gridbox.c
+SRC += multibox.c
 SRC += expander.c
 SRC += cbox.c
 SRC += detachbox.c

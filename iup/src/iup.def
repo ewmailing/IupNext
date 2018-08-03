@@ -148,6 +148,9 @@ IupCboxv
 IupCbox
 IupGridBox 
 IupGridBoxv
+IupMultiBoxv
+IupMultiBoxV
+IupMultiBox
 IupVal
 IupProgressBar
 IupTabs
