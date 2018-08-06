@@ -280,8 +280,11 @@ static void iMultiBoxSetChildrenCurrentSizeMethod(Ihandle* ih, int shrink)
         if (child_height > lin_height)
           lin_height = child_height;
 
-        if (new_lin_width > ih->currentwidth || line_break)
+        if (new_lin_width > ih->currentwidth - 2 * ih->data->margin_horiz || line_break)
         {
+          if (!line_break && prev_child)
+            iupAttribSet(prev_child, "_IUPMB_LINEBREAK", "1");
+
           num_lin++;
 
           total_height += lin_height + ih->data->gap_vert;
@@ -295,6 +298,9 @@ static void iMultiBoxSetChildrenCurrentSizeMethod(Ihandle* ih, int shrink)
         }
         else
         {
+          if (prev_child)
+            iupAttribSet(prev_child, "_IUPMB_LINEBREAK", NULL);
+
           num_col++;
           lin_width = new_lin_width;
           if (num_col > 1)
@@ -310,8 +316,11 @@ static void iMultiBoxSetChildrenCurrentSizeMethod(Ihandle* ih, int shrink)
         if (child_width > col_width)
           col_width = child_width;
 
-        if (new_col_height > ih->currentheight || column_break)
+        if (new_col_height > ih->currentheight - 2 * ih->data->margin_vert || column_break)
         {
+          if (!column_break && prev_child)
+            iupAttribSet(prev_child, "_IUPMB_COLUMNBREAK", "1");
+
           num_col++;
 
           total_width += col_width + ih->data->gap_horiz;
@@ -325,6 +334,9 @@ static void iMultiBoxSetChildrenCurrentSizeMethod(Ihandle* ih, int shrink)
         }
         else
         {
+          if (prev_child)
+            iupAttribSet(prev_child, "_IUPMB_COLUMNBREAK", NULL);
+
           num_lin++;
           col_height = new_col_height;
           if (num_lin > 1)
@@ -367,10 +379,8 @@ static void iMultiBoxSetChildrenCurrentSizeMethod(Ihandle* ih, int shrink)
 
 static void iMultiBoxSetChildrenPositionMethod(Ihandle* ih, int x, int y)
 {
-  Ihandle* child, *prev_child = NULL;
-  int lin_width = 0;
+  Ihandle* child;
   int lin_height = 0;
-  int col_height = 0;
   int col_width = 0;
   int child_min_width = 0, child_min_height = 0;
   int child_width, child_height;
@@ -379,7 +389,7 @@ static void iMultiBoxSetChildrenPositionMethod(Ihandle* ih, int x, int y)
 
   iupAttribGetIntInt(ih, "CHILDMINSPACE", &child_min_width, &child_min_height, 'x');
 
-  for (child = ih->firstchild; child; prev_child = child, child = child->brother)
+  for (child = ih->firstchild; child; child = child->brother)
   {
     if (!(child->flags & IUP_FLOATING_IGNORE))
     {
@@ -396,50 +406,46 @@ static void iMultiBoxSetChildrenPositionMethod(Ihandle* ih, int x, int y)
 
       if (ih->data->orientation == IMBOX_HORIZONTAL)
       {
-        int line_break = iupStrBoolean(iupAttribGet(prev_child, "LINEBREAK")); /* no inherit, no default */
-
-        int new_lin_width = lin_width + child_width;
+        int line_break = iupStrBoolean(iupAttribGet(child, "LINEBREAK")); /* no inherit, no default */
+        if (!line_break)
+          line_break = iupAttribGetInt(child, "_IUPMB_LINEBREAK");
 
         if (child_height > lin_height)
           lin_height = child_height;
 
-        if (new_lin_width > ih->currentwidth || line_break)
+        if (line_break)
         {
           dx = ih->data->margin_horiz;
           dy += lin_height + ih->data->gap_vert;
 
           /* re-start */
-          lin_width = child_width;
           lin_height = 0;
         }
         else
         {
-          lin_width = new_lin_width;
           dx += child_width + ih->data->gap_horiz;
         }
       }
       else
       {
-        int column_break = iupStrBoolean(iupAttribGet(prev_child, "COLUMNBREAK")); /* no inherit, no default */
-
-        int new_col_height = col_height + child_height;
+        int column_break = iupStrBoolean(iupAttribGet(child, "COLUMNBREAK")); /* no inherit, no default */
+        if (!column_break)
+          column_break = iupAttribGetInt(child, "_IUPMB_COLUMNBREAK");
 
         if (child_width > col_width)
           col_width = child_width;
 
-        if (new_col_height > ih->currentheight || column_break)
+        if (column_break)
         {
           dx += col_width + ih->data->gap_horiz;
           dy = ih->data->margin_vert;
 
           /* re-start */
-          col_height = child_height;
           col_width = 0;
         }
         else
         {
-          col_height = new_col_height;
-          dy += ih->data->gap_vert + ih->data->gap_horiz;
+          dy += child_height + ih->data->gap_vert;
         }
       }
     }
