@@ -8,6 +8,7 @@ void MultiBoxTest(void)
   Ihandle *fr1;
   Ihandle *mbox;
 
+//  fr1 = IupScrollBox
   fr1 = IupFrame
   (
     mbox = IupMultiBox
@@ -18,7 +19,7 @@ void MultiBoxTest(void)
 
       IupSetAttributes(IupLabel("very long element 4"), "FONTSTYLE=Bold"),
       IupSetAttributes(IupLabel("elem 5"), "XSIZE=50x12"),
-      IupSetAttributes(IupButton("element 6", NULL), "XSIZE=50"),
+      IupSetAttributes(IupButton("element 6", NULL), "XSIZE=50, LINEBREAK=Yes"),
 
       IupSetAttributes(IupLabel("label 7"), "FONTSTYLE=Bold"),
       IupSetAttributes(IupLabel("label 8"), "XSIZE=x12"),
@@ -32,9 +33,7 @@ void MultiBoxTest(void)
   );
   
 //  IupSetAttribute(mbox, "ORIENTATION", "VERTICAL");
-
 //  IupSetAttribute(mbox, "SIZE", "70x");
-
 //  IupSetAttribute(mbox, "ALIGNMENTLIN", "ACENTER");
   IupSetAttribute(mbox, "MARGIN", "10x10");
   IupSetAttribute(mbox, "GAPHORIZ", "5");

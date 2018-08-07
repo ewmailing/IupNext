@@ -45,6 +45,16 @@
   Because of that its elements can overlap other elements in the dialog, so the 
   ideal combination is to put the <strong>IupMultiBox</strong> inside an
   <a href="iupscrollbox.html">IupScrollBox</a>.</p>
+<p>
+  IMPORTANT: the actual element distribution in the container is done only after 
+  the natural size of the dialog is computed because it needs the current with 
+  or height to determine which elements will fit in the current space according 
+  to the orientation. The first time the multibox natural size is computed it 
+  returns simply the largest width and the highest height among the children. 
+  The next time it will use the size previously calculated with the line/column 
+  breaks, to avoid obtaining an outdated layout call <strong>IupRefresh</strong> 
+  or <strong>IupMap</strong> before showing the dialog (when the layout will be 
+  updated again). </p>
 <p>It does not have a native representation.</p>
 
 <h3><a name="Creation">Creation</a></h3>
@@ -138,7 +148,7 @@ break after the child when ORIENTATION=VERTICAL. </p>
 <a href="../func/iupinsert.html">IupInsert</a>.</p>
 <p>The box will NOT expand its children in any condition.</p>
 <p>The number of elements in a line when ORIENTATION=HORIZONTAL can be very 
-different depending on the children sizes. The same for elements in a column 
+different depending on the children sizes and line/column breaks. The same for elements in a column 
 when ORIENTATION=VERTICAL.</p>
 
 <h3><a name="Examples">Examples</a></h3>
@@ -148,8 +158,8 @@ when ORIENTATION=VERTICAL.</p>
   <center>
   <table border="0" cellpadding="6" cellspacing="0" style="border-collapse: collapse" bordercolor="#111111">
     <tr>
-      <td valign="top"><br><img src="images/iupmultibox.png"></td>
-      <td valign="top">ORIENTATION=VERTICAL<br> <img src="images/iupmultibox_vertical.png"></td>
+      <td valign="top"><img src="images/iupmultibox1.png"></td>
+      <td valign="top"><img src="images/iupmultibox2.png"></td>
     </tr>
   </table>
   </center>
