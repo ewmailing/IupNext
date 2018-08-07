@@ -213,8 +213,8 @@ static void iMultiBoxComputeNaturalSizeMethod(Ihandle* ih, int *w, int *h, int *
   *children_expand = ih->expand;
 
   /* at least will have this size, use it as a minimum size */
-  *w = max_width;  
-  *h = max_height;
+  *w = max_width + 2 * ih->data->margin_horiz;
+  *h = max_height + 2 * ih->data->margin_vert;
 
   if (ih->data->orientation == IMBOX_HORIZONTAL)
   {
@@ -249,6 +249,9 @@ static void iMultiBoxSetChildrenCurrentSizeMethod(Ihandle* ih, int shrink)
   {
     if (!(child->flags & IUP_FLOATING_IGNORE))
     {
+      /* child here can belong to the current line or column, 
+         OR can be placed in the next one */
+
       /* CHILDMAXSIZE affects child current size */
       child_width = child->naturalwidth; 
       child_height = child->naturalheight;
@@ -277,9 +280,6 @@ static void iMultiBoxSetChildrenCurrentSizeMethod(Ihandle* ih, int shrink)
 
         int new_lin_width = lin_width + child_width;
 
-        if (child_height > lin_height)
-          lin_height = child_height;
-
         if (new_lin_width > ih->currentwidth - 2 * ih->data->margin_horiz || line_break)
         {
           if (!line_break && prev_child)
@@ -291,15 +291,18 @@ static void iMultiBoxSetChildrenCurrentSizeMethod(Ihandle* ih, int shrink)
           if (lin_width > total_width)
             total_width = lin_width;
 
-          /* re-start */
+          /* next line */
           num_col = 1;
           lin_width = child_width;
-          lin_height = 0;
+          lin_height = child_height;
         }
         else
         {
           if (prev_child)
             iupAttribSet(prev_child, "_IUPMB_LINEBREAK", NULL);
+
+          if (child_height > lin_height)
+            lin_height = child_height;
 
           num_col++;
           lin_width = new_lin_width;
@@ -313,9 +316,6 @@ static void iMultiBoxSetChildrenCurrentSizeMethod(Ihandle* ih, int shrink)
 
         int new_col_height = col_height + child_height;
 
-        if (child_width > col_width)
-          col_width = child_width;
-
         if (new_col_height > ih->currentheight - 2 * ih->data->margin_vert || column_break)
         {
           if (!column_break && prev_child)
@@ -327,15 +327,18 @@ static void iMultiBoxSetChildrenCurrentSizeMethod(Ihandle* ih, int shrink)
           if (col_height > total_height)
             total_height = col_height;
 
-          /* re-start */
+          /* next column */
           num_lin = 1;
           col_height = child_height;
-          col_width = 0;
+          col_width = child_width;
         }
         else
         {
           if (prev_child)
             iupAttribSet(prev_child, "_IUPMB_COLUMNBREAK", NULL);
+
+          if (child_width > col_width)
+            col_width = child_width;
 
           num_lin++;
           col_height = new_col_height;
@@ -393,6 +396,8 @@ static void iMultiBoxSetChildrenPositionMethod(Ihandle* ih, int x, int y)
   {
     if (!(child->flags & IUP_FLOATING_IGNORE))
     {
+      /* child here belongs to the current line or column */
+
       iupBaseSetPosition(child, x + dx, y + dy);
 
       /* CHILDMINSPACE affects child used space size, but does not affect the child size */
