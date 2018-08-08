@@ -2,14 +2,21 @@
 #include <stdio.h>
 #include "iup.h"
 #include "cd.h"
+
+//#define USE_IUPDRAW
+#ifdef USE_IUPDRAW
+#include "iupdraw_cd.h"
+#else
 #include "cdiup.h"
-#include "cddbuf.h"
+#endif
 
 
 static int redraw_cb(Ihandle *ih)
 {
   int width, height;
   cdCanvas *cdcanvas = (cdCanvas*)IupGetAttribute(ih, "_APP_CDCANVAS");
+
+  cdCanvasActivate(cdcanvas);
 
   cdCanvasBackground(cdcanvas, CD_WHITE);
   cdCanvasClear(cdcanvas);
@@ -19,15 +26,7 @@ static int redraw_cb(Ihandle *ih)
   cdCanvasLine(cdcanvas, 0, 0, width-1, height-1);
   cdCanvasLine(cdcanvas, 0, height-1, width-1, 0);
 
-  return IUP_DEFAULT;
-}
-
-static int resize_cb(Ihandle *ih)
-{
-  cdCanvas *cdcanvas = (cdCanvas*)IupGetAttribute(ih, "_APP_CDCANVAS");
-
-  /* update canvas size */
-  cdCanvasActivate(cdcanvas);
+  cdCanvasFlush(cdcanvas);
 
   return IUP_DEFAULT;
 }
@@ -36,7 +35,11 @@ static int map_cb(Ihandle *ih)
 {
   cdCanvas *cdcanvas;
 
+#ifdef USE_IUPDRAW
+  cdcanvas = cdCreateCanvas(CD_IUPDRAW, ih);
+#else
   cdcanvas = cdCreateCanvas(CD_IUP, ih);
+#endif
   if (!cdcanvas)
     return IUP_DEFAULT;
 
@@ -62,7 +65,6 @@ void CanvasCDSimpleTest(void)
   canvas = IupCanvas(NULL);
   IupSetAttribute(canvas, "RASTERSIZE", "300x200"); /* initial size */
 
-  IupSetCallback(canvas, "RESIZE_CB",  (Icallback)resize_cb);
   IupSetCallback(canvas, "ACTION",  (Icallback)redraw_cb);
   IupSetCallback(canvas, "MAP_CB",  (Icallback)map_cb);
   IupSetCallback(canvas, "UNMAP_CB",  (Icallback)unmap_cb);
