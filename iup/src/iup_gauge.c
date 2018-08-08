@@ -162,7 +162,7 @@ static int iGaugeRedraw_CB(Ihandle* ih)
       IupDrawRectangle(ih, xstart, ystart, xmid, yend);
     }
 
-    if(ih->data->show_text)
+    if (ih->data->show_text)
       iGaugeDrawText(ih, xmid, w, h, fgcolor);
   }
 
@@ -224,7 +224,7 @@ static int iGaugeSetValueAttrib(Ihandle* ih, const char* value)
       iGaugeCropValue(ih);
   }
 
-  IupUpdate(ih);
+  IupRedraw(ih, 0); /* redraw now */
   return 0; /* do not store value in hash table */
 }
 
@@ -356,6 +356,9 @@ static int iGaugeCreateMethod(Ihandle* ih, void **params)
   ih->data->dark_shadow = iupDrawColor(128, 128, 128, 255);
   ih->data->flatcolor = iupDrawColor(164, 164, 164, 255);
   ih->data->show_text = 1;
+
+  /* to avoid performance glitches on Windows */
+  iupAttribSet(ih, "DRAWUSEGDI", "YES");
 
   /* IupCanvas callbacks */
   IupSetCallback(ih, "ACTION",    (Icallback)iGaugeRedraw_CB);

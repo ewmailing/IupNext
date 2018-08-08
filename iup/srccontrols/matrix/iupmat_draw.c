@@ -1675,7 +1675,7 @@ int iupMatrixDrawSetRedrawAttrib(Ihandle* ih, const char* value)
   ih->data->need_redraw = 0;
   iupMatrixDrawUpdate(ih);
 #else
-  IupUpdate(ih);
+  IupRedraw(ih, 0);  /* redraw now */
   (void)value;
 #endif
   return 0;

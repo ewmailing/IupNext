@@ -60,7 +60,6 @@ struct _IdrawCanvas{
   WD_HCANVAS hCanvas;
   HDC hDC;
 
-  int use_gdi;
   IdrawCanvas* gdi_dc;
 
   int clip_x1, clip_y1, clip_x2, clip_y2;
@@ -99,7 +98,6 @@ IdrawCanvas* iupdrvDrawCreateCanvas(Ihandle* ih)
 
   if (iupAttribGetBoolean(ih, "DRAWUSEGDI"))
   {
-    dc->use_gdi = 1;
     dc->gdi_dc = iupdrvDrawCreateCanvasGDI(ih);
     return dc;
   }
@@ -146,7 +144,7 @@ IdrawCanvas* iupdrvDrawCreateCanvas(Ihandle* ih)
 
 void iupdrvDrawKillCanvas(IdrawCanvas* dc)
 {
-  if (dc->use_gdi)
+  if (dc->gdi_dc)
   {
     iupdrvDrawKillCanvasGDI(dc->gdi_dc);
 
@@ -170,7 +168,7 @@ void iupdrvDrawUpdateSize(IdrawCanvas* dc)
   int w, h;
   RECT rect;
 
-  if (dc->use_gdi)
+  if (dc->gdi_dc)
   {
     iupdrvDrawUpdateSizeGDI(dc->gdi_dc);
     return;
@@ -191,7 +189,7 @@ void iupdrvDrawUpdateSize(IdrawCanvas* dc)
 
 void iupdrvDrawFlush(IdrawCanvas* dc)
 {
-  if (dc->use_gdi)
+  if (dc->gdi_dc)
   {
     iupdrvDrawFlushGDI(dc->gdi_dc);
     return;
@@ -202,7 +200,7 @@ void iupdrvDrawFlush(IdrawCanvas* dc)
 
 void iupdrvDrawGetSize(IdrawCanvas* dc, int *w, int *h)
 {
-  if (dc->use_gdi)
+  if (dc->gdi_dc)
   {
     iupdrvDrawGetSizeGDI(dc->gdi_dc, w, h);
     return;
@@ -252,7 +250,7 @@ void iupdrvDrawRectangle(IdrawCanvas* dc, int x1, int y1, int x2, int y2, long c
 {
   WD_HBRUSH brush;
 
-  if (dc->use_gdi)
+  if (dc->gdi_dc)
   {
     iupdrvDrawRectangleGDI(dc->gdi_dc, x1, y1, x2, y2, color, style, line_width);
     return;
@@ -280,7 +278,7 @@ void iupdrvDrawLine(IdrawCanvas* dc, int x1, int y1, int x2, int y2, long color,
   WD_HBRUSH brush;
   WD_HSTROKESTYLE stroke_style;
 
-  if (dc->use_gdi)
+  if (dc->gdi_dc)
   {
     iupdrvDrawLineGDI(dc->gdi_dc, x1, y1, x2, y2, color, style, line_width);
     return;
@@ -310,7 +308,7 @@ void iupdrvDrawArc(IdrawCanvas* dc, int x1, int y1, int x2, int y2, double a1, d
   float baseAngle, sweepAngle;
   WD_HBRUSH brush;
 
-  if (dc->use_gdi)
+  if (dc->gdi_dc)
   {
     iupdrvDrawArcGDI(dc->gdi_dc, x1, y1, x2, y2, a1, a2, color, style, line_width);
     return;
@@ -358,7 +356,7 @@ void iupdrvDrawPolygon(IdrawCanvas* dc, int* points, int count, long color, int 
   WD_PATHSINK sink;
   int i;
 
-  if (dc->use_gdi)
+  if (dc->gdi_dc)
   {
     iupdrvDrawPolygonGDI(dc->gdi_dc, points, count, color, style, line_width);
     return;
@@ -391,7 +389,7 @@ void iupdrvDrawPolygon(IdrawCanvas* dc, int* points, int count, long color, int 
 
 void iupdrvDrawGetClipRect(IdrawCanvas* dc, int *x1, int *y1, int *x2, int *y2)
 {
-  if (dc->use_gdi)
+  if (dc->gdi_dc)
   {
     iupdrvDrawGetClipRectGDI(dc->gdi_dc, x1, y1, x2, y2);
     return;
@@ -407,7 +405,7 @@ void iupdrvDrawSetClipRect(IdrawCanvas* dc, int x1, int y1, int x2, int y2)
 {
   WD_RECT rect;
 
-  if (dc->use_gdi)
+  if (dc->gdi_dc)
   {
     iupdrvDrawSetClipRectGDI(dc->gdi_dc, x1, y1, x2, y2);
     return;
@@ -448,7 +446,7 @@ void iupdrvDrawSetClipRect(IdrawCanvas* dc, int x1, int y1, int x2, int y2)
 
 void iupdrvDrawResetClip(IdrawCanvas* dc)
 {
-  if (dc->use_gdi)
+  if (dc->gdi_dc)
   {
     iupdrvDrawResetClipGDI(dc->gdi_dc);
     return;
@@ -469,7 +467,7 @@ static int iCompensatePosX(float font_height)
 
 void iupdrvDrawText(IdrawCanvas* dc, const char* text, int len, int x, int y, int w, int h, long color, const char* font, int flags, double text_orientation)
 {
-  if (dc->use_gdi)
+  if (dc->gdi_dc)
     iupdrvDrawTextGDI(dc->gdi_dc, text, len, x, y, w, h, color, font, flags, text_orientation);
   else
   {
@@ -542,7 +540,7 @@ void iupdrvDrawImage(IdrawCanvas* dc, const char* name, int make_inactive, const
 {
   WD_HIMAGE hImage;
 
-  if (dc->use_gdi)
+  if (dc->gdi_dc)
   {
     iupdrvDrawImageGDI(dc->gdi_dc, name, make_inactive, bgcolor, x, y, w, h);
     return;
@@ -572,7 +570,7 @@ void iupdrvDrawSelectRect(IdrawCanvas* dc, int x1, int y1, int x2, int y2)
 {
   WD_HBRUSH brush;
 
-  if (dc->use_gdi)
+  if (dc->gdi_dc)
   {
     iupdrvDrawSelectRectGDI(dc->gdi_dc, x1, y1, x2, y2);
     return;
@@ -604,7 +602,7 @@ void iupdrvDrawFocusRect(IdrawCanvas* dc, int x1, int y1, int x2, int y2)
   DrawFocusRect(hDC, &rect);
   wdEndGdi(dc->hCanvas, hDC);
 #else
-  if (dc->use_gdi)
+  if (dc->gdi_dc)
   {
     iupdrvDrawFocusRectGDI(dc->gdi_dc, x1, y1, x2, y2);
     return;
