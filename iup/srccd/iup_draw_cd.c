@@ -343,10 +343,14 @@ static void cdputimagerectrgba(cdCtxCanvas* ctxcanvas, int width, int height, co
   int pos;
   unsigned char *rgba;
   int dy = y;
+  int nw, nh;
 
   sFixImageY(&dy, height);
 
-  image = IupImageRGBA(width, height, NULL);
+  nw = xmax - xmin + 1;
+  nh = ymax - ymin + 1;
+
+  image = IupImageRGBA(nw, nh, NULL);
   IupSetHandle("_IUPDRAW_CD_IMAGE", image);
   rgba = (unsigned char*)IupGetAttribute(image, "WID");
 
@@ -378,10 +382,14 @@ static void cdputimagerectrgb(cdCtxCanvas* ctxcanvas, int width, int height, con
   int pos;
   unsigned char *rgb;
   int dy = y;
+  int nw, nh;
 
-  sFixImageY(&dy, height);
+  //sFixImageY(&dy, height);
 
-  image = IupImageRGB(width, height, NULL);
+  nw = xmax - xmin + 1;
+  nh = ymax - ymin + 1;
+
+  image = IupImageRGB(nw, nh, NULL);
   IupSetHandle("_IUPDRAW_CD_IMAGE", image);
   rgb = (unsigned char*)IupGetAttribute(image, "WID");
 
@@ -413,10 +421,14 @@ static void cdputimagerectmap(cdCtxCanvas *ctxcanvas, int iw, int ih, const unsi
   unsigned char *map;
   int dy = y;
   char name[60];
+  int nh, nw;
 
   sFixImageY(&dy, ih);
 
-  image = IupImage(iw, ih, NULL);
+  nw = xmax - xmin + 1;
+  nh = ymax - ymin + 1;
+
+  image = IupImage(nw, nh, NULL);
   IupSetHandle("_IUPDRAW_CD_IMAGE", image);
   map = (unsigned char*)IupGetAttribute(image, "WID");
 
