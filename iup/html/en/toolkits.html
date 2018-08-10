@@ -4,6 +4,11 @@
 <meta http-equiv="Content-Language" content="en-us">
 <title>Other Toolkits</title>
 <link rel="stylesheet" type="text/css" href="../style.css">
+<style type="text/css">
+.auto-style1 {
+	text-decoration: underline;
+}
+</style>
 </head>
 <body>
 
@@ -30,7 +35,12 @@ reference toolkit, list the available
     also a disparity among the available applications in the same system. Native controls are also faster because they 
     are drawn by the system. But the problem is what's &quot;native&quot; in UNIX? Some commercial applications in UNIX start 
     using Motif as the &quot;native&quot; option. It was the official standard but because of license restrictions, before the 
-    OpenMotif event, the system became old and some good alternatives were developed, including GTK and Qt.</li>
+    OpenMotif event, the system became old and some good alternatives were developed, including GTK and Qt.
+  <span class="auto-style1">Update</span>: lately with the wide spread of mobile 
+  interfaces that focus in simplicity, that directly reflected in the Windows 10 
+  appearance, with almost no decorations in the controls. So we decide to 
+  provide our own controls with a more flexible range of attributes, usually 
+  they start with IupFlat* prefix, but there are others. </li>
 </ul>
 <h3>Toolkits</h3>
 <p>With these characteristics in mind we select some of the available toolkits:</p>
@@ -50,8 +60,8 @@ reference toolkit, list the available
     <td>
     <p align="center" style="text-align:center"><a href="http://www.fox-toolkit.org/">FOX</a></td>
     <td>LGPL*</td>
-    <td>1997-2016/05</td>
-    <td>1.7.56</td>
+    <td>1997-2018/02</td>
+    <td>1.7.64</td>
     <td>
     <o:p>C++</o:p></td>
     <td>Win, X</td>
@@ -64,22 +74,23 @@ reference toolkit, list the available
     <td>
     <p align="center" style="text-align:center"><a href="http://www.fltk.org/">FLTK</a></td>
     <td>LGPL*</td>
-    <td>1998-2014/11</td>
-    <td>1.3.3</td>
+    <td>1998-2016/11</td>
+    <td>1.3.4</td>
     <td>
     <o:p>C++</o:p></td>
     <td>Win, X, Mac</td>
     <td>
     <o:p>own</o:p></td>
-    <td>4</td>
-    <td>was from<o:p> Digital Domain. Easy to learn.</o:p></td>
+    <td>6</td>
+    <td>was from<o:p> Digital Domain. Easy to learn.<br>1.4.x has weekly 
+	snapshots but no stable yet</o:p></td>
   </tr>
   <tr>
     <td>
     <p align="center" style="text-align:center"><a href="http://www.gtk.org/">GTK+</a></td>
     <td>LGPL*</td>
-    <td>1997-2016/03</td>
-    <td>3.20</td>
+    <td>1997-2018/04</td>
+    <td>3.22</td>
     <td>
     <o:p>C</o:p></td>
     <td>Win, X, Mac</td>
@@ -92,8 +103,8 @@ reference toolkit, list the available
     <td>
     <p align="center" style="text-align:center"><a href="https://www.qt.io/">Qt</a></td>
     <td>LGPL</td>
-    <td>1994-2016/06</td>
-    <td>5.7</td>
+    <td>1994-2018/05</td>
+    <td>5.11</td>
     <td>
     <o:p>C++</o:p></td>
     <td>Win, X, Mac</td>
@@ -105,12 +116,12 @@ reference toolkit, list the available
     <td>
     <p align="center" style="text-align:center"><a href="http://www.wxwidgets.org/">wxWidgets</a></td>
     <td>LGPL*</td>
-    <td>1992-2016/02</td>
-    <td>3.1</td>
+    <td>1992-2018/02</td>
+    <td>3.1.1</td>
     <td>
     <o:p>C++</o:p></td>
     <td>Win, X, Mac</td>
-    <td>native</td>
+    <td>native/own</td>
     <td>6</td>
     <td>X can use Motif or GTK, has many contributors</td>
   </tr>
@@ -118,17 +129,17 @@ reference toolkit, list the available
     <td>
     <p align="center"><a href="http://www.tecgraf.puc-rio.br/iup/">IUP</a></td>
     <td>MIT</td>
-    <td>1994-2016/07</td>
-    <td>3.19</td>
+    <td>1994-2018/05</td>
+    <td>3.25</td>
     <td>C</td>
     <td>Win, X, Mac</td>
-    <td>native</td>
+    <td>native/own</td>
     <td>2</td>
     <td>
     <o:p>X can use Motif or GTK, Mac using X</o:p></td>
   </tr>
 </table>
-<p>Table Last Update: July 2016</p>
+<p>Table Last Update: August 2018</p>
 <p>More toolkits can be found here:
   <a ADD_DATE="851377089" href="http://www.atai.org/guitool/" LAST_MODIFIED="851377011" LAST_VISIT="857454078">The GUI Toolkit, Framework Page</a> 
 and <a href="http://en.wikipedia.org/wiki/List_of_widget_toolkits">List of 
@@ -159,8 +170,8 @@ one.</p>
 <strong>Qt</strong> since they are much more than an 
 User Interface Toolkit. They are 
   complete development platforms that include several secondary libraries not related to User Interface. In IUP we focus 
-  only in Graphical User Interface. Also both have a heavy C++ API with some 
-very complex constructions that may be more complex to understand. </p>
+  only in Graphical User Interface. Also both have a heavy C++ APIs with some 
+very complex constructions that may be more difficult&nbsp; to understand. </p>
 <h3>Developing IUP</h3>
 <p>IUP has a C API, only has functions for Graphical User Interface, and uses &quot;Native Controls&quot; in Windows, Motif and 
   GTK+. These are the major differences between IUP and other toolkits. Because of that IUP is small, fast and very 
@@ -168,8 +179,8 @@ very complex constructions that may be more complex to understand. </p>
 <p>We have a small but very active team and we have many Tecgraf and foreign applications that today use IUP, 
   collaborating for its evolution. Our objective is to surpass the Tecgraf needs, keeping backward compatibility and 
   improving the internal code.</p>
-<p>IUP does not have a wide localization feature, it only includes support for 
-messages in English, Spanish and Portuguese. </p>
+<p>IUP does not have a wide localization feature, internally it only includes support for 
+messages in English, Spanish and Portuguese. But is can be expanded.</p>
 <p><b>Why Not Mac? </b>The first Mac driver was developed for MacOS 9 and had several memory limitations so it was 
   abandoned. With Mac OS X we have the opportunity to do something better. Today IUP runs on Mac OS X using X11 
 with 
@@ -177,8 +188,9 @@ with
 Tecgraf priority.</p>
 <p><b>Why Still Motif? </b>Motif is very important for non Linux systems, some Tecgraf applications run on 
 old AIX, SGI 
-  and Sun systems, that only have Motif installed and we can not force the installation of other toolkits like GTK. 
-</p>
+  and Sun systems, that only have Motif installed and we can not force the installation of other toolkits like GTK.
+<span class="auto-style1">Update</span>: we don't test or build the Motif 
+version in a couple of years.</p>
 <p><em>.. &quot;Make it Reusable, Make it Simple, Make it Small&quot; ...</em></p>
 
 </body>
