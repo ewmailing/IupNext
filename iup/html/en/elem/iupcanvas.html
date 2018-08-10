@@ -115,6 +115,10 @@ The SCROLLBAR and BORDER attributes affect the size of the drawing area.</p>
 <p><strong>DRAWDRIVER</strong> (read-only): returns the name of the draw driver 
 in use by the IupDraw API. Can be: X11 (Motif), GDK (GTK), Cairo (GTK), D2D 
 (Windows), GDI+ (Windows) or GDI (Windows). (since 3.25)</p>
+<p><strong>DRAWUSEGDI</strong> [Windows Only] (<font size="3">non inheritable</font>): 
+force the use of the old GDI driver, instead of the new DirectD2 driver. Used in 
+the <strong>IupGauge</strong>, <strong>IupMatrix</strong> and Flat Scrollbars 
+for better performance and backward compatibility. (since 3.26)</p>
 <p><a href="../attrib/iup_expand.html">EXPAND</a> (<font size="3">non inheritable</font>):
   The default value is "YES". The natural size is the size of 1 
   character.</p>
