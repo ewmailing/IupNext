@@ -345,7 +345,6 @@ static void new_file(char* dialogtype, int preview)
 //    IupSetAttribute(dlg, "EXTFILTER", "BMP FILES|*.bmp|JPEG FILES|*.jpg|");
     IupSetAttribute(dlg, "EXTFILTER", "All Files|*.*|Image Files|*.bmp;*.jpg|Text Files|*.txt|");
   }
-  IupSetCallback(dlg, "HELP_CB", (Icallback)help_cb);
   IupSetAttribute(dlg, "FILE", "test.bmp");
 //  IupSetAttributes(dlg, "FILE = \"\\tecgraf\\iup\\test.bmp\""); // OK
 //  IupSetAttributes(dlg, "FILE = \"/tecgraf/iup/test.bmp\""); // OK
@@ -354,9 +353,11 @@ static void new_file(char* dialogtype, int preview)
   IupSetAttribute(dlg, "NOCHANGEDIR", "YES");
   if (strcmp(dialogtype, "OPEN") == 0) IupSetAttribute(dlg, "MULTIPLEFILES", "YES");
 //  IupSetAttribute(dlg, "RASTERSIZE", "800x600");
+  IupSetCallback(dlg, "HELP_CB", (Icallback)help_cb); /* comment these to show the new Explorer interface */
   IupSetCallback(dlg, "FILE_CB", (Icallback)file_cb);
   IupSetAttribute(dlg, "EXTDEFAULT", "txt");
 //  IupSetAttribute(dlg, "MULTIVALUEPATH", "Yes");
+//  IupSetAttribute(dlg, "NOPLACESBAR", "Yes");
 
   if (preview)
   {

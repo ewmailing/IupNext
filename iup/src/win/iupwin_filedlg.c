@@ -643,6 +643,20 @@ static TCHAR* winFileDlgStrReplaceSeparator(const TCHAR* name)
   return buffer;
 }
 
+static int winFileDlgUseHook(Ihandle *ih, int x, int y)
+{
+  if (IupGetCallback(ih, "FILE_CB") || IupGetCallback(ih, "HELP_CB"))
+    return 1;
+
+  if (x != IUP_CENTER && x != IUP_CURRENT && x != IUP_CENTERPARENT)
+    return 1;
+
+  if (y != IUP_CENTER && y != IUP_CURRENT && y != IUP_CENTERPARENT)
+    return 1;
+
+  return 0;
+}
+
 static int winFileDlgPopup(Ihandle *ih, int x, int y)
 {
   InativeHandle* parent = iupDialogGetNativeParent(ih);
@@ -740,6 +754,9 @@ static int winFileDlgPopup(Ihandle *ih, int x, int y)
   openfilename.lpstrTitle = iupwinStrToSystem(iupAttribGet(ih, "TITLE"));
   openfilename.Flags = OFN_PATHMUSTEXIST | OFN_HIDEREADONLY;
 
+  if (iupAttribGetBoolean(ih, "NOPLACESBAR"))
+    openfilename.FlagsEx = OFN_EX_NOPLACESBAR;
+
   if (!iupAttribGetBoolean(ih, "NOOVERWRITEPROMPT"))
     openfilename.Flags |= OFN_OVERWRITEPROMPT;
 
@@ -765,9 +782,14 @@ static int winFileDlgPopup(Ihandle *ih, int x, int y)
   if (iupAttribGetBoolean(ih, "MULTIPLEFILES"))
      openfilename.Flags |= OFN_ALLOWMULTISELECT;
 
-  openfilename.lpfnHook = winFileDlgSimpleHook;
-  openfilename.Flags |= OFN_ENABLEHOOK | OFN_EXPLORER | OFN_ENABLESIZING;
-  openfilename.lCustData = (LPARAM)ih;
+  if (winFileDlgUseHook(ih, x, y))
+  {
+    openfilename.lpfnHook = winFileDlgSimpleHook;
+    openfilename.Flags |= OFN_ENABLEHOOK;
+    openfilename.lCustData = (LPARAM)ih;
+  }
+
+  openfilename.Flags |= OFN_EXPLORER | OFN_ENABLESIZING;
 
   if (iupAttribGetBoolean(ih, "SHOWPREVIEW") && IupGetCallback(ih, "FILE_CB"))
   {
@@ -909,4 +931,7 @@ void iupdrvFileDlgInitClass(Iclass* ic)
   iupClassRegisterAttribute(ic, "EXTFILTER", NULL, NULL, NULL, NULL, IUPAF_NO_INHERIT);
   iupClassRegisterAttribute(ic, "FILTERINFO", NULL, NULL, NULL, NULL, IUPAF_NO_INHERIT);
   iupClassRegisterAttribute(ic, "FILTERUSED", NULL, NULL, NULL, NULL, IUPAF_NO_INHERIT);
+
+  /* Windows Only */
+  iupClassRegisterAttribute(ic, "NOPLACESBAR", NULL, NULL, NULL, NULL, IUPAF_NO_INHERIT);
 }

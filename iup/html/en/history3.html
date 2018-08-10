@@ -61,7 +61,7 @@
 <p>Check the <a href="migration_guide.html">Migration Guide</a> for a summary of 
 the important changes and how to proceed when migrating from version 2.x to 
 version 3.x.</p>
-<h3>SVN (03/Ago/2018)</h3>
+<h3>SVN (10/Ago/2018)</h3>
 
 <ul>
 
@@ -76,6 +76,8 @@ version 3.x.</p>
 	<li><span class="hist_new">New:</span> <strong>IupMultiBox</strong> 
 	container that distributes elements in multiple lines or columns according 
 	to the available space.</li>
+	<li><span class="hist_new">New:</span> NOPLACESBAR attribute for <strong>
+	IupFileDlg</strong> in Windows.</li>
 
 	<li>
 	<font SIZE="3">
@@ -94,6 +96,13 @@ version 3.x.</p>
 	<strong>Changed:</strong></span><span class="auto-style1"> </span>renamed 
 	some flat scrollbar attributes to include the prefix &quot;SB_&quot; to avoid 
 	conflicts with control attributes. All IMAGE* and *COLOR attributes.</font></li>
+	<li style="width: 3643px">
+	<font SIZE="3">
+	<span class="hist_changed" style="color: rgb(0, 128, 0); font-weight: bold;">
+	<strong>Changed:</strong></span><span class="auto-style1"> if FILE_CB and 
+	HELP_CB are not defined, and x,y is IUP_CENTER or IUP_CURRENT in <strong>
+	IupFileDlg</strong> on Windows then it will use a newer Explorer interface 
+	available since Windows 8.</span></font></li>
 	<li>
 	<font SIZE="3"><span style="color: #008000">
 	<span

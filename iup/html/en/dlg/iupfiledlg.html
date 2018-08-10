@@ -125,6 +125,8 @@ period &quot;.&quot;. (since 3.18)</p>
   in
   &quot;SAVE&quot; dialog. Default is
   &quot;NO&quot;, i.e. prompt before overwrite.&nbsp; (GTK 2.8)</p>
+<p><strong>NOPLACESBAR</strong> [Windows Only]: do not show the places bar. 
+(since 3.26)</p>
   <p><strong><a href="../attrib/iup_parentdialog.html">PARENTDIALOG</a></strong>:
   Makes the dialog be treated as a child of the specified 
   dialog.</p>
@@ -275,6 +277,9 @@ use ANSI file names. To use UTF-8 filenames (that can be lately be converted to 
 <a href="../attrib/iup_globals.html#UTF8MODE">UTF8MODE_FILE</a> to Yes. In a 
 specific case, the application can set before popup, and unset after, so for 
 just that call will return in UTF-8.</p>
+<p>In Windows, <font SIZE="3"><span>if FILE_CB and HELP_CB are not defined, and 
+x,y is IUP_CENTER or IUP_CURRENT in IupFileDlg on Windows then it will use a 
+newer Explorer interface available since Windows 8. (since 3.26)</span></font></p>
 <p>When saving a file, the overwrite check is done before the FILE_CB callback 
 is called with status=OK. If the application wants to add an extension to the 
 file name inside the FILE_CB callback when status=OK, then it must manually 
