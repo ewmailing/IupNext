@@ -57,7 +57,7 @@ static int mousemove_cb(Ihandle *ih, int lin, int col)
 static int drop(Ihandle *self, Ihandle *drop, int lin, int col)
 {
   printf("drop_cb(%d, %d)\n", lin, col);
-  if(lin == 3 && col == 1)
+  if ((lin == 3 && col == 1) || (lin == 4 && col == 5))
   {
     IupSetAttribute(drop, "1", "A - Test of Very Big String for Dropdown!");
     IupSetAttribute(drop, "2", "B");
@@ -75,7 +75,7 @@ static int drop(Ihandle *self, Ihandle *drop, int lin, int col)
 
 static int dropcheck_cb(Ihandle *self, int lin, int col)
 {
-  if (lin == 3 && col == 1)
+  if ((lin == 3 && col == 1) || (lin == 4 && col == 5))
     return IUP_DEFAULT;
   if (lin == 4 && col == 4)
     return IUP_CONTINUE;
@@ -166,6 +166,7 @@ static Ihandle* create_matrix(void)
   //  IupSetAttribute(mat, "ACTIVE", "NO");
 //  IupSetAttribute(mat, "EXPAND", "NO");
 //  IupSetAttribute(mat, "ALIGNMENT", "ALEFT");
+//  IupSetAttribute(mat, "HEIGHT4", "16");
 
   IupSetAttribute(mat, "FONTSTYLE0:1", "Bold");
 
@@ -231,7 +232,7 @@ static Ihandle* create_matrix(void)
   IupSetAttribute(mat, "RESIZEDRAG", "Yes");
 
   IupSetAttribute(mat, "NUMCOL_NOSCROLL", "1");
-  IupSetAttribute(mat, "NOSCROLLASTITLE", "Yes");
+//  IupSetAttribute(mat, "NOSCROLLASTITLE", "Yes");
 
   IupSetAttributeId2(mat, "MERGE", 1, 2, "1:3");
   IupSetAttributeId2(mat, "MERGE", 5, 2, "7:4");
