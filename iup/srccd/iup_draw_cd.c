@@ -384,7 +384,7 @@ static void cdputimagerectrgb(cdCtxCanvas* ctxcanvas, int width, int height, con
   int dy = y;
   int nw, nh;
 
-  //sFixImageY(&dy, height);
+  sFixImageY(&dy, height);
 
   nw = xmax - xmin + 1;
   nh = ymax - ymin + 1;
