@@ -2555,5 +2555,5 @@ static const unsigned char B1[]={
 101,110,100, 10,
 };
 
- iuplua_dobuffer(L,(const char*)B1,sizeof(B1),"scripter/debugger.lua");
+ iuplua_dobuffer(L,(const char*)B1,sizeof(B1),"=""scripter/debugger.lua");
 }

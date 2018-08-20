@@ -34,5 +34,5 @@ static const unsigned char B1[]={
  10,
 };
 
- iuplua_dobuffer(L,(const char*)B1,sizeof(B1),"elem/colorbrowser.lua");
+ iuplua_dobuffer(L,(const char*)B1,sizeof(B1),"=""elem/colorbrowser.lua");
 }
