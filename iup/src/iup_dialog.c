@@ -417,6 +417,7 @@ int iupDialogGetChildId(Ihandle* ih)
 
 char* iupDialogGetChildIdStr(Ihandle* ih)
 {
+  /* Used only in Motif */
   Ihandle* dialog = IupGetDialog(ih);
   return iupStrReturnStrf("iup-%s-%d", ih->iclass->name, dialog->data->child_id);
 }

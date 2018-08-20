@@ -54,6 +54,7 @@ int iupMenuGetChildId(Ihandle* ih)
 
 char* iupMenuGetChildIdStr(Ihandle* ih)
 {
+  /* Used only in Motif */
   Ihandle* dlg = IupGetDialog(ih);
   if (dlg)
     return iupDialogGetChildIdStr(ih);
