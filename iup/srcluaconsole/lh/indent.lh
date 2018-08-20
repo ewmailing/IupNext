@@ -1584,5 +1584,5 @@ static const unsigned char B1[]={
 100, 10,
 };
 
- if (luaL_loadbuffer(L,(const char*)B1,sizeof(B1),"indent.lua")==0) lua_pcall(L, 0, 0, 0);
+ iuplua_dobuffer(L,(const char*)B1,sizeof(B1),"=""indent.lua");
 }

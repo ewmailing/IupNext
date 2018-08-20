@@ -492,5 +492,5 @@ static const unsigned char B1[]={
  10, 32, 32,105,117,112, 46, 67,108,111,115,101, 40, 41, 10,101,110,100, 10,
 };
 
- iuplua_dobuffer(L,(const char*)B1,sizeof(B1),"console5.lua");
+ iuplua_dobuffer(L,(const char*)B1,sizeof(B1),"=""console5.lua");
 }
