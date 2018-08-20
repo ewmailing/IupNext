@@ -418,4 +418,6 @@ void iupdrvLabelInitClass(Iclass* ic)
 
   /* Not Supported */
   iupClassRegisterAttribute(ic, "MARKUP", NULL, NULL, NULL, NULL, IUPAF_NOT_SUPPORTED|IUPAF_NO_INHERIT);
+
+  iupClassRegisterAttribute(ic, "CONTROLID", NULL, NULL, NULL, NULL, IUPAF_NO_INHERIT);
 }

@@ -142,6 +142,11 @@ because the compiler will report errors in the newest headers.</p>
 you to upgrade your compiler.
 <a href="http://msdn.microsoft.com/vstudio/express/visualc/">Visual C++ Express 
 Edition</a> is a free compiler that has everything VC6 had and more.</p>
+<h4>Control ID (since 3.26)</h4>
+<p>The attribute CONTROLID can be used to set the Windows control identifier. 
+IUP automatically generates identifiers for controls inside the dialog starting 
+at 100. When using this attribute start with a very large number to avoid 
+conflicts with the generated idetifiers. </p>
 
 </body>
 

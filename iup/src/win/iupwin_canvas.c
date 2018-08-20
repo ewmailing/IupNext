@@ -784,4 +784,6 @@ void iupdrvCanvasInitClass(Iclass* ic)
 
   /* Not Supported */
   iupClassRegisterAttribute(ic, "BACKINGSTORE", NULL, NULL, "YES", NULL, IUPAF_NOT_SUPPORTED|IUPAF_NO_INHERIT);
+
+  iupClassRegisterAttribute(ic, "CONTROLID", NULL, NULL, NULL, NULL, IUPAF_NO_INHERIT);
 }

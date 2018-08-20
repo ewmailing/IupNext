@@ -1959,4 +1959,6 @@ void iupdrvListInitClass(Iclass* ic)
 
   iupClassRegisterAttribute(ic, "CUEBANNER", NULL, winListSetCueBannerAttrib, NULL, NULL, IUPAF_NO_INHERIT);
   iupClassRegisterAttribute(ic, "FILTER", NULL, winListSetFilterAttrib, NULL, NULL, IUPAF_NO_INHERIT);
+
+  iupClassRegisterAttribute(ic, "CONTROLID", NULL, NULL, NULL, NULL, IUPAF_NO_INHERIT);
 }

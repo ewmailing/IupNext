@@ -363,4 +363,6 @@ void iupdrvValInitClass(Iclass* ic)
 
   /* Visual */
   iupClassRegisterAttribute(ic, "BGCOLOR", NULL, winValSetBgColorAttrib, IUPAF_SAMEASSYSTEM, "DLGBGCOLOR", IUPAF_DEFAULT);
+
+  iupClassRegisterAttribute(ic, "CONTROLID", NULL, NULL, NULL, NULL, IUPAF_NO_INHERIT);
 }

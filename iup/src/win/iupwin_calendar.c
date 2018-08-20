@@ -251,6 +251,8 @@ Iclass* iupCalendarNewClass(void)
   iupClassRegisterAttribute(ic, "BORDER", winCalendarGetBorderAttrib, winCalendarSetBorderAttrib, NULL, NULL, IUPAF_NO_DEFAULTVALUE | IUPAF_NO_INHERIT);
 #endif
 
+  iupClassRegisterAttribute(ic, "CONTROLID", NULL, NULL, NULL, NULL, IUPAF_NO_INHERIT);
+
   return ic;
 }
 

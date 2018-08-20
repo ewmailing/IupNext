@@ -1482,4 +1482,6 @@ void iupdrvTabsInitClass(Iclass* ic)
   /* Default node images */
   if (!IupGetHandle("IMGCLOSE"))
     winTabsInitializeCloseImage();
+
+  iupClassRegisterAttribute(ic, "CONTROLID", NULL, NULL, NULL, NULL, IUPAF_NO_INHERIT);
 }

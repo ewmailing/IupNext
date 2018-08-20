@@ -997,7 +997,8 @@ HWND iupwinCreateWindowEx(HWND hParent, LPCTSTR lpClassName, DWORD dwExStyle, DW
 
 int iupwinCreateWindow(Ihandle* ih, LPCTSTR lpClassName, DWORD dwExStyle, DWORD dwStyle, void* clientdata)
 {
-  ih->serial = iupDialogGetChildId(ih);
+  const int serial = iupAttribGetInt(ih, "CONTROLID");
+  ih->serial = (serial ? serial : iupDialogGetChildId(ih));
 
   ih->handle = iupwinCreateWindowEx(iupChildTreeGetNativeParentHandle(ih), lpClassName, dwExStyle, dwStyle, ih->serial, clientdata);
   if (!ih->handle)
