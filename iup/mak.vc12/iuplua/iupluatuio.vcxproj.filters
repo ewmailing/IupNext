@@ -21,6 +21,9 @@
     <None Include="..\..\srclua5\ctrl\tuioclient.lua">
       <Filter>Lua</Filter>
     </None>
+    <None Include="..\..\srclua5\lh\tuioclient.lh">
+      <Filter>Source Files</Filter>
+    </None>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="..\..\include\iupluatuio.h">

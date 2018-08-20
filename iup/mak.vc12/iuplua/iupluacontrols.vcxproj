@@ -106,6 +106,10 @@
     <None Include="..\..\srclua5\ctrl\matrix.lua" />
     <None Include="..\..\srclua5\ctrl\matrixex.lua" />
     <None Include="..\..\srclua5\ctrl\matrixlist.lua" />
+    <None Include="..\..\srclua5\lh\cells.lh" />
+    <None Include="..\..\srclua5\lh\matrix.lh" />
+    <None Include="..\..\srclua5\lh\matrixex.lh" />
+    <None Include="..\..\srclua5\lh\matrixlist.lh" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="..\..\srclua5\ctrl\il_controls.h" />

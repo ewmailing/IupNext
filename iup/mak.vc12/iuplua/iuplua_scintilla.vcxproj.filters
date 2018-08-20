@@ -30,6 +30,12 @@
     <None Include="..\..\srclua5\ctrl\scintilladlg.lua">
       <Filter>Lua</Filter>
     </None>
+    <None Include="..\..\srclua5\lh\scintilla.lh">
+      <Filter>Source Files</Filter>
+    </None>
+    <None Include="..\..\srclua5\lh\scintilladlg.lh">
+      <Filter>Source Files</Filter>
+    </None>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="..\..\include\iuplua_scintilla.h">

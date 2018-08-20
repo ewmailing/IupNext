@@ -11,6 +11,9 @@
     </ProjectConfiguration>
   </ItemGroup>
   <ItemGroup>
+    <None Include="..\..\srclua5\lh\console.lh" />
+    <None Include="..\..\srclua5\lh\debugger.lh" />
+    <None Include="..\..\srclua5\lh\luascripterdlg.lh" />
     <None Include="..\..\srclua5\scripter\console.lua" />
     <None Include="..\..\srclua5\scripter\debugger.lua" />
     <None Include="..\..\srclua5\scripter\iupluascripterdlg.def" />
