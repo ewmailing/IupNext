@@ -265,17 +265,17 @@ int iuplua_dofile(lua_State *L, const char *filename)
   return report(L, status);
 }
 
-int iuplua_dostring(lua_State *L, const char *s, const char *name)
+int iuplua_dostring(lua_State *L, const char *s, const char *chunk_name)
 {
-  int status = luaL_loadbuffer(L, s, strlen(s), name);
+  int status = luaL_loadbuffer(L, s, strlen(s), chunk_name);
   if (status == LUA_OK)
     status = docall(L, 0, LUA_MULTRET);
   return report(L, status);
 }
 
-int iuplua_dobuffer(lua_State *L, const char *s, int len, const char *name)
+int iuplua_dobuffer(lua_State *L, const char *s, int len, const char *chunk_name)
 {
-  int status = luaL_loadbuffer(L, s, len, name);
+  int status = luaL_loadbuffer(L, s, len, chunk_name);
   if (status == LUA_OK)
     status = docall(L, 0, LUA_MULTRET);
   return report(L, status);
@@ -300,7 +300,7 @@ static int il_dostring(lua_State *L)
   int old_top = lua_gettop(L);
   size_t size;
   const char* str = luaL_checklstring(L, 1, &size);
-  int status = iuplua_dobuffer(L, str, (int)size, "iup.dostring");
+  int status = iuplua_dobuffer(L, str, (int)size, "=iup.dostring");
   if (status == LUA_OK)
   {
     int top = lua_gettop(L);

@@ -428,9 +428,13 @@ static int item_run_action_cb(Ihandle *ih_item)
     iuplua_dofile(L, filename);
   else
   {
+    char chunk_name[1024];
     char* value = IupGetAttribute(multitext, "VALUE");
     char* title = IupGetAttribute(ih, "TITLE");
-    iuplua_dostring(L, value, title);
+    if (!title)
+      title = "iup.dostring";
+    sprintf(chunk_name, "=%s", title);
+    iuplua_dostring(L, value, chunk_name);
   }
 
   return IUP_DEFAULT;
