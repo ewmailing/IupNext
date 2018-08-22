@@ -16,10 +16,10 @@
 
 #include <cd.h>
 
-#ifdef USE_IUPDRAW
-#include <iupdraw_cd.h>
-#else
+#ifdef USE_OLD_CDIUP
 #include <cdiup.h>
+#else
+#include <iupdraw_cd.h>
 #endif
 
 #include "iup_cdutil.h"
@@ -1853,10 +1853,10 @@ static int iMatrixCreateMethod(Ihandle* ih, void **params)
 
 static int iMatrixMapMethod(Ihandle* ih)
 {
-#ifdef USE_IUPDRAW
-  ih->data->cd_canvas = cdCreateCanvas(CD_IUPDRAW, ih);
-#else
+#ifdef USE_OLD_CDIUP
   ih->data->cd_canvas = cdCreateCanvas(CD_IUPDBUFFER, ih);
+#else
+  ih->data->cd_canvas = cdCreateCanvas(CD_IUPDRAW, ih);
 #endif
   if (!ih->data->cd_canvas)
     return IUP_ERROR;
