@@ -50,7 +50,7 @@ PROJDIR = ../../..
 #SRC = matrixlist.c
 #SRC = progressbar.c
 #SRC = radio.c
-SRC = sample.c
+#SRC = sample.c
 #SRC = sbox1.c
 #SRC = sbox2.c
 #SRC = scanf.c
@@ -82,6 +82,14 @@ SRC = sample.c
 #USE_OPENGL = Yes
 #SRC = glcanvas.c
 #SRC = glcube.c
+
+ifneq ($(findstring Win, $(TEC_SYSNAME)), )
+  IUP_OLE := Yes
+  ifdef IUP_OLE
+    SRC = ole_browser.cpp
+    LIBS += iupole
+  endif
+endif
 
 #IUPWEB_SAMPLE=Yes
 ifdef IUPWEB_SAMPLE
