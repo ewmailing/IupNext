@@ -137,11 +137,18 @@ static int iScintillaSetCaretColorAttrib(Ihandle* ih, const char* value)
 
 /*******************************************************************************************/
 
-static char* iScintillaGetCurrentLineAttrib(Ihandle* ih)
+static char* iScintillaGetLineValueAttrib(Ihandle* ih)
 {
   int textLen = (int)IupScintillaSendMessage(ih, SCI_GETCURLINE, 0, 0);
   char* str = iupStrGetMemory(textLen+1);
   IupScintillaSendMessage(ih, SCI_GETCURLINE, textLen, (sptr_t)str);
+  if (str[0] != 0)
+  {
+    /* LINEVALUE does not includes the end of line character. */
+    char* line = strchr(str, '\n');
+    if (line)
+      *line = 0;
+  }
   return str;
 }
 
@@ -494,7 +501,7 @@ void iupScintillaRegisterSelection(Iclass* ic)
   iupClassRegisterAttribute(ic, "CARETTOVIEW", NULL, iScintillaSetCaretToViewAttrib, NULL, NULL, IUPAF_WRITEONLY|IUPAF_NO_INHERIT);
   iupClassRegisterAttribute(ic, "COUNT", iScintillaGetCountAttrib, NULL, NULL, NULL, IUPAF_READONLY|IUPAF_NO_INHERIT);
   iupClassRegisterAttribute(ic, "LINECOUNT", iScintillaGetLineCountAttrib, NULL, NULL, NULL, IUPAF_READONLY|IUPAF_NO_INHERIT);
-  iupClassRegisterAttribute(ic, "LINEVALUE", iScintillaGetCurrentLineAttrib, NULL, NULL, NULL, IUPAF_READONLY|IUPAF_NO_INHERIT);
+  iupClassRegisterAttribute(ic, "LINEVALUE", iScintillaGetLineValueAttrib, NULL, NULL, NULL, IUPAF_READONLY | IUPAF_NO_INHERIT);
   iupClassRegisterAttribute(ic, "SELECTEDTEXT", iScintillaGetSelectedTextAttrib, iScintillaSetSelectedTextAttrib, NULL, NULL, IUPAF_NO_INHERIT);
   iupClassRegisterAttribute(ic, "SELECTION", iScintillaGetSelectionAttrib, iScintillaSetSelectionAttrib, NULL, NULL, IUPAF_NO_INHERIT);
   iupClassRegisterAttribute(ic, "SELECTIONPOS", iScintillaGetSelectionPosAttrib, iScintillaSetSelectionPosAttrib, NULL, NULL, IUPAF_NO_INHERIT);

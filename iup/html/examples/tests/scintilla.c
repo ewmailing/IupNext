@@ -124,7 +124,8 @@ static void set_attribs (Ihandle *sci)
 
   IupSetAttribute(sci, "STYLEHOTSPOT6", "YES");
   
-  IupSetAttribute(sci, "INSERT0", sampleCode);
+  IupSetAttribute(sci, "VALUE", sampleCode);
+//  IupSetAttribute(sci, "INSERT0", sampleCode);
   //IupSetAttribute(sci, "INSERT-1", "           ");
 
   //if (IupGetInt(NULL, "UTF8MODE"))
@@ -165,7 +166,7 @@ static void set_attribs (Ihandle *sci)
   printf("COUNT=%s\n", IupGetAttribute(sci, "COUNT"));
   //printf("VALUE=\"%s\"\n", IupGetAttribute(sci, "VALUE"));
   printf("LINECOUNT=%s\n", IupGetAttribute(sci, "LINECOUNT"));
-  printf("LINEVALUE=\"%s\"\n", IupGetAttribute(sci, "LINEVALUE"));
+//  printf("LINEVALUE=\"%s\"\n", IupGetAttribute(sci, "LINEVALUE"));
 }
 
 void ScintillaTest(void)
@@ -177,7 +178,9 @@ void ScintillaTest(void)
 
   // Creates an instance of the Scintilla control
   sci = IupScintilla();
-//  IupSetAttribute(sci, "VISIBLECOLUMNS", "80");
+//  sci = IupText(NULL);
+//  IupSetAttribute(sci, "MULTILINE", "Yes");
+  //  IupSetAttribute(sci, "VISIBLECOLUMNS", "80");
 //  IupSetAttribute(sci, "VISIBLELINES", "40");
   //IupSetAttribute(sci, "SCROLLBAR", "NO");
 //  IupSetAttribute(sci, "BORDER", "NO");
