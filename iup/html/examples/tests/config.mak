@@ -171,6 +171,7 @@ ifneq ($(findstring Win, $(TEC_SYSNAME)), )
   LIBS += iup_scintilla imm32
 else
   SLIB += $(IUP_LIB)/libiup_scintilla.a
+  LIBS += atk-1.0
 endif
 
 USE_IM = Yes

@@ -199,12 +199,12 @@ void ScintillaTest(void)
   // Creates a dialog containing the control
   dlg = IupDialog(IupVbox(sci, NULL));
   IupSetAttribute(dlg, "TITLE", "IupScintilla");
-  IupSetAttribute(dlg, "RASTERSIZE", "700x500");
+//  IupSetAttribute(dlg, "RASTERSIZE", "700x500");
   IupSetAttribute(dlg, "MARGIN", "10x10");
 
   // Shows dialog
   IupShow(dlg);
-  IupSetAttribute(dlg, "RASTERSIZE", NULL);
+//  IupSetAttribute(dlg, "RASTERSIZE", NULL);
 
   set_attribs(sci);
 }
