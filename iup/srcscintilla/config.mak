@@ -47,7 +47,12 @@ ifdef SCINTILLA_NEW
   # minimum GCC 4.8 (Linux313_64) and MSVC 2015 (vc14)
   # Needs C++ 11 support
   USE_CPP11 = Yes
-  SCINTILLA := scintilla375
+  ifdef SCINTILLA4
+    # NOT WORKING - compile error in std::string_view
+    SCINTILLA := scintilla410
+  else
+    SCINTILLA := scintilla375
+  endif
 endif
 
 INCLUDES += $(SCINTILLA)/lexlib $(SCINTILLA)/src $(SCINTILLA)/include
@@ -65,6 +70,12 @@ ifdef USE_GTK
   ifneq ($(findstring cygw, $(TEC_UNAME)), )
     INCLUDES += $(GTK)/include/cairo
     LIBS += pangocairo-1.0 cairo
+  endif
+  ifdef SCINTILLA_NEW
+    LIBS += atk-1.0
+  endif
+  ifdef SCINTILLA4
+    CPPFLAGS = -std=gnu++17
   endif
 else
   INCLUDES += ../src/win $(SCINTILLA)/win32
@@ -95,6 +106,10 @@ SRCSCINTILLA = src/AutoComplete.cxx src/CallTip.cxx src/Catalogue.cxx src/CellBu
                src/RESearch.cxx src/RunStyles.cxx src/ScintillaBase.cxx src/Selection.cxx src/Style.cxx \
                src/UniConversion.cxx src/ViewStyle.cxx src/XPM.cxx src/CaseConvert.cxx src/CaseFolder.cxx \
                src/EditModel.cxx src/EditView.cxx src/MarginView.cxx
+               
+ifdef SCINTILLA4
+  SRCSCINTILLA += src/DBCS.cxx
+endif
 
 SRCSCINTILLA += lexers/LexA68k.cxx lexers/LexAbaqus.cxx lexers/LexAda.cxx lexers/LexAPDL.cxx \
 				lexers/LexAsn1.cxx lexers/LexASY.cxx lexers/LexAU3.cxx lexers/LexAVE.cxx lexers/LexAVS.cxx \
@@ -126,13 +141,21 @@ else
   SRCSCINTILLA += lexers/LexBatch.cxx lexers/LexDiff.cxx lexers/LexErrorList.cxx \
 				lexers/LexMake.cxx lexers/LexNull.cxx lexers/LexProps.cxx lexers/LexJSON.cxx
 endif
+
 ifdef SCINTILLA_NEW
   SRCSCINTILLA += lexers/LexEDIFACT.cxx lexers/LexIndent.cxx
+  ifdef SCINTILLA4
+    SRCSCINTILLA +=  lexers/LexMaxima.cxx
+  endif
 endif
 
 SRCSCINTILLA += lexlib/Accessor.cxx lexlib/CharacterSet.cxx lexlib/LexerBase.cxx lexlib/LexerModule.cxx \
                 lexlib/LexerNoExceptions.cxx lexlib/LexerSimple.cxx lexlib/PropSetSimple.cxx \
                 lexlib/StyleContext.cxx lexlib/WordList.cxx lexlib/CharacterCategory.cxx
+               
+ifdef SCINTILLA4
+  SRCSCINTILLA += lexlib/DefaultLexer.cxx
+endif
 
 ifdef USE_GTK
   SRCSCINTILLA += gtk/PlatGTK.cxx gtk/ScintillaGTK.cxx gtk/scintilla-marshal.c
