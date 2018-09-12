@@ -355,7 +355,7 @@ static void new_file(char* dialogtype, int preview)
 //  IupSetAttribute(dlg, "RASTERSIZE", "800x600");
   IupSetCallback(dlg, "HELP_CB", (Icallback)help_cb); /* comment these to show the new Explorer interface */
   IupSetCallback(dlg, "FILE_CB", (Icallback)file_cb);
-  IupSetAttribute(dlg, "EXTDEFAULT", "txt");
+//  IupSetAttribute(dlg, "EXTDEFAULT", "txt");
 //  IupSetAttribute(dlg, "MULTIVALUEPATH", "Yes");
 //  IupSetAttribute(dlg, "NOPLACESBAR", "Yes");
 
