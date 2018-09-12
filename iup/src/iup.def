@@ -384,6 +384,7 @@ iupStrReturnStrf
 iupStrGetMemory
 iupStrGetLargeMem
 iupStrFileMakeFileName
+iupStrFileNameSplit
 iupStrFileGetTitle
 iupStrFileGetPath
 iupStrFileGetExt
@@ -512,6 +513,7 @@ iupFlatScrollBarSetChildrenPosition
 iupFlatScrollBarWheelUpdate
 iupFlatScrollBarMotionUpdate
 iupFlatScrollBarSetPos
+iupDialogGetNativeParent
 
 iupAttribSetClassObject
 iupAttribSetClassObjectId
@@ -646,3 +648,5 @@ iupwinStrChar2Wide
 iupwinStrWide2Char
 iupwinShowLastError
 iupwinSetInstance
+iupwinStrToSystemFilename
+iupwinStrFromSystemFilename
