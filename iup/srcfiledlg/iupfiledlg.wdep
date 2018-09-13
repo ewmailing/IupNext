@@ -1,0 +1,7 @@
+$(OBJDIR)/iupwin_newfiledlg.obj: iupwin_newfiledlg.cpp ../include/iup.h \
+ ../include/iupkey.h ../include/iupdef.h ../include/iupcbs.h \
+ ../include/iupfiledlg.h ../src/iup_object.h ../src/iup_class.h \
+ ../src/iup_table.h ../src/iup_classbase.h ../src/iup_attrib.h \
+ ../src/iup_str.h ../src/iup_array.h ../src/iup_dialog.h \
+ ../src/iup_drvinfo.h ../src/iup_key.h ../src/iup_register.h \
+ ../src/win/iupwin_str.h
