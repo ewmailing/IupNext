@@ -572,6 +572,9 @@ static int winNewFileDlgPopup(Ihandle *ih, int x, int y)
     if (iupAttribGetBoolean(ih, "SHOWHIDDEN"))
       dwFlags |= FOS_FORCESHOWHIDDEN;
 
+    if (iupAttribGetBoolean(ih, "SHOWPREVIEW"))
+      dwFlags |= FOS_FORCEPREVIEWPANEON;     // just show the preview pane, regular IupFileDlg preview is NOT supported
+
     // In this case, get shell items only for file system items.
     pfd->SetOptions(dwFlags | FOS_FORCEFILESYSTEM);
   }
@@ -864,6 +867,3 @@ int IupNewFileDlgOpen(void)
   return IUP_NOERROR;
 }
 }
-
-// TODO:
-// SHOWPREVIEW + Preview Callbacks
