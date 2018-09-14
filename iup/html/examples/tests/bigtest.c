@@ -17,6 +17,11 @@ export G_SLICE=always-malloc
 #include "iupcontrols.h"
 #include "iupkey.h"
 
+#define USE_NEWFILEDLG
+#ifdef USE_NEWFILEDLG
+#include "iupfiledlg.h"
+#endif
+
 /* Must define BIG_TEST on the Project and include in the build all test files */
 #ifdef BIG_TEST
 void ButtonTest(void);
@@ -242,6 +247,9 @@ int main(int argc, char* argv[])
   IupOpen(&argc, &argv);
   IupControlsOpen();
   IupImageLibOpen();
+#ifdef USE_NEWFILEDLG
+  IupNewFileDlgOpen();
+#endif
 
   IupSetGlobal("GLOBALLAYOUTDLGKEY", "Yes");
   IupSetGlobal("GLOBALLAYOUTRESIZEKEY", "Yes");

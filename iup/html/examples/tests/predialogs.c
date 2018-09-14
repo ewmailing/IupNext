@@ -339,11 +339,13 @@ static void new_file(char* dialogtype, int preview)
 //    IupSetAttribute(dlg, "FILE", "/tecgraf/im/test.bmp");
 //    IupSetAttribute(dlg, "FILE", "test.bmp");
 
-//    IupSetAttribute(dlg, "FILTER", "*.txt"); 
-//    IupSetAttribute(dlg, "FILTER", "*.bmp;*.jpg"); 
+    //IupSetAttribute(dlg, "FILTER", "*.txt"); 
+//    IupSetAttribute(dlg, "FILTERINFO", "Text Files");
+    //    IupSetAttribute(dlg, "FILTER", "*.bmp;*.jpg"); 
 //    IupSetAttribute(dlg, "EXTFILTER", "TEXT|*.txt|");
 //    IupSetAttribute(dlg, "EXTFILTER", "BMP FILES|*.bmp|JPEG FILES|*.jpg|");
     IupSetAttribute(dlg, "EXTFILTER", "All Files|*.*|Image Files|*.bmp;*.jpg|Text Files|*.txt|");
+//    IupSetAttribute(dlg, "FILTERUSED", "2"); 
   }
   IupSetAttribute(dlg, "FILE", "test.bmp");
 //  IupSetAttributes(dlg, "FILE = \"\\tecgraf\\iup\\test.bmp\""); // OK
@@ -358,6 +360,7 @@ static void new_file(char* dialogtype, int preview)
 //  IupSetAttribute(dlg, "EXTDEFAULT", "txt");
 //  IupSetAttribute(dlg, "MULTIVALUEPATH", "Yes");
 //  IupSetAttribute(dlg, "NOPLACESBAR", "Yes");
+//  IupSetAttribute(dlg, "SHOWEDITBOX", "YES");
 
   if (preview)
   {

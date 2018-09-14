@@ -258,7 +258,7 @@ IFACEMETHODIMP winNewFileDlgEventHandler::OnSelectionChange(IFileDialog *pfd)
     if (filename == NULL)
       return S_OK;
 
-    ret = cb(ih, filename, "OK");
+    ret = cb(ih, filename, "SELECT");
 
     if (ret == IUP_IGNORE || ret == IUP_CONTINUE)
       return S_FALSE;
@@ -381,7 +381,7 @@ static COMDLG_FILTERSPEC *winNewFileDlgCreateFilterSpecs(char *name, int *size)
       if (*filter == '|')
       {
         *filter = 0;
-        filters[i].pszName = (LPCWSTR)iupwinStrToSystem(name);
+        filters[i].pszName = iupwinStrToSystem(name);
         break;
       }
       filter++;
@@ -397,7 +397,7 @@ static COMDLG_FILTERSPEC *winNewFileDlgCreateFilterSpecs(char *name, int *size)
       if (*filter == '|')
       {
         *filter = 0;
-        filters[i].pszSpec = (LPCWSTR)iupwinStrToSystem(name);
+        filters[i].pszSpec = iupwinStrToSystem(name);
         break;
       }
       filter++;
@@ -640,8 +640,8 @@ static int winNewFileDlgPopup(Ihandle *ih, int x, int y)
       if (!info)
         info = value;
 
-      filterSpecs[0].pszName = (LPCWSTR)iupwinStrToSystemFilename(info);
-      filterSpecs[0].pszSpec = (LPCWSTR)iupwinStrToSystemFilename(value);
+      filterSpecs[0].pszName = iupwinStrToSystem(info);
+      filterSpecs[0].pszSpec = iupwinStrToSystem(value);
 
       hr = pfd->SetFileTypes(1, filterSpecs);
       if (SUCCEEDED(hr))
@@ -656,21 +656,28 @@ static int winNewFileDlgPopup(Ihandle *ih, int x, int y)
     char name[4096] = "";
     static char dir[4096] = "";
     IShellItem *si;
-    TCHAR *fileName, *directory;
+    TCHAR *wname, *wdir;
     iupStrFileNameSplit(value, dir, name);
-    fileName = iupwinStrToSystemFilename(name);
-    directory = iupwinStrToSystemFilename(dir);
-    winNewFileDlgStrReplacePathSlash(directory);
-    pfd->SetFileName((LPCWSTR)fileName);
-    si = winNewFileDlgParseName((LPCWSTR)directory);
+    if (name[0] != 0)
+      wname = iupwinStrToSystemFilename(name);
+    else
+      wname = iupwinStrToSystemFilename(value);
+    if (dir[0] != 0)
+      wdir = iupwinStrToSystemFilename(dir);
+    else
+      wdir = iupwinStrToSystemFilename(directory);
+    winNewFileDlgStrReplacePathSlash(wdir);
+    pfd->SetFileName(wname);
+    si = winNewFileDlgParseName(wdir);
     if (si)
       pfd->SetFolder(si);
   }
   else if (directory)
   {
     IShellItem *si;
-    winNewFileDlgStrReplacePathSlash((TCHAR*)directory);
-    si = winNewFileDlgParseName((LPCWSTR)directory);
+    TCHAR *wdir = iupwinStrToSystemFilename(directory);
+    winNewFileDlgStrReplacePathSlash(wdir);
+    si = winNewFileDlgParseName(wdir);
     if (si)
       hr = pfd->SetFolder(si);
     free(directory);
