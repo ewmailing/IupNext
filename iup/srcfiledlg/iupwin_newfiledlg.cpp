@@ -27,6 +27,7 @@
 
 #include "iupwin_str.h"
 
+#define IUP_HELP_BTN    150
 
 enum { IUP_DIALOGOPEN, IUP_DIALOGSAVE, IUP_DIALOGDIR };
 
@@ -62,15 +63,14 @@ public:
   IFACEMETHODIMP OnFileOk(IFileDialog *);
   IFACEMETHODIMP OnSelectionChange(IFileDialog *);
   IFACEMETHODIMP OnTypeChange(IFileDialog*);
-
   IFACEMETHODIMP OnFolderChange(IFileDialog *) { return S_OK; };
   IFACEMETHODIMP OnFolderChanging(IFileDialog *, IShellItem *) { return S_OK; };
   IFACEMETHODIMP OnShareViolation(IFileDialog *, IShellItem *, FDE_SHAREVIOLATION_RESPONSE *) { return S_OK; };
   IFACEMETHODIMP OnOverwrite(IFileDialog *, IShellItem *, FDE_OVERWRITE_RESPONSE *) { return S_OK; };
 
   // IFileDialogControlEvents methods
+  IFACEMETHODIMP OnButtonClicked(IFileDialogCustomize *, DWORD);
   IFACEMETHODIMP OnItemSelected(IFileDialogCustomize*, DWORD, DWORD) { return S_OK; }
-  IFACEMETHODIMP OnButtonClicked(IFileDialogCustomize *, DWORD) { return S_OK; };
   IFACEMETHODIMP OnCheckButtonToggled(IFileDialogCustomize *, DWORD, BOOL) { return S_OK; };
   IFACEMETHODIMP OnControlActivating(IFileDialogCustomize *, DWORD) { return S_OK; };
 
@@ -299,6 +299,18 @@ IFACEMETHODIMP winNewFileDlgEventHandler::OnTypeChange(IFileDialog *pfd)
   }
 
   return S_OK;
+}
+
+IFACEMETHODIMP winNewFileDlgEventHandler::OnButtonClicked(IFileDialogCustomize*, DWORD dwIDCtl)
+{ 
+  if (dwIDCtl == IUP_HELP_BTN)
+  {
+    IFn cb = (IFn)IupGetCallback(ih, "HELP_CB");
+    if (cb)
+      cb(ih);
+  }
+
+  return S_OK; 
 }
 
 // Instance creation helper
@@ -638,6 +650,15 @@ static int winNewFileDlgPopup(Ihandle *ih, int x, int y)
   if (value)
     pfd->SetTitle(iupwinStrToSystem(value));
 
+  if (IupGetCallback(ih, "HELP_CB"))
+  {
+    // Set up a Customization.
+    IFileDialogCustomize *pfdc = NULL;
+    hr = pfd->QueryInterface(IID_PPV_ARGS(&pfdc));
+    if (SUCCEEDED(hr))
+      pfdc->AddPushButton(IUP_HELP_BTN, iupwinStrToSystem(IupGetLanguageString("IUP_HELP")));
+  }
+
   IFnss cb = (IFnss)IupGetCallback(ih, "FILE_CB");
   if (cb) cb(ih, NULL, "INIT");  // Not exactly the same as in a regular GetOpenFileName/GetSaveFileName
 
@@ -846,4 +867,3 @@ int IupNewFileDlgOpen(void)
 
 // TODO:
 // SHOWPREVIEW + Preview Callbacks
-// HELP_CB
