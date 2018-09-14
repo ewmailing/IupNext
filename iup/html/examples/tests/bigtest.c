@@ -17,7 +17,7 @@ export G_SLICE=always-malloc
 #include "iupcontrols.h"
 #include "iupkey.h"
 
-#define USE_NEWFILEDLG
+//#define USE_NEWFILEDLG
 #ifdef USE_NEWFILEDLG
 #include "iupfiledlg.h"
 #endif
