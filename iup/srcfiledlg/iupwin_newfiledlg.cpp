@@ -60,11 +60,12 @@ public:
 
   // IFileDialogEvents methods
   IFACEMETHODIMP OnFileOk(IFileDialog *);
+  IFACEMETHODIMP OnSelectionChange(IFileDialog *);
+  IFACEMETHODIMP OnTypeChange(IFileDialog*);
+
   IFACEMETHODIMP OnFolderChange(IFileDialog *) { return S_OK; };
   IFACEMETHODIMP OnFolderChanging(IFileDialog *, IShellItem *) { return S_OK; };
-  IFACEMETHODIMP OnSelectionChange(IFileDialog *);
   IFACEMETHODIMP OnShareViolation(IFileDialog *, IShellItem *, FDE_SHAREVIOLATION_RESPONSE *) { return S_OK; };
-  IFACEMETHODIMP OnTypeChange(IFileDialog *pfd);
   IFACEMETHODIMP OnOverwrite(IFileDialog *, IShellItem *, FDE_OVERWRITE_RESPONSE *) { return S_OK; };
 
   // IFileDialogControlEvents methods
@@ -73,6 +74,7 @@ public:
   IFACEMETHODIMP OnCheckButtonToggled(IFileDialogCustomize *, DWORD, BOOL) { return S_OK; };
   IFACEMETHODIMP OnControlActivating(IFileDialogCustomize *, DWORD) { return S_OK; };
 
+  // Constructor
   winNewFileDlgEventHandler(Ihandle* _ih) : _cRef(1), ih(_ih) {};
 
 private:
@@ -159,8 +161,9 @@ IFACEMETHODIMP winNewFileDlgEventHandler::OnFileOk(IFileDialog *pfd)
     {
       if (ret == IUP_CONTINUE)
       {
+        // If the filename does not have an extension equal to the selected type,
+        // the selected type extension will be concatenated to the filename anyway 
         char* value = iupAttribGet(ih, "FILE");
-        /* TODO: Se o nome selecionado não for uns dos tipos especificados para o diálogo uma extensão será concatenada */
         if (value)
           pfd->SetFileName(iupwinStrToSystem(value));
       }
@@ -190,7 +193,7 @@ IFACEMETHODIMP winNewFileDlgEventHandler::OnSelectionChange(IFileDialog *pfd)
           PWSTR pszFilePath = NULL;
           SFGAOF attr;
           hr = psi->GetAttributes(SFGAO_FOLDER, &attr);
-          if (SUCCEEDED(hr) && (SFGAO_FOLDER == attr))
+          if (SUCCEEDED(hr) && !(attr & SFGAO_FOLDER))
           {
             HRESULT hr = psi->GetDisplayName(SIGDN_FILESYSPATH, &pszFilePath);
             if (SUCCEEDED(hr))
@@ -213,7 +216,7 @@ IFACEMETHODIMP winNewFileDlgEventHandler::OnSelectionChange(IFileDialog *pfd)
           hr = psiaResult->GetItemAt(0, &psi); // get a selected item from the IShellItemArray
           SFGAOF attr;
           hr = psi->GetAttributes(SFGAO_FOLDER, &attr);
-          if (SUCCEEDED(hr) && (SFGAO_FOLDER == attr))
+          if (SUCCEEDED(hr) && !(attr & SFGAO_FOLDER))
           {
             if (SUCCEEDED(hr))
             {
@@ -238,11 +241,11 @@ IFACEMETHODIMP winNewFileDlgEventHandler::OnSelectionChange(IFileDialog *pfd)
         IShellItem *psi;
         if (SUCCEEDED(pfd->GetCurrentSelection(&psi)))
         {
-          PWSTR pszFilePath = NULL;
           SFGAOF attr;
           hr = psi->GetAttributes(SFGAO_FOLDER, &attr);
-          if (SUCCEEDED(hr) && (SFGAO_FOLDER == attr))
+          if (SUCCEEDED(hr) && !(attr & SFGAO_FOLDER))
           {
+            PWSTR pszFilePath = NULL;
             HRESULT hr = psi->GetDisplayName(SIGDN_FILESYSPATH, &pszFilePath);
             if (SUCCEEDED(hr))
             {
@@ -340,8 +343,9 @@ IFACEMETHODIMP winNewFileDlgEventHandler::OnTypeChange(IFileDialog *pfd)
     free(buffer);
     if (ret == IUP_CONTINUE)
     {
+      // If the filename does not have an extension equal to the selected type,
+      // the selected type extension will be concatenated to the filename anyway 
       char* value = iupAttribGet(ih, "FILE");
-      /* TODO: Se o nome selecionado não for uns dos tipos especificados para o diálogo uma extensão será concatenada */
       if (value)
         pfd->SetFileName(iupwinStrToSystem(value));
     }
@@ -501,8 +505,9 @@ static int winNewFileDlgPopup(Ihandle *ih, int x, int y)
   int dialogtype;
   char *value, *directory;
 
-  iupAttribSetInt(ih, "_IUPDLG_X", x);   /* used in iupDialogUpdatePosition */
-  iupAttribSetInt(ih, "_IUPDLG_Y", y);
+  // NOT supported
+  (void)x;
+  (void)y;
 
   value = iupAttribGetStr(ih, "DIALOGTYPE");
   if (iupStrEqualNoCase(value, "SAVE"))
@@ -687,8 +692,13 @@ static int winNewFileDlgPopup(Ihandle *ih, int x, int y)
   if (value)
     pfd->SetTitle(iupwinStrToSystem(value));
 
+  IFnss cb = (IFnss)IupGetCallback(ih, "FILE_CB");
+  if (cb) cb(ih, NULL, "INIT");  // Not exactly the same as in a regular GetOpenFileName/GetSaveFileName
+
   // Show the dialog
   hr = pfd->Show(parent);
+
+  if (cb) cb(ih, NULL, "FINISH");  // Not exactly the same as in a regular GetOpenFileName/GetSaveFileName
 
   if (SUCCEEDED(hr))
   {
@@ -891,3 +901,7 @@ int IupNewFileDlgOpen(void)
 // TODO:
 // SHOWPREVIEW + Preview Callbacks
 // HELP_CB
+// FILE_CB
+//    "SELECT" - a file has been selected.
+//    "OTHER" - an invalid file or a directory is selected.
+//    Multiselect
