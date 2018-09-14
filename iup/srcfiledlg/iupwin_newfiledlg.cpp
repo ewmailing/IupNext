@@ -94,10 +94,11 @@ IFACEMETHODIMP winNewFileDlgEventHandler::OnFileOk(IFileDialog *pfd)
     HRESULT hr = pfd->QueryInterface(IID_PPV_ARGS(&pfod));
     if (SUCCEEDED(hr))
     {
-      IShellItem *psi;
       if (!iupAttribGetBoolean(ih, "MULTIPLEFILES"))
       {
-        if (SUCCEEDED(pfd->GetResult(&psi)))
+        IShellItem *psi;
+        hr = pfd->GetResult(&psi);
+        if (SUCCEEDED(hr))
         {
           PWSTR pszFilePath = NULL;
           HRESULT hr = psi->GetDisplayName(SIGDN_FILESYSPATH, &pszFilePath);
@@ -138,7 +139,8 @@ IFACEMETHODIMP winNewFileDlgEventHandler::OnFileOk(IFileDialog *pfd)
       if (SUCCEEDED(hr))
       {
         IShellItem *psi;
-        if (SUCCEEDED(pfd->GetResult(&psi)))
+        hr = pfd->GetResult(&psi);
+        if (SUCCEEDED(hr))
         {
           PWSTR pszFilePath = NULL;
           HRESULT hr = psi->GetDisplayName(SIGDN_FILESYSPATH, &pszFilePath);
@@ -176,92 +178,37 @@ IFACEMETHODIMP winNewFileDlgEventHandler::OnFileOk(IFileDialog *pfd)
 
 IFACEMETHODIMP winNewFileDlgEventHandler::OnSelectionChange(IFileDialog *pfd)
 {
-  char *filename = NULL;
-  int ret;
   IFnss cb = (IFnss)IupGetCallback(ih, "FILE_CB");
   if (cb)
   {
-    IFileOpenDialog *pfod;
-    HRESULT hr = pfd->QueryInterface(IID_PPV_ARGS(&pfod));
+    char *filename = NULL;
+    char* status = "SELECT";
+    IShellItem *psi;
+    HRESULT hr = pfd->GetCurrentSelection(&psi);
     if (SUCCEEDED(hr))
     {
-      IShellItem *psi;
-      if (!iupAttribGetBoolean(ih, "MULTIPLEFILES"))
+      SFGAOF attr;
+      HRESULT hr = psi->GetAttributes(SFGAO_FILESYSTEM | SFGAO_FOLDER, &attr);
+      if (SUCCEEDED(hr) && (attr & SFGAO_FILESYSTEM))
       {
-        if (SUCCEEDED(pfd->GetCurrentSelection(&psi)))
-        {
-          PWSTR pszFilePath = NULL;
-          SFGAOF attr;
-          hr = psi->GetAttributes(SFGAO_FOLDER, &attr);
-          if (SUCCEEDED(hr) && !(attr & SFGAO_FOLDER))
-          {
-            HRESULT hr = psi->GetDisplayName(SIGDN_FILESYSPATH, &pszFilePath);
-            if (SUCCEEDED(hr))
-            {
-              filename = iupwinStrFromSystemFilename(pszFilePath);
-              CoTaskMemFree(pszFilePath);
-            }
-          }
-        }
-      }
-      else
-      {
-        IShellItemArray *psiaResult;
-
-        hr = pfod->GetSelectedItems(&psiaResult);
+        PWSTR pszFilePath = NULL;
+        hr = psi->GetDisplayName(SIGDN_FILESYSPATH, &pszFilePath);
         if (SUCCEEDED(hr))
         {
-          PWSTR pszFilePath = NULL;
-          IShellItem *psi = NULL;
-          hr = psiaResult->GetItemAt(0, &psi); // get a selected item from the IShellItemArray
-          SFGAOF attr;
-          hr = psi->GetAttributes(SFGAO_FOLDER, &attr);
-          if (SUCCEEDED(hr) && !(attr & SFGAO_FOLDER))
-          {
-            if (SUCCEEDED(hr))
-            {
-              HRESULT hr = psi->GetDisplayName(SIGDN_FILESYSPATH, &pszFilePath);
-              if (SUCCEEDED(hr))
-              {
-                filename = iupwinStrFromSystemFilename(pszFilePath);
-                CoTaskMemFree(pszFilePath);
-              }
-            }
-          }
+          filename = iupwinStrFromSystemFilename(pszFilePath);
+
+          if (attr & SFGAO_FOLDER)
+            status = "OTHER";
+
+          CoTaskMemFree(pszFilePath);
         }
       }
-      pfod->Release();
-    }
-    else
-    {
-      IFileSaveDialog *pfsd;
-      HRESULT hr = pfd->QueryInterface(IID_PPV_ARGS(&pfsd));
-      if (SUCCEEDED(hr))
-      {
-        IShellItem *psi;
-        if (SUCCEEDED(pfd->GetCurrentSelection(&psi)))
-        {
-          SFGAOF attr;
-          hr = psi->GetAttributes(SFGAO_FOLDER, &attr);
-          if (SUCCEEDED(hr) && !(attr & SFGAO_FOLDER))
-          {
-            PWSTR pszFilePath = NULL;
-            HRESULT hr = psi->GetDisplayName(SIGDN_FILESYSPATH, &pszFilePath);
-            if (SUCCEEDED(hr))
-            {
-              filename = iupwinStrFromSystemFilename(pszFilePath);
-              CoTaskMemFree(pszFilePath);
-            }
-          }
-        }
-      }
-      pfsd->Release();
     }
 
     if (filename == NULL)
       return S_OK;
 
-    ret = cb(ih, filename, "SELECT");
+    int ret = cb(ih, filename, status);
 
     if (ret == IUP_IGNORE || ret == IUP_CONTINUE)
       return S_FALSE;
@@ -320,7 +267,7 @@ IFACEMETHODIMP winNewFileDlgEventHandler::OnTypeChange(IFileDialog *pfd)
         hr = pfd->GetFileName(&pszFileName);
         if (SUCCEEDED(hr))
         {
-          if (iupAttribGetBoolean(ih, "MULTIPLEFILES"))
+          if (iupAttribGetBoolean(ih, "MULTIPLEFILES"))  // The returned filename may contain more than one name
             winNewFileDlgGetFirstFile(pszFileName);
           filename = iupwinStrFromSystemFilename(pszFileName);
           size += (int)strlen(filename);
@@ -477,8 +424,7 @@ static void winNewFileDlgGetFolder(Ihandle *ih)
       if (SUCCEEDED(pfd->GetResult(&psi)))
       {
         PWSTR pszFilePath = NULL;
-        HRESULT hr = psi->GetDisplayName(SIGDN_FILESYSPATH, &pszFilePath);
-        if (SUCCEEDED(hr))
+        if (SUCCEEDED(psi->GetDisplayName(SIGDN_FILESYSPATH, &pszFilePath)))
         {
           iupAttribSetStr(ih, "VALUE", iupwinStrFromSystemFilename(pszFilePath));
           iupAttribSet(ih, "STATUS", "0");
@@ -764,7 +710,7 @@ static int winNewFileDlgPopup(Ihandle *ih, int x, int y)
         if (dwNumItems == 1)
         {
           IShellItem *psi = NULL;
-          hr = psiaResult->GetItemAt(0, &psi); // get a selected item from the IShellItemArray
+          hr = psiaResult->GetItemAt(0, &psi); // get the selected item from the IShellItemArray
           if (SUCCEEDED(hr))
           {
             hr = psi->GetDisplayName(SIGDN_FILESYSPATH, &pszFilePath);
@@ -901,7 +847,3 @@ int IupNewFileDlgOpen(void)
 // TODO:
 // SHOWPREVIEW + Preview Callbacks
 // HELP_CB
-// FILE_CB
-//    "SELECT" - a file has been selected.
-//    "OTHER" - an invalid file or a directory is selected.
-//    Multiselect
