@@ -1002,7 +1002,14 @@ wb_usr.tree =
           {
             {
               name= {nl= "IupFileDlg"},
-              link= "dlg/iupfiledlg.html"
+              link= "dlg/iupfiledlg.html",
+              folder=
+              {
+                {
+                  name= {nl= "IupNewFileDlg"},
+                  link= "dlg/iupnewfiledlg.html"
+                },
+              }
             },
             {
               name= {nl= "IupMessageDlg"},
