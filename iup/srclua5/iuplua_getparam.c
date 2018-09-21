@@ -113,7 +113,7 @@ static int GetParam(lua_State *L)
       *(double*)(param_data[i]) = (double)luaL_checknumber(L, lua_param_start); lua_param_start++;
       break;
     case 'h':
-      (Ihandle*)(param_data[i]) = iuplua_checkihandle(L, lua_param_start); lua_param_start++;  /* no malloc here */
+      param_data[i] = iuplua_checkihandle(L, lua_param_start); lua_param_start++;  /* no malloc here */
       break;
     case 'd':
     case 'f':
