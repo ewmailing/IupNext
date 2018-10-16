@@ -376,6 +376,7 @@ void iupdrvDrawText(IdrawCanvas* dc, const char* text, int len, int x, int y, in
 #if PANGO_VERSION_CHECK(1,2,0)  
     pango_layout_set_height(fontlayout, -1);
 #endif
+#endif
   }
   if (flags & IUP_DRAW_ELLIPSIS)
     pango_layout_set_ellipsize(fontlayout, PANGO_ELLIPSIZE_NONE);
