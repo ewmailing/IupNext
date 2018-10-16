@@ -440,14 +440,14 @@ void iupdrvDrawText(IdrawCanvas* dc, const char* text, int len, int x, int y, in
   if (flags & IUP_DRAW_WRAP)
   {
     pango_layout_set_width(fontlayout, iupGTK_PIXELS2PANGOUNITS(layout_w));
-#if PANGO_VERSION_CHECK(1,2,0)  
+#if defined(PANGO_VERSION_CHECK) && PANGO_VERSION_CHECK(1,2,0)  
     pango_layout_set_height(fontlayout, iupGTK_PIXELS2PANGOUNITS(layout_h));
 #endif
   }
   else if (flags & IUP_DRAW_ELLIPSIS)
   {
     pango_layout_set_width(fontlayout, iupGTK_PIXELS2PANGOUNITS(layout_w));
-#if PANGO_VERSION_CHECK(1,2,0)  
+#if defined(PANGO_VERSION_CHECK) && PANGO_VERSION_CHECK(1,2,0)  
     pango_layout_set_height(fontlayout, iupGTK_PIXELS2PANGOUNITS(layout_h));
 #endif
     pango_layout_set_ellipsize(fontlayout, PANGO_ELLIPSIZE_END);
@@ -489,7 +489,9 @@ void iupdrvDrawText(IdrawCanvas* dc, const char* text, int len, int x, int y, in
   if ((flags & IUP_DRAW_WRAP) || (flags & IUP_DRAW_ELLIPSIS))
   {
     pango_layout_set_width(fontlayout, -1);
+#if defined(PANGO_VERSION_CHECK) && PANGO_VERSION_CHECK(1,2,0)  
     pango_layout_set_height(fontlayout, -1);
+#endif
   }
   if (flags & IUP_DRAW_ELLIPSIS)
     pango_layout_set_ellipsize(fontlayout, PANGO_ELLIPSIZE_NONE);
