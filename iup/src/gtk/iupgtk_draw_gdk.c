@@ -306,15 +306,19 @@ void iupdrvDrawText(IdrawCanvas* dc, const char* text, int len, int x, int y, in
   if (flags & IUP_DRAW_WRAP)
   {
     pango_layout_set_width(fontlayout, iupGTK_PIXELS2PANGOUNITS(layout_w));
-#if defined(PANGO_VERSION_CHECK) && PANGO_VERSION_CHECK(1,2,0)  
+#ifdef PANGO_VERSION_CHECK
+#if PANGO_VERSION_CHECK(1,2,0)  
     pango_layout_set_height(fontlayout, iupGTK_PIXELS2PANGOUNITS(layout_h));
+#endif
 #endif
   }
   else if (flags & IUP_DRAW_ELLIPSIS)
   {
     pango_layout_set_width(fontlayout, iupGTK_PIXELS2PANGOUNITS(layout_w));
-#if defined(PANGO_VERSION_CHECK) && PANGO_VERSION_CHECK(1,2,0)  
+#ifdef PANGO_VERSION_CHECK
+#if PANGO_VERSION_CHECK(1,2,0)  
     pango_layout_set_height(fontlayout, iupGTK_PIXELS2PANGOUNITS(layout_h));
+#endif
 #endif
     pango_layout_set_ellipsize(fontlayout, PANGO_ELLIPSIZE_END);
   }
@@ -343,8 +347,10 @@ void iupdrvDrawText(IdrawCanvas* dc, const char* text, int len, int x, int y, in
     pango_layout_context_changed(fontlayout);
 
     pango_layout_get_pixel_extents(fontlayout, NULL, &rect);
+#ifdef PANGO_VERSION_CHECK
 #if PANGO_VERSION_CHECK(1,16,0)
     pango_matrix_transform_pixel_rectangle(&fontmatrix, &rect);
+#endif
 #endif
 
     /* Adjust the position considering the Pango rectangle transformed */
@@ -366,7 +372,8 @@ void iupdrvDrawText(IdrawCanvas* dc, const char* text, int len, int x, int y, in
   if ((flags & IUP_DRAW_WRAP) || (flags & IUP_DRAW_ELLIPSIS))
   {
     pango_layout_set_width(fontlayout, -1);
-#if defined(PANGO_VERSION_CHECK) && PANGO_VERSION_CHECK(1,2,0)  
+#ifdef PANGO_VERSION_CHECK
+#if PANGO_VERSION_CHECK(1,2,0)  
     pango_layout_set_height(fontlayout, -1);
 #endif
   }
