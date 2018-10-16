@@ -41,7 +41,7 @@ void iupdrvGetScreenSize(int *width, int *height)
 #if GTK_CHECK_VERSION(2, 20, 0)
   gint monitor = gdk_screen_get_primary_monitor(screen);
 #else
-  gint monitor = gdk_screen_get_monitor_at_point(screen, 0, 0)
+  gint monitor = gdk_screen_get_monitor_at_point(screen, 0, 0);
 #endif
   gdk_screen_get_monitor_workarea(screen, monitor, &rect);
   *width = rect.width;
