@@ -126,9 +126,9 @@ static void winTextParseParagraphFormat(Ihandle* formattag, PARAFORMAT2 *parafor
     {
       paraformat->dwMask |= PFM_NUMBERINGSTYLE;
 
-      if (iupStrEqualNoCase(format, "RIGHTPARENTESES"))
+      if (iupStrEqualNoCase(format, "RIGHTPARENTHESIS"))
         paraformat->wNumberingStyle = PFNS_PAREN;
-      else if (iupStrEqualNoCase(format, "PARENTESES"))
+      else if (iupStrEqualNoCase(format, "PARENTHESES"))
         paraformat->wNumberingStyle = PFNS_PARENS;
       else if (iupStrEqualNoCase(format, "PERIOD"))
         paraformat->wNumberingStyle = PFNS_PERIOD;
