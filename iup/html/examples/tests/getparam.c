@@ -25,6 +25,8 @@ static int param_action(Ihandle* param_box, int param_index, void* user_data)
       param = (Ihandle*)IupGetAttributeId(param_box, "PARAM", 3);
       printf("PARAM3 = %s\n", IupGetAttribute(param, "INDEX"));
 
+//      IupSetAttribute(IupGetDialog(param_box), "RASTERSIZE", "800x");
+
       printf("IupGetParam - Init\n");
 
       if (0)
@@ -71,7 +73,8 @@ void GetParamTest(void)
   int plist = 2, poptions = 1;
   char pstring2[200] = "second text\nsecond line";
   char file_name[500] = "test.jpg";
-  
+  char dir_name[500] = "d:/";
+
   if (!IupGetParam("Title", param_action, 0,
                    "Bt%u[, MyCancel, Help!]\n"
 //                   "%x[NOFRAME=Yes]\n"
@@ -88,11 +91,12 @@ void GetParamTest(void)
                    "List:%l|item0|item1|item2|item3|item4|item5|item6|\n" 
                    "Date:%d[MONTHSHORTNAMES=Yes,ZEROPRECED=Yes]\n"
                    "File:%f[OPEN|*.bmp;*.jpg|CURRENT|NO|NO]\n"
+                   "Directory:%f[DIR||||]\n"
                    "Color:%c{Color Tip}\n"
                    "Font:%n\n"
                    "Sep3 %t\n"
                    "Multiline:%m\n",
-                   &pboolean, &pinteger, &preal, &pinteger2, &preal2, &pangle, pstring, &poptions, &plist, pdate, file_name, pcolor, pfont, pstring2, NULL))
+                   &pboolean, &pinteger, &preal, &pinteger2, &preal2, &pangle, pstring, &poptions, &plist, pdate, file_name, dir_name, pcolor, pfont, pstring2, NULL))
     return;
   
   IupMessagef("IupGetParam",
