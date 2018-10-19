@@ -368,6 +368,13 @@ background. Values in RGB format (&quot;r g b&quot;).&nbsp;(since 3.21)</p>
 for line containing the caret. Translucency ranges from 0 for completely 
 transparent to 255 for opaque with 256 being opaque and not using translucent 
 drawing code which may be slower.&nbsp;(since 3.21)</p>
+<p><strong>CARETXPOLICY</strong>/<strong>CARETYPOLICY</strong> (non 
+inheritable): <span>These set the caret policy. The value can be a combination 
+of&nbsp;&quot;</span>SLOP<span>&quot;,&nbsp;&quot;</span>STRICT<span>&quot;,&nbsp;&quot;</span>JUMPS<span>&quot;&nbsp;and&nbsp;&quot;E</span>VEN<span>&quot; 
+using &quot;|&quot; as separator. When SLOP is used the attribute CARETSLOP defines an 
+unwanted zone for the caret. This zone is defined as a number of pixels near the 
+vertical margins, and as a number of lines near the horizontal margins. (since 
+3.26)</span></p>
 <p><strong>FIRSTVISIBLELINE</strong> (<font size="3">non inheritable</font>):
 <span>the line number of the first visible line. </span>(since 3.18)</p>
 

@@ -24,8 +24,8 @@
 /***** SCROLLING AND AUTOMATIC SCROLLING 
 SCI_LINESCROLL(int column, int line)
 SCI_SCROLLCARET
---SCI_SETXCARETPOLICY(int caretPolicy, int caretSlop)
---SCI_SETYCARETPOLICY(int caretPolicy, int caretSlop)
+SCI_SETXCARETPOLICY(int caretPolicy, int caretSlop)
+SCI_SETYCARETPOLICY(int caretPolicy, int caretSlop)
 --SCI_SETVISIBLEPOLICY(int caretPolicy, int caretSlop)
 SCI_SETHSCROLLBAR(bool visible)
 SCI_GETHSCROLLBAR
@@ -40,6 +40,47 @@ SCI_GETVSCROLLBAR
 --SCI_SETENDATLASTLINE(bool endAtLastLine)
 --SCI_GETENDATLASTLINE
 */
+
+static int iSciGetPolicy(const char *value)
+{
+  int policy = 0;
+  int len = 0;
+
+  const char *lastValue = value;
+  const char *nextValue = iupStrNextValue(value, (int)strlen(value), &len, '|');
+  while (len != 0)
+  {
+    if (iupStrEqualPartial(lastValue, "SLOP"))
+      policy |= CARET_SLOP;
+    if (iupStrEqualPartial(lastValue, "STRICT"))
+      policy |= CARET_STRICT;
+    if (iupStrEqualPartial(lastValue, "JUMPS"))
+      policy |= CARET_JUMPS;
+    if (iupStrEqualPartial(lastValue, "EVEN"))
+      policy |= CARET_EVEN;
+
+    lastValue = nextValue;
+    nextValue = iupStrNextValue(nextValue, (int)strlen(nextValue), &len, ' ');
+  }
+
+  return policy;
+}
+
+static int iScintillaSetXCaretPolicyAttrib(Ihandle *ih, const char *value)
+{
+  int policy = iSciGetPolicy(value);
+  int slop = iupAttribGetInt(ih, "CARETSLOP");
+  IupScintillaSendMessage(ih, SCI_SETXCARETPOLICY, policy, slop);
+  return 0;
+}
+
+static int iScintillaSetYCaretPolicyAttrib(Ihandle *ih, const char *value)
+{
+  int policy = iSciGetPolicy(value);
+  int slop = iupAttribGetInt(ih, "CARETSLOP");
+  IupScintillaSendMessage(ih, SCI_SETYCARETPOLICY, policy, slop);
+  return 0;
+}
 
 static int iScintillaSetScrollByAttrib(Ihandle *ih, const char *value)
 {
@@ -114,4 +155,8 @@ void iupScintillaRegisterScrolling(Iclass* ic)
   iupClassRegisterAttribute(ic, "SCROLLBY", NULL, iScintillaSetScrollByAttrib, NULL, NULL, IUPAF_WRITEONLY|IUPAF_NO_INHERIT);
   iupClassRegisterAttribute(ic, "SCROLLTOCARET", NULL, iScintillaSetScrollCaretAttrib, NULL, NULL, IUPAF_WRITEONLY|IUPAF_NO_INHERIT);
   iupClassRegisterAttribute(ic, "SCROLLWIDTH", iScintillaGetScrollWidthAttrib, iScintillaSetScrollWidthAttrib, IUPAF_SAMEASSYSTEM, "2000", IUPAF_NO_INHERIT);
+
+  iupClassRegisterAttribute(ic, "CARETXPOLICY", NULL, iScintillaSetXCaretPolicyAttrib, NULL, NULL, IUPAF_WRITEONLY | IUPAF_NO_INHERIT);
+  iupClassRegisterAttribute(ic, "CARETYPOLICY", NULL, iScintillaSetYCaretPolicyAttrib, NULL, NULL, IUPAF_WRITEONLY | IUPAF_NO_INHERIT);
+  iupClassRegisterAttribute(ic, "CARETSLOP", NULL, NULL, NULL, NULL, IUPAF_NO_INHERIT);
 }

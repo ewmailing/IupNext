@@ -123,6 +123,8 @@ static void set_attribs (Ihandle *sci)
   // 11-Identifier  
 
   IupSetAttribute(sci, "STYLEHOTSPOT6", "YES");
+
+//  IupSetAttribute(sci, "CARETXPOLICY", "SLOP|JUMPS");
   
   IupSetAttribute(sci, "VALUE", sampleCode);
 //  IupSetAttribute(sci, "INSERT0", sampleCode);
