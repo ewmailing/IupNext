@@ -376,6 +376,11 @@ canvas. But the ACTION callback function can NOT be called manually from inside
 the application, it must be invoked by the system, so if you need to redraw then 
 call <a href="../func/iupredraw.html">IupRedraw</a> or
 <a href="../func/iupupdate.html">IupUpdate</a>.</p>
+<p> In GTK uses GtkFixed, in Windows uses a custom window class called 
+&quot;IupCanvas&quot;, and 
+in Motif uses xmDrawingArea.</p>
+
+
 <h3>Using with the CD library</h3>
 <p>When using the <a href="http://www.tecgraf.puc-rio.br/cd/" target="_blank">CD</a> 
 library to draw in a IupCanvas, you can use the callbacks to manage the canvas. 
