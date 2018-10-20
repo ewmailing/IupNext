@@ -60,6 +60,9 @@ Help button is pressed.</p>
 <p>The dialog is mapped only inside <b>IupPopup</b>, <b>IupMap</b> does nothing.</p>
 <p>In Windows, the dialog will be modal relative only to its parent or to the 
 active dialog.</p>
+<p>In GTK uses gtk_font_selection_dialog (GTK 2) or gtk_font_chooser (GTK 3), in 
+Windows uses ChooseFont, and in Motif uses a custom dialog implemented using IUP 
+controls.</p>
 <h3><a name="Examples">Examples</a></h3>
 <pre>Ihandle* dlg = IupFontDlg();
 

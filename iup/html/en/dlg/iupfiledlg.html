@@ -283,13 +283,16 @@ newer Explorer interface available since Windows Vista. To always use the newer
 Explorer interface, then initialize the <a href="iupnewfiledlg.html">
 IupNewFileDlg</a>&nbsp;library, its only limitation is not having the preview 
 implemented as a IupCanvas. (since 3.26)</span></font></p>
-<p>&nbsp;When saving a file, the overwrite check is done before the FILE_CB callback 
+<p>When saving a file, the overwrite check is done before the FILE_CB callback 
 is called with status=OK. If the application wants to add an extension to the 
 file name inside the FILE_CB callback when status=OK, then it must manually 
 check if the file with the extension exits and asks the user if the file should 
 be replaced, if not then the callback can set the FILE attribute and returns 
 IUP_CONTINUE, so the file dialog will remain open and the user will have an 
 opportunity to change the file name now that it contains the extension.</p>
+<p>In GTK uses gtk_file_chooser_dialog, in Windows uses GetOpenFileName/GetSaveFileName 
+(or the IFileDialog COM interface when using the <font SIZE="3"><span> <a href="iupnewfiledlg.html">
+IupNewFileDlg</a>&nbsp;library), and in Motif uses xmFileSelectionBox.</span></font></p>
 
 <h3><a name="Examples">Examples</a></h3>
 <pre>Ihandle *dlg = IupFileDlg(); 
