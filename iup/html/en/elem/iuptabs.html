@@ -285,6 +285,8 @@ tab is a confusing interface situation.</p>
 the tabs disappear when the mouse moves over it after being used in the 
 valuator. A workaround is to put the valuator inside an&nbsp;<strong>IupFrame</strong>&nbsp;and 
 then inside the&nbsp;<strong>IupTabs</strong>, so the problem does not occur. </p>
+<p>In GTK uses GtkNotebook, in Windows uses WC_TABCONTROL, and in Motif uses 
+xmNotebook.</p>
 <h3>Utility Functions </h3>
 <p>These functions can be used to set and get attributes from the element:</p>
 <pre>void  IupSetAttributeId(Ihandle *ih, const char* name, int id, const char* value);
