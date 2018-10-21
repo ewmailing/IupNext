@@ -24,7 +24,7 @@ PROJDIR = ../../..
 
 #DBG = Yes
 
-#SRC = alarm.c
+SRC = alarm.c
 #SRC = button.c
 #SRC = dialog1.c
 #SRC = dialog2.c
