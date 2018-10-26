@@ -1024,11 +1024,17 @@ void iupFlatScrollBarSetChildrenCurrentSize(Ihandle* ih, int shrink)
     int posx = iupAttribGetInt(ih, "POSX");
     int posy = iupAttribGetInt(ih, "POSY");
 
-    iFlatScrollBarCalcHandler(ih->currentheight, 0, ymax, dy, sb_size, posy, &pos1, &pos2);
-    iupBaseSetCurrentSize(sb_vert, sb_size, pos2 - pos1 + 1, shrink);  /* sb_vert->currentheight == dy in pixels */
+    if (!iupAttribGetBoolean(ih, "YHIDDEN"))
+    {
+      iFlatScrollBarCalcHandler(ih->currentheight, 0, ymax, dy, sb_size, posy, &pos1, &pos2);
+      iupBaseSetCurrentSize(sb_vert, sb_size, pos2 - pos1 + 1, shrink);  /* sb_vert->currentheight == dy in pixels */
+    }
 
-    iFlatScrollBarCalcHandler(ih->currentwidth, 0, xmax, dx, sb_size, posx, &pos1, &pos2);
-    iupBaseSetCurrentSize(sb_horiz, pos2 - pos1 + 1, sb_size, shrink);  /* sb_horiz->currentwidth == dx in pixels */
+    if (!iupAttribGetBoolean(ih, "XHIDDEN"))
+    {
+      iFlatScrollBarCalcHandler(ih->currentwidth, 0, xmax, dx, sb_size, posx, &pos1, &pos2);
+      iupBaseSetCurrentSize(sb_horiz, pos2 - pos1 + 1, sb_size, shrink);  /* sb_horiz->currentwidth == dx in pixels */
+    }
   }
   else
   {
@@ -1054,11 +1060,17 @@ void iupFlatScrollBarSetChildrenPosition(Ihandle* ih)
     int posx = iupAttribGetInt(ih, "POSX");
     int posy = iupAttribGetInt(ih, "POSY");
 
-    iFlatScrollBarCalcHandler(ih->currentheight, 0, ymax, dy, sb_size, posy, &pos1, &pos2);
-    iupBaseSetPosition(sb_vert, ih->currentwidth - sb_size, pos1);
+    if (!iupAttribGetBoolean(ih, "YHIDDEN"))
+    {
+      iFlatScrollBarCalcHandler(ih->currentheight, 0, ymax, dy, sb_size, posy, &pos1, &pos2);
+      iupBaseSetPosition(sb_vert, ih->currentwidth - sb_size, pos1);
+    }
 
-    iFlatScrollBarCalcHandler(ih->currentwidth, 0, xmax, dx, sb_size, posx, &pos1, &pos2);
-    iupBaseSetPosition(sb_horiz, pos1, ih->currentheight - sb_size);
+    if (!iupAttribGetBoolean(ih, "XHIDDEN"))
+    {
+      iFlatScrollBarCalcHandler(ih->currentwidth, 0, xmax, dx, sb_size, posx, &pos1, &pos2);
+      iupBaseSetPosition(sb_horiz, pos1, ih->currentheight - sb_size);
+    }
   }
   else
   {
