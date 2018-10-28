@@ -248,9 +248,9 @@ static Ihandle *create_mat(int mati)
 //  IupSetAttribute(mat,"WIDTH0","24");
 //  IupSetAttribute(mat,"HEIGHT0","8");
 
-  IupSetAttribute(mat, "FLATSCROLLBAR", "Yes");
+//  IupSetAttribute(mat, "FLATSCROLLBAR", "Yes");
 //  IupSetAttribute(mat, "SHOWFLOATING", "Yes");
-  IupSetAttribute(mat, "SHOWTRANSPARENT", "Yes");
+//  IupSetAttribute(mat, "SHOWTRANSPARENT", "Yes");
 
   return mat;
 }
@@ -291,7 +291,8 @@ static int removeline(Ihandle *self)
 
 static int addline(Ihandle *self) 
 {
-  IupSetAttribute(IupGetHandle("mat1"),"ADDLIN","0"); 
+//  IupSetAttribute(IupGetHandle("mat1"), "NUMLIN", "5");
+  IupSetAttribute(IupGetHandle("mat1"), "ADDLIN", "0");
 //  IupSetAttribute(IupGetHandle("mat1"),"ADDLIN","0-5"); 
 //  IupSetAttribute(IupGetHandle("mat1"),"NUMCOL_NOSCROLL","2");
 //  IupSetAttribute(IupGetHandle("mat1"),"NUMLIN_NOSCROLL","2");
