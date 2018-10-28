@@ -10,9 +10,6 @@ LINKER = $(CPPC)
 # To use a subfolder with the Lua version for binaries
 LUAMOD_DIR = Yes
 
-NO_LUAOBJECT = Yes
-USE_BIN2C_LUA = Yes
-
 ifdef USE_LUA_VERSION
   USE_LUA51:=
   USE_LUA52:=
@@ -46,16 +43,6 @@ endif
 
 APPNAME := $(APPNAME)$(LUASFX)
 SRC = iupluascripter.c
-
-ifdef NO_LUAOBJECT
-  DEFINES += IUPLUA_USELH
-  USE_LH_SUBDIR = Yes
-  LHDIR = lh
-else
-  DEFINES += IUPLUA_USELOH
-  USE_LOH_SUBDIR = Yes
-  LOHDIR = loh$(LUASFX)
-endif
 
 INCLUDES = ../include
 
