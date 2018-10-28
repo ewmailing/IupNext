@@ -1564,10 +1564,10 @@ void iupMatrixDrawUpdate(Ihandle* ih)
 void iupMatrixDrawCB(Ihandle* ih)
 {
   /* called only from the ACTION callback */
-  cdCanvasActivate(ih->data->cd_canvas);
-
   if (ih->data->need_calcsize)
     iupMatrixAuxCalcSizes(ih);
+
+  cdCanvasActivate(ih->data->cd_canvas);
 
   iMatrixDrawMatrix(ih);
 
