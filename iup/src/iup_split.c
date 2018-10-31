@@ -816,7 +816,7 @@ Iclass* iupSplitNewClass(void)
   ic->name   = "split";
   ic->format = "hh";   /* two Ihandle*(s) */
   ic->nativetype = IUP_TYPEVOID;
-  ic->childtype  = IUP_CHILDMANY+3;  /* canvas+child+child */
+  ic->childtype = IUP_CHILDMANY+3;  /* canvas+child+child */
   ic->is_interactive = 0;
 
   /* Class functions */

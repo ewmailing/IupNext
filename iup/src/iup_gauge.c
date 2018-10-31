@@ -373,7 +373,7 @@ Iclass* iupGaugeNewClass(void)
   ic->name = "gauge";
   ic->format = NULL; /* no parameters */
   ic->nativetype  = IUP_TYPECANVAS;
-  ic->childtype   = IUP_CHILDNONE;
+  ic->childtype = IUP_CHILDNONE;
   ic->is_interactive = 0;
 
   /* Class functions */

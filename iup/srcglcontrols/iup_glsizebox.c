@@ -331,7 +331,7 @@ Iclass* iupGLSizeBoxNewClass(void)
   ic->name   = "glsizebox";
   ic->format = "h";   /* one Ihandle* */
   ic->nativetype = IUP_TYPEVOID;
-  ic->childtype  = IUP_CHILDMANY+1;  /* one child */
+  ic->childtype = IUP_CHILDMANY+1;  /* 1 child */
   ic->is_interactive = 0;
 
   /* Class functions */

@@ -529,7 +529,7 @@ Iclass* iupTabsNewClass(void)
   ic->name = "tabs";
   ic->format = "g"; /* array of Ihandle */
   ic->nativetype = IUP_TYPECONTROL;
-  ic->childtype  = IUP_CHILDMANY;
+  ic->childtype = IUP_CHILDMANY;  /* can have children */
   ic->is_interactive = 1;
   ic->has_attrib_id = 1;
 

@@ -268,7 +268,7 @@ Iclass* iupGLProgressBarNewClass(void)
   ic->name = "glprogressbar";
   ic->format = NULL; /* no parameters */
   ic->nativetype = IUP_TYPEVOID;
-  ic->childtype   = IUP_CHILDNONE;
+  ic->childtype = IUP_CHILDNONE;
   ic->is_interactive = 0;
 
   /* Class functions */

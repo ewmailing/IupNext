@@ -93,7 +93,7 @@ Iclass* iupProgressBarNewClass(void)
   ic->name = "progressbar";
   ic->format = NULL; /* no parameters */
   ic->nativetype  = IUP_TYPECONTROL;
-  ic->childtype   = IUP_CHILDNONE;
+  ic->childtype = IUP_CHILDNONE;
   ic->is_interactive = 0;
 
   /* Class functions */

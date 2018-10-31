@@ -1574,7 +1574,7 @@ Iclass* iupExpanderNewClass(void)
   ic->name   = "expander";
   ic->format = "h";   /* one Ihandle* */
   ic->nativetype = IUP_TYPEVOID;
-  ic->childtype  = IUP_CHILDMANY+2;  /* canvas+child */
+  ic->childtype = IUP_CHILDMANY+2;  /* canvas+child */
   ic->is_interactive = 0;
 
   /* Class functions */

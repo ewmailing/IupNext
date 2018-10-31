@@ -673,7 +673,7 @@ Iclass* iupWebBrowserNewClass(void)
   ic->name = "webbrowser";
   ic->format = NULL; /* no parameters */
   ic->nativetype = IUP_TYPECANVAS;
-  ic->childtype  = IUP_CHILDNONE;
+  ic->childtype = IUP_CHILDNONE;
   ic->is_interactive = 1;
 
   /* Class functions */

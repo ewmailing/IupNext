@@ -1951,7 +1951,7 @@ Iclass* iupParamBoxNewClass(void)
   ic->name = "parambox";
   ic->format = "g"; /* array of Ihandle */
   ic->nativetype = IUP_TYPEVOID;
-  ic->childtype = IUP_CHILDMANY;
+  ic->childtype = IUP_CHILDMANY;  /* can have children */
   ic->is_interactive = 0;
 
   ic->New = iupParamBoxNewClass;
