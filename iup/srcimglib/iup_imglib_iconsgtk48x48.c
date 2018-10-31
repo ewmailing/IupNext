@@ -13,7 +13,7 @@
 
 void iupImglibIconsGtk48x48Open(void)
 {
-#ifdef IUP_IMGLIB_LARGE
+#ifdef IUP_IMGLIB_LARGE_ICON
   iupImageStockSet("IUP_IconMessageError", 0, "gtk-dialog-error");
   iupImageStockSet("IUP_IconMessageHelp", 0, "gtk-dialog-question");
   iupImageStockSet("IUP_IconMessageInfo", 0, "gtk-dialog-info");

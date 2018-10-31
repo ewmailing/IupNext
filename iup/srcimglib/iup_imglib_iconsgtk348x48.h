@@ -1,4 +1,4 @@
-#ifdef IUP_IMGLIB_LARGE
+#ifdef IUP_IMGLIB_LARGE_ICON_ICON
 
 static Ihandle* load_image_dialog_password(void)
 {

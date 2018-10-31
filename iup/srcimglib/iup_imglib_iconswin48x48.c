@@ -30,7 +30,9 @@ void iupImglibIconsWin48x48Open(void)
   iupImageStockSet("IUP_DeviceScanner", load_image_DeviceScanner, 0);
   iupImageStockSet("IUP_DeviceSound", load_image_DeviceSound, 0);
   iupImageStockSet("IUP_DeviceVideo", load_image_DeviceVideo, 0);
+#endif
 
+#ifdef IUP_IMGLIB_LARGE_ICON
   iupImageStockSet("IUP_IconMessageError", load_image_IconMessageError, 0);
   iupImageStockSet("IUP_IconMessageHelp", load_image_IconMessageHelp, 0);
   iupImageStockSet("IUP_IconMessageInfo", load_image_IconMessageInfo, 0);
