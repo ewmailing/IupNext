@@ -6,6 +6,8 @@ LIBNAME = iupimglib
 
 INCLUDES = ../include ../src
 
+DEFINES = IUP_IMGLIB_LARGE_ICON
+
 ifdef USE_IUP_IMGLIB_LARGE
   # if you want to include images larger than 48x48 (inclusive)
   DEFINES += IUP_IMGLIB_LARGE
