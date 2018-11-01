@@ -22,7 +22,7 @@ USE_STATIC = Yes
 IUP = ../../..
 PROJDIR = ../../..
 
-#DBG = Yes
+DBG = Yes
 
 SRC = alarm.c
 #SRC = button.c
@@ -164,6 +164,18 @@ ifdef IUPSCINTILLA_SAMPLE
   else
     SLIB += $(IUP)/lib/$(TEC_UNAME)d/libiup_scintilla.a
   endif
+endif
+
+#BALLON_SAMPLE=Yes
+ifdef BALLON_SAMPLE
+  SRC = dialog_ballon.c
+  ifdef DBG_LIB_DIR
+    SLIB += $(IUP)/lib/$(TEC_UNAME)d/libiupim.a 
+  else
+    SLIB += $(IUP)/lib/$(TEC_UNAME)/libiupim.a 
+  endif
+  USE_IM = Yes
+  LINKER = g++
 endif
 
 #USE_LUA51=Yes
