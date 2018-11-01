@@ -20,6 +20,8 @@
 #include "iup_stdcontrols.h"
 #include "iup_layout.h"
 #include "iup_drv.h"
+#include "iup_drvdraw.h"
+#include "iup_draw.h"
 
 
 /*****************************************************************************\
@@ -32,6 +34,41 @@ static char* iBackgroundBoxGetBgColorAttrib(Ihandle* ih)
     return NULL;  /* get from the hash table */
   else
     return iupBaseNativeParentGetBgColorAttrib(ih);
+}
+
+static int iBackgroundBoxRedrawBackImage_CB(Ihandle* ih)
+{                    
+  char* bgimage = iupAttribGet(ih, "BACKIMAGE");
+  char* bgcolor = iupAttribGet(ih, "BACKCOLOR");
+  int backimage_zoom = iupAttribGetBoolean(ih, "BACKIMAGEZOOM");
+  IdrawCanvas* dc = iupdrvDrawCreateCanvas(ih);
+
+  if (!bgcolor)
+    bgcolor = iBackgroundBoxGetBgColorAttrib(ih);
+
+  iupFlatDrawBox(dc, 0, ih->currentwidth - 1, 0, ih->currentheight - 1, bgcolor, NULL, 1);
+
+  if (backimage_zoom)
+    iupdrvDrawImage(dc, bgimage, 0, bgcolor, 0, 0, ih->currentwidth, ih->currentheight);
+  else
+    iupdrvDrawImage(dc, bgimage, 0, bgcolor, 0, 0, -1, -1);
+
+  iupdrvDrawFlush(dc);
+
+  iupdrvDrawKillCanvas(dc);
+
+  return IUP_DEFAULT;
+}
+
+static int iBackgroundBoxSetBackImageAttrib(Ihandle* ih, const char* value)
+{
+  if (value && value[0] != 0)
+    IupSetCallback(ih, "ACTION", iBackgroundBoxRedrawBackImage_CB);
+  else
+    IupSetCallback(ih, "ACTION", NULL);
+
+  IupUpdate(ih); /* post a redraw */
+  return 1;  /* save on the hash table */
 }
 
 static int iBackgroundBoxSetBgColorAttrib(Ihandle* ih, const char* value)
@@ -238,6 +275,9 @@ Iclass* iupBackgroundBoxNewBaseClass(const char* name, const char* base_name)
   iupClassRegisterAttribute(ic, "DECORSIZE", NULL, NULL, NULL, NULL, IUPAF_NOT_MAPPED | IUPAF_NO_INHERIT);
   iupClassRegisterAttribute(ic, "DECOROFFSET", NULL, NULL, NULL, NULL, IUPAF_NOT_MAPPED | IUPAF_NO_INHERIT);
 
+  iupClassRegisterAttribute(ic, "BACKIMAGE", NULL, iBackgroundBoxSetBackImageAttrib, NULL, NULL, IUPAF_NOT_MAPPED | IUPAF_IHANDLENAME | IUPAF_NO_DEFAULTVALUE | IUPAF_NO_INHERIT);
+  iupClassRegisterAttribute(ic, "BACKIMAGEZOOM", NULL, NULL, NULL, NULL, IUPAF_NO_INHERIT);
+  iupClassRegisterAttribute(ic, "BACKCOLOR", NULL, NULL, NULL, NULL, IUPAF_NO_INHERIT);
   return ic;
 }
 

@@ -44,6 +44,23 @@ backgroundbox(<strong>child</strong>) [in LED]</pre>
 
 <p>Inherits all attributes and callbacks of the <a href="../elem/iupcanvas.html">IupCanvas</a>, 
 but redefines a few attributes.</p>
+
+
+  <p><strong>BACKIMAGE</strong> (<font SIZE="3">non inheritable</font>):
+  image name to be used as background. Use
+	<a href="../func/iupsethandle.html">IupSetHandle</a> or
+	<a href="../func/iupsetattributehandle.html">IupSetAttributeHandle</a> to 
+	associate an image to a name. See also
+	<a href="../elem/iupimage.html">IupImage</a>. When defined the ACTION 
+  callback of the IupCanvas will be defined. (since 3.26)</p>
+<p><strong>BACKIMAGEZOOM</strong> (<font size="3">non inheritable</font>): 
+if set the back image will be zoomed to occupy the full background. Aspect ratio 
+is NOT preserved. Can be 
+Yes or No. Default: No. (since 3.26)</p>
+
+<p><strong>BACKCOLOR</strong><font SIZE="3">
+	(non inheritable): if defined used to fill the background color when 
+BACKIMAGE is defined. If not defined BGCOLOR is used. (since 3.26)</font></p>
 <p><a href="../attrib/iup_bgcolor.html">BGCOLOR</a>: by default will use the 
 background color of the native parent, but can be set to a custom value (since 
 3.11).</p>
