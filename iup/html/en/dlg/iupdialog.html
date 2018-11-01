@@ -271,12 +271,16 @@ alpha value. Valid values range from 0 (completely transparent) to 255 (opaque).
 In Windows must be set before map so the native window would be properly 
 initialized when mapped (since 3.16). (GTK 2.12)</p>
 
-<p><strong>OPACITYIMAGE</strong> [Windows and GTK Only]: sets a transparent 
-image as the dialog shape so it is possible to create a non rectangle window. In 
-Windows must be set before map so the native window would be properly 
-initialized when mapped (since 3.16). In GTK the shape works only as a bitmap 
-mask, to view a color image must also use a label. (GTK 2.12) 
-(since 3.12)</p>
+<p><strong>OPACITYIMAGE</strong> [Windows Only]: sets an RGBA 
+image as the dialog background so it is possible to create a non rectangle window 
+with transparency, but it can not have children. Used usually for splash 
+screens. It must be set before map so the native window would be properly 
+initialized when mapped. Works also for GTK but as the SHAPEIMAGE attribute. 
+(since 3.16)</p>
+<p><strong>SHAPEIMAGE</strong> [Windows and GTK Only]: sets a RGBA image as the 
+dialog shape so it is possible to create a non rectangle window with children. 
+(GTK 2.12) Only the fully transparent pixels will be transparent. The pixels 
+colors will be ignored, only the alpha channel is used. (since 3.26)</p>
 
 <p><strong>TOPMOST</strong> [Windows and GTK Only]:&nbsp; puts the dialog always 
 in front of all other dialogs in all applications. Default: NO.</p>

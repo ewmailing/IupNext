@@ -1281,7 +1281,7 @@ static int gtkDialogSetOpacityAttrib(Ihandle *ih, const char *value)
   return 1;
 }
 
-static int gtkDialogSetOpacityImageAttrib(Ihandle *ih, const char *value)
+static int gtkDialogSetShapeImageAttrib(Ihandle *ih, const char *value)
 {
   GdkPixbuf* pixbuf = iupImageGetImage(value, ih, 0, NULL);
   if (pixbuf)
@@ -1570,7 +1570,8 @@ void iupdrvDialogInitClass(Iclass* ic)
   iupClassRegisterAttribute(ic, "DIALOGHINT", NULL, NULL, NULL, NULL, IUPAF_NO_INHERIT);
 #if GTK_CHECK_VERSION(2, 12, 0)
   iupClassRegisterAttribute(ic, "OPACITY", NULL, gtkDialogSetOpacityAttrib, NULL, NULL, IUPAF_NO_INHERIT);
-  iupClassRegisterAttribute(ic, "OPACITYIMAGE", NULL, gtkDialogSetOpacityImageAttrib, NULL, NULL, IUPAF_NO_INHERIT);
+  iupClassRegisterAttribute(ic, "OPACITYIMAGE", NULL, gtkDialogSetShapeImageAttrib, NULL, NULL, IUPAF_NO_INHERIT);
+  iupClassRegisterAttribute(ic, "SHAPEIMAGE", NULL, gtkDialogSetShapeImageAttrib, NULL, NULL, IUPAF_NO_INHERIT);
 #endif
 /* gtk_status_icon - deprecated in 3.14, but still available in 3.22 (must enable deprecated in config.mak) */
 #if (GTK_CHECK_VERSION(2, 10, 0) && !GTK_CHECK_VERSION(3, 14, 0)) || !defined(GTK_DISABLE_DEPRECATED)

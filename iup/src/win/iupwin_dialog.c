@@ -1502,11 +1502,67 @@ static int winDialogSetOpacityImageAttrib(Ihandle *ih, const char *value)
     size.cx = img_w;
     size.cy = img_h;
 
-    UpdateLayeredWindow(ih->handle, hDC, NULL, &size, hMemDC, &ptSrc, RGB(0, 0, 0), &blend, ULW_ALPHA);
+    UpdateLayeredWindow(ih->handle, hDC, NULL, &size, hMemDC, &ptSrc, 0, &blend, ULW_ALPHA);
 
     SelectObject(hMemDC, oldBitmap);
     DeleteDC(hMemDC);  /* to match CreateCompatibleDC */
     ReleaseDC(NULL, hDC);
+
+    return 1;
+  }
+}
+
+static int winDialogSetShapeImageAttrib(Ihandle *ih, const char *value)
+{
+  Ihandle* image = IupGetHandle(value);
+  if (!image)
+  {
+    SetWindowRgn(ih->handle, NULL, TRUE);
+    return 0;
+  }
+  else
+  {
+    unsigned char* imgdata = (unsigned char*)iupAttribGet(image, "WID");
+    int channels = iupAttribGetInt(image, "CHANNELS");
+    int w = image->currentwidth;
+    int h = image->currentheight;
+    int x, y;
+    HRGN hRgn, hTmpRgn;
+
+    if (!imgdata || channels != 4)
+      return 0;
+
+    hRgn = CreateRectRgn(0, 0, 0, 0);
+
+    for (y = 0; y < h; y++)
+    {
+      int start_x = -1;
+
+      for (x = 0; x < w; x++)
+      {
+        if (imgdata[3] == 0) /* fully transparent */
+        {
+          if (start_x != -1) /* this is the end of a non transparent line */
+          {
+            hTmpRgn = CreateRectRgn(start_x, y, x, y + 1);
+            CombineRgn(hRgn, hRgn, hTmpRgn, RGN_OR); /* Union */
+            DeleteObject(hTmpRgn);
+
+            start_x = -1;
+          }
+
+        }
+        else /* opaque */
+        {
+          if (start_x == -1) /* this is the start of a non transparent line */
+            start_x = x;
+        }
+
+        imgdata += 4;
+      }
+    }
+
+    SetWindowRgn(ih->handle, hRgn, TRUE);
 
     return 1;
   }
@@ -1923,6 +1979,7 @@ void iupdrvDialogInitClass(Iclass* ic)
   iupClassRegisterAttribute(ic, "MDINEXT", winDialogGetMdiNextAttrib, NULL, NULL, NULL, IUPAF_READONLY|IUPAF_NO_INHERIT);
   iupClassRegisterAttribute(ic, "OPACITY", NULL, winDialogSetOpacityAttrib, NULL, NULL, IUPAF_NO_INHERIT);
   iupClassRegisterAttribute(ic, "OPACITYIMAGE", NULL, winDialogSetOpacityImageAttrib, NULL, NULL, IUPAF_NO_INHERIT);
+  iupClassRegisterAttribute(ic, "SHAPEIMAGE", NULL, winDialogSetShapeImageAttrib, NULL, NULL, IUPAF_NO_INHERIT);
   iupClassRegisterAttribute(ic, "LAYERALPHA", NULL, winDialogSetOpacityAttrib, NULL, NULL, IUPAF_NO_INHERIT);
   iupClassRegisterAttribute(ic, "BRINGFRONT", NULL, winDialogSetBringFrontAttrib, NULL, NULL, IUPAF_NO_INHERIT);
   iupClassRegisterAttribute(ic, "MAXIMIZED", winDialogGetMaximizedAttrib, NULL, NULL, NULL, IUPAF_READONLY | IUPAF_NO_INHERIT);
@@ -1970,3 +2027,4 @@ void iupdrvDialogInitClass(Iclass* ic)
 
   iupClassRegisterAttribute(ic, "CONTROLID", NULL, NULL, NULL, NULL, IUPAF_NO_INHERIT);
 }
+
