@@ -267,19 +267,6 @@ static void set_callbacks(Ihandle* button)
   IupSetCallback(button, "FLAT_LEAVEWINDOW_CB", (Icallback)leavewindow_cb);
 }
 
-static int show_cb(Ihandle *ih, int state)
-{
-  char* state_str[5] ={
-    "SHOW",
-    "RESTORE", 
-    "MINIMIZE",
-    "MAXIMIZE",
-    "HIDE"
-  };
-  printf("SHOW_CB(%s, %s)\n", IupGetAttribute(ih, "TESTTITLE"), state_str[state]);
-  return IUP_DEFAULT;
-}
-
 void FlatButtonTest(void)
 {
   Ihandle *dlg, *button, *label, *image1, *image1i, *image1p, *image2, *image3, 
