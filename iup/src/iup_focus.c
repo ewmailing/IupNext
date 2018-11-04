@@ -220,7 +220,7 @@ void iupFocusPrevious(Ihandle *ih)
 
 /* local variables */
 static Ihandle* iup_current_focus = NULL;
-static Ihandle* iup_current_focus_dialog = NULL;
+static Ihandle* iup_current_dialog_focus = NULL;
 
 Ihandle* IupGetFocus(void)
 {
@@ -234,20 +234,24 @@ void iupSetCurrentFocus(Ihandle *ih)
   if (ih)
   {
     Ihandle* dialog = IupGetDialog(ih);
-    if (iup_current_focus_dialog != dialog)
+    Ihandle* current_dialog = iup_current_dialog_focus;
+
+    if (current_dialog != dialog)
     {
       IFni cb;
 
-      if (iupObjectCheck(iup_current_focus_dialog)) /* can be NULL at start or can be destroyed */
+      /* change it before calling the callbacks 
+         because focus can be changed again from inside the callbacks. */
+      iup_current_dialog_focus = dialog;
+
+      if (iupObjectCheck(current_dialog)) /* can be NULL at start or can be destroyed */
       {
-        cb = (IFni)IupGetCallback(iup_current_focus_dialog, "FOCUS_CB");
-        if (cb) cb(iup_current_focus_dialog, 0);
+        cb = (IFni)IupGetCallback(current_dialog, "FOCUS_CB");
+        if (cb) cb(current_dialog, 0);
       }
 
-      iup_current_focus_dialog = dialog;
-
-      cb = (IFni)IupGetCallback(iup_current_focus_dialog, "FOCUS_CB");
-      if (cb) cb(iup_current_focus_dialog, 1);
+      cb = (IFni)IupGetCallback(iup_current_dialog_focus, "FOCUS_CB");
+      if (cb) cb(iup_current_dialog_focus, 1);
     }
   }
 }
@@ -256,8 +260,8 @@ void iupResetCurrentFocus(Ihandle *destroyed_ih)
 {
   if (iup_current_focus == destroyed_ih)
     iup_current_focus = NULL;
-  if (iup_current_focus_dialog == destroyed_ih)
-    iup_current_focus_dialog = NULL;
+  if (iup_current_dialog_focus == destroyed_ih)
+    iup_current_dialog_focus = NULL;
 }
 
 Ihandle *IupSetFocus(Ihandle *ih)

@@ -256,19 +256,19 @@ static int active_cb(Ihandle *ih)
 
 static int dropdown_cb(Ihandle *ih, int state)
 {
-  printf("DROPDOWN_CB(%d)\n", state);
+  printf("DROPDOWN_CB(%s, %d)\n", get_name(ih), state);
   return IUP_DEFAULT;
 }
 
 static int dropshow_cb(Ihandle *ih, int state)
 {
-  printf("DROPSHOW_CB(%d)\n", state);
+  printf("DROPSHOW_CB((%s, %d)\n", get_name(ih), state);
   if (state == 1)
   {
 //    Ihandle* child = IupGetAttributeHandle(ih, "DROPCHILD");
-    Ihandle* child = (Ihandle*)IupGetAttribute(ih, "DROPCHILD_HANDLE");
+//    Ihandle* child = (Ihandle*)IupGetAttribute(ih, "DROPCHILD_HANDLE");
 //    printf("child(%p - %s)\n", child, IupGetClassName(child));
-    IupSetAttribute(child, "REDRAW", "ALL");
+//    IupSetAttribute(child, "REDRAW", "ALL");
   }
   return IUP_DEFAULT;
 }
@@ -287,19 +287,6 @@ static void set_callbacks(Ihandle* button)
   //IupSetCallback(button, "KILLFOCUS_CB", (Icallback)killfocus_cb);
 //  IupSetCallback(button, "FLAT_ENTERWINDOW_CB", (Icallback)enterwindow_cb);
 //  IupSetCallback(button, "FLAT_LEAVEWINDOW_CB", (Icallback)leavewindow_cb);
-}
-
-static int show_cb(Ihandle *ih, int state)
-{
-  char* state_str[5] ={
-    "SHOW",
-    "RESTORE", 
-    "MINIMIZE",
-    "MAXIMIZE",
-    "HIDE"
-  };
-  printf("SHOW_CB(%s, %s)\n", IupGetAttribute(ih, "TESTTITLE"), state_str[state]);
-  return IUP_DEFAULT;
 }
 
 static Ihandle* CreateMatrixList(void)
