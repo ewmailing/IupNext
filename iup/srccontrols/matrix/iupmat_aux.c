@@ -342,9 +342,12 @@ static void iMatrixAuxUpdateVisibleSize(Ihandle* ih, int m)
 
 void iupMatrixAuxCalcSizes(Ihandle* ih)
 {
+  ih->data->need_calcsize = 0;  /* do it before UpdateVisibleSize */
+
   iMatrixAuxFillSizeVec(ih, IMAT_PROCESS_COL);
   iMatrixAuxFillSizeVec(ih, IMAT_PROCESS_LIN);
 
+  /* this could change the size of the drawing area, and trigger another calcsize */
   iMatrixAuxUpdateVisibleSize(ih, IMAT_PROCESS_COL);
   iMatrixAuxUpdateVisibleSize(ih, IMAT_PROCESS_LIN);
 
@@ -369,8 +372,6 @@ void iupMatrixAuxCalcSizes(Ihandle* ih)
   /* make sure scroll pos is consistent */
   iupMatrixAuxUpdateScrollPos(ih, IMAT_PROCESS_COL);
   iupMatrixAuxUpdateScrollPos(ih, IMAT_PROCESS_LIN);
-
-  ih->data->need_calcsize = 0;
 }
 
 int iupMatrixAuxCallLeaveCellCb(Ihandle* ih)
