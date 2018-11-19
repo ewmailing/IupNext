@@ -97,7 +97,7 @@ static Ihandle* create_matrix(void)
   Ihandle* mat = IupMatrix(NULL); 
   
 //  IupSetAttribute(mat, "NUMLIN", "3"); 
-  IupSetAttribute(mat, "NUMLIN", "20"); 
+  IupSetAttribute(mat, "NUMLIN", "14"); 
   IupSetAttribute(mat, "NUMCOL", "8"); 
 //  IupSetAttribute(mat, "NUMCOL", "15"); 
 //  IupSetAttribute(mat, "NUMLIN", "3"); 
@@ -137,6 +137,7 @@ static Ihandle* create_matrix(void)
 //  IupSetAttribute(mat,"HIDDENTEXTMARKS", "YES");
 //  IupSetAttribute(mat,"USETITLESIZE", "YES");
   //IupSetAttribute(mat,"SCROLLBAR", "NO");
+//  IupSetAttribute(mat, "SCROLLBAR", "HORIZONTAL");
   //IupSetAttribute(mat, "BGCOLOR1:2", "255 92 255");
   //IupSetAttribute(mat, "BGCOLOR2:*", "92 92 255");
   //IupSetAttribute(mat, "BGCOLOR*:3", "255 92 92");
