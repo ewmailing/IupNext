@@ -1169,7 +1169,7 @@ static void iMatrixDrawCells(Ihandle* ih, int lin1, int col1, int lin2, int col2
   int x1, y1, x2, y2, old_x2, old_y1, old_y2, toggle_centered;
   int col_alignment, lin, col, active, first_col, first_lin;
   int i, adjust_merged_col = 0, adjust_merged_lin = 0;
-  long framecolor, framehighlight, emptyarea_color = -1;
+  long framecolor, framehighlight;
   IFnii mark_cb;
   IFnii dropcheck_cb;
   IFniiiiiiC draw_cb;
@@ -1272,7 +1272,7 @@ static void iMatrixDrawCells(Ihandle* ih, int lin1, int col1, int lin2, int col2
 
   if ((col2 == ih->data->columns.num - 1) && (old_x2 > x2))
   {
-    emptyarea_color = cdIupConvertColor(ih->data->bgcolor_parent);
+    long emptyarea_color = cdIupConvertColor(ih->data->bgcolor_parent);
     cdCanvasForeground(ih->data->cd_canvas, emptyarea_color);
 
     /* If it was drawn until the last column and remains space in the right of it,
@@ -1282,8 +1282,7 @@ static void iMatrixDrawCells(Ihandle* ih, int lin1, int col1, int lin2, int col2
 
   if ((lin2 == ih->data->lines.num - 1) && (old_y2 > y2))
   {
-    if (emptyarea_color == -1)
-      emptyarea_color = cdIupConvertColor(ih->data->bgcolor_parent);
+    long emptyarea_color = cdIupConvertColor(ih->data->bgcolor_parent);
     cdCanvasForeground(ih->data->cd_canvas, emptyarea_color);
 
     /* If it was drawn until the last line visible and remains space below it,
