@@ -322,7 +322,7 @@ static void iMatrixAuxUpdateVisibleSize(Ihandle* ih, int m)
   if (!p->total_visible_size || p->current_visible_size == p->total_visible_size)
   {
     IupSetAttribute(ih, MAX, "0");
-    IupSetAttribute(ih, D, "0");
+    IupSetAttribute(ih, D, "0");  /* this can generate resize+redraw events */
   }
   else
   {
@@ -336,7 +336,7 @@ static void iMatrixAuxUpdateVisibleSize(Ihandle* ih, int m)
     }
 
     IupSetInt(ih, MAX, p->total_visible_size);
-    IupSetInt(ih, D, p->current_visible_size);
+    IupSetInt(ih, D, p->current_visible_size);  /* this can generate resize+redraw events */
   }
 }
 
@@ -347,7 +347,8 @@ void iupMatrixAuxCalcSizes(Ihandle* ih)
   iMatrixAuxFillSizeVec(ih, IMAT_PROCESS_COL);
   iMatrixAuxFillSizeVec(ih, IMAT_PROCESS_LIN);
 
-  /* this could change the size of the drawing area, and trigger another calcsize */
+  /* this could change the size of the drawing area, 
+     and trigger a resize event, then another calcsize. */
   iMatrixAuxUpdateVisibleSize(ih, IMAT_PROCESS_COL);
   iMatrixAuxUpdateVisibleSize(ih, IMAT_PROCESS_LIN);
 

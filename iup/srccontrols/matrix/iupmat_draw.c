@@ -1563,8 +1563,10 @@ void iupMatrixDrawUpdate(Ihandle* ih)
 void iupMatrixDrawCB(Ihandle* ih)
 {
   /* called only from the ACTION callback */
+
   if (ih->data->need_calcsize)
-    iupMatrixAuxCalcSizes(ih);
+    iupMatrixAuxCalcSizes(ih);  /* does not use cd_canvas, no need to Activate, 
+                                   but it can trigger a resize+redraw event */
 
   cdCanvasActivate(ih->data->cd_canvas);
 
