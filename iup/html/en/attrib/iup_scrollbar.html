@@ -53,10 +53,12 @@
   the horizontal scrollbar is hidden. Default: "YES". (since 3.0)</p>
 <p><b><a name="YAUTOHIDE">YAUTOHIDE</a></b>: When enabled, if DY &gt;= YMAX-YMIN then 
   the vertical scrollbar is hidden. Default: "YES". (since 3.0)</p>
-<p><strong>XHIDDEN</strong>: returns if the scrollbar is hidden or not when 
+<p><strong>XHIDDEN</strong> [read-only]: returns if the scrollbar is hidden or not when 
 XAUTOHIDE=Yes. (since 3.13)</p>
-<p><strong>YHIDDEN</strong>: returns if the scrollbar is hidden or not when 
+<p><strong>YHIDDEN</strong> [read-only]: returns if the scrollbar is hidden or not when 
 YAUTOHIDE=Yes. (since 3.13)</p>
+<p><strong>SB_RESIZE</strong> [read-only]: returns if a scrollbar visibility was 
+changed forcing a canvas resize after setting DX or DY. (since 3.26)</p>
 
 <h3>Notes</h3>
 <p>The 

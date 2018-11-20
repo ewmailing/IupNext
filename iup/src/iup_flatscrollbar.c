@@ -802,8 +802,12 @@ static int iFlatScrollBarSetDXAttrib(Ihandle* ih, const char *value)
       Ihandle* sb_horiz = iFlatScrollBarGetHorizontal(ih);
       int xmax = iupAttribGetInt(ih, "XMAX");
 
+      iupAttribSet(ih, "SB_RESIZE", NULL);
+
       if (dx >= xmax)
       {
+        if (IupGetInt(sb_horiz, "VISIBLE"))
+          iupAttribSet(ih, "SB_RESIZE", "YES");
         IupSetAttribute(sb_horiz, "VISIBLE", "NO");
         iupAttribSet(ih, "XHIDDEN", "YES");
         iupAttribSet(ih, "POSX", "0");
@@ -816,6 +820,8 @@ static int iFlatScrollBarSetDXAttrib(Ihandle* ih, const char *value)
 
         if (!iupAttribGetBoolean(ih, "SHOWFLOATING"))
         {
+          if (!IupGetInt(sb_horiz, "VISIBLE"))
+            iupAttribSet(ih, "SB_RESIZE", "YES");
           IupSetAttribute(sb_horiz, "VISIBLE", "Yes");
           IupSetAttribute(sb_horiz, "ZORDER", "TOP");
         }
@@ -846,8 +852,12 @@ static int iFlatScrollBarSetDYAttrib(Ihandle* ih, const char *value)
       Ihandle* sb_vert = iFlatScrollBarGetVertical(ih);
       int ymax = iupAttribGetInt(ih, "YMAX");
 
+      iupAttribSet(ih, "SB_RESIZE", NULL);
+
       if (dy >= ymax)
       {
+        if (IupGetInt(sb_vert, "VISIBLE"))
+          iupAttribSet(ih, "SB_RESIZE", "YES");
         IupSetAttribute(sb_vert, "VISIBLE", "NO");
         iupAttribSet(ih, "YHIDDEN", "YES");
         iupAttribSet(ih, "POSY", "0");
@@ -860,6 +870,8 @@ static int iFlatScrollBarSetDYAttrib(Ihandle* ih, const char *value)
 
         if (!iupAttribGetBoolean(ih, "SHOWFLOATING"))
         {
+          if (!IupGetInt(sb_vert, "VISIBLE"))
+            iupAttribSet(ih, "SB_RESIZE", "YES");
           IupSetAttribute(sb_vert, "VISIBLE", "Yes");
           IupSetAttribute(sb_vert, "ZORDER", "TOP");
         }

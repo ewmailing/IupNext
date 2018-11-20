@@ -259,6 +259,8 @@ static int motCanvasSetDXAttrib(Ihandle* ih, const char *value)
     if (!iupStrToDoubleDef(value, &dx, 0.1))
       return 1;
 
+    iupAttribSet(ih, "SB_RESIZE", NULL);
+
     xmin = iupAttribGetDouble(ih, "XMIN");
     xmax = iupAttribGetDouble(ih, "XMAX");
     posx = ih->data->posx;
@@ -286,6 +288,7 @@ static int motCanvasSetDXAttrib(Ihandle* ih, const char *value)
       {
         if (XtIsManaged(sb_horiz))
         {
+          iupAttribSet(ih, "SB_RESIZE", "YES");
           XtUnmanageChild(sb_horiz);
           motCanvasUpdateScrollLayout(ih);
         }
@@ -302,6 +305,7 @@ static int motCanvasSetDXAttrib(Ihandle* ih, const char *value)
     {
       if (!XtIsManaged(sb_horiz))
       {
+        iupAttribSet(ih, "SB_RESIZE", "YES");
         XtManageChild(sb_horiz);
         motCanvasUpdateScrollLayout(ih);
       }
@@ -363,6 +367,8 @@ static int motCanvasSetDYAttrib(Ihandle* ih, const char *value)
     if (!iupStrToDoubleDef(value, &dy, 0.1))
       return 1;
 
+    iupAttribSet(ih, "SB_RESIZE", NULL);
+
     ymin = iupAttribGetDouble(ih, "YMIN");
     ymax = iupAttribGetDouble(ih, "YMAX");
     posy = ih->data->posy;
@@ -390,6 +396,7 @@ static int motCanvasSetDYAttrib(Ihandle* ih, const char *value)
       {
         if (XtIsManaged(sb_vert))
         {
+          iupAttribSet(ih, "SB_RESIZE", "YES");
           XtUnmanageChild(sb_vert);
           motCanvasUpdateScrollLayout(ih);
         }
@@ -406,6 +413,7 @@ static int motCanvasSetDYAttrib(Ihandle* ih, const char *value)
     {
       if (!XtIsManaged(sb_vert))
       {
+        iupAttribSet(ih, "SB_RESIZE", "YES");
         XtManageChild(sb_vert);
         motCanvasUpdateScrollLayout(ih);
       }

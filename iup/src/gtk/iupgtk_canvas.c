@@ -422,6 +422,8 @@ static int gtkCanvasSetDXAttrib(Ihandle* ih, const char *value)
     if (!iupStrToDoubleDef(value, &dx, 0.1))
       return 1;
 
+    iupAttribSet(ih, "SB_RESIZE", NULL);
+
     xmin = iupAttribGetDouble(ih, "XMIN");
     xmax = iupAttribGetDouble(ih, "XMAX");
 
@@ -442,6 +444,7 @@ static int gtkCanvasSetDXAttrib(Ihandle* ih, const char *value)
       {
         if (iupgtkIsVisible(sb_horiz))
         {
+          iupAttribSet(ih, "SB_RESIZE", "YES");
           gtk_widget_hide(sb_horiz);
           gtkCanvasUpdateChildLayout(ih, 1);
         }
@@ -458,6 +461,7 @@ static int gtkCanvasSetDXAttrib(Ihandle* ih, const char *value)
     {
       if (!iupgtkIsVisible(sb_horiz))
       {
+        iupAttribSet(ih, "SB_RESIZE", "YES");
         gtk_widget_show(sb_horiz);
         gtkCanvasUpdateChildLayout(ih, 1);
       }
@@ -504,6 +508,8 @@ static int gtkCanvasSetDYAttrib(Ihandle* ih, const char *value)
     if (!iupStrToDoubleDef(value, &dy, 0.1))
       return 1;
 
+    iupAttribSet(ih, "SB_RESIZE", NULL);
+
     ymin = iupAttribGetDouble(ih, "YMIN");
     ymax = iupAttribGetDouble(ih, "YMAX");
 
@@ -524,6 +530,7 @@ static int gtkCanvasSetDYAttrib(Ihandle* ih, const char *value)
       {
         if (iupgtkIsVisible(sb_vert))
         {
+          iupAttribSet(ih, "SB_RESIZE", "YES");
           gtk_widget_hide(sb_vert);
           gtkCanvasUpdateChildLayout(ih, 1);
         }
@@ -540,6 +547,7 @@ static int gtkCanvasSetDYAttrib(Ihandle* ih, const char *value)
     {
       if (!iupgtkIsVisible(sb_vert))
       {
+        iupAttribSet(ih, "SB_RESIZE", "YES");
         gtk_widget_show(sb_vert);
         gtkCanvasUpdateChildLayout(ih, 1);
       }
