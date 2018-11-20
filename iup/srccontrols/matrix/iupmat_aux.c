@@ -279,7 +279,7 @@ static void iMatrixAuxFillSizeVec(Ihandle* ih, int m)
   }
 }
 
-static void iMatrixAuxUpdateVisibleSize(Ihandle* ih, int m)
+static int iMatrixAuxUpdateVisibleSize(Ihandle* ih, int m)
 {
   char *D, *AUTOHIDE, *MAX;
   ImatLinColData *p;
@@ -338,10 +338,13 @@ static void iMatrixAuxUpdateVisibleSize(Ihandle* ih, int m)
     IupSetInt(ih, MAX, p->total_visible_size);
     IupSetInt(ih, D, p->current_visible_size);  /* this can generate resize+redraw events */
   }
+
+  return IupGetInt(ih, "SB_RESIZE");
 }
 
-void iupMatrixAuxCalcSizes(Ihandle* ih)
+int iupMatrixAuxCalcSizes(Ihandle* ih)
 {
+  int sb_resize_col, sb_resize_lin;
   ih->data->need_calcsize = 0;  /* do it before UpdateVisibleSize */
 
   iMatrixAuxFillSizeVec(ih, IMAT_PROCESS_COL);
@@ -349,8 +352,8 @@ void iupMatrixAuxCalcSizes(Ihandle* ih)
 
   /* this could change the size of the drawing area, 
      and trigger a resize event, then another calcsize. */
-  iMatrixAuxUpdateVisibleSize(ih, IMAT_PROCESS_COL);
-  iMatrixAuxUpdateVisibleSize(ih, IMAT_PROCESS_LIN);
+  sb_resize_col = iMatrixAuxUpdateVisibleSize(ih, IMAT_PROCESS_COL);
+  sb_resize_lin = iMatrixAuxUpdateVisibleSize(ih, IMAT_PROCESS_LIN);
 
   /* when removing lines the first can be positioned after the last line */
   if (ih->data->lines.first > ih->data->lines.num-1) 
@@ -373,6 +376,8 @@ void iupMatrixAuxCalcSizes(Ihandle* ih)
   /* make sure scroll pos is consistent */
   iupMatrixAuxUpdateScrollPos(ih, IMAT_PROCESS_COL);
   iupMatrixAuxUpdateScrollPos(ih, IMAT_PROCESS_LIN);
+
+  return sb_resize_col || sb_resize_lin;
 }
 
 int iupMatrixAuxCallLeaveCellCb(Ihandle* ih)

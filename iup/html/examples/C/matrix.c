@@ -97,7 +97,7 @@ static Ihandle* create_matrix(void)
   Ihandle* mat = IupMatrix(NULL); 
   
 //  IupSetAttribute(mat, "NUMLIN", "3"); 
-  IupSetAttribute(mat, "NUMLIN", "14"); 
+  IupSetAttribute(mat, "NUMLIN", "4"); 
   IupSetAttribute(mat, "NUMCOL", "8"); 
 //  IupSetAttribute(mat, "NUMCOL", "15"); 
 //  IupSetAttribute(mat, "NUMLIN", "3"); 
@@ -219,7 +219,9 @@ static Ihandle* create_matrix(void)
 //  IupSetAttribute(mat,"TYPECOLORINACTIVE","No");
 //  IupSetAttribute(mat, "ACTIVE", "No");
 
-  IupSetAttribute(mat, "FRAMEBORDER", "Yes");
+//  IupSetAttribute(mat, "FRAMEBORDER", "Yes");
+//  IupSetAttribute(mat, "FLATSCROLLBAR", "Yes");
+//  IupSetAttribute(mat, "SHOWFLOATING", "Yes");
 
   /* test for custom matrix attributes */
   //{
