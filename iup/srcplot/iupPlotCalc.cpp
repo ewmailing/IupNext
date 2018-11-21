@@ -84,7 +84,7 @@ void iupPlot::CalculateTitlePos()
   if (mTitle.mAutoPos)
   {
     mTitle.mPosX = mViewport.mWidth / 2;
-    mTitle.mPosY = 5;  // add small spacing
+    mTitle.mPosY = mViewport.mHeight - 1 - 5;  // add small spacing
   }
 }
 
@@ -98,7 +98,7 @@ bool iupPlot::CheckInsideTitle(cdCanvas* canvas, int x, int y)
     cdCanvasTextAlignment(canvas, CD_NORTH);
 
     int xmin, xmax, ymin, ymax;
-    cdCanvasGetTextBox(canvas, mTitle.mPosX, cdCanvasInvertYAxis(canvas, mTitle.mPosY), mTitle.GetText(), &xmin, &xmax, &ymin, &ymax);
+    cdCanvasGetTextBox(canvas, mTitle.mPosX, mTitle.mPosY, mTitle.GetText(), &xmin, &xmax, &ymin, &ymax);
 
     if (x >= xmin && x <= xmax && 
         y >= ymin && y <= ymax)
@@ -112,10 +112,8 @@ bool iupPlot::CheckInsideLegend(cdCanvas* canvas, int x, int y)
 {
   if (mLegend.mShow)
   {
-    int theY = cdCanvasInvertYAxis(canvas, mLegend.mPos.mY);
-
     if (x >= mLegend.mPos.mX && x < mLegend.mPos.mX + mLegend.mPos.mWidth &&
-        y >= theY            && y < theY + mLegend.mPos.mHeight)
+        y >= mLegend.mPos.mY && y < mLegend.mPos.mY + mLegend.mPos.mHeight)
       return true;
   }
 

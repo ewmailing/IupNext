@@ -1604,7 +1604,7 @@ bool iupPlot::Render(cdCanvas* canvas)
 
   CalculateMargins(canvas);
 
-  iupPlotRect theDataSetArea;
+  iupPlotRect theDataSetArea;  /* Viewport - Margin (size only, no need for viewport offset) */
   theDataSetArea.mX = mBack.mMargin.mLeft;
   theDataSetArea.mY = mBack.mMargin.mBottom;
   theDataSetArea.mWidth = mViewport.mWidth - mBack.mMargin.mLeft - mBack.mMargin.mRight;

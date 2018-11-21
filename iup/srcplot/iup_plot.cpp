@@ -1832,7 +1832,7 @@ static int iPlotMotion_CB(Ihandle* ih, int x, int y, char *status)
         if (!ih->data->current_plot->mTitle.mAutoPos && ih->data->last_pos_moving == 1)
         {
           ih->data->current_plot->mTitle.mPosX = ih->data->last_pos_x + (x - ih->data->last_click_x);
-          ih->data->current_plot->mTitle.mPosY = ih->data->last_pos_y - (y - ih->data->last_click_y);
+          ih->data->current_plot->mTitle.mPosY = ih->data->last_pos_y + (y - ih->data->last_click_y);
           ih->data->current_plot->mRedraw = true;
 
           iPlotRedrawInteract(ih);
@@ -1842,7 +1842,7 @@ static int iPlotMotion_CB(Ihandle* ih, int x, int y, char *status)
         if (ih->data->current_plot->mLegend.mPosition == IUP_PLOT_XY && ih->data->last_pos_moving == 2)
         {
           ih->data->current_plot->mLegend.mPos.mX = ih->data->last_pos_x + (x - ih->data->last_click_x);
-          ih->data->current_plot->mLegend.mPos.mY = ih->data->last_pos_y - (y - ih->data->last_click_y);
+          ih->data->current_plot->mLegend.mPos.mY = ih->data->last_pos_y + (y - ih->data->last_click_y);
           ih->data->current_plot->mRedraw = true;
 
           iPlotRedrawInteract(ih);

@@ -542,9 +542,13 @@ it will disable the automatic position but reuse the last calculated position,
 and it will enable the interactive change of the title position. Default: 
 Yes. (since 3.13)</p>
 <p><strong>TITLEPOSXY</strong>: position of the title in the format "x,y" 
-in pixels inside the plot area relative to the top-left corner of the plot and 
+in pixels inside the plot area relative to the bottom-left corner of the plot, 
+oriented left to right and bottom to top, and 
 anchored at the north-center point of the title bounding box. When set will 
-also set TITLEPOSAUTO to No. (since 3.13)</p>
+also set TITLEPOSAUTO to No. Notice that when this value is used, if the 
+plot is resized the value must also be manually updated to maintain the same 
+appearace. (since 3.13) (relative 
+position changed in 3.26)</p>
 <h4>Legend Configuration </h4>
 <p><b>LEGEND</b>: shows or hides the legend box. Can be YES or NO. Default: 
 NO. LEGENDSHOW is also accepted.</p>
@@ -567,8 +571,10 @@ calculated position is re-used, and it will enable the interactive change of the
 legend box position. ("XY" since 3.13)</p>
 <p><b>LEGENDPOSXY</b>: legend box position in the format "x,y". When set will 
 change LEGENDPOS to "XY". Position is in pixels inside the plot area relative to 
-the top-left corner of the plot and anchored at the top-left corner of the 
-legend box. (since 3.13)</p>
+the bottom-left corner of the plot, oriented left to right and bottom to top, and anchored at the bottom-left corner of the 
+legend box. Notice that when this value is used, if the plot is resized the 
+values must also be manually updated to maintain the same appearace. (since 3.13) (relative position changed in 
+3.26)</p>
 <h4>Grid Configuration </h4>
 <p><b>GRID</b>: shows or hides the grid in both or a 
 specific axis at the major ticks. Can be: YES (both), HORIZONTAL, VERTICAL or NO. Default: NO.</p>

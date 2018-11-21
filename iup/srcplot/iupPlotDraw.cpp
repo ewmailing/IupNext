@@ -614,7 +614,7 @@ void iupPlot::DrawTitle(cdCanvas* canvas) const
     SetTitleFont(canvas);
 
     cdCanvasTextAlignment(canvas, CD_NORTH);
-    cdCanvasText(canvas, mTitle.mPosX, cdCanvasInvertYAxis(canvas, mTitle.mPosY), mTitle.GetText());
+    cdCanvasText(canvas, mTitle.mPosX, mTitle.mPosY, mTitle.GetText());
   }
 }
 
@@ -697,17 +697,10 @@ bool iupPlot::DrawLegend(const iupPlotRect &inRect, cdCanvas* canvas, iupPlotRec
 
     theMaxWidth += 2 * theMargin;
 
-    int theScreenX, theScreenY;
-
-    if (mLegend.mPosition == IUP_PLOT_XY)
+    if (mLegend.mPosition != IUP_PLOT_XY)
     {
-      theScreenX = ioPos.mX;
-      theScreenY = cdCanvasInvertYAxis(canvas, ioPos.mY);
-    }
-    else
-    {
-      theScreenX = inRect.mX;
-      theScreenY = inRect.mY;
+      int theScreenX = inRect.mX;
+      int theScreenY = inRect.mY;
 
       switch (mLegend.mPosition)
       {
@@ -734,24 +727,24 @@ bool iupPlot::DrawLegend(const iupPlotRect &inRect, cdCanvas* canvas, iupPlotRec
       }
 
       ioPos.mX = theScreenX;
-      ioPos.mY = cdCanvasInvertYAxis(canvas, theScreenY);
+      ioPos.mY = theScreenY;
     }
 
     ioPos.mWidth = theMaxWidth;
     ioPos.mHeight = theTotalHeight;
 
     // Clip to the legend box
-    cdCanvasClipArea(canvas, theScreenX, theScreenX + theMaxWidth - 1,
-                     theScreenY, theScreenY + theTotalHeight - 1);
+    cdCanvasClipArea(canvas, ioPos.mX, ioPos.mX + ioPos.mWidth - 1,
+                             ioPos.mY, ioPos.mY + ioPos.mHeight - 1);
 
     if (mLegend.mBoxShow)
     {
       cdCanvasSetForeground(canvas, mLegend.mBoxBackColor);
-      iPlotDrawBox(canvas, theScreenX + 1, theScreenY + 1, theMaxWidth - 2, theTotalHeight - 2);
+      iPlotDrawBox(canvas, ioPos.mX + 1, ioPos.mY + 1, ioPos.mWidth - 2, ioPos.mHeight - 2);
 
       cdCanvasSetForeground(canvas, mLegend.mBoxColor);
       iPlotSetLine(canvas, mLegend.mBoxLineStyle, mLegend.mBoxLineWidth);
-      iPlotDrawRectI(canvas, theScreenX, theScreenY, theMaxWidth, theTotalHeight);
+      iPlotDrawRectI(canvas, ioPos.mX, ioPos.mY, ioPos.mWidth, ioPos.mHeight);
     }
 
     for (ds = 0; ds < mDataSetListCount; ds++)
@@ -760,8 +753,8 @@ bool iupPlot::DrawLegend(const iupPlotRect &inRect, cdCanvas* canvas, iupPlotRec
 
       cdCanvasSetForeground(canvas, dataset->mColor);
 
-      int theLegendX = theScreenX + theMargin;
-      int theLegendY = theScreenY + (mDataSetListCount - 1 - ds)*theFontHeight + theMargin;
+      int theLegendX = ioPos.mX + theMargin;
+      int theLegendY = ioPos.mY + (mDataSetListCount - 1 - ds)*theFontHeight + theMargin;
 
       theLegendY += theFontHeight / 2;
 
@@ -774,7 +767,7 @@ bool iupPlot::DrawLegend(const iupPlotRect &inRect, cdCanvas* canvas, iupPlotRec
       {
         iPlotSetLine(canvas, dataset->mLineStyle, dataset->mLineWidth);
         cdCanvasLine(canvas, theLegendX, theLegendY - theFontHeight / 8,
-                     theLegendX + theLineSpace - 3, theLegendY - theFontHeight / 8);
+                             theLegendX + theLineSpace - 3, theLegendY - theFontHeight / 8);
       }
 
       iPlotDrawText(canvas, theLegendX + theLineSpace, theLegendY, CD_WEST, dataset->GetName());
@@ -847,17 +840,10 @@ bool iupPlot::DrawSampleColorLegend(iupPlotDataSet *dataset, const iupPlotRect &
 
     theMaxWidth += 2 * theMargin;
 
-    int theScreenX, theScreenY;
-
-    if (mLegend.mPosition == IUP_PLOT_XY)
+    if (mLegend.mPosition != IUP_PLOT_XY)
     {
-      theScreenX = ioPos.mX;
-      theScreenY = cdCanvasInvertYAxis(canvas, ioPos.mY);
-    }
-    else
-    {
-      theScreenX = inRect.mX;
-      theScreenY = inRect.mY;
+      int theScreenX = inRect.mX;
+      int theScreenY = inRect.mY;
 
       switch (mLegend.mPosition)
       {
@@ -884,32 +870,32 @@ bool iupPlot::DrawSampleColorLegend(iupPlotDataSet *dataset, const iupPlotRect &
       }
 
       ioPos.mX = theScreenX;
-      ioPos.mY = cdCanvasInvertYAxis(canvas, theScreenY);
+      ioPos.mY = theScreenY;
     }
 
     ioPos.mWidth = theMaxWidth;
     ioPos.mHeight = theTotalHeight;
 
     // Clip to the legend box
-    cdCanvasClipArea(canvas, theScreenX, theScreenX + theMaxWidth - 1,
-                     theScreenY, theScreenY + theTotalHeight - 1);
+    cdCanvasClipArea(canvas, ioPos.mX, ioPos.mX + ioPos.mWidth - 1,
+                             ioPos.mY, ioPos.mY + ioPos.mHeight - 1);
 
     if (mLegend.mBoxShow)
     {
       cdCanvasSetForeground(canvas, mLegend.mBoxBackColor);
-      iPlotDrawBox(canvas, theScreenX + 1, theScreenY + 1, theMaxWidth - 2, theTotalHeight - 2);
+      iPlotDrawBox(canvas, ioPos.mX + 1, ioPos.mY + 1, ioPos.mWidth - 2, ioPos.mHeight - 2);
 
       cdCanvasSetForeground(canvas, mLegend.mBoxColor);
       iPlotSetLine(canvas, mLegend.mBoxLineStyle, mLegend.mBoxLineWidth);
-      iPlotDrawRectI(canvas, theScreenX, theScreenY, theMaxWidth, theTotalHeight);
+      iPlotDrawRectI(canvas, ioPos.mX, ioPos.mY, ioPos.mWidth, ioPos.mHeight);
     }
 
     for (int i = 0; i < theCount; i++)
     {
       cdCanvasSetForeground(canvas, iPlotGetSampleColorTable(ih, i));
 
-      int theLegendX = theScreenX + theMargin;
-      int theLegendY = theScreenY + (theCount - 1 - i)*theFontHeight + theMargin;
+      int theLegendX = ioPos.mX + theMargin;
+      int theLegendY = ioPos.mY + (theCount - 1 - i)*theFontHeight + theMargin;
 
       int boxSize = theLineSpace - 3;
 
