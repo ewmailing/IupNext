@@ -555,6 +555,11 @@ static int iPlotCheckAuto2(Ihandle* param)
   return !iupAttribGetBoolean(param, "VALUE");
 }
 
+static int iPlotCheckAutoXY(Ihandle* param)  // Simply to be able to distiguish from other iPlotCheckAuto
+{
+  return !iupAttribGetBoolean(param, "VALUE");
+}
+
 static int iPlotCheckLegendXY(Ihandle* param)
 {
   int index = iupAttribGetInt(param, "VALUE");
@@ -581,8 +586,8 @@ static iPlotAttribParam iplot_title_attribs[] = {
   { "TITLECOLOR", NULL, "_@IUP_COLOR", "c", "", "", NULL },
   { "TITLEFONTSTYLE", NULL, "_@IUP_FONTSTYLE", "l", iplot_fontstyle_extra, "", iplot_fontstyle_list },
   { "TITLEFONTSIZE", NULL, "_@IUP_FONTSIZE", "i", "[1,,]", "", NULL },
-  { "TITLEPOSAUTO", iPlotCheckAuto, "_@IUP_POSITION", "b", "[ ,Auto]", "", NULL },
-  { "TITLEPOSXY", NULL, "\t_@IUP_POSXY", "s", "/d+[,]/d+", "{(pixels)}", NULL },
+  { "TITLEPOSAUTO", iPlotCheckAutoXY, "_@IUP_POSITION", "b", "[ ,Auto]", "", NULL },
+  { "TITLEPOSXY", NULL, "\t_@IUP_POSXY", "s", "[+/-]?/d+[,][+/-]?/d+", "{(pixels)}", NULL },
   { NULL, NULL, NULL, NULL, NULL, NULL, NULL }
 };
 
@@ -591,7 +596,7 @@ static iPlotAttribParam iplot_legend_attribs[] = {
   { "LEGENDFONTSTYLE", NULL, "_@IUP_FONTSTYLE", "l", iplot_fontstyle_extra, "", iplot_fontstyle_list },
   { "LEGENDFONTSIZE", NULL, "_@IUP_FONTSIZE", "i", "[1,,]", "", NULL },
   { "LEGENDPOS", iPlotCheckLegendXY, "_@IUP_POSITION", "l", iplot_legendpos_extra, "", iplot_legendpos_list },
-  { "LEGENDPOSXY", NULL, "\t_@IUP_POSXY", "s", "/d+[,]/d+", "{(pixels)}", NULL },
+  { "LEGENDPOSXY", NULL, "\t_@IUP_POSXY", "s", "[+/-]?/d+[,][+/-]?/d+", "{(pixels)}", NULL },
   { NULL, NULL, NULL, NULL, NULL, NULL, NULL }
 };
 
@@ -783,11 +788,35 @@ static const char* iPlotGetParamValue(Ihandle* param)
   }
 }
 
+static void iPlotPropertiesCheckUpdateXY(Ihandle* ih, Ihandle* parambox, Ihandle* param, int param_index)
+{
+  Icallback check = IupGetCallback(param, "PLOT_ATTRIBCHECK");
+  if (check == iPlotCheckAutoXY ||
+      check == iPlotCheckLegendXY)
+  {
+    int active = check(param);
+    if (!active)
+    {
+      /* if not active is automatically calculated every draw, must update param */
+
+      param = (Ihandle*)IupGetAttributeId(parambox, "PARAM", param_index + 1);
+
+      char* name = IupGetAttribute(param, "PLOT_ATTRIB");
+      // From Plot
+      char* value = IupGetAttribute(ih, name);
+      // To Param
+      iPlotSetParamValue(param, value);
+    }
+
+  }
+}
+
 static void iPlotPropertiesCheckParam(Ihandle* parambox, Ihandle* param, int param_index)
 {
   Icallback check = IupGetCallback(param, "PLOT_ATTRIBCHECK");
   if (check)
   {
+    /* disable or enable the next childcount params */
     int active = check(param);
     int count = iupAttribGetInt(param, "CHILDCOUNT");
     if (count == 0) count = 1;
@@ -884,6 +913,12 @@ static void iPlotPropertiesApplyChanges(Ihandle* parambox)
 
   IupSetAttribute(parambox, "PLOT_CHANGED", NULL);
   IupSetAttribute(ih, "REDRAW", NULL);
+
+  for (i = 0; i < count; i++)
+  {
+    Ihandle* param = (Ihandle*)IupGetAttributeId(parambox, "PARAM", i);
+    iPlotPropertiesCheckUpdateXY(ih, parambox, param, i);
+  }
 
   Icallback cb = IupGetCallback(ih, "PROPERTIESCHANGED_CB");
   if (cb)
