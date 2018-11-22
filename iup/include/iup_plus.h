@@ -154,6 +154,7 @@ namespace Iup
     Element SetAttributes(const char* str) { return IupSetAttributes(ih, str); }
     void ResetAttribute(const char* name) { IupResetAttribute(ih, name); }
     int GetAllAttributes(char** names, int n) { return IupGetAllAttributes(ih, names, n); }
+    void CopyAttributes(Ihandle* dst_ih) { IupCopyAttributes(ih, dst_ih); }
     void SetAttributeHandle(const char* name, const  Element& elem) { IupSetAttributeHandle(ih, name, elem.GetHandle()); }
     Element GetAttributeHandle(const char* name) { return IupGetAttributeHandle(ih, name); }
     void SetAttributeHandleId(const char* name, int id, const Element& elem) { IupSetAttributeHandleId(ih, name, id, elem.GetHandle()); }

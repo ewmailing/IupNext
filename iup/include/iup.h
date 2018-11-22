@@ -94,6 +94,7 @@ void      IupUnmap         (Ihandle* ih);
 
 void      IupResetAttribute(Ihandle* ih, const char* name);
 int       IupGetAllAttributes(Ihandle* ih, char** names, int n);
+void      IupCopyAttributes(Ihandle* src_ih, Ihandle* dst_ih);
 Ihandle*  IupSetAtt(const char* handle_name, Ihandle* ih, const char* name, ...);
 Ihandle*  IupSetAttributes (Ihandle* ih, const char *str);
 char*     IupGetAttributes (Ihandle* ih);

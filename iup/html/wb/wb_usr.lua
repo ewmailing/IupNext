@@ -613,6 +613,10 @@ wb_usr.tree =
               link= "func/iupgetattributes.html"
             },
             {
+              name= {nl= "IupCopyAttributes"},
+              link= "func/iupcopyattributes.html"
+            },
+            {
               name= {nl= "IupGetAttributeHandle"},
               link= "func/iupgetattributehandle.html"
             },

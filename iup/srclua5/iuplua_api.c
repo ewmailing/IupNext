@@ -315,6 +315,12 @@ static int CopyClassAttributes(lua_State *L)
   return 0;
 }
 
+static int CopyAttributes(lua_State *L)
+{
+  IupCopyAttributes(iuplua_checkihandle(L, 1), iuplua_checkihandle(L, 2));
+  return 0;
+}
+
 static int GetDialog(lua_State *L)
 {
   iuplua_pushihandle(L, IupGetDialog(iuplua_checkihandle(L,1)));
@@ -1072,6 +1078,7 @@ void iupluaapi_open(lua_State * L)
     {"GetAttributeData", GetAttributeData},
     {"GetAttributes", GetAttributes},
     {"GetAllAttributes", GetAllAttributes},
+    {"CopyAttributes", CopyAttributes},
     {"SetClassDefaultAttribute", SetClassDefaultAttribute},
     {"SaveClassAttributes", SaveClassAttributes},
     {"CopyClassAttributes", CopyClassAttributes},

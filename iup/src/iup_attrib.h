@@ -251,6 +251,7 @@ void iupAttribUpdateChildren(Ihandle* ih);
 
 
 /* Other functions declared in <iup.h> and implemented here. 
+IupCopyAttributes
 IupGetAllAttributes
 IupGetAttributes
 IupSetAttributes

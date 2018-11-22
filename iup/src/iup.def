@@ -123,6 +123,7 @@ IupGetChild
 IupGetChildPos
 IupGetChildCount
 IupGetAllAttributes
+IupCopyAttributes
 IupSetAttributeHandle
 IupGetAttributeHandle
 IupSetAttributeHandleId

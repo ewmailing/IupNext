@@ -36,6 +36,31 @@
   }
 
 
+void IupCopyAttributes(Ihandle* src_ih, Ihandle* dst_ih)
+{
+  char *name, *value;
+
+  iupASSERT(iupObjectCheck(src_ih));
+  if (!iupObjectCheck(src_ih))
+    return;
+
+  iupASSERT(iupObjectCheck(dst_ih));
+  if (!iupObjectCheck(dst_ih))
+    return;
+
+  name = iupTableFirst(src_ih->attrib);
+  while (name)
+  {
+    if (!iupATTRIB_ISINTERNAL(name) && !iupAttribIsNotString(src_ih, name))
+    {
+      value = iupTableGetCurr(src_ih->attrib);
+      IupStoreAttribute(dst_ih, name, value);
+    }
+
+    name = iupTableNext(src_ih->attrib);
+  }
+}
+
 int IupGetAllAttributes(Ihandle* ih, char** names, int n)
 {
   char *name;
