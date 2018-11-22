@@ -3,6 +3,15 @@
 #include <iup.h>
 #include <iupcontrols.h>
 
+//#define USE_GLBGBOX
+#ifdef USE_GLBGBOX
+#include <iupgl.h>
+#ifdef WIN32
+#include <windows.h>
+#endif
+#include <GL/gl.h>
+#endif
+
 static Ihandle* load_image_Tecgraf(void)
 {
   unsigned char imgdata[] = {
@@ -246,6 +255,28 @@ static int action3_cb(Ihandle* ih)
 //  IupSetAttribute(IupGetChild(IupGetDialog(ih), 0), "BGCOLOR", "128 0 0");
   return IUP_DEFAULT;
 }
+
+#ifdef USE_GLBGBOX
+static int bgbox_action_cb(Ihandle* ih)
+{
+  IupGLMakeCurrent(ih);
+
+  glClearColor(1.0, 0.0, 1.0, 1.f);  /* pink */
+  glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
+
+  glColor3f(1.0, 0.0, 0.0);  /* red */
+  glBegin(GL_QUADS);
+  glVertex2f(0.9f, 0.9f);
+  glVertex2f(0.9f, -0.9f);
+  glVertex2f(-0.9f, -0.9f);
+  glVertex2f(-0.9f, 0.9f);
+  glEnd();
+
+  IupGLSwapBuffers(ih);
+
+  return IUP_DEFAULT;
+}
+#endif
 
 static Ihandle* set_callbacks(Ihandle* ih)
 {
@@ -530,6 +561,16 @@ void ScrollBoxTest(void)
 //  _vbox_2 = IupVbox(IupSetAttributes(IupScrollBox(_vbox_1), "RASTERSIZE=400x300"), NULL);
   _vbox_2 = IupVbox(IupSetAttributes(IupScrollBox(_vbox_1), "NAME=SCROLLBOXTEST, XXX_LAYOUTDRAG=NO"), NULL);
   IupSetAttribute(_vbox_2,"MARGIN","20x20");
+
+#ifdef USE_GLBGBOX
+  IupGLCanvasOpen();
+
+  IupSetAttribute(_vbox_2, "MARGIN", "100x100");
+  _vbox_2 = IupGLBackgroundBox(_vbox_2);
+  IupSetCallback(_vbox_2, "ACTION", (Icallback)bgbox_action_cb);
+#endif
+
+//  
 
   dlg = IupDialog(_vbox_2);
   IupSetHandle("dlg",dlg);
