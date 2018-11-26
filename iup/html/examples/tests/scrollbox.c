@@ -256,6 +256,35 @@ static int action3_cb(Ihandle* ih)
   return IUP_DEFAULT;
 }
 
+static int dialog_custom_minimize(Ihandle* ih)
+{
+  Ihandle* dlg = IupGetDialog(ih);
+  if (IupGetInt(dlg, "MINIMIZED"))
+    IupSetAttribute(dlg, "PLACEMENT", NULL);
+  else
+    IupSetAttribute(dlg, "PLACEMENT", "MINIMIZED");
+  IupShow(dlg);
+  return IUP_DEFAULT;
+}
+
+static int dialog_custom_maximize(Ihandle* ih)
+{
+  Ihandle* dlg = IupGetDialog(ih);
+  if (IupGetInt(dlg, "MAXIMIZED"))
+    IupSetAttribute(dlg, "PLACEMENT", NULL);
+  else
+    IupSetAttribute(dlg, "PLACEMENT", "MAXIMIZED");
+  IupShow(dlg);
+  return IUP_DEFAULT;
+}
+
+static int dialog_custom_close(Ihandle* ih)
+{
+  Ihandle* dlg = IupGetDialog(ih);
+  IupHide(dlg);
+  return IUP_DEFAULT;
+}
+
 #ifdef USE_GLBGBOX
 static int bgbox_action_cb(Ihandle* ih)
 {
@@ -571,8 +600,25 @@ void ScrollBoxTest(void)
 #endif
 
 //  
+#if 0  // custom frame
+  {
+    Ihandle* label, *_vbox_cf;
+    Ihandle* caption_bar = IupSetAttributes(IupBackgroundBox(IupHbox(
+      label = IupSetAttributes(IupLabel("Custom Dialog Title"), "EXPAND=HORIZONTAL, HTTRANSPARENT=Yes, NAME=CUSTOMFRAMECAPTION"),
+      IupSetCallbacks(IupSetAttributes(IupButton("_", NULL), "RASTERSIZE=50, FLAT=Yes, CANFOCUS=NO, FONTSTYLE=Bold"), "ACTION", dialog_custom_minimize, NULL),
+      IupSetCallbacks(IupSetAttributes(IupButton("Max", NULL), "RASTERSIZE=50"), "ACTION", dialog_custom_maximize, NULL),
+      IupSetCallbacks(IupSetAttributes(IupButton(" X ", NULL), "RASTERSIZE=50"), "ACTION", dialog_custom_close, NULL),
+      NULL)), "HTTRANSPARENT=Yes, BGCOLOR=\"100 150 255\"");
+    _vbox_cf = IupVbox(caption_bar, _vbox_2, NULL);
+    IupSetAttribute(_vbox_cf, "MARGIN", "10x10");
+    dlg = IupDialog(_vbox_cf);
 
+    IupSetAttribute(dlg, "CUSTOMFRAME", "YES");
+  }
+#else
   dlg = IupDialog(_vbox_2);
+#endif
+
   IupSetHandle("dlg",dlg);
   IupSetAttribute(dlg,"MENU","mnu");
   IupSetAttribute(dlg,"TITLE","IupDialog Title");
