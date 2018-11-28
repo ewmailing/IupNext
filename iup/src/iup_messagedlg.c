@@ -48,6 +48,7 @@ Iclass* iupMessageDlgNewClass(void)
   iupClassRegisterAttribute(ic, "BUTTONS", NULL, NULL, IUPAF_SAMEASSYSTEM, "OK", IUPAF_NO_INHERIT);
   iupClassRegisterAttribute(ic, "BUTTONDEFAULT", NULL, NULL, IUPAF_SAMEASSYSTEM, "1", IUPAF_NO_INHERIT);
   iupClassRegisterAttribute(ic, "BUTTONRESPONSE", NULL, NULL, IUPAF_SAMEASSYSTEM, "1", IUPAF_NO_INHERIT);
+  iupClassRegisterAttribute(ic, "VALUE", NULL, NULL, NULL, NULL, IUPAF_NO_INHERIT);
 
   return ic;
 }
