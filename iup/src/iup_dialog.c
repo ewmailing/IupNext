@@ -360,7 +360,8 @@ static void iDialogAfterHide(Ihandle* ih)
   IFni show_cb;
 
   /* process all pending messages, make sure the dialog is hidden */
-  IupFlush();
+  if (!iupAttribGetBoolean(ih, "NOFLUSH"))
+    IupFlush();
 
   show_cb = (IFni)IupGetCallback(ih, "SHOW_CB");
   if (show_cb && show_cb(ih, ih->data->show_state) == IUP_CLOSE)
@@ -376,7 +377,8 @@ static void iDialogAfterShow(Ihandle* ih)
   int old_show_state;
 
   /* process all pending messages, make sure the dialog is visible */
-  IupFlush();
+  if (!iupAttribGetBoolean(ih, "NOFLUSH"))
+    IupFlush();
 
   old_focus = IupGetFocus();
   old_show_state = ih->data->show_state;
@@ -391,7 +393,10 @@ static void iDialogAfterShow(Ihandle* ih)
   if (old_show_state == IUP_SHOW)
   {
     if (show_cb)
-      IupFlush();  /* again to update focus */
+    {
+      if (!iupAttribGetBoolean(ih, "NOFLUSH"))
+        IupFlush();  /* again to update focus */
+    }
 
     /* do it only if show_cb did NOT changed the current focus */
     if (old_focus == IupGetFocus())
@@ -995,6 +1000,7 @@ Iclass* iupDialogNewClass(void)
   iupClassRegisterAttribute(ic, "STARTFOCUS",   NULL, NULL, NULL, NULL, IUPAF_NO_INHERIT);
   iupClassRegisterAttribute(ic, "MODAL",        NULL, NULL, NULL, NULL, IUPAF_READONLY|IUPAF_NO_INHERIT);
   iupClassRegisterAttribute(ic, "PLACEMENT",    NULL, NULL, "NORMAL", NULL, IUPAF_NO_INHERIT);
+  iupClassRegisterAttribute(ic, "NOFLUSH", NULL, NULL, NULL, NULL, IUPAF_NO_INHERIT);
 
   iupClassRegisterAttribute(ic, "SIMULATEMODAL", NULL, iDialogSetSimulateModalAttrib, NULL, NULL, IUPAF_WRITEONLY | IUPAF_NO_INHERIT);
 
