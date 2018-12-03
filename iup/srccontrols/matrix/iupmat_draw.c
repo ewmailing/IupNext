@@ -1559,6 +1559,15 @@ void iupMatrixDrawUpdate(Ihandle* ih)
 #endif
 }
 
+static int iMatrixDrawHasFlatScrollBar(Ihandle* ih)
+{
+  char* value = iupAttribGetStr(ih, "FLATSCROLLBAR");
+  if (value && !iupStrEqualNoCase(value, "NO"))
+    return 1;
+  else
+    return 0;
+}
+
 #ifndef USE_OLD_DRAW
 void iupMatrixDrawCB(Ihandle* ih)
 {
@@ -1568,9 +1577,8 @@ void iupMatrixDrawCB(Ihandle* ih)
     int sb_resize = iupMatrixAuxCalcSizes(ih);  /* does not use cd_canvas, no need to Activate, */
     if (sb_resize)                              /* but it can trigger a resize+redraw event */
     {
-      if (iupAttribGetInt(ih, "FLATSCROLLBAR"))
-        ih->data->need_calcsize = 1;
-      return;
+      if (!iMatrixDrawHasFlatScrollBar(ih))
+        return;
     }
   }
 
