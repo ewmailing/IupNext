@@ -2191,7 +2191,7 @@ Iclass* iupMatrixNewClass(void)
   iupClassRegisterCallback(ic, "BGCOLOR_CB", "iiIII");
   iupClassRegisterCallback(ic, "FGCOLOR_CB", "iiIII");
   iupClassRegisterCallback(ic, "FONT_CB", "ii=s");
-  iupClassRegisterCallback(ic, "DRAW_CB", "iiiiiiv");
+  iupClassRegisterCallback(ic, "DRAW_CB", "iiiiiiC");
   iupClassRegisterCallback(ic, "DROPCHECK_CB", "ii");
   iupClassRegisterCallback(ic, "TYPE_CB", "ii=s");
   iupClassRegisterCallback(ic, "TRANSLATEVALUE_CB", "iis=s");
