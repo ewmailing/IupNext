@@ -81,15 +81,22 @@ int iupMatrixColResStart(Ihandle* ih, int x, int y)
 
 void iupMatrixColResFinish(Ihandle* ih, int x)
 {
+  int min_width = iupAttribGetIntId(ih, "MINCOLWIDTH", ih->data->colres_drag_col);
   int delta = x - ih->data->colres_drag_col_start_x;
   int width = ih->data->columns.dt[ih->data->colres_drag_col].size + delta;
-  if (width < 0)
-    width = 0;
+
+  if (min_width == 0)
+    min_width = iupAttribGetInt(ih, "MINCOLWIDTHDEF");
+
+  width -= IMAT_PADDING_W + IMAT_FRAME_W;
+
+  if (width < min_width)
+    width = min_width;
 
   ih->data->colres_dragging = 0;
   ih->data->colres_feedback = 0;
 
-  iupAttribSetIntId(ih, "RASTERWIDTH", ih->data->colres_drag_col, width-IMAT_PADDING_W-IMAT_FRAME_W);
+  iupAttribSetIntId(ih, "RASTERWIDTH", ih->data->colres_drag_col, width);
   iupAttribSetId(ih, "WIDTH", ih->data->colres_drag_col, NULL);
 
   ih->data->need_calcsize = 1;

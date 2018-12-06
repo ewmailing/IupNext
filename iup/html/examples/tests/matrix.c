@@ -230,6 +230,7 @@ static Ihandle* create_matrix(void)
 //  IupSetAttribute(mat,"EDITNEXT","COLCR");
 
   IupSetAttribute(mat, "RESIZEDRAG", "Yes");
+//  IupSetAttribute(mat, "MINCOLWIDTHDEF", "10");
 
   IupSetAttribute(mat, "NUMCOL_NOSCROLL", "1");
 //  IupSetAttribute(mat, "NOSCROLLASTITLE", "Yes");

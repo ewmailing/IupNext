@@ -2290,6 +2290,8 @@ Iclass* iupMatrixNewClass(void)
   iupClassRegisterAttributeId(ic, "COPYCOL", NULL, iMatrixSetCopyColAttrib, IUPAF_WRITEONLY | IUPAF_NO_INHERIT);
   iupClassRegisterAttributeId(ic, "MOVELIN", NULL, iMatrixSetMoveLinAttrib, IUPAF_WRITEONLY | IUPAF_NO_INHERIT);
   iupClassRegisterAttributeId(ic, "MOVECOL", NULL, iMatrixSetMoveColAttrib, IUPAF_WRITEONLY | IUPAF_NO_INHERIT);
+  iupClassRegisterAttributeId(ic, "MINCOLWIDTH", NULL, NULL, IUPAF_NOT_MAPPED | IUPAF_NO_INHERIT);
+  iupClassRegisterAttribute(ic, "MINCOLWIDTHDEF", NULL, NULL, NULL, NULL, IUPAF_NOT_MAPPED | IUPAF_NO_INHERIT);
 
   /* IupMatrix Attributes - MARK */
   iupClassRegisterAttribute(ic, "MARKED", iupMatrixGetMarkedAttrib, iupMatrixSetMarkedAttrib, NULL, NULL, IUPAF_NO_INHERIT);  /* noticed that for MARKED the matrix must be mapped */

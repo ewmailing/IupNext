@@ -313,7 +313,10 @@ maximum size will not include the scrollbars (since 3.9). (since 3.5) </p>
   Defines if the width of a column can be 
   interactively changed. When this is possible, the user can change the size of a column by dragging the column title 
   right border. Possible values: &quot;YES&quot; or &quot;NO&quot;. Default: 
-    &quot;NO&quot; (does not allow interactive width change).</p>
+    &quot;NO&quot; (does not allow interactive width change). The minimum size 
+is 0 by default, the column is then hidden, but it can be controlled by the 
+MINCOLWIDTHid and <font SIZE="3">
+	MINCOLWIDTHDEF </font>attributes (since 3.26).</p>
 <p><strong>RESIZEDRAG</strong>: Resize the column while dragging. By default the 
 column is resized only when the mouse button is released, the resize feedback is 
 a simple vertical line. Works only when RESIZEMATRIX=Yes. 
@@ -345,6 +348,9 @@ occupied by the frame lines. The returned value is the actual computed size.</p>
 <p><strong><a name="WIDTHDEF">WIDTHDEF</a></strong>:
   Default column width in SIZE units. Not used for the title column. Default: 
 80 (width corresponding to 20 characters).</p>
+<p><strong>MINCOLWIDTHid</strong>: when the column is interactively resized 
+controls the minimum width of the given column. If not defined <font SIZE="3">
+	MINCOLWIDTHDEF is used. </font>(since 3.26)</p>
 <h3><a name="Line_Size_Attributes">Line Size Attributes</a></h3>
 <p>For all lines if HEIGHTn is not defined, then RASTERHEIGHTn is used. If also 
 not defined, then depending on the circumstances a logic is used to find the 
