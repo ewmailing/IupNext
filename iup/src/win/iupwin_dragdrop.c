@@ -1146,9 +1146,9 @@ void iupdrvRegisterDragDropAttrib(Iclass* ic)
 
   iupClassRegisterCallback(ic, "DRAGBEGIN_CB", "ii");
   iupClassRegisterCallback(ic, "DRAGDATASIZE_CB", "s");
-  iupClassRegisterCallback(ic, "DRAGDATA_CB", "sCi");
+  iupClassRegisterCallback(ic, "DRAGDATA_CB", "sVi");
   iupClassRegisterCallback(ic, "DRAGEND_CB", "i");
-  iupClassRegisterCallback(ic, "DROPDATA_CB", "sCiii");
+  iupClassRegisterCallback(ic, "DROPDATA_CB", "sViii");
   iupClassRegisterCallback(ic, "DROPMOTION_CB", "iis");
 
   iupClassRegisterAttribute(ic, "DRAGTYPES",  NULL, winSetDragTypesAttrib, NULL, NULL, IUPAF_NOT_MAPPED|IUPAF_NO_INHERIT);
