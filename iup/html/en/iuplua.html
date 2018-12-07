@@ -74,7 +74,9 @@
         If you are using another Lua distribution you can use the environment:</p>
 <pre>export LUA_CPATH=./\?.so\;./lib\?.so\;./lib\?51.so\;   [in UNIX]</pre>
 <p>Or you can set it in Lua before loading iup modules:</p>
-<pre>package.cpath = package.cpath .. &quot;.<a href="file://?51.dll">\\?51.dll</a>&quot;     [in Windows]</pre>
+<pre>package.cpath = package.cpath .. "./lib?51.so;"    [in UNIX]
+
+package.cpath = package.cpath .. &quot;.\\?51.dll;&quot;     [in Windows]</pre>
 <p>The simplest form <b>require</b>"<b>iup</b>" and so on, can not be used because
         there are IUP dynamic libraries with names that will conflict with the names used
         by <b>require</b> during search.</p>
