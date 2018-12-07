@@ -30,8 +30,8 @@
   used inside IUP dialogs. There are many OLE controls available, like calendars, internet browsers, PDF readers etc.</p>
 <p>Notice that IupOleControl just takes care of the visualization of the control (size and 
   positioning), and map some callbacks (navigate and new window) using a 
-listener interface to sink events. It does not deal with properties, methods and events. The application must deal with them using the COM interfaces offered by the control. Nevertheless, using IupLua together with 
-  <a target="_blank" href="http://luaforge.net/projects/luacom/">LuaCOM</a> makes it possible to use OLE 
+listener interface to sink events. It does not deal with properties, methods and events. The application must deal with them using the COM interfaces offered by the control. Nevertheless, using IupLua together with
+<a href="https://github.com/davidm/luacom" target="_blank">LuaCOM</a> makes it possible to use OLE 
   controls very easily in Lua, accessing their methods, properties and events similarly to the other IUP elements.</p>
 <p>Notice that this control works only on Windows.</p>
 <p>When linking with GCC add the &quot;<span>oleaut32&quot; and &quot;uuid&quot; to the list of libraries.</span></p>
@@ -93,7 +93,7 @@ MAXSIZE</a>,
 <p>In C/C++, the OLE control's callbacks (events, in ActiveX terms) shall be set using the 
   control's interface and the COM mechanism. When using IupLua, it's possible to call methods, 
   access properties and receive events from the OLE control using the
-  <a target="_blank" href="http://luaforge.net/projects/luacom/">LuaCOM</a> library. When the LuaCOM library is loaded, 
+  <a target="_blank" href="https://github.com/davidm/luacom">LuaCOM</a> library. When the LuaCOM library is loaded, 
   call elem:CreateLuaCOM so a LuaCOM object is created and stored in the <strong>
 &quot;elem.com&quot;</strong> 
   field of the object returned by iup.olecontrol. This LuaCOM object can be used 
