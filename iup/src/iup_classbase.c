@@ -301,6 +301,17 @@ int iupBaseGetScrollbar(Ihandle* ih)
   return sb;
 }
 
+static int iBaseSetThemeAttrib(Ihandle* ih, const char* value)
+{
+  Ihandle* theme = IupGetHandle(value);
+  if (theme)
+  {
+    iupAttribSetTheme(ih, theme);
+    return 1;
+  }
+  return 0;
+}
+
 static int iBaseSetNormalizerGroupAttrib(Ihandle* ih, const char* value)
 {
   Ihandle* ih_normalizer = IupGetHandle(value);
@@ -508,6 +519,8 @@ void iupBaseRegisterCommonAttrib(Iclass* ic)
   iupClassRegisterAttribute(ic, "NORMALIZERGROUP", NULL, iBaseSetNormalizerGroupAttrib, NULL, NULL, IUPAF_IHANDLENAME|IUPAF_NOT_MAPPED|IUPAF_NO_INHERIT);
   iupClassRegisterAttribute(ic, "EXPANDWEIGHT", NULL, NULL, NULL, NULL, IUPAF_NOT_MAPPED|IUPAF_NO_INHERIT);
   iupClassRegisterAttribute(ic, "HANDLENAME", NULL, NULL, NULL, NULL, IUPAF_NOT_MAPPED | IUPAF_NO_INHERIT);
+  iupClassRegisterAttribute(ic, "THEME", NULL, iBaseSetThemeAttrib, NULL, NULL, IUPAF_IHANDLENAME | IUPAF_NOT_MAPPED);
+  iupClassRegisterAttribute(ic, "NTHEME", NULL, iBaseSetThemeAttrib, NULL, NULL, IUPAF_IHANDLENAME | IUPAF_NOT_MAPPED | IUPAF_NO_INHERIT);
 
   /* make sure everyone has the correct default value */
   iupClassRegisterAttribute(ic, "ACTIVE", NULL, NULL, IUPAF_SAMEASSYSTEM, "YES", IUPAF_DEFAULT);  /* inherited */

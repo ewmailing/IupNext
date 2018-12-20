@@ -476,6 +476,18 @@ int iupClassObjectCurAttribIsInherit(Iclass* ic)
   return 0;
 }
 
+int iupClassObjectAttribCanCopy(Ihandle* ih, const char* name)
+{
+  Iclass* ic = ih->iclass;
+  IattribFunc* afunc = (IattribFunc*)iupTableGet(ic->attrib_func, name);
+  if (afunc && !(afunc->flags & IUPAF_NO_STRING) &&  /* is a string */
+               !(afunc->flags & IUPAF_READONLY) &&   /* not read-only */
+               !(afunc->flags & IUPAF_WRITEONLY) &&  /* not write-only */
+               !(afunc->flags & IUPAF_CALLBACK))     /* not a callback */
+    return 1;
+  return 0;
+}
+
 int iupClassObjectAttribIsNotString(Ihandle* ih, const char* name)
 {
   IattribFunc* afunc = (IattribFunc*)iupTableGet(ih->iclass->attrib_func, name);
@@ -950,7 +962,8 @@ void IupCopyClassAttributes(Ihandle* src_ih, Ihandle* dst_ih)
     name = iupTableNext(ic->attrib_func);
   }
 
-  /* loop again over all registered attributes to check for different values */
+  /* loop again over all registered attributes to check for different values,
+     in the previous loop some attribute my set another attribute during the loop */
   name = iupTableFirst(ic->attrib_func);
   while (name)
   {

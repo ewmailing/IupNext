@@ -450,6 +450,9 @@ int   iupClassObjectAttribIsNotString(Ihandle* ih, const char* name);
 /* Used only in iupAttribIsIhandle */
 int   iupClassObjectAttribIsIhandle(Ihandle* ih, const char* name);
 
+/* Used only in iupAttribSetTheme */
+int   iupClassObjectAttribCanCopy(Ihandle* ih, const char* name);
+
 /* Used only in iupAttribUpdateFromParent */
 int   iupClassObjectCurAttribIsInherit(Iclass* ic);
 

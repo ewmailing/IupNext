@@ -236,7 +236,7 @@ char* iupAttribGetClassObjectId2(Ihandle* ih, const char* name, int lin, int col
 
 
 
-/* For all attributes in the evironment, call the class SetAttribute only.
+/* For all attributes in the environment, call the class SetAttribute only.
  * Called only after the element is mapped, but before the children are mapped. */
 void iupAttribUpdate(Ihandle* ih); 
 
@@ -245,9 +245,13 @@ void iupAttribUpdate(Ihandle* ih);
  * Called only after the element is mapped, but before the children are mapped. */
 void iupAttribUpdateFromParent(Ihandle* ih);
 
-/* For all attributes in the evironment, call the class SetAttribute only for the children.
+/* For all attributes in the environment, call the class SetAttribute only for the children.
  * Called only after the element is mapped, and after the children are mapped. */
 void iupAttribUpdateChildren(Ihandle* ih);
+
+/* Parse attributes from theme and set at element.
+   Called only in Create and when a theme is explicitly set */
+void iupAttribSetTheme(Ihandle* ih, Ihandle* theme);
 
 
 /* Other functions declared in <iup.h> and implemented here. 

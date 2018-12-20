@@ -16,6 +16,7 @@
 #include "iup_names.h"
 #include "iup_varg.h"
 #include "iup_focus.h"
+#include "iup_attrib.h"
 
 
 static Ihandle* iHandleCreate(void)
@@ -59,6 +60,8 @@ int iupObjectCheck(Ihandle* ih)
 
 Ihandle* iupObjectCreate(Iclass* iclass, void** params)
 {
+  char* name;
+
   /* create the base handle structure */
   Ihandle* ih = iHandleCreate();
 
@@ -74,6 +77,14 @@ Ihandle* iupObjectCreate(Iclass* iclass, void** params)
 
   /* ensure attributes default values, at this time only the ones that can be set before map */
   iupClassObjectEnsureDefaultAttributes(ih);
+
+  name = IupGetGlobal("DEFAULTTHEME");
+  if (name)
+  {
+    Ihandle* theme = IupGetHandle(name);
+    if (theme)
+      iupAttribSetTheme(ih, theme);
+  }
 
   return ih;
 }

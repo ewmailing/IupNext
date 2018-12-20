@@ -37,7 +37,7 @@ Iclass* iupUserNewClass(void)
 
   ic->New = iupUserNewClass;
 
-  iupClassRegisterAttribute(ic, "CLEARATTRIBUTES", NULL, iUserSetClearAttributesAttrib, NULL, NULL, IUPAF_NOT_MAPPED|IUPAF_NO_INHERIT);
+  iupClassRegisterAttribute(ic, "CLEARATTRIBUTES", NULL, iUserSetClearAttributesAttrib, NULL, NULL, IUPAF_WRITEONLY | IUPAF_NOT_MAPPED | IUPAF_NO_INHERIT);
 
   return ic;
 }
