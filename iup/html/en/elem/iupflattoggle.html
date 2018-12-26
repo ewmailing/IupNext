@@ -18,6 +18,9 @@
   .bg {
 	background-color: #F0F0F0;
 }
+  .auto-style2 {
+	margin-left: 2em;
+}
   </style>
 </head>
 
@@ -96,16 +99,16 @@ obtained from the default value. Alignment does not includes the padding area. <
 	<a href="../func/iupsetattributehandle.html">IupSetAttributeHandle</a> to 
 	associate an image to a name. See also
 	<a href="../elem/iupimage.html">IupImage</a>. </p>
-<p><strong>BACKIMAGEHIGHLIGHT</strong> (<font SIZE="3">non inheritable</font>): 
+<p class="auto-style2"><strong>BACKIMAGEHIGHLIGHT</strong> (<font SIZE="3">non inheritable</font>): 
 background image name of the element in highlight state. If it is not defined 
 then the BACKIMAGE is used.</p>
-  <p><strong>BACKIMAGEINACTIVE</strong> (<font SIZE="3">non inheritable</font>): 
+  <p class="auto-style2"><strong>BACKIMAGEINACTIVE</strong> (<font SIZE="3">non inheritable</font>): 
   background image name of the element when inactive. If it is not defined then 
   the BACKIMAGE is used and its colors will be replaced by a modified version 
   creating the disabled effect.</p>
 
   
-<p><strong>BACKIMAGEPRESS </strong>(<font size="3">non inheritable</font>): 
+<p class="auto-style2"><strong>BACKIMAGEPRESS </strong>(<font size="3">non inheritable</font>): 
 background image name of the element in pressed state. If it is not defined then 
 the BACKIMAGE is used.</p>
 
@@ -118,15 +121,22 @@ Yes or No. Default: No. (since 3.25)</p>
 and image are not defined, the button is configured to simply show a color, in 
 this case set the button size because the natural size will be very small. If 
 not defined it will use the background color of the native parent. </p>
+<p class="auto-style2"><strong>HLCOLOR</strong>: background color used to indicate a highlight state. 
+Pre-defined to &quot;200 225 245&quot;. Can be set to NULL. If NULL BGCOLOR will 
+be used instead.</p>
+<p class="auto-style2"><strong>PSCOLOR</strong>: background color used to indicate a press state. 
+Pre-defined to &quot;150 200 235&quot;. Can be set to NULL. If NULL BGCOLOR will 
+be used instead.</p>
+
 
 <p><b>BORDER </b>(creation only):
   
   the default value is "NO". This is the <strong>IupCanvas</strong> border.</p>
 <p><strong>BORDERCOLOR</strong>: color used for borders. Default: &quot;50 150 255&quot;. 
 This is for the <strong>IupFlatToggle</strong> drawn border.</p>
-<p><strong>BORDERPSCOLOR</strong>: color used for borders when pressed or 
+<p class="auto-style2"><strong>BORDERPSCOLOR</strong>: color used for borders when pressed or 
 selected. Default use BORDERCOLOR.</p>
-<p><strong>BORDERHLCOLOR</strong>: color used for borders when highlighted. 
+<p class="auto-style2"><strong>BORDERHLCOLOR</strong>: color used for borders when highlighted. 
 Default use BORDERCOLOR.</p>
 <p><strong>BORDERWIDTH</strong>: line width used for borders. Default: &quot;1&quot;. Any borders can be 
 hidden by simply setting 
@@ -168,22 +178,24 @@ ACENTER. (since 3.26)</p>
 	associate an image to a name. See also
 	<a href="../elem/iupimage.html">IupImage</a>. If this attribute is defined 
   the check box is not drawn, the images will be used instead.</p>
-<p><strong>CHECKIMAGEHIGHLIGHT</strong> (<font SIZE="3">non inheritable</font>): 
+<p class="auto-style2"><strong>CHECKIMAGEHIGHLIGHT</strong> (<font SIZE="3">non inheritable</font>): 
 check box image name of the element in highlight state when VALUE=OFF. If it is not defined 
 then the CHECKIMAGE is used.</p>
-  <p><strong>CHECKIMAGEINACTIVE</strong> (<font SIZE="3">non inheritable</font>): 
+  <p class="auto-style2"><strong>CHECKIMAGEINACTIVE</strong> (<font SIZE="3">non inheritable</font>): 
   check box image name of the element when inactive and VALUE=OFF. If it is not defined then 
   the CHECKIMAGE is used and its colors will be replaced by a modified version 
   creating the disabled effect.</p>
 
   
-<p><strong>CHECKIMAGEPRESS </strong> (<font size="3">non inheritable</font>): 
+<p class="auto-style2"><strong>CHECKIMAGEPRESS </strong> (<font size="3">non inheritable</font>): 
 check box image name of the element in pressed state when VALUE=OFF. If it is not defined then 
 the CHECKIMAGE is used.</p>
 <p><strong>CHECKIMAGEON*</strong> (<font SIZE="3">non inheritable</font>):
-  image name to be used as check box when VALUE=ON.</p>
+  image names to be used as check box when VALUE=ON. (HIGHLIGHT, INACTIVE and 
+PRESS included)</p>
 <p><strong>CHECKIMAGENOTDEF*</strong> (<font SIZE="3">non inheritable</font>):
-  image name to be used as check box when VALUE=NOTDEF.</p>
+  image names to be used as check box when VALUE=NOTDEF. (HIGHLIGHT, INACTIVE 
+and PRESS included)</p>
 
 
 
@@ -205,6 +217,16 @@ global attribute DLGFGCOLOR.</p>
 
 
   
+<p class="auto-style2"><strong>TEXTHLCOLOR</strong>: text color used to indicate a highlight state. 
+If not defined FGCOLOR will 
+be used instead. (since 3.26)</p>
+<p class="auto-style2"><strong>TEXTPSCOLOR</strong>: text color used to indicate a press state. 
+If not defined FGCOLOR will 
+be used instead. (since 3.26)</p>
+
+
+
+  
 <p><strong>FITTOBACKIMAGE</strong> (<font size="3">non inheritable</font>): 
 enable the natural size to be computed from the BACKIMAGE. If BACKIMAGE is not 
 defined will be ignored. Can be 
@@ -219,23 +241,20 @@ Yes or No. Default: No.</p>
 	<a href="../func/iupsetattributehandle.html">IupSetAttributeHandle</a> to 
 	associate an image to a name. See also
 	<a href="../elem/iupimage.html">IupImage</a>.</p>
-<p><strong>FRONTIMAGEHIGHLIGHT</strong> (<font SIZE="3">non inheritable</font>): 
+<p class="auto-style2"><strong>FRONTIMAGEHIGHLIGHT</strong> (<font SIZE="3">non inheritable</font>): 
 foreground image name of the element in highlight state. If it is not defined 
 then the FRONTIMAGE is used.</p>
-  <p><strong>FRONTIMAGEINACTIVE</strong> (<font SIZE="3">non inheritable</font>): 
+  <p class="auto-style2"><strong>FRONTIMAGEINACTIVE</strong> (<font SIZE="3">non inheritable</font>): 
   foreground image name of the element when inactive. If it is not defined then 
   the FRONTIMAGE is used and its colors will be replaced by a modified version 
   creating the disabled effect.</p>
 
   
-<p><strong>FRONTIMAGEPRESS </strong> (<font size="3">non inheritable</font>): 
+<p class="auto-style2"><strong>FRONTIMAGEPRESS </strong> (<font size="3">non inheritable</font>): 
 foreground image name of the element in pressed state. If it is not defined then 
 the FRONTIMAGE is used.</p>
 <p><strong>HASFOCUS </strong> (read-only): returns the button state if has 
 focus. Can be Yes or No.</p>
-<p><strong>HLCOLOR</strong>: background color used to indicate a highlight state. 
-Pre-defined to &quot;200 225 245&quot;. Can be set to NULL. If NULL BGCOLOR will 
-be used instead.</p>
 <p><strong>HIGHLIGHTED </strong> (read-only): returns the button state if 
 highlighted. Can be Yes or No.</p>
 <p><strong>IMAGE</strong> (<font SIZE="3">non inheritable</font>):
@@ -244,16 +263,16 @@ highlighted. Can be Yes or No.</p>
 	<a href="../func/iupsetattributehandle.html">IupSetAttributeHandle</a> to 
 	associate an image to a name. See also
 	<a href="../elem/iupimage.html">IupImage</a>.</p>
-<p><strong>IMAGEHIGHLIGHT</strong> (<font SIZE="3">non inheritable</font>): 
+<p class="auto-style2"><strong>IMAGEHIGHLIGHT</strong> (<font SIZE="3">non inheritable</font>): 
 Image name of the element in highlight state. If it is not defined then the 
 IMAGE is used.</p>
-  <p><strong>IMAGEINACTIVE</strong> (<font SIZE="3">non inheritable</font>): 
+  <p class="auto-style2"><strong>IMAGEINACTIVE</strong> (<font SIZE="3">non inheritable</font>): 
   Image name of the element when inactive. If it is not defined then the IMAGE 
   is used and its colors will be replaced by a modified version creating the 
   disabled effect. </p>
 
   
-<p><strong>IMAGEPRESS </strong>(<font size="3">non inheritable</font>): Image 
+<p class="auto-style2"><strong>IMAGEPRESS </strong>(<font size="3">non inheritable</font>): Image 
 name of the element in pressed state. If it is not defined then the IMAGE is 
 used.</p>
 
@@ -268,9 +287,6 @@ a different name to avoid inheritance problems. Alignment does not includes the
 padding area. Default value: &quot;0x0&quot;.</p>
 <p><strong>PRESSED </strong> (read-only): returns the button state if pressed. 
 Can be Yes or No.</p>
-<p><strong>PSCOLOR</strong>: background color used to indicate a press state. 
-Pre-defined to &quot;150 200 235&quot;. Can be set to NULL. If NULL BGCOLOR will 
-be used instead.</p>
 
 
 <p><strong>RADIO</strong> (read-only): returns if the toggle is inside a radio. 

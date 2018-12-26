@@ -106,6 +106,10 @@ static int iFlatToggleRedraw_CB(Ihandle* ih)
       if (presscolor)
         bgcolor = presscolor;
 
+      presscolor = iupAttribGetStr(ih, "TEXTPSCOLOR");
+      if (presscolor)
+        fgcolor = presscolor;
+
       draw_border = 1;
     }
     else if (ih->data->highlighted)
@@ -113,6 +117,10 @@ static int iFlatToggleRedraw_CB(Ihandle* ih)
       char* hlcolor = iupAttribGetStr(ih, "HLCOLOR");
       if (hlcolor)
         bgcolor = hlcolor;
+
+      hlcolor = iupAttribGetStr(ih, "TEXTHLCOLOR");
+      if (hlcolor)
+        fgcolor = hlcolor;
 
       draw_border = 1;
     }
@@ -802,6 +810,8 @@ Iclass* iupFlatToggleNewClass(void)
   iupClassRegisterAttribute(ic, "BGCOLOR", iFlatToggleGetBgColorAttrib, iFlatToggleSetAttribPostRedraw, IUPAF_SAMEASSYSTEM, "DLGBGCOLOR", IUPAF_NO_SAVE | IUPAF_DEFAULT);
   iupClassRegisterAttribute(ic, "HLCOLOR", NULL, NULL, NULL, NULL, IUPAF_DEFAULT);  /* inheritable */
   iupClassRegisterAttribute(ic, "PSCOLOR", NULL, NULL, NULL, NULL, IUPAF_DEFAULT);  /* inheritable */
+  iupClassRegisterAttribute(ic, "TEXTHLCOLOR", NULL, NULL, NULL, NULL, IUPAF_DEFAULT);  /* inheritable */
+  iupClassRegisterAttribute(ic, "TEXTPSCOLOR", NULL, NULL, NULL, NULL, IUPAF_DEFAULT);  /* inheritable */
 
   iupClassRegisterAttribute(ic, "IMAGE", NULL, NULL, NULL, NULL, IUPAF_IHANDLENAME | IUPAF_NO_DEFAULTVALUE | IUPAF_NO_INHERIT);
   iupClassRegisterAttribute(ic, "IMAGEPRESS", NULL, NULL, NULL, NULL, IUPAF_IHANDLENAME | IUPAF_NO_DEFAULTVALUE | IUPAF_NO_INHERIT);
