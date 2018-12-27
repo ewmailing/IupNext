@@ -657,6 +657,10 @@ wb_usr.tree =
               link= "attrib/iup_font.html"
             },
             {
+              name= {nl= "THEME"},
+              link= "attrib/iup_theme.html"
+            },
+            {
               name= {nl= "VISIBLE"},
               link= "attrib/iup_visible.html"
             },

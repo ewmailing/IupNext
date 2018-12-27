@@ -681,6 +681,17 @@ void SampleTest(void)
   }
 #endif
 
+#if 0
+  {
+    Ihandle* theme = IupUser();
+    //IupSetAttribute(theme, "BGCOLOR", "92 92 255");
+//    IupSetAttribute(theme, "FONT", "Helvetica, 24");
+    IupSetAttribute(theme, "PADDING", "30x30");
+
+    IupSetAttributeHandle(dlg, "THEME", theme);
+  }
+#endif
+
 //  IupSetAttribute(dlg, "BGCOLOR", "173 177 194");  // Motif BGCOLOR for documentation
 //  IupSetAttribute(_vbox_1, "BGCOLOR", "92 92 255");
 //  IupSetAttribute(dlg, "BGCOLOR", "92 92 255");
