@@ -1138,6 +1138,7 @@ int main (int argc, char **argv)
 
 #ifdef STOCK_TEST
     IupSetGlobal("IMAGESTOCKSIZE", STOCK_TEST);
+    IupSetGlobal("IMAGESTOCKAUTOSCALE", "NO");
 #endif
 
     IupSetGlobal("GLOBALLAYOUTDLGKEY", "Yes");
