@@ -175,7 +175,7 @@ Call <strong>IupConfigRecentInit </strong>once to initialize the menu. Then
 every time a file is open or saved call <strong>IupConfigRecentUpdate</strong> 
 so that the menu list is updated. The last file will be always on the top of the 
 list. </p>
-<p>Inside the RECENT_CB callback the TITLE attribute contains the filename, but 
+<p>Inside the RECENT_CB callback the RECENTFILENAME attribute contains the filename, but 
 the ih handle is not the menu, it is the IupConfig handle. But also inside the 
 callback the IupConfig will inherit attributes from the menu as if it was its 
 parent. (since 3.15)</p>

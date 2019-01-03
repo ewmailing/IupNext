@@ -125,7 +125,7 @@ int write_file(const char* filename, const char* str, int count)
 
 int config_recent_cb(Ihandle* ih)
 {
-  char* filename = IupGetAttribute(ih, "TITLE");
+  char* filename = IupGetAttribute(ih, "RECENTFILENAME");
   char* str = read_file(filename);
   if (str)
   {

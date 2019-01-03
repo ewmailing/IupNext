@@ -83,7 +83,7 @@ item_exit = iup.item{title="E&xit"}
 
 
 function config:recent_cb()
-  local filename = self.title
+  local filename = self.recentfilename
   local str = read_file(filename)
   if (str) then
     multitext.value = str

@@ -335,7 +335,7 @@ end
 
 function config:recent_cb()
   if (save_check(self)) then
-    local filename = self.title
+    local filename = self.recentfilename
     open_file(self, filename)
   end
 end

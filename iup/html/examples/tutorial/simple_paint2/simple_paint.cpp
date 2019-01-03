@@ -237,7 +237,7 @@ int SimplePaint::ConfigRecentCallback(Ihandle* ih)
 {
   if (file.SaveCheck())
   {
-    char* filename = IupGetAttribute(ih, "TITLE");
+    char* filename = IupGetAttribute(ih, "RECENTFILENAME");
     OpenFile(filename);
   }
   return IUP_DEFAULT;

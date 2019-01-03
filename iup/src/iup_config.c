@@ -433,7 +433,7 @@ static int iConfigItemRecent_CB(Ihandle* ih_item)
   if (recent_cb)
   {
     Ihandle* ih = (Ihandle*)IupGetAttribute(ih_item, "_IUP_CONFIG");
-    IupSetStrAttribute(ih, "TITLE", IupGetAttribute(ih_item, "TITLE"));
+    IupSetStrAttribute(ih, "TITLE", IupGetAttribute(ih_item, "RECENTFILENAME"));  /* backward compatibility */
     ih->parent = ih_item;
 
     recent_cb(ih);
@@ -469,6 +469,8 @@ static void iConfigBuildRecent(Ihandle* ih, Ihandle* menu, int max_recent, const
         IupAppend(menu, item);
         if (mapped) IupMap(item);
       }
+
+      IupSetStrAttribute(item, "RECENTFILENAME", value); /* TITLE will convert the string to a native representation, so RECENTFILENAME will keep the original value */
     }
     i++;
   } while (value && i <= max_recent);

@@ -1449,7 +1449,7 @@ int config_recent_cb(Ihandle* ih)
 {
   if (save_check(ih))
   {
-    char* filename = IupGetAttribute(ih, "TITLE");
+    char* filename = IupGetAttribute(ih, "RECENTFILENAME");
     open_file(ih, filename);
   }
   return IUP_DEFAULT;

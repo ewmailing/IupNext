@@ -156,7 +156,7 @@ int edit_menu_open_cb(Ihandle* ih)
 
 int config_recent_cb(Ihandle* ih)
 {
-  char* filename = IupGetAttribute(ih, "TITLE");
+  char* filename = IupGetAttribute(ih, "RECENTFILENAME");
   char* str = read_file(filename);
   if (str)
   {
