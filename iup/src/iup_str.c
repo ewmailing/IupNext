@@ -2,6 +2,9 @@
  * \brief String Utilities
  *
  * See Copyright Notice in "iup.h"
+ *
+ *   IMPORTANT: the encoding of this file MUST be ISO8859-1.
+ *
  */
 
  
