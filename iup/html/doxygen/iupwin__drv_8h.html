@@ -15,15 +15,15 @@
 <a href="#func-members">Functions</a> &#124;
 <a href="#var-members">Variables</a>  </div>
   <div class="headertitle">
-<h1>iupwin_drv.h File Reference</h1>  </div>
+<h2>iupwin_drv.h File Reference</h2>  </div>
 </div>
 <div class="contents">
 
 <p>Windows Driver.  
 <a href="#_details">More...</a></p>
 <table class="memberdecls">
-<tr><td colspan="2"><h2><a name="define-members"></a>
-Defines</h2></td></tr>
+<tr><td colspan="2"><h3><a name="define-members"></a>
+Defines</h3></td></tr>
 <tr><td class="memItemLeft" align="right" valign="top"><a class="anchor" id="a0ddee44e3fb22881d1ce5590063f2b01"></a><!-- doxytag: member="iupwin_drv.h::iupWIN_PT2PIXEL" ref="a0ddee44e3fb22881d1ce5590063f2b01" args="(_pt, _res)" -->
 #define&nbsp;</td><td class="memItemRight" valign="bottom"><b>iupWIN_PT2PIXEL</b>(_pt, _res)&nbsp;&nbsp;&nbsp;MulDiv(_pt, _res, 72)</td></tr>
 <tr><td class="memItemLeft" align="right" valign="top"><a class="anchor" id="a06f5e3857e33da9acc2c1e3599b06aae"></a><!-- doxytag: member="iupwin_drv.h::iupWIN_PIXEL2PT" ref="a06f5e3857e33da9acc2c1e3599b06aae" args="(_pixel, _res)" -->
@@ -34,8 +34,8 @@ Defines</h2></td></tr>
 #define&nbsp;</td><td class="memItemRight" valign="bottom"><b>GET_X_LPARAM</b>(lp)&nbsp;&nbsp;&nbsp;((int)(short)LOWORD(lp))</td></tr>
 <tr><td class="memItemLeft" align="right" valign="top"><a class="anchor" id="a1197a848b91dedd933b038579ee9a213"></a><!-- doxytag: member="iupwin_drv.h::GET_Y_LPARAM" ref="a1197a848b91dedd933b038579ee9a213" args="(lp)" -->
 #define&nbsp;</td><td class="memItemRight" valign="bottom"><b>GET_Y_LPARAM</b>(lp)&nbsp;&nbsp;&nbsp;((int)(short)HIWORD(lp))</td></tr>
-<tr><td colspan="2"><h2><a name="typedef-members"></a>
-Typedefs</h2></td></tr>
+<tr><td colspan="2"><h3><a name="typedef-members"></a>
+Typedefs</h3></td></tr>
 <tr><td class="memItemLeft" align="right" valign="top"><a class="anchor" id="a67254eea1cb3c37a5061ad0f0351296b"></a><!-- doxytag: member="iupwin_drv.h::IFctlColor" ref="a67254eea1cb3c37a5061ad0f0351296b" args=")(Ihandle *ih, HDC hdc, LRESULT *result)" -->
 typedef int(*&nbsp;</td><td class="memItemRight" valign="bottom"><b>IFctlColor</b> )(Ihandle *ih, HDC hdc, LRESULT *result)</td></tr>
 <tr><td class="memItemLeft" align="right" valign="top"><a class="anchor" id="a39ce1577922e25d9a5826757caa2ca81"></a><!-- doxytag: member="iupwin_drv.h::IFdrawItem" ref="a39ce1577922e25d9a5826757caa2ca81" args=")(Ihandle *ih, void *drawitem)" -->
@@ -46,8 +46,8 @@ typedef int(*&nbsp;</td><td class="memItemRight" valign="bottom"><b>IFnotify</b>
 typedef int(*&nbsp;</td><td class="memItemRight" valign="bottom"><b>IFwmCommand</b> )(Ihandle *ih, WPARAM wp, LPARAM lp)</td></tr>
 <tr><td class="memItemLeft" align="right" valign="top"><a class="anchor" id="aeb5b5d1e15475c38f22c89ef692637f2"></a><!-- doxytag: member="iupwin_drv.h::IwinMsgProc" ref="aeb5b5d1e15475c38f22c89ef692637f2" args=")(Ihandle *ih, UINT msg, WPARAM wp, LPARAM lp, LRESULT *result)" -->
 typedef int(*&nbsp;</td><td class="memItemRight" valign="bottom"><b>IwinMsgProc</b> )(Ihandle *ih, UINT msg, WPARAM wp, LPARAM lp, LRESULT *result)</td></tr>
-<tr><td colspan="2"><h2><a name="func-members"></a>
-Functions</h2></td></tr>
+<tr><td colspan="2"><h3><a name="func-members"></a>
+Functions</h3></td></tr>
 <tr><td class="memItemLeft" align="right" valign="top"><a class="anchor" id="a85288bd4f5c362ee18762a4291b2e246"></a><!-- doxytag: member="iupwin_drv.h::iupwinShowLastError" ref="a85288bd4f5c362ee18762a4291b2e246" args="(void)" -->
 void&nbsp;</td><td class="memItemRight" valign="bottom"><b>iupwinShowLastError</b> (void)</td></tr>
 <tr><td class="memItemLeft" align="right" valign="top"><a class="anchor" id="a6b556ce7f21a273687115656b130ae38"></a><!-- doxytag: member="iupwin_drv.h::iupwinWmSetFocus" ref="a6b556ce7f21a273687115656b130ae38" args="(Ihandle *ih)" -->
@@ -142,8 +142,8 @@ void&nbsp;</td><td class="memItemRight" valign="bottom"><b>iupwinSetMnemonicTitl
 void&nbsp;</td><td class="memItemRight" valign="bottom"><b>iupwinDrawFocusRect</b> (HDC hDC, int x, int y, int w, int h)</td></tr>
 <tr><td class="memItemLeft" align="right" valign="top"><a class="anchor" id="a05f03f5e60f89b1a89321f42dc9ad32d"></a><!-- doxytag: member="iupwin_drv.h::iupwinGetScreenRes" ref="a05f03f5e60f89b1a89321f42dc9ad32d" args="(void)" -->
 int&nbsp;</td><td class="memItemRight" valign="bottom"><b>iupwinGetScreenRes</b> (void)</td></tr>
-<tr><td colspan="2"><h2><a name="var-members"></a>
-Variables</h2></td></tr>
+<tr><td colspan="2"><h3><a name="var-members"></a>
+Variables</h3></td></tr>
 <tr><td class="memItemLeft" align="right" valign="top"><a class="anchor" id="ad31a88d05208ef1d8840fbc949a84da4"></a><!-- doxytag: member="iupwin_drv.h::iupwin_hinstance" ref="ad31a88d05208ef1d8840fbc949a84da4" args="" -->
 HINSTANCE&nbsp;</td><td class="memItemRight" valign="bottom"><b>iupwin_hinstance</b></td></tr>
 <tr><td class="memItemLeft" align="right" valign="top"><a class="anchor" id="a4e0adefb34a3c063d74bbb61f1c512f2"></a><!-- doxytag: member="iupwin_drv.h::iupwin_comctl32ver6" ref="a4e0adefb34a3c063d74bbb61f1c512f2" args="" -->
@@ -151,10 +151,10 @@ int&nbsp;</td><td class="memItemRight" valign="bottom"><b>iupwin_comctl32ver6</b
 <tr><td class="memItemLeft" align="right" valign="top"><a class="anchor" id="a64c6fd557cb3d5270485bbc06e3b8904"></a><!-- doxytag: member="iupwin_drv.h::iupwin_dll_hinstance" ref="a64c6fd557cb3d5270485bbc06e3b8904" args="" -->
 HINSTANCE&nbsp;</td><td class="memItemRight" valign="bottom"><b>iupwin_dll_hinstance</b></td></tr>
 </table>
-<hr/><a name="_details"></a><h2>Detailed Description</h2>
+<hr/><a name="_details"></a><h3>Detailed Description</h3>
 <p>See Copyright Notice in "iup.h" </p>
 </div>
-<hr class="footer"/><address class="footer"><small>Generated on Sat Jan 5 2019 18:14:56 for SDK by&nbsp;
+<hr class="footer"/><address class="footer"><small>Generated on Sat Jan 5 2019 18:36:15 for SDK by&nbsp;
 <a href="http://www.doxygen.org/index.html">
 <img class="footer" src="doxygen.png" alt="doxygen"/></a> 1.7.1 </small></address>
 </body>

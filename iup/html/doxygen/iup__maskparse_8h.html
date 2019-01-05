@@ -14,15 +14,15 @@
 <a href="#typedef-members">Typedefs</a> &#124;
 <a href="#func-members">Functions</a>  </div>
   <div class="headertitle">
-<h1>iup_maskparse.h File Reference</h1>  </div>
+<h2>iup_maskparse.h File Reference</h2>  </div>
 </div>
 <div class="contents">
 
 <p>Mask internal functions (not exported API).  
 <a href="#_details">More...</a></p>
 <table class="memberdecls">
-<tr><td colspan="2"><h2><a name="define-members"></a>
-Defines</h2></td></tr>
+<tr><td colspan="2"><h3><a name="define-members"></a>
+Defines</h3></td></tr>
 <tr><td class="memItemLeft" align="right" valign="top"><a class="anchor" id="aa2f6c86d8d3a454086ad33d7f67dcaf6"></a><!-- doxytag: member="iup_maskparse.h::IMASK_PARSE_OK" ref="aa2f6c86d8d3a454086ad33d7f67dcaf6" args="" -->
 #define&nbsp;</td><td class="memItemRight" valign="bottom"><b>IMASK_PARSE_OK</b>&nbsp;&nbsp;&nbsp;0</td></tr>
 <tr><td class="memItemLeft" align="right" valign="top"><a class="anchor" id="a86af37598a62767410b3d3ed01dfc38d"></a><!-- doxytag: member="iup_maskparse.h::IMASK_NOMATCH" ref="a86af37598a62767410b3d3ed01dfc38d" args="" -->
@@ -33,14 +33,14 @@ Defines</h2></td></tr>
 #define&nbsp;</td><td class="memItemRight" valign="bottom"><b>IMASK_PARSE_ERROR</b>&nbsp;&nbsp;&nbsp;-3</td></tr>
 <tr><td class="memItemLeft" align="right" valign="top"><a class="anchor" id="a1265da3c044e0ae89e273e8c5d4de7e5"></a><!-- doxytag: member="iup_maskparse.h::IMASK_PARTIALMATCH" ref="a1265da3c044e0ae89e273e8c5d4de7e5" args="" -->
 #define&nbsp;</td><td class="memItemRight" valign="bottom"><b>IMASK_PARTIALMATCH</b>&nbsp;&nbsp;&nbsp;-4</td></tr>
-<tr><td colspan="2"><h2><a name="typedef-members"></a>
-Typedefs</h2></td></tr>
+<tr><td colspan="2"><h3><a name="typedef-members"></a>
+Typedefs</h3></td></tr>
 <tr><td class="memItemLeft" align="right" valign="top"><a class="anchor" id="a177311e3c397baee0e7c99ea1fd968f1"></a><!-- doxytag: member="iup_maskparse.h::ImaskParsed" ref="a177311e3c397baee0e7c99ea1fd968f1" args="" -->
 typedef struct _ImaskParsed&nbsp;</td><td class="memItemRight" valign="bottom"><b>ImaskParsed</b></td></tr>
 <tr><td class="memItemLeft" align="right" valign="top"><a class="anchor" id="a174c48f874be099fbc1ec21ec6d34de2"></a><!-- doxytag: member="iup_maskparse.h::iMaskMatchFunc" ref="a174c48f874be099fbc1ec21ec6d34de2" args=")(char which_one, long next_pos, long capture_pos, const char *text, void *user_data)" -->
 typedef int(*&nbsp;</td><td class="memItemRight" valign="bottom"><b>iMaskMatchFunc</b> )(char which_one, long next_pos, long capture_pos, const char *text, void *user_data)</td></tr>
-<tr><td colspan="2"><h2><a name="func-members"></a>
-Functions</h2></td></tr>
+<tr><td colspan="2"><h3><a name="func-members"></a>
+Functions</h3></td></tr>
 <tr><td class="memItemLeft" align="right" valign="top"><a class="anchor" id="aabe3b8a65b04becbd69e4b659e9e87e8"></a><!-- doxytag: member="iup_maskparse.h::iupMaskParse" ref="aabe3b8a65b04becbd69e4b659e9e87e8" args="(const char *mask, ImaskParsed **imk)" -->
 int&nbsp;</td><td class="memItemRight" valign="bottom"><b>iupMaskParse</b> (const char *mask, ImaskParsed **imk)</td></tr>
 <tr><td class="memItemLeft" align="right" valign="top"><a class="anchor" id="ac3c5245c5c64dbd0f333e6e763db9688"></a><!-- doxytag: member="iup_maskparse.h::iupMaskMatch" ref="ac3c5245c5c64dbd0f333e6e763db9688" args="(const char *text, ImaskParsed *imk, long start, iMaskMatchFunc mask_func, void *user_data, char *addchar, int icase)" -->
@@ -48,10 +48,10 @@ int&nbsp;</td><td class="memItemRight" valign="bottom"><b>iupMaskMatch</b> (cons
 <tr><td class="memItemLeft" align="right" valign="top"><a class="anchor" id="a6560684b9085a3e887a7cc61644693a4"></a><!-- doxytag: member="iup_maskparse.h::iupMaskSetChar" ref="a6560684b9085a3e887a7cc61644693a4" args="(int char_number, char new_char)" -->
 int&nbsp;</td><td class="memItemRight" valign="bottom"><b>iupMaskSetChar</b> (int char_number, char new_char)</td></tr>
 </table>
-<hr/><a name="_details"></a><h2>Detailed Description</h2>
+<hr/><a name="_details"></a><h3>Detailed Description</h3>
 <p>See Copyright Notice in "iup.h" </p>
 </div>
-<hr class="footer"/><address class="footer"><small>Generated on Sat Jan 5 2019 18:14:56 for SDK by&nbsp;
+<hr class="footer"/><address class="footer"><small>Generated on Sat Jan 5 2019 18:36:15 for SDK by&nbsp;
 <a href="http://www.doxygen.org/index.html">
 <img class="footer" src="doxygen.png" alt="doxygen"/></a> 1.7.1 </small></address>
 </body>
