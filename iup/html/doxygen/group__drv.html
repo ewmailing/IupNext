@@ -13,7 +13,7 @@
 <a href="#groups">Modules</a> &#124;
 <a href="#func-members">Functions</a>  </div>
   <div class="headertitle">
-<h2>Driver Interface</h2>  </div>
+<h1>Driver Interface</h1>  </div>
 </div>
 <div class="contents">
 
@@ -27,12 +27,12 @@ Collaboration diagram for Driver Interface:</div>
 </div>
 </p>
 <table class="memberdecls">
-<tr><td colspan="2"><h3><a name="groups"></a>
-Modules</h3></td></tr>
+<tr><td colspan="2"><h2><a name="groups"></a>
+Modules</h2></td></tr>
 <tr><td class="memItemLeft" align="right" valign="top">&nbsp;</td><td class="memItemRight" valign="bottom"><a class="el" href="group__drvfont.html">Driver Font Interface</a></td></tr>
 <tr><td class="memItemLeft" align="right" valign="top">&nbsp;</td><td class="memItemRight" valign="bottom"><a class="el" href="group__drvinfo.html">Driver Information Interface</a></td></tr>
-<tr><td colspan="2"><h3><a name="func-members"></a>
-Functions</h3></td></tr>
+<tr><td colspan="2"><h2><a name="func-members"></a>
+Functions</h2></td></tr>
 <tr><td class="memItemLeft" align="right" valign="top">int&nbsp;</td><td class="memItemRight" valign="bottom"><a class="el" href="group__drv.html#ga26de4c1d9a8a13de78fbdf51d18dfd02">iupdrvSetGlobal</a> (const char *name, const char *value)</td></tr>
 <tr><td class="memItemLeft" align="right" valign="top">char *&nbsp;</td><td class="memItemRight" valign="bottom"><a class="el" href="group__drv.html#ga290e1cb301eb6ef9618f7801b0cd8d51">iupdrvGetGlobal</a> (const char *name)</td></tr>
 <tr><td class="memItemLeft" align="right" valign="top">void&nbsp;</td><td class="memItemRight" valign="bottom"><a class="el" href="group__drv.html#ga25408e3361b982fa3b280322e7ed336d">iupdrvSetIdleFunction</a> (Icallback func)</td></tr>
@@ -54,11 +54,12 @@ Functions</h3></td></tr>
 <tr><td class="memItemLeft" align="right" valign="top">void&nbsp;</td><td class="memItemRight" valign="bottom"><a class="el" href="group__drv.html#gacc94766647632c69f7dbde0e2f572b9c">iupdrvWarpPointer</a> (int x, int y)</td></tr>
 <tr><td class="memItemLeft" align="right" valign="top">void&nbsp;</td><td class="memItemRight" valign="bottom"><a class="el" href="group__drv.html#gaf05b064840df35181b8ba21c2e05db77">iupdrvKeyEncode</a> (int key, unsigned int *keyval, unsigned int *state)</td></tr>
 <tr><td class="memItemLeft" align="right" valign="top">void&nbsp;</td><td class="memItemRight" valign="bottom"><a class="el" href="group__drv.html#gad57c02845a87be0b9481a278f18692a0">iupdrvSleep</a> (int time)</td></tr>
+<tr><td class="memItemLeft" align="right" valign="top">void&nbsp;</td><td class="memItemRight" valign="bottom"><a class="el" href="group__drv.html#ga1a1b6c38a888dad064baf2281cdfd022">iupdrvSetAccessibleTitle</a> (Ihandle *ih, const char *title)</td></tr>
 </table>
-<hr/><a name="_details"></a><h3>Detailed Description</h3>
+<hr/><a name="_details"></a><h2>Detailed Description</h2>
 <dl class="user"><dt><b></b></dt><dd>Each driver must export the symbols defined here. </dd></dl>
 <dl class="user"><dt><b></b></dt><dd>See <a class="el" href="iup__drv_8h.html">iup_drv.h</a> </dd></dl>
-<hr/><h3>Function Documentation</h3>
+<hr/><h2>Function Documentation</h2>
 <a class="anchor" id="ga26de4c1d9a8a13de78fbdf51d18dfd02"></a><!-- doxytag: member="iup_drv.h::iupdrvSetGlobal" ref="ga26de4c1d9a8a13de78fbdf51d18dfd02" args="(const char *name, const char *value)" -->
 <div class="memitem">
 <div class="memproto">
@@ -569,8 +570,36 @@ Functions</h3></td></tr>
 
 </div>
 </div>
+<a class="anchor" id="ga1a1b6c38a888dad064baf2281cdfd022"></a><!-- doxytag: member="iup_drv.h::iupdrvSetAccessibleTitle" ref="ga1a1b6c38a888dad064baf2281cdfd022" args="(Ihandle *ih, const char *title)" -->
+<div class="memitem">
+<div class="memproto">
+      <table class="memname">
+        <tr>
+          <td class="memname">void iupdrvSetAccessibleTitle </td>
+          <td>(</td>
+          <td class="paramtype">Ihandle *&nbsp;</td>
+          <td class="paramname"> <em>ih</em>, </td>
+        </tr>
+        <tr>
+          <td class="paramkey"></td>
+          <td></td>
+          <td class="paramtype">const char *&nbsp;</td>
+          <td class="paramname"> <em>title</em></td><td>&nbsp;</td>
+        </tr>
+        <tr>
+          <td></td>
+          <td>)</td>
+          <td></td><td></td><td></td>
+        </tr>
+      </table>
 </div>
-<hr class="footer"/><address class="footer"><small>Generated on Sat May 26 2018 18:26:47 for SDK by&nbsp;
+<div class="memdoc">
+<p>Sets the accessibility text for screen readers. </p>
+
+</div>
+</div>
+</div>
+<hr class="footer"/><address class="footer"><small>Generated on Sat Jan 5 2019 18:14:56 for SDK by&nbsp;
 <a href="http://www.doxygen.org/index.html">
 <img class="footer" src="doxygen.png" alt="doxygen"/></a> 1.7.1 </small></address>
 </body>

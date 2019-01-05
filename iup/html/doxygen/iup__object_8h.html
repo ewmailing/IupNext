@@ -16,7 +16,7 @@
 <a href="#enum-members">Enumerations</a> &#124;
 <a href="#func-members">Functions</a>  </div>
   <div class="headertitle">
-<h2>iup_object.h File Reference</h2>  </div>
+<h1>iup_object.h File Reference</h1>  </div>
 </div>
 <div class="contents">
 
@@ -30,11 +30,11 @@ Include dependency graph for iup_object.h:</div>
 <area shape="rect" id="node5" href="iup__class_8h.html" title="Ihandle Class Interface." alt="" coords="99,83,187,112"/><area shape="rect" id="node7" href="iup__table_8h.html" title="Simple hash table C API. Does not allow 0 values for items..." alt="" coords="37,160,123,189"/><area shape="rect" id="node9" href="iup__classbase_8h.html" title="Base Class." alt="" coords="147,160,261,189"/></map>
 </div>
 <table class="memberdecls">
-<tr><td colspan="2"><h3><a name="nested-classes"></a>
-Data Structures</h3></td></tr>
+<tr><td colspan="2"><h2><a name="nested-classes"></a>
+Data Structures</h2></td></tr>
 <tr><td class="memItemLeft" align="right" valign="top">struct &nbsp;</td><td class="memItemRight" valign="bottom"><a class="el" href="structIhandle__.html">Ihandle_</a></td></tr>
-<tr><td colspan="2"><h3><a name="define-members"></a>
-Defines</h3></td></tr>
+<tr><td colspan="2"><h2><a name="define-members"></a>
+Defines</h2></td></tr>
 <tr><td class="memItemLeft" align="right" valign="top"><a class="anchor" id="a8a363cab7109b8dbc67123af48e4e72c"></a><!-- doxytag: member="iup_object.h::iupWIDTH2RASTER" ref="a8a363cab7109b8dbc67123af48e4e72c" args="(_w, _cw)" -->
 #define&nbsp;</td><td class="memItemRight" valign="bottom"><b>iupWIDTH2RASTER</b>(_w, _cw)&nbsp;&nbsp;&nbsp;iupRound((_w * _cw)/4.0)</td></tr>
 <tr><td class="memItemLeft" align="right" valign="top"><a class="anchor" id="ab3df52a96a0d0adb23674c239d15156b"></a><!-- doxytag: member="iup_object.h::iupHEIGHT2RASTER" ref="ab3df52a96a0d0adb23674c239d15156b" args="(_h, _ch)" -->
@@ -47,12 +47,12 @@ Defines</h3></td></tr>
 <tr><td class="memItemLeft" align="right" valign="top">#define&nbsp;</td><td class="memItemRight" valign="bottom"><a class="el" href="group__object.html#gab9573223b5d92c33cddc014216f593aa">IUP_EXPAND_HEIGHT</a>&nbsp;&nbsp;&nbsp;(IUP_EXPAND_H1 | IUP_EXPAND_H0)</td></tr>
 <tr><td class="memItemLeft" align="right" valign="top">#define&nbsp;</td><td class="memItemRight" valign="bottom"><a class="el" href="group__object.html#gaf4fd481165c48015c6afc1af83add899">IUP_EXPAND_BOTH</a>&nbsp;&nbsp;&nbsp;(IUP_EXPAND_WIDTH | IUP_EXPAND_HEIGHT)</td></tr>
 <tr><td class="memItemLeft" align="right" valign="top">#define&nbsp;</td><td class="memItemRight" valign="bottom"><a class="el" href="group__object.html#gafced58389390d39e6db0697bbbaac610">iupALLOCCTRLDATA</a>()&nbsp;&nbsp;&nbsp;((<a class="el" href="group__object.html#gaee338a7267ac8c43aa454203dbe548b6">IcontrolData</a>*)calloc(1, sizeof(<a class="el" href="group__object.html#gaee338a7267ac8c43aa454203dbe548b6">IcontrolData</a>)))</td></tr>
-<tr><td colspan="2"><h3><a name="typedef-members"></a>
-Typedefs</h3></td></tr>
+<tr><td colspan="2"><h2><a name="typedef-members"></a>
+Typedefs</h2></td></tr>
 <tr><td class="memItemLeft" align="right" valign="top">typedef struct _InativeHandle&nbsp;</td><td class="memItemRight" valign="bottom"><a class="el" href="group__object.html#gad7c818b0280c1947556ca9cb3ce948b8">InativeHandle</a></td></tr>
 <tr><td class="memItemLeft" align="right" valign="top">typedef struct _IcontrolData&nbsp;</td><td class="memItemRight" valign="bottom"><a class="el" href="group__object.html#gaee338a7267ac8c43aa454203dbe548b6">IcontrolData</a></td></tr>
-<tr><td colspan="2"><h3><a name="enum-members"></a>
-Enumerations</h3></td></tr>
+<tr><td colspan="2"><h2><a name="enum-members"></a>
+Enumerations</h2></td></tr>
 <tr><td class="memItemLeft" align="right" valign="top">enum &nbsp;</td><td class="memItemRight" valign="bottom"><a class="el" href="group__object.html#ga8847554c4c3b42b8c7b1d036962fdbd7">Iexpand</a> { <br/>
 &nbsp;&nbsp;<b>IUP_EXPAND_NONE</b> =  0x00, 
 <b>IUP_EXPAND_H0</b> =  0x01, 
@@ -73,17 +73,17 @@ Enumerations</h3></td></tr>
 &nbsp;&nbsp;<a class="el" href="group__object.html#gga90c505ffa41ed824f0ec6d2dfe9f5f97a07a72054d62c68d3eb7d364d759de525">IUP_INTERNAL</a> =  0x10
 <br/>
  }</td></tr>
-<tr><td colspan="2"><h3><a name="func-members"></a>
-Functions</h3></td></tr>
+<tr><td colspan="2"><h2><a name="func-members"></a>
+Functions</h2></td></tr>
 <tr><td class="memItemLeft" align="right" valign="top"><a class="anchor" id="a61102b5d06ce017a4a3007440b2de67e"></a><!-- doxytag: member="iup_object.h::iupObjectCreate" ref="a61102b5d06ce017a4a3007440b2de67e" args="(Iclass *ic, void **params)" -->
 Ihandle *&nbsp;</td><td class="memItemRight" valign="bottom"><b>iupObjectCreate</b> (<a class="el" href="structIclass__.html">Iclass</a> *ic, void **params)</td></tr>
 <tr><td class="memItemLeft" align="right" valign="top">void **&nbsp;</td><td class="memItemRight" valign="bottom"><a class="el" href="group__object.html#ga93c00a2ecdb5844f15f8e9e540a2917e">iupObjectGetParamList</a> (void *first, va_list arglist)</td></tr>
 <tr><td class="memItemLeft" align="right" valign="top">int&nbsp;</td><td class="memItemRight" valign="bottom"><a class="el" href="group__object.html#ga41cf658fc126eff4f10c7f04e2706c91">iupObjectCheck</a> (Ihandle *ih)</td></tr>
 </table>
-<hr/><a name="_details"></a><h3>Detailed Description</h3>
+<hr/><a name="_details"></a><h2>Detailed Description</h2>
 <p>See Copyright Notice in "iup.h" </p>
 </div>
-<hr class="footer"/><address class="footer"><small>Generated on Sat May 26 2018 18:26:47 for SDK by&nbsp;
+<hr class="footer"/><address class="footer"><small>Generated on Sat Jan 5 2019 18:14:56 for SDK by&nbsp;
 <a href="http://www.doxygen.org/index.html">
 <img class="footer" src="doxygen.png" alt="doxygen"/></a> 1.7.1 </small></address>
 </body>
