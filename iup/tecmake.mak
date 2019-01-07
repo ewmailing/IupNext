@@ -6,7 +6,7 @@
 
 #---------------------------------#
 # Tecmake Version
-VERSION = 4.16
+VERSION = 4.17
 
 
 #---------------------------------#
@@ -1756,7 +1756,7 @@ $(DEPEND): $(MAKENAME)
 	  @which $(CPPC) 2> /dev/null 1>&2 ;\
 	  if [ $$? -eq 0 ]; then \
 	    echo "Tecmake: Building Dependencies ... [ $(DEPEND) ] (can be slow)" ;\
-	    $(CPPC) $(DEPFLAGS) $(DEPINCS) $(DEFINES) $(STDDEFS) -MM $(SOURCES) | \
+	    $(CPPC) $(DEPFLAGS) $(DEPINCS) $(STDINCS) $(PKGINCS) $(DEFINES) $(STDDEFS) -MM $(SOURCES) | \
 	    sed -e '1,$$s/^\([^ ]\)/$$(OBJDIR)\/\1/' > $(DEPEND) ;\
 	  else \
 	    echo "" ;\
