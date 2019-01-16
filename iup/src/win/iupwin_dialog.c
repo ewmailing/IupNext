@@ -1532,6 +1532,7 @@ static int winDialogSetShapeImageAttrib(Ihandle *ih, const char *value)
     if (!imgdata || channels != 4)
       return 0;
 
+    /* accumulate non transparent regions */
     hRgn = CreateRectRgn(0, 0, 0, 0);
 
     for (y = 0; y < h; y++)
@@ -1540,7 +1541,7 @@ static int winDialogSetShapeImageAttrib(Ihandle *ih, const char *value)
 
       for (x = 0; x < w; x++)
       {
-        if (imgdata[3] == 0) /* fully transparent */
+        if (imgdata[3] == 0 || x == w-1) /* fully transparent or last column */
         {
           if (start_x != -1) /* this is the end of a non transparent line */
           {
@@ -1550,7 +1551,6 @@ static int winDialogSetShapeImageAttrib(Ihandle *ih, const char *value)
 
             start_x = -1;
           }
-
         }
         else /* opaque */
         {

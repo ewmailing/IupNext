@@ -16,6 +16,7 @@ int main(int argc, char **argv)
 
 //  image = IupLoadImage("D:\\tecgraf\\iup\\html\\examples\\C\\balloon.png");
   image = IupLoadImage("/tecgraf/iup/html/examples/C/balloon.png");
+//  image = IupLoadImage("/tecgraf/iup/bin/Debug_64/balloon.png");
 
   /* Creating the button */ 
   quit_bt = IupButton("Quit", 0);
@@ -23,7 +24,7 @@ int main(int argc, char **argv)
 
   /* the container with a label and the button */
   vbox = IupVbox(
-           IupSetAttributes(IupFlatLabel("Very Long Text Label"), "EXPAND=YES, ALIGNMENT=ACENTER"), 
+           IupSetAttributes(IupFlatLabel("Very Long Text Label"), "EXPAND=YES, ALIGNMENT=ACENTER, FONTSIZE=28"), 
            quit_bt,
            NULL);
   IupSetAttribute(vbox, "ALIGNMENT", "ACENTER");
@@ -32,8 +33,8 @@ int main(int argc, char **argv)
 
   vbox = IupBackgroundBox(vbox);
   IupSetAttribute(vbox, "RASTERSIZE", "804x644");
-  IupSetAttribute(vbox, "BACKCOLOR", "255 255 255");
-//  IupSetAttribute(vbox, "BGCOLOR", "255 255 255");
+//  IupSetAttribute(vbox, "BACKCOLOR", "255 255 255");
+  IupSetAttribute(vbox, "BGCOLOR", "255 255 255");
   IupSetAttributeHandle(vbox, "BACKIMAGE", image);
 
   /* Creating the dialog */ 
