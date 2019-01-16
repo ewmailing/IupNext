@@ -169,6 +169,7 @@ static Ihandle* create_matrix(void)
 //  IupSetAttribute(mat, "HEIGHT4", "16");
 
   IupSetAttribute(mat, "FONTSTYLE0:1", "Bold");
+//  IupSetAttribute(mat, "FONTSIZE", "28");
 
 //  IupSetAttribute(mat, "MASK1:3", IUP_MASK_FLOAT);
 //  IupSetAttribute(mat, "MASK1:3", "[a-zA-Z][0-9a-zA-Z_]*");
@@ -252,6 +253,7 @@ static Ihandle* create_matrix(void)
 
 //  IupSetAttribute(mat, "FLATSCROLLBAR", "Yes");
 //  IupSetAttribute(mat, "SHOWFLOATING", "Yes");
+//  IupSetAttribute(mat, "SHOWTRANSPARENT", "Yes");
 
   /* test for custom matrix attributes */
   //{
