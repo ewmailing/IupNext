@@ -20,8 +20,6 @@
 #include "iup_stdcontrols.h"
 #include "iup_layout.h"
 #include "iup_childtree.h"
-#include "iup_drvdraw.h"
-#include "iup_draw.h"
 
 
 enum { ISPLIT_VERT, ISPLIT_HORIZ };
