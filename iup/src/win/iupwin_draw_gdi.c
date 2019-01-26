@@ -269,7 +269,7 @@ void iupdrvDrawArc(IdrawCanvas* dc, int x1, int y1, int x2, int y2, double a1, d
   if (style==IUP_DRAW_FILL)
   {
     HBRUSH hBrush = CreateSolidBrush(RGB(iupDrawRed(color),iupDrawGreen(color),iupDrawBlue(color)));
-    HPEN hBrushOld = SelectObject(dc->hBitmapDC, hBrush); 
+    HBRUSH hBrushOld = SelectObject(dc->hBitmapDC, hBrush);
     BeginPath(dc->hBitmapDC); 
     Pie(dc->hBitmapDC, x1, y1, x2 + 1, y2 + 1, XStartArc, YStartArc, XEndArc, YEndArc);
     EndPath(dc->hBitmapDC);
@@ -292,7 +292,7 @@ void iupdrvDrawPolygon(IdrawCanvas* dc, int* points, int count, long color, int 
   if (style==IUP_DRAW_FILL)
   {
     HBRUSH hBrush = CreateSolidBrush(RGB(iupDrawRed(color),iupDrawGreen(color),iupDrawBlue(color)));
-    HPEN hBrushOld = SelectObject(dc->hBitmapDC, hBrush); 
+    HBRUSH hBrushOld = SelectObject(dc->hBitmapDC, hBrush);
     BeginPath(dc->hBitmapDC); 
     Polygon(dc->hBitmapDC, (POINT*)points, count);
     EndPath(dc->hBitmapDC);
@@ -484,6 +484,9 @@ void iupdrvDrawFocusRect(IdrawCanvas* dc, int x1, int y1, int x2, int y2)
   rect.right = x2 + 1;
   rect.top = y1;
   rect.bottom = y2 + 1;
+
+  /* for some reason text color affects focus drawing */
+  SetTextColor(dc->hBitmapDC, RGB(0, 0, 0));
 
   DrawFocusRect(dc->hBitmapDC, &rect);
 }
