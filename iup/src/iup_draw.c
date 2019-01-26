@@ -565,7 +565,7 @@ void iupDrawCalcShadows(long bgcolor, long *light_shadow, long *mid_shadow, long
     else             b = bg_b + (255 - max);
   }
 
-  if (light_shadow) *light_shadow = iupDrawColor((unsigned char)r, (unsigned char)g, (unsigned char)b, 0);
+  if (light_shadow) *light_shadow = iupDrawColor((unsigned char)r, (unsigned char)g, (unsigned char)b, 255);
 
   /* dark_shadow */
   r = bg_r - 128;
@@ -575,10 +575,10 @@ void iupDrawCalcShadows(long bgcolor, long *light_shadow, long *mid_shadow, long
   if (g < 0) g = 0;
   if (b < 0) b = 0;
 
-  if (dark_shadow) *dark_shadow = iupDrawColor((unsigned char)r, (unsigned char)g, (unsigned char)b, 0);
+  if (dark_shadow) *dark_shadow = iupDrawColor((unsigned char)r, (unsigned char)g, (unsigned char)b, 255);
 
   /*   mid_shadow = (dark_shadow+bgcolor)/2    */
-  if (mid_shadow) *mid_shadow = iupDrawColor((unsigned char)((bg_r + r) / 2), (unsigned char)((bg_g + g) / 2), (unsigned char)((bg_b + b) / 2), 0);
+  if (mid_shadow) *mid_shadow = iupDrawColor((unsigned char)((bg_r + r) / 2), (unsigned char)((bg_g + g) / 2), (unsigned char)((bg_b + b) / 2), 255);
 }
 
 void iupDrawParentBackground(IdrawCanvas* dc, Ihandle* ih)
