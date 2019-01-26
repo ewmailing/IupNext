@@ -820,26 +820,14 @@ static void iMatrixDrawFocus(Ihandle* ih)
       y1++;
   }
 
-  {
-#ifdef USE_OLD_DRAW
-    cdCanvas* cnv = (cdCanvas*)IupGetAttribute(ih, "_CD_CANVAS");  /* front buffer canvas */
-#else
-    cdCanvas* cnv = ih->data->cd_canvas;
-#endif
-    cdIupDrawFocusRect(cnv, x1, iupMATRIX_INVERTYAXIS(ih, y1), x2, iupMATRIX_INVERTYAXIS(ih, y2));
-  }
+  cdIupDrawFocusRect(ih->data->cd_canvas, x1, iupMATRIX_INVERTYAXIS(ih, y1), x2, iupMATRIX_INVERTYAXIS(ih, y2));
 }
 
 static void iMatrixDrawColRes(Ihandle* ih)
 {
-#ifdef USE_OLD_DRAW
-  cdCanvas* cnv = (cdCanvas*)IupGetAttribute(ih, "_CD_CANVAS");  /* front buffer canvas */
-#else
-  cdCanvas* cnv = ih->data->cd_canvas;
-#endif
-  cdCanvasForeground(cnv, ih->data->colres_color);
-  cdCanvasLine(cnv, ih->data->colres_x, ih->data->colres_y1,
-                ih->data->colres_x, ih->data->colres_y2);
+  cdCanvasForeground(ih->data->cd_canvas, ih->data->colres_color);
+  cdCanvasLine(ih->data->cd_canvas, ih->data->colres_x, ih->data->colres_y1,
+                                    ih->data->colres_x, ih->data->colres_y2);
 }
 
 
