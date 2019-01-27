@@ -24,12 +24,12 @@
 <a href="../elem/iupbackgroundbox.html">IupBackgroundBox</a>. They are simple functions 
 designed to help the drawing of custom controls based on these two controls. It 
 is NOT a complete set of drawing functions, for that you should still use 
-another toolkit like CD. </p>
+another toolkit like <a href="http://www.tecgraf.puc-rio.br/cd">CD</a>. </p>
 <p>To use the functions in C/C++ you must include the &quot;iupdraw.h&quot; header.</p>
 <p>Internally IupDraw uses several drawing APIs: GDI, Direct2D, GDI+ (in 
 Windows); X11 (in Motif), GDK and Cairo (in GTK). </p>
 <p>All drivers are double buffered, so drawing occurs off-screen and the final 
-result is displayed in <strong>IupDrawEnd</strong> only.</p>
+result is displayed when <strong>IupDrawEnd</strong> is called only.</p>
 <p>Direct2D and GDI+ are accessed using the
 <a href="https://github.com/mity/windrawlib">WinDrawLib</a> library by Martin 
 Mitáš. This library is embedded in IUP source code and uses dynamically load to 
@@ -37,13 +37,20 @@ import Direct 2D and GDI+ functions in C, so no extra libraries are need to be
 linked by the application. It uses the same MIT <a href="windrawlib.txt">license</a> 
 used by IUP. We would like to thank Martin Mitáš for sharing such important 
 tool. (since 3.25)</p>
-<p>Since IUP version 3.25, the default draw driver is Direct 2D in Windows, and 
-Cairo in Linux (even in GTK 2). In Windows XP, there is no Direct 2D then GDI+ 
-is used. So since 3.25 DRAWCOLOR supports alpha and primitives have 
-anti-aliasing in Windows and Linux. The GDI driver and the GDK can still be 
-used, but the IUP main library must be re-compiled, see the USE_NEW_DRAW 
-definition in &quot;iup/src/config.mak&quot;. 
-The canvas has a new attribute called DRAWDRIVER that returns: GDI, D2D, GDI+, 
+<p>Since IUP 3.25, the Direct2D/GDI+ Windows, and 
+Cairo in Linux (even in GTK 2) drivers added support for alpha (transparency) in 
+colors and antialiasing in primitives. In Windows XP, there is no Direct 2D then GDI+ 
+is used. In IUP 3.25 we set the Direct 2D driver as default, but the overall 
+performance of complex dialogs became noticeably slow unfortunately, so in 3.27 
+we were force to go back to GDI. But we added a hack to use GDI+ for diagonal 
+lines (non vertical or horizontal), polygons and arcs&nbsp;were antialiasing is more 
+needed and does not affect less ordinary rectangular based drawings . The hack 
+is enabled by default using the canvas <strong>DRAWANTIALIAS</strong> attribute 
+in Windows when using GDI, set it to NO if you need to disable the hack. The 
+Direct2D driver can be enabled by setting the canvas <strong>DRAWUSEDIRECT2D</strong> 
+attribute to Yes. If you want to enable it for all controls at once set <strong>
+DRAWUSEDIRECT2D=Yes</strong> as a global attribute.</p>
+<p>The canvas has a new attribute called DRAWDRIVER that returns: GDI, D2D, GDI+, 
 X11, GDK or CAIRO.</p>
 <p>IMPORTANT: all functions can be used only in <strong>IupCanvas</strong> or
 <strong>IupBackgroundBox</strong> and inside the ACTION callback. To force a 
@@ -76,7 +83,7 @@ if clipping was reset returns 0 in all values. (since 3.25)</p>
 <p>The primitives color is controlled by the attribute <strong>DRAWCOLOR</strong>.
 <span style="color: rgb(0, 0, 0); font-family: tahoma, verdana, arial, helvetica, geneva, sans-serif; font-size: medium; font-style: normal; font-variant: normal; font-weight: normal; letter-spacing: normal; line-height: 20.8px; orphans: auto; text-align: start; text-indent: 0px; text-transform: none; white-space: normal; widows: 1; word-spacing: 0px; -webkit-text-stroke-width: 0px; display: inline !important; float: none; background-color: rgb(255, 255, 255);">
 Default: &quot;0 0 0&quot;. Since version 3.25 the alpha component is also 
-supported, if not specified 255 (opaque) is assumed.</span></p>
+supported but depends on the current driver, if not specified 255 (opaque) is assumed.</span></p>
 <p>Rectangle, Arc and Polygon can be filled or stroked. When stroked the line 
 style can be continuous, dashed or dotted. These are controlled by the attribute 
 <strong>DRAWSTYLE</strong>. Can have values: FILL, STROKE, STROKE_DASH, STROKE_DOT, 

@@ -1813,9 +1813,6 @@ static int iMatrixCreateMethod(Ihandle* ih, void **params)
   iupAttribSet(ih, "BORDER", "NO");
   iupAttribSet(ih, "CURSOR", "IupMatrixCrossCursor");
 
-  /* to avoid performance glitches on Windows */
-  iupAttribSet(ih, "DRAWUSEGDI", "YES");
-
   /* IupCanvas callbacks */
   IupSetCallback(ih, "ACTION", (Icallback)iMatrixRedraw_CB);
   IupSetCallback(ih, "RESIZE_CB", (Icallback)iMatrixResize_CB);

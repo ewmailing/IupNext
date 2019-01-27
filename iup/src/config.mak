@@ -36,8 +36,9 @@ INCLUDES = ../include .
 
 # Windows XP minimum
 WIN32VER = 0x0501
+#For the future use 0x0601  (Windows 7 minimum)
 
-# Draw driver with alpha and anti-aliasing in Windows and Linux always
+# Draw driver with alpha and anti-aliasing in Windows and Linux enabled
 USE_NEW_DRAW := Yes
 
 SRC = iup_array.c iup_callback.c iup_dlglist.c iup_attrib.c iup_focus.c iup_font.c \

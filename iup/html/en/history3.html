@@ -64,10 +64,20 @@
 <p>Check the <a href="migration_guide.html">Migration Guide</a> for a summary of 
 the important changes and how to proceed when migrating from version 2.x to 
 version 3.x.</p>
-<h3>SVN (16/Jan/2019)</h3>
+<h3>SVN (27/Jan/2019)</h3>
 
 <ul>
 
+	<li>
+	<font SIZE="3">
+	<span class="hist_changed" style="color: rgb(0, 128, 0); font-weight: bold;">
+	<strong>Changed:</strong></span><span class="auto-style1"> the <strong>
+	IupDraw</strong> function are now using GDI again in Windows. Direct2D was 
+	very slow for drawing controls with integer coordinates in dialogs with 
+	complex layout. It can still be used by setting the <strong>DRAWUSEDIRECT2D</strong> 
+	attribute to Yes. To compensate the lost of antialiasing and alpha in GDI, 
+	we added a hack to use GDI+ for lines, polygons and arcs were antialiasing 
+	is more needed and does not affect less ordinary rectangular based drawings.</span></font></li>
 	<li>
 	<font SIZE="3"><span style="color: #008000">
 	<span

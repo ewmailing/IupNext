@@ -357,9 +357,6 @@ static int iGaugeCreateMethod(Ihandle* ih, void **params)
   ih->data->flatcolor = iupDrawColor(164, 164, 164, 255);
   ih->data->show_text = 1;
 
-  /* to avoid performance glitches on Windows */
-  iupAttribSet(ih, "DRAWUSEGDI", "YES");
-
   /* IupCanvas callbacks */
   IupSetCallback(ih, "ACTION",    (Icallback)iGaugeRedraw_CB);
 

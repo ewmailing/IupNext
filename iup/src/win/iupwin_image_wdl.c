@@ -152,7 +152,7 @@ static WD_HIMAGE wdlCreateImageFromBuffer(UINT uWidth, UINT uHeight, UINT srcStr
   if (d2d_enabled()) {
     IWICBitmap* bitmap = NULL;
     HRESULT hr;
-    WICRect rect = { 0, 0, uWidth, uHeight };
+    WICRect rect;
     IWICBitmapLock *bitmap_lock = NULL;
     UINT cbBufferSize = 0;
     UINT dstStride = 0;
@@ -169,6 +169,11 @@ static WD_HIMAGE wdlCreateImageFromBuffer(UINT uWidth, UINT uHeight, UINT srcStr
                   "IWICImagingFactory::CreateBitmap() failed.");
       return NULL;
     }
+
+    rect.X = 0;
+    rect.Y = 0;
+    rect.Width = uWidth;
+    rect.Height = uHeight;
 
     hr = IWICBitmap_Lock(bitmap, &rect, WICBitmapLockWrite, &bitmap_lock);
     if (FAILED(hr)) {
@@ -205,7 +210,7 @@ static WD_HIMAGE wdlCreateImageFromBuffer(UINT uWidth, UINT uHeight, UINT srcStr
     int status;
     dummy_GpBitmap *bitmap = NULL;
     dummy_GpBitmapData bitmapData;
-    dummy_GpRectI rect = { 0, 0, uWidth, uHeight };
+    dummy_GpRectI rect;
 
     if (pixelFormat == WD_PIXELFORMAT_R8G8B8 || pixelFormat == WD_PIXELFORMAT_PALETTE)
       format = dummy_PixelFormat24bppRGB;
@@ -220,6 +225,11 @@ static WD_HIMAGE wdlCreateImageFromBuffer(UINT uWidth, UINT uHeight, UINT srcStr
                "GdipCreateBitmapFromScan0() failed. [%d]", status);
       return NULL;
     }
+
+    rect.x = 0;
+    rect.y = 0;
+    rect.w = uWidth;
+    rect.h = uHeight;
 
     gdix_vtable->fn_BitmapLockBits(bitmap, &rect, dummy_ImageLockModeWrite, format, &bitmapData);
 

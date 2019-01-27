@@ -32,26 +32,6 @@
 void iupwinWdlImageInit(void);
 WD_HIMAGE iupwinWdlImageGetImage(const char* name, Ihandle* ih_parent, int make_inactive, const char* bgcolor);
 
-/* From iupwin_draw_gdi.c */
-IdrawCanvas* iupdrvDrawCreateCanvasGDI(Ihandle* ih);
-void iupdrvDrawKillCanvasGDI(IdrawCanvas* dc);
-void iupdrvDrawFlushGDI(IdrawCanvas* dc);
-void iupdrvDrawUpdateSizeGDI(IdrawCanvas* dc);
-void iupdrvDrawGetSizeGDI(IdrawCanvas* dc, int *w, int *h);
-void iupdrvDrawLineGDI(IdrawCanvas* dc, int x1, int y1, int x2, int y2, long color, int style, int line_width);
-void iupdrvDrawRectangleGDI(IdrawCanvas* dc, int x1, int y1, int x2, int y2, long color, int style, int line_width);
-void iupdrvDrawArcGDI(IdrawCanvas* dc, int x1, int y1, int x2, int y2, double a1, double a2, long color, int style, int line_width);
-void iupdrvDrawPolygonGDI(IdrawCanvas* dc, int* points, int count, long color, int style, int line_width);
-void iupdrvDrawTextGDI(IdrawCanvas* dc, const char* text, int len, int x, int y, int w, int h, long color, const char* font, int flags, double text_orientation);
-void iupdrvDrawImageGDI(IdrawCanvas* dc, const char* name, int make_inactive, const char* bgcolor, int x, int y, int w, int h);
-void iupdrvDrawSetClipRectGDI(IdrawCanvas* dc, int x1, int y1, int x2, int y2);
-void iupdrvDrawResetClipGDI(IdrawCanvas* dc);
-void iupdrvDrawGetClipRectGDI(IdrawCanvas* dc, int *x1, int *y1, int *x2, int *y2);
-void iupdrvDrawSelectRectGDI(IdrawCanvas* dc, int x1, int y1, int x2, int y2);
-void iupdrvDrawFocusRectGDI(IdrawCanvas* dc, int x1, int y1, int x2, int y2);
-
-
-
 struct _IdrawCanvas{
   Ihandle* ih;
   int w, h;
@@ -60,18 +40,14 @@ struct _IdrawCanvas{
   WD_HCANVAS hCanvas;
   HDC hDC;
 
-  IdrawCanvas* gdi_dc;
-
   int clip_x1, clip_y1, clip_x2, clip_y2;
 };
 
 /* must be the same in wdInitialize and wdTerminate */
 const DWORD wdl_flags = WD_INIT_COREAPI | WD_INIT_IMAGEAPI | WD_INIT_STRINGAPI;
 
-void iupwinDrawInit(void)
+int iupwinDrawInitWDL(void)
 {
-  iupwinDrawThemeInit();
-
 #if 0
   wdPreInitialize(NULL, NULL, WD_DISABLE_D2D);  /* to force GDI+ */
 #endif
@@ -79,14 +55,24 @@ void iupwinDrawInit(void)
   wdInitialize(wdl_flags);
 
   iupwinWdlImageInit();
+
+  if (wdBackend() == WD_BACKEND_D2D)
+    return 1;
+  else
+    return 0;
 }
 
-void iupwinDrawFinish(void)
+int iupwinDrawFinishWDL(void)
 {
+  int ret = 0;
+  if (wdBackend() == WD_BACKEND_D2D)
+    ret = 1;
+
   wdTerminate(wdl_flags);
+  return ret;
 }
 
-IdrawCanvas* iupdrvDrawCreateCanvas(Ihandle* ih)
+IdrawCanvas* iupdrvDrawCreateCanvasWDL(Ihandle* ih)
 {
   IdrawCanvas* dc = calloc(1, sizeof(IdrawCanvas));
   PAINTSTRUCT ps;
@@ -95,12 +81,6 @@ IdrawCanvas* iupdrvDrawCreateCanvas(Ihandle* ih)
   char *rcPaint;
 
   dc->ih = ih;
-
-  if (iupAttribGetBoolean(ih, "DRAWUSEGDI"))
-  {
-    dc->gdi_dc = iupdrvDrawCreateCanvasGDI(ih);
-    return dc;
-  }
 
   dc->hWnd = (HWND)IupGetAttribute(ih, "HWND");  /* Use the attribute, so it can work with FileDlg preview area */
 
@@ -142,17 +122,8 @@ IdrawCanvas* iupdrvDrawCreateCanvas(Ihandle* ih)
   return dc;
 }
 
-void iupdrvDrawKillCanvas(IdrawCanvas* dc)
+void iupdrvDrawKillCanvasWDL(IdrawCanvas* dc)
 {
-  if (dc->gdi_dc)
-  {
-    iupdrvDrawKillCanvasGDI(dc->gdi_dc);
-
-    memset(dc, 0, sizeof(IdrawCanvas));
-    free(dc);
-    return;
-  }
-
   wdSetClip(dc->hCanvas, NULL, NULL); /* must reset clip before destroy */
   wdDestroyCanvas(dc->hCanvas);
 
@@ -163,16 +134,10 @@ void iupdrvDrawKillCanvas(IdrawCanvas* dc)
   free(dc);
 }
 
-void iupdrvDrawUpdateSize(IdrawCanvas* dc)
+void iupdrvDrawUpdateSizeWDL(IdrawCanvas* dc)
 {
   int w, h;
   RECT rect;
-
-  if (dc->gdi_dc)
-  {
-    iupdrvDrawUpdateSizeGDI(dc->gdi_dc);
-    return;
-  }
 
   GetClientRect(dc->hWnd, &rect);
   w = rect.right - rect.left;
@@ -187,25 +152,13 @@ void iupdrvDrawUpdateSize(IdrawCanvas* dc)
   }
 }
 
-void iupdrvDrawFlush(IdrawCanvas* dc)
+void iupdrvDrawFlushWDL(IdrawCanvas* dc)
 {
-  if (dc->gdi_dc)
-  {
-    iupdrvDrawFlushGDI(dc->gdi_dc);
-    return;
-  }
-
   wdEndPaint(dc->hCanvas);
 }
 
-void iupdrvDrawGetSize(IdrawCanvas* dc, int *w, int *h)
+void iupdrvDrawGetSizeWDL(IdrawCanvas* dc, int *w, int *h)
 {
-  if (dc->gdi_dc)
-  {
-    iupdrvDrawGetSizeGDI(dc->gdi_dc, w, h);
-    return;
-  }
-
   if (w) *w = dc->w;
   if (h) *h = dc->h;
 }
@@ -246,17 +199,9 @@ static void iDrawRelaseStyle(WD_HSTROKESTYLE stroke_style)
 #define iupInt2FloatW(_x) ((float)_x)
 #define iupColor2ARGB(_c) WD_ARGB(iupDrawAlpha(_c), iupDrawRed(_c), iupDrawGreen(_c), iupDrawBlue(_c))
 
-void iupdrvDrawRectangle(IdrawCanvas* dc, int x1, int y1, int x2, int y2, long color, int style, int line_width)
+void iupdrvDrawRectangleWDL(IdrawCanvas* dc, int x1, int y1, int x2, int y2, long color, int style, int line_width)
 {
-  WD_HBRUSH brush;
-
-  if (dc->gdi_dc)
-  {
-    iupdrvDrawRectangleGDI(dc->gdi_dc, x1, y1, x2, y2, color, style, line_width);
-    return;
-  }
-
-  brush = wdCreateSolidBrush(dc->hCanvas, iupColor2ARGB(color));
+  WD_HBRUSH brush = wdCreateSolidBrush(dc->hCanvas, iupColor2ARGB(color));
 
   iupDrawCheckSwapCoord(x1, x2);
   iupDrawCheckSwapCoord(y1, y2);
@@ -273,16 +218,10 @@ void iupdrvDrawRectangle(IdrawCanvas* dc, int x1, int y1, int x2, int y2, long c
   wdDestroyBrush(brush);
 }
 
-void iupdrvDrawLine(IdrawCanvas* dc, int x1, int y1, int x2, int y2, long color, int style, int line_width)
+void iupdrvDrawLineWDL(IdrawCanvas* dc, int x1, int y1, int x2, int y2, long color, int style, int line_width)
 {
   WD_HBRUSH brush;
   WD_HSTROKESTYLE stroke_style;
-
-  if (dc->gdi_dc)
-  {
-    iupdrvDrawLineGDI(dc->gdi_dc, x1, y1, x2, y2, color, style, line_width);
-    return;
-  }
 
   brush = wdCreateSolidBrush(dc->hCanvas, iupColor2ARGB(color));
   stroke_style = iDrawSetLineStyle(style);
@@ -302,17 +241,11 @@ void iupdrvDrawLine(IdrawCanvas* dc, int x1, int y1, int x2, int y2, long color,
   wdDestroyBrush(brush);
 }
 
-void iupdrvDrawArc(IdrawCanvas* dc, int x1, int y1, int x2, int y2, double a1, double a2, long color, int style, int line_width)
+void iupdrvDrawArcWDL(IdrawCanvas* dc, int x1, int y1, int x2, int y2, double a1, double a2, long color, int style, int line_width)
 {
   float xc, yc, rx, ry;
   float baseAngle, sweepAngle;
   WD_HBRUSH brush;
-
-  if (dc->gdi_dc)
-  {
-    iupdrvDrawArcGDI(dc->gdi_dc, x1, y1, x2, y2, a1, a2, color, style, line_width);
-    return;
-  }
 
   brush = wdCreateSolidBrush(dc->hCanvas, 0);
   wdSetSolidBrushColor(brush, iupColor2ARGB(color));
@@ -349,18 +282,12 @@ void iupdrvDrawArc(IdrawCanvas* dc, int x1, int y1, int x2, int y2, double a1, d
   wdDestroyBrush(brush);
 }
 
-void iupdrvDrawPolygon(IdrawCanvas* dc, int* points, int count, long color, int style, int line_width)
+void iupdrvDrawPolygonWDL(IdrawCanvas* dc, int* points, int count, long color, int style, int line_width)
 {
   WD_HBRUSH brush;
   WD_HPATH path;
   WD_PATHSINK sink;
   int i;
-
-  if (dc->gdi_dc)
-  {
-    iupdrvDrawPolygonGDI(dc->gdi_dc, points, count, color, style, line_width);
-    return;
-  }
 
   brush = wdCreateSolidBrush(dc->hCanvas, iupColor2ARGB(color));
 
@@ -387,29 +314,17 @@ void iupdrvDrawPolygon(IdrawCanvas* dc, int* points, int count, long color, int 
   wdDestroyBrush(brush);
 }
 
-void iupdrvDrawGetClipRect(IdrawCanvas* dc, int *x1, int *y1, int *x2, int *y2)
+void iupdrvDrawGetClipRectWDL(IdrawCanvas* dc, int *x1, int *y1, int *x2, int *y2)
 {
-  if (dc->gdi_dc)
-  {
-    iupdrvDrawGetClipRectGDI(dc->gdi_dc, x1, y1, x2, y2);
-    return;
-  }
-
   if (x1) *x1 = dc->clip_x1;
   if (y1) *y1 = dc->clip_y1;
   if (x2) *x2 = dc->clip_x2;
   if (y2) *y2 = dc->clip_y2;
 }
 
-void iupdrvDrawSetClipRect(IdrawCanvas* dc, int x1, int y1, int x2, int y2)
+void iupdrvDrawSetClipRectWDL(IdrawCanvas* dc, int x1, int y1, int x2, int y2)
 {
   WD_RECT rect;
-
-  if (dc->gdi_dc)
-  {
-    iupdrvDrawSetClipRectGDI(dc->gdi_dc, x1, y1, x2, y2);
-    return;
-  }
 
   if (x1 == 0 && y1 == 0 && x2 == 0 && y2 == 0)
   {
@@ -444,14 +359,8 @@ void iupdrvDrawSetClipRect(IdrawCanvas* dc, int x1, int y1, int x2, int y2)
   dc->clip_y2 = y2;
 }
 
-void iupdrvDrawResetClip(IdrawCanvas* dc)
+void iupdrvDrawResetClipWDL(IdrawCanvas* dc)
 {
-  if (dc->gdi_dc)
-  {
-    iupdrvDrawResetClipGDI(dc->gdi_dc);
-    return;
-  }
-
   wdSetClip(dc->hCanvas, NULL, NULL);
 
   dc->clip_x1 = 0;
@@ -465,88 +374,75 @@ static int iCompensatePosX(float font_height)
   return iupRound(font_height / 7.);  /* 15% */
 }
 
-void iupdrvDrawText(IdrawCanvas* dc, const char* text, int len, int x, int y, int w, int h, long color, const char* font, int flags, double text_orientation)
+void iupdrvDrawTextWDL(IdrawCanvas* dc, const char* text, int len, int x, int y, int w, int h, long color, const char* font, int flags, double text_orientation)
 {
-  if (dc->gdi_dc)
-    iupdrvDrawTextGDI(dc->gdi_dc, text, len, x, y, w, h, color, font, flags, text_orientation);
-  else
+  WD_RECT rect;
+  DWORD dwFlags = WD_STR_TOPALIGN;
+  WCHAR *wtext = iupwinStrToSystemLen(text, &len);
+  WD_HBRUSH brush = wdCreateSolidBrush(dc->hCanvas, iupColor2ARGB(color));
+  int layout_center = flags & IUP_DRAW_LAYOUTCENTER;
+
+  HFONT hFont = (HFONT)iupwinGetHFont(font);
+  WD_HFONT wdFont = wdCreateFontWithGdiHandle(hFont);
+  int layout_w = w, layout_h = h;
+
+  if (text_orientation && layout_center)
+    iupDrawGetTextInnerBounds(w, h, text_orientation, &layout_w, &layout_h);
+
+  rect.x0 = iupInt2Float(x);
+  rect.x1 = iupInt2Float(x + layout_w);
+  rect.y0 = iupInt2Float(y);
+  rect.y1 = iupInt2Float(y + layout_h);
+
+  dwFlags |= WD_STR_LEFTALIGN;
+  if (flags & IUP_DRAW_RIGHT)
+    dwFlags |= WD_STR_RIGHTALIGN;
+  else if (flags & IUP_DRAW_CENTER)
+    dwFlags |= WD_STR_CENTERALIGN;
+
+  if (!(flags & IUP_DRAW_WRAP))
   {
-    WD_RECT rect;
-    DWORD dwFlags = WD_STR_TOPALIGN;
-    WCHAR *wtext = iupwinStrToSystemLen(text, &len);
-    WD_HBRUSH brush = wdCreateSolidBrush(dc->hCanvas, iupColor2ARGB(color));
-    int layout_center = flags & IUP_DRAW_LAYOUTCENTER;
+    dwFlags |= WD_STR_NOWRAP;
 
-    HFONT hFont = (HFONT)iupwinGetHFont(font);
-    WD_HFONT wdFont = wdCreateFontWithGdiHandle(hFont);
-    int layout_w = w, layout_h = h;
-
-    if (text_orientation && layout_center)
-      iupDrawGetTextInnerBounds(w, h, text_orientation, &layout_w, &layout_h);
-
-    rect.x0 = iupInt2Float(x);
-    rect.x1 = iupInt2Float(x + layout_w);
-    rect.y0 = iupInt2Float(y);
-    rect.y1 = iupInt2Float(y + layout_h);
-
-    dwFlags |= WD_STR_LEFTALIGN;
-    if (flags & IUP_DRAW_RIGHT)
-      dwFlags |= WD_STR_RIGHTALIGN;
-    else if (flags & IUP_DRAW_CENTER)
-      dwFlags |= WD_STR_CENTERALIGN;
-
-    if (!(flags & IUP_DRAW_WRAP))
-    {
-      dwFlags |= WD_STR_NOWRAP;
-
-      if (flags & IUP_DRAW_ELLIPSIS)
-        dwFlags |= WD_STR_ENDELLIPSIS;
-    }
-
-    if (wdBackend() == WD_BACKEND_GDIPLUS)
-    {
-      /* compensate GDI+ internal padding */
-      WD_FONTMETRICS metrics;
-      wdFontMetrics(wdFont, &metrics);
-      rect.x0 -= iCompensatePosX(metrics.fLeading);
-    }
-
-    if (text_orientation)
-    {
-      if (layout_center)
-      {
-        wdRotateWorld(dc->hCanvas, iupInt2Float(x + layout_w / 2), iupInt2Float(y + layout_h / 2), (float)-text_orientation);  /* counterclockwise */
-        wdTranslateWorld(dc->hCanvas, iupInt2Float(w - layout_w) / 2, iupInt2Float(h - layout_h) / 2);  /* append the transform */
-      }
-      else
-        wdRotateWorld(dc->hCanvas, iupInt2Float(x), iupInt2Float(y), (float)-text_orientation);  /* counterclockwise */
-    }
-
-    if (!(flags & IUP_DRAW_CLIP))
-      dwFlags |= WD_STR_NOCLIP;
-
-    wdDrawString(dc->hCanvas, wdFont, &rect, wtext, len, brush, dwFlags);
-
-    wdDestroyBrush(brush);
-    wdDestroyFont(wdFont);
-
-    /* restore settings */
-    if (text_orientation)
-      wdResetWorld(dc->hCanvas);
+    if (flags & IUP_DRAW_ELLIPSIS)
+      dwFlags |= WD_STR_ENDELLIPSIS;
   }
+
+  if (wdBackend() == WD_BACKEND_GDIPLUS)
+  {
+    /* compensate GDI+ internal padding */
+    WD_FONTMETRICS metrics;
+    wdFontMetrics(wdFont, &metrics);
+    rect.x0 -= iCompensatePosX(metrics.fLeading);
+  }
+
+  if (text_orientation)
+  {
+    if (layout_center)
+    {
+      wdRotateWorld(dc->hCanvas, iupInt2Float(x + layout_w / 2), iupInt2Float(y + layout_h / 2), (float)-text_orientation);  /* counterclockwise */
+      wdTranslateWorld(dc->hCanvas, iupInt2Float(w - layout_w) / 2, iupInt2Float(h - layout_h) / 2);  /* append the transform */
+    }
+    else
+      wdRotateWorld(dc->hCanvas, iupInt2Float(x), iupInt2Float(y), (float)-text_orientation);  /* counterclockwise */
+  }
+
+  if (!(flags & IUP_DRAW_CLIP))
+    dwFlags |= WD_STR_NOCLIP;
+
+  wdDrawString(dc->hCanvas, wdFont, &rect, wtext, len, brush, dwFlags);
+
+  wdDestroyBrush(brush);
+  wdDestroyFont(wdFont);
+
+  /* restore settings */
+  if (text_orientation)
+    wdResetWorld(dc->hCanvas);
 }
 
-void iupdrvDrawImage(IdrawCanvas* dc, const char* name, int make_inactive, const char* bgcolor, int x, int y, int w, int h)
+void iupdrvDrawImageWDL(IdrawCanvas* dc, const char* name, int make_inactive, const char* bgcolor, int x, int y, int w, int h)
 {
-  WD_HIMAGE hImage;
-
-  if (dc->gdi_dc)
-  {
-    iupdrvDrawImageGDI(dc->gdi_dc, name, make_inactive, bgcolor, x, y, w, h);
-    return;
-  }
-
-  hImage = iupwinWdlImageGetImage(name, dc->ih, make_inactive, bgcolor);
+  WD_HIMAGE hImage = iupwinWdlImageGetImage(name, dc->ih, make_inactive, bgcolor);
   if (hImage)
   {
     UINT img_w, img_h;
@@ -566,15 +462,9 @@ void iupdrvDrawImage(IdrawCanvas* dc, const char* name, int make_inactive, const
   }
 }
 
-void iupdrvDrawSelectRect(IdrawCanvas* dc, int x1, int y1, int x2, int y2)
+void iupdrvDrawSelectRectWDL(IdrawCanvas* dc, int x1, int y1, int x2, int y2)
 {
   WD_HBRUSH brush;
-
-  if (dc->gdi_dc)
-  {
-    iupdrvDrawSelectRectGDI(dc->gdi_dc, x1, y1, x2, y2);
-    return;
-  }
 
   iupDrawCheckSwapCoord(x1, x2);
   iupDrawCheckSwapCoord(y1, y2);
@@ -584,7 +474,7 @@ void iupdrvDrawSelectRect(IdrawCanvas* dc, int x1, int y1, int x2, int y2)
   wdDestroyBrush(brush);
 }
 
-void iupdrvDrawFocusRect(IdrawCanvas* dc, int x1, int y1, int x2, int y2)
+void iupdrvDrawFocusRectWDL(IdrawCanvas* dc, int x1, int y1, int x2, int y2)
 {
 #if 0
   RECT rect;
@@ -602,12 +492,6 @@ void iupdrvDrawFocusRect(IdrawCanvas* dc, int x1, int y1, int x2, int y2)
   DrawFocusRect(hDC, &rect);
   wdEndGdi(dc->hCanvas, hDC);
 #else
-  if (dc->gdi_dc)
-  {
-    iupdrvDrawFocusRectGDI(dc->gdi_dc, x1, y1, x2, y2);
-    return;
-  }
-
   iupdrvDrawRectangle(dc, x1, y1, x2, y2, iupDrawColor(0, 0, 0, 224), IUP_DRAW_STROKE_DOT, 1);
 #endif
 }
