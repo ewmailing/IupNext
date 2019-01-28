@@ -252,7 +252,9 @@ static Ihandle* create_matrix(void)
 //  IupSetAttribute(mat, "FRAMEBORDER", "Yes");
 
 //  IupSetAttribute(mat, "FLATSCROLLBAR", "Yes");
-//  IupSetAttribute(mat, "SHOWFLOATING", "Yes");
+//  IupSetAttribute(mat, "SHOWARROWS", "No");
+//  IupSetAttribute(mat, "BGCOLOR", "255 255 255");
+  //  IupSetAttribute(mat, "SHOWFLOATING", "Yes");
 //  IupSetAttribute(mat, "SHOWTRANSPARENT", "Yes");
 
   /* test for custom matrix attributes */

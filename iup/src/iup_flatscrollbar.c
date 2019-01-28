@@ -218,7 +218,7 @@ static void iFlatScrollBarDrawVertical(Ihandle* sb_vert, IdrawCanvas* dc, int ac
 
   if (show_transparent)
   {
-    iupFlatDrawBox(dc, 2, sb_size - 1 - 2, 0, height-1, fgcolor_drag, bgcolor, active);
+    iupFlatDrawBox(dc, 0, sb_size - 1, 0, height-1, fgcolor_drag, bgcolor, active);
     return;
   }
 
