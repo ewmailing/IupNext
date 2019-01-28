@@ -271,6 +271,9 @@ static int action3_cb(Ihandle* ih)
 static int action4_cb(Ihandle* ih)
 {
   IupSetAttribute(IupGetChild(IupGetDialog(ih), 0), "ACTIVE", "NO");
+//  IupUpdate(IupGetDialog(ih));
+//  IupUpdateChildren(IupGetDialog(ih));
+//  IupSetAttribute(IupGetDialog(ih), "BGCOLOR", "0 128 0");
   return IUP_DEFAULT;
 }
 

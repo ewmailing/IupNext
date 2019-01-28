@@ -976,7 +976,14 @@ void iupwinGetNativeParentStyle(Ihandle* ih, DWORD *dwExStyle, DWORD *dwStyle)
   *dwStyle |= WS_CLIPCHILDREN;
 
   if (iupAttribGetBoolean(IupGetDialog(ih), "COMPOSITED"))
+  {
+    /* Paints all descendants of a window in bottom-to-top painting order using double-buffering. 
+       This cannot be used if the window has a class style of either CS_OWNDC or CS_CLASSDC. 
+       IMPORTANT: IupCanvas uses CS_OWNDC. 
+       And CD can draw at any time in the canvas, it is incompatible with the flag, see:
+       https://blogs.msdn.microsoft.com/oldnewthing/20171018-00/?p=97245 */
     *dwExStyle |= WS_EX_COMPOSITED;
+  }
 }
 
 HWND iupwinCreateWindowEx(HWND hParent, LPCTSTR lpClassName, DWORD dwExStyle, DWORD dwStyle, int serial, void* clientdata)

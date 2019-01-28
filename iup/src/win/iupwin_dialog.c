@@ -1186,7 +1186,13 @@ static int winDialogMapMethod(Ihandle* ih)
     dwExStyle |= WS_EX_DLGMODALFRAME;  /* this will hide the MENUBOX but not the close button */
 
   if (iupAttribGet(ih, "OPACITY") || iupAttribGet(ih, "OPACITYIMAGE"))
+  {
+    /* The window is a layered window. 
+       This style cannot be used if the window has a class style of either CS_OWNDC or CS_CLASSDC.
+       Windows >= 8 toplevel and child. Windows < 8 toplevel only.
+       IMPORTANT: IupCanvas uses CS_OWNDC. */
     dwExStyle |= WS_EX_LAYERED;
+  }
 
   iupwinGetNativeParentStyle(ih, &dwExStyle, &dwStyle);
 

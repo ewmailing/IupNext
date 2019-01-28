@@ -550,8 +550,8 @@ void FlatScrollBoxTest(void)
 
   IupMap(dlg);
 
-  IupSetAttribute(tree, "TITLE0",         "Figures");  
-  IupSetAttribute(tree, "ADDLEAF0",      "Other");     /* new id=1 */
+  IupSetAttribute(tree, "TITLE0",       "Figures");  
+  IupSetAttribute(tree, "ADDLEAF0",     "Other");     /* new id=1 */
   IupSetAttribute(tree, "ADDBRANCH1",   "triangle");  /* new id=2 */     
   IupSetAttribute(tree, "ADDLEAF2",     "equilateral");  /* ... */
   IupSetAttribute(tree, "ADDLEAF3",     "isoceles");

@@ -291,7 +291,9 @@ foreground window. Use &quot;YES&quot; to activate it. Useful for multithreaded
 applications.</p>
 <p><strong>COMPOSITED</strong> [Windows Only] (creation only): controls if the 
 window will have an automatic double buffer for all children. Default is &quot;NO&quot;. 
-In Windows Vista it is NOT working as expected.</p>
+In Windows Vista it is NOT working as expected. It is NOT compatible with 
+IupCanvas and all derived IUP controls such as IupFlat*, IupGL*, IupPlot and 
+IupMatrix, because IupCanvas uses CS_OWNDC in the window class. </p>
 <p><a href="../attrib/iup_control.html">CONTROL</a> [Windows Only] (creation 
 only): Embeds the dialog inside another window.</p>
 <p>
