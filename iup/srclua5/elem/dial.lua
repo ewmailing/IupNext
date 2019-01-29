@@ -7,9 +7,9 @@ local ctrl = {
   creation = "S",
   subdir = "elem",
   callback = {
---     mousemove_cb = "d",       -- already registered by the val
---     button_press_cb = "d",    -- already registered by the val
---     button_release_cb = "d",  -- already registered by the val
+    mousemove_cb = "d",         -- must repeat this callback because of its non-exclusive name
+--    button_press_cb = "d",    -- already registered by the val
+--    button_release_cb = "d",  -- already registered by the val
   },
 }
 

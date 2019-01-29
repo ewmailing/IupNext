@@ -12,6 +12,13 @@
 #include "il.h"
 
 
+static int dial_mousemove_cb(Ihandle *self, double p0)
+{
+  lua_State *L = iuplua_call_start(self, "mousemove_cb");
+  lua_pushnumber(L, p0);
+  return iuplua_call(L, 1);
+}
+
 static int Dial(lua_State *L)
 {
   Ihandle *ih = IupDial((char *)luaL_optstring(L, 1, NULL));
@@ -24,6 +31,7 @@ int iupdiallua_open(lua_State * L)
 {
   iuplua_register(L, Dial, "Dial");
 
+  iuplua_register_cb(L, "MOUSEMOVE_CB", (lua_CFunction)dial_mousemove_cb, "dial");
 
 #ifdef IUPLUA_USELOH
 #include "dial.loh"
