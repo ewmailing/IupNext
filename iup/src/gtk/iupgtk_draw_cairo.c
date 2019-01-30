@@ -133,7 +133,8 @@ void iupdrvDrawFlush(IdrawCanvas* dc)
   /* flush the writing in the image */
   cairo_show_page(dc->image_cr);
 
-  cairo_reset_clip(dc->cr); /* reset the current clipping */
+  iupdrvDrawResetClip(dc);
+
   cairo_rectangle(dc->cr, 0, 0, dc->w, dc->h);
   cairo_clip(dc->cr);  /* intersect with the current clipping */
 
@@ -397,7 +398,8 @@ void iupdrvDrawSetClipRect(IdrawCanvas* dc, int x1, int y1, int x2, int y2)
   if (x1 >= x2) x1 = x2;
   if (y1 >= y2) y1 = y2;
 
-  cairo_reset_clip(dc->image_cr);  /* reset the current clipping */
+  iupdrvDrawResetClip(dc);
+
   cairo_rectangle(dc->image_cr, x1, y1, x2 - x1 + 1, y2 - y1 + 1);
   cairo_clip(dc->image_cr);  /* intersect with the current clipping */
 
@@ -575,3 +577,5 @@ void iupdrvDrawFocusRect(IdrawCanvas* dc, int x1, int y1, int x2, int y2)
   iupdrvDrawRectangle(dc, x1, y1, x2, y2, iupDrawColor(0, 0, 0, 224), IUP_DRAW_STROKE_DOT, 1);
 #endif
 }
+
+
