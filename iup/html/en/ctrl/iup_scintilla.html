@@ -199,11 +199,15 @@ Can be &quot;WORD&quot;, &quot;CHAR&quot; or &quot;NONE&quot;. Default: NONE.</p
 MARGIN (at the line number margin), START (start of wrapped line), END (end of 
 wrapped line) or NONE. Default: NONE.</span></p>
 <h4>Text Retrieval and Modification</h4>
+<p><strong>ADD</strong> (<font size="3">non inheritable, </font>write-only):
+  Inserts a text at the current position. If VALUELEN is defined, the it is used 
+instead of strlen. (since 3.27)</p>
 <p><strong>APPEND</strong> (<font size="3">non inheritable, </font>write-only):
-  Inserts a text at the <strong>end</strong> of the current text. If APPENDNEWLINE=YES, an 
+  Inserts a text at the <strong>end</strong> of the text. If APPENDNEWLINE=YES, an 
 end of line character will be 
-automatically inserted before the appended text if the current text is not empty 
-(APPENDNEWLINE default is YES).</p>
+automatically inserted before the appended text if the text is not empty 
+(APPENDNEWLINE default is YES). If VALUELEN is defined, the it is used instead 
+of strlen (since 3.27).</p>
 
 <p><strong>CHAR<em>id</em></strong> (<font size="3">non inheritable, read-only</font>): 
 returns the character at a given position, considering the &quot;id&quot; as the 
@@ -238,9 +242,9 @@ the end of line character.</p>
 
   
 <p><strong>PREPEND</strong> (<font size="3">non inheritable, </font>write-only):
-  Inserts a text at the <strong>begin</strong> of the current text. If APPENDNEWLINE=YES, an 
+  Inserts a text at the <strong>begin</strong> of the text. If APPENDNEWLINE=YES, an 
 end of line character will be 
-automatically inserted after the prepended text if the current text is not empty 
+automatically inserted after the prepended text if the text is not empty 
 (APPENDNEWLINE default is YES).</p>
 
   
