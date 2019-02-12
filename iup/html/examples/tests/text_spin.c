@@ -59,6 +59,7 @@ void TextSpinTest(void)
   IupSetAttribute(text, "SPINVALUE", "13");
 //  IupSetAttribute(text, "SPINAUTO", "NO");
   IupSetAttribute(text, "NAME", "spin");
+//  IupSetAttribute(text, "FGCOLOR", "0 255 0");
 
 //  IupSetAttribute(text, "MASK", "[+/-]?(/d+/.?/d*|/./d+)");
 //  IupSetAttribute(text, "MASK", "[+/-]?(/d+/./d/d)");
@@ -72,6 +73,7 @@ void TextSpinTest(void)
   IupSetAttribute(dlg, "GAP", "20");
   IupSetAttribute(dlg, "MARGIN", "20x20");
 //  IupSetAttribute(dlg, "BGCOLOR", "173 177 194");  // Motif BGCOLOR for documentation
+//  IupSetAttribute(dlg, "BGCOLOR", "0 0 0");
 
   IupSetFunction("setspinvalue", (Icallback)setspinvalue);
 

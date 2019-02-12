@@ -1119,6 +1119,46 @@ static char* gtkTextGetReadOnlyAttrib(Ihandle* ih)
   return iupStrReturnBoolean (!editable); 
 }
 
+#if GTK_CHECK_VERSION(3, 20, 0)
+static void iupgdkRGBASet(GdkRGBA* rgba, unsigned char r, unsigned char g, unsigned char b)
+{
+  rgba->red = iupgtkColorToDouble(r);
+  rgba->green = iupgtkColorToDouble(g);
+  rgba->blue = iupgtkColorToDouble(b);
+  rgba->alpha = 1.0;
+}
+#endif
+
+static int gtkTextSetFgColorAttrib(Ihandle* ih, const char* value)
+{
+#if GTK_CHECK_VERSION(3, 20, 0)
+  char *fg;
+  char *css;
+  GtkCssProvider *provider;
+  GdkRGBA rgba;
+  unsigned char r, g, b;
+  if (!iupStrToRGB(value, &r, &g, &b))
+    return 0;
+
+  iupgdkRGBASet(&rgba, r, g, b);
+
+  fg = gdk_rgba_to_string(&rgba);
+
+  /* style background color using CSS */
+  provider = gtk_css_provider_new();
+
+  css = g_strdup_printf("* { caret-color: %s; }", fg);
+  gtk_style_context_add_provider(gtk_widget_get_style_context(ih->handle), GTK_STYLE_PROVIDER(provider), GTK_STYLE_PROVIDER_PRIORITY_USER);
+  gtk_css_provider_load_from_data(provider, css, -1, NULL);
+
+  g_free(fg);
+  g_free(css);
+  g_object_unref(provider);
+#endif
+
+  return iupdrvBaseSetFgColorAttrib(ih, value);
+}
+
 static int gtkTextSetBgColorAttrib(Ihandle* ih, const char* value)
 {
   if (ih->data->is_multiline && iupStrBoolean(IupGetGlobal("SB_BGCOLOR")))
@@ -1744,7 +1784,7 @@ void iupdrvTextInitClass(Iclass* ic)
   iupClassRegisterAttribute(ic, "BGCOLOR", NULL, gtkTextSetBgColorAttrib, IUPAF_SAMEASSYSTEM, "TXTBGCOLOR", IUPAF_DEFAULT);
 
   /* Special */
-  iupClassRegisterAttribute(ic, "FGCOLOR", NULL, iupdrvBaseSetFgColorAttrib, IUPAF_SAMEASSYSTEM, "TXTFGCOLOR", IUPAF_DEFAULT);
+  iupClassRegisterAttribute(ic, "FGCOLOR", NULL, gtkTextSetFgColorAttrib, IUPAF_SAMEASSYSTEM, "TXTFGCOLOR", IUPAF_DEFAULT);
 
   /* IupText only */
   iupClassRegisterAttribute(ic, "PADDING", iupTextGetPaddingAttrib, gtkTextSetPaddingAttrib, IUPAF_SAMEASSYSTEM, "0x0", IUPAF_NOT_MAPPED);

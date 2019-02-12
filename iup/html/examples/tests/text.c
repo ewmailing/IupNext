@@ -338,6 +338,9 @@ void TextTest(void)
 //  IupSetAttribute(mltline, "SCROLLBAR", "NO");
 //  IupSetAttribute(mltline, "NOHIDESEL", "Yes");
 
+//  IupSetAttribute(mltline, "FGCOLOR", "0 255 0");
+//  IupSetAttribute(mltline, "BGCOLOR", "0 0 0");
+
   /* Turns on multiline expand and text horizontal expand */
   IupSetAttribute(mltline, "SIZE", "80x40");
   IupSetAttribute(mltline, "EXPAND", "YES");

@@ -24,5 +24,5 @@ PROJDIR = ../../..
 
 #USE_CD = Yes
 #LIBS += iupimglib
-SRC += sample.c
+SRC = sample.c
 
