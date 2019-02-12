@@ -602,7 +602,7 @@ static int motTextSetBgColorAttrib(Ihandle* ih, const char* value)
   {
     Pixel color;
 
-    /* ignore given value for the scrollbars, must use only from parent */
+    /* ignore given value, must use only from parent for the scrollbars */
     char* parent_value = iupBaseNativeParentGetBgColor(ih);
 
     color = iupmotColorGetPixelStr(parent_value);

@@ -33,7 +33,7 @@ static int gtkLabelSetBgColorAttrib(Ihandle* ih, const char* value)
   GtkWidget* eventbox = (GtkWidget*)iupAttribGet(ih, "_IUP_EXTRAPARENT");
   unsigned char r, g, b;
 
-  /* ignore given value, must use only from parent for the scrollbars */
+  /* ignore given value, must use only from parent */
   char* parent_value = iupBaseNativeParentGetBgColor(ih);
 
   if (iupStrToRGB(parent_value, &r, &g, &b))
