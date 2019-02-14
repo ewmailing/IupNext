@@ -498,7 +498,7 @@ void FlatTabsTest(void)
   tabs = CreateTabs(1);
   
   box = IupHbox(tabs, 
-#if 0
+#if 1
                 frm1 = IupFrame(IupRadio(IupVbox(IupToggle("TOP", "cbType"), 
                                                  IupToggle("LEFT", "cbType"), 
                                                  IupToggle("BOTTOM", "cbType"), 
@@ -518,7 +518,7 @@ void FlatTabsTest(void)
                         NULL), 
                 NULL);
 
-#if 0
+#if 1
   IupSetAttribute(frm1, "MARGIN", "5x5");
   IupSetAttribute(frm2, "MARGIN", "5x5");
   IupSetAttribute(frm1, "GAP", "0");

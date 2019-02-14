@@ -149,8 +149,17 @@ the rotated space. (since 3.25)</span></span></p>
 
 
   
+<p><strong>TABTYPE </strong>(<font SIZE="3">non inheritable</font>): the type of tabs, 
+which can be &quot;TOP&quot;, &quot;BOTTOM&quot;, &quot;LEFT&quot; or &quot;RIGHT&quot;. Default is &quot;TOP&quot;. It will not 
+automatically change the TABORIENTATION. When changed with the dialog visible 
+the application should call IupRefresh or IupRefresh children to updated the 
+layout when ready. (since 3.27)</p>
+
+
+
+  
   <p><strong>TABORIENTATION </strong>(<font SIZE="3">non inheritable</font>): 
-  Indicates the orientation of tab text, which can be &quot;HORIZONTAL&quot; or 
+  the orientation of tab text, which can be &quot;HORIZONTAL&quot; or 
   &quot;VERTICAL&quot;. Default is &quot;HORIZONTAL&quot;. When set to vertical it will simply set
   <span style="color: rgb(0, 0, 0); font-family: tahoma, verdana, arial, helvetica, geneva, sans-serif; font-size: medium; font-style: normal; font-variant: normal; font-weight: normal; letter-spacing: normal; line-height: 20.8px; orphans: auto; text-align: start; text-indent: 0px; text-transform: none; white-space: normal; widows: 1; word-spacing: 0px; -webkit-text-stroke-width: 0px; display: inline !important; float: none; background-color: rgb(255, 255, 255);">
   <span class="Apple-converted-space">
