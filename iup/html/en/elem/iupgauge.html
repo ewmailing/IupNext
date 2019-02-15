@@ -57,6 +57,10 @@ pixels sunken border. Can be Yes or No. Default: No. (since 3.21)</p>
 <p><strong>MIN </strong>(<font SIZE="3">non inheritable</font>):
   Contains the minimum value. Default 
   is &quot;0&quot;.</p>
+<p><strong>ORIENTATION</strong> (creation only): can be &quot;VERTICAL&quot; or 
+&quot;HORIZONTAL&quot;. Default: &quot;HORIZONTAL&quot;. Horizontal goes from left to right, and 
+vertical from bottom to top. Width and height are swapped when orientation is 
+set. (since 3.27)</p>
   <p><b>PADDING</b>: internal margin. Works just like the MARGIN attribute of 
   the <strong>IupHbox</strong> and <strong>IupVbox</strong> containers, but uses a different name to avoid 
   inheritance problems. Default value: &quot;0x0&quot;. 
@@ -73,7 +77,8 @@ use smaller values.</p>
 <p><strong>TEXT </strong>(<font SIZE="3">non inheritable</font>):
   Contains a text to be shown inside the 
   Gauge when SHOW_TEXT=YES. If it is NULL, the 
-  percentage calculated from VALUE will be used. If the gauge is dashed the text is never shown.</p>
+  percentage calculated from VALUE will be used. If the gauge is dashed the text is never shown. 
+When ORIENTATION=VERTICAL text is drawn in 90º.</p>
 <p><strong>VALUE </strong>(<font SIZE="3">non inheritable</font>):
   Contains a number between &quot;MIN&quot; and &quot;MAX&quot;, controlling the 
 current position.</p>

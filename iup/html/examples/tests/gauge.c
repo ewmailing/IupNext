@@ -234,8 +234,9 @@ void GaugeTest(void)
   IupSetAttribute(gauge, "EXPAND", "YES");
 //  IupSetAttribute(gauge, "BGCOLOR", "255 0 128");
 //  IupSetAttribute(gauge, "FGCOLOR", "0 128 0");
-//  IupSetAttribute(gauge, "FLAT", "YES");
+  IupSetAttribute(gauge, "FLAT", "YES");
   //IupSetAttribute(gauge, "FGCOLOR", "96 120 232");
+//  IupSetAttribute(gauge, "ORIENTATION", "VERTICAL");
 
   btn_restart = IupButton(NULL, NULL);
   btn_pause = IupButton(NULL, NULL);

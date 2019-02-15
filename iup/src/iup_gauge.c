@@ -27,9 +27,11 @@
 
 #define IGAUGE_DEFAULTCOLOR "64 96 192"
 #define IGAUGE_DEFAULTSIZE  "120x14"
-
 #define IGAUGE_DASHED_GAP     3
 #define IGAUGE_DASHED_BLOCKS 20
+
+/* Orientation */
+enum { IGAUGE_HORIZONTAL, IGAUGE_VERTICAL };
 
 struct _IcontrolData
 {
@@ -46,6 +48,7 @@ struct _IcontrolData
   long mid_shadow;
   long dark_shadow;
   long flatcolor;
+  int orientation;
 
   double value;  /* min<=value<max */
   double vmin;
@@ -54,7 +57,7 @@ struct _IcontrolData
 
 static void iGaugeDrawText(Ihandle* ih, int xmid, int w, int h, long fgcolor)
 {
-  int x, y, xmin, xmax, ymin, ymax, text_w, text_h;
+  int x, y, min, max, xmin, xmax, ymin, ymax, text_w, text_h;
   char* text = iupAttribGet(ih, "TEXT");
   char buffer[30];
 
@@ -77,23 +80,32 @@ static void iGaugeDrawText(Ihandle* ih, int xmid, int w, int h, long fgcolor)
   ymin = y;
   ymax = y + text_h;
 
-  if(xmid < xmin)
+  min = (ih->data->orientation == IGAUGE_HORIZONTAL) ? xmin : ymin;
+  max = (ih->data->orientation == IGAUGE_HORIZONTAL) ? xmax : ymax;
+
+  if (xmid < min)
   {
     iupDrawSetColor(ih, "DRAWCOLOR", fgcolor);
     IupDrawText(ih, text, 0, x, y, text_w, text_h);
   }
-  else if(xmid > xmax)
+  else if (xmid > max)
   {
     iupDrawSetColor(ih, "DRAWCOLOR", ih->data->bgcolor);
     IupDrawText(ih, text, 0, x, y, text_w, text_h);
   }
   else
   {
-    IupDrawSetClipRect(ih, xmin, ymin, xmid, ymax);
+    if (ih->data->orientation == IGAUGE_HORIZONTAL)
+      IupDrawSetClipRect(ih, xmin, ymin, xmid, ymax);
+    else
+      IupDrawSetClipRect(ih, xmin, h - xmid, xmax, ymax);
     iupDrawSetColor(ih, "DRAWCOLOR", ih->data->bgcolor);
     IupDrawText(ih, text, 0, x, y, text_w, text_h);
 
-    IupDrawSetClipRect(ih, xmid, ymin, xmax, ymax);
+    if (ih->data->orientation == IGAUGE_HORIZONTAL)
+      IupDrawSetClipRect(ih, xmid, ymin, xmax, ymax);
+    else
+      IupDrawSetClipRect(ih, xmin, ymin, xmax, h - xmid);
     iupDrawSetColor(ih, "DRAWCOLOR", fgcolor);
     IupDrawText(ih, text, 0, x, y, text_w, text_h);
     IupDrawResetClip(ih);
@@ -102,7 +114,7 @@ static void iGaugeDrawText(Ihandle* ih, int xmid, int w, int h, long fgcolor)
 
 static int iGaugeRedraw_CB(Ihandle* ih)
 {
-  int border = ih->data->flat? 1: 3;
+  int border = ih->data->flat ? 1 : 3;
   int xstart = ih->data->horiz_padding + border;
   int ystart = ih->data->vert_padding + border;
   int xend, yend, w, h;
@@ -123,7 +135,7 @@ static int iGaugeRedraw_CB(Ihandle* ih)
   }
   else
     iupDrawSunkenRect(ih, 0, 0, w - 1, h - 1,
-                      ih->data->light_shadow, ih->data->mid_shadow, ih->data->dark_shadow);
+    ih->data->light_shadow, ih->data->mid_shadow, ih->data->dark_shadow);
 
   if (!iupdrvIsActive(ih))
     fgcolor = iupDrawColorMakeInactive(fgcolor, ih->data->bgcolor);
@@ -135,35 +147,46 @@ static int iGaugeRedraw_CB(Ihandle* ih)
 
   if (ih->data->dashed)
   {
-    double step = (double)(xend - xstart + 1) / (double)IGAUGE_DASHED_BLOCKS;
-    double boxw = step - IGAUGE_DASHED_GAP;
-    double vx = (double)((xend - xstart + 1) * (ih->data->value - ih->data->vmin) / (ih->data->vmax - ih->data->vmin));
-    int intvx  = (int)(100 * vx);
+    int start = (ih->data->orientation == IGAUGE_HORIZONTAL) ? xstart : ystart;
+    int end = (ih->data->orientation == IGAUGE_HORIZONTAL) ? xend : yend;
+    double step = (double)(end - start + 1) / (double)IGAUGE_DASHED_BLOCKS;
+    double step_fill = step - IGAUGE_DASHED_GAP;
+    double range = (double)((end - start + 1) * (ih->data->value - ih->data->vmin) / (ih->data->vmax - ih->data->vmin));
+    int range_percent = (int)(100 * range);
     double i = 0;
 
-    if(ih->data->value == ih->data->vmin)
+    if (ih->data->value == ih->data->vmin)
       return IUP_DEFAULT;
 
-    while(iupRound(100*(i + boxw)) <= intvx)
+    while (iupRound(100 * (i + step_fill)) <= range_percent)
     {
       iupAttribSet(ih, "DRAWSTYLE", "FILL");
-      IupDrawRectangle(ih, xstart + iupRound(i), ystart,
-                           xstart + iupRound(i + boxw) - 1, yend);
+      if (ih->data->orientation == IGAUGE_HORIZONTAL)
+        IupDrawRectangle(ih, start + iupRound(i), ih->currentheight - ystart,
+                             start + iupRound(i + step_fill) - 1, ih->currentheight - yend);
+      else
+        IupDrawRectangle(ih, xstart, ih->currentheight - (start + iupRound(i)),
+                             xend, ih->currentheight - (start + iupRound(i + step_fill) - 1));
       i += step;
     }
   }
   else
   {
-    int xmid = xstart + iupRound((xend-xstart + 1) * (ih->data->value - ih->data->vmin) / (ih->data->vmax - ih->data->vmin));
+    int start = (ih->data->orientation == IGAUGE_HORIZONTAL) ? xstart : ystart;
+    int end = (ih->data->orientation == IGAUGE_HORIZONTAL) ? xend : yend;
+    int mid = start + iupRound((end - start + 1) * (ih->data->value - ih->data->vmin) / (ih->data->vmax - ih->data->vmin));
 
     if (ih->data->value != ih->data->vmin)
     {
       iupAttribSet(ih, "DRAWSTYLE", "FILL");
-      IupDrawRectangle(ih, xstart, ystart, xmid, yend);
+      if (ih->data->orientation == IGAUGE_HORIZONTAL)
+        IupDrawRectangle(ih, xstart, ystart, mid, yend);
+      else
+        IupDrawRectangle(ih, xstart, ih->currentheight - ystart, xend, ih->currentheight - mid);
     }
 
     if (ih->data->show_text)
-      iGaugeDrawText(ih, xmid, w, h, fgcolor);
+      iGaugeDrawText(ih, mid, w, h, fgcolor);
   }
 
   IupDrawEnd(ih);
@@ -172,9 +195,9 @@ static int iGaugeRedraw_CB(Ihandle* ih)
 
 static void iGaugeCropValue(Ihandle* ih)
 {
-  if(ih->data->value>ih->data->vmax)
+  if (ih->data->value > ih->data->vmax)
     ih->data->value = ih->data->vmax;
-  else if(ih->data->value<ih->data->vmin)
+  else if (ih->data->value < ih->data->vmin)
     ih->data->value = ih->data->vmin;
 }
 
@@ -216,7 +239,7 @@ static int iGaugeSetActiveAttrib(Ihandle* ih, const char* value)
 
 static int iGaugeSetValueAttrib(Ihandle* ih, const char* value)
 {
-  if(value == NULL)
+  if (value == NULL)
     ih->data->value = 0;
   else
   {
@@ -265,7 +288,7 @@ static int iGaugeSetShowTextAttrib(Ihandle* ih, const char* value)
 {
   if (iupStrBoolean(value))
     ih->data->show_text = 1;
-  else 
+  else
     ih->data->show_text = 0;
 
   IupUpdate(ih);
@@ -315,7 +338,7 @@ static int iGaugeSetDashedAttrib(Ihandle* ih, const char* value)
 {
   if (iupStrBoolean(value))
     ih->data->dashed = 1;
-  else 
+  else
     ih->data->dashed = 0;
 
   IupUpdate(ih);
@@ -332,6 +355,42 @@ static int iGaugeSetTextAttrib(Ihandle* ih, const char* value)
   (void)value;
   IupUpdate(ih);
   return 1;
+}
+
+static int iGaugeSetOrientationAttrib(Ihandle* ih, const char* value)
+{
+  if (ih->handle) /* can NOT be changed after map */
+    return 0;
+
+  if (iupStrEqualNoCase(value, "VERTICAL"))
+  {
+    ih->data->orientation = IGAUGE_VERTICAL;
+
+    if (ih->userheight < ih->userwidth) /* make size coherent with orientation */
+      IupSetStrf(ih, "RASTERSIZE", "%dx%d", ih->userheight, ih->userwidth);
+
+    iupAttribSet(ih, "DRAWTEXTORIENTATION", "90");
+    iupAttribSet(ih, "DRAWTEXTLAYOUTCENTER", "YES");
+  }
+  else if (iupStrEqualNoCase(value, "HORIZONTAL"))
+  {
+    ih->data->orientation = IGAUGE_HORIZONTAL;
+
+    if (ih->userwidth < ih->userheight) /* make size coherent with orientation */
+      IupSetStrf(ih, "RASTERSIZE", "%dx%d", ih->userheight, ih->userwidth);
+
+    iupAttribSet(ih, "DRAWTEXTORIENTATION", NULL);
+    iupAttribSet(ih, "DRAWTEXTLAYOUTCENTER", NULL);
+  }
+  return 0;
+}
+
+static char* iGaugeGetOrientationAttrib(Ihandle* ih)
+{
+  if (ih->data->orientation == IGAUGE_HORIZONTAL)
+    return "HORIZONTAL";
+  else
+    return "VERTICAL";
 }
 
 static int iGaugeCreateMethod(Ihandle* ih, void **params)
@@ -356,9 +415,10 @@ static int iGaugeCreateMethod(Ihandle* ih, void **params)
   ih->data->dark_shadow = iupDrawColor(128, 128, 128, 255);
   ih->data->flatcolor = iupDrawColor(164, 164, 164, 255);
   ih->data->show_text = 1;
+  ih->data->orientation = IGAUGE_HORIZONTAL;
 
   /* IupCanvas callbacks */
-  IupSetCallback(ih, "ACTION",    (Icallback)iGaugeRedraw_CB);
+  IupSetCallback(ih, "ACTION", (Icallback)iGaugeRedraw_CB);
 
   return IUP_NOERROR;
 }
@@ -369,13 +429,13 @@ Iclass* iupGaugeNewClass(void)
 
   ic->name = "gauge";
   ic->format = NULL; /* no parameters */
-  ic->nativetype  = IUP_TYPECANVAS;
+  ic->nativetype = IUP_TYPECANVAS;
   ic->childtype = IUP_CHILDNONE;
   ic->is_interactive = 0;
 
   /* Class functions */
   ic->New = iupGaugeNewClass;
-  ic->Create  = iGaugeCreateMethod;
+  ic->Create = iGaugeCreateMethod;
 
   /* Do not need to set base attributes because they are inherited from IupCanvas */
 
@@ -384,17 +444,18 @@ Iclass* iupGaugeNewClass(void)
   iupClassRegisterReplaceAttribFlags(ic, "BORDER", IUPAF_READONLY | IUPAF_NO_INHERIT);
 
   /* IupGauge only */
-  iupClassRegisterAttribute(ic, "MIN", iGaugeGetMinAttrib, iGaugeSetMinAttrib, IUPAF_SAMEASSYSTEM, "0", IUPAF_NOT_MAPPED|IUPAF_NO_INHERIT);
-  iupClassRegisterAttribute(ic, "MAX", iGaugeGetMaxAttrib, iGaugeSetMaxAttrib, IUPAF_SAMEASSYSTEM, "1", IUPAF_NOT_MAPPED|IUPAF_NO_INHERIT);
-  iupClassRegisterAttribute(ic, "VALUE", iGaugeGetValueAttrib, iGaugeSetValueAttrib, NULL, NULL, IUPAF_NOT_MAPPED|IUPAF_NO_INHERIT);
+  iupClassRegisterAttribute(ic, "MIN", iGaugeGetMinAttrib, iGaugeSetMinAttrib, IUPAF_SAMEASSYSTEM, "0", IUPAF_NOT_MAPPED | IUPAF_NO_INHERIT);
+  iupClassRegisterAttribute(ic, "MAX", iGaugeGetMaxAttrib, iGaugeSetMaxAttrib, IUPAF_SAMEASSYSTEM, "1", IUPAF_NOT_MAPPED | IUPAF_NO_INHERIT);
+  iupClassRegisterAttribute(ic, "VALUE", iGaugeGetValueAttrib, iGaugeSetValueAttrib, NULL, NULL, IUPAF_NOT_MAPPED | IUPAF_NO_INHERIT);
   iupClassRegisterAttribute(ic, "DASHED", iGaugeGetDashedAttrib, iGaugeSetDashedAttrib, NULL, NULL, IUPAF_NOT_MAPPED);
   iupClassRegisterAttribute(ic, "PADDING", iGaugeGetPaddingAttrib, iGaugeSetPaddingAttrib, IUPAF_SAMEASSYSTEM, "0x0", IUPAF_NOT_MAPPED);
-  iupClassRegisterAttribute(ic, "TEXT", NULL, iGaugeSetTextAttrib, NULL, NULL, IUPAF_NOT_MAPPED|IUPAF_NO_INHERIT);
+  iupClassRegisterAttribute(ic, "TEXT", NULL, iGaugeSetTextAttrib, NULL, NULL, IUPAF_NOT_MAPPED | IUPAF_NO_INHERIT);
   /*OLD*/iupClassRegisterAttribute(ic, "SHOW_TEXT", iGaugeGetShowTextAttrib, iGaugeSetShowTextAttrib, IUPAF_SAMEASSYSTEM, "YES", IUPAF_NOT_MAPPED);
   iupClassRegisterAttribute(ic, "SHOWTEXT", iGaugeGetShowTextAttrib, iGaugeSetShowTextAttrib, IUPAF_SAMEASSYSTEM, "YES", IUPAF_NOT_MAPPED);
   iupClassRegisterAttribute(ic, "FGCOLOR", NULL, iGaugeSetFgColorAttrib, IGAUGE_DEFAULTCOLOR, NULL, IUPAF_NOT_MAPPED);
   iupClassRegisterAttribute(ic, "FLAT", iGaugeGetFlatAttrib, iGaugeSetFlatAttrib, NULL, NULL, IUPAF_NOT_MAPPED);
   iupClassRegisterAttribute(ic, "FLATCOLOR", NULL, iGaugeSetFlatColorAttrib, IUPAF_SAMEASSYSTEM, "164 164 164", IUPAF_NOT_MAPPED);
+  iupClassRegisterAttribute(ic, "ORIENTATION", iGaugeGetOrientationAttrib, iGaugeSetOrientationAttrib, IUPAF_SAMEASSYSTEM, "HORIZONTAL", IUPAF_NOT_MAPPED | IUPAF_NO_INHERIT);
 
   /* Overwrite IupCanvas Attributes */
   iupClassRegisterAttribute(ic, "ACTIVE", iupBaseGetActiveAttrib, iGaugeSetActiveAttrib, IUPAF_SAMEASSYSTEM, "YES", IUPAF_DEFAULT);
