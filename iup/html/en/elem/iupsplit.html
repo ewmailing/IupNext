@@ -29,7 +29,7 @@ enclosed in a box that allows expanding and contracting the element <strong>size
 direction, but when one is expanded the other is contracted.</p>
 
   <p>
-  It does not have a native representation, but it contains also a <strong>IupCanvas</strong> to implement 
+  It does not have a native representation, but it contains also a <strong>IupFlatSeparator</strong> to implement 
 	the bar handler.</p>
 
 <h3><a name="Creation">Creation</a></h3>
@@ -71,7 +71,7 @@ This will constrain the interactive change of the bar handler. Default:
 &quot;0:1000&quot;. (Since 3.2)</p>
 <p><strong>SHOWGRIP</strong> (<font SIZE="3">non inheritable</font>): Shows the 
 bar grip affordance. Default: YES. When set to NO, the BARSIZE is set to 3. When 
-set to NO if COLOR is defined then it is used to fill the grip area (since 
+set to NO, COLOR is used to fill the grip area (since 
 3.11.1). If set to "LINES" then instead of the traditional grip appearance, it 
 will be two parallel lines (since 3.11.1). </p>
 <p><strong>VALUE</strong> (<font SIZE="3">non inheritable</font>): The proportion of the left or 
@@ -117,7 +117,7 @@ set. See the <a href="../layout_guide.html">Layout Guide</a> for mode details
 <p>If you set the MINMAX attribute for a direct child, <strong>IupSplit</strong> 
 will respect that size. Nested children will also have their size limits 
 respected.</p>
-<p>The <strong>IupCanvas</strong> bar handler is always the first child of the 
+<p>The <strong>IupFlatSeparator</strong> bar handler is always the first child of the 
 split. It can be obtained using <strong>IupGetChild</strong> or <strong>
 IupGetNextChild</strong>.</p>
 <p>The <strong>IupSplit</strong> control looks just like the <strong>IupSbox</strong>, 

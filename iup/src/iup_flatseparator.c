@@ -41,6 +41,14 @@ struct _IcontrolData
 
 /****************************************************************/
 
+static long iDrawGetDarkerColor(long color)
+{
+  unsigned char r = iupDrawRed(color), g = iupDrawGreen(color), b = iupDrawBlue(color), a = iupDrawAlpha(color);
+  r = (r * 80) / 100;
+  g = (g * 80) / 100;
+  b = (b * 80) / 100;
+  return iupDrawColor(r, g, b, a);
+}
 
 static int iFlatSeparatorRedraw_CB(Ihandle* ih)
 {
@@ -69,13 +77,13 @@ static int iFlatSeparatorRedraw_CB(Ihandle* ih)
       {
         x = ih->data->barsize / 2 - 1;
         y = 2;
-        count = (h - 2) / 5;
+        count = (h - 2) / ih->data->barsize;
       }
       else
       {
         x = 2;
         y = ih->data->barsize / 2 - 1;
-        count = (w - 2) / 5;
+        count = (w - 2) / ih->data->barsize;
       }
 
       for (i = 0; i < count; i++)
@@ -84,9 +92,9 @@ static int iFlatSeparatorRedraw_CB(Ihandle* ih)
         iupdrvDrawRectangle(dc, x, y, x + 1, y + 1, color, IUP_DRAW_FILL, 1);
 
         if (ih->data->orientation == ISEPARATOR_VERT)
-          y += 5;
+          y += ih->data->barsize;
         else
-          x += 5;
+          x += ih->data->barsize;
       }
     }
     else if (ih->data->style == ISEPARATOR_DUALLINES)
@@ -147,15 +155,13 @@ static int iFlatSeparatorRedraw_CB(Ihandle* ih)
   }
   else /* ISEPARATOR_FILL */
   {
-    char* color = iupAttribGet(ih, "COLOR");  /* ignore the default value */
-    if (color)
-    {
-      long color = iupDrawStrToColor(IupGetAttribute(ih, "COLOR"), iupDrawColor(160, 160, 160, 255));
-      int w, h;
-      iupdrvDrawGetSize(dc, &w, &h);
+    long color = iupDrawStrToColor(IupGetAttribute(ih, "COLOR"), iupDrawColor(160, 160, 160, 255));
+    long border_color = iDrawGetDarkerColor(color);
+    int w, h;
+    iupdrvDrawGetSize(dc, &w, &h);
 
-      iupdrvDrawRectangle(dc, 0, 0, w - 1, h - 1, color, IUP_DRAW_FILL, 1);
-    }
+    iupdrvDrawRectangle(dc, 1, 1, w - 2, h - 2, color, IUP_DRAW_FILL, 1);
+    iupdrvDrawRectangle(dc, 0, 0, w - 1, h - 1, border_color, IUP_DRAW_STROKE, 1);
   }
 
   iupdrvDrawFlush(dc);

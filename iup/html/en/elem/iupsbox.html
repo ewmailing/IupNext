@@ -24,7 +24,7 @@ expanding and contracting the child <strong>size</strong> in one
 direction.</p>
 
   <p>
-  It does not have a native representation but it contains also a <strong>IupCanvas</strong> to implement 
+  It does not have a native representation but it contains also a <strong>IupFlatSeparator </strong>to implement 
 	the bar handler.</p>
 
 <h3><a name="Creation">Creation</a></h3>
@@ -41,6 +41,10 @@ sbox(<strong>child</strong>) [in LED]</pre>
 <h3><a name="Attributes">Attributes</a></h3>
 
 
+<p><strong>BARSIZE</strong> (<font SIZE="3">non inheritable</font>): controls 
+the size of the bar handler. Default: 5. (since 3.27)</p>
+
+
 <p><strong>COLOR</strong>: Changes the color of the
   bar handler. Default: &quot;192 192 192&quot;.</p>
 
@@ -51,6 +55,15 @@ resize and the position of the bar handler. Possible values are &quot;NORTH&quot
 direction). Default: &quot;EAST&quot;.</p>
 <p><a href="../attrib/iup_expand.html">EXPAND</a> (<font SIZE="3">non inheritable</font>):
   It will expand automatically only in the direction opposite to the handler.&nbsp;</p>
+
+<p><strong>LAYOUTDRAG</strong> (<font SIZE="3">non inheritable</font>): When the 
+bar is moved automatically update the children layout. Default: YES. If set to 
+NO then the layout will be updated only when the mouse drag is released. (since 
+3.27)</p>
+<p><strong>SHOWGRIP</strong> (<font SIZE="3">non inheritable</font>): Shows the 
+bar grip affordance. Default: NO. When 
+set to NO COLOR is used to fill the grip area. If set to "LINES" then instead of the traditional grip appearance, it 
+will be two parallel lines. (since 3.27)</p>
 
   <p><b>WID</b> (read-only): returns -1 if mapped.</p>
 
@@ -75,8 +88,7 @@ also accepted.</p>
 The control inside the sbox will not be resized with a size lesser than its
 <strong>Natural</strong> size. See the <a href="../layout_guide.html">Layout Guide</a> for mode details 
   on sizes.</p>
-<p>The <strong>IupCanvas</strong> bar handler is always the first child of the 
-sbox. It can be obtained using <strong>IupGetChild</strong> or <strong>
+<p>The <strong>IupFlatSeparator </strong>bar handler is always the first child of the sbox. It can be obtained using <strong>IupGetChild</strong> or <strong>
 IupGetNextChild</strong>.</p>
 <p><strong>IupSbox</strong> can make the layout to be resized larger than the 
 dialog size so some controls will be positioned outside the dialog area 

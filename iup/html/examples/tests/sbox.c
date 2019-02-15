@@ -12,7 +12,11 @@ void SboxTest(void)
 
   box = IupSbox(bt);
   IupSetAttribute(box, "DIRECTION", "SOUTH");  /* place at the bottom of the button */
+//  IupSetAttribute(box, "DIRECTION", "EAST");
 //  IupSetAttribute(box, "COLOR", "0 255 0");
+//  IupSetAttribute(box, "SHOWGRIP", "Yes");
+//  IupSetAttribute(box, "SHOWGRIP", "LINES");
+//  IupSetAttribute(box, "BARSIZE", "10");
 
   ml = IupMultiLine(NULL);
   IupSetAttribute(ml, "EXPAND", "YES");

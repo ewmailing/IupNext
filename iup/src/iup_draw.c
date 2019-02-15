@@ -461,9 +461,9 @@ long iupDrawColor(unsigned char r, unsigned char g, unsigned char b, unsigned ch
 {
   a = ~a;
   return (((unsigned long)a) << 24) |
-    (((unsigned long)r) << 16) |
-    (((unsigned long)g) << 8) |
-    (((unsigned long)b) << 0);
+         (((unsigned long)r) << 16) |
+         (((unsigned long)g) << 8)  |
+         (((unsigned long)b) << 0);
 }
 
 long iupDrawColorMakeInactive(long color, long bgcolor)
