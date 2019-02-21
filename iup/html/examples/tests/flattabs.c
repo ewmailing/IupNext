@@ -448,13 +448,15 @@ static Ihandle* CreateTabs(int tab)
     IupSetAttribute(tabs, "TABSFORECOLOR", "255 255 255");
     IupSetAttribute(tabs, "SHOWLINES", "NO");
   }
-  
-//  IupSetAttribute(tabs, "EXTRABUTTONS", "3");
-//  IupSetAttribute(tabs, "EXTRATITLE1", "Button1");
-//  IupSetAttribute(tabs, "EXTRATITLE2", "But2");
-//  IupSetAttribute(tabs, "EXTRATIP2", "Tip But2");
-  //  IupSetAttribute(tabs, "EXTRATITLE3", "3");
-//  IupSetStrAttribute(tabs, "EXTRAIMAGE3", IupGetAttribute(tabs, "TABIMAGE1"));
+
+#if 1
+  IupSetAttribute(tabs, "EXTRABUTTONS", "3");
+  IupSetAttribute(tabs, "EXTRATITLE1", "Button1");
+  IupSetAttribute(tabs, "EXTRATITLE2", "But2");
+  IupSetAttribute(tabs, "EXTRATIP2", "Tip But2");
+  IupSetAttribute(tabs, "EXTRATITLE3", "3");
+  IupSetStrAttribute(tabs, "EXTRAIMAGE3", IupGetAttribute(tabs, "TABIMAGE1"));
+#endif
 
 //  IupSetAttribute(tabs, "EXPANDBUTTON", "Yes");
 
