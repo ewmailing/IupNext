@@ -306,7 +306,6 @@ static IDropSource* winCreateDropSource(Ihandle* ih)
 static void winDestroyDropSource(IDropSource* pSrc)
 {
   pSrc->lpVtbl->Release(pSrc);
-  free(pSrc);
 }
 
 
@@ -536,11 +535,7 @@ static IDataObject* winCreateDataObject(CLIPFORMAT *pClipFormat, ULONG nNumForma
 
 static void winDestroyDataObject(IDataObject* pObj)
 {
-  IwinDataObject* pDataObject = (IwinDataObject*)pObj;
-  free(pDataObject->pFormatEtc);
-
   pObj->lpVtbl->Release(pObj);
-  free(pObj);
 }
 
 
@@ -896,8 +891,8 @@ static int winRegisterProcessDrag(Ihandle *ih)
   dwOKEffect = iupAttribGetBoolean(ih, "DRAGSOURCEMOVE")? DROPEFFECT_MOVE|DROPEFFECT_COPY: DROPEFFECT_COPY;
   DoDragDrop(pObj, pSrc, dwOKEffect, &dwEffect);
 
-  winDestroyDropSource(pSrc);
   winDestroyDataObject(pObj);
+  winDestroyDropSource(pSrc);
   free(cfList);
 
   if (dwEffect == DROPEFFECT_MOVE)
