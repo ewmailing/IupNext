@@ -195,17 +195,6 @@ static char* iSboxGetClientSizeAttrib(Ihandle* ih)
   return iupStrReturnIntInt(width, height, 'x');
 }
 
-static int iSboxSetStyleAttrib(Ihandle* ih, const char* value)
-{
-  IupSetAttribute(ih->firstchild, "STYLE", value);
-  return 0;  /* do not store value in hash table */
-}
-
-static char* iSboxGetStyleAttrib(Ihandle* ih)
-{
-  return IupGetAttribute(ih->firstchild, "STYLE");
-}
-
 static int iSboxSetBarSizeAttrib(Ihandle* ih, const char* value)
 {
   IupSetAttribute(ih->firstchild, "BARSIZE", value);
