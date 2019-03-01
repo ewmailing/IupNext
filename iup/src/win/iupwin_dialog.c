@@ -436,9 +436,10 @@ static int winDialogDrawBackground(Ihandle* ih, HDC hdc, int force_bgcolor)
   return 0;
 }
 
-static void winDialogCustomFrameHitTest(Ihandle* ih, LPARAM lp, LRESULT *result)
+static LRESULT winDialogCustomFrameHitTest(Ihandle* ih, LPARAM lp)
 {
   RECT rcWindow;
+  LRESULT result;
   int x = GET_X_LPARAM(lp);
   int y = GET_Y_LPARAM(lp);
   int w, h;
@@ -451,32 +452,32 @@ static void winDialogCustomFrameHitTest(Ihandle* ih, LPARAM lp, LRESULT *result)
 
   winDialogGetWindowDecor(ih, &border, &caption, 0);
 
-  *result = 0;
+  result = HTNOWHERE;
 
   if (x >= 0 && x < border)
   {
     if (y >= 0 && y < border)
-      *result = HTTOPLEFT;
+      result = HTTOPLEFT;
     else if (y > h - border && y <= h)
-      *result = HTBOTTOMLEFT;
+      result = HTBOTTOMLEFT;
     else if (y >= border && y <= h - border)
-      *result = HTLEFT;
+      result = HTLEFT;
   }
   else if (x > w - border && x <= w)
   {
     if (y >= 0 && y < border)
-      *result = HTTOPRIGHT;
+      result = HTTOPRIGHT;
     else if (y > h - border && y <= h)
-      *result = HTBOTTOMRIGHT;
+      result = HTBOTTOMRIGHT;
     else if (y >= border && y <= h - border)
-      *result = HTRIGHT;
+      result = HTRIGHT;
   }
   else if (x >= border && x <= w - border)
   {
     if (y >= 0 && y < border)
-      *result = HTTOP;
+      result = HTTOP;
     else if (y > h - border && y <= h)
-      *result = HTBOTTOM;
+      result = HTBOTTOM;
     else if (y >= border && y < caption + border)
     {
       int caption_left = 0, caption_right = 0;
@@ -490,23 +491,41 @@ static void winDialogCustomFrameHitTest(Ihandle* ih, LPARAM lp, LRESULT *result)
         {
           int caption_x = winDialogGetChildPosX(ih_caption);
           if (x >= caption_x && x <= caption_x + ih_caption->currentwidth)
-            *result = HTCAPTION;
-          return;
+            result = HTCAPTION;
+
+          return result;
         }
       }
 
       if (x >= border + caption_left && x <= w - border - caption_right)
-        *result = HTCAPTION;
+        result = HTCAPTION;
     }
     else if (y >= caption + border && y < h - border)
-      *result = HTCLIENT;
+      result = HTCLIENT;
   }
+
+  return result;
 }
 
 static int winDialogCustomFrameProc(Ihandle* ih, UINT msg, WPARAM wp, LPARAM lp, LRESULT *result)
 {
   switch (msg)
   {
+  case WM_CREATE:
+    {
+      RECT rcClient;
+      GetWindowRect(ih->handle, &rcClient);
+
+      /* Inform the application of the frame change. - Not sure if this is necessary */
+      SetWindowPos(ih->handle,
+                   NULL,
+                   rcClient.left, rcClient.top,
+                   rcClient.right - rcClient.left, rcClient.bottom - rcClient.top,
+                   SWP_FRAMECHANGED);
+
+      *result = 0;
+      return 1;
+    }
   case WM_NCACTIVATE:
     {
       IFni cb = (IFni)IupGetCallback(ih, "CUSTOMFRAMEACTIVATE_CB");
@@ -541,9 +560,9 @@ static int winDialogCustomFrameProc(Ihandle* ih, UINT msg, WPARAM wp, LPARAM lp,
   }
   case WM_NCHITTEST:
   {
-    winDialogCustomFrameHitTest(ih, lp, result);
+    *result = winDialogCustomFrameHitTest(ih, lp);
 
-    if (*result != 0)
+    if (*result != HTNOWHERE)
       return 1;
 
     break;
