@@ -256,7 +256,8 @@ IupCanvas</strong> must be at the top of the dialog and must have the NAME
 attribute set to CUSTOMFRAMECAPTION (since 3.22). Custom frames are supported 
 only in GTK version 3.10, so for older GTK versions we have to simulate the 
 support by removing all dialog decorations. (since 3.18) (renamed in 3.22) (GTK 
-support since 3.22)</font></p>
+support since 3.22) See the <a href="#Custom_Frame">Custom Frame</a> notes 
+bellow.</font></p>
 
 <p><strong>DROPFILESTARGET</strong> [Windows and GTK Only] (<font SIZE="3">non inheritable</font>): 
 Enable or disable the drop of files. Default: NO, but if DROPFILES_CB is 
@@ -590,6 +591,22 @@ MDI frame, other controls can also be available in the same dialog, like buttons
 and other canvases composing toolbars and status area. The following picture 
 illustrates the e components:</p>
 <p style="text-align: center"><img src="images/mdi.gif" width="504" height="435"></p>
+<h4><a name="Custom_Frame">Custom Frame</a></h4>
+<p>The use of custom frame is very popular nowadays. But the system support is 
+very poor, in Windows and in GTK. So use it carefully and consciously of its 
+glitches. </p>
+<p>In GTK is easier to understand because the frame is managed by the Window 
+Manager. So depending on the system it may be provided by the Windows Manager or 
+it is simulated by IUP removing the window decoration.</p>
+<p>In Windows, there is no function or attribute to activate this feature in 
+Win32 (maybe in WPF there is, but we are stuck with the old API). It is a 
+combination of message handling with returned values in the WindowProc. So 
+sometimes the result is not what was expected. For instance, if the application 
+is not responding the old title bar interface is drawn over the current title 
+bar area just to show the &quot;Not Responding&quot; at the window caption. We don't know 
+how to avoid that. Also the internal double buffer processing for the dialog is 
+some how affected and a sequential of full redraw of the dialog has more flicker 
+than usual. </p>
 
 <h3><a name="Examples">Examples</a></h3>
 
