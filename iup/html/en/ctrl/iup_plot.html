@@ -704,11 +704,12 @@ restored when zoom out completely.</p>
 NO. Default: NO. Default is Y oriented bottom to top, and X oriented from left 
 to right.</p>
 <p><b>AXS_XCROSSORIGIN, AXS_YCROSSORIGIN</b>: allow the axis to cross the 
-origin and to be placed inside the dataset area. Can be YES or NO. Default: NO.</p>
+origin and to be placed inside the dataset area. Can be YES or NO. Default: NO. 
+If <b>AXS_*SCALE</b> is logarithmic then it is always NO.</p>
 <p><b>AXS_XARROW, AXS_YARROW</b>: enable or disable the axis arrow display. Can be 
 YES or NO. Default: YES.</p>
 <p><b>AXS_XSCALE, AXS_YSCALE</b>: configures the scale of the respective axis. 
-Can be: LIN (linear), LOG10 (base 10), LOG2 (base 2) and LOGN (base e). Default: 
+Can be: LIN (linear), LOG10 (logarithmic base 10), LOG2 (logarithmic base 2) and LOGN (logarithmic base e). Default: 
 LIN.</p>
 <p><strong><a name="AXS_XTIPFORMAT">AXS_XTIPFORMAT</a></strong>, <strong>AXS_YTIPFORMAT</strong>: format to 
 numeric conversion when an automatic tip is shown. See <a href="#TIPFORMAT">TIPFORMAT</a> attribute. 
