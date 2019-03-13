@@ -1726,7 +1726,7 @@ static int iPlotButton_CB(Ihandle* ih, int button, int press, int x, int y, char
             ih->data->last_pos_moving = 1;
           }
           else if (ih->data->current_plot->mLegend.mPosition == IUP_PLOT_XY &&
-                   ih->data->current_plot->CheckInsideLegend(ih->data->cd_canvas, x, y))
+                   ih->data->current_plot->CheckInsideLegend(x, y))
           {
             ih->data->last_pos_x = ih->data->current_plot->mLegend.mPos.mX;
             ih->data->last_pos_y = ih->data->current_plot->mLegend.mPos.mY;
@@ -1839,7 +1839,7 @@ static int iPlotMotion_CB(Ihandle* ih, int x, int y, char *status)
       ih->data->current_plot->CheckInsideTitle(ih->data->cd_canvas, x, y))
       IupSetAttribute(ih, "CURSOR", "HAND");
   else if (ih->data->current_plot->mLegend.mPosition == IUP_PLOT_XY &&
-           ih->data->current_plot->CheckInsideLegend(ih->data->cd_canvas, x, y))
+           ih->data->current_plot->CheckInsideLegend(x, y))
            IupSetAttribute(ih, "CURSOR", "HAND");
 
   /////////////// SELECTION, TITLE MOVE and LEGEND MOVE

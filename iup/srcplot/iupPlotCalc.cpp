@@ -13,71 +13,6 @@ const double kMajorTickYInitialFac = 3.0;
 const double kRangeVerySmall = (double)1.0e-3;
 
 
-static int iPlotCountDigit(int inNum)
-{
-  int theCount = 0;
-  while (inNum != 0)
-  {
-    inNum = inNum / 10;
-    theCount++;
-  }
-  if (theCount == 0) theCount = 1;
-  return theCount;
-}
-
-static int iPlotGetPrecisionNumChar(bool inAutoSpacing, const char* inFormatString, double inMin, double inMax)
-{
-  int thePrecision = 0;
-
-  if (inAutoSpacing)
-  {
-    int theMinPrecision = iupPlotCalcPrecision(inMin);
-    int theMaxPrecision = iupPlotCalcPrecision(inMax);
-    if (theMinPrecision > theMaxPrecision)
-      thePrecision = theMinPrecision;
-    else
-      thePrecision = theMaxPrecision;
-  }
-  else
-  {
-    while (*inFormatString)
-    {
-      if (*inFormatString == '.')
-        break;
-      inFormatString++;
-    }
-
-    if (*inFormatString == '.')
-    {
-      inFormatString++;
-      iupStrToInt(inFormatString, &thePrecision);
-    }
-  }
-
-  int theMin = iupPlotRound(inMin);
-  int theMax = iupPlotRound(inMax);
-  int theNumDigitMin = iPlotCountDigit(theMin);
-  int theNumDigitMax = iPlotCountDigit(theMax);
-  if (theNumDigitMin > theNumDigitMax)
-    thePrecision += theNumDigitMin;
-  else
-    thePrecision += theNumDigitMax;
-
-  thePrecision += 3;  // sign, decimal symbol, exp 
-
-  return thePrecision;
-}
-
-void iupPlotAxis::GetTickNumberSize(cdCanvas* canvas, int *outWitdh, int *outHeight) const
-{
-  int theTickFontWidth, theTickFontHeight;
-  SetFont(canvas, mTick.mFontStyle, mTick.mFontSize);
-  cdCanvasGetTextSize(canvas, "1234567890.", &theTickFontWidth, &theTickFontHeight);
-  theTickFontWidth /= 11;
-  if (outHeight) *outHeight = theTickFontHeight;
-  if (outWitdh)  *outWitdh = theTickFontWidth * iPlotGetPrecisionNumChar(mTick.mAutoSpacing, mTick.mFormatString, mMin, mMax);
-}
-
 void iupPlot::CalculateTitlePos()
 {
   // it does not depend on theMargin
@@ -108,7 +43,7 @@ bool iupPlot::CheckInsideTitle(cdCanvas* canvas, int x, int y)
   return false;
 }
 
-bool iupPlot::CheckInsideLegend(cdCanvas* canvas, int x, int y)
+bool iupPlot::CheckInsideLegend(int x, int y)
 {
   if (mLegend.mShow)
   {
@@ -307,7 +242,7 @@ bool iupPlot::CalculateXRange(double &outXMin, double &outXMax)
 
   for (int ds = 0; ds < mDataSetListCount; ds++)
   {
-    const iupPlotDataBase *theXData = mDataSetList[ds]->GetDataX();
+    const iupPlotData *theXData = mDataSetList[ds]->GetDataX();
 
     if (theXData->GetCount() == 0)
       continue;
@@ -348,7 +283,7 @@ bool iupPlot::CalculateYRange(double &outYMin, double &outYMax)
 
   for (int ds = 0; ds < mDataSetListCount; ds++)
   {
-    const iupPlotDataBase *theYData = mDataSetList[ds]->GetDataY();
+    const iupPlotData *theYData = mDataSetList[ds]->GetDataY();
 
     double theYMin;
     double theYMax;

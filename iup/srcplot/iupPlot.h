@@ -28,6 +28,8 @@ const double kLogMinClipValue = 1e-10;  // pragmatism to avoid problems with sma
 
 int iupPlotCalcPrecision(double inValue);
 
+long iupPlotDrawGetSampleColorTable(Ihandle* ih, int index);
+
 inline int iupPlotRound(double inFloat)
 {
   return (int)(inFloat > 0 ? inFloat + 0.5 : inFloat - 0.5);
@@ -45,6 +47,34 @@ inline double iupPlotExp(double inFloat, double inBase)
   const double kExpMax = 1e10;  // max argument for pow10 function
   if (inFloat>kExpMax) inFloat = kExpMax;
   return pow(inBase, inFloat);
+}
+
+inline void iupPlotDrawSetLineStyle(cdCanvas* canvas, int inLineStyle, int inLineWidth)
+{
+  cdCanvasLineStyle(canvas, inLineStyle);
+  cdCanvasLineWidth(canvas, inLineWidth);
+}
+
+inline void iPlotSetMark(cdCanvas* canvas, int inMarkStyle, int inMarkSize)
+{
+  cdCanvasMarkType(canvas, inMarkStyle);
+  cdCanvasMarkSize(canvas, inMarkSize);
+}
+
+inline void iupPlotDrawText(cdCanvas* canvas, double inX, double inY, int inAlignment, const char* inString)
+{
+  cdCanvasTextAlignment(canvas, inAlignment);
+  cdfCanvasText(canvas, inX, inY, inString);
+}
+
+inline void iupPlotDrawRect(cdCanvas* canvas, double inX, double inY, double inW, double inH)
+{
+  cdfCanvasRect(canvas, inX, inX + inW - 1, inY, inY + inH - 1);
+}
+
+inline void iupPlotDrawBox(cdCanvas* canvas, double inX, double inY, double inW, double inH)
+{
+  cdfCanvasBox(canvas, inX, inX + inW - 1, inY, inY + inH - 1);
 }
 
 class iupPlotRect
@@ -75,16 +105,16 @@ public:
 
 class iupPlotAxis;
 
-class iupPlotTrafoBase
+class iupPlotTrafo
 {
 public:
-  virtual ~iupPlotTrafoBase() {}
+  virtual ~iupPlotTrafo() {}
   virtual double Transform(double inValue) const = 0;
   virtual double TransformBack(double inValue) const = 0;
   virtual bool Calculate(int inBegin, int inEnd, const iupPlotAxis& inAxis) = 0;
 };
 
-class iupPlotTrafoLinear : public iupPlotTrafoBase
+class iupPlotTrafoLinear : public iupPlotTrafo
 {
 public:
   iupPlotTrafoLinear() :mOffset(0), mSlope(0) {}
@@ -96,7 +126,8 @@ public:
   double mOffset;
   double mSlope;
 };
-class iupPlotTrafoLog : public iupPlotTrafoBase
+
+class iupPlotTrafoLog : public iupPlotTrafo
 {
 public:
   iupPlotTrafoLog() :mOffset(0), mSlope(0), mBase(10) {}
@@ -110,11 +141,11 @@ public:
   double mBase;
 };
 
-class iupPlotDataBase
+class iupPlotData
 {
 public:
-  iupPlotDataBase(int inSize) : mCount(0), mIsString(false) { mArray = iupArrayCreate(20, inSize); }
-  virtual ~iupPlotDataBase() { iupArrayDestroy(mArray); }
+  iupPlotData(int inSize) : mCount(0), mIsString(false) { mArray = iupArrayCreate(20, inSize); }
+  virtual ~iupPlotData() { iupArrayDestroy(mArray); }
 
   bool IsString() const { return mIsString; }
   int GetCount() const { return mCount; }
@@ -133,10 +164,10 @@ protected:
   bool mIsString;
 };
 
-class iupPlotDataReal : public iupPlotDataBase
+class iupPlotDataReal : public iupPlotData
 {
 public:
-  iupPlotDataReal() :iupPlotDataBase(sizeof(double)) { mData = (double*)iupArrayGetData(mArray); }
+  iupPlotDataReal() :iupPlotData(sizeof(double)) { mData = (double*)iupArrayGetData(mArray); }
 
   double GetSample(int inSampleIndex) const { return mData[inSampleIndex]; }
   void SetSample(int inSampleIndex, double inReal) const { mData[inSampleIndex] = inReal; }
@@ -153,10 +184,10 @@ protected:
   double* mData;
 };
 
-class iupPlotDataString : public iupPlotDataBase
+class iupPlotDataString : public iupPlotData
 {
 public:
-  iupPlotDataString() :iupPlotDataBase(sizeof(char*)) { mIsString = true; mData = (char**)iupArrayGetData(mArray); }
+  iupPlotDataString() :iupPlotData(sizeof(char*)) { mIsString = true; mData = (char**)iupArrayGetData(mArray); }
   ~iupPlotDataString();
 
   double GetSample(int inSampleIndex) const { return inSampleIndex; }
@@ -180,10 +211,10 @@ protected:
   char** mData;
 };
 
-class iupPlotDataBool : public iupPlotDataBase
+class iupPlotDataBool : public iupPlotData
 {
 public:
-  iupPlotDataBool() :iupPlotDataBase(sizeof(bool)) { mData = (bool*)iupArrayGetData(mArray); }
+  iupPlotDataBool() :iupPlotData(sizeof(bool)) { mData = (bool*)iupArrayGetData(mArray); }
 
   double GetSample(int inSampleIndex) const { return (int)mData[inSampleIndex]; }
 
@@ -218,16 +249,16 @@ public:
   void SetName(const char* inName) { if (inName == mName) return; if (mName) free(mName); mName = iupStrDup(inName); }
   const char* GetName() { return mName; }
 
-  bool FindSample(iupPlotTrafoBase *inTrafoX, iupPlotTrafoBase *inTrafoY, double inScreenX, double inScreenY, double inScreenTolerance, int &outSampleIndex, double &outX, double &outY) const;
-  bool FindPointSample(iupPlotTrafoBase *inTrafoX, iupPlotTrafoBase *inTrafoY, double inScreenX, double inScreenY, double inScreenTolerance, int &outSampleIndex, double &outX, double &outY) const;
-  bool FindMultipleBarSample(iupPlotTrafoBase *inTrafoX, iupPlotTrafoBase *inTrafoY, double inScreenX, double inScreenY, int &outSampleIndex, double &outX, double &outY) const;
-  bool FindBarSample(iupPlotTrafoBase *inTrafoX, iupPlotTrafoBase *inTrafoY, double inScreenX, double inScreenY, int &outSampleIndex, double &outX, double &outY) const;
-  bool FindHorizontalBarSample(iupPlotTrafoBase *inTrafoX, iupPlotTrafoBase *inTrafoY, double inScreenX, double inScreenY, int &outSampleIndex, double &outX, double &outY) const;
-  bool FindPieSample(iupPlotTrafoBase *inTrafoX, iupPlotTrafoBase *inTrafoY, double inScreenX, double inScreenY, int &outSampleIndex, double &outX, double &outY) const;
-  bool FindSegment(iupPlotTrafoBase *mTrafoX, iupPlotTrafoBase *mTrafoY, double inScreenX, double inScreenY, double inScreenTolerance, int &outSampleIndex1, int &outSampleIndex2, double &outX1, double &outY1, double &outX2, double &outY2) const;
+  bool FindSample(iupPlotTrafo *inTrafoX, iupPlotTrafo *inTrafoY, double inScreenX, double inScreenY, double inScreenTolerance, int &outSampleIndex, double &outX, double &outY) const;
+  bool FindPointSample(iupPlotTrafo *inTrafoX, iupPlotTrafo *inTrafoY, double inScreenX, double inScreenY, double inScreenTolerance, int &outSampleIndex, double &outX, double &outY) const;
+  bool FindMultipleBarSample(iupPlotTrafo *inTrafoX, iupPlotTrafo *inTrafoY, double inScreenX, double inScreenY, int &outSampleIndex, double &outX, double &outY) const;
+  bool FindBarSample(iupPlotTrafo *inTrafoX, iupPlotTrafo *inTrafoY, double inScreenX, double inScreenY, int &outSampleIndex, double &outX, double &outY) const;
+  bool FindHorizontalBarSample(iupPlotTrafo *inTrafoX, iupPlotTrafo *inTrafoY, double inScreenX, double inScreenY, int &outSampleIndex, double &outX, double &outY) const;
+  bool FindPieSample(iupPlotTrafo *inTrafoX, iupPlotTrafo *inTrafoY, double inScreenX, double inScreenY, int &outSampleIndex, double &outX, double &outY) const;
+  bool FindSegment(iupPlotTrafo *mTrafoX, iupPlotTrafo *mTrafoY, double inScreenX, double inScreenY, double inScreenTolerance, int &outSampleIndex1, int &outSampleIndex2, double &outX1, double &outY1, double &outX2, double &outY2) const;
 
-  void DrawData(const iupPlotTrafoBase *inTrafoX, const iupPlotTrafoBase *inTrafoY, cdCanvas* canvas, const iupPlotSampleNotify* inNotify) const;
-  void DrawDataPie(const iupPlotTrafoBase *inTrafoX, const iupPlotTrafoBase *inTrafoY, cdCanvas* canvas, const iupPlotSampleNotify* inNotify, const iupPlotAxis& inAxisY, long inBackColor) const;
+  void DrawData(const iupPlotTrafo *inTrafoX, const iupPlotTrafo *inTrafoY, cdCanvas* canvas, const iupPlotSampleNotify* inNotify) const;
+  void DrawDataPie(const iupPlotTrafo *inTrafoX, const iupPlotTrafo *inTrafoY, cdCanvas* canvas, const iupPlotSampleNotify* inNotify, const iupPlotAxis& inAxisY, long inBackColor) const;
 
   int GetCount();
   void AddSample(double inX, double inY);
@@ -246,8 +277,8 @@ public:
   void SetSampleSelection(int inSampleIndex, bool inSelected);
   void SetSampleExtra(int inSampleIndex, double inExtra);
 
-  const iupPlotDataBase* GetDataX() const { return mDataX; }
-  const iupPlotDataBase* GetDataY() const { return mDataY; }
+  const iupPlotData* GetDataX() const { return mDataX; }
+  const iupPlotData* GetDataY() const { return mDataY; }
   const iupPlotDataBool* GetSelection() const { return mSelection; }
   const iupPlotDataBool* GetSegment() const { return mSegment; }
   const iupPlotDataReal* GetExtra() const { return mExtra; }
@@ -283,8 +314,8 @@ public:
 protected:
   char* mName;
 
-  iupPlotDataBase* mDataX;
-  iupPlotDataBase* mDataY;
+  iupPlotData* mDataX;
+  iupPlotData* mDataY;
   iupPlotDataBool* mSelection;
   iupPlotDataReal* mExtra;
   iupPlotDataBool* mSegment;
@@ -293,27 +324,27 @@ protected:
   void InitSegment();
   void InitExtra();
 
-  void DrawDataLine(const iupPlotTrafoBase *inTrafoX, const iupPlotTrafoBase *inTrafoY, cdCanvas* canvas, const iupPlotSampleNotify* inNotify, bool inShowMark, bool inErrorBar) const;
-  void DrawDataMark(const iupPlotTrafoBase *inTrafoX, const iupPlotTrafoBase *inTrafoY, cdCanvas* canvas, const iupPlotSampleNotify* inNotify) const;
-  void DrawDataStem(const iupPlotTrafoBase *inTrafoX, const iupPlotTrafoBase *inTrafoY, cdCanvas* canvas, const iupPlotSampleNotify* inNotify, bool inShowMark) const;
-  void DrawDataArea(const iupPlotTrafoBase *inTrafoX, const iupPlotTrafoBase *inTrafoY, cdCanvas* canvas, const iupPlotSampleNotify* inNotify) const;
-  void DrawDataBar(const iupPlotTrafoBase *inTrafoX, const iupPlotTrafoBase *inTrafoY, cdCanvas* canvas, const iupPlotSampleNotify* inNotify) const;
-  void DrawDataHorizontalBar(const iupPlotTrafoBase *inTrafoX, const iupPlotTrafoBase *inTrafoY, cdCanvas* canvas, const iupPlotSampleNotify* inNotify) const;
-  void DrawDataMultiBar(const iupPlotTrafoBase *inTrafoX, const iupPlotTrafoBase *inTrafoY, cdCanvas* canvas, const iupPlotSampleNotify* inNotify) const;
-  void DrawSelection(const iupPlotTrafoBase *inTrafoX, const iupPlotTrafoBase *inTrafoY, cdCanvas* canvas, const iupPlotSampleNotify* inNotify) const;
-  void DrawDataStep(const iupPlotTrafoBase *inTrafoX, const iupPlotTrafoBase *inTrafoY, cdCanvas* canvas, const iupPlotSampleNotify* inNotify) const;
+  void DrawDataLine(const iupPlotTrafo *inTrafoX, const iupPlotTrafo *inTrafoY, cdCanvas* canvas, const iupPlotSampleNotify* inNotify, bool inShowMark, bool inErrorBar) const;
+  void DrawDataMark(const iupPlotTrafo *inTrafoX, const iupPlotTrafo *inTrafoY, cdCanvas* canvas, const iupPlotSampleNotify* inNotify) const;
+  void DrawDataStem(const iupPlotTrafo *inTrafoX, const iupPlotTrafo *inTrafoY, cdCanvas* canvas, const iupPlotSampleNotify* inNotify, bool inShowMark) const;
+  void DrawDataArea(const iupPlotTrafo *inTrafoX, const iupPlotTrafo *inTrafoY, cdCanvas* canvas, const iupPlotSampleNotify* inNotify) const;
+  void DrawDataBar(const iupPlotTrafo *inTrafoX, const iupPlotTrafo *inTrafoY, cdCanvas* canvas, const iupPlotSampleNotify* inNotify) const;
+  void DrawDataHorizontalBar(const iupPlotTrafo *inTrafoX, const iupPlotTrafo *inTrafoY, cdCanvas* canvas, const iupPlotSampleNotify* inNotify) const;
+  void DrawDataMultiBar(const iupPlotTrafo *inTrafoX, const iupPlotTrafo *inTrafoY, cdCanvas* canvas, const iupPlotSampleNotify* inNotify) const;
+  void DrawSelection(const iupPlotTrafo *inTrafoX, const iupPlotTrafo *inTrafoY, cdCanvas* canvas, const iupPlotSampleNotify* inNotify) const;
+  void DrawDataStep(const iupPlotTrafo *inTrafoX, const iupPlotTrafo *inTrafoY, cdCanvas* canvas, const iupPlotSampleNotify* inNotify) const;
 
-  void DrawErrorBar(const iupPlotTrafoBase *inTrafoY, cdCanvas* canvas, int index, double theY, double theScreenX) const;
-  void SetSampleExtraMarkSize(const iupPlotTrafoBase *inTrafoY, cdCanvas* canvas, int inSampleIndex) const;
+  void DrawErrorBar(const iupPlotTrafo *inTrafoY, cdCanvas* canvas, int index, double theY, double theScreenX) const;
+  void SetSampleExtraMarkSize(const iupPlotTrafo *inTrafoY, cdCanvas* canvas, int inSampleIndex) const;
 };
 
 class iupPlotTick;
 
-class iupPlotTickIterBase
+class iupPlotTickIter
 {
 public:
-  iupPlotTickIterBase() :mAxis(NULL){}
-  virtual ~iupPlotTickIterBase() {}
+  iupPlotTickIter() :mAxis(NULL){}
+  virtual ~iupPlotTickIter() {}
 
   virtual bool Init() = 0;
   virtual bool GetNextTick(double &outTick, bool &outIsMajorTick, char* outFormatString) = 0;
@@ -327,7 +358,7 @@ protected:
   const iupPlotAxis *mAxis;
 };
 
-class iupPlotTickIterLinear : public iupPlotTickIterBase
+class iupPlotTickIterLinear : public iupPlotTickIter
 {
 public:
   iupPlotTickIterLinear() :mCurrentTick(0), mCount(0), mDelta(0){}
@@ -343,7 +374,7 @@ protected:
   double mDelta;
 };
 
-class iupPlotTickIterLog : public iupPlotTickIterBase
+class iupPlotTickIterLog : public iupPlotTickIter
 {
 public:
   iupPlotTickIterLog() :mCurrentTick(0), mCount(0), mDelta(0){}
@@ -474,8 +505,8 @@ public:
 
   iupPlotTick mTick;
 
-  iupPlotTrafoBase *mTrafo;
-  iupPlotTickIterBase *mTickIter;
+  iupPlotTrafo *mTrafo;
+  iupPlotTickIter *mTickIter;
 
 protected:
   char* mLabel;
@@ -508,8 +539,8 @@ public:
     : mShowX(false), mShowY(false), mColor(cdEncodeColor(200, 200, 200)),
     mLineStyle(CD_CONTINUOUS), mLineWidth(1), mMajor(inMajor) {}
 
-  bool DrawX(iupPlotTickIterBase* inTickIter, iupPlotTrafoBase* inTrafo, const iupPlotRect &inRect, cdCanvas* canvas) const;
-  bool DrawY(iupPlotTickIterBase* inTickIter, iupPlotTrafoBase* inTrafo, const iupPlotRect &inRect, cdCanvas* canvas) const;
+  bool DrawX(iupPlotTickIter* inTickIter, iupPlotTrafo* inTrafo, const iupPlotRect &inRect, cdCanvas* canvas) const;
+  bool DrawY(iupPlotTickIter* inTickIter, iupPlotTrafo* inTrafo, const iupPlotRect &inRect, cdCanvas* canvas) const;
 
   bool mMajor;
   bool mShowX;
@@ -633,16 +664,16 @@ public:
   bool DrawLegend(const iupPlotRect &inRect, cdCanvas* canvas, iupPlotRect &ioPos) const;
   bool DrawSampleColorLegend(iupPlotDataSet *inData, const iupPlotRect &inRect, cdCanvas* canvas, iupPlotRect &ioPos) const;
   void DrawCrossHairH(const iupPlotRect &inRect, cdCanvas* canvas) const;
-  void DrawCrossSamplesH(const iupPlotRect &inRect, const iupPlotDataBase *inXData, const iupPlotDataBase *inYData, cdCanvas* canvas) const;
+  void DrawCrossSamplesH(const iupPlotRect &inRect, const iupPlotData *inXData, const iupPlotData *inYData, cdCanvas* canvas) const;
   void DrawCrossHairV(const iupPlotRect &inRect, cdCanvas* canvas) const;
-  void DrawCrossSamplesV(const iupPlotRect &inRect, const iupPlotDataBase *inXData, const iupPlotDataBase *inYData, cdCanvas* canvas) const;
+  void DrawCrossSamplesV(const iupPlotRect &inRect, const iupPlotData *inXData, const iupPlotData *inYData, cdCanvas* canvas) const;
   void DrawInactive(cdCanvas* canvas) const;
 
   /*********************************/
 
   void CalculateTitlePos();
   bool CheckInsideTitle(cdCanvas* canvas, int x, int y);
-  bool CheckInsideLegend(cdCanvas* canvas, int x, int y);
+  bool CheckInsideLegend(int x, int y);
   void CalculateMargins(cdCanvas* canvas);
   bool CalculateAxisRange();
   bool CalculateXRange(double &outXMin, double &outXMax);

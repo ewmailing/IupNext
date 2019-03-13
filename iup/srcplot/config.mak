@@ -28,7 +28,7 @@ ifdef USE_CONTEXTPLUS
   DEFINES += USE_CONTEXTPLUS
 endif
 
-SRC = iup_plot.cpp  iupPlotCalc.cpp iupPlot.cpp iupPlotDraw.cpp iupPlotTick.cpp iup_plot_attrib.cpp
+SRC = iup_plot_ctrl.cpp iup_plot_attrib.cpp iupPlot.cpp iupPlotCalc.cpp iupPlotDraw.cpp iupPlotAxis.cpp iupPlotData.cpp iupPlotTick.cpp
 
 ifneq ($(findstring MacOS, $(TEC_UNAME)), )
   INCLUDES += $(X11_INC)
