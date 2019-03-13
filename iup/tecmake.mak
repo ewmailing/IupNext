@@ -299,6 +299,9 @@ endif
 
 ifdef GTK_DEFAULT
   ifndef USE_GTK2
+    ifneq ($(findstring Linux5, $(TEC_UNAME)), )
+      USE_GTK3 = Yes
+    endif
     ifneq ($(findstring Linux4, $(TEC_UNAME)), )
       USE_GTK3 = Yes
     endif
@@ -1178,6 +1181,9 @@ ifdef USE_CD
   ifneq ($(findstring Linux4, $(TEC_UNAME)), )
     LIBS += fontconfig
   endif
+  ifneq ($(findstring Linux5, $(TEC_UNAME)), )
+    LIBS += fontconfig
+  endif
   ifneq ($(findstring cygw, $(TEC_UNAME)), )
     LIBS += fontconfig
   endif
@@ -1213,18 +1219,22 @@ ifdef USE_IM
 endif
 
 ifdef LINK_WEBKIT
-  ifneq ($(findstring Linux4, $(TEC_UNAME)), )
+  ifneq ($(findstring Linux5, $(TEC_UNAME)), )
     LIBS += webkitgtk-3.0
   else 
-    ifneq ($(findstring Linux3, $(TEC_UNAME)), )
-      ifdef USE_GTK3
-        LIBS += webkitgtk-3.0
+    ifneq ($(findstring Linux4, $(TEC_UNAME)), )
+      LIBS += webkitgtk-3.0
+    else 
+      ifneq ($(findstring Linux3, $(TEC_UNAME)), )
+        ifdef USE_GTK3
+          LIBS += webkitgtk-3.0
+        else
+          LIBS += webkitgtk-1.0
+        endif
       else
-        LIBS += webkitgtk-1.0
+        LIBS += webkit-1.0
       endif
-    else
-      LIBS += webkit-1.0
-    endif
+    endif 
   endif
 endif
 
