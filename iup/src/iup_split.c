@@ -368,6 +368,9 @@ static char* iSplitGetClientSizeAttrib(Ihandle* ih)
 
 static int iSplitSetColorAttrib(Ihandle* ih, const char* value)
 {
+  if (value != NULL && ih->data->showgrip == 0)
+    IupSetAttribute(ih->firstchild, "STYLE", "FILL");
+
   IupSetStrAttribute(ih->firstchild, "COLOR", value);
   return 0;
 }
@@ -510,7 +513,11 @@ static int iSplitSetShowGripAttrib(Ihandle* ih, const char* value)
     }
     else
     {
-      IupSetAttribute(ih->firstchild, "STYLE", "FILL");
+      if (iupAttribGet(ih, "COLOR") != NULL)
+        IupSetAttribute(ih->firstchild, "STYLE", "FILL");
+      else
+        IupSetAttribute(ih->firstchild, "STYLE", "EMPTY");
+
       ih->data->showgrip = 0;
 
       if (ih->data->barsize == 5)

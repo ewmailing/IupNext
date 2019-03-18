@@ -72,7 +72,8 @@ This will constrain the interactive change of the bar handler. Default:
 <p><strong>SHOWGRIP</strong> (<font SIZE="3">non inheritable</font>): Shows the 
 bar grip affordance. Default: YES. When set to NO, the BARSIZE is set to 3. When 
 set to NO, COLOR is used to fill the grip area (since 
-3.11.1). If set to "LINES" then instead of the traditional grip appearance, it 
+3.11.1) if defined, if COLOR is not defined the area is filled with the parent 
+background color. If set to "LINES" then instead of the traditional grip appearance, it 
 will be two parallel lines (since 3.11.1). </p>
 <p><strong>VALUE</strong> (<font SIZE="3">non inheritable</font>): The proportion of the left or 
 top (child1) client area relative to the full available area. It is an 
