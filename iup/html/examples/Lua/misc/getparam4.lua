@@ -6,7 +6,7 @@ Input File %f[,,,]
 Output File %f[,,,]
 	]],"*","*")
 	
-if res ~= 0 then	
+if res then	
 	iup.Message("Files",inf .. outf)
 end
 

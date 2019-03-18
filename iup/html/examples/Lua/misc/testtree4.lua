@@ -1,6 +1,8 @@
 require 'iuplua'
 require 'iupluacontrols'
 tree = iup.tree{}
+f = iup.dialog{tree; title = "Tree Test"}
+f:map()
 
 function assoc (idx,value)
     iup.TreeSetTableId(tree,idx,{value})
@@ -38,8 +40,6 @@ end
 function tree:selection_cb (id,woz)
     if woz == 1 then dump('select',id) end
 end
-
-f = iup.dialog{tree; title = "Tree Test"}
 
 f:show()
 

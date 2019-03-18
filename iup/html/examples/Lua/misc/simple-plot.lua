@@ -27,7 +27,7 @@ local m,c = least_squares(xx,yy)
 
 function eval (x) return m*x + c end
 
-local plot = iupx.pplot {TITLE = "Simple Data",AXS_YMIN=0,GRID="YES"}
+local plot = iupx.plot {TITLE = "Simple Data",AXS_YMIN=0,GRID="YES"}
 
 -- the original data
 plot:AddSeries(xx,yy,{DS_MODE="MARK",DS_MARKSTYLE="CIRCLE"})

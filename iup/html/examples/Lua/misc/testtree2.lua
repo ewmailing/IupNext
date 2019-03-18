@@ -1,6 +1,8 @@
 require 'iuplua'
 require 'iupluacontrols'
 tree = iup.tree{}
+f = iup.dialog{tree; title = "Tree Test"}
+f:map()
 
 local id = 0
 local text
@@ -43,8 +45,6 @@ end
 function tree:selection_cb (id,woz)
     if woz == 1 then dump('select',id) end
 end
-
-f = iup.dialog{tree; title = "Tree Test"}
 
 f:show()
 

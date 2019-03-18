@@ -1,9 +1,9 @@
 require 'iuplua'
-require "iuplua_pplot"
+require "iuplua_plot"
 
-iupxpplot = {}
+iupxplot = {}
 
-function iupxpplot.pplot (tbl)
+function iupxplot.plot (tbl)
 
 	if tbl.AXS_BOUNDS then
 		local t = tbl.AXS_BOUNDS
@@ -23,11 +23,11 @@ function iupxpplot.pplot (tbl)
     if tbl.AXS_XMIN then tbl.AXS_XAUTOMIN = "NO" end
     if tbl.AXS_XMAX then tbl.AXS_XAUTOMAX = "NO" end
 
-    local plot = iup.pplot(tbl)
-    plot.End = iup.PPlotEnd
-    plot.Add = iup.PPlotAdd
+    local plot = iup.plot(tbl)
+    plot.End = iup.PlotEnd
+    plot.Add = iup.PlotAdd
     function plot.Begin ()
-        return iup.PPlotBegin(plot,0)
+        return iup.PlotBegin(plot,0)
     end
 
     function plot:AddSeries(xvalues,yvalues,options)

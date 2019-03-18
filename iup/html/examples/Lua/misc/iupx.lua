@@ -31,10 +31,10 @@ function iupx.GetString (title,prompt,default)
 	return iup.GetParam(title, nil,prompt.." %s\n",default or "")
 end
 
-function iupx.pplot (tbl)
+function iupx.plot (tbl)
 	-- only load this functionality on demand! ---
-	require 'iupxpplot'
-	return iupxpplot.pplot(tbl)
+	require 'iupxplot'
+	return iupxplot.plot(tbl)
 end
 
 
