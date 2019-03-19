@@ -561,6 +561,9 @@ static int winCanvasMsgProc(Ihandle* ih, UINT msg, WPARAM wp, LPARAM lp, LRESULT
         iupwinRefreshCursor(ih);
       }
 
+      if (msg == WM_LBUTTONDOWN && iupAttribGetBoolean(ih, "DRAGSOURCE"))
+        iupwinDragStart(ih);
+
       if (msg==WM_XBUTTONDOWN || msg==WM_XBUTTONDBLCLK)
         *result = 1;
       else
