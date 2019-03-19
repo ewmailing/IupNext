@@ -77,8 +77,8 @@ static int iDropButtonRedraw_CB(Ihandle* ih)
   int arrow_images = iupAttribGetInt(ih, "ARROWIMAGES");
   int focus_feedback = iupAttribGetBoolean(ih, "FOCUSFEEDBACK");
   IdrawCanvas* dc = iupdrvDrawCreateCanvas(ih);
-  int make_inactive = 0;
-  char* bgcolor_button, *bgcolor_arrow;
+  int make_inactive = 0, arrow_x, arrow_y;
+  char* bgcolor_button, *bgcolor_arrow, *arrow_align;
 
   iupDrawParentBackground(dc, ih);
 
@@ -231,15 +231,24 @@ static int iDropButtonRedraw_CB(Ihandle* ih)
                        fgcolor, bgcolor_button, active);
   }
 
+  arrow_x = ih->currentwidth - 1 - ih->data->arrow_size - border_width + ih->data->arrow_padding;
+  arrow_y = (ih->currentheight - ih->data->arrow_size) / 2 + ih->data->arrow_padding;
+  arrow_align = iupAttribGet(ih, "ARROWALIGN");
+  if (arrow_align)
+  {
+    if (iupStrEqualNoCase(arrow_align, "TOP"))
+      arrow_y = ih->data->arrow_padding;
+    else if (iupStrEqualNoCase(arrow_align, "BOTTOM"))
+      arrow_y = ih->currentheight - ih->data->arrow_size - ih->data->arrow_padding;
+  }
+
   if (arrow_images)
   {
     int make_inactive;
     const char* image;
 
     image = iupFlatGetImageName(ih, "ARROWIMAGE", NULL, arrow_active ? ih->data->pressed : 0, arrow_active ? ih->data->highlighted : 0, arrow_active, &make_inactive);
-    iupdrvDrawImage(dc, image, make_inactive, bgcolor,
-                    ih->currentwidth - 1 - ih->data->arrow_size - border_width + ih->data->arrow_padding, 
-                    (ih->currentheight - ih->data->arrow_size) / 2 + ih->data->arrow_padding, -1, -1);
+    iupdrvDrawImage(dc, image, make_inactive, bgcolor, arrow_x, arrow_y, -1, -1);
   }
   else
   {
@@ -247,9 +256,7 @@ static int iDropButtonRedraw_CB(Ihandle* ih)
     if (!arrow_color)
       arrow_color = fgcolor;
     
-    iupFlatDrawArrow(dc, ih->currentwidth - 1 - ih->data->arrow_size - border_width + ih->data->arrow_padding,
-                         (ih->currentheight - ih->data->arrow_size)/2 + ih->data->arrow_padding,
-                         ih->data->arrow_size - 2 * ih->data->arrow_padding, arrow_color, bgcolor_arrow, arrow_active, IUPDRAW_ARROW_BOTTOM);
+    iupFlatDrawArrow(dc, arrow_x, arrow_y, ih->data->arrow_size - 2 * ih->data->arrow_padding, arrow_color, bgcolor_arrow, arrow_active, IUPDRAW_ARROW_BOTTOM);
   }
 
   if (ih->data->has_focus && focus_feedback)
@@ -924,6 +931,7 @@ Iclass* iupDropButtonNewClass(void)
   iupClassRegisterAttribute(ic, "ARROWPADDING", iDropButtonGetArrowPaddingAttrib, iDropButtonSetArrowPaddingAttrib, IUPAF_SAMEASSYSTEM, "4", IUPAF_NO_INHERIT);
   iupClassRegisterAttribute(ic, "ARROWACTIVE", NULL, NULL, IUPAF_SAMEASSYSTEM, "Yes", IUPAF_NO_INHERIT);
   iupClassRegisterAttribute(ic, "ARROWCOLOR", NULL, NULL, NULL, NULL, IUPAF_NO_INHERIT);
+  iupClassRegisterAttribute(ic, "ARROWALIGN", NULL, NULL, IUPAF_SAMEASSYSTEM, "CENTER", IUPAF_IHANDLENAME | IUPAF_NO_DEFAULTVALUE | IUPAF_NO_INHERIT);
 
   iupClassRegisterAttribute(ic, "ARROWIMAGE", NULL, NULL, NULL, NULL, IUPAF_IHANDLENAME | IUPAF_NO_DEFAULTVALUE | IUPAF_NO_INHERIT);
   iupClassRegisterAttribute(ic, "ARROWIMAGEPRESS", NULL, NULL, NULL, NULL, IUPAF_IHANDLENAME | IUPAF_NO_DEFAULTVALUE | IUPAF_NO_INHERIT);
