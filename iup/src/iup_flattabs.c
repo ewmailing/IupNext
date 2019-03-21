@@ -1200,7 +1200,7 @@ static void iFlatTabsToggleExpand(Ihandle* ih)
     iupAttribSetId(ih, "EXTRAIMAGE", expand_pos, "IupFlatExpandDown");
     iupAttribSet(ih, "EXPANDBUTTONSTATE", "No");
     IupSetStrf(ih, "MAXSIZE", "x%d", title_height);
-    iupAttribSetInt(ih, "_IUP_FULLHEIGHT", ih->currentheight);
+    iupAttribSetInt(ih, "_IUPFTABS_FULLHEIGHT", ih->currentheight);
     IupRefresh(ih);
   }
   else
@@ -1208,7 +1208,7 @@ static void iFlatTabsToggleExpand(Ihandle* ih)
     iupAttribSetId(ih, "EXTRAIMAGE", expand_pos, "IupFlatExpandUp");
     iupAttribSet(ih, "EXPANDBUTTONSTATE", "Yes");
     IupSetAttribute(ih, "MAXSIZE", NULL);
-    iupAttribSet(ih, "_IUP_FULLHEIGHT", NULL);
+    iupAttribSet(ih, "_IUPFTABS_FULLHEIGHT", NULL);
     IupRefresh(ih);
   }
 }
@@ -1251,7 +1251,7 @@ static int iFlatTabsButton_CB(Ihandle* ih, int button, int pressed, int x, int y
 
         if (iupAttribGetBoolean(ih, "EXPANDBUTTON") && !iupAttribGetBoolean(ih, "EXPANDBUTTONSTATE"))
         {
-          ih->currentheight = iupAttribGetInt(ih, "_IUP_FULLHEIGHT");
+          ih->currentheight = iupAttribGetInt(ih, "_IUPFTABS_FULLHEIGHT");
           IupSetAttribute(ih, "ZORDER", "TOP");
           iupLayoutUpdate(ih);
         }
@@ -1322,7 +1322,11 @@ static int iFlatTabsButton_CB(Ihandle* ih, int button, int pressed, int x, int y
             IupRefreshChildren(ih);
           }
           else if (ret == IUP_DEFAULT) /* hide tab and children */
-            IupSetAttributeId(ih, "TABVISIBLE", tab_found, "No");
+          {
+            iupAttribSetStrId(ih, "TABVISIBLE", tab_found, "No");
+            iFlatTabsCheckCurrentTab(ih, child, tab_found, 0);
+            iupdrvPostRedraw(ih);
+          }
           else
             iupdrvPostRedraw(ih);
         }
@@ -1396,7 +1400,7 @@ static int iFlatTabsCheckTip(Ihandle* ih, const char* new_tip)
 
 static void iFlatTabsResetTip(Ihandle* ih)
 {
-  char* tip = iupAttribGet(ih, "TABSTIP");
+  char* tip = iupAttribGet(ih, "_IUPFTABS_TIP");
   if (!iFlatTabsCheckTip(ih, tip))
     iFlatTabsSetTipVisible(ih, tip);
 }
@@ -1693,7 +1697,7 @@ static int iFlatTabsSetTabVisibleAttrib(Ihandle* ih, int pos, const char* value)
   {
     if (!iupStrBoolean(value))
     {
-      iupAttribSetStrId(ih, "TABVISIBLE", pos, value);
+      iupAttribSetStrId(ih, "TABVISIBLE", pos, "No");
       iFlatTabsCheckCurrentTab(ih, child, pos, 0);
     }
   }
@@ -1733,7 +1737,7 @@ static int iFlatTabsSetBgColorAttrib(Ihandle* ih, const char* value)
 
 static int iFlatTabsSetTipAttrib(Ihandle* ih, const char* value)
 {
-  iupAttribSetStr(ih, "TABSTIP", value);
+  iupAttribSetStr(ih, "_IUPFTABS_TIP", value);
   return iupdrvBaseSetTipAttrib(ih, value);
 }
 
@@ -2012,7 +2016,7 @@ static int iFlatTabsConvertXYToPos(Ihandle* ih, int x, int y)
     return -1;
 }
 
-#define ATTRIB_ID_COUNT 8
+#define ATTRIB_ID_COUNT 9
 const static char* flattabs_attrib_id[ATTRIB_ID_COUNT] = {
   "TABTITLE",
   "TABIMAGE",
@@ -2021,7 +2025,8 @@ const static char* flattabs_attrib_id[ATTRIB_ID_COUNT] = {
   "TABFORECOLOR",
   "TABBACKCOLOR",
   "TABHIGHCOLOR",
-  "TABFONT"
+  "TABFONT",
+  "TABTIP"
 };
 
 static void iFlatTabsChildAddedMethod(Ihandle* ih, Ihandle* child)
@@ -2047,7 +2052,7 @@ static void iFlatTabsChildAddedMethod(Ihandle* ih, Ihandle* child)
   /* transfer form child to Id based attribute */
   for (i = 0; i < ATTRIB_ID_COUNT; i++)
   {
-    if (!iupAttribGetId(ih, flattabs_attrib_id[i], pos))
+    if (!iupAttribGetId(ih, flattabs_attrib_id[i], pos)) // if not already defined at the tabs, use from child
     {
       char* value = iupAttribGet(child, flattabs_attrib_id[i]);
       if (value)
@@ -2081,7 +2086,7 @@ static void iFlatTabsChildRemovedMethod(Ihandle* ih, Ihandle* child, int pos)
 
   iFlatTabsCheckCurrentTab(ih, child, pos, 1);
 
-  count = IupGetChildCount(ih);
+  count = IupGetChildCount(ih);  // does not include the removed tab
 
   /* if removed before last tab, must update Id based attributes */
   for (p = pos; p < count; p++)
@@ -2092,6 +2097,12 @@ static void iFlatTabsChildRemovedMethod(Ihandle* ih, Ihandle* child, int pos)
       iupAttribSetStrId(ih, flattabs_attrib_id[i], p, value);
       iupAttribSetStrId(ih, flattabs_attrib_id[i], p + 1, NULL);
     }
+  }   
+
+  if (pos == count)
+  {
+    for (i = 0; i < ATTRIB_ID_COUNT; i++)
+      iupAttribSetStrId(ih, flattabs_attrib_id[i], pos, NULL);
   }
 
   if (ih->handle)
