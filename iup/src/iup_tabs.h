@@ -22,6 +22,7 @@ void iupTabsCheckCurrentTab(Ihandle* ih, int pos, int removed);
 
 int iupdrvTabsIsTabVisible(Ihandle* child, int pos);
 int iupdrvTabsExtraDecor(Ihandle* ih);
+int iupdrvTabsExtraMargin(void);
 int iupdrvTabsGetLineCountAttrib(Ihandle* ih);
 void iupdrvTabsSetCurrentTab(Ihandle* ih, int pos);
 int iupdrvTabsGetCurrentTab(Ihandle* ih);

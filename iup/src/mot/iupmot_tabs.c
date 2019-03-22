@@ -36,6 +36,11 @@
 #include "iupmot_color.h"
 
 
+int iupdrvTabsExtraMargin(void)
+{
+  return 0;
+}
+
 int iupdrvTabsExtraDecor(Ihandle* ih)
 {
   (void)ih;

@@ -36,6 +36,11 @@ int iupdrvTabsExtraDecor(Ihandle* ih)
   return 0;
 }
 
+int iupdrvTabsExtraMargin(void)
+{
+  return 0;
+}
+
 int iupdrvTabsGetLineCountAttrib(Ihandle* ih)
 {
   (void)ih;

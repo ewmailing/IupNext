@@ -285,6 +285,13 @@ static int winTabsGetPageWindowPos(Ihandle* ih, HWND tab_container)
   return -1;
 }
 
+int iupdrvTabsExtraMargin(void)
+{
+  if (iupwin_comctl32ver6 && iupwinIsWin10OrNew())
+    return 2;
+  return 0;
+}
+
 int iupdrvTabsExtraDecor(Ihandle* ih)
 {
   (void)ih;
@@ -379,6 +386,26 @@ static int winTabsGetImageIndex(Ihandle* ih, const char* name)
   bmp_array_data[i] = bmp;
   ret = ImageList_Add(image_list, bmp, NULL);  /* the bmp is duplicated at the list */
   return ret;
+}
+
+static void winTabGetPageWindowRect(Ihandle* ih, RECT *rect)
+{
+  /* Calculate the display rectangle, assuming the
+     tab control is the size of the client area. */
+#if 0
+  GetClientRect(ih->handle, rect);
+  SendMessage(ih->handle, TCM_ADJUSTRECT, FALSE, (LPARAM)rect);
+#else
+  {
+    int x, y, w, h;
+    IupGetIntInt(ih, "CLIENTOFFSET", &x, &y);
+    IupGetIntInt(ih, "CLIENTSIZE", &w, &h);
+    rect->left = x;
+    rect->right = x + w;
+    rect->top = y;
+    rect->bottom = y + h;
+  }
+#endif
 }
 
 static void winTabSetPageWindowPos(HWND tab_container, RECT *rect)
@@ -520,11 +547,7 @@ static void winTabsInsertItem(Ihandle* ih, Ihandle* child, int pos, HWND tab_con
   tie.lParam = (LPARAM)tab_container;
   SendMessage(ih->handle, TCM_INSERTITEM, p, (LPARAM)&tie);
 
-  /* Calculate the display rectangle, assuming the
-  tab control is the size of the client area. */
-  GetClientRect(ih->handle, &rect);
-  SendMessage(ih->handle, TCM_ADJUSTRECT, FALSE, (LPARAM)&rect);
-
+  winTabGetPageWindowRect(ih, &rect);
   winTabSetPageWindowPos(tab_container, &rect);
 
   if (ih->data->is_multiline)
@@ -569,9 +592,7 @@ static void winTabsDeleteItem(Ihandle* ih, int p, HWND tab_container)
     if (rowcount != old_rowcount)
     {
       RECT rect;
-      GetClientRect(ih->handle, &rect);
-      SendMessage(ih->handle, TCM_ADJUSTRECT, FALSE, (LPARAM)&rect);
-
+      winTabGetPageWindowRect(ih, &rect);
       winTabsPlacePageWindows(ih, &rect);
 
       IupRefreshChildren(ih);
@@ -919,9 +940,7 @@ static int winTabsMsgProc(Ihandle* ih, UINT msg, WPARAM wp, LPARAM lp, LRESULT *
     WNDPROC oldProc = (WNDPROC)IupGetCallback(ih, "_IUPWIN_OLDWNDPROC_CB");
     CallWindowProc(oldProc, ih->handle, msg, wp, lp);
 
-    SetRect(&rect, 0, 0, LOWORD(lp), HIWORD(lp));
-    SendMessage(ih->handle, TCM_ADJUSTRECT, FALSE, (LPARAM)&rect);
-
+    winTabGetPageWindowRect(ih, &rect);
     winTabsPlacePageWindows(ih, &rect);
 
     *result = 0;

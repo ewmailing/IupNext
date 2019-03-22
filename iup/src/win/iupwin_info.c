@@ -77,6 +77,11 @@ int iupwinIsWin8OrNew(void)
   return iupwinCheckWindowsVersion(6, 2);
 }
 
+int iupwinIsWin10OrNew(void)
+{
+  return iupwinCheckWindowsVersion(6, 4);
+}
+
 char *iupwinGetSystemLanguage(void)
 {
   LANGID id = GetSystemDefaultUILanguage();

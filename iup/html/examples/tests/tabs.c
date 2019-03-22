@@ -421,7 +421,6 @@ static Ihandle* CreateTabs(int tab)
   IupSetAttribute(vboxB, "TITLE", "TABS BB");
   IupSetAttribute(vboxC, "TITLE", "TABS CCC");
 //  IupSetAttribute(vboxC, "ACTIVE", "NO");
-  IupSetAttribute(vboxF, "TABSIZE", "100");
   IupSetAttribute(vboxI, "BGCOLOR", "32 192 32");
 
   tabs = IupTabs(vboxA, vboxB, vboxC, vboxD, vboxE, vboxF, vboxG, vboxH, vboxI, NULL);
@@ -439,10 +438,11 @@ static Ihandle* CreateTabs(int tab)
 
   // In Windows, must be set before map
 //  IupSetAttribute(tabs, "MULTILINE", "YES");
-//  IupSetAttribute(tabs, "TABTYPE", "LEFT");
-//  IupSetAttribute(tabs, "TABTYPE", "RIGHT");
+  //IupSetAttribute(tabs, "TABTYPE", "LEFT");
+  //IupSetAttribute(tabs, "TABTYPE", "RIGHT");
 //  IupSetAttribute(tabs, "TABTYPE", "BOTTOM");
 //  IupSetAttribute(tabs, "TABORIENTATION", "VERTICAL");
+//    IupSetAttribute(tabs, "TABORIENTATION", "HORIZONTAL");
 
 //  IupSetAttribute(tabs, "SHOWCLOSE", "YES");
   
