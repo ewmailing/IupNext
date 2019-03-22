@@ -330,6 +330,7 @@ static void iDropButtonShowDrop(Ihandle* ih)
     }
 
     iupdrvRedrawNow(ih);
+    IupSetAttribute(ih->data->dropdialog, "SIZE", NULL);
     IupShowXY(ih->data->dropdialog, x, y);
   }
   else
