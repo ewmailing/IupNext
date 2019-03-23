@@ -330,7 +330,11 @@ static void iDropButtonShowDrop(Ihandle* ih)
     }
 
     iupdrvRedrawNow(ih);
-    IupSetAttribute(ih->data->dropdialog, "SIZE", NULL);
+
+    /* force current size to be updated during Show */
+    ih->data->dropdialog->currentwidth = 0;
+    ih->data->dropdialog->currentheight = 0;
+
     IupShowXY(ih->data->dropdialog, x, y);
   }
   else
