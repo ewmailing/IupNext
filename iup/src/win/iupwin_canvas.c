@@ -105,7 +105,7 @@ static int winCanvasSetDXAttrib(Ihandle* ih, const char *value)
     {
       if (iupAttribGetBoolean(ih, "XAUTOHIDE"))
       {
-        if (winCanvasIsScrollbarVisible(ih, SB_HORZ))
+        if (winCanvasIsScrollbarVisible(ih, SB_HORZ) && iupdrvIsVisible(ih))
           iupAttribSet(ih, "SB_RESIZE", "YES");
         iupAttribSet(ih, "XHIDDEN", "YES");
         ShowScrollBar(ih->handle, SB_HORZ, FALSE);
@@ -123,7 +123,7 @@ static int winCanvasSetDXAttrib(Ihandle* ih, const char *value)
     {
       if (iupAttribGetBoolean(ih, "XAUTOHIDE"))
       {
-        if (!winCanvasIsScrollbarVisible(ih, SB_HORZ))
+        if (!winCanvasIsScrollbarVisible(ih, SB_HORZ) && iupdrvIsVisible(ih))
           iupAttribSet(ih, "SB_RESIZE", "YES");
         iupAttribSet(ih, "XHIDDEN", "NO");
         ShowScrollBar(ih->handle, SB_HORZ, TRUE);
@@ -167,7 +167,7 @@ static int winCanvasSetDYAttrib(Ihandle* ih, const char *value)
     {
       if (iupAttribGetBoolean(ih, "YAUTOHIDE"))
       {
-        if (winCanvasIsScrollbarVisible(ih, SB_VERT))
+        if (winCanvasIsScrollbarVisible(ih, SB_VERT) && iupdrvIsVisible(ih))
           iupAttribSet(ih, "SB_RESIZE", "YES");
         iupAttribSet(ih, "YHIDDEN", "YES");
         ShowScrollBar(ih->handle, SB_VERT, FALSE);
@@ -186,7 +186,7 @@ static int winCanvasSetDYAttrib(Ihandle* ih, const char *value)
     {
       if (iupAttribGetBoolean(ih, "YAUTOHIDE"))
       {
-        if (!winCanvasIsScrollbarVisible(ih, SB_VERT))
+        if (!winCanvasIsScrollbarVisible(ih, SB_VERT) && iupdrvIsVisible(ih))
           iupAttribSet(ih, "SB_RESIZE", "YES");
         iupAttribSet(ih, "YHIDDEN", "NO");
         ShowScrollBar(ih->handle, SB_VERT, TRUE);

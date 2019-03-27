@@ -1562,11 +1562,14 @@ void iupMatrixDrawCB(Ihandle* ih)
   /* called only from the ACTION callback */
   if (ih->data->need_calcsize)
   {
-    int sb_resize = iupMatrixAuxCalcSizes(ih);  /* does not use cd_canvas, no need to Activate, */
+    int sb_resize = iupMatrixAuxCalcSizes(ih);  /* does not use cd_canvas, can be done before Activate, */
     if (sb_resize)                              /* but it can trigger a resize+redraw event */
     {
-      if (!iMatrixDrawHasFlatScrollBar(ih))
-        return;
+      /* if (!iMatrixDrawHasFlatScrollBar(ih)) */
+      {
+        /* TODO: this is not working in all situations, so it is disabled. */
+        /* return; */
+      }
     }
   }
 
