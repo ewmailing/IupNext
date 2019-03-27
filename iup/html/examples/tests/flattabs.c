@@ -419,7 +419,6 @@ static Ihandle* CreateTabs(int tab)
   IupSetAttribute(vboxB, "TITLE", "TABS BB");
   IupSetAttribute(vboxC, "TITLE", "TABS CCC");
 //  IupSetAttribute(vboxC, "ACTIVE", "NO");
-  IupSetAttribute(vboxF, "TABSIZE", "100");
   IupSetAttribute(vboxI, "BGCOLOR", "32 192 32");
 
   tabs = IupFlatTabs(vboxA, vboxB, vboxC, vboxD, vboxE, vboxF, vboxG, vboxH, vboxI, NULL);

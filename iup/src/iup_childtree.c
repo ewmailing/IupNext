@@ -71,7 +71,7 @@ static void iChildTreeDetach(Ihandle* parent, Ihandle* child)
 
 void IupDetach(Ihandle *child)
 {
-  Ihandle *parent, *top_parent;
+  Ihandle *parent;
   int pos;
 
   iupASSERT(iupObjectCheck(child));
@@ -85,21 +85,11 @@ void IupDetach(Ihandle *child)
     return;
 
   parent = child->parent;
-  top_parent = iupChildTreeGetNativeParent(child);
 
   pos = IupGetChildPos(parent, child);
 
   iChildTreeDetach(parent, child);
   iupClassObjectChildRemoved(parent, child, pos);
-
-  /* notify also internal parents up to the native parent 
-     TODO: this is weird, do we still need it? */
-  while (parent && parent != top_parent)
-  {
-    parent = parent->parent;
-    if (parent)
-      iupClassObjectChildRemoved(parent, child, pos);
-  }
 }
 
 #ifdef IUP_ASSERT
@@ -212,7 +202,6 @@ Ihandle* IupInsert(Ihandle* parent, Ihandle* ref_child, Ihandle* child)
     return NULL;
   }
 #endif
-
 
   if (parent->iclass->childtype == IUP_CHILDNONE)
     return NULL;
