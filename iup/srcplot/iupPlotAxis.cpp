@@ -177,6 +177,11 @@ void iupPlotAxis::Init()
   }
 
   mTickIter->SetAxis(this);
+
+  if (mPosition == IUP_PLOT_START)
+    mReverseTicksLabel = false;
+  if (mPosition == IUP_PLOT_END)
+    mReverseTicksLabel = true;
 }
 
 void iupPlotAxis::GetTickNumberSize(cdCanvas* canvas, int *outWitdh, int *outHeight) const
@@ -393,8 +398,6 @@ static void iPlotDrawArrow(cdCanvas* canvas, double inX, double inY, int inVerti
   int theX = iupPlotRound(inX);
   int theY = iupPlotRound(inY);
 
-  inSize += 2; // to avoid too small sizes
-
   int theSizeDir = iupPlotRound(inSize * 0.7);
   if (inVertical)
   {
@@ -403,8 +406,8 @@ static void iPlotDrawArrow(cdCanvas* canvas, double inX, double inY, int inVerti
     int theY1 = iupPlotRound(inY + inDirection*inSize);
     int theY2 = theY1 - inDirection*theSizeDir;
     iPlotFillArrowI(canvas, theX, theY1,
-                    theX - theSizeDir, theY2,
-                    theX + theSizeDir, theY2);
+                            theX - theSizeDir, theY2,
+                            theX + theSizeDir, theY2);
   }
   else
   {
@@ -413,8 +416,8 @@ static void iPlotDrawArrow(cdCanvas* canvas, double inX, double inY, int inVerti
     int theX1 = iupPlotRound(inX + inDirection*inSize);
     int theX2 = theX1 - inDirection*theSizeDir;
     iPlotFillArrowI(canvas, theX1, theY,
-                    theX2, theY - theSizeDir,
-                    theX2, theY + theSizeDir);
+                            theX2, theY - theSizeDir,
+                            theX2, theY + theSizeDir);
   }
 }
 
@@ -425,15 +428,70 @@ void iupPlotAxis::SetFont(cdCanvas* canvas, int inFontStyle, int inFontSize) con
   cdCanvasFont(canvas, NULL, inFontStyle, inFontSize);
 }
 
-double iupPlotAxis::GetScreenYOriginX(const iupPlotAxis& inAxisY) const
+int iupPlotAxis::GetTickNumberHeight(cdCanvas* canvas) const
+{
+  int height;
+  if (mTick.mRotateNumber)
+  {
+    int theXTickNumberWidth;
+    GetTickNumberSize(canvas, &theXTickNumberWidth, NULL);
+    height = theXTickNumberWidth;
+  }
+  else
+  {
+    int theXTickNumberHeight;
+    GetTickNumberSize(canvas, NULL, &theXTickNumberHeight);
+    height = theXTickNumberHeight;
+  }
+  return height;
+}
+
+int iupPlotAxis::GetTickNumberWidth(cdCanvas* canvas) const
+{
+  int width;
+  if (mTick.mRotateNumber)
+  {
+    int theYTickNumberHeight;
+    GetTickNumberSize(canvas, NULL, &theYTickNumberHeight);
+    width = theYTickNumberHeight;
+  }
+  else
+  {
+    int theYTickNumberWidth;
+    GetTickNumberSize(canvas, &theYTickNumberWidth, NULL);
+    width = theYTickNumberWidth;
+  }
+  return width;
+}
+
+int iupPlotAxis::GetArrowSize() const
+{
+  return mTick.mMinorSize + 2;  // to avoid too small sizes
+}
+
+
+/*****************************************************************************/
+
+
+double iupPlotAxisX::GetScreenYOriginX(const iupPlotAxis& inAxisY) const
 {
   double theTargetY = 0;
-  if (!mCrossOrigin)
+  if (mPosition != IUP_PLOT_CROSSORIGIN)
   {
-    if (!inAxisY.mReverse)
-      theTargetY = inAxisY.mMin;
+    if (mPosition == IUP_PLOT_START)
+    {
+      if (inAxisY.mReverse)
+        theTargetY = inAxisY.mMax;
+      else
+        theTargetY = inAxisY.mMin;
+    }
     else
-      theTargetY = inAxisY.mMax;
+    {
+      if (inAxisY.mReverse)
+        theTargetY = inAxisY.mMin;
+      else
+        theTargetY = inAxisY.mMax;
+    }
   }
   if (inAxisY.mDiscrete)
     theTargetY -= 0.5;
@@ -441,7 +499,7 @@ double iupPlotAxis::GetScreenYOriginX(const iupPlotAxis& inAxisY) const
   return inAxisY.mTrafo->Transform(theTargetY);
 }
 
-bool iupPlotAxis::DrawX(const iupPlotRect &inRect, cdCanvas* canvas, const iupPlotAxis& inAxisY) const
+bool iupPlotAxisX::DrawX(const iupPlotRect &inRect, cdCanvas* canvas, const iupPlotAxis& inAxisY) const
 {
   if (!mShow)
     return true;
@@ -458,9 +516,9 @@ bool iupPlotAxis::DrawX(const iupPlotRect &inRect, cdCanvas* canvas, const iupPl
   if (mShowArrow)
   {
     if (!mReverse)
-      iPlotDrawArrow(canvas, theScreenX2, theScreenY, 0, 1, mTick.mMinorSize);
+      iPlotDrawArrow(canvas, theScreenX2, theScreenY, 0, 1, GetArrowSize());
     else
-      iPlotDrawArrow(canvas, theScreenX1, theScreenY, 0, -1, mTick.mMinorSize);
+      iPlotDrawArrow(canvas, theScreenX1, theScreenY, 0, -1, GetArrowSize());
   }
 
   if (mTick.mShow)
@@ -477,58 +535,51 @@ bool iupPlotAxis::DrawX(const iupPlotRect &inRect, cdCanvas* canvas, const iupPl
       SetFont(canvas, mTick.mFontStyle, mTick.mFontSize);
 
     while (mTickIter->GetNextTick(theX, theIsMajorTick, theFormatString))
-    {
-      if (!DrawXTick(theX, theScreenY, theIsMajorTick, theFormatString, canvas))
-        return false;
-    }
+      DrawXTick(theX, theScreenY, theIsMajorTick, theFormatString, canvas);
 
-    theScreenY -= mTick.mMajorSize;  // skip major tick
+    int theTickSpace = mTick.mMajorSize;  // skip major tick
     if (mTick.mShowNumber)
-    {
-      if (mTick.mRotateNumber)
-      {
-        int theXTickNumberWidth;
-        GetTickNumberSize(canvas, &theXTickNumberWidth, NULL);
-        theScreenY -= theXTickNumberWidth;
-      }
-      else
-      {
-        int theXTickNumberHeight;
-        GetTickNumberSize(canvas, NULL, &theXTickNumberHeight);
-        theScreenY -= theXTickNumberHeight;
-      }
-    }
+      theTickSpace += GetTickNumberHeight(canvas) + mTick.mMinorSize;  // Use minor size as spacing
+
+    if (mReverseTicksLabel)
+      theScreenY += theTickSpace;
+    else
+      theScreenY -= theTickSpace;
   }
 
   if (GetLabel())
   {
     SetFont(canvas, mFontStyle, mFontSize);
 
+    int theLabelSpacing = mLabelSpacing;
     if (mLabelSpacing == -1)
     {
       int theXFontHeight;
       cdCanvasGetFontDim(canvas, NULL, &theXFontHeight, NULL, NULL);
-      theScreenY -= theXFontHeight / 10;  // default spacing
+      theLabelSpacing = theXFontHeight / 10;  // default spacing
     }
+
+    if (mReverseTicksLabel)
+      theScreenY += theLabelSpacing;
     else
-      theScreenY -= mLabelSpacing;
+      theScreenY -= theLabelSpacing;
 
     if (mLabelCentered)
     {
       double theScreenX = theScreenX1 + inRect.mWidth / 2;
-      iupPlotDrawText(canvas, theScreenX, theScreenY, CD_NORTH, GetLabel());
+      iupPlotDrawText(canvas, theScreenX, theScreenY, mReverseTicksLabel? CD_SOUTH: CD_NORTH, GetLabel());
     }
     else
     {
       double theScreenX = theScreenX2;
-      iupPlotDrawText(canvas, theScreenX, theScreenY, CD_NORTH_EAST, GetLabel());
+      iupPlotDrawText(canvas, theScreenX, theScreenY, mReverseTicksLabel? CD_SOUTH_EAST: CD_NORTH_EAST, GetLabel());
     }
   }
 
   return true;
 }
 
-bool iupPlotAxis::DrawXTick(double inX, double inScreenY, bool inMajor, const char*inFormatString, cdCanvas* canvas) const
+void iupPlotAxisX::DrawXTick(double inX, double inScreenY, bool inMajor, const char*inFormatString, cdCanvas* canvas) const
 {
   int theTickSize;
   double theScreenX = mTrafo->Transform(inX);
@@ -541,30 +592,51 @@ bool iupPlotAxis::DrawXTick(double inX, double inScreenY, bool inMajor, const ch
       char theBuf[128];
       iupStrPrintfDoubleLocale(theBuf, inFormatString, inX, IupGetGlobal("DEFAULTDECIMALSYMBOL"));
 
-      double theScreenY = inScreenY - theTickSize - mTick.mMinorSize;  // Use minor size as spacing
+      double theScreenY;
+      if (mReverseTicksLabel)
+        theScreenY = inScreenY + theTickSize + mTick.mMinorSize;  // Use minor size as spacing
+      else
+        theScreenY = inScreenY - theTickSize - mTick.mMinorSize;  // Use minor size as spacing
+
       // SetFont called in DrawX
       if (mTick.mRotateNumber)
-        iPlotDrawRotatedText(canvas, theScreenX, theScreenY, mTick.mRotateNumberAngle, CD_EAST, theBuf);
+        iPlotDrawRotatedText(canvas, theScreenX, theScreenY, mTick.mRotateNumberAngle, mReverseTicksLabel? CD_WEST: CD_EAST, theBuf);
       else
-        iupPlotDrawText(canvas, theScreenX, theScreenY, CD_NORTH, theBuf);
+        iupPlotDrawText(canvas, theScreenX, theScreenY, mReverseTicksLabel? CD_SOUTH: CD_NORTH, theBuf);
     }
   }
   else
     theTickSize = mTick.mMinorSize;
 
-  cdfCanvasLine(canvas, theScreenX, inScreenY, theScreenX, inScreenY - theTickSize);
-  return true;
+  if (mReverseTicksLabel)
+    cdfCanvasLine(canvas, theScreenX, inScreenY, theScreenX, inScreenY + theTickSize);
+  else
+    cdfCanvasLine(canvas, theScreenX, inScreenY, theScreenX, inScreenY - theTickSize);
 }
 
-double iupPlotAxis::GetScreenXOriginY(const iupPlotAxis& inAxisX) const
+
+/*****************************************************************************/
+
+
+double iupPlotAxisY::GetScreenXOriginY(const iupPlotAxis& inAxisX) const
 {
   double theTargetX = 0;
-  if (!mCrossOrigin)
+  if (mPosition != IUP_PLOT_CROSSORIGIN)
   {
-    if (!inAxisX.mReverse)
-      theTargetX = inAxisX.mMin;
+    if (mPosition == IUP_PLOT_START)
+    {
+      if (inAxisX.mReverse)
+        theTargetX = inAxisX.mMax;
+      else
+        theTargetX = inAxisX.mMin;
+    }
     else
-      theTargetX = inAxisX.mMax;
+    {
+      if (inAxisX.mReverse)
+        theTargetX = inAxisX.mMin;
+      else
+        theTargetX = inAxisX.mMax;
+    }
   }
   if (inAxisX.mDiscrete)
     theTargetX -= 0.5;
@@ -572,7 +644,7 @@ double iupPlotAxis::GetScreenXOriginY(const iupPlotAxis& inAxisX) const
   return inAxisX.mTrafo->Transform(theTargetX);
 }
 
-bool iupPlotAxis::DrawY(const iupPlotRect &inRect, cdCanvas* canvas, const iupPlotAxis& inAxisX) const
+bool iupPlotAxisY::DrawY(const iupPlotRect &inRect, cdCanvas* canvas, const iupPlotAxis& inAxisX) const
 {
   if (!mShow)
     return true;
@@ -589,9 +661,9 @@ bool iupPlotAxis::DrawY(const iupPlotRect &inRect, cdCanvas* canvas, const iupPl
   if (mShowArrow)
   {
     if (!mReverse)
-      iPlotDrawArrow(canvas, theScreenX, theScreenY2, 1, 1, mTick.mMinorSize);
+      iPlotDrawArrow(canvas, theScreenX, theScreenY2, 1, 1, GetArrowSize());
     else
-      iPlotDrawArrow(canvas, theScreenX, theScreenY1, 1, -1, mTick.mMinorSize);
+      iPlotDrawArrow(canvas, theScreenX, theScreenY1, 1, -1, GetArrowSize());
   }
 
   if (mTick.mShow)
@@ -608,58 +680,51 @@ bool iupPlotAxis::DrawY(const iupPlotRect &inRect, cdCanvas* canvas, const iupPl
       SetFont(canvas, mTick.mFontStyle, mTick.mFontSize);
 
     while (mTickIter->GetNextTick(theY, theIsMajorTick, theFormatString))
-    {
-      if (!DrawYTick(theY, theScreenX, theIsMajorTick, theFormatString, canvas))
-        return false;
-    }
+      DrawYTick(theY, theScreenX, theIsMajorTick, theFormatString, canvas);
 
-    theScreenX -= mTick.mMajorSize;  // skip major tick
+    int theTickSpace = mTick.mMajorSize;  // skip major tick
     if (mTick.mShowNumber)
-    {
-      if (mTick.mRotateNumber)
-      {
-        int theYTickNumberHeight;
-        GetTickNumberSize(canvas, NULL, &theYTickNumberHeight);
-        theScreenX -= theYTickNumberHeight;
-      }
-      else
-      {
-        int theYTickNumberWidth;
-        GetTickNumberSize(canvas, &theYTickNumberWidth, NULL);
-        theScreenX -= theYTickNumberWidth;
-      }
-    }
+      theTickSpace += GetTickNumberWidth(canvas) + mTick.mMinorSize;  // Use minor size as spacing
+
+    if (mReverseTicksLabel)
+      theScreenX += theTickSpace;
+    else
+      theScreenX -= theTickSpace;
   }
 
   if (GetLabel())
   {
     SetFont(canvas, mFontStyle, mFontSize);
 
+    int theLabelSpacing = mLabelSpacing;
     if (mLabelSpacing == -1)
     {
       int theYFontHeight;
       cdCanvasGetFontDim(canvas, NULL, &theYFontHeight, NULL, NULL);
-      theScreenX -= theYFontHeight / 10;  // default spacing
+      theLabelSpacing = theYFontHeight / 10;  // default spacing
     }
+
+    if (mReverseTicksLabel)
+      theScreenX += theLabelSpacing;
     else
-      theScreenX -= mLabelSpacing;
+      theScreenX -= theLabelSpacing;
 
     if (mLabelCentered)
     {
       double theScreenY = theScreenY1 + inRect.mHeight / 2;
-      iPlotDrawRotatedText(canvas, theScreenX, theScreenY, 90, CD_SOUTH, GetLabel());
+      iPlotDrawRotatedText(canvas, theScreenX, theScreenY, 90, mReverseTicksLabel? CD_NORTH: CD_SOUTH, GetLabel());
     }
     else
     {
       double theScreenY = theScreenY2;
-      iPlotDrawRotatedText(canvas, theScreenX, theScreenY, 90, CD_SOUTH_EAST, GetLabel());
+      iPlotDrawRotatedText(canvas, theScreenX, theScreenY, 90, mReverseTicksLabel? CD_NORTH_EAST: CD_SOUTH_EAST, GetLabel());
     }
   }
 
   return true;
 }
 
-bool iupPlotAxis::DrawYTick(double inY, double inScreenX, bool inMajor, const char* inFormatString, cdCanvas* canvas) const
+void iupPlotAxisY::DrawYTick(double inY, double inScreenX, bool inMajor, const char* inFormatString, cdCanvas* canvas) const
 {
   int theTickSize;
   double theScreenY = mTrafo->Transform(inY);
@@ -672,17 +737,24 @@ bool iupPlotAxis::DrawYTick(double inY, double inScreenX, bool inMajor, const ch
       char theBuf[128];
       iupStrPrintfDoubleLocale(theBuf, inFormatString, inY, IupGetGlobal("DEFAULTDECIMALSYMBOL"));
 
-      double theScreenX = inScreenX - theTickSize - mTick.mMinorSize;  // Use minor size as spacing
+      double theScreenX;
+      if (mReverseTicksLabel)
+        theScreenX = inScreenX + theTickSize + mTick.mMinorSize;  // Use minor size as spacing
+      else
+        theScreenX = inScreenX - theTickSize - mTick.mMinorSize;  // Use minor size as spacing
+
       // SetFont called in DrawX
       if (mTick.mRotateNumber)
-        iPlotDrawRotatedText(canvas, theScreenX, theScreenY, mTick.mRotateNumberAngle, CD_SOUTH, theBuf);
+        iPlotDrawRotatedText(canvas, theScreenX, theScreenY, mTick.mRotateNumberAngle, mReverseTicksLabel? CD_NORTH: CD_SOUTH, theBuf);
       else
-        iupPlotDrawText(canvas, theScreenX, theScreenY, CD_EAST, theBuf);
+        iupPlotDrawText(canvas, theScreenX, theScreenY, mReverseTicksLabel? CD_WEST: CD_EAST, theBuf);
     }
   }
   else
     theTickSize = mTick.mMinorSize;
 
-  cdfCanvasLine(canvas, inScreenX, theScreenY, inScreenX - theTickSize, theScreenY);
-  return true;
+  if (mReverseTicksLabel)
+    cdfCanvasLine(canvas, inScreenX, theScreenY, inScreenX + theTickSize, theScreenY);
+  else
+    cdfCanvasLine(canvas, inScreenX, theScreenY, inScreenX - theTickSize, theScreenY);
 }

@@ -92,9 +92,9 @@ corners of the dataset area.</p>
 <p>The <b>grid</b> is automatically spaced accordingly the current axis 
 major ticks.</p>
 <p>The <b>title</b> is always centered in the top of the plot.</p>
-<p>The <b>axis</b> are always positioned at the left-bottom, except when cross-origin 
+<p>The <b>axis</b> are positioned at the left-bottom by default. When cross-origin 
 is enabled, then it is positioned at the origin and zoom and pan will affect its 
-position. Cross-origin will be automatically disable if a logarithm scale is 
+position. Cross-origin will be automatically disabled in the other axis if a logarithm scale is 
 used.</p>
 <h3><a name="Interaction">Interaction</a></h3>
 <h4>Zoom &amp; Pan</h4>
@@ -517,6 +517,10 @@ When consulted return the last calculated margin.</p>
 <p><b>MARGINLEFTAUTO, MARGINRIGHTAUTO, MARGINTOPAUTO, MARGINBOTTOMAUTO:</b> 
 returns if the margin is set to AUTO. When set to NO the margin values will 
 re-use the last calculated margin. Default: "YES". (since 3.13)</p>
+
+  
+<p><b>PADDING</b>: internal margin used to complement the MARGIN* attributes. Default value: &quot;5x5&quot;. 
+(since 3.27)</p>
 <p><strong>BACKCOLOR</strong>: background color of the plot. Default: BGCOLOR.</p>
 <p><strong>BACKIMAGE</strong>: background image name. Use <a href="../func/iupsethandle.html">IupSetHandle</a> or
 	<a href="../func/iupsetattributehandle.html">IupSetAttributeHandle</a> to 
@@ -703,21 +707,29 @@ restored when zoom out completely.</p>
 <p><b>AXS_XREVERSE, AXS_YREVERSE</b>: reverse the axis direction. Can be YES or 
 NO. Default: NO. Default is Y oriented bottom to top, and X oriented from left 
 to right.</p>
-<p><b>AXS_XCROSSORIGIN, AXS_YCROSSORIGIN</b>: allow the axis to cross the 
-origin and to be placed inside the dataset area. Can be YES or NO. Default: NO. 
-If <b>AXS_*SCALE</b> is logarithmic then it is always NO.</p>
+<p><b>AXS_XCROSSORIGIN, AXS_YCROSSORIGIN</b>: allow the axis to cross the origin 
+and to be placed inside the dataset area. Can be YES or NO. Default: NO. It is a 
+simple interface to AXS_*ORIGINPOS when CROSSORIGIN is used or not (since 3.27).</p>
+<p><b>AXS_XPOSITION, AXS_YPOSITION</b>: position the axis. Can be START (left or 
+bottom), CROSSORIGIN (cross the origin), and END (right or top). Default: START. 
+If AXS_<b>*</b>SCALE is logarithmic then it is always START. (since 3.27)</p>
+<p><b>AXS_XREVERSETICKSLABEL, AXS_YREVERSETICKSLABEL</b>: reverse ticks and 
+label position. By default the position is at left for the Y axis, and at bottom 
+for the X axis. Can be YES or NO. Default: NO. When AXS_*POSITION is START is 
+always NO, when AXS_*POSITION is END is always YES, and when AXS_*POSITION is 
+CROSSORIGIN can be YES or NO. (since 3.27)</p>
 <p><b>AXS_XARROW, AXS_YARROW</b>: enable or disable the axis arrow display. Can be 
 YES or NO. Default: YES.</p>
 <p><b>AXS_XSCALE, AXS_YSCALE</b>: configures the scale of the respective axis. 
 Can be: LIN (linear), LOG10 (logarithmic base 10), LOG2 (logarithmic base 2) and LOGN (logarithmic base e). Default: 
-LIN.</p>
+LIN. If a logarithmic scale is set then the other axis position is set to START. </p>
 <p><strong><a name="AXS_XTIPFORMAT">AXS_XTIPFORMAT</a></strong>, <strong>AXS_YTIPFORMAT</strong>: format to 
 numeric conversion when an automatic tip is shown. See <a href="#TIPFORMAT">TIPFORMAT</a> attribute. 
 Default: "%.2f". (since 3.13)</p>
 <p>
 <b>AXS_XTIPFORMATPRECISION, AXS_YTIPFORMATPRECISION</b>: will set the <strong>
 sprintf</strong> &quot;precision&quot; field in the
-AXS_?TIPFORMAT<b> </b>attributes string if the format 
+AXS_*TIPFORMAT<b> </b>attributes string if the format 
 &quot;%.&lt;precision&gt;f&quot;. It is just a simple form to set and get the 
 precision of the format attribute. (since 3.13)</p>
 <h4>Axis Label Configuration&nbsp; </h4>
@@ -764,13 +776,13 @@ in degrees. Use values between 90º and 45º for better results. Default: 90.
 For the log scale axis the format is dynamically changed for every major tick. Default: &quot;Yes&quot;. 
 (since 3.13)</p>
 <p><b>AXS_XTICKFORMAT, AXS_YTICKFORMAT</b>: axis tick number C format string. 
-If set will also set AXS_?TICKFORMATAUTO to NO. Default: &quot;%.0f&quot;. The 
+If set will also set AXS_*TICKFORMATAUTO to NO. Default: &quot;%.0f&quot;. The 
 decimal symbol will follow the DEFAULTDECIMALSYMBOL global attribute definition 
 if any (since 3.13).</p>
 <p>
 <b>AXS_XTICKFORMATPRECISION, AXS_YTICKFORMATPRECISION</b>: will set the <strong>
 sprintf</strong> &quot;precision&quot; field in the
-AXS_?TICKFORMAT<b> </b>attributes string if the format 
+AXS_*TICKFORMAT<b> </b>attributes string if the format 
 &quot;%.&lt;precision&gt;f&quot;. It is just a simple form to set and get the 
 precision of the format attribute. (since 3.13)</p>
 <p><b>AXS_XTICKFONTSIZE, AXS_YTICKFONTSIZE, AXS_XTICKFONTSTYLE, 

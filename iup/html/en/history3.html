@@ -64,7 +64,7 @@
 <p>Check the <a href="migration_guide.html">Migration Guide</a> for a summary of 
 the important changes and how to proceed when migrating from version 2.x to 
 version 3.x.</p>
-<h3>SVN (27/Mar/2019)</h3>
+<h3>SVN (28/Mar/2019)</h3>
 
 <ul>
 
@@ -81,7 +81,8 @@ version 3.x.</p>
 	<span class="hist_new">New:</span> ORIENTATION attribute 
 	for <strong>IupGauge</strong>.</li>
 	<li>
-	<span class="hist_new">New:</span> PADDING, AXS_XPOSITION and AXS_YPOSITION attributes 
+	<span class="hist_new">New:</span> PADDING, AXS_*POSITION and 
+	AXS_*REVERSETICKSLABEL attributes 
 	for <strong>IupPlot</strong>.</li>
 	<li>
 	<span class="hist_new">New:</span> ARROWALIGN attribute 
@@ -1474,7 +1475,7 @@ and <strong>IupGLToggle</strong>.</li>
 	<span
             style="color: #000000"><span class="hist_fixed">Fixed:</span> 
 	background drawing when VIEWPORTSQUARE=Yes is used in <strong>IupPlot</strong>. 
-	Fixed AXS_?LABELCENTERED default value.</span></span></font></li>
+	Fixed AXS_*LABELCENTERED default value.</span></span></font></li>
 	<li>
 	<font SIZE="3"><span style="color: #008000">
 	<span
@@ -3003,7 +3004,7 @@ and <strong>IupGLToggle</strong>.</li>
 	<li><strong><span class="hist_changed">Changed:</span></strong> 
 	<strong>IupMglPlot</strong> API replaced &quot;float&quot; by &quot;double&quot;. Removed 
 	support for TrueType (*.ttf) and OpenType (*.otf) font files. PLANARVALUE 
-	and CLOUDCUBES attributea are not supported anymore. AXS_?MIN attributes default changed to -1, 
+	and CLOUDCUBES attributea are not supported anymore. AXS_*MIN attributes default changed to -1, 
 	to match MathGL default. MathGL updated to version 2.2. <strong>
 	IupMglPlotTransformXYZ</strong> renamed to <strong>IupMglPlotTransformTo</strong>. 
 	Plor area configured using boolean atributes MARGINLEFT, MARGINRIGHT, 

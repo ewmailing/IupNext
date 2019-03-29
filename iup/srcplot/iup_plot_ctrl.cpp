@@ -532,12 +532,14 @@ static const char* iplot_fontstyle_list[] = { "", "BOLD", "ITALIC", "BOLDITALIC"
 static const char* iplot_legendpos_list[] = { "TOPRIGHT", "TOPLEFT", "BOTTOMRIGHT", "BOTTOMLEFT", "BOTTOMCENTER", "XY", NULL };
 static const char* iplot_grid_list[] = { "NO", "YES", "HORIZONTAL", "VERTICAL", NULL };
 static const char* iplot_scale_list[] = { "LIN", "LOG10", "LOG2", "LOGN", NULL };
+static const char* iplot_axispos_list[] = { "START", "CROSSORIGIN", "END", NULL };
 
 static const char* iplot_linestyle_extra = { "|_@IUP_CONTINUOUS|_@IUP_DASHED|_@IUP_DOTTED|_@IUP_DASH_DOT|_@IUP_DASH_DOT_DOT|" };
 static const char* iplot_fontstyle_extra = { "|_@IUP_PLAIN|_@IUP_BOLD|_@IUP_ITALIC|_@IUP_BOLDITALIC|" };
 static const char* iplot_legendpos_extra = { "|_@IUP_TOPRIGHT|_@IUP_TOPLEFT|_@IUP_BOTTOMRIGHT|_@IUP_BOTTOMLEFT|_@IUP_BOTTOMCENTER|_@IUP_XY|" };
 static const char* iplot_grid_extra = { "|_@IUP_NO|_@IUP_YES|_@IUP_HORIZONTAL|_@IUP_VERTICAL|" };
 static const char* iplot_scale_extra = { "|_@IUP_LINEAR|_@IUP_LOG10|_@IUP_LOG2|_@IUP_LOGN|" };
+static const char* iplot_axispos_extra = { "|_@IUP_START|_@IUP_CROSSORIGIN|_@IUP_END|" };
 
 static int iPlotCheckBool(Ihandle* param)
 {
@@ -555,7 +557,7 @@ static int iPlotCheckAuto2(Ihandle* param)
   return !iupAttribGetBoolean(param, "VALUE");
 }
 
-static int iPlotCheckAutoXY(Ihandle* param)  // Simply to be able to distiguish from other iPlotCheckAuto
+static int iPlotCheckAutoXY(Ihandle* param)  // Simply to be able to distinguish from other iPlotCheckAuto
 {
   return !iupAttribGetBoolean(param, "VALUE");
 }
@@ -577,6 +579,7 @@ static iPlotAttribParam iplot_background_attribs[] = {
   { "MARGINBOTTOMAUTO", iPlotCheckAuto, "_@IUP_BOTTOM", "b", "[ ,Auto]", "", NULL },
   { "MARGINBOTTOM", NULL, "\t_@IUP_VALUE", "i", "", "", NULL },
   { "", NULL, "", "t", NULL, NULL, NULL },
+  { "PADDING", NULL, "_@IUP_PADDING", "s", "[+/-]?/d+[x][+/-]?/d+", "{_@IUP_INTERNALMARGIN}", NULL },
   { "BACKCOLOR", NULL, "_@IUP_COLOR", "c", "", "", NULL },
   { NULL, NULL, NULL, NULL, NULL, NULL, NULL }
 };
@@ -645,7 +648,8 @@ static iPlotAttribParam iplot_axisX_attribs[] = {
   { "AXS_XMAX", NULL, "\t_@IUP_VALUE", "R", "", "", NULL },
   { "AXS_XSCALE", NULL, "_@IUP_SCALE", "l", iplot_scale_extra, "", iplot_scale_list },
   { "AXS_XREVERSE", NULL, "_@IUP_REVERSE", "b", "", "", NULL },
-  { "AXS_XCROSSORIGIN", NULL, "_@IUP_CROSSORIGIN", "b", "", "", NULL },
+  { "AXS_XPOSITION", NULL, "_@IUP_POSITION", "l", iplot_axispos_extra, "", iplot_axispos_list },
+  { "AXS_XREVERSETICKSLABEL", NULL, "_@IUP_REVERSETICKSLABEL", "b", "", "", NULL },
   { NULL, NULL, NULL, NULL, NULL, NULL, NULL }
 };
 
@@ -661,7 +665,8 @@ static iPlotAttribParam iplot_axisY_attribs[] = {
   { "AXS_YMAX", NULL, "\t_@IUP_VALUE", "R", "", "", NULL },
   { "AXS_YSCALE", NULL, "_@IUP_SCALE", "l", iplot_scale_extra, "", iplot_scale_list },
   { "AXS_YREVERSE", NULL, "_@IUP_REVERSE", "b", "", "", NULL },
-  { "AXS_YCROSSORIGIN", NULL, "_@IUP_CROSSORIGIN", "b", "", "", NULL },
+  { "AXS_YPOSITION", NULL, "_@IUP_POSITION", "l", iplot_axispos_extra, "", iplot_axispos_list },
+  { "AXS_YREVERSETICKSLABEL", NULL, "_@IUP_REVERSETICKSLABEL", "b", "", "", NULL },
   { NULL, NULL, NULL, NULL, NULL, NULL, NULL }
 };
 
@@ -2000,7 +2005,7 @@ static int iPlotMotion_CB(Ihandle* ih, int x, int y, char *status)
   {
     redraw = true;
 
-    if (ih->data->show_cross_hair == IUP_PLOT_CROSSHORIZ)
+    if (ih->data->show_cross_hair == IUP_PLOT_CROSSHAIR_HORIZ)
     {
       ih->data->current_plot->mCrossHairH = true;
       ih->data->current_plot->mCrossHairX = x;
@@ -2059,11 +2064,11 @@ static int iPlotKeyPress_CB(Ihandle* ih, int c, int press)
 
   if (c == K_cH || c == K_cV)
   {
-    int new_show_cross_hair = IUP_PLOT_CROSSHORIZ;
-    if (c == K_cV) new_show_cross_hair = IUP_PLOT_CROSSVERT;
+    int new_show_cross_hair = IUP_PLOT_CROSSHAIR_HORIZ;
+    if (c == K_cV) new_show_cross_hair = IUP_PLOT_CROSSHAIR_VERT;
 
     if (ih->data->show_cross_hair == new_show_cross_hair)
-      ih->data->show_cross_hair = IUP_PLOT_CROSSNONE;
+      ih->data->show_cross_hair = IUP_PLOT_CROSSHAIR_NONE;
     else
       ih->data->show_cross_hair = new_show_cross_hair;
 
@@ -2081,7 +2086,7 @@ static int iPlotKeyPress_CB(Ihandle* ih, int c, int press)
       }
     }
 
-    if (ih->data->show_cross_hair != IUP_PLOT_CROSSNONE)  // was shown, leave it there as reference
+    if (ih->data->show_cross_hair != IUP_PLOT_CROSSHAIR_NONE)  // was shown, leave it there as reference
       iPlotRedrawInteract(ih);
 
     return IUP_IGNORE;  /* ignore processed keys */
@@ -2947,6 +2952,7 @@ static void iPlotSetClassUpdate(Iclass* ic)
     IupSetLanguageString("IUP_CLOSE", "Close");
 
     IupSetLanguageString("IUP_BACKGROUND", "Background");
+    IupSetLanguageString("IUP_PADDING", "Padding");
     IupSetLanguageString("IUP_TITLE", "Title");
     IupSetLanguageString("IUP_LEGEND", "Legend");
     IupSetLanguageString("IUP_LEGENDBOX", "Legend Box");
@@ -2966,6 +2972,7 @@ static void iPlotSetClassUpdate(Iclass* ic)
     IupSetLanguageString("IUP_CHANGESNOTAPPLIEDAPPLY", "Changes Not Applied. Apply?");
 
     IupSetLanguageString("IUP_MARGIN", "Margin");
+    IupSetLanguageString("IUP_INTERNALMARGIN", "Internal Margin");
     IupSetLanguageString("IUP_LEFT", "Left:");
     IupSetLanguageString("IUP_RIGHT", "Right:");
     IupSetLanguageString("IUP_TOP", "Top:");
@@ -2991,8 +2998,11 @@ static void iPlotSetClassUpdate(Iclass* ic)
     IupSetLanguageString("IUP_MIN", "Min:");
     IupSetLanguageString("IUP_MAX", "Max:");
     IupSetLanguageString("IUP_REVERSE", "Reverse:");
-    IupSetLanguageString("IUP_CROSSORIGIN", "Cross Origin:");
+    IupSetLanguageString("IUP_REVERSETICKSLABEL", "Reverse Ticks&&Label:");
     IupSetLanguageString("IUP_CENTERED", "Centered:");
+    IupSetLanguageString("IUP_CROSSORIGIN", "Cross Origin");
+    IupSetLanguageString("IUP_START", "Start");
+    IupSetLanguageString("IUP_END", "End");
 
     IupSetLanguageString("IUP_SCALE", "Scale:");
     IupSetLanguageString("IUP_LINEAR", "Linear");
@@ -3081,6 +3091,7 @@ static void iPlotSetClassUpdate(Iclass* ic)
     IupSetLanguageString("IUP_CLOSE", "Fechar");
 
     IupSetLanguageString("IUP_BACKGROUND", "Fundo");
+    IupSetLanguageString("IUP_PADDING", "Preenchimento");
     IupSetLanguageString("IUP_TITLE", "TÌtulo");
     IupSetLanguageString("IUP_LEGEND", "Legenda");
     IupSetLanguageString("IUP_LEGENDBOX", "Caixa da Legenda");
@@ -3100,6 +3111,7 @@ static void iPlotSetClassUpdate(Iclass* ic)
     IupSetLanguageString("IUP_CHANGESNOTAPPLIEDAPPLY", "ModificaÁıes n„o aplicadas. Aplicar?");
 
     IupSetLanguageString("IUP_MARGIN", "Margem");
+    IupSetLanguageString("IUP_INTERNALMARGIN", "Margem Interna");
     IupSetLanguageString("IUP_LEFT", "Esquerda:");
     IupSetLanguageString("IUP_RIGHT", "Direita:");
     IupSetLanguageString("IUP_TOP", "Superior:");
@@ -3125,8 +3137,11 @@ static void iPlotSetClassUpdate(Iclass* ic)
     IupSetLanguageString("IUP_MIN", "Min:");
     IupSetLanguageString("IUP_MAX", "Max:");
     IupSetLanguageString("IUP_REVERSE", "Reverso:");
-    IupSetLanguageString("IUP_CROSSORIGIN", "Origem Cruzada:");
+    IupSetLanguageString("IUP_REVERSETICKSLABEL", "Reverter Marcas&&Etiqueta:");
     IupSetLanguageString("IUP_CENTERED", "Centrado:");
+    IupSetLanguageString("IUP_CROSSORIGIN", "Cruza Origem");
+    IupSetLanguageString("IUP_START", "InÌcio");
+    IupSetLanguageString("IUP_END", "Fim");
 
     IupSetLanguageString("IUP_SCALE", "Escala:");
     IupSetLanguageString("IUP_LINEAR", "Linear");
@@ -3176,6 +3191,7 @@ static void iPlotSetClassUpdate(Iclass* ic)
       IupSetLanguageString("IUP_BARSPACING", "Espa√ßamento da Barra:");
       IupSetLanguageString("IUP_AREATRANSPARENCY", "Transpar√™ncia de √Årea:");
       IupSetLanguageString("IUP_PIESTARTANGLE", "√Çngulo de In√≠cio da Torta:");
+      IupSetLanguageString("IUP_START", "In√≠cio");
     }
   }
   else if (iupStrEqualNoCase(IupGetGlobal("LANGUAGE"), "SPANISH"))
@@ -3245,6 +3261,7 @@ static void iPlotSetClassUpdate(Iclass* ic)
     IupSetLanguageString("IUP_CLOSE", "Cerrar");
 
     IupSetLanguageString("IUP_BACKGROUND", "Fondo");
+    IupSetLanguageString("IUP_PADDING", "Relleno");
     IupSetLanguageString("IUP_TITLE", "TÌtulo");
     IupSetLanguageString("IUP_LEGEND", "Leyenda");
     IupSetLanguageString("IUP_LEGENDBOX", "Caja de Leyenda");
@@ -3264,6 +3281,7 @@ static void iPlotSetClassUpdate(Iclass* ic)
     IupSetLanguageString("IUP_CHANGESNOTAPPLIEDAPPLY", "Hay Modificaciones. øAplicarlas?");
 
     IupSetLanguageString("IUP_MARGIN", "Margen");
+    IupSetLanguageString("IUP_INTERNALMARGIN", "Margen Interno");
     IupSetLanguageString("IUP_LEFT", "Izquierdo:");
     IupSetLanguageString("IUP_RIGHT", "Derecho:");
     IupSetLanguageString("IUP_TOP", "Superior:");
@@ -3288,9 +3306,12 @@ static void iPlotSetClassUpdate(Iclass* ic)
     IupSetLanguageString("IUP_SHOWARROW", "Mostrar Flecha:");
     IupSetLanguageString("IUP_MIN", "MÌnimo:");
     IupSetLanguageString("IUP_MAX", "M·ximo:");
-    IupSetLanguageString("IUP_REVERSE", "Invertir:");
-    IupSetLanguageString("IUP_CROSSORIGIN", "Cruzar Origen:");
+    IupSetLanguageString("IUP_REVERSE", "Revertir:");
+    IupSetLanguageString("IUP_REVERSETICKSLABEL", "Revertir Marcas&&Etiqueta:");
     IupSetLanguageString("IUP_CENTERED", "Centrado:");
+    IupSetLanguageString("IUP_CROSSORIGIN", "Cruza Origen");
+    IupSetLanguageString("IUP_START", "Comienzo");
+    IupSetLanguageString("IUP_END", "Fin");
 
     IupSetLanguageString("IUP_SCALE", "Escala:");
     IupSetLanguageString("IUP_LINEAR", "Lineal");

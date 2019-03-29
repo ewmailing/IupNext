@@ -127,7 +127,7 @@ static long iPlotGetDefaultColor(int index)
   }
 }
 
-long iupPlot::GetNextDataSetColor()
+long iupPlot::GetNextDataSetColor() const
 {
   int def_color = 0, i = 0;
   long theColor;
@@ -196,7 +196,7 @@ void iupPlot::RemoveDataSet(int inIndex)
   mDataSetListCount--;
 }
 
-int iupPlot::FindDataSet(const char* inName)
+int iupPlot::FindDataSet(const char* inName) const
 {
   for (int ds = 0; ds < mDataSetListCount; ds++)
   {
@@ -384,7 +384,7 @@ void iupPlot::ConfigureAxis()
   mAxisY.Init();
 
   if (mAxisX.mLogScale)
-    mAxisY.mCrossOrigin = false;  // change at the other axis
+    mAxisY.mPosition = IUP_PLOT_START;  // change at the other axis
   else
   {
     const iupPlotData *theXData = mDataSetList[0]->GetDataX();   // The first dataset will define the named tick usage
@@ -396,10 +396,10 @@ void iupPlot::ConfigureAxis()
   }
 
   if (mAxisY.mLogScale)
-    mAxisX.mCrossOrigin = false;   // change at the other axis
+    mAxisX.mPosition = IUP_PLOT_START;   // change at the other axis
 }
 
-iupPlotDataSet* iupPlot::HasPie()
+iupPlotDataSet* iupPlot::HasPie() const
 {
   for (int ds = 0; ds < mDataSetListCount; ds++)
   {
@@ -410,7 +410,7 @@ iupPlotDataSet* iupPlot::HasPie()
   return NULL;
 }
 
-void iupPlot::DataSetClipArea(cdCanvas* canvas, int xmin, int xmax, int ymin, int ymax)
+void iupPlot::DataSetClipArea(cdCanvas* canvas, int xmin, int xmax, int ymin, int ymax) const
 {
   if (mDataSetClipping == IUP_PLOT_CLIPAREAOFFSET)
   {
@@ -481,10 +481,10 @@ bool iupPlot::Render(cdCanvas* canvas)
   CalculateMargins(canvas);
 
   iupPlotRect theDataSetArea;  /* Viewport - Margin (size only, no need for viewport offset) */
-  theDataSetArea.mX = mBack.mMargin.mLeft;
-  theDataSetArea.mY = mBack.mMargin.mBottom;
-  theDataSetArea.mWidth = mViewport.mWidth - mBack.mMargin.mLeft - mBack.mMargin.mRight;
-  theDataSetArea.mHeight = mViewport.mHeight - mBack.mMargin.mTop - mBack.mMargin.mBottom;
+  theDataSetArea.mX = mBack.mMargin.mLeft + mBack.mHorizPadding;
+  theDataSetArea.mY = mBack.mMargin.mBottom + mBack.mVertPadding;
+  theDataSetArea.mWidth = mViewport.mWidth - mBack.mMargin.mLeft - mBack.mMargin.mRight - 2 * mBack.mHorizPadding;
+  theDataSetArea.mHeight = mViewport.mHeight - mBack.mMargin.mTop - mBack.mMargin.mBottom - 2 * mBack.mVertPadding;
 
   if (!CalculateTickSpacing(theDataSetArea, canvas))
     return false;

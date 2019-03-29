@@ -22,6 +22,11 @@ enum iupPlotLegendPosition { IUP_PLOT_TOPRIGHT, IUP_PLOT_TOPLEFT, IUP_PLOT_BOTTO
 enum iupPlotSliceLabel { IUP_PLOT_NONE, IUP_PLOT_X, IUP_PLOT_Y, IUP_PLOT_PERCENT };
 enum iupPlotHighlight { IUP_PLOT_HIGHLIGHT_NONE, IUP_PLOT_HIGHLIGHT_SAMPLE, IUP_PLOT_HIGHLIGHT_CURVE, IUP_PLOT_HIGHLIGHT_BOTH };
 enum iupPlotClipping { IUP_PLOT_CLIPNONE, IUP_PLOT_CLIPAREA, IUP_PLOT_CLIPAREAOFFSET };
+enum iupPlotAxisPosition { IUP_PLOT_START, IUP_PLOT_CROSSORIGIN, IUP_PLOT_END };
+
+#define IUP_PLOT_DEF_NUMBERFORMAT "%.0f"
+#define IUP_PLOT_DEF_NUMBERFORMATSIGNED "% .0f"
+#define IUP_PLOT_DEF_TIPFORMAT "%.2f"
 
 const double kFloatSmall = 1e-20;
 const double kLogMinClipValue = 1e-10;  // pragmatism to avoid problems with small values in log plot
@@ -40,6 +45,11 @@ inline double iupPlotLog(double inFloat, double inBase)
   const double kLogMin = 1e-10;  // min argument for log10 function
   if (inFloat<kLogMin) inFloat = kLogMin;
   return log10(inFloat) / log10(inBase);
+}
+
+inline int iupPlotMax(int a, int b)
+{
+  return a>b ? a: b;
 }
 
 inline double iupPlotExp(double inFloat, double inBase)
@@ -416,7 +426,7 @@ public:
     mMajorSpan(1), mMajorSize(1), mMinorSize(1), mShow(true), mRotateNumberAngle(90),
     mFontSize(0), mFontStyle(-1), mRotateNumber(false), mFormatAuto(true)
   {
-    strcpy(mFormatString, "%.0f");
+    strcpy(mFormatString, IUP_PLOT_DEF_NUMBERFORMAT);
   }
 
   bool mShow;
@@ -441,16 +451,17 @@ public:
 class iupPlotAxis
 {
 public:
-  iupPlotAxis(int inDefaultFontStyle, int inDefaultFontSize)
+  iupPlotAxis(int inDefaultFontStyle, int inDefaultFontSize, bool inVertical)
     : mShow(true), mMin(0), mMax(0), mAutoScaleMin(true), mAutoScaleMax(true),
-    mReverse(false), mLogScale(false), mCrossOrigin(false), mColor(CD_BLACK),
+    mReverse(false), mLogScale(false), mPosition(IUP_PLOT_START), mColor(CD_BLACK),
     mMaxDecades(-1), mLogBase(10), mLabelCentered(true), mHasZoom(false),
     mDiscrete(false), mLabel(NULL), mShowArrow(true), mLineWidth(1), mLabelSpacing(-1),
     mFontSize(0), mFontStyle(-1), mDefaultFontSize(inDefaultFontSize),
     mTrafo(NULL), mTickIter(NULL), mDefaultFontStyle(inDefaultFontStyle),
-    mNoZoomMin(0), mNoZoomMax(0), mNoZoomAutoScaleMin(false), mNoZoomAutoScaleMax(false), mPanMin(0)
+    mNoZoomMin(0), mNoZoomMax(0), mNoZoomAutoScaleMin(false), mNoZoomAutoScaleMax(false), 
+    mPanMin(0), mReverseTicksLabel(false), mVertical(inVertical)
   {
-    strcpy(mTipFormatString, "%.2f");
+    strcpy(mTipFormatString, IUP_PLOT_DEF_TIPFORMAT);
   }
   ~iupPlotAxis() { SetLabel(NULL); }
 
@@ -460,11 +471,9 @@ public:
   void Init();
   void SetNamedTickIter(const iupPlotDataString *inStringXData);
   void GetTickNumberSize(cdCanvas* canvas, int *outWitdh, int *outHeight) const;
-  double GetScreenYOriginX(const iupPlotAxis& inAxisY) const;
-  double GetScreenXOriginY(const iupPlotAxis& inAxisX) const;
-
-  bool DrawX(const iupPlotRect &inRect, cdCanvas* canvas, const iupPlotAxis& inAxisY) const;
-  bool DrawY(const iupPlotRect &inRect, cdCanvas* canvas, const iupPlotAxis& inAxisX) const;
+  int GetTickNumberHeight(cdCanvas* canvas) const;
+  int GetTickNumberWidth(cdCanvas* canvas) const;
+  int GetArrowSize() const;
 
   bool HasZoom() const { return mHasZoom; }
   bool ResetZoom();
@@ -479,15 +488,17 @@ public:
   void SetFont(cdCanvas* canvas, int inFontStyle, int inFontSize) const;
 
   bool mShow;
+  bool mVertical;
   long mColor;
   double mMin;
   double mMax;
   bool mAutoScaleMin;
   bool mAutoScaleMax;
   bool mReverse;
-  bool mCrossOrigin;
+  iupPlotAxisPosition mPosition;
   bool mShowArrow;
   char mTipFormatString[30];
+  bool mReverseTicksLabel;
 
   int mFontSize;
   int mFontStyle;
@@ -511,9 +522,6 @@ public:
 protected:
   char* mLabel;
 
-  bool DrawXTick(double inX, double inScreenY, bool inMajor, const char* inFormatString, cdCanvas* canvas) const;
-  bool DrawYTick(double inY, double inScreenX, bool inMajor, const char* inFormatString, cdCanvas* canvas) const;
-
   iupPlotTrafoLinear mLinTrafo;
   iupPlotTrafoLog mLogTrafo;
 
@@ -530,6 +538,31 @@ protected:
   bool mNoZoomAutoScaleMin;
   bool mNoZoomAutoScaleMax;
   double mPanMin;
+};
+
+class iupPlotAxisX : public iupPlotAxis
+{
+public:
+  iupPlotAxisX(int inDefaultFontStyle, int inDefaultFontSize) :
+    iupPlotAxis(inDefaultFontStyle, inDefaultFontSize, false) {}
+
+  bool DrawX(const iupPlotRect &inRect, cdCanvas* canvas, const iupPlotAxis& inAxisY) const;
+protected:
+  void DrawXTick(double inX, double inScreenY, bool inMajor, const char* inFormatString, cdCanvas* canvas) const;
+  double GetScreenYOriginX(const iupPlotAxis& inAxisY) const;
+};
+
+class iupPlotAxisY : public iupPlotAxis
+{
+public:
+  iupPlotAxisY(int inDefaultFontStyle, int inDefaultFontSize) :
+    iupPlotAxis(inDefaultFontStyle, inDefaultFontSize, true) {}
+
+  bool DrawY(const iupPlotRect &inRect, cdCanvas* canvas, const iupPlotAxis& inAxisX) const;
+
+protected:
+  void DrawYTick(double inY, double inScreenX, bool inMajor, const char* inFormatString, cdCanvas* canvas) const;
+  double GetScreenXOriginY(const iupPlotAxis& inAxisX) const;
 };
 
 class iupPlotGrid
@@ -611,19 +644,21 @@ class iupPlotBackground
 {
 public:
   iupPlotBackground()
-    : mColor(CD_WHITE), mMarginAuto(1, 1, 1, 1), mImage(NULL) {}
+    : mColor(CD_WHITE), mMarginAuto(1, 1, 1, 1), mImage(NULL), mHorizPadding(5), mVertPadding(5) {}
   ~iupPlotBackground() { if (mImage) free(mImage); }
 
   void SetImage(const char* inImage) { if (inImage == mImage) return; if (mImage) free(mImage); mImage = iupStrDup(inImage); }
   const char* GetImage() const { return mImage; }
 
   iupPlotMargin mMargin,
-    mMarginAuto;
+                mMarginAuto; // Used as boolean
   long mColor;
   double mImageMinX,
          mImageMaxX,
          mImageMinY,
          mImageMaxY;
+
+  int mHorizPadding, mVertPadding;
 
 protected:
   char* mImage;
@@ -638,27 +673,85 @@ public:
 
   /*********************************/
 
-  Ihandle* ih;
   bool mRedraw;
   iupPlotRect mViewport;
-  iupPlotRect mViewportBack;
   bool mViewportSquare;
-  bool mScaleEqual;
   int mDefaultFontSize;
   int mDefaultFontStyle;
+  bool mScaleEqual;
   iupPlotClipping mDataSetClipping;
 
-  void SetViewport(int x, int y, int w, int h);
-  void DataSetClipArea(cdCanvas* canvas, int xmin, int xmax, int ymin, int ymax);
+  bool mCrossHairH, mCrossHairV;
+  int mCrossHairX, mCrossHairY;
+  bool mShowSelectionBand;
+  iupPlotRect mSelectionBand;
+  iupPlotHighlight mHighlightMode;
+  double mScreenTolerance;
+
+  iupPlotBackground mBack;
+  iupPlotGrid mGrid;
+  iupPlotGrid mGridMinor;
+  iupPlotAxisX mAxisX;
+  iupPlotAxisY mAxisY;
+  iupPlotBox mBox;
+  iupPlotLegend mLegend;
+  iupPlotTitle mTitle;
+
+  iupPlotDataSet* *mDataSetList;
+  int mDataSetListCount;
+  int mDataSetListMax;
+  int mCurrentDataSet;
+
   bool Render(cdCanvas* canvas);
+  void SetViewport(int x, int y, int w, int h);
+
+  void ResetZoom() { if (mAxisX.ResetZoom()) mRedraw = true; if (mAxisY.ResetZoom()) mRedraw = true; }
+  void ZoomIn(double inCenterX, double inCenterY) { if (mAxisX.ZoomIn(inCenterX)) mRedraw = true; if (mAxisY.ZoomIn(inCenterY)) mRedraw = true; }
+  void ZoomOut(double inCenterX, double inCenterY) { if (mAxisX.ZoomOut(inCenterX)) mRedraw = true; if (mAxisY.ZoomOut(inCenterY)) mRedraw = true; }
+  void ZoomTo(double inMinX, double inMaxX, double inMinY, double inMaxY) { if (mAxisX.ZoomTo(inMinX, inMaxX)) mRedraw = true; if (mAxisY.ZoomTo(inMinY, inMaxY)) mRedraw = true; }
+  void PanStart() { mAxisX.PanStart(); mAxisY.PanStart(); }
+  void Pan(double inOffsetX, double inOffsetY) { if (mAxisX.Pan(inOffsetX)) mRedraw = true; if (mAxisY.Pan(inOffsetY)) mRedraw = true; }
+  void Scroll(double inDelta, bool inFullPage, bool inVertical) { if (inVertical) { if (mAxisY.Scroll(inDelta, inFullPage)) mRedraw = true; } else { if (mAxisX.Scroll(inDelta, inFullPage)) mRedraw = true; } }
+  void ScrollTo(double inMinX, double inMinY) { if (mAxisX.ScrollTo(inMinX)) mRedraw = true; if (mAxisY.ScrollTo(inMinY)) mRedraw = true; }
+
+  void TransformBack(int inX, int inY, double &outX, double &outY) const {
+    outX = mAxisX.mTrafo->TransformBack((double)inX);
+    outY = mAxisY.mTrafo->TransformBack((double)inY);
+  }
+
+  bool CheckInsideTitle(cdCanvas* canvas, int x, int y) const;
+  bool CheckInsideLegend(int x, int y) const;
+
+  void AddDataSet(iupPlotDataSet* inDataSet);
+  void RemoveDataSet(int inIndex);
+  int FindDataSet(const char* inName) const;
+  void RemoveAllDataSets();
+
+  bool FindDataSetSample(double inScreenX, double inScreenY, int &outIndex, const char* &outName, int &outSampleIndex, double &outX, double &outY, const char* &outStrX) const;
+  bool FindDataSetSegment(double inScreenX, double inScreenY, int &outIndex, const char* &outName, int &outSampleIndex1, double &outX1, double &outY1, int &outSampleIndex2, double &outX2, double &outY2) const;
+  void SelectDataSetSamples(double inMinX, double inMaxX, double inMinY, double inMaxY);
+  void DeleteSelectedDataSetSamples();
+  void ClearDataSetSelection();
+  void ClearHighlight();
+
+  void UpdateMultibarCount();
+
+protected:
+  Ihandle* ih;
+  iupPlotRect mViewportBack;
+
+  void DataSetClipArea(cdCanvas* canvas, int xmin, int xmax, int ymin, int ymax) const;
   void ConfigureAxis();
   void SetFont(cdCanvas* canvas, int inFontStyle, int inFontSize) const;
-  void UpdateMultibarCount();
+  void SetTitleFont(cdCanvas* canvas) const;
+  bool CheckRange(const iupPlotAxis &inAxis) const;
+  bool HasZoom() const { return mAxisX.HasZoom() || mAxisY.HasZoom(); }
+  long GetNextDataSetColor() const;
+  iupPlotDataSet* HasPie() const;
 
   /*********************************/
 
   void DrawTitle(cdCanvas* canvas) const;
-  void SetTitleFont(cdCanvas* canvas) const;
   void DrawBackground(cdCanvas* canvas) const;
   void DrawBackgroundImage(cdCanvas* canvas) const;
   bool DrawLegend(const iupPlotRect &inRect, cdCanvas* canvas, iupPlotRect &ioPos) const;
@@ -672,13 +765,10 @@ public:
   /*********************************/
 
   void CalculateTitlePos();
-  bool CheckInsideTitle(cdCanvas* canvas, int x, int y);
-  bool CheckInsideLegend(int x, int y);
   void CalculateMargins(cdCanvas* canvas);
   bool CalculateAxisRange();
-  bool CalculateXRange(double &outXMin, double &outXMax);
-  bool CalculateYRange(double &outYMin, double &outYMax);
-  bool CheckRange(const iupPlotAxis &inAxis);
+  bool CalculateXRange(double &outXMin, double &outXMax) const;
+  bool CalculateYRange(double &outYMin, double &outYMax) const;
   bool CalculateYTransformation(const iupPlotRect &inRect);
   bool CalculateXTransformation(const iupPlotRect &inRect);
   bool CalculateLinTransformation(int inBegin, int inEnd, const iupPlotAxis& inAxis, iupPlotTrafoLinear* outTrafo);
@@ -686,66 +776,11 @@ public:
   bool CalculateTickSpacing(const iupPlotRect &inRect, cdCanvas* canvas);
   void CalculateTickSize(cdCanvas* canvas, iupPlotTick &ioTick);
 
-  /*********************************/
-
-  bool HasZoom() const { return mAxisX.HasZoom() || mAxisY.HasZoom(); }
-  void ResetZoom() { if (mAxisX.ResetZoom()) mRedraw = true; if (mAxisY.ResetZoom()) mRedraw = true; }
-  void ZoomIn(double inCenterX, double inCenterY) { if (mAxisX.ZoomIn(inCenterX)) mRedraw = true; if (mAxisY.ZoomIn(inCenterY)) mRedraw = true; }
-  void ZoomOut(double inCenterX, double inCenterY) { if (mAxisX.ZoomOut(inCenterX)) mRedraw = true; if (mAxisY.ZoomOut(inCenterY)) mRedraw = true; }
-  void ZoomTo(double inMinX, double inMaxX, double inMinY, double inMaxY) { if (mAxisX.ZoomTo(inMinX, inMaxX)) mRedraw = true; if (mAxisY.ZoomTo(inMinY, inMaxY)) mRedraw = true; }
-  void PanStart() { mAxisX.PanStart(); mAxisY.PanStart(); }
-  void Pan(double inOffsetX, double inOffsetY) { if (mAxisX.Pan(inOffsetX)) mRedraw = true; if (mAxisY.Pan(inOffsetY)) mRedraw = true; }
-  void Scroll(double inDelta, bool inFullPage, bool inVertical) { if (inVertical) { if (mAxisY.Scroll(inDelta, inFullPage)) mRedraw = true; } else { if (mAxisX.Scroll(inDelta, inFullPage)) mRedraw = true; } }
-  void ScrollTo(double inMinX, double inMinY) { if (mAxisX.ScrollTo(inMinX)) mRedraw = true; if (mAxisY.ScrollTo(inMinY)) mRedraw = true; }
-
-  void TransformBack(int inX, int inY, double &outX, double &outY) {
-    outX = mAxisX.mTrafo->TransformBack((double)inX);
-    outY = mAxisY.mTrafo->TransformBack((double)inY);
-  }
-
-  /*********************************/
-
-  bool mCrossHairH, mCrossHairV;
-  int mCrossHairX, mCrossHairY;
-
-  bool mShowSelectionBand;
-  iupPlotRect mSelectionBand;
-
-  iupPlotHighlight mHighlightMode;
-
-  double mScreenTolerance;
-
-  /*********************************/
-
-  iupPlotBackground mBack;
-  iupPlotGrid mGrid;
-  iupPlotGrid mGridMinor;
-  iupPlotAxis mAxisX;
-  iupPlotAxis mAxisY;
-  iupPlotBox mBox;
-  iupPlotLegend mLegend;
-  iupPlotTitle mTitle;
-
-  /***********************************/
-
-  iupPlotDataSet* *mDataSetList;
-  int mDataSetListCount;
-  int mDataSetListMax;
-  int mCurrentDataSet;
-
-  void AddDataSet(iupPlotDataSet* inDataSet);
-  void RemoveDataSet(int inIndex);
-  int FindDataSet(const char* inName);
-  void RemoveAllDataSets();
-  long GetNextDataSetColor();
-  iupPlotDataSet* HasPie();
-
-  bool FindDataSetSample(double inScreenX, double inScreenY, int &outIndex, const char* &outName, int &outSampleIndex, double &outX, double &outY, const char* &outStrX) const;
-  bool FindDataSetSegment(double inScreenX, double inScreenY, int &outIndex, const char* &outName, int &outSampleIndex1, double &outX1, double &outY1, int &outSampleIndex2, double &outX2, double &outY2) const;
-  void SelectDataSetSamples(double inMinX, double inMaxX, double inMinY, double inMaxY);
-  void DeleteSelectedDataSetSamples();
-  void ClearDataSetSelection();
-  void ClearHighlight();
+  int CalcYTickVerticalMargin(cdCanvas* canvas, bool start) const;
+  int CalcXTickHorizontalMargin(cdCanvas* canvas, bool start) const;
+  int CalcXTickVerticalMargin(cdCanvas* canvas) const;
+  int CalcYTickHorizontalMargin(cdCanvas* canvas) const;
+  int CalcTitleVerticalMargin(cdCanvas* canvas) const;
 };
 
 #endif

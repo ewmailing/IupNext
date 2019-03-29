@@ -19,11 +19,11 @@ void iupPlot::CalculateTitlePos()
   if (mTitle.mAutoPos)
   {
     mTitle.mPosX = mViewport.mWidth / 2;
-    mTitle.mPosY = mViewport.mHeight - 1 - 5;  // add small spacing
+    mTitle.mPosY = mViewport.mHeight - 1 - mBack.mVertPadding;
   }
 }
 
-bool iupPlot::CheckInsideTitle(cdCanvas* canvas, int x, int y)
+bool iupPlot::CheckInsideTitle(cdCanvas* canvas, int x, int y) const
 {
   // it does not depend on theMargin
   if (mTitle.GetText())
@@ -43,7 +43,7 @@ bool iupPlot::CheckInsideTitle(cdCanvas* canvas, int x, int y)
   return false;
 }
 
-bool iupPlot::CheckInsideLegend(int x, int y)
+bool iupPlot::CheckInsideLegend(int x, int y) const
 {
   if (mLegend.mShow)
   {
@@ -55,186 +55,148 @@ bool iupPlot::CheckInsideLegend(int x, int y)
   return false;
 }
 
+int iupPlot::CalcTitleVerticalMargin(cdCanvas* canvas) const
+{
+  SetTitleFont(canvas);
+
+  int theTextHeight;
+  cdCanvasGetTextSize(canvas, mTitle.GetText(), NULL, &theTextHeight);
+  return theTextHeight + 5 + theTextHeight / 2;
+}
+
+int iupPlot::CalcXTickHorizontalMargin(cdCanvas* canvas, bool start) const
+{
+  int theXTickHorizontalMargin = 0;
+
+  if (mAxisX.mShowArrow)
+  {
+    if ((!start && !mAxisX.mReverse) ||
+        ( start &&  mAxisX.mReverse))
+      theXTickHorizontalMargin += mAxisX.GetArrowSize();
+  }
+
+  if (mAxisX.mTick.mShow && mAxisX.mTick.mShowNumber)  // Leave space for half number
+    theXTickHorizontalMargin = iupPlotMax(theXTickHorizontalMargin, mAxisX.GetTickNumberWidth(canvas) / 2);
+
+  return theXTickHorizontalMargin;
+}
+
+int iupPlot::CalcYTickVerticalMargin(cdCanvas* canvas, bool start) const
+{
+  int theYTickVerticalMargin = 0;
+
+  if (mAxisY.mShowArrow)
+  {
+    if ((!start && !mAxisY.mReverse) ||
+        ( start &&  mAxisY.mReverse))
+        theYTickVerticalMargin += mAxisY.GetArrowSize();
+  }
+
+  if (mAxisY.mTick.mShow && mAxisY.mTick.mShowNumber) // Leave space for half number
+    theYTickVerticalMargin = iupPlotMax(theYTickVerticalMargin, mAxisY.GetTickNumberHeight(canvas) / 2);
+
+  return theYTickVerticalMargin;
+}
+
+int iupPlot::CalcXTickVerticalMargin(cdCanvas* canvas) const
+{
+  int theXTickVerticalMargin = 0;
+
+  if (mAxisX.mTick.mShow)
+  {
+    theXTickVerticalMargin += mAxisX.mTick.mMajorSize;
+
+    if (mAxisX.mTick.mShowNumber)
+      theXTickVerticalMargin += mAxisX.GetTickNumberHeight(canvas) + mAxisX.mTick.mMinorSize;  // Use minor size as spacing
+  }
+
+  if (mAxisX.GetLabel())
+  {
+    int theXFontHeight;
+    SetFont(canvas, mAxisX.mFontStyle, mAxisX.mFontSize);
+    cdCanvasGetFontDim(canvas, NULL, &theXFontHeight, NULL, NULL);
+
+    theXTickVerticalMargin += theXFontHeight + theXFontHeight / 10;
+  }
+
+  return theXTickVerticalMargin;
+}
+
+int iupPlot::CalcYTickHorizontalMargin(cdCanvas* canvas) const
+{
+  int theYTickHorizontalMargin = 0;
+
+  if (mAxisY.mTick.mShow)
+  {
+    theYTickHorizontalMargin += mAxisY.mTick.mMajorSize;
+
+    if (mAxisY.mTick.mShowNumber)
+      theYTickHorizontalMargin += mAxisY.GetTickNumberWidth(canvas) + mAxisY.mTick.mMinorSize;  // Use minor size as spacing
+  }
+
+  if (mAxisY.GetLabel())
+  {
+    int theYFontHeight;
+    SetFont(canvas, mAxisY.mFontStyle, mAxisY.mFontSize);
+    cdCanvasGetFontDim(canvas, NULL, &theYFontHeight, NULL, NULL);
+
+    theYTickHorizontalMargin += theYFontHeight + theYFontHeight / 10;
+  }
+
+  return theYTickHorizontalMargin;
+}
+
 void iupPlot::CalculateMargins(cdCanvas* canvas)
 {
   if (mBack.mMarginAuto.mTop)
   {
     mBack.mMargin.mTop = 0;
 
-    if (mTitle.GetText() && mTitle.mAutoPos)
-    {
-      SetTitleFont(canvas);
+    if (mTitle.GetText() && mTitle.mAutoPos)  // Affects only top margin
+      mBack.mMargin.mTop += CalcTitleVerticalMargin(canvas);
 
-      int theTextHeight;
-      cdCanvasGetTextSize(canvas, mTitle.GetText(), NULL, &theTextHeight);
-      mBack.mMargin.mTop += theTextHeight + 5 + theTextHeight/2;
-    }
-    else
-    {
-      if (mAxisY.mShow)
-      {
-        if (mAxisY.mShowArrow && !mAxisY.mReverse)
-          mBack.mMargin.mTop += mAxisY.mTick.mMinorSize + 2 + 5;  // size of the arrow
+    if (mAxisX.mShow && mAxisX.mPosition == IUP_PLOT_END)
+      mBack.mMargin.mTop += CalcXTickVerticalMargin(canvas);
 
-        if (mAxisY.mTick.mShowNumber)
-        {
-          if (mAxisY.mTick.mRotateNumber)
-          {
-            int theYTickNumberHeight;
-            mAxisY.GetTickNumberSize(canvas, NULL, &theYTickNumberHeight);
-            mBack.mMargin.mTop += theYTickNumberHeight / 2;
-          }
-          else
-          {
-            int theYTickNumberWidth;
-            mAxisY.GetTickNumberSize(canvas, &theYTickNumberWidth, NULL);
-            mBack.mMargin.mTop += theYTickNumberWidth / 2;
-          }
-        }
-      }
-    }
+    if (mAxisY.mShow)
+      mBack.mMargin.mTop = iupPlotMax(mBack.mMargin.mTop, CalcYTickVerticalMargin(canvas, false));
   }
 
   if (mBack.mMarginAuto.mBottom)
   {
     mBack.mMargin.mBottom = 0;
 
-    if (mAxisX.mShow && !mAxisX.mCrossOrigin)
-    {
-      mBack.mMargin.mBottom += mAxisX.mTick.mMajorSize;
-
-      if (mAxisX.mTick.mShowNumber)
-      {
-        if (mAxisX.mTick.mRotateNumber)
-        {
-          int theXTickNumberWidth;
-          mAxisX.GetTickNumberSize(canvas, &theXTickNumberWidth, NULL);
-          mBack.mMargin.mBottom += theXTickNumberWidth;
-        }
-        else
-        {
-          int theXTickNumberHeight;
-          mAxisX.GetTickNumberSize(canvas, NULL, &theXTickNumberHeight);
-          mBack.mMargin.mBottom += theXTickNumberHeight;
-        }
-      }
-
-      if (mAxisX.GetLabel())
-      {
-        int theXFontHeight;
-        SetFont(canvas, mAxisX.mFontStyle, mAxisX.mFontSize);
-        cdCanvasGetFontDim(canvas, NULL, &theXFontHeight, NULL, NULL);
-
-        mBack.mMargin.mBottom += theXFontHeight + theXFontHeight / 10;
-      }
-    }
+    if (mAxisX.mShow && mAxisX.mPosition == IUP_PLOT_START)
+      mBack.mMargin.mBottom += CalcXTickVerticalMargin(canvas);
 
     if (mAxisY.mShow)
-    {
-      if (mAxisY.mTick.mShowNumber)
-      {
-        if (mAxisY.mTick.mRotateNumber)
-        {
-          int theYTickNumberHeight;
-          mAxisY.GetTickNumberSize(canvas, NULL, &theYTickNumberHeight);
-          mBack.mMargin.mBottom += theYTickNumberHeight/2;
-        }
-        else
-        {
-          int theYTickNumberWidth;
-          mAxisY.GetTickNumberSize(canvas, &theYTickNumberWidth, NULL);
-          mBack.mMargin.mBottom += theYTickNumberWidth/2;
-        }
-      }
-    }
-  }
-
-  if (mBack.mMarginAuto.mRight)
-  {
-    mBack.mMargin.mRight = 0;
-
-    if (mAxisX.mShow)
-    {
-      if (mAxisX.mShowArrow && !mAxisX.mReverse)
-        mBack.mMargin.mRight += mAxisX.mTick.mMinorSize + 2 + 5;  // size of the arrow
-
-      if (mAxisX.mTick.mShowNumber)
-      {
-        if (mAxisX.mTick.mRotateNumber)
-        {
-          int theXTickNumberHeight;
-          mAxisX.GetTickNumberSize(canvas, NULL, &theXTickNumberHeight);
-          mBack.mMargin.mRight += theXTickNumberHeight/2;
-        }
-        else
-        {
-          int theXTickNumberWidth;
-          mAxisX.GetTickNumberSize(canvas, &theXTickNumberWidth, NULL);
-          mBack.mMargin.mRight += theXTickNumberWidth/2;
-        }
-      }
-    }
+      mBack.mMargin.mBottom = iupPlotMax(mBack.mMargin.mBottom, CalcYTickVerticalMargin(canvas, true));
   }
 
   if (mBack.mMarginAuto.mLeft)
   {
     mBack.mMargin.mLeft = 0;
 
-    if (mAxisY.mShow && !mAxisY.mCrossOrigin)
-    {
-      mBack.mMargin.mLeft += mAxisY.mTick.mMajorSize;
-
-      if (mAxisY.mTick.mShowNumber)
-      {
-        if (mAxisY.mTick.mRotateNumber)
-        {
-          int theYTickNumberHeight;
-          mAxisY.GetTickNumberSize(canvas, NULL, &theYTickNumberHeight);
-          mBack.mMargin.mLeft += theYTickNumberHeight;
-        }
-        else
-        {
-          int theYTickNumberWidth;
-          mAxisY.GetTickNumberSize(canvas, &theYTickNumberWidth, NULL);
-          mBack.mMargin.mLeft += theYTickNumberWidth;
-        }
-      }
-
-      if (mAxisY.GetLabel())
-      {
-        int theYFontHeight;
-        SetFont(canvas, mAxisY.mFontStyle, mAxisY.mFontSize);
-        cdCanvasGetFontDim(canvas, NULL, &theYFontHeight, NULL, NULL);
-
-        mBack.mMargin.mLeft += theYFontHeight + theYFontHeight / 10;
-      }
-    }
+    if (mAxisY.mShow && mAxisY.mPosition == IUP_PLOT_START)
+      mBack.mMargin.mLeft += CalcYTickHorizontalMargin(canvas);
 
     if (mAxisX.mShow)
-    {
-      if (mAxisX.mShowArrow && mAxisX.mReverse)
-        mBack.mMargin.mLeft += mAxisX.mTick.mMinorSize + 2 + 5;  // size of the arrow
+      mBack.mMargin.mLeft = iupPlotMax(mBack.mMargin.mLeft, CalcXTickHorizontalMargin(canvas, true));
+  }
 
-      if (mAxisX.mTick.mShowNumber)
-      {
-        if (mAxisX.mTick.mRotateNumber)
-        {
-          int theXTickNumberHeight;
-          mAxisX.GetTickNumberSize(canvas, NULL, &theXTickNumberHeight);
-          mBack.mMargin.mLeft += theXTickNumberHeight / 2;
-        }
-        else
-        {
-          int theXTickNumberWidth;
-          mAxisX.GetTickNumberSize(canvas, &theXTickNumberWidth, NULL);
-          mBack.mMargin.mLeft += theXTickNumberWidth / 2;
-        }
-      }
-    }
+  if (mBack.mMarginAuto.mRight)
+  {
+    mBack.mMargin.mRight = 0;
+
+    if (mAxisY.mShow && mAxisY.mPosition == IUP_PLOT_END)
+      mBack.mMargin.mRight += CalcYTickHorizontalMargin(canvas);
+
+    if (mAxisX.mShow)
+      mBack.mMargin.mRight = iupPlotMax(mBack.mMargin.mRight, CalcXTickHorizontalMargin(canvas, false));
   }
 }
 
-bool iupPlot::CalculateXRange(double &outXMin, double &outXMax)
+bool iupPlot::CalculateXRange(double &outXMin, double &outXMax) const
 {
   bool theFirst = true;
   outXMin = 0;
@@ -275,7 +237,7 @@ bool iupPlot::CalculateXRange(double &outXMin, double &outXMax)
   return true;
 }
 
-bool iupPlot::CalculateYRange(double &outYMin, double &outYMax)
+bool iupPlot::CalculateYRange(double &outYMin, double &outYMax) const
 {
   bool theFirst = true;
   outYMin = 0;
@@ -395,7 +357,7 @@ bool iupPlot::CalculateAxisRange()
   return true;
 }
 
-bool iupPlot::CheckRange(const iupPlotAxis &inAxis)
+bool iupPlot::CheckRange(const iupPlotAxis &inAxis) const
 {
   if (inAxis.mLogScale) 
   {

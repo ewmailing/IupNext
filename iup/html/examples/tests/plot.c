@@ -103,7 +103,11 @@ static void InitPlots(void)
   //  IupSetAttribute(plot[0], "AXS_YFONTSIZE", "10");
   IupSetAttribute(plot[0], "AXS_XCROSSORIGIN", "Yes");
   IupSetAttribute(plot[0], "AXS_YCROSSORIGIN", "Yes");
-//  IupSetAttribute(plot[0], "GRAPHICSMODE", "OPENGL");
+  IupSetAttribute(plot[0], "AXS_XLABELCENTERED", "No");
+  IupSetAttribute(plot[0], "AXS_YLABELCENTERED", "No");
+//  IupSetAttribute(plot[0], "AXS_XREVERSETICKLABEL", "Yes");
+//  IupSetAttribute(plot[0], "AXS_YREVERSETICKLABEL", "Yes");
+  //  IupSetAttribute(plot[0], "GRAPHICSMODE", "OPENGL");
   //  IupSetAttribute(plot[0], "ACTIVE", "No");
 
   //  IupSetAttribute(plot[0], "AXS_AUTOSCALEEQUAL", "Yes");
@@ -243,6 +247,7 @@ static void InitPlots(void)
   IupSetAttribute(plot[2], "AXS_XFONTSTYLE", "BOLD");
   IupSetAttribute(plot[2], "AXS_YFONTSTYLE", "BOLD");
   IupSetAttribute(plot[2], "HIGHLIGHTMODE", "CURVE");
+//  IupSetAttribute(plot[2], "PADDING", "70x70");
 
   theFac = 100.0 / (100 * 100 * 100);
   IupPlotBegin(plot[2], 0);
@@ -368,6 +373,9 @@ static void InitPlots(void)
   IupSetAttribute(plot[6], "DS_MODE", "STEP");
   IupSetAttribute(plot[6], "HIGHLIGHTMODE", "SAMPLE");
   IupSetAttribute(plot[6], "DATASETCLIPPING", "NONE");
+  IupSetAttribute(plot[6], "AXS_YPOSITION", "END");
+//  IupSetAttribute(plot[6], "AXS_XPOSITION", "END");
+  //  IupSetAttribute(plot[6], "PADDING", "70x70");
 
   /************************************************************************/
   /* PLOT 7 */
@@ -969,10 +977,12 @@ void PlotTest(void)
   //  tabs = IupZboxv(vboxr);
   //  IupSetAttribute(tabs, "VALUE", "Plot 3");
   tabs = IupTabsv(vboxr);
+//  tabs = IupFlatTabsv(vboxr);
   IupSetCallback(tabs, "TABCHANGE_CB", (Icallback)tabs_tabchange_cb);
 
   hbox = IupHbox(vboxl, tabs, NULL);
-  IupSetAttribute(hbox, "MARGIN", "4x4");
+  IupSetAttribute(hbox, "MARGIN", "0x0");
+//  IupSetAttribute(hbox, "MARGIN", "4x4");
   IupSetAttribute(hbox, "GAP", "10");
 
   dlg = IupDialog(hbox);
