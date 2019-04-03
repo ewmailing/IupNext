@@ -130,14 +130,16 @@ data is dropped.</p>
 
   
     
-<pre>int function(Ihandle*<strong> ih</strong>, char* <strong>type</strong>, void* <strong>data</strong>, int <strong>size</strong>) [in C]<br><strong>elem</strong>:dragdata_cb(<strong>type</strong>: string, <strong>size</strong>: number) -&gt; (<strong>data: </strong>userdata) [in Lua]</pre>
+<pre>int function(Ihandle*<strong> ih</strong>, char* <strong>type</strong>, void* <strong>data</strong>, int <strong>size</strong>) [in C]<br><strong>elem</strong>:dragdata_cb(<strong>type</strong>: string,<strong> data: </strong>userdata <strong>size</strong>: number) -&gt; (<strong>ret</strong>: number) [in Lua]</pre>
 
     
 <p class="info"><strong>ih</strong>:
   identifier of the element that activated the 
   event.<br><strong>type</strong>: type of the data. It is one of the registered 
 types in <strong>DRAGTYPES</strong><span class="auto-style1">.</span><br><strong>data</strong>: 
-buffer to be filled by the application. In Lua is a light userdata.<br><strong>size</strong>: buffer size in 
+buffer to be filled by the application. In Lua is a light userdata. If your data 
+is a string you can use iup.<strong>CopyString2UserData</strong>(str, data, 
+size) to copy the string into the user data (since 3.27).<br><strong>size</strong>: buffer size in 
 bytes. 
 The same value returned by <b>DRAGDATASIZE_CB.</b></p>
 
@@ -176,7 +178,8 @@ it would be called after the <b>DRAGDATA_CB</b> callback.</p>
 <strong>type</strong>: type of the data. It is one of the registered 
 types in <strong>DROPTYPES</strong><span class="auto-style1">.</span><br>
 <strong>data</strong>: content data received in the drop operation.&nbsp; In Lua 
-is a light userdata.<br>
+is a light userdata. If your data is a string you can use &quot;str = iup.<strong>CopyUserData2String</strong>(data, 
+size)&quot; to copy the user data into a string (since 3.27).<br>
 <strong>size</strong>: data size in bytes.<br><strong>x, y</strong>: cursor position relative to the top-left 
 corner of the element.</p>
 
