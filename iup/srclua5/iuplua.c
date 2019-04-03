@@ -1029,6 +1029,21 @@ static int multitouch_cb(Ihandle *ih, int count, int* pid, int* px, int* py, int
   return iuplua_call(L, 5);
 }
 
+static int dragdata_cb(Ihandle *self, char* p0, void* p1, int p2)
+{
+  lua_State *L = iuplua_call_start(self, "dragdata_cb");
+  lua_pushstring(L, p0);
+  lua_pushinteger(L, p2);
+  if (iuplua_call_raw(L, 2 + 2, 1) == LUA_OK) /* 2 args + 2 args(errormsg, ih), 1 return */
+  {
+    void* tmp = lua_isnil(L, -1)? NULL : lua_touserdata(L, -1);
+    lua_pop(L, 1);  /* remove the result */
+    if (tmp)
+      memcpy(p1, tmp, p2);
+  }
+  return IUP_DEFAULT;
+}
+
 static void globalwheel_cb(float delta, int x, int y, char* status)
 {
   lua_State *L = iuplua_call_global_start("globalwheel_cb");
@@ -1304,6 +1319,7 @@ int iuplua_open(lua_State * L)
   iuplua_register_cb(L, "K_ANY", (lua_CFunction)k_any, NULL);
   iuplua_register_cb(L, "KILLFOCUS_CB", (lua_CFunction)killfocus_cb, NULL);
   iuplua_register_cb(L, "MULTITOUCH_CB", (lua_CFunction)multitouch_cb, NULL);
+  iuplua_register_cb(L, "DRAGDATA_CB", (lua_CFunction)dragdata_cb, NULL);
 
   /* Register global callbacks */
   iuplua_register_cb(L, "GLOBALWHEEL_CB", (lua_CFunction)globalwheel_cb, NULL);
