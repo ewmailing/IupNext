@@ -1029,19 +1029,26 @@ static int multitouch_cb(Ihandle *ih, int count, int* pid, int* px, int* py, int
   return iuplua_call(L, 5);
 }
 
-static int dragdata_cb(Ihandle *self, char* p0, void* p1, int p2)
+static int copyuserdata2string(lua_State *L)
 {
-  lua_State *L = iuplua_call_start(self, "dragdata_cb");
-  lua_pushstring(L, p0);
-  lua_pushinteger(L, p2);
-  if (iuplua_call_raw(L, 2 + 2, 1) == LUA_OK) /* 2 args + 2 args(errormsg, ih), 1 return */
-  {
-    void* tmp = lua_isnil(L, -1)? NULL : lua_touserdata(L, -1);
-    lua_pop(L, 1);  /* remove the result */
-    if (tmp)
-      memcpy(p1, tmp, p2);
-  }
-  return IUP_DEFAULT;
+  void* udata = lua_touserdata(L, 1);
+  size_t size = luaL_checkinteger(L, 2);
+  char* str = malloc(size);
+  memcpy(str, udata, size);
+  lua_pushlstring(L, str, size);
+  free(str);
+  return 1;
+}
+
+static int copystring2userdata(lua_State *L)
+{
+  size_t size;
+  const char* str = luaL_checklstring(L, 1, &size);
+  void* udata = lua_touserdata(L, 2);
+  size_t max_size = luaL_checkinteger(L, 3);
+  if (size > max_size) size = max_size;
+  memcpy(udata, str, size);
+  return 0;
 }
 
 static void globalwheel_cb(float delta, int x, int y, char* status)
@@ -1272,6 +1279,8 @@ int iuplua_open(lua_State * L)
     {"dostring", il_dostring},
     {"dofile", il_dofile},
     { "StringCompare", StringCompare },
+    { "CopyUserData2String", copyuserdata2string },
+    { "CopyString2UserData", copystring2userdata },
 
     { NULL, NULL },
   };
@@ -1319,7 +1328,6 @@ int iuplua_open(lua_State * L)
   iuplua_register_cb(L, "K_ANY", (lua_CFunction)k_any, NULL);
   iuplua_register_cb(L, "KILLFOCUS_CB", (lua_CFunction)killfocus_cb, NULL);
   iuplua_register_cb(L, "MULTITOUCH_CB", (lua_CFunction)multitouch_cb, NULL);
-  iuplua_register_cb(L, "DRAGDATA_CB", (lua_CFunction)dragdata_cb, NULL);
 
   /* Register global callbacks */
   iuplua_register_cb(L, "GLOBALWHEEL_CB", (lua_CFunction)globalwheel_cb, NULL);
