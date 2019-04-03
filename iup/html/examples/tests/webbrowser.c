@@ -82,7 +82,6 @@ static int forward_cb(Ihandle* self)
 {
   Ihandle* web  = (Ihandle*)IupGetAttribute(self, "MY_WEB");
   IupSetAttribute(web, "BACKFORWARD", "1");
-//  IupSetAttribute(web, "ZOOM", "200");
   return IUP_DEFAULT;
 }
 
@@ -90,7 +89,12 @@ static int stop_cb(Ihandle* self)
 {
   Ihandle* web  = (Ihandle*)IupGetAttribute(self, "MY_WEB");
   IupSetAttribute(web, "STOP", NULL);
-  return IUP_DEFAULT;
+
+//  IupSetAttribute(web, "PRINT", NULL);
+//    IupSetAttribute(web, "ZOOM", "200");
+//    IupSetAttribute(web, "SELECTALL", NULL);
+ // IupSetAttribute(web, "COPY", NULL);
+    return IUP_DEFAULT;
 }
 
 static int reload_cb(Ihandle* self)
