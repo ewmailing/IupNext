@@ -303,27 +303,27 @@ i.e. even if SCREENDEPTH&lt;=8 . Returns
   &quot;YES&quot; or 
   &quot;NO&quot;. Usefull in Motif.</p>
   
-<h3><strong>DWM_COMPOSITION</strong> (read-only) [Win32 Only]<span class="style2"> 
+<h3><strong>DWM_COMPOSITION</strong> (read-only) [Windows Only]<span class="style2"> 
 (since 3.10)</span></h3>
 <p>Returns the Desktop Window Manager Composition flag. Returns &quot;YES&quot; or &quot;NO&quot;. 
 Works only in Windows Vista and newer. Returns NULL if not supported.</p>
-<h3><strong><a name="VIRTUALSCREEN">VIRTUALSCREEN</a></strong> (read-only) [Win32 and GTK Only]<span class="style2"> 
+<h3><strong><a name="VIRTUALSCREEN">VIRTUALSCREEN</a></strong> (read-only) [Windows 
+and GTK Only]<span class="style2"> 
 (since 3.0)</span></h3>
 <p>Returns the virtual screen position and size in pixels. It is the virtual 
 space defined by all monitors in the system.</p>
 <p>String in the &quot;<i>x y width height</i>&quot; format.</p>
-<h3><a name="MONITORSCOUNT">MONITORSCOUNT</a> (read-only) [Win32 and 
-GTK Only] <span class="style2">(since 3.17)</span></h3>
+<h3><a name="MONITORSCOUNT">MONITORSCOUNT</a> (read-only) [Windows and GTK Only] <span class="style2">(since 3.17)</span></h3>
 <p>Returns the number of monitors.</p>
-<h3><a name="MONITORSINFO">MONITORSINFO</a> (read-only) [Win32 and 
-GTK Only] <span class="style2">(since 3.0)</span></h3>
+<h3><a name="MONITORSINFO">MONITORSINFO</a> (read-only) [Windows and GTK Only] <span class="style2">(since 3.0)</span></h3>
 <p>Returns the position and size in pixels of all monitors. Each monitor 
 information is terminated by a &quot;\n&quot; character.</p>
 <p>String in the &quot;<i>x y width height</i>\n<i>x y width height</i>\n...&quot; format.</p>
 <h2 align="center">System <a name="Data">Data</a>&nbsp;</h2>
-<h3><a name="HINSTANCE"><strong>HINSTANCE</strong></a> (read-only) [Win32 Only]</h3>
+<h3><a name="HINSTANCE"><strong>HINSTANCE</strong></a> (read-only) [Windows 
+Only]</h3>
 <p>Returns a handle (HINSTANCE) that identifies the application in the native system.</p>
-<h3><a name="DLL_HINSTANCE"><strong>DLL_HINSTANCE</strong></a> [Win32 Only]<span class="style2"> (since 
+<h3><a name="DLL_HINSTANCE"><strong>DLL_HINSTANCE</strong></a> [Windows Only]<span class="style2"> (since 
 3.0)</span></h3>
 <p>Changes and returns a handle (HINSTANCE) that identifies the DLL where resources are stored.</p>
 <h3><a name="APPSHELL"><strong>APPSHELL</strong></a> (read-only) [Motif Only] 
