@@ -19,6 +19,29 @@
 #include "il.h"
 
 
+static int CopyUserData2String(lua_State *L)
+{
+  void* udata = lua_touserdata(L, 1);
+  size_t size = luaL_checkinteger(L, 2);
+  char* str = malloc(size);
+  memcpy(str, udata, size);  /* buffer must contain the terminator */
+  lua_pushlstring(L, str, size - 1); /* len */
+  free(str);
+  return 1;
+}
+
+static int CopyString2UserData(lua_State *L)
+{
+  size_t len;
+  const char* str = luaL_checklstring(L, 1, &len);
+  void* udata = lua_touserdata(L, 2);
+  size_t size = luaL_checkinteger(L, 3);
+  if (len >= size) len = size-1;
+  memcpy(udata, str, len);
+  ((char*)udata)[len] = 0;
+  return 0;
+}
+
 static int StringCompare(lua_State *L)
 {
   const char* str1 = luaL_optstring(L, 1, NULL);
@@ -1029,28 +1052,6 @@ static int multitouch_cb(Ihandle *ih, int count, int* pid, int* px, int* py, int
   return iuplua_call(L, 5);
 }
 
-static int copyuserdata2string(lua_State *L)
-{
-  void* udata = lua_touserdata(L, 1);
-  size_t size = luaL_checkinteger(L, 2);
-  char* str = malloc(size);
-  memcpy(str, udata, size);
-  lua_pushlstring(L, str, size);
-  free(str);
-  return 1;
-}
-
-static int copystring2userdata(lua_State *L)
-{
-  size_t size;
-  const char* str = luaL_checklstring(L, 1, &size);
-  void* udata = lua_touserdata(L, 2);
-  size_t max_size = luaL_checkinteger(L, 3);
-  if (size > max_size) size = max_size;
-  memcpy(udata, str, size);
-  return 0;
-}
-
 static void globalwheel_cb(float delta, int x, int y, char* status)
 {
   lua_State *L = iuplua_call_global_start("globalwheel_cb");
@@ -1279,8 +1280,8 @@ int iuplua_open(lua_State * L)
     {"dostring", il_dostring},
     {"dofile", il_dofile},
     { "StringCompare", StringCompare },
-    { "CopyUserData2String", copyuserdata2string },
-    { "CopyString2UserData", copystring2userdata },
+    { "CopyUserData2String", CopyUserData2String },
+    { "CopyString2UserData", CopyString2UserData },
 
     { NULL, NULL },
   };
