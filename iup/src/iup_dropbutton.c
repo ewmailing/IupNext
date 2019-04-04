@@ -673,15 +673,18 @@ static void iDropButtonSetDropChild(Ihandle* ih, Ihandle* dropchild)
       IupDetach(ih->data->dropchild);
 
     /* make sure it has at least one name */
-    if (!iupAttribGetHandleName(dropchild))
+    if (dropchild && !iupAttribGetHandleName(dropchild))
       iupAttribSetHandleName(dropchild);
 
     ih->data->dropchild = dropchild;
 
-    IupAppend(ih->data->dropdialog, ih->data->dropchild);
+    if (dropchild)
+    {
+      IupAppend(ih->data->dropdialog, ih->data->dropchild);
 
-    if (ih->data->dropdialog->handle)
-      IupMap(ih->data->dropchild);
+      if (ih->data->dropdialog->handle)
+        IupMap(ih->data->dropchild);
+    }
   }
 }
 
