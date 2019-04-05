@@ -212,10 +212,13 @@ void iupPlot::DrawTitle(cdCanvas* canvas) const
 
 void iupPlot::DrawBackground(cdCanvas* canvas) const
 {
-  cdCanvasOrigin(canvas, 0, 0);
-  cdCanvasClip(canvas, CD_CLIPOFF);
-  cdCanvasSetForeground(canvas, mBack.mColor);
-  cdCanvasBox(canvas, mViewportBack.mX, mViewportBack.mX + mViewportBack.mWidth - 1, mViewportBack.mY, mViewportBack.mY + mViewportBack.mHeight - 1);
+  if (!mBack.mTransparent)
+  {
+    cdCanvasOrigin(canvas, 0, 0);
+    cdCanvasClip(canvas, CD_CLIPOFF);
+    cdCanvasSetForeground(canvas, mBack.mColor);
+    cdCanvasBox(canvas, mViewportBack.mX, mViewportBack.mX + mViewportBack.mWidth - 1, mViewportBack.mY, mViewportBack.mY + mViewportBack.mHeight - 1);
+  }
 }
 
 void iupPlot::DrawInactive(cdCanvas* canvas) const

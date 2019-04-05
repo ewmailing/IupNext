@@ -1356,8 +1356,18 @@ void iupPlotSetPlotCurrent(Ihandle* ih, int p)
 
 void iupPlotRedraw(Ihandle* ih, int flush, int only_current, int reset_redraw)
 {
-  if (flush && ih->data->graphics_mode == IUP_PLOT_OPENGL)
+  if (ih->data->graphics_mode == IUP_PLOT_OPENGL)
+  {
     IupGLMakeCurrent(ih);
+
+    // in OpenGL mode must:
+    flush = 1;  // always flush
+    only_current = 0;  // redraw all plots
+    reset_redraw = 1;  // always render
+  }
+
+  if (ih->data->sync_view || ih->data->merge_view)
+    only_current = 0;  // draw all plots
 
   cdCanvasActivate(ih->data->cd_canvas);
 
@@ -1365,31 +1375,83 @@ void iupPlotRedraw(Ihandle* ih, int flush, int only_current, int reset_redraw)
   {
     if (reset_redraw)
       ih->data->current_plot->mRedraw = true;
+
+    ih->data->current_plot->PrepareRender(ih->data->cd_canvas);
     ih->data->current_plot->Render(ih->data->cd_canvas);
   }
   else
   {
     int old_current = ih->data->current_plot_index;
-    for (int p = 0; p < ih->data->plot_list_count; p++)
+    int p;
+
+    for (p = 0; p < ih->data->plot_list_count; p++)
     {
-      // Set current because of the draw callbacks
       iupPlotSetPlotCurrent(ih, p);
 
       if (reset_redraw)
         ih->data->current_plot->mRedraw = true;
+
+      ih->data->current_plot->PrepareRender(ih->data->cd_canvas);
+
+      ih->data->current_plot->mBack.mTransparent = false;
+    }
+
+    if (ih->data->merge_view)
+    {
+      iupPlotSetPlotCurrent(ih, 0);
+      iupPlot* plot0 = ih->data->current_plot;
+
+      /* compute the margin that all plots can fit */
+      for (p = 1; p < ih->data->plot_list_count; p++)
+      {
+        iupPlotSetPlotCurrent(ih, p);
+
+        if (ih->data->current_plot->mBack.mMargin.mLeft > plot0->mBack.mMargin.mLeft)
+          plot0->mBack.mMargin.mLeft = ih->data->current_plot->mBack.mMargin.mLeft;
+        if (ih->data->current_plot->mBack.mMargin.mRight > plot0->mBack.mMargin.mRight)
+          plot0->mBack.mMargin.mRight = ih->data->current_plot->mBack.mMargin.mRight;
+        if (ih->data->current_plot->mBack.mMargin.mTop > plot0->mBack.mMargin.mTop)
+          plot0->mBack.mMargin.mTop = ih->data->current_plot->mBack.mMargin.mTop;
+        if (ih->data->current_plot->mBack.mMargin.mBottom > plot0->mBack.mMargin.mBottom)
+          plot0->mBack.mMargin.mBottom = ih->data->current_plot->mBack.mMargin.mBottom;
+
+        if (ih->data->current_plot->mRedraw)
+          plot0->mRedraw = true;
+      }
+
+      /* all the plots get the same margin */
+      for (p = 1; p < ih->data->plot_list_count; p++)
+      {
+        iupPlotSetPlotCurrent(ih, p);
+
+        ih->data->current_plot->mBack.mMargin.mLeft = plot0->mBack.mMargin.mLeft;
+        ih->data->current_plot->mBack.mMargin.mRight = plot0->mBack.mMargin.mRight;
+        ih->data->current_plot->mBack.mMargin.mTop = plot0->mBack.mMargin.mTop;
+        ih->data->current_plot->mBack.mMargin.mBottom = plot0->mBack.mMargin.mBottom;
+
+        ih->data->current_plot->mBack.mTransparent = true;
+
+        if (plot0->mRedraw)
+          ih->data->current_plot->mRedraw = true;
+      }
+    }
+
+    for (p = 0; p < ih->data->plot_list_count; p++)
+    {
+      iupPlotSetPlotCurrent(ih, p);
+
       ih->data->current_plot->Render(ih->data->cd_canvas);
     }
+
     iupPlotSetPlotCurrent(ih, old_current);
   }
 
   // Do the flush once
   if (flush)
-  {
     cdCanvasFlush(ih->data->cd_canvas);
 
-    if (ih->data->graphics_mode == IUP_PLOT_OPENGL)
-      IupGLSwapBuffers(ih);
-  }
+  if (ih->data->graphics_mode == IUP_PLOT_OPENGL)
+    IupGLSwapBuffers(ih);
 }
 
 static int iPlotAction_CB(Ihandle* ih)
@@ -1398,14 +1460,6 @@ static int iPlotAction_CB(Ihandle* ih)
   int flush = 1,  // always flush
     only_current = 0,  // redraw all plots
     reset_redraw = 0; // render only if necessary
-
-  if (ih->data->graphics_mode == IUP_PLOT_OPENGL)
-  {
-    // in OpenGL mode must:
-    flush = 1;  // always flush
-    only_current = 0;  // redraw all plots
-    reset_redraw = 1;  // always render
-  }
 
   iupPlotRedraw(ih, flush, only_current, reset_redraw);
 
@@ -1422,6 +1476,7 @@ void iupPlotUpdateViewports(Ihandle* ih)
   int numcol = ih->data->numcol;
   if (numcol > ih->data->plot_list_count) numcol = ih->data->plot_list_count;
   int numlin = ih->data->plot_list_count / numcol;
+
   int pw = w / numcol;
   int ph = h / numlin;
 
@@ -1431,6 +1486,14 @@ void iupPlotUpdateViewports(Ihandle* ih)
     int col = p % numcol;
     int px = col * pw;
     int py = lin * ph;
+
+    if (ih->data->merge_view)
+    {
+      px = 0;
+      py = 0;
+      pw = w;
+      ph = h;
+    }
 
     ih->data->plot_list[p]->SetViewport(px, py, pw, ph);
   }
@@ -1454,24 +1517,11 @@ static void iPlotRedrawInteract(Ihandle *ih)
 {
   // when interacting
   int flush = 0, // flush if necessary
-    only_current = 1, // draw all plots if sync
+    only_current = 1, 
     reset_redraw = 0;  // render only if necessary
 
-  if (ih->data->graphics_mode == IUP_PLOT_OPENGL)
-  {
-    // in OpenGL mode must:
-    flush = 1;  // always flush
-    only_current = 0;  // redraw all plots
-    reset_redraw = 1;  // always render
-  }
-  else
-  {
-    if (ih->data->current_plot->mRedraw)
-      flush = 1;
-
-    if (ih->data->sync_view)
-      only_current = 0;
-  }
+  if (ih->data->current_plot->mRedraw)
+    flush = 1;
 
   iupPlotRedraw(ih, flush, only_current, reset_redraw);
 }
@@ -1648,7 +1698,7 @@ static void iPlotScrollTo(Ihandle *ih, int x, int y)
   iPlotRedrawInteract(ih);
 }
 
-static int iPlotFindPlot(Ihandle* ih, int x, int &y)
+static int iPlotFindPlot(Ihandle* ih, int x, int &y, char* status)
 {
   int w, h;
 
@@ -1661,6 +1711,20 @@ static int iPlotFindPlot(Ihandle* ih, int x, int &y)
   // Notice that this change is returned to the callback
   cdCanvasOrigin(ih->data->cd_canvas, 0, 0);
   y = cdCanvasInvertYAxis(ih->data->cd_canvas, y);
+
+  if (ih->data->merge_view)
+  {
+    if (ih->data->plot_list_count > 1 && iup_isshift(status))
+      return 1;
+
+    if (ih->data->plot_list_count > 2 && iup_iscontrol(status))
+      return 2;
+
+    if (ih->data->plot_list_count > 3 && iup_isalt(status))
+      return 3;
+
+    return 0;
+  }
 
   int numcol = ih->data->numcol;
   if (numcol > ih->data->plot_list_count) numcol = ih->data->plot_list_count;
@@ -1681,7 +1745,7 @@ static int iPlotFindPlot(Ihandle* ih, int x, int &y)
 static int iPlotButton_CB(Ihandle* ih, int button, int press, int x, int y, char* status)
 {
   int screen_x = x, screen_y = y;
-  int index = iPlotFindPlot(ih, x, y);
+  int index = iPlotFindPlot(ih, x, y, status);
   if (index < 0)
   {
     iPlotRedrawInteract(ih);
@@ -1813,7 +1877,7 @@ static int iPlotMotion_CB(Ihandle* ih, int x, int y, char *status)
   if (iupStrEqualNoCase(IupGetAttribute(ih, "CURSOR"), "HAND"))
     IupSetAttribute(ih, "CURSOR", NULL);
 
-  int index = iPlotFindPlot(ih, x, y);
+  int index = iPlotFindPlot(ih, x, y, status);
   if (index < 0)
     return IUP_DEFAULT;
 
@@ -2028,7 +2092,7 @@ static int iPlotMotion_CB(Ihandle* ih, int x, int y, char *status)
 
 static int iPlotWheel_CB(Ihandle *ih, float delta, int x, int y, char* status)
 {
-  int index = iPlotFindPlot(ih, x, y);
+  int index = iPlotFindPlot(ih, x, y, status);
   if (index < 0)
     return IUP_DEFAULT;
 

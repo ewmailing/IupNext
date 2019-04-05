@@ -19,6 +19,7 @@ struct _IcontrolData
 
   int numcol;
   int sync_view;
+  int merge_view;
   int read_only;
 
   cdCanvas* cd_canvas;

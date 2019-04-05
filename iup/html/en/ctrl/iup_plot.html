@@ -435,6 +435,10 @@ will behave as &quot;NOFLUSH&quot;. Works only after mapped.</p>
 
 <p><strong>SYNCVIEW</strong>: when a plot view is changed by 
 interactive zoom or pan, the other plots are zoomed or panned accordingly. </p>
+<p><strong>MERGEVIEW</strong>: all plots are drawn in the same area. The margins 
+are changed to define a single area in the same space. Interaction is done with 
+the plot 0 by default, but can be altered for plot 1 (Shift key), plot 2 (Ctrl 
+key) or plot 3 (Alt key). (since 3.27)</p>
 <p><strong><a name="TIPFORMAT">TIPFORMAT</a></strong>: format of the automatic TIP when mouse is over a 
 sample. Default: "%s (%s, %s)". First parameter is DS_NAME, then X and Y 
 sample values converted to strings using <a href="#AXS_XTIPFORMAT">AXS_XTIPFORMAT</a> and AXS_YTIPFORMAT 

@@ -238,22 +238,12 @@ static int iPlotSetRedrawAttrib(Ihandle* ih, const char* value)
     only_current = 0, // redraw all plots
     reset_redraw = 1;  // always render
 
-  if (ih->data->graphics_mode == IUP_PLOT_OPENGL)
+  if (iupStrEqualNoCase(value, "NOFLUSH"))
+    flush = 0;
+  else if (iupStrEqualNoCase(value, "CURRENT"))
   {
-    // in OpenGL mode must:
-    flush = 1;  // always flush
-    only_current = 0;  // redraw all plots
-    reset_redraw = 1;  // always render
-  }
-  else
-  {
-    if (iupStrEqualNoCase(value, "NOFLUSH"))
-      flush = 0;
-    else if (iupStrEqualNoCase(value, "CURRENT"))
-    {
-      flush = 0;  // same as NOFLUSH
-      only_current = 1;
-    }
+    flush = 0;  // same as NOFLUSH
+    only_current = 1;
   }
 
   iupPlotRedraw(ih, flush, only_current, reset_redraw);
@@ -1291,6 +1281,17 @@ static int iPlotSetSyncViewAttrib(Ihandle* ih, const char* value)
 static char* iPlotGetSyncViewAttrib(Ihandle* ih)
 {
   return iupStrReturnBoolean(ih->data->sync_view);
+}
+
+static int iPlotSetMergeViewAttrib(Ihandle* ih, const char* value)
+{
+  ih->data->merge_view = iupStrBoolean(value);
+  return 0;
+}
+
+static char* iPlotGetMergeViewAttrib(Ihandle* ih)
+{
+  return iupStrReturnBoolean(ih->data->merge_view);
 }
 
 static int iPlotSetReadOnlyAttrib(Ihandle* ih, const char* value)
@@ -3556,6 +3557,7 @@ void iupPlotRegisterAttributes(Iclass* ic)
   iupClassRegisterAttribute(ic, "ANTIALIAS", iPlotGetAntialiasAttrib, iPlotSetAntialiasAttrib, IUPAF_SAMEASSYSTEM, "No", IUPAF_NO_INHERIT);
   iupClassRegisterAttribute(ic, "REDRAW", NULL, iPlotSetRedrawAttrib, NULL, NULL, IUPAF_WRITEONLY | IUPAF_NO_INHERIT);
   iupClassRegisterAttribute(ic, "SYNCVIEW", iPlotGetSyncViewAttrib, iPlotSetSyncViewAttrib, NULL, NULL, IUPAF_NOT_MAPPED | IUPAF_NO_INHERIT);
+  iupClassRegisterAttribute(ic, "MERGEVIEW", iPlotGetMergeViewAttrib, iPlotSetMergeViewAttrib, NULL, NULL, IUPAF_NOT_MAPPED | IUPAF_NO_INHERIT);
   iupClassRegisterAttribute(ic, "READONLY", iPlotGetReadOnlyAttrib, iPlotSetReadOnlyAttrib, IUPAF_SAMEASSYSTEM, "Yes", IUPAF_NOT_MAPPED | IUPAF_NO_INHERIT);
   iupClassRegisterAttribute(ic, "CANVAS", iPlotGetCanvasAttrib, NULL, NULL, NULL, IUPAF_READONLY | IUPAF_NO_INHERIT);
   iupClassRegisterAttribute(ic, "GRAPHICSMODE", iPlotGetGraphicsModeAttrib, iPlotSetGraphicsModeAttrib, IUPAF_SAMEASSYSTEM, "NATIVEPLUS", IUPAF_NOT_MAPPED | IUPAF_NO_INHERIT);

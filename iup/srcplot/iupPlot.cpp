@@ -387,11 +387,14 @@ void iupPlot::ConfigureAxis()
     mAxisY.mPosition = IUP_PLOT_START;  // change at the other axis
   else
   {
-    const iupPlotData *theXData = mDataSetList[0]->GetDataX();   // The first dataset will define the named tick usage
-    if (theXData->IsString())
+    if (mDataSetListCount > 0)
     {
-      const iupPlotDataString *theStringXData = (const iupPlotDataString *)(theXData);
-      mAxisX.SetNamedTickIter(theStringXData);
+      const iupPlotData *theXData = mDataSetList[0]->GetDataX();   // The first dataset will define the named tick usage
+      if (theXData->IsString())
+      {
+        const iupPlotDataString *theStringXData = (const iupPlotDataString *)(theXData);
+        mAxisX.SetNamedTickIter(theStringXData);
+      }
     }
   }
 
@@ -437,6 +440,32 @@ void iupPlot::DataSetClipArea(cdCanvas* canvas, int xmin, int xmax, int ymin, in
     cdCanvasClipArea(canvas, xmin, xmax, ymin, ymax);
 }
 
+bool iupPlot::PrepareRender(cdCanvas* canvas)
+{
+  cdCanvasNativeFont(canvas, IupGetAttribute(ih, "FONT"));
+
+  ConfigureAxis();
+
+  if (!CalculateAxisRange())
+    return false;
+
+  if (!CheckRange(mAxisX))
+    return false;
+
+  if (!CheckRange(mAxisY))
+    return false;
+
+  CalculateTitlePos();
+
+  // Must be before calculate margins
+  CalculateTickSize(canvas, mAxisX.mTick);
+  CalculateTickSize(canvas, mAxisY.mTick);
+
+  CalculateMargins(canvas);
+
+  return true;
+}
+
 bool iupPlot::Render(cdCanvas* canvas)
 {
   if (!mRedraw)
@@ -460,25 +489,6 @@ bool iupPlot::Render(cdCanvas* canvas)
     return true;
 
   cdCanvasNativeFont(canvas, IupGetAttribute(ih, "FONT"));
-
-  ConfigureAxis();
-
-  if (!CalculateAxisRange())
-    return false;
-
-  if (!CheckRange(mAxisX))
-    return false;
-
-  if (!CheckRange(mAxisY))
-    return false;
-
-  CalculateTitlePos();
-
-  // Must be before calculate margins
-  CalculateTickSize(canvas, mAxisX.mTick);
-  CalculateTickSize(canvas, mAxisY.mTick);
-
-  CalculateMargins(canvas);
 
   iupPlotRect theDataSetArea;  /* Viewport - Margin (size only, no need for viewport offset) */
   theDataSetArea.mX = mBack.mMargin.mLeft + mBack.mHorizPadding;

@@ -196,7 +196,7 @@ void iupPlot::CalculateMargins(cdCanvas* canvas)
   }
 }
 
-bool iupPlot::CalculateXRange(double &outXMin, double &outXMax) const
+void iupPlot::CalculateXRange(double &outXMin, double &outXMax) const
 {
   bool theFirst = true;
   outXMin = 0;
@@ -217,7 +217,7 @@ bool iupPlot::CalculateXRange(double &outXMin, double &outXMax) const
       theXMax = 1;
     }
     else if (!theXData->CalculateRange(theXMin, theXMax))
-      return false;
+      return;
     
     if (theFirst) 
     {
@@ -230,14 +230,9 @@ bool iupPlot::CalculateXRange(double &outXMin, double &outXMax) const
     if (theXMin<outXMin)
       outXMin = theXMin;
   }
-
-  if (outXMin == 0 && outXMax == 0)
-    return false;
-
-  return true;
 }
 
-bool iupPlot::CalculateYRange(double &outYMin, double &outYMax) const
+void iupPlot::CalculateYRange(double &outYMin, double &outYMax) const
 {
   bool theFirst = true;
   outYMin = 0;
@@ -255,7 +250,7 @@ bool iupPlot::CalculateYRange(double &outYMin, double &outYMax) const
       theYMax = 1;
     }
     else if (!theYData->CalculateRange(theYMin, theYMax))
-      return false;
+      return;
     
     if (theFirst) 
     {
@@ -268,18 +263,14 @@ bool iupPlot::CalculateYRange(double &outYMin, double &outYMax) const
     if (theYMax>outYMax)
       outYMax = theYMax;
   }
-
-  // YRange can be 0
-
-  return true;
 }
 
 bool iupPlot::CalculateAxisRange() 
 {
   if (mAxisX.mAutoScaleMin || mAxisX.mAutoScaleMax) 
   {
-    double theXMin;
-    double theXMax;
+    double theXMin = 0.0;
+    double theXMax = 1.0;
 
     CalculateXRange(theXMin, theXMax);
 
@@ -299,8 +290,8 @@ bool iupPlot::CalculateAxisRange()
 
   if (mAxisY.mAutoScaleMin || mAxisY.mAutoScaleMax) 
   {
-    double theYMin;
-    double theYMax;
+    double theYMin = 0.0;
+    double theYMax = 1.0;
 
     CalculateYRange(theYMin, theYMax);
 

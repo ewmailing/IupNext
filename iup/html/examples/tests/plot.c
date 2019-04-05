@@ -336,7 +336,17 @@ static void InitPlots(void)
   //IupSetAttribute(plot[5], "MARGINTOP", "40");
 
 #if 0
-  IupPlotLoadData(plot[5], "../test/plot.dat", 0);
+  //IupPlotLoadData(plot[5], "../test/plot.dat", 0);
+
+  IupSetAttribute(plot[4], "AXS_XAUTOMIN", "NO");
+  IupSetAttribute(plot[4], "AXS_XAUTOMAX", "NO");
+  IupSetAttribute(plot[4], "AXS_YAUTOMIN", "NO");
+  IupSetAttribute(plot[4], "AXS_YAUTOMAX", "NO");
+  IupSetAttribute(plot[5], "AXS_XMIN", "0");
+  IupSetAttribute(plot[5], "AXS_XMAX", "1");
+  IupSetAttribute(plot[5], "AXS_YMIN", "0");
+  IupSetAttribute(plot[5], "AXS_YMAX", "1");
+
 #else
   theFac = 100.0 / (100 * 100 * 100);
   IupPlotBegin(plot[5], 0);
@@ -359,6 +369,12 @@ static void InitPlots(void)
 
   /************************************************************************/
   /* PLOT 6 */
+  IupSetAttribute(plot[6], "PLOT_COUNT", "2");
+  IupSetAttribute(plot[6], "PLOT_NUMCOL", "2");
+  IupSetAttribute(plot[6], "MERGEVIEW", "Yes");
+  
+  IupSetAttribute(plot[6], "PLOT_CURRENT", "0");
+
   IupPlotBegin(plot[6], 0);
   for (theI = 0; theI <= 360; theI = theI + 10)
   {
@@ -367,13 +383,32 @@ static void InitPlots(void)
     IupPlotAdd(plot[6], x, y);
   }
   IupPlotEnd(plot[6]);
-  IupSetAttribute(plot[6], "TITLE", "Step curve");
+  IupSetAttribute(plot[6], "TITLE", "Step Merge curve");
   IupSetAttribute(plot[6], "DS_LINEWIDTH", "3");
   IupSetAttribute(plot[6], "DS_LEGEND", "Line");
   IupSetAttribute(plot[6], "DS_MODE", "STEP");
   IupSetAttribute(plot[6], "HIGHLIGHTMODE", "SAMPLE");
   IupSetAttribute(plot[6], "DATASETCLIPPING", "NONE");
   IupSetAttribute(plot[6], "AXS_YPOSITION", "END");
+
+  IupSetAttribute(plot[6], "PLOT_CURRENT", "1");
+
+  IupPlotBegin(plot[6], 0);
+  for (theI = 0; theI <= 360; theI = theI + 10)
+  {
+    x = theI;
+    y = 50*sin(x*M_PI / 90.);
+    IupPlotAdd(plot[6], x, y);
+  }
+  IupPlotEnd(plot[6]);
+
+  IupSetAttribute(plot[6], "DS_LINEWIDTH", "3");
+  IupSetAttribute(plot[6], "DS_LEGEND", "Merged");
+//  IupSetAttribute(plot[6], "DATASETCLIPPING", "NONE");
+  IupSetAttribute(plot[6], "DS_COLOR", "180 180 250");
+  IupSetAttribute(plot[6], "HIGHLIGHTMODE", "CURVE");
+  IupSetAttribute(plot[6], "AXS_X", "No");
+
 //  IupSetAttribute(plot[6], "AXS_XPOSITION", "END");
   //  IupSetAttribute(plot[6], "PADDING", "70x70");
 

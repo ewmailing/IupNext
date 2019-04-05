@@ -644,7 +644,7 @@ class iupPlotBackground
 {
 public:
   iupPlotBackground()
-    : mColor(CD_WHITE), mMarginAuto(1, 1, 1, 1), mImage(NULL), mHorizPadding(5), mVertPadding(5) {}
+    : mColor(CD_WHITE), mMarginAuto(1, 1, 1, 1), mImage(NULL), mHorizPadding(5), mVertPadding(5), mTransparent(false){}
   ~iupPlotBackground() { if (mImage) free(mImage); }
 
   void SetImage(const char* inImage) { if (inImage == mImage) return; if (mImage) free(mImage); mImage = iupStrDup(inImage); }
@@ -659,6 +659,8 @@ public:
          mImageMaxY;
 
   int mHorizPadding, mVertPadding;
+
+  bool mTransparent;
 
 protected:
   char* mImage;
@@ -702,6 +704,7 @@ public:
   int mDataSetListMax;
   int mCurrentDataSet;
 
+  bool PrepareRender(cdCanvas* canvas);
   bool Render(cdCanvas* canvas);
   void SetViewport(int x, int y, int w, int h);
 
@@ -767,8 +770,8 @@ protected:
   void CalculateTitlePos();
   void CalculateMargins(cdCanvas* canvas);
   bool CalculateAxisRange();
-  bool CalculateXRange(double &outXMin, double &outXMax) const;
-  bool CalculateYRange(double &outYMin, double &outYMax) const;
+  void CalculateXRange(double &outXMin, double &outXMax) const;
+  void CalculateYRange(double &outYMin, double &outYMax) const;
   bool CalculateYTransformation(const iupPlotRect &inRect);
   bool CalculateXTransformation(const iupPlotRect &inRect);
   bool CalculateLinTransformation(int inBegin, int inEnd, const iupPlotAxis& inAxis, iupPlotTrafoLinear* outTrafo);
