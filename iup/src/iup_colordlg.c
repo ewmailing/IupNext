@@ -470,8 +470,7 @@ static int iColorDlgColorSelDrag_CB(Ihandle* ih, unsigned char r, unsigned char 
   iColorDlgHSI_TXT_Update(colordlg_data);
   iColorDlgRGB_TXT_Update(colordlg_data);
 
-  colordlg_data->color = iupDrawColor(colordlg_data->red, colordlg_data->green, colordlg_data->blue, colordlg_data->alpha);
-  IupUpdate(colordlg_data->color_cnv);
+  iColorDlgColor_Update(colordlg_data);
 
   return IUP_DEFAULT;
 }
@@ -483,8 +482,7 @@ static int iColorDlgAlphaVal_CB(Ihandle* ih, double val)
   colordlg_data->alpha = (unsigned char)val;
   IupSetInt(colordlg_data->alpha_txt, "VALUE", (int)colordlg_data->alpha);
 
-  colordlg_data->color = iupDrawColor(colordlg_data->red, colordlg_data->green, colordlg_data->blue, colordlg_data->alpha);
-  IupUpdate(colordlg_data->color_cnv);
+  iColorDlgColor_Update(colordlg_data);
 
   return IUP_DEFAULT;  
 }
@@ -499,8 +497,7 @@ static int iColorDlgAlphaAction_CB(Ihandle* ih, int c, char* value)
     colordlg_data->alpha = (unsigned char)vi;
     IupSetInt(colordlg_data->alpha_val, "VALUE", (int)colordlg_data->alpha);
 
-    colordlg_data->color = iupDrawColor(colordlg_data->red, colordlg_data->green, colordlg_data->blue, colordlg_data->alpha);
-    IupUpdate(colordlg_data->color_cnv);
+    iColorDlgColor_Update(colordlg_data);
   }
 
   (void)c;
@@ -514,8 +511,7 @@ static int iColorDlgAlphaSpin_CB(Ihandle* ih, int vi)
   colordlg_data->alpha = (unsigned char)vi;
   IupSetInt(colordlg_data->alpha_val, "VALUE", (int)colordlg_data->alpha);
 
-  colordlg_data->color = iupDrawColor(colordlg_data->red, colordlg_data->green, colordlg_data->blue, colordlg_data->alpha);
-  IupUpdate(colordlg_data->color_cnv);
+  iColorDlgColor_Update(colordlg_data);
 
   return IUP_DEFAULT;
 }
@@ -648,9 +644,9 @@ static int iColorDlgSetAlphaAttrib(Ihandle* ih, const char* value)
     IupSetInt(colordlg_data->alpha_txt, "VALUE", (int)colordlg_data->alpha);
     IupSetInt(colordlg_data->alpha_val, "VALUE", (int)colordlg_data->alpha);
 
-    colordlg_data->color = iupDrawColor(colordlg_data->red, colordlg_data->green, colordlg_data->blue, colordlg_data->alpha);
     colordlg_data->previous_color = iupDrawColor(iupDrawRed(colordlg_data->previous_color), iupDrawGreen(colordlg_data->previous_color), iupDrawBlue(colordlg_data->previous_color), colordlg_data->alpha);
-    IupUpdate(colordlg_data->color_cnv);
+
+    iColorDlgColor_Update(colordlg_data);
 
     if (!ih->handle)  /* do it only before map */
       IupSetAttribute(ih, "SHOWALPHA", "YES");
