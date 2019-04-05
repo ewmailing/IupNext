@@ -198,6 +198,12 @@ static int help_cb(Ihandle* ih)
   return IUP_DEFAULT; 
 }
 
+static int colorupdate_cb(Ihandle* ih)
+{
+  printf("colorupdate_cb(%s)\n", IupGetAttribute(ih, "VALUE"));
+  return IUP_DEFAULT;
+}
+
 static int button_cb(Ihandle *ih, int but, int pressed, int x, int y, char* status)
 {
   printf("BUTTON_CB(but=%c (%d), x=%d, y=%d [%s])\n", (char)but, pressed, x, y, status);
@@ -283,6 +289,7 @@ static void new_color(void)
   //IupSetAttribute(dlg, "SHOWALPHA", "YES");
   IupSetAttribute(dlg, "TITLE", "IupColorDlg Test");
   IupSetCallback(dlg, "HELP_CB", (Icallback)help_cb);
+  IupSetCallback(dlg, "COLORUPDATE_CB", (Icallback)colorupdate_cb);
 
   IupPopup(dlg, IUP_CENTERPARENT, IUP_CENTERPARENT);
 
