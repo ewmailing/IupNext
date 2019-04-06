@@ -1630,14 +1630,14 @@ void iupPlotSetZoom(Ihandle *ih, int dir)
 {
   if (dir > 0)
   {
-    int x = ih->data->current_plot->mViewport.mX + ih->data->current_plot->mViewport.mWidth / 2;
-    int y = ih->data->current_plot->mViewport.mY + ih->data->current_plot->mViewport.mHeight / 2;
+    int x = ih->data->current_plot->mViewport.mWidth / 2;
+    int y = ih->data->current_plot->mViewport.mHeight / 2;
     iPlotZoom(ih, x, y, 1);
   }
   else if (dir < 0)
   {
-    int x = ih->data->current_plot->mViewport.mX + ih->data->current_plot->mViewport.mWidth / 2;
-    int y = ih->data->current_plot->mViewport.mY + ih->data->current_plot->mViewport.mHeight / 2;
+    int x = ih->data->current_plot->mViewport.mWidth / 2;
+    int y = ih->data->current_plot->mViewport.mHeight / 2;
     iPlotZoom(ih, x, y, -1);
   }
   else
@@ -2173,15 +2173,15 @@ static int iPlotKeyPress_CB(Ihandle* ih, int c, int press)
 
   if (c == K_plus)
   {
-    int x = ih->data->current_plot->mViewport.mX + ih->data->current_plot->mViewport.mWidth / 2;
-    int y = ih->data->current_plot->mViewport.mY + ih->data->current_plot->mViewport.mHeight / 2;
+    int x = ih->data->current_plot->mViewport.mWidth / 2;
+    int y = ih->data->current_plot->mViewport.mHeight / 2;
     iPlotZoom(ih, x, y, 1);
     return IUP_IGNORE;  /* ignore processed keys */
   }
   else if (c == K_minus)
   {
-    int x = ih->data->current_plot->mViewport.mX + ih->data->current_plot->mViewport.mWidth / 2;
-    int y = ih->data->current_plot->mViewport.mY + ih->data->current_plot->mViewport.mHeight / 2;
+    int x = ih->data->current_plot->mViewport.mWidth / 2;
+    int y = ih->data->current_plot->mViewport.mHeight / 2;
     iPlotZoom(ih, x, y, -1);
     return IUP_IGNORE;  /* ignore processed keys */
   }
