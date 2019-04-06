@@ -1366,20 +1366,21 @@ static int iPlotSetUseContextPlusAttrib(Ihandle* ih, const char* value)
 static int iPlotSetShowMenuContextAttrib(Ihandle* ih, const char* value)
 {
   int screen_x = 0, screen_y = 0;
-  iupStrToIntInt(value, &screen_x, &screen_y, ',');
+  if (iupStrToIntInt(value, &screen_x, &screen_y, ',') == 2)
+  {
+    int sx, sy;
+    IupGetIntInt(ih, "SCREENPOSITION", &sx, &sy);
 
-  int sx, sy;
-  IupGetIntInt(ih, "SCREENPOSITION", &sx, &sy);
+    int x = screen_x - sx;
+    int y = screen_y - sy;
 
-  int x = screen_x - sx;
-  int y = screen_y - sy;
+    y = ih->currentheight - 1 - y;
 
-  y = ih->currentheight - 1 - y;
+    x -= ih->data->current_plot->mViewport.mX;
+    y -= ih->data->current_plot->mViewport.mY;
 
-  x -= ih->data->current_plot->mViewport.mX;
-  y -= ih->data->current_plot->mViewport.mY;
-
-  iupPlotShowMenuContext(ih, screen_x, screen_y, x, y);
+    iupPlotShowMenuContext(ih, screen_x, screen_y, x, y);
+  }
   return 0;
 }
 
