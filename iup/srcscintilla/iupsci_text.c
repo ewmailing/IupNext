@@ -151,6 +151,16 @@ static int iScintillaSetAddAttrib(Ihandle* ih, const char* value)
   return 0;
 }
 
+static int iScintillaSetChangeInsertAttrib(Ihandle* ih, const char* value)
+{
+  int len = iupAttribGetInt(ih, "VALUELEN");
+  if (len == 0)
+    len = (int)strlen(value);		/* len = to the first terminator */
+
+  IupScintillaSendMessage(ih, SCI_CHANGEINSERTION, len, (sptr_t)value);
+  return 0;
+}
+
 static int iScintillaSetClearAllAttrib(Ihandle* ih, const char* value)
 {
   (void)value;
@@ -223,6 +233,7 @@ void iupScintillaRegisterText(Iclass* ic)
   iupClassRegisterAttribute(ic,   "PREPEND", NULL, iScintillaSetPrependAttrib, NULL, NULL, IUPAF_WRITEONLY|IUPAF_NO_INHERIT);
   iupClassRegisterAttribute(ic,   "VALUE", iScintillaGetValueAttrib, iScintillaSetValueAttrib, NULL, NULL, IUPAF_NO_INHERIT);
   iupClassRegisterAttributeId(ic, "INSERT", NULL, iScintillaSetInsertAttribId, IUPAF_WRITEONLY|IUPAF_NO_INHERIT);
+  iupClassRegisterAttribute(ic,   "CHANGEINSERT", NULL, iScintillaSetChangeInsertAttrib, NULL, NULL, IUPAF_WRITEONLY|IUPAF_NO_INHERIT);
   iupClassRegisterAttribute(ic,   "ADD", NULL, iScintillaSetAddAttrib, NULL, NULL, IUPAF_WRITEONLY|IUPAF_NO_INHERIT);
   iupClassRegisterAttributeId(ic, "LINE", iScintillaGetLineAttribId, NULL, IUPAF_READONLY | IUPAF_NO_INHERIT);
   iupClassRegisterAttributeId(ic, "CHAR", iScintillaGetCharAttribId, NULL, IUPAF_READONLY | IUPAF_NO_INHERIT);

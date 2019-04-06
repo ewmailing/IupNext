@@ -16,6 +16,7 @@ local ctrl = {
   --  button_cb = "nnnns",
   --  motion_cb = "nns",
     action = "nnns",
+    insertcheck_cb = "nns",
     autocselection_cb = "ns",
     autoccancelled_cb = "",
     autocchardeleted_cb = "",

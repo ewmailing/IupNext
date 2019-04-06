@@ -1050,6 +1050,27 @@ character while auto-completion list was active. (since 3.10.1)</p>
 
   
   
+<p><strong>INSERTCHECK_CB</strong>: Action generated before some text is 
+inserted. Inside the callback the attribute CHANGEINSERT can be set to change 
+the inserted text. (since 3.27)</p>
+
+  
+    
+<pre>int function(Ihandle *<strong>ih</strong>, int <strong>pos</strong>, int <strong>length</strong>, char* <strong>text</strong> ); [in C]<br><strong>ih</strong>:insertcheck_cb(<strong>pos</strong>, <strong>length</strong>: number, <strong>text</strong>: string) -&gt; (<strong>ret</strong>: number) [in Lua]</pre>
+
+    
+<p class="info"><strong>ih</strong>:
+  identifier of the element that activated the 
+  event.<br>
+
+<strong>pos</strong>: 0 based character position when change started.<br>
+<strong>length</strong>: size of the change.<br>
+
+    <strong>text</strong>:
+    the inserted text value. It is NULL when insert=0.</p>
+
+    
+  
 <p><a href="../call/iup_dropfiles_cb.html">DROPFILES_CB</a>: Action generated when one or 
   more files are dropped in the element.</p>
 <p><strong><a name="DWELL_CB">DWELL_CB</a></strong>: <span>Action generated when 
@@ -1254,7 +1275,7 @@ pixels.</p>
 supported.</p>
 <p>
 <a href="../attrib/iup_dragdrop.html">Drag &amp; Drop</a> callbacks 
-are supported. See Notes bellow.</p>
+are supported (*). See Notes bellow.</p>
 
 
 
@@ -1722,7 +1743,9 @@ are supported. See Notes bellow.</p>
 <p>
   Enter key will add a new line, and the Tab key will 
 	insert a Tab.</p>
-<p>Internal Drag&amp;Drop support is enabled by default.</p>
+<p>Internal Drag&amp;Drop support is enabled by default, although the
+<a href="../attrib/iup_dragdrop.html">Drag &amp; Drop</a> attributes and 
+callbacks are supported they may not work as expected.</p>
 <p><strong>IupScintilla</strong> uses attributes and callbacks very similar to 
 the <strong>IupText</strong> control, except for text formatting. But notice 
 that in IupScintilla position always starts at 0.</p>

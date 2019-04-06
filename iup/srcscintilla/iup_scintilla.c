@@ -182,6 +182,13 @@ void iupScintillaNotify(Ihandle *ih, SCNotification* pMsg)
       break;
     }
 
+    if (pMsg->modificationType&SC_MOD_INSERTCHECK)
+    {
+      IFniis cb = (IFniis)IupGetCallback(ih, "INSERTCHECK_CB");
+      if (cb)
+        cb(ih, pMsg->position, pMsg->length, (char*)pMsg->text);
+    }
+
     if (pMsg->modificationType&SC_PERFORMED_USER ||
         pMsg->modificationType&SC_PERFORMED_UNDO || 
         pMsg->modificationType&SC_PERFORMED_REDO)
@@ -418,6 +425,7 @@ static Iclass* iupScintillaNewClass(void)
   iupClassRegisterCallback(ic, "CARET_CB", "iii");
   iupClassRegisterCallback(ic, "VALUECHANGED_CB", "");
   iupClassRegisterCallback(ic, "ACTION", "iiis");
+  iupClassRegisterCallback(ic, "INSERTCHECK_CB", "iis");
   iupClassRegisterCallback(ic, "ZOOM_CB", "i");
   iupClassRegisterCallback(ic, "AUTOCSELECTION_CB", "is");
   iupClassRegisterCallback(ic, "AUTOCCANCELLED_CB", "");
