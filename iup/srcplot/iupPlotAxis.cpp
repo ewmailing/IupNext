@@ -29,33 +29,31 @@ static int iPlotCountDigit(int inNum)
   return theCount;
 }
 
-static int iPlotGetPrecisionNumChar(bool inAutoSpacing, const char* inFormatString, double inMin, double inMax)
+static int iPlotEstimateNumberCharCount(bool inFormatAuto, const char* inFormatString, double inMin, double inMax)
 {
   int thePrecision = 0;
 
-  if (inAutoSpacing)
+  while (*inFormatString)
+  {
+    if (*inFormatString == '.')
+      break;
+    inFormatString++;
+  }
+
+  if (*inFormatString == '.')
+  {
+    inFormatString++;
+    iupStrToInt(inFormatString, &thePrecision);
+  }
+
+  if (inFormatAuto)
   {
     int theMinPrecision = iupPlotCalcPrecision(inMin);
     int theMaxPrecision = iupPlotCalcPrecision(inMax);
     if (theMinPrecision > theMaxPrecision)
-      thePrecision = theMinPrecision;
+      thePrecision = iupPlotMax(thePrecision, theMinPrecision);
     else
-      thePrecision = theMaxPrecision;
-  }
-  else
-  {
-    while (*inFormatString)
-    {
-      if (*inFormatString == '.')
-        break;
-      inFormatString++;
-    }
-
-    if (*inFormatString == '.')
-    {
-      inFormatString++;
-      iupStrToInt(inFormatString, &thePrecision);
-    }
+      thePrecision = iupPlotMax(thePrecision, theMaxPrecision);
   }
 
   int theMin = iupPlotRound(inMin);
@@ -191,7 +189,7 @@ void iupPlotAxis::GetTickNumberSize(cdCanvas* canvas, int *outWitdh, int *outHei
   cdCanvasGetTextSize(canvas, "1234567890.", &theTickFontWidth, &theTickFontHeight);
   theTickFontWidth /= 11;
   if (outHeight) *outHeight = theTickFontHeight;
-  if (outWitdh)  *outWitdh = theTickFontWidth * iPlotGetPrecisionNumChar(mTick.mAutoSpacing, mTick.mFormatString, mMin, mMax);
+  if (outWitdh)  *outWitdh  = theTickFontWidth * iPlotEstimateNumberCharCount(mTick.mFormatAuto, mTick.mFormatString, mHasZoom? mNoZoomMin: mMin, mHasZoom? mNoZoomMax: mMax);
 }
 
 void iupPlotAxis::SetNamedTickIter(const iupPlotDataString *inStringData)

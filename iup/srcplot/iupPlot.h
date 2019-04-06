@@ -31,9 +31,9 @@ enum iupPlotAxisPosition { IUP_PLOT_START, IUP_PLOT_CROSSORIGIN, IUP_PLOT_END };
 const double kFloatSmall = 1e-20;
 const double kLogMinClipValue = 1e-10;  // pragmatism to avoid problems with small values in log plot
 
-int iupPlotCalcPrecision(double inValue);
-
 long iupPlotDrawGetSampleColorTable(Ihandle* ih, int index);
+
+int iupPlotCalcPrecision(double inValue);
 
 inline int iupPlotRound(double inFloat)
 {

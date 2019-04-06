@@ -7,8 +7,8 @@
 #include "iupPlot.h"
 
 
-const double kTickValueVeryBig = 1.0e4;// switch to scientific format
-const double kTickValueVerySmall = 1.0e-3;
+const double kTickValueVeryBig = 1.0e4;     // switch to scientific format
+const double kTickValueVerySmall = 1.0e-3;  // switch to scientific format
 const double kLittleIncrease = 1.0001;
 const double kLittleDecrease = 0.9999;
 const double kEps = 1e-4;

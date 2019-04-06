@@ -372,7 +372,8 @@ static void InitPlots(void)
   IupSetAttribute(plot[6], "PLOT_COUNT", "2");
   IupSetAttribute(plot[6], "PLOT_NUMCOL", "2");
   IupSetAttribute(plot[6], "MERGEVIEW", "Yes");
-  
+  IupSetAttribute(plot[6], "SYNCVIEW", "Yes");
+
   IupSetAttribute(plot[6], "PLOT_CURRENT", "0");
 
   IupPlotBegin(plot[6], 0);
