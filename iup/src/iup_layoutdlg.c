@@ -2124,7 +2124,7 @@ box2 = IupSetAttributes(IupVbox(
 
 tabs = IupTabs(box1, box2, box3, NULL);
 IupSetAttribute(tabs, "TABTITLE0", "Registered Attributes");
-IupSetAttribute(tabs, "TABTITLE1", "Hash Table Only");
+IupSetAttribute(tabs, "TABTITLE1", "Custom Attributes");
 IupSetAttribute(tabs, "TABTITLE2", "Callbacks");
 IupSetCallback(tabs, "TABCHANGEPOS_CB", (Icallback)iLayoutPropertiesTabChangePos_CB);
 iLayoutPropertiesTabChangePos_CB(tabs, 0, 0);
