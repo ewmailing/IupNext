@@ -18,6 +18,7 @@
 #include <cdiup.h>
 #include <cdprint.h>
 #include <cdsvg.h>
+#include <cdirgb.h>
 #include <cdemf.h>
 #include <cdwmf.h>
 #include <cdcgm.h>
@@ -35,6 +36,7 @@
 #include "iup_assert.h"
 #include "iup_predialogs.h"
 #include "iup_linefile.h"
+#include "iup_image.h"
 
 #include "iup_plot_ctrl.h"
 
@@ -71,7 +73,15 @@ static int iPlotCopyAsMetafile_CB(Ihandle* self)
   int w, h;
   IupGetIntInt(ih, "DRAWSIZE", &w, &h);
   sprintf(StrData, "%dx%d", w, h);
-  cdCanvas* cd_canvas = cdCreateCanvas(CD_CLIPBOARD, StrData);
+  cdCanvas* cd_canvas;
+  if (ih->data->graphics_mode == IUP_PLOT_NATIVEPLUS)
+  {
+    int old_plus = cdUseContextPlus(1);
+    cd_canvas = cdCreateCanvas(CD_CLIPBOARD, StrData);
+    cdUseContextPlus(old_plus);
+  }
+  else
+    cd_canvas = cdCreateCanvas(CD_CLIPBOARD, StrData);
   IupPlotPaintTo(ih, cd_canvas);
   cdKillCanvas(cd_canvas);
   return IUP_DEFAULT;
@@ -83,10 +93,23 @@ static int iPlotCopyAsImage_CB(Ihandle* self)
   char StrData[100];
   int w, h;
   IupGetIntInt(ih, "DRAWSIZE", &w, &h);
-  sprintf(StrData, "%dx%d -b", w, h);
-  cdCanvas* cd_canvas = cdCreateCanvas(CD_CLIPBOARD, StrData);
+  double res = IupGetDouble(NULL, "SCREENDPI") / 25.4;
+  int plane_size = w*h;
+  unsigned char* data = (unsigned char*)malloc(plane_size * 4);
+  if (!data)
+    return IUP_DEFAULT;
+
+  sprintf(StrData, "%dx%d %p %p %p %p -r%g -a", w, h, data, data + plane_size, data + 2 * plane_size, data + 3 * plane_size, res);
+  cdCanvas* cd_canvas = cdCreateCanvas(CD_IMAGERGB, StrData);
   IupPlotPaintTo(ih, cd_canvas);
   cdKillCanvas(cd_canvas);
+
+  Ihandle *clipboard = IupClipboard();
+  IupSetAttribute(clipboard, "IMAGE", NULL);
+  IupSetAttribute(clipboard, "NATIVEIMAGE", (char*)iupdrvImageCreateImageRaw(w, h, 32, NULL, 0, data));
+  IupDestroy(clipboard);
+
+  free(data);
   return IUP_DEFAULT;
 }
 
@@ -172,7 +195,17 @@ static int iPlotExportEMF_CB(Ihandle* self)
     int w, h;
     IupGetIntInt(ih, "DRAWSIZE", &w, &h);
     sprintf(StrData, "%s %dx%d", filename, w, h);
-    cdCanvas* cd_canvas = cdCreateCanvas(CD_EMF, StrData);
+
+    cdCanvas* cd_canvas;
+    if (ih->data->graphics_mode == IUP_PLOT_NATIVEPLUS)
+    {
+      int old_plus = cdUseContextPlus(1);
+      cd_canvas = cdCreateCanvas(CD_EMF, StrData);
+      cdUseContextPlus(old_plus);
+    }
+    else
+      cd_canvas = cdCreateCanvas(CD_EMF, StrData);
+
     if (cd_canvas)
     {
       IupPlotPaintTo(ih, cd_canvas);
@@ -210,7 +243,15 @@ static int iPlotExportWMF_CB(Ihandle* self)
 static int iPlotPrint_CB(Ihandle* self)
 {
   Ihandle* ih = (Ihandle*)IupGetAttribute(self, "PLOT");
-  cdCanvas* cd_canvas = cdCreateCanvas(CD_PRINTER, (void*)"Plot -d");
+  cdCanvas* cd_canvas;
+  if (ih->data->graphics_mode == IUP_PLOT_NATIVEPLUS)
+  {
+    int old_plus = cdUseContextPlus(1);
+    cd_canvas = cdCreateCanvas(CD_PRINTER, (void*)"Plot -d");
+    cdUseContextPlus(old_plus);
+  }
+  else
+    cd_canvas = cdCreateCanvas(CD_PRINTER, (void*)"Plot -d");
   IupPlotPaintTo(ih, cd_canvas);
   cdKillCanvas(cd_canvas);
   return IUP_DEFAULT;
@@ -1285,7 +1326,7 @@ static Ihandle* iPlotCreateMenuContext(Ihandle* ih, int x, int y)
     IupSubmenu("_@IUP_COPY",
     IupMenu(
     IupSetCallbacks(IupItem("Metafile", NULL), "ACTION", iPlotCopyAsMetafile_CB, NULL),
-    IupSetCallbacks(IupItem("Bitmap", NULL), "ACTION", iPlotCopyAsImage_CB, NULL),
+    IupSetCallbacks(IupItem("Image", NULL), "ACTION", iPlotCopyAsImage_CB, NULL),
     NULL)),
     IupSubmenu("_@IUP_EXPORT",
     IupMenu(
