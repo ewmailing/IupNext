@@ -441,6 +441,7 @@ void DropButtonTest(void)
   IupAppend(box1, button);
 
   button = IupDropButton(NULL);
+//  button = IupCanvas(NULL);
   IupSetAttribute(button, "TITLE", "Text1\nSecond Line");
 //  IupSetAttribute(button, "RASTERSIZE", "200x100");
   IupSetAttribute(button, "DROPCHILD_HANDLE", (char*)CreateList());
@@ -451,6 +452,7 @@ void DropButtonTest(void)
   if (toggle) IupSetAttribute(button, "TOGGLE", "Yes");
   set_callbacks(button);
   IupAppend(box1, button);
+//  IupSetCallback(button, "BUTTON_CB", (Icallback)button_cb);
 
   button = IupDropButton(NULL);
   IupSetAttribute(button, "TITLE", "Text2\nSecond Line");
