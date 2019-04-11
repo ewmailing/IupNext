@@ -74,6 +74,9 @@ static void iZboxChildRemovedMethod(Ihandle* ih, Ihandle* child, int pos)
     if (ih->firstchild)
       IupSetAttribute(ih->firstchild, "VISIBLE", IupGetAttribute(ih, "VISIBLE"));
     ih->data->value_handle = ih->firstchild;
+
+    if (!iupAttribGetBoolean(ih, "CHILDSIZEALL"))
+      IupRefresh(ih);
   }
 }
 
@@ -135,6 +138,10 @@ static int iZboxSetValueHandleAttrib(Ihandle* ih, const char* value)
 
       IupSetAttribute(new_handle, "VISIBLE", visible? "YES": "NO");
       ih->data->value_handle = new_handle;
+
+      if (!iupAttribGetBoolean(ih, "CHILDSIZEALL"))
+        IupRefresh(ih);
+
       return 0;
     }
   }

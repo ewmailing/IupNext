@@ -252,6 +252,10 @@ void iupTabsCheckCurrentTab(Ihandle* ih, int pos, int removed)
       if (p != pos && iupdrvTabsIsTabVisible(child, p))
       {
         iupdrvTabsSetCurrentTab(ih, p);
+
+        if (!iupAttribGetBoolean(ih, "CHILDSIZEALL"))
+          IupRefresh(ih);
+
         return;
       }
 
@@ -268,7 +272,12 @@ static void iTabsSetTab(Ihandle* ih, Ihandle* child, int pos)
   {
     int cur_pos = iupdrvTabsGetCurrentTab(ih);
     if (cur_pos != pos && iupdrvTabsIsTabVisible(child, pos))
+    {
       iupdrvTabsSetCurrentTab(ih, pos);
+
+      if (!iupAttribGetBoolean(ih, "CHILDSIZEALL"))
+        IupRefresh(ih);
+    }
   }
   else
     iupAttribSet(ih, "_IUPTABS_VALUE_HANDLE", (char*)child);

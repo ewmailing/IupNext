@@ -229,6 +229,9 @@ static void iFlatTabsSetCurrentTab(Ihandle* ih, Ihandle* child)
     iFlatTabsUpdateScrollPos(ih, child);
   }
 
+  if (!iupAttribGetBoolean(ih, "CHILDSIZEALL"))
+    IupRefresh(ih);
+
   if (ih->handle)
     iupdrvPostRedraw(ih);
 }
