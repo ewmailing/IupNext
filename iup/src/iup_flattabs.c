@@ -2134,6 +2134,8 @@ static void iFlatTabsComputeNaturalSizeMethod(Ihandle* ih, int *w, int *h, int *
   Ihandle* child;
   int children_naturalwidth, children_naturalheight;
   int tabType = iupAttribGetInt(ih, "_IUPTAB_TYPE");
+  int childSizeAll = iupAttribGetBoolean(ih, "CHILDSIZEALL");
+  Ihandle* current_child = childSizeAll? NULL: iFlatTabsGetCurrentTab(ih);
   int height, width;
 
   /* calculate total children natural size (even for hidden children) */
@@ -2145,6 +2147,9 @@ static void iFlatTabsComputeNaturalSizeMethod(Ihandle* ih, int *w, int *h, int *
     /* update child natural size first */
     if (!(child->flags & IUP_FLOATING_IGNORE))
       iupBaseComputeNaturalSize(child);
+
+    if (!childSizeAll && child != current_child)
+      continue;
 
     if (!(child->flags & IUP_FLOATING))
     {
@@ -2333,6 +2338,7 @@ Iclass* iupFlatTabsNewClass(void)
   iupClassRegisterAttribute(ic, "TABCHANGEONCHECK", NULL, NULL, NULL, NULL, IUPAF_NO_INHERIT);
   iupClassRegisterAttribute(ic, "HASFOCUS", NULL, NULL, NULL, NULL, IUPAF_READONLY | IUPAF_NO_INHERIT);
   iupClassRegisterAttribute(ic, "TABTYPE", NULL, iFlatTabsSetTabTypeAttrib, IUPAF_SAMEASSYSTEM, "TOP", IUPAF_NOT_MAPPED | IUPAF_NO_INHERIT);
+  iupClassRegisterAttribute(ic, "CHILDSIZEALL", NULL, NULL, IUPAF_SAMEASSYSTEM, "Yes", IUPAF_NO_INHERIT);
 
   /* IupFlatTabs Child only */
   iupClassRegisterAttributeId(ic, "TABTITLE", NULL, (IattribSetIdFunc)iFlatTabsSetAttribPostRedraw, IUPAF_NO_INHERIT);

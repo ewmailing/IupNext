@@ -228,6 +228,7 @@ static void iZboxComputeNaturalSizeMethod(Ihandle* ih, int *w, int *h, int *chil
 {
   Ihandle* child;
   int children_naturalwidth, children_naturalheight;
+  int childSizeAll = iupAttribGetBoolean(ih, "CHILDSIZEALL");
 
   /* calculate total children natural size (even for hidden children) */
   children_naturalwidth = 0;
@@ -238,6 +239,9 @@ static void iZboxComputeNaturalSizeMethod(Ihandle* ih, int *w, int *h, int *chil
     /* update child natural size first */
     if (!(child->flags & IUP_FLOATING_IGNORE))
       iupBaseComputeNaturalSize(child);
+
+    if (!childSizeAll && child != ih->data->value_handle)
+      continue;
 
     if (!(child->flags & IUP_FLOATING))
     {
@@ -379,6 +383,7 @@ Iclass* iupZboxNewClass(void)
   iupClassRegisterAttribute(ic, "VALUE", iZboxGetValueAttrib, iZboxSetValueAttrib, NULL, NULL, IUPAF_NOT_MAPPED|IUPAF_NO_INHERIT);
   iupClassRegisterAttribute(ic, "VALUEPOS", iZboxGetValuePosAttrib, iZboxSetValuePosAttrib, NULL, NULL, IUPAF_NOT_MAPPED|IUPAF_NO_INHERIT);
   iupClassRegisterAttribute(ic, "VALUE_HANDLE", iZboxGetValueHandleAttrib, iZboxSetValueHandleAttrib, NULL, NULL, IUPAF_NOT_MAPPED | IUPAF_NO_INHERIT | IUPAF_IHANDLE | IUPAF_NO_STRING);
+  iupClassRegisterAttribute(ic, "CHILDSIZEALL", NULL, NULL, IUPAF_SAMEASSYSTEM, "Yes", IUPAF_NO_INHERIT);
 
   /* Intercept VISIBLE since ZBOX works by showing and hiding its children */
   iupClassRegisterAttribute(ic, "VISIBLE", NULL, iZboxSetVisibleAttrib, IUPAF_SAMEASSYSTEM, "YES", IUPAF_NO_SAVE|IUPAF_NOT_MAPPED);

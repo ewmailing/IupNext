@@ -452,6 +452,8 @@ static void iTabsComputeNaturalSizeMethod(Ihandle* ih, int *w, int *h, int *chil
   Ihandle* child;
   int children_naturalwidth, children_naturalheight;
   int decorwidth, decorheight;
+  int childSizeAll = iupAttribGetBoolean(ih, "CHILDSIZEALL");
+  Ihandle* current_child = childSizeAll? NULL: IupGetChild(ih, iupdrvTabsGetCurrentTab(ih));
 
   /* calculate total children natural size (even for hidden children) */
   children_naturalwidth = 0;
@@ -462,6 +464,9 @@ static void iTabsComputeNaturalSizeMethod(Ihandle* ih, int *w, int *h, int *chil
     /* update child natural size first */
     if (!(child->flags & IUP_FLOATING_IGNORE))
       iupBaseComputeNaturalSize(child);
+
+    if (!childSizeAll && child != current_child)
+      continue;
 
     if (!(child->flags & IUP_FLOATING))
     {
@@ -587,6 +592,7 @@ Iclass* iupTabsNewClass(void)
   iupClassRegisterAttribute(ic, "VALUE_HANDLE", iTabsGetValueHandleAttrib, iTabsSetValueHandleAttrib, NULL, NULL, IUPAF_NOT_MAPPED | IUPAF_NO_INHERIT | IUPAF_IHANDLE | IUPAF_NO_STRING);
   iupClassRegisterAttribute(ic, "COUNT", iTabsGetCountAttrib, NULL, NULL, NULL, IUPAF_READONLY|IUPAF_NOT_MAPPED|IUPAF_NO_INHERIT);
   iupClassRegisterAttribute(ic, "SHOWCLOSE", iTabsGetShowCloseAttrib, iTabsSetShowCloseAttrib, NULL, NULL, IUPAF_NOT_MAPPED|IUPAF_NO_INHERIT);
+  iupClassRegisterAttribute(ic, "CHILDSIZEALL", NULL, NULL, IUPAF_SAMEASSYSTEM, "Yes", IUPAF_NO_INHERIT);
 
   /* Base Container */
   iupClassRegisterAttribute(ic, "CLIENTSIZE", iTabsGetClientSizeAttrib, NULL, NULL, NULL, IUPAF_READONLY|IUPAF_NOT_MAPPED|IUPAF_NO_INHERIT);
