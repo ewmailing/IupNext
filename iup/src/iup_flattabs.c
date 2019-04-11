@@ -2143,11 +2143,15 @@ static void iFlatTabsComputeNaturalSizeMethod(Ihandle* ih, int *w, int *h, int *
   for (child = ih->firstchild; child; child = child->brother)
   {
     /* update child natural size first */
-    iupBaseComputeNaturalSize(child);
+    if (!(child->flags & IUP_FLOATING_IGNORE))
+      iupBaseComputeNaturalSize(child);
 
-    *children_expand |= child->expand;
-    children_naturalwidth = iupMAX(children_naturalwidth, child->naturalwidth);
-    children_naturalheight = iupMAX(children_naturalheight, child->naturalheight);
+    if (!(child->flags & IUP_FLOATING))
+    {
+      *children_expand |= child->expand;
+      children_naturalwidth = iupMAX(children_naturalwidth, child->naturalwidth);
+      children_naturalheight = iupMAX(children_naturalheight, child->naturalheight);
+    }
   }
 
   height = iFlatTabsGetTitleHeight(ih, &width, 0);
@@ -2189,11 +2193,14 @@ static void iFlatTabsSetChildrenCurrentSizeMethod(Ihandle* ih, int shrink)
 
   for (child = ih->firstchild; child; child = child->brother)
   {
-    child->currentwidth = width;
-    child->currentheight = height;
+    if (!(child->flags & IUP_FLOATING))
+    {
+      child->currentwidth = width;
+      child->currentheight = height;
 
-    if (child->firstchild)
-      iupClassObjectSetChildrenCurrentSize(child, shrink);
+      if (child->firstchild)
+        iupClassObjectSetChildrenCurrentSize(child, shrink);
+    }
   }
 }
 
@@ -2227,7 +2234,10 @@ static void iFlatTabsSetChildrenPositionMethod(Ihandle* ih, int x, int y)
     y += 1;
 
   for (child = ih->firstchild; child; child = child->brother)
-    iupBaseSetPosition(child, x, y);
+  {
+    if (!(child->flags & IUP_FLOATING))
+      iupBaseSetPosition(child, x, y);
+  }
 }
 
 static int iFlatTabsCreateMethod(Ihandle* ih, void **params)

@@ -460,11 +460,15 @@ static void iTabsComputeNaturalSizeMethod(Ihandle* ih, int *w, int *h, int *chil
   for (child = ih->firstchild; child; child = child->brother)
   {
     /* update child natural size first */
-    iupBaseComputeNaturalSize(child);
+    if (!(child->flags & IUP_FLOATING_IGNORE))
+      iupBaseComputeNaturalSize(child);
 
-    *children_expand |= child->expand;
-    children_naturalwidth = iupMAX(children_naturalwidth, child->naturalwidth);
-    children_naturalheight = iupMAX(children_naturalheight, child->naturalheight);
+    if (!(child->flags & IUP_FLOATING))
+    {
+      *children_expand |= child->expand;
+      children_naturalwidth = iupMAX(children_naturalwidth, child->naturalwidth);
+      children_naturalheight = iupMAX(children_naturalheight, child->naturalheight);
+    }
   }
 
   iTabsGetDecorSize(ih, &decorwidth, &decorheight);
@@ -487,7 +491,8 @@ static void iTabsSetChildrenCurrentSizeMethod(Ihandle* ih, int shrink)
 
   for (child = ih->firstchild; child; child = child->brother)
   {
-    iupBaseSetCurrentSize(child, width, height, shrink);
+    if (!(child->flags & IUP_FLOATING))
+      iupBaseSetCurrentSize(child, width, height, shrink);
   }
 }
 
@@ -505,7 +510,10 @@ static void iTabsSetChildrenPositionMethod(Ihandle* ih, int x, int y)
   if (offset) iupStrToIntInt(offset, &x, &y, 'x');
 
   for (child = ih->firstchild; child; child = child->brother)
-    iupBaseSetPosition(child, x, y);
+  {
+    if (!(child->flags & IUP_FLOATING))
+      iupBaseSetPosition(child, x, y);
+  }
 }
 
 static void* iTabsGetInnerNativeContainerHandleMethod(Ihandle* ih, Ihandle* child)
