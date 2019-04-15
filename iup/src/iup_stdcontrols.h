@@ -73,6 +73,7 @@ Iclass* iupDatePickNewClass(void);
 Iclass* iupParamBoxNewClass(void);
 Iclass* iupParamNewClass(void);
 Iclass* iupMultiBoxNewClass(void);
+Iclass* iupFlatListNewClass(void);
 
 Iclass* iupTimerNewClass(void);
 Iclass* iupImageNewClass(void);

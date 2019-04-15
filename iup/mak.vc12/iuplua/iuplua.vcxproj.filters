@@ -238,6 +238,9 @@
     <ClCompile Include="..\..\srclua5\elem\il_multibox.c">
       <Filter>Source Files\controls</Filter>
     </ClCompile>
+    <ClCompile Include="..\..\srclua5\elem\il_flatlist.c">
+      <Filter>Source Files\controls</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <None Include="..\..\srclua5\iuplua.def">
@@ -647,6 +650,9 @@
     </None>
     <None Include="..\..\srclua5\lh\menu.lh">
       <Filter>Includes\controls</Filter>
+    </None>
+    <None Include="..\..\srclua5\elem\flatlist.lua">
+      <Filter>Lua\controls</Filter>
     </None>
   </ItemGroup>
   <ItemGroup>

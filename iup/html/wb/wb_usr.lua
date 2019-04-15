@@ -1491,6 +1491,10 @@ wb_usr.tree =
               link= "elem/iuplist.html"
             },
             {
+              name= {nl= "IupFlatList"},
+              link= "elem/iupflatlist.html"
+            },
+            {
               name= {nl= "IupProgressBar"},
               link= "elem/iupprogressbar.html"
             },

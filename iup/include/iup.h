@@ -242,6 +242,7 @@ Ihandle*  IupDialog     (Ihandle* child);
 Ihandle*  IupUser       (void);
 Ihandle*  IupLabel      (const char* title);
 Ihandle*  IupList       (const char* action);
+Ihandle*  IupFlatList   (void);
 Ihandle*  IupText       (const char* action);
 Ihandle*  IupMultiLine  (const char* action);
 Ihandle*  IupToggle     (const char* title, const char* action);

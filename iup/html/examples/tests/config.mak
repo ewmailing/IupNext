@@ -67,6 +67,7 @@ SRC += menu.c
 SRC += spin.c
 SRC += text_spin.c
 SRC += list.c
+SRC += flatlist.c
 SRC += sysinfo.c
 SRC += mdi.c
 SRC += getparam.c

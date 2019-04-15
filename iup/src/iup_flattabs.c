@@ -751,7 +751,7 @@ static int iFlatTabsRedraw_CB(Ihandle* ih)
                       img_position, spacing, horiz_alignment, vert_alignment, horiz_padding, vert_padding,
                       tab_image, make_inactive, tab_title, text_flags, text_orientation, foreground_color, background_color, tab_active);
 
-      if (current_child == child && iupAttribGetInt(ih, "HASFOCUS"))
+      if (current_child == child && iupAttribGetInt(ih, "HASFOCUS") && iupAttribGetBoolean(ih, "FOCUSFEEDBACK"))
       {
         int x1, y1, x2, y2;
 
@@ -2341,7 +2341,8 @@ Iclass* iupFlatTabsNewClass(void)
   iupClassRegisterAttribute(ic, "TABCHANGEONCHECK", NULL, NULL, NULL, NULL, IUPAF_NO_INHERIT);
   iupClassRegisterAttribute(ic, "HASFOCUS", NULL, NULL, NULL, NULL, IUPAF_READONLY | IUPAF_NO_INHERIT);
   iupClassRegisterAttribute(ic, "TABTYPE", NULL, iFlatTabsSetTabTypeAttrib, IUPAF_SAMEASSYSTEM, "TOP", IUPAF_NOT_MAPPED | IUPAF_NO_INHERIT);
-  iupClassRegisterAttribute(ic, "CHILDSIZEALL", NULL, NULL, IUPAF_SAMEASSYSTEM, "Yes", IUPAF_NO_INHERIT);
+  iupClassRegisterAttribute(ic, "CHILDSIZEALL", NULL, NULL, IUPAF_SAMEASSYSTEM, "YES", IUPAF_NO_INHERIT);
+  iupClassRegisterAttribute(ic, "FOCUSFEEDBACK", NULL, NULL, IUPAF_SAMEASSYSTEM, "YES", IUPAF_NOT_MAPPED | IUPAF_NO_INHERIT);
 
   /* IupFlatTabs Child only */
   iupClassRegisterAttributeId(ic, "TABTITLE", NULL, (IattribSetIdFunc)iFlatTabsSetAttribPostRedraw, IUPAF_NO_INHERIT);

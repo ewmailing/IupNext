@@ -93,5 +93,6 @@
     <ClCompile Include="..\html\examples\tests\flattabs.c" />
     <ClCompile Include="..\html\examples\tests\flattoggle.c" />
     <ClCompile Include="..\html\examples\tests\multibox.c" />
+    <ClCompile Include="..\html\examples\tests\flatlist.c" />
   </ItemGroup>
 </Project>

@@ -510,6 +510,13 @@ namespace Iup
     List(Ihandle* _ih) : Control(_ih) {}
     List(const Element& elem) : Control(elem.GetHandle()) {}
   };
+  class FlatList : public Control
+  {
+  public:
+    FlatList() : Control(IupFlatList()) {}
+    FlatList(Ihandle* _ih) : Control(_ih) {}
+    FlatList(const Element& elem) : Control(elem.GetHandle()) {}
+  };
   class Text : public Control
   {
   public:

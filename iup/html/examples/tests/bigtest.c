@@ -47,6 +47,7 @@ void IdleTest(void);
 void LabelTest(void);
 void FlatLabelTest(void);
 void ListTest(void);
+void FlatListTest(void);
 void MatrixTest(void);
 void MatrixCbModeTest(void);
 void MatrixCbsTest(void);
@@ -173,6 +174,7 @@ static TestItems test_list[] = {
   { "FlatLabel", FlatLabelTest },
   { "Link", LinkTest },
   {"List", ListTest},
+  {"FlatList", FlatListTest},
   {"Matrix", MatrixTest},
   {"MatrixCbMode", MatrixCbModeTest},
   {"MatrixCbs", MatrixCbsTest},
