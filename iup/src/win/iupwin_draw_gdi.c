@@ -227,53 +227,6 @@ static HPEN iDrawCreatePen(long color, int style, int line_width)
   return NULL;
 }
 
-void iupdrvDrawRectangle(IdrawCanvas* dc, int x1, int y1, int x2, int y2, long color, int style, int line_width)
-{
-  if (dc->wdl_gc)
-  {
-    iupdrvDrawRectangleWDL(dc->wdl_gc, x1, y1, x2, y2, color, style, line_width);
-    return;
-  }
-
-  SetDCBrushColor(dc->hBitmapDC, RGB(iupDrawRed(color), iupDrawGreen(color), iupDrawBlue(color)));
-
-  if (style == IUP_DRAW_FILL)
-  {
-    RECT rect;
-    iupDrawCheckSwapCoord(x1, x2);
-    iupDrawCheckSwapCoord(y1, y2);
-    SetRect(&rect, x1, y1, x2 + 1, y2 + 1);
-    FillRect(dc->hBitmapDC, &rect, (HBRUSH)GetStockObject(DC_BRUSH));
-  }
-  else if (style == IUP_DRAW_STROKE && line_width == 1)
-  {
-    RECT rect;
-    iupDrawCheckSwapCoord(x1, x2);
-    iupDrawCheckSwapCoord(y1, y2);
-    SetRect(&rect, x1, y1, x2 + 1, y2 + 1);
-    FrameRect(dc->hBitmapDC, &rect, (HBRUSH)GetStockObject(DC_BRUSH));
-  }
-  else
-  {
-    POINT line_poly[5];
-    HPEN hPen = iDrawCreatePen(color, style, line_width);
-    HPEN hPenOld = SelectObject(dc->hBitmapDC, hPen);
-    line_poly[0].x = x1;
-    line_poly[0].y = y1;
-    line_poly[1].x = x1;
-    line_poly[1].y = y2;
-    line_poly[2].x = x2;
-    line_poly[2].y = y2;
-    line_poly[3].x = x2;
-    line_poly[3].y = y1;
-    line_poly[4].x = x1;
-    line_poly[4].y = y1;
-    Polyline(dc->hBitmapDC, line_poly, 5);
-    SelectObject(dc->hBitmapDC, hPenOld);
-    DeleteObject(hPen);
-  }
-}
-
 static void iwinDrawSetLineStyleSimAA(int style, dummy_GpPen* pen)
 {
   if (style != IUP_DRAW_STROKE)
@@ -314,6 +267,96 @@ static void iwinDrawSetLineStyleSimAA(int style, dummy_GpPen* pen)
   }
 }
 
+static int colorHasAlpha(long color)
+{
+  return iupDrawAlpha(color) != 255;
+}
+
+static void iwinDrawRectangleSimAA(IdrawCanvas* dc, int x1, int y1, int x2, int y2, long color, int style, int line_width)
+{
+  dummy_GpGraphics* graphics;
+
+  gdix_vtable->fn_CreateFromHDC(dc->hBitmapDC, &graphics);
+  gdix_vtable->fn_SetSmoothingMode(graphics, dummy_SmoothingModeAntiAlias);
+
+  iupDrawCheckSwapCoord(x1, x2);
+  iupDrawCheckSwapCoord(y1, y2);
+
+  if (style == IUP_DRAW_FILL)
+  {
+    dummy_GpBrush* brush;
+    gdix_vtable->fn_CreateSolidFill(iupColor2ARGB(color), &brush);
+
+    gdix_vtable->fn_FillRectangle(graphics, brush, (float)(x1 - 0.5f), (float)(y1 - 0.5f), (float)(x2 - x1 + 1), (float)(y2 - y1 + 1));   // in this case Size = Max - Min 
+
+    gdix_vtable->fn_DeleteBrush(brush);
+  }
+  else
+  {
+    dummy_GpPen* pen;
+    gdix_vtable->fn_CreatePen1(iupColor2ARGB(color), (float)line_width, dummy_UnitPixel, &pen);
+    iwinDrawSetLineStyleSimAA(style, pen);
+
+    gdix_vtable->fn_DrawRectangle(graphics, pen, (float)x1, (float)y1, (float)(x2 - x1), (float)(y2 - y1));   // in this case Size = Max - Min 
+
+    gdix_vtable->fn_DeletePen(pen);
+  }
+
+  gdix_vtable->fn_DeleteGraphics(graphics);
+}
+
+void iupdrvDrawRectangle(IdrawCanvas* dc, int x1, int y1, int x2, int y2, long color, int style, int line_width)
+{
+  if (dc->wdl_gc)
+  {
+    iupdrvDrawRectangleWDL(dc->wdl_gc, x1, y1, x2, y2, color, style, line_width);
+    return;
+  }
+
+  if (dc->sim_aa && colorHasAlpha(color))
+    iwinDrawRectangleSimAA(dc, x1, y1, x2, y2, color, style, line_width);
+  else
+  {
+    SetDCBrushColor(dc->hBitmapDC, RGB(iupDrawRed(color), iupDrawGreen(color), iupDrawBlue(color)));
+
+    if (style == IUP_DRAW_FILL)
+    {
+      RECT rect;
+      iupDrawCheckSwapCoord(x1, x2);
+      iupDrawCheckSwapCoord(y1, y2);
+      SetRect(&rect, x1, y1, x2 + 1, y2 + 1);
+      FillRect(dc->hBitmapDC, &rect, (HBRUSH)GetStockObject(DC_BRUSH));
+    }
+    else if (style == IUP_DRAW_STROKE && line_width == 1)
+    {
+      RECT rect;
+      iupDrawCheckSwapCoord(x1, x2);
+      iupDrawCheckSwapCoord(y1, y2);
+      SetRect(&rect, x1, y1, x2 + 1, y2 + 1);
+      FrameRect(dc->hBitmapDC, &rect, (HBRUSH)GetStockObject(DC_BRUSH));
+    }
+    else
+    {
+      POINT line_poly[5];
+      HPEN hPen = iDrawCreatePen(color, style, line_width);
+      HPEN hPenOld = SelectObject(dc->hBitmapDC, hPen);
+      line_poly[0].x = x1;
+      line_poly[0].y = y1;
+      line_poly[1].x = x1;
+      line_poly[1].y = y2;
+      line_poly[2].x = x2;
+      line_poly[2].y = y2;
+      line_poly[3].x = x2;
+      line_poly[3].y = y1;
+      line_poly[4].x = x1;
+      line_poly[4].y = y1;
+      Polyline(dc->hBitmapDC, line_poly, 5);
+      SelectObject(dc->hBitmapDC, hPenOld);
+      DeleteObject(hPen);
+    }
+  }
+}
+
 static void iwinDrawLineSimAA(IdrawCanvas* dc, int x1, int y1, int x2, int y2, long color, int style, int line_width)
 {
   dummy_GpGraphics* graphics;
@@ -340,7 +383,7 @@ void iupdrvDrawLine(IdrawCanvas* dc, int x1, int y1, int x2, int y2, long color,
     return;
   }
 
-  if (dc->sim_aa && x1 != x2 && y1 != y2)
+  if (dc->sim_aa && ((x1 != x2 && y1 != y2) || colorHasAlpha(color)))
     iwinDrawLineSimAA(dc, x1, y1, x2, y2, color, style, line_width);
   else
   {
@@ -421,10 +464,6 @@ static void iwinDrawArcSimAA(IdrawCanvas* dc, int x1, int y1, int x2, int y2, do
 
     gdix_vtable->fn_DeletePen(pen);
   }
-
-#if 0
-    WD_HSTROKESTYLE stroke_style = iDrawSetLineStyle(style);
-#endif
 
   gdix_vtable->fn_DeleteGraphics(graphics);
 }
