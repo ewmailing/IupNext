@@ -915,11 +915,12 @@ static int iFlatListSetRemoveItemAttrib(Ihandle* ih, const char* value)
 static int iFlatListSetImageAttrib(Ihandle* ih, int pos, const char* value)
 {
   int count = iupArrayCount(ih->data->items_array);
+  iFlatListItem *items;
 
   if (pos < 1 || pos > count)
     return 0;
 
-  iFlatListItem *items = (iFlatListItem *)iupArrayGetData(ih->data->items_array);
+  items = (iFlatListItem *)iupArrayGetData(ih->data->items_array);
   if (items)
   {
     if (items[pos - 1].image)
@@ -1161,7 +1162,7 @@ static int iFlatListSetValueAttrib(Ihandle* ih, const char* value)
   iFlatListItem* items = (iFlatListItem*)iupArrayGetData(ih->data->items_array);
   if (ih->data->is_multiple)
   {
-    int i;
+    int i, len;
     int count = iupArrayCount(ih->data->items_array);
 
     if (!value)
@@ -1170,7 +1171,7 @@ static int iFlatListSetValueAttrib(Ihandle* ih, const char* value)
       return 0;
     }
 
-    int len = (int)strlen(value);
+    len = (int)strlen(value);
     if (len != count)
       return 1;
     for (i = 0; i < count; i++)
