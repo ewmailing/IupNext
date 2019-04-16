@@ -58,7 +58,7 @@ static void iGdkEventFunc(GdkEvent *evt, gpointer	data)
         if (doubleclick)
         {
           /* Must compensate the fact that in GTK there is an extra button press event 
-             when occours a double click, we compensate that completing the event 
+             when occurs a double click, we compensate that completing the event 
              with a button release before the double click. */
           status[5] = ' '; /* clear double click */
           cb(b, 0, x, y, status);  /* release */

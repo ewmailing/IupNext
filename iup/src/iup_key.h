@@ -27,11 +27,11 @@ char *iupKeyCodeToName(int code);
  * \ingroup key */
 void iupKeyForEach(void (*func)(const char *name, int code, void* user_data), void* user_data);
 
-/** Calls the K_ANY or K_* callbacks. Should be called when a keyboard event occoured.
+/** Calls the K_ANY or K_* callbacks. Should be called when a keyboard event occurred.
  * \ingroup key */
 int iupKeyCallKeyCb(Ihandle *ih, int c);
 
-/** Calls the KEYPRESS_CB callback. Should be called when a keyboard event occoured.
+/** Calls the KEYPRESS_CB callback. Should be called when a keyboard event occurred.
  * \ingroup key */
 int iupKeyCallKeyPressCb(Ihandle *ih, int code, int press);
 

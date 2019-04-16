@@ -146,7 +146,7 @@ char* iuplua_call_ret_s(lua_State *L, int nargs);
  */
 double iuplua_call_ret_d(lua_State *L, int nargs);
 
-/** Same as lua_pcall, but if an error occour then
+/** Same as lua_pcall, but if an error occur then
  * _ERRORMESSAGE is called. 
  */
 int iuplua_call_raw(lua_State* L, int nargs, int nresults);
