@@ -43,12 +43,12 @@ tree. Default: the global attribute TXTBGCOLOR.</p>
 <p><strong>PROPAGATEFOCUS</strong>(<font size="3">non inheritable</font>): enables the focus callback forwarding to the next native parent with FOCUS_CB defined. Default: NO. (since 3.23)</p>
 
   
-<p><strong>DRAGDROPTREE</strong> (<font SIZE="3">non inheritable</font>): enable 
-or disable the drag and drop of nodes between trees, in the same IUP application. 
+<p><strong>DRAGDROPTREE</strong> (<font SIZE="3">non inheritable</font>): 
+prepare the 
+<a href="../attrib/iup_dragdrop.html">Drag &amp; Drop</a> callbacks to support drag and drop of nodes between trees, in the same IUP application. 
 <a href="../attrib/iup_dragdrop.html">Drag &amp; Drop</a> attributes<span id="result_box" class="" lang="en"><span class="hps"> 
-must be set in order to activate the drag &amp; drop support. </span><span class="">
-On the other hand, it is</span> <span class="hps">not necessary to</span>
-<span class="hps">register</span></span> drag &amp; drop callbacks. Default: NO. (since 3.10)</p>
+still need to be set in order to activate the drag &amp; drop support, so the 
+application can control if this tree will be source and/or target. </span></span>Default: NO. (since 3.10)</p>
 <p><strong>DROPFILESTARGET</strong> [Windows and GTK Only] (<font SIZE="3">non inheritable</font>): Enable or disable the drop of 
 <span class="style5">files</span>. Default: NO, but if DROPFILES_CB is defined when the element is mapped 
 then it will be automatically enabled. This is NOT related to the drag&amp;drop of 
@@ -100,7 +100,9 @@ layout use smaller values.</p>
 <p><strong>SHOWDRAGDROP</strong> (creation only) (<font size="3">non inheritable</font>): Enables the 
 internal drag and drop of 
 nodes, and enables the <strong>DRAGDROP_CB</strong> callback. Default:
-  &quot;NO&quot;. Works only if MARKMODE=SINGLE.</p>
+  &quot;NO&quot;. Works only if MARKMODE=SINGLE. 
+<a href="../attrib/iup_dragdrop.html">Drag &amp; Drop</a> attributes<span id="result_box0" class="" lang="en"><span class="hps"> 
+are NOT used.</span></span></p>
 <p><strong>SHOWTOGGLE </strong>(creation only) (<font size="3">non inheritable</font>): enables the use of toggles for all nodes of the 
 tree. Can 
   be "YES", &quot;3STATE&quot; or NO". Default: "NO". In Motif Versions 2.1.x and 2.2.x, the images 

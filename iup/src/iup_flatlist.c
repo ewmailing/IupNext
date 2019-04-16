@@ -62,9 +62,6 @@ struct _IcontrolData
   int show_dragdrop;
 };
 
-/* Color attenuation factor in a marked cell, 20% darker */
-#define IMAT_ATENUATION(_x)    ((unsigned char)(((_x)*8)/10))
-
 
 static int iFlatListGetScrollbar(Ihandle* ih)
 {
@@ -97,9 +94,9 @@ static int iFlatListConvertXYToPos(Ihandle* ih, int x, int y)
 {
   int posy = IupGetInt(ih, "POSY");
   int count = iupArrayCount(ih->data->items_array);
-  int pos = (int)((y + posy) / (ih->data->line_height + ih->data->spacing)) + 1; /* pos starts at 1 */
+  int pos = ((y + posy) / (ih->data->line_height + ih->data->spacing)) + 1; /* pos starts at 1 */
 
-  if (pos < 1 || pos > count)
+  if (y + posy < 0 || pos < 1 || pos > count)
     return -1;
 
   (void)x;
@@ -168,23 +165,6 @@ static void iFlatListUnSelectedAll(Ihandle *ih)
     break;
   }
   iupArrayRemove(ih->data->items_array, i, 1);
-}
-
-static void iFlatListAddMarkedAttenuation(Ihandle* ih, unsigned char *r, unsigned char *g, unsigned char *b)
-{
-  char* hlcolor = iupAttribGetStr(ih, "HLCOLOR");
-  unsigned char hl_r, hl_g, hl_b;
-  if (iupStrToRGB(hlcolor, &hl_r, &hl_g, &hl_b))
-  {
-    unsigned char a = (unsigned char)iupAttribGetInt(ih, "HLCOLORALPHA");
-    *r = iupALPHABLEND(*r, hl_r, a);
-    *g = iupALPHABLEND(*g, hl_g, a);
-    *b = iupALPHABLEND(*b, hl_b, a);
-  }
-
-  *r = IMAT_ATENUATION(*r);
-  *g = IMAT_ATENUATION(*g);
-  *b = IMAT_ATENUATION(*b);
 }
 
 static void iFlatListSetItemFont(Ihandle* ih, const char* font)
@@ -365,6 +345,9 @@ static int iFlatListRedraw_CB(Ihandle* ih)
       unsigned char a = (unsigned char)iupAttribGetInt(ih, "HLCOLORALPHA");
       long selcolor;
 
+      if (ih->data->dragging_pos == i + 1)
+        a = (2*a)/3;
+
       iupStrToRGB(hlcolor, &red, &green, &blue);
       selcolor = iupDrawColor(red, green, blue, a);
 
@@ -405,7 +388,7 @@ static void iFlatListSelectItem(Ihandle* ih, int pos, int ctrlPressed, int shftP
   if (ih->data->is_multiple)
   {
     int i, start, end;
-    char *val = iupAttribGet(ih, "_IUPLIST_LASTSELECTED");
+    char *val = iupAttribGet(ih, "_IUPFLATLIST_LASTSELECTED");
     int last_pos = (val) ? atoi(val) : 0;
     if (pos <= last_pos)
     {
@@ -471,13 +454,13 @@ static void iFlatListSelectItem(Ihandle* ih, int pos, int ctrlPressed, int shftP
   }
 
   if (!shftPressed)
-    iupAttribSetInt(ih, "_IUPLIST_LASTSELECTED", pos);
+    iupAttribSetInt(ih, "_IUPFLATLIST_LASTSELECTED", pos);
 }
 
 static int iFlatListButton_CB(Ihandle* ih, int button, int pressed, int x, int y, char* status)
 {
   IFniiiis button_cb = (IFniiiis)IupGetCallback(ih, "FLAT_BUTTON_CB");
-  int itemDragged = iupAttribGetInt(ih, "_IUPLIST_ITEMDRAGGED");
+  int pos_dragged = iupAttribGetInt(ih, "_IUPFLATLIST_ITEMDRAGGED");
   int pos = iFlatListConvertXYToPos(ih, x, y);
 
   if (button_cb)
@@ -486,18 +469,33 @@ static int iFlatListButton_CB(Ihandle* ih, int button, int pressed, int x, int y
       return IUP_DEFAULT;
   }
 
-  if (pos == -1)
-    return IUP_DEFAULT;
-
-  if (button == IUP_BUTTON1 && !pressed && itemDragged > 0)
+  if (button == IUP_BUTTON1 && !pressed && pos_dragged > 0)
   {
     iFlatListItem* items = (iFlatListItem*)iupArrayGetData(ih->data->items_array);
-    iFlatListCopyItem(ih, itemDragged, pos, 0);
+
+    if (pos == -1)
+    {
+      if (y < 0) 
+        pos = 1;
+      else
+      {
+        int count = iupArrayCount(ih->data->items_array);
+        pos = count + 1;
+      }
+    }
+
+    iFlatListCopyItem(ih, pos_dragged, pos, 0);
     iFlatListUnSelectedAll(ih);
     items[pos - 1].selected = 1;
     ih->data->dragging_pos = 0;
-    iupAttribSetInt(ih, "_IUPLIST_ITEMDRAGGED", 0);
+    iupAttribSetInt(ih, "_IUPFLATLIST_ITEMDRAGGED", 0);
+
+    IupUpdate(ih);
+    return IUP_DEFAULT;
   }
+
+  if (pos == -1)
+    return IUP_DEFAULT;
 
   if (button == IUP_BUTTON1 && pressed)
     iFlatListSelectItem(ih, pos, iup_iscontrol(status), iup_isshift(status));
@@ -514,14 +512,13 @@ static int iFlatListButton_CB(Ihandle* ih, int button, int pressed, int x, int y
   }
 
   IupUpdate(ih);
-
   return IUP_DEFAULT;
 }
 
 static int iFlatListMotion_CB(Ihandle* ih, int x, int y, char* status)
 {
   IFniis motion_cb = (IFniis)IupGetCallback(ih, "FLAT_MOTION_CB");
-  int pos, itemDragged;
+  int pos, pos_dragged;
 
   iupFlatScrollBarMotionUpdate(ih, x, y);
 
@@ -539,15 +536,16 @@ static int iFlatListMotion_CB(Ihandle* ih, int x, int y, char* status)
   if (pos == -1)
     return IUP_DEFAULT;
 
-  itemDragged = iupAttribGetInt(ih, "_IUPLIST_ITEMDRAGGED");
-  if (itemDragged == 0)
-    iupAttribSetInt(ih, "_IUPLIST_ITEMDRAGGED", pos);
+  pos_dragged = iupAttribGetInt(ih, "_IUPFLATLIST_ITEMDRAGGED");
+  if (pos_dragged == 0)
+    iupAttribSetInt(ih, "_IUPFLATLIST_ITEMDRAGGED", pos);
 
-  //if (y < 0 || y > ih->currentheight)
-  //{
-  //  int posy = (pos - 1) * (ih->data->line_height + ih->data->spacing);
-  //  IupSetInt(ih, "POSY", posy);
-  //}
+  if (y < 0 || y > ih->currentheight)
+  {
+    /* scroll if dragging out of canvas */
+    int posy = (pos - 1) * (ih->data->line_height + ih->data->spacing);
+    IupSetInt(ih, "POSY", posy);
+  }
 
   ih->data->dragging_pos = pos;
 
@@ -609,7 +607,7 @@ static void iFlatListCallActionCallback(Ihandle* ih, IFnsii cb, int pos, int sta
 
 static void iFlatListUpdateOldValue(Ihandle* ih, int pos, int removed)
 {
-  char* old_value = iupAttribGet(ih, "_IUPLIST_OLDVALUE");
+  char* old_value = iupAttribGet(ih, "_IUPFLATLIST_OLDVALUE");
   if (old_value)
   {
     int old_pos = atoi(old_value) - 1; /* was in IUP reference, starting at 1 */
@@ -620,24 +618,24 @@ static void iFlatListUpdateOldValue(Ihandle* ih, int pos, int removed)
         if (removed && old_pos == pos)
         {
           /* when the current item is removed nothing remains selected */
-          iupAttribSet(ih, "_IUPLIST_OLDVALUE", NULL);
+          iupAttribSet(ih, "_IUPFLATLIST_OLDVALUE", NULL);
         }
         else
-          iupAttribSetInt(ih, "_IUPLIST_OLDVALUE", removed ? old_pos - 1 : old_pos + 1);
+          iupAttribSetInt(ih, "_IUPFLATLIST_OLDVALUE", removed ? old_pos - 1 : old_pos + 1);
       }
     }
     else
     {
       /* multiple selection on a non drop-down list. */
       char* value = IupGetAttribute(ih, "VALUE");
-      iupAttribSetStr(ih, "_IUPLIST_OLDVALUE", value);
+      iupAttribSetStr(ih, "_IUPFLATLIST_OLDVALUE", value);
     }
   }
 }
 
 static void iFlatListSingleCallActionCb(Ihandle* ih, IFnsii cb, IFn valuechanged_cb, int pos)
 {
-  char* old_str = iupAttribGet(ih, "_IUPLIST_OLDVALUE");
+  char* old_str = iupAttribGet(ih, "_IUPFLATLIST_OLDVALUE");
   int unchanged = 1;
 
   if (old_str)
@@ -646,7 +644,7 @@ static void iFlatListSingleCallActionCb(Ihandle* ih, IFnsii cb, IFn valuechanged
     if (oldpos != pos)
     {
       iFlatListCallActionCallback(ih, cb, oldpos, 0);
-      iupAttribSetInt(ih, "_IUPLIST_OLDVALUE", pos);
+      iupAttribSetInt(ih, "_IUPFLATLIST_OLDVALUE", pos);
       iFlatListCallActionCallback(ih, cb, pos, 1);
       unchanged = 0;
     }
@@ -654,7 +652,7 @@ static void iFlatListSingleCallActionCb(Ihandle* ih, IFnsii cb, IFn valuechanged
   else
   {
     iFlatListItem* items = (iFlatListItem*)iupArrayGetData(ih->data->items_array);
-    iupAttribSetInt(ih, "_IUPLIST_OLDVALUE", pos);
+    iupAttribSetInt(ih, "_IUPFLATLIST_OLDVALUE", pos);
     iFlatListCallActionCallback(ih, cb, pos, 1);
     if (items[pos - 1].selected)
       unchanged = 0;
@@ -668,7 +666,7 @@ static void iFlatListMultipleCallActionCb(Ihandle* ih, IFnsii cb, IFns multi_cb,
 {
   int i, count = iupArrayCount(ih->data->items_array);
 
-  char* old_str = iupAttribGet(ih, "_IUPLIST_OLDVALUE");
+  char* old_str = iupAttribGet(ih, "_IUPFLATLIST_OLDVALUE");
   int old_count = old_str ? (int)strlen(old_str) : 0;
   int unchanged = 1;
 
@@ -737,7 +735,7 @@ static void iFlatListMultipleCallActionCb(Ihandle* ih, IFnsii cb, IFns multi_cb,
   if (!unchanged && valuechanged_cb)
     valuechanged_cb(ih);
 
-  iupAttribSetStr(ih, "_IUPLIST_OLDVALUE", str);
+  iupAttribSetStr(ih, "_IUPFLATLIST_OLDVALUE", str);
   free(str);
 }
 
@@ -834,7 +832,7 @@ static int iFlatListSetIdValueAttrib(Ihandle* ih, int pos, const char* value)
   if (!value)
   {
     iFlatListRemoveItem(ih, 0, count - pos - 1);
-    iupAttribSet(ih, "_IUPLIST_OLDVALUE", NULL);
+    iupAttribSet(ih, "_IUPFLATLIST_OLDVALUE", NULL);
   }
   else if (pos <= count)
   {
@@ -904,7 +902,7 @@ static int iFlatListSetRemoveItemAttrib(Ihandle* ih, const char* value)
   if (!value || iupStrEqualNoCase(value, "ALL"))
   {
     iFlatListRemoveItem(ih, 0, iupArrayCount(ih->data->items_array));
-    iupAttribSet(ih, "_IUPLIST_OLDVALUE", NULL);
+    iupAttribSet(ih, "_IUPFLATLIST_OLDVALUE", NULL);
   }
   else
   {
@@ -925,7 +923,7 @@ static int iFlatListSetRemoveItemAttrib(Ihandle* ih, const char* value)
   return 0;
 }
 
-static int iFlatListSetImageAttrib(Ihandle* ih, int pos, const char* value)
+static int iFlatListSetImageAttribId(Ihandle* ih, int pos, const char* value)
 {
   int count = iupArrayCount(ih->data->items_array);
   iFlatListItem *items;
@@ -946,6 +944,33 @@ static int iFlatListSetImageAttrib(Ihandle* ih, int pos, const char* value)
   }
 
   return 0;
+}
+
+static char* iFlatListGetImageAttribId(Ihandle* ih, int pos)
+{
+  int count = iupArrayCount(ih->data->items_array);
+  iFlatListItem *items;
+
+  if (pos < 1 || pos > count)
+    return 0;
+
+  items = (iFlatListItem *)iupArrayGetData(ih->data->items_array);
+  return items[pos - 1].image;
+}
+
+static char* iFlatListGetImageNativeHandleAttribId(Ihandle* ih, int pos)
+{
+  int count = iupArrayCount(ih->data->items_array);
+  iFlatListItem *items;
+
+  if (pos < 1 || pos > count)
+    return 0;
+
+  items = (iFlatListItem *)iupArrayGetData(ih->data->items_array);
+  if (items[pos - 1].image)
+    return iupImageGetImage(items[pos - 1].image, ih, 0, NULL);
+
+  return NULL;
 }
 
 static int iFlatListSetImagePositionAttrib(Ihandle* ih, const char* value)
@@ -991,76 +1016,67 @@ static int iFlatListDropData_CB(Ihandle *ih, char* type, void* data, int len, in
 
   /* Data is not the pointer, it contains the pointer */
   Ihandle* ih_source;
-  memcpy((void*)&ih_source, data, len);
+  memcpy((void*)&ih_source, data, len);  /* but ih_source can be IupList or IupFlatList, can NOT use ih_source->data here */
 
-  /* A copy operation is enabled with the CTRL key pressed, or else a move operation will occour.
-  A move operation will be possible only if the attribute DRAGSOURCEMOVE is Yes.
-  When no key is pressed the default operation is copy when DRAGSOURCEMOVE=No and move when DRAGSOURCEMOVE=Yes. */
+  /* A copy operation is enabled with the CTRL key pressed, or else a move operation will occur.
+     A move operation will be possible only if the attribute DRAGSOURCEMOVE is Yes.
+     When no key is pressed the default operation is copy when DRAGSOURCEMOVE=No and move when DRAGSOURCEMOVE=Yes. */
   iupdrvGetKeyState(key);
   if (key[1] == 'C')
     is_ctrl = 1;
 
-  if (ih_source->data->is_multiple)
+  if (IupGetInt(ih_source, "MULTIPLE"))
   {
     char *buffer = IupGetAttribute(ih_source, "VALUE");
 
     /* Copy all selected items */
-    int i = 1;  /* IUP starts at 1 */
-    while (buffer[i - 1] != '\0')
+    int src_pos = 1;  /* IUP starts at 1 */
+    while (buffer[src_pos - 1] != '\0')
     {
-      if (buffer[i - 1] == '+')
+      if (buffer[src_pos - 1] == '+')
       {
-        iFlatListItem* srcItems = (iFlatListItem*)iupArrayGetData(ih_source->data->items_array);
         iFlatListItem* items = (iFlatListItem*)iupArrayInsert(ih->data->items_array, pos - 1, 1);
-        if (srcItems && items)
-        {
-          items[pos - 1].name = iupStrDup(srcItems[i].name);
-          items[pos - 1].image = iupStrDup(srcItems[i].image);
-          items[pos - 1].fgColor = iupStrDup(srcItems[i].fgColor);
-          items[pos - 1].bgColor = iupStrDup(srcItems[i].bgColor);
-          items[pos - 1].font = iupStrDup(srcItems[i].font);
-          items[pos - 1].selected = 0;
-        }
+        items[pos - 1].name = iupStrDup(IupGetAttributeId(ih_source, "", src_pos));
+        items[pos - 1].image = iupStrDup(IupGetAttributeId(ih_source, "IMAGE", src_pos));   /* works for IupFlatList only, in IupList is write-only */
+        items[pos - 1].fgColor = iupStrDup(IupGetAttributeId(ih_source, "ITEMFGCOLOR", src_pos));
+        items[pos - 1].bgColor = iupStrDup(IupGetAttributeId(ih_source, "ITEMBGCOLOR", src_pos));
+        items[pos - 1].font = iupStrDup(IupGetAttributeId(ih_source, "ITEMFONT", src_pos));
+        items[pos - 1].selected = 0;
+        pos++;
       }
 
-      i++;
+      src_pos++;
     }
 
     if (IupGetInt(ih_source, "DRAGSOURCEMOVE") && !is_ctrl)
     {
       /* Remove all item from source if MOVE */
-      i = 1;  /* IUP starts at 1 */
+      src_pos = 1;  /* IUP starts at 1 */
       while (*buffer != '\0')
       {
         if (*buffer == '+')
-        {
-          iFlatListRemoveItem(ih_source, i - 1, 1);
-        }
+          IupSetInt(ih_source, "REMOVEITEM", src_pos);
 
-        i++;
+        src_pos++;
         buffer++;
       }
     }
   }
   else
   {
-    iFlatListItem* srcItems = (iFlatListItem*)iupArrayGetData(ih_source->data->items_array);
     iFlatListItem* items = (iFlatListItem*)iupArrayInsert(ih->data->items_array, pos - 1, 1);
-    if (srcItems && items)
-    {
-      int srcPos = IupGetInt(ih_source, "VALUE");
-      items[pos - 1].name = iupStrDup(srcItems[srcPos - 1].name);
-      items[pos - 1].image = iupStrDup(srcItems[srcPos - 1].image);
-      items[pos - 1].fgColor = iupStrDup(srcItems[srcPos - 1].fgColor);
-      items[pos - 1].bgColor = iupStrDup(srcItems[srcPos - 1].bgColor);
-      items[pos - 1].font = iupStrDup(srcItems[srcPos - 1].font);
-      items[pos - 1].selected = 0;
-    }
+    int src_pos = IupGetInt(ih_source, "VALUE");
+    items[pos - 1].name = iupStrDup(IupGetAttributeId(ih_source, "", src_pos));
+    items[pos - 1].image = iupStrDup(IupGetAttributeId(ih_source, "IMAGE", src_pos));   /* works for IupFlatList only, in IupList is write-only */
+    items[pos - 1].fgColor = iupStrDup(IupGetAttributeId(ih_source, "ITEMFGCOLOR", src_pos));
+    items[pos - 1].bgColor = iupStrDup(IupGetAttributeId(ih_source, "ITEMBGCOLOR", src_pos));
+    items[pos - 1].font = iupStrDup(IupGetAttributeId(ih_source, "ITEMFONT", src_pos));
+    items[pos - 1].selected = 0;
 
     if (IupGetInt(ih_source, "DRAGSOURCEMOVE") && !is_ctrl)
     {
-      int srcPos = iupAttribGetInt(ih_source, "_IUP_LIST_SOURCEPOS");
-      iFlatListRemoveItem(ih_source, srcPos - 1, 1);
+      src_pos = iupAttribGetInt(ih_source, "_IUP_LIST_SOURCEPOS");
+      IupSetInt(ih_source, "REMOVEITEM", src_pos);
     }
   }
 
@@ -1179,7 +1195,7 @@ static int iFlatListSetValueAttrib(Ihandle* ih, const char* value)
 
     if (!value)
     {
-      iupAttribSet(ih, "_IUPLIST_OLDVALUE", NULL);
+      iupAttribSet(ih, "_IUPFLATLIST_OLDVALUE", NULL);
       return 0;
     }
 
@@ -1191,7 +1207,7 @@ static int iFlatListSetValueAttrib(Ihandle* ih, const char* value)
       if (value[i] == '+')
       {
         items[i].selected = 1;
-        iupAttribSetInt(ih, "_IUPLIST_LASTSELECTED", i);
+        iupAttribSetInt(ih, "_IUPFLATLIST_LASTSELECTED", i);
       }
       else if (value[i] == '-')
         items[i].selected = 0;
@@ -1199,7 +1215,7 @@ static int iFlatListSetValueAttrib(Ihandle* ih, const char* value)
         return 1;
     }
 
-    iupAttribSetStr(ih, "_IUPLIST_OLDVALUE", value);
+    iupAttribSetStr(ih, "_IUPFLATLIST_OLDVALUE", value);
   }
   else
   {
@@ -1208,12 +1224,12 @@ static int iFlatListSetValueAttrib(Ihandle* ih, const char* value)
     if (iupStrToInt(value, &pos) == 1 && pos > 0 && pos <= count)
     {
       items[pos - 1].selected = 1;
-      iupAttribSetInt(ih, "_IUPLIST_OLDVALUE", pos);
+      iupAttribSetInt(ih, "_IUPFLATLIST_OLDVALUE", pos);
     }
     else
-      iupAttribSet(ih, "_IUPLIST_OLDVALUE", NULL);
+      iupAttribSet(ih, "_IUPFLATLIST_OLDVALUE", NULL);
 
-    iupAttribSetInt(ih, "_IUPLIST_LASTSELECTED", pos);
+    iupAttribSetInt(ih, "_IUPFLATLIST_LASTSELECTED", pos);
   }
 
   if (ih->handle)
@@ -1758,6 +1774,9 @@ static int iFlatListCreateMethod(Ihandle* ih, void** params)
 {
   (void)params;
 
+  /* change the IupCanvas default values */
+  ih->expand = IUP_EXPAND_NONE;
+
   /* free the data allocated by IupCanvas, and reallocate */
   free(ih->data);
   ih->data = iupALLOCCTRLDATA();
@@ -1851,11 +1870,12 @@ Iclass* iupFlatListNewClass(void)
   iupClassRegisterAttribute(ic, "ALIGNMENT", iFlatListGetAlignmentAttrib, iFlatListSetAlignmentAttrib, "ALEFT:ACENTER", NULL, IUPAF_NOT_MAPPED | IUPAF_NO_INHERIT);
   iupClassRegisterAttribute(ic, "FOCUSFEEDBACK", NULL, NULL, IUPAF_SAMEASSYSTEM, "YES", IUPAF_NOT_MAPPED | IUPAF_NO_INHERIT);
 
-  iupClassRegisterAttributeId(ic, "INSERTITEM", NULL, iFlatListSetInsertItemAttrib, IUPAF_NOT_MAPPED | IUPAF_NO_INHERIT);
-  iupClassRegisterAttribute(ic, "APPENDITEM", NULL, iFlatListSetAppendItemAttrib, NULL, NULL, IUPAF_NOT_MAPPED | IUPAF_NO_INHERIT);
-  iupClassRegisterAttribute(ic, "REMOVEITEM", NULL, iFlatListSetRemoveItemAttrib, NULL, NULL, IUPAF_NOT_MAPPED | IUPAF_NO_INHERIT);
+  iupClassRegisterAttributeId(ic, "INSERTITEM", NULL, iFlatListSetInsertItemAttrib, IUPAF_WRITEONLY | IUPAF_NOT_MAPPED | IUPAF_NO_INHERIT);
+  iupClassRegisterAttribute(ic, "APPENDITEM", NULL, iFlatListSetAppendItemAttrib, NULL, NULL, IUPAF_WRITEONLY | IUPAF_NOT_MAPPED | IUPAF_NO_INHERIT);
+  iupClassRegisterAttribute(ic, "REMOVEITEM", NULL, iFlatListSetRemoveItemAttrib, NULL, NULL, IUPAF_WRITEONLY | IUPAF_NOT_MAPPED | IUPAF_NO_INHERIT);
 
-  iupClassRegisterAttributeId(ic, "IMAGE", NULL, iFlatListSetImageAttrib, IUPAF_IHANDLENAME | IUPAF_NOT_MAPPED | IUPAF_NO_INHERIT);
+  iupClassRegisterAttributeId(ic, "IMAGE", iFlatListGetImageAttribId, iFlatListSetImageAttribId, IUPAF_IHANDLENAME | IUPAF_NOT_MAPPED | IUPAF_NO_INHERIT);
+  iupClassRegisterAttributeId(ic, "IMAGENATIVEHANDLE", iFlatListGetImageNativeHandleAttribId, NULL, IUPAF_NO_STRING | IUPAF_READONLY | IUPAF_NO_INHERIT);
   iupClassRegisterAttribute(ic, "IMAGEPOSITION", iFlatListGetImagePositionAttrib, iFlatListSetImagePositionAttrib, IUPAF_SAMEASSYSTEM, "LEFT", IUPAF_NOT_MAPPED | IUPAF_NO_INHERIT);
   iupClassRegisterAttribute(ic, "ICONSPACING", iFlatListGetIconSpacingAttrib, iFlatListSetIconSpacingAttrib, IUPAF_SAMEASSYSTEM, "2", IUPAF_NOT_MAPPED | IUPAF_NO_INHERIT);
   iupClassRegisterAttribute(ic, "TEXTALIGNMENT", NULL, NULL, IUPAF_SAMEASSYSTEM, "ALEFT", IUPAF_NOT_MAPPED | IUPAF_NO_INHERIT);
@@ -1867,7 +1887,7 @@ Iclass* iupFlatListNewClass(void)
   iupClassRegisterAttribute(ic, "FITTOBACKIMAGE", NULL, NULL, NULL, NULL, IUPAF_NO_INHERIT);
 
   iupClassRegisterAttribute(ic, "SHOWDRAGDROP", iFlatListGetShowDragDropAttrib, iFlatListSetShowDragDropAttrib, NULL, NULL, IUPAF_NOT_MAPPED | IUPAF_NO_INHERIT);
-  iupClassRegisterAttribute(ic, "DRAGDROPLIST", NULL, iFlatListSetDragDropListAttrib, NULL, NULL, IUPAF_NO_INHERIT);
+  iupClassRegisterAttribute(ic, "DRAGDROPLIST", NULL, iFlatListSetDragDropListAttrib, NULL, NULL, IUPAF_NOT_MAPPED | IUPAF_NO_INHERIT);
 
   iupClassRegisterAttribute(ic, "VISIBLECOLUMNS", NULL, NULL, NULL, NULL, IUPAF_NOT_MAPPED | IUPAF_NO_INHERIT);
   iupClassRegisterAttribute(ic, "VISIBLELINES", NULL, NULL, "5", NULL, IUPAF_NOT_MAPPED | IUPAF_NO_INHERIT);

@@ -562,6 +562,7 @@ static int winListSetPaddingAttrib(Ihandle* ih, const char* value)
 
   iupStrToIntInt(value, &(ih->data->horiz_padding), &(ih->data->vert_padding), 'x');
   ih->data->vert_padding = 0;
+
   if (ih->handle)
   {
     HWND cbedit = (HWND)iupAttribGet(ih, "_IUPWIN_EDITBOX");
@@ -975,6 +976,15 @@ static int winListSetImageAttrib(Ihandle* ih, int id, const char* value)
   return 0;
 }
 
+static char* winListGetImageNativeHandleAttribId(Ihandle* ih, int id)
+{
+  winListItemData *itemdata = winListGetItemData(ih, id - 1);
+  if (itemdata)
+    return (char*)itemdata->hBitmap;
+  else
+    return NULL;
+}
+
 void* iupdrvListGetImageHandle(Ihandle* ih, int id)
 {
   winListItemData *itemdata = winListGetItemData(ih, id-1);
@@ -983,7 +993,7 @@ void* iupdrvListGetImageHandle(Ihandle* ih, int id)
 
 int iupdrvListSetImageHandle(Ihandle* ih, int id, void* hImage)
 {
-  winListSetItemData(ih, id-1, NULL, (HBITMAP)hImage);
+  winListSetItemData(ih, id, NULL, (HBITMAP)hImage);
   iupdrvRedrawNow(ih);
   return 0;
 }
@@ -1928,7 +1938,7 @@ void iupdrvListInitClass(Iclass* ic)
   iupClassRegisterAttribute(ic, "BGCOLOR", NULL, winListSetBgColorAttrib, IUPAF_SAMEASSYSTEM, "TXTBGCOLOR", IUPAF_NOT_MAPPED);
 
   /* Special */
-  iupClassRegisterAttribute(ic, "FGCOLOR", NULL, NULL, IUPAF_SAMEASSYSTEM, "TXTFGCOLOR", IUPAF_NOT_MAPPED);
+  iupClassRegisterAttribute(ic, "FGCOLOR", NULL, NULL, IUPAF_SAMEASSYSTEM, "TXTFGCOLOR", IUPAF_DEFAULT);
   iupClassRegisterAttribute(ic, "AUTOREDRAW", NULL, iupwinSetAutoRedrawAttrib, IUPAF_SAMEASSYSTEM, "Yes", IUPAF_WRITEONLY|IUPAF_NO_INHERIT);
 
   /* IupList only */
@@ -1956,6 +1966,7 @@ void iupdrvListInitClass(Iclass* ic)
   iupClassRegisterAttribute(ic, "SCROLLTOPOS", NULL, winListSetScrollToPosAttrib, NULL, NULL, IUPAF_WRITEONLY|IUPAF_NO_INHERIT);
 
   iupClassRegisterAttributeId(ic, "IMAGE", NULL, winListSetImageAttrib, IUPAF_IHANDLENAME|IUPAF_WRITEONLY|IUPAF_NO_INHERIT);
+  iupClassRegisterAttributeId(ic, "IMAGENATIVEHANDLE", winListGetImageNativeHandleAttribId, NULL, IUPAF_NO_STRING | IUPAF_READONLY | IUPAF_NO_INHERIT);
 
   iupClassRegisterAttribute(ic, "CUEBANNER", NULL, winListSetCueBannerAttrib, NULL, NULL, IUPAF_NO_INHERIT);
   iupClassRegisterAttribute(ic, "FILTER", NULL, winListSetFilterAttrib, NULL, NULL, IUPAF_NO_INHERIT);

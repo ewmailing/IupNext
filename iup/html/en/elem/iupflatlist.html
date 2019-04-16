@@ -159,12 +159,12 @@ this value to 0. It is drawn inside the canvas, so inside the scrollbars.</p>
 returns the number of items. </p>
 
   
-<p><strong>DRAGDROPLIST</strong> (<font SIZE="3">non inheritable</font>): enable 
-or disable the drag and drop of items between lists, in the same IUP application. 
+<p><strong>DRAGDROPLIST</strong> (<font SIZE="3">non inheritable</font>): 
+prepare the 
+<a href="../attrib/iup_dragdrop.html">Drag &amp; Drop</a> callbacks to support drag and drop of items between lists, in the same IUP application. 
 <a href="../attrib/iup_dragdrop.html">Drag &amp; Drop</a> attributes<span id="result_box" class="" lang="en"><span class="hps"> 
-must be set in order to activate the drag &amp; drop support. </span><span class="">
-On the other hand, it is</span> <span class="hps">not necessary to</span>
-<span class="hps">register</span></span> drag &amp; drop callbacks. Default: NO.</p>
+still need to be set in order to activate the drag &amp; drop support, so the 
+application can control if this list will be source and/or target. </span></span>Default: NO.</p>
 
   
 <p><strong>DROPFILESTARGET</strong> (<font SIZE="3">non inheritable</font>): 
@@ -253,8 +253,10 @@ Vertical or Horizontal. Can be set only before map. Default: Yes. </p>
   
 <p><strong>SHOWDRAGDROP</strong> (creation only) (<font size="3">non inheritable</font>): 
 enables the 
-internal drag and drop of items, and enables the <strong>DRAGDROP_CB</strong> callback. Default:
-  &quot;NO&quot;. Works only if MULTIPLE=NO.</p>
+internal drag and drop of items in the same list, and enables the <strong>DRAGDROP_CB</strong> callback. Default:
+  &quot;NO&quot;. Works only if MULTIPLE=NO. 
+<a href="../attrib/iup_dragdrop.html">Drag &amp; Drop</a> attributes<span id="result_box0" class="" lang="en"><span class="hps"> 
+are NOT used.</span></span></p>
 
   
 <p><a href="../attrib/iup_size.html">SIZE</a>:

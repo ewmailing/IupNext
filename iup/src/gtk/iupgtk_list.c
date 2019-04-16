@@ -925,6 +925,20 @@ static int gtkListSetImageAttrib(Ihandle* ih, int id, const char* value)
   return 0;
 }
 
+static char* gtkListGetImageNativeHandleAttribId(Ihandle* ih, int id)
+{
+  GdkPixbuf* pixImage;
+  GtkTreeModel* model = gtkListGetModel(ih);
+  GtkTreeIter iter;
+
+  if (!gtk_tree_model_iter_nth_child(model, &iter, NULL, id - 1))
+    return NULL;
+
+  gtk_tree_model_get(model, &iter, IUPGTK_LIST_IMAGE, &pixImage, -1);
+
+  return (char*)pixImage;
+}
+
 void* iupdrvListGetImageHandle(Ihandle* ih, int id)
 {
   GdkPixbuf* pixImage;
@@ -944,7 +958,7 @@ int iupdrvListSetImageHandle(Ihandle* ih, int id, void* hImage)
   GtkTreeModel* model = gtkListGetModel(ih);
   GtkTreeIter iter;
 
-  gtk_tree_model_iter_nth_child(model, &iter, NULL, id-1);
+  gtk_tree_model_iter_nth_child(model, &iter, NULL, id);
   gtk_list_store_set(GTK_LIST_STORE(model), &iter, IUPGTK_LIST_IMAGE, (GdkPixbuf*)hImage, -1);
 
   return 0;
@@ -1734,6 +1748,7 @@ void iupdrvListInitClass(Iclass* ic)
   iupClassRegisterAttribute(ic, "SCROLLTOPOS", NULL, gtkListSetScrollToPosAttrib, NULL, NULL, IUPAF_WRITEONLY|IUPAF_NO_INHERIT);
 
   iupClassRegisterAttributeId(ic, "IMAGE", NULL, gtkListSetImageAttrib, IUPAF_IHANDLENAME|IUPAF_WRITEONLY|IUPAF_NO_INHERIT);
+  iupClassRegisterAttributeId(ic, "IMAGENATIVEHANDLE", gtkListGetImageNativeHandleAttribId, NULL, IUPAF_NO_STRING | IUPAF_READONLY | IUPAF_NO_INHERIT);
 
   /* Not Supported */
   iupClassRegisterAttribute(ic, "VISIBLEITEMS", NULL, NULL, IUPAF_SAMEASSYSTEM, "5", IUPAF_NOT_SUPPORTED);

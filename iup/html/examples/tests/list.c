@@ -265,13 +265,14 @@ static void set_callbacks(Ihandle* list)
 
 void ListTest(void)
 {
-  Ihandle *dlg, *list1, *list2, *list3, *list4, *text, *btok, *btcancel,
+  Ihandle *dlg, *list1, *list2, *list3, *list4, *list5, *text, *btok, *btcancel,
           *box, *lists, *buttons1, *buttons2, *buttons3, *label;
 
   list1 = IupList(NULL);
   list2 = IupList(NULL);
   list3 = IupList(NULL);
   list4 = IupList(NULL);                              
+  list5 = IupList(NULL);
 
   IupSetAttributes(list1, "1=\"US$ 1000\", 2=\"US$ 2000\", 3=\"US$ 300.000.000\", 4=\"US$ 4000\","
                           "EDITBOX=YES, DROPDOWN=YES, TIP=Edit+Drop, VALUE=\"Edit Here\", NAME=list1");
@@ -279,10 +280,10 @@ void ListTest(void)
                           "DROPDOWN=YES, NAME=list2, TIP=Drop, XXX_VALUE=2, XXX_SORT=YES, XXX_BGCOLOR=\"192 64 192\"");
   IupSetAttributes(list3, "1=\"Char A\", 2=\"Char B\", 3=\"Char CCCCC\", 4=\"Char D\", 5=\"Char E\", 6=\"Char F\","
                           "EDITBOX=YES, NAME=list3, TIP=Edit+List, VALUE=\"Edit Here\"");
-//  IupSetAttributes(list4, "1=\"Number 1\", 2=\"Number 2\", 3=\"Number 3\", 4=\"Number 4\", 5=\"Number 5\", 6=\"Number 6\", 7=\"Number 7\","
-//                          "MULTIPLE=YES, NAME=list4, TIP=List, VALUE=+--++--");
-  IupSetAttributes(list4, "1=\"Number 3\", 2=\"Number 4\", 3=\"Number 2\", 4=\"Number 1\", 5=\"Number 6\", 6=\"Number 5\", 7=\"Number 7\","
-                          "MULTIPLE=YES, NAME=list4, TIP=List, XXX_SORT=YES, VALUE=+--++--, XXX_CANFOCUS=NO");
+  IupSetAttributes(list4, "1=\"Number 1\", 2=\"Number 2 Long Long\", 3=\"Number 3\", 4=\"Number 4\", 5=\"Number 5\", 6=\"Number 6\", 7=\"Number 7\","
+                          "NAME=list4, TIP=List");
+  IupSetAttributes(list5, "1=\"Number 3\", 2=\"Number 4\", 3=\"Number 2\", 4=\"Number 1\", 5=\"Number 6\", 6=\"Number 5\", 7=\"Number 7\","
+                          "MULTIPLE=YES, NAME=list5, TIP=List, XXX_SORT=YES, VALUE=+--++--, XXX_CANFOCUS=NO");
 
   //IupSetAttributes(list1, "5=\"US$ 1000\", 6=\"US$ 2000\", 7=\"US$ 300.000.000\", 8=\"US$ 4000\"");
   //IupSetAttributes(list1, "9=\"US$ 1000\", 10=\"US$ 2000\", 11=\"US$ 300.000.000\", 12=\"US$ 4000\"");
@@ -294,17 +295,27 @@ void ListTest(void)
   set_callbacks(list2);
   set_callbacks(list3);
   set_callbacks(list4);
+  set_callbacks(list5);
 
   //IupSetAttributes(list2, "6=\"R$ 1000\", 7=\"R$ 2000\", 8=\"R$ 123456789\", 9=\"R$ 4000\", 10=\"R$ 5000\",");
   //IupSetAttributes(list2, "11=\"R$ 1000\", 12=\"R$ 2000\", 13=\"R$ 123456789\", 14=\"R$ 4000\", 15=\"R$ 5000\",");
   //IupSetAttributes(list2, "16=\"R$ 1000\", 17=\"R$ 2000\", 18=\"R$ 123456789\", 19=\"R$ 4000\", 20=\"R$ 5000\",");
   
-  //IupSetCallback(list4, "MULTISELECT_CB", (Icallback)multilist_cb);
+  //IupSetCallback(list5, "MULTISELECT_CB", (Icallback)multilist_cb);
 
 //  IupSetAttribute(list1, "READONLY", "YES");
 //  IupSetAttribute(list3, "READONLY", "YES");
 //  IupSetAttribute(list1, "PADDING", "10x10");
 //  IupSetAttribute(list3, "PADDING", "10x10");
+
+  IupSetAttribute(list4, "SHOWDRAGDROP", "Yes");
+  //  IupSetAttribute(list4, "DRAGDROPLIST", "Yes");
+  //  IupSetAttribute(list5, "DRAGDROPLIST", "Yes");
+//  IupSetAttribute(list1, "DRAGSOURCE", "YES");
+  //IupSetAttribute(list1, "DRAGSOURCEMOVE", "YES");
+//  IupSetAttribute(list1, "DRAGTYPES", "ITEMLIST");
+//  IupSetAttribute(list2, "DROPTARGET", "YES");
+//  IupSetAttribute(list2, "DROPTYPES", "ITEMLIST");
 
 //  IupSetAttribute(list3, "SPACING", "10");
 //  IupSetAttribute(list4, "SPACING", "10");
@@ -313,6 +324,7 @@ void ListTest(void)
   printf("COUNT(list2)=%s\n", IupGetAttribute(list2, "COUNT"));
   printf("COUNT(list3)=%s\n", IupGetAttribute(list3, "COUNT"));
   printf("COUNT(list4)=%s\n", IupGetAttribute(list4, "COUNT"));
+  printf("COUNT(list5)=%s\n", IupGetAttribute(list5, "COUNT"));
 
   lists = IupHbox(
     IupVbox(
@@ -320,7 +332,8 @@ void ListTest(void)
       IupSetAttributes(IupFrame(IupVbox(list2, NULL)), "TITLE=DROPDOWN"),
       NULL), 
     IupSetAttributes(IupFrame(IupVbox(list3, NULL)), "TITLE=EDITBOX"),
-    IupSetAttributes(IupFrame(IupVbox(list4, NULL)), "TITLE=MULTIPLE"),
+    IupSetAttributes(IupFrame(IupVbox(list4, NULL)), "TITLE=SINGLE"),
+    IupSetAttributes(IupFrame(IupVbox(list5, NULL)), "TITLE=MULTIPLE"),
     IupVbox(
       btok = IupSetCallbacks(IupButton("Default Enter", NULL), "ACTION", btok_cb, NULL),
       btcancel = IupSetCallbacks(IupButton("Default Esc", NULL), "ACTION", btcancel_cb, NULL),

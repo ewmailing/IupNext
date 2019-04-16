@@ -249,9 +249,9 @@ void FlatListTest(void)
   list1 = IupFlatList();
   list2 = IupFlatList();
 
-  IupSetAttributes(list1, "1=\"Number 1\", 2=\"Number 2\", 3=\"Number 3 Very Long\", 4=\"Number 4\", 5=\"Number 5\", 6=\"Number 6\", 7=\"Number 7\","
+  IupSetAttributes(list1, "1=\"Number 1\", 2=\"Number 2\", 3=\"Number 3 Very Long\", 4=\"Number 4\", 5=\"Number 5\", 6=\"Number 6\", 7=\"Number 7\", 8=\"Number 8\", 9=\"Number 9\","
                           "NAME=list1, TIP=FlatList, VALUE=+--++--");
-  IupSetAttributes(list2, "1=\"Number 1\", 2=\"Number 2\", 3=\"Number 3\", 4=\"Number 4\", 5=\"Number 5\", 6=\"Number 6 Long Long Long\", 7=\"Number 7\", 11=\"Number 11\","
+  IupSetAttributes(list2, "1=\"Number 1\", 2=\"Number 2\", 3=\"Number 3\", 4=\"Number 4\", 5=\"Number 5\", 6=\"Number 6 Long Long Long\", 7=\"Number 7\", 9=\"Number 9\","
                           "MULTIPLE=YES, NAME=list2, TIP=FlatList, VALUE=+--++--, XXX_CANFOCUS=NO");
 
   IupSetAttributeHandle(list1, "IMAGE3", image1);
@@ -276,6 +276,15 @@ void FlatListTest(void)
   
   IupSetCallback(list2, "MULTISELECT_CB", (Icallback)multilist_cb);
 
+//  IupSetAttribute(list1, "SHOWDRAGDROP", "Yes");
+  IupSetAttribute(list1, "DRAGDROPLIST", "Yes");
+  IupSetAttribute(list2, "DRAGDROPLIST", "Yes");
+  IupSetAttribute(list1, "DRAGSOURCE", "YES");
+  //IupSetAttribute(list1, "DRAGSOURCEMOVE", "YES");
+  IupSetAttribute(list1, "DRAGTYPES", "ITEMLIST");
+  IupSetAttribute(list2, "DROPTARGET", "YES");
+  IupSetAttribute(list2, "DROPTYPES", "ITEMLIST");
+
 //  IupSetAttribute(list1, "PADDING", "10x10");
   IupSetAttribute(list2, "PADDING", "10x10");
 
@@ -285,8 +294,8 @@ void FlatListTest(void)
 
 //  IupSetAttribute(list, "VISIBLECOLUMNS", "7");
 //  IupSetAttribute(list, "VISIBLELINES", "4");
-  IupSetAttribute(list1, "VISIBLECOLUMNS", "3");
-  IupSetAttribute(list2, "VISIBLECOLUMNS", "3");
+//  IupSetAttribute(list1, "VISIBLECOLUMNS", "3");
+//  IupSetAttribute(list2, "VISIBLECOLUMNS", "3");
 //  IupSetAttribute(list1, "VISIBLELINES", "0");
 //  IupSetAttribute(list2, "VISIBLELINES", "0");
 
