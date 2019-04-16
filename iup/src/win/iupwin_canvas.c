@@ -219,6 +219,9 @@ static int winCanvasSetPosXAttrib(Ihandle *ih, const char *value)
     xmax = iupAttribGetDouble(ih, "XMAX");
     dx = iupAttribGetDouble(ih, "DX");
 
+    if (dx >= xmax - xmin)
+      return 0;
+
     if (posx < xmin) posx = xmin;
     if (posx >(xmax - dx)) posx = xmax - dx;
     ih->data->posx = posx;
@@ -245,6 +248,9 @@ static int winCanvasSetPosYAttrib(Ihandle *ih, const char *value)
     ymin = iupAttribGetDouble(ih, "YMIN");
     ymax = iupAttribGetDouble(ih, "YMAX");
     dy = iupAttribGetDouble(ih, "DY");
+
+    if (dy >= ymax - ymin)
+      return 0;
 
     if (posy < ymin) posy = ymin;
     if (posy > (ymax - dy)) posy = ymax - dy;
