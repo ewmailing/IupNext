@@ -21,6 +21,9 @@
   .auto-style1 {
 	  font-size: large;
   }
+  .auto-style2 {
+	border-width: 0;
+}
   </style>
 </head>
 
@@ -211,6 +214,13 @@ padding area. Default value: &quot;2x2&quot;.</p>
 the item at the given id. id starts at 1. If not defined FGCOLOR is used.</p>
 <p><strong>ITEMBGCOLOR</strong><em><strong>id</strong></em>: background color of 
 the item at the given id. id starts at 1. If not defined BGCOLOR is used.</p>
+<p><strong>ITEMFONT</strong><em><strong>id</strong></em>: text font of the tab. 
+If not defined FONT is 
+used.</p>
+<p><strong>ITEMFONTSTYLE</strong><em><strong>id</strong></em>: text font style. When changed will actually 
+set ITEMFONTid. </p>
+<p><strong>ITEMFONTSIZE</strong><em><strong>id</strong></em>: text font size. When changed will actually set 
+ITEMFONTid. </p>
 <p><strong>ICONSPACING </strong>(<font SIZE="3">non inheritable</font>): spacing between the 
 image and the text. Default: &quot;2&quot;.</p>
 <p><strong>HLCOLOR</strong>: color used to indicate a selected state. 
@@ -440,12 +450,14 @@ edited.</p>
 
 
 <p>When the list has focus use the arrow keys to move focus from one item to 
-another. </p>
+another.</p>
 <p> <strong>Clicking and dragging a item</strong>: if SHOWDRAGDROP=Yes starts a 
 drag. When mouse is released, the DRAGDROP_CB callback is called. If the 
 callback does not exist or if it returns IUP_CONTINUE then the item is moved to 
 the new position. If Ctrl is pressed then the node is copied instead of moved. 
 Drag is performed with the left mouse button. </p>
+<p> All list items occupy the same vertical size, which is the largest height 
+computed from the combination of text and image for each item individually.</p>
 
 
 <h3>Utility Functions </h3>
@@ -474,13 +486,13 @@ concatenate the attribute name with the id.</p>
   
 <center>
   
-<table style="border-collapse: collapse;" id="AutoNumber1" border="0" bordercolor="#111111" cellpadding="5" cellspacing="0">
+<table style="border-collapse: collapse;" border="0" cellpadding="5" cellspacing="0">
 
     <tbody>
 
     <tr>
 
-      <td><img src="images/iupflatlist.png" border="0"></td>
+      <td class="auto-style2"><img src="images/iupflatlist.png" border="0"></td>
 
     </tr>
 

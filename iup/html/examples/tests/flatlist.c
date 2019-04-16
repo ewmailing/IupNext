@@ -299,6 +299,9 @@ void FlatListTest(void)
   IupSetAttribute(list2, "ITEMFGCOLOR5", "255 0 0");
   IupSetAttribute(list2, "ITEMFGCOLOR6", "255 0 0");
 
+  IupSetAttribute(list1, "ITEMFONTSTYLE3", "Bold");
+//  IupSetAttribute(list2, "ITEMFONT4", "Times, 24");
+
   printf("COUNT(list1)=%s\n", IupGetAttribute(list1, "COUNT"));
   printf("COUNT(list2)=%s\n", IupGetAttribute(list2, "COUNT"));
 
