@@ -249,12 +249,12 @@ height they will be cropped.</p>
 respective button.</p>
 <p><strong>EXTRAACTIVE</strong><em><strong>id</strong></em>: active state of the 
 button. Can be Yes or No. When not defined works as &quot;Yes&quot;.</p>
-<p><strong>EXTRABORDERWIDTH</strong>: width of the button border. Set this 
+<p><strong>EXTRABORDERWIDTH<em>id</em></strong>: width of the button border. Set this 
 attribute to at least 1 to enable the border. Default: 0 (since 3.27)</p>
-<p><strong>EXTRASHOWBORDER</strong>: always show the button border. If not 
+<p><strong>EXTRASHOWBORDER<em>id</em></strong>: always show the button border. If not 
 defined the border is shown when highlighted or pressed. Default: NO (since 
 3.27)</p>
-<p><strong>EXTRABORDERCOLOR</strong>: color of the border. Default: &quot;50 150 255&quot; 
+<p><strong>EXTRABORDERCOLOR<em>id</em></strong>: color of the border. Default: &quot;50 150 255&quot; 
 (since 3.27)</p>
 <p><strong>EXTRAFORECOLOR</strong><em><strong>id</strong></em>: text color of 
 the button title. When not defined TABSFORECOLOR 
@@ -281,6 +281,10 @@ EXTRAIMAGE<em>id</em> when in inactive
 state. If not defined EXTRAIMAGE<em>id</em> is used and its colors will be 
 replaced by a modified version creating the disabled effect.</p>
 <p><strong>EXTRATIP<em>id</em></strong>: TIP of the button.</p>
+<p><strong>EXTRATOGGLE<em>id</em></strong>: enabled the toggle behavior. Default: NO. 
+(since 3.27)</p>
+<p><b><strong>EXTRA</strong>VALUE<strong><em>id</em></strong></b>: Toggle's 
+state. Values can be &quot;ON&quot; or &quot;OFF&quot;. Default: &quot;OFF&quot;. (since 3.27)</p>
 <h4>Expand Button Attributes (<font SIZE="3">non inheritable</font>) (since 3.22)</h4>
 <p><strong>EXPANDBUTTON</strong>: uses the next free extra button to configure 
 an expand button. The button allows to dynamically expand and collapse the tabs 
