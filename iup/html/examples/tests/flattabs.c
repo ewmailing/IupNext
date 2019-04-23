@@ -454,6 +454,9 @@ static Ihandle* CreateTabs(int tab)
   IupSetAttribute(tabs, "EXTRATITLE2", "But2");
   IupSetAttribute(tabs, "EXTRATIP2", "Tip But2");
   IupSetAttribute(tabs, "EXTRATITLE3", "3");
+  IupSetAttribute(tabs, "EXTRABORDERWIDTH2", "1");
+  IupSetAttribute(tabs, "EXTRABORDERWIDTH3", "1");
+  IupSetAttribute(tabs, "EXTRASHOWBORDER3", "Yes");
   IupSetStrAttribute(tabs, "EXTRAIMAGE3", IupGetAttribute(tabs, "TABIMAGE1"));
 #endif
 

@@ -64,7 +64,7 @@
 <p>Check the <a href="migration_guide.html">Migration Guide</a> for a summary of 
 the important changes and how to proceed when migrating from version 2.x to 
 version 3.x.</p>
-<h3>SVN (11/Apr/2019)</h3>
+<h3>SVN (22/Apr/2019)</h3>
 
 <ul>
 
@@ -106,6 +106,9 @@ version 3.x.</p>
 	behaves as a IupList with DROPDOWN=NO and EDITBOX=NO, but with more control 
 	over its parameters.</li>
 	<li>
+	<span class="hist_new">New:</span> EXTRASHOWBORDER, EXTRABORDERCOLOR and 
+	EXTRABORDERWIDTH attributes for <strong>IupFlatTabs</strong>. </li>
+	<li>
 	<font SIZE="3">
 	<span class="hist_changed" style="color: rgb(0, 128, 0); font-weight: bold;">
 	<strong>Changed:</strong></span><span class="auto-style1"> the <strong>
@@ -115,6 +118,11 @@ version 3.x.</p>
 	attribute to Yes. To compensate the lost of antialiasing and alpha in GDI, 
 	we added a hack to use GDI+ for lines, polygons and arcs were antialiasing 
 	is more needed and does not affect less ordinary rectangular based drawings.</span></font></li>
+	<li>
+	<font SIZE="3">
+	<span class="hist_changed" style="color: rgb(0, 128, 0); font-weight: bold;">
+	<strong>Changed:</strong></span><span class="auto-style1"> default values 
+	for EXTRAPRESSCOLOR and EXTRAHIGHCOLOR in <strong>IupFlatTabs</strong>.</span></font></li>
 	<li>
 	<font SIZE="3"><span style="color: #008000">
 	<span
@@ -206,6 +214,11 @@ version 3.x.</p>
             style="color: #000000"><span class="hist_fixed">Fixed: </span> 
 	</span></span>invalid double click message after drop dialog close in
 	<strong>IupDropButton</strong>.</font></li>
+	<li>
+	<font SIZE="3"><span style="color: #008000">
+	<span
+            style="color: #000000"><span class="hist_fixed">Fixed: </span> 
+	</span></span>active button state for extra buttons in <strong>IupFlatTabs</strong>.</font></li>
 
 </ul>
 <h3><a href="http://sourceforge.net/projects/iup/files/3.26/">Version 3.26</a> (07/Jan/2019)</h3>

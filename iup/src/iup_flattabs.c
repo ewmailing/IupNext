@@ -869,13 +869,15 @@ static int iFlatTabsRedraw_CB(Ihandle* ih)
       char* extra_alignment = iupAttribGetId(ih, "EXTRAALIGNMENT", i);
       char* extra_forecolor = iupAttribGetId(ih, "EXTRAFORECOLOR", i);
       int extra_press = iupAttribGetInt(ih, "_IUPFTABS_EXTRAPRESS");
+      int draw_border = iupAttribGetBooleanId(ih, "EXTRASHOWBORDER", i);
+      int border_width = iupAttribGetIntId(ih, "EXTRABORDERWIDTH", i);
 
       extra_horiz_alignment = horiz_alignment; 
       extra_vert_alignment = vert_alignment;
       iFlatTabsGetAlignment(extra_alignment, &extra_horiz_alignment, &extra_vert_alignment);
 
       if (!active)
-        extra_active = active;
+        extra_active = 0;
       else
         extra_active = iFlatTabsGetExtraActive(ih, i);
 
@@ -907,22 +909,32 @@ static int iFlatTabsRedraw_CB(Ihandle* ih)
         ymax = extra_y + extra_h - vert_padding / 2;
       }
 
-
       if (extra_press == extra_id)
       {
         char* extra_presscolor = iupAttribGetId(ih, "EXTRAPRESSCOLOR", i);
         if (!extra_presscolor)
-          extra_presscolor = iupAttribGetStr(ih, "CLOSEPRESSCOLOR");
+          extra_presscolor = "150 200 235";
 
         iupFlatDrawBox(dc, xmin, xmax, ymin, ymax, extra_presscolor, NULL, 1);
+        draw_border = 1;
       }
       else if (tab_highlighted == extra_id)
       {
         char* extra_highcolor = iupAttribGetId(ih, "EXTRAHIGHCOLOR", i);
         if (!extra_highcolor)
-          extra_highcolor = iupAttribGetStr(ih, "CLOSEHIGHCOLOR");
+          extra_highcolor = "200 225 245";
 
         iupFlatDrawBox(dc, xmin, xmax, ymin, ymax, extra_highcolor, NULL, 1);
+        draw_border = 1;
+      }
+
+      if (draw_border && border_width != 0)
+      {
+        char* bordercolor = iupAttribGetId(ih, "EXTRABORDERCOLOR", i);
+        if (!bordercolor)
+          bordercolor = "50 150 255";
+
+        iupFlatDrawBorder(dc, xmin, xmax, ymin, ymax, border_width, bordercolor, tabs_bgcolor, extra_active);
       }
 
       extra_image = iupFlatGetImageNameId(ih, "EXTRAIMAGE", i, extra_image, extra_press == extra_id, tab_highlighted == extra_id, extra_active, &make_inactive);
@@ -1301,12 +1313,16 @@ static int iFlatTabsButton_CB(Ihandle* ih, int button, int pressed, int x, int y
     }
     else if (tab_found <= ITABS_EXTRABUTTON1)
     {
-      IFnii cb = (IFnii)IupGetCallback(ih, "EXTRABUTTON_CB");
-      if (cb)
-        cb(ih, ITABS_TABID2EXTRABUT(tab_found), 1);
+      int extra_active = iFlatTabsGetExtraActive(ih, tab_found);
+      if (extra_active)
+      {
+        IFnii cb = (IFnii)IupGetCallback(ih, "EXTRABUTTON_CB");
+        if (cb)
+          cb(ih, ITABS_TABID2EXTRABUT(tab_found), 1);
 
-      iupAttribSetInt(ih, "_IUPFTABS_EXTRAPRESS", tab_found);
-      iupdrvPostRedraw(ih);
+        iupAttribSetInt(ih, "_IUPFTABS_EXTRAPRESS", tab_found);
+        iupdrvPostRedraw(ih);
+      }
     }
   }
   else if (button == IUP_BUTTON1 && !pressed)
@@ -2408,6 +2424,9 @@ Iclass* iupFlatTabsNewClass(void)
   iupClassRegisterAttributeId(ic, "EXTRAIMAGEHIGHLIGHT", NULL, NULL, IUPAF_IHANDLENAME | IUPAF_NO_INHERIT);
   iupClassRegisterAttributeId(ic, "EXTRAIMAGEINACTIVE", NULL, (IattribSetIdFunc)iFlatTabsSetAttribPostRedraw, IUPAF_IHANDLENAME | IUPAF_NO_INHERIT);
   iupClassRegisterAttributeId(ic, "EXTRATIP", NULL, NULL, IUPAF_NO_INHERIT);
+  iupClassRegisterAttributeId(ic, "EXTRASHOWBORDER", NULL, NULL, IUPAF_NO_INHERIT);
+  iupClassRegisterAttributeId(ic, "EXTRABORDERCOLOR", NULL, NULL, IUPAF_NO_INHERIT);
+  iupClassRegisterAttributeId(ic, "EXTRABORDERWIDTH", NULL, NULL, IUPAF_NO_INHERIT);
 
   iupClassRegisterAttribute(ic, "EXPANDBUTTON", NULL, iFlatTabsSetExpandButtonAttrib, NULL, NULL, IUPAF_NOT_MAPPED | IUPAF_NO_INHERIT);
   iupClassRegisterAttribute(ic, "EXPANDBUTTONPOS", NULL, NULL, NULL, NULL, IUPAF_NO_INHERIT);
