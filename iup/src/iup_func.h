@@ -16,6 +16,7 @@ void iupFuncInit(void);
 void iupFuncFinish(void);
 
 char* iupGetCallbackName(Ihandle *ih, const char *name);
+int iupGetFunctions(char** names, int n);
 
 /* Other functions declared in <iup.h> and implemented here. 
 IupGetFunction

@@ -141,6 +141,7 @@ IupMessageDlg
 IupColorDlg   
 IupFontDlg    
 IupLayoutDialog
+IupGlobalsDialog
 IupElementPropertiesDialog
 IupSbox
 IupSpin

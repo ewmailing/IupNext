@@ -20,6 +20,7 @@
 #include "iup_assert.h"
 #include "iup_str.h"
 #include "iup_strmessage.h"
+#include "iup_attrib.h"
 
 
 static Itable *iglobal_table = NULL;
@@ -263,4 +264,30 @@ int iupGlobalIsPointer(const char* name)
   }
 
   return 0;
+}
+
+int iupGetGlobalAttributes(char** names, int n)
+{
+  int count = iupTableCount(iglobal_table);
+  char * name;
+  int i = 0;
+
+  if (n == 0 || n == -1)
+    return count;
+
+  name = iupTableFirst(iglobal_table);
+  while (name)
+  {
+    if (!iupATTRIB_ISINTERNAL(name))
+    {
+      names[i] = name;
+      i++;
+      if (i == n)
+        break;
+    }
+
+    name = iupTableNext(iglobal_table);
+  }
+
+  return i;
 }

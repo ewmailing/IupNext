@@ -20,6 +20,8 @@ int iupGlobalIsPointer(const char* name);
 int iupGlobalDefaultColorChanged(const char *name);    /* check if user changed */
 void iupGlobalSetDefaultColorAttrib(const char* name, int r, int g, int b);  /* internal change method */
 
+int iupGetGlobalAttributes(char** names, int n);
+
 /* Other functions declared in <iup.h> and implemented here. 
 IupSetGlobal
 IupStoreGlobal

@@ -333,6 +333,8 @@ Ihandle*  IupParamBoxv(Ihandle* *param_array);
 
 Ihandle* IupLayoutDialog(Ihandle* dialog);
 Ihandle* IupElementPropertiesDialog(Ihandle* elem);
+Ihandle* IupGlobalsDialog(void);
+
 
 
 #ifdef __cplusplus
