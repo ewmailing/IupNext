@@ -569,7 +569,7 @@ static int winCanvasMsgProc(Ihandle* ih, UINT msg, WPARAM wp, LPARAM lp, LRESULT
 
       if (msg == WM_LBUTTONDOWN && iupAttribGetBoolean(ih, "DRAGSOURCE"))
       {
-        if (!iupwinDragStart(ih))
+        if (!iupwinDragDetectStart(ih))
         {
           /* Did not started a drag, but it will process the WM_LBUTTONUP message internally, 
              so IUP will lose it. Then we must simulate a button up. */

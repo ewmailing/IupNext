@@ -48,7 +48,7 @@ HFONT iupwinGetHFont(const char* value);
 char* iupwinFindHFont(HFONT hFont);
 
 /* DnD */
-int iupwinDragStart(Ihandle* ih);
+int iupwinDragDetectStart(Ihandle* ih);
 void iupwinDropFiles(HDROP hDrop, Ihandle *ih);
 void iupwinDestroyDragDrop(Ihandle* ih);
 

@@ -903,32 +903,36 @@ static int winRegisterProcessDrag(Ihandle *ih)
     return -1;
 }
 
-int iupwinDragStart(Ihandle* ih)
+static int winDragStart(Ihandle* ih, int x, int y)
+{
+  IFnii cbDragBegin = (IFnii)IupGetCallback(ih, "DRAGBEGIN_CB");
+  if (cbDragBegin)
+  {
+    IFni cbDragEnd;
+    int remove;
+    iupdrvScreenToClient(ih, &x, &y);
+    if (cbDragBegin(ih, x, y) == IUP_IGNORE)
+      return 0;
+
+    remove = winRegisterProcessDrag(ih);
+
+    cbDragEnd = (IFni)IupGetCallback(ih, "DRAGEND_CB");
+    if (cbDragEnd)
+      cbDragEnd(ih, remove);
+
+    return 1;
+  }
+
+  return 0;
+}
+
+int iupwinDragDetectStart(Ihandle* ih)
 {
   POINT pt;
   GetCursorPos(&pt);
 
   if (DragDetect(ih->handle, pt))
-  {
-    IFnii cbDragBegin = (IFnii)IupGetCallback(ih, "DRAGBEGIN_CB");
-    if(cbDragBegin)
-    {
-      IFni cbDragEnd;
-      int remove;
-      int x = pt.x, y = pt.y;
-      iupdrvScreenToClient(ih, &x, &y);
-      if (cbDragBegin(ih, x, y) == IUP_IGNORE)
-        return 0;
-
-      remove = winRegisterProcessDrag(ih);
-
-      cbDragEnd = (IFni)IupGetCallback(ih, "DRAGEND_CB");
-      if(cbDragEnd)
-        cbDragEnd(ih, remove);
-
-      return 1;
-    }
-  }
+    return winDragStart(ih, pt.x, pt.y);
 
   return 0;
 }
@@ -1060,6 +1064,16 @@ static int winSetDragSourceAttrib(Ihandle* ih, const char* value)
   return 1;
 }
 
+static int winSetDragStartAttrib(Ihandle* ih, const char* value)
+{
+  int x, y;
+
+  if (iupStrToIntInt(value, &x, &y, ',') == 2)
+    winDragStart(ih, x, y);
+
+  return 0;
+}
+
 
 /******************************************************************************************/
 
@@ -1153,6 +1167,7 @@ void iupdrvRegisterDragDropAttrib(Iclass* ic)
   iupClassRegisterAttribute(ic, "DRAGSOURCEMOVE", NULL, NULL, NULL, NULL, IUPAF_NO_INHERIT);
   iupClassRegisterAttribute(ic, "DRAGCURSOR", NULL, NULL, NULL, NULL, IUPAF_NO_INHERIT);
   iupClassRegisterAttribute(ic, "DRAGCURSORCOPY", NULL, NULL, NULL, NULL, IUPAF_NO_INHERIT);
+  iupClassRegisterAttribute(ic, "DRAGSTART", NULL, winSetDragStartAttrib, NULL, NULL, IUPAF_NO_INHERIT);  /* Windows Only */
 
   iupClassRegisterAttribute(ic, "DRAGDROP", NULL, winSetDropFilesTargetAttrib, NULL, NULL, IUPAF_NO_INHERIT);
   iupClassRegisterAttribute(ic, "DROPFILESTARGET", NULL, winSetDropFilesTargetAttrib, NULL, NULL, IUPAF_NO_INHERIT);

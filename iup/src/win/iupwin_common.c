@@ -218,7 +218,7 @@ int iupwinBaseMsgProc(Ihandle* ih, UINT msg, WPARAM wp, LPARAM lp, LRESULT *resu
   case WM_LBUTTONDOWN:
     if(iupAttribGetBoolean(ih, "DRAGSOURCE"))
     {
-      if (iupwinDragStart(ih))
+      if (iupwinDragDetectStart(ih))
       {
         *result = 0;
         return 1;  /* abort default processing */
