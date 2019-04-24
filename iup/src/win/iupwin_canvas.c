@@ -568,7 +568,18 @@ static int winCanvasMsgProc(Ihandle* ih, UINT msg, WPARAM wp, LPARAM lp, LRESULT
       }
 
       if (msg == WM_LBUTTONDOWN && iupAttribGetBoolean(ih, "DRAGSOURCE"))
-        iupwinDragStart(ih);
+      {
+        if (!iupwinDragStart(ih))
+        {
+          /* Did not started a drag, but it will process the WM_LBUTTONUP message internally, 
+             so IUP will lose it. Then we must simulate a button up. */
+          if (iupwinButtonUp(ih, WM_LBUTTONUP, wp, lp))
+          {
+            /* refresh the cursor, it could have been changed in BUTTON_CB */
+            iupwinRefreshCursor(ih);
+          }
+        }
+      }
 
       if (msg==WM_XBUTTONDOWN || msg==WM_XBUTTONDBLCLK)
         *result = 1;
