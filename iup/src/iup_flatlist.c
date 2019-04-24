@@ -50,7 +50,7 @@ struct _IcontrolData
 
   /* aux */
   int line_height, line_width;
-  int dragging_pos;
+  int dragover_pos, dragged_pos;
   int has_focus, focus_pos;
 
   /* attributes */
@@ -226,6 +226,9 @@ static void iFlatListUpdateScrollBar(Ihandle *ih)
   view_height = max_h * count;
   view_height += (count - 1) * ih->data->spacing;
 
+  if (ih->data->show_dragdrop || iupAttribGetBoolean(ih, "DRAGDROPLIST"))
+    view_height += ih->data->line_height/2; /* additional space for drop area */
+
   sb = iFlatListGetScrollbar(ih);
   if (sb)
   {
@@ -338,14 +341,14 @@ static int iFlatListRedraw_CB(Ihandle* ih)
                     ih->data->img_position, ih->data->icon_spacing, ih->data->horiz_alignment, ih->data->vert_alignment, ih->data->horiz_padding, ih->data->vert_padding,
                     items[i].image, make_inactive, items[i].name, text_flags, 0, fgcolor, bgcolor, active);
 
-    if (items[i].selected || ih->data->dragging_pos == i + 1)
+    if (items[i].selected || ih->data->dragover_pos == i + 1)
     {
       unsigned char red, green, blue;
       char* hlcolor = iupAttribGetStr(ih, "HLCOLOR");
       unsigned char a = (unsigned char)iupAttribGetInt(ih, "HLCOLORALPHA");
       long selcolor;
 
-      if (ih->data->dragging_pos == i + 1)
+      if (ih->data->dragover_pos == i + 1)
         a = (2*a)/3;
 
       iupStrToRGB(hlcolor, &red, &green, &blue);
@@ -460,7 +463,6 @@ static void iFlatListSelectItem(Ihandle* ih, int pos, int ctrlPressed, int shftP
 static int iFlatListButton_CB(Ihandle* ih, int button, int pressed, int x, int y, char* status)
 {
   IFniiiis button_cb = (IFniiiis)IupGetCallback(ih, "FLAT_BUTTON_CB");
-  int pos_dragged = iupAttribGetInt(ih, "_IUPFLATLIST_ITEMDRAGGED");
   int pos = iFlatListConvertXYToPos(ih, x, y);
 
   if (button_cb)
@@ -469,7 +471,7 @@ static int iFlatListButton_CB(Ihandle* ih, int button, int pressed, int x, int y
       return IUP_DEFAULT;
   }
 
-  if (button == IUP_BUTTON1 && !pressed && pos_dragged > 0)
+  if (button == IUP_BUTTON1 && !pressed && ih->data->dragged_pos > 0)
   {
     iFlatListItem* items = (iFlatListItem*)iupArrayGetData(ih->data->items_array);
 
@@ -484,11 +486,11 @@ static int iFlatListButton_CB(Ihandle* ih, int button, int pressed, int x, int y
       }
     }
 
-    iFlatListCopyItem(ih, pos_dragged, pos, 0);
+    iFlatListCopyItem(ih, ih->data->dragged_pos, pos, 0);
     iFlatListUnSelectedAll(ih);
     items[pos - 1].selected = 1;
-    ih->data->dragging_pos = 0;
-    iupAttribSetInt(ih, "_IUPFLATLIST_ITEMDRAGGED", 0);
+    ih->data->dragover_pos = 0;
+    ih->data->dragged_pos = 0;
 
     IupUpdate(ih);
     return IUP_DEFAULT;
@@ -498,7 +500,10 @@ static int iFlatListButton_CB(Ihandle* ih, int button, int pressed, int x, int y
     return IUP_DEFAULT;
 
   if (button == IUP_BUTTON1 && pressed)
+  {
     iFlatListSelectItem(ih, pos, iup_iscontrol(status), iup_isshift(status));
+    ih->data->dragged_pos = pos;
+  }
 
   if (iup_isdouble(status))
   {
@@ -518,7 +523,7 @@ static int iFlatListButton_CB(Ihandle* ih, int button, int pressed, int x, int y
 static int iFlatListMotion_CB(Ihandle* ih, int x, int y, char* status)
 {
   IFniis motion_cb = (IFniis)IupGetCallback(ih, "FLAT_MOTION_CB");
-  int pos, pos_dragged;
+  int pos;
 
   iupFlatScrollBarMotionUpdate(ih, x, y);
 
@@ -532,13 +537,8 @@ static int iFlatListMotion_CB(Ihandle* ih, int x, int y, char* status)
     return IUP_IGNORE;
 
   pos = iFlatListConvertXYToPos(ih, x, y);
-
   if (pos == -1)
     return IUP_DEFAULT;
-
-  pos_dragged = iupAttribGetInt(ih, "_IUPFLATLIST_ITEMDRAGGED");
-  if (pos_dragged == 0)
-    iupAttribSetInt(ih, "_IUPFLATLIST_ITEMDRAGGED", pos);
 
   if (y < 0 || y > ih->currentheight)
   {
@@ -547,7 +547,8 @@ static int iFlatListMotion_CB(Ihandle* ih, int x, int y, char* status)
     IupSetInt(ih, "POSY", posy);
   }
 
-  ih->data->dragging_pos = pos;
+  if (ih->data->dragged_pos > 0)
+    ih->data->dragover_pos = pos;
 
   IupUpdate(ih);
 
@@ -1080,7 +1081,11 @@ static int iFlatListDropData_CB(Ihandle *ih, char* type, void* data, int len, in
     }
   }
 
-  IupUpdate(ih);
+  if (ih->handle)
+  {
+    iFlatListUpdateScrollBar(ih);
+    IupUpdate(ih);
+  }
 
   (void)type;
   return IUP_DEFAULT;

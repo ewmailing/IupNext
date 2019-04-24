@@ -276,14 +276,15 @@ void FlatListTest(void)
   
   IupSetCallback(list2, "MULTISELECT_CB", (Icallback)multilist_cb);
 
-//  IupSetAttribute(list1, "SHOWDRAGDROP", "Yes");
-  IupSetAttribute(list1, "DRAGDROPLIST", "Yes");
-  IupSetAttribute(list2, "DRAGDROPLIST", "Yes");
-  IupSetAttribute(list1, "DRAGSOURCE", "YES");
+  IupSetAttribute(list1, "SHOWDRAGDROP", "Yes");
+
+//  IupSetAttribute(list1, "DRAGDROPLIST", "Yes");
+//  IupSetAttribute(list2, "DRAGDROPLIST", "Yes");
+//  IupSetAttribute(list1, "DRAGSOURCE", "YES");
   //IupSetAttribute(list1, "DRAGSOURCEMOVE", "YES");
-  IupSetAttribute(list1, "DRAGTYPES", "ITEMLIST");
-  IupSetAttribute(list2, "DROPTARGET", "YES");
-  IupSetAttribute(list2, "DROPTYPES", "ITEMLIST");
+//  IupSetAttribute(list1, "DRAGTYPES", "ITEMLIST");
+//  IupSetAttribute(list2, "DROPTARGET", "YES");
+//  IupSetAttribute(list2, "DROPTYPES", "ITEMLIST");
 
 //  IupSetAttribute(list1, "PADDING", "10x10");
   IupSetAttribute(list2, "PADDING", "10x10");
