@@ -1104,6 +1104,10 @@ wb_usr.tree =
               name= {nl= "IupElementPropertiesDialog"},
               link= "dlg/iupelementpropdialog.html"
             },
+            {
+              name= {nl= "IupGlobalsDialog"},
+              link= "dlg/iupglobalsdialog.html"
+            },
           }
         }
       }
