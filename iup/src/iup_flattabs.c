@@ -419,7 +419,7 @@ static int iFlatTabsGetExtraHeight(Ihandle* ih, int extra_buttons, int img_posit
 
 static int iFlatTabsGetExtraActive(Ihandle* ih, int id)
 {
-  if (!iupAttribGetId(ih, "EXTRAACTIVE", id))
+  if (iupAttribGetId(ih, "EXTRAACTIVE", id) == NULL) /* not defined */
     return 1; /* default is yes */
 
   return iupAttribGetBooleanId(ih, "EXTRAACTIVE", id);
@@ -911,23 +911,26 @@ static int iFlatTabsRedraw_CB(Ihandle* ih)
         ymax = extra_y + extra_h - vert_padding / 2;
       }
 
-      if (extra_press == extra_id || (selected && tab_highlighted != extra_id))
+      if (extra_active)
       {
-        char* extra_presscolor = iupAttribGetId(ih, "EXTRAPRESSCOLOR", i);
-        if (!extra_presscolor)
-          extra_presscolor = "150 200 235";
+        if (extra_press == extra_id || (selected && tab_highlighted != extra_id))
+        {
+          char* extra_presscolor = iupAttribGetId(ih, "EXTRAPRESSCOLOR", i);
+          if (!extra_presscolor)
+            extra_presscolor = "150 200 235";
 
-        iupFlatDrawBox(dc, xmin, xmax, ymin, ymax, extra_presscolor, NULL, 1);
-        draw_border = 1;
-      }
-      else if (tab_highlighted == extra_id)
-      {
-        char* extra_highcolor = iupAttribGetId(ih, "EXTRAHIGHCOLOR", i);
-        if (!extra_highcolor)
-          extra_highcolor = "200 225 245";
+          iupFlatDrawBox(dc, xmin, xmax, ymin, ymax, extra_presscolor, NULL, 1);
+          draw_border = 1;
+        }
+        else if (tab_highlighted == extra_id)
+        {
+          char* extra_highcolor = iupAttribGetId(ih, "EXTRAHIGHCOLOR", i);
+          if (!extra_highcolor)
+            extra_highcolor = "200 225 245";
 
-        iupFlatDrawBox(dc, xmin, xmax, ymin, ymax, extra_highcolor, NULL, 1);
-        draw_border = 1;
+          iupFlatDrawBox(dc, xmin, xmax, ymin, ymax, extra_highcolor, NULL, 1);
+          draw_border = 1;
+        }
       }
 
       if (draw_border && border_width != 0)
@@ -1319,7 +1322,7 @@ static int iFlatTabsButton_CB(Ihandle* ih, int button, int pressed, int x, int y
     }
     else if (tab_found <= ITABS_EXTRABUTTON1)
     {
-      int extra_active = iFlatTabsGetExtraActive(ih, tab_found);
+      int extra_active = iFlatTabsGetExtraActive(ih, ITABS_TABID2EXTRABUT(tab_found));
       if (extra_active)
       {
         IFnii cb = (IFnii)IupGetCallback(ih, "EXTRABUTTON_CB");
@@ -1382,7 +1385,7 @@ static int iFlatTabsButton_CB(Ihandle* ih, int button, int pressed, int x, int y
 
       iupAttribSetInt(ih, "_IUPFTABS_EXTRAPRESS", ITABS_NONE);
 
-      if (tab_found <= ITABS_EXTRABUTTON1 && iFlatTabsGetExtraActive(ih, tab_found) && extra_press == tab_found)
+      if (tab_found <= ITABS_EXTRABUTTON1 && iFlatTabsGetExtraActive(ih, ITABS_TABID2EXTRABUT(tab_found)) && extra_press == tab_found)
       {
         IFnii cb;
 
@@ -1491,8 +1494,9 @@ static int iFlatTabsMotion_CB(Ihandle *ih, int x, int y, char *status)
     }
     else
     {
+      int extra_active = iFlatTabsGetExtraActive(ih, ITABS_TABID2EXTRABUT(tab_found));
       char* extra_tip = iupAttribGetId(ih, "EXTRATIP", ITABS_TABID2EXTRABUT(tab_found));
-      if (extra_tip)
+      if (extra_tip && extra_active)
         iFlatTabsSetTip(ih, extra_tip);
       else
         iFlatTabsResetTip(ih);

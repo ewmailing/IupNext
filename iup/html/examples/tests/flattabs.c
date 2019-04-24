@@ -453,6 +453,8 @@ static Ihandle* CreateTabs(int tab)
   IupSetAttribute(tabs, "EXTRATITLE1", "Button1");
   IupSetAttribute(tabs, "EXTRATITLE2", "But2");
   IupSetAttribute(tabs, "EXTRATIP2", "Tip But2");
+  IupSetAttribute(tabs, "EXTRATIP3", "Tip But3");
+//  IupSetAttribute(tabs, "EXTRAACTIVE3", "NO");
   IupSetAttribute(tabs, "EXTRATITLE3", "3");
   IupSetAttribute(tabs, "EXTRATITLE4", "Toggle");
   IupSetAttribute(tabs, "EXTRATOGGLE4", "Yes");
