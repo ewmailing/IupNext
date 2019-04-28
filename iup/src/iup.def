@@ -376,7 +376,6 @@ iupStrNextLine
 iupStrNextValue
 IupMessageError
 IupMessageAlarm
-IupGetLanguageString
 iupStrLower
 iupStrUpper
 iupStrHasSpace
