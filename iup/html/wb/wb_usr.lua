@@ -2104,6 +2104,10 @@ wb_usr.tree =
               link= "../doxygen/group__drvfont.html"
             },
             {
+              name= {nl= "Driver Draw Interface"},
+              link= "../doxygen/group__drvdraw.html"
+            },
+            {
               name= {nl= "Driver Information Interface"},
               link= "../doxygen/group__drvinfo.html"
             }
@@ -2130,10 +2134,6 @@ wb_usr.tree =
             {
               name= {nl= "Simple Array"},
               link= "../doxygen/group__iarray.html"
-            },
-            {
-              name= {nl= "Simple Draw"},
-              link= "../doxygen/group__draw.html"
             },
             {
               name= {nl= "String Utilities"},
