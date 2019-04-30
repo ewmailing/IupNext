@@ -45,3 +45,10 @@ endif
 LIBNAME := $(LIBNAME)$(LUASFX)
 
 SRC	= ctrl/iuplua_filedlg.c
+
+ifneq ($(findstring mingw, $(TEC_UNAME)), )
+  $(error No support for NewFileDlg in MingW)
+endif
+ifneq ($(findstring dllw, $(TEC_UNAME)), )
+  $(error No support for NewFileDlg in MingW)
+endif
