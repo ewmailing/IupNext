@@ -582,15 +582,15 @@ imImage* IupImageToImImage(Ihandle* iup_image)
     int color_mode = IM_RGB;
     int depth = 3;
 
-    if (bpp == 32)
-    {
-      color_mode |= IM_ALPHA;
-      depth++;
-    }
-
     image = imImageCreate(width, height, color_mode, IM_BYTE);
     if (!image)
       return NULL;
+
+    if (bpp == 32)
+    {
+      imImageAddAlpha(image);
+      depth++;
+    }
 
     /* imImage is always unpacked, IUP is always packed */
     imConvertPacking(image_data, image->data[0], width, height, depth, depth, IM_BYTE, 1);
