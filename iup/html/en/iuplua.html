@@ -146,6 +146,21 @@ directly as strings:</p>
         In C, simply include the .LH files:</p>
     <pre>#include "myfile.lh"</pre>
 
+<h3>LuaJIT</h3>
+<p>LuaJIT&nbsp;is a&nbsp;Just-In-Time Compiler&nbsp;for Lua that can be found at
+<a href="http://luajit.org/">http://luajit.org/</a>. IUP can be used with LuaJIT 
+but there are a few remarks.</p>
+<p>First, LuaJIT&nbsp;is for Lua 5.1 ONLY (as of May 2019), but can be built for 32 
+or 64 bits.</p>
+<p>In Windows, It builds a modified &quot;lua51.dll&quot;, so the Lua DLL in IUP Tools 
+packages must be ignored.&nbsp;But in IUP we use a &quot;lua5.1.dll&quot;, notice the 
+difference in the name. To use it with IUP there two options, rebuild&nbsp;LuaJIT&nbsp;using 
+the same suffix, or use a DLL proxy that will map calls for &quot;lua5.1.dll&quot; into 
+&quot;lua51.dll&quot;. The DLL proxy can be found here&nbsp;<a href="../download/lua5.1_proxy.zip">lua5.1_proxy.zip</a> 
+(notice that the IUP Tools packages includes a proxy in the other way, mapping 
+&quot;lua51.dll&quot; calls into &quot;lua5.1.dll&quot;, this is NOT the case).</p>
+<p>In Linux this can be easily fixed with links in the file system. </p>
+
 <h3>More Information</h3>
 <p>Steve Donovan wrote a very nice &quot;<a href="basic/index.html">A Basic Guide to 
 using IupLua</a>&quot; that was included in
