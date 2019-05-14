@@ -482,7 +482,7 @@ imImage* IupGetNativeHandleImage(void* handle)
   return NULL;
 }
 
-static void iFlipData(unsigned char* data, int width, int height, int depth)
+static void iFlipDataPacked(unsigned char* data, int width, int height, int depth)
 {
   int line_size = depth*width;
   unsigned char* temp_line = (unsigned char*)malloc(line_size);
@@ -523,10 +523,10 @@ Ihandle* IupImageFromImImage(const imImage* image)
       return NULL;
 
     /* imImage is always unpacked, IUP is always packed */
-    imConvertPacking(image->data[0], image_data, image->width, image->height, depth, depth, IM_BYTE, 0);
+    imConvertPacking(image->data[0], image_data, image->width, image->height, depth, depth, IM_BYTE, 0);  /* to packed */
 
     /* imImage is always bottom top, IUP is always top bottom */
-    iFlipData(image_data, image->width, image->height, depth);
+    iFlipDataPacked(image_data, image->width, image->height, depth);
 
     if (image->has_alpha)
       iup_image = IupImageRGBA(image->width, image->height, (unsigned char*)image_data);
@@ -547,7 +547,7 @@ Ihandle* IupImageFromImImage(const imImage* image)
     image_data = (unsigned char*)IupGetAttribute(iup_image, "WID");
 
     /* imImage is always bottom top, IUP is always top bottom */
-    iFlipData(image_data, image->width, image->height, 1);
+    iFlipDataPacked(image_data, image->width, image->height, 1);
 
     for (i = 0; i < image->palette_count; i++)
     {
@@ -592,11 +592,14 @@ imImage* IupImageToImImage(Ihandle* iup_image)
       depth++;
     }
 
-    /* imImage is always unpacked, IUP is always packed */
-    imConvertPacking(image_data, image->data[0], width, height, depth, depth, IM_BYTE, 1);
-
     /* imImage is always bottom top, IUP is always top bottom */
-    iFlipData(image->data[0], image->width, image->height, depth);
+    iFlipDataPacked(image_data, image->width, image->height, depth);
+
+    /* imImage is always unpacked, IUP is always packed */
+    imConvertPacking(image_data, image->data[0], width, height, depth, depth, IM_BYTE, 1);  /* to un-packed */
+
+    /* Undo Flip */
+    iFlipDataPacked(image_data, image->width, image->height, depth);
   }
   else
   {
@@ -610,7 +613,7 @@ imImage* IupImageToImImage(Ihandle* iup_image)
     memcpy(image->data[0], image_data, image->size);
 
     /* imImage is always bottom top, IUP is always top bottom */
-    iFlipData(image->data[0], image->width, image->height, 1);
+    iFlipDataPacked(image->data[0], image->width, image->height, 1);
 
     for (i = 0; i < 256; i++)
     {
