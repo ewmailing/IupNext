@@ -185,6 +185,7 @@
     <ClCompile Include="..\srcscintilla\scintilla\lexers\LexJSON.cxx" />
     <ClCompile Include="..\srcscintilla\scintilla\lexers\LexKVIrc.cxx" />
     <ClCompile Include="..\srcscintilla\scintilla\lexers\LexLaTeX.cxx" />
+    <ClCompile Include="..\srcscintilla\scintilla\lexers\LexLed.cxx" />
     <ClCompile Include="..\srcscintilla\scintilla\lexers\LexMake.cxx" />
     <ClCompile Include="..\srcscintilla\scintilla\lexers\LexNull.cxx" />
     <ClCompile Include="..\srcscintilla\scintilla\lexers\LexProps.cxx" />

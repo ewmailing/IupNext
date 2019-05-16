@@ -446,6 +446,9 @@
     <ClCompile Include="..\srcscintilla\iup_scintilla.c" />
     <ClCompile Include="..\srcscintilla\iupsci_print.c" />
     <ClCompile Include="..\srcscintilla\iupsci_indicator.c" />
+    <ClCompile Include="..\srcscintilla\scintilla\lexers\LexLed.cxx">
+      <Filter>Scintilla\Lexers</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="..\srcscintilla\scintilla\src\Indicator.h">
