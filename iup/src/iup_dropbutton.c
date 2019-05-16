@@ -180,7 +180,7 @@ static int iDropButtonRedraw_CB(Ihandle* ih)
   if (bgimage)
   {
     int backimage_zoom = iupAttribGetBoolean(ih, "BACKIMAGEZOOM");
-    draw_image = iupFlatGetImageName(ih, "BACKIMAGE", bgimage, image_pressed, ih->data->highlighted, active, &make_inactive);
+    draw_image = iupFlatGetImageName(ih, "BACKIMAGE", bgimage, image_pressed, ih->data->highlighted, 1, &make_inactive);
     if (backimage_zoom)
       iupdrvDrawImage(dc, draw_image, make_inactive, bgcolor, border_width, border_width, ih->currentwidth - border_width, ih->currentheight - border_width);
     else

@@ -121,6 +121,7 @@
     <ClCompile Include="..\src\iup_flatseparator.c" />
     <ClCompile Include="..\src\iup_flattabs.c" />
     <ClCompile Include="..\src\iup_flattoggle.c" />
+    <ClCompile Include="..\src\iup_flatval.c" />
     <ClCompile Include="..\src\iup_focus.c" />
     <ClCompile Include="..\src\iup_font.c" />
     <ClCompile Include="..\src\iup_func.c" />

@@ -117,7 +117,7 @@ static int enterwindow_cb(Ihandle *ih)
   return IUP_DEFAULT;
 }
 
-void ValTest(void)
+void FlatValTest(void)
 {
   Ihandle *dlg, *val_h, *val_v;
 
@@ -127,7 +127,7 @@ void ValTest(void)
   lbl_h = IupLabel("VALUE=");
   IupSetAttribute(lbl_h, "SIZE", "70x");
 
-  val_v = IupVal("VERTICAL");
+  val_v = IupFlatVal("VERTICAL");
   IupSetAttribute(val_v, "MAX", "10.0");
   IupSetAttribute(val_v, "STEP", ".02");
   IupSetAttribute(val_v, "PAGESTEP", ".2");
@@ -145,7 +145,7 @@ void ValTest(void)
 //  IupSetAttribute(val_v, "SHOWTICKS", "10");
 //  IupSetAttribute(val_v, "TICKSPOS", "REVERSE");
 
-  val_h = IupVal("HORIZONTAL");
+  val_h = IupFlatVal("HORIZONTAL");
   IupSetAttribute(val_h, "MAX", "100.0");
   IupSetAttribute(val_h, "RASTERSIZE", "x20");
 //  IupSetAttribute(val_h, "SHOWTICKS", "10");
@@ -182,7 +182,7 @@ void ValTest(void)
   IupSetCallback(val_h, "BUTTON_RELEASE_CB",  (Icallback) button_release);
   IupSetCallback(val_h, "MOUSEMOVE_CB", (Icallback) mousemove); 
 
-  IupSetAttribute(dlg, "TITLE", "IupVal Test");
+  IupSetAttribute(dlg, "TITLE", "IupFlatVal Test");
 //  IupSetAttribute(IupGetChild(dlg, 0), "BGCOLOR", "50 50 255");
 //  IupSetAttribute(IupGetChild(dlg, 0), "ACTIVE", "NO");
   IupSetAttribute(dlg, "MARGIN", "10x10");
@@ -194,7 +194,7 @@ int main(int argc, char* argv[])
 {
   IupOpen(&argc, &argv);
 
-  ValTest();
+  FlatValTest();
 
   IupMainLoop();
 

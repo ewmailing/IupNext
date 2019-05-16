@@ -250,6 +250,7 @@ Ihandle*  IupTimer      (void);
 Ihandle*  IupClipboard  (void);
 Ihandle*  IupProgressBar(void);
 Ihandle*  IupVal        (const char *type);
+Ihandle*  IupFlatVal    (const char *type);
 Ihandle*  IupTabs       (Ihandle* child, ...);
 Ihandle*  IupTabsv      (Ihandle* *children);
 Ihandle*  IupFlatTabs   (Ihandle* first, ...);

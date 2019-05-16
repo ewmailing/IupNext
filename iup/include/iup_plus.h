@@ -497,7 +497,14 @@ namespace Iup
     Val(Ihandle* _ih) : Control(_ih) {}
     Val(const Element& elem) : Control(elem.GetHandle()) {}
   };
-  class ProgressBar: public Control
+  class FlatVal : public Control
+  {
+  public:
+    FlatVal(const char* orientation = 0) : Control(IupFlatVal(orientation)) {}
+    FlatVal(Ihandle* _ih) : Control(_ih) {}
+    FlatVal(const Element& elem) : Control(elem.GetHandle()) {}
+  };
+  class ProgressBar : public Control
   {
   public:
     ProgressBar() : Control(IupProgressBar()) {}

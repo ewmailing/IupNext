@@ -64,6 +64,7 @@ void GaugeTest(void);
 void CellsDegradeTest(void);
 void CellsCheckboardTest(void);
 void ValTest(void);
+void FlatValTest(void);
 void TreeTest(void);
 void TrayTest(void);
 void ToggleTest(void);
@@ -212,7 +213,8 @@ static TestItems test_list[] = {
   { "Tray", TrayTest },
   {"Tree", TreeTest},
   {"Val", ValTest},
-  {"Vbox", VboxTest},
+  { "FlatVal", FlatValTest },
+  { "Vbox", VboxTest },
   {"Zbox", ZboxTest},
 #ifndef NO_WEBBROWSER_TEST
   { "WebBrowser", WebBrowserTest },

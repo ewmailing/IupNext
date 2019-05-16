@@ -91,6 +91,7 @@ SRC += flatscrollbox.c
 SRC += dropbutton.c
 SRC += flatlabel.c
 SRC += flattoggle.c
+SRC += flatval.c
 
 ifneq ($(findstring Win, $(TEC_SYSNAME)), )
   LIBS += iupimglib

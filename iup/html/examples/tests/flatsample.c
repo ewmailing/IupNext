@@ -478,8 +478,8 @@ static int list_cb(Ihandle* list, char *text, int item, int state)
 void FlatSampleTest(void)
 {
   Ihandle *mnu, *_hbox_1, *_cnv_1, *_vbox_1, *dlg, *img, *dial, *_frm_22,
-    *_frm_1, *_frm_2, *_frm_3, *_frm_4, *_frm_5, *pbar, *val, *tabs,
-    *_list_1, *_list_2, *_list_3, *_text_1, *_ml_1, *tree;
+    *_frm_1, *_frm_2, *_frm_3, *_frm_5, *pbar, *val, *tabs,
+    *_list_1, *_list_2; //, *tree
 
   //img = IupImage(32,32, img_bits1);
   //IupSetHandle ("img1", img); 
@@ -555,24 +555,7 @@ void FlatSampleTest(void)
       NULL));
   IupSetAttribute(_frm_3,"TITLE","IupFlatToggle");
 
-  _text_1 = IupText( NULL);
-  IupSetAttribute(_text_1,"VALUE","Single Line Text");
-  IupSetAttribute(_text_1,"SIZE","80x");
-  IupSetAttribute(_text_1,"TIP","Text TIP");
-
-  _ml_1 = IupMultiLine( NULL);
-  IupSetAttribute(_ml_1,"VALUE","Multiline Text\nSecond Line\nThird Line");
-  IupSetAttribute(_ml_1,"EXPAND","YES");
-  IupSetAttribute(_ml_1,"SIZE","80x40");
-  IupSetAttribute(_ml_1,"TIP","Multiline TIP");
-
-  _frm_4 = IupFlatFrame(IupVbox(
-    set_callbacks(_text_1),
-    set_callbacks(_ml_1),
-    NULL));
-  IupSetAttribute(_frm_4,"TITLE","IupText");
-
-  _list_1 = IupList( NULL);
+  _list_1 = IupFlatList();
 //  IupSetAttribute(_list_1,"EXPAND","YES");
   IupSetAttribute(_list_1,"VALUE","1");
   IupSetAttribute(_list_1,"1","Item 1 Text");
@@ -585,51 +568,37 @@ void FlatSampleTest(void)
   IupSetAttribute(_list_1, "TIP", "List 1");
   IupSetAttribute(_list_1, "VISIBLELINES", "3");
 
-  _list_2 = IupList( NULL);
+  _list_2 = IupFlatList();
 //  IupSetAttribute(_list_2,"EXPAND","YES");
   IupSetAttribute(_list_2, "VALUE", "1");
   IupSetAttribute(_list_2,"1","Item 1 Text");
   IupSetAttribute(_list_2,"2","Item 2 Text - Very Large Item");
   IupSetAttribute(_list_2,"3","Item 3 Text");
-  IupSetCallback(_list_2, "ACTION", (Icallback)list_cb);
+  IupSetCallback(_list_2, "FLAT_ACTION", (Icallback)list_cb);
+  IupSetAttribute(_list_2, "VISIBLECOLUMNS", "20");
   _list_2 = IupDropButton(_list_2);  /* mimicking the IupList with DROPDOWN=Yes */
   IupSetAttribute(_list_2, "TITLE", "Item 1 Text");
-  IupSetAttribute(_list_2, "VISIBLECOLUMNS", "6");
   IupSetAttribute(_list_2, "SHOWBORDER", "Yes");
   IupSetAttribute(_list_2, "DROPONARROW", "NO");
 
   IupSetAttribute(_list_2,"TIP","List 2");
 
-  _list_3 = IupList( NULL);
-  IupSetAttribute(_list_3,"EDITBOX","YES");
-//  IupSetAttribute(_list_3,"EXPAND","YES");
-  IupSetAttribute(_list_3,"VALUE","3");
-  IupSetAttribute(_list_3, "VISIBLELINES", "3");
-  IupSetAttribute(_list_3, "1", "Item 1 Text");
-  IupSetAttribute(_list_3,"2","Item 2 Text");
-  IupSetAttribute(_list_3,"3","Item 3 Text");
-  IupSetAttribute(_list_3, "4", "Item 4 Text");
-  IupSetAttribute(_list_3, "5", "Item 5 Text");
-  IupSetAttribute(_list_3, "6", "Item 6 Text");
-  IupSetAttribute(_list_3, "7", "Item 7 Text");
-  IupSetAttribute(_list_3, "TIP", "List 3");
-
   _frm_5 =  IupFlatFrame(IupVbox(
       set_callbacks(_list_1),
       set_callbacks(_list_2),
-      set_callbacks(_list_3),
+//      set_callbacks(_list_3),
       NULL));
-  IupSetAttribute(_frm_5,"TITLE","IupList");
+  IupSetAttribute(_frm_5,"TITLE","IupFlatList");
 
   _hbox_1 = IupHbox(
     _frm_1,
     _frm_2,
     _frm_3,
-    _frm_4,
+//    _frm_4,
     _frm_5,
     NULL);
 
-  val = IupVal(NULL);
+  val = IupFlatVal(NULL);
   IupSetAttribute(val,"TIP","Valuator TIP");
   set_callbacks(val);
   
@@ -655,11 +624,13 @@ void FlatSampleTest(void)
 //  IupSetAttribute(tabs,"TABPADDING","5x5");
   set_callbacks(tabs);
 
+#if 0
   tree = IupTree();
   IupSetAttribute(tree, "SHOWRENAME",   "YES");
   IupSetAttribute(tree,"RASTERSIZE","100x150");
   IupSetAttribute(tree,"TIP","Tree TIP");
   set_callbacks(tree);
+#endif
 
   _cnv_1 = IupCanvas(NULL);
   IupSetAttribute(_cnv_1,"BGCOLOR","128 255 0");
@@ -673,7 +644,7 @@ void FlatSampleTest(void)
 
   _vbox_1 = IupVbox(
     _hbox_1,
-    IupHbox(IupSetAttributes(IupFlatFrame(IupHbox(val, NULL)), "TITLE=IupVal"),
+    IupHbox(IupSetAttributes(IupFlatFrame(IupHbox(val, NULL)), "TITLE=IupFlatVal"),
             IupSetAttributes(IupFlatFrame(IupHbox(pbar, NULL)), "TITLE=IupGauge"),
             IupSetAttributes(IupFlatFrame(IupHbox(dial, NULL)), "TITLE=IupDial"),
             IupSetAttributes(IupFlatFrame(IupHbox(tabs, NULL)), "TITLE=IupFlatTabs"),
@@ -683,7 +654,7 @@ void FlatSampleTest(void)
             NULL),
 #endif
     IupHbox(IupSetAttributes(IupFlatFrame(IupHbox(_cnv_1, NULL)), "TITLE=IupCanvas"),
-            IupSetAttributes(IupFlatFrame(IupHbox(tree, NULL)), "TITLE=IupTree"),
+//            IupSetAttributes(IupFlatFrame(IupHbox(tree, NULL)), "TITLE=IupTree"),
             NULL),
     NULL);
   IupSetAttribute(_vbox_1,"MARGIN","5x5");
@@ -755,6 +726,7 @@ void FlatSampleTest(void)
 
   IupMap(dlg);
 
+#if 0
   IupSetAttribute(tree, "TITLE0",         "Figures");  
   IupSetAttribute(tree, "ADDLEAF0",      "Other");     /* new id=1 */
   IupSetAttribute(tree, "ADDBRANCH1",   "triangle");  /* new id=2 */     
@@ -769,6 +741,7 @@ void FlatSampleTest(void)
   IupSetAttribute(tree, "ADDLEAF10", "item 5");  /* ... */
   IupSetAttribute(tree, "ADDLEAF11", "item 6");  /* ... */
   IupSetAttribute(tree, "ADDLEAF12", "item 7");  /* ... */
+#endif
 
   IupShow(dlg);
 

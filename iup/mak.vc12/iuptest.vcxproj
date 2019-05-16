@@ -164,6 +164,7 @@
     <ClCompile Include="..\html\examples\tests\flatscrollbox.c" />
     <ClCompile Include="..\html\examples\tests\flattabs.c" />
     <ClCompile Include="..\html\examples\tests\flattoggle.c" />
+    <ClCompile Include="..\html\examples\tests\flatval.c" />
     <ClCompile Include="..\html\examples\tests\frame.c" />
     <ClCompile Include="..\html\examples\tests\gauge.c" />
     <ClCompile Include="..\html\examples\tests\getcolor.c" />

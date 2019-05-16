@@ -1553,6 +1553,10 @@ wb_usr.tree =
             {
               name= {nl= "IupVal"},
               link= "elem/iupval.html"
+            },
+            {
+              name= {nl= "IupFlatVal"},
+              link= "elem/iupflatval.html"
             }
           }
         },

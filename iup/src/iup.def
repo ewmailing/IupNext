@@ -271,6 +271,7 @@ IupGauge
 IupColorbar
 IupColorBrowser
 IupFlatList
+IupFlatVal
 
 iupdrvSetVisible
 iupdrvSetFontAttrib

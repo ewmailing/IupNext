@@ -159,4 +159,5 @@ void iupRegisterInternalClasses(void)
   iupRegisterClass(iupColorBrowserNewClass());
   iupRegisterClass(iupMultiBoxNewClass());
   iupRegisterClass(iupFlatListNewClass());
+  iupRegisterClass(iupFlatValNewClass());
 }

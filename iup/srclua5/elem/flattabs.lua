@@ -13,6 +13,8 @@ local ctrl = {
     --tabclose_cb = "n", -- already implemented in IupTabs, same definition
     --extrabutton_cb = "nn", -- already implemented in IupExpander, same definition
     --rightclick_cb = "n", -- already implemented in IupTree, same definition
+    flat_getfocus_cb = "",
+    flat_killfocus_cb = "",
   },
 }
 

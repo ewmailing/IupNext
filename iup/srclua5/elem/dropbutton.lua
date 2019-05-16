@@ -9,11 +9,11 @@ local ctrl = {
   funcname = "DropButton",
   callback = {
     flat_action = "", 
-    flat_button_cb = "nnnns",
+    --flat_button_cb = "nnnns",
     flat_motion_cb = "nns",
-    flat_enterwindow_cb = "",
-    flat_leavewindow_cb = "",
-    flat_focus_cb = "n",
+    --flat_enterwindow_cb = "",
+    --flat_leavewindow_cb = "",
+    --flat_focus_cb = "n",
     dropdown_cb = "n",
     dropshow_cb = "n",
   }
