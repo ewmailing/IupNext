@@ -133,7 +133,7 @@ SRCSCINTILLA += lexers/LexA68k.cxx lexers/LexAbaqus.cxx lexers/LexAda.cxx lexers
 				lexers/LexVerilog.cxx lexers/LexVHDL.cxx lexers/LexVisualProlog.cxx lexers/LexYAML.cxx \
 				lexers/LexKVIrc.cxx lexers/LexLaTeX.cxx lexers/LexSTTXT.cxx lexers/LexRust.cxx \
 				lexers/LexDMAP.cxx lexers/LexDMIS.cxx lexers/LexBibTeX.cxx lexers/LexHex.cxx lexers/LexAsm.cxx \
-				lexers/LexRegistry.cxx
+				lexers/LexRegistry.cxx lexers/LexLed.cxx
         
 ifdef SCINTILLA_OLD
   SRCSCINTILLA += lexers/LexOthers.cxx
