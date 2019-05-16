@@ -465,13 +465,6 @@ static int iFlatToggleLeaveWindow_CB(Ihandle* ih)
 /***********************************************************************************************/
 
 
-static int iFlatToggleSetActiveAttrib(Ihandle* ih, const char* value)
-{
-  iupBaseSetActiveAttrib(ih, value);
-  iupdrvRedrawNow(ih);
-  return 0;
-}
-
 static int iFlatToggleSetAlignmentAttrib(Ihandle* ih, const char* value)
 {
   char value1[30], value2[30];
@@ -784,7 +777,7 @@ Iclass* iupFlatToggleNewClass(void)
   iupClassRegisterCallback(ic, "VALUECHANGED_CB", "");
 
   /* Overwrite Visual */
-  iupClassRegisterAttribute(ic, "ACTIVE", iupBaseGetActiveAttrib, iFlatToggleSetActiveAttrib, IUPAF_SAMEASSYSTEM, "YES", IUPAF_DEFAULT);
+  iupClassRegisterAttribute(ic, "ACTIVE", iupBaseGetActiveAttrib, iupFlatSetActiveAttrib, IUPAF_SAMEASSYSTEM, "YES", IUPAF_DEFAULT);
 
   /* Special */
   iupClassRegisterAttribute(ic, "TITLE", NULL, iFlatToggleSetAttribPostRedraw, NULL, NULL, IUPAF_NO_DEFAULTVALUE | IUPAF_NO_INHERIT);

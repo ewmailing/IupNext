@@ -1852,6 +1852,8 @@ Iclass* iupFlatListNewClass(void)
   iupClassRegisterCallback(ic, "FLAT_MOTION_CB", "iis");
   iupClassRegisterCallback(ic, "FLAT_FOCUS_CB", "i");
 
+  iupClassRegisterAttribute(ic, "ACTIVE", iupBaseGetActiveAttrib, iupFlatSetActiveAttrib, IUPAF_SAMEASSYSTEM, "YES", IUPAF_DEFAULT);
+
   iupClassRegisterAttributeId(ic, "IDVALUE", iFlatListGetIdValueAttrib, iFlatListSetIdValueAttrib, IUPAF_NOT_MAPPED);
   iupClassRegisterAttribute(ic, "MULTIPLE", iFlatListGetMultipleAttrib, iFlatListSetMultipleAttrib, NULL, NULL, IUPAF_NOT_MAPPED | IUPAF_NO_INHERIT);
   iupClassRegisterAttribute(ic, "COUNT", iFlatListGetCountAttrib, NULL, NULL, NULL, IUPAF_READONLY | IUPAF_NOT_MAPPED | IUPAF_NO_INHERIT);

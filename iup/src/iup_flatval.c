@@ -227,7 +227,6 @@ static int iFlatValRedraw_CB(Ihandle* ih)
     x2 = x1 + slider_size;
   }
 
-  /* draw slider background */
   if (bgimage)
   {
     int make_inactive;
@@ -238,13 +237,12 @@ static int iFlatValRedraw_CB(Ihandle* ih)
     else
       iupdrvDrawImage(dc, draw_image, make_inactive, bgcolor, 0, 0, -1, -1);
   }
-  else
-  {
-    iupFlatDrawBox(dc, x1, x2, y1, y2, slidercolor, NULL, 1);  /* background is always active */
 
-    /* draw slider border - can be disabled setting bwidth=0 */
-    iupFlatDrawBorder(dc, x1, x2, y1, y2, 1, sliderbordercolor, bgcolor, active);
-  }
+  /* draw slider background */
+  iupFlatDrawBox(dc, x1, x2, y1, y2, slidercolor, NULL, active);
+
+  /* draw slider border - can be disabled setting bwidth=0 */
+  iupFlatDrawBorder(dc, x1, x2, y1, y2, 1, sliderbordercolor, bgcolor, active);
 
   if (is_horizontal)
   {
@@ -299,7 +297,7 @@ static int iFlatValRedraw_CB(Ihandle* ih)
 
     /* draw handler foreground */
     iupFlatDrawBox(dc, x1 + border_width, x2 - border_width, y1 + border_width, y2 - border_width,
-                   fgcolor, bgcolor, active);  /* background is always active */
+                   fgcolor, bgcolor, active);
 
     if (pressed)
     {
@@ -847,6 +845,7 @@ Iclass* iupFlatValNewClass(void)
   iupClassRegisterCallback(ic, "VALUECHANGING_CB", "i");
 
   iupClassRegisterAttribute(ic, "BGCOLOR", iupBaseNativeParentGetBgColorAttrib, NULL, IUPAF_SAMEASSYSTEM, "DLGBGCOLOR", IUPAF_NO_SAVE | IUPAF_DEFAULT);
+  iupClassRegisterAttribute(ic, "ACTIVE", iupBaseGetActiveAttrib, iupFlatSetActiveAttrib, IUPAF_SAMEASSYSTEM, "YES", IUPAF_DEFAULT);
 
   /* IupFlatVal only */
   iupClassRegisterAttribute(ic, "MIN", iFlatValGetMinAttrib, iFlatValSetMinAttrib, IUPAF_SAMEASSYSTEM, "0", IUPAF_NOT_MAPPED | IUPAF_NO_INHERIT);

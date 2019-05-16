@@ -107,13 +107,6 @@ static int iFlatLabelRedraw_CB(Ihandle* ih)
 /***********************************************************************************************/
 
 
-static int iFlatLabelSetActiveAttrib(Ihandle* ih, const char* value)
-{
-  iupBaseSetActiveAttrib(ih, value);
-  iupdrvRedrawNow(ih);
-  return 0; 
-}
-
 static int iFlatLabelSetAlignmentAttrib(Ihandle* ih, const char* value)
 {
   char value1[30], value2[30];
@@ -255,7 +248,7 @@ Iclass* iupFlatLabelNewClass(void)
   ic->ComputeNaturalSize = iFlatLabelComputeNaturalSizeMethod;
 
   /* Overwrite Visual */
-  iupClassRegisterAttribute(ic, "ACTIVE", iupBaseGetActiveAttrib, iFlatLabelSetActiveAttrib, IUPAF_SAMEASSYSTEM, "YES", IUPAF_DEFAULT);
+  iupClassRegisterAttribute(ic, "ACTIVE", iupBaseGetActiveAttrib, iupFlatSetActiveAttrib, IUPAF_SAMEASSYSTEM, "YES", IUPAF_DEFAULT);
   iupClassRegisterAttribute(ic, "BGCOLOR", iupBaseNativeParentGetBgColorAttrib, NULL, IUPAF_SAMEASSYSTEM, "DLGBGCOLOR", IUPAF_NO_SAVE | IUPAF_DEFAULT);
 
   /* Special */

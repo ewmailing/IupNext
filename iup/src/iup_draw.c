@@ -1121,3 +1121,10 @@ char* iupFlatGetDarkerBgColor(Ihandle* ih)
   else
     return value;
 }
+
+int iupFlatSetActiveAttrib(Ihandle* ih, const char* value)
+{
+  iupBaseSetActiveAttrib(ih, value);
+  iupdrvRedrawNow(ih);
+  return 0;
+}

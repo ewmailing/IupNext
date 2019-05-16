@@ -43,6 +43,7 @@ void iupDrawSunkenRect(Ihandle *ih, int x1, int y1, int x2, int y2, long light_s
 void iupDrawParentBackground(IdrawCanvas* dc, Ihandle* ih);
 char* iupDrawGetTextSize(Ihandle* ih, const char* str, int len, int *w, int *h, double text_orientation);
 void iupDrawGetTextInnerBounds(int o_w, int o_h, double text_orientation, int *w, int *h);
+int iupDrawGetTextFlags(Ihandle* ih, const char* align_name, const char* wrap_name, const char* ellipsis_name);
 
 
 /**********************************************************************************************************/
@@ -54,7 +55,7 @@ int iupFlatGetHorizontalAlignment(const char* value);
 int iupFlatGetVerticalAlignment(const char* value);
 int iupFlatGetImagePosition(const char* value);
 char* iupFlatGetDarkerBgColor(Ihandle* ih);
-int iupDrawGetTextFlags(Ihandle* ih, const char* align_name, const char* wrap_name, const char* ellipsis_name);
+int iupFlatSetActiveAttrib(Ihandle* ih, const char* value);
 
 const char* iupFlatGetImageName(Ihandle* ih, const char* baseattrib, const char* basevalue, int press, int highlight, int active, int *make_inactive);
 const char* iupFlatGetImageNameId(Ihandle* ih, const char* baseattrib, int id, const char* basevalue, int press, int highlight, int active, int *make_inactive);

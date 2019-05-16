@@ -1795,12 +1795,6 @@ static int iFlatTabsSetTipAttrib(Ihandle* ih, const char* value)
   return iupdrvBaseSetTipAttrib(ih, value);
 }
 
-static int iFlatTabsSetActiveAttrib(Ihandle* ih, const char* value)
-{
-  iupdrvPostRedraw(ih);
-  return iupBaseSetActiveAttrib(ih, value);
-}
-
 static int iFlatTabsSetAttribPostRedraw(Ihandle* ih, const char* value)
 {
   (void)value;
@@ -2366,7 +2360,7 @@ Iclass* iupFlatTabsNewClass(void)
   iupClassRegisterReplaceAttribFlags(ic, "BORDER", IUPAF_READONLY | IUPAF_NO_INHERIT);
   iupClassRegisterReplaceAttribFlags(ic, "SCROLLBAR", IUPAF_READONLY | IUPAF_NO_INHERIT);
 
-  iupClassRegisterReplaceAttribFunc(ic, "ACTIVE", NULL, iFlatTabsSetActiveAttrib);
+  iupClassRegisterReplaceAttribFunc(ic, "ACTIVE", NULL, iupFlatSetActiveAttrib);
   iupClassRegisterAttribute(ic, "TIP", NULL, iFlatTabsSetTipAttrib, NULL, NULL, IUPAF_NO_DEFAULTVALUE | IUPAF_NO_INHERIT);
 
   /* IupFlatTabs only */

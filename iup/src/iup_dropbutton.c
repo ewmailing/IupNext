@@ -511,13 +511,6 @@ static int iDropButtonSetShowDropdownAttrib(Ihandle* ih, const char* value)
   return 0;
 }
 
-static int iDropButtonSetActiveAttrib(Ihandle* ih, const char* value)
-{
-  iupBaseSetActiveAttrib(ih, value);
-  iupdrvRedrawNow(ih);
-  return 0; 
-}
-
 static int iDropButtonSetAlignmentAttrib(Ihandle* ih, const char* value)
 {
   char value1[30], value2[30];
@@ -881,7 +874,7 @@ Iclass* iupDropButtonNewClass(void)
   iupClassRegisterCallback(ic, "DROPSHOW_CB", "i");
 
   /* Overwrite Visual */
-  iupClassRegisterAttribute(ic, "ACTIVE", iupBaseGetActiveAttrib, iDropButtonSetActiveAttrib, IUPAF_SAMEASSYSTEM, "YES", IUPAF_DEFAULT);
+  iupClassRegisterAttribute(ic, "ACTIVE", iupBaseGetActiveAttrib, iupFlatSetActiveAttrib, IUPAF_SAMEASSYSTEM, "YES", IUPAF_DEFAULT);
 
   /* Special */
   iupClassRegisterAttribute(ic, "TITLE", NULL, iDropButtonSetAttribPostRedraw, NULL, NULL, IUPAF_NO_DEFAULTVALUE | IUPAF_NO_INHERIT);

@@ -344,13 +344,6 @@ static int iFlatButtonLeaveWindow_CB(Ihandle* ih)
 /***********************************************************************************************/
 
 
-static int iFlatButtonSetActiveAttrib(Ihandle* ih, const char* value)
-{
-  iupBaseSetActiveAttrib(ih, value);
-  iupdrvRedrawNow(ih);
-  return 0; 
-}
-
 static int iFlatButtonSetAlignmentAttrib(Ihandle* ih, const char* value)
 {
   char value1[30], value2[30];
@@ -632,7 +625,7 @@ Iclass* iupFlatButtonNewClass(void)
   iupClassRegisterCallback(ic, "VALUECHANGED_CB", "");
 
   /* Overwrite Visual */
-  iupClassRegisterAttribute(ic, "ACTIVE", iupBaseGetActiveAttrib, iFlatButtonSetActiveAttrib, IUPAF_SAMEASSYSTEM, "YES", IUPAF_DEFAULT);
+  iupClassRegisterAttribute(ic, "ACTIVE", iupBaseGetActiveAttrib, iupFlatSetActiveAttrib, IUPAF_SAMEASSYSTEM, "YES", IUPAF_DEFAULT);
 
   /* Special */
   iupClassRegisterAttribute(ic, "TITLE", NULL, iFlatButtonSetAttribPostRedraw, NULL, NULL, IUPAF_NO_DEFAULTVALUE | IUPAF_NO_INHERIT);

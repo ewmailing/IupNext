@@ -140,7 +140,7 @@ static int iFlatFrameRedraw_CB(Ihandle* ih)
     iupFlatDrawIcon(ih, dc, frame_width + x_off, frame_width,
                     ih->currentwidth - 2 * frame_width, title_h - title_line,
                     img_position, spacing, title_alignment, IUP_ALIGN_ATOP, horiz_padding, vert_padding,
-                    titleimage, make_inactive, title, text_flags, text_orientation, titlecolor, NULL, active);
+                    titleimage, make_inactive, title, text_flags, text_orientation, titlecolor, backcolor, active);
   }
 
   iupdrvDrawFlush(dc);
@@ -241,6 +241,7 @@ Iclass* iupFlatFrameNewClass(void)
 
   /* replace IupCanvas behavior */
   iupClassRegisterReplaceAttribFlags(ic, "BORDER", IUPAF_READONLY);
+  iupClassRegisterAttribute(ic, "ACTIVE", iupBaseGetActiveAttrib, iupFlatSetActiveAttrib, IUPAF_SAMEASSYSTEM, "YES", IUPAF_DEFAULT);
 
   /* replace IupBackgroundBox behavior */
   iupClassRegisterAttribute(ic, "DECORATION", NULL, NULL, IUPAF_SAMEASSYSTEM, "Yes", IUPAF_NOT_MAPPED | IUPAF_READONLY | IUPAF_NO_INHERIT);
