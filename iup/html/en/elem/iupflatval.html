@@ -16,8 +16,8 @@
   .auto-style1 {
 	color: #FF0000;
 }
-  .auto-style2 {
-	color: #0000FF;
+  .auto-style3 {
+	color: #000000;
 }
   </style>
 </head>
@@ -101,10 +101,11 @@ NOT preserved. Can be Yes or No. Default: No.</p>
   the default value is "NO". This is the <strong>IupCanvas</strong> border.</p>
 <p><strong>BORDERCOLOR</strong>: color used for borders. Default: &quot;50 150 255&quot;. 
 This is for the drawn border.</p>
-<p class="auto-style2"><strong>BORDERPSCOLOR</strong>: color used for borders 
+<p class="auto-style3"><strong>BORDERPSCOLOR</strong>: color used for borders 
 when pressed or selected. Default use BORDERCOLOR.</p>
-<p class="auto-style2"><strong>BORDERHLCOLOR</strong>: color used for borders 
-when highlighted. Default use BORDERCOLOR.</p>
+<p class="auto-style3"><strong>BORDERHLCOLOR</strong>: color used for borders 
+when highlighted. Pre-defined to &quot;0 120 220&quot;. Can be set to NULL. If 
+NULL BORDERCOLOR will be used instead.</p>
 <p><strong>BORDERWIDTH</strong>: line width used for borders. Default: &quot;1&quot;. Any borders can be 
 hidden by simply setting 
 this value to 0. This is for the <strong>IupFlatButton</strong> drawn border.</p>
@@ -127,12 +128,14 @@ defined will be ignored. Can be
 Yes or No. Default: No.</p>
 
 
-<p><a href="../attrib/iup_fgcolor.html">FGCOLOR</a>: Controls the handler color. Default: &quot;64 
-128 225&quot;.</p>
-<p class="auto-style2"><strong>HLCOLOR</strong>: color used to indicate a 
-highlight state. If not defined FGCOLOR will be used instead.</p>
-<p class="auto-style2"><strong>PSCOLOR</strong>: color used to indicate a press 
-state. If not defined FGCOLOR will be used instead.</p>
+<p><a href="../attrib/iup_fgcolor.html">FGCOLOR</a>: Controls the handler color. Default: &quot;0 
+120 220&quot;.</p>
+<p class="auto-style3"><strong>HLCOLOR</strong>: color used to indicate a 
+highlight state. Pre-defined to &quot;30 150 250&quot;. Can be set to NULL. If 
+NULL FGCOLOR will be used instead.</p>
+<p class="auto-style3"><strong>PSCOLOR</strong>: color used to indicate a press 
+state. Pre-defined to &quot;0 60 190&quot;. Can be set to NULL. If NULL FGCOLOR 
+will be used instead.</p>
 
 
 
@@ -186,10 +189,11 @@ width of 15 characters in the other.</p>
 <p><strong>SLIDERSIZE </strong>(<font size="3">non inheritable</font>): slider 
 size in the same direction of the ORIENTATION. Default: 5. Ignored when 
 BACKIMAGE is used.</p>
-<p><strong>SLIDERBORDERCOLOR</strong>: slider border color. Default: &quot;50 150 
-255&quot;.</p>
-<p><strong>SLIDERCOLOR</strong>: slider background color. Default: &quot;255 255 
-255&quot;.</p>
+<p><strong>SLIDERBORDERCOLOR</strong>: slider border color. Default: &quot;160 
+160 
+160&quot;.</p>
+<p><strong>SLIDERCOLOR</strong>: slider background color. Default: &quot;220 220 
+220&quot;.</p>
 
 <p><strong>STEP</strong> (<font size="3">non inheritable</font><strong>)</strong>: Controls the increment for keyboard control and the mouse 
   wheel. It is not the size of the increment. The increment size is 

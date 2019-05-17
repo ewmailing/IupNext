@@ -279,7 +279,7 @@ static int iFlatValRedraw_CB(Ihandle* ih)
   else
   {
     int pressed = iupAttribGetInt(ih, "_IUPFLATVAL_PRESSED");
-    int highlight = iupAttribGetInt(ih, "HIGHLIGHT");
+    int highlight = iupAttribGetInt(ih, "_IUPFLATVAL_HIGHLIGHT");
     char* fgcolor = iupAttribGetStr(ih, "FGCOLOR");
 
     if (pressed)
@@ -352,7 +352,6 @@ static int iFlatValButton_CB(Ihandle* ih, int button, int pressed, int x, int y,
     }
     else
     {
-      iupAttribSet(ih, "_IUPFLATVAL_PRESSED", NULL);
       if (iupAttribGet(ih, "_IUP_DRAG"))
       {
         IFni cb = (IFni)IupGetCallback(ih, "VALUECHANGING_CB");
@@ -360,7 +359,7 @@ static int iFlatValButton_CB(Ihandle* ih, int button, int pressed, int x, int y,
 
         iupAttribSet(ih, "_IUP_DRAG", NULL);
       }
-      else
+      else if (!iupAttribGet(ih, "_IUPFLATVAL_PRESSED")) /* click outside the handler */
       {
         int is_horizontal = ih->data->orientation == IFLATVAL_HORIZONTAL;
         int p, p1, p2, dx, dy, handler_op_size, pginc, handPos;
@@ -376,9 +375,10 @@ static int iFlatValButton_CB(Ihandle* ih, int button, int pressed, int x, int y,
         if (iFlatValMoveHandler(ih, dx, dy))
           iupBaseCallValueChangedCb(ih);
       }
+      iupAttribSet(ih, "_IUPFLATVAL_PRESSED", NULL);
     }
 
-    IupUpdate(ih);
+    iupdrvRedrawNow(ih);
   }
 
   (void)status;
@@ -400,18 +400,18 @@ static int iFlatValMotion_CB(Ihandle* ih, int x, int y, char* status)
   /* special highlight processing for handler area */
   if (iFlatValIsInsideHandler(ih, x, y))
   {
-    if (!iupAttribGet(ih, "HIGHLIGHT"))
+    if (!iupAttribGet(ih, "_IUPFLATVAL_HIGHLIGHT"))
     {
       redraw = 1;
-      iupAttribSet(ih, "HIGHLIGHT", "1");
+      iupAttribSet(ih, "_IUPFLATVAL_HIGHLIGHT", "1");
     }
   }
   else
   {
-    if (iupAttribGet(ih, "HIGHLIGHT"))
+    if (iupAttribGet(ih, "_IUPFLATVAL_HIGHLIGHT"))
     {
       redraw = 1;
-      iupAttribSet(ih, "HIGHLIGHT", NULL);
+      iupAttribSet(ih, "_IUPFLATVAL_HIGHLIGHT", NULL);
     }
   }
 
@@ -422,7 +422,7 @@ static int iFlatValMotion_CB(Ihandle* ih, int x, int y, char* status)
 
     if (iFlatValMoveHandler(ih, x - start_x, y - start_y))
     {
-      IupUpdate(ih);
+      iupdrvRedrawNow(ih);
       redraw = 0;
 
       if (!iupAttribGet(ih, "_IUP_DRAG"))
@@ -441,7 +441,7 @@ static int iFlatValMotion_CB(Ihandle* ih, int x, int y, char* status)
   }
 
   if (redraw)
-    IupUpdate(ih);
+    iupdrvRedrawNow(ih);
 
   (void)status;
   return IUP_DEFAULT;
@@ -458,9 +458,9 @@ static int iFlatValEnterWindow_CB(Ihandle* ih, int x, int y)
 
   /* special highlight processing for handler area */
   if (iFlatValIsInsideHandler(ih, x, y))
-    iupAttribSet(ih, "HIGHLIGHT", "1");
+    iupAttribSet(ih, "_IUPFLATVAL_HIGHLIGHT", "1");
   else
-    iupAttribSet(ih, "HIGHLIGHT", NULL);
+    iupAttribSet(ih, "_IUPFLATVAL_HIGHLIGHT", NULL);
 
   IupUpdate(ih);
 
@@ -477,7 +477,7 @@ static int iFlatValFocus_CB(Ihandle* ih, int focus)
   }
 
   ih->data->has_focus = focus;
-  iupdrvRedrawNow(ih);
+  IupUpdate(ih);
 
   return IUP_DEFAULT;
 }
@@ -491,7 +491,7 @@ static int iFlatValLeaveWindow_CB(Ihandle* ih)
       return IUP_DEFAULT;
   }
 
-  iupAttribSet(ih, "HIGHLIGHT", NULL);
+  iupAttribSet(ih, "_IUPFLATVAL_HIGHLIGHT", NULL);
 
   IupUpdate(ih);
 
@@ -793,7 +793,11 @@ static int iFlatValCreateMethod(Ihandle* ih, void **params)
   ih->data->vmax = 1;
   ih->data->step = 0.01;
   ih->data->pageStep = 0.10;
-  ih->data->focus_width = 1;
+  ih->data->focus_width = 2;
+
+  iupAttribSet(ih, "HLCOLOR", "30 150 250");
+  iupAttribSet(ih, "PSCOLOR", "0 60 190");
+  iupAttribSet(ih, "BORDERHLCOLOR", "0 120 220");
 
   /* IupCanvas callbacks */
   IupSetCallback(ih, "ACTION", (Icallback)iFlatValRedraw_CB);
@@ -859,15 +863,15 @@ Iclass* iupFlatValNewClass(void)
   iupClassRegisterAttribute(ic, "SLIDERSIZE", NULL, NULL, IUPAF_SAMEASSYSTEM, "5", IUPAF_NO_INHERIT);
   iupClassRegisterAttribute(ic, "HANDLERSIZE", NULL, NULL, NULL, NULL, IUPAF_NO_INHERIT);
 
-  iupClassRegisterAttribute(ic, "BORDERCOLOR", NULL, NULL, IUPAF_SAMEASSYSTEM, "50 150 255", IUPAF_DEFAULT);  /* inheritable */
+  iupClassRegisterAttribute(ic, "BORDERCOLOR", NULL, NULL, IUPAF_SAMEASSYSTEM, IUP_FLAT_BORDERCOLOR, IUPAF_DEFAULT);  /* inheritable */
   iupClassRegisterAttribute(ic, "BORDERPSCOLOR", NULL, NULL, NULL, NULL, IUPAF_DEFAULT);  /* inheritable */
   iupClassRegisterAttribute(ic, "BORDERHLCOLOR", NULL, NULL, NULL, NULL, IUPAF_DEFAULT);  /* inheritable */
   iupClassRegisterAttribute(ic, "BORDERWIDTH", iFlatValGetBorderWidthAttrib, iFlatValSetBorderWidthAttrib, IUPAF_SAMEASSYSTEM, "1", IUPAF_DEFAULT);  /* inheritable */
-  iupClassRegisterAttribute(ic, "FGCOLOR", NULL, NULL, "64 128 255", NULL, IUPAF_NOT_MAPPED);  /* force the new default value */
+  iupClassRegisterAttribute(ic, "FGCOLOR", NULL, NULL, "0 120 220", NULL, IUPAF_NOT_MAPPED);  /* force the new default value */
   iupClassRegisterAttribute(ic, "HLCOLOR", NULL, NULL, NULL, NULL, IUPAF_DEFAULT);  /* inheritable */
   iupClassRegisterAttribute(ic, "PSCOLOR", NULL, NULL, NULL, NULL, IUPAF_DEFAULT);  /* inheritable */
-  iupClassRegisterAttribute(ic, "SLIDERBORDERCOLOR", NULL, NULL, IUPAF_SAMEASSYSTEM, "50 150 255", IUPAF_DEFAULT);  /* inheritable */
-  iupClassRegisterAttribute(ic, "SLIDERCOLOR", NULL, NULL, IUPAF_SAMEASSYSTEM, "255 255 255", IUPAF_DEFAULT);  /* inheritable */
+  iupClassRegisterAttribute(ic, "SLIDERBORDERCOLOR", NULL, NULL, IUPAF_SAMEASSYSTEM, "160 160 160", IUPAF_DEFAULT);  /* inheritable */
+  iupClassRegisterAttribute(ic, "SLIDERCOLOR", NULL, NULL, IUPAF_SAMEASSYSTEM, "220 220 220", IUPAF_DEFAULT);  /* inheritable */
 
   iupClassRegisterAttribute(ic, "IMAGE", NULL, NULL, NULL, NULL, IUPAF_IHANDLENAME | IUPAF_NO_DEFAULTVALUE | IUPAF_NO_INHERIT);
   iupClassRegisterAttribute(ic, "IMAGEPRESS", NULL, NULL, NULL, NULL, IUPAF_IHANDLENAME | IUPAF_NO_DEFAULTVALUE | IUPAF_NO_INHERIT);

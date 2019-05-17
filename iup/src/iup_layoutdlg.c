@@ -1291,7 +1291,7 @@ static void iLayoutDrawElement(IdrawCanvas* dc, Ihandle* ih, int marked, int nat
 
   bg = iupDrawColor(255, 255, 255, 255);  /* background color */
   fg = iupDrawColor(0, 0, 0, 255);        /* foreground color */
-  fg_void = iupDrawColor(164, 164, 164, 255);  /* foreground color for void elements */
+  fg_void = iupDrawColor(160, 160, 160, 255);  /* foreground color for void elements */
   fg_max = iupDrawColor(255, 0, 0, 255);      /* foreground color for elements that are maximizing parent size */
 
   x = ih->x + native_parent_x;

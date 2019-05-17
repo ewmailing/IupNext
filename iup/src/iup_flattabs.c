@@ -917,7 +917,7 @@ static int iFlatTabsRedraw_CB(Ihandle* ih)
         {
           char* extra_presscolor = iupAttribGetId(ih, "EXTRAPRESSCOLOR", i);
           if (!extra_presscolor)
-            extra_presscolor = "150 200 235";
+            extra_presscolor = IUP_FLAT_PRESSCOLOR;
 
           iupFlatDrawBox(dc, xmin, xmax, ymin, ymax, extra_presscolor, NULL, 1);
           draw_border = 1;
@@ -926,7 +926,7 @@ static int iFlatTabsRedraw_CB(Ihandle* ih)
         {
           char* extra_highcolor = iupAttribGetId(ih, "EXTRAHIGHCOLOR", i);
           if (!extra_highcolor)
-            extra_highcolor = "200 225 245";
+            extra_highcolor = IUP_FLAT_HIGHCOLOR;
 
           iupFlatDrawBox(dc, xmin, xmax, ymin, ymax, extra_highcolor, NULL, 1);
           draw_border = 1;
@@ -937,7 +937,7 @@ static int iFlatTabsRedraw_CB(Ihandle* ih)
       {
         char* bordercolor = iupAttribGetId(ih, "EXTRABORDERCOLOR", i);
         if (!bordercolor)
-          bordercolor = "50 150 255";
+          bordercolor = IUP_FLAT_BORDERCOLOR;
 
         iupFlatDrawBorder(dc, xmin, xmax, ymin, ymax, border_width, bordercolor, tabs_bgcolor, extra_active);
       }
@@ -2390,8 +2390,8 @@ Iclass* iupFlatTabsNewClass(void)
   iupClassRegisterAttributeId(ic, "TABFONTSIZE", iFlatTabsGetTabFontSizeAttrib, iFlatTabsSetTabFontSizeAttrib, IUPAF_NO_SAVE | IUPAF_NOT_MAPPED | IUPAF_NO_INHERIT);
 
   /* Visual for current TAB */
-  iupClassRegisterAttribute(ic, "BGCOLOR", NULL, iFlatTabsSetBgColorAttrib, IUPAF_SAMEASSYSTEM, "255 255 255", IUPAF_NO_INHERIT);   /* NO inherited - exception for BGCOLOR */
-  iupClassRegisterAttribute(ic, "FORECOLOR", NULL, iFlatTabsSetAttribPostRedraw, IUPAF_SAMEASSYSTEM, "50 150 255", IUPAF_NO_INHERIT);
+  iupClassRegisterAttribute(ic, "BGCOLOR", NULL, iFlatTabsSetBgColorAttrib, IUPAF_SAMEASSYSTEM, IUP_FLAT_BACKCOLOR, IUPAF_NO_INHERIT);   /* NO inherited - exception for BGCOLOR */
+  iupClassRegisterAttribute(ic, "FORECOLOR", NULL, iFlatTabsSetAttribPostRedraw, IUPAF_SAMEASSYSTEM, IUP_FLAT_BORDERCOLOR, IUPAF_NO_INHERIT);
   iupClassRegisterAttribute(ic, "HIGHCOLOR", NULL, NULL, NULL, NULL, IUPAF_NO_INHERIT);
 
   /* Visual for the other TABS */
@@ -2405,7 +2405,7 @@ Iclass* iupFlatTabsNewClass(void)
   iupClassRegisterAttribute(ic, "TABSFONTSIZE", iFlatTabsGetTabsFontSizeAttrib, iFlatTabsSetTabsFontSizeAttrib, NULL, NULL, IUPAF_NO_SAVE | IUPAF_NOT_MAPPED | IUPAF_NO_INHERIT);
 
   iupClassRegisterAttribute(ic, "SHOWLINES", NULL, iFlatTabsSetAttribPostRedraw, IUPAF_SAMEASSYSTEM, "YES", IUPAF_NO_INHERIT);
-  iupClassRegisterAttribute(ic, "TABSLINECOLOR", NULL, iFlatTabsSetAttribPostRedraw, IUPAF_SAMEASSYSTEM, "180 180 180", IUPAF_NO_INHERIT);
+  iupClassRegisterAttribute(ic, "TABSLINECOLOR", NULL, iFlatTabsSetAttribPostRedraw, IUPAF_SAMEASSYSTEM, "160 160 160", IUPAF_NO_INHERIT);
   iupClassRegisterAttribute(ic, "TABSIMAGEPOSITION", NULL, iFlatTabsSetAttribPostRedraw, IUPAF_SAMEASSYSTEM, "LEFT", IUPAF_NO_INHERIT);
   iupClassRegisterAttribute(ic, "TABSIMAGESPACING", NULL, iFlatTabsSetAttribPostRedraw, IUPAF_SAMEASSYSTEM, "2", IUPAF_NO_INHERIT);
   iupClassRegisterAttribute(ic, "TABSALIGNMENT", NULL, iFlatTabsSetAttribPostRedraw, "ACENTER:ACENTER", NULL, IUPAF_NO_INHERIT);
@@ -2422,8 +2422,8 @@ Iclass* iupFlatTabsNewClass(void)
   iupClassRegisterAttribute(ic, "CLOSEIMAGEPRESS", NULL, iFlatTabsSetAttribPostRedraw, IUPAF_SAMEASSYSTEM, "IMGFLATCLOSEPRESS", IUPAF_IHANDLENAME | IUPAF_NO_INHERIT);
   iupClassRegisterAttribute(ic, "CLOSEIMAGEHIGHLIGHT", NULL, NULL, NULL, NULL, IUPAF_IHANDLENAME | IUPAF_NO_INHERIT);
   iupClassRegisterAttribute(ic, "CLOSEIMAGEINACTIVE", NULL, iFlatTabsSetAttribPostRedraw, NULL, NULL, IUPAF_IHANDLENAME | IUPAF_NO_INHERIT);
-  iupClassRegisterAttribute(ic, "CLOSEPRESSCOLOR", NULL, NULL, IUPAF_SAMEASSYSTEM, "80 180 245", IUPAF_NO_INHERIT);
-  iupClassRegisterAttribute(ic, "CLOSEHIGHCOLOR", NULL, NULL, IUPAF_SAMEASSYSTEM, "200 220 245", IUPAF_NO_INHERIT);
+  iupClassRegisterAttribute(ic, "CLOSEPRESSCOLOR", NULL, NULL, IUPAF_SAMEASSYSTEM, IUP_FLAT_PRESSCOLOR, IUPAF_NO_INHERIT);
+  iupClassRegisterAttribute(ic, "CLOSEHIGHCOLOR", NULL, NULL, IUPAF_SAMEASSYSTEM, IUP_FLAT_HIGHCOLOR, IUPAF_NO_INHERIT);
 
   /* Extra Buttons */
   iupClassRegisterAttribute(ic, "EXTRABUTTONS", NULL, NULL, NULL, NULL, IUPAF_NO_INHERIT);

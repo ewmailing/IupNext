@@ -833,7 +833,7 @@ static int iDialCreateMethod(Ihandle* ih, void **params)
   ih->data->unit = 1.0;  /* RADIANS */
   ih->data->num_div = 3;
   iDialUpdateFgColors(ih, IDIAL_DEFAULT_FGCOLOR);
-  ih->data->flatcolor = iupDrawColor(164, 164, 164, 255);
+  ih->data->flatcolor = iupDrawColor(160, 160, 160, 255);
 
   /* IupCanvas callbacks */
   IupSetCallback(ih, "ACTION", (Icallback)iDialRedraw_CB);
@@ -881,7 +881,7 @@ Iclass* iupDialNewClass(void)
   iupClassRegisterAttribute(ic, "FGCOLOR", NULL, iDialSetFgColorAttrib, IDIAL_DEFAULT_FGCOLOR, NULL, IUPAF_NOT_MAPPED);
   iupClassRegisterAttribute(ic, "UNIT", NULL, iDialSetUnitAttrib, IUPAF_SAMEASSYSTEM, "RADIANS", IUPAF_NOT_MAPPED);
   iupClassRegisterAttribute(ic, "FLAT", iDialGetFlatAttrib, iDialSetFlatAttrib, NULL, NULL, IUPAF_NOT_MAPPED);
-  iupClassRegisterAttribute(ic, "FLATCOLOR", NULL, iDialSetFlatColorAttrib, IUPAF_SAMEASSYSTEM, "164 164 164", IUPAF_NOT_MAPPED);
+  iupClassRegisterAttribute(ic, "FLATCOLOR", NULL, iDialSetFlatColorAttrib, IUPAF_SAMEASSYSTEM, "160 160 160", IUPAF_NOT_MAPPED);
 
   /* Overwrite IupCanvas Attributes */
   iupClassRegisterAttribute(ic, "ACTIVE", iupBaseGetActiveAttrib, iDialSetActiveAttrib, IUPAF_SAMEASSYSTEM, "YES", IUPAF_DEFAULT);

@@ -430,7 +430,7 @@ static int draw_cb(Ihandle* ih)
 
 static Ihandle* myFrame(Ihandle* child)
 {
-  return IupSetAttributes(IupFlatFrame(child), "FRAMECOLOR=\"192 192 192\", FRAME=CROSSTITLE");
+  return IupSetAttributes(IupFlatFrame(child), "FRAME=CROSSTITLE");
 //  return IupVbox(child, NULL);
 }
 #define IupFlatFrame myFrame

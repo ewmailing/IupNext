@@ -70,6 +70,7 @@ void FlatFrameTest(void)
   IupSetAttribute(frame2, "FGCOLOR", "255 128 128");  /* recursive set for labels */
   IupSetAttribute(frame2, "FONTSTYLE", "Bold");
   IupSetAttribute(frame2, "FONTSIZE", "14");
+  IupSetAttribute(frame2, "FRAMECOLOR", "0 0 0");
 
   IupSetAttribute(frame3, "FRAME", "No");
   IupSetAttribute(frame3, "TITLE", "Title Text");

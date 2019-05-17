@@ -1860,10 +1860,10 @@ Iclass* iupFlatListNewClass(void)
   iupClassRegisterAttribute(ic, "VALUE", iFlatListGetValueAttrib, iFlatListSetValueAttrib, NULL, NULL, IUPAF_NO_SAVE | IUPAF_NO_DEFAULTVALUE | IUPAF_NO_INHERIT);
   iupClassRegisterAttribute(ic, "VALUESTRING", iFlatListGetValueStringAttrib, iFlatListSetValueStringAttrib, NULL, NULL, IUPAF_NO_DEFAULTVALUE | IUPAF_NO_INHERIT);
 
-  iupClassRegisterAttribute(ic, "BORDERCOLOR", NULL, NULL, IUPAF_SAMEASSYSTEM, "50 150 255", IUPAF_DEFAULT);  /* inheritable */
+  iupClassRegisterAttribute(ic, "BORDERCOLOR", NULL, NULL, IUPAF_SAMEASSYSTEM, IUP_FLAT_BORDERCOLOR, IUPAF_DEFAULT);  /* inheritable */
   iupClassRegisterAttribute(ic, "BORDERWIDTH", iFlatListGetBorderWidthAttrib, iFlatListSetBorderWidthAttrib, IUPAF_SAMEASSYSTEM, "0", IUPAF_NOT_MAPPED);  /* inheritable */
-  iupClassRegisterAttribute(ic, "FGCOLOR", NULL, iFlatListSetAttribPostRedraw, "0 0 0", NULL, IUPAF_NOT_MAPPED);  /* force the new default value */
-  iupClassRegisterAttribute(ic, "BGCOLOR", NULL, iFlatListSetAttribPostRedraw, "255 255 255", NULL, IUPAF_NOT_MAPPED);  /* force the new default value */
+  iupClassRegisterAttribute(ic, "FGCOLOR", NULL, iFlatListSetAttribPostRedraw, IUP_FLAT_FORECOLOR, NULL, IUPAF_NOT_MAPPED);  /* force the new default value */
+  iupClassRegisterAttribute(ic, "BGCOLOR", NULL, iFlatListSetAttribPostRedraw, IUP_FLAT_BACKCOLOR, NULL, IUPAF_NOT_MAPPED);  /* force the new default value */
   iupClassRegisterAttributeId(ic, "ITEMFGCOLOR", iFlatListGetItemFGColorAttrib, iFlatListSetItemFGColorAttrib, IUPAF_NO_INHERIT | IUPAF_NOT_MAPPED);
   iupClassRegisterAttributeId(ic, "ITEMBGCOLOR", iFlatListGetItemBGColorAttrib, iFlatListSetItemBGColorAttrib, IUPAF_NO_INHERIT | IUPAF_NOT_MAPPED);
   iupClassRegisterAttributeId(ic, "ITEMFONT", iFlatListGetItemFontAttrib, iFlatListSetItemFontAttrib, IUPAF_NO_INHERIT | IUPAF_NOT_MAPPED);
