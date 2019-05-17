@@ -139,12 +139,15 @@ static int iGaugeRedraw_CB(Ihandle* ih)
   xend = w - 1 - (ih->data->horiz_padding + border);
   yend = h - 1 - (ih->data->vert_padding + border);
 
-  iupAttribSetStr(ih, "DRAWCOLOR", backcolor);
-  iupAttribSet(ih, "DRAWSTYLE", "FILL");
-  if (ih->data->orientation == IGAUGE_HORIZONTAL)
-    IupDrawRectangle(ih, xstart, ystart, xend, yend);
-  else
-    IupDrawRectangle(ih, xstart, ih->currentheight - ystart, xend, ih->currentheight - yend);
+  if (backcolor)
+  {
+    iupAttribSetStr(ih, "DRAWCOLOR", backcolor);
+    iupAttribSet(ih, "DRAWSTYLE", "FILL");
+    if (ih->data->orientation == IGAUGE_HORIZONTAL)
+      IupDrawRectangle(ih, xstart, ystart, xend, yend);
+    else
+      IupDrawRectangle(ih, xstart, ih->currentheight - ystart, xend, ih->currentheight - yend);
+  }
 
   xstart++;
   ystart++;
@@ -417,6 +420,7 @@ static int iGaugeCreateMethod(Ihandle* ih, void **params)
   IupSetAttribute(ih, "EXPAND", "NO");
 
   /* default values */
+  iupAttribSet(ih, "BACKCOLOR", "220 220 220");
   iupAttribSet(ih, "FGCOLOR", IGAUGE_DEFAULTCOLOR);
   ih->data->fgcolor = iupDrawColor(0, 120, 220, 255);
   ih->data->vmax = 1;
@@ -468,7 +472,7 @@ Iclass* iupGaugeNewClass(void)
   iupClassRegisterAttribute(ic, "FLAT", iGaugeGetFlatAttrib, iGaugeSetFlatAttrib, NULL, NULL, IUPAF_NOT_MAPPED);
   iupClassRegisterAttribute(ic, "FLATCOLOR", NULL, iGaugeSetFlatColorAttrib, IUPAF_SAMEASSYSTEM, "160 160 160", IUPAF_NOT_MAPPED);
   iupClassRegisterAttribute(ic, "ORIENTATION", iGaugeGetOrientationAttrib, iGaugeSetOrientationAttrib, IUPAF_SAMEASSYSTEM, "HORIZONTAL", IUPAF_NOT_MAPPED | IUPAF_NO_INHERIT);
-  iupClassRegisterAttribute(ic, "BACKCOLOR", NULL, NULL, IUPAF_SAMEASSYSTEM, "220 220 220", IUPAF_DEFAULT);  /* inheritable */
+  iupClassRegisterAttribute(ic, "BACKCOLOR", NULL, NULL, NULL, NULL, IUPAF_DEFAULT);  /* inheritable */
 
   /* Overwrite IupCanvas Attributes */
   iupClassRegisterAttribute(ic, "ACTIVE", iupBaseGetActiveAttrib, iGaugeSetActiveAttrib, IUPAF_SAMEASSYSTEM, "YES", IUPAF_DEFAULT);
