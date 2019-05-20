@@ -168,16 +168,16 @@
       <Project>{1ebc7a53-4677-ffff-1234-49d301f17d85}</Project>
       <ReferenceOutputAssembly>false</ReferenceOutputAssembly>
     </ProjectReference>
-    <ProjectReference Include="iuplua_pplot.vcxproj">
-      <Project>{1ebc7a53-4677-aaaa-1234-49d301f17d85}</Project>
+    <ProjectReference Include="iuplua_plot.vcxproj">
+      <Project>{8B2E140D-E759-441F-B2BC-B9FE61CDF741}</Project>
       <ReferenceOutputAssembly>false</ReferenceOutputAssembly>
     </ProjectReference>
     <ProjectReference Include="..\iupwin.vcxproj">
       <Project>{2c7e83b9-123a-bcdf-97ba-fcf4d0728408}</Project>
       <ReferenceOutputAssembly>false</ReferenceOutputAssembly>
     </ProjectReference>
-    <ProjectReference Include="..\iup_pplot.vcxproj">
-      <Project>{5a42018b-95ac-a789-e4e4-59a692649dca}</Project>
+    <ProjectReference Include="..\iup_plot.vcxproj">
+      <Project>{C146018B-9ADC-A745-A7E4-532192649FCA}</Project>
       <ReferenceOutputAssembly>false</ReferenceOutputAssembly>
     </ProjectReference>
   </ItemGroup>

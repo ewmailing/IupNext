@@ -72,7 +72,7 @@
       <Culture>0x0416</Culture>
     </ResourceCompile>
     <Link>
-      <AdditionalDependencies>iupgtk3.lib;comctl32.lib;gtk-win32-3.0.lib;gdk-win32-3.0.lib;gdk_pixbuf-2.0.lib;pangocairo-1.0.lib;pango-1.0.lib;cairo.lib;pangowin32-1.0.lib;gobject-2.0.lib;gmodule-2.0.lib;glib-2.0.lib;iupcontrols.lib;iupimglib.lib;iup_pplot.lib;iupgl.lib;cdgdk.lib;cdcairo.lib;iupcd.lib;freetype6.lib;zlib1.lib;lua$(LUA_SUFFIX).lib;iuplua$(LUASFX).lib;iupluaim$(LUASFX).lib;iupluaimglib$(LUASFX).lib;iupluagl$(LUASFX).lib;iupluacontrols$(LUASFX).lib;iuplua_pplot$(LUASFX).lib;iupim.lib;opengl32.lib;glu32.lib;gdiplus.lib;im.lib;cdlua$(LUASFX).lib;iupluacd$(LUASFX).lib;imlua$(LUASFX).lib;imlua_process$(LUASFX).lib;cdluaim$(LUASFX).lib;im_process.lib;%(AdditionalDependencies)</AdditionalDependencies>
+      <AdditionalDependencies>iupgtk3.lib;comctl32.lib;gtk-win32-3.0.lib;gdk-win32-3.0.lib;gdk_pixbuf-2.0.lib;pangocairo-1.0.lib;pango-1.0.lib;cairo.lib;pangowin32-1.0.lib;gobject-2.0.lib;gmodule-2.0.lib;glib-2.0.lib;iupcontrols.lib;iupimglib.lib;iup_plot.lib;iupgl.lib;cdgdk.lib;cdcairo.lib;iupcd.lib;freetype6.lib;zlib1.lib;lua$(LUA_SUFFIX).lib;iuplua$(LUASFX).lib;iupluaim$(LUASFX).lib;iupluaimglib$(LUASFX).lib;iupluagl$(LUASFX).lib;iupluacontrols$(LUASFX).lib;iuplua_plot$(LUASFX).lib;iupim.lib;opengl32.lib;glu32.lib;gdiplus.lib;im.lib;cdlua$(LUASFX).lib;iupluacd$(LUASFX).lib;imlua$(LUASFX).lib;imlua_process$(LUASFX).lib;cdluaim$(LUASFX).lib;im_process.lib;%(AdditionalDependencies)</AdditionalDependencies>
       <OutputFile>$(OutDir)iuplua$(LUASFX)gtk3.exe</OutputFile>
       <SuppressStartupBanner>true</SuppressStartupBanner>
       <AdditionalLibraryDirectories>..\..\..\im\lib\Debug;..\..\..\cd\lib\Debug;..\..\lib\Debug;..\..\..\im\lib\Debug\Lua$(LUASFX);..\..\..\cd\lib\Debug\Lua$(LUASFX);..\..\lib\Debug\Lua$(LUASFX);..\..\..\lua$(LUA_SUFFIX)\lib\vc12;\lng\gtk3\lib;%(AdditionalLibraryDirectories)</AdditionalLibraryDirectories>
@@ -156,12 +156,12 @@
       <Project>{1ebc7a53-4677-adf1-8d4a-49d301f17d85}</Project>
       <ReferenceOutputAssembly>false</ReferenceOutputAssembly>
     </ProjectReference>
-    <ProjectReference Include="iuplua_pplot.vcxproj">
-      <Project>{1ebc7a53-4677-aaaa-1234-49d301f17d85}</Project>
+    <ProjectReference Include="iuplua_plot.vcxproj">
+      <Project>{8B2E140D-E759-441F-B2BC-B9FE61CDF741}</Project>
       <ReferenceOutputAssembly>false</ReferenceOutputAssembly>
     </ProjectReference>
-    <ProjectReference Include="..\iup_pplot.vcxproj">
-      <Project>{5a42018b-95ac-a789-e4e4-59a692649dca}</Project>
+    <ProjectReference Include="..\iup_plot.vcxproj">
+      <Project>{C146018B-9ADC-A745-A7E4-532192649FCA}</Project>
       <ReferenceOutputAssembly>false</ReferenceOutputAssembly>
     </ProjectReference>
   </ItemGroup>
