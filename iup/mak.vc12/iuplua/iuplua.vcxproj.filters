@@ -241,6 +241,9 @@
     <ClCompile Include="..\..\srclua5\elem\il_flatlist.c">
       <Filter>Source Files\controls</Filter>
     </ClCompile>
+    <ClCompile Include="..\..\srclua5\elem\il_flatval.c">
+      <Filter>Source Files\controls</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <None Include="..\..\srclua5\iuplua.def">
@@ -652,6 +655,9 @@
       <Filter>Includes\controls</Filter>
     </None>
     <None Include="..\..\srclua5\elem\flatlist.lua">
+      <Filter>Lua\controls</Filter>
+    </None>
+    <None Include="..\..\srclua5\elem\flatval.lua">
       <Filter>Lua\controls</Filter>
     </None>
   </ItemGroup>
