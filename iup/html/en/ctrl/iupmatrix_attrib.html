@@ -197,7 +197,8 @@ line of the cell. When not defined the FRAMEVERTCOLOR<em>*:C</em> is used. For a
 right and left frames, except if FRAMETITLEVERTCOLOR<i>L</i><strong>:</strong><i>C</i>&nbsp; 
 is defined. If value is &quot;BGCOLOR&quot; the frame line is not drawn.<br>
 <strong>FRAMEVERTCOLOR<em>*:C</em></strong>: same as FRAMEVERTCOLOR<em>L:C</em> 
-but for all the cells of the column C. When not defined the FRAMECOLOR is used. (since 3.5)<strong><br>FRAMETITLEVERTCOLOR<em>L:</em></strong><em><strong>0</strong></em>: 
+but for all the cells of the column C. When not defined the FRAMECOLORL:C is used. (since 3.5)<strong><br>FRAMEVERTCOLOR<em>L:*</em></strong>: same as FRAMEVERTCOLOR<em>L:C</em> 
+but for all the cells of the line L. When not defined the FRAMECOLOR*:C is used. (since 3.28)<strong><br>FRAMETITLEVERTCOLOR<em>L:</em></strong><em><strong>0</strong></em>: 
 color of the vertical left frame line of the cell. When not defined the FRAMEVERTCOLOR<em>L:0</em>&nbsp; 
 is used. &quot;L&quot; can also be &quot;*&quot; (since 3.22)<strong><br>
 FRAMEHORIZCOLOR<em>L:C</em></strong>: color of the horizontal bottom frame 
@@ -207,7 +208,9 @@ except if FRAMETITLEHORIZCOLOR<i>L</i><strong>:</strong><i>C</i>&nbsp; is
 defined. If value is 
 &quot;BGCOLOR&quot; the frame line is not drawn.<br>
 <strong>FRAMEHORIZCOLOR<em>L:*</em></strong>: same as FRAMEHORIZCOLOR<em>L:C </em>
-but for all the cells of the line L. When not defined the FRAMECOLOR is used. (since 3.5)<br>
+but for all the cells of the line L. When not defined the FRAMECOLORL:C is used. (since 3.5)<br>
+<strong>FRAMEHORIZCOLOR<em>*:C</em></strong>: same as FRAMEHORIZCOLOR<em>L:C </em>
+but for all the cells of the column C. When not defined the FRAMECOLORL:* is used. (since 3.28)<br>
 <strong>FRAMETITLEHORIZCOLOR<em>0:C</em></strong>: color of the horizontal top 
 frame line of the cell. When not defined the FRAMEHORIZCOLOR<em>0:C</em>&nbsp; 
 is used. &quot;C&quot; can also be &quot;*&quot;. (since 3.22)</p>

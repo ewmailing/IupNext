@@ -58,7 +58,7 @@
          MARK is stored in the hash table when in callback mode and the MARK*_CB callbacks are not defined.
 */
 
-#define IMAT_NUM_ATTRIB_LINE 8
+#define IMAT_NUM_ATTRIB_LINE 9
 #define IMAT_NUM_ATTRIB_LINE_ONLY 3
 static char* imatrix_lin_attrib[IMAT_NUM_ATTRIB_LINE] = {
   "RASTERHEIGHT",  /* only the line */
@@ -68,9 +68,10 @@ static char* imatrix_lin_attrib[IMAT_NUM_ATTRIB_LINE] = {
   "FGCOLOR",
   "FONT",
   "TYPE",
-  "FRAMEHORIZCOLOR"};
+  "FRAMEHORIZCOLOR",
+  "FRAMEVERTCOLOR"};
 
-#define IMAT_NUM_ATTRIB_COL 11
+#define IMAT_NUM_ATTRIB_COL 12
 #define IMAT_NUM_ATTRIB_COL_ONLY 6
 static char* imatrix_col_attrib[IMAT_NUM_ATTRIB_COL] = { 
   "NUMERICFORMAT",   /* only the column */
@@ -83,7 +84,8 @@ static char* imatrix_col_attrib[IMAT_NUM_ATTRIB_COL] = {
   "FGCOLOR",
   "FONT",
   "TYPE",
-  "FRAMEVERTCOLOR"};
+  "FRAMEVERTCOLOR",
+  "FRAMEHORIZCOLOR"};
 
 #define IMAT_NUM_ATTRIB_CELL 11
 static char* imatrix_cell_attrib[IMAT_NUM_ATTRIB_CELL] = { 

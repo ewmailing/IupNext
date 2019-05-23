@@ -124,10 +124,24 @@ static Ihandle* create_matrix(void)
 //  IupSetAttribute(mat, "WIDTHDEF", "15");
 //  IupSetAttribute(mat, "FRAMEBORDER", "Yes");
 
-  IupSetAttribute(mat,"FRAMEVERTCOLOR1:2","BGCOLOR");
-  IupSetAttribute(mat,"FRAMEHORIZCOLOR2:1","BGCOLOR");
+//  IupSetAttribute(mat,"FRAMEVERTCOLOR1:2","BGCOLOR");
+//  IupSetAttribute(mat,"FRAMEHORIZCOLOR2:1","BGCOLOR");
 //  IupSetAttribute(mat,"FRAMEVERTCOLOR1:2","255 255 255");
 //  IupSetAttribute(mat,"FRAMEHORIZCOLOR2:1","255 255 255");
+
+  //IupSetAttribute(mat, "FRAMECOLOR", "255 255 255");
+  //IupSetAttribute(mat, "BGCOLOR1:*", "192 192 192");
+  //IupSetAttribute(mat, "BGCOLOR3:*", "192 192 192");
+  //IupSetAttribute(mat, "BGCOLOR5:*", "192 192 192");
+  //IupSetAttribute(mat, "FRAMEVERTCOLOR1:*","192 192 192");
+  //IupSetAttribute(mat, "FRAMEVERTCOLOR3:*","192 192 192");
+  //IupSetAttribute(mat, "FRAMEVERTCOLOR5:*","192 192 192");
+  //IupSetAttribute(mat, "FRAMEHORIZCOLOR1:*", "192 192 192");
+  //IupSetAttribute(mat, "FRAMEHORIZCOLOR3:*", "192 192 192");
+  //IupSetAttribute(mat, "FRAMEHORIZCOLOR5:*", "192 192 192");
+  //IupSetAttribute(mat, "FRAMEVERTCOLOR3:1","192 192 192");
+  //IupSetAttribute(mat, "FRAMEVERTCOLOR3:2","192 192 192");
+  //IupSetAttribute(mat, "FRAMEVERTCOLOR3:3", "192 192 192");
 
 #ifdef XXXBIG_MATRIX
   for (lin = 0; lin < 3000; lin++)
