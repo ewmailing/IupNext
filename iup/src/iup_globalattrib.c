@@ -137,7 +137,7 @@ static void iGlobalSet(const char *name, const char *value, int store)
   {
     int x, y, status;
     char bt; 
-    if (sscanf(value, "%dx%d %c %d", &x, &y, &bt, &status) == 4)
+    if (value && sscanf(value, "%dx%d %c %d", &x, &y, &bt, &status) == 4)
       iupdrvSendMouse(x, y, bt, status);
     return;
   }
