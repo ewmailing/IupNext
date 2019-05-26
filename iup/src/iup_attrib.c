@@ -1499,6 +1499,9 @@ static void iAttribParse(Ihandle *ih, const char* str)
       break;
     }
   }
+
+  if (name)
+    free(name);
 }
 
 Ihandle* IupSetAttributes(Ihandle *ih, const char* str)
