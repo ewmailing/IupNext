@@ -436,8 +436,10 @@ void ButtonTest(void)
   IupSetAttribute(dlg, "PARENTDIALOG", "BIGTEST");
   IupSetAttributeHandle(dlg, "DEFAULTENTER", IupGetDialogChild(dlg, "button1"));
   IupSetAttributeHandle(dlg, "DEFAULTESC", IupGetDialogChild(dlg, "button6"));
-
   IupSetAttributeHandle(dlg, "STARTFOCUS", button);
+
+//  IupSetAttribute(dlg, "MAXIMIZEATPARENT", "Yes");
+//  IupSetAttribute(dlg, "PLACEMENT", "MAXIMIZED");
 
 //  IupSetGlobal("CLIENTAREAANIMATION", "No");
 //  IupSetGlobal("HOTTRACKING", "No");

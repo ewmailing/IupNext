@@ -125,8 +125,27 @@ void iupdrvDialogGetSize(Ihandle* ih, InativeHandle* handle, int *w, int *h)
   if (h) *h = rect.bottom-rect.top;
 }
 
+static void winDialogMaximizeAtParent(HWND hWnd, HWND hWndParent)
+{
+  MONITORINFO mi = { sizeof(MONITORINFO) };
+  const LONG currStyles = GetWindowLong(hWnd, GWL_STYLE);
+  GetMonitorInfo(MonitorFromWindow(hWndParent, MONITOR_DEFAULTTONEAREST), &mi);
+  SetWindowLong(hWnd, GWL_STYLE, currStyles | WS_MAXIMIZE);
+  SetWindowPos(hWnd, HWND_TOP, mi.rcMonitor.left, mi.rcMonitor.top, 0, 0, SWP_NOSIZE);
+}
+
 void iupdrvDialogSetVisible(Ihandle* ih, int visible)
 {
+  if (visible && (ih->data->cmd_show == SW_MAXIMIZE || ih->data->cmd_show == SW_SHOWMAXIMIZED))
+  {
+    if (iupAttribGetBoolean(ih, "MAXIMIZEATPARENT"))
+    {
+      Ihandle* parent = IupGetAttributeHandle(ih, "PARENTDIALOG");
+      if (parent)
+        winDialogMaximizeAtParent(ih->handle, parent->handle);
+    }
+  }
+
   ShowWindow(ih->handle, visible? ih->data->cmd_show: SW_HIDE);
 }
 
@@ -2011,6 +2030,7 @@ void iupdrvDialogInitClass(Iclass* ic)
   iupClassRegisterAttribute(ic, "MINIMIZED", winDialogGetMinimizedAttrib, NULL, NULL, NULL, IUPAF_READONLY | IUPAF_NO_INHERIT);
   iupClassRegisterAttribute(ic, "SHOWNOACTIVATE", NULL, NULL, NULL, NULL, IUPAF_NO_INHERIT);
   iupClassRegisterAttribute(ic, "SHOWMINIMIZENEXT", NULL, NULL, NULL, NULL, IUPAF_NO_INHERIT);
+  iupClassRegisterAttribute(ic, "MAXIMIZEATPARENT", NULL, NULL, NULL, NULL, IUPAF_NO_INHERIT);
 
   iupClassRegisterAttribute(ic, "COMPOSITED", NULL, NULL, NULL, NULL, IUPAF_NOT_MAPPED);
 
