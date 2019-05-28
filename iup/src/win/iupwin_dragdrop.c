@@ -405,6 +405,9 @@ static HRESULT STDMETHODCALLTYPE IwinDataObject_GetData(IwinDataObject* pThis, L
   winGetClipboardFormatName(pFormatEtc->cfFormat, type, 256);
 
   cbDragDataSize = (IFns)IupGetCallback(pThis->ih, "DRAGDATASIZE_CB");
+  if (!cbDragDataSize)
+    return STG_E_MEDIUMFULL;
+
   size = cbDragDataSize(pThis->ih, iupwinStrFromSystem(type));
   if (size <= 0)
     return STG_E_MEDIUMFULL;
