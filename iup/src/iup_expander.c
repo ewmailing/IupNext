@@ -387,6 +387,9 @@ static int iExpanderAnimateTimer_CB(Ihandle* animate_timer)
   int height;
   int current_frame = frame_time != 0 ? time_delay / frame_time : 0;  /* safety check */
 
+  if (num_frames == 0)
+    return IUP_DEFAULT;
+
   if (closing)
     height = (final_height*(num_frames - current_frame)) / num_frames;
   else
