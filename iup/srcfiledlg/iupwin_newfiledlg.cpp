@@ -719,7 +719,7 @@ static int winNewFileDlgPopup(Ihandle *ih, int x, int y)
         psiResult->Release();
       }
     }
-    else
+    else if (opfd != NULL) /* MULTIPLEFILES=Yes (so DIALOGTYPE=OPEN) */
     {
       IShellItemArray *psiaResult;
 
