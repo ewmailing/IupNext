@@ -87,7 +87,7 @@ char *iupdrvGetSystemVersion(void)
   sprintf(str, "%d.%d.%d", (int)osvi.dwMajorVersion, (int)osvi.dwMinorVersion, (int)osvi.dwBuildNumber);
 
   /* Display service pack (if any). */
-  if (osvi.szCSDVersion && osvi.szCSDVersion[0]!=0)
+  if (osvi.szCSDVersion[0] != 0)
   {
     strcat(str, " ");
     strcat(str, osvi.szCSDVersion);
