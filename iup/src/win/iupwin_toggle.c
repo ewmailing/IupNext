@@ -578,6 +578,7 @@ static int winToggleWmCommand(Ihandle* ih, WPARAM wp, LPARAM lp)
   case BN_DOUBLECLICKED:
     if (iupAttribGetBoolean(ih, "IGNOREDOUBLECLICK"))
       return 0;
+    /* continue */
   case BN_CLICKED:
     {
       Ihandle *radio;
