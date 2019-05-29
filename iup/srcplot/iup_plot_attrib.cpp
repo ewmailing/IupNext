@@ -248,7 +248,6 @@ static int iPlotSetRedrawAttrib(Ihandle* ih, const char* value)
 
   iupPlotRedraw(ih, flush, only_current, reset_redraw);
 
-  (void)value;  /* not used */
   return 0;
 }
 
@@ -1286,6 +1285,10 @@ static char* iPlotGetSyncViewAttrib(Ihandle* ih)
 static int iPlotSetMergeViewAttrib(Ihandle* ih, const char* value)
 {
   ih->data->merge_view = iupStrBoolean(value);
+
+  if (ih->data->cd_canvas)
+    iupPlotUpdateViewports(ih);
+
   return 0;
 }
 
