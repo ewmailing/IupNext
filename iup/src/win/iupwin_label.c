@@ -44,7 +44,7 @@ static void winLabelDrawImage(Ihandle* ih, HDC hDC, int rect_width, int rect_hei
   int xpad = ih->data->horiz_padding, 
       ypad = ih->data->vert_padding;
   int x, y, width, height, bpp;
-  HBITMAP hBitmap, hMask = NULL;
+  HBITMAP hBitmap;
   char *name;
   int make_inactive = 0;
 
@@ -85,9 +85,6 @@ static void winLabelDrawImage(Ihandle* ih, HDC hDC, int rect_width, int rect_hei
   y += ypad;
 
   iupwinDrawBitmap(hDC, hBitmap, x, y, width, height, width, height, bpp);
-
-  if (hMask)
-    DeleteObject(hMask);
 }
 
 static void winLabelDrawText(Ihandle* ih, HDC hDC, int rect_width, int rect_height, UINT itemState)
