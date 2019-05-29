@@ -175,7 +175,6 @@ static int iGlobalGetAppAttributes(char **names)
 static void iGlobalsUpdate(Ihandle* properties)
 {
   int i, j, attr_count, total_count = iGlobalGetAppAttributes(NULL);
-  char **attr_names = (char **)malloc(total_count * sizeof(char *));
   Ihandle* list1 = (Ihandle*)iupAttribGet(properties, "_IUP_PROPLIST1");
   Ihandle* txt1 = (Ihandle*)iupAttribGetInherit(list1, "_IUP_ATTVALUE");
   Ihandle* setbut1 = (Ihandle*)iupAttribGetInherit(list1, "_IUP_SETBUTTON");
@@ -190,6 +189,7 @@ static void iGlobalsUpdate(Ihandle* properties)
   Ihandle* txt3 = (Ihandle*)iupAttribGetInherit(list3, "_IUP_CBVALUE");
   Ihandle* list4 = (Ihandle*)iupAttribGet(properties, "_IUP_NAMESLIST");
   Ihandle* txt4 = (Ihandle*)iupAttribGetInherit(list4, "_IUP_NAMESVALUE");
+  char **attr_names;
 
   /* Clear everything */
   IupSetAttribute(list1, "REMOVEITEM", NULL);
@@ -209,6 +209,7 @@ static void iGlobalsUpdate(Ihandle* properties)
 
   if (total_count > 0)
   {
+    attr_names = (char **)malloc(total_count * sizeof(char *));
     attr_count = iGlobalGetAppAttributes(attr_names);
     qsort(attribs, total_count, sizeof(iRegisteredGlobal), compare_names);
     for (i = 0; i < attr_count; i++)
@@ -399,7 +400,7 @@ static int iGlobalsFunctionsList_CB(Ihandle *list1, char *name, int item, int st
     Ihandle* txt1 = (Ihandle *)iupAttribGetInherit(list1, "_IUP_CBVALUE");
 
     if (cb)
-      IupSetfAttribute(txt1, "VALUE", "%p", (char*)cb);
+      IupSetfAttribute(txt1, "VALUE", "%p", cb);
     else
       IupSetAttribute(txt1, "VALUE", "NULL");
 
