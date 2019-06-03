@@ -1058,7 +1058,7 @@ static void iFlatTabsCheckCurrentTab(Ihandle* ih, Ihandle* check_child, int chec
         {
           /* found a new tab to be current */
           if (iupAttribGetBoolean(ih, "TABCHANGEONCHECK"))
-            iFlatTabsCallTabChange(ih, check_child, check_pos, child); /* ignore return value */
+            (void)iFlatTabsCallTabChange(ih, check_child, check_pos, child); /* ignore return value */
 
           iFlatTabsSetCurrentTab(ih, child);
           return;
@@ -1078,7 +1078,7 @@ static void iFlatTabsCheckCurrentTab(Ihandle* ih, Ihandle* check_child, int chec
         {
           /* found a new tab to be current */
           if (iupAttribGetBoolean(ih, "TABCHANGEONCHECK"))
-            iFlatTabsCallTabChange(ih, check_child, check_pos, child); /* ignore return value */
+            (void)iFlatTabsCallTabChange(ih, check_child, check_pos, child); /* ignore return value */
 
           iFlatTabsSetCurrentTab(ih, child);
           return;

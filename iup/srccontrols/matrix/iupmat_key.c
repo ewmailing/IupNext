@@ -173,7 +173,7 @@ int iupMatrixProcessKeyPress(Ihandle* ih, int c)
 
     case K_CR:
       if (!ih->data->edit_hide_onfocus && ih->data->editing)
-        iupMatrixEditConfirm(ih);  /* ignore return value */
+        (void)iupMatrixEditConfirm(ih);  /* ignore return value */
       else
       {
         if (iupMatrixEditShow(ih))

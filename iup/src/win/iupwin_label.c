@@ -295,7 +295,7 @@ static int winLabelMsgProc(Ihandle* ih, UINT msg, WPARAM wp, LPARAM lp, LRESULT 
   case WM_MBUTTONUP:
   case WM_RBUTTONUP:
     {
-      iupwinButtonUp(ih, msg, wp, lp); /* ignore return value */
+      (void)iupwinButtonUp(ih, msg, wp, lp); /* ignore return value */
       break;
     }
   case WM_MOUSEMOVE:
