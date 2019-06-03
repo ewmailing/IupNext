@@ -1021,7 +1021,7 @@ of a tick number in the X axis. If the callback is not defined the internal
 function is used. (since 3.28)</p>
   
     <pre>int function(Ihandle *<strong>ih</strong>, char* <strong>buffer</strong>, char* <strong>format</strong>, double <strong>x</strong>, char* <strong>decimal_symbol</strong>); [in C]
-<strong>ih</strong>:select_cb(<b>format</b>: <span class="auto-style3">string</span><b>, x</b>: number, <strong>decimal_symbol</strong>: string) -&gt; (<strong>ret</strong>: number, <strong>buffer</strong>: string) [in Lua]</pre>
+<strong>ih</strong>:xtickformatnumber_cb(<b>format</b>: <span class="auto-style3">string</span><b>, x</b>: number, <strong>decimal_symbol</strong>: string) -&gt; (<strong>ret</strong>: number, <strong>buffer</strong>: string) [in Lua]</pre>
     <p class="info"><strong>ih</strong>:
   identifier of the element that activated the 
   event.<br> <strong>buffer</strong>: buffer that will receive the string with 
@@ -1042,7 +1042,7 @@ of a tick number in the Y axis. If the callback is not defined the internal
 function is used. (since 3.28)</p>
   
     <pre>int function(Ihandle *<strong>ih</strong>, char* <strong>buffer</strong>, char* <strong>format</strong>, double <strong>y</strong>, char* <strong>decimal_symbol</strong>); [in C]
-<strong>ih</strong>:select_cb(<b>format</b>: <span class="auto-style3">string</span><b>, y</b>: number, <strong>decimal_symbol</strong>: string) -&gt; (<strong>ret</strong>: number, <strong>buffer</strong>: string) [in Lua]</pre>
+<strong>ih</strong>:ytickformatnumber_cb(<b>format</b>: <span class="auto-style3">string</span><b>, y</b>: number, <strong>decimal_symbol</strong>: string) -&gt; (<strong>ret</strong>: number, <strong>buffer</strong>: string) [in Lua]</pre>
     <p class="info"><strong>ih</strong>:
   identifier of the element that activated the 
   event.<br> <strong>buffer</strong>: buffer that will receive the string with 
