@@ -3518,6 +3518,8 @@ static Iclass* iPlotNewClass(void)
   iupClassRegisterCallback(ic, "MENUCONTEXTCLOSE_CB", "nii");
   iupClassRegisterCallback(ic, "PROPERTIESCHANGED_CB", "");
   iupClassRegisterCallback(ic, "DSPROPERTIESCHANGED_CB", "i");
+  iupClassRegisterCallback(ic, "XTICKFORMATNUMBER_CB", "ssds");
+  iupClassRegisterCallback(ic, "YTICKFORMATNUMBER_CB", "ssds");
 
   iupPlotRegisterAttributes(ic);
 

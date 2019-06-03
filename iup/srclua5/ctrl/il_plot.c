@@ -13,19 +13,39 @@
 #include "il.h"
 
 
-static int plot_plotmotion_cb(Ihandle *self, double p0, double p1, char * p2)
+static int plot_ytickformatnumber_cb(Ihandle *self, char * p0, char * p1, double p2, char * p3)
 {
-  lua_State *L = iuplua_call_start(self, "plotmotion_cb");
-  lua_pushnumber(L, p0);
-  lua_pushnumber(L, p1);
-  lua_pushstring(L, p2);
+  lua_State *L = iuplua_call_start(self, "ytickformatnumber_cb");
+  lua_pushstring(L, p0);
+  lua_pushstring(L, p1);
+  lua_pushnumber(L, p2);
+  lua_pushstring(L, p3);
+  return iuplua_call(L, 4);
+}
+
+static int plot_selectbegin_cb(Ihandle *self)
+{
+  lua_State *L = iuplua_call_start(self, "selectbegin_cb");
+  return iuplua_call(L, 0);
+}
+
+static int plot_menucontext_cb(Ihandle *self, Ihandle * p0, int p1, int p2)
+{
+  lua_State *L = iuplua_call_start(self, "menucontext_cb");
+  iuplua_pushihandle(L, p0);
+  lua_pushinteger(L, p1);
+  lua_pushinteger(L, p2);
   return iuplua_call(L, 3);
 }
 
-static int plot_propertieschanged_cb(Ihandle *self)
+static int plot_xtickformatnumber_cb(Ihandle *self, char * p0, char * p1, double p2, char * p3)
 {
-  lua_State *L = iuplua_call_start(self, "propertieschanged_cb");
-  return iuplua_call(L, 0);
+  lua_State *L = iuplua_call_start(self, "xtickformatnumber_cb");
+  lua_pushstring(L, p0);
+  lua_pushstring(L, p1);
+  lua_pushnumber(L, p2);
+  lua_pushstring(L, p3);
+  return iuplua_call(L, 4);
 }
 
 static int plot_postdraw_cb(Ihandle *self, int p0)
@@ -121,15 +141,6 @@ static int plot_editsample_cb(Ihandle *self, int p0, int p1, double p2, double p
   return iuplua_call(L, 4);
 }
 
-static int plot_menucontext_cb(Ihandle *self, Ihandle * p0, int p1, int p2)
-{
-  lua_State *L = iuplua_call_start(self, "menucontext_cb");
-  iuplua_pushihandle(L, p0);
-  lua_pushinteger(L, p1);
-  lua_pushinteger(L, p2);
-  return iuplua_call(L, 3);
-}
-
 static int plot_menucontextclose_cb(Ihandle *self, Ihandle * p0, int p1, int p2)
 {
   lua_State *L = iuplua_call_start(self, "menucontextclose_cb");
@@ -139,10 +150,19 @@ static int plot_menucontextclose_cb(Ihandle *self, Ihandle * p0, int p1, int p2)
   return iuplua_call(L, 3);
 }
 
-static int plot_selectbegin_cb(Ihandle *self)
+static int plot_propertieschanged_cb(Ihandle *self)
 {
-  lua_State *L = iuplua_call_start(self, "selectbegin_cb");
+  lua_State *L = iuplua_call_start(self, "propertieschanged_cb");
   return iuplua_call(L, 0);
+}
+
+static int plot_plotmotion_cb(Ihandle *self, double p0, double p1, char * p2)
+{
+  lua_State *L = iuplua_call_start(self, "plotmotion_cb");
+  lua_pushnumber(L, p0);
+  lua_pushnumber(L, p1);
+  lua_pushstring(L, p2);
+  return iuplua_call(L, 3);
 }
 
 static int plot_deletebegin_cb(Ihandle *self)
@@ -183,8 +203,10 @@ int iupplotlua_open(lua_State * L)
 {
   iuplua_register(L, Plot, "Plot");
 
-  iuplua_register_cb(L, "PLOTMOTION_CB", (lua_CFunction)plot_plotmotion_cb, NULL);
-  iuplua_register_cb(L, "PROPERTIESCHANGED_CB", (lua_CFunction)plot_propertieschanged_cb, NULL);
+  iuplua_register_cb(L, "YTICKFORMATNUMBER_CB", (lua_CFunction)plot_ytickformatnumber_cb, NULL);
+  iuplua_register_cb(L, "SELECTBEGIN_CB", (lua_CFunction)plot_selectbegin_cb, NULL);
+  iuplua_register_cb(L, "MENUCONTEXT_CB", (lua_CFunction)plot_menucontext_cb, NULL);
+  iuplua_register_cb(L, "XTICKFORMATNUMBER_CB", (lua_CFunction)plot_xtickformatnumber_cb, NULL);
   iuplua_register_cb(L, "POSTDRAW_CB", (lua_CFunction)plot_postdraw_cb, NULL);
   iuplua_register_cb(L, "DELETE_CB", (lua_CFunction)plot_delete_cb, NULL);
   iuplua_register_cb(L, "CLICKSAMPLE_CB", (lua_CFunction)plot_clicksample_cb, NULL);
@@ -195,9 +217,9 @@ int iupplotlua_open(lua_State * L)
   iuplua_register_cb(L, "SELECT_CB", (lua_CFunction)plot_select_cb, NULL);
   iuplua_register_cb(L, "DSPROPERTIESCHANGED_CB", (lua_CFunction)plot_dspropertieschanged_cb, NULL);
   iuplua_register_cb(L, "EDITSAMPLE_CB", (lua_CFunction)plot_editsample_cb, NULL);
-  iuplua_register_cb(L, "MENUCONTEXT_CB", (lua_CFunction)plot_menucontext_cb, NULL);
   iuplua_register_cb(L, "MENUCONTEXTCLOSE_CB", (lua_CFunction)plot_menucontextclose_cb, NULL);
-  iuplua_register_cb(L, "SELECTBEGIN_CB", (lua_CFunction)plot_selectbegin_cb, NULL);
+  iuplua_register_cb(L, "PROPERTIESCHANGED_CB", (lua_CFunction)plot_propertieschanged_cb, NULL);
+  iuplua_register_cb(L, "PLOTMOTION_CB", (lua_CFunction)plot_plotmotion_cb, NULL);
   iuplua_register_cb(L, "DELETEBEGIN_CB", (lua_CFunction)plot_deletebegin_cb, NULL);
   iuplua_register_cb(L, "PREDRAW_CB", (lua_CFunction)plot_predraw_cb, NULL);
   iuplua_register_cb(L, "PLOTBUTTON_CB", (lua_CFunction)plot_plotbutton_cb, NULL);

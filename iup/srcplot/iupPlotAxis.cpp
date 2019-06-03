@@ -70,6 +70,24 @@ static int iPlotEstimateNumberCharCount(bool inFormatAuto, const char* inFormatS
   return thePrecision;
 }
 
+static bool iPlotGetTickFormat(Ihandle* ih, Ifnssds formatticknumber_cb, char* inBuf, const char *inFormatString, double inValue)
+{
+  char* decimal_symbol = IupGetGlobal("DEFAULTDECIMALSYMBOL");
+
+  if (formatticknumber_cb)
+  {
+    int ret = formatticknumber_cb(ih, inBuf, (char*)inFormatString, inValue, decimal_symbol);
+    if (ret == IUP_IGNORE)
+      return false;
+    else if (ret == IUP_CONTINUE)
+      iupStrPrintfDoubleLocale(inBuf, inFormatString, inValue, decimal_symbol);
+  }
+  else
+    iupStrPrintfDoubleLocale(inBuf, inFormatString, inValue, decimal_symbol);
+
+  return true;
+}
+
 
 /************************************************************************************************/
 
@@ -497,7 +515,7 @@ double iupPlotAxisX::GetScreenYOriginX(const iupPlotAxis& inAxisY) const
   return inAxisY.mTrafo->Transform(theTargetY);
 }
 
-bool iupPlotAxisX::DrawX(const iupPlotRect &inRect, cdCanvas* canvas, const iupPlotAxis& inAxisY) const
+bool iupPlotAxisX::DrawX(const iupPlotRect &inRect, cdCanvas* canvas, const iupPlotAxis& inAxisY, Ihandle* ih) const
 {
   if (!mShow)
     return true;
@@ -529,11 +547,13 @@ bool iupPlotAxisX::DrawX(const iupPlotRect &inRect, cdCanvas* canvas, const iupP
     char theFormatString[30];
     strcpy(theFormatString, mTick.mFormatString);
 
+    Ifnssds formatticknumber_cb = (Ifnssds)IupGetCallback(ih, "XTICKFORMATNUMBER_CB");
+
     if (mTick.mShowNumber)
       SetFont(canvas, mTick.mFontStyle, mTick.mFontSize);
 
     while (mTickIter->GetNextTick(theX, theIsMajorTick, theFormatString))
-      DrawXTick(theX, theScreenY, theIsMajorTick, theFormatString, canvas);
+      DrawXTick(theX, theScreenY, theIsMajorTick, theFormatString, canvas, ih, formatticknumber_cb);
 
     int theTickSpace = mTick.mMajorSize;  // skip major tick
     if (mTick.mShowNumber)
@@ -577,7 +597,7 @@ bool iupPlotAxisX::DrawX(const iupPlotRect &inRect, cdCanvas* canvas, const iupP
   return true;
 }
 
-void iupPlotAxisX::DrawXTick(double inX, double inScreenY, bool inMajor, const char*inFormatString, cdCanvas* canvas) const
+void iupPlotAxisX::DrawXTick(double inX, double inScreenY, bool inMajor, const char*inFormatString, cdCanvas* canvas, Ihandle* ih, Ifnssds formatticknumber_cb) const
 {
   int theTickSize;
   double theScreenX = mTrafo->Transform(inX);
@@ -588,19 +608,20 @@ void iupPlotAxisX::DrawXTick(double inX, double inScreenY, bool inMajor, const c
     if (mTick.mShowNumber)
     {
       char theBuf[128];
-      iupStrPrintfDoubleLocale(theBuf, inFormatString, inX, IupGetGlobal("DEFAULTDECIMALSYMBOL"));
+      if (iPlotGetTickFormat(ih, formatticknumber_cb, theBuf, inFormatString, inX))
+      {
+        double theScreenY;
+        if (mReverseTicksLabel)
+          theScreenY = inScreenY + theTickSize + mTick.mMinorSize;  // Use minor size as spacing
+        else
+          theScreenY = inScreenY - theTickSize - mTick.mMinorSize;  // Use minor size as spacing
 
-      double theScreenY;
-      if (mReverseTicksLabel)
-        theScreenY = inScreenY + theTickSize + mTick.mMinorSize;  // Use minor size as spacing
-      else
-        theScreenY = inScreenY - theTickSize - mTick.mMinorSize;  // Use minor size as spacing
-
-      // SetFont called in DrawX
-      if (mTick.mRotateNumber)
-        iPlotDrawRotatedText(canvas, theScreenX, theScreenY, mTick.mRotateNumberAngle, mReverseTicksLabel? CD_WEST: CD_EAST, theBuf);
-      else
-        iupPlotDrawText(canvas, theScreenX, theScreenY, mReverseTicksLabel? CD_SOUTH: CD_NORTH, theBuf);
+        // SetFont called in DrawX
+        if (mTick.mRotateNumber)
+          iPlotDrawRotatedText(canvas, theScreenX, theScreenY, mTick.mRotateNumberAngle, mReverseTicksLabel ? CD_WEST : CD_EAST, theBuf);
+        else
+          iupPlotDrawText(canvas, theScreenX, theScreenY, mReverseTicksLabel ? CD_SOUTH : CD_NORTH, theBuf);
+      }
     }
   }
   else
@@ -642,7 +663,7 @@ double iupPlotAxisY::GetScreenXOriginY(const iupPlotAxis& inAxisX) const
   return inAxisX.mTrafo->Transform(theTargetX);
 }
 
-bool iupPlotAxisY::DrawY(const iupPlotRect &inRect, cdCanvas* canvas, const iupPlotAxis& inAxisX) const
+bool iupPlotAxisY::DrawY(const iupPlotRect &inRect, cdCanvas* canvas, const iupPlotAxis& inAxisX, Ihandle* ih) const
 {
   if (!mShow)
     return true;
@@ -674,11 +695,13 @@ bool iupPlotAxisY::DrawY(const iupPlotRect &inRect, cdCanvas* canvas, const iupP
     char theFormatString[30];
     strcpy(theFormatString, mTick.mFormatString);
 
+    Ifnssds formatticknumber_cb = (Ifnssds)IupGetCallback(ih, "YTICKFORMATNUMBER_CB");
+
     if (mTick.mShowNumber)
       SetFont(canvas, mTick.mFontStyle, mTick.mFontSize);
 
     while (mTickIter->GetNextTick(theY, theIsMajorTick, theFormatString))
-      DrawYTick(theY, theScreenX, theIsMajorTick, theFormatString, canvas);
+      DrawYTick(theY, theScreenX, theIsMajorTick, theFormatString, canvas, ih, formatticknumber_cb);
 
     int theTickSpace = mTick.mMajorSize;  // skip major tick
     if (mTick.mShowNumber)
@@ -722,7 +745,7 @@ bool iupPlotAxisY::DrawY(const iupPlotRect &inRect, cdCanvas* canvas, const iupP
   return true;
 }
 
-void iupPlotAxisY::DrawYTick(double inY, double inScreenX, bool inMajor, const char* inFormatString, cdCanvas* canvas) const
+void iupPlotAxisY::DrawYTick(double inY, double inScreenX, bool inMajor, const char* inFormatString, cdCanvas* canvas, Ihandle* ih, Ifnssds formatticknumber_cb) const
 {
   int theTickSize;
   double theScreenY = mTrafo->Transform(inY);
@@ -733,19 +756,20 @@ void iupPlotAxisY::DrawYTick(double inY, double inScreenX, bool inMajor, const c
     if (mTick.mShowNumber)
     {
       char theBuf[128];
-      iupStrPrintfDoubleLocale(theBuf, inFormatString, inY, IupGetGlobal("DEFAULTDECIMALSYMBOL"));
+      if (iPlotGetTickFormat(ih, formatticknumber_cb, theBuf, inFormatString, inY))
+      {
+        double theScreenX;
+        if (mReverseTicksLabel)
+          theScreenX = inScreenX + theTickSize + mTick.mMinorSize;  // Use minor size as spacing
+        else
+          theScreenX = inScreenX - theTickSize - mTick.mMinorSize;  // Use minor size as spacing
 
-      double theScreenX;
-      if (mReverseTicksLabel)
-        theScreenX = inScreenX + theTickSize + mTick.mMinorSize;  // Use minor size as spacing
-      else
-        theScreenX = inScreenX - theTickSize - mTick.mMinorSize;  // Use minor size as spacing
-
-      // SetFont called in DrawX
-      if (mTick.mRotateNumber)
-        iPlotDrawRotatedText(canvas, theScreenX, theScreenY, mTick.mRotateNumberAngle, mReverseTicksLabel? CD_NORTH: CD_SOUTH, theBuf);
-      else
-        iupPlotDrawText(canvas, theScreenX, theScreenY, mReverseTicksLabel? CD_WEST: CD_EAST, theBuf);
+        // SetFont called in DrawX
+        if (mTick.mRotateNumber)
+          iPlotDrawRotatedText(canvas, theScreenX, theScreenY, mTick.mRotateNumberAngle, mReverseTicksLabel ? CD_NORTH : CD_SOUTH, theBuf);
+        else
+          iupPlotDrawText(canvas, theScreenX, theScreenY, mReverseTicksLabel ? CD_WEST : CD_EAST, theBuf);
+      }
     }
   }
   else

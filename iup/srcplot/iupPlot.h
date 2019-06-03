@@ -546,9 +546,9 @@ public:
   iupPlotAxisX(int inDefaultFontStyle, int inDefaultFontSize) :
     iupPlotAxis(inDefaultFontStyle, inDefaultFontSize, false) {}
 
-  bool DrawX(const iupPlotRect &inRect, cdCanvas* canvas, const iupPlotAxis& inAxisY) const;
+  bool DrawX(const iupPlotRect &inRect, cdCanvas* canvas, const iupPlotAxis& inAxisY, Ihandle* ih) const;
 protected:
-  void DrawXTick(double inX, double inScreenY, bool inMajor, const char* inFormatString, cdCanvas* canvas) const;
+  void DrawXTick(double inX, double inScreenY, bool inMajor, const char* inFormatString, cdCanvas* canvas, Ihandle* ih, Ifnssds formatticknumber_cb) const;
   double GetScreenYOriginX(const iupPlotAxis& inAxisY) const;
 };
 
@@ -558,10 +558,10 @@ public:
   iupPlotAxisY(int inDefaultFontStyle, int inDefaultFontSize) :
     iupPlotAxis(inDefaultFontStyle, inDefaultFontSize, true) {}
 
-  bool DrawY(const iupPlotRect &inRect, cdCanvas* canvas, const iupPlotAxis& inAxisX) const;
+  bool DrawY(const iupPlotRect &inRect, cdCanvas* canvas, const iupPlotAxis& inAxisX, Ihandle* ih) const;
 
 protected:
-  void DrawYTick(double inY, double inScreenX, bool inMajor, const char* inFormatString, cdCanvas* canvas) const;
+  void DrawYTick(double inY, double inScreenX, bool inMajor, const char* inFormatString, cdCanvas* canvas, Ihandle* ih, Ifnssds formatticknumber_cb) const;
   double GetScreenXOriginY(const iupPlotAxis& inAxisX) const;
 };
 

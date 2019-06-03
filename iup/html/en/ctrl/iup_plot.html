@@ -1016,7 +1016,48 @@ internal processing will not be done. </p>
 <p><strong>PLOTMOTION_CB</strong>: similar to <a href="../call/iup_motion_cb.html">MOTION_CB</a> 
 but coordinates are in plot scale with double precision. It is called before the internal 
 processing, if returns IUP_IGNORE internal processing will not be done. </p>
-
+<p><strong>XTICKFORMATNUMBER_CB</strong>: allows to modify the displayed string 
+of a tick number in the X axis. If the callback is not defined the internal 
+function is used. (since 3.28)</p>
+  
+    <pre>int function(Ihandle *<strong>ih</strong>, char* <strong>buffer</strong>, char* <strong>format</strong>, double <strong>x</strong>, char* <strong>decimal_symbol</strong>); [in C]
+<strong>ih</strong>:select_cb(<b>format</b>: <span class="auto-style3">string</span><b>, x</b>: number, <strong>decimal_symbol</strong>: string) -&gt; (<strong>ret</strong>: number, <strong>buffer</strong>: string) [in Lua]</pre>
+    <p class="info"><strong>ih</strong>:
+  identifier of the element that activated the 
+  event.<br> <strong>buffer</strong>: buffer that will receive the string with 
+	the formatted number. In Lua the string is returned by the callback, then 
+	copied to the buffer. The buffer is limited to 128 characters.<br>
+    <strong>format</strong>: the format string used by the internal function to 
+	format the number.<strong><br>
+    x</strong>: X coordinate value of the tick number.<br>
+    <strong>decimal_symbol</strong>: the decimal symbol used by the internal 
+	function. </p>
+    <p class="info">
+    <span class="style2">Returns:</span>
+    If IUP_IGNORE the number is not plotted. If IUP_CONTINUE the internal 
+	function is used.</p>
+  
+<p><strong>YTICKFORMATNUMBER_CB</strong>: allows to modify the displayed string 
+of a tick number in the Y axis. If the callback is not defined the internal 
+function is used. (since 3.28)</p>
+  
+    <pre>int function(Ihandle *<strong>ih</strong>, char* <strong>buffer</strong>, char* <strong>format</strong>, double <strong>y</strong>, char* <strong>decimal_symbol</strong>); [in C]
+<strong>ih</strong>:select_cb(<b>format</b>: <span class="auto-style3">string</span><b>, y</b>: number, <strong>decimal_symbol</strong>: string) -&gt; (<strong>ret</strong>: number, <strong>buffer</strong>: string) [in Lua]</pre>
+    <p class="info"><strong>ih</strong>:
+  identifier of the element that activated the 
+  event.<br> <strong>buffer</strong>: buffer that will receive the string with 
+	the formatted number. In Lua the string is returned by the callback, then 
+	copied to the buffer. The buffer is limited to 128 characters.<br>
+    <strong>format</strong>: the format string used by the internal function to 
+	format the number.<strong><br>
+    y</strong>: Y coordinate value of the tick number.<br>
+    <strong>decimal_symbol</strong>: the decimal symbol used by the internal 
+	function. </p>
+    <p class="info">
+    <span class="style2">Returns:</span>
+    If IUP_IGNORE the number is not plotted. If IUP_CONTINUE the internal 
+	function is used.</p>
+  
   
 <p><b>PREDRAW_CB, POSTDRAW_CB</b>: Actions generated before and after the draw 
 operation. Predraw can be used to draw a different background and Postdraw can 

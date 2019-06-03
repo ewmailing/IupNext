@@ -63,6 +63,7 @@ typedef int (*IFniiffFF)(Ihandle*, int, int, float, float, float*, float*); /* e
 typedef int (*IFniiffs)(Ihandle*, int, int, float, float, char*);  /* plotbutton_cb (pplot) */
 typedef int (*IFniidds)(Ihandle*, int, int, double, double, char*);  /* plotbutton_cb */
 typedef int (*IFndds)(Ihandle*, double, double, char*);    /* plotmotion_cb */
+typedef int (*Ifnssds)(Ihandle*, char*, char*, double, char*); /* plottickformat_cb */
 
 typedef char* (*sIFnii)(Ihandle*, int, int);  /* value_cb, font_cb */
 typedef char* (*sIFni)(Ihandle*, int);  /* cell_cb */

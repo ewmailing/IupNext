@@ -524,10 +524,10 @@ bool iupPlot::Render(cdCanvas* canvas)
   if (mGrid.mShowY)
     mGridMinor.DrawY(mAxisY.mTickIter, mAxisY.mTrafo, theDataSetArea, canvas);
 
-  if (!mAxisX.DrawX(theDataSetArea, canvas, mAxisY))
+  if (!mAxisX.DrawX(theDataSetArea, canvas, mAxisY, ih))
     return false;
 
-  if (!mAxisY.DrawY(theDataSetArea, canvas, mAxisX))
+  if (!mAxisY.DrawY(theDataSetArea, canvas, mAxisX, ih))
     return false;
 
   if (mBox.mShow)
