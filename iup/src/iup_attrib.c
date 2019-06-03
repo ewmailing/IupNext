@@ -1475,6 +1475,7 @@ static void iAttribParse(Ihandle *ih, const char* str)
     {
     case IUPLEX_TK_END:           /* same as IUPLEX_TK_COMMA */
       end = 1;
+      /* fall-through */
     case IUPLEX_TK_COMMA:
       if (name)
       {
@@ -1493,7 +1494,10 @@ static void iAttribParse(Ihandle *ih, const char* str)
 
     case IUPLEX_TK_NAME:
       if (state == 'a')
+      {
+        if (name) free(name);
         name = iupStrDup(env_buffer);
+      }
       else
         value = env_buffer;
       break;
