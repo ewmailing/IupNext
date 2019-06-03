@@ -116,8 +116,8 @@ static void ColouriseLedDoc(
 		}
 
 		// Determine if the current state should terminate.
-    if (sc.state == SCE_LUA_OPERATOR) {
-      sc.SetState(SCE_LUA_DEFAULT);
+    if (sc.state == SCE_LED_OPERATOR) {
+      sc.SetState(SCE_LED_DEFAULT);
     }
     else if (sc.state == SCE_LED_NUMBER) {
 			// We stop the number definition on non-numerical non-dot non-eEpP non-sign non-hexdigit char
@@ -153,9 +153,9 @@ static void ColouriseLedDoc(
 				sc.SetState(SCE_LED_DEFAULT);
 			}
     }
-    else if (sc.state == SCE_LUA_STRING) {
+    else if (sc.state == SCE_LED_STRING) {
       if (sc.ch == '\"') {
-        sc.ForwardSetState(SCE_LUA_DEFAULT);
+        sc.ForwardSetState(SCE_LED_DEFAULT);
       }
     }
     else if (sc.state == SCE_LED_COMMENTLINE) {
