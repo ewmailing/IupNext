@@ -535,7 +535,7 @@ static int winButtonMsgProc(Ihandle* ih, UINT msg, WPARAM wp, LPARAM lp, LRESULT
   case WM_RBUTTONDOWN:
     {
       /* Process BUTTON_CB */
-      iupwinButtonDown(ih, msg, wp, lp);
+      iupwinButtonDown(ih, msg, wp, lp); /* ignore return value */
 
       /* Feedback will NOT be done when not receiving the focus or when in double click */
       if ((msg==WM_LBUTTONDOWN && !iupAttribGetBoolean(ih, "CANFOCUS")) ||
@@ -552,7 +552,7 @@ static int winButtonMsgProc(Ihandle* ih, UINT msg, WPARAM wp, LPARAM lp, LRESULT
   case WM_RBUTTONUP:
     {
       /* Process BUTTON_CB */
-      iupwinButtonUp(ih, msg, wp, lp);
+      iupwinButtonUp(ih, msg, wp, lp); /* ignore return value */
       
       if (!iupObjectCheck(ih))
       {
