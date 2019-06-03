@@ -350,7 +350,7 @@ static COMDLG_FILTERSPEC *winNewFileDlgCreateFilterSpecs(char *name, int *size)
       filter++;
     }
 
-    if (!filter)
+    if (*filter == 0)
       break;
 
     name = ++filter;
@@ -366,7 +366,7 @@ static COMDLG_FILTERSPEC *winNewFileDlgCreateFilterSpecs(char *name, int *size)
       filter++;
     }
 
-    if (!filter)
+    if (*filter == 0)
       break;
 
     i++;
@@ -622,7 +622,7 @@ static int winNewFileDlgPopup(Ihandle *ih, int x, int y)
     char name[4096] = "";
     static char dir[4096] = "";
     IShellItem *si;
-    TCHAR *wname, *wdir;
+    TCHAR *wname, *wdir = L"";
     iupStrFileNameSplit(value, dir, name);
     if (name[0] != 0)
       wname = iupwinStrToSystemFilename(name);
@@ -630,13 +630,14 @@ static int winNewFileDlgPopup(Ihandle *ih, int x, int y)
       wname = iupwinStrToSystemFilename(value);
     if (dir[0] != 0)
       wdir = iupwinStrToSystemFilename(dir);
-    else
+    else if (directory)
       wdir = iupwinStrToSystemFilename(directory);
     winNewFileDlgStrReplacePathSlash(wdir);
     pfd->SetFileName(wname);
     si = winNewFileDlgParseName(wdir);
     if (si)
       pfd->SetFolder(si);
+    if (directory) free(directory);
   }
   else if (directory)
   {
@@ -690,6 +691,7 @@ static int winNewFileDlgPopup(Ihandle *ih, int x, int y)
           iupAttribSetStr(ih, "DIRECTORY", dir);
 
           iupAttribSetStrId(ih, "MULTIVALUE", 0, dir);  /* same as directory, includes last separator */
+          free(dir);
 
           if (iupAttribGetBoolean(ih, "MULTIVALUEPATH"))
             dir_len = 0;
@@ -699,8 +701,6 @@ static int winNewFileDlgPopup(Ihandle *ih, int x, int y)
           iupAttribSetStr(ih, "VALUE", filename);  /* here value is not separated by '|' */
 
           iupAttribSetInt(ih, "MULTIVALUECOUNT", 2);
-          free(dir);
-          CoTaskMemFree(pszFilePath);
 
           if (winIsFile(pszFilePath))  /* check if file exists */
           {
@@ -712,6 +712,8 @@ static int winNewFileDlgPopup(Ihandle *ih, int x, int y)
             iupAttribSet(ih, "FILEEXIST", "NO");
             iupAttribSet(ih, "STATUS", "1");
           }
+
+          CoTaskMemFree(pszFilePath);
         }
         else
           iupAttribSet(ih, "STATUS", "-1");
@@ -800,6 +802,7 @@ static int winNewFileDlgPopup(Ihandle *ih, int x, int y)
                   iupAttribSetStrf(ih, nameid, "%s%s", dir, fname);
 
                   iupAttribSetStrf(ih, "VALUE", "%s%s|", value, iupAttribGetId(ih, "MULTIVALUE", i + 1));
+                  free(fname);
                 }
                 else
                 {
