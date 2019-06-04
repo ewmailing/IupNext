@@ -760,6 +760,71 @@ static TCHAR* winTextStrConvertToSystem(Ihandle* ih, const char* str)
   return iupwinStrToSystem(str);
 }
 
+static DWORD CALLBACK winTextWriteStreamCallback(DWORD_PTR dwCookie, LPBYTE lpBuff, LONG cb, PLONG pcb)
+{
+  HANDLE hFile = (HANDLE)dwCookie;
+
+  if (WriteFile(hFile, lpBuff, cb, (DWORD *)pcb, NULL))
+    return 0;
+
+  return (DWORD)-1;
+}
+
+static BOOL winTextWriteRtfToFile(HWND hwnd, TCHAR* pszFile)
+{
+  BOOL fSuccess = FALSE;
+
+  HANDLE hFile = CreateFile(pszFile, GENERIC_WRITE, 0, NULL, CREATE_ALWAYS, 0, NULL);
+  if (hFile != INVALID_HANDLE_VALUE)
+  {
+    EDITSTREAM es = { 0 };
+
+    es.pfnCallback = winTextWriteStreamCallback;
+    es.dwCookie = (DWORD_PTR)hFile;
+
+    if (SendMessage(hwnd, EM_STREAMOUT, SF_RTF, (LPARAM)&es) && es.dwError == 0)
+      fSuccess = TRUE;
+
+    CloseHandle(hFile);
+  }
+
+  return fSuccess;
+
+}
+
+static DWORD CALLBACK winTextReadStreamCallback(DWORD_PTR dwCookie, LPBYTE lpBuff, LONG cb, PLONG pcb)
+{
+  HANDLE hFile = (HANDLE)dwCookie;
+
+  if (ReadFile(hFile, lpBuff, cb, (DWORD *)pcb, NULL))
+    return 0;
+
+  return (DWORD)-1;
+}
+
+static BOOL winTextReadRtfFromFile(HWND hwnd, TCHAR* pszFile)
+{
+  BOOL fSuccess = FALSE;
+
+  HANDLE hFile = CreateFile(pszFile, GENERIC_READ, FILE_SHARE_READ, NULL, OPEN_EXISTING, FILE_FLAG_SEQUENTIAL_SCAN, NULL);
+  if (hFile != INVALID_HANDLE_VALUE)
+  {
+    EDITSTREAM es = { 0 };
+
+    es.pfnCallback = winTextReadStreamCallback;
+    es.dwCookie = (DWORD_PTR)hFile;
+
+    if (SendMessage(hwnd, EM_STREAMIN, SF_RTF, (LPARAM)&es) && es.dwError == 0)
+      fSuccess = TRUE;
+
+    CloseHandle(hFile);
+  }
+
+  return fSuccess;
+
+}
+
+
 /***********************************************************************************************/
 
 
@@ -1475,6 +1540,30 @@ static int winTextSetRemoveFormattingAttrib(Ihandle* ih, const char* value)
     SendMessage(ih->handle, EM_SETCHARFORMAT, SCF_SELECTION, (LPARAM)&charformat);
   }
 
+  return 0;
+}
+
+static int winTextSetLoadRtfAttrib(Ihandle* ih, const char* value)
+{
+  if (value)
+  {
+    if (winTextReadRtfFromFile(ih->handle, iupwinStrToSystemFilename(value)))
+      iupAttribSet(ih, "LOADRTFSTATUS", "OK");
+    else
+      iupAttribSet(ih, "LOADRTFSTATUS", "FAILED");
+  }
+  return 0;
+}
+
+static int winTextSetSaveRtfAttrib(Ihandle* ih, const char* value)
+{
+  if (value)
+  {
+    if (winTextWriteRtfToFile(ih->handle, iupwinStrToSystemFilename(value)))
+      iupAttribSet(ih, "SAVERTFSTATUS", "OK");
+    else
+      iupAttribSet(ih, "SAVERTFSTATUS", "FAILED");
+  }
   return 0;
 }
 
@@ -2240,6 +2329,10 @@ void iupdrvTextInitClass(Iclass* ic)
   iupClassRegisterAttribute(ic, "CUEBANNER", NULL, winTextSetCueBannerAttrib, NULL, NULL, IUPAF_NO_INHERIT);
   iupClassRegisterAttribute(ic, "FILTER", NULL, winTextSetFilterAttrib, NULL, NULL, IUPAF_NO_INHERIT);
   iupClassRegisterAttribute(ic, "NOHIDESEL", NULL, NULL, IUPAF_SAMEASSYSTEM, "Yes", IUPAF_NO_INHERIT);
+  iupClassRegisterAttribute(ic, "LOADRTF", NULL, winTextSetLoadRtfAttrib, NULL, NULL, IUPAF_WRITEONLY | IUPAF_NO_INHERIT);
+  iupClassRegisterAttribute(ic, "SAVERTF", NULL, winTextSetSaveRtfAttrib, NULL, NULL, IUPAF_WRITEONLY | IUPAF_NO_INHERIT);
+  iupClassRegisterAttribute(ic, "LOADRTFSTATUS", NULL, NULL, NULL, NULL, IUPAF_NO_INHERIT);
+  iupClassRegisterAttribute(ic, "SAVERTFSTATUS", NULL, NULL, NULL, NULL, IUPAF_NO_INHERIT);
 
   iupClassRegisterAttribute(ic, "CONTROLID", NULL, NULL, NULL, NULL, IUPAF_NO_INHERIT);
 }

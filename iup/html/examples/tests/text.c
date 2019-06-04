@@ -236,14 +236,22 @@ static int enterwindow_cb(void)
   return IUP_DEFAULT;
 }
 
-static int btn_def_esc_cb(void)
+static int btn_def_esc_cb(Ihandle *ih)
 {
+#if 0
+  Ihandle *mltline = IupGetDialogChild(ih, "mltline");
+  IupSetAttribute(mltline, "SAVERTF", "test.rtf");
+#endif
   printf("DEFAULTESC\n");
   return IUP_DEFAULT;
 }
 
-static int btn_def_enter_cb(void)
+static int btn_def_enter_cb(Ihandle *ih)
 {
+#if 0
+  Ihandle *mltline = IupGetDialogChild(ih, "mltline");
+  IupSetAttribute(mltline, "LOADRTF", "test.rtf");
+#endif
   printf("DEFAULTENTER\n");
   return IUP_DEFAULT;
 }
