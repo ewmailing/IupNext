@@ -257,7 +257,9 @@ static int winWebBrowserSetHTMLAttrib(Ihandle* ih, const char* value)
   {
     iupAttribSet(ih, "_IUPWEB_FAILED", NULL);
     iupAttribSet(ih, "_IUPWEB_IGNORE_NAVIGATE", "1");
-    pweb->Navigate(L"about:blank", NULL, NULL, NULL, NULL);
+    BSTR url = SysAllocString(L"about:blank");
+    pweb->Navigate(url, NULL, NULL, NULL, NULL);
+    SysFreeString(url);
     IupFlush();
     iupAttribSet(ih, "_IUPWEB_IGNORE_NAVIGATE", NULL);
 
@@ -588,16 +590,16 @@ static int winWebBrowserSetValueAttrib(Ihandle* ih, const char* value)
   {
     IWebBrowser2 *pweb = (IWebBrowser2*)iupAttribGet(ih, "_IUPWEB_BROWSER");
     BSTR bvalue = iupwinStrChar2BStr(value);
+    BSTR btarget = SysAllocString(L"_top");
 
     VARIANT var;
-    VariantInit(&var);  /* Initialize our variant */
-    var.vt = VT_ARRAY | VT_UI1;
-    var.bstrVal = L"_top";
+    VariantBStr(&var, btarget);
 
     iupAttribSet(ih, "_IUPWEB_FAILED", NULL);
 
     pweb->Navigate(bvalue, NULL, &var, NULL, NULL);
     SysFreeString(bvalue);
+    SysFreeString(btarget);
   }
   return 0;
 }
