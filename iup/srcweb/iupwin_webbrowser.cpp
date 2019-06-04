@@ -40,6 +40,15 @@ extern "C" char*  iupwinStrWide2Char(const WCHAR* wstr);
 
 using namespace ATL;
 
+
+static BSTR iupwinStrChar2BStr(const char* str)
+{
+  WCHAR* wstr = iupwinStrChar2Wide(str);
+  BSTR bstr = SysAllocString(wstr);
+  if (wstr) free(wstr);
+  return bstr;
+}
+
 // Should have only one instance of a class
 // derived from CAtlModule in a project.
 static CComModule* iweb_module = NULL;
@@ -156,11 +165,11 @@ public:
   }
 };
 
-static void VariantBStr(VARIANT *var, WCHAR* wstr)
+static void VariantBStr(VARIANT *var, BSTR bstr)
 {
   VariantInit(var);
   var->vt = VT_BSTR;
-  var->bstrVal = wstr;
+  var->bstrVal = bstr;
 }
 
 static void VariantLong(VARIANT *var, LONG val)
@@ -170,14 +179,14 @@ static void VariantLong(VARIANT *var, LONG val)
   var->lVal = val;
 }
 
-static SAFEARRAY* VariantSafeArray(const WCHAR* wstr)
+static SAFEARRAY* VariantSafeArray(BSTR bstr)
 {
   VARIANT *param;
   SAFEARRAY *sfArray;
   sfArray = SafeArrayCreateVector(VT_VARIANT, 0, 1);    // must call SafeArrayDestroy
   SafeArrayAccessData(sfArray,(LPVOID*) &param);
   param->vt = VT_BSTR;
-  param->bstrVal = SysAllocString(wstr);
+  param->bstrVal = bstr;
   SafeArrayUnaccessData(sfArray);
   return sfArray;
 }
@@ -258,18 +267,18 @@ static int winWebBrowserSetHTMLAttrib(Ihandle* ih, const char* value)
 	IHTMLDocument2 *htmlDoc2;
   lpDispatch->QueryInterface(IID_IHTMLDocument2, (void**)&htmlDoc2);
 
-  WCHAR* wvalue = iupwinStrChar2Wide(value);
+  BSTR bvalue = iupwinStrChar2BStr(value);
 
-  SAFEARRAY *sfArray = VariantSafeArray(wvalue);
+  SAFEARRAY *sfArray = VariantSafeArray(bvalue);
 
 	htmlDoc2->write(sfArray);
 	htmlDoc2->close();
 
   /* Releases */
   SafeArrayDestroy(sfArray);
+  SysFreeString(bvalue);
   htmlDoc2->Release();
   lpDispatch->Release();
-  free(wvalue);
   
   return 0; /* do not store value in hash table */
 }
@@ -411,9 +420,9 @@ static int winWebBrowserSetInnerTextAttrib(Ihandle* ih, const char* value)
       IHTMLElement* pElem = winWebBrowserFindElement(ih, element_id);
       if (pElem)
       {
-        WCHAR* wvalue = iupwinStrChar2Wide(value);
-        pElem->put_innerText(wvalue);
-        free(wvalue);
+        BSTR bvalue = iupwinStrChar2BStr(value);
+        pElem->put_innerText(bvalue);
+        SysFreeString(bvalue);
         pElem->Release();
       }
     }
@@ -429,12 +438,12 @@ static char* winWebBrowserGetInnerTextAttrib(Ihandle* ih)
     IHTMLElement* pElem = winWebBrowserFindElement(ih, element_id);
     if (pElem)
     {
-      WCHAR* wvalue = NULL;
-      if (!FAILED(pElem->get_innerText(&wvalue)))
+      BSTR bvalue = NULL;
+      if (!FAILED(pElem->get_innerText(&bvalue)))
       {
-        char* str = iupwinStrWide2Char(wvalue);
+        char* str = iupwinStrWide2Char(bvalue);
         char* value = iupStrReturnStr(str);
-        SysFreeString(wvalue);
+        SysFreeString(bvalue);
         free(str);
         pElem->Release();
         return value;
@@ -457,16 +466,16 @@ static int winWebBrowserSetAttributeAttrib(Ihandle* ih, const char* value)
       IHTMLElement* pElem = winWebBrowserFindElement(ih, element_id);
       if (pElem)
       {
-        WCHAR* wname = iupwinStrChar2Wide(attribute_name);
-        WCHAR* wvalue = iupwinStrChar2Wide(value);
+        BSTR bname = iupwinStrChar2BStr(attribute_name);
+        BSTR bvalue = iupwinStrChar2BStr(value);
 
         VARIANT var;
-        VariantBStr(&var, wvalue);
+        VariantBStr(&var, bvalue);
 
-        pElem->setAttribute(wname, var, 1);  // case sensitive search
+        pElem->setAttribute(bname, var, 1);  // case sensitive search
 
-        free(wvalue);
-        free(wname);
+        SysFreeString(bvalue);
+        SysFreeString(bname);
         pElem->Release();
       }
     }
@@ -483,19 +492,19 @@ static char* winWebBrowserGetAttributeAttrib(Ihandle* ih)
     IHTMLElement* pElem = winWebBrowserFindElement(ih, element_id);
     if (pElem)
     {
-      WCHAR* wname = iupwinStrChar2Wide(attribute_name);
+      BSTR bname = iupwinStrChar2BStr(attribute_name);
       VARIANT var;
       VariantInit(&var);
-      if (!FAILED(pElem->getAttribute(wname, 1, &var)) && var.bstrVal)  // case sensitive search
+      if (!FAILED(pElem->getAttribute(bname, 1, &var)) && var.bstrVal)  // case sensitive search
       {
         char* str = iupwinStrWide2Char(var.bstrVal);
         char* value = iupStrReturnStr(str);
         free(str);
-        free(wname);
+        SysFreeString(bname);
         pElem->Release();
         return value;
       }
-      free(wname);
+      SysFreeString(bname);
       pElem->Release();
     }
   }
@@ -578,7 +587,7 @@ static int winWebBrowserSetValueAttrib(Ihandle* ih, const char* value)
   if (value)
   {
     IWebBrowser2 *pweb = (IWebBrowser2*)iupAttribGet(ih, "_IUPWEB_BROWSER");
-    WCHAR* wvalue = iupwinStrChar2Wide(value);
+    BSTR bvalue = iupwinStrChar2BStr(value);
 
     VARIANT var;
     VariantInit(&var);  /* Initialize our variant */
@@ -587,8 +596,8 @@ static int winWebBrowserSetValueAttrib(Ihandle* ih, const char* value)
 
     iupAttribSet(ih, "_IUPWEB_FAILED", NULL);
 
-    pweb->Navigate(wvalue, NULL, &var, NULL, NULL);
-    free(wvalue);
+    pweb->Navigate(bvalue, NULL, &var, NULL, NULL);
+    SysFreeString(bvalue);
   }
   return 0;
 }
