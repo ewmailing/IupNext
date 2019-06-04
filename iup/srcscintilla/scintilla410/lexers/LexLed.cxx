@@ -35,18 +35,6 @@ static void strUpper(char* dstr, const char* sstr)
   *dstr = 0;
 }
 
-// Test for [=[ ... ]=] delimiters, returns 0 if it's only a [ or ],
-// return 1 for [[ or ]], returns >=2 for [=[ or ]=] and so on.
-// The maximum number of '=' characters allowed is 254.
-static int LongDelimCheck(StyleContext &sc) {
-	int sep = 1;
-	while (sc.GetRelative(sep) == '=' && sep < 0xFF)
-		sep++;
-	if (sc.GetRelative(sep) == sc.ch)
-		return sep;
-	return 0;
-}
-
 static void ColouriseLedDoc(
 	Sci_PositionU startPos,
 	Sci_Position length,
