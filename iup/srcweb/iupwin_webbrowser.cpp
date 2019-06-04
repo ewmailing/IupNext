@@ -41,7 +41,7 @@ extern "C" char*  iupwinStrWide2Char(const WCHAR* wstr);
 using namespace ATL;
 
 
-static BSTR iupwinStrChar2BStr(const char* str)
+static BSTR winStrChar2BStr(const char* str)
 {
   WCHAR* wstr = iupwinStrChar2Wide(str);
   BSTR bstr = SysAllocString(wstr);
@@ -165,21 +165,21 @@ public:
   }
 };
 
-static void VariantBStr(VARIANT *var, BSTR bstr)
+static void winVariantBStr(VARIANT *var, BSTR bstr)
 {
   VariantInit(var);
   var->vt = VT_BSTR;
   var->bstrVal = bstr;
 }
 
-static void VariantLong(VARIANT *var, LONG val)
+static void winVariantLong(VARIANT *var, LONG val)
 {
   VariantInit(var);
   var->vt = VT_I4;
   var->lVal = val;
 }
 
-static SAFEARRAY* VariantSafeArray(BSTR bstr)
+static SAFEARRAY* winVariantSafeArray(BSTR bstr)
 {
   VARIANT *param;
   SAFEARRAY *sfArray;
@@ -269,9 +269,9 @@ static int winWebBrowserSetHTMLAttrib(Ihandle* ih, const char* value)
 	IHTMLDocument2 *htmlDoc2;
   lpDispatch->QueryInterface(IID_IHTMLDocument2, (void**)&htmlDoc2);
 
-  BSTR bvalue = iupwinStrChar2BStr(value);
+  BSTR bvalue = winStrChar2BStr(value);
 
-  SAFEARRAY *sfArray = VariantSafeArray(bvalue);
+  SAFEARRAY *sfArray = winVariantSafeArray(bvalue);
 
 	htmlDoc2->write(sfArray);
 	htmlDoc2->close();
@@ -318,7 +318,7 @@ static int winWebBrowserSetZoomAttrib(Ihandle* ih, const char* value)
     IWebBrowser2 *pweb = (IWebBrowser2*)iupAttribGet(ih, "_IUPWEB_BROWSER");
 
     VARIANT var;
-    VariantLong(&var, (LONG)zoom);
+    winVariantLong(&var, (LONG)zoom);
 
     // OLECMDID_OPTICAL_ZOOM = VT_I4 (LONG) parameter in the range of 10 to 1000 (percent).
     pweb->ExecWB(OLECMDID_OPTICAL_ZOOM, OLECMDEXECOPT_DONTPROMPTUSER, &var, NULL);
@@ -331,7 +331,7 @@ static char* winWebBrowserGetZoomAttrib(Ihandle* ih)
   IWebBrowser2 *pweb = (IWebBrowser2*)iupAttribGet(ih, "_IUPWEB_BROWSER");
 
   VARIANT var;
-  VariantLong(&var, 0);
+  winVariantLong(&var, 0);
 
   pweb->ExecWB(OLECMDID_OPTICAL_ZOOM, OLECMDEXECOPT_DONTPROMPTUSER, NULL, &var);
 
@@ -364,7 +364,7 @@ static IHTMLElement* winWebBrowserFindElement(Ihandle* ih, const char* element_i
         for (int i = 0; i < nLength; i++)
         {
           VARIANT vIdx;
-          VariantLong(&vIdx, (LONG)i);
+          winVariantLong(&vIdx, (LONG)i);
 
           IDispatch* pElemDispatch = NULL;
           IHTMLElement * pElem = NULL;
@@ -422,7 +422,7 @@ static int winWebBrowserSetInnerTextAttrib(Ihandle* ih, const char* value)
       IHTMLElement* pElem = winWebBrowserFindElement(ih, element_id);
       if (pElem)
       {
-        BSTR bvalue = iupwinStrChar2BStr(value);
+        BSTR bvalue = winStrChar2BStr(value);
         pElem->put_innerText(bvalue);
         SysFreeString(bvalue);
         pElem->Release();
@@ -468,11 +468,11 @@ static int winWebBrowserSetAttributeAttrib(Ihandle* ih, const char* value)
       IHTMLElement* pElem = winWebBrowserFindElement(ih, element_id);
       if (pElem)
       {
-        BSTR bname = iupwinStrChar2BStr(attribute_name);
-        BSTR bvalue = iupwinStrChar2BStr(value);
+        BSTR bname = winStrChar2BStr(attribute_name);
+        BSTR bvalue = winStrChar2BStr(value);
 
         VARIANT var;
-        VariantBStr(&var, bvalue);
+        winVariantBStr(&var, bvalue);
 
         pElem->setAttribute(bname, var, 1);  // case sensitive search
 
@@ -494,7 +494,7 @@ static char* winWebBrowserGetAttributeAttrib(Ihandle* ih)
     IHTMLElement* pElem = winWebBrowserFindElement(ih, element_id);
     if (pElem)
     {
-      BSTR bname = iupwinStrChar2BStr(attribute_name);
+      BSTR bname = winStrChar2BStr(attribute_name);
       VARIANT var;
       VariantInit(&var);
       if (!FAILED(pElem->getAttribute(bname, 1, &var)) && var.bstrVal)  // case sensitive search
@@ -589,11 +589,11 @@ static int winWebBrowserSetValueAttrib(Ihandle* ih, const char* value)
   if (value)
   {
     IWebBrowser2 *pweb = (IWebBrowser2*)iupAttribGet(ih, "_IUPWEB_BROWSER");
-    BSTR bvalue = iupwinStrChar2BStr(value);
+    BSTR bvalue = winStrChar2BStr(value);
     BSTR btarget = SysAllocString(L"_top");
 
     VARIANT var;
-    VariantBStr(&var, btarget);
+    winVariantBStr(&var, btarget);
 
     iupAttribSet(ih, "_IUPWEB_FAILED", NULL);
 
