@@ -1111,7 +1111,7 @@ static int winDialogMapMethod(Ihandle* ih)
   int has_titlebar = 0,
       has_border = 0;
   TCHAR* classname = TEXT("IupDialog");
-  char* title;
+  char* title, *value;
 
   title = iupAttribGet(ih, "TITLE"); 
   if (title)
@@ -1215,6 +1215,15 @@ static int winDialogMapMethod(Ihandle* ih)
                                                                    (int)GetBValue(color));
       classname = TEXT("IupDialogMDIFrame");
     }
+  }
+
+  value = iupAttribGet(ih, "TASKBARBUTTON");
+  if (value)
+  {
+    if (iupStrEqualNoCase(value, "SHOW"))
+      dwExStyle |= WS_EX_APPWINDOW;   /* Force Show on taskbar even with no decorations */
+    else if (iupStrEqualNoCase(value, "HIDE"))
+      dwExStyle |= WS_EX_TOOLWINDOW;  /* Force Hide from taskbar even with all decorations */
   }
 
   if (iupAttribGetBoolean(ih, "TOOLBOX") && native_parent)
@@ -2056,6 +2065,7 @@ void iupdrvDialogInitClass(Iclass* ic)
   iupClassRegisterAttribute(ic, "TRAYTIPBALLOON", NULL, NULL, IUPAF_SAMEASSYSTEM, NULL, IUPAF_NO_INHERIT);
   iupClassRegisterAttribute(ic, "TRAYTIPBALLOONTITLE", NULL, NULL, IUPAF_SAMEASSYSTEM, NULL, IUPAF_NO_INHERIT);
   iupClassRegisterAttribute(ic, "TRAYTIPBALLOONTITLEICON", NULL, NULL, IUPAF_SAMEASSYSTEM, NULL, IUPAF_NO_INHERIT);
+  iupClassRegisterAttribute(ic, "TASKBARBUTTON", NULL, NULL, IUPAF_SAMEASSYSTEM, NULL, IUPAF_NO_INHERIT);
 
   iupClassRegisterAttribute(ic, "CUSTOMFRAMEDRAW", NULL, NULL, IUPAF_SAMEASSYSTEM, NULL, IUPAF_NO_INHERIT);
   iupClassRegisterAttribute(ic, "CUSTOMFRAMECAPTIONHEIGHT", NULL, NULL, IUPAF_SAMEASSYSTEM, NULL, IUPAF_NO_INHERIT);

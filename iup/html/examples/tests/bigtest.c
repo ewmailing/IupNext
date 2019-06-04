@@ -274,6 +274,15 @@ int main(int argc, char* argv[])
 //  IupSetAttribute(dlg, "ICON", "SIZE_ICON");
   IupSetHandle("BIGTEST", dlg);
 
+#if 0
+  IupSetAttribute(dlg, "RESIZE", "NO");
+  IupSetAttribute(dlg, "MENUBOX", "NO");
+  IupSetAttribute(dlg, "MAXBOX", "NO");
+  IupSetAttribute(dlg, "MINBOX", "NO");
+  IupSetAttribute(dlg, "BORDER", "NO");
+  IupSetAttribute(dlg, "TITLE", NULL);
+#endif
+
   IupSetAttribute(list, "VISIBLELINES", "15");
   IupSetAttribute(list, "EXPAND", "YES");
   IupSetCallback(list, "DBLCLICK_CB", (Icallback)dblclick_cb);
