@@ -503,8 +503,11 @@ static void iMatrixExPasteSetData(Ihandle *ih, const char* data, int data_num_li
               len -= 2;
             }
 
-            value = iMatrixExStrCopyData(value, &value_max_size, data, value_len);
-            iupMatrixExSetCellValue(matex_data->ih, lin, col, value);
+            if (value_len)
+            {
+              value = iMatrixExStrCopyData(value, &value_max_size, data, value_len);
+              iupMatrixExSetCellValue(matex_data->ih, lin, col, value);
+            }
           }
           else
             iupMatrixExSetCellValue(matex_data->ih, lin, col, "");
