@@ -287,7 +287,10 @@ static int winLabelMsgProc(Ihandle* ih, UINT msg, WPARAM wp, LPARAM lp, LRESULT 
   case WM_MBUTTONDOWN:
   case WM_RBUTTONDOWN:
     {
-      iupwinButtonDown(ih, msg, wp, lp);
+      if (IupGetCallback(ih, "BUTTON_CB"))
+        SetCapture(ih->handle);
+
+      (void)iupwinButtonDown(ih, msg, wp, lp); /* ignore return value */
       break;
     }
   case WM_XBUTTONUP:
@@ -295,6 +298,9 @@ static int winLabelMsgProc(Ihandle* ih, UINT msg, WPARAM wp, LPARAM lp, LRESULT 
   case WM_MBUTTONUP:
   case WM_RBUTTONUP:
     {
+      if (IupGetCallback(ih, "BUTTON_CB") && GetCapture() == ih->handle)
+        ReleaseCapture();
+
       (void)iupwinButtonUp(ih, msg, wp, lp); /* ignore return value */
       break;
     }
