@@ -61,6 +61,10 @@ void iupDialogEnterModal(Ihandle* ih_popup, int popup_level);
 /* retrieve the decorations size that offsets the window size of the client size. */
 void iupDialogGetDecorSize(Ihandle* ih, int *decorwidth, int *decorheight);
 
+void iupDialogCustomFrameSimulateCheckCallbacks(Ihandle* ih);
+int  iupDialogCustomFrameRestore(Ihandle* ih);
+void iupDialogCustomFrameMaximize(Ihandle* ih);
+
 struct _IcontrolData 
 {
   int show_state,     /* save the state to be used used in SHOW_CB */

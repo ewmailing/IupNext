@@ -406,7 +406,22 @@ int iupdrvDialogSetPlacement(Ihandle* ih)
   {
     if (old_state == IUP_MAXIMIZE || old_state == IUP_MINIMIZE)
       ih->data->show_state = IUP_RESTORE;
+
+    if (iupAttribGetBoolean(ih, "CUSTOMFRAMESIMULATE") && iupDialogCustomFrameRestore(ih))
+    {
+      ih->data->show_state = IUP_RESTORE;
+      return 1;
+    }
+
     return 0;
+  }
+
+  if (iupAttribGetBoolean(ih, "CUSTOMFRAMESIMULATE") && iupStrEqualNoCase(placement, "MAXIMIZED"))
+  {
+    iupDialogCustomFrameMaximize(ih);
+    iupAttribSet(ih, "PLACEMENT", NULL); /* reset to NORMAL */
+    ih->data->show_state = IUP_MAXIMIZE;
+    return 1;
   }
 
   if (iupStrEqualNoCase(placement, "MINIMIZED"))
@@ -882,6 +897,9 @@ static int motDialogMapMethod(Ihandle* ih)
   /* Create the dialog shell  */
   /****************************/
 
+  if (iupAttribGetBoolean(ih, "CUSTOMFRAMESIMULATE"))
+    iupDialogCustomFrameSimulateCheckCallbacks(ih);
+
   if (iupAttribGet(ih, "TITLE"))
     has_titlebar = 1;
   if (iupAttribGetBoolean(ih, "RESIZE"))
@@ -943,6 +961,12 @@ static int motDialogMapMethod(Ihandle* ih)
   XtAddEventHandler(ih->handle, StructureNotifyMask, False, (XtEventHandler)motDialogCBStructureNotifyEvent, (XtPointer)ih);
 
   XtAddCallback(ih->handle, XmNdestroyCallback, (XtCallbackProc)motDialogDestroyCallback, (XtPointer)ih);
+
+  if (iupAttribGetBoolean(ih, "CUSTOMFRAMESIMULATE"))
+  {
+    XtAddEventHandler(ih->handle, ButtonPressMask | ButtonReleaseMask, False, (XtEventHandler)iupmotButtonPressReleaseEvent, (XtPointer)ih);
+    XtAddEventHandler(ih->handle, PointerMotionMask, False, (XtEventHandler)iupmotPointerMotionEvent, (XtPointer)ih);
+  }
 
   /*****************************/
   /* Create the dialog manager */

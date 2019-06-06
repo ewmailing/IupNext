@@ -670,14 +670,18 @@ void SampleTest(void)
   {
     Ihandle* label;
     Ihandle* caption_bar = IupSetAttributes(IupBackgroundBox(IupHbox(
-      label = IupSetAttributes(IupLabel("Custom Dialog Title"), "EXPAND=HORIZONTAL, HTTRANSPARENT=Yes, NAME=CUSTOMFRAMECAPTION"),
+      label = IupSetAttributes(IupLabel("Custom Dialog Title"), "EXPAND=HORIZONTAL, NAME=CUSTOMFRAMECAPTION"),
       IupSetCallbacks(IupSetAttributes(IupButton("_", NULL), "RASTERSIZE=50, FLAT=Yes, CANFOCUS=NO, FONTSTYLE=Bold"), "ACTION", dialog_custom_minimize, NULL),
       IupSetCallbacks(IupSetAttributes(IupButton("Max", NULL), "RASTERSIZE=50"), "ACTION", dialog_custom_maximize, NULL),
       IupSetCallbacks(IupSetAttributes(IupButton(" X ", NULL), "RASTERSIZE=50"), "ACTION", dialog_custom_close, NULL),
-      NULL)), "HTTRANSPARENT=Yes, BGCOLOR=\"100 150 255\"");
+      NULL)), "BGCOLOR=\"100 150 255\"");
     IupInsert(_vbox_1, NULL, caption_bar);
 
-    IupSetAttribute(dlg, "CUSTOMFRAME", "YES");
+//    IupSetAttribute(dlg, "CUSTOMFRAME", "YES");
+//    IupSetAttribute(label, "HTTRANSPARENT", "YES");        /* Windows Only */
+//    IupSetAttribute(caption_bar, "HTTRANSPARENT", "YES");  /* Windows Only */
+
+    IupSetAttribute(dlg, "CUSTOMFRAMESIMULATE", "YES");
   }
 #endif
 

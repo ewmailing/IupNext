@@ -286,7 +286,22 @@ int iupdrvDialogSetPlacement(Ihandle* ih)
   {
     if (IsIconic(ih->handle) || IsZoomed(ih->handle))
       ih->data->show_state = IUP_RESTORE;
+
+    if (iupAttribGetBoolean(ih, "CUSTOMFRAMESIMULATE") && iupDialogCustomFrameRestore(ih))
+    {
+      ih->data->show_state = IUP_RESTORE;
+      return 1;
+    }
+
     return 0;
+  }
+
+  if (iupAttribGetBoolean(ih, "CUSTOMFRAMESIMULATE") && iupStrEqualNoCase(placement, "MAXIMIZED"))
+  {
+    iupDialogCustomFrameMaximize(ih);
+    iupAttribSet(ih, "PLACEMENT", NULL); /* reset to NORMAL */
+    ih->data->show_state = IUP_MAXIMIZE;
+    return 1;
   }
 
   no_activate = iupAttribGetBoolean(ih, "SHOWNOACTIVATE");
@@ -878,6 +893,53 @@ static int winDialogBaseProc(Ihandle* ih, UINT msg, WPARAM wp, LPARAM lp, LRESUL
       }
       break; 
     }
+    case WM_LBUTTONDBLCLK:
+    case WM_LBUTTONDOWN:
+    {
+      if (iupAttribGetBoolean(ih, "CUSTOMFRAMESIMULATE"))
+      {
+        SetCapture(ih->handle);
+
+        if (iupwinButtonDown(ih, msg, wp, lp))
+        {
+          /* refresh the cursor, it could have been changed in BUTTON_CB */
+          iupwinRefreshCursor(ih);
+        }
+
+        *result = 0;
+        return 1;
+      }
+      break;
+    }
+    case WM_MOUSEMOVE:
+    {
+      if (iupAttribGetBoolean(ih, "CUSTOMFRAMESIMULATE"))
+      {
+        if (iupwinMouseMove(ih, msg, wp, lp))
+        {
+          /* refresh the cursor, it could have been changed in MOTION_CB */
+          iupwinRefreshCursor(ih);
+        }
+      }
+      break;
+    }
+    case WM_LBUTTONUP:
+    {
+      if (iupAttribGetBoolean(ih, "CUSTOMFRAMESIMULATE"))
+      {
+        ReleaseCapture();
+
+        if (iupwinButtonUp(ih, msg, wp, lp))
+        {
+          /* refresh the cursor, it could have been changed in BUTTON_CB */
+          iupwinRefreshCursor(ih);
+        }
+
+        *result = 0;
+        return 1;
+      }
+      break;
+    }
   case WM_ERASEBKGND:
     {
       if (winDialogDrawBackground(ih, (HDC)wp, 0))
@@ -1112,6 +1174,9 @@ static int winDialogMapMethod(Ihandle* ih)
       has_border = 0;
   TCHAR* classname = TEXT("IupDialog");
   char* title, *value;
+
+  if (iupAttribGetBoolean(ih, "CUSTOMFRAMESIMULATE"))
+    iupDialogCustomFrameSimulateCheckCallbacks(ih);
 
   title = iupAttribGet(ih, "TITLE"); 
   if (title)
@@ -1679,7 +1744,10 @@ static int winDialogSetMdiCloseAllAttrib(Ihandle *ih, const char *value)
 
 static char* winDialogGetMaximizedAttrib(Ihandle *ih)
 {
-  return iupStrReturnBoolean(IsZoomed(ih->handle));
+  if (iupAttribGetBoolean(ih, "CUSTOMFRAMESIMULATE"))
+    return iupAttribGet(ih, "MAXIMIZED");
+  else
+    return iupStrReturnBoolean(IsZoomed(ih->handle));
 }
 
 static char* winDialogGetMinimizedAttrib(Ihandle *ih)

@@ -140,6 +140,33 @@ are supported.&nbsp;</p>
 
 
 <h4>Exclusive</h4>
+<p><strong><a name="CUSTOMFRAMESIMULATE">CUSTOMFRAMESIMULATE</a></strong>: <font SIZE="3">
+	allows the application to customize the dialog frame elements (the title and 
+its buttons) by using IUP controls for its elements like caption, minimize 
+button, maximize button, and close buttons. The custom frame support is entirely 
+simulated by IUP, no native support for custom frame is used (this seems to have 
+less drawbacks on the application behavior). The application is responsible for 
+leaving space for the borders. One drawback is that menu bars will not work. For 
+the dialog to be able to be moved an <strong>IupLabel</strong>, or a <strong>
+IupFlatLabel</strong> or an <strong>
+IupCanvas</strong> must be at the top of the dialog and must have the NAME 
+attribute set to CUSTOMFRAMECAPTION. See the <a href="#Custom_Frame">Custom Frame</a> notes 
+bellow. (since 3.28)</font></p>
+<p class="info">By setting this attribute the following attributes will be set:</p>
+<pre>RESIZE=NO
+MENUBOX=NO
+MAXBOX=NO
+MINBOX=NO
+BORDER=NO
+TITLE=NULL
+MENU=NULL
+TASKBARBUTTON=SHOW</pre>
+<p class="info">The BUTTON_CB and MOTION_CB callbacks of the dialog will be set 
+too, so the dialog can be resized. The BUTTON_CB and MOTION_CB callbacks of the 
+element with NAME=<font SIZE="3">CUSTOMFRAMECAPTION</font>&nbsp; will also be 
+changed so the dialog can be moved and maximized with double click. Its the 
+application responsibility to implement the minimize, maximize and close 
+buttons.</p>
 <p><strong>DEFAULTENTER</strong>:&nbsp; Name of the button activated when the 
 user press Enter when focus is in another control of the dialog. Use <a href="../func/iupsethandle.html">
 IupSetHandle</a> or
@@ -249,13 +276,14 @@ the dialog is the active window (the window with focus). Can be Yes or No.
 	<strong>CUSTOMFRAME</strong> [Windows and GTK Only] (non inheritable): 
 allows the application to customize the dialog frame elements (the title and its 
 buttons) by using IUP controls for its elements like caption, minimize button, 
-maximize button, and close buttons. The application is responsible for leaving 
+maximize button, and close buttons. The custom frame support uses the native 
+system support for custom frames. The application is responsible for leaving 
 space for the borders. One drawback is that menu bars will not work. For the 
 dialog to be able to be moved an <strong>IupLabel</strong> or an <strong>
 IupCanvas</strong> must be at the top of the dialog and must have the NAME 
-attribute set to CUSTOMFRAMECAPTION (since 3.22). Custom frames are supported 
-only in GTK version 3.10, so for older GTK versions we have to simulate the 
-support by removing all dialog decorations. (since 3.18) (renamed in 3.22) (GTK 
+attribute set to CUSTOMFRAMECAPTION (since 3.22). Native custom frames are supported 
+only in Windows and in GTK version 3.10, so for older GTK versions we have to simulate the 
+support using <a href="#CUSTOMFRAMESIMULATE">CUSTOMFRAMESIMULATE</a>. (since 3.18) (renamed in 3.22) (GTK 
 support since 3.22) See the <a href="#Custom_Frame">Custom Frame</a> notes 
 bellow.</font></p>
 
@@ -610,11 +638,15 @@ it is simulated by IUP removing the window decoration.</p>
 Win32 API (maybe in WPF there is, but we are stuck with the old API). It is a 
 combination of message handling with returned values in the WindowProc. So 
 sometimes the result is not what was expected. For instance, if the application 
-is not responding the old title bar interface is drawn over the current title 
-bar area just to show the &quot;Not Responding&quot; at the window caption. We don't know 
+is not responding the old title bar interface is drawn over the top of the 
+dialog just to show the &quot;Not Responding&quot; at the window caption, even 
+if the window does not have a caption. We don't know 
 how to avoid that. Also the internal double buffer processing for the dialog is 
 some how affected and a sequential of full redraw of the dialog has more flicker 
 than usual. </p>
+<p>The CUSTOMFRAMESIMULATE attribute is a workaround that tries to solve the 
+double buffer problem and has more control over the custom frame behavior in 
+general. </p>
 
 <h3><a name="Examples">Examples</a></h3>
 

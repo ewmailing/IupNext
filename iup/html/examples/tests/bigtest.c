@@ -281,6 +281,8 @@ int main(int argc, char* argv[])
   IupSetAttribute(dlg, "MINBOX", "NO");
   IupSetAttribute(dlg, "BORDER", "NO");
   IupSetAttribute(dlg, "TITLE", NULL);
+
+//  IupSetAttribute(dlg, "TASKBARBUTTON", "SHOW");
 #endif
 
   IupSetAttribute(list, "VISIBLELINES", "15");
