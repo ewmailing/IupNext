@@ -580,19 +580,6 @@ static int iFlatListResize_CB(Ihandle* ih, int width, int height)
   return IUP_DEFAULT;
 }
 
-static void iFlatListSingleCallDblClickCb(Ihandle* ih, IFnis cb, int pos)
-{
-  char *text;
-
-  if (pos < 1)
-    return;
-
-  text = IupGetAttributeId(ih, "", pos);
-
-  if (cb(ih, pos, text) == IUP_CLOSE)
-    IupExitLoop();
-}
-
 static void iFlatListCallActionCallback(Ihandle* ih, IFnsii cb, int pos, int state)
 {
   char *text;
