@@ -103,7 +103,7 @@ static int iFlatListConvertXYToPos(Ihandle* ih, int x, int y)
   return pos;
 }
 
-static void iFlatListCopyItem(Ihandle *ih, int from, int to, int selected)
+static void iFlatListCopyItem(Ihandle *ih, int from, int to)
 {
   int count = iupArrayCount(ih->data->items_array);
   iFlatListItem* items = (iFlatListItem*)iupArrayGetData(ih->data->items_array);
@@ -126,7 +126,7 @@ static void iFlatListCopyItem(Ihandle *ih, int from, int to, int selected)
   items[i].fgColor = iupStrDup(copy.fgColor);
   items[i].bgColor = iupStrDup(copy.bgColor);
   items[i].font = iupStrDup(copy.font);
-  items[i].selected = selected;
+  items[i].selected = 0;
 }
 
 static void iFlatListRemoveItem(Ihandle *ih, int start, int remove_count)
@@ -159,12 +159,7 @@ static void iFlatListUnSelectedAll(Ihandle *ih)
   int count = iupArrayCount(ih->data->items_array);
   int i;
   for (i = 0; i < count; i++)
-  {
-    if (items[i].selected == 0)
-      continue;
-    break;
-  }
-  iupArrayRemove(ih->data->items_array, i, 1);
+    items[i].selected = 0;
 }
 
 static void iFlatListSetItemFont(Ihandle* ih, const char* font)
@@ -452,12 +447,43 @@ static void iFlatListSelectItem(Ihandle* ih, int pos, int ctrlPressed, int shftP
     }
     items[pos - 1].selected = 1;
 
-    if (cb)
+    if (cb || vc_cb)
       iFlatListSingleCallActionCb(ih, cb, vc_cb, pos);
   }
 
   if (!shftPressed)
     iupAttribSetInt(ih, "_IUPFLATLIST_LASTSELECTED", pos);
+}
+
+static int iFlatListCallDragDropCb(Ihandle* ih, int drag_id, int drop_id, int *is_ctrl)
+{
+  IFniiii cbDragDrop = (IFniiii)IupGetCallback(ih, "DRAGDROP_CB");
+  int is_shift = 0;
+  char key[5];
+  iupdrvGetKeyState(key);
+  if (key[0] == 'S')
+    is_shift = 1;
+  if (key[1] == 'C')
+    *is_ctrl = 1;
+  else
+    *is_ctrl = 0;
+
+  /* ignore a drop that will do nothing */
+  if ((*is_ctrl) == 0 && (drag_id + 1 == drop_id || drag_id == drop_id))
+    return IUP_DEFAULT;
+  if ((*is_ctrl) != 0 && drag_id == drop_id)
+    return IUP_DEFAULT;
+
+  drag_id++;
+  if (drop_id < 0)
+    drop_id = -1;
+  else
+    drop_id++;
+
+  if (cbDragDrop)
+    return cbDragDrop(ih, drag_id, drop_id, is_shift, *is_ctrl);  /* starts at 1 */
+
+  return IUP_CONTINUE; /* allow to move/copy by default if callback not defined */
 }
 
 static int iFlatListButton_CB(Ihandle* ih, int button, int pressed, int x, int y, char* status)
@@ -474,6 +500,7 @@ static int iFlatListButton_CB(Ihandle* ih, int button, int pressed, int x, int y
   if (button == IUP_BUTTON1 && !pressed && ih->data->dragged_pos > 0)
   {
     iFlatListItem* items = (iFlatListItem*)iupArrayGetData(ih->data->items_array);
+    int is_ctrl;
 
     if (pos == -1)
     {
@@ -486,12 +513,25 @@ static int iFlatListButton_CB(Ihandle* ih, int button, int pressed, int x, int y
       }
     }
 
-    iFlatListCopyItem(ih, ih->data->dragged_pos, pos, 0);
-    iFlatListUnSelectedAll(ih);
-    items[pos - 1].selected = 1;
+    if (iFlatListCallDragDropCb(ih, ih->data->dragged_pos, pos, &is_ctrl) == IUP_CONTINUE)
+    {
+      iFlatListCopyItem(ih, ih->data->dragged_pos, pos);
+      iFlatListUnSelectedAll(ih);
+      items[pos - 1].selected = 1;
+
+      if (!is_ctrl)
+      {
+        if (ih->data->dragged_pos < pos)
+          ih->data->dragged_pos--;
+
+        iFlatListRemoveItem(ih, ih->data->dragged_pos, 1);
+      }
+    }
+
     ih->data->dragover_pos = 0;
     ih->data->dragged_pos = 0;
 
+    iFlatListUpdateScrollBar(ih);
     IupUpdate(ih);
     return IUP_DEFAULT;
   }
@@ -502,7 +542,9 @@ static int iFlatListButton_CB(Ihandle* ih, int button, int pressed, int x, int y
   if (button == IUP_BUTTON1 && pressed)
   {
     iFlatListSelectItem(ih, pos, iup_iscontrol(status), iup_isshift(status));
-    ih->data->dragged_pos = pos;
+
+    if (ih->data->show_dragdrop)
+      ih->data->dragged_pos = pos;
   }
 
   if (iup_isdouble(status))
@@ -1554,37 +1596,6 @@ static int iFlatListSetTopItemAttrib(Ihandle* ih, const char* value)
     IupUpdate(ih);
   }
   return 0;
-}
-
-static int iFlatListCallDragDropCb(Ihandle* ih, int drag_id, int drop_id, int *is_ctrl)
-{
-  IFniiii cbDragDrop = (IFniiii)IupGetCallback(ih, "DRAGDROP_CB");
-  int is_shift = 0;
-  char key[5];
-  iupdrvGetKeyState(key);
-  if (key[0] == 'S')
-    is_shift = 1;
-  if (key[1] == 'C')
-    *is_ctrl = 1;
-  else
-    *is_ctrl = 0;
-
-  /* ignore a drop that will do nothing */
-  if ((*is_ctrl) == 0 && (drag_id + 1 == drop_id || drag_id == drop_id))
-    return IUP_DEFAULT;
-  if ((*is_ctrl) != 0 && drag_id == drop_id)
-    return IUP_DEFAULT;
-
-  drag_id++;
-  if (drop_id < 0)
-    drop_id = -1;
-  else
-    drop_id++;
-
-  if (cbDragDrop)
-    return cbDragDrop(ih, drag_id, drop_id, is_shift, *is_ctrl);  /* starts at 1 */
-
-  return IUP_CONTINUE; /* allow to move/copy by default if callback not defined */
 }
 
 static int iFlatListWheel_CB(Ihandle* ih, float delta)

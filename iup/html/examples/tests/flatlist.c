@@ -73,7 +73,7 @@ static int multilist_cb (Ihandle *ih, char *s)
 
 static int list_cb (Ihandle *ih, char *t, int i, int v)
 {
-  printf("ACTION_CB[%p](%s - %d %d)\n", ih, t, i, v);
+  printf("FLAT_ACTION(%s, %d, %d)\n", t, i, v);
   return IUP_DEFAULT;
 }
 
@@ -214,13 +214,19 @@ static int help_cb(Ihandle* ih)
 
 static int valuechanged_cb(Ihandle *ih)
 {
-  printf("VALUECHANGED_CB(%p)=%s\n", ih, IupGetAttribute(ih, "VALUE"));
+  printf("VALUECHANGED_CB() value = %s\n", ih, IupGetAttribute(ih, "VALUE"));
   return IUP_DEFAULT;
+}
+
+static int dragdrop_cb(Ihandle* ih, int drag_id, int drop_id, int shift, int control)
+{
+  printf("DRAGDROP_CB (%d)->(%d) shift=%d ctrl=%d\n", drag_id, drop_id, shift, control);
+  return IUP_CONTINUE;
 }
 
 static void set_callbacks(Ihandle* list)
 {
-  IupSetCallback(list, "ACTION_CB", (Icallback)list_cb);
+  IupSetCallback(list, "FLAT_ACTION", (Icallback)list_cb);
   IupSetCallback(list, "VALUECHANGED_CB", (Icallback)valuechanged_cb);
   IupSetCallback(list, "DBLCLICK_CB", (Icallback)dblclick_cb);
 //  IupSetCallback(list, "FLAT_BUTTON_CB",    (Icallback)button_cb);
@@ -232,7 +238,7 @@ static void set_callbacks(Ihandle* list)
   IupSetCallback(list, "ENTERWINDOW_CB", (Icallback)enterwindow_cb);
   IupSetCallback(list, "LEAVEWINDOW_CB", (Icallback)leavewindow_cb);
 
-  IupSetCallback(list, "K_ANY", (Icallback)k_any);
+//  IupSetCallback(list, "K_ANY", (Icallback)k_any);
   IupSetCallback(list, "HELP_CB", (Icallback)help_cb);
 }
 
@@ -277,6 +283,7 @@ void FlatListTest(void)
   IupSetCallback(list2, "MULTISELECT_CB", (Icallback)multilist_cb);
 
   IupSetAttribute(list1, "SHOWDRAGDROP", "Yes");
+  IupSetCallback(list1, "DRAGDROP_CB", (Icallback)dragdrop_cb);
 
 //  IupSetAttribute(list1, "DRAGDROPLIST", "Yes");
 //  IupSetAttribute(list2, "DRAGDROPLIST", "Yes");
