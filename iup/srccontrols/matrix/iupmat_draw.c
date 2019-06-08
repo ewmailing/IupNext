@@ -1547,6 +1547,7 @@ void iupMatrixDrawUpdate(Ihandle* ih)
 #endif
 }
 
+/*
 static int iMatrixDrawHasFlatScrollBar(Ihandle* ih)
 {
   char* value = iupAttribGetStr(ih, "FLATSCROLLBAR");
@@ -1555,6 +1556,7 @@ static int iMatrixDrawHasFlatScrollBar(Ihandle* ih)
   else
     return 0;
 }
+*/
 
 #ifndef USE_OLD_DRAW
 void iupMatrixDrawCB(Ihandle* ih)
