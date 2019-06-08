@@ -1600,25 +1600,6 @@ static int iFlatListCallDragDropCb(Ihandle* ih, int drag_id, int drop_id, int *i
   return IUP_CONTINUE; /* allow to move/copy by default if callback not defined */
 }
 
-static char* iListGetShowDragDropAttrib(Ihandle* ih)
-{
-  return iupStrReturnBoolean(ih->data->show_dragdrop);
-}
-
-static int iListSetShowDragDropAttrib(Ihandle* ih, const char* value)
-{
-  /* valid only before map */
-  if (ih->handle)
-    return 0;
-
-  if (iupStrBoolean(value))
-    ih->data->show_dragdrop = 1;
-  else
-    ih->data->show_dragdrop = 0;
-
-  return 0;
-}
-
 static int iFlatListWheel_CB(Ihandle* ih, float delta)
 {
   iupFlatScrollBarWheelUpdate(ih, delta);
