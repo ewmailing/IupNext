@@ -677,11 +677,11 @@ void SampleTest(void)
       NULL)), "BGCOLOR=\"100 150 255\"");
     IupInsert(_vbox_1, NULL, caption_bar);
 
-    IupSetAttribute(dlg, "CUSTOMFRAME", "YES");
-    IupSetAttribute(label, "HTTRANSPARENT", "YES");        /* Windows Only */
-    IupSetAttribute(caption_bar, "HTTRANSPARENT", "YES");  /* Windows Only */
+//    IupSetAttribute(dlg, "CUSTOMFRAME", "YES");
+//    IupSetAttribute(label, "HTTRANSPARENT", "YES");        /* Windows Only */
+//    IupSetAttribute(caption_bar, "HTTRANSPARENT", "YES");  /* Windows Only */
 
-//    IupSetAttribute(dlg, "CUSTOMFRAMESIMULATE", "YES");
+    IupSetAttribute(dlg, "CUSTOMFRAMESIMULATE", "YES");
   }
 #endif
 

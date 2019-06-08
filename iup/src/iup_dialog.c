@@ -714,10 +714,8 @@ static int iDialogCustomFrameButton_CB(Ihandle* ih, int button, int pressed, int
 
         iupAttribSetInt(ih, "_IUPDLG_RESIZE_EDGE", edge);
       }
-      else if (is_resizing)  /* DRAG END */
-      {
+      else if (is_resizing && !pressed)  /* DRAG END */
         iupAttribSet(ih, "_IUPDLG_RESIZING", NULL);
-      }
     }
   }
 
