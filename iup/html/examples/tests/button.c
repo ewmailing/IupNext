@@ -443,8 +443,10 @@ void ButtonTest(void)
 
 //  IupSetGlobal("CLIENTAREAANIMATION", "No");
 //  IupSetGlobal("HOTTRACKING", "No");
+//  IupSetGlobal("PROCESSWINDOWSGHOSTING", "No");
 
   IupShow(dlg);
+  
 
 //  IupShowXY(dlg, IUP_CENTERPARENT, IUP_CENTERPARENT);
   //  IupShowXY(dlg,IUP_LEFT,IUP_TOP);

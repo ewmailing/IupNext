@@ -120,6 +120,11 @@ size is not available the stock image is resized to match the given size. By
 default the size will be automatically calculated from the screen resolution: if 
 res &lt;= 96 DPI then size = 16, if 144 DPI size = 24, if 192 DPI size = 32, else 
 size = 48.&nbsp; </p>
+<h3><span class="style2">PROCESSWINDOWSGHOSTING [Windows Only] (since 3.28)</span></h3>
+<p>If set to NO will disable the <span>window ghosting feature for the duration 
+of the process, can not be enabled again. When disabled the application dialogs 
+can not be moved or resize while application that is not responding, also the 
+&quot;Not Responding&quot; display at the application tittle bar will not be done anymore.</span></p>
 <h3>IUPLUA_THREADED<span class="style2"> (since 3.6)</span></h3>
 <p>If defined allow IUP to be used inside coroutines in Lua.</p>
 <h3><strong>SINGLEINSTANCE</strong> [Windows Only]<span class="style2"> (since 3.2)</span></h3>

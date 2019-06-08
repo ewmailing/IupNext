@@ -367,6 +367,12 @@ int iupdrvSetGlobal(const char* name, const char* value)
     SystemParametersInfoA(SPI_SETHOTTRACKING, 0, (void*)flag, 0);
     return 1;
   }
+  if (iupStrEqual(name, "PROCESSWINDOWSGHOSTING"))
+  {
+    if (!iupStrBoolean(value))
+      DisableProcessWindowsGhosting();
+    return 1;
+  }
   
   return 1;
 }
