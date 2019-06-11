@@ -1325,6 +1325,9 @@ static int iLuaScripterDlgCreateMethod(Ihandle* ih, void** params)
   IupSetCallback(ih, "NEWTEXT_CB", (Icallback)newtext_cb);
   IupSetCallback(ih, "NEWFILENAME_CB", (Icallback)newfilename_cb);
 
+  /* Call NEW_TEXT_CB because the first tab was already created */
+  newtext_cb(ih, get_current_multitext(ih));
+
   /* Additional toolbar buttons */
   toolbar = IupGetChild(IupGetChild(ih, 0), 0);
   iupLuaScripterDebuggerAddToolbarButtons(toolbar);
