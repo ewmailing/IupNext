@@ -193,7 +193,8 @@ void iupwinMenuDialogProc(Ihandle* ih_dialog, UINT msg, WPARAM wp, LPARAM lp)
     {
       /* Simulate WM_GETFOCUS when the menu interaction is stopped */
       Ihandle* lastfocus = (Ihandle*)iupAttribGet(ih_dialog, "_IUPWIN_LASTFOCUS");
-      if (iupObjectCheck(lastfocus)) iupCallGetFocusCb(lastfocus);
+      if (iupObjectCheck(lastfocus)) 
+        iupCallGetFocusCb(lastfocus);
       break;
     }
   }
