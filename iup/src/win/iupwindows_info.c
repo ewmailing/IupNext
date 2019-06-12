@@ -11,6 +11,7 @@
    and Windows system headers. */
 
 #include <windows.h>
+#include <ShlObj.h> /* for SHGetFolderPath */
 
 #include "iup_str.h"
 #include "iup_drvinfo.h"
@@ -103,6 +104,44 @@ char *iupdrvGetSystemVersion(void)
   return str;
 }
 
+/*
+Windows 7 and 10
+PreferencePath(0)=C:\Users\Tecgraf\
+PreferencePath(1)=C:\Users\Tecgraf\AppData\Roaming\
+
+Windows XP
+PreferencePath(0)=C:\Documents and Settings\Tecgraf\
+PreferencePath(1)=C:\Documents and Settings\Tecgraf\Application Data\
+*/
+
+int iupdrvGetPreferencePath(char *filename, int use_system)
+{
+  char* homedrive;
+  char* homepath;
+
+  if (use_system)
+  {
+    if (SHGetFolderPathA(NULL, CSIDL_APPDATA | CSIDL_FLAG_CREATE, NULL, SHGFP_TYPE_CURRENT, filename) == S_OK)
+    {
+      strcat(filename, "\\");
+      return 1;
+    }
+  }
+
+  homedrive = getenv("HOMEDRIVE");
+  homepath = getenv("HOMEPATH");
+  if (homedrive && homepath)
+  {
+    strcpy(filename, homedrive);
+    strcat(filename, homepath);
+    strcat(filename, "\\");
+    return 1;
+  }
+
+  filename[0] = '\0';
+  return 0;
+
+}
 int iupdrvSetCurrentDirectory(const char* path)
 {
   return SetCurrentDirectoryA(path);

@@ -18,6 +18,7 @@
 #include "iup_attrib.h"
 #include "iup_assert.h"
 
+#include "iup_drvinfo.h"
 
 #define GROUPKEYSIZE 100
 #define MAX_LINES 500
@@ -52,8 +53,7 @@ static char* iConfigSetFilename(Ihandle* ih)
 {
   char* app_name;
   char* app_path;
-  int app_config;
-  char* home;
+  int app_config, app_system;
   
   char filename[10240] = "";
   char* app_filename = IupGetAttribute(ih, "APP_FILENAME");
@@ -63,30 +63,21 @@ static char* iConfigSetFilename(Ihandle* ih)
   app_name = IupGetAttribute(ih, "APP_NAME");
   app_path = IupGetAttribute(ih, "APP_PATH");
   app_config = IupGetInt(ih, "APP_CONFIG");
+  app_system = IupGetInt(ih, "APP_SYSTEMPATH");
 
   if (!app_name)
     return NULL;
 
-  home = getenv("HOME");
-  if (home && !app_config)
+  if (iupdrvGetPreferencePath(filename, app_system) && !app_config)
   {
-    /* UNIX format */
-    strcat(filename, home);
-    strcat(filename, "/.");
+#if defined(__ANDROID__) || defined(__APPLE__) || defined(WIN32)
     strcat(filename, app_name);
-  }
-  else
-  {
-    /* Windows format */
-    char* homedrive = getenv("HOMEDRIVE");
-    char* homepath = getenv("HOMEPATH");
-    if (homedrive && homepath && !app_config)
-    {
-      strcat(filename, homedrive);
-      strcat(filename, homepath);
-      strcat(filename, "\\");
-      strcat(filename, app_name);
-      strcat(filename, ".cfg");
+    strcat(filename, ".cfg");
+#else
+    /* UNIX format */
+    strcat(filename, ".");
+    strcat(filename, app_name);
+#endif
     }
     else
     {
@@ -94,15 +85,17 @@ static char* iConfigSetFilename(Ihandle* ih)
         return NULL;
 
       strcat(filename, app_path);
-#ifndef WIN32
+#if defined(__ANDROID__) || defined(__APPLE__) || defined(WIN32)
+      /* these platforms shouldn't use a .dot file */
+#else
+      /* Unix generic hidden dot prefix */
       strcat(filename, ".");
 #endif
       strcat(filename, app_name);
-#ifdef WIN32
+#if defined(__ANDROID__) || defined(__APPLE__) || defined(WIN32)
       strcat(filename, ".cfg");
 #endif
     }
-  }
 
   IupSetStrAttribute(ih, "FILENAME", filename);
 

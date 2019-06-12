@@ -231,6 +231,7 @@ static int k_enter_cb(Ihandle*ih)
 
 static int dblclick_cb(Ihandle *ih, int item, char *text)
 {
+  (void)ih;
   (void)text;
   test_list[item-1].func();
   return IUP_DEFAULT;

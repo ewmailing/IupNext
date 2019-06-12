@@ -242,3 +242,20 @@ char* iupdrvLocaleInfo(void)
 {
   return iupStrReturnStr(nl_langinfo(CODESET));
 }
+
+int iupdrvGetPreferencePath(char *filename, int use_system)
+{
+  char* home = getenv("HOME");
+  if (home)
+  {
+    (void)use_system; /* unused */
+    strcpy(filename, home);
+    strcat(filename, "/");
+    return 1;
+  }
+  else
+  {
+    filename[0] = '\0';
+    return 0;
+  }
+}

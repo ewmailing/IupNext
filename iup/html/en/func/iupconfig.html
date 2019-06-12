@@ -72,13 +72,17 @@ file name creation will depend on the system and on its usage.</p>
 <p>There are two defined usages. First, for a <strong>User Configuration File,</strong> 
 it will be stored on the user Home folder. Second, as an <strong>Application 
 Configuration File,</strong> it will be stored in the same folder of the 
-executable.</p>
+executable. The Home folder is always preferred, but you may need to just load a 
+configuration file saved by the installation for instance.</p>
 <p>The <strong>User Configuration File </strong>is the most common usage. In 
 UNIX, the filename will be &quot;&lt;HOME&gt;/.&lt;APP_NAME&gt;&quot;, where &quot;&lt;HOME&gt;&quot; is replaced by 
 the &quot;HOME&quot; environment variable contents, and &lt;APP_NAME&gt; replaced by the 
 APP_NAME attribute value. In Windows, the filename will be 
 &quot;&lt;HOMEDRIVE&gt;&lt;HOMEPATH&gt;\&lt;APP_NAME&gt;.cfg&quot;, where HOMEDRIVE and HOMEPATH are also 
-obtained from environment variables.</p>
+obtained from environment variables. If the attribute APP_SYSTEMPATH is set to 
+Yes, then it will use the system defined folder for application files (since 
+3.28), in Windows will be the same folder given by the environment variables 
+with &quot;Application Data\&quot; or &quot;AppData\Roaming\&quot; appended. </p>
 <p>The <strong>Application Configuration File</strong> is defined by setting the 
 attribute APP_CONFIG to Yes (default is No). In this case the attribute APP_PATH must also be 
 set. In UNIX, the filename will be &quot;&lt;APP_PATH&gt;.&lt;APP_NAME&gt;&quot;,&nbsp; and in Windows 

@@ -83,6 +83,12 @@ void* iupdrvGetDisplay(void);
  * \ingroup drvinfo */
 char* iupdrvLocaleInfo(void);
 
+/** Returns the path to the preference directory.
+ * Path will always have a trailing slash.
+ * Return 1 on success, 0 on failure.
+ * \ingroup drvinfo */
+int iupdrvGetPreferencePath(char *filename, int use_system);
+
 /** Changes the current directory.
 * \ingroup drvinfo */
 int iupdrvSetCurrentDirectory(const char* dir);

@@ -283,6 +283,7 @@ iupdrvReparent
 iupdrvLocaleInfo
 iupdrvSetCurrentDirectory
 iupdrvGetCurrentDirectory
+iupdrvGetPreferencePath
 iupdrvIsVisible
 iupdrvIsActive
 iupdrvGetUserName

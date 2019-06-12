@@ -80,6 +80,23 @@ char* iupdrvGetCurrentDirectory(void)
   return NULL;
 }
 
+int iupdrvGetPreferencePath(char *filename, int use_system)
+{
+  char* home = getenv("HOME");
+  if (home)
+  {
+    (void)use_system; /* unused */
+    /* UNIX format */
+    strcpy(filename, home);
+    strcat(filename, "/");
+    return 1;
+  }
+  else
+  {
+    filename[0] = '\0';
+    return 0;
+  }
+}
 
 /**************************************************************************/
 
