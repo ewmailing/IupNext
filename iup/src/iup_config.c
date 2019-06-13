@@ -68,7 +68,7 @@ static char* iConfigSetFilename(Ihandle* ih)
   if (!app_name)
     return NULL;
 
-  if (iupdrvGetPreferencePath(filename, app_system) && !app_config)
+  if (!app_config && iupdrvGetPreferencePath(filename, app_system))
   {
 #if defined(__ANDROID__) || defined(__APPLE__) || defined(WIN32)
     strcat(filename, app_name);
@@ -78,30 +78,29 @@ static char* iConfigSetFilename(Ihandle* ih)
     strcat(filename, ".");
     strcat(filename, app_name);
 #endif
-    }
-    else
-    {
-      if (!app_path)
-        return NULL;
+  }
+  else
+  {
+    if (!app_path)
+      return NULL;
 
-      strcat(filename, app_path);
+    strcat(filename, app_path);
 #if defined(__ANDROID__) || defined(__APPLE__) || defined(WIN32)
-      /* these platforms shouldn't use a .dot file */
+    /* these platforms shouldn't use a .dot file */
 #else
-      /* Unix generic hidden dot prefix */
-      strcat(filename, ".");
+    /* Unix generic hidden dot prefix */
+    strcat(filename, ".");
 #endif
-      strcat(filename, app_name);
+    strcat(filename, app_name);
 #if defined(__ANDROID__) || defined(__APPLE__) || defined(WIN32)
-      strcat(filename, ".cfg");
+    strcat(filename, ".cfg");
 #endif
-    }
+  }
 
   IupSetStrAttribute(ih, "FILENAME", filename);
 
   return IupGetAttribute(ih, "FILENAME");
 }
-
 
 static int sort_names_cb(const void* elem1, const void* elem2)
 {
