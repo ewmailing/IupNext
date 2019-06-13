@@ -125,7 +125,11 @@ wb_usr.tree =
         {
           name= {en= "Screenshots"},
           link= "screenshots.html"
-        }
+        },
+        {
+          name= {en= "Contributions"},
+          link= "contrib.html"
+        },
       }
     },
     {
@@ -148,10 +152,6 @@ wb_usr.tree =
         {
           name= {en= "Using IUP in C++"},
           link= "guide.html#cpp"
-        },
-        {
-          name= {en= "Contributions"},
-          link= "guide.html#contrib"
         },
         { link= "", name= {en= "" } },
         {
