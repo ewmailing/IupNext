@@ -11,18 +11,41 @@
 extern "C" {
 #endif
 
-int iuplua_open(lua_State *L);
-int iupkey_open(lua_State *L);  /* does nothing, kept for backward compatibility */
-int iuplua_close(lua_State * L);
+
+#ifndef DOXYGEN_SHOULD_IGNORE_THIS
+/** @cond DOXYGEN_SHOULD_IGNORE_THIS */
+#ifndef IUPLUA_EXPORT
+#ifdef IUPLUA_BUILD_LIBRARY
+  #ifdef __EMSCRIPTEN__
+    #include <emscripten.h>
+    #define IUPLUA_EXPORT EMSCRIPTEN_KEEPALIVE
+  #elif WIN32
+    #define IUPLUA_EXPORT __declspec(dllexport)
+  #elif defined(__GNUC__) && __GNUC__ >= 4
+    #define IUPLUA_EXPORT __attribute__ ((visibility("default")))
+  #else
+    #define IUPLUA_EXPORT
+  #endif
+#else
+  #define IUPLUA_EXPORT
+#endif /* IUPLUA_BUILD_LIBRARY */
+#endif /* IUPLUA_EXPORT */
+/** @endcond DOXYGEN_SHOULD_IGNORE_THIS */
+#endif /* DOXYGEN_SHOULD_IGNORE_THIS */
+
+
+IUPLUA_EXPORT int iuplua_open(lua_State *L);
+IUPLUA_EXPORT int iupkey_open(lua_State *L);  /* does nothing, kept for backward compatibility */
+IUPLUA_EXPORT int iuplua_close(lua_State * L);
 
 /* utilities */
-int iuplua_isihandle(lua_State *L, int pos);
-Ihandle* iuplua_checkihandle(lua_State *L, int pos);
-void iuplua_pushihandle(lua_State *L, Ihandle *n);
-int iuplua_dofile(lua_State *L, const char *filename);
-int iuplua_dostring(lua_State *L, const char *string, const char *chunk_name);
-int iuplua_dobuffer(lua_State *L, const char *buffer, int len, const char *chunk_name);
-void iuplua_show_error_message(const char *pname, const char* msg);
+IUPLUA_EXPORT int iuplua_isihandle(lua_State *L, int pos);
+IUPLUA_EXPORT Ihandle* iuplua_checkihandle(lua_State *L, int pos);
+IUPLUA_EXPORT void iuplua_pushihandle(lua_State *L, Ihandle *n);
+IUPLUA_EXPORT int iuplua_dofile(lua_State *L, const char *filename);
+IUPLUA_EXPORT int iuplua_dostring(lua_State *L, const char *string, const char *chunk_name);
+IUPLUA_EXPORT int iuplua_dobuffer(lua_State *L, const char *buffer, int len, const char *chunk_name);
+IUPLUA_EXPORT void iuplua_show_error_message(const char *pname, const char* msg);
 
 #ifdef __cplusplus
 }
