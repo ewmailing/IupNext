@@ -78,7 +78,7 @@ static int show_error_copy_action(Ihandle* ih)
   return IUP_DEFAULT;
 }
 
-void iuplua_show_error_message(const char *pname, const char* msg)
+IUPLUA_EXPORT void iuplua_show_error_message(const char *pname, const char* msg)
 {
   Ihandle *multi_text, *lbl, *copy, *button, *box, *dlg, *abort, *buttonbox;
   char* value = IupGetGlobal("LUA_ERROR_LABEL");
@@ -253,7 +253,7 @@ static int docall (lua_State *L, int narg, int nret)
              /*************************************/
              /*              Utilities            */
 
-void iuplua_push_name(lua_State *L, const char* name)
+IUPLUA_EXPORT void iuplua_push_name(lua_State *L, const char* name)
 {
   /* push iup.name in stack */
   iuplua_get_env(L);
@@ -262,7 +262,7 @@ void iuplua_push_name(lua_State *L, const char* name)
   lua_remove(L, -2);  /* remove global table from stack */
 }
 
-int iuplua_dofile(lua_State *L, const char *filename)
+IUPLUA_EXPORT int iuplua_dofile(lua_State *L, const char *filename)
 {
   int status = luaL_loadfile(L, filename);
   if (status == LUA_OK)
@@ -288,7 +288,7 @@ int iuplua_dofile(lua_State *L, const char *filename)
   return report(L, status);
 }
 
-int iuplua_dostring(lua_State *L, const char *s, const char *chunk_name)
+IUPLUA_EXPORT int iuplua_dostring(lua_State *L, const char *s, const char *chunk_name)
 {
   int status = luaL_loadbuffer(L, s, strlen(s), chunk_name);
   if (status == LUA_OK)
@@ -296,7 +296,7 @@ int iuplua_dostring(lua_State *L, const char *s, const char *chunk_name)
   return report(L, status);
 }
 
-int iuplua_dobuffer(lua_State *L, const char *s, int len, const char *chunk_name)
+IUPLUA_EXPORT int iuplua_dobuffer(lua_State *L, const char *s, int len, const char *chunk_name)
 {
   int status = luaL_loadbuffer(L, s, len, chunk_name);
   if (status == LUA_OK)
@@ -1177,7 +1177,7 @@ static void register_key(char *name, int code, void* user_data)
 /* from iupkey.c */
 void iupKeyForEach(void (*func)(char *name, int code, void* user_data), void* user_data);
 
-int iupkey_open(lua_State *L)
+IUPLUA_EXPORT int iupkey_open(lua_State *L)
 {
   (void)L;
   /* does nothing, kept for backward compatibility */
@@ -1225,7 +1225,7 @@ static int il_open(lua_State * L)
   return 1;
 }
 
-int iuplua_close(lua_State * L)
+IUPLUA_EXPORT int iuplua_close(lua_State * L)
 {
   if (iuplua_opencall_internal(L))
     IupClose();
@@ -1255,7 +1255,7 @@ static void setinfo (lua_State *L)
   lua_setfield(L, -2, "_VERSION_NUMBER");
 }
 
-int iuplua_open(lua_State * L)
+IUPLUA_EXPORT int iuplua_open(lua_State * L)
 {
   int ret;
 
