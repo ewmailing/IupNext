@@ -187,6 +187,8 @@ Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "iupfiledlg", "iupfiledlg.vc
 EndProject
 Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "iupluafiledlg", "iuplua\iupluafiledlg.vcxproj", "{1EBCAB67-5532-12AB-3422-49D667157985}"
 EndProject
+Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "iupvled", "iupvled.vcxproj", "{4828CDA0-D4B4-4D4F-B976-7F33BB4725D2}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Win32 = Debug|Win32
@@ -579,6 +581,14 @@ Global
 		{1EBCAB67-5532-12AB-3422-49D667157985}.Release|Win32.Build.0 = Debug|Win32
 		{1EBCAB67-5532-12AB-3422-49D667157985}.Release|x64.ActiveCfg = Debug|x64
 		{1EBCAB67-5532-12AB-3422-49D667157985}.Release|x64.Build.0 = Debug|x64
+		{4828CDA0-D4B4-4D4F-B976-7F33BB4725D2}.Debug|Win32.ActiveCfg = Debug|Win32
+		{4828CDA0-D4B4-4D4F-B976-7F33BB4725D2}.Debug|Win32.Build.0 = Debug|Win32
+		{4828CDA0-D4B4-4D4F-B976-7F33BB4725D2}.Debug|x64.ActiveCfg = Debug|x64
+		{4828CDA0-D4B4-4D4F-B976-7F33BB4725D2}.Debug|x64.Build.0 = Debug|x64
+		{4828CDA0-D4B4-4D4F-B976-7F33BB4725D2}.Release|Win32.ActiveCfg = Debug|Win32
+		{4828CDA0-D4B4-4D4F-B976-7F33BB4725D2}.Release|Win32.Build.0 = Debug|Win32
+		{4828CDA0-D4B4-4D4F-B976-7F33BB4725D2}.Release|x64.ActiveCfg = Debug|x64
+		{4828CDA0-D4B4-4D4F-B976-7F33BB4725D2}.Release|x64.Build.0 = Debug|x64
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
@@ -625,6 +635,7 @@ Global
 		{4094BDD7-82B1-4754-A86B-C7D893F8CEE3} = {B24D8E0A-2EB5-4C49-A146-C0AABEF81788}
 		{1EB17A53-1945-AB56-DD11-A3FB01F18985} = {1CBEAA34-BA34-497D-A775-B9AF6F905696}
 		{1EBCAB67-5532-12AB-3422-49D667157985} = {1CBEAA34-BA34-497D-A775-B9AF6F905696}
+		{4828CDA0-D4B4-4D4F-B976-7F33BB4725D2} = {B24D8E0A-2EB5-4C49-A146-C0AABEF81788}
 	EndGlobalSection
 	GlobalSection(DevPartner) = postSolution
 	EndGlobalSection
