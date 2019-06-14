@@ -249,7 +249,7 @@ static int cbInsertTab(Ihandle* ih)
   Ihandle* ref_vbox = IupGetHandle(IupGetAttribute(tabs, "VALUE"));
   Ihandle *vbox;
 
-  vbox = IupBackgroundBox(IupVbox(IupLabel("Label YYY"), IupButton("Button YYY", "cbChildButton"), NULL));
+  vbox = IupBackgroundBox(IupVbox(IupLabel("Label YYY"), IupButton("Button YYY", "cbChildButton"), IupCanvas(NULL), NULL));
   IupSetAttribute(vbox, "TABTITLE", "YYY");
   IupSetAttribute(vbox, "TITLE", "TABS YYY");
 
@@ -301,6 +301,14 @@ static int cbTabChangePos(Ihandle* ih, int new_tab, int old_tab)
   printf("new Tab: %d, old Tab: %d\n", new_tab, old_tab);
   TestFocusInChild(ih, new_tab);
   return IUP_DEFAULT;
+}
+
+static int cbTabClose(Ihandle *ih, int pos)
+{
+  Ihandle* child = IupGetChild(ih, pos);
+  IupDestroy(child);
+  IupRefresh(ih);
+  return IUP_IGNORE;
 }
 
 static int cbTabRightButton(Ihandle* ih, int pos)
@@ -378,7 +386,7 @@ static int extrabutton_cb(Ihandle *ih, int button, int press)
 }
 
 static Ihandle* CreateTabs(int tab)
-{
+{                                          
   Ihandle *vboxA, *vboxB, *vboxG, *text, *button,
           *vboxC, *vboxD,*vboxE, *vboxF, *vboxH, *vboxI,
           *tabs;
@@ -469,7 +477,8 @@ static Ihandle* CreateTabs(int tab)
 //  IupSetAttribute(tabs, "EXPANDBUTTON", "Yes");
 
 //  IupSetAttribute(tabs, "SHOWCLOSE", "yes");
-//  IupSetAttribute(tabs, "TABSPADDING", "10x50");
+//  IupSetCallback(tabs, "TABCLOSE_CB", (Icallback)cbTabClose);  // remove instead of hide
+  //  IupSetAttribute(tabs, "TABSPADDING", "10x50");
 //  IupSetAttribute(tabs, "TABSFONTSIZE", "36");
 //  IupSetAttribute(tabs, "TABSTEXTORIENTATION", "90");
 
