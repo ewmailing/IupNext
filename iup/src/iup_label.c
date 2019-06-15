@@ -143,6 +143,8 @@ static void iLabelComputeNaturalSizeMethod(Ihandle* ih, int *w, int *h, int *chi
     natural_h += 2*ih->data->vert_padding;
   }
 
+  iupdrvLabelAddExtraPadding(ih, &natural_w, &natural_h);
+
   *w = natural_w;
   *h = natural_h;
 }

@@ -77,7 +77,7 @@ static IupAndroidLabelSubType androidTextGetSubType(Ihandle* ih)
 }
 
 
-void iupdrvLabelAddBorders(Ihandle* ih, int *x, int *y)
+void iupdrvLabelAddExtraPadding(Ihandle* ih, int *x, int *y)
 {
   (void)ih;
   (void)x;

@@ -52,7 +52,7 @@ extern void emjsLabel_SetImageAttrib(int handle_id, void* pixel_data, size_t arr
 
 
 // adds padding to element
-void iupdrvLabelAddBorders(Ihandle* ih, int *x, int *y)
+void iupdrvLabelAddExtraPadding(Ihandle* ih, int *x, int *y)
 {
   (void)ih;
   (void)x;

@@ -29,6 +29,13 @@
 #include "iupmot_drv.h"
 
 
+void iupdrvLabelAddExtraPadding(Ihandle* ih, int *x, int *y)
+{
+  (void)ih;
+  (void)x;
+  (void)y;
+}
+
 static int motLabelSetTitleAttrib(Ihandle* ih, const char* value)
 {
   if (ih->data->type == IUP_LABEL_TEXT)

@@ -43,7 +43,7 @@ int iupdrvFrameHasClientOffset(Ihandle* ih)
 	return 0;
 }
 
-void iupdrvFrameGetTitleHeight(Ihandle* ih, int *h)
+int iupdrvFrameGetTitleHeight(Ihandle* ih, int *h)
 {
 	// The title height uses a smaller font size than the normal system font,
 	// so don't use iupdrvFontGetCharSize() since I don't think that font is stored in the ih. (Maybe that should be fixed.)
@@ -62,9 +62,10 @@ void iupdrvFrameGetTitleHeight(Ihandle* ih, int *h)
 	}
 */
 	*h = 0;
+  return 1;
 }
 
-void iupdrvFrameGetDecorSize(Ihandle* ih, int *w, int *h)
+int iupdrvFrameGetDecorSize(Ihandle* ih, int *w, int *h)
 {
 	// HACK: Need to make customizable based on whether title is shown or not.
 /*
@@ -82,6 +83,7 @@ void iupdrvFrameGetDecorSize(Ihandle* ih, int *w, int *h)
 	// 22 seems to be okay. Testing with a multilist on the bottom of frame...19 clips the scrollbar at the bottom.
 	// 20 doesn't have enough padding pixels under the scrollbar compared to other scrollbars I look at.
 	*h = 22;
+  return 1;
 }
 
 

@@ -87,7 +87,7 @@ int iupdrvFrameHasClientOffset(Ihandle* ih)
 	return 0;
 }
 
-void iupdrvFrameGetTitleHeight(Ihandle* ih, int *h)
+int iupdrvFrameGetTitleHeight(Ihandle* ih, int *h)
 {
 	// The title height uses a smaller font size than the normal system font,
 	// so don't use iupdrvFontGetCharSize() since I don't think that font is stored in the ih. (Maybe that should be fixed.)
@@ -106,9 +106,10 @@ void iupdrvFrameGetTitleHeight(Ihandle* ih, int *h)
 	}
 */
 	*h = 0;
+  return 1;
 }
 
-void iupdrvFrameGetDecorSize(Ihandle* ih, int *w, int *h)
+int iupdrvFrameGetDecorSize(Ihandle* ih, int *w, int *h)
 {
 	// HACK: Need to make customizable based on whether title is shown or not.
 /*
@@ -124,6 +125,7 @@ void iupdrvFrameGetDecorSize(Ihandle* ih, int *w, int *h)
 	// FIXME: I put 14 as a first guess without measuring. It looked pretty good, but should be measured.
 	*w = 14;
 	*h = 14;
+  return 1;
 }
 
 

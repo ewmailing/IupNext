@@ -82,26 +82,20 @@ int iupdrvFrameHasClientOffset(Ihandle* ih)
 	return 0;
 }
 
-void iupdrvFrameGetTitleHeight(Ihandle* ih, int *h)
+int iupdrvFrameGetTitleHeight(Ihandle* ih, int *h)
 {
-  int charheight;
-  iupdrvFontGetCharSize(ih, NULL, &charheight);
-  *h = charheight;
+  (void)ih;
+  (void)h;
+  return 0;
 }
 
-void iupdrvFrameGetDecorSize(Ihandle* ih, int *w, int *h)
+int iupdrvFrameGetDecorSize(Ihandle* ih, int *w, int *h)
 {
-  *w = 5;
-  *h = 5;
-
-  if (iupAttribGet(ih, "_IUPFRAME_HAS_TITLE") || iupAttribGet(ih, "TITLE"))
-  {
-    int title_height;
-    iupdrvFrameGetTitleHeight(ih, &title_height);
-    (*h) += title_height;
-  }
+  (void)ih;
+  (void)w;
+  (void)h;
+  return 0;
 }
-
 
 void iupdrvFrameInitClass(Iclass* ic)
 {

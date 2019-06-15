@@ -54,7 +54,7 @@ static NSImageView* cocoaLabelGetImageView(Ihandle* ih)
 }
 
 
-void iupdrvLabelAddBorders(Ihandle* ih, int *x, int *y)
+void iupdrvLabelAddExtraPadding(Ihandle* ih, int *x, int *y)
 {
 	*x += 4;
 }

@@ -12,10 +12,13 @@ extern "C" {
 #endif
 
 
-void iupdrvButtonAddBorders(int *x, int *y);  /* reuse button borders */
+/* some drivers reuses iupdrvButtonAddBorders */
+void iupdrvButtonAddBorders(Ihandle* ih, int *x, int *y);
+
+void iupdrvToggleAddBorders(Ihandle* ih, int *x, int *y);
 
 void iupdrvToggleInitClass(Iclass* ic);
-void iupdrvToggleAddCheckBox(int *x, int *y, const char* str);
+void iupdrvToggleAddCheckBox(Ihandle* ih, int *x, int *y, const char* str);
 
 Ihandle *iupRadioFindToggleParent(Ihandle* ih_toggle);
 char* iupToggleGetPaddingAttrib(Ihandle* ih);
