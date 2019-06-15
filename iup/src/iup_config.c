@@ -20,6 +20,10 @@
 
 #include "iup_drvinfo.h"
 
+#if defined(__APPLE__)
+#import <TargetConditionals.h>
+#endif
+
 #define GROUPKEYSIZE 100
 #define MAX_LINES 500
 
@@ -70,7 +74,7 @@ static char* iConfigSetFilename(Ihandle* ih)
 
   if (!app_config && iupdrvGetPreferencePath(filename, app_system))
   {
-#if defined(__ANDROID__) || defined(__APPLE__) || defined(WIN32)
+#if defined(__ANDROID__) || defined(__APPLE__) || defined(WIN32) || defined(__EMSCRIPTEN__)
     strcat(filename, app_name);
     strcat(filename, ".cfg");
 #else
@@ -85,14 +89,14 @@ static char* iConfigSetFilename(Ihandle* ih)
       return NULL;
 
     strcat(filename, app_path);
-#if defined(__ANDROID__) || defined(__APPLE__) || defined(WIN32)
+#if defined(__ANDROID__) || defined(__APPLE__) || defined(WIN32) || defined(__EMSCRIPTEN__)
     /* these platforms shouldn't use a .dot file */
 #else
     /* Unix generic hidden dot prefix */
     strcat(filename, ".");
 #endif
     strcat(filename, app_name);
-#if defined(__ANDROID__) || defined(__APPLE__) || defined(WIN32)
+#if defined(__ANDROID__) || defined(__APPLE__) || defined(WIN32) || defined(__EMSCRIPTEN__)
     strcat(filename, ".cfg");
 #endif
   }
@@ -213,6 +217,14 @@ int IupConfigSave(Ihandle* ih)
   }
 
   fclose(file);
+#if defined(__EMSCRIPTEN__)
+  EM_ASM(
+	FS.syncfs(function(err) {
+        if(err) console.log('Error: FS.syncfs failed', err);
+	  }
+	);
+  );
+#endif
   return 0;
 }
 
@@ -407,6 +419,9 @@ void IupConfigSetListVariable(Ihandle* ih, const char *group, const char* key, c
 
 /******************************************************************/
 
+/* macOS/Cocoa needs a completely different implementation, so exclude Mac/Cocoa from compiling this. */
+#if !defined(__APPLE__) || !defined(TARGET_OS_OSX)
+
 static const char* iConfigGetRecentAttribName(const char* recent_name, const char* base_name)
 {
   if (recent_name)
@@ -532,6 +547,8 @@ void IupConfigRecentUpdate(Ihandle* ih, const char* filename)
 
   iConfigBuildRecent(ih, menu, max_recent, group_name, recent_cb);
 }
+
+#endif /* macOS/Cocoa */
 
 
 /*******************************************************************/

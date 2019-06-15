@@ -69,6 +69,35 @@ typedef struct _GtkWidget InativeHandle;
 typedef struct _WidgetRec InativeHandle;
 #elif defined(WINVER)
 typedef struct HWND__ InativeHandle;
+#elif defined(__APPLE__)
+//#import <CoreFoundation/CoreFoundation.h>
+	// Problem: The usage of InativeHandle always appends a '*'.
+	// Both id and CFTypeRef are already pointers so I don't want a double pointer.
+	typedef void InativeHandle;
+#elif defined(__ANDROID__)
+//#include <jni.h>
+/*
+Problem: The usage of InativeHandle always appends a '*'.
+jobject already includes the pointer and I don't want a double pointer.
+Use _jobject instead.
+*/
+struct _jobject;
+typedef struct _jobject InativeHandle;
+/*
+struct AndroidHandleWrapper;
+typedef struct AndroidHandleWrapper InativeHandle;
+*/
+#elif defined(__EMSCRIPTEN__)
+#include <stdint.h>
+#define IUP_EMSCRIPTEN_MAX_COMPOUND_ELEMENTS 2
+struct InativeHandleEmscripten
+{
+  int handleID;
+  _Bool isCompound;
+  int numElemsIfCompound; // only set if compound; otherwise 0
+  int32_t compoundHandleIDArray[IUP_EMSCRIPTEN_MAX_COMPOUND_ELEMENTS];
+};
+typedef struct InativeHandleEmscripten InativeHandle;
 #else
 typedef struct _InativeHandle InativeHandle;
 #endif
