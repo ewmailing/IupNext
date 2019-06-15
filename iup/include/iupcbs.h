@@ -26,6 +26,7 @@ typedef int (*IFniii)(Ihandle*, int, int, int); /* trayclick_cb, edition_cb */
 typedef int (*IFniiii)(Ihandle*, int, int, int, int); /* dragdrop_cb */
 typedef int (*IFniiiiiiC)(Ihandle*, int, int, int, int, int, int, struct _cdCanvas*);  /* draw_cb */
 typedef int (*IFniiiiii)(Ihandle*, int, int, int, int, int, int);  /* OLD draw_cb */
+typedef int (*IFnsid)(Ihandle*, char*, int, double); /* postmessage_cb */
 
 typedef int (*IFnff)(Ihandle*, float, float);    /* canvas_action, plotmotion_cb (pplot) */
 typedef int (*IFniff)(Ihandle*,int,float,float);  /* scroll_cb */
@@ -66,7 +67,7 @@ typedef int (*IFniiffFF)(Ihandle*, int, int, float, float, float*, float*); /* e
 typedef int (*IFniiffs)(Ihandle*, int, int, float, float, char*);  /* plotbutton_cb (pplot) */
 typedef int (*IFniidds)(Ihandle*, int, int, double, double, char*);  /* plotbutton_cb */
 typedef int (*IFndds)(Ihandle*, double, double, char*);    /* plotmotion_cb */
-typedef int (*Ifnssds)(Ihandle*, char*, char*, double, char*); /* plottickformat_cb */
+typedef int (*IFnssds)(Ihandle*, char*, char*, double, char*); /* plottickformat_cb */
 
 typedef char* (*sIFnii)(Ihandle*, int, int);  /* value_cb, font_cb */
 typedef char* (*sIFni)(Ihandle*, int);  /* cell_cb */

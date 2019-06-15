@@ -70,7 +70,7 @@ static int iPlotEstimateNumberCharCount(bool inFormatAuto, const char* inFormatS
   return thePrecision;
 }
 
-static bool iPlotGetTickFormat(Ihandle* ih, Ifnssds formatticknumber_cb, char* inBuf, const char *inFormatString, double inValue)
+static bool iPlotGetTickFormat(Ihandle* ih, IFnssds formatticknumber_cb, char* inBuf, const char *inFormatString, double inValue)
 {
   char* decimal_symbol = IupGetGlobal("DEFAULTDECIMALSYMBOL");
 
@@ -547,7 +547,7 @@ bool iupPlotAxisX::DrawX(const iupPlotRect &inRect, cdCanvas* canvas, const iupP
     char theFormatString[30];
     strcpy(theFormatString, mTick.mFormatString);
 
-    Ifnssds formatticknumber_cb = (Ifnssds)IupGetCallback(ih, "XTICKFORMATNUMBER_CB");
+    IFnssds formatticknumber_cb = (IFnssds)IupGetCallback(ih, "XTICKFORMATNUMBER_CB");
 
     if (mTick.mShowNumber)
       SetFont(canvas, mTick.mFontStyle, mTick.mFontSize);
@@ -597,7 +597,7 @@ bool iupPlotAxisX::DrawX(const iupPlotRect &inRect, cdCanvas* canvas, const iupP
   return true;
 }
 
-void iupPlotAxisX::DrawXTick(double inX, double inScreenY, bool inMajor, const char*inFormatString, cdCanvas* canvas, Ihandle* ih, Ifnssds formatticknumber_cb) const
+void iupPlotAxisX::DrawXTick(double inX, double inScreenY, bool inMajor, const char*inFormatString, cdCanvas* canvas, Ihandle* ih, IFnssds formatticknumber_cb) const
 {
   int theTickSize;
   double theScreenX = mTrafo->Transform(inX);
@@ -695,7 +695,7 @@ bool iupPlotAxisY::DrawY(const iupPlotRect &inRect, cdCanvas* canvas, const iupP
     char theFormatString[30];
     strcpy(theFormatString, mTick.mFormatString);
 
-    Ifnssds formatticknumber_cb = (Ifnssds)IupGetCallback(ih, "YTICKFORMATNUMBER_CB");
+    IFnssds formatticknumber_cb = (IFnssds)IupGetCallback(ih, "YTICKFORMATNUMBER_CB");
 
     if (mTick.mShowNumber)
       SetFont(canvas, mTick.mFontStyle, mTick.mFontSize);
@@ -745,7 +745,7 @@ bool iupPlotAxisY::DrawY(const iupPlotRect &inRect, cdCanvas* canvas, const iupP
   return true;
 }
 
-void iupPlotAxisY::DrawYTick(double inY, double inScreenX, bool inMajor, const char* inFormatString, cdCanvas* canvas, Ihandle* ih, Ifnssds formatticknumber_cb) const
+void iupPlotAxisY::DrawYTick(double inY, double inScreenX, bool inMajor, const char* inFormatString, cdCanvas* canvas, Ihandle* ih, IFnssds formatticknumber_cb) const
 {
   int theTickSize;
   double theScreenY = mTrafo->Transform(inY);
