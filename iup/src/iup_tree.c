@@ -316,7 +316,7 @@ static void iTreeAddToCache(Ihandle* ih, int id, InodeHandle* node_handle)
   ih->data->node_cache[id].userdata = NULL;
 }
 
-static void iTreeIncCacheMem(Ihandle* ih)
+void iupTreeIncCacheMem(Ihandle* ih)
 {
   /* node_count here already contains the final count */
 
@@ -336,7 +336,7 @@ void iupTreeAddToCache(Ihandle* ih, int add, int kindPrev, InodeHandle* prevNode
   ih->data->node_count++;
 
   /* node_count here already contains the final count */
-  iTreeIncCacheMem(ih);
+  iupTreeIncCacheMem(ih);
 
   if (prevNode)
   {
@@ -405,7 +405,7 @@ void iupTreeCopyMoveCache(Ihandle* ih, int id_src, int id_dst, int count, int is
   /* id_dst here points to the final position for a copy operation */
 
   /* node_count here contains the final count for a copy operation */
-  iTreeIncCacheMem(ih);
+  iupTreeIncCacheMem(ih);
 
   /* add space for new nodes */
   remain_count = ih->data->node_count - (id_dst + count);
@@ -650,7 +650,7 @@ void iupTreeDragDropCopyCache(Ihandle* ih, int id_src, int id_dst, int count)
   /* id_dst here points to the final position for a copy operation */
 
   /* node_count here contains the final count for a copy operation */
-  iTreeIncCacheMem(ih);
+  iupTreeIncCacheMem(ih);
 
   /* add space for new nodes */
   remain_count = ih->data->node_count - (id_dst + count);

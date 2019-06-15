@@ -2088,8 +2088,8 @@ static void iupCocoaTreeCopyCache(Ihandle* ih, int flat_index_source, int flat_i
 	int original_node_count = ih->data->node_count;
 	// We must change the node_count and let IUP resize its array as needed.
 	ih->data->node_count += count_of_nodes_to_copy;
-	// iTreeIncCacheMem expects that the node_count contains the new size
-	iTreeIncCacheMem(ih);
+	// iupTreeIncCacheMem expects that the node_count contains the new size
+	iupTreeIncCacheMem(ih);
 
 	
 //	NSLog(@"flat_index_source: %d", flat_index_source);
@@ -2179,8 +2179,8 @@ static void iupCocoaTreeCrossInsertCache(Ihandle* source_ih, Ihandle* target_ih,
 	int original_node_count = target_ih->data->node_count;
 	// We must change the node_count and let IUP resize its array as needed.
 	target_ih->data->node_count += count_of_nodes_to_copy;
-	// iTreeIncCacheMem expects that the node_count contains the new size
-	iTreeIncCacheMem(target_ih);
+	// iupTreeIncCacheMem expects that the node_count contains the new size
+	iupTreeIncCacheMem(target_ih);
 
 	
 //	NSLog(@"flat_index_target: %d", flat_index_target);

@@ -35,6 +35,8 @@ typedef char InodeHandle;   /* should be void, but we use char to force compiler
 typedef struct _WidgetRec InodeHandle;
 #elif defined(WINVER)
 typedef struct _TREEITEM InodeHandle;
+#elif defined(__APPLE__)
+typedef void InodeHandle;   /* should be id, but don't want Obj-C in C header, and don't want id* */
 #else
 typedef struct _InodeData InodeHandle;
 #endif
@@ -56,6 +58,7 @@ int iupdrvTreeTotalChildCount(Ihandle* ih, InodeHandle* node_handle);
 void iupTreeSelectLastCollapsedBranch(Ihandle* ih, int *last_id);
 
 void iupTreeDelFromCache(Ihandle* ih, int id, int count);
+void iupTreeIncCacheMem(Ihandle* ih); /* needed for IupCocoa */
 void iupTreeAddToCache(Ihandle* ih, int add, int kindPrev, InodeHandle* prevNode, InodeHandle* node_handle);
 void iupTreeCopyMoveCache(Ihandle* ih, int id_src, int id_dst, int count, int is_copy);
 void iupTreeDragDropCopyCache(Ihandle* ih, int id_src, int id_dst, int count);
