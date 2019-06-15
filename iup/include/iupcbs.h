@@ -9,11 +9,13 @@
 
 struct _cdCanvas;
 
-typedef int (*IFidle)(void);  /* idle */
+typedef int  (*IFidle)(void);  /* idle */
+typedef void (*IFentry)(void);  /* entry */
 
-typedef void(*IFi)(int); /* globalentermodal_cb, globalleavemodal_cb,  */
-typedef void(*IFii)(int, int); /* globalkeypress_cb */
-typedef void (*IFiis)(int, int, char*);  /* globalmotion_cb */
+typedef void (*IFi)(int); /* globalentermodal_cb, globalleavemodal_cb,  */
+typedef void (*IFs)(char*);  /* openurl_cb */
+typedef void (*IFii)(int, int); /* globalkeypress_cb */
+typedef void (*IFiis)(int, int, char*);  /* globalmotion_cb, openfiles_cb */
 typedef void (*IFiiiis)(int, int, int, int, char*);  /* globalbutton_cb */
 typedef void (*IFfiis)(float,int,int,char*);  /* globalwheel_cb */
 
@@ -22,7 +24,7 @@ typedef int (*IFni)(Ihandle*, int);   /* k_any, show_cb, toggle_action, spin_cb,
 typedef int (*IFnii)(Ihandle*, int, int);  /* resize_cb, caret_cb, matrix_mousemove_cb, enteritem_cb, leaveitem_cb, scrolltop_cb, dropcheck_cb, selection_cb, select_cb, switch_cb, scrolling_cb, vspan_cb, hspan_cb */
 typedef int (*IFniii)(Ihandle*, int, int, int); /* trayclick_cb, edition_cb */
 typedef int (*IFniiii)(Ihandle*, int, int, int, int); /* dragdrop_cb */
-typedef int(*IFniiiiiiC)(Ihandle*, int, int, int, int, int, int, struct _cdCanvas*);  /* draw_cb */
+typedef int (*IFniiiiiiC)(Ihandle*, int, int, int, int, int, int, struct _cdCanvas*);  /* draw_cb */
 typedef int (*IFniiiiii)(Ihandle*, int, int, int, int, int, int);  /* OLD draw_cb */
 
 typedef int (*IFnff)(Ihandle*, float, float);    /* canvas_action, plotmotion_cb (pplot) */
@@ -32,6 +34,7 @@ typedef int (*IFnfiis)(Ihandle*,float,int,int,char*);  /* wheel_cb */
 typedef int (*IFnsVi)(Ihandle*, char*, void*, int);  /* dragdata_cb */
 typedef int (*IFnsViii)(Ihandle*, char*, void*, int, int, int);  /* dropdata_cb */
 typedef int (*IFnsiii)(Ihandle*, char*, int, int, int);  /* dropfiles_cb */
+typedef int (*IFnssi)(Ihandle*, char*, char*, int);  /* dragfilecreatename_cb */
 
 typedef int (*IFnnii)(Ihandle*, Ihandle*, int, int); /* drop_cb */
 typedef int (*IFnn)(Ihandle*, Ihandle*); /* savemarkers_cb, restoremarkers_cb */
@@ -71,5 +74,7 @@ typedef char* (*sIFniis)(Ihandle*, int, int, char*);  /* translatevalue_cb */
 
 typedef double (*dIFnii)(Ihandle*, int, int);  /* numericgetvalue_cb */
 typedef int    (*IFniid)(Ihandle*, int, int, double);  /* numericsetvalue_cb */
+
+typedef void (*IFniiv)(Ihandle*, int, int, void*);  /* android_onactivityresult_cb */
 
 #endif
