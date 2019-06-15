@@ -501,7 +501,11 @@ int main(int argc, char* argv[])
 {
   IupOpen(&argc, &argv);
 
+#ifdef USE_ENTRY_POINT
+  IupSetFunction("ENTRY_POINT", (Icallback)DialogTest);
+#else
   DialogTest();
+#endif
 
   IupMainLoop();
 

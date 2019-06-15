@@ -16,10 +16,13 @@
 #include "iup_object.h"
 #include "iup_attrib.h"
 #include "iup_str.h"
+#include "iup_loop.h"
 
 #include "iupwin_drv.h"
 #include "iupwin_handle.h"
 
+/* This just needs to be a random unique number not used by the OS */
+#define IWIN_POSTMESSAGE_ID 0x4456
 
 static IFidle win_idle_cb = NULL;
 static int win_main_loop = 0;
@@ -50,14 +53,27 @@ void IupExitLoop(void)
     PostQuitMessage(0);
 }
 
+static void winProcessPostMessage(LPARAM lParam);
+
 static int winLoopProcessMessage(MSG* msg)
 {
   if (msg->message == WM_QUIT)  /* IUP_CLOSE returned in a callback or IupHide in a popup dialog or all dialogs closed */
     return IUP_CLOSE;
   else
   {
-    TranslateMessage(msg);
-    DispatchMessage(msg);
+#ifndef USE_WINHOOKPOST
+    if (msg->message == WM_APP && msg->wParam == IWIN_POSTMESSAGE_ID)
+    {
+      winProcessPostMessage(msg->lParam);
+      return IUP_DEFAULT;
+    }
+#else
+    if (!CallMsgFilter(msg, IWIN_POSTMESSAGE_ID))
+#endif
+    {
+      TranslateMessage(msg);
+      DispatchMessage(msg);
+    }
     return IUP_DEFAULT;
   }
 }
@@ -71,8 +87,17 @@ int IupMainLoop(void)
 {
   MSG msg;
   int ret;
+  int return_code = IUP_NOERROR;
+  static int has_done_entry = 0;
+  static int has_done_exit = 0;
 
   win_main_loop++;
+
+  if (0 == has_done_entry)
+  {
+	  has_done_entry = 1;
+	  iupLoopCallEntryCb();
+  }
 
   do 
   {
@@ -83,16 +108,18 @@ int IupMainLoop(void)
       {
         if (winLoopProcessMessage(&msg) == IUP_CLOSE)
         {
-          win_main_loop--;
-          return IUP_CLOSE;
+          /* win_main_loop will be decremented at the end of this function */
+          return_code = IUP_CLOSE;
+          break;
         }
       }
       else
       {
         if (winLoopCallIdle() == IUP_CLOSE)
         {
-          win_main_loop--;
-          return IUP_CLOSE;
+          /* win_main_loop will be decremented at the end of this function */
+          return_code = IUP_CLOSE;
+          break;
         }
       }
     }
@@ -101,20 +128,29 @@ int IupMainLoop(void)
       ret = GetMessage(&msg, NULL, 0, 0);
       if (ret == -1) /* error */
       {
-        win_main_loop--;
-        return IUP_ERROR;
+        /* win_main_loop will be decremented at the end of this function */
+        return_code = IUP_ERROR;
+        break;
       }
       if (ret == 0 || /* WM_QUIT */
           winLoopProcessMessage(&msg) == IUP_CLOSE)  /* ret != 0 */
       {
-        win_main_loop--;
-        return IUP_NOERROR;
+        /* win_main_loop will be decremented at the end of this function */
+        return_code = IUP_NOERROR;
+        break;
       }
     }
   } while (ret);
 
-  win_main_loop--;   /* just for the record, should never pass here */
-  return IUP_NOERROR;
+  win_main_loop--;
+
+  if ((0 == win_main_loop) && (0 == has_done_exit))
+  {
+    has_done_exit = 1;
+    iupLoopCallExitCb();
+  }
+
+  return return_code;
 }
 
 int IupLoopStepWait(void)
@@ -158,3 +194,65 @@ void IupFlush(void)
   if (post_quit && win_main_loop>0)
     IupExitLoop();
 }
+
+
+typedef struct {
+  Ihandle* ih;
+  const char* s;
+  int i;
+  double d;
+} winPostMessageUserData;
+
+void IupPostMessage(Ihandle* ih, const char* s, int i, double d)
+{
+  winPostMessageUserData* user_data = (winPostMessageUserData*)malloc(sizeof(winPostMessageUserData));
+  user_data->ih = ih;
+  user_data->s = s;
+  user_data->i = i;
+  user_data->d = d;
+
+  PostThreadMessage(iupwin_mainthreadid, WM_APP, (WPARAM)IWIN_POSTMESSAGE_ID, (LPARAM)user_data);
+}
+
+static void winProcessPostMessage(LPARAM lParam)
+{
+  winPostMessageUserData* user_data = (winPostMessageUserData*)lParam;
+  Ihandle* ih = user_data->ih;
+  IFnsid post_message_callback = (IFnsid)IupGetCallback(ih, "POSTMESSAGE_CB");
+  if (post_message_callback)
+  {
+    post_message_callback(ih, (char*)user_data->s, user_data->i, user_data->d);
+  }
+  free(user_data);
+}
+
+#ifdef USE_WINHOOKPOST
+/* Based on Raymond Chen's discussion of PostThreadMessage
+https://blogs.msdn.microsoft.com/oldnewthing/20050428-00/?p=35753
+*/
+LRESULT CALLBACK iupwinPostMessageFilterProc(int code, WPARAM wParam, LPARAM lParam)
+{
+  MSG* msg = (MSG*)lParam;
+  /* Interesting: Chen uses code >= 0 for a purpose.
+	Usually, we get back IWIN_POSTMESSAGE_ID, but in the case where we could lose messages (right-click on the title bar)
+	I get a different number. (2 for the right-click title bar)
+	If we check explicitly only for code == IWIN_POSTMESSAGE_ID, then we skip this block in this case and lose messages.
+	Unfortunately, we lose yet another identifier to recognize this is our message.
+	However, Chen looks for WM_APP in psg->message which implies that is unique enough.
+	If somehow we start getting other WM_APP messages that aren't ours, we may need
+	to change things to set pmsg->wParam to another unique identifier so we can recognize this is our data.
+	But for now, this seems to work and hopefully there can't be any other messages since we are the only
+	ones that should be posting messages to our thread in an IUP app.
+  */
+  if (code >= 0)
+  {
+    if (msg->message == WM_APP && msg->wParam == IWIN_POSTMESSAGE_ID)
+    {
+      winProcessPostMessage(msg->lParam);
+      return TRUE;
+    }
+  }
+
+  return CallNextHookEx(iupwin_threadmsghook, code, wParam, lParam);
+}
+#endif

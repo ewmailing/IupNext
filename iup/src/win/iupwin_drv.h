@@ -17,7 +17,10 @@ extern "C" {
 extern HINSTANCE iupwin_hinstance;      /* iupwin_open.c */
 extern int       iupwin_comctl32ver6;   /* iupwin_open.c */
 extern HINSTANCE iupwin_dll_hinstance;  /* iupwindows_main.c */
-
+extern DWORD     iupwin_mainthreadid;   /* iupwin_open.c */
+#ifdef USE_WINHOOKPOST
+extern HHOOK     iupwin_threadmsghook;  /* iupwin_open.c */
+#endif
 
 /* open */
 void iupwinShowLastError(void);
@@ -103,6 +106,10 @@ void iupwinTrackMouseLeave(Ihandle* ih);
 void iupwinRefreshCursor(Ihandle* ih);
 
 int iupwinListDND(Ihandle *ih, UINT uNotification, POINT pt);
+
+#ifdef USE_WINHOOKPOST
+LRESULT CALLBACK iupwinPostMessageFilterProc(int code, WPARAM wParam, LPARAM lParam);
+#endif
 
 
 /*********************/

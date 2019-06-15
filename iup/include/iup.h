@@ -19,7 +19,7 @@ extern "C" {
 
 
 #define IUP_NAME "IUP - Portable User Interface"
-#define IUP_DESCRIPTION	"Multi-platform Toolkit for Building Graphical User Interfaces"
+#define IUP_DESCRIPTION "Multi-platform Toolkit for Building Graphical User Interfaces"
 #define IUP_COPYRIGHT "Copyright (C) 1994-2019 Tecgraf/PUC-Rio"
 #define IUP_VERSION "3.27"         /* bug fixes are reported only by IupVersion functions */
 #define IUP_VERSION_NUMBER 327000
@@ -42,6 +42,7 @@ int       IupLoopStepWait  (void);
 int       IupMainLoopLevel (void);
 void      IupFlush         (void);
 void      IupExitLoop      (void);
+void      IupPostMessage   (Ihandle* ih, const char* s, int i, double d);
 
 int       IupRecordInput(const char* filename, int mode);
 int       IupPlayInput(const char* filename);
@@ -149,7 +150,7 @@ char*     IupGetGlobal  (const char* name);
 
 Ihandle*  IupSetFocus     (Ihandle* ih);
 Ihandle*  IupGetFocus     (void);
-Ihandle*  IupPreviousField(Ihandle* ih);  
+Ihandle*  IupPreviousField(Ihandle* ih);
 Ihandle*  IupNextField    (Ihandle* ih);
 
 Icallback IupGetCallback (Ihandle* ih, const char *name);
@@ -237,7 +238,7 @@ Ihandle*  IupFlatToggle (const char* title);
 Ihandle*  IupDropButton (Ihandle* dropchild);
 Ihandle*  IupFlatLabel  (const char* title);
 Ihandle*  IupFlatSeparator(void);
-Ihandle*  IupCanvas(const char* action);
+Ihandle*  IupCanvas     (const char* action);
 Ihandle*  IupDialog     (Ihandle* child);
 Ihandle*  IupUser       (void);
 Ihandle*  IupLabel      (const char* title);
@@ -326,7 +327,7 @@ int  IupGetText(const char* title, char* text, int maxsize);
 int  IupGetColor(int x, int y, unsigned char* r, unsigned char* g, unsigned char* b);
 
 typedef int (*Iparamcb)(Ihandle* dialog, int param_index, void* user_data);
-int IupGetParam(const char* title, Iparamcb action, void* user_data, const char* format, ...);
+int IupGetParam(const char* title, Iparamcb action, void* user_data, const char* format,...);
 int IupGetParamv(const char* title, Iparamcb action, void* user_data, const char* format, int param_count, int param_extra, void** param_data);
 Ihandle* IupParam(const char* format);
 Ihandle*  IupParamBox(Ihandle* param, ...);
@@ -335,7 +336,6 @@ Ihandle*  IupParamBoxv(Ihandle* *param_array);
 Ihandle* IupLayoutDialog(Ihandle* dialog);
 Ihandle* IupElementPropertiesDialog(Ihandle* elem);
 Ihandle* IupGlobalsDialog(void);
-
 
 
 #ifdef __cplusplus
@@ -432,7 +432,7 @@ enum{IUP_SBUP,   IUP_SBDN,    IUP_SBPGUP,   IUP_SBPGDN,    IUP_SBPOSV, IUP_SBDRA
 #define IUPMASK_FLOAT     IUP_MASK_FLOAT
 #define IUPMASK_UFLOAT    IUP_MASK_UFLOAT
 #define IUPMASK_EFLOAT    IUP_MASK_EFLOAT
-#define IUPMASK_INT	      IUP_MASK_INT
+#define IUPMASK_INT       IUP_MASK_INT
 #define IUPMASK_UINT      IUP_MASK_UINT
 
 

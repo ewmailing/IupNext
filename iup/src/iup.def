@@ -131,6 +131,7 @@ IupGetAttributeHandleId
 IupSetAttributeHandleId2
 IupGetAttributeHandleId2
 IupExitLoop
+IupPostMessage
 IupUpdate
 IupRedraw
 IupImageRGB

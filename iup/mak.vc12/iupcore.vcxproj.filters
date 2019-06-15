@@ -313,6 +313,9 @@
     <ClCompile Include="..\src\iup_flatval.c">
       <Filter>src_controls</Filter>
     </ClCompile>
+    <ClCompile Include="..\src\iup_loop.c">
+      <Filter>src</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="..\src\iup_array.h">
@@ -487,6 +490,9 @@
       <Filter>inc</Filter>
     </ClInclude>
     <ClInclude Include="..\src\iup_draw.h">
+      <Filter>inc</Filter>
+    </ClInclude>
+    <ClInclude Include="..\src\iup_loop.h">
       <Filter>inc</Filter>
     </ClInclude>
   </ItemGroup>

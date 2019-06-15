@@ -199,16 +199,15 @@ void IupFlush(void)
 }
 
 /* TODO: Make decision on final API. For now, this API is just to get a usable demo. */
-void IupPostMessage(Ihandle* ih, char* unusedchar, void* message_data, int unusedint)
+void IupPostMessage(Ihandle* ih, const char* s, int i, double d)
 {
 	dispatch_async(dispatch_get_main_queue(),
 		^{
 			//NSLog(@"dispatch_async fired on main_queue");
-			IFnsVi post_message_callback = (IFnsVi)IupGetCallback(ih, "POSTMESSAGE_CB");
+			IFnsid post_message_callback = (IFnsid)IupGetCallback(ih, "POSTMESSAGE_CB");
 			if (post_message_callback)
 			{
-				//post_message_callback(ih, NULL, message_data, 0);
-				post_message_callback(ih, unusedchar, message_data, unusedint);
+				post_message_callback(ih, s, i, d);
 			}
 		}
 	);

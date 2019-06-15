@@ -461,7 +461,11 @@ int main(int argc, char* argv[])
   IupOpen(&argc, &argv);
   IupImageLibOpen();
 
+#ifdef USE_ENTRY_POINT
+  IupSetFunction("ENTRY_POINT", (Icallback)ButtonTest);
+#else
   ButtonTest();
+#endif
 
   IupMainLoop();
 

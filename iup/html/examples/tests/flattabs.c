@@ -130,7 +130,7 @@ static int cbDisableThisTab(Ihandle* ih)
 {
   Ihandle* tabs = (Ihandle*)IupGetAttribute(ih, "APP_TABS");
   int pos = IupGetInt(ih, "APP_THISTAB");
-  IupSetAttributeId(tabs, "TABINACTIVE", pos, "No");
+  IupSetAttributeId(tabs, "TABACTIVE", pos, "No");
   return IUP_DEFAULT;
 }
 
