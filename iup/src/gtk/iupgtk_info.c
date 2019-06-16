@@ -14,11 +14,12 @@
 #include <glib.h>
 #include <glib/gstdio.h>
 
+#include "iup_export.h"
 #include "iup_str.h"
 #include "iup_drvinfo.h"
 
 
-void iupdrvAddScreenOffset(int *x, int *y, int add)
+IUP_SDK_API void iupdrvAddScreenOffset(int *x, int *y, int add)
 {
   (void)x;
   (void)y;
@@ -33,7 +34,7 @@ GdkScreen* screen = gdk_screen_get_default();
 *height = gdk_screen_get_height(screen);
 #endif
 
-void iupdrvGetScreenSize(int *width, int *height)
+IUP_SDK_API void iupdrvGetScreenSize(int *width, int *height)
 {
 #if GTK_CHECK_VERSION(3, 4, 0)
   GdkRectangle rect;
@@ -56,7 +57,7 @@ void iupdrvGetScreenSize(int *width, int *height)
 #endif
 }
 
-void iupdrvGetFullSize(int *width, int *height)
+IUP_SDK_API void iupdrvGetFullSize(int *width, int *height)
 {
   GdkScreen* screen = gdk_screen_get_default();
   GdkRectangle rect;
@@ -70,7 +71,7 @@ void iupdrvGetFullSize(int *width, int *height)
   *height = rect.height;
 }
 
-int iupdrvGetScreenDepth(void)
+IUP_SDK_API int iupdrvGetScreenDepth(void)
 {
   GdkVisual* visual = gdk_visual_get_system();
 #if GTK_CHECK_VERSION(2, 22, 0)
@@ -80,12 +81,12 @@ int iupdrvGetScreenDepth(void)
 #endif
 }
 
-double iupdrvGetScreenDpi(void)
+IUP_SDK_API double iupdrvGetScreenDpi(void)
 {
   return gdk_screen_get_resolution(gdk_screen_get_default());
 }
 
-void iupdrvGetCursorPos(int *x, int *y)
+IUP_SDK_API void iupdrvGetCursorPos(int *x, int *y)
 {
 #if GTK_CHECK_VERSION(3, 0, 0)
   GdkDeviceManager* device_manager = gdk_display_get_device_manager(gdk_display_get_default());
@@ -96,7 +97,7 @@ void iupdrvGetCursorPos(int *x, int *y)
 #endif
 }
 
-void iupdrvGetKeyState(char* key)
+IUP_SDK_API void iupdrvGetKeyState(char* key)
 {
   GdkModifierType aModifierType;
   gdk_display_get_pointer(gdk_display_get_default(), NULL, NULL, NULL, &aModifierType); /* TODO: deprecated in GTK 3, but couldn't find a simpler way */
@@ -124,12 +125,12 @@ void iupdrvGetKeyState(char* key)
   key[4] = 0;
 }
 
-char *iupdrvGetComputerName(void)
+IUP_SDK_API char *iupdrvGetComputerName(void)
 {
   return (char*)g_get_host_name();
 }
 
-char *iupdrvGetUserName(void)
+IUP_SDK_API char *iupdrvGetUserName(void)
 {
   return (char*)g_get_user_name();
 }

@@ -197,7 +197,7 @@ static Iclass* iOleControlNewClass(void)
   return ic;
 }
 
-IUPOLE_EXPORT Ihandle *IupOleControl(const char *ProgID)
+IUPOLE_API Ihandle *IupOleControl(const char *ProgID)
 {
   void *params[2];
   params[0] = (void*)ProgID;
@@ -205,7 +205,7 @@ IUPOLE_EXPORT Ihandle *IupOleControl(const char *ProgID)
   return IupCreatev("olecontrol", params);
 }
 
-IUPOLE_EXPORT int IupOleControlOpen(void)
+IUPOLE_API int IupOleControlOpen(void)
 {
   if (IupGetGlobal("_IUP_OLECONTROL_OPEN"))
     return IUP_OPENED;

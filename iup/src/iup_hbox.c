@@ -268,17 +268,17 @@ static void iHboxSetChildrenPositionMethod(Ihandle* ih, int x, int y)
 /******************************************************************************/
 
 
-Ihandle *IupHboxv(Ihandle **children)
+IUP_API Ihandle* IupHboxv(Ihandle **children)
 {
   return IupCreatev("hbox", (void**)children);
 }
 
-Ihandle* IupHboxV(Ihandle* child, va_list arglist)
+IUP_API Ihandle* IupHboxV(Ihandle* child, va_list arglist)
 {
   return IupCreateV("hbox", child, arglist);
 }
 
-Ihandle *IupHbox(Ihandle* child, ...)
+IUP_API Ihandle* IupHbox(Ihandle* child, ...)
 {
   Ihandle *ih;
 

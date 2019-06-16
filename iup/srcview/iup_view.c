@@ -29,7 +29,7 @@
 #endif
 
 /* IupImage internal function, used only here */
-int iupSaveImageAsText(Ihandle* ih, FILE* packfile, const char* format, const char* name);
+IUP_SDK_API int iupSaveImageAsText(Ihandle* ih, FILE* packfile, const char* format, const char* name);
 
 /* IupImage internal function, used only here */
 void iupImageStockLoadAll(void);

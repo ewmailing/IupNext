@@ -616,17 +616,17 @@ Iclass* iupTabsNewClass(void)
   return ic;
 }
 
-Ihandle* IupTabsv(Ihandle** params)
+IUP_API Ihandle* IupTabsv(Ihandle** params)
 {
   return IupCreatev("tabs", (void**)params);
 }
 
-Ihandle*  IupTabsV(Ihandle* child, va_list arglist)
+IUP_API Ihandle* IupTabsV(Ihandle* child, va_list arglist)
 {
   return IupCreateV("tabs", child, arglist);
 }
 
-Ihandle* IupTabs(Ihandle* child, ...)
+IUP_API Ihandle* IupTabs(Ihandle* child, ...)
 {
   Ihandle *ih;
 

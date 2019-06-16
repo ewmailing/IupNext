@@ -1136,17 +1136,17 @@ static int iGridBoxCreateMethod(Ihandle* ih, void** params)
 /******************************************************************************/
 
 
-Ihandle *IupGridBoxv(Ihandle **children)
+IUP_API Ihandle* IupGridBoxv(Ihandle **children)
 {
   return IupCreatev("gridbox", (void**)children);
 }
 
-Ihandle*  IupGridBoxV(Ihandle* child, va_list arglist)
+IUP_API Ihandle* IupGridBoxV(Ihandle* child, va_list arglist)
 {
   return IupCreateV("gridbox", child, arglist);
 }
 
-Ihandle *IupGridBox(Ihandle* child, ...)
+IUP_API Ihandle* IupGridBox(Ihandle* child, ...)
 {
   Ihandle *ih;
 

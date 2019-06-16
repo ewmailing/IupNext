@@ -28,12 +28,12 @@ void iupdrvSetIdleFunction(Icallback f)
 }
 }
 
-void IupExitLoop(void)
+IUP_API void IupExitLoop(void)
 {
   be_app->PostMessage(B_QUIT_REQUESTED);
 }
 
-int IupMainLoopLevel(void)
+IUP_API int IupMainLoopLevel(void)
 {
 	UNIMPLEMENTED
 		return 0;
@@ -41,7 +41,7 @@ int IupMainLoopLevel(void)
 
 static bool isRunning = false;
 
-int IupMainLoop(void)
+IUP_API int IupMainLoop(void)
 {
   // This is called for the main window (and we start the application), but
   // also for all modal dialogs. We can only start the application once, so
@@ -69,7 +69,7 @@ int IupMainLoop(void)
   return IUP_NOERROR;
 }
 
-int IupLoopStepWait(void)
+IUP_API int IupLoopStepWait(void)
 {
 	UNIMPLEMENTED
   return IUP_DEFAULT;
@@ -81,7 +81,7 @@ int32 appLoop(void*)
 	be_app->Run();
 }
 
-int IupLoopStep(void)
+IUP_API int IupLoopStep(void)
 {
   if(!isRunning) {
 	isRunning = true;
@@ -104,13 +104,13 @@ int IupLoopStep(void)
   return IUP_DEFAULT;
 }
 
-void IupFlush(void)
+IUP_API void IupFlush(void)
 {
 	// This is meant to flush the event loop. Since the windows each run in
 	// their own thread, we can't do much anyway. Let's see later if this is a
 	// real problem...
 }
 
-void IupPostMessage(Ihandle* ih, const char* s, int i, double d)
+IUP_API void IupPostMessage(Ihandle* ih, const char* s, int i, double d)
 {
 }

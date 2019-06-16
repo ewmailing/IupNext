@@ -928,7 +928,7 @@ Iclass* iupColorbarNewClass(void)
   return ic;
 }
 
-Ihandle *IupColorbar(void)
+IUP_API Ihandle* IupColorbar(void)
 {
   return IupCreate("colorbar");
 }

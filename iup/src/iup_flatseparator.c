@@ -303,7 +303,7 @@ Iclass* iupFlatSeparatorNewClass(void)
   return ic;
 }
 
-Ihandle* IupFlatSeparator(void)
+IUP_API Ihandle* IupFlatSeparator(void)
 {
   return IupCreate("flatseparator");
 }

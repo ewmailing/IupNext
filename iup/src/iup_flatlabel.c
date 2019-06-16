@@ -281,7 +281,7 @@ Iclass* iupFlatLabelNewClass(void)
   return ic;
 }
 
-Ihandle* IupFlatLabel(const char* title)
+IUP_API Ihandle* IupFlatLabel(const char* title)
 {
   void *params[2];
   params[0] = (void*)title;

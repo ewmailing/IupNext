@@ -189,7 +189,7 @@ Iclass* iupValNewClass(void)
   return ic;
 }
 
-Ihandle *IupVal(const char *orientation)
+IUP_API Ihandle* IupVal(const char *orientation)
 {
   void *params[2];
   params[0] = (void*)orientation;

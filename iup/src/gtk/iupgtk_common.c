@@ -134,12 +134,12 @@ void iupgtkUpdateMnemonic(Ihandle* ih)
   if (label) gtk_label_set_mnemonic_widget(label, ih->handle);
 }
 
-void iupdrvActivate(Ihandle* ih)
+IUP_SDK_API void iupdrvActivate(Ihandle* ih)
 {
   gtk_widget_activate(ih->handle);
 }
 
-void iupdrvReparent(Ihandle* ih)
+IUP_SDK_API void iupdrvReparent(Ihandle* ih)
 {
   GtkWidget* old_parent;
   GtkWidget* new_parent = gtkGetNativeParent(ih);
@@ -170,7 +170,7 @@ void iupgtkSetPosSize(GtkContainer* parent, GtkWidget* widget, int x, int y, int
     gtk_widget_set_size_request(widget, width, height);
 }
 
-void iupdrvBaseLayoutUpdateMethod(Ihandle *ih)
+IUP_SDK_API void iupdrvBaseLayoutUpdateMethod(Ihandle *ih)
 {
   GtkWidget* parent = gtkGetNativeParent(ih);
   GtkWidget* widget = (GtkWidget*)iupAttribGet(ih, "_IUP_EXTRAPARENT");
@@ -179,7 +179,7 @@ void iupdrvBaseLayoutUpdateMethod(Ihandle *ih)
   iupgtkSetPosSize(GTK_CONTAINER(parent), widget, ih->x, ih->y, ih->currentwidth, ih->currentheight);
 }
 
-void iupdrvBaseUnMapMethod(Ihandle* ih)
+IUP_SDK_API void iupdrvBaseUnMapMethod(Ihandle* ih)
 {
   GtkWidget* widget = (GtkWidget*)iupAttribGet(ih, "_IUP_EXTRAPARENT");
   if (!widget) widget = ih->handle;
@@ -188,7 +188,7 @@ void iupdrvBaseUnMapMethod(Ihandle* ih)
   gtk_widget_destroy(widget);   /* To match the call to gtk_*****_new     */
 }
 
-void iupdrvPostRedraw(Ihandle *ih)
+IUP_SDK_API void iupdrvPostRedraw(Ihandle *ih)
 {
   GdkWindow* window = iupgtkGetWindow(ih->handle);
   if (window)
@@ -198,7 +198,7 @@ void iupdrvPostRedraw(Ihandle *ih)
   gtk_widget_queue_draw(ih->handle);
 }
 
-void iupdrvRedrawNow(Ihandle *ih)
+IUP_SDK_API void iupdrvRedrawNow(Ihandle *ih)
 {
   GdkWindow* window = iupgtkGetWindow(ih->handle);
   if (window)
@@ -223,7 +223,7 @@ static GtkWidget* gtkGetWindowedParent(GtkWidget* widget)
   return widget;
 }
 
-void iupdrvScreenToClient(Ihandle* ih, int *x, int *y)
+IUP_SDK_API void iupdrvScreenToClient(Ihandle* ih, int *x, int *y)
 {
   gint win_x = 0, win_y = 0;
   gint dx = 0, dy = 0;
@@ -235,7 +235,7 @@ void iupdrvScreenToClient(Ihandle* ih, int *x, int *y)
   *y -= win_y + dy;
 }
 
-void iupdrvClientToScreen(Ihandle* ih, int *x, int *y)
+IUP_SDK_API void iupdrvClientToScreen(Ihandle* ih, int *x, int *y)
 {
   gint win_x = 0, win_y = 0;
   gint dx = 0, dy = 0;
@@ -301,7 +301,7 @@ int iupgtkSetMnemonicTitle(Ihandle* ih, GtkLabel* label, const char* value)
   return 0;
 }
 
-int iupdrvBaseSetZorderAttrib(Ihandle* ih, const char* value)
+IUP_SDK_API int iupdrvBaseSetZorderAttrib(Ihandle* ih, const char* value)
 {
   if (iupdrvIsVisible(ih))
   {
@@ -315,7 +315,7 @@ int iupdrvBaseSetZorderAttrib(Ihandle* ih, const char* value)
   return 0;
 }
 
-void iupdrvSetVisible(Ihandle* ih, int visible)
+IUP_SDK_API void iupdrvSetVisible(Ihandle* ih, int visible)
 {
   GtkWidget* container = (GtkWidget*)iupAttribGet(ih, "_IUP_EXTRAPARENT");
   if (visible)
@@ -339,7 +339,7 @@ int iupgtkIsVisible(GtkWidget* widget)
 #endif
 }
 
-int iupdrvIsVisible(Ihandle* ih)
+IUP_SDK_API int iupdrvIsVisible(Ihandle* ih)
 {
   if (iupgtkIsVisible(ih->handle))
   {
@@ -362,7 +362,7 @@ int iupdrvIsVisible(Ihandle* ih)
     return 0;
 }
 
-int iupdrvIsActive(Ihandle *ih)
+IUP_SDK_API int iupdrvIsActive(Ihandle *ih)
 {
 #if GTK_CHECK_VERSION(2, 18, 0)
   return gtk_widget_is_sensitive(ih->handle);
@@ -371,7 +371,7 @@ int iupdrvIsActive(Ihandle *ih)
 #endif
 }
 
-void iupdrvSetActive(Ihandle* ih, int enable)
+IUP_SDK_API void iupdrvSetActive(Ihandle* ih, int enable)
 {
   GtkWidget* container = (GtkWidget*)iupAttribGet(ih, "_IUP_EXTRAPARENT");
   if (container) gtk_widget_set_sensitive(container, enable);
@@ -572,7 +572,7 @@ void iupgtkSetFgColor(InativeHandle* handle, unsigned char r, unsigned char g, u
 #endif
 }
 
-int iupdrvBaseSetBgColorAttrib(Ihandle* ih, const char* value)
+IUP_SDK_API int iupdrvBaseSetBgColorAttrib(Ihandle* ih, const char* value)
 {
   unsigned char r, g, b;
   if (!iupStrToRGB(value, &r, &g, &b))
@@ -585,7 +585,7 @@ int iupdrvBaseSetBgColorAttrib(Ihandle* ih, const char* value)
   return 1;
 }
 
-int iupdrvBaseSetFgColorAttrib(Ihandle* ih, const char* value)
+IUP_SDK_API int iupdrvBaseSetFgColorAttrib(Ihandle* ih, const char* value)
 {
   unsigned char r, g, b;
   if (!iupStrToRGB(value, &r, &g, &b))
@@ -692,7 +692,7 @@ static GdkCursor* gtkGetCursor(Ihandle* ih, const char* name)
   return cur;
 }
 
-int iupdrvBaseSetCursorAttrib(Ihandle* ih, const char* value)
+IUP_SDK_API int iupdrvBaseSetCursorAttrib(Ihandle* ih, const char* value)
 {
   GdkCursor* cur = gtkGetCursor(ih, value);
   if (cur)
@@ -716,7 +716,7 @@ void iupgdkColorSetRGB(GdkColor* color, unsigned char r, unsigned char g, unsign
   color->pixel = 0;
 }
 
-int iupdrvGetScrollbarSize(void)
+IUP_SDK_API int iupdrvGetScrollbarSize(void)
 {
   static int size = 0;
 
@@ -745,14 +745,14 @@ int iupdrvGetScrollbarSize(void)
   return size;
 }
 
-void iupdrvBaseRegisterCommonAttrib(Iclass* ic)
+IUP_SDK_API void iupdrvBaseRegisterCommonAttrib(Iclass* ic)
 {
   iupClassRegisterAttribute(ic, iupgtkGetNativeFontIdName(), iupgtkGetFontIdAttrib, NULL, NULL, NULL, IUPAF_NOT_MAPPED | IUPAF_NO_INHERIT | IUPAF_NO_STRING);
   iupClassRegisterAttribute(ic, "PANGOFONTDESC", iupgtkGetPangoFontDescAttrib, NULL, NULL, NULL, IUPAF_NOT_MAPPED|IUPAF_NO_INHERIT|IUPAF_NO_STRING);
   iupClassRegisterAttribute(ic, "PANGOLAYOUT", iupgtkGetPangoLayoutAttrib, NULL, NULL, NULL, IUPAF_NOT_MAPPED|IUPAF_NO_INHERIT|IUPAF_NO_STRING);
 }
 
-void iupdrvBaseRegisterVisualAttrib(Iclass* ic)
+IUP_SDK_API void iupdrvBaseRegisterVisualAttrib(Iclass* ic)
 {
   iupClassRegisterAttribute(ic, "TIPMARKUP", NULL, NULL, IUPAF_SAMEASSYSTEM, NULL, IUPAF_NOT_MAPPED);
   iupClassRegisterAttribute(ic, "TIPICON", NULL, NULL, IUPAF_SAMEASSYSTEM, NULL, IUPAF_NOT_MAPPED);
@@ -840,7 +840,7 @@ static void igtkSendKey(GdkWindow* window, GdkEventType type, guint keyval, guin
   gdk_event_free(evt);
 }
 
-void iupdrvSendKey(int key, int press)
+IUP_SDK_API void iupdrvSendKey(int key, int press)
 {
   Ihandle* focus;
   guint keyval, state;
@@ -870,7 +870,7 @@ void iupdrvSendKey(int key, int press)
   g_free(keys);
 }
 
-void iupdrvWarpPointer(int x, int y)
+IUP_SDK_API void iupdrvWarpPointer(int x, int y)
 {
   /* VirtualBox does not reproduce the mouse move visually, but it is working. */
 #if GTK_CHECK_VERSION(3, 0, 0)
@@ -882,7 +882,7 @@ void iupdrvWarpPointer(int x, int y)
 #endif
 }
 
-void iupdrvSendMouse(int x, int y, int bt, int status)
+IUP_SDK_API void iupdrvSendMouse(int x, int y, int bt, int status)
 {
   /* always update cursor */
   /* must be before sending the message because the cursor position will be used */
@@ -1009,7 +1009,7 @@ void iupdrvSendMouse(int x, int y, int bt, int status)
 #endif
 }
 
-void iupdrvSleep(int time)
+IUP_SDK_API void iupdrvSleep(int time)
 {
   g_usleep(time*1000);  /* mili to micro */
 }
@@ -1072,7 +1072,7 @@ void iupgtkClearSizeStyleCSS(GtkWidget* widget)
 #endif
 }
 
-void iupdrvSetAccessibleTitle(Ihandle *ih, const char* title)
+IUP_SDK_API void iupdrvSetAccessibleTitle(Ihandle *ih, const char* title)
 {
   /* AtkText Interface? */
   (void)title;

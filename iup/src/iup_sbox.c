@@ -482,7 +482,7 @@ Iclass* iupSboxNewClass(void)
   return ic;
 }
 
-Ihandle* IupSbox(Ihandle* child)
+IUP_API Ihandle* IupSbox(Ihandle* child)
 {
   void *children[2];
   children[0] = (void*)child;

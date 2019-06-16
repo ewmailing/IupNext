@@ -27,7 +27,7 @@
 
 
 /* from IupRadio implementation */
-Ihandle *iupRadioFindToggleParent(Ihandle* ih_toggle);
+IUP_SDK_API Ihandle *iupRadioFindToggleParent(Ihandle* ih_toggle);
 
 
 struct _IcontrolData 
@@ -683,7 +683,7 @@ Iclass* iupFlatButtonNewClass(void)
   return ic;
 }
 
-Ihandle* IupFlatButton(const char* title)
+IUP_API Ihandle* IupFlatButton(const char* title)
 {
   void *params[2];
   params[0] = (void*)title;

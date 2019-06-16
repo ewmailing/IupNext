@@ -478,7 +478,7 @@ Iclass* iupFlatScrollBoxNewClass(void)
   return ic;
 }
 
-Ihandle* IupFlatScrollBox(Ihandle* child)
+IUP_API Ihandle* IupFlatScrollBox(Ihandle* child)
 {
   void *children[2];
   children[0] = (void*)child;

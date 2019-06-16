@@ -19,7 +19,7 @@
 #include "iup_childtree.h"
 
 
-Ihandle* iupFocusNextInteractive(Ihandle *ih)
+IUP_SDK_API Ihandle* iupFocusNextInteractive(Ihandle *ih)
 {
   Ihandle *c;
 
@@ -35,7 +35,7 @@ Ihandle* iupFocusNextInteractive(Ihandle *ih)
   return NULL;
 }
 
-int iupFocusCanAccept(Ihandle *ih)
+IUP_SDK_API int iupFocusCanAccept(Ihandle *ih)
 {
   if (ih->iclass->is_interactive &&  /* interactive */
       iupAttribGetBoolean(ih, "CANFOCUS") &&   /* can receive focus */
@@ -114,7 +114,7 @@ static Ihandle* iFocusFindNext(Ihandle *ih, int checkradio)
   return NULL;
 }
 
-Ihandle* IupNextField(Ihandle *ih)
+IUP_API Ihandle* IupNextField(Ihandle *ih)
 {
   Ihandle *ih_next;
 
@@ -187,7 +187,7 @@ static int iFocusFindPrevious(Ihandle *parent, Ihandle **previous, Ihandle *ih, 
   return 0;
 }
 
-Ihandle* IupPreviousField(Ihandle *ih)
+IUP_API Ihandle* IupPreviousField(Ihandle *ih)
 {
   Ihandle *previous = NULL;
 
@@ -222,7 +222,7 @@ void iupFocusPrevious(Ihandle *ih)
 static Ihandle* iup_current_focus = NULL;
 static Ihandle* iup_current_dialog_focus = NULL;
 
-Ihandle* IupGetFocus(void)
+IUP_API Ihandle* IupGetFocus(void)
 {
   return iup_current_focus;
 }
@@ -264,7 +264,7 @@ void iupResetCurrentFocus(Ihandle *destroyed_ih)
     iup_current_dialog_focus = NULL;
 }
 
-Ihandle *IupSetFocus(Ihandle *ih)
+IUP_API Ihandle *IupSetFocus(Ihandle *ih)
 {
   Ihandle* old_focus = IupGetFocus();
 
@@ -281,7 +281,7 @@ Ihandle *IupSetFocus(Ihandle *ih)
   return old_focus;
 }
 
-void iupCallGetFocusCb(Ihandle *ih)
+IUP_SDK_API void iupCallGetFocusCb(Ihandle *ih)
 {
   Icallback cb;
 
@@ -316,7 +316,7 @@ void iupCallGetFocusCb(Ihandle *ih)
   }
 }
 
-void iupCallKillFocusCb(Ihandle *ih)
+IUP_SDK_API void iupCallKillFocusCb(Ihandle *ih)
 {
   Icallback cb;
 

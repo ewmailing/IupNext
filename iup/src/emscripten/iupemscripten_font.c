@@ -29,7 +29,7 @@ extern void emjsFont_GetMultiLineStringSize(Ihandle* ih, int handleID, const cha
 extern void emjsFont_GetTextSize(const char* font_name, int point_size, int is_bold, int is_italic, int is_underline, int is_strikeout, const char* str, int32_t* out_ptr_width, int32_t* out_ptr_height);
 extern void emjsFont_GetCharSize(Ihandle* ih, int handleID, int32_t* out_ptr_width, int32_t* out_ptr_height);
 
-char* iupdrvGetSystemFont(void)
+IUP_SDK_API char* iupdrvGetSystemFont(void)
 {
   static char systemfont[200] = "";
 #if 0
@@ -45,7 +45,7 @@ char* iupdrvGetSystemFont(void)
 }
 
 
-int iupdrvSetStandardFontAttrib(Ihandle* ih, const char* value)
+IUP_SDK_API int iupdrvSetStandardFontAttrib(Ihandle* ih, const char* value)
 {
 #if 0 // iupBaseUpdateSizeFromFont missing
   ImacFont* macfont = macFontCreateNativeFont(ih, value);
@@ -66,7 +66,7 @@ int iupdrvSetStandardFontAttrib(Ihandle* ih, const char* value)
 
 // three functions below are used to compute string size:
 
-void iupdrvFontGetMultiLineStringSize(Ihandle* ih, const char* str, int *w, int *h)
+IUP_SDK_API void iupdrvFontGetMultiLineStringSize(Ihandle* ih, const char* str, int *w, int *h)
 {
 	int32_t tmp_width = 0;
 	int32_t tmp_height = 0;
@@ -93,7 +93,7 @@ void iupdrvFontGetMultiLineStringSize(Ihandle* ih, const char* str, int *w, int 
 }
 
 // FIXME: This is a quick-and-dirty copy-and-paste from emjsFont_GetMultiLineStringSize to get things working due to Iup internal API changes.
-void iupdrvFontGetTextSize(const char* font, const char* str, int *w, int *h)
+IUP_SDK_API void iupdrvFontGetTextSize(const char* font, const char* str, int *w, int *h)
 {
 	int32_t tmp_width = 0;
 	int32_t tmp_height = 0;
@@ -129,7 +129,7 @@ void iupdrvFontGetTextSize(const char* font, const char* str, int *w, int *h)
 
 }
 
-int iupdrvFontGetStringWidth(Ihandle* ih, const char* str)
+IUP_SDK_API int iupdrvFontGetStringWidth(Ihandle* ih, const char* str)
 {
 	int handle_id = 0;
 	if(ih && ih->handle)
@@ -139,7 +139,7 @@ int iupdrvFontGetStringWidth(Ihandle* ih, const char* str)
 	return emjsFont_GetStringWidth(ih, handle_id, str);
 }
 
-void iupdrvFontGetCharSize(Ihandle* ih, int *charwidth, int *charheight)
+IUP_SDK_API void iupdrvFontGetCharSize(Ihandle* ih, int *charwidth, int *charheight)
 {
 	int32_t tmp_width = 0;
 	int32_t tmp_height = 0;
@@ -169,7 +169,7 @@ void iupdrvFontFinish(void)
 {
 }
 
-int iupdrvSetFontAttrib(Ihandle* ih, const char* value)
+IUP_SDK_API int iupdrvSetFontAttrib(Ihandle* ih, const char* value)
 {
   return 1;
 }

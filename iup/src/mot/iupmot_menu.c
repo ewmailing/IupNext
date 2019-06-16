@@ -53,7 +53,7 @@ int iupdrvMenuPopup(Ihandle* ih, int x, int y)
   return IUP_NOERROR;
 }
 
-int iupdrvMenuGetMenuBarSize(Ihandle* ih)
+IUP_SDK_API int iupdrvMenuGetMenuBarSize(Ihandle* ih)
 {
   int ch;
   iupdrvFontGetCharSize(ih, NULL, &ch);

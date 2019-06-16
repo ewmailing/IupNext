@@ -135,7 +135,7 @@ static void iRecInputKeyPressCB(int key, int pressed)
   }
 }
 
-int IupRecordInput(const char* filename, int mode)
+IUP_API int IupRecordInput(const char* filename, int mode)
 {
   if (irec_file)
     fclose(irec_file);
@@ -357,7 +357,7 @@ static int iPlayTimer_CB(Ihandle* timer)
   return IUP_DEFAULT;
 }
 
-int IupPlayInput(const char* filename)
+IUP_API int IupPlayInput(const char* filename)
 {
   Ihandle* timer = (Ihandle*)IupGetGlobal("_IUP_PLAYTIMER");
   FILE* file;

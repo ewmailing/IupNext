@@ -121,7 +121,7 @@ static void iFlatScrollBarNotify(Ihandle *ih, int handler)
 }
 
 /* used only in IupFlatScrollBox */
-void iupFlatScrollBarSetPos(Ihandle *ih, int posx, int posy)
+IUP_SDK_API void iupFlatScrollBarSetPos(Ihandle *ih, int posx, int posy)
 {
   iFlatScrollBarNormalizePos(&posx, iupAttribGetInt(ih, "XMAX"), iupAttribGetInt(ih, "DX"));
   iFlatScrollBarNormalizePos(&posy, iupAttribGetInt(ih, "YMAX"), iupAttribGetInt(ih, "DY"));
@@ -729,7 +729,7 @@ static int iFlatScrollBarLeaveWindow_CB(Ihandle* sb_ih)
   return IUP_DEFAULT;
 }
 
-void iupFlatScrollBarWheelUpdate(Ihandle* ih, float delta)
+IUP_SDK_API void iupFlatScrollBarWheelUpdate(Ihandle* ih, float delta)
 {
   int posy = iupAttribGetInt(ih, "POSY");
   int dy = iupAttribGetInt(ih, "DY");
@@ -1015,7 +1015,7 @@ static int iFlatScrollBarSetShowTransparentAttrib(Ihandle* ih, const char *value
 /*******************************************************************************************************/
 
 
-void iupFlatScrollBarSetChildrenCurrentSize(Ihandle* ih, int shrink)
+IUP_SDK_API void iupFlatScrollBarSetChildrenCurrentSize(Ihandle* ih, int shrink)
 {
   int show_transparent = iupAttribGetBoolean(ih, "SHOWTRANSPARENT");
   Ihandle* sb_vert = iFlatScrollBarGetVertical(ih);
@@ -1054,7 +1054,7 @@ void iupFlatScrollBarSetChildrenCurrentSize(Ihandle* ih, int shrink)
   }
 }
 
-void iupFlatScrollBarSetChildrenPosition(Ihandle* ih)
+IUP_SDK_API void iupFlatScrollBarSetChildrenPosition(Ihandle* ih)
 {
   int show_transparent = iupAttribGetBoolean(ih, "SHOWTRANSPARENT");
   Ihandle* sb_vert = iFlatScrollBarGetVertical(ih);
@@ -1093,7 +1093,7 @@ void iupFlatScrollBarSetChildrenPosition(Ihandle* ih)
   IupSetAttribute(sb_horiz, "ZORDER", "TOP");
 }
 
-void iupFlatScrollBarMotionUpdate(Ihandle* ih, int x, int y)
+IUP_SDK_API void iupFlatScrollBarMotionUpdate(Ihandle* ih, int x, int y)
 {
   if (iupAttribGetBoolean(ih, "SHOWFLOATING"))
   {
@@ -1132,7 +1132,7 @@ void iupFlatScrollBarMotionUpdate(Ihandle* ih, int x, int y)
 /******************************************************************************/
 
 
-int iupFlatScrollBarGet(Ihandle* ih)
+IUP_SDK_API int iupFlatScrollBarGet(Ihandle* ih)
 {
   int sb = IUP_SB_NONE;  /* NO scrollbar by default */
   char* value = iupAttribGetStr(ih, "FLATSCROLLBAR");
@@ -1163,7 +1163,7 @@ static void iChildTreeInsertFirst(Ihandle* ih, Ihandle* child)
   ih->firstchild = child;
 }
 
-int iupFlatScrollBarCreate(Ihandle* ih)
+IUP_SDK_API int iupFlatScrollBarCreate(Ihandle* ih)
 {
   Ihandle* sb_vert, *sb_horiz;
 
@@ -1209,7 +1209,7 @@ int iupFlatScrollBarCreate(Ihandle* ih)
   return 1;
 }
 
-void iupFlatScrollBarRegister(Iclass* ic)
+IUP_SDK_API void iupFlatScrollBarRegister(Iclass* ic)
 {
   iupClassRegisterCallback(ic, "FLATSCROLL_CB", "");
 

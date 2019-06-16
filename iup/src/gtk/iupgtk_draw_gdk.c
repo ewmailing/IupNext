@@ -46,7 +46,7 @@ static void iupgdkColorSet(GdkColor* c, long color)
   c->pixel = 0;
 }
 
-IdrawCanvas* iupdrvDrawCreateCanvas(Ihandle* ih)
+IUP_SDK_API IdrawCanvas* iupdrvDrawCreateCanvas(Ihandle* ih)
 {
   IdrawCanvas* dc = calloc(1, sizeof(IdrawCanvas));
 
@@ -64,7 +64,7 @@ IdrawCanvas* iupdrvDrawCreateCanvas(Ihandle* ih)
   return dc;
 }
 
-void iupdrvDrawKillCanvas(IdrawCanvas* dc)
+IUP_SDK_API void iupdrvDrawKillCanvas(IdrawCanvas* dc)
 {
   g_object_unref(dc->pixmap_gc); 
   g_object_unref(dc->pixmap); 
@@ -73,7 +73,7 @@ void iupdrvDrawKillCanvas(IdrawCanvas* dc)
   free(dc);
 }
 
-void iupdrvDrawUpdateSize(IdrawCanvas* dc)
+IUP_SDK_API void iupdrvDrawUpdateSize(IdrawCanvas* dc)
 {
   int w, h;
   gdk_drawable_get_size(dc->wnd, &w, &h);
@@ -103,7 +103,7 @@ static void gdkDrawFocusRect(Ihandle* ih, int x, int y, int w, int h)
   gtk_paint_focus(style, window, state, NULL, ih->handle, NULL, x, y, w, h);
 }
 
-void iupdrvDrawFlush(IdrawCanvas* dc)
+IUP_SDK_API void iupdrvDrawFlush(IdrawCanvas* dc)
 {
   gdk_draw_drawable(dc->wnd, dc->gc, dc->pixmap, 0, 0, 0, 0, dc->w, dc->h);
 
@@ -114,7 +114,7 @@ void iupdrvDrawFlush(IdrawCanvas* dc)
   }
 }
 
-void iupdrvDrawGetSize(IdrawCanvas* dc, int *w, int *h)
+IUP_SDK_API void iupdrvDrawGetSize(IdrawCanvas* dc, int *w, int *h)
 {
   if (w) *w = dc->w;
   if (h) *h = dc->h;
@@ -166,7 +166,7 @@ static void iDrawSetLineWidth(IdrawCanvas* dc, int line_width)
   gdk_gc_set_values(dc->pixmap_gc, &gcval, GDK_GC_LINE_WIDTH);
 }
 
-void iupdrvDrawRectangle(IdrawCanvas* dc, int x1, int y1, int x2, int y2, long color, int style, int line_width)
+IUP_SDK_API void iupdrvDrawRectangle(IdrawCanvas* dc, int x1, int y1, int x2, int y2, long color, int style, int line_width)
 {
   GdkColor c;
   iupgdkColorSet(&c, color);
@@ -186,7 +186,7 @@ void iupdrvDrawRectangle(IdrawCanvas* dc, int x1, int y1, int x2, int y2, long c
   }
 }
 
-void iupdrvDrawLine(IdrawCanvas* dc, int x1, int y1, int x2, int y2, long color, int style, int line_width)
+IUP_SDK_API void iupdrvDrawLine(IdrawCanvas* dc, int x1, int y1, int x2, int y2, long color, int style, int line_width)
 {
   GdkColor c;
   iupgdkColorSet(&c, color);
@@ -198,7 +198,7 @@ void iupdrvDrawLine(IdrawCanvas* dc, int x1, int y1, int x2, int y2, long color,
   gdk_draw_line(dc->pixmap, dc->pixmap_gc, x1, y1, x2, y2);
 }
 
-void iupdrvDrawArc(IdrawCanvas* dc, int x1, int y1, int x2, int y2, double a1, double a2, long color, int style, int line_width)
+IUP_SDK_API void iupdrvDrawArc(IdrawCanvas* dc, int x1, int y1, int x2, int y2, double a1, double a2, long color, int style, int line_width)
 {
   GdkColor c;
   iupgdkColorSet(&c, color);
@@ -217,7 +217,7 @@ void iupdrvDrawArc(IdrawCanvas* dc, int x1, int y1, int x2, int y2, double a1, d
   gdk_draw_arc(dc->pixmap, dc->pixmap_gc, style == IUP_DRAW_FILL, x1, y1, x2 - x1, y2 - y1, iupRound(a1 * 64), iupRound((a2 - a1) * 64));    /* angle = 1/64ths of a degree */
 }
 
-void iupdrvDrawPolygon(IdrawCanvas* dc, int* points, int count, long color, int style, int line_width)
+IUP_SDK_API void iupdrvDrawPolygon(IdrawCanvas* dc, int* points, int count, long color, int style, int line_width)
 {
   GdkColor c;
   iupgdkColorSet(&c, color);
@@ -235,7 +235,7 @@ void iupdrvDrawPolygon(IdrawCanvas* dc, int* points, int count, long color, int 
     gdk_draw_lines(dc->pixmap, dc->pixmap_gc, (GdkPoint*)points, count);
 }
 
-void iupdrvDrawGetClipRect(IdrawCanvas* dc, int *x1, int *y1, int *x2, int *y2)
+IUP_SDK_API void iupdrvDrawGetClipRect(IdrawCanvas* dc, int *x1, int *y1, int *x2, int *y2)
 {
   if (x1) *x1 = dc->clip_x1;
   if (y1) *y1 = dc->clip_y1;
@@ -243,7 +243,7 @@ void iupdrvDrawGetClipRect(IdrawCanvas* dc, int *x1, int *y1, int *x2, int *y2)
   if (y2) *y2 = dc->clip_y2;
 }
 
-void iupdrvDrawSetClipRect(IdrawCanvas* dc, int x1, int y1, int x2, int y2)
+IUP_SDK_API void iupdrvDrawSetClipRect(IdrawCanvas* dc, int x1, int y1, int x2, int y2)
 {
   GdkRectangle rect;
 
@@ -270,7 +270,7 @@ void iupdrvDrawSetClipRect(IdrawCanvas* dc, int x1, int y1, int x2, int y2)
   dc->clip_y2 = y2;
 }
 
-void iupdrvDrawResetClip(IdrawCanvas* dc)
+IUP_SDK_API void iupdrvDrawResetClip(IdrawCanvas* dc)
 {
   gdk_gc_set_clip_region(dc->pixmap_gc, NULL);
 
@@ -280,7 +280,7 @@ void iupdrvDrawResetClip(IdrawCanvas* dc)
   dc->clip_y2 = 0;
 }
 
-void iupdrvDrawText(IdrawCanvas* dc, const char* text, int len, int x, int y, int w, int h, long color, const char* font, int flags, double text_orientation)
+IUP_SDK_API void iupdrvDrawText(IdrawCanvas* dc, const char* text, int len, int x, int y, int w, int h, long color, const char* font, int flags, double text_orientation)
 {
   PangoLayout* fontlayout = (PangoLayout*)iupgtkGetPangoLayout(font);
   PangoAlignment alignment = PANGO_ALIGN_LEFT;
@@ -386,7 +386,7 @@ void iupdrvDrawText(IdrawCanvas* dc, const char* text, int len, int x, int y, in
     pango_context_set_matrix(fontcontext, NULL);
 }
 
-void iupdrvDrawImage(IdrawCanvas* dc, const char* name, int make_inactive, const char* bgcolor, int x, int y, int w, int h)
+IUP_SDK_API void iupdrvDrawImage(IdrawCanvas* dc, const char* name, int make_inactive, const char* bgcolor, int x, int y, int w, int h)
 {
   int bpp, img_w, img_h;
   GdkPixbuf* pixbuf = iupImageGetImage(name, dc->ih, make_inactive, bgcolor);
@@ -403,7 +403,7 @@ void iupdrvDrawImage(IdrawCanvas* dc, const char* name, int make_inactive, const
   (void)h;
 }
 
-void iupdrvDrawSelectRect(IdrawCanvas* dc, int x1, int y1, int x2, int y2)
+IUP_SDK_API void iupdrvDrawSelectRect(IdrawCanvas* dc, int x1, int y1, int x2, int y2)
 {
   GdkColor c;
   iupgdkColorSetRGB(&c, 255, 255, 255);
@@ -417,7 +417,7 @@ void iupdrvDrawSelectRect(IdrawCanvas* dc, int x1, int y1, int x2, int y2)
   gdk_gc_set_function(dc->pixmap_gc, GDK_COPY);
 }
 
-void iupdrvDrawFocusRect(IdrawCanvas* dc, int x1, int y1, int x2, int y2)
+IUP_SDK_API void iupdrvDrawFocusRect(IdrawCanvas* dc, int x1, int y1, int x2, int y2)
 {
   iupDrawCheckSwapCoord(x1, x2);
   iupDrawCheckSwapCoord(y1, y2);

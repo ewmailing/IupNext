@@ -175,7 +175,7 @@ void iupdrvImageGetData(void* handle, unsigned char* imgdata)
   GlobalUnlock(hHandle);
 }
 
-void iupdrvImageGetRawData(void* handle, unsigned char* imgdata)
+IUP_SDK_API void iupdrvImageGetRawData(void* handle, unsigned char* imgdata)
 {
   int x, y, w, h, bpp, bmp_line_size, bits_size;
   BYTE* bits;
@@ -301,7 +301,7 @@ void iupdrvImageGetRawData(void* handle, unsigned char* imgdata)
   GlobalUnlock(hHandle);
 }
 
-void* iupdrvImageCreateImageRaw(int width, int height, int bpp, iupColor* colors, int colors_count, unsigned char *imgdata)
+IUP_SDK_API void* iupdrvImageCreateImageRaw(int width, int height, int bpp, iupColor* colors, int colors_count, unsigned char *imgdata)
 {
   int y,x,bmp_line_size,channels,bits_size,header_size;
   HANDLE hHandle;
@@ -411,7 +411,7 @@ void* iupdrvImageCreateImageRaw(int width, int height, int bpp, iupColor* colors
   return hHandle;
 }
 
-int iupdrvImageGetRawInfo(void* handle, int *w, int *h, int *bpp, iupColor* colors, int *colors_count)
+IUP_SDK_API int iupdrvImageGetRawInfo(void* handle, int *w, int *h, int *bpp, iupColor* colors, int *colors_count)
 {
   HANDLE hHandle = (HANDLE)handle;
   void* dib = GlobalLock(hHandle);
@@ -804,7 +804,7 @@ int iupdrvImageGetInfo(void* handle, int *w, int *h, int *bpp)
   return 1;
 }
 
-void iupdrvImageDestroy(void* handle, int type)
+IUP_SDK_API void iupdrvImageDestroy(void* handle, int type)
 {
   switch (type)
   {

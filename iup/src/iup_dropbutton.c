@@ -948,7 +948,7 @@ Iclass* iupDropButtonNewClass(void)
   return ic;
 }
 
-Ihandle* IupDropButton(Ihandle* dropchild)
+IUP_API Ihandle* IupDropButton(Ihandle* dropchild)
 {
   void *children[2];
   children[0] = (void*)dropchild;

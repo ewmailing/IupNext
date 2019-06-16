@@ -20,7 +20,7 @@
 #include "iup_register.h"
 
 
-Ihandle* IupFileDlg(void)
+IUP_API Ihandle* IupFileDlg(void)
 {
   return IupCreate("filedlg");
 }

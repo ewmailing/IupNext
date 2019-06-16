@@ -16,7 +16,7 @@
 #define SEE_MASK_NOASYNC 0x00000100
 #endif
 
-int IupExecute(const char *filename, const char* parameters)
+IUP_API int IupExecute(const char *filename, const char* parameters)
 {
   /* no need to convert from UTF8 here */
   int err = (int)ShellExecuteA(GetDesktopWindow(), "open", filename, parameters, NULL, SW_SHOWNORMAL);
@@ -34,7 +34,7 @@ int IupExecute(const char *filename, const char* parameters)
   return 1;
 }
 
-int IupExecuteWait(const char *filename, const char* parameters)
+IUP_API int IupExecuteWait(const char *filename, const char* parameters)
 {                                          
   /* no need to convert from UTF8 here */
   SHELLEXECUTEINFOA ExecInfo;
@@ -66,7 +66,7 @@ int IupExecuteWait(const char *filename, const char* parameters)
   return 1;
 }
 
-int IupHelp(const char* url)
+IUP_API int IupHelp(const char* url)
 {
   return IupExecute(url, NULL);
 }

@@ -20,7 +20,7 @@
 
 
 
-Ihandle* IupSpace(void)
+IUP_API Ihandle* IupSpace(void)
 {
   return IupCreate("space");
 }

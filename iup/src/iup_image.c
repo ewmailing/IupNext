@@ -167,7 +167,7 @@ void iupImageStockFinish(void)
   istock_table = NULL;
 }
 
-void iupImageStockSet(const char *name, iupImageStockCreateFunc func, const char* native_name)
+IUP_SDK_API void iupImageStockSet(const char *name, iupImageStockCreateFunc func, const char* native_name)
 {
   IimageStock* istock = (IimageStock*)iupTableGet(istock_table, name);
   if (istock)
@@ -185,7 +185,7 @@ void iupImageStockSet(const char *name, iupImageStockCreateFunc func, const char
   iupTableSet(istock_table, name, (void*)istock, IUPTABLE_POINTER);
 }
 
-void iupImageStockSetNoResize(const char *name, iupImageStockCreateFunc func, const char* native_name)
+IUP_SDK_API void iupImageStockSetNoResize(const char *name, iupImageStockCreateFunc func, const char* native_name)
 {
   IimageStock* istock = (IimageStock*)iupTableGet(istock_table, name);
   if (istock)
@@ -302,7 +302,7 @@ static int iImageStockExtended(const char* name)
   return 0;
 }
 
-void iupImageStockLoadAll(void)
+IUP_SDK_API void iupImageStockLoadAll(void)
 {
   /* Used only in IupView */
   char* name = iupTableFirst(istock_table);
@@ -333,7 +333,7 @@ static void iupColorSet(iupColor *c, unsigned char r, unsigned char g, unsigned 
   c->a = a;
 }
 
-int iupImageInitColorTable(Ihandle *ih, iupColor* colors, int *colors_count)
+IUP_SDK_API int iupImageInitColorTable(Ihandle *ih, iupColor* colors, int *colors_count)
 {
   char *value;
   unsigned char red, green, blue;
@@ -421,7 +421,7 @@ void iupImageInitNonBgColors(Ihandle* ih, unsigned char *colors)
   }
 }
 
-void iupImageColorMakeInactive(unsigned char *r, unsigned char *g, unsigned char *b, unsigned char bg_r, unsigned char bg_g, unsigned char bg_b)
+IUP_SDK_API void iupImageColorMakeInactive(unsigned char *r, unsigned char *g, unsigned char *b, unsigned char bg_r, unsigned char bg_g, unsigned char bg_b)
 {
   if (*r==bg_r && *g==bg_g && *b==bg_b)  /* preserve colors identical to the background color */
   {
@@ -783,7 +783,7 @@ static Ihandle* iImageGetHandleFromImage(void* handle)
   return ih;
 }
 
-Ihandle* iupImageGetHandle(const char* name)
+IUP_SDK_API Ihandle* iupImageGetHandle(const char* name)
 {
   /* Used in CD or OpenGL based controls where WID is mandatory - IupMatrix, IupGLControls and IupPlot */
   Ihandle *ih;
@@ -1108,7 +1108,7 @@ static void iImageDestroyMethod(Ihandle* ih)
 /******************************************************************************/
 
 
-Ihandle* IupImage(int width, int height, const unsigned char *imgdata)
+IUP_API Ihandle* IupImage(int width, int height, const unsigned char *imgdata)
 {
   void *params[4];
   params[0] = (void*)width;
@@ -1118,7 +1118,7 @@ Ihandle* IupImage(int width, int height, const unsigned char *imgdata)
   return IupCreatev("image", params);
 }
 
-Ihandle* IupImageRGB(int width, int height, const unsigned char *imgdata)
+IUP_API Ihandle* IupImageRGB(int width, int height, const unsigned char *imgdata)
 {
   void *params[4];
   params[0] = (void*)width;
@@ -1128,7 +1128,7 @@ Ihandle* IupImageRGB(int width, int height, const unsigned char *imgdata)
   return IupCreatev("imagergb", params);
 }
 
-Ihandle* IupImageRGBA(int width, int height, const unsigned char *imgdata)
+IUP_API Ihandle* IupImageRGBA(int width, int height, const unsigned char *imgdata)
 {
   void *params[4];
   params[0] = (void*)width;
@@ -1557,7 +1557,7 @@ static int SaveImageLED(const char* file_name, Ihandle* ih, const char* name, FI
   return 1;
 }
 
-int iupSaveImageAsText(Ihandle* ih, FILE* packfile, const char* format, const char* name)
+IUP_SDK_API int iupSaveImageAsText(Ihandle* ih, FILE* packfile, const char* format, const char* name)
 {
   int ret = 0;
   if (iupStrEqualNoCase(format, "LED"))
@@ -1569,7 +1569,7 @@ int iupSaveImageAsText(Ihandle* ih, FILE* packfile, const char* format, const ch
   return ret;
 }
 
-int IupSaveImageAsText(Ihandle* ih, const char* file_name, const char* format, const char* name)
+IUP_API int IupSaveImageAsText(Ihandle* ih, const char* file_name, const char* format, const char* name)
 {
   int ret = 0;
   if (!name)

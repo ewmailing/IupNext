@@ -467,7 +467,7 @@ Iclass* iupDatePickNewClass(void)
   return ic;
 }
 
-Ihandle *IupDatePick(void)
+IUP_API Ihandle* IupDatePick(void)
 {
   return IupCreate("datepick");
 }

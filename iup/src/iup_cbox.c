@@ -91,17 +91,17 @@ static void iCboxSetChildrenPositionMethod(Ihandle* ih, int x, int y)
 /******************************************************************************/
 
 
-Ihandle *IupCboxv(Ihandle** children)
+IUP_API Ihandle* IupCboxv(Ihandle** children)
 {
   return IupCreatev("cbox", (void**)children);
 }
 
-Ihandle*  IupCboxV(Ihandle* child, va_list arglist)
+IUP_API Ihandle* IupCboxV(Ihandle* child, va_list arglist)
 {
   return IupCreateV("cbox", child, arglist);
 }
 
-Ihandle *IupCbox (Ihandle * child,...)
+IUP_API Ihandle* IupCbox (Ihandle * child,...)
 {
   Ihandle *ih;
 

@@ -237,7 +237,7 @@ static int iBackgroundBoxCreateMethod(Ihandle* ih, void** params)
   return IUP_NOERROR;
 }
 
-Iclass* iupBackgroundBoxNewBaseClass(const char* name, const char* base_name)
+IUP_SDK_API Iclass* iupBackgroundBoxNewBaseClass(const char* name, const char* base_name)
 {
   Iclass* ic = iupClassNew(iupRegisterFindClass(base_name));
 
@@ -286,7 +286,7 @@ Iclass* iupBackgroundBoxNewClass(void)
   return iupBackgroundBoxNewBaseClass("backgroundbox", "canvas");
 }
 
-Ihandle* IupBackgroundBox(Ihandle* child)
+IUP_API Ihandle* IupBackgroundBox(Ihandle* child)
 {
   void *children[2];
   children[0] = (void*)child;

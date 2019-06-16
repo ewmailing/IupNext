@@ -49,7 +49,7 @@ static Boolean motIdlecbWorkProc(XtPointer client_data)
   return True; /* removes the working procedure */
 }
 
-void iupdrvSetIdleFunction(Icallback f)
+IUP_SDK_API void iupdrvSetIdleFunction(Icallback f)
 {
   if (mot_idle_cb)
     XtRemoveWorkProc(mot_idle_id);
@@ -66,19 +66,19 @@ static int motLoopProcessEvent(void)
   return (mot_exitmainloop)? IUP_CLOSE : IUP_DEFAULT;
 }
 
-void IupExitLoop(void)
+IUP_API void IupExitLoop(void)
 {
   char* exit_loop = IupGetGlobal("EXITLOOP");
   if (mot_mainloop > 1 || !exit_loop || iupStrBoolean(exit_loop))
     mot_exitmainloop = 1;
 }
 
-int IupMainLoopLevel(void)
+IUP_API int IupMainLoopLevel(void)
 {
   return mot_mainloop;
 }
 
-int IupMainLoop(void)
+IUP_API int IupMainLoop(void)
 {
   static int has_done_entry = 0;
   if (0 == has_done_entry)
@@ -106,14 +106,14 @@ int IupMainLoop(void)
   return IUP_NOERROR;
 }
 
-int IupLoopStepWait(void)
+IUP_API int IupLoopStepWait(void)
 {
   while(!XtAppPending(iupmot_appcontext));
 
   return motLoopProcessEvent();
 }
 
-int IupLoopStep(void)
+IUP_API int IupLoopStep(void)
 {
   if (!XtAppPending(iupmot_appcontext)) 
     return IUP_DEFAULT;
@@ -121,7 +121,7 @@ int IupLoopStep(void)
   return motLoopProcessEvent();
 }
 
-void IupFlush(void)
+IUP_API void IupFlush(void)
 {
   int count = 0;
 
@@ -158,7 +158,7 @@ static Boolean motPostMessagebWorkProc(XtPointer client_data)
   return True; /* removes the working procedure */
 }
 
-void IupPostMessage(Ihandle* ih, const char* s, int i, double d)
+IUP_API void IupPostMessage(Ihandle* ih, const char* s, int i, double d)
 {
   motPostMessageUserData* user_data = (motPostMessageUserData*)malloc(sizeof(motPostMessageUserData));
   user_data->ih = ih;

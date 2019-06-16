@@ -7,7 +7,7 @@
 #ifndef __IUP_MATRIXEX_H 
 #define __IUP_MATRIXEX_H 
 
-#include"iup_array.h"
+#include "iup_array.h"
 
 #ifdef __cplusplus
 extern "C" {

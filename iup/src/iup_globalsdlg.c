@@ -679,7 +679,7 @@ static Ihandle* iGlobalsCreateDialog(void)
   return dlg;
 }
 
-Ihandle* IupGlobalsDialog(void)
+IUP_API Ihandle* IupGlobalsDialog(void)
 {
   Ihandle* dlg = iGlobalsCreateDialog();
   iGlobalsUpdate(dlg);

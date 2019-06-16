@@ -193,18 +193,18 @@ struct Iclass_
  * If parent is specified then a new instance of the parent class is created
  * and set as the actual parent class.
  * \ingroup iclass */
-Iclass* iupClassNew(Iclass* ic_parent);
+IUP_SDK_API Iclass* iupClassNew(Iclass* ic_parent);
 
 /** Release the memory allocated by the class.
  *  Calls the \ref Iclass::Release method. \n
  *  Called from iupRegisterFinish.
  * \ingroup iclass */
-void iupClassRelease(Iclass* ic);
+IUP_SDK_API void iupClassRelease(Iclass* ic);
 
 /** Check if the class name match the given name. \n
  *  Parent classes are also checked.
  * \ingroup iclass */
-int iupClassMatch(Iclass* ic, const char* classname);
+IUP_SDK_API int iupClassMatch(Iclass* ic, const char* classname);
 
 
 /** GetAttribute called for a specific attribute.
@@ -288,7 +288,7 @@ typedef enum _IattribFlags{
  * If an attribute is not inheritable or not a string then it MUST be registered.
  * Internal attributes (starting with "_IUP") can never be registered.
  * \ingroup iclass */
-void iupClassRegisterAttribute(Iclass* ic, const char* name, 
+IUP_SDK_API void iupClassRegisterAttribute(Iclass* ic, const char* name,
                                            IattribGetFunc get, 
                                            IattribSetFunc set, 
                                            const char* default_value, 
@@ -297,21 +297,21 @@ void iupClassRegisterAttribute(Iclass* ic, const char* name,
 
 /** Same as \ref iupClassRegisterAttribute for attributes with Ids.
  * \ingroup iclass */
-void iupClassRegisterAttributeId(Iclass* ic, const char* name, 
+IUP_SDK_API void iupClassRegisterAttributeId(Iclass* ic, const char* name,
                                            IattribGetIdFunc get, 
                                            IattribSetIdFunc set, 
                                            int flags);
 
 /** Same as \ref iupClassRegisterAttribute for attributes with two Ids.
  * \ingroup iclass */
-void iupClassRegisterAttributeId2(Iclass* ic, const char* name, 
+IUP_SDK_API void iupClassRegisterAttributeId2(Iclass* ic, const char* name,
                                            IattribGetId2Func get, 
                                            IattribSetId2Func set, 
                                            int flags);
 
 /** Returns the attribute handling functions, defaults and flags.
  * \ingroup iclass */
-void iupClassRegisterGetAttribute(Iclass* ic, const char* name, 
+IUP_SDK_API void iupClassRegisterGetAttribute(Iclass* ic, const char* name,
                                            IattribGetFunc *get, 
                                            IattribSetFunc *set, 
                                            const char* *default_value, 
@@ -320,15 +320,15 @@ void iupClassRegisterGetAttribute(Iclass* ic, const char* name,
 
 /** Replaces the attribute handling functions of an already registered attribute.
  * \ingroup iclass */
-void iupClassRegisterReplaceAttribFunc(Iclass* ic, const char* name, IattribGetFunc _get, IattribSetFunc _set);
+IUP_SDK_API void iupClassRegisterReplaceAttribFunc(Iclass* ic, const char* name, IattribGetFunc _get, IattribSetFunc _set);
 
 /** Replaces the attribute handling default of an already registered attribute.
  * \ingroup iclass */
-void iupClassRegisterReplaceAttribDef(Iclass* ic, const char* name, const char* _default_value, const char* _system_default);
+IUP_SDK_API void iupClassRegisterReplaceAttribDef(Iclass* ic, const char* name, const char* _default_value, const char* _system_default);
 
 /** Replaces the attribute handling functions of an already registered attribute.
  * \ingroup iclass */
-void iupClassRegisterReplaceAttribFlags(Iclass* ic, const char* name, int _flags);
+IUP_SDK_API void iupClassRegisterReplaceAttribFlags(Iclass* ic, const char* name, int _flags);
 
 
 /** Register the parameters of a callback. \n
@@ -349,12 +349,12 @@ void iupClassRegisterReplaceAttribFlags(Iclass* ic, const char* name, int _flags
  * but a different return value can be specified using one of the above parameters, 
  * after all parameters using "=" to separate it from them.
  * \ingroup iclass */
-void iupClassRegisterCallback(Iclass* ic, const char* name, const char* format);
+IUP_SDK_API void iupClassRegisterCallback(Iclass* ic, const char* name, const char* format);
 
 /** Returns the format of the parameters of a registered callback. 
  * If NULL then the default callback definition is assumed.
  * \ingroup iclass */
-char* iupClassCallbackGetFormat(Iclass* ic, const char* name);
+IUP_SDK_API char* iupClassCallbackGetFormat(Iclass* ic, const char* name);
 
 
 
@@ -369,63 +369,63 @@ char* iupClassCallbackGetFormat(Iclass* ic, const char* name);
 /** Calls \ref Iclass::Create method. 
  * \ingroup iclassobject
  */
-int iupClassObjectCreate(Ihandle* ih, void** params);
+IUP_SDK_API int iupClassObjectCreate(Ihandle* ih, void** params);
 
 /** Calls \ref Iclass::Map method. 
  * \ingroup iclassobject
  */
-int iupClassObjectMap(Ihandle* ih);
+IUP_SDK_API int iupClassObjectMap(Ihandle* ih);
 
 /** Calls \ref Iclass::UnMap method. 
  * \ingroup iclassobject
  */
-void iupClassObjectUnMap(Ihandle* ih);
+IUP_SDK_API void iupClassObjectUnMap(Ihandle* ih);
 
 /** Calls \ref Iclass::Destroy method. 
  * \ingroup iclassobject
  */
-void iupClassObjectDestroy(Ihandle* ih);
+IUP_SDK_API void iupClassObjectDestroy(Ihandle* ih);
 
 /** Calls \ref Iclass::GetInnerNativeContainerHandle method. Returns ih->handle if there is no inner parent.
  * The parent class is ignored. If necessary the child class must handle the parent class internally.
  * \ingroup iclassobject
  */
-void* iupClassObjectGetInnerNativeContainerHandle(Ihandle* ih, Ihandle* child);
+IUP_SDK_API void* iupClassObjectGetInnerNativeContainerHandle(Ihandle* ih, Ihandle* child);
 
 /** Calls \ref Iclass::ChildAdded method. 
  * \ingroup iclassobject
  */
-void iupClassObjectChildAdded(Ihandle* ih, Ihandle* child);
+IUP_SDK_API void iupClassObjectChildAdded(Ihandle* ih, Ihandle* child);
 
 /** Calls \ref Iclass::ChildRemoved method. 
  * \ingroup iclassobject
  */
-void iupClassObjectChildRemoved(Ihandle* ih, Ihandle* child, int pos);
+IUP_SDK_API void iupClassObjectChildRemoved(Ihandle* ih, Ihandle* child, int pos);
 
 /** Calls \ref Iclass::LayoutUpdate method. 
  * \ingroup iclassobject
  */
-void iupClassObjectLayoutUpdate(Ihandle* ih);
+IUP_SDK_API void iupClassObjectLayoutUpdate(Ihandle* ih);
 
 /** Calls \ref Iclass::ComputeNaturalSize method. 
  * \ingroup iclassobject
  */
-void iupClassObjectComputeNaturalSize(Ihandle* ih, int *w, int *h, int *children_expand);
+IUP_SDK_API void iupClassObjectComputeNaturalSize(Ihandle* ih, int *w, int *h, int *children_expand);
 
 /** Calls \ref Iclass::SetChildrenCurrentSize method. 
  * \ingroup iclassobject
  */
-void iupClassObjectSetChildrenCurrentSize(Ihandle* ih, int shrink);
+IUP_SDK_API void iupClassObjectSetChildrenCurrentSize(Ihandle* ih, int shrink);
 
 /** Calls \ref Iclass::SetChildrenPosition method. 
  * \ingroup iclassobject
  */
-void iupClassObjectSetChildrenPosition(Ihandle* ih, int x, int y);
+IUP_SDK_API void iupClassObjectSetChildrenPosition(Ihandle* ih, int x, int y);
 
 /** Calls \ref Iclass::DlgPopup method. 
  * \ingroup iclassobject
  */
-int iupClassObjectDlgPopup(Ihandle* ih, int x, int y);
+IUP_SDK_API int iupClassObjectDlgPopup(Ihandle* ih, int x, int y);
 
 
 

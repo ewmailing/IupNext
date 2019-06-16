@@ -20,7 +20,7 @@ static int iUserSetClearAttributesAttrib(Ihandle* ih, const char* value)
   return 0;
 }
 
-Ihandle* IupUser(void)
+IUP_API Ihandle* IupUser(void)
 {
   return IupCreate("user");
 }

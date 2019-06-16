@@ -13,29 +13,29 @@ extern "C" {
 
 #ifndef DOXYGEN_SHOULD_IGNORE_THIS
 /** @cond DOXYGEN_SHOULD_IGNORE_THIS */
-#ifndef IUPWEB_EXPORT
+#ifndef IUPWEB_API
 #ifdef IUPWEB_BUILD_LIBRARY
   #ifdef __EMSCRIPTEN__
     #include <emscripten.h>
-    #define IUPWEB_EXPORT EMSCRIPTEN_KEEPALIVE
+    #define IUPWEB_API EMSCRIPTEN_KEEPALIVE
   #elif WIN32
-    #define IUPWEB_EXPORT __declspec(dllexport)
+    #define IUPWEB_API __declspec(dllexport)
   #elif defined(__GNUC__) && __GNUC__ >= 4
-    #define IUPWEB_EXPORT __attribute__ ((visibility("default")))
+    #define IUPWEB_API __attribute__ ((visibility("default")))
   #else
-    #define IUPWEB_EXPORT
+    #define IUPWEB_API
   #endif
 #else
-  #define IUPWEB_EXPORT
+  #define IUPWEB_API
 #endif /* IUP_BUILD_LIBRARY */
-#endif /* IUPWEB_EXPORT */
+#endif /* IUPWEB_API */
 /** @endcond DOXYGEN_SHOULD_IGNORE_THIS */
 #endif /* DOXYGEN_SHOULD_IGNORE_THIS */
 
 
-IUPWEB_EXPORT int IupWebBrowserOpen(void);
+IUPWEB_API int IupWebBrowserOpen(void);
 
-IUPWEB_EXPORT Ihandle *IupWebBrowser(void);
+IUPWEB_API Ihandle *IupWebBrowser(void);
 
 
 #ifdef __cplusplus

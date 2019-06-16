@@ -21,6 +21,7 @@
 #include "iup_dlglist.h"
 #include "iup_focus.h"
 #include "iup_menu.h"
+#include "iup_drv.h"
 
 #include "iupwin_drv.h"
 #include "iupwin_handle.h"
@@ -51,7 +52,7 @@ Ihandle* iupwinMenuGetItemHandle(HMENU hMenu, int menuId)
     return NULL;
 }
 
-int iupdrvMenuGetMenuBarSize(Ihandle* ih)
+IUP_SDK_API int iupdrvMenuGetMenuBarSize(Ihandle* ih)
 {
   (void)ih;
   return GetSystemMetrics(SM_CYMENU);

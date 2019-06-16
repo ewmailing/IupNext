@@ -281,7 +281,7 @@ static int motClipboardSetAddFormatAttrib(Ihandle *ih, const char *value)
 /******************************************************************************/
 
 
-Ihandle* IupClipboard(void)
+IUP_API Ihandle* IupClipboard(void)
 {
   return IupCreate("clipboard");
 }

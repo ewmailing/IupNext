@@ -890,7 +890,7 @@ Iclass* iupDialNewClass(void)
   return ic;
 }
 
-Ihandle* IupDial(const char* orientation)
+IUP_API Ihandle* IupDial(const char* orientation)
 {
   void *params[2];
   params[0] = (void*)orientation;

@@ -334,17 +334,17 @@ static void iZboxSetChildrenPositionMethod(Ihandle* ih, int x, int y)
 /******************************************************************************/
 
 
-Ihandle *IupZboxv(Ihandle **children)
+IUP_API Ihandle* IupZboxv(Ihandle **children)
 {
   return IupCreatev("zbox", (void**)children);
 }
 
-Ihandle*  IupZboxV(Ihandle* child, va_list arglist)
+IUP_API Ihandle* IupZboxV(Ihandle* child, va_list arglist)
 {
   return IupCreateV("zbox", child, arglist);
 }
 
-Ihandle *IupZbox(Ihandle* child, ...)
+IUP_API Ihandle* IupZbox(Ihandle* child, ...)
 {
   Ihandle *ih;
 

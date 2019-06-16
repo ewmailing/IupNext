@@ -116,7 +116,7 @@ void iupRemoveNames(Ihandle* ih)
      So, some names may have left invalid on the handle names database. */
 }
 
-Ihandle *IupGetHandle(const char *name)
+IUP_API Ihandle *IupGetHandle(const char *name)
 {
   if (!name) /* no iupASSERT needed here */
     return NULL;
@@ -138,7 +138,7 @@ static char* iNameFindHandle(Ihandle *ih)
   return NULL;
 }
 
-Ihandle* IupSetHandle(const char *name, Ihandle *ih)
+IUP_API Ihandle* IupSetHandle(const char *name, Ihandle *ih)
 {
   Ihandle *old_ih;
 
@@ -182,7 +182,7 @@ Ihandle* IupSetHandle(const char *name, Ihandle *ih)
   return old_ih;
 }
 
-char* IupGetName(Ihandle* ih)
+IUP_API char* IupGetName(Ihandle* ih)
 {
   char *name;
   if (!ih) /* no iupASSERT needed here */
@@ -204,7 +204,7 @@ char* IupGetName(Ihandle* ih)
   return iNameFindHandle(ih);
 }
 
-int IupGetAllNames(char** names, int n)
+IUP_API int IupGetAllNames(char** names, int n)
 {
   int i = 0;
   char* name;
@@ -241,7 +241,7 @@ static int iNamesCountDialogs(void)
   return i;
 }
 
-int IupGetAllDialogs(char** names, int n)
+IUP_API int IupGetAllDialogs(char** names, int n)
 {
   int i = 0;
   char* name;

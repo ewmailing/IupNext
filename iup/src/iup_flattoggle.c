@@ -28,7 +28,7 @@
 #define ITOGGLE_MARGIN 2
 
 /* from IupRadio implementation */
-Ihandle *iupRadioFindToggleParent(Ihandle* ih_toggle);
+IUP_SDK_API Ihandle *iupRadioFindToggleParent(Ihandle* ih_toggle);
 
 
 struct _IcontrolData
@@ -858,7 +858,7 @@ Iclass* iupFlatToggleNewClass(void)
   return ic;
 }
 
-Ihandle* IupFlatToggle(const char* title)
+IUP_API Ihandle* IupFlatToggle(const char* title)
 {
   void *params[2];
   params[0] = (void*)title;

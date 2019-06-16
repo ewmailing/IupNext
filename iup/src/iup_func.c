@@ -30,7 +30,7 @@ void iupFuncFinish(void)
   ifunc_table = NULL;
 }
 
-Icallback IupGetFunction(const char *name)
+IUP_API Icallback IupGetFunction(const char *name)
 {
   void* value;
 
@@ -41,7 +41,7 @@ Icallback IupGetFunction(const char *name)
   return (Icallback)iupTableGetFunc(ifunc_table, name, &value);
 }
 
-Icallback IupSetFunction(const char *name, Icallback func)
+IUP_API Icallback IupSetFunction(const char *name, Icallback func)
 {
   void* value;
   Icallback old_func;

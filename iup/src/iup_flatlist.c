@@ -1797,7 +1797,7 @@ static int iFlatListCreateMethod(Ihandle* ih, void** params)
 /******************************************************************************/
 
 
-Ihandle* IupFlatList(void)
+IUP_API Ihandle* IupFlatList(void)
 {
   return IupCreate("flatlist");
 }

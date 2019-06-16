@@ -75,7 +75,7 @@ int iupwebbrowserlua_open(lua_State * L)
   
 #include "iupluaweb.h"
   
-IUPLUAWEB_EXPORT int iupweblua_open(lua_State* L)
+IUPLUAWEB_API int iupweblua_open(lua_State* L)
 {
   if (iuplua_opencall_internal(L))
     IupWebBrowserOpen();
@@ -86,7 +86,7 @@ IUPLUAWEB_EXPORT int iupweblua_open(lua_State* L)
 }
 
 /* obligatory to use require"iupluaweb" */
-IUPLUAWEB_EXPORT int luaopen_iupluaweb(lua_State* L)
+IUPLUAWEB_API int luaopen_iupluaweb(lua_State* L)
 {
   return iupweblua_open(L);
 }

@@ -586,7 +586,7 @@ Iclass* iupDetachBoxNewClass(void)
   return ic;
 }
 
-Ihandle* IupDetachBox(Ihandle* child)
+IUP_API Ihandle* IupDetachBox(Ihandle* child)
 {
   void *children[2];
   children[0] = (void*)child;

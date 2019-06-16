@@ -104,7 +104,7 @@ Iclass* iupLinkNewClass(void)
   return ic;
 }
 
-Ihandle *IupLink(const char *url, const char * title)
+IUP_API Ihandle* IupLink(const char *url, const char * title)
 {
   void *params[3];
   params[0] = (void*)url;

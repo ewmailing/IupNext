@@ -21,19 +21,19 @@ extern "C" {
 /** Utility to check if a control can have the keyboard input focus.
  * To receive the focus must be interactive, has CANFOCUS=YES, is mapped, is visible and is active.
  * \ingroup focus */
-int iupFocusCanAccept(Ihandle *ih);
+IUP_SDK_API int iupFocusCanAccept(Ihandle *ih);
 
 /** Call GETFOCUS_CB and FOCUS_CB.
  * \ingroup focus */
-void iupCallGetFocusCb(Ihandle *ih);
+IUP_SDK_API void iupCallGetFocusCb(Ihandle *ih);
 
 /** Call KILLFOCUS_CB and FOCUS_CB.
  * \ingroup focus */
-void iupCallKillFocusCb(Ihandle *ih);
+IUP_SDK_API void iupCallKillFocusCb(Ihandle *ih);
 
 /** Returns the next interactive brother. Independs if it can receive the focus.
  * \ingroup focus */
-Ihandle* iupFocusNextInteractive(Ihandle *ih);
+IUP_SDK_API Ihandle* iupFocusNextInteractive(Ihandle *ih);
 
 /* Used only in iupKeyProcessNavigation */
 void iupFocusNext(Ihandle *ih);

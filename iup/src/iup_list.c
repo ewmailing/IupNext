@@ -1039,7 +1039,7 @@ static void iListDestroyMethod(Ihandle* ih)
 /******************************************************************************/
 
 
-Ihandle* IupList(const char* action)
+IUP_API Ihandle* IupList(const char* action)
 {
   void *params[2];
   params[0] = (void*)action;

@@ -890,7 +890,7 @@ static void iTreeDestroyMethod(Ihandle* ih)
 
 /*************************************************************************/
 
-Ihandle* IupTree(void)
+IUP_API Ihandle* IupTree(void)
 {
   return IupCreate("tree");
 }
@@ -980,7 +980,7 @@ Iclass* iupTreeNewClass(void)
 /************************************************************************************/
 
 
-int IupTreeSetUserId(Ihandle* ih, int id, void* userdata)
+IUP_API int IupTreeSetUserId(Ihandle* ih, int id, void* userdata)
 {
   iupASSERT(iupObjectCheck(ih));
   if (!iupObjectCheck(ih))
@@ -995,7 +995,7 @@ int IupTreeSetUserId(Ihandle* ih, int id, void* userdata)
   return 0;
 }
 
-int IupTreeGetId(Ihandle* ih, void *userdata)
+IUP_API int IupTreeGetId(Ihandle* ih, void *userdata)
 {
   iupASSERT(iupObjectCheck(ih));
   if (!iupObjectCheck(ih))
@@ -1004,7 +1004,7 @@ int IupTreeGetId(Ihandle* ih, void *userdata)
   return iTreeFindUserDataId(ih, userdata);
 }
 
-void* IupTreeGetUserId(Ihandle* ih, int id)
+IUP_API void* IupTreeGetUserId(Ihandle* ih, int id)
 {
   iupASSERT(iupObjectCheck(ih));
   if (!iupObjectCheck(ih))
@@ -1016,7 +1016,7 @@ void* IupTreeGetUserId(Ihandle* ih, int id)
   return NULL;
 }
 
-void IupTreeSetAttributeHandle(Ihandle* ih, const char* a, int id, Ihandle* ih_named)
+IUP_API void IupTreeSetAttributeHandle(Ihandle* ih, const char* a, int id, Ihandle* ih_named)
 {
   IupSetAttributeHandleId(ih, a, id, ih_named);
 }

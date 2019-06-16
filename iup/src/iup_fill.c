@@ -222,7 +222,7 @@ static int iFillCreateMethod(Ihandle* ih, void** params)
 
 /******************************************************************************/
 
-Ihandle* IupFill(void)
+IUP_API Ihandle* IupFill(void)
 {
   return IupCreate("fill");
 }

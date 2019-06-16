@@ -13,29 +13,29 @@ extern "C" {
 
 #ifndef DOXYGEN_SHOULD_IGNORE_THIS
   /** @cond DOXYGEN_SHOULD_IGNORE_THIS */
-#ifndef IUPOLE_EXPORT
+#ifndef IUPOLE_API
 #ifdef IUPOLE_BUILD_LIBRARY
 #ifdef __EMSCRIPTEN__
 #include <emscripten.h>
-#define IUPOLE_EXPORT EMSCRIPTEN_KEEPALIVE
+#define IUPOLE_API EMSCRIPTEN_KEEPALIVE
 #elif WIN32
-#define IUPOLE_EXPORT __declspec(dllexport)
+#define IUPOLE_API __declspec(dllexport)
 #elif defined(__GNUC__) && __GNUC__ >= 4
-#define IUPOLE_EXPORT __attribute__ ((visibility("default")))
+#define IUPOLE_API __attribute__ ((visibility("default")))
 #else
-#define IUPOLE_EXPORT
+#define IUPOLE_API
 #endif
 #else
-#define IUPOLE_EXPORT
+#define IUPOLE_API
 #endif /* IUP_BUILD_LIBRARY */
-#endif /* IUPOLE_EXPORT */
+#endif /* IUPOLE_API */
   /** @endcond DOXYGEN_SHOULD_IGNORE_THIS */
 #endif /* DOXYGEN_SHOULD_IGNORE_THIS */
 
 
-IUPOLE_EXPORT Ihandle *IupOleControl(const char* progid);
+IUPOLE_API Ihandle *IupOleControl(const char* progid);
 
-IUPOLE_EXPORT int IupOleControlOpen(void);
+IUPOLE_API int IupOleControlOpen(void);
 
 
 #ifdef __cplusplus

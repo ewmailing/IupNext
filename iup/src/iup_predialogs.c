@@ -47,7 +47,7 @@ static int CB_list (Ihandle *ih, char *text, int item, int state)
   return IUP_DEFAULT;
 }
 
-int IupListDialog (int type, const char *title, int size, const char** list_str,
+IUP_API int IupListDialog (int type, const char *title, int size, const char** list_str,
                    int op, int max_col, int max_lin, int* marks)
 {
   Ihandle *lst, *ok, *dlg, *cancel, *dlg_box, *button_box;
@@ -151,7 +151,7 @@ static int iAlarmButtonAction_CB(Ihandle *ih)
   return IUP_CLOSE;
 }
 
-int IupAlarm(const char *title, const char *msg, const char *b1, const char *b2, const char *b3)
+IUP_API int IupAlarm(const char *title, const char *msg, const char *b1, const char *b2, const char *b3)
 {
   Ihandle  *dlg, *dlg_box, *button_box, *button, *default_esc, *default_enter;
   int bt;
@@ -224,7 +224,7 @@ int IupAlarm(const char *title, const char *msg, const char *b1, const char *b2,
   return bt;
 }
 
-int  iupDataEntry(int    maxlin,
+IUP_SDK_API int  iupDataEntry(int    maxlin,
                   int*   maxcol,
                   int*   maxscr,
                   char*  title,
@@ -309,7 +309,7 @@ int  iupDataEntry(int    maxlin,
   return bt;
 }
 
-int IupGetFile(char* filename)
+IUP_API int IupGetFile(char* filename)
 {
   Ihandle *dlg = 0;
   int ret;
@@ -347,7 +347,7 @@ int IupGetFile(char* filename)
   return ret;
 }
 
-int IupGetText(const char* title, char* text, int maxsize)
+IUP_API int IupGetText(const char* title, char* text, int maxsize)
 {
   Ihandle *ok, *cancel, *multi_text, *button_box, *dlg_box, *dlg;
   int bt;
@@ -410,7 +410,7 @@ int IupGetText(const char* title, char* text, int maxsize)
   return bt;
 }
 
-int IupGetColor(int x, int y, unsigned char *r, unsigned char *g, unsigned char *b)
+IUP_API int IupGetColor(int x, int y, unsigned char *r, unsigned char *g, unsigned char *b)
 {
   int ret;
   Ihandle* dlg = IupColorDlg();
@@ -431,7 +431,7 @@ int IupGetColor(int x, int y, unsigned char *r, unsigned char *g, unsigned char 
   return ret;
 }
 
-void iupShowVersion(void)
+IUP_SDK_API void iupShowVersion(void)
 {
   Ihandle* dlg;
 

@@ -306,7 +306,7 @@ int iupwinIsAppThemed(void)
     return 0;
 }
 
-void iupdrvGetScreenSize(int *width, int *height)
+IUP_SDK_API void iupdrvGetScreenSize(int *width, int *height)
 {
   RECT area;
   SystemParametersInfoA(SPI_GETWORKAREA, 0, &area, 0);
@@ -314,7 +314,7 @@ void iupdrvGetScreenSize(int *width, int *height)
   *height = (int)(area.bottom - area.top);
 }
 
-void iupdrvAddScreenOffset(int *x, int *y, int add)
+IUP_SDK_API void iupdrvAddScreenOffset(int *x, int *y, int add)
 {
   RECT area;
   SystemParametersInfoA(SPI_GETWORKAREA, 0, &area, 0);
@@ -330,7 +330,7 @@ void iupdrvAddScreenOffset(int *x, int *y, int add)
   }
 }
 
-void iupdrvGetFullSize(int *width, int *height)
+IUP_SDK_API void iupdrvGetFullSize(int *width, int *height)
 {
   RECT rect;
   GetWindowRect(GetDesktopWindow(), &rect);
@@ -338,7 +338,7 @@ void iupdrvGetFullSize(int *width, int *height)
   *height = rect.bottom - rect.top;
 }
 
-int iupdrvGetScreenDepth(void)
+IUP_SDK_API int iupdrvGetScreenDepth(void)
 {
   int bpp;
   HDC hDCDisplay = GetDC(NULL);
@@ -347,7 +347,7 @@ int iupdrvGetScreenDepth(void)
   return bpp;
 }
 
-double iupdrvGetScreenDpi(void)
+IUP_SDK_API double iupdrvGetScreenDpi(void)
 {
   double dpi;
   HDC hDCDisplay = GetDC(NULL);
@@ -356,7 +356,7 @@ double iupdrvGetScreenDpi(void)
   return dpi;
 }
 
-void iupdrvGetCursorPos(int *x, int *y)
+IUP_SDK_API void iupdrvGetCursorPos(int *x, int *y)
 {
   POINT CursorPoint;
   GetCursorPos(&CursorPoint);
@@ -366,7 +366,7 @@ void iupdrvGetCursorPos(int *x, int *y)
   iupdrvAddScreenOffset(x, y, -1);
 }
 
-void iupdrvGetKeyState(char* key)
+IUP_SDK_API void iupdrvGetKeyState(char* key)
 {
   if (GetAsyncKeyState(VK_SHIFT) & 0x8000)
     key[0] = 'S';
@@ -388,7 +388,7 @@ void iupdrvGetKeyState(char* key)
   key[4] = 0;
 }
 
-char *iupdrvGetComputerName(void)
+IUP_SDK_API char *iupdrvGetComputerName(void)
 {
   DWORD size = MAX_COMPUTERNAME_LENGTH + 1;
   char* str = iupStrGetMemory(size);
@@ -396,7 +396,7 @@ char *iupdrvGetComputerName(void)
   return str;
 }
 
-char *iupdrvGetUserName(void)
+IUP_SDK_API char *iupdrvGetUserName(void)
 {
   DWORD size = 256;
   char* str = iupStrGetMemory(size);

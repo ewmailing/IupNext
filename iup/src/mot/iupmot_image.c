@@ -55,7 +55,7 @@ void iupdrvImageGetData(void* handle, unsigned char* imgdata)
   }
 }
 
-void iupdrvImageGetRawData(void* handle, unsigned char* imgdata)
+IUP_SDK_API void iupdrvImageGetRawData(void* handle, unsigned char* imgdata)
 {
   Pixmap pixmap = (Pixmap)handle;
   int w, h, y, x, bpp;
@@ -88,7 +88,7 @@ void iupdrvImageGetRawData(void* handle, unsigned char* imgdata)
   }
 }
 
-void* iupdrvImageCreateImageRaw(int width, int height, int bpp, iupColor* colors, int colors_count, unsigned char *imgdata)
+IUP_SDK_API void* iupdrvImageCreateImageRaw(int width, int height, int bpp, iupColor* colors, int colors_count, unsigned char *imgdata)
 {
   int y, x;
   Pixmap pixmap;
@@ -433,7 +433,7 @@ int iupdrvImageGetInfo(void* handle, int *w, int *h, int *bpp)
   return 1;
 }
 
-int iupdrvImageGetRawInfo(void* handle, int *w, int *h, int *bpp, iupColor* colors, int *colors_count)
+IUP_SDK_API int iupdrvImageGetRawInfo(void* handle, int *w, int *h, int *bpp, iupColor* colors, int *colors_count)
 {
   /* How to get the pallete? */
   (void)colors;
@@ -441,7 +441,7 @@ int iupdrvImageGetRawInfo(void* handle, int *w, int *h, int *bpp, iupColor* colo
   return iupdrvImageGetInfo(handle, w, h, bpp);
 }
 
-void iupdrvImageDestroy(void* handle, int type)
+IUP_SDK_API void iupdrvImageDestroy(void* handle, int type)
 {
   if (type == IUPIMAGE_CURSOR)
     XFreeCursor(iupmot_display, (Cursor)handle);

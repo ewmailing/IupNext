@@ -78,7 +78,7 @@ void iupwinDrawFinish(void)
     gdix_fini();
 }
 
-IdrawCanvas* iupdrvDrawCreateCanvas(Ihandle* ih)
+IUP_SDK_API IdrawCanvas* iupdrvDrawCreateCanvas(Ihandle* ih)
 {
   IdrawCanvas* dc = calloc(1, sizeof(IdrawCanvas));
   RECT rect;
@@ -118,7 +118,7 @@ IdrawCanvas* iupdrvDrawCreateCanvas(Ihandle* ih)
   return dc;
 }
 
-void iupdrvDrawKillCanvas(IdrawCanvas* dc)
+IUP_SDK_API void iupdrvDrawKillCanvas(IdrawCanvas* dc)
 {
   if (dc->wdl_gc)
   {
@@ -138,7 +138,7 @@ void iupdrvDrawKillCanvas(IdrawCanvas* dc)
   free(dc);
 }
 
-void iupdrvDrawUpdateSize(IdrawCanvas* dc)
+IUP_SDK_API void iupdrvDrawUpdateSize(IdrawCanvas* dc)
 {
   int w, h;
   RECT rect;
@@ -171,7 +171,7 @@ void iupdrvDrawUpdateSize(IdrawCanvas* dc)
   }
 }
 
-void iupdrvDrawFlush(IdrawCanvas* dc)
+IUP_SDK_API void iupdrvDrawFlush(IdrawCanvas* dc)
 {
   if (dc->wdl_gc)
   {
@@ -182,7 +182,7 @@ void iupdrvDrawFlush(IdrawCanvas* dc)
   BitBlt(dc->hDC, 0, 0, dc->w, dc->h, dc->hBitmapDC, 0, 0, SRCCOPY);
 }
 
-void iupdrvDrawGetSize(IdrawCanvas* dc, int *w, int *h)
+IUP_SDK_API void iupdrvDrawGetSize(IdrawCanvas* dc, int *w, int *h)
 {
   if (dc->wdl_gc)
   {
@@ -305,7 +305,7 @@ static void iwinDrawRectangleSimAA(IdrawCanvas* dc, int x1, int y1, int x2, int 
   gdix_vtable->fn_DeleteGraphics(graphics);
 }
 
-void iupdrvDrawRectangle(IdrawCanvas* dc, int x1, int y1, int x2, int y2, long color, int style, int line_width)
+IUP_SDK_API void iupdrvDrawRectangle(IdrawCanvas* dc, int x1, int y1, int x2, int y2, long color, int style, int line_width)
 {
   if (dc->wdl_gc)
   {
@@ -375,7 +375,7 @@ static void iwinDrawLineSimAA(IdrawCanvas* dc, int x1, int y1, int x2, int y2, l
   gdix_vtable->fn_DeleteGraphics(graphics);
 }
 
-void iupdrvDrawLine(IdrawCanvas* dc, int x1, int y1, int x2, int y2, long color, int style, int line_width)
+IUP_SDK_API void iupdrvDrawLine(IdrawCanvas* dc, int x1, int y1, int x2, int y2, long color, int style, int line_width)
 {
   if (dc->wdl_gc)
   {
@@ -468,7 +468,7 @@ static void iwinDrawArcSimAA(IdrawCanvas* dc, int x1, int y1, int x2, int y2, do
   gdix_vtable->fn_DeleteGraphics(graphics);
 }
 
-void iupdrvDrawArc(IdrawCanvas* dc, int x1, int y1, int x2, int y2, double a1, double a2, long color, int style, int line_width)
+IUP_SDK_API void iupdrvDrawArc(IdrawCanvas* dc, int x1, int y1, int x2, int y2, double a1, double a2, long color, int style, int line_width)
 {
   int XStartArc, XEndArc, YStartArc, YEndArc;
 
@@ -554,7 +554,7 @@ static void iwinDrawPolygonSimAA(IdrawCanvas* dc, int* points, int count, long c
   gdix_vtable->fn_DeleteGraphics(graphics);
 }
 
-void iupdrvDrawPolygon(IdrawCanvas* dc, int* points, int count, long color, int style, int line_width)
+IUP_SDK_API void iupdrvDrawPolygon(IdrawCanvas* dc, int* points, int count, long color, int style, int line_width)
 {
   if (dc->wdl_gc)
   {
@@ -589,7 +589,7 @@ void iupdrvDrawPolygon(IdrawCanvas* dc, int* points, int count, long color, int 
   }
 }
 
-void iupdrvDrawGetClipRect(IdrawCanvas* dc, int *x1, int *y1, int *x2, int *y2)
+IUP_SDK_API void iupdrvDrawGetClipRect(IdrawCanvas* dc, int *x1, int *y1, int *x2, int *y2)
 {
   if (dc->wdl_gc)
   {
@@ -603,7 +603,7 @@ void iupdrvDrawGetClipRect(IdrawCanvas* dc, int *x1, int *y1, int *x2, int *y2)
   if (y2) *y2 = dc->clip_y2;
 }
 
-void iupdrvDrawResetClip(IdrawCanvas* dc)
+IUP_SDK_API void iupdrvDrawResetClip(IdrawCanvas* dc)
 {
   if (dc->wdl_gc)
   {
@@ -619,7 +619,7 @@ void iupdrvDrawResetClip(IdrawCanvas* dc)
   dc->clip_y2 = 0;
 }
 
-void iupdrvDrawSetClipRect(IdrawCanvas* dc, int x1, int y1, int x2, int y2)
+IUP_SDK_API void iupdrvDrawSetClipRect(IdrawCanvas* dc, int x1, int y1, int x2, int y2)
 {
   HRGN clip_hrgn;
 
@@ -691,7 +691,7 @@ static void gdiResetWorld(HDC hDC)
   SetGraphicsMode(hDC, GM_COMPATIBLE);
 }
 
-void iupdrvDrawText(IdrawCanvas* dc, const char* text, int len, int x, int y, int w, int h, long color, const char* font, int flags, double text_orientation)
+IUP_SDK_API void iupdrvDrawText(IdrawCanvas* dc, const char* text, int len, int x, int y, int w, int h, long color, const char* font, int flags, double text_orientation)
 {
   if (dc->wdl_gc)
     iupdrvDrawTextWDL(dc->wdl_gc, text, len, x, y, w, h, color, font, flags, text_orientation);
@@ -751,7 +751,7 @@ void iupdrvDrawText(IdrawCanvas* dc, const char* text, int len, int x, int y, in
   }
 }
 
-void iupdrvDrawImage(IdrawCanvas* dc, const char* name, int make_inactive, const char* bgcolor, int x, int y, int w, int h)
+IUP_SDK_API void iupdrvDrawImage(IdrawCanvas* dc, const char* name, int make_inactive, const char* bgcolor, int x, int y, int w, int h)
 {
   int bpp, img_w, img_h;
   HBITMAP hBitmap;
@@ -775,7 +775,7 @@ void iupdrvDrawImage(IdrawCanvas* dc, const char* name, int make_inactive, const
   iupwinDrawBitmap(dc->hBitmapDC, hBitmap, x, y, w, h, img_w, img_h, bpp);
 }
 
-void iupdrvDrawSelectRect(IdrawCanvas* dc, int x1, int y1, int x2, int y2)
+IUP_SDK_API void iupdrvDrawSelectRect(IdrawCanvas* dc, int x1, int y1, int x2, int y2)
 {
   if (dc->wdl_gc)
   {
@@ -789,7 +789,7 @@ void iupdrvDrawSelectRect(IdrawCanvas* dc, int x1, int y1, int x2, int y2)
   BitBlt(dc->hBitmapDC, x1, y1, x2 - x1 + 1, y2 - y1 + 1, dc->hBitmapDC, x1, y1, DSTINVERT);
 }
 
-void iupdrvDrawFocusRect(IdrawCanvas* dc, int x1, int y1, int x2, int y2)
+IUP_SDK_API void iupdrvDrawFocusRect(IdrawCanvas* dc, int x1, int y1, int x2, int y2)
 {
   RECT rect;
 

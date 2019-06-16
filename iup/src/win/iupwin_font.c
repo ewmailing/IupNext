@@ -132,7 +132,7 @@ static void winFontFromLogFontA(LOGFONTA* logfont, char* font)
                                    size);
 }
 
-char* iupdrvGetSystemFont(void)
+IUP_SDK_API char* iupdrvGetSystemFont(void)
 {
   static char str[200]; /* must return a static string, because it will be used as the default value for the FONT attribute */
   NONCLIENTMETRICSA ncm;
@@ -208,7 +208,7 @@ char* iupwinGetHFontAttrib(Ihandle *ih)
     return (char*)winfont->hFont;
 }
 
-int iupdrvSetFontAttrib(Ihandle* ih, const char* value)
+IUP_SDK_API int iupdrvSetFontAttrib(Ihandle* ih, const char* value)
 {
   IwinFont* winfont = winFontCreateNativeFont(ih, value);
   if (!winfont)
@@ -309,21 +309,21 @@ static void winFontGetTextSize(Ihandle* ih, IwinFont* winfont, const char* str, 
   if (h) *h = winfont->charheight * line_count;
 }
 
-void iupdrvFontGetMultiLineStringSize(Ihandle* ih, const char* str, int *w, int *h)
+IUP_SDK_API void iupdrvFontGetMultiLineStringSize(Ihandle* ih, const char* str, int *w, int *h)
 {
   IwinFont* winfont = winFontGet(ih);
   if (winfont)
     winFontGetTextSize(ih, winfont, str, str? (int)strlen(str): 0, w, h);
 }
 
-void iupdrvFontGetTextSize(const char* font, const char* str, int len, int *w, int *h)
+IUP_SDK_API void iupdrvFontGetTextSize(const char* font, const char* str, int len, int *w, int *h)
 {
   IwinFont* winfont = winFindFont(font);
   if (winfont)
     winFontGetTextSize(NULL, winfont, str, len, w, h);
 }
 
-void iupdrvFontGetFontDim(const char* font, int *max_width, int *line_height, int *ascent, int *descent)
+IUP_SDK_API void iupdrvFontGetFontDim(const char* font, int *max_width, int *line_height, int *ascent, int *descent)
 {
   IwinFont* winfont = winFindFont(font);
   if (winfont)
@@ -335,7 +335,7 @@ void iupdrvFontGetFontDim(const char* font, int *max_width, int *line_height, in
   }
 }
 
-int iupdrvFontGetStringWidth(Ihandle* ih, const char* str)
+IUP_SDK_API int iupdrvFontGetStringWidth(Ihandle* ih, const char* str)
 {
   HDC hdc;
   HFONT oldhfont, hFont;
@@ -368,7 +368,7 @@ int iupdrvFontGetStringWidth(Ihandle* ih, const char* str)
   return size.cx;
 }
 
-void iupdrvFontGetCharSize(Ihandle* ih, int *charwidth, int *charheight)
+IUP_SDK_API void iupdrvFontGetCharSize(Ihandle* ih, int *charwidth, int *charheight)
 {
   IwinFont* winfont = winFontGet(ih);
   if (!winfont)

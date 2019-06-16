@@ -18,6 +18,7 @@
 #include <X11/Xutil.h>
 #include <X11/Xatom.h>
 
+#include "iup_export.h"
 #include "iup_str.h"
 #include "iup_drvinfo.h"
 
@@ -50,14 +51,14 @@ static int xGetWorkAreaSize(Display* display, int screen, int *width, int *heigh
   return 1;
 }
 
-void iupdrvAddScreenOffset(int *x, int *y, int add)
+IUP_SDK_API void iupdrvAddScreenOffset(int *x, int *y, int add)
 {
   (void)x;
   (void)y;
   (void)add;
 }
 
-void iupdrvGetScreenSize(int *width, int *height)
+IUP_SDK_API void iupdrvGetScreenSize(int *width, int *height)
 {
   Display* display = (Display*)iupdrvGetDisplay();
   int screen = XDefaultScreen(display);
@@ -68,7 +69,7 @@ void iupdrvGetScreenSize(int *width, int *height)
   }
 }
 
-void iupdrvGetFullSize(int *width, int *height)
+IUP_SDK_API void iupdrvGetFullSize(int *width, int *height)
 {
   Display* display = (Display*)iupdrvGetDisplay();
   int screen = XDefaultScreen(display);
@@ -94,7 +95,7 @@ static int xCheckVisualInfo(Display* drv_display, int bpp)
   return 0;
 }
 
-int iupdrvGetScreenDepth(void)
+IUP_SDK_API int iupdrvGetScreenDepth(void)
 {
   static int first = 1;
   static int bpp;
@@ -135,7 +136,7 @@ int iupdrvGetScreenDepth(void)
   return bpp;
 }
 
-double iupdrvGetScreenDpi(void)
+IUP_SDK_API double iupdrvGetScreenDpi(void)
 {
   double dpi;
   Display* drv_display = (Display*)iupdrvGetDisplay();
@@ -144,7 +145,7 @@ double iupdrvGetScreenDpi(void)
   return dpi * 25.4;  /* mm to inch */
 }
 
-void iupdrvGetCursorPos(int *x, int *y)
+IUP_SDK_API void iupdrvGetCursorPos(int *x, int *y)
 {
   Window root, child;
   int cx, cy;
@@ -173,7 +174,7 @@ static int xCheckModifier(KeyCode* modifiermap, int max_keypermod, int index, co
   return 0;
 }
 
-void iupdrvGetKeyState(char* key)
+IUP_SDK_API void iupdrvGetKeyState(char* key)
 {
   char keys[32];
   Display* display = (Display*)iupdrvGetDisplay();
@@ -209,14 +210,14 @@ void iupdrvGetKeyState(char* key)
 
 #include <unistd.h>
 
-char *iupdrvGetComputerName(void)
+IUP_SDK_API char *iupdrvGetComputerName(void)
 {
   char* str = iupStrGetMemory(50);
   gethostname(str, 50);
   return str;
 }
 
-char *iupdrvGetUserName(void)
+IUP_SDK_API char *iupdrvGetUserName(void)
 {
   return (char*)getlogin();
 }

@@ -203,17 +203,17 @@ Iclass* iupNormalizerNewClass(void)
   return ic;
 }
 
-Ihandle *IupNormalizerv(Ihandle **ih_list)
+IUP_API Ihandle* IupNormalizerv(Ihandle **ih_list)
 {
   return IupCreatev("normalizer", (void**)ih_list);
 }
 
-Ihandle*  IupNormalizerV(Ihandle* ih_first, va_list arglist)
+IUP_API Ihandle* IupNormalizerV(Ihandle* ih_first, va_list arglist)
 {
   return IupCreateV("normalizer", ih_first, arglist);
 }
 
-Ihandle *IupNormalizer(Ihandle* ih_first, ...)
+IUP_API Ihandle* IupNormalizer(Ihandle* ih_first, ...)
 {
   Ihandle *ih;
 

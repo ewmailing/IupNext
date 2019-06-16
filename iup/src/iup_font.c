@@ -109,7 +109,7 @@ const char* iupFontGetMacName(const char* name)
   return NULL;
 }
 
-char* iupGetFontValue(Ihandle* ih)
+IUP_SDK_API char* iupGetFontValue(Ihandle* ih)
 {
   char* value = iupAttribGetStr(ih, "FONT");
 
@@ -129,7 +129,7 @@ void iupUpdateFontAttrib(Ihandle* ih)
   iupAttribSetClassObject(ih, "FONT", iupGetFontValue(ih));
 }
 
-int iupGetFontInfo(const char* font, char *typeface, int *size, int *is_bold, int *is_italic, int *is_underline, int *is_strikeout)
+IUP_SDK_API int iupGetFontInfo(const char* font, char *typeface, int *size, int *is_bold, int *is_italic, int *is_underline, int *is_strikeout)
 {
   *size = 0;
   *is_bold = 0;
@@ -151,7 +151,7 @@ int iupGetFontInfo(const char* font, char *typeface, int *size, int *is_bold, in
   return 1;
 }
 
-char* iupGetFontFaceAttrib(Ihandle* ih)
+IUP_SDK_API char* iupGetFontFaceAttrib(Ihandle* ih)
 {
   int size = 0;
   int is_bold = 0,
@@ -169,7 +169,7 @@ char* iupGetFontFaceAttrib(Ihandle* ih)
   return iupStrReturnStr(typeface);
 }
 
-int iupSetFontFaceAttrib(Ihandle* ih, const char* value)
+IUP_SDK_API int iupSetFontFaceAttrib(Ihandle* ih, const char* value)
 {
   int size = 0;
   int is_bold = 0,
@@ -191,7 +191,7 @@ int iupSetFontFaceAttrib(Ihandle* ih, const char* value)
   return 0;
 }
 
-char* iupGetFontSizeAttrib(Ihandle* ih)
+IUP_SDK_API char* iupGetFontSizeAttrib(Ihandle* ih)
 {
   int size = 0;
   int is_bold = 0,
@@ -209,7 +209,7 @@ char* iupGetFontSizeAttrib(Ihandle* ih)
   return iupStrReturnInt(size);
 }
 
-int iupSetFontSizeAttrib(Ihandle* ih, const char* value)
+IUP_SDK_API int iupSetFontSizeAttrib(Ihandle* ih, const char* value)
 {
   int size = 0;
   int is_bold = 0,
@@ -231,7 +231,7 @@ int iupSetFontSizeAttrib(Ihandle* ih, const char* value)
   return 0;
 }
 
-char* iupGetFontStyleAttrib(Ihandle* ih)
+IUP_SDK_API char* iupGetFontStyleAttrib(Ihandle* ih)
 {
   int size = 0;
   int is_bold = 0,
@@ -247,7 +247,7 @@ char* iupGetFontStyleAttrib(Ihandle* ih)
   return iupStrReturnStrf("%s%s%s%s", is_bold ? "Bold " : "", is_italic ? "Italic " : "", is_underline ? "Underline " : "", is_strikeout ? "Strikeout " : "");
 }
 
-int iupSetFontStyleAttrib(Ihandle* ih, const char* value)
+IUP_SDK_API int iupSetFontStyleAttrib(Ihandle* ih, const char* value)
 {
   int size = 0;
   int is_bold = 0,
@@ -475,7 +475,7 @@ static const char * iFontGetStyleWord(const char *str, const char *last, int *wo
 }
 
 /* this code is shared between CD and IUP, must be updated on both libraries */
-int iupFontParsePango(const char *font, char *typeface, int *size, int *bold, int *italic, int *underline, int *strikeout)
+IUP_SDK_API int iupFontParsePango(const char *font, char *typeface, int *size, int *bold, int *italic, int *underline, int *strikeout)
 {
   const char *p, *last;
   int len, wordlen, style;
@@ -552,7 +552,7 @@ int iupFontParsePango(const char *font, char *typeface, int *size, int *bold, in
 }
 
 /* this code is shared between CD and IUP, must be updated on both libraries */
-int iupFontParseWin(const char *value, char *typeface, int *size, int *bold, int *italic, int *underline, int *strikeout)
+IUP_SDK_API int iupFontParseWin(const char *value, char *typeface, int *size, int *bold, int *italic, int *underline, int *strikeout)
 {
   int c;
 
@@ -629,7 +629,7 @@ int iupFontParseWin(const char *value, char *typeface, int *size, int *bold, int
 }
 
 /* this code is shared between CD and IUP, must be updated on both libraries */
-int iupFontParseX(const char *font, char *typeface, int *size, int *bold, int *italic, int *underline, int *strikeout)
+IUP_SDK_API int iupFontParseX(const char *font, char *typeface, int *size, int *bold, int *italic, int *underline, int *strikeout)
 {
   char style1[30], style2[30];
   char* token;

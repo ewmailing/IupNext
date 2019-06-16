@@ -48,7 +48,7 @@ static char* strSetGroupKeyName(const char* groupkey, char* group)
   return (char*)(key + 1);
 }
 
-Ihandle* IupConfig(void)
+IUP_API Ihandle* IupConfig(void)
 {
   return IupUser();
 }
@@ -113,7 +113,7 @@ static int sort_names_cb(const void* elem1, const void* elem2)
   return strcmp(str1, str2);
 }
 
-int IupConfigLoad(Ihandle* ih)
+IUP_API int IupConfigLoad(Ihandle* ih)
 {
   char group[GROUPKEYSIZE] = "";
   char key[GROUPKEYSIZE];
@@ -172,7 +172,7 @@ int IupConfigLoad(Ihandle* ih)
   return 0;
 }
 
-int IupConfigSave(Ihandle* ih)
+IUP_API int IupConfigSave(Ihandle* ih)
 {
   char* names[MAX_LINES];
   FILE* file;
@@ -228,58 +228,58 @@ int IupConfigSave(Ihandle* ih)
   return 0;
 }
 
-void IupConfigSetVariableStrId(Ihandle* ih, const char* group, const char* key, int id, const char* value)
+IUP_API void IupConfigSetVariableStrId(Ihandle* ih, const char* group, const char* key, int id, const char* value)
 {
   char key_id[GROUPKEYSIZE];
   sprintf(key_id, "%s%d", key, id);
   IupConfigSetVariableStr(ih, group, key_id, value);
 }
 
-void IupConfigSetVariableIntId(Ihandle* ih, const char* group, const char* key, int id, int value)
+IUP_API void IupConfigSetVariableIntId(Ihandle* ih, const char* group, const char* key, int id, int value)
 {
   char key_id[GROUPKEYSIZE];
   sprintf(key_id, "%s%d", key, id);
   IupConfigSetVariableInt(ih, group, key_id, value);
 }
 
-void IupConfigSetVariableDoubleId(Ihandle* ih, const char* group, const char* key, int id, double value)
+IUP_API void IupConfigSetVariableDoubleId(Ihandle* ih, const char* group, const char* key, int id, double value)
 {
   char key_id[GROUPKEYSIZE];
   sprintf(key_id, "%s%d", key, id);
   IupConfigSetVariableDouble(ih, group, key_id, value);
 }
 
-void IupConfigSetVariableStr(Ihandle* ih, const char* group, const char* key, const char* value)
+IUP_API void IupConfigSetVariableStr(Ihandle* ih, const char* group, const char* key, const char* value)
 {
   IupSetStrAttribute(ih, strGetGroupKeyName(group, key), value);
 }
 
-void IupConfigSetVariableInt(Ihandle* ih, const char* group, const char* key, int value)
+IUP_API void IupConfigSetVariableInt(Ihandle* ih, const char* group, const char* key, int value)
 {
   IupSetInt(ih, strGetGroupKeyName(group, key), value);
 }
 
-void IupConfigSetVariableDouble(Ihandle* ih, const char* group, const char* key, double value)
+IUP_API void IupConfigSetVariableDouble(Ihandle* ih, const char* group, const char* key, double value)
 {
   IupSetDouble(ih, strGetGroupKeyName(group, key), value);
 }
 
-const char* IupConfigGetVariableStr(Ihandle* ih, const char* group, const char* key)
+IUP_API const char* IupConfigGetVariableStr(Ihandle* ih, const char* group, const char* key)
 {
   return IupGetAttribute(ih, strGetGroupKeyName(group, key));
 }
 
-int IupConfigGetVariableInt(Ihandle* ih, const char* group, const char* key)
+IUP_API int IupConfigGetVariableInt(Ihandle* ih, const char* group, const char* key)
 {
   return IupGetInt(ih, strGetGroupKeyName(group, key));
 }
 
-double IupConfigGetVariableDouble(Ihandle* ih, const char* group, const char* key)
+IUP_API double IupConfigGetVariableDouble(Ihandle* ih, const char* group, const char* key)
 {
   return IupGetDouble(ih, strGetGroupKeyName(group, key));
 }
 
-const char* IupConfigGetVariableStrDef(Ihandle* ih, const char* group, const char* key, const char* def)
+IUP_API const char* IupConfigGetVariableStrDef(Ihandle* ih, const char* group, const char* key, const char* def)
 {
   if (!IupGetAttribute(ih, strGetGroupKeyName(group, key)))
     return def;
@@ -287,7 +287,7 @@ const char* IupConfigGetVariableStrDef(Ihandle* ih, const char* group, const cha
     return IupConfigGetVariableStr(ih, group, key);
 }
 
-const char* IupConfigGetVariableStrIdDef(Ihandle* ih, const char* group, const char* key, int id, const char* def)
+IUP_API const char* IupConfigGetVariableStrIdDef(Ihandle* ih, const char* group, const char* key, int id, const char* def)
 {
   if (!IupGetAttributeId(ih, strGetGroupKeyName(group, key), id))
     return def;
@@ -295,7 +295,7 @@ const char* IupConfigGetVariableStrIdDef(Ihandle* ih, const char* group, const c
     return IupConfigGetVariableStrId(ih, group, key, id);
 }
 
-int IupConfigGetVariableIntDef(Ihandle* ih, const char* group, const char* key, int def)
+IUP_API int IupConfigGetVariableIntDef(Ihandle* ih, const char* group, const char* key, int def)
 {
   if (!IupGetAttribute(ih, strGetGroupKeyName(group, key)))
     return def;
@@ -303,7 +303,7 @@ int IupConfigGetVariableIntDef(Ihandle* ih, const char* group, const char* key, 
     return IupConfigGetVariableInt(ih, group, key);
 }
 
-int IupConfigGetVariableIntIdDef(Ihandle* ih, const char* group, const char* key, int id, int def)
+IUP_API int IupConfigGetVariableIntIdDef(Ihandle* ih, const char* group, const char* key, int id, int def)
 {
   if (!IupGetAttributeId(ih, strGetGroupKeyName(group, key), id))
     return def;
@@ -311,7 +311,7 @@ int IupConfigGetVariableIntIdDef(Ihandle* ih, const char* group, const char* key
     return IupConfigGetVariableIntId(ih, group, key, id);
 }
 
-double IupConfigGetVariableDoubleDef(Ihandle* ih, const char* group, const char* key, double def)
+IUP_API double IupConfigGetVariableDoubleDef(Ihandle* ih, const char* group, const char* key, double def)
 {
   if (!IupGetAttribute(ih, strGetGroupKeyName(group, key)))
     return def;
@@ -319,7 +319,7 @@ double IupConfigGetVariableDoubleDef(Ihandle* ih, const char* group, const char*
     return IupConfigGetVariableDouble(ih, group, key);
 }
 
-double IupConfigGetVariableDoubleIdDef(Ihandle* ih, const char* group, const char* key, int id, double def)
+IUP_API double IupConfigGetVariableDoubleIdDef(Ihandle* ih, const char* group, const char* key, int id, double def)
 {
   if (!IupGetAttributeId(ih, strGetGroupKeyName(group, key), id))
     return def;
@@ -327,28 +327,28 @@ double IupConfigGetVariableDoubleIdDef(Ihandle* ih, const char* group, const cha
     return IupConfigGetVariableDoubleId(ih, group, key, id);
 }
 
-const char* IupConfigGetVariableStrId(Ihandle* ih, const char* group, const char* key, int id)
+IUP_API const char* IupConfigGetVariableStrId(Ihandle* ih, const char* group, const char* key, int id)
 {
   char key_id[GROUPKEYSIZE];
   sprintf(key_id, "%s%d", key, id);
   return IupConfigGetVariableStr(ih, group, key_id);
 }
 
-int IupConfigGetVariableIntId(Ihandle* ih, const char* group, const char* key, int id)
+IUP_API int IupConfigGetVariableIntId(Ihandle* ih, const char* group, const char* key, int id)
 {
   char key_id[GROUPKEYSIZE];
   sprintf(key_id, "%s%d", key, id);
   return IupConfigGetVariableInt(ih, group, key_id);
 }
 
-double IupConfigGetVariableDoubleId(Ihandle* ih, const char* group, const char* key, int id)
+IUP_API double IupConfigGetVariableDoubleId(Ihandle* ih, const char* group, const char* key, int id)
 {
   char key_id[GROUPKEYSIZE];
   sprintf(key_id, "%s%d", key, id);
   return IupConfigGetVariableDouble(ih, group, key_id);
 }
 
-void IupConfigCopy(Ihandle* ih1, Ihandle* ih2, const char* exclude_prefix)
+IUP_API void IupConfigCopy(Ihandle* ih1, Ihandle* ih2, const char* exclude_prefix)
 {
   char *name;
 
@@ -373,7 +373,7 @@ void IupConfigCopy(Ihandle* ih1, Ihandle* ih2, const char* exclude_prefix)
 /******************************************************************/
 
 
-void IupConfigSetListVariable(Ihandle* ih, const char *group, const char* key, const char* value, int add)
+IUP_API void IupConfigSetListVariable(Ihandle* ih, const char *group, const char* key, const char* value, int add)
 {
   const char* value_id;
   int last_id, found_id = 0;
@@ -483,7 +483,7 @@ static void iConfigBuildRecent(Ihandle* ih, Ihandle* menu, int max_recent, const
   } while (value && i <= max_recent);
 }
 
-void IupConfigRecentInit(Ihandle* ih, Ihandle* menu, Icallback recent_cb, int max_recent)
+IUP_API void IupConfigRecentInit(Ihandle* ih, Ihandle* menu, Icallback recent_cb, int max_recent)
 {
   char* recent_name = IupGetAttribute(ih, "RECENTNAME");
   const char* group_name = recent_name;
@@ -496,7 +496,7 @@ void IupConfigRecentInit(Ihandle* ih, Ihandle* menu, Icallback recent_cb, int ma
   iConfigBuildRecent(ih, menu, max_recent, group_name, recent_cb);
 }
 
-void IupConfigRecentUpdate(Ihandle* ih, const char* filename)
+IUP_API void IupConfigRecentUpdate(Ihandle* ih, const char* filename)
 {
   const char* value;
   char* recent_name = IupGetAttribute(ih, "RECENTNAME");
@@ -554,7 +554,7 @@ void IupConfigRecentUpdate(Ihandle* ih, const char* filename)
 /*******************************************************************/
 
 
-void IupConfigDialogShow(Ihandle* ih, Ihandle* dialog, const char* name)
+IUP_API void IupConfigDialogShow(Ihandle* ih, Ihandle* dialog, const char* name)
 {
   int shown = 0;
   int set_size = 0;
@@ -633,7 +633,7 @@ void IupConfigDialogShow(Ihandle* ih, Ihandle* dialog, const char* name)
     IupSetAttribute(dialog, "USERSIZE", NULL);  /* clear minimum restriction without reseting the current size */
 }
 
-void IupConfigDialogClosed(Ihandle* ih, Ihandle* dialog, const char* name)
+IUP_API void IupConfigDialogClosed(Ihandle* ih, Ihandle* dialog, const char* name)
 {
   int x, y;
   int width, height;

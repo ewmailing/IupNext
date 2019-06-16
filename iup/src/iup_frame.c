@@ -167,7 +167,7 @@ static void iFrameSetChildrenPositionMethod(Ihandle* ih, int x, int y)
 /******************************************************************************/
 
 
-Ihandle* IupFrame(Ihandle* child)
+IUP_API Ihandle* IupFrame(Ihandle* child)
 {
   void *children[2];
   children[0] = (void*)child;

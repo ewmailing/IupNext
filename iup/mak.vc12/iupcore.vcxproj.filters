@@ -495,5 +495,8 @@
     <ClInclude Include="..\src\iup_loop.h">
       <Filter>inc</Filter>
     </ClInclude>
+    <ClInclude Include="..\include\iup_export.h">
+      <Filter>include</Filter>
+    </ClInclude>
   </ItemGroup>
 </Project>

@@ -47,7 +47,7 @@ void iupgtkReleaseNativeGraphicsContext(GtkWidget* widget, void* gc)
 {
 }
 
-void* iupdrvGetDisplay(void)
+IUP_SDK_API void* iupdrvGetDisplay(void)
 {
   return NULL;
 }
@@ -93,7 +93,7 @@ void iupgtkReleaseNativeGraphicsContext(GtkWidget* widget, void* gc)
   (void)widget;
 }
 
-void* iupdrvGetDisplay(void)
+IUP_SDK_API void* iupdrvGetDisplay(void)
 {
   GdkDisplay* display = gdk_display_get_default();
   return display;
@@ -152,7 +152,7 @@ void iupgtkReleaseNativeGraphicsContext(GtkWidget* widget, void* gc)
   ReleaseDC(GDK_WINDOW_HWND(iupgtkGetWindow(widget)), (HDC)gc);
 }
 
-void* iupdrvGetDisplay(void)
+IUP_SDK_API void* iupdrvGetDisplay(void)
 {
   return NULL;
 }
@@ -202,7 +202,7 @@ void iupgtkReleaseNativeGraphicsContext(GtkWidget* widget, void* gc)
   (void)widget;
 }
 
-void* iupdrvGetDisplay(void)
+IUP_SDK_API void* iupdrvGetDisplay(void)
 {
   GdkDisplay* display = gdk_display_get_default();
   return GDK_DISPLAY_XDISPLAY(display);

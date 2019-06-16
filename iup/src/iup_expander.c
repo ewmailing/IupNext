@@ -1650,7 +1650,7 @@ Iclass* iupExpanderNewClass(void)
   return ic;
 }
 
-Ihandle* IupExpander(Ihandle* child)
+IUP_API Ihandle* IupExpander(Ihandle* child)
 {
   void *children[2];
   children[0] = (void*)child;

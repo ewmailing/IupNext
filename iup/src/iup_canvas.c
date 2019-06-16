@@ -110,7 +110,7 @@ static void iCanvasComputeNaturalSizeMethod(Ihandle* ih, int *w, int *h, int *ch
 /******************************************************************************/
 
 
-Ihandle* IupCanvas(const char* action)
+IUP_API Ihandle* IupCanvas(const char* action)
 {
   void *params[2];
   params[0] = (void*)action;

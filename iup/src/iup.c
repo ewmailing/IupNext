@@ -72,14 +72,14 @@ const char iup_ident[] =
 /* Using this, if you look for the string TECVER, you will find also the library version. */
 const char *iup_tecver = "TECVERID.str:Iup:LIB:" IUP_VERSION IUP_VERSION_FIX;
 
-char* IupVersion(void)
+IUP_API char* IupVersion(void)
 {
   (void)iup_tecver;
   (void)iup_ident;
   return IUP_VERSION IUP_VERSION_FIX;
 }
 
-char* IupVersionDate(void)
+IUP_API char* IupVersionDate(void)
 {
 #ifdef IUP_VERSION_FIX_DATE
   return IUP_VERSION_FIX_DATE;
@@ -88,7 +88,7 @@ char* IupVersionDate(void)
 #endif
 }
  
-int IupVersionNumber(void)
+IUP_API int IupVersionNumber(void)
 {
   return IUP_VERSION_NUMBER+IUP_VERSION_FIX_NUMBER;
 }

@@ -53,7 +53,7 @@ static int iMacIsFolder(const char* name)
   return isFolder;
 }
 
-int iupdrvGetWindowDecor(void* wnd, int *border, int *caption)
+IUP_SDK_API int iupdrvGetWindowDecor(void* wnd, int *border, int *caption)
 {
   Rect rect;
   CGRect cg;
@@ -87,12 +87,12 @@ int iupdrvGetWindowDecor(void* wnd, int *border, int *caption)
   return 0;
 }
 
-void iupdrvAddScreenOffset(int *x, int *y, int add)
+IUP_SDK_API void iupdrvAddScreenOffset(int *x, int *y, int add)
 {
   /* ?????? */
 }
 
-void iupdrvGetScreenSize(int *width, int *height)
+IUP_SDK_API void iupdrvGetScreenSize(int *width, int *height)
 {
   int w_size = CGDisplayPixelsWide(kCGDirectMainDisplay);
   int h_size = CGDisplayPixelsHigh(kCGDirectMainDisplay);
@@ -101,7 +101,7 @@ void iupdrvGetScreenSize(int *width, int *height)
   *height = h_size;
 }
 
-void iupdrvGetFullSize(int *width, int *height)
+IUP_SDK_API void iupdrvGetFullSize(int *width, int *height)
 {
   CGRect rect;
 
@@ -111,12 +111,12 @@ void iupdrvGetFullSize(int *width, int *height)
   *height = (int)CGRectGetHeight(rect);
 }
 
-int iupdrvGetScreenDepth(void)
+IUP_SDK_API int iupdrvGetScreenDepth(void)
 {
   return CGDisplayBitsPerPixel(kCGDirectMainDisplay);  /* Deprecated in Mac OS X v10.6 */
 }
 
-double iupdrvGetScreenDpi(void)
+IUP_SDK_API double iupdrvGetScreenDpi(void)
 {
   CGRect rect = CGDisplayBounds(kCGDirectMainDisplay);
   int height = (int)CGRectGetHeight(rect);   /* pixels */
@@ -124,7 +124,7 @@ double iupdrvGetScreenDpi(void)
   return ((double)height / size.height) * 25.4;  /* mm to inch */
 }
 
-void iupdrvGetCursorPos(int *x, int *y)
+IUP_SDK_API void iupdrvGetCursorPos(int *x, int *y)
 {
   CGPoint point;
 #ifdef OLD_MAC_INFO
@@ -139,7 +139,7 @@ void iupdrvGetCursorPos(int *x, int *y)
   *y = (int)point.y;
 }
 
-void iupdrvGetKeyState(char* key)
+IUP_SDK_API void iupdrvGetKeyState(char* key)
 {
   if (GetCurrentEventKeyModifiers() & shiftKey)
     key[0] = 'S';
@@ -186,7 +186,7 @@ char *iupdrvGetSystemName(void)
   return "MacOS";
 }
 
-char *iupdrvGetSystemVersion(void)
+IUP_SDK_API char *iupdrvGetSystemVersion(void)
 {
   char* str = iupStrGetMemory(100);
   SInt32 systemVersion, versionMajor, versionMinor, versionBugFix, systemArchitecture;
@@ -222,7 +222,7 @@ char *iupdrvGetSystemVersion(void)
   return str;
 }
 
-char *iupdrvGetComputerName(void)
+IUP_SDK_API char *iupdrvGetComputerName(void)
 {
   char* str = iupStrGetMemory(50);
   CFStringRef computerName = CSCopyMachineName();
@@ -230,7 +230,7 @@ char *iupdrvGetComputerName(void)
   return str;
 }
 
-char *iupdrvGetUserName(void)
+IUP_SDK_API char *iupdrvGetUserName(void)
 {
   char* str = iupStrGetMemory(50);
   CFStringRef userName = CSCopyUserName(TRUE);  /* TRUE = login name   FALSE = user name */
@@ -238,12 +238,12 @@ char *iupdrvGetUserName(void)
   return str;
 }
 
-char* iupdrvLocaleInfo(void)
+IUP_SDK_API char* iupdrvLocaleInfo(void)
 {
   return iupStrReturnStr(nl_langinfo(CODESET));
 }
 
-int iupdrvGetPreferencePath(char *filename, int use_system)
+IUP_SDK_API int iupdrvGetPreferencePath(char *filename, int use_system)
 {
   char* home = getenv("HOME");
   if (home)

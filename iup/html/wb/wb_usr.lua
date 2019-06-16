@@ -2132,10 +2132,6 @@ wb_usr.tree =
               link= "../doxygen/group__table.html"
             },
             {
-              name= {nl= "Language Dependent Messages"},
-              link= "../doxygen/group__strmessage.html"
-            },
-            {
               name= {nl= "Simple Array"},
               link= "../doxygen/group__iarray.html"
             },

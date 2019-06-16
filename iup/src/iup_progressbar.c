@@ -125,7 +125,7 @@ Iclass* iupProgressBarNewClass(void)
   return ic;
 }
 
-Ihandle *IupProgressBar(void)
+IUP_API Ihandle* IupProgressBar(void)
 {
   return IupCreate("progressbar");
 }

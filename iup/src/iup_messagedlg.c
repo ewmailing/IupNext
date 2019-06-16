@@ -20,7 +20,7 @@
 #include "iup_varg.h"
 
 
-Ihandle* IupMessageDlg(void)
+IUP_API Ihandle* IupMessageDlg(void)
 {
   return IupCreate("messagedlg");
 }
@@ -53,7 +53,7 @@ Iclass* iupMessageDlgNewClass(void)
   return ic;
 }
 
-void IupMessage(const char* title, const char* message)
+IUP_API void IupMessage(const char* title, const char* message)
 {
   Ihandle* dlg = IupCreate("messagedlg");
 
@@ -65,7 +65,7 @@ void IupMessage(const char* title, const char* message)
   IupDestroy(dlg);
 }
 
-void IupMessageV(const char *title, const char *format, va_list arglist)
+IUP_API void IupMessageV(const char *title, const char *format, va_list arglist)
 {
   int size;
   char* str = iupStrGetLargeMem(&size);
@@ -73,7 +73,7 @@ void IupMessageV(const char *title, const char *format, va_list arglist)
   IupMessage(title, str);
 }
 
-void IupMessagef(const char *title, const char *format, ...)
+IUP_API void IupMessagef(const char *title, const char *format, ...)
 {
   va_list arglist;
   va_start(arglist, format);
@@ -81,7 +81,7 @@ void IupMessagef(const char *title, const char *format, ...)
   va_end(arglist);
 }
 
-void IupMessageError(Ihandle* parent, const char* message)
+IUP_API void IupMessageError(Ihandle* parent, const char* message)
 {
   Ihandle* dlg = IupMessageDlg();
   char* title = NULL, *str_message;
@@ -114,7 +114,7 @@ void IupMessageError(Ihandle* parent, const char* message)
   IupDestroy(dlg);
 }
 
-int IupMessageAlarm(Ihandle* parent, const char* title, const char *message, const char *buttons)
+IUP_API int IupMessageAlarm(Ihandle* parent, const char* title, const char *message, const char *buttons)
 {
   Ihandle* dlg = IupMessageDlg();
   char *str_message, *str_title;

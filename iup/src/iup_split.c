@@ -860,7 +860,7 @@ Iclass* iupSplitNewClass(void)
   return ic;
 }
 
-Ihandle* IupSplit(Ihandle* child1, Ihandle* child2)
+IUP_API Ihandle* IupSplit(Ihandle* child1, Ihandle* child2)
 {
   void *children[3];
   children[0] = (void*)child1;

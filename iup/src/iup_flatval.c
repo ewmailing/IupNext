@@ -885,7 +885,7 @@ Iclass* iupFlatValNewClass(void)
   return ic;
 }
 
-Ihandle *IupFlatVal(const char *orientation)
+IUP_API Ihandle* IupFlatVal(const char *orientation)
 {
   void *params[2];
   params[0] = (void*)orientation;

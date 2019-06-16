@@ -147,22 +147,22 @@ static void iGlobalSet(const char *name, const char *value, int store)
     iGlobalTableSet(name, value, store);
 }
 
-void IupSetGlobal(const char *name, const char *value)
+IUP_API void IupSetGlobal(const char *name, const char *value)
 {
   iGlobalSet(name, value, 0);
 }
 
-void IupStoreGlobal(const char *name, const char *value)
+IUP_API void IupStoreGlobal(const char *name, const char *value)
 {
   iGlobalSet(name, value, 1);
 }
 
-void IupSetStrGlobal(const char *name, const char *value)
+IUP_API void IupSetStrGlobal(const char *name, const char *value)
 {
   iGlobalSet(name, value, 1);
 }
 
-char* IupGetGlobal(const char *name)
+IUP_API char* IupGetGlobal(const char *name)
 {
   char* value;
   
@@ -235,7 +235,7 @@ char* IupGetGlobal(const char *name)
   return value;
 }
 
-int iupGlobalIsPointer(const char* name)
+IUP_SDK_API int iupGlobalIsPointer(const char* name)
 {
   static struct {
     const char *name;

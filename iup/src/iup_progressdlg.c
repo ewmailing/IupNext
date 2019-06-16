@@ -345,8 +345,7 @@ Iclass* iupProgressDlgNewClass(void)
   return ic;
 }
 
-Ihandle* IupProgressDlg(void)
+IUP_API Ihandle* IupProgressDlg(void)
 {
   return IupCreate("progressdlg");
 }
-

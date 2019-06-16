@@ -10,6 +10,7 @@
 #include <string.h>
 #include <memory.h>
 
+#include "iup_export.h"
 #include "iup_table.h"
 #include "iup_str.h"
 #include "iup_assert.h"
@@ -112,13 +113,13 @@ static void iTableCheckDuplicated(ItableItem *item, unsigned int nextItemIndex,
 #endif
 
 
-Itable *iupTableCreate(Itable_IndexTypes indexType)
+IUP_SDK_API Itable *iupTableCreate(Itable_IndexTypes indexType)
 {
   return iupTableCreateSized(indexType, 1);  /* 101 shows to be a better start for IUP */
 }
 
 
-Itable *iupTableCreateSized(Itable_IndexTypes indexType, unsigned int initialSizeIndex)
+IUP_SDK_API Itable *iupTableCreateSized(Itable_IndexTypes indexType, unsigned int initialSizeIndex)
 {
   Itable *it = (Itable *)malloc(sizeof(Itable));
   iupASSERT(it!=NULL);
@@ -149,7 +150,7 @@ Itable *iupTableCreateSized(Itable_IndexTypes indexType, unsigned int initialSiz
   return it;
 }
 
-void iupTableClear(Itable *it)
+IUP_SDK_API void iupTableClear(Itable *it)
 {
   unsigned int i;
 
@@ -174,7 +175,7 @@ void iupTableClear(Itable *it)
   it->context.itemIndex = (unsigned int)-1;
 }
 
-void iupTableDestroy(Itable *it)
+IUP_SDK_API void iupTableDestroy(Itable *it)
 {
   if (!it)
     return;
@@ -194,7 +195,7 @@ void iupTableDestroy(Itable *it)
   free(it);
 }
 
-int iupTableCount(Itable *it)
+IUP_SDK_API int iupTableCount(Itable *it)
 {
   iupASSERT(it!=NULL);
   if (!it)
@@ -202,12 +203,12 @@ int iupTableCount(Itable *it)
   return it->numberOfEntries;
 }
 
-void iupTableSetFunc(Itable *it, const char *key, Ifunc func)
+IUP_SDK_API void iupTableSetFunc(Itable *it, const char *key, Ifunc func)
 {
   iupTableSet(it, key, (void*)func, IUPTABLE_FUNCPOINTER); /* type cast from function pointer to void* */
 }
 
-void iupTableSet(Itable *it, const char *key, void *value, Itable_Types itemType)
+IUP_SDK_API void iupTableSet(Itable *it, const char *key, void *value, Itable_Types itemType)
 {
   unsigned int  itemIndex,
                 itemFound;
@@ -314,7 +315,7 @@ static void iTableRemoveItem(Itable *it, ItableEntry *entry, unsigned int itemIn
   it->numberOfEntries--;
 }
 
-void iupTableRemove(Itable *it, const char *key)
+IUP_SDK_API void iupTableRemove(Itable *it, const char *key)
 {
   unsigned int itemFound,
                itemIndex;
@@ -331,7 +332,7 @@ void iupTableRemove(Itable *it, const char *key)
     iTableRemoveItem(it, entry, itemIndex);
 }
 
-void *iupTableGet(Itable *it, const char *key)
+IUP_SDK_API void* iupTableGet(Itable *it, const char *key)
 {
   unsigned int  itemFound,
                 itemIndex;
@@ -351,7 +352,7 @@ void *iupTableGet(Itable *it, const char *key)
   return value;
 }
 
-Ifunc iupTableGetFunc(Itable *it, const char *key, void **value)
+IUP_SDK_API Ifunc iupTableGetFunc(Itable *it, const char *key, void **value)
 {
   Itable_Types itemType = IUPTABLE_POINTER;
   *value = iupTableGetTyped(it, key, &itemType);
@@ -361,7 +362,7 @@ Ifunc iupTableGetFunc(Itable *it, const char *key, void **value)
     return (Ifunc)0;
 }
 
-void *iupTableGetTyped(Itable *it, const char *key, Itable_Types *itemType)
+IUP_SDK_API void* iupTableGetTyped(Itable *it, const char *key, Itable_Types *itemType)
 {
   unsigned int  itemFound,
                 itemIndex;
@@ -385,7 +386,7 @@ void *iupTableGetTyped(Itable *it, const char *key, Itable_Types *itemType)
   return value;
 }
 
-void iupTableSetCurr(Itable *it, void* value, Itable_Types itemType)
+IUP_SDK_API void iupTableSetCurr(Itable *it, void* value, Itable_Types itemType)
 {
   void* v;
   ItableItem *item;
@@ -417,7 +418,7 @@ void iupTableSetCurr(Itable *it, void* value, Itable_Types itemType)
 
 }
 
-void* iupTableGetCurr(Itable *it)
+IUP_SDK_API void* iupTableGetCurr(Itable *it)
 {
   iupASSERT(it!=NULL);
   if (!it || it->context.entryIndex == (unsigned int)-1
@@ -427,7 +428,7 @@ void* iupTableGetCurr(Itable *it)
   return it->entries[it->context.entryIndex].items[it->context.itemIndex].value;
 }
 
-int iupTableGetCurrType(Itable *it)
+IUP_SDK_API int iupTableGetCurrType(Itable *it)
 {
   iupASSERT(it!=NULL);
   if (!it || it->context.entryIndex == (unsigned int)-1
@@ -437,7 +438,7 @@ int iupTableGetCurrType(Itable *it)
   return it->entries[it->context.entryIndex].items[it->context.itemIndex].itemType;
 }
 
-char *iupTableFirst(Itable *it)
+IUP_SDK_API char *iupTableFirst(Itable *it)
 {
   unsigned int entryIndex;
 
@@ -462,8 +463,7 @@ char *iupTableFirst(Itable *it)
   return 0;
 }
 
-
-char *iupTableNext(Itable *it)
+IUP_SDK_API char *iupTableNext(Itable *it)
 {
   unsigned int entryIndex;
 
@@ -495,7 +495,7 @@ char *iupTableNext(Itable *it)
   return 0;
 }
 
-char *iupTableRemoveCurr(Itable *it)
+IUP_SDK_API char *iupTableRemoveCurr(Itable *it)
 {
   char* key;
   unsigned int entryIndex;
@@ -575,7 +575,6 @@ static void iTableFreeItemArray(Itable_IndexTypes indexType, unsigned int nextFr
 
   free(items);
 }
-
 
 static unsigned int iTableGetEntryIndex(Itable *it, const char *key, unsigned long *keyIndex)
 {

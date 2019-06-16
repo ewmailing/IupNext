@@ -30,7 +30,7 @@
 
 static int dlg_popup_level = 1;
 
-InativeHandle* iupDialogGetNativeParent(Ihandle* ih)
+IUP_SDK_API InativeHandle* iupDialogGetNativeParent(Ihandle* ih)
 {
   Ihandle* parent = IupGetAttributeHandle(ih, "PARENTDIALOG");
   if (parent && parent->handle)
@@ -1305,7 +1305,7 @@ static int iDialogSetMenuAttrib(Ihandle* ih, const char* value)
 /****************************************************************/
 
 
-Ihandle* IupDialog(Ihandle* child)
+IUP_API Ihandle* IupDialog(Ihandle* child)
 {
   void *children[2];
   children[0] = child;

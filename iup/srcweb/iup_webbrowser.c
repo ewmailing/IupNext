@@ -29,7 +29,7 @@
 extern int IupGtkWebBrowserDLOpen(void);
 #endif
 
-IUPWEB_EXPORT int IupWebBrowserOpen(void)
+IUPWEB_API int IupWebBrowserOpen(void)
 {
 #ifdef WIN32
   IupOleControlOpen();
@@ -49,7 +49,7 @@ IUPWEB_EXPORT int IupWebBrowserOpen(void)
   return IUP_NOERROR;
 }
 
-IUPWEB_EXPORT Ihandle *IupWebBrowser(void)
+IUPWEB_API Ihandle *IupWebBrowser(void)
 {
   return IupCreate("webbrowser");
 }

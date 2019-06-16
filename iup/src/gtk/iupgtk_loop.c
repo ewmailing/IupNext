@@ -44,7 +44,7 @@ static gboolean gtkIdleFunc(gpointer data)
   return FALSE; /* removes the idle */
 }
 
-void iupdrvSetIdleFunction(Icallback f)
+IUP_SDK_API void iupdrvSetIdleFunction(Icallback f)
 {
   if (gtk_idle_cb)
     g_source_remove(gtk_idle_id);
@@ -55,7 +55,7 @@ void iupdrvSetIdleFunction(Icallback f)
     gtk_idle_id = g_idle_add(gtkIdleFunc, NULL);
 }
 
-void IupExitLoop(void)
+IUP_API void IupExitLoop(void)
 {
   char* exit_loop = IupGetGlobal("EXITLOOP");
   if (gtk_main_level() > 1 || !exit_loop || iupStrBoolean(exit_loop))
@@ -65,12 +65,12 @@ void IupExitLoop(void)
   }
 }
 
-int IupMainLoopLevel(void)
+IUP_API int IupMainLoopLevel(void)
 {
   return gtk_main_level();
 }
 
-int IupMainLoop(void)
+IUP_API int IupMainLoop(void)
 {
   static int loop_count = 0;
   static int has_done_entry = 0;
@@ -91,21 +91,21 @@ int IupMainLoop(void)
   return IUP_NOERROR;
 }
 
-int IupLoopStepWait(void)
+IUP_API int IupLoopStepWait(void)
 {
   if (gtk_main_iteration_do(TRUE))
     return IUP_CLOSE;
   return IUP_DEFAULT;
 }
 
-int IupLoopStep(void)
+IUP_API int IupLoopStep(void)
 {
   if (gtk_main_iteration_do(FALSE))
     return IUP_CLOSE;
   return IUP_DEFAULT;
 }
 
-void IupFlush(void)
+IUP_API void IupFlush(void)
 {
   int count = 0;
 
@@ -155,7 +155,7 @@ static gint gtkPostMessageCallback(void *user_data)
   return FALSE; /* call only once */
 }
 
-void IupPostMessage(Ihandle* ih, const char* s, int i, double d)
+IUP_API void IupPostMessage(Ihandle* ih, const char* s, int i, double d)
 {
   gtkPostMessageUserData* user_data = (gtkPostMessageUserData*)malloc(sizeof(gtkPostMessageUserData));
   user_data->ih = ih;

@@ -49,7 +49,7 @@ void iupdrvImageGetData(void* handle, unsigned char* imgdata)
   }
 }
 
-void iupdrvImageGetRawData(void* handle, unsigned char* imgdata)
+IUP_SDK_API void iupdrvImageGetRawData(void* handle, unsigned char* imgdata)
 {
   GdkPixbuf* pixbuf = (GdkPixbuf*)handle;
   int w, h, y, x, bpp;
@@ -90,7 +90,7 @@ void iupdrvImageGetRawData(void* handle, unsigned char* imgdata)
   }
 }
 
-void* iupdrvImageCreateImageRaw(int width, int height, int bpp, iupColor* colors, int colors_count, unsigned char *imgdata)
+IUP_SDK_API void* iupdrvImageCreateImageRaw(int width, int height, int bpp, iupColor* colors, int colors_count, unsigned char *imgdata)
 {
   GdkPixbuf* pixbuf;
   guchar *pixdata, *pixline_data;
@@ -559,7 +559,7 @@ int iupdrvImageGetInfo(void* handle, int *w, int *h, int *bpp)
   return 1;
 }
 
-int iupdrvImageGetRawInfo(void* handle, int *w, int *h, int *bpp, iupColor* colors, int *colors_count)
+IUP_SDK_API int iupdrvImageGetRawInfo(void* handle, int *w, int *h, int *bpp, iupColor* colors, int *colors_count)
 {
   /* GdkPixbuf are only 24 bpp or 32 bpp */
   (void)colors;
@@ -567,7 +567,7 @@ int iupdrvImageGetRawInfo(void* handle, int *w, int *h, int *bpp, iupColor* colo
   return iupdrvImageGetInfo(handle, w, h, bpp);
 }
 
-void iupdrvImageDestroy(void* handle, int type)
+IUP_SDK_API void iupdrvImageDestroy(void* handle, int type)
 {
 #if !GTK_CHECK_VERSION(3, 0, 0)
   if (type == IUPIMAGE_CURSOR)

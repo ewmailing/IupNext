@@ -19,7 +19,7 @@
 #include "iup_drv.h" 
 
 
-Ihandle* IupGetDialog(Ihandle* ih)
+IUP_API Ihandle* IupGetDialog(Ihandle* ih)
 {
   iupASSERT(iupObjectCheck(ih));
   if (!iupObjectCheck(ih))
@@ -69,7 +69,7 @@ static void iChildTreeDetach(Ihandle* parent, Ihandle* child)
   }
 }
 
-void IupDetach(Ihandle *child)
+IUP_API void IupDetach(Ihandle *child)
 {
   Ihandle *parent;
   int pos;
@@ -183,7 +183,7 @@ static int iChildTreeCount(Ihandle* ih)
   return num;
 }
 
-Ihandle* IupInsert(Ihandle* parent, Ihandle* ref_child, Ihandle* child)
+IUP_API Ihandle* IupInsert(Ihandle* parent, Ihandle* ref_child, Ihandle* child)
 {
   /* ref_child can be NULL */
 
@@ -230,7 +230,7 @@ Ihandle* IupInsert(Ihandle* parent, Ihandle* ref_child, Ihandle* child)
   return parent;
 }
 
-void iupChildTreeAppend(Ihandle* parent, Ihandle* child)
+IUP_SDK_API void iupChildTreeAppend(Ihandle* parent, Ihandle* child)
 {
   child->parent = parent;
 
@@ -245,7 +245,7 @@ void iupChildTreeAppend(Ihandle* parent, Ihandle* child)
   }
 }
 
-Ihandle* IupAppend(Ihandle* parent, Ihandle* child)
+IUP_API Ihandle* IupAppend(Ihandle* parent, Ihandle* child)
 {
   iupASSERT(iupObjectCheck(parent));
   if (!iupObjectCheck(parent))
@@ -305,7 +305,7 @@ static void iChildTreeReparent(Ihandle* child, Ihandle* new_parent)
   }
 }
 
-int IupReparent(Ihandle* child, Ihandle* parent, Ihandle* ref_child)
+IUP_API int IupReparent(Ihandle* child, Ihandle* parent, Ihandle* ref_child)
 {
   Ihandle* old_parent;
   int pos;
@@ -372,7 +372,7 @@ int IupReparent(Ihandle* child, Ihandle* parent, Ihandle* ref_child)
   return IUP_NOERROR;
 }
 
-Ihandle* IupGetChild(Ihandle* ih, int pos)
+IUP_API Ihandle* IupGetChild(Ihandle* ih, int pos)
 {
   int p;
   Ihandle* child;
@@ -390,7 +390,7 @@ Ihandle* IupGetChild(Ihandle* ih, int pos)
   return NULL;
 }
 
-int IupGetChildPos(Ihandle* ih, Ihandle* child)
+IUP_API int IupGetChildPos(Ihandle* ih, Ihandle* child)
 {
   int pos;
   Ihandle* c;
@@ -407,7 +407,7 @@ int IupGetChildPos(Ihandle* ih, Ihandle* child)
   return -1;
 }
 
-Ihandle* iupChildTreeGetPrevBrother(Ihandle* ih)
+IUP_SDK_API Ihandle* iupChildTreeGetPrevBrother(Ihandle* ih)
 {
   Ihandle *c, *prev = NULL;
 
@@ -422,7 +422,7 @@ Ihandle* iupChildTreeGetPrevBrother(Ihandle* ih)
   return NULL;
 }
 
-int IupGetChildCount(Ihandle* ih)
+IUP_API int IupGetChildCount(Ihandle* ih)
 {
   int count = 0;
   Ihandle* child;
@@ -437,7 +437,7 @@ int IupGetChildCount(Ihandle* ih)
   return count;
 }
 
-Ihandle* IupGetNextChild(Ihandle* ih, Ihandle* child)
+IUP_API Ihandle* IupGetNextChild(Ihandle* ih, Ihandle* child)
 {
   if (!child)
   {
@@ -457,7 +457,7 @@ Ihandle* IupGetNextChild(Ihandle* ih, Ihandle* child)
   }
 }
 
-Ihandle* IupGetBrother(Ihandle* ih)
+IUP_API Ihandle* IupGetBrother(Ihandle* ih)
 {
   iupASSERT(iupObjectCheck(ih));
   if (!iupObjectCheck(ih))
@@ -466,7 +466,7 @@ Ihandle* IupGetBrother(Ihandle* ih)
   return ih->brother;
 }
 
-Ihandle* IupGetParent(Ihandle *ih)
+IUP_API Ihandle* IupGetParent(Ihandle *ih)
 {
   iupASSERT(iupObjectCheck(ih));
   if (!iupObjectCheck(ih))
@@ -475,7 +475,7 @@ Ihandle* IupGetParent(Ihandle *ih)
   return ih->parent;
 }
 
-int iupChildTreeIsChild(Ihandle* ih, Ihandle* child)
+IUP_SDK_API int iupChildTreeIsChild(Ihandle* ih, Ihandle* child)
 {
   Ihandle* parent;
 
@@ -493,7 +493,7 @@ int iupChildTreeIsChild(Ihandle* ih, Ihandle* child)
   return 0;
 }
 
-Ihandle* iupChildTreeGetNativeParent(Ihandle* ih)
+IUP_SDK_API Ihandle* iupChildTreeGetNativeParent(Ihandle* ih)
 {
   Ihandle* parent = ih->parent;
   while (parent && parent->iclass->nativetype == IUP_TYPEVOID)
@@ -501,7 +501,7 @@ Ihandle* iupChildTreeGetNativeParent(Ihandle* ih)
   return parent;
 }
 
-InativeHandle* iupChildTreeGetNativeParentHandle(Ihandle* ih)
+IUP_SDK_API InativeHandle* iupChildTreeGetNativeParentHandle(Ihandle* ih)
 {
   Ihandle* native_parent = iupChildTreeGetNativeParent(ih);
   return (InativeHandle*)iupClassObjectGetInnerNativeContainerHandle(native_parent, ih);

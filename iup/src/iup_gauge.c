@@ -481,7 +481,7 @@ Iclass* iupGaugeNewClass(void)
   return ic;
 }
 
-Ihandle *IupGauge(void)
+IUP_API Ihandle* IupGauge(void)
 {
   return IupCreate("gauge");
 }

@@ -80,7 +80,7 @@ void iupEmscripten_Log(const char* restrict format, ...) {
 }
 
 extern void emjsCommon_IupLog(int priority, char* message);
-void IupLogV(const char* type, const char* format, va_list arglist)
+IUP_API void IupLogV(const char* type, const char* format, va_list arglist)
 {
 	enum IUPLOG_LEVEL
 	{
@@ -118,7 +118,7 @@ void IupLogV(const char* type, const char* format, va_list arglist)
 	
 }
 
-void IupLog(const char* type, const char* format, ...)
+IUP_API void IupLog(const char* type, const char* format, ...)
 {
   va_list arglist;
   va_start(arglist, format);
@@ -219,19 +219,19 @@ extern void emjsCommon_SetFgColor(int handle_id, unsigned char r, unsigned char 
 #endif
 //}
 
-void iupdrvActivate(Ihandle* ih)
+IUP_SDK_API void iupdrvActivate(Ihandle* ih)
 {
 
 }
 
-void iupdrvReparent(Ihandle* ih)
+IUP_SDK_API void iupdrvReparent(Ihandle* ih)
 {
 
 	
 }
 
 
-void iupdrvBaseLayoutUpdateMethod(Ihandle *ih)
+IUP_SDK_API void iupdrvBaseLayoutUpdateMethod(Ihandle *ih)
 {
 //	iupEmscripten_Log("x:%d, y:%d, w:%d, h:%d, id: %d", ih->x,ih->y,ih->currentwidth,ih->currentheight,ih->handle->handleID);
 
@@ -332,49 +332,49 @@ void iupdrvBaseLayoutUpdateMethod(Ihandle *ih)
 
 }
 
-void iupdrvBaseUnMapMethod(Ihandle* ih)
+IUP_SDK_API void iupdrvBaseUnMapMethod(Ihandle* ih)
 {
 	// Why do I need this when everything else has its own UnMap method?
 	//NSLog(@"iupdrvBaseUnMapMethod not implemented. Might be leaking");
 }
 
-void iupdrvDisplayUpdate(Ihandle *ih)
+IUP_SDK_API void iupdrvDisplayUpdate(Ihandle *ih)
 {
 	// call ViewGroup.invalidate()
 
 }
 
-void iupdrvDisplayRedraw(Ihandle *ih)
+IUP_SDK_API void iupdrvDisplayRedraw(Ihandle *ih)
 {
 	iupdrvDisplayUpdate(ih);
 }
 
-void iupdrvScreenToClient(Ihandle* ih, int *x, int *y)
+IUP_SDK_API void iupdrvScreenToClient(Ihandle* ih, int *x, int *y)
 {
 }
 
 
 
-int iupdrvBaseSetZorderAttrib(Ihandle* ih, const char* value)
+IUP_SDK_API int iupdrvBaseSetZorderAttrib(Ihandle* ih, const char* value)
 {
   return 0;
 }
 
-void iupdrvSetVisible(Ihandle* ih, int visible)
+IUP_SDK_API void iupdrvSetVisible(Ihandle* ih, int visible)
 {
 }
 
-int iupdrvIsVisible(Ihandle* ih)
+IUP_SDK_API int iupdrvIsVisible(Ihandle* ih)
 {
 	return 1;
 }
 
-int iupdrvIsActive(Ihandle *ih)
+IUP_SDK_API int iupdrvIsActive(Ihandle *ih)
 {
   return 1;
 }
 
-void iupdrvSetActive(Ihandle* ih, int enable)
+IUP_SDK_API void iupdrvSetActive(Ihandle* ih, int enable)
 {
 }
 
@@ -398,7 +398,7 @@ char* iupdrvBaseGetClientSizeAttrib(Ihandle *ih)
 }
  */
 
-int iupdrvBaseSetBgColorAttrib(Ihandle* ih, const char* value)
+IUP_SDK_API int iupdrvBaseSetBgColorAttrib(Ihandle* ih, const char* value)
 {
 
 	
@@ -409,7 +409,7 @@ int iupdrvBaseSetBgColorAttrib(Ihandle* ih, const char* value)
 }
 
 
-int iupdrvBaseSetFgColorAttrib(Ihandle* ih, const char* value)
+IUP_SDK_API int iupdrvBaseSetFgColorAttrib(Ihandle* ih, const char* value)
 {
   unsigned char r, g, b;
   if (!iupStrToRGB(value, &r, &g, &b))
@@ -419,14 +419,14 @@ int iupdrvBaseSetFgColorAttrib(Ihandle* ih, const char* value)
   return 1;
 }
 
-int iupdrvBaseSetCursorAttrib(Ihandle* ih, const char* value)
+IUP_SDK_API int iupdrvBaseSetCursorAttrib(Ihandle* ih, const char* value)
 {
 
   return 0;
 }
 
 
-int iupdrvGetScrollbarSize(void)
+IUP_SDK_API int iupdrvGetScrollbarSize(void)
 {
 
   return 0;
@@ -434,7 +434,7 @@ int iupdrvGetScrollbarSize(void)
 
 
 
-void iupdrvBaseRegisterCommonAttrib(Iclass* ic)
+IUP_SDK_API void iupdrvBaseRegisterCommonAttrib(Iclass* ic)
 {
 	/*
 #ifndef GTK_MAC
@@ -448,38 +448,38 @@ void iupdrvBaseRegisterCommonAttrib(Iclass* ic)
 */
 }
 
-void iupdrvBaseRegisterVisualAttrib(Iclass* ic)
+IUP_SDK_API void iupdrvBaseRegisterVisualAttrib(Iclass* ic)
 {
 	
 }
 
-void iupdrvClientToScreen(Ihandle* ih, int *x, int *y)
+IUP_SDK_API void iupdrvClientToScreen(Ihandle* ih, int *x, int *y)
 {
 	
 }
 
-void iupdrvPostRedraw(Ihandle *ih)
+IUP_SDK_API void iupdrvPostRedraw(Ihandle *ih)
 {
 
 }
 
-void iupdrvRedrawNow(Ihandle *ih)
+IUP_SDK_API void iupdrvRedrawNow(Ihandle *ih)
 {
 
 }
-void iupdrvSendKey(int key, int press)
+IUP_SDK_API void iupdrvSendKey(int key, int press)
 {
 	
 }
-void iupdrvSendMouse(int x, int y, int bt, int status)
+IUP_SDK_API void iupdrvSendMouse(int x, int y, int bt, int status)
 {
 	
 }
-void iupdrvSleep(int time)
+IUP_SDK_API void iupdrvSleep(int time)
 {
 	
 }
-void iupdrvWarpPointer(int x, int y)
+IUP_SDK_API void iupdrvWarpPointer(int x, int y)
 {
 	
 }

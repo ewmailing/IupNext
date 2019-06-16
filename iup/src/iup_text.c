@@ -539,7 +539,7 @@ static void iTextDestroyMethod(Ihandle* ih)
 typedef void (*Iconvertlincol2pos)(Ihandle* ih, int lin, int col, int *pos);
 typedef void (*Iconvertpos2lincol)(Ihandle* ih, int pos, int *lin, int *col);
 
-void IupTextConvertLinColToPos(Ihandle* ih, int lin, int col, int *pos)
+IUP_API void IupTextConvertLinColToPos(Ihandle* ih, int lin, int col, int *pos)
 {
   iupASSERT(iupObjectCheck(ih));
   if (!iupObjectCheck(ih))
@@ -563,7 +563,7 @@ void IupTextConvertLinColToPos(Ihandle* ih, int lin, int col, int *pos)
   }
 }
 
-void IupTextConvertPosToLinCol(Ihandle* ih, int pos, int *lin, int *col)
+IUP_API void IupTextConvertPosToLinCol(Ihandle* ih, int pos, int *lin, int *col)
 {
   iupASSERT(iupObjectCheck(ih));
   if (!iupObjectCheck(ih))
@@ -590,7 +590,7 @@ void IupTextConvertPosToLinCol(Ihandle* ih, int pos, int *lin, int *col)
   }
 }
 
-Ihandle* IupText(const char* action)
+IUP_API Ihandle* IupText(const char* action)
 {
   void *params[2];
   params[0] = (void*)action;
@@ -598,7 +598,7 @@ Ihandle* IupText(const char* action)
   return IupCreatev("text", params);
 }
 
-Ihandle* IupMultiLine(const char* action)
+IUP_API Ihandle* IupMultiLine(const char* action)
 {
   void *params[2];
   params[0] = (void*)action;

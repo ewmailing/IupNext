@@ -235,7 +235,7 @@ static const char* iKeyBaseCodeToName(int code, unsigned char *mod)
   return name;                               \
 }
 
-char* iupKeyCodeToName(int code)
+IUP_SDK_API char* iupKeyCodeToName(int code)
 {
   unsigned char mod = 0;
   const char* base_name;
@@ -295,7 +295,7 @@ static void iKeyCallFunc(void (*func)(const char *name, int code, void* user_dat
   }
 }
 
-void iupKeyForEach(void (*func)(const char *name, int code, void* user_data), void* user_data)
+IUP_SDK_API void iupKeyForEach(void(*func)(const char *name, int code, void* user_data), void* user_data)
 {
   /* Used only by the IupLua binding. */
   int code, map;
@@ -328,7 +328,7 @@ void iupKeyForEach(void (*func)(const char *name, int code, void* user_data), vo
   iKeyCallFunc(func, user_data, "K_diaeresis", K_diaeresis, 1);
 }
 
-int iupKeyCallKeyCb(Ihandle *ih, int code)
+IUP_SDK_API int iupKeyCallKeyCb(Ihandle *ih, int code)
 {
   char* name = iupKeyCodeToName(code);
   for (; ih; ih = ih->parent)
@@ -349,7 +349,7 @@ int iupKeyCallKeyCb(Ihandle *ih, int code)
   return IUP_DEFAULT;
 }
 
-int iupKeyCallKeyPressCb(Ihandle *ih, int code, int press)
+IUP_SDK_API int iupKeyCallKeyPressCb(Ihandle *ih, int code, int press)
 {
   IFnii cb = (IFnii)IupGetCallback(ih, "KEYPRESS_CB");
   if (cb) return cb(ih, code, press);
@@ -398,7 +398,7 @@ static void iupSetFontSizeChildren(Ihandle *ih, int inc)
   }
 }
 
-int iupKeyProcessNavigation(Ihandle* ih, int code, int shift)
+IUP_SDK_API int iupKeyProcessNavigation(Ihandle* ih, int code, int shift)
 {
   /* this is called after K_ANY is processed, 
      so the user may change its behavior */
@@ -511,7 +511,7 @@ int iupKeyProcessNavigation(Ihandle* ih, int code, int shift)
   return 0;
 }
 
-int iupKeyProcessMnemonic(Ihandle* ih, int code)
+IUP_SDK_API int iupKeyProcessMnemonic(Ihandle* ih, int code)
 {
   Ihandle *ih_mnemonic, *dialog = IupGetDialog(ih);
   char attrib[16] = "_IUP_MNEMONIC_ ";
@@ -544,7 +544,7 @@ int iupKeyProcessMnemonic(Ihandle* ih, int code)
   return 0;
 }
 
-void iupKeySetMnemonic(Ihandle* ih, int code, int pos)
+IUP_SDK_API void iupKeySetMnemonic(Ihandle* ih, int code, int pos)
 {
   Ihandle* ih_dialog = IupGetDialog(ih);
   char attrib[16] = "_IUP_MNEMONIC_ ";

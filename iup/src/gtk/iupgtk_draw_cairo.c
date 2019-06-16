@@ -43,7 +43,7 @@ struct _IdrawCanvas
   int clip_x1, clip_y1, clip_x2, clip_y2;
 };
 
-IdrawCanvas* iupdrvDrawCreateCanvas(Ihandle* ih)
+IUP_SDK_API IdrawCanvas* iupdrvDrawCreateCanvas(Ihandle* ih)
 {
   IdrawCanvas* dc = calloc(1, sizeof(IdrawCanvas));
   cairo_surface_t* surface;
@@ -80,7 +80,7 @@ IdrawCanvas* iupdrvDrawCreateCanvas(Ihandle* ih)
   return dc;
 }
 
-void iupdrvDrawKillCanvas(IdrawCanvas* dc)
+IUP_SDK_API void iupdrvDrawKillCanvas(IdrawCanvas* dc)
 {
   cairo_destroy(dc->image_cr);
   if (dc->release_cr)
@@ -89,7 +89,7 @@ void iupdrvDrawKillCanvas(IdrawCanvas* dc)
   free(dc);
 }
 
-void iupdrvDrawUpdateSize(IdrawCanvas* dc)
+IUP_SDK_API void iupdrvDrawUpdateSize(IdrawCanvas* dc)
 {
   int w, h;
 #if !GTK_CHECK_VERSION(3, 0, 0)
@@ -128,7 +128,7 @@ static void gdkDrawFocusRect(Ihandle* ih, int x, int y, int w, int h)
 }
 #endif
 
-void iupdrvDrawFlush(IdrawCanvas* dc)
+IUP_SDK_API void iupdrvDrawFlush(IdrawCanvas* dc)
 {
   /* flush the writing in the image */
   cairo_show_page(dc->image_cr);
@@ -153,7 +153,7 @@ void iupdrvDrawFlush(IdrawCanvas* dc)
 #endif
 }
 
-void iupdrvDrawGetSize(IdrawCanvas* dc, int *w, int *h)
+IUP_SDK_API void iupdrvDrawGetSize(IdrawCanvas* dc, int *w, int *h)
 {
   if (w) *w = dc->w;
   if (h) *h = dc->h;
@@ -211,7 +211,7 @@ static void iDrawHorizontalLineW1(IdrawCanvas* dc, int x1, int x2, int y)
   cairo_line_to(dc->image_cr, x2 + 1, y + 0.5);
 }
 
-void iupdrvDrawRectangle(IdrawCanvas* dc, int x1, int y1, int x2, int y2, long color, int style, int line_width)
+IUP_SDK_API void iupdrvDrawRectangle(IdrawCanvas* dc, int x1, int y1, int x2, int y2, long color, int style, int line_width)
 {
   cairo_set_source_rgba(dc->image_cr, iupgtkColorToDouble(iupDrawRed(color)), iupgtkColorToDouble(iupDrawGreen(color)), iupgtkColorToDouble(iupDrawBlue(color)), iupgtkColorToDouble(iupDrawAlpha(color)));
 
@@ -251,7 +251,7 @@ void iupdrvDrawRectangle(IdrawCanvas* dc, int x1, int y1, int x2, int y2, long c
   }
 }
 
-void iupdrvDrawLine(IdrawCanvas* dc, int x1, int y1, int x2, int y2, long color, int style, int line_width)
+IUP_SDK_API void iupdrvDrawLine(IdrawCanvas* dc, int x1, int y1, int x2, int y2, long color, int style, int line_width)
 {
   cairo_set_source_rgba(dc->image_cr, iupgtkColorToDouble(iupDrawRed(color)), iupgtkColorToDouble(iupDrawGreen(color)), iupgtkColorToDouble(iupDrawBlue(color)), iupgtkColorToDouble(iupDrawAlpha(color)));
 
@@ -293,7 +293,7 @@ static void iFixAngles(double *a1, double *a2)
   *a2 *= IUP_DEG2RAD;
 }
 
-void iupdrvDrawArc(IdrawCanvas* dc, int x1, int y1, int x2, int y2, double a1, double a2, long color, int style, int line_width)
+IUP_SDK_API void iupdrvDrawArc(IdrawCanvas* dc, int x1, int y1, int x2, int y2, double a1, double a2, long color, int style, int line_width)
 {
   double xc, yc, w, h;
 
@@ -354,7 +354,7 @@ void iupdrvDrawArc(IdrawCanvas* dc, int x1, int y1, int x2, int y2, double a1, d
   }
 }
 
-void iupdrvDrawPolygon(IdrawCanvas* dc, int* points, int count, long color, int style, int line_width)
+IUP_SDK_API void iupdrvDrawPolygon(IdrawCanvas* dc, int* points, int count, long color, int style, int line_width)
 {
   int i;
 
@@ -378,7 +378,7 @@ void iupdrvDrawPolygon(IdrawCanvas* dc, int* points, int count, long color, int 
     cairo_stroke(dc->image_cr);
 }
 
-void iupdrvDrawGetClipRect(IdrawCanvas* dc, int *x1, int *y1, int *x2, int *y2)
+IUP_SDK_API void iupdrvDrawGetClipRect(IdrawCanvas* dc, int *x1, int *y1, int *x2, int *y2)
 {
   if (x1) *x1 = dc->clip_x1;
   if (y1) *y1 = dc->clip_y1;
@@ -386,7 +386,7 @@ void iupdrvDrawGetClipRect(IdrawCanvas* dc, int *x1, int *y1, int *x2, int *y2)
   if (y2) *y2 = dc->clip_y2;
 }
 
-void iupdrvDrawSetClipRect(IdrawCanvas* dc, int x1, int y1, int x2, int y2)
+IUP_SDK_API void iupdrvDrawSetClipRect(IdrawCanvas* dc, int x1, int y1, int x2, int y2)
 {
   if (x1 == 0 && y1 == 0 && x2 == 0 && y2 == 0)
   {
@@ -409,7 +409,7 @@ void iupdrvDrawSetClipRect(IdrawCanvas* dc, int x1, int y1, int x2, int y2)
   dc->clip_y2 = y2;
 }
 
-void iupdrvDrawResetClip(IdrawCanvas* dc)
+IUP_SDK_API void iupdrvDrawResetClip(IdrawCanvas* dc)
 {
   cairo_reset_clip(dc->image_cr);
 
@@ -419,7 +419,7 @@ void iupdrvDrawResetClip(IdrawCanvas* dc)
   dc->clip_y2 = 0;
 }
 
-void iupdrvDrawText(IdrawCanvas* dc, const char* text, int len, int x, int y, int w, int h, long color, const char* font, int flags, double text_orientation)
+IUP_SDK_API void iupdrvDrawText(IdrawCanvas* dc, const char* text, int len, int x, int y, int w, int h, long color, const char* font, int flags, double text_orientation)
 {
   PangoLayout* fontlayout = (PangoLayout*)iupgtkGetPangoLayout(font);
   PangoAlignment alignment = PANGO_ALIGN_LEFT;
@@ -509,7 +509,7 @@ void iupdrvDrawText(IdrawCanvas* dc, const char* text, int len, int x, int y, in
     cairo_restore(dc->image_cr);
 }
 
-void iupdrvDrawImage(IdrawCanvas* dc, const char* name, int make_inactive, const char* bgcolor, int x, int y, int w, int h)
+IUP_SDK_API void iupdrvDrawImage(IdrawCanvas* dc, const char* name, int make_inactive, const char* bgcolor, int x, int y, int w, int h)
 {
   int bpp, img_w, img_h;
   GdkPixbuf* pixbuf = iupImageGetImage(name, dc->ih, make_inactive, bgcolor);
@@ -542,7 +542,7 @@ void iupdrvDrawImage(IdrawCanvas* dc, const char* name, int make_inactive, const
   cairo_restore(dc->image_cr);
 }
 
-void iupdrvDrawSelectRect(IdrawCanvas* dc, int x1, int y1, int x2, int y2)
+IUP_SDK_API void iupdrvDrawSelectRect(IdrawCanvas* dc, int x1, int y1, int x2, int y2)
 {
   cairo_set_source_rgba(dc->image_cr, 0, 0, 1, 0.6);  /* 0, 0, 255, 153 (blue semi-transparent) */
 
@@ -554,7 +554,7 @@ void iupdrvDrawSelectRect(IdrawCanvas* dc, int x1, int y1, int x2, int y2)
   cairo_fill(dc->image_cr);
 }
 
-void iupdrvDrawFocusRect(IdrawCanvas* dc, int x1, int y1, int x2, int y2)
+IUP_SDK_API void iupdrvDrawFocusRect(IdrawCanvas* dc, int x1, int y1, int x2, int y2)
 {
 #if 0
 #if GTK_CHECK_VERSION(3, 0, 0)

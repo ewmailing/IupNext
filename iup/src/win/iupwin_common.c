@@ -64,7 +64,7 @@ int iupwinGetScreenRes(void)
   return res;
 }
 
-void iupdrvActivate(Ihandle* ih)
+IUP_SDK_API void iupdrvActivate(Ihandle* ih)
 {
   int is_toggle = IupClassMatch(ih, "toggle");
   int is_radio = 0;
@@ -94,14 +94,14 @@ void iupdrvActivate(Ihandle* ih)
     IupSetAttribute(ih, "VALUE", "TOGGLE");
 }
 
-int iupdrvGetScrollbarSize(void)
+IUP_SDK_API int iupdrvGetScrollbarSize(void)
 {
   int xv = GetSystemMetrics(SM_CXVSCROLL);
   int yh = GetSystemMetrics(SM_CYHSCROLL);
   return xv > yh ? xv : yh;
 }
 
-void iupdrvReparent(Ihandle* ih)
+IUP_SDK_API void iupdrvReparent(Ihandle* ih)
 {
   HWND newParent = iupChildTreeGetNativeParentHandle(ih);
   if (GetParent(ih->handle) != newParent)
@@ -112,7 +112,7 @@ void iupdrvReparent(Ihandle* ih)
   }
 }
 
-void iupdrvBaseLayoutUpdateMethod(Ihandle *ih)
+IUP_SDK_API void iupdrvBaseLayoutUpdateMethod(Ihandle *ih)
 {
   if (ih->currentwidth > 0 && ih->currentheight > 0)
     SetWindowPos(ih->handle, NULL, ih->x, ih->y, ih->currentwidth, ih->currentheight,
@@ -122,20 +122,20 @@ void iupdrvBaseLayoutUpdateMethod(Ihandle *ih)
                  SWP_NOSIZE | SWP_NOZORDER | SWP_NOACTIVATE | SWP_NOOWNERZORDER);
 }
 
-void iupdrvRedrawNow(Ihandle *ih)
+IUP_SDK_API void iupdrvRedrawNow(Ihandle *ih)
 {
   /* REDRAW Now - IupRedraw */
   RedrawWindow(ih->handle,NULL,NULL,RDW_ERASE|RDW_INVALIDATE|RDW_INTERNALPAINT|RDW_UPDATENOW);
 }
 
-void iupdrvPostRedraw(Ihandle *ih)
+IUP_SDK_API void iupdrvPostRedraw(Ihandle *ih)
 {
   /* Post a REDRAW - IupUpdate */
   /* can NOT use RDW_NOCHILDREN because IupList has internal children that needs to be redraw */
   RedrawWindow(ih->handle,NULL,NULL,RDW_ERASE|RDW_INVALIDATE|RDW_INTERNALPAINT);  
 }
 
-void iupdrvScreenToClient(Ihandle* ih, int *x, int *y)
+IUP_SDK_API void iupdrvScreenToClient(Ihandle* ih, int *x, int *y)
 {
   POINT p;
   p.x = *x;
@@ -145,7 +145,7 @@ void iupdrvScreenToClient(Ihandle* ih, int *x, int *y)
   *y = p.y;
 }
 
-void iupdrvClientToScreen(Ihandle* ih, int *x, int *y)
+IUP_SDK_API void iupdrvClientToScreen(Ihandle* ih, int *x, int *y)
 {
   POINT p;
   p.x = *x;
@@ -193,7 +193,7 @@ void iupwinSetStyle(Ihandle* ih, DWORD value, int set)
   SetWindowLong(ih->handle, GWL_STYLE, dwStyle);
 }
 
-int iupwinBaseMsgProc(Ihandle* ih, UINT msg, WPARAM wp, LPARAM lp, LRESULT *result)
+IUP_DRV_API int iupwinBaseMsgProc(Ihandle* ih, UINT msg, WPARAM wp, LPARAM lp, LRESULT *result)
 { 
   switch (msg)
   {
@@ -611,7 +611,7 @@ void iupwinChangeWndProc(Ihandle *ih, WNDPROC newProc)
   SetWindowLongPtr(ih->handle, GWLP_WNDPROC, (LONG_PTR)newProc);
 }
 
-void iupdrvBaseUnMapMethod(Ihandle* ih)
+IUP_SDK_API void iupdrvBaseUnMapMethod(Ihandle* ih)
 {
   WNDPROC oldProc = (WNDPROC)IupGetCallback(ih, "_IUPWIN_OLDWNDPROC_CB");
   if (oldProc)
@@ -654,7 +654,7 @@ int iupwinGetParentBgColor(Ihandle* ih, COLORREF* cr)
   return 0;
 }
 
-int iupdrvBaseSetZorderAttrib(Ihandle* ih, const char* value)
+IUP_SDK_API int iupdrvBaseSetZorderAttrib(Ihandle* ih, const char* value)
 {
   if (IsWindowVisible(ih->handle))
   {
@@ -669,22 +669,22 @@ int iupdrvBaseSetZorderAttrib(Ihandle* ih, const char* value)
   return 0;
 }
 
-void iupdrvSetVisible(Ihandle* ih, int visible)
+IUP_SDK_API void iupdrvSetVisible(Ihandle* ih, int visible)
 {
   ShowWindow(ih->handle, visible? SW_SHOWNORMAL: SW_HIDE);
 }
 
-int iupdrvIsVisible(Ihandle* ih)
+IUP_SDK_API int iupdrvIsVisible(Ihandle* ih)
 {
   return IsWindowVisible(ih->handle);
 }
 
-int iupdrvIsActive(Ihandle* ih)
+IUP_SDK_API int iupdrvIsActive(Ihandle* ih)
 {
   return IsWindowEnabled(ih->handle);
 }
 
-void iupdrvSetActive(Ihandle* ih, int enable)
+IUP_SDK_API void iupdrvSetActive(Ihandle* ih, int enable)
 {
   EnableWindow(ih->handle, enable);
 }
@@ -698,7 +698,7 @@ int iupwinSetTitleAttrib(Ihandle* ih, const char* value)
   return 1;
 }
 
-void iupdrvSetAccessibleTitle(Ihandle *ih, const char* title)
+IUP_SDK_API void iupdrvSetAccessibleTitle(Ihandle *ih, const char* title)
 {
   if (!title) 
     SetWindowText(ih->handle, TEXT(""));
@@ -839,7 +839,7 @@ void iupwinRefreshCursor(Ihandle* ih)
   SendMessage(ih->handle, WM_SETCURSOR, (WPARAM)ih->handle, MAKELPARAM(HTCLIENT, WM_MOUSEMOVE));
 }
 
-int iupdrvBaseSetCursorAttrib(Ihandle* ih, const char* value)
+IUP_SDK_API int iupdrvBaseSetCursorAttrib(Ihandle* ih, const char* value)
 {
   /* Cursor can be NULL in Windows. */
   HCURSOR hCur = iupwinGetCursor(ih, value);
@@ -849,7 +849,7 @@ int iupdrvBaseSetCursorAttrib(Ihandle* ih, const char* value)
   return 1;
 }
 
-void iupdrvBaseRegisterCommonAttrib(Iclass* ic)
+IUP_SDK_API void iupdrvBaseRegisterCommonAttrib(Iclass* ic)
 {
   iupClassRegisterAttribute(ic, "HFONT", iupwinGetHFontAttrib, NULL, NULL, NULL, IUPAF_NOT_MAPPED|IUPAF_NO_INHERIT|IUPAF_NO_STRING);
 
@@ -857,7 +857,7 @@ void iupdrvBaseRegisterCommonAttrib(Iclass* ic)
     WM_DRAGLISTMSG = RegisterWindowMessage(DRAGLISTMSGSTRING);
 }
 
-void iupdrvBaseRegisterVisualAttrib(Iclass* ic)
+IUP_SDK_API void iupdrvBaseRegisterVisualAttrib(Iclass* ic)
 {
   if (iupwinIsWin7OrNew())
     iupwinTouchRegisterAttrib(ic);
@@ -867,7 +867,7 @@ void iupdrvBaseRegisterVisualAttrib(Iclass* ic)
   iupClassRegisterAttribute(ic, "TIPBALLOONTITLEICON", NULL, NULL, IUPAF_SAMEASSYSTEM, NULL, IUPAF_NOT_MAPPED);
 }
 
-int iupwinButtonDown(Ihandle* ih, UINT msg, WPARAM wp, LPARAM lp)
+IUP_DRV_API int iupwinButtonDown(Ihandle* ih, UINT msg, WPARAM wp, LPARAM lp)
 {
   char status[IUPKEY_STATUS_SIZE] = IUPKEY_STATUS_INIT;
   int ret, doubleclick = 0;
@@ -908,7 +908,7 @@ int iupwinButtonDown(Ihandle* ih, UINT msg, WPARAM wp, LPARAM lp)
   return 1;
 }
 
-int iupwinButtonUp(Ihandle* ih, UINT msg, WPARAM wp, LPARAM lp)
+IUP_DRV_API int iupwinButtonUp(Ihandle* ih, UINT msg, WPARAM wp, LPARAM lp)
 {
   char status[IUPKEY_STATUS_SIZE] = IUPKEY_STATUS_INIT;
   int ret, b=0;
@@ -957,7 +957,7 @@ int iupwinButtonUp(Ihandle* ih, UINT msg, WPARAM wp, LPARAM lp)
   return 1;
 }
 
-int iupwinMouseMove(Ihandle* ih, UINT msg, WPARAM wp, LPARAM lp)
+IUP_DRV_API int iupwinMouseMove(Ihandle* ih, UINT msg, WPARAM wp, LPARAM lp)
 {
   IFniis cb = (IFniis)IupGetCallback(ih, "MOTION_CB");
   if (cb)
@@ -1002,7 +1002,7 @@ HWND iupwinCreateWindowEx(HWND hParent, LPCTSTR lpClassName, DWORD dwExStyle, DW
     clientdata);
 }
 
-int iupwinCreateWindow(Ihandle* ih, LPCTSTR lpClassName, DWORD dwExStyle, DWORD dwStyle, void* clientdata)
+IUP_DRV_API int iupwinCreateWindow(Ihandle* ih, LPCTSTR lpClassName, DWORD dwExStyle, DWORD dwStyle, void* clientdata)
 {
   const int serial = iupAttribGetInt(ih, "CONTROLID");
   ih->serial = (serial ? serial : iupDialogGetChildId(ih));
@@ -1020,7 +1020,7 @@ int iupwinCreateWindow(Ihandle* ih, LPCTSTR lpClassName, DWORD dwExStyle, DWORD 
   return 1;
 }
 
-void iupdrvSendKey(int key, int press)
+IUP_SDK_API void iupdrvSendKey(int key, int press)
 {
   unsigned int keyval, state;
   INPUT input[2];
@@ -1099,7 +1099,7 @@ void iupdrvSendKey(int key, int press)
   }
 }
 
-void iupdrvWarpPointer(int x, int y)
+IUP_SDK_API void iupdrvWarpPointer(int x, int y)
 {
   iupdrvAddScreenOffset(&x, &y, 1);
   SetCursorPos(x, y);
@@ -1124,7 +1124,7 @@ static int winGetButtonStatus(int bt, int status)
   }
 }
 
-void iupdrvSendMouse(int x, int y, int bt, int status)
+IUP_SDK_API void iupdrvSendMouse(int x, int y, int bt, int status)
 {
   INPUT input;
   ZeroMemory(&input, sizeof(INPUT));
@@ -1194,7 +1194,7 @@ int iupwinSetAutoRedrawAttrib(Ihandle* ih, const char* value)
   return 1;
 }
 
-void iupdrvSleep(int time)
+IUP_SDK_API void iupdrvSleep(int time)
 {
   Sleep(time);
 }
@@ -1209,4 +1209,20 @@ void iupwinDrawFocusRect(HDC hDC, int x, int y, int w, int h)
   rect.bottom = y + h;
 
   DrawFocusRect(hDC, &rect);
+}
+
+/* Unused in Windows */
+IUP_SDK_API int iupdrvBaseSetBgColorAttrib(Ihandle* ih, const char* value)
+{
+  (void)ih;
+  (void)value;
+  return 1;
+}
+
+/* Unused in Windows */
+IUP_SDK_API int iupdrvBaseSetFgColorAttrib(Ihandle* ih, const char* value)
+{
+  (void)ih;
+  (void)value;
+  return 1;
 }

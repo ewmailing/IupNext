@@ -56,7 +56,7 @@ static void iTimerDestroyMethod(Ihandle* ih)
 
 /******************************************************************************/
 
-Ihandle* IupTimer(void)
+IUP_API Ihandle* IupTimer(void)
 {
   return IupCreate("timer");
 }

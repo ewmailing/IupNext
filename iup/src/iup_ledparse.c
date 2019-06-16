@@ -30,7 +30,7 @@ static int iparse_error = 0;
 #define IPARSE_RETURN_IF_ERROR_FREE(_e, _x)   {iparse_error=(_e); if (iparse_error) { if (_x) free(_x); return NULL;} }
 
 
-char* IupLoad(const char *filename)
+IUP_API char* IupLoad(const char *filename)
 {
   iupASSERT(filename!=NULL);
   if (!filename)
@@ -57,7 +57,7 @@ char* IupLoad(const char *filename)
   return NULL;
 }
 
-char* IupLoadBuffer(const char *buffer)
+IUP_API char* IupLoadBuffer(const char *buffer)
 {
   iupASSERT(buffer!=NULL);
   if (!buffer)

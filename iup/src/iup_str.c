@@ -15,6 +15,7 @@
 #include <stdarg.h>
 #include <locale.h>
 
+#include "iup_export.h"
 #include "iup_str.h"
 
 
@@ -46,7 +47,7 @@
   if (*str1 == *str2) return 1;        \
 }
 
-int iupStrEqual(const char* str1, const char* str2) 
+IUP_SDK_API int iupStrEqual(const char* str1, const char* str2)
 {
 #define EXTRAINC(_x) (void)(_x)
 #define SF(_x) (_x)
@@ -56,7 +57,7 @@ int iupStrEqual(const char* str1, const char* str2)
   return 0;
 }
 
-int iupStrEqualPartial(const char* str1, const char* str2) 
+IUP_SDK_API int iupStrEqualPartial(const char* str1, const char* str2)
 {
 #define EXTRAINC(_x) (void)(_x)
 #define SF(_x) (_x)
@@ -68,7 +69,7 @@ int iupStrEqualPartial(const char* str1, const char* str2)
   return 0;
 }
 
-int iupStrEqualNoCase(const char* str1, const char* str2) 
+IUP_SDK_API int iupStrEqualNoCase(const char* str1, const char* str2)
 {
 #define EXTRAINC(_x) (void)(_x)
 #define SF(_x) iup_tolower(_x)
@@ -78,7 +79,7 @@ int iupStrEqualNoCase(const char* str1, const char* str2)
   return 0;
 }
 
-int iupStrEqualNoCasePartial(const char* str1, const char* str2) 
+IUP_SDK_API int iupStrEqualNoCasePartial(const char* str1, const char* str2)
 {
 #define EXTRAINC(_x) (void)(_x)
 #define SF(_x) iup_tolower(_x)
@@ -90,7 +91,7 @@ int iupStrEqualNoCasePartial(const char* str1, const char* str2)
   return 0;
 }
 
-int iupStrEqualNoCaseNoSpace(const char* str1, const char* str2) 
+IUP_SDK_API int iupStrEqualNoCaseNoSpace(const char* str1, const char* str2)
 {
 #define EXTRAINC(_x) { if (*_x == ' ') _x++; }  /* also ignore spaces */
 #define SF(_x) iup_tolower(_x)
@@ -100,7 +101,7 @@ int iupStrEqualNoCaseNoSpace(const char* str1, const char* str2)
   return 0;
 }
 
-int iupStrFalse(const char* str)
+IUP_SDK_API int iupStrFalse(const char* str)
 {
   if (!str || str[0]==0) return 0;
   if (str[0]=='0' && str[1]==0) return 1;
@@ -109,7 +110,7 @@ int iupStrFalse(const char* str)
   return 0;
 }
 
-int iupStrBoolean(const char* str)
+IUP_SDK_API int iupStrBoolean(const char* str)
 {
   if (!str || str[0]==0) return 0;
   if (str[0]=='1' && str[1]==0) return 1;
@@ -118,7 +119,7 @@ int iupStrBoolean(const char* str)
   return 0;
 }
 
-void iupStrUpper(char* dstr, const char* sstr)
+IUP_SDK_API void iupStrUpper(char* dstr, const char* sstr)
 {
   if (!sstr || sstr[0] == 0) return;
   for (; *sstr; sstr++, dstr++)
@@ -126,7 +127,7 @@ void iupStrUpper(char* dstr, const char* sstr)
   *dstr = 0;
 }
 
-void iupStrLower(char* dstr, const char* sstr)
+IUP_SDK_API void iupStrLower(char* dstr, const char* sstr)
 {
   if (!sstr || sstr[0] == 0) return;
   for (; *sstr; sstr++, dstr++)
@@ -134,7 +135,7 @@ void iupStrLower(char* dstr, const char* sstr)
   *dstr = 0;
 }
 
-int iupStrHasSpace(const char* str)
+IUP_SDK_API int iupStrHasSpace(const char* str)
 {
   if (!str) return 0;
   while (*str)
@@ -146,7 +147,7 @@ int iupStrHasSpace(const char* str)
   return 0;
 }
 
-char *iupStrDup(const char *str)
+IUP_SDK_API char *iupStrDup(const char *str)
 {
   if (str)
   {
@@ -158,7 +159,7 @@ char *iupStrDup(const char *str)
   return NULL;
 }
 
-const char* iupStrNextLine(const char* str, int *len)
+IUP_SDK_API const char* iupStrNextLine(const char* str, int *len)
 {
   *len = 0;
 
@@ -178,7 +179,7 @@ const char* iupStrNextLine(const char* str, int *len)
     return str;  /* no next line */
 }
 
-const char* iupStrNextValue(const char* str, int str_len, int *len, char sep)
+IUP_SDK_API const char* iupStrNextValue(const char* str, int str_len, int *len, char sep)
 {
   int ignore_sep = 0;
 
@@ -206,7 +207,7 @@ const char* iupStrNextValue(const char* str, int str_len, int *len, char sep)
     return str;  /* no next value */
 }
 
-int iupStrLineCount(const char* str, int len)
+IUP_SDK_API int iupStrLineCount(const char* str, int len)
 {
   int line_count = 1, count = 0;
 
@@ -244,7 +245,7 @@ int iupStrLineCount(const char* str, int len)
   return line_count;
 }
 
-int iupStrCountChar(const char *str, char c)
+IUP_SDK_API int iupStrCountChar(const char *str, char c)
 {
   int n;
   if (!str) return 0;
@@ -256,7 +257,7 @@ int iupStrCountChar(const char *str, char c)
   return n;
 }
 
-void iupStrCopyN(char* dst_str, int dst_max_size, const char* src_str)
+IUP_SDK_API void iupStrCopyN(char* dst_str, int dst_max_size, const char* src_str)
 {
   if (src_str)
   {
@@ -267,7 +268,7 @@ void iupStrCopyN(char* dst_str, int dst_max_size, const char* src_str)
   }
 }
 
-char* iupStrDupUntil(const char **str, char c)
+IUP_SDK_API char* iupStrDupUntil(const char **str, char c)
 {
   const char *p_str;
   char *new_str;
@@ -326,7 +327,7 @@ static char *iStrDupUntilNoCase(char **str, char sep)
   }
 }
 
-char *iupStrGetLargeMem(int *size)
+IUP_SDK_API char *iupStrGetLargeMem(int *size)
 {
 #define LARGE_MAX_BUFFERS 10
 #define LARGE_SIZE SHRT_MAX
@@ -391,7 +392,7 @@ static char* iupStrGetSmallMem(void)
 #undef SMALL_SIZE 
 }
 
-char *iupStrGetMemory(int size)
+IUP_SDK_API char *iupStrGetMemory(int size)
 {
 #define MAX_BUFFERS 50
   static char* buffers[MAX_BUFFERS];
@@ -451,7 +452,7 @@ char *iupStrGetMemory(int size)
 #undef MAX_BUFFERS
 }
 
-char* iupStrReturnStrf(const char* format, ...)
+IUP_SDK_API char* iupStrReturnStrf(const char* format, ...)
 {
   char* str = iupStrGetMemory(1024);
   va_list arglist;
@@ -461,7 +462,7 @@ char* iupStrReturnStrf(const char* format, ...)
   return str;
 }
 
-char* iupStrReturnStr(const char* str)
+IUP_SDK_API char* iupStrReturnStr(const char* str)
 {
   if (str)
   {
@@ -474,7 +475,7 @@ char* iupStrReturnStr(const char* str)
     return NULL;
 }
 
-char* iupStrReturnBoolean(int b)
+IUP_SDK_API char* iupStrReturnBoolean(int b)
 {
   if (b)
     return "YES";
@@ -482,7 +483,7 @@ char* iupStrReturnBoolean(int b)
     return "NO";
 }
 
-char* iupStrReturnChecked(int check)
+IUP_SDK_API char* iupStrReturnChecked(int check)
 {
   if (check == -1)
     return "NOTDEF";
@@ -492,49 +493,49 @@ char* iupStrReturnChecked(int check)
     return "OFF";
 }
 
-char* iupStrReturnUInt(unsigned int i)
+IUP_SDK_API char* iupStrReturnUInt(unsigned int i)
 {
   char* str = iupStrGetSmallMem();  /* 20 */
   sprintf(str, "%u", i);
   return str;
 }
 
-char* iupStrReturnInt(int i)
+IUP_SDK_API char* iupStrReturnInt(int i)
 {
   char* str = iupStrGetSmallMem();  /* 20 */
   sprintf(str, "%d", i);
   return str;
 }
 
-char* iupStrReturnFloat(float f)
+IUP_SDK_API char* iupStrReturnFloat(float f)
 {
   char* str = iupStrGetSmallMem();  /* 80 */
   sprintf(str, IUP_FLOAT2STR, f);
   return str;
 }
 
-char* iupStrReturnDouble(double d)
+IUP_SDK_API char* iupStrReturnDouble(double d)
 {
   char* str = iupStrGetSmallMem();  /* 80 */
   sprintf(str, IUP_DOUBLE2STR, d);
   return str;
 }
 
-char* iupStrReturnRGB(unsigned char r, unsigned char g, unsigned char b)
+IUP_SDK_API char* iupStrReturnRGB(unsigned char r, unsigned char g, unsigned char b)
 {
   char* str = iupStrGetSmallMem();  /* 3*20 */
   sprintf(str, "%d %d %d", (int)r, (int)g, (int)b);
   return str;
 }
 
-char* iupStrReturnRGBA(unsigned char r, unsigned char g, unsigned char b, unsigned char a)
+IUP_SDK_API char* iupStrReturnRGBA(unsigned char r, unsigned char g, unsigned char b, unsigned char a)
 {
   char* str = iupStrGetSmallMem();  /* 4*20 */
   sprintf(str, "%d %d %d %d", (int)r, (int)g, (int)b, (int)a);
   return str;
 }
 
-char* iupStrReturnStrStr(const char *str1, const char *str2, char sep)
+IUP_SDK_API char* iupStrReturnStrStr(const char *str1, const char *str2, char sep)
 {
   if (str1 || str2)
   {
@@ -553,14 +554,14 @@ char* iupStrReturnStrStr(const char *str1, const char *str2, char sep)
     return NULL;
 }
 
-char* iupStrReturnIntInt(int i1, int i2, char sep)
+IUP_SDK_API char* iupStrReturnIntInt(int i1, int i2, char sep)
 {
   char* str = iupStrGetSmallMem();  /* 2*20 */
   sprintf(str, "%d%c%d", i1, sep, i2);
   return str;
 }
 
-int iupStrGetFormatPrecision(const char* format)
+IUP_SDK_API int iupStrGetFormatPrecision(const char* format)
 {
   int precision;
   while (*format)
@@ -580,7 +581,7 @@ int iupStrGetFormatPrecision(const char* format)
   return -1;
 }
 
-int iupStrToRGB(const char *str, unsigned char *r, unsigned char *g, unsigned char *b)
+IUP_SDK_API int iupStrToRGB(const char *str, unsigned char *r, unsigned char *g, unsigned char *b)
 {
   unsigned int ri = 0, gi = 0, bi = 0;
   if (!str) return 0;
@@ -600,7 +601,7 @@ int iupStrToRGB(const char *str, unsigned char *r, unsigned char *g, unsigned ch
   return 1;
 }
 
-int iupStrToRGBA(const char *str, unsigned char *r, unsigned char *g, unsigned char *b, unsigned char *a)
+IUP_SDK_API int iupStrToRGBA(const char *str, unsigned char *r, unsigned char *g, unsigned char *b, unsigned char *a)
 {
   unsigned int ri = 0, gi = 0, bi = 0, ai = 255;
   if (!str) return 0;
@@ -624,21 +625,21 @@ int iupStrToRGBA(const char *str, unsigned char *r, unsigned char *g, unsigned c
 /* TODO: are strtod/atof and strtol/atoi faster/better than sscanf? 
          must handle the 0 return value. */
 
-int iupStrToInt(const char *str, int *i)
+IUP_SDK_API int iupStrToInt(const char *str, int *i)
 {
   if (!str) return 0;
   if (sscanf(str, "%d", i) != 1) return 0;
   return 1;
 }
 
-int iupStrToUInt(const char *str, unsigned int *i)
+IUP_SDK_API int iupStrToUInt(const char *str, unsigned int *i)
 {
   if (!str) return 0;
   if (sscanf(str, "%u", i) != 1) return 0;
   return 1;
 }
 
-int iupStrToIntInt(const char *str, int *i1, int *i2, char sep)
+IUP_SDK_API int iupStrToIntInt(const char *str, int *i1, int *i2, char sep)
 {
   if (!str) return 0;
                          
@@ -675,35 +676,35 @@ int iupStrToIntInt(const char *str, int *i1, int *i2, char sep)
   }
 }
 
-int iupStrToFloatDef(const char *str, float *f, float def)
+IUP_SDK_API int iupStrToFloatDef(const char *str, float *f, float def)
 {
   if (!str) { *f = def;  return 1; }
   if (sscanf(str, "%f", f) != 1) return 0;
   return 1;
 }
 
-int iupStrToFloat(const char *str, float *f)
+IUP_SDK_API int iupStrToFloat(const char *str, float *f)
 {
   if (!str) return 0;
   if (sscanf(str, "%f", f) != 1) return 0;
   return 1;
 }
 
-int iupStrToDouble(const char *str, double *d)
+IUP_SDK_API int iupStrToDouble(const char *str, double *d)
 {
   if (!str) return 0;
   if (sscanf(str, "%lf", d) != 1) return 0;
   return 1;
 }
 
-int iupStrToDoubleDef(const char *str, double *d, double def)
+IUP_SDK_API int iupStrToDoubleDef(const char *str, double *d, double def)
 {
   if (!str) { *d = def;  return 1; }
   if (sscanf(str, "%lf", d) != 1) return 0;
   return 1;
 }
 
-int iupStrToFloatFloat(const char *str, float *f1, float *f2, char sep)
+IUP_SDK_API int iupStrToFloatFloat(const char *str, float *f1, float *f2, char sep)
 {
   if (!str) return 0;
 
@@ -740,7 +741,7 @@ int iupStrToFloatFloat(const char *str, float *f1, float *f2, char sep)
   }
 }
 
-int iupStrToDoubleDouble(const char *str, double *f1, double *f2, char sep)
+IUP_SDK_API int iupStrToDoubleDouble(const char *str, double *f1, double *f2, char sep)
 {
   if (!str) return 0;
 
@@ -777,7 +778,7 @@ int iupStrToDoubleDouble(const char *str, double *f1, double *f2, char sep)
   }
 }
 
-int iupStrToStrStr(const char *str, char *str1, char *str2, char sep)
+IUP_SDK_API int iupStrToStrStr(const char *str, char *str1, char *str2, char sep)
 {
   str1[0] = 0;
   str2[0] = 0;
@@ -816,7 +817,7 @@ int iupStrToStrStr(const char *str, char *str1, char *str2, char sep)
   }
 }
 
-char* iupStrFileGetPath(const char *file_name)
+IUP_SDK_API char* iupStrFileGetPath(const char *file_name)
 {
   if (!file_name)
     return NULL;
@@ -847,7 +848,7 @@ char* iupStrFileGetPath(const char *file_name)
   }
 }
 
-char* iupStrFileGetTitle(const char *file_name)
+IUP_SDK_API char* iupStrFileGetTitle(const char *file_name)
 {
   if (!file_name)
     return NULL;
@@ -876,7 +877,7 @@ char* iupStrFileGetTitle(const char *file_name)
   }
 }
 
-char* iupStrFileGetExt(const char *file_name)
+IUP_SDK_API char* iupStrFileGetExt(const char *file_name)
 {
   if (!file_name)
     return NULL;
@@ -912,7 +913,7 @@ char* iupStrFileGetExt(const char *file_name)
   }
 }
 
-char* iupStrFileMakeFileName(const char* path, const char* title)
+IUP_SDK_API char* iupStrFileMakeFileName(const char* path, const char* title)
 {
   if (!path || !title)
     return NULL;
@@ -936,7 +937,7 @@ char* iupStrFileMakeFileName(const char* path, const char* title)
   }
 }
 
-void iupStrFileNameSplit(const char* file_name, char *path, char *title)
+IUP_SDK_API void iupStrFileNameSplit(const char* file_name, char *path, char *title)
 {
   int i, n;
 
@@ -966,7 +967,7 @@ void iupStrFileNameSplit(const char* file_name, char *path, char *title)
   }
 }
 
-int iupStrReplace(char* str, char src, char dst)
+IUP_SDK_API int iupStrReplace(char* str, char src, char dst)
 {
   int i = 0;
 
@@ -985,7 +986,7 @@ int iupStrReplace(char* str, char src, char dst)
   return i;
 }
 
-void iupStrToUnix(char* str)
+IUP_SDK_API void iupStrToUnix(char* str)
 {
   char* pstr = str;
 
@@ -1006,7 +1007,7 @@ void iupStrToUnix(char* str)
   *pstr = *str;
 }
 
-void iupStrToMac(char* str)
+IUP_SDK_API void iupStrToMac(char* str)
 {
   char* pstr = str;
 
@@ -1032,7 +1033,7 @@ void iupStrToMac(char* str)
   *pstr = *str;
 }
 
-char* iupStrToDos(const char* str)
+IUP_SDK_API char* iupStrToDos(const char* str)
 {
 	char *auxstr, *newstr;
 	int line_count, len;
@@ -1073,7 +1074,7 @@ char* iupStrToDos(const char* str)
 
 #define IUP_ISRESERVED(_c) (_c=='\n' || _c=='\r' || _c=='\t')
 
-char* iupStrConvertToC(const char* str)
+IUP_SDK_API char* iupStrConvertToC(const char* str)
 {
   char* new_str, *pnstr;
   const char* pstr = str;
@@ -1125,7 +1126,7 @@ char* iupStrConvertToC(const char* str)
   return new_str;
 }
 
-char* iupStrProcessMnemonic(const char* str, char *c, int action)
+IUP_SDK_API char* iupStrProcessMnemonic(const char* str, char *c, int action)
 {
   int i = 0, found = 0;
   char* new_str, *orig_str = (char*)str;
@@ -1177,7 +1178,7 @@ char* iupStrProcessMnemonic(const char* str, char *c, int action)
   return new_str;
 }
 
-int iupStrFindMnemonic(const char* str)
+IUP_SDK_API int iupStrFindMnemonic(const char* str)
 {
   int c = 0, found = 0;
 
@@ -1339,7 +1340,7 @@ downloaded from the Dave Koelle page and implemented by Dirk Jagdmann.
 It was modified to the C language and simplified to IUP needs.
 */
 
-int iupStrCompare(const char *l, const char *r, int casesensitive, int utf8)
+IUP_SDK_API int iupStrCompare(const char *l, const char *r, int casesensitive, int utf8)
 {
   enum mode_t { STRING, NUMBER } mode=STRING;
 
@@ -1440,7 +1441,7 @@ int iupStrCompare(const char *l, const char *r, int casesensitive, int utf8)
   return 0;
 }
 
-int iupStrCompareEqual(const char *l, const char *r, int casesensitive, int utf8, int partial)
+IUP_SDK_API int iupStrCompareEqual(const char *l, const char *r, int casesensitive, int utf8, int partial)
 {
   if (!l || !r)
     return 0;
@@ -1498,7 +1499,7 @@ static int iStrIncUTF8(const char* str)
   return 1;
 }
 
-int iupStrCompareFind(const char *l, const char *r, int casesensitive, int utf8)
+IUP_SDK_API int iupStrCompareFind(const char *l, const char *r, int casesensitive, int utf8)
 {
   int i, inc, l_len, r_len, count;
 
@@ -1562,7 +1563,7 @@ static void iStrFixPosUTF8(const char* str, int *start, int *end)
     *end = i;
 }
 
-void iupStrRemove(char* str, int start, int end, int dir, int utf8)
+IUP_SDK_API void iupStrRemove(char* str, int start, int end, int dir, int utf8)
 {
   int len;
 
@@ -1593,7 +1594,7 @@ void iupStrRemove(char* str, int start, int end, int dir, int utf8)
   memmove(str + start, str + end, len - end + 1);
 }
 
-char* iupStrInsert(const char* str, const char* insert_str, int start, int end, int utf8)
+IUP_SDK_API char* iupStrInsert(const char* str, const char* insert_str, int start, int end, int utf8)
 {
   char* new_str = (char*)str;
   int insert_len, len;
@@ -1678,7 +1679,7 @@ static void iStrResetLocale(char* old_locale)
   }
 }
 
-int iupStrToDoubleLocale(const char *str, double *d, const char* decimal_symbol)
+IUP_SDK_API int iupStrToDoubleLocale(const char *str, double *d, const char* decimal_symbol)
 {
   int ret, locale_set = 0;
   char* old_locale;
@@ -1702,7 +1703,7 @@ int iupStrToDoubleLocale(const char *str, double *d, const char* decimal_symbol)
     return 1;
 }
 
-void iupStrPrintfDoubleLocale(char *str, const char *format, double d, const char* decimal_symbol)
+IUP_SDK_API void iupStrPrintfDoubleLocale(char *str, const char *format, double d, const char* decimal_symbol)
 {
   char* old_locale = iStrSetLocale(decimal_symbol);
 

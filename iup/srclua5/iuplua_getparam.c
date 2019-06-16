@@ -17,8 +17,8 @@
 
 
 /* Used only by the Lua binding */
-int iupGetParamCount(const char *format, int *param_extra);
-char iupGetParamType(const char* format, int *line_size);
+IUP_SDK_API int iupGetParamCount(const char *format, int *param_extra);
+IUP_SDK_API char iupGetParamType(const char* format, int *line_size);
 
 
 typedef struct _getparam_data

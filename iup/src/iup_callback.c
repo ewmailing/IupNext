@@ -29,7 +29,7 @@ char* iupGetCallbackName(Ihandle *ih, const char *name)
   return NULL;
 }
 
-Icallback IupGetCallback(Ihandle *ih, const char *name)
+IUP_API Icallback IupGetCallback(Ihandle *ih, const char *name)
 {
   Icallback func = NULL;
   void* value;
@@ -53,7 +53,7 @@ Icallback IupGetCallback(Ihandle *ih, const char *name)
   return func;
 }
 
-Icallback IupSetCallback(Ihandle *ih, const char *name, Icallback func)
+IUP_API Icallback IupSetCallback(Ihandle *ih, const char *name, Icallback func)
 {
   Icallback old_func = NULL;
 
@@ -80,7 +80,7 @@ Icallback IupSetCallback(Ihandle *ih, const char *name, Icallback func)
   return old_func;
 }
 
-Ihandle*  IupSetCallbacksV(Ihandle* ih, const char *name, Icallback func, va_list arglist)
+IUP_API Ihandle* IupSetCallbacksV(Ihandle* ih, const char *name, Icallback func, va_list arglist)
 {
   iupASSERT(iupObjectCheck(ih));
   if (!iupObjectCheck(ih))
@@ -100,7 +100,7 @@ Ihandle*  IupSetCallbacksV(Ihandle* ih, const char *name, Icallback func, va_lis
   return ih;
 }
 
-Ihandle* IupSetCallbacks(Ihandle* ih, const char *name, Icallback func, ...)
+IUP_API Ihandle* IupSetCallbacks(Ihandle* ih, const char *name, Icallback func, ...)
 {
   va_list arglist;
 

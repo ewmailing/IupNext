@@ -194,6 +194,7 @@
     <ClInclude Include="..\include\iupdraw.h" />
     <ClInclude Include="..\include\iup_class_cbs.hpp" />
     <ClInclude Include="..\include\iup_config.h" />
+    <ClInclude Include="..\include\iup_export.h" />
     <ClInclude Include="..\include\iup_plus.h" />
     <ClInclude Include="..\include\iup_varg.h" />
     <ClInclude Include="..\src\iup_array.h" />

@@ -432,7 +432,7 @@ Iclass* iupScrollBoxNewClass(void)
   return ic;
 }
 
-Ihandle* IupScrollBox(Ihandle* child)
+IUP_API Ihandle* IupScrollBox(Ihandle* child)
 {
   void *children[2];
   children[0] = (void*)child;

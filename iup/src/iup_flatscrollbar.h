@@ -12,19 +12,19 @@ extern "C" {
 #endif
 
 
-int iupFlatScrollBarCreate(Ihandle* ih);
-void iupFlatScrollBarRegister(Iclass* ic);
+IUP_SDK_API int iupFlatScrollBarCreate(Ihandle* ih);
+IUP_SDK_API void iupFlatScrollBarRegister(Iclass* ic);
 
-int iupFlatScrollBarGet(Ihandle* ih);
+IUP_SDK_API int iupFlatScrollBarGet(Ihandle* ih);
                                                
-void iupFlatScrollBarSetChildrenCurrentSize(Ihandle* ih, int shrink);
-void iupFlatScrollBarSetChildrenPosition(Ihandle* ih);
+IUP_SDK_API void iupFlatScrollBarSetChildrenCurrentSize(Ihandle* ih, int shrink);
+IUP_SDK_API void iupFlatScrollBarSetChildrenPosition(Ihandle* ih);
 
-void iupFlatScrollBarWheelUpdate(Ihandle* ih, float delta);
-void iupFlatScrollBarMotionUpdate(Ihandle* ih, int x, int y);
+IUP_SDK_API void iupFlatScrollBarWheelUpdate(Ihandle* ih, float delta);
+IUP_SDK_API void iupFlatScrollBarMotionUpdate(Ihandle* ih, int x, int y);
 
 /* used only in IupFlatScrollBox */
-void iupFlatScrollBarSetPos(Ihandle *ih, int posx, int posy);
+IUP_SDK_API void iupFlatScrollBarSetPos(Ihandle *ih, int posx, int posy);
 
 
 #ifdef __cplusplus

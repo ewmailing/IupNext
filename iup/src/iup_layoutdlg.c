@@ -2173,7 +2173,7 @@ static Ihandle* iLayoutPropertiesCreateDialog(iLayoutDialog* layoutdlg, Ihandle*
   return dlg;
 }
 
-Ihandle* IupElementPropertiesDialog(Ihandle* elem)
+IUP_API Ihandle* IupElementPropertiesDialog(Ihandle* elem)
 {
   Ihandle* dlg = iLayoutPropertiesCreateDialog(NULL, NULL);
   iLayoutPropertiesUpdate(dlg, elem);
@@ -2987,7 +2987,7 @@ static int iLayoutDialogDestroy_CB(Ihandle* dlg)
   return IUP_DEFAULT;
 }
 
-Ihandle* IupLayoutDialog(Ihandle* dialog)
+IUP_API Ihandle* IupLayoutDialog(Ihandle* dialog)
 {
   Ihandle *tree, *canvas, *dlg, *menu, *status, *split;
   iLayoutDialog* layoutdlg;

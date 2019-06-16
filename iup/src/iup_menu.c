@@ -324,7 +324,7 @@ Iclass* iupMenuNewClass(void)
 
 /************************************************************************/
 
-Ihandle* IupItem(const char* title, const char* action)
+IUP_API Ihandle* IupItem(const char* title, const char* action)
 {
   void *params[2];
   params[0] = (void*)title;
@@ -332,7 +332,7 @@ Ihandle* IupItem(const char* title, const char* action)
   return IupCreatev("item", params);
 }
 
-Ihandle* IupSubmenu(const char* title, Ihandle* child)
+IUP_API Ihandle* IupSubmenu(const char* title, Ihandle* child)
 {
   void *params[2];
   params[0] = (void*)title;
@@ -340,17 +340,17 @@ Ihandle* IupSubmenu(const char* title, Ihandle* child)
   return IupCreatev("submenu", params);
 }
 
-Ihandle *IupMenuv(Ihandle **children)
+IUP_API Ihandle* IupMenuv(Ihandle **children)
 {
   return IupCreatev("menu", (void**)children);
 }
 
-Ihandle*  IupMenuV(Ihandle* child, va_list arglist)
+IUP_API Ihandle* IupMenuV(Ihandle* child, va_list arglist)
 {
   return IupCreateV("menu", child, arglist);
 }
 
-Ihandle *IupMenu(Ihandle *child, ...)
+IUP_API Ihandle* IupMenu(Ihandle *child, ...)
 {
   Ihandle *ih;
 
@@ -362,7 +362,7 @@ Ihandle *IupMenu(Ihandle *child, ...)
   return ih;
 }
 
-Ihandle* IupSeparator(void)
+IUP_API Ihandle* IupSeparator(void)
 {
   return IupCreate("separator");
 }

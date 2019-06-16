@@ -19,17 +19,18 @@
 #include <langinfo.h>
 #include <syslog.h>
 
+#include "iup_export.h"
 #include "iup_str.h"
 #include "iup_drvinfo.h"
 #include "iup_varg.h"
 
 
-char* iupdrvLocaleInfo(void)
+IUP_SDK_API char* iupdrvLocaleInfo(void)
 {
   return iupStrReturnStr(nl_langinfo(CODESET));
 }
 
-char *iupdrvGetSystemName(void)
+IUP_SDK_API char *iupdrvGetSystemName(void)
 {
   struct utsname un;
   uname(&un);
@@ -39,7 +40,7 @@ char *iupdrvGetSystemName(void)
     return iupStrReturnStr(un.sysname);
 }
 
-char *iupdrvGetSystemVersion(void)
+IUP_SDK_API char *iupdrvGetSystemVersion(void)
 {
   struct utsname un;
   uname(&un);
@@ -52,12 +53,12 @@ char *iupdrvGetSystemVersion(void)
     return iupStrReturnStrf("%s.%s", un.release, un.version);
 }
 
-int iupdrvSetCurrentDirectory(const char* dir)
+IUP_SDK_API int iupdrvSetCurrentDirectory(const char* dir)
 {
   return chdir(dir) == 0 ? 1 : 0;
 }
 
-char* iupdrvGetCurrentDirectory(void)
+IUP_SDK_API char* iupdrvGetCurrentDirectory(void)
 {
   size_t size = 256;
   char *buffer = (char *)iupStrGetMemory(size);
@@ -80,7 +81,7 @@ char* iupdrvGetCurrentDirectory(void)
   return NULL;
 }
 
-int iupdrvGetPreferencePath(char *filename, int use_system)
+IUP_SDK_API int iupdrvGetPreferencePath(char *filename, int use_system)
 {
   char* home = getenv("HOME");
   if (home)
@@ -136,7 +137,7 @@ int iupUnixMakeDirectory(const char* name)
 /**************************************************************************/
 
 
-void IupLogV(const char* type, const char* format, va_list arglist)
+IUP_API void IupLogV(const char* type, const char* format, va_list arglist)
 {
   int options = LOG_CONS | LOG_PID;
   int priority = 0;
@@ -162,7 +163,7 @@ void IupLogV(const char* type, const char* format, va_list arglist)
   closelog();
 }
 
-void IupLog(const char* type, const char* format, ...)
+IUP_API void IupLog(const char* type, const char* format, ...)
 {
   va_list arglist;
   va_start(arglist, format);

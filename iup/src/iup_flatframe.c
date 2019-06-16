@@ -217,7 +217,7 @@ static int iFlatFrameSetAttribPostRedraw(Ihandle* ih, const char* value)
 /******************************************************************************/
 
 
-Ihandle* IupFlatFrame(Ihandle* child)
+IUP_API Ihandle* IupFlatFrame(Ihandle* child)
 {
   void *children[2];
   children[0] = (void*)child;

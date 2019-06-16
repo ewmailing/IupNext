@@ -153,7 +153,7 @@ static void iLabelComputeNaturalSizeMethod(Ihandle* ih, int *w, int *h, int *chi
 /******************************************************************************/
 
 
-Ihandle* IupLabel(const char* title)
+IUP_API Ihandle* IupLabel(const char* title)
 {
   void *params[2];
   params[0] = (void*)title;

@@ -21,13 +21,14 @@
 #include "iup_drv.h"
 #include "iup_drvinfo.h"
 
-void iupdrvAddScreenOffset(int *x, int *y, int add)
+
+IUP_SDK_API void iupdrvAddScreenOffset(int *x, int *y, int add)
 {
 	/* ?????? */
 }
 
 // How is this different than iupdrvGetFullSize? Is this supposed to subtract the menu and dock?
-void iupdrvGetScreenSize(int *width, int *height)
+IUP_SDK_API void iupdrvGetScreenSize(int *width, int *height)
 {
 
 //	NSRect screen_rect = [[NSScreen mainScreen] visibleFrame];
@@ -41,7 +42,7 @@ void iupdrvGetScreenSize(int *width, int *height)
 	
 }
 
-void iupdrvGetFullSize(int *width, int *height)
+IUP_SDK_API void iupdrvGetFullSize(int *width, int *height)
 {
 #if 0
 	NSRect screen_rect = [[NSScreen mainScreen] frame];
@@ -54,13 +55,13 @@ void iupdrvGetFullSize(int *width, int *height)
 #endif
 }
 
-int iupdrvGetScreenDepth(void)
+IUP_SDK_API int iupdrvGetScreenDepth(void)
 {
 //	return CGDisplayBitsPerPixel(kCGDirectMainDisplay);  /* Deprecated in Mac OS X v10.6 */
 	return 32;
 }
 
-double iupdrvGetScreenDpi(void)
+IUP_SDK_API double iupdrvGetScreenDpi(void)
 {
 #if 0
 	CGRect rect = CGDisplayBounds(kCGDirectMainDisplay);
@@ -70,7 +71,7 @@ double iupdrvGetScreenDpi(void)
 #endif
 }
 
-void iupdrvGetCursorPos(int *x, int *y)
+IUP_SDK_API void iupdrvGetCursorPos(int *x, int *y)
 {
 #if 0
 	CGPoint point;
@@ -87,7 +88,7 @@ void iupdrvGetCursorPos(int *x, int *y)
 #endif
 }
 
-void iupdrvGetKeyState(char* key)
+IUP_SDK_API void iupdrvGetKeyState(char* key)
 {
 #if 0
 	if (GetCurrentEventKeyModifiers() & shiftKey)
@@ -112,13 +113,13 @@ void iupdrvGetKeyState(char* key)
 	
 }
 
-char *iupdrvGetSystemName(void)
+IUP_SDK_API char *iupdrvGetSystemName(void)
 {
 
 	return "Emscripten";
 }
 
-char *iupdrvGetSystemVersion(void)
+IUP_SDK_API char *iupdrvGetSystemVersion(void)
 {
 	
 #if 0
@@ -174,7 +175,7 @@ char *iupdrvGetSystemVersion(void)
 
 }
 
-char *iupdrvGetComputerName(void)
+IUP_SDK_API char *iupdrvGetComputerName(void)
 {
 	// Emscripten doesn't give a computer name. This is also a problem for protocols like Zeroconf.
 	// TODO: Use my solution for Zeroconf here.
@@ -182,15 +183,13 @@ char *iupdrvGetComputerName(void)
 	return NULL;
 }
 
-char *iupdrvGetUserName(void)
+IUP_SDK_API char *iupdrvGetUserName(void)
 {
 
 	return NULL;
-
-	
 }
 
-int iupdrvGetPreferencePath(char *filename, int str_len, const char *app_name)
+IUP_SDK_API int iupdrvGetPreferencePath(char *filename, int str_len, const char *app_name)
 {
   /*
   Everything is supposed to be sandboxed.
@@ -214,43 +213,41 @@ int iupdrvGetPreferencePath(char *filename, int str_len, const char *app_name)
 }
 
 
-char* iupdrvLocaleInfo(void)
+IUP_SDK_API char* iupdrvLocaleInfo(void)
 {
 	//return iupStrReturnStr(nl_langinfo(CODESET));
 	return NULL;
 }
 
-char* iupdrvGetCurrentDirectory(void)
+IUP_SDK_API char* iupdrvGetCurrentDirectory(void)
 {
 	return NULL;
 }
 
-int iupdrvSetCurrentDirectory(const char* dir)
+IUP_SDK_API int iupdrvSetCurrentDirectory(const char* dir)
 {
 	return 0;
 }
 
-int iupdrvMakeDirectory(const char* name) 
+IUP_SDK_API int iupdrvMakeDirectory(const char* name)
 {
 	return 0;
 }
 
-int iupdrvIsFile(const char* name)
+IUP_SDK_API int iupdrvIsFile(const char* name)
 {
 	return 0;
 }
 
-int iupdrvIsDirectory(const char* name)
+IUP_SDK_API int iupdrvIsDirectory(const char* name)
 {
 	return 0;
 }
 
-int iupdrvGetWindowDecor(void* wnd, int *border, int *caption)
+IUP_SDK_API int iupdrvGetWindowDecor(void* wnd, int *border, int *caption)
 {
 	*border = 0;
 	*caption = 0;
 	return 0;
 }
-
-
 

@@ -262,7 +262,7 @@ void iupgtkUpdateObjectFont(Ihandle* ih, gpointer object)
   }
 }
 
-char* iupdrvGetSystemFont(void)
+IUP_SDK_API char* iupdrvGetSystemFont(void)
 {
   static char str[200]; /* must return a static string, because it will be used as the default value for the FONT attribute */
   const PangoFontDescription* font_desc = NULL;
@@ -355,7 +355,7 @@ char* iupgtkGetFontIdAttrib(Ihandle *ih)
   }
 }
 
-int iupdrvSetFontAttrib(Ihandle* ih, const char* value)
+IUP_SDK_API int iupdrvSetFontAttrib(Ihandle* ih, const char* value)
 {
   IgtkFont* gtkfont = gtkFontCreateNativeFont(ih, value);
   if (!gtkfont)
@@ -413,21 +413,21 @@ static void gtkFontGetTextSize(Ihandle* ih, IgtkFont* gtkfont, const char* str, 
   if (h) *h = gtkfont->charheight * line_count;
 }
 
-void iupdrvFontGetMultiLineStringSize(Ihandle* ih, const char* str, int *w, int *h)
+IUP_SDK_API void iupdrvFontGetMultiLineStringSize(Ihandle* ih, const char* str, int *w, int *h)
 {
   IgtkFont* gtkfont = gtkFontGet(ih);
   if (gtkfont)
     gtkFontGetTextSize(ih, gtkfont, str, str? (int)strlen(str): 0, w, h);
 }
 
-void iupdrvFontGetTextSize(const char* font, const char* str, int len, int *w, int *h)
+IUP_SDK_API void iupdrvFontGetTextSize(const char* font, const char* str, int len, int *w, int *h)
 {
   IgtkFont *gtkfont = gtkFindFont(font);
   if (gtkfont)
     gtkFontGetTextSize(NULL, gtkfont, str, len, w, h);
 }
 
-void iupdrvFontGetFontDim(const char* font, int *max_width, int *line_height, int *ascent, int *descent)
+IUP_SDK_API void iupdrvFontGetFontDim(const char* font, int *max_width, int *line_height, int *ascent, int *descent)
 {
   IgtkFont *gtkfont = gtkFindFont(font);
   if (gtkfont)
@@ -453,7 +453,7 @@ void iupdrvFontGetFontDim(const char* font, int *max_width, int *line_height, in
   }
 }
 
-int iupdrvFontGetStringWidth(Ihandle* ih, const char* str)
+IUP_SDK_API int iupdrvFontGetStringWidth(Ihandle* ih, const char* str)
 {
   IgtkFont* gtkfont;
   int len, w;
@@ -487,7 +487,7 @@ int iupdrvFontGetStringWidth(Ihandle* ih, const char* str)
   return w;
 }
 
-void iupdrvFontGetCharSize(Ihandle* ih, int *charwidth, int *charheight)
+IUP_SDK_API void iupdrvFontGetCharSize(Ihandle* ih, int *charwidth, int *charheight)
 {
   IgtkFont* gtkfont = gtkFontGet(ih);
   if (!gtkfont)

@@ -21,7 +21,7 @@
 /* from iup_open, but it is not exported, used only here */
 int iupIsOpened(void);
 
-void iupError(const char* format, ...)
+IUP_SDK_API void iupError(const char* format, ...)
 {
   int size;
   char* msg = iupStrGetLargeMem(&size);
@@ -41,7 +41,7 @@ void iupError(const char* format, ...)
   size = 0;
 }
 
-void iupAssert(const char* expr, const char* file, int line, const char* func)
+IUP_SDK_API void iupAssert(const char* expr, const char* file, int line, const char* func)
 {
   if (func)
     iupError("File: %s\n"

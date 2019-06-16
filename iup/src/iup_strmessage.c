@@ -38,7 +38,7 @@ void iupStrMessageFinish(void)
   istrmessage_table = NULL;
 }
 
-char* IupGetLanguageString(const char* name)
+IUP_API char* IupGetLanguageString(const char* name)
 {
   char* value;
   if (!name) return NULL;
@@ -48,17 +48,17 @@ char* IupGetLanguageString(const char* name)
   return value;
 }
 
-void IupSetLanguageString(const char* name, const char* str)
+IUP_API void IupSetLanguageString(const char* name, const char* str)
 {
   iupTableSet(istrmessage_table, name, (char*)str, IUPTABLE_POINTER);
 }
 
-void IupStoreLanguageString(const char* name, const char* str)
+IUP_API void IupStoreLanguageString(const char* name, const char* str)
 {
   iupTableSet(istrmessage_table, name, (char*)str, IUPTABLE_STRING);
 }
 
-void IupSetLanguagePack(Ihandle* ih)
+IUP_API void IupSetLanguagePack(Ihandle* ih)
 {
   if (!ih)
     iupTableClear(istrmessage_table);
@@ -81,12 +81,12 @@ void IupSetLanguagePack(Ihandle* ih)
   }
 }
 
-void IupSetLanguage(const char *language)
+IUP_API void IupSetLanguage(const char *language)
 {
   IupStoreGlobal("LANGUAGE", language);
 }
 
-char *IupGetLanguage(void)
+IUP_API char *IupGetLanguage(void)
 {
   return IupGetGlobal("LANGUAGE");
 }

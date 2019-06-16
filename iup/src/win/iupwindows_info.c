@@ -13,6 +13,7 @@
 #include <windows.h>
 #include <ShlObj.h> /* for SHGetFolderPath */
 
+#include "iup_export.h"
 #include "iup_str.h"
 #include "iup_drvinfo.h"
 #include "iup_varg.h"
@@ -23,7 +24,7 @@
 #pragma warning( disable : 4996 )
 #endif
 
-char* iupdrvLocaleInfo(void)
+IUP_SDK_API char* iupdrvLocaleInfo(void)
 {
   CPINFOEXA info;
   GetCPInfoExA(CP_ACP, 0, &info);
@@ -33,7 +34,7 @@ char* iupdrvLocaleInfo(void)
 /* TODO: Since Windows 8.1/Visual Studio 2013 GetVersionEx is deprecated. 
          We can replace it using GetProductInfo. But for now leave it. */
 
-char *iupdrvGetSystemName(void)
+IUP_SDK_API char *iupdrvGetSystemName(void)
 {
   OSVERSIONINFOA osvi;
   osvi.dwOSVersionInfoSize = sizeof(OSVERSIONINFOA);
@@ -72,7 +73,7 @@ char *iupdrvGetSystemName(void)
   return "Windows";
 }
 
-char *iupdrvGetSystemVersion(void)
+IUP_SDK_API char *iupdrvGetSystemVersion(void)
 {
   char *str = iupStrGetMemory(256);
   OSVERSIONINFOEXA osvi;
@@ -114,7 +115,7 @@ PreferencePath(0)=C:\Documents and Settings\Tecgraf\
 PreferencePath(1)=C:\Documents and Settings\Tecgraf\Application Data\
 */
 
-int iupdrvGetPreferencePath(char *filename, int use_system)
+IUP_SDK_API int iupdrvGetPreferencePath(char *filename, int use_system)
 {
   char* homedrive;
   char* homepath;
@@ -142,12 +143,13 @@ int iupdrvGetPreferencePath(char *filename, int use_system)
   return 0;
 
 }
-int iupdrvSetCurrentDirectory(const char* path)
+
+IUP_SDK_API int iupdrvSetCurrentDirectory(const char* path)
 {
   return SetCurrentDirectoryA(path);
 }
 
-char* iupdrvGetCurrentDirectory(void)
+IUP_SDK_API char* iupdrvGetCurrentDirectory(void)
 {
   char* cur_dir = NULL;
 
@@ -162,7 +164,7 @@ char* iupdrvGetCurrentDirectory(void)
   return cur_dir;
 }
 
-void IupLogV(const char* type, const char* format, va_list arglist)
+IUP_API void IupLogV(const char* type, const char* format, va_list arglist)
 {
   HANDLE EventSource;
   WORD wtype = 0;
@@ -191,7 +193,7 @@ void IupLogV(const char* type, const char* format, va_list arglist)
   }
 }
 
-void IupLog(const char* type, const char* format, ...)
+IUP_API void IupLog(const char* type, const char* format, ...)
 {
   va_list arglist;
   va_start(arglist, format);

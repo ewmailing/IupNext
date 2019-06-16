@@ -20,7 +20,7 @@
 #include "iup_register.h"
 
 
-Ihandle* IupFontDlg(void)
+IUP_API Ihandle* IupFontDlg(void)
 {
   return IupCreate("fontdlg");
 }

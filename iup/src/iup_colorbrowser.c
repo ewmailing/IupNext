@@ -865,7 +865,7 @@ Iclass* iupColorBrowserNewClass(void)
   return ic;
 }
 
-Ihandle *IupColorBrowser(void)
+IUP_API Ihandle* IupColorBrowser(void)
 {
   return IupCreate("colorbrowser");
 }

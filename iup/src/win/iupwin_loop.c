@@ -28,7 +28,7 @@ static IFidle win_idle_cb = NULL;
 static int win_main_loop = 0;
 
 
-void iupdrvSetIdleFunction(Icallback f)
+IUP_SDK_API void iupdrvSetIdleFunction(Icallback f)
 {
   win_idle_cb = (IFidle)f;
 }
@@ -46,7 +46,7 @@ static int winLoopCallIdle(void)
   return ret;
 }
 
-void IupExitLoop(void)
+IUP_API void IupExitLoop(void)
 {
   char* exit_loop = IupGetGlobal("EXITLOOP");
   if (win_main_loop > 1 || !exit_loop || iupStrBoolean(exit_loop))
@@ -78,12 +78,12 @@ static int winLoopProcessMessage(MSG* msg)
   }
 }
 
-int IupMainLoopLevel(void)
+IUP_API int IupMainLoopLevel(void)
 {
   return win_main_loop;
 }
 
-int IupMainLoop(void)
+IUP_API int IupMainLoop(void)
 {
   MSG msg;
   int ret;
@@ -153,7 +153,7 @@ int IupMainLoop(void)
   return return_code;
 }
 
-int IupLoopStepWait(void)
+IUP_API int IupLoopStepWait(void)
 {
   MSG msg;
   int ret = GetMessage(&msg, NULL, 0, 0);
@@ -165,7 +165,7 @@ int IupLoopStepWait(void)
   return IUP_DEFAULT;
 }
 
-int IupLoopStep(void)
+IUP_API int IupLoopStep(void)
 {
   MSG msg;
   if (PeekMessage(&msg, 0, 0, 0, PM_REMOVE))
@@ -176,7 +176,7 @@ int IupLoopStep(void)
   return IUP_DEFAULT;
 }
 
-void IupFlush(void)
+IUP_API void IupFlush(void)
 {
   int post_quit = 0;
   MSG msg;
@@ -203,7 +203,7 @@ typedef struct {
   double d;
 } winPostMessageUserData;
 
-void IupPostMessage(Ihandle* ih, const char* s, int i, double d)
+IUP_API void IupPostMessage(Ihandle* ih, const char* s, int i, double d)
 {
   winPostMessageUserData* user_data = (winPostMessageUserData*)malloc(sizeof(winPostMessageUserData));
   user_data->ih = ih;

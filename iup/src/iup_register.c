@@ -38,7 +38,7 @@ void iupRegisterFinish(void)
   iregister_table = NULL;
 }
 
-int IupGetAllClasses(char** list, int n)
+IUP_API int IupGetAllClasses(char** list, int n)
 {
   int i = 0;
   char* name = iupTableFirst(iregister_table);
@@ -59,12 +59,12 @@ int IupGetAllClasses(char** list, int n)
   return i;
 }
 
-Iclass* iupRegisterFindClass(const char* name)
+IUP_SDK_API Iclass* iupRegisterFindClass(const char* name)
 {
   return (Iclass*)iupTableGet(iregister_table, name);
 }
 
-void iupRegisterClass(Iclass* ic)
+IUP_SDK_API void iupRegisterClass(Iclass* ic)
 {
   Iclass* old_ic = (Iclass*)iupTableGet(iregister_table, ic->name);
   if (old_ic)

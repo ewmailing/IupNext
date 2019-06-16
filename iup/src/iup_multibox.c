@@ -480,17 +480,17 @@ static int iMultiBoxCreateMethod(Ihandle* ih, void** params)
 /******************************************************************************/
 
 
-Ihandle *IupMultiBoxv(Ihandle **children)
+IUP_API Ihandle* IupMultiBoxv(Ihandle **children)
 {
   return IupCreatev("multibox", (void**)children);
 }
 
-Ihandle*  IupMultiBoxV(Ihandle* child, va_list arglist)
+IUP_API Ihandle* IupMultiBoxV(Ihandle* child, va_list arglist)
 {
   return IupCreateV("multibox", child, arglist);
 }
 
-Ihandle *IupMultiBox(Ihandle* child, ...)
+IUP_API Ihandle* IupMultiBox(Ihandle* child, ...)
 {
   Ihandle *ih;
 

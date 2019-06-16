@@ -101,7 +101,7 @@ static void iToggleComputeNaturalSizeMethod(Ihandle* ih, int *w, int *h, int *ch
 /******************************************************************************/
 
 
-Ihandle* IupToggle(const char* title, const char* action)
+IUP_API Ihandle* IupToggle(const char* title, const char* action)
 {
   void *params[3];
   params[0] = (void*)title;

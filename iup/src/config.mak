@@ -194,7 +194,13 @@ ifneq ($(findstring dll, $(TEC_UNAME)), )
   DEFINES += IUP_DLL
   INCLUDES += ../etc
   SRC += ../etc/iup.rc
-  DEF_FILE = iup.def
+  ifdef USE_EXPORT
+    # Experimental
+    DEFINES += IUP_BUILD_LIBRARY
+    DEF_FILE = iup_dummy.def
+  else
+    DEF_FILE = iup.def
+  endif
 endif
 
 ifeq "$(TEC_UNAME)" "vc6"

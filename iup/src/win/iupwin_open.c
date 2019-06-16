@@ -17,6 +17,7 @@
 #include "iup_str.h"
 #include "iup_drv.h"
 #include "iup_drvfont.h"
+#include "iup_drvinfo.h"
 #include "iup_globalattrib.h"
 
 #include "iupwin_drv.h"
@@ -38,17 +39,17 @@ DWORD     iupwin_mainthreadid = 0;
 HHOOK     iupwin_threadmsghook = 0;
 #endif
 
-void* iupdrvGetDisplay(void)
+IUP_SDK_API void* iupdrvGetDisplay(void)
 {
   return NULL;
 }
 
-void iupwinSetInstance(HINSTANCE hInstance)
+IUP_DRV_API void iupwinSetInstance(HINSTANCE hInstance)
 {
   iupwin_hinstance = hInstance;
 }
 
-void iupwinShowLastError(void)
+IUP_DRV_API void iupwinShowLastError(void)
 {
   DWORD error = GetLastError();
   if (error)

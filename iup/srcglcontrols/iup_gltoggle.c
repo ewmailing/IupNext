@@ -25,7 +25,7 @@
 
 
 /* from IupRadio implementation */
-Ihandle *iupRadioFindToggleParent(Ihandle* ih_toggle);
+IUP_SDK_API Ihandle *iupRadioFindToggleParent(Ihandle* ih_toggle);
 
 /* from IupGLButton implementation */
 void iupGLButtonDraw(Ihandle* ih);

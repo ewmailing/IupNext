@@ -1425,7 +1425,7 @@ static char* iParamStrGetType(const char* format)
 }
 
 /* Used in IupLua */
-char iupGetParamType(const char* format, int *line_size)
+IUP_SDK_API char iupGetParamType(const char* format, int *line_size)
 {
   char* type = iParamStrGetType(format);
   char* line_end = strchr(format, '\n');
@@ -1624,7 +1624,7 @@ static int iParamCreateMethod(Ihandle* param, void** params)
 }
 
 /* Used in IupLua also */
-int iupGetParamCount(const char *format, int *param_extra)
+IUP_SDK_API int iupGetParamCount(const char *format, int *param_extra)
 {
   int param_count = 0, extra = 0;
   const char* s = format;
@@ -1664,7 +1664,7 @@ int iupGetParamCount(const char *format, int *param_extra)
 *******************************************************************************************/
 
 
-int IupGetParamv(const char* title, Iparamcb action, void* user_data, const char* format, int param_count, int param_extra, void** param_data)
+IUP_API int IupGetParamv(const char* title, Iparamcb action, void* user_data, const char* format, int param_count, int param_extra, void** param_data)
 {
   Ihandle *dlg, *param_box, **params;
   int i, line_size, p, count;
@@ -1801,7 +1801,7 @@ int IupGetParamv(const char* title, Iparamcb action, void* user_data, const char
   }
 }
 
-int IupGetParamV(const char* title, Iparamcb action, void* user_data, const char* format, va_list arglist)
+IUP_API int IupGetParamV(const char* title, Iparamcb action, void* user_data, const char* format, va_list arglist)
 {
   int param_count, param_extra, i, ret;
   void** param_data;
@@ -1821,7 +1821,7 @@ int IupGetParamV(const char* title, Iparamcb action, void* user_data, const char
   return ret;
 }
 
-int IupGetParam(const char* title, Iparamcb action, void* user_data, const char* format, ...)
+IUP_API int IupGetParam(const char* title, Iparamcb action, void* user_data, const char* format, ...)
 {
   va_list arglist;
   int ret;
@@ -1837,7 +1837,7 @@ int IupGetParam(const char* title, Iparamcb action, void* user_data, const char*
 /*******************************************************************************/
 
 
-Ihandle* IupParam(const char* format)
+IUP_API Ihandle* IupParam(const char* format)
 {
   void *params[2];
   params[0] = (void*)format;
@@ -1894,17 +1894,17 @@ Iclass* iupParamNewClass(void)
   return ic;
 }
 
-Ihandle *IupParamBoxv(Ihandle** children)
+IUP_API Ihandle* IupParamBoxv(Ihandle** children)
 {
   return IupCreatev("parambox", (void**)children);
 }
 
-Ihandle*  IupParamBoxV(Ihandle* child, va_list arglist)
+IUP_API Ihandle* IupParamBoxV(Ihandle* child, va_list arglist)
 {
   return IupCreateV("parambox", child, arglist);
 }
 
-Ihandle *IupParamBox(Ihandle * child, ...)
+IUP_API Ihandle* IupParamBox(Ihandle * child, ...)
 {
   Ihandle *ih;
 

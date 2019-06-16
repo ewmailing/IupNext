@@ -2537,17 +2537,17 @@ Iclass* iupFlatTabsNewClass(void)
   return ic;
 }
 
-Ihandle* IupFlatTabsv(Ihandle** params)
+IUP_API Ihandle* IupFlatTabsv(Ihandle** params)
 {
   return IupCreatev("flattabs", (void**)params);
 }
 
-Ihandle*  IupFlatTabsV(Ihandle* child, va_list arglist)
+IUP_API Ihandle* IupFlatTabsV(Ihandle* child, va_list arglist)
 {
   return IupCreateV("flattabs", child, arglist);
 }
 
-Ihandle* IupFlatTabs(Ihandle* child, ...)
+IUP_API Ihandle* IupFlatTabs(Ihandle* child, ...)
 {
   Ihandle *ih;
 

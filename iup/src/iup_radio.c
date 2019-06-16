@@ -19,7 +19,7 @@
 #include "iup_layout.h"
 
 
-Ihandle *iupRadioFindToggleParent(Ihandle* ih_toggle)
+IUP_SDK_API Ihandle *iupRadioFindToggleParent(Ihandle* ih_toggle)
 {
   Ihandle *p;
 
@@ -168,7 +168,7 @@ static void iRadioSetChildrenPositionMethod(Ihandle* ih, int x, int y)
 /******************************************************************************/
 
 
-Ihandle* IupRadio(Ihandle* child)
+IUP_API Ihandle* IupRadio(Ihandle* child)
 {
   void *children[2];
   children[0] = (void*)child;

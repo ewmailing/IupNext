@@ -1695,7 +1695,6 @@ IF(IUP_USE_LUA)
 
 
 	IF(IUP_SHOULD_BUILD_IUPWEB)
-		# FIXME: We must add a IUPLUAWEB_EXPORT for the lua/web open functions, but there is no obvious place to add it
 		SET(IUPLUAWEB_SOURCE_FILES
 			${CMAKE_SOURCE_DIR}/srclua5/ctrl/il_webbrowser.c
 			${CMAKE_SOURCE_DIR}/srclua5/lh/webbrowser.lh

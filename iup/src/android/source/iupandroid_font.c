@@ -26,7 +26,7 @@
 
 
 
-char* iupdrvGetSystemFont(void)
+IUP_SDK_API char* iupdrvGetSystemFont(void)
 {
   static char systemfont[200] = "";
 #if 0
@@ -42,7 +42,7 @@ char* iupdrvGetSystemFont(void)
 }
 
 
-int iupdrvSetStandardFontAttrib(Ihandle* ih, const char* value)
+IUP_SDK_API int iupdrvSetStandardFontAttrib(Ihandle* ih, const char* value)
 {
 #if 0 // iupBaseUpdateSizeFromFont missing
   ImacFont* macfont = macFontCreateNativeFont(ih, value);
@@ -61,7 +61,7 @@ int iupdrvSetStandardFontAttrib(Ihandle* ih, const char* value)
   return 1;
 }
 
-void iupdrvFontGetMultiLineStringSize(Ihandle* ih, const char* str, int *w, int *h)
+IUP_SDK_API void iupdrvFontGetMultiLineStringSize(Ihandle* ih, const char* str, int *w, int *h)
 {
 	JNIEnv* jni_env = iupAndroid_GetEnvThreadSafe();
 	jclass java_class = (*jni_env)->FindClass(jni_env, "br/pucrio/tecgraf/iup/IupFontHelper");
@@ -86,7 +86,7 @@ void iupdrvFontGetMultiLineStringSize(Ihandle* ih, const char* str, int *w, int 
 }
 
 
-void iupdrvFontGetTextSize(const char* font, const char* str, int *w, int *h)
+IUP_SDK_API void iupdrvFontGetTextSize(const char* font, const char* str, int *w, int *h)
 {
 	JNIEnv* jni_env = iupAndroid_GetEnvThreadSafe();
 	jclass java_class = (*jni_env)->FindClass(jni_env, "br/pucrio/tecgraf/iup/IupFontHelper");
@@ -111,7 +111,7 @@ void iupdrvFontGetTextSize(const char* font, const char* str, int *w, int *h)
 	if (h) *h = (int)j_height;
 }
 
-int iupdrvFontGetStringWidth(Ihandle* ih, const char* str)
+IUP_SDK_API int iupdrvFontGetStringWidth(Ihandle* ih, const char* str)
 {
 	JNIEnv* jni_env = iupAndroid_GetEnvThreadSafe();
 	jclass java_class = (*jni_env)->FindClass(jni_env, "br/pucrio/tecgraf/iup/IupFontHelper");
@@ -126,7 +126,7 @@ int iupdrvFontGetStringWidth(Ihandle* ih, const char* str)
 	return ((int)j_width);
 }
 
-void iupdrvFontGetCharSize(Ihandle* ih, int *charwidth, int *charheight)
+IUP_SDK_API void iupdrvFontGetCharSize(Ihandle* ih, int *charwidth, int *charheight)
 {
 	JNIEnv* jni_env = iupAndroid_GetEnvThreadSafe();
 	jclass java_class = (*jni_env)->FindClass(jni_env, "br/pucrio/tecgraf/iup/IupFontHelper");
@@ -157,12 +157,12 @@ void iupdrvFontFinish(void)
 }
 
 
-int iupdrvSetFontAttrib(Ihandle* ih, const char* value)
+IUP_SDK_API int iupdrvSetFontAttrib(Ihandle* ih, const char* value)
 {
 	return 1;
 }
 
-const char* iupdrvGetFontAttrib(Ihandle* ih)
+IUP_SDK_API const char* iupdrvGetFontAttrib(Ihandle* ih)
 {
 	return NULL;
 }

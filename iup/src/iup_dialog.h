@@ -38,7 +38,7 @@ char* iupDialogGetChildIdStr(Ihandle* ih);
 void iupdrvDialogGetDecoration(Ihandle* ih, int *border, int *caption, int *menu);
 
 /* Returns the native parent. Can be PARENTDIALOG or NATIVEPARENT attributes. Parent must be mapped. */
-InativeHandle* iupDialogGetNativeParent(Ihandle* ih);
+IUP_SDK_API InativeHandle* iupDialogGetNativeParent(Ihandle* ih);
 
 /* Changes the parent dialog (works only if already set at map) */
 void iupdrvDialogSetParent(Ihandle* ih, InativeHandle* native_parent);

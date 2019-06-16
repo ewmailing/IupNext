@@ -43,7 +43,7 @@ static void iHandleDestroy(Ihandle* ih)
   free(ih);
 }
 
-int iupObjectCheck(Ihandle* ih)
+IUP_SDK_API int iupObjectCheck(Ihandle* ih)
 {
   char* sig = (char*)ih;
 
@@ -58,7 +58,7 @@ int iupObjectCheck(Ihandle* ih)
   return 1;
 }
 
-Ihandle* iupObjectCreate(Iclass* iclass, void** params)
+IUP_SDK_API Ihandle* iupObjectCreate(Iclass* iclass, void** params)
 {
   char* name;
 
@@ -89,7 +89,7 @@ Ihandle* iupObjectCreate(Iclass* iclass, void** params)
   return ih;
 }
 
-void** iupObjectGetParamList(void* first, va_list arglist)
+IUP_SDK_API void** iupObjectGetParamList(void* first, va_list arglist)
 {
   const int INITIAL_NUMBER = 50;
   void **params;
@@ -124,7 +124,7 @@ void** iupObjectGetParamList(void* first, va_list arglist)
   return params;
 }
 
-Ihandle* IupCreatev(const char *name, void **params)
+IUP_API Ihandle* IupCreatev(const char *name, void **params)
 {
   Iclass *ic;
   iupASSERT(name!=NULL);
@@ -135,7 +135,7 @@ Ihandle* IupCreatev(const char *name, void **params)
     return NULL;
 }
 
-Ihandle *IupCreateV(const char *name, void* first, va_list arglist)
+IUP_API Ihandle *IupCreateV(const char *name, void* first, va_list arglist)
 {
   void **params;
   Ihandle *ih;
@@ -149,7 +149,7 @@ Ihandle *IupCreateV(const char *name, void* first, va_list arglist)
   return ih;
 }
 
-Ihandle *IupCreatep(const char *name, void* first, ...)
+IUP_API Ihandle *IupCreatep(const char *name, void* first, ...)
 {
   va_list arglist;
   Ihandle *ih;
@@ -163,13 +163,13 @@ Ihandle *IupCreatep(const char *name, void* first, ...)
   return ih;
 }
 
-Ihandle* IupCreate(const char *name)
+IUP_API Ihandle* IupCreate(const char *name)
 {
   iupASSERT(name!=NULL);
   return IupCreatev(name, NULL);
 }
 
-void IupDestroy(Ihandle *ih)
+IUP_API void IupDestroy(Ihandle *ih)
 {
   Icallback cb;
 

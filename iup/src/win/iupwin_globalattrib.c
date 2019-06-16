@@ -309,7 +309,7 @@ static LRESULT CALLBACK winHookGetMessageProc(int hcode, WPARAM gm_wp, LPARAM gm
   return CallNextHookEx(win_OldGetMessageHook, hcode, gm_wp, gm_lp);
 }
 
-int iupdrvSetGlobal(const char* name, const char* value)
+IUP_SDK_API int iupdrvSetGlobal(const char* name, const char* value)
 {
   if (iupStrEqual(name, "INPUTCALLBACKS"))
   {
@@ -377,7 +377,7 @@ int iupdrvSetGlobal(const char* name, const char* value)
   return 1;
 }
 
-char* iupdrvGetGlobal(const char* name)
+IUP_SDK_API char* iupdrvGetGlobal(const char* name)
 {
   if (iupStrEqual(name, "VIRTUALSCREEN"))
   {

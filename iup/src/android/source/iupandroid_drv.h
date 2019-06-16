@@ -26,15 +26,15 @@ typedef struct AndroidHandleWrapper AndroidHandleWrapper;
 
 */
 
-IUP_EXPORTI JNIEnv* iupAndroid_GetEnvThreadSafe();
+IUP_SDK_API JNIEnv* iupAndroid_GetEnvThreadSafe();
 
-IUP_EXPORTI void iupAndroid_RetainIhandle(JNIEnv* jni_env, jobject native_widget, Ihandle* ih);
-IUP_EXPORTI void iupAndroid_ReleaseIhandle(JNIEnv* jni_env, Ihandle* ih);
+IUP_SDK_API void iupAndroid_RetainIhandle(JNIEnv* jni_env, jobject native_widget, Ihandle* ih);
+IUP_SDK_API void iupAndroid_ReleaseIhandle(JNIEnv* jni_env, Ihandle* ih);
 
-IUP_EXPORTI jobject iupAndroid_GetApplication(JNIEnv* jni_env);
-IUP_EXPORTI jobject iupAndroid_GetCurrentActivity(JNIEnv* jni_env);
+IUP_SDK_API jobject iupAndroid_GetApplication(JNIEnv* jni_env);
+IUP_SDK_API jobject iupAndroid_GetCurrentActivity(JNIEnv* jni_env);
 
-IUP_EXPORTI void iupAndroid_AddWidgetToParent(JNIEnv* jni_env, Ihandle* ih);
+IUP_SDK_API void iupAndroid_AddWidgetToParent(JNIEnv* jni_env, Ihandle* ih);
 
 
 

@@ -1111,7 +1111,7 @@ Iclass* iupColorDlgNewClass(void)
   return ic;
 }
 
-Ihandle* IupColorDlg(void)
+IUP_API Ihandle* IupColorDlg(void)
 {
   return IupCreate("colordlg");
 }

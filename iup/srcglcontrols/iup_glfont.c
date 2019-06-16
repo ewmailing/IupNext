@@ -488,7 +488,7 @@ static IglFont* iGLFontGet(Ihandle *ih)
   return glfont;
 }
 
-char* iupStrConvertToUTF8(const char* str, int len, char* utf8_buffer, int *utf8_buffer_max, int utf8mode);
+IUP_SDK_API char* iupStrConvertToUTF8(const char* str, int len, char* utf8_buffer, int *utf8_buffer_max, int utf8mode);
 
 static void iGLFontConvertToUTF8(const char* str, int len)
 {
