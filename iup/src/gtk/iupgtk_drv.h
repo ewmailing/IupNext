@@ -18,7 +18,7 @@ extern "C" {
 /* common */
 IUP_DRV_API gboolean iupgtkEnterLeaveEvent(GtkWidget *widget, GdkEventCrossing *evt, Ihandle* ih);
 gboolean iupgtkMotionNotifyEvent(GtkWidget *widget, GdkEventMotion *evt, Ihandle *ih);
-gboolean iupgtkButtonEvent(GtkWidget *widget, GdkEventButton *evt, Ihandle *ih);
+IUP_DRV_API gboolean iupgtkButtonEvent(GtkWidget *widget, GdkEventButton *evt, Ihandle *ih);
 IUP_DRV_API gboolean iupgtkShowHelp(GtkWidget *widget, GtkWidgetHelpType *arg1, Ihandle* ih);
 
 int iupgtkSetMnemonicTitle(Ihandle* ih, GtkLabel* label, const char* value);
@@ -54,11 +54,11 @@ int   iupgtkStrGetUTF8Mode(void);
 
 /* focus */
 IUP_DRV_API gboolean iupgtkFocusInOutEvent(GtkWidget *widget, GdkEventFocus *evt, Ihandle* ih);
-void iupgtkSetCanFocus(GtkWidget *widget, int can);
+IUP_DRV_API void iupgtkSetCanFocus(GtkWidget *widget, int can);
 
 
 /* key */
-gboolean iupgtkKeyPressEvent(GtkWidget *widget, GdkEventKey *evt, Ihandle* ih);
+IUP_DRV_API gboolean iupgtkKeyPressEvent(GtkWidget *widget, GdkEventKey *evt, Ihandle* ih);
 gboolean iupgtkKeyReleaseEvent(GtkWidget *widget, GdkEventKey *evt, Ihandle* ih);
 void iupgtkButtonKeySetStatus(guint state, unsigned int but, char* status, int doubleclick);
 int iupgtkKeyDecode(GdkEventKey *evt);

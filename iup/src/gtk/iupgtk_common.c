@@ -153,7 +153,7 @@ IUP_SDK_API void iupdrvReparent(Ihandle* ih)
   }
 }
 
-void iupgtkAddToParent(Ihandle* ih)
+IUP_DRV_API void iupgtkAddToParent(Ihandle* ih)
 {
   GtkWidget* parent = gtkGetNativeParent(ih);
   GtkWidget* widget = (GtkWidget*)iupAttribGet(ih, "_IUP_EXTRAPARENT"); /* here is used as the native child because is the outermost component of the element */
@@ -247,7 +247,7 @@ IUP_SDK_API void iupdrvClientToScreen(Ihandle* ih, int *x, int *y)
   *y += win_y + dy;
 }
 
-gboolean iupgtkShowHelp(GtkWidget *widget, GtkWidgetHelpType *arg1, Ihandle *ih)
+IUP_DRV_API gboolean iupgtkShowHelp(GtkWidget *widget, GtkWidgetHelpType *arg1, Ihandle *ih)
 {
   Icallback cb;
   (void)widget;
@@ -260,7 +260,7 @@ gboolean iupgtkShowHelp(GtkWidget *widget, GtkWidgetHelpType *arg1, Ihandle *ih)
   return FALSE;
 }
 
-gboolean iupgtkEnterLeaveEvent(GtkWidget *widget, GdkEventCrossing *evt, Ihandle *ih)
+IUP_DRV_API gboolean iupgtkEnterLeaveEvent(GtkWidget *widget, GdkEventCrossing *evt, Ihandle *ih)
 {
   Icallback cb = NULL;
   (void)widget;
@@ -781,7 +781,7 @@ gboolean iupgtkMotionNotifyEvent(GtkWidget *widget, GdkEventMotion *evt, Ihandle
   return FALSE;
 }
 
-gboolean iupgtkButtonEvent(GtkWidget *widget, GdkEventButton *evt, Ihandle *ih)
+IUP_DRV_API gboolean iupgtkButtonEvent(GtkWidget *widget, GdkEventButton *evt, Ihandle *ih)
 {
   IFniiiis cb = (IFniiiis)IupGetCallback(ih,"BUTTON_CB");
   if (cb)

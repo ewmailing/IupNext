@@ -193,7 +193,7 @@ static int iupObjectIsNativeContainer(Ihandle* ih)
     return 0;
 }
 
-gboolean iupgtkKeyPressEvent(GtkWidget *widget, GdkEventKey *evt, Ihandle *ih)
+IUP_DRV_API gboolean iupgtkKeyPressEvent(GtkWidget *widget, GdkEventKey *evt, Ihandle *ih)
 {
   int result;
   int code = iupgtkKeyDecode(evt);

@@ -28,8 +28,10 @@
 #include "iup_drvfont.h"
 
 /* Exported from "iupwin_str.c" */
-extern "C" WCHAR* iupwinStrChar2Wide(const char* str);
-extern "C" char*  iupwinStrWide2Char(const WCHAR* wstr);
+extern "C" {
+  IUP_DRV_API WCHAR* iupwinStrChar2Wide(const char* str);
+  IUP_DRV_API char*  iupwinStrWide2Char(const WCHAR* wstr);
+}
 
 #include <atlbase.h>
 #include <atlcom.h>

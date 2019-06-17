@@ -89,7 +89,7 @@ char* iupgtkStrConvertToSystemLen(const char* str, int *len)
   return (char*)str;
 }
 
-char* iupgtkStrConvertToSystem(const char* str)  /* From IUP to GTK */
+IUP_DRV_API char* iupgtkStrConvertToSystem(const char* str)  /* From IUP to GTK */
 {
   if (!str || *str == 0)
     return (char*)str;
