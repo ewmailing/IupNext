@@ -89,13 +89,13 @@ the dialog is already hidden.</p>
 
   
     
-<pre>int function(Ihandle*<strong> ih</strong>, char* <strong>old_filename</strong>, char* <strong>new_filename</strong>); [in C]<br><strong>elem</strong>:newtext_cb(<strong>old_filename</strong>, <strong>new_filename</strong>: string) -&gt; (<strong>ret</strong>: number) [in Lua]</pre>
+<pre>int function(Ihandle*<strong> ih</strong>, Ihandle* <strong>multitext</strong>); [in C]<br><strong>elem</strong>:newtext_cb(<strong>multitext</strong>: ihandle) -&gt; (<strong>ret</strong>: number) [in Lua]</pre>
 
     
 <p class="info"><strong>ih</strong>:
   identifier of the element that activated the 
-  event.<br><strong>old_filename</strong>: previous file name.<br><strong>
-new_filename</strong>: current filename.</p>
+  event.<br><strong>multitext</strong>: identifier of the scintilla element that 
+was created.</p>
 <p><strong>CLOSETEXT_CB</strong>: Called when a document is closed. (since 3.23)</p>
 
   
@@ -106,21 +106,7 @@ new_filename</strong>: current filename.</p>
 <p class="info"><strong>ih</strong>:
   identifier of the element that activated the 
   event.<br><strong>multitext</strong>: identifier of the scintilla element that 
-is affected.</p>
-
-  
-<p><strong>NEWFILENAME_CB</strong>: Called after the filename of document was 
-changed by "Save As" or "Rename". (since 3.23)</p>
-
-  
-    
-<pre>int function(Ihandle*<strong> ih</strong>, Ihandle* <strong>multitext</strong>); [in C]<br><strong>elem</strong>:newfilename_cb(<strong>multitext</strong>: ihandle) -&gt; (<strong>ret</strong>: number) [in Lua]</pre>
-
-    
-<p class="info"><strong>ih</strong>:
-  identifier of the element that activated the 
-  event.<br><strong>multitext</strong>: identifier of the scintilla element that 
-is affected.</p>
+is to be closed.</p>
 
   
 <p><strong>MARKERCHANGED_CB</strong>:
@@ -138,6 +124,44 @@ programmatically).</p>
 is affected.<br><strong>lin</strong>: line number where the marker was changed 
 (starts at 0).<br>
 <strong>margin</strong>: which margin was affected.</p>
+
+  
+<p><strong>NEWFILENAME_CB</strong>: Called after the filename of document was 
+changed by "Save As" or "Rename". (since 3.23)</p>
+
+  
+    
+<pre>int function(Ihandle*<strong> ih</strong>, char* <strong>old_filename</strong>, char* <strong>new_filename</strong>); [in C]<br><strong>elem</strong>:newfilename_cb(<strong>old_filename</strong>, <strong>new_filename</strong>: string) -&gt; (<strong>ret</strong>: number) [in Lua]</pre>
+
+    
+<p class="info"><strong>ih</strong>:
+  identifier of the element that activated the 
+  event.<br><strong>old_filename</strong>: previous file name.<br><strong>
+new_filename</strong>: current filename.</p>
+
+  
+<p><strong>LOADFILE_CB</strong>: Called after the file is loaded and ready. (since 3.28)</p>
+
+  
+    
+<pre>int function(Ihandle*<strong> ih</strong>, char* <strong>filename</strong>); [in C]<br><strong>elem</strong>:loadfile_cb(<strong>filename</strong>: string) -&gt; (<strong>ret</strong>: number) [in Lua]</pre>
+
+    
+<p class="info"><strong>ih</strong>:
+  identifier of the element that activated the 
+  event.<br><strong>filename</strong>: file name.</p>
+
+  
+<p><strong>SAVEFILE_CB</strong>: Called after the file is saved. (since 3.28)</p>
+
+  
+    
+<pre>int function(Ihandle*<strong> ih</strong>, char* <strong>filename</strong>); [in C]<br><strong>elem</strong>:savefile_cb(<strong>filename</strong>: string) -&gt; (<strong>ret</strong>: number) [in Lua]</pre>
+
+    
+<p class="info"><strong>ih</strong>:
+  identifier of the element that activated the 
+  event.<br><strong>filename</strong>: file name.</p>
 
   
 <p><strong>RESTOREMARKERS_CB</strong>: Called when the markers in the Scitilla 

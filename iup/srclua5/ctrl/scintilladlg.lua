@@ -14,6 +14,8 @@ local ctrl = {
     newtext_cb = "i",
     closetext_cb = "i",
     newfilename_cb = "ss",
+    loadfile_cb = "s",
+    savefile_cb = "s",
     configsave_cb = "i",
     configload_cb = "i",
   },
