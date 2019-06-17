@@ -725,10 +725,9 @@ static int item_folding_action_cb(Ihandle* ih)
       IupSetAttribute(multitext, "PROPERTY", "fold=1");
       IupSetAttribute(multitext, "MARGINWIDTH3", FOLDING_MARGIN);
       IupSetAttribute(multitext, "_IUP_FOLDDING", "1");
+      IupSetAttribute(multitext, "FOLDALL", "EXPAND");
     }
   }
-
-  IupSetAttribute(multitext, "FOLDALL", "EXPAND");
 
   IupConfigSetVariableStr(config, "LuaScripter", "Folding", IupGetAttribute(ih, "VALUE"));
 
@@ -1142,6 +1141,7 @@ static int multitext_map_cb(Ihandle* multitext)
     IupSetAttribute(multitext, "MARGINWIDTH3", FOLDING_MARGIN);
     IupSetAttribute(multitext, "PROPERTY", "fold=1");
     IupSetAttribute(multitext, "_IUP_FOLDDING", "1");
+    IupSetAttribute(multitext, "FOLDALL", "EXPAND");
   }
   else
   {
@@ -1149,7 +1149,6 @@ static int multitext_map_cb(Ihandle* multitext)
     IupSetAttribute(multitext, "PROPERTY", "fold=0");
     IupSetAttribute(multitext, "_IUP_FOLDDING", NULL);
   }
-  IupSetAttribute(multitext, "FOLDALL", "EXPAND");
 
   return IUP_DEFAULT;
 }
