@@ -1065,7 +1065,7 @@ static void new_file(Ihandle* ih_item)
   Ihandle* multitext = iScintillaDlgNewMultitext(ih_item);
 
   IupSetAttribute(multitext, "FILENAME", NULL);
-  IupSetAttribute(multitext, "VALUE", "");
+  IupSetAttribute(multitext, "VALUE", ""); /* empty text */
   IupSetAttribute(multitext, "SAVEPOINT", NULL); /* this will update title */
   IupSetAttribute(multitext, "UNDO", NULL); /* clear undo */
 }
@@ -1075,6 +1075,7 @@ static void open_file(Ihandle* ih_item, const char* filename, int check_empty)
   char* str = readFile(filename);
   if (str)
   {
+    IFns load_cb;
     Ihandle* ih = IupGetDialog(ih_item);
     Ihandle* tabs = IupGetDialogChild(ih_item, "MULTITEXT_TABS");
     Ihandle* multitext = iScintillaDlgNewMultitext(ih_item);
@@ -1095,6 +1096,10 @@ static void open_file(Ihandle* ih_item, const char* filename, int check_empty)
       restoreMarkers(config, multitext);
 
     free(str);
+
+    load_cb = (IFns)IupGetCallback(ih, "LOADFILE_CB");
+    if (load_cb)
+      load_cb(ih, (char*)filename);
 
     if (check_empty && IupGetChildCount(tabs) == 2)
     {
@@ -1164,13 +1169,20 @@ static void save_file(Ihandle* multitext)
   {
     char* str = IupGetAttribute(multitext, "VALUE");
     int count = IupGetInt(multitext, "COUNT");
+    Ihandle* ih = IupGetDialog(multitext);
     if (writeFile(filename, str, count))
     {
+      IFns save_cb;
+
       IupSetAttribute(multitext, "SAVEPOINT", NULL); /* this will update title */
       IupSetAttribute(multitext, "UNDO", NULL); /* clear undo */
+
+      save_cb = (IFns)IupGetCallback(ih, "SAVEFILE_CB");
+      if (save_cb)
+        save_cb(ih, (char*)filename);
     }
     else
-      IupMessageError(IupGetDialog(multitext), "IUP_ERRORFILESAVE");
+      IupMessageError(ih, "IUP_ERRORFILESAVE");
   }
 }
 
@@ -1178,11 +1190,13 @@ static void saveas_file(Ihandle* multitext, const char* filename)
 {
   char* str = IupGetAttribute(multitext, "VALUE");
   int count = IupGetInt(multitext, "COUNT");
+  Ihandle* ih = IupGetDialog(multitext);
   if (writeFile(filename, str, count))
   {
     Ihandle* config = iScintillaDlgGetConfig(multitext);
     char* old_filename = iupStrDup(IupGetAttribute(multitext, "FILENAME"));
     IFnss cb;
+    IFns save_cb;
 
     IupSetAttribute(config, "RECENTNAME", "ScintillaRecent");
     IupConfigRecentUpdate(config, filename);
@@ -1192,14 +1206,18 @@ static void saveas_file(Ihandle* multitext, const char* filename)
     IupSetAttribute(multitext, "SAVEPOINT", NULL); /* this will update title */
     IupSetAttribute(multitext, "UNDO", NULL); /* clear undo */
 
-    cb = (IFnss)IupGetCallback(IupGetDialog(multitext), "NEWFILENAME_CB");
+    save_cb = (IFns)IupGetCallback(ih, "SAVEFILE_CB");
+    if (save_cb)
+      save_cb(ih, (char*)filename);
+
+    cb = (IFnss)IupGetCallback(ih, "NEWFILENAME_CB");
     if (cb)
-      cb(IupGetDialog(multitext), old_filename, (char*)filename);
+      cb(ih, old_filename, (char*)filename);
 
     free(old_filename);
   }
   else
-    IupMessageError(IupGetDialog(multitext), "IUP_ERRORFILESAVE");
+    IupMessageError(ih, "IUP_ERRORFILESAVE");
 }
 
 static void savecopy_file(Ihandle* multitext, const char* filename)
@@ -2645,7 +2663,7 @@ static int item_add_new_file_action_cb(Ihandle* ih_item)
     multitext = iScintillaDlgNewMultitext(ih_item);
 
     IupSetAttribute(multitext, "FILENAME", filename);
-    IupSetAttribute(multitext, "VALUE", " ");
+    IupSetAttribute(multitext, "VALUE", ""); /* empty text */
     IupSetAttribute(multitext, "SAVEPOINT", NULL); /* this will update title */
     IupSetAttribute(multitext, "UNDO", NULL); /* clear undo */
 
@@ -5110,6 +5128,8 @@ Iclass* iupScintillaDlgNewClass(void)
   iupClassRegisterCallback(ic, "NEWTEXT_CB", "i");
   iupClassRegisterCallback(ic, "CLOSETEXT_CB", "i");
   iupClassRegisterCallback(ic, "NEWFILENAME_CB", "ss");
+  iupClassRegisterCallback(ic, "LOADFILE_CB", "s");
+  iupClassRegisterCallback(ic, "SAVEFILE_CB", "s");
   iupClassRegisterCallback(ic, "CONFIGSAVE_CB", "i");
   iupClassRegisterCallback(ic, "CONFIGLOAD_CB", "i");
   iupClassRegisterCallback(ic, "EXIT_CB", "");
