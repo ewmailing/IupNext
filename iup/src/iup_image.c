@@ -783,7 +783,7 @@ static Ihandle* iImageGetHandleFromImage(void* handle)
   return ih;
 }
 
-IUP_SDK_API Ihandle* iupImageGetHandle(const char* name)
+IUP_API Ihandle* IupImageGetHandle(const char* name)
 {
   /* Used in CD or OpenGL based controls where WID is mandatory - IupMatrix, IupGLControls and IupPlot */
   Ihandle *ih;
@@ -804,13 +804,13 @@ IUP_SDK_API Ihandle* iupImageGetHandle(const char* name)
     /* the loaded image is converted and destroyed */
 
     ih = iImageGetHandleFromImage(handle);
+    iupdrvImageDestroy(handle, IUPIMAGE_IMAGE);
+
     if (ih)
     {
       IupSetHandle(name, ih);
       return ih;
     }
-
-    iupdrvImageDestroy(handle, IUPIMAGE_IMAGE);
   }
 
   /* Check in the stock images. */
@@ -829,13 +829,13 @@ IUP_SDK_API Ihandle* iupImageGetHandle(const char* name)
       /* the loaded image is converted and destroyed */
 
       ih = iImageGetHandleFromImage(handle);
+      iupdrvImageDestroy(handle, IUPIMAGE_IMAGE);
+
       if (ih)
       {
         IupSetHandle(name, ih);
         return ih;
       }
-
-      iupdrvImageDestroy(handle, IUPIMAGE_IMAGE);
     }
   }
 

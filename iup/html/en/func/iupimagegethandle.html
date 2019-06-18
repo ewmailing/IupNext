@@ -1,0 +1,54 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.0 Strict//EN">
+<html>
+<head>
+<meta http-equiv="Content-Language" content="en-us">
+<title>IupImageGetHandle</title>
+
+<meta http-equiv="Content-Type" content="text/html; charset=windows-1252">
+
+<link rel="stylesheet" type="text/css" href="../../style.css">
+<style type="text/css">
+.style1 {
+	text-decoration: underline;
+}
+.style2 {
+	font-size: large;
+}
+</style>
+</head>
+<body>
+
+<h2>IupImageGetHandle<span class="style2"> (since 3.28)</span></h2>
+<p><span>
+	Returns an <strong>IupImage</strong> handle from a name.</span></p>
+<p>It does NOT depends on the IM library.</p>
+<h3>
+Parameters/Return</h3>
+<pre>Ihandle* IupImageGetHandle(const char* <strong>name</strong>); [in C]
+iup.ImageGetHandle(<strong>name</strong>: string) -&gt; (<b>ret</b>: ihandle) [in Lua]</pre>
+<p><strong>name</strong>: name of the image.</p>
+<p><span class="style1">Returns:</span> handle of the <strong>IupImage</strong> 
+or NULL if failed.</p>
+<h3>Notes</h3>
+<p>Name can be a global name set with <strong>IupSetHandle</strong>, defined in 
+LED or the name of a stock image from <strong>IupImageLib</strong>. In this case 
+the function just returns the existing element.</p>
+<p>Name can also be the a file name that will be loaded from disk. But the 
+available file formats supported are system dependent. The Windows driver 
+supports BMP. The GTK driver supports the formats supported by the GDK-PixBuf 
+library, such as BMP, GIF, JPEG, PCX, PNG, TIFF and many others. The Motif 
+driver supports the X-Windows bitmap. In this case the function returns a new 
+image handle and associates the name with that handle, so in the next call it 
+will returns the existing handle.</p>
+<p>Name can also be the name of a resource image defined in a RC file in 
+Windows. In this case the function returns a new image handle and associates the 
+name with that handle, so in the next call it will returns the existing handle.</p>
+
+<h3><a name="SeeAlso">See Also</a></h3>
+
+<p><a href="../elem/iupimage.html">IupImage</a>, <a href="../iupim.html">IUP-IM 
+Functions</a>, <a href="../iupimglib.html">IupImageLib</a></p>
+
+</body>
+
+</html>

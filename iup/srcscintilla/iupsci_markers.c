@@ -187,7 +187,7 @@ static int iScintillaSetMarkerDefineAttrib(Ihandle* ih, const char* value)
 
 static int iScintillaSetMarkerDefineRGBAImageId(Ihandle* ih, int markerNumber, const char* value)
 {
-  Ihandle* ih_image = iupImageGetHandle(value);
+  Ihandle* ih_image = IupImageGetHandle(value);
   if (ih_image)
   {
     int bpp = IupGetInt(ih_image, "BPP");

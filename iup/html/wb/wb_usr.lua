@@ -1848,6 +1848,10 @@ wb_usr.tree =
             {
               name= {nl= "IupSaveImageAsText"},
               link= "func/iupsaveimageastext.html"
+            },
+            {
+              name= {nl= "IupImageGetHandle"},
+              link= "func/iupimagegethandle.html"
             }
           }
         },

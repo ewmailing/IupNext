@@ -1025,7 +1025,8 @@ void iupdrvImageDestroy(void* handle, int type)
 
 
 
-// New: Why doesn't IUP have a Load from file?
+//Use IupImageGetHandle
+/* DEPRECATED: Why doesn't IUP have a Load from file?
 IUP_EXPORT Ihandle* IupImageLoadFile(const char* file_name)
 {
 	int w;
@@ -1063,5 +1064,4 @@ IUP_EXPORT Ihandle* IupImageLoadFile(const char* file_name)
 
 	return image_ih;
 }
-
-
+*/

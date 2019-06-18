@@ -301,17 +301,21 @@ namespace Iup
     int Popup(int x, int y) { return IupPopup(ih, x, y); }
   };
 
-#ifdef __IM_PLUS_H
   class Image : public Element
   {
   public:
-    Image(const char* filename) : Element(IupLoadImage(filename)) {}
-    Image(const im::Image& image) : Element(IupImageFromImImage(image.GetHandle())) {}
     Image(Ihandle* _ih) : Element(_ih) {}
     Image(const Element& elem) : Element(elem.GetHandle()) {}
+    Image(const char* name) : Element(IupImageGetHandle(name)) {}
 
-    int Save(const char* filename, const char* im_format) { return IupSaveImage(ih, filename, im_format); }
     int SaveAsText(const char* filename, const char* iup_format, const char* name) { return IupSaveImageAsText(ih, filename, iup_format, name); }
+
+#ifdef __IM_PLUS_H
+    Image(const im::Image& image) : Element(IupImageFromImImage(image.GetHandle())) {}
+    Image Load(const char* filename) { return Image(IupLoadImage(filename)); }
+    int Save(const char* filename, const char* im_format) { return IupSaveImage(ih, filename, im_format); }
+    im::Image ToImImage() { return im::Image(IupImageToImImage(GetHandle())); }
+#endif
   };
   class Clipboard : public Element
   {
@@ -320,12 +324,11 @@ namespace Iup
     Clipboard(Ihandle* _ih) : Element(_ih) {}
     Clipboard(const Element& elem) : Element(elem.GetHandle()) {}
 
+#ifdef __IM_PLUS_H
     void SetImage(const im::Image& image) { SetUserData("NATIVEIMAGE", IupGetImageNativeHandle(image.GetHandle())); }
-
     im::Image GetImage(void) { return im::Image(IupGetNativeHandleImage(GetUserData("NATIVEIMAGE"))); }
-  };
-  //TODO imImage* IupImageToImImage(Ihandle* iup_image)
 #endif
+  };
   class User : public Element
   {
   public:
@@ -379,7 +382,7 @@ namespace Iup
     void DrawArc(int x1, int y1, int x2, int y2, double a1, double a2) { IupDrawArc(ih, x1, y1, x2, y2, a1, a2); }
     void DrawPolygon(int* points, int count) { IupDrawPolygon(ih, points, count); }
     void DrawText(const char* text, int len, int x, int y, int w, int h) { IupDrawText(ih, text, len, x, y, w, h); }
-    void DrawImage(const char* name, int x, int y, int w, int h) { IupDrawImage(ih, name, x, y, h, h); }
+    void DrawImage(const char* name, int x, int y, int w, int h) { IupDrawImage(ih, name, x, y, w, h); }
     void DrawSelectRect(int x1, int y1, int x2, int y2) { IupDrawSelectRect(ih, x1, y1, x2, y2); }
     void DrawFocusRect(int x1, int y1, int x2, int y2) { IupDrawFocusRect(ih, x1, y1, x2, y2); }
     void DrawGetSize(int &w, int &h) { IupDrawGetSize(ih, &w, &h); }
@@ -617,7 +620,7 @@ namespace Iup
     void DrawArc(int x1, int y1, int x2, int y2, double a1, double a2) { IupDrawArc(ih, x1, y1, x2, y2, a1, a2); }
     void DrawPolygon(int* points, int count) { IupDrawPolygon(ih, points, count); }
     void DrawText(const char* text, int len, int x, int y, int w, int h) { IupDrawText(ih, text, len, x, y, w, h); }
-    void DrawImage(const char* name, int x, int y, int w, int h) { IupDrawImage(ih, name, x, y, h, h); }
+    void DrawImage(const char* name, int x, int y, int w, int h) { IupDrawImage(ih, name, x, y, w, h); }
     void DrawSelectRect(int x1, int y1, int x2, int y2) { IupDrawSelectRect(ih, x1, y1, x2, y2); }
     void DrawFocusRect(int x1, int y1, int x2, int y2) { IupDrawFocusRect(ih, x1, y1, x2, y2); }
     void DrawGetSize(int &w, int &h) { IupDrawGetSize(ih, &w, &h); }

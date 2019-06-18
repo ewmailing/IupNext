@@ -232,7 +232,7 @@ void iupPlot::DrawInactive(cdCanvas* canvas) const
 
 void iupPlot::DrawBackgroundImage(cdCanvas* canvas) const
 {
-  Ihandle* image = iupImageGetHandle(mBack.GetImage());
+  Ihandle* image = IupImageGetHandle(mBack.GetImage());
   if (image)
   {
     double theScreenMinX = mAxisX.mTrafo->Transform(mBack.mImageMinX);

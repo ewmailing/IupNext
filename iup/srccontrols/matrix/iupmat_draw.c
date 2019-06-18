@@ -385,7 +385,7 @@ static void iMatrixDrawFrameRectCell(Ihandle* ih, int lin, int col, int x1, int 
 static void iMatrixDrawFeedbackImage(Ihandle* ih, int x1, int x2, int y1, int y2, int lin, int col, int active, int marked, const char*name, unsigned char* alpha)
 {
   int x, y;
-  Ihandle* image = iupImageGetHandle(name);
+  Ihandle* image = IupImageGetHandle(name);
   if (image)
   {
     long bgcolor;
@@ -685,7 +685,7 @@ static void iMatrixDrawImage(Ihandle* ih, int x1, int x2, int y1, int y2, int co
   x1 += IMAT_PADDING_W / 2;       x2 -= IMAT_PADDING_W / 2;
   y1 += IMAT_PADDING_H / 2;       y2 -= IMAT_PADDING_H / 2;
 
-  image = iupImageGetHandle(name);
+  image = IupImageGetHandle(name);
   if (image)
   {
     int image_width = IupGetInt(image, "WIDTH");

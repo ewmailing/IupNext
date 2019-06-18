@@ -33,6 +33,13 @@ static int SaveImageAsText(lua_State *L)
   return 1;
 }
 
+static int ImageGetHandle(lua_State *L)
+{
+  const char *name = luaL_checkstring(L, 1);
+  iuplua_pushihandle(L, IupImageGetHandle(name));
+  return 1;
+}
+
 static int Reparent(lua_State *L)
 {
   lua_pushinteger(L, IupReparent(iuplua_checkihandle(L,1),
@@ -1165,6 +1172,7 @@ void iupluaapi_open(lua_State * L)
     {"Update", Update},
     {"UpdateChildren", UpdateChildren},
     {"SaveImageAsText", SaveImageAsText},
+    {"ImageGetHandle", ImageGetHandle},
     {"Redraw", Redraw},
     {"ShowXY", ShowXY},
     {"StoreAttribute", StoreAttribute},

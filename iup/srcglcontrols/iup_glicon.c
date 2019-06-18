@@ -48,24 +48,24 @@ Ihandle* iupGLIconGetImageHandle(Ihandle* ih, const char* baseattrib, const char
     {
       int pressed = iupAttribGetInt(ih, "PRESSED");
       if (pressed)
-        image = iupImageGetHandle(iGLIconGetImageName(ih, baseattrib, "PRESS"));
+        image = IupImageGetHandle(iGLIconGetImageName(ih, baseattrib, "PRESS"));
       else
       {
         int highlight = iupAttribGetInt(ih, "HIGHLIGHT");
         if (highlight)
-          image = iupImageGetHandle(iGLIconGetImageName(ih, baseattrib, "HIGHLIGHT"));
+          image = IupImageGetHandle(iGLIconGetImageName(ih, baseattrib, "HIGHLIGHT"));
       }
     }
     else
     {
-      image = iupImageGetHandle(iGLIconGetImageName(ih, baseattrib, "INACTIVE"));
+      image = IupImageGetHandle(iGLIconGetImageName(ih, baseattrib, "INACTIVE"));
       if (!image)
         make_inactive = 1;
     }
   }
 
   if (!image)
-    image = iupImageGetHandle(imagename);
+    image = IupImageGetHandle(imagename);
 
   if (image && make_inactive)
     iupAttribSet(image, "MAKEINACTIVE", "1");

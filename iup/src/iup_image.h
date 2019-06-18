@@ -18,7 +18,7 @@ void* iupdrvImageCreateImage(Ihandle *ih, const char* bgcolor, int make_inactive
 
 enum {IUPIMAGE_IMAGE, IUPIMAGE_ICON, IUPIMAGE_CURSOR};
 void* iupdrvImageLoad(const char* name, int type);
-IUP_SDK_API void  iupdrvImageDestroy(void* handle, int type);
+IUP_SDK_API void  iupdrvImageDestroy(void* handle, int type);  /* exported to match iupdrvImageCreateImageRaw */
 int   iupdrvImageGetInfo(void* handle, int *w, int *h, int *bpp);  /* only for IUPIMAGE_IMAGE */
 void  iupdrvImageGetData(void* handle, unsigned char* imgdata);   /* only for IUPIMAGE_IMAGE */
 
@@ -27,8 +27,6 @@ void* iupImageGetCursor(const char* name);
 void* iupImageGetImage(const char* name, Ihandle* parent, int make_inactive, const char* bgcolor);
 void iupImageGetInfo(const char* name, int *w, int *h, int *bpp);
 void iupImageRemoveFromCache(Ihandle* ih, void* handle);
-
-IUP_SDK_API Ihandle* iupImageGetHandle(const char* name);
 
 typedef struct _iupColor { 
   unsigned char r, g, b, a; 
