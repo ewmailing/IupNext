@@ -987,6 +987,16 @@ static int Redraw(lua_State *L)
   return 0;
 }
 
+static int PostMessage(lua_State *L)
+{
+  Ihandle *ih = iuplua_checkihandle(L, 1);
+  const char *s = luaL_checkstring(L, 2);
+  int i = (int)luaL_checkinteger(L, 3);
+  double d = luaL_checknumber(L, 4);
+  IupPostMessage(ih, s, i, d);
+  return 0;
+}
+
 static int ShowXY(lua_State *L)
 {
   Ihandle *ih = iuplua_checkihandle(L,1);
@@ -1158,6 +1168,7 @@ void iupluaapi_open(lua_State * L)
     {"LayoutDialog", LayoutDialog},
     {"GlobalsDialog", GlobalsDialog},
     {"ElementPropertiesDialog", ElementPropertiesDialog},
+    {"PostMessage", PostMessage},
     {"SetFocus", SetFocus},
     {"SetGlobal", SetGlobal},
     {"SetHandle", SetHandle},
