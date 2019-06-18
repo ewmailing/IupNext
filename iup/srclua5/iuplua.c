@@ -1052,6 +1052,18 @@ static int multitouch_cb(Ihandle *ih, int count, int* pid, int* px, int* py, int
   return iuplua_call(L, 5);
 }
 
+static void entry_point(void)
+{
+  lua_State *L = iuplua_call_global_start("entry_point");
+  iuplua_call_global(L, 0);
+}
+
+static void exit_cb(void)
+{
+  lua_State *L = iuplua_call_global_start("exit_cb");
+  iuplua_call_global(L, 0);
+}
+
 static void globalwheel_cb(float delta, int x, int y, char* status)
 {
   lua_State *L = iuplua_call_global_start("globalwheel_cb");
@@ -1331,6 +1343,8 @@ IUPLUA_API int iuplua_open(lua_State * L)
   iuplua_register_cb(L, "MULTITOUCH_CB", (lua_CFunction)multitouch_cb, NULL);
 
   /* Register global callbacks */
+  iuplua_register_cb(L, "ENTRY_POINT", (lua_CFunction)entry_point, NULL);
+  iuplua_register_cb(L, "EXIT_CB", (lua_CFunction)exit_cb, NULL);
   iuplua_register_cb(L, "GLOBALWHEEL_CB", (lua_CFunction)globalwheel_cb, NULL);
   iuplua_register_cb(L, "GLOBALBUTTON_CB", (lua_CFunction)globalbutton_cb, NULL);
   iuplua_register_cb(L, "GLOBALMOTION_CB", (lua_CFunction)globalmotion_cb, NULL);
