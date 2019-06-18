@@ -329,6 +329,13 @@ AR       := $(TEC_TOOLCHAIN)ar
 DEBUGGER := $(TEC_TOOLCHAIN)gdb
 RCC      := $(TEC_TOOLCHAIN)windres
 
+ifdef USE_EMSCRIPTEN
+CC       := $(TEC_TOOLCHAIN)emcc
+CPPC     := $(TEC_TOOLCHAIN)em++
+RANLIB   := $(TEC_TOOLCHAIN)emranlib
+AR       := $(TEC_TOOLCHAIN)emar
+endif
+
 # Remote build script
 REMOTE  = $(TECMAKE_HOME)/remote
 
@@ -1318,6 +1325,16 @@ ifdef USE_MOTIF
   ifneq ($(findstring cygw, $(TEC_UNAME)), )
     X11_LIBS := Xpm $(X11_LIBS)
   endif
+endif
+
+ifdef USE_EMSCRIPTEN
+  EMSCRIPTEN = emscripten
+  #EMSCRIPTEN = src/emscripten
+  EMFLAGS += --js-library $(EMSCRIPTEN)/iupemscripten_common.js 
+             --js-library $(EMSCRIPTEN)/iupemscripten_dialog.js 
+             --js-library $(EMSCRIPTEN)/iupemscripten_button.js
+  STDFLAGS += $(EMFLAGS)
+  STDLDFLAGS += $(EMFLAGS)
 endif
 
 ifdef USE_GTK
