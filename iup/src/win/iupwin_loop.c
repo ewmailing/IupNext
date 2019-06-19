@@ -89,7 +89,6 @@ IUP_API int IupMainLoop(void)
   int ret;
   int return_code = IUP_NOERROR;
   static int has_done_entry = 0;
-  static int has_done_exit = 0;
 
   win_main_loop++;
 
@@ -144,11 +143,8 @@ IUP_API int IupMainLoop(void)
 
   win_main_loop--;
 
-  if ((0 == win_main_loop) && (0 == has_done_exit))
-  {
-    has_done_exit = 1;
+  if (win_main_loop == 0)
     iupLoopCallExitCb();
-  }
 
   return return_code;
 }

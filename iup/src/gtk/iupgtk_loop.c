@@ -72,10 +72,8 @@ IUP_API int IupMainLoopLevel(void)
 
 IUP_API int IupMainLoop(void)
 {
-  static int loop_count = 0;
   static int has_done_entry = 0;
-  loop_count++;
-  if (0 == has_done_entry)
+  if (has_done_entry == 0)
   {
     has_done_entry = 1;
     iupLoopCallEntryCb();
@@ -83,11 +81,9 @@ IUP_API int IupMainLoop(void)
 
   gtk_main();
 
-  loop_count--;
-  if( 0 == loop_count)
-  {
+  if (gtk_main_level() == 0)
     iupLoopCallExitCb();
-  }
+
   return IUP_NOERROR;
 }
 

@@ -874,6 +874,14 @@ wb_usr.tree =
               name= {nl= "GLOBALCTRLFUNC_CB"},
               link= "call/iup_globalctrlfunc_cb.html"
             },
+            {
+              name= {nl= "ENTRY_POINT"},
+              link= "call/iup_entry_point.html"
+            },
+            {
+              name= {nl= "EXIT_CB"},
+              link= "call/iup_exit_cb.html"
+            },
             { link= "", name= {en= "" } },
             {
               name= {nl= "MAP_CB"},
