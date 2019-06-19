@@ -823,6 +823,10 @@ wb_usr.tree =
               link= "func/iupexitloop.html"
             },
             {
+              name= {nl= "IupPostMessage"},
+              link= "func/iuppostmessage.html"
+            },
+            {
               name= {nl= "IupFlush"},
               link= "func/iupflush.html"
             },

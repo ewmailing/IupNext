@@ -134,24 +134,25 @@ IUP_API void IupFlush(void)
 
 typedef struct {
   Ihandle* ih;
-  const char* s;
+  char* s;
   int i;
   double d;
 } gtkPostMessageUserData;
 
-static gint gtkPostMessageCallback(void *user_data)
+static gint gtkPostMessageCallback(void *cb_data)
 {
-  gtkPostMessageUserData* message_user_data = (gtkPostMessageUserData*)user_data;
-  Ihandle* ih = message_user_data->ih;
+  gtkPostMessageUserData* user_data = (gtkPostMessageUserData*)cb_data;
+  Ihandle* ih = user_data->ih;
   IFnsid post_message_callback = (IFnsid)IupGetCallback(ih, "POSTMESSAGE_CB");
   if (post_message_callback)
   {
-    const char* s = message_user_data->s;
-    int i = message_user_data->i;
-    double d = message_user_data->d;
+    char* s = user_data->s;
+    int i = user_data->i;
+    double d = user_data->d;
     post_message_callback(ih, (char*)s, i, d);
   }
-  free(message_user_data);
+  if (user_data->s) free(user_data->s);
+  free(user_data);
   return FALSE; /* call only once */
 }
 
@@ -159,7 +160,7 @@ IUP_API void IupPostMessage(Ihandle* ih, const char* s, int i, double d)
 {
   gtkPostMessageUserData* user_data = (gtkPostMessageUserData*)malloc(sizeof(gtkPostMessageUserData));
   user_data->ih = ih;
-  user_data->s = s;
+  user_data->s = iupStrDup(s);
   user_data->i = i;
   user_data->d = d;
   g_idle_add(gtkPostMessageCallback, user_data);  

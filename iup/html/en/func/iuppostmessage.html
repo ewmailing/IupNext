@@ -1,0 +1,48 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.0 Strict//EN">
+<html>
+<head>
+<meta http-equiv="Content-Language" content="en-us">
+<title>IupPostMessage</title>
+
+<link rel="stylesheet" type="text/css" href="../../style.css">
+<style type="text/css">
+.style1 {
+	font-size: large;
+}
+</style>
+</head>
+<body>
+
+<h2>IupPostMessage<span class="style1"> (since 3.28)</span></h2>
+<p>Sends data to an element, that will be received by a callback when the main 
+loop regain control. </p>
+<p>It is expected to be thread safe, but it needs more testing.</p>
+<h3>
+Parameters/Return</h3>
+<div>
+  <pre>void IupPostMessage(Ihandle* <strong>ih</strong>, const char* <strong>s</strong>, int <strong>i</strong>, double <strong>d</strong>); [in C]
+iup.PostMessage(<strong>ih</strong>: ihandle, <strong>s</strong>: string <strong>i</strong>, <strong>d</strong>: number) [in Lua]
+</pre>
+</div>
+<p><b>ih</b>: identifier of the interface element.<br><strong>s</strong>: 
+string. Can be NULL. It will be internally duplicated if not NULL. <br>
+<strong>i</strong>: integer number.<br><strong>d</strong>: floating point 
+number.</p>
+<h3>POSTMESSAGE_CB Callback</h3>
+<pre>int function(Ihandle *<strong>ih</strong>,  const char* <strong>s</strong>, int <strong>i</strong>, double <strong>d</strong>); [in C]
+<strong>ih</strong>:postmessage_cb(<strong>s</strong>: string <strong>i</strong>, <strong>d</strong>: number) -&gt; (<strong>ret</strong>: number) [in Lua]</pre>
+<p><strong>ih</strong>:
+  identifier of the element that activated the 
+  event.<br><strong>s</strong>: string.<br>
+<strong>i</strong>: integer number.<br><strong>d</strong>: floating point 
+number.</p>
+<h3>Notes</h3>
+<p>The variables are stored when the function is called, to be later passed to 
+the callback. It will work even for non native elements.</p>
+<p>The callback must be defined or there will be a memory leak.</p>
+<h3>Affects</h3>
+<p>All controls.</p>
+
+</body>
+
+</html>

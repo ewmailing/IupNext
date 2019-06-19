@@ -105,18 +105,10 @@ static int dialog_dropfiles_cb(Ihandle *self, char * p0, int p1, int p2, int p3)
   return iuplua_call(L, 4);
 }
 
-static int dialog_dragdatasize_cb(Ihandle *self, char * p0)
+static int dialog_postmessage_cb(Ihandle *self)
 {
-  lua_State *L = iuplua_call_start(self, "dragdatasize_cb");
-  lua_pushstring(L, p0);
-  return iuplua_call(L, 1);
-}
-
-static int dialog_customframeactivate_cb(Ihandle *self, int p0)
-{
-  lua_State *L = iuplua_call_start(self, "customframeactivate_cb");
-  lua_pushinteger(L, p0);
-  return iuplua_call(L, 1);
+  lua_State *L = iuplua_call_start(self, "postmessage_cb");
+  return iuplua_call(L, 0);
 }
 
 static int dialog_dragdata_cb(Ihandle *self, char * p0, void* p1, int p2)
@@ -128,16 +120,30 @@ static int dialog_dragdata_cb(Ihandle *self, char * p0, void* p1, int p2)
   return iuplua_call(L, 3);
 }
 
-static int dialog_destroy_cb(Ihandle *self)
+static int dialog_customframeactivate_cb(Ihandle *self, int p0)
 {
-  lua_State *L = iuplua_call_start(self, "destroy_cb");
-  return iuplua_call(L, 0);
+  lua_State *L = iuplua_call_start(self, "customframeactivate_cb");
+  lua_pushinteger(L, p0);
+  return iuplua_call(L, 1);
 }
 
 static int dialog_dragend_cb(Ihandle *self, int p0)
 {
   lua_State *L = iuplua_call_start(self, "dragend_cb");
   lua_pushinteger(L, p0);
+  return iuplua_call(L, 1);
+}
+
+static int dialog_destroy_cb(Ihandle *self)
+{
+  lua_State *L = iuplua_call_start(self, "destroy_cb");
+  return iuplua_call(L, 0);
+}
+
+static int dialog_dragdatasize_cb(Ihandle *self, char * p0)
+{
+  lua_State *L = iuplua_call_start(self, "dragdatasize_cb");
+  lua_pushstring(L, p0);
   return iuplua_call(L, 1);
 }
 
@@ -165,11 +171,12 @@ int iupdialoglua_open(lua_State * L)
   iuplua_register_cb(L, "SHOW_CB", (lua_CFunction)dialog_show_cb, NULL);
   iuplua_register_cb(L, "TRAYCLICK_CB", (lua_CFunction)dialog_trayclick_cb, NULL);
   iuplua_register_cb(L, "DROPFILES_CB", (lua_CFunction)dialog_dropfiles_cb, NULL);
-  iuplua_register_cb(L, "DRAGDATASIZE_CB", (lua_CFunction)dialog_dragdatasize_cb, NULL);
-  iuplua_register_cb(L, "CUSTOMFRAMEACTIVATE_CB", (lua_CFunction)dialog_customframeactivate_cb, NULL);
+  iuplua_register_cb(L, "POSTMESSAGE_CB", (lua_CFunction)dialog_postmessage_cb, NULL);
   iuplua_register_cb(L, "DRAGDATA_CB", (lua_CFunction)dialog_dragdata_cb, NULL);
-  iuplua_register_cb(L, "DESTROY_CB", (lua_CFunction)dialog_destroy_cb, NULL);
+  iuplua_register_cb(L, "CUSTOMFRAMEACTIVATE_CB", (lua_CFunction)dialog_customframeactivate_cb, NULL);
   iuplua_register_cb(L, "DRAGEND_CB", (lua_CFunction)dialog_dragend_cb, NULL);
+  iuplua_register_cb(L, "DESTROY_CB", (lua_CFunction)dialog_destroy_cb, NULL);
+  iuplua_register_cb(L, "DRAGDATASIZE_CB", (lua_CFunction)dialog_dragdatasize_cb, NULL);
 
 #ifdef IUPLUA_USELOH
 #include "dialog.loh"

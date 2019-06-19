@@ -198,7 +198,7 @@ IUP_API void IupFlush(void)
 
 typedef struct {
   Ihandle* ih;
-  const char* s;
+  char* s;
   int i;
   double d;
 } winPostMessageUserData;
@@ -207,7 +207,7 @@ IUP_API void IupPostMessage(Ihandle* ih, const char* s, int i, double d)
 {
   winPostMessageUserData* user_data = (winPostMessageUserData*)malloc(sizeof(winPostMessageUserData));
   user_data->ih = ih;
-  user_data->s = s;
+  user_data->s = iupStrDup(s);
   user_data->i = i;
   user_data->d = d;
 
@@ -220,9 +220,9 @@ static void winProcessPostMessage(LPARAM lParam)
   Ihandle* ih = user_data->ih;
   IFnsid post_message_callback = (IFnsid)IupGetCallback(ih, "POSTMESSAGE_CB");
   if (post_message_callback)
-  {
-    post_message_callback(ih, (char*)user_data->s, user_data->i, user_data->d);
-  }
+    post_message_callback(ih, user_data->s, user_data->i, user_data->d);
+
+  if (user_data->s) free(user_data->s);
   free(user_data);
 }
 

@@ -583,6 +583,7 @@ IUP_SDK_API void iupBaseRegisterCommonCallbacks(Iclass* ic)
   iupClassRegisterCallback(ic, "KILLFOCUS_CB", "");
   iupClassRegisterCallback(ic, "ENTERWINDOW_CB", "");
   iupClassRegisterCallback(ic, "LEAVEWINDOW_CB", "");
+  iupClassRegisterCallback(ic, "POSTMESSAGE_CB", "");
   iupClassRegisterCallback(ic, "HELP_CB", "");
   iupClassRegisterCallback(ic, "K_ANY", "i");
 }

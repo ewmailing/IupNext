@@ -198,7 +198,6 @@ void IupFlush(void)
 	[NSApp terminate:nil];
 }
 
-/* TODO: Make decision on final API. For now, this API is just to get a usable demo. */
 void IupPostMessage(Ihandle* ih, const char* s, int i, double d)
 {
 	dispatch_async(dispatch_get_main_queue(),
@@ -212,4 +211,3 @@ void IupPostMessage(Ihandle* ih, const char* s, int i, double d)
 		}
 	);
 }
-

@@ -137,24 +137,25 @@ IUP_API void IupFlush(void)
 
 typedef struct {
   Ihandle* ih;
-  const char* s;
+  char* s;
   int i;
   double d;
 } motPostMessageUserData;
 
 static Boolean motPostMessagebWorkProc(XtPointer client_data)
 {
-  motPostMessageUserData* message_user_data = (motPostMessageUserData*)client_data;
-  Ihandle* ih = message_user_data->ih;
+  motPostMessageUserData* user_data = (motPostMessageUserData*)client_data;
+  Ihandle* ih = user_data->ih;
   IFnsid post_message_callback = (IFnsid)IupGetCallback(ih, "POSTMESSAGE_CB");
   if (post_message_callback)
   {
-    const char* s = message_user_data->s;
-    int i = message_user_data->i;
-    double d = message_user_data->d;
-    post_message_callback(ih, (char*)s, i, d);
+    char* s = user_data->s;
+    int i = user_data->i;
+    double d = user_data->d;
+    post_message_callback(ih, s, i, d);
   }
-  free(message_user_data);
+  if (user_data->s) free(user_data->s);
+  free(user_data);
   return True; /* removes the working procedure */
 }
 
@@ -162,7 +163,7 @@ IUP_API void IupPostMessage(Ihandle* ih, const char* s, int i, double d)
 {
   motPostMessageUserData* user_data = (motPostMessageUserData*)malloc(sizeof(motPostMessageUserData));
   user_data->ih = ih;
-  user_data->s = s;
+  user_data->s = iupStrDup(s);
   user_data->i = i;
   user_data->d = d;
   XtAppAddWorkProc(iupmot_appcontext, motPostMessagebWorkProc, NULL);
