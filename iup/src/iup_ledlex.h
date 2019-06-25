@@ -46,6 +46,8 @@ float   iupLexGetNumber  (void);
 int     iupLexError      (int n, ...);
 Iclass* iupLexGetClass   (void);
 
+char* iupLoadLed(const char *buffer, int is_file, int checkhandle);
+
 #ifdef __cplusplus
 }
 #endif

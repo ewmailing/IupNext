@@ -21,22 +21,30 @@
 #define IPARSE_SYMBEXIST       1
 #define IPARSE_SYMBNOTDEF      2
 
-static Ihandle* iParseExp (void);
+static void* iParseExp (void);
 static Ihandle* iParseFunction (Iclass *ic);
 static int iParseError (int err, char *s);
 
 static int iparse_error = 0;
+static int iparse_checkhandle = 1;
 #define IPARSE_RETURN_IF_ERROR(_e)        {iparse_error=(_e); if (iparse_error) return NULL;}
 #define IPARSE_RETURN_IF_ERROR_FREE(_e, _x)   {iparse_error=(_e); if (iparse_error) { if (_x) free(_x); return NULL;} }
 
 
-IUP_API char* IupLoad(const char *filename)
+char* iupLoadLed(const char *buffer, int is_file, int checkhandle)
 {
-  iupASSERT(filename!=NULL);
-  if (!filename)
-    return "invalid file name";
+  iupASSERT(buffer != NULL);
+  if (!buffer)
+  {
+    if (is_file)
+      return "invalid file name";
+    else
+      return "invalid buffer";
+  }
 
-  iparse_error = iupLexStart(filename, 1);
+  iparse_checkhandle = checkhandle;
+
+  iparse_error = iupLexStart(buffer, is_file);
   if (iparse_error)
   {
     iupLexClose();
@@ -45,7 +53,7 @@ IUP_API char* IupLoad(const char *filename)
 
   while (iupLexLookAhead() != IUPLEX_TK_END)
   {
-    iParseExp();
+    (void)iParseExp(); /* ignore return */
     if (iparse_error)
     {
       iupLexClose();
@@ -55,36 +63,19 @@ IUP_API char* IupLoad(const char *filename)
 
   iupLexClose();
   return NULL;
+}
+
+IUP_API char* IupLoad(const char *filename)
+{
+  return iupLoadLed(filename, 1, 1);
 }
 
 IUP_API char* IupLoadBuffer(const char *buffer)
 {
-  iupASSERT(buffer!=NULL);
-  if (!buffer)
-    return "invalid buffer";
-
-  iparse_error = iupLexStart(buffer, 0);
-  if (iparse_error)
-  {
-    iupLexClose();
-    return iupLexGetError();
-  }
-
-  while (iupLexLookAhead() != IUPLEX_TK_END)
-  {
-    iParseExp();
-    if (iparse_error)
-    {
-      iupLexClose();
-      return iupLexGetError();
-    }
-  }
-
-  iupLexClose();
-  return NULL;
+  return iupLoadLed(buffer, 0, 1);
 }
 
-static Ihandle* iParseExp(void)
+static void* iParseExp(void)
 {
   char* nm = NULL;
   Ihandle* ih = NULL;
@@ -111,14 +102,15 @@ static Ihandle* iParseExp(void)
 
   if (match)
   {
-    ih = iParseExp();  
+    ih = (Ihandle*)iParseExp();  
     IPARSE_RETURN_IF_ERROR_FREE(iparse_error, nm);
-    IupSetHandle(nm, ih);
+    if (ih)
+      IupSetHandle(nm, ih);
   }
   else
   {
     ih = IupGetHandle(nm);
-    if (!ih)
+    if (!ih && iparse_checkhandle)
       IPARSE_RETURN_IF_ERROR_FREE(iParseError(IPARSE_SYMBNOTDEF, nm), nm);
   }
 
@@ -159,9 +151,9 @@ static void* iParseControlParam(char type)
   case 'g':
   case 'h':
     {
-      char *new_control = (char*)iParseExp();
+      void *p = iParseExp();
       IPARSE_RETURN_IF_ERROR(iparse_error);
-      return new_control;
+      return p;
     }
 
   default:
