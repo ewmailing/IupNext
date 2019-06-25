@@ -1607,7 +1607,7 @@ static void iLayoutPropertiesUpdate(Ihandle* properties, Ihandle* ih)
   if (attr_count > total_count)
     attr_names = (char **)realloc(attr_names, attr_count * sizeof(char *));
 
-  IupGetAllAttributes(ih, attr_names, attr_count);
+  attr_count = IupGetAllAttributes(ih, attr_names, attr_count);
   for (i = 0, j = 1; i < attr_count; i++)
   {
     if (!iupClassAttribIsRegistered(ih->iclass, attr_names[i]))
