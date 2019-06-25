@@ -582,7 +582,7 @@ static unsigned int iTableGetEntryIndex(Itable *it, const char *key, unsigned lo
   {
     register unsigned int checksum = 0;
 
-/*     Orignal version
+/*     Original version
     unsigned int i;
     for (i = 0; key[i]; i++)
       checksum = checksum*31 + key[i];  
