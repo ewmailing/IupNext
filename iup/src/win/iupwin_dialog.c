@@ -603,7 +603,8 @@ static int winDialogCustomFrameProc(Ihandle* ih, UINT msg, WPARAM wp, LPARAM lp,
   }
   case WM_ERASEBKGND:
   {
-    InvalidateRect(ih->handle, NULL, FALSE);
+    if (!iupwinIsVistaOrNew())
+      InvalidateRect(ih->handle, NULL, FALSE);
 
     /* return non zero value */
     *result = 1;

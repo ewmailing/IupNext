@@ -452,8 +452,11 @@ static int winCanvasMsgProc(Ihandle* ih, UINT msg, WPARAM wp, LPARAM lp, LRESULT
       FillRect(hdc, &rect, iupwinBrushGet(color)); 
     }
     else
-      InvalidateRect(ih->handle,NULL,FALSE);  /* This will invalidate all area. 
-                                                 Necessary in XP, or overlapping windows will have the effect of partial redrawing. */
+    {
+      if (!iupwinIsVistaOrNew())
+        InvalidateRect(ih->handle, NULL, FALSE);  /* This will invalidate all area.
+                                                     Necessary in XP, or overlapping windows will have the effect of partial redrawing. */
+    }
 
     /* always return non zero value */
     *result = 1;
@@ -503,6 +506,7 @@ static int winCanvasMsgProc(Ihandle* ih, UINT msg, WPARAM wp, LPARAM lp, LRESULT
         *result = 0;
         return 1;
       }
+
       break;
     }
   case WM_GETDLGCODE:
