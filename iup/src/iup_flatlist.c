@@ -626,7 +626,7 @@ static void iFlatListCallActionCallback(Ihandle* ih, IFnsii cb, int pos, int sta
 {
   char *text;
 
-  if (pos < 1)
+  if (pos < 1 || !cb)
     return;
 
   text = IupGetAttributeId(ih, "", pos);
