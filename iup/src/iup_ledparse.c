@@ -110,8 +110,20 @@ static void* iParseExp(void)
   else
   {
     ih = IupGetHandle(nm);
-    if (!ih && iparse_checkhandle)
-      IPARSE_RETURN_IF_ERROR_FREE(iParseError(IPARSE_SYMBNOTDEF, nm), nm);
+    if (!ih)
+    {
+      if (iparse_checkhandle)
+      {
+        IPARSE_RETURN_IF_ERROR_FREE(iParseError(IPARSE_SYMBNOTDEF, nm), nm);
+      }
+      else
+      {
+        /* dummy element to be replaced later */
+        ih = IupUser();
+        IupSetAttribute(ih, "LEDPARSER_NOTDEFINED", "1");
+        IupSetStrAttribute(ih, "LEDPARSER_NAME", nm);
+      }
+    }
   }
 
   if (nm) free(nm);
