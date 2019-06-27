@@ -485,6 +485,7 @@ void DropButtonTest(void)
 //  IupSetAttribute(box2, "BGCOLOR", "75 150 170");
 //  IupSetAttribute(box2, "PADDING", "15x15");
 
+#if 0
   image1 = IupImage(TEST_IMAGE_SIZE, TEST_IMAGE_SIZE, image_data_8);
   IupSetAttribute(image1, "0", "BGCOLOR");
   IupSetAttribute(image1, "1", "255 0 0"); 
@@ -492,6 +493,7 @@ void DropButtonTest(void)
   IupSetAttribute(image1, "3", "0 0 255"); 
   IupSetAttribute(image1, "4", "255 255 255"); 
   IupSetAttribute(image1, "5", "0 0 0"); 
+#endif
 
 #if 0
   image1i = IupImage(TEST_IMAGE_SIZE, TEST_IMAGE_SIZE, image_data_8_inactive);

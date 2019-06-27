@@ -341,6 +341,7 @@ void FlatButtonTest(void)
 //  IupSetAttribute(box2, "BGCOLOR", "75 150 170");
 //  IupSetAttribute(box2, "PADDING", "15x15");
 
+#if 0
   image1 = IupImage(TEST_IMAGE_SIZE, TEST_IMAGE_SIZE, image_data_8);
   IupSetAttribute(image1, "0", "BGCOLOR");
   IupSetAttribute(image1, "1", "255 0 0"); 
@@ -348,6 +349,9 @@ void FlatButtonTest(void)
   IupSetAttribute(image1, "3", "0 0 255"); 
   IupSetAttribute(image1, "4", "255 255 255"); 
   IupSetAttribute(image1, "5", "0 0 0"); 
+#else
+  image1 = load_image_FileSave();
+#endif
 
 #if 0
   image1i = IupImage(TEST_IMAGE_SIZE, TEST_IMAGE_SIZE, image_data_8_inactive);
@@ -376,7 +380,7 @@ void FlatButtonTest(void)
 
   button = IupFlatButton(NULL);
   IupSetAttribute(button, "TITLE", "Images");
-  IupSetAttributeHandle(button, "IMAGE", load_image_FileSave());
+  IupSetAttributeHandle(button, "IMAGE", image1);
   
   //IupSetAttribute(button, "IMAGE", "TECGRAF_BITMAP");
   IupAppend(box2, button);
@@ -443,7 +447,15 @@ void FlatButtonTest(void)
 
   IupSetAttributeHandle(dlg, "STARTFOCUS", button);
 
+#if 1
   IupShow(dlg);
+#else
+  IupPopup(dlg, IUP_CENTER, IUP_CENTER);
+  IupDestroy(dlg);
+  IupDestroy(image1);
+  IupDestroy(image2);
+  IupDestroy(image3);
+#endif
 }
 
 #ifndef BIG_TEST
