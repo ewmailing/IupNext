@@ -32,7 +32,7 @@
 IUP_SDK_API int iupSaveImageAsText(Ihandle* ih, FILE* packfile, const char* format, const char* name);
 
 /* IupImage internal function, used only here */
-void iupImageStockLoadAll(void);
+IUP_SDK_API void iupImageStockLoadAll(void);
 
 static int close_cb(void)
 {
