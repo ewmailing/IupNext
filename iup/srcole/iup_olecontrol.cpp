@@ -207,6 +207,9 @@ IUPOLE_API Ihandle *IupOleControl(const char *ProgID)
 
 IUPOLE_API int IupOleControlOpen(void)
 {
+  if (!IupIsOpened())
+    return IUP_ERROR;
+
   if (IupGetGlobal("_IUP_OLECONTROL_OPEN"))
     return IUP_OPENED;
 

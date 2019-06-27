@@ -860,6 +860,9 @@ extern "C" {
    once called it will replace regular IupFileDlg */
 int IupNewFileDlgOpen(void)
 {
+  if (!IupIsOpened())
+    return IUP_ERROR;
+
   if (IupGetGlobal("_IUP_NEWFILEDLG_OPEN"))
     return IUP_OPENED;
 

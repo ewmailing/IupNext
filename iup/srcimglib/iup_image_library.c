@@ -14,6 +14,9 @@
 
 void IupImageLibOpen(void)
 {
+  if (!IupIsOpened())
+    return;
+
   if (IupGetGlobal("_IUP_IMAGELIB_OPEN"))
     return;
 

@@ -431,6 +431,9 @@ static Iclass* iTuioNewClass(void)
 
 int IupTuioOpen(void)
 {
+  if (!IupIsOpened())
+    return IUP_ERROR;
+
   if (IupGetGlobal("_IUP_TUIO_OPEN"))
     return IUP_OPENED;
 

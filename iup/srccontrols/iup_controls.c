@@ -17,6 +17,9 @@
 
 int IupControlsOpen(void)
 {
+  if (!IupIsOpened())
+    return IUP_ERROR;
+
   if (IupGetGlobal("_IUP_CONTROLS_OPEN"))
     return IUP_OPENED;
 

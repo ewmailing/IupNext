@@ -31,8 +31,12 @@ extern int IupGtkWebBrowserDLOpen(void);
 
 IUPWEB_API int IupWebBrowserOpen(void)
 {
+  if (!IupIsOpened())
+    return IUP_ERROR;
+
 #ifdef WIN32
-  IupOleControlOpen();
+  if (IupOleControlOpen() == IUP_ERROR)
+    return IUP_ERROR;
 #endif
 
 #ifdef IUPWEB_USE_DLOPEN

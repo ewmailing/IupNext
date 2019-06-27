@@ -3537,7 +3537,11 @@ Ihandle* IupPlot(void)
 
 void IupPlotOpen(void)
 {
+  if (!IupIsOpened())
+    return;
+
   IupGLCanvasOpen();
+
 #ifdef USE_CONTEXTPLUS
   cdInitContextPlus();
 #endif

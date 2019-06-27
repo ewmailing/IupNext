@@ -36,7 +36,9 @@ typedef int (*Icallback)(Ihandle*);
 
 IUP_API int       IupOpen          (int *argc, char ***argv);
 IUP_API void      IupClose         (void);
-IUPIMGLIB_API void IupImageLibOpen (void);
+IUP_API int       IupIsOpened      (void);
+
+IUPIMGLIB_API void IupImageLibOpen(void);
 
 IUP_API int       IupMainLoop      (void);
 IUP_API int       IupLoopStep      (void);

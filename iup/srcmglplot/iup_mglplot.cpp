@@ -5244,6 +5244,9 @@ Ihandle* IupMglLabel(const char* title)
 
 void IupMglPlotOpen(void)
 {
+  if (!IupIsOpened())
+    return;
+
   IupGLCanvasOpen();
 
   if (!IupGetGlobal("_IUP_MGLPLOT_OPEN"))

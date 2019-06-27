@@ -485,6 +485,9 @@ Iclass* iupScintillaDlgNewClass(void);
 
 void IupScintillaOpen(void)
 {
+  if (!IupIsOpened())
+    return;
+
   if (!IupGetGlobal("_IUP_SCINTILLA_OPEN"))
   {
     iupRegisterClass(iupScintillaNewClass());

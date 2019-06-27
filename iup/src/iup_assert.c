@@ -18,8 +18,6 @@
 #include "iup_str.h"
 #include "iup_predialogs.h"
 
-/* from iup_open, but it is not exported, used only here */
-int iupIsOpened(void);
 
 IUP_SDK_API void iupError(const char* format, ...)
 {
@@ -32,7 +30,7 @@ IUP_SDK_API void iupError(const char* format, ...)
 #if IUP_ASSERT_CONSOLE 
   fprintf(stderr, "%s", msg);
 #else
-  if (iupIsOpened())
+  if (IupIsOpened())
     IupMessageError(NULL, msg);
   else
     fprintf(stderr, "%s", msg);

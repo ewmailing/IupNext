@@ -160,6 +160,7 @@ IupImageGetHandle
 IupImageRGB
 IupImageRGBA
 IupInsert
+IupIsOpened
 IupItem
 IupLabel
 IupLayoutDialog

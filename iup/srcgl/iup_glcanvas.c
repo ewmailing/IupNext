@@ -78,6 +78,9 @@ Ihandle* IupGLCanvas(const char *action)
 
 void IupGLCanvasOpen(void)
 {
+  if (!IupIsOpened())
+    return;
+
   if (!IupGetGlobal("_IUP_GLCANVAS_OPEN"))
   {
     iupRegisterClass(iGlCanvasNewClass());
