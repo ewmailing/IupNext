@@ -1345,7 +1345,7 @@ static int iMatrixListKeyAny_CB(Ihandle *ih, int key)
 ******************************************************************************/
 
 
-static void iMatrixListUnMapMethod(Ihandle* ih)
+static void iMatrixListDestroyMethod(Ihandle* ih)
 {
   ImatrixListData* mtxList = (ImatrixListData*)iupAttribGet(ih, "_IUPMTXLIST_DATA");
   free(mtxList);
@@ -1405,8 +1405,8 @@ Iclass* iupMatrixListNewClass(void)
   /* Class functions */
   ic->New    = iupMatrixListNewClass;
   ic->Create = iMatrixListCreateMethod;
-  ic->Map    = iMatrixListMapMethod;
-  ic->UnMap  = iMatrixListUnMapMethod;
+  ic->Destroy = iMatrixListDestroyMethod;
+  ic->Map = iMatrixListMapMethod;
 
   /* IupMatrixList Callbacks */
   iupClassRegisterCallback(ic, "IMAGEVALUECHANGED_CB", "ii");
