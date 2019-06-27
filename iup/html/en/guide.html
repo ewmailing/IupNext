@@ -426,6 +426,28 @@ int SampleClass::ButtonAction2(Ihandle*)
    
 
 
+<h3><a name="memcheck">Memory Checking</a></h3>
+<p>Periodically we run some tool to check for memory usage and check for leaks 
+or other misuse. </p>
+<p>In Windows we use Visual Leak Detector (<a href="https://kinddragon.github.io/vld/" target="_top">https://kinddragon.github.io/vld/</a>). 
+You just have to include this in your code once:</p>
+<pre> #ifdef WIN32
+<strong>#define VLD_MAX_DATA_DUMP 80
+#include &lt;vld.h&gt;
+</strong>#endif</pre>
+<p>For Linux we use Valgrind (<a href="http://valgrind.org/" target="_top">http://valgrind.org/</a>), 
+but there are a few problems with GTK that should be ignored. We suggest the 
+following environment variable:</p>
+<pre><span>export VALGRIND_OPTS=&quot;--tool=memcheck -v --leak-check=full --show-reachable=yes --num-callers=30 --leak-resolution=high --error-limit=no --suppressions=gtk.supp --track-origins=yes&quot;</span></pre>
+<p>The file with the necessary suppressions can be downloaded
+<a href="../download/gtk.supp">here</a>. Take a look at this page for more info:
+<a href="https://wiki.gnome.org/Valgrind">https://wiki.gnome.org/Valgrind</a>.</p>
+<p>Another free tool available for Linux and Windows is Doctor Memory (<a href="https://drmemory.org/">https://drmemory.org/</a>).</p>
+  
+
+   
+
+
 </body>
 
 </html>
