@@ -811,6 +811,11 @@ static int iDropButtonCreateMethod(Ihandle* ih, void** params)
   return IUP_NOERROR;
 }
 
+static void iDropButtonDestroyMethod(Ihandle* ih)
+{
+  IupDestroy(ih->data->dropdialog);
+}
+
 static void iDropButtonComputeNaturalSizeMethod(Ihandle* ih, int *w, int *h, int *children_expand)
 {
   int fit2backimage = iupAttribGetBoolean(ih, "FITTOBACKIMAGE");
@@ -861,6 +866,7 @@ Iclass* iupDropButtonNewClass(void)
   /* Class functions */
   ic->New = iupDropButtonNewClass;
   ic->Create = iDropButtonCreateMethod;
+  ic->Destroy = iDropButtonDestroyMethod;
   ic->ComputeNaturalSize = iDropButtonComputeNaturalSizeMethod;
 
   /* Callbacks */
