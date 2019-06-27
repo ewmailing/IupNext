@@ -173,6 +173,25 @@ static void* iParseControlParam(char type)
   }
 }
 
+static void iParseRelaseParamArray(void** params, const char *format, int num_format)
+{
+  int i;
+
+  for (i = 0; params[i] && i<num_format; i++)
+  {
+    if (format[i] == 'j' ||
+        format[i] == 'g' ||
+        format[i] == 'c')
+        break;
+
+    if (format[i] == 'a' || format[i] == 's')
+    {
+      if (params[i])
+        free(params[i]);   /* iupLexGetName returned a duplicated string */
+    }
+  }
+}
+
 static Ihandle* iParseControl(Iclass *ic)
 {
   const char *format = ic->format;
@@ -187,14 +206,18 @@ static Ihandle* iParseControl(Iclass *ic)
                       
     num_arg = num_format;
     alloc_arg = num_arg+20;
-    params = (void**)malloc(sizeof(void*)*alloc_arg);
+    params = (void**)calloc(sizeof(void*), alloc_arg);
 
     for (i = 0; i < num_arg; )
     {
       char p_format = format[i];
 
       if (i > 0)
-        IPARSE_RETURN_IF_ERROR_FREE(iupLexMatch (IUPLEX_TK_COMMA), params);
+      {
+        iparse_error = iupLexMatch(IUPLEX_TK_COMMA);
+        if (iparse_error) iParseRelaseParamArray(params, format, num_format);
+        IPARSE_RETURN_IF_ERROR_FREE(iparse_error, params);
+      }
 
       if (p_format != 'j' &&    /* not array */
           p_format != 'g' && 
@@ -202,6 +225,7 @@ static Ihandle* iParseControl(Iclass *ic)
       {
         params[i] = iParseControlParam(p_format);
         i++;
+        if (iparse_error) iParseRelaseParamArray(params, format, num_format);
         IPARSE_RETURN_IF_ERROR_FREE(iparse_error, params);
       }
       else    /* array */
@@ -220,8 +244,10 @@ static Ihandle* iParseControl(Iclass *ic)
           }
           params[i] = iParseControlParam(p_format);
           i++;
+          if (iparse_error) iParseRelaseParamArray(params, format, num_format);
           IPARSE_RETURN_IF_ERROR_FREE(iparse_error, params);
           match = iupLexSeenMatch(IUPLEX_TK_COMMA,&iparse_error);
+          if (iparse_error) iParseRelaseParamArray(params, format, num_format);
           IPARSE_RETURN_IF_ERROR_FREE(iparse_error, params);
         } while (match); 
 
@@ -233,16 +259,7 @@ static Ihandle* iParseControl(Iclass *ic)
     params[i] = NULL;
     new_control = iupObjectCreate(ic, params);
 
-    for (i = 0; params[i] && i<num_format ; i++)
-    {
-      if (format[i] == 'j' ||
-          format[i] == 'g' || 
-          format[i] == 'c')
-        break;
-
-      if (format[i] == 'a' || format[i] == 's')
-        free(params[i]);   /* iupLexGetName returned a duplicated string */
-    }
+    iParseRelaseParamArray(params, format, num_format);
 
     free(params);
     return new_control;
