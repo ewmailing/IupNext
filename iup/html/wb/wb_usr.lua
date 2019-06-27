@@ -153,6 +153,10 @@ wb_usr.tree =
           name= {en= "Using IUP in C++"},
           link= "guide.html#cpp"
         },
+        {
+          name= {en= "Memory Checking"},
+          link= "guide.html#memcheck"
+        },
         { link= "", name= {en= "" } },
         {
           name= {en= "Building in Linux"},
