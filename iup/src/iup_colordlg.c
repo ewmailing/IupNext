@@ -1069,9 +1069,10 @@ static int iColorDlgCreateMethod(Ihandle* ih, void** params)
   iupChildTreeAppend(ih, IupSetAttributes(IupVbox(lin1, IupSetAttributes(IupLabel(NULL), "SEPARATOR=HORIZONTAL"), lin2, NULL), "MARGIN=10x10, GAP=10"));
 
   IupRefresh(ih);
+
   if (colordlg_data->color_browser->currentwidth < colordlg_data->color_browser->currentheight)
   {
-    IupSetStrf(colordlg_data->color_browser, "RASTERSIZE", "%dx", colordlg_data->color_browser->currentheight);
+    IupSetStrf(colordlg_data->color_browser, "RASTERSIZE", "%dx%d", colordlg_data->color_browser->currentheight, colordlg_data->color_browser->currentheight);
     IupSetAttribute(ih, "RASTERSIZE", NULL);
   }
 

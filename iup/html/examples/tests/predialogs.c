@@ -286,7 +286,7 @@ static void new_color(void)
   //IupSetAttribute(dlg, "COLORTABLE", ";;177 29 234;;;0 0 23;253 20 119");
   IupSetAttribute(dlg, "SHOWHEX", "YES");
   IupSetAttribute(dlg, "SHOWCOLORTABLE", "YES");
-  //IupSetAttribute(dlg, "SHOWALPHA", "YES");
+  IupSetAttribute(dlg, "SHOWALPHA", "YES");
   IupSetAttribute(dlg, "TITLE", "IupColorDlg Test");
   IupSetCallback(dlg, "HELP_CB", (Icallback)help_cb);
   IupSetCallback(dlg, "COLORUPDATE_CB", (Icallback)colorupdate_cb);
