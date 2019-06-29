@@ -790,7 +790,10 @@ static int iFlatListSetIdValueAttrib(Ihandle* ih, int pos, const char* value)
     iFlatListRemoveItem(ih, 0, count - pos - 1);
   else if (pos <= count)
   {
-    iFlatListItem* items = (iFlatListItem*)iupArrayInsert(ih->data->items_array, pos - 1, 1);
+    iFlatListItem* items = (iFlatListItem*)iupArrayGetData(ih->data->items_array);
+
+    if (items[pos - 1].name)
+      free(items[pos - 1].name);
     items[pos - 1].name = iupStrDup(value);
   }
   else
@@ -876,9 +879,9 @@ static int iFlatListSetImageAttribId(Ihandle* ih, int pos, const char* value)
     return 0;
 
   items = (iFlatListItem *)iupArrayGetData(ih->data->items_array);
+
   if (items[pos - 1].image)
     free(items[pos - 1].image);
-
   items[pos-1].image = iupStrDup(value);
 
   if (ih->handle)
@@ -1281,7 +1284,6 @@ static int iFlatListSetItemFGColorAttrib(Ihandle* ih, int pos, const char* value
 
   if (items[i].fgColor)
     free(items[i].fgColor);
-
   items[i].fgColor = iupStrDup(value);
 
   if (ih->handle)
@@ -1312,7 +1314,6 @@ static int iFlatListSetItemBGColorAttrib(Ihandle* ih, int pos, const char* value
 
   if (items[i].bgColor)
     free(items[i].bgColor);
-
   items[i].bgColor = iupStrDup(value);
 
   if (ih->handle)
@@ -1342,7 +1343,6 @@ static int iFlatListSetItemFontAttrib(Ihandle* ih, int pos, const char* value)
 
   if (items[i].font)
     free(items[i].font);
-
   items[i].font = iupStrDup(value);
 
   if (ih->handle)
