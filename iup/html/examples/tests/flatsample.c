@@ -477,7 +477,7 @@ static int list_cb(Ihandle* list, char *text, int item, int state)
 
 void FlatSampleTest(void)
 {
-  Ihandle *mnu, *_hbox_1, *_cnv_1, *_vbox_1, *dlg, *img, *dial, *_frm_22,
+  Ihandle *mnu, *_hbox_1, *_cnv_1, *_vbox_1, *dlg, *img, *img2, *dial, *_frm_22,
     *_frm_1, *_frm_2, *_frm_3, *_frm_5, *pbar, *val, *tabs,
     *_list_1, *_list_2; //, *tree
 
@@ -490,12 +490,12 @@ void FlatSampleTest(void)
   img = load_image_Tecgraf();
   IupSetHandle ("img1", img); 
 
-  img = IupImage(32,32, img_bits2);
-  IupSetHandle ("img2", img); 
-  IupSetAttribute (img, "0", "0 0 0"); 
-  IupSetAttribute (img, "1", "0 255 0");
-  IupSetAttribute (img, "2", "BGCOLOR");
-  IupSetAttribute (img, "3", "255 0 0");
+  img2 = IupImage(32, 32, img_bits2);
+  IupSetHandle("img2", img2);
+  IupSetAttribute(img2, "0", "0 0 0");
+  IupSetAttribute(img2, "1", "0 255 0");
+  IupSetAttribute(img2, "2", "BGCOLOR");
+  IupSetAttribute(img2, "3", "255 0 0");
 
   mnu = IupMenu(
     IupSubmenu("IupSubmenu 1", IupMenu(
@@ -747,7 +747,14 @@ void FlatSampleTest(void)
   IupSetAttribute(tree, "ADDLEAF12", "item 7");  /* ... */
 #endif
 
+#if 1
   IupShow(dlg);
+#else
+  IupPopup(dlg, IUP_CENTER, IUP_CENTER);
+  IupDestroy(dlg);
+  IupDestroy(img);
+  IupDestroy(img2);
+#endif
 
 //  IupSetAttribute(dlg,"RASTERSIZE", NULL);
 }
