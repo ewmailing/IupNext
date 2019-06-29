@@ -29,9 +29,6 @@
 #include "iup_flatscrollbar.h"
 
 
-static void iFlatListCallActionCallback(Ihandle* ih, IFnsii cb, int pos, int state);
-static void iFlatListMultipleCallActionCb(Ihandle* ih, IFnsii cb, IFns multi_cb, IFn valuechanged_cb, int* pos, int sel_count);
-static void iFlatListSingleCallActionCb(Ihandle* ih, IFnsii cb, IFn valuechanged_cb, int pos);
 
 typedef struct _iFlatListItem {
   char* name;
@@ -151,15 +148,6 @@ static void iFlatListRemoveItem(Ihandle *ih, int start, int remove_count)
       free(items[i].font);
   }
   iupArrayRemove(ih->data->items_array, start, remove_count);
-}
-
-static void iFlatListUnSelectedAll(Ihandle *ih)
-{
-  iFlatListItem* items = (iFlatListItem*)iupArrayGetData(ih->data->items_array);
-  int count = iupArrayCount(ih->data->items_array);
-  int i;
-  for (i = 0; i < count; i++)
-    items[i].selected = 0;
 }
 
 static void iFlatListSetItemFont(Ihandle* ih, const char* font)
@@ -373,6 +361,74 @@ static int iFlatListRedraw_CB(Ihandle* ih)
   return IUP_DEFAULT;
 }
 
+static char* iFlatListGetIdValueAttrib(Ihandle* ih, int pos);
+
+static void iFlatListCallActionCallback(Ihandle* ih, IFnsii cb, int pos, int state)
+{
+  char *text;
+
+  if (pos < 1 || !cb)
+    return;
+
+  text = iFlatListGetIdValueAttrib(ih, pos);
+
+  if (cb(ih, text, pos, state) == IUP_CLOSE)
+    IupExitLoop();
+}
+
+static void iFlatListSingleCallActionCb(Ihandle* ih, IFnsii cb, IFn valuechanged_cb, int pos, int old_pos)
+{
+  int unchanged = 1;
+
+  if (old_pos != -1)
+  {
+    if (old_pos != pos)
+    {
+      iFlatListCallActionCallback(ih, cb, old_pos, 0);
+      iFlatListCallActionCallback(ih, cb, pos, 1);
+      unchanged = 0;
+    }
+  }
+  else
+  {
+    iFlatListCallActionCallback(ih, cb, pos, 1);
+    unchanged = 0;
+  }
+
+  if (!unchanged && valuechanged_cb)
+    valuechanged_cb(ih);
+}
+
+static void iFlatListMultipleCallActionCb(Ihandle* ih, IFnsii cb, IFns multi_cb, IFn valuechanged_cb, char* str, int count)
+{
+  int i;
+  int unchanged = 1;
+
+  if (multi_cb)
+  {
+    if (multi_cb(ih, str) == IUP_CLOSE)
+      IupExitLoop();
+  }
+  else
+  {
+    /* must simulate the click on each item */
+    for (i = 0; i < count; i++)
+    {
+      if (str[i] != 'x')
+      {
+        if (str[i] == '+')
+          iFlatListCallActionCallback(ih, cb, i + 1, 1);
+        else
+          iFlatListCallActionCallback(ih, cb, i + 1, 0);
+        unchanged = 0;
+      }
+    }
+  }
+
+  if (!unchanged && valuechanged_cb)
+    valuechanged_cb(ih);
+}
+
 static void iFlatListSelectItem(Ihandle* ih, int pos, int ctrlPressed, int shftPressed)
 {
   IFns multi_cb = (IFns)IupGetCallback(ih, "MULTISELECT_CB");
@@ -386,92 +442,112 @@ static void iFlatListSelectItem(Ihandle* ih, int pos, int ctrlPressed, int shftP
   if (ih->data->is_multiple)
   {
     int i, start, end;
+    char* str;
     char *val = iupAttribGet(ih, "_IUPFLATLIST_LASTSELECTED");
     int last_pos = (val) ? atoi(val) : 0;
     if (pos <= last_pos)
     {
-      start = pos;
-      end = last_pos;
+      start = pos - 1;
+      end = last_pos - 1;
     }
     else
     {
-      start = last_pos;
-      end = pos;
+      start = last_pos - 1;
+      end = pos - 1;
     }
+
+    str = malloc(count + 1);
+    memset(str, 'x', count); /* mark all as unchanged */
+    str[count] = 0;
 
     if (!ctrlPressed)
     {
-      for (i = 0; i < count; i++)
-        items[i].selected = 0;
-    }
-
-    if (shftPressed)
-    {
-      for (i = start; i <= end; i++)
-        items[i - 1].selected = 1;
-    }
-    else
-    {
-      if (ctrlPressed)
-        items[pos - 1].selected = (items[pos - 1].selected) ? 0 : 1; /* toggle selection */
-      else
-        items[pos - 1].selected = 1;
-    }
-
-    if (multi_cb || cb)
-    {
-      int i, sel_count = 0;
-      int* pos = malloc(sizeof(int)*count);
+      /* un-select all */
       for (i = 0; i < count; i++)
       {
         if (items[i].selected)
         {
-          pos[sel_count] = i + 1;
-          sel_count++;
+          str[i] = '-';
+          items[i].selected = 0;
         }
       }
-      iFlatListMultipleCallActionCb(ih, cb, multi_cb, vc_cb, pos, sel_count);
-      free(pos);
     }
+
+    if (shftPressed)
+    {
+      /* select interval */
+      for (i = start; i <= end; i++)
+      {
+        if (!items[i].selected)
+        {
+          str[i] = '+';
+          items[i].selected = 1;
+        }
+      }
+    }
+    else
+    {
+      i = pos - 1;
+
+      if (ctrlPressed)
+      {
+        /* toggle selection */
+        if (items[i].selected)
+        {
+          str[i] = '-';
+          items[i].selected = 0;
+        }
+        else
+        {
+          str[i] = '+';
+          items[i].selected = 1;
+        }
+      }
+      else
+      {
+        if (!items[i].selected)
+        {
+          str[i] = '+';
+          items[i].selected = 1;
+        }
+      }
+    }
+
+    if (multi_cb || cb)
+      iFlatListMultipleCallActionCb(ih, cb, multi_cb, vc_cb, str, count);
+
+    free(str);
   }
   else
   {
-    int i;
+    int i, old_pos = -1;
 
     for (i = 0; i < count; i++)
     {
       if (!items[i].selected)
         continue;
       items[i].selected = 0;
+      old_pos = i + 1;
       break;
     }
     items[pos - 1].selected = 1;
 
     if (cb || vc_cb)
-      iFlatListSingleCallActionCb(ih, cb, vc_cb, pos);
+      iFlatListSingleCallActionCb(ih, cb, vc_cb, pos, old_pos);
   }
 
   if (!shftPressed)
     iupAttribSetInt(ih, "_IUPFLATLIST_LASTSELECTED", pos);
 }
 
-static int iFlatListCallDragDropCb(Ihandle* ih, int drag_id, int drop_id, int *is_ctrl)
+static int iFlatListCallDragDropCb(Ihandle* ih, int drag_id, int drop_id, int is_ctrl, int is_shift)
 {
   IFniiii cbDragDrop = (IFniiii)IupGetCallback(ih, "DRAGDROP_CB");
-  int is_shift = 0;
-  char key[5];
-  iupdrvGetKeyState(key);
-  if (key[0] == 'S')
-    is_shift = 1;
-  if (key[1] == 'C')
-    *is_ctrl = 1;
-  else
-    *is_ctrl = 0;
 
   /* ignore a drop that will do nothing */
-  if ((*is_ctrl) == 0 && (drag_id + 1 == drop_id || drag_id == drop_id))
+  if (is_ctrl == 0 && (drag_id + 1 == drop_id || drag_id == drop_id))
     return IUP_DEFAULT;
-  if ((*is_ctrl) != 0 && drag_id == drop_id)
+  if (is_ctrl != 0 && drag_id == drop_id)
     return IUP_DEFAULT;
 
   drag_id++;
@@ -481,7 +557,7 @@ static int iFlatListCallDragDropCb(Ihandle* ih, int drag_id, int drop_id, int *i
     drop_id++;
 
   if (cbDragDrop)
-    return cbDragDrop(ih, drag_id, drop_id, is_shift, *is_ctrl);  /* starts at 1 */
+    return cbDragDrop(ih, drag_id, drop_id, is_shift, is_ctrl);  /* starts at 1 */
 
   return IUP_CONTINUE; /* allow to move/copy by default if callback not defined */
 }
@@ -499,9 +575,6 @@ static int iFlatListButton_CB(Ihandle* ih, int button, int pressed, int x, int y
 
   if (button == IUP_BUTTON1 && !pressed && ih->data->dragged_pos > 0)
   {
-    iFlatListItem* items = (iFlatListItem*)iupArrayGetData(ih->data->items_array);
-    int is_ctrl;
-
     if (pos == -1)
     {
       if (y < 0) 
@@ -513,13 +586,14 @@ static int iFlatListButton_CB(Ihandle* ih, int button, int pressed, int x, int y
       }
     }
 
-    if (iFlatListCallDragDropCb(ih, ih->data->dragged_pos, pos, &is_ctrl) == IUP_CONTINUE)
+    if (iFlatListCallDragDropCb(ih, ih->data->dragged_pos, pos, iup_iscontrol(status), iup_isshift(status)) == IUP_CONTINUE)
     {
       iFlatListCopyItem(ih, ih->data->dragged_pos, pos);
-      iFlatListUnSelectedAll(ih);
-      items[pos - 1].selected = 1;
 
-      if (!is_ctrl)
+      /* select the dropped item */
+      iFlatListSelectItem(ih, pos, 0, 0); /* force no ctrl and no shift for selection */
+
+      if (!iup_iscontrol(status))
       {
         if (ih->data->dragged_pos < pos)
           ih->data->dragged_pos--;
@@ -622,153 +696,6 @@ static int iFlatListResize_CB(Ihandle* ih, int width, int height)
   return IUP_DEFAULT;
 }
 
-static void iFlatListCallActionCallback(Ihandle* ih, IFnsii cb, int pos, int state)
-{
-  char *text;
-
-  if (pos < 1 || !cb)
-    return;
-
-  text = IupGetAttributeId(ih, "", pos);
-
-  if (cb(ih, text, pos, state) == IUP_CLOSE)
-    IupExitLoop();
-}
-
-static void iFlatListUpdateOldValue(Ihandle* ih, int pos, int removed)
-{
-  char* old_value = iupAttribGet(ih, "_IUPFLATLIST_OLDVALUE");
-  if (old_value)
-  {
-    int old_pos = atoi(old_value) - 1; /* was in IUP reference, starting at 1 */
-    if (!ih->data->is_multiple)
-    {
-      if (old_pos >= pos)
-      {
-        if (removed && old_pos == pos)
-        {
-          /* when the current item is removed nothing remains selected */
-          iupAttribSet(ih, "_IUPFLATLIST_OLDVALUE", NULL);
-        }
-        else
-          iupAttribSetInt(ih, "_IUPFLATLIST_OLDVALUE", removed ? old_pos - 1 : old_pos + 1);
-      }
-    }
-    else
-    {
-      /* multiple selection on a non drop-down list. */
-      char* value = IupGetAttribute(ih, "VALUE");
-      iupAttribSetStr(ih, "_IUPFLATLIST_OLDVALUE", value);
-    }
-  }
-}
-
-static void iFlatListSingleCallActionCb(Ihandle* ih, IFnsii cb, IFn valuechanged_cb, int pos)
-{
-  char* old_str = iupAttribGet(ih, "_IUPFLATLIST_OLDVALUE");
-  int unchanged = 1;
-
-  if (old_str)
-  {
-    int oldpos = atoi(old_str);
-    if (oldpos != pos)
-    {
-      iFlatListCallActionCallback(ih, cb, oldpos, 0);
-      iupAttribSetInt(ih, "_IUPFLATLIST_OLDVALUE", pos);
-      iFlatListCallActionCallback(ih, cb, pos, 1);
-      unchanged = 0;
-    }
-  }
-  else
-  {
-    iFlatListItem* items = (iFlatListItem*)iupArrayGetData(ih->data->items_array);
-    iupAttribSetInt(ih, "_IUPFLATLIST_OLDVALUE", pos);
-    iFlatListCallActionCallback(ih, cb, pos, 1);
-    if (items[pos - 1].selected)
-      unchanged = 0;
-  }
-
-  if (!unchanged && valuechanged_cb)
-    valuechanged_cb(ih);
-}
-
-static void iFlatListMultipleCallActionCb(Ihandle* ih, IFnsii cb, IFns multi_cb, IFn valuechanged_cb, int* pos, int sel_count)
-{
-  int i, count = iupArrayCount(ih->data->items_array);
-
-  char* old_str = iupAttribGet(ih, "_IUPFLATLIST_OLDVALUE");
-  int old_count = old_str ? (int)strlen(old_str) : 0;
-  int unchanged = 1;
-
-  char* str = malloc(count + 1);
-  memset(str, '-', count);
-  str[count] = 0;
-  for (i = 0; i < sel_count; i++)
-    str[pos[i] - 1] = '+';
-
-  if (old_count != count)
-  {
-    old_count = 0;
-    old_str = NULL;
-  }
-
-  if (multi_cb)
-  {
-    unchanged = 1;
-
-    for (i = 0; i < count && old_str; i++)
-    {
-      if (str[i] == old_str[i])
-        str[i] = 'x';    /* mark unchanged values */
-      else
-        unchanged = 0;
-    }
-
-    if (old_str && unchanged)
-    {
-      free(str);
-      return;
-    }
-
-    if (multi_cb(ih, str) == IUP_CLOSE)
-      IupExitLoop();
-
-    for (i = 0; i < count && old_str; i++)
-    {
-      if (str[i] == 'x')
-        str[i] = old_str[i];    /* restore unchanged values */
-    }
-  }
-  else
-  {
-    /* must simulate the click on each item */
-    for (i = 0; i < count; i++)
-    {
-      unchanged = 1;
-      if (i >= old_count)  /* new items, if selected then call the callback */
-      {
-        if (str[i] == '+')
-          iFlatListCallActionCallback(ih, cb, i + 1, 1);
-        unchanged = 0;
-      }
-      else if (str[i] != old_str[i])
-      {
-        if (str[i] == '+')
-          iFlatListCallActionCallback(ih, cb, i + 1, 1);
-        else
-          iFlatListCallActionCallback(ih, cb, i + 1, 0);
-        unchanged = 0;
-      }
-    }
-  }
-
-  if (!unchanged && valuechanged_cb)
-    valuechanged_cb(ih);
-
-  iupAttribSetStr(ih, "_IUPFLATLIST_OLDVALUE", str);
-  free(str);
-}
-
 static int iFlatListKUp_CB(Ihandle* ih)
 {
   if (ih->data->has_focus)
@@ -860,10 +787,7 @@ static int iFlatListSetIdValueAttrib(Ihandle* ih, int pos, const char* value)
     return 0;
 
   if (!value)
-  {
     iFlatListRemoveItem(ih, 0, count - pos - 1);
-    iupAttribSet(ih, "_IUPFLATLIST_OLDVALUE", NULL);
-  }
   else if (pos <= count)
   {
     iFlatListItem* items = (iFlatListItem*)iupArrayInsert(ih->data->items_array, pos - 1, 1);
@@ -874,8 +798,6 @@ static int iFlatListSetIdValueAttrib(Ihandle* ih, int pos, const char* value)
     iFlatListItem* items = (iFlatListItem*)iupArrayInsert(ih->data->items_array, count, pos - 1 - count + 1);
     items[pos - 1].name = iupStrDup(value);
   }
-
-  iFlatListUpdateOldValue(ih, pos, 0);
 
   if (ih->handle)
   {
@@ -916,8 +838,6 @@ static int iFlatListSetInsertItemAttrib(Ihandle* ih, int pos, const char* value)
     items[pos - 1].name = iupStrDup(value);
   }
 
-  iFlatListUpdateOldValue(ih, pos, 0);
-
   if (ih->handle)
   {
     iFlatListUpdateScrollBar(ih);
@@ -930,18 +850,12 @@ static int iFlatListSetInsertItemAttrib(Ihandle* ih, int pos, const char* value)
 static int iFlatListSetRemoveItemAttrib(Ihandle* ih, const char* value)
 {
   if (!value || iupStrEqualNoCase(value, "ALL"))
-  {
     iFlatListRemoveItem(ih, 0, iupArrayCount(ih->data->items_array));
-    iupAttribSet(ih, "_IUPFLATLIST_OLDVALUE", NULL);
-  }
   else
   {
     int pos;
     if (iupStrToInt(value, &pos))
-    {
       iFlatListRemoveItem(ih, pos - 1, 1);
-      iFlatListUpdateOldValue(ih, pos - 1, 1);
-    }
   }
 
   if (ih->handle)
@@ -1222,48 +1136,52 @@ static char* iFlatListGetCountAttrib(Ihandle* ih)
 static int iFlatListSetValueAttrib(Ihandle* ih, const char* value)
 {
   iFlatListItem* items = (iFlatListItem*)iupArrayGetData(ih->data->items_array);
-  if (ih->data->is_multiple)
+  int count = iupArrayCount(ih->data->items_array);
+  int i;
+
+  if (!value)
   {
-    int i, len;
-    int count = iupArrayCount(ih->data->items_array);
-
-    if (!value)
-    {
-      iupAttribSet(ih, "_IUPFLATLIST_OLDVALUE", NULL);
-      return 0;
-    }
-
-    len = (int)strlen(value);
-    if (len != count)
-      return 1;
+    /* un-select all */
     for (i = 0; i < count; i++)
-    {
-      if (value[i] == '+')
-      {
-        items[i].selected = 1;
-        iupAttribSetInt(ih, "_IUPFLATLIST_LASTSELECTED", i);
-      }
-      else if (value[i] == '-')
-        items[i].selected = 0;
-      else
-        return 1;
-    }
-
-    iupAttribSetStr(ih, "_IUPFLATLIST_OLDVALUE", value);
+      items[i].selected = 0;
   }
   else
   {
-    int pos;
-    int count = iupArrayCount(ih->data->items_array);
-    if (iupStrToInt(value, &pos) == 1 && pos > 0 && pos <= count)
+    if (ih->data->is_multiple)
     {
-      items[pos - 1].selected = 1;
-      iupAttribSetInt(ih, "_IUPFLATLIST_OLDVALUE", pos);
+      int len = (int)strlen(value);
+      if (len != count)
+        return 1;
+
+      for (i = 0; i < count; i++)
+      {
+        if (value[i] == '+')
+        {
+          items[i].selected = 1;
+          iupAttribSetInt(ih, "_IUPFLATLIST_LASTSELECTED", i);
+        }
+        else if (value[i] == '-')
+          items[i].selected = 0;
+        /* else does nothing, ignore item */
+      }
     }
     else
-      iupAttribSet(ih, "_IUPFLATLIST_OLDVALUE", NULL);
+    {
+      int pos;
+      if (iupStrToInt(value, &pos) == 1 && pos > 0 && pos <= count)
+      {
+        for (i = 0; i < count; i++)
+        {
+          if (!items[i].selected)
+            continue;
+          items[i].selected = 0;
+          break;
+        }
 
-    iupAttribSetInt(ih, "_IUPFLATLIST_LASTSELECTED", pos);
+        items[pos - 1].selected = 1;
+        iupAttribSetInt(ih, "_IUPFLATLIST_LASTSELECTED", pos);
+      }
+    }
   }
 
   if (ih->handle)

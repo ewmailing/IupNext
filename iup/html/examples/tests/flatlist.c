@@ -73,7 +73,7 @@ static int multilist_cb (Ihandle *ih, char *s)
 
 static int list_cb (Ihandle *ih, char *t, int i, int v)
 {
-  printf("FLAT_ACTION(%s, %d, %d)\n", t, i, v);
+  printf("FLAT_ACTION(%s, pos=%d, sel=%d)\n", t, i, v);
   return IUP_DEFAULT;
 }
 
@@ -227,7 +227,7 @@ static int dragdrop_cb(Ihandle* ih, int drag_id, int drop_id, int shift, int con
 static void set_callbacks(Ihandle* list)
 {
   IupSetCallback(list, "FLAT_ACTION", (Icallback)list_cb);
-  IupSetCallback(list, "VALUECHANGED_CB", (Icallback)valuechanged_cb);
+//  IupSetCallback(list, "VALUECHANGED_CB", (Icallback)valuechanged_cb);
   IupSetCallback(list, "DBLCLICK_CB", (Icallback)dblclick_cb);
 //  IupSetCallback(list, "FLAT_BUTTON_CB",    (Icallback)button_cb);
 //  IupSetCallback(list, "FLAT_MOTION_CB",    (Icallback)motion_cb);

@@ -304,12 +304,15 @@ selection mode:</p>
     
 <ul>
 
-		<li>MULTIPLE=YES: Sequence of '+' and '-' symbols indicating 
-    the state of each item. When setting this value, the user must provide the same amount of '+' and '-' symbols as the 
-    amount of items in the list, otherwise the specified items will be deselected.</li>
+		<li>MULTIPLE=YES: Sequence of '+' and '-' symbols indicating the state 
+		of each item. When setting this value, the user must provide the same 
+		amount of '+' and '-' symbols as the amount of items in the list. It can 
+		use ' ' (space) or another character so the current selection on that 
+		item will remain the same (since 3.28).</li>
 
 		<li>MULTIPLE=NO: Integer number representing the selected item in the list 
-		(begins at 1). It is NULL if there is no selected item.</li>
+		(begins at 1). It returns NULL if there is no selected item.</li>
+		<li>For both cases, when setting NULL all items are deselected.</li>
 
 </ul>
 
@@ -350,7 +353,7 @@ IUP_IGNORE the internal callbacks are not processed.</p>
 
 <p><strong>FLAT_ACTION</strong>:
   Action generated when the state of an item 
-  in the list is changed. Also provides information on the changed item:</p>
+  in the list is interactively changed.</p>
 
   
     
@@ -364,11 +367,6 @@ IUP_IGNORE the internal callbacks are not processed.</p>
 <strong>item</strong>: Number of the changed item starting at 1.<br>
 
 <strong>state</strong>: Equal to 1 if the option was selected or to 0 if the option was deselected.</p>
-
-<p class="info">The state=0 is simulated internally by IUP in all systems. If 
-you add or remove items to/from the list and you count on the state=0 value, 
-then after adding/removing items set the VALUE attribute to ensure proper 
-state=0 value.</p>
 
   
   
@@ -412,7 +410,7 @@ of moved.</p>
     
 <p><b>MULTISELECT_CB</b>:
   Action generated when the state of an item 
-  in the multiple selection list is changed. But it is called only when the interaction is over.</p>
+  in the multiple selection list is interactively changed. But it is called only when the interaction is over.</p>
 
   
     
@@ -435,9 +433,8 @@ on the 'x' values, then after adding/removing items set the VALUE attribute to
 ensure proper 'x' values.</p>
 
 
-<p><strong>VALUECHANGED_CB</strong>: Called after the value was interactively 
-changed by the user. Called when the selection is changed or when the text is 
-edited.</p>
+<p><strong>VALUECHANGED_CB</strong>: Called after the selection was 
+interactively changed.</p>
 
 <pre>int function(Ihandle *<strong>ih</strong>); [in C]<br><strong>ih</strong>:valuechanged_cb() -&gt; (<strong>ret</strong>: number) [in Lua]</pre>
 
@@ -453,6 +450,8 @@ edited.</p>
 
 <p>When the list has focus use the arrow keys to move focus from one item to 
 another.</p>
+<p>When adding or removing items the selection can be changed depending on the 
+operation but the selection callbacks will not be called.</p>
 <p> <strong>Clicking and dragging a item</strong>: if SHOWDRAGDROP=Yes starts a 
 drag. When mouse is released, the DRAGDROP_CB callback is called. If the 
 callback does not exist or if it returns IUP_CONTINUE then the item is moved to 
