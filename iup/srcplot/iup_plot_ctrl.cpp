@@ -3283,7 +3283,7 @@ static void iPlotSetClassUpdate(Iclass* ic)
     if (IupGetInt(NULL, "UTF8MODE"))
     {
       /* When seeing this file assuming ISO8859-1 encoding, above will appear correct.
-      When seeing this file assuming UTF-8 encoding, bellow will appear correct. */
+         When seeing this file assuming UTF-8 encoding, bellow will appear correct. */
 
       IupSetLanguageString("IUP_MULTIBARS", "Barras Múltiplas");
       IupSetLanguageString("IUP_ERRORINVALIDFORMULA", "Fórmula Inválida.");
@@ -3453,13 +3453,13 @@ static void iPlotSetClassUpdate(Iclass* ic)
     if (IupGetInt(NULL, "UTF8MODE"))
     {
       /* When seeing this file assuming ISO8859-1 encoding, above will appear correct.
-      When seeing this file assuming UTF-8 encoding, bellow will appear correct. */
+         When seeing this file assuming UTF-8 encoding, bellow will appear correct. */
 
       IupSetLanguageString("IUP_ERRORINVALIDFORMULA", "Fórmula Inválida.");
       IupSetLanguageString("IUP_AREA", "Área");
       IupSetLanguageString("IUP_MULTIBARS", "Barras Múltiples");
       IupSetLanguageString("IUP_HOLLOW_CIRCLE", "Circulo Vacío");
-      IupSetLanguageString("IUP_HOLLOW_BOX", "Caja Vac�a");
+      IupSetLanguageString("IUP_HOLLOW_BOX", "Caja Vacía");
       IupSetLanguageString("IUP_HOLLOW_DIAMOND", "Diamante Vacío");
       IupSetLanguageString("IUP_MARKSIZE", "Tamaño de Marca:");
       IupSetLanguageString("IUP_AREATRANSPARENCY", "Transparencia de Área:");
