@@ -318,7 +318,7 @@ char *iupLexGetError(void)
 
 int iupLexError (int n, ...)
 {
-  char msg[10240];
+  char msg[10210];
   va_list va;
   va_start(va,n);
   switch (n)
