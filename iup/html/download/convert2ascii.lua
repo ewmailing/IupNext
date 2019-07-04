@@ -15,22 +15,13 @@ local function toascii(c)
   return hex .. '"' .. ( c:sub(-1) == '"' and "" or '"')
 end
 
-function toascii_direct(c)
-  local ascii = string.byte(c)
-  return ascii
-end
-
-local function convert(filename, direct)
+local function convert(filename)
   print(filename)
 	local f = assert(io.open(filename,"rb"))
 	local text = f:read("*a")
 	f:close()
 
-  if (direct) then
-    text = text:gsub("'([\x80-\xff])'", toascii_direct)
-  else
-	  text = text:gsub('[\x80-\xff]"?', toascii) -- from 128 to 255
-  end
+  text = text:gsub('[\x80-\xff]"?', toascii) -- from 128 to 255
   
 	f = assert(io.open(filename, "wb"))
 	f:write(text)
@@ -39,7 +30,6 @@ end
 
 print("Converting to ASCii:\n")
 
-convert("src/iup_str.c", true) -- Uses a different conversion
 convert("src/iup_strmessage.c")
 convert("srccontrols/matrix/iupmatrix.c")
 convert("srccontrols/matrixex/iupmatex_find.c")
