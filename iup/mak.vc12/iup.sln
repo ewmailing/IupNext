@@ -188,6 +188,10 @@ EndProject
 Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "iupluafiledlg", "iuplua\iupluafiledlg.vcxproj", "{1EBCAB67-5532-12AB-3422-49D667157985}"
 EndProject
 Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "iupvled", "iupvled.vcxproj", "{4828CDA0-D4B4-4D4F-B976-7F33BB4725D2}"
+	ProjectSection(ProjectDependencies) = postProject
+		{22AD4898-1301-4EE3-A505-1F17F12638B2} = {22AD4898-1301-4EE3-A505-1F17F12638B2}
+		{22AD4898-ABC1-EF25-A8A8-DF17F12D38B2} = {22AD4898-ABC1-EF25-A8A8-DF17F12D38B2}
+	EndProjectSection
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
