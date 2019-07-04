@@ -34,7 +34,6 @@ convert("src/iup_strmessage.c")
 convert("srccontrols/matrix/iupmatrix.c")
 convert("srccontrols/matrixex/iupmatex_find.c")
 convert("srccontrols/matrixex/iupmatex_sort.c")
-convert("srccontrols/matrixex/iupmatex_units.c")
 convert("srccontrols/matrixex/iup_matrixex.c")
 convert("srcplot/iup_plot.cpp")
 
