@@ -273,6 +273,12 @@ static int iDialogCreateMethod(Ihandle* ih, void** params)
 
 static void iDialogDestroyMethod(Ihandle* ih)
 {
+  if (ih->data->menu)
+  {
+    IupDestroy(ih->data->menu);
+    ih->data->menu = NULL;
+  }
+
   iupDlgListRemove(ih);
 }
 

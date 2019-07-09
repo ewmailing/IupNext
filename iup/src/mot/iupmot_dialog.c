@@ -1027,6 +1027,7 @@ static void motDialogUnMapMethod(Ihandle* ih)
   {
     ih->data->menu->handle = NULL; /* the dialog will destroy the native menu */
     IupDestroy(ih->data->menu);  
+    ih->data->menu = NULL;
   }
 
   dialog_manager = (Widget)iupAttribGet(ih, "_IUPMOT_DLGCONTAINER");

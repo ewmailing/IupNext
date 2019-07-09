@@ -1399,6 +1399,7 @@ static void winDialogUnMapMethod(Ihandle* ih)
   {
     ih->data->menu->handle = NULL; /* the dialog will destroy the native menu */
     IupDestroy(ih->data->menu);  
+    ih->data->menu = NULL;
   }
 
 #ifdef __ITaskbarList3_FWD_DEFINED__
