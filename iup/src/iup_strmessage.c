@@ -90,11 +90,18 @@ IUP_API char *IupGetLanguage(void)
 
 /**********************************************************************************/
 
+
 #include "iup_lng_english.h"
 #include "iup_lng_portuguese.h"
 #include "iup_lng_portuguese_utf8.h"
 #include "iup_lng_spanish.h"
 #include "iup_lng_spanish_utf8.h"
+#ifdef IUP_CZECH
+#include "iup_lng_czech_utf8.h"
+#endif
+#ifdef IUP_RUSSIAN
+#include "iup_lng_russian_utf8.h"
+#endif
 
 static void iStrMessageRegisterInternal(const char* language)
 {
@@ -118,6 +125,21 @@ static void iStrMessageRegisterInternal(const char* language)
     else
       lng = iup_load_lng_spanish();
   }
+  /* To add a custom language */
+#ifdef IUP_CZECH
+  else if (iupStrEqualNoCase(language, "CZECH"))
+  {
+    if (IupGetInt(NULL, "UTF8MODE"))
+      lng = iup_load_lng_czech_utf8();
+  }
+#endif
+#ifdef IUP_RUSSIAN
+  else if (iupStrEqualNoCase(language, "RUSSIAN"))
+  {
+    if (IupGetInt(NULL, "UTF8MODE"))
+      lng = iup_load_lng_russian_utf8();
+  }
+#endif
 
   if (lng)
   {
