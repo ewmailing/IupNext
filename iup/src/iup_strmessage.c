@@ -21,15 +21,11 @@
 #include "iup_register.h"
 
 
-static void iStrMessageRegisterInternal(const char* language);
-
 static Itable *istrmessage_table = NULL;   /* the message hash table indexed by the name string */
 
 void iupStrMessageInit(void)
 {
   istrmessage_table = iupTableCreate(IUPTABLE_STRINGINDEXED);
-
-  iStrMessageRegisterInternal("ENGLISH");
 }
 
 void iupStrMessageFinish(void)
@@ -137,6 +133,11 @@ void iupStrMessageUpdateLanguage(const char* language)
   iStrMessageRegisterInternal(language);
 
   iupRegisterUpdateClasses();
+}
+
+void iupStrMessageLanguageInit(void)
+{
+  iStrMessageRegisterInternal("ENGLISH");
 }
 
 #if 0

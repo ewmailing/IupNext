@@ -23,7 +23,7 @@ static Ihandle* iup_load_lng_portuguese (void)
     "IUP_GREEN", "V&erde:", 
     "IUP_HELP", "Ajuda", 
     "IUP_HUE", "&Matiz:", 
-    "IUP_INTENSITY", "&Intensity:", 
+    "IUP_INTENSITY", "&Intensidade:", 
     "IUP_INVALIDDIR", "Diretório inválido.", 
     "IUP_LUAERROR", "Erro de Lua", 
     "IUP_NAMENEWFOLDER", "Nome do novo diretório:", 
