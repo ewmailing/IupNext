@@ -209,23 +209,17 @@ folder were the CD, IM and Lua libraries are installed.</p>
 <p>IUP_ASSERT can be defined to enable some runtime checks for the main API.</p>
 <h4>File Encoding</h4>
 <p>Almost all IUP source code files are in pure ASCii encoding. But some files 
-are encoded in ISO8859-1 where Portuguese and Spanish strings are written. We 
-use the ISO8859-1 to improve readability of the files and make maintenance 
-simple. Some UTF-8 strings are also written, to be able to see them simply tell 
-the text editor that the encoding is UTF-8, the strings in ISO8859-1 will just 
-appear wrong, but not conversion is required.</p>
+are encoded in ISO8859-1 and some in UTF-8 where Portuguese and Spanish strings 
+are written.</p>
 <p>This 
 occurs in a few source files only. If you have trouble compiling these source files you 
 can convert the strings to contain pure ASCii characters using an Hexadecimal 
 representation of the non ASCii characters, for instance: &quot;Atenção!&quot; will be &quot;Aten\xE7\xE3o!&quot;. You can use the Lua script
 <a href="../download/convert2ascii.lua">convert2ascii.lua</a> to do that. The 
 following files will be affected:</p>
-<pre>src/iup_strmessage.c
-srccontrols/matrix/iupmatrix.c
-srccontrols/matrixex/iupmatex_find.c
-srccontrols/matrixex/iupmatex_sort.c
-srccontrols/matrixex/iup_matrixex.c
-srcplot/iup_plot.cpp</pre>
+<pre>src/iup_lng*.h
+srccontrols/matrixex/iup_lng*.h
+srcplot/iup_lng*.h</pre>
 <p>Notice that the UTF-8 strings will also be correct using the Hexadecimal 
 representation.</p>
 <h4>Libraries Dependencies</h4>

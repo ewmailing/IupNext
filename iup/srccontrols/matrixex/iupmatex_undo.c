@@ -406,66 +406,6 @@ void iupMatrixExUndoShowDialog(ImatExData* matex_data)
   IupDestroy(dlg_undo);
 }
 
-void iupMatrixExSetClassUpdateUndo(Iclass* ic)
-{
-  (void)ic;
-
-  if (iupStrEqualNoCase(IupGetGlobal("LANGUAGE"), "ENGLISH"))
-  {
-    IupSetLanguageString("IUP_PASTECLIP", "Paste from Clipboard");
-    IupSetLanguageString("IUP_PASTEDATA", "Paste from Buffer");
-    IupSetLanguageString("IUP_PASTEFILE", "Paste from File (Import)");
-    IupSetLanguageString("IUP_COPYCOLTO_ALL", "Copy To All Lines");
-    IupSetLanguageString("IUP_COPYCOLTO_TOP", "Copy To Top");
-    IupSetLanguageString("IUP_COPYCOLTO_BOTTOM", "Copy To Bottom");
-    IupSetLanguageString("IUP_COPYCOLTO_MARKED", "Copy To Marked");
-    IupSetLanguageString("IUP_COPYCOLTO_INTERVAL", "Copy To Interval");
-    IupSetLanguageString("IUP_UNDONAME", "Undo");  /* To avoid conflict with the menu item string */
-    IupSetLanguageString("IUP_REDONAME", "Redo");
-    IupSetLanguageString("IUP_SETCELL", "Set Cell");
-    IupSetLanguageString("IUP_EDITCELL", "Edit Cell");
-    IupSetLanguageString("IUP_CLEARVALUE", "Clear Value");
-  }
-  else if (iupStrEqualNoCase(IupGetGlobal("LANGUAGE"), "PORTUGUESE"))
-  {
-    IupSetLanguageString("IUP_PASTECLIP", "Colar do Clipboard");
-    IupSetLanguageString("IUP_PASTEDATA", "Colar de um Buffer");
-    IupSetLanguageString("IUP_PASTEFILE", "Colar de Arquivo (Importar)");
-    IupSetLanguageString("IUP_COPYCOLTO_ALL", "Copiar para Todas as Linhas");
-    IupSetLanguageString("IUP_COPYCOLTO_TOP", "Copiar para Topo");
-    IupSetLanguageString("IUP_COPYCOLTO_BOTTOM", "Copiar para fim");
-    IupSetLanguageString("IUP_COPYCOLTO_MARKED", "Copiar para Selecionadas");
-    IupSetLanguageString("IUP_COPYCOLTO_INTERVAL", "Copiar para Intervalo");
-    IupSetLanguageString("IUP_UNDONAME", "Desfazer");
-    IupSetLanguageString("IUP_REDONAME", "Refazer");
-    IupSetLanguageString("IUP_SETCELL", "Modificar Célula");
-    IupSetLanguageString("IUP_EDITCELL", "Editar Célula");
-    IupSetLanguageString("IUP_CLEARVALUE", "Limpar Valores");
-
-    if (IupGetInt(NULL, "UTF8MODE"))
-    {
-      IupSetLanguageString("IUP_SETCELL", "Modificar CÃ©lula");
-      IupSetLanguageString("IUP_EDITCELL", "Editar CÃ©lula");
-    }
-  }
-  else if (iupStrEqualNoCase(IupGetGlobal("LANGUAGE"), "SPANISH"))
-  {
-    IupSetLanguageString("IUP_PASTECLIP", "Pegar Desde el Portapapeles");
-    IupSetLanguageString("IUP_PASTEDATA", "Pegar Desde el Buffer");
-    IupSetLanguageString("IUP_PASTEFILE", "Pegar Desde Archivo (Importar)");
-    IupSetLanguageString("IUP_COPYCOLTO_ALL", "Copiar Para Todas las Lineas");
-    IupSetLanguageString("IUP_COPYCOLTO_TOP", "Copiar Para Arriba");
-    IupSetLanguageString("IUP_COPYCOLTO_BOTTOM", "Copiar Para Abajo");
-    IupSetLanguageString("IUP_COPYCOLTO_MARKED", "Copiar Para Seleccionadas");
-    IupSetLanguageString("IUP_COPYCOLTO_INTERVAL", "Copiar Para Intervalo");
-    IupSetLanguageString("IUP_UNDONAME", "Deshacer");
-    IupSetLanguageString("IUP_REDONAME", "Rehacer");
-    IupSetLanguageString("IUP_SETCELL", "Modificar Celda");
-    IupSetLanguageString("IUP_EDITCELL", "Editar Celda");
-    IupSetLanguageString("IUP_CLEARVALUE", "Limpiar Valores");
-  }
-}
-
 void iupMatrixExRegisterUndo(Iclass* ic)
 {
   /* Already defined in IupMatrix, redefined here */

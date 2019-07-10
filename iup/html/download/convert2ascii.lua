@@ -30,11 +30,11 @@ end
 
 print("Converting to ASCii:\n")
 
-convert("src/iup_strmessage.c")
-convert("srccontrols/matrix/iupmatrix.c")
-convert("srccontrols/matrixex/iupmatex_find.c")
-convert("srccontrols/matrixex/iupmatex_sort.c")
-convert("srccontrols/matrixex/iup_matrixex.c")
-convert("srcplot/iup_plot.cpp")
+convert("src/iup_lng_portuguese.h")
+convert("src/iup_lng_spanish.h")
+convert("srccontrols/matrixex/iup_lng_portuguese_matrix.h")
+convert("srccontrols/matrixex/iup_lng_spanish_matrix.h")
+convert("srcplot/iup_lng_portuguese_plot.h")
+convert("srcplot/iup_lng_spanish_plot.h")
 
 print("\nDone")
