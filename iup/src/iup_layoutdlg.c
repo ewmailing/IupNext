@@ -140,7 +140,7 @@ static int iLayoutFindDialogClose_CB(Ihandle* ih)
   return IUP_DEFAULT;
 }
 
-static Ihandle* iLayoutCreateFindDialog(iLayoutDialog* layoutdlg, Ihandle *ih)
+IUP_API Ihandle* IupLayoutFindDialog(Ihandle *tree, Ihandle* elem) /* dialog for find NAME */
 {
   Ihandle *txt, *box, *find_dlg;
   Ihandle *type, *handle_name, *name, *title, *attribute, *radio;
@@ -220,16 +220,15 @@ static Ihandle* iLayoutCreateFindDialog(iLayoutDialog* layoutdlg, Ihandle *ih)
   IupSetAttribute(find_dlg, "DIALOGFRAME", "Yes");
   IupSetAttributeHandle(find_dlg, "DEFAULTENTER", bt_next);
   IupSetAttributeHandle(find_dlg, "DEFAULTESC", bt_close);
-  IupSetAttributeHandle(find_dlg, "PARENTDIALOG", IupGetDialog(ih));
+  IupSetAttributeHandle(find_dlg, "PARENTDIALOG", IupGetDialog(tree));
   IupSetCallback(find_dlg, "CLOSE_CB", (Icallback)iLayoutFindDialogClose_CB);
 
   /* Save the multiline to access it from the callbacks */
-  IupSetAttribute(find_dlg, "TREE", (char*)ih);
+  IupSetAttribute(find_dlg, "TREE", (char*)tree);
 
   /* Save the dialog to reuse it */
   IupSetAttribute(find_dlg, "FIND_DIALOG", (char*)find_dlg);  /* from itself */
-  IupSetAttribute(IupGetDialog(ih), "FIND_DIALOG", (char*)find_dlg); /* from the main dialog */
-  IupSetAttribute(find_dlg, "DIALOG", (char*)layoutdlg->dialog); /* from the main dialog */
+  IupSetAttribute(find_dlg, "DIALOG", (char*)IupGetDialog(elem)); /* from the main dialog, use to find NAME */
 
   return find_dlg;
 }
@@ -1156,11 +1155,14 @@ static int iLayoutMenuFind_CB(Ihandle* ih)
 {
   Ihandle* dlg = IupGetDialog(ih);
   iLayoutDialog* layoutdlg = (iLayoutDialog*)iupAttribGet(dlg, "_IUP_LAYOUTDIALOG");
-  Ihandle* find_dlg = (Ihandle*)IupGetAttribute(ih, "FIND_DIALOG");
+  Ihandle* find_dlg = (Ihandle*)IupGetAttribute(dlg, "FIND_DIALOG");
   Ihandle* tree = IupGetDialogChild(ih, "TREE");
 
   if (!find_dlg)
-    find_dlg = iLayoutCreateFindDialog(layoutdlg, tree);
+  {
+    find_dlg = IupLayoutFindDialog(tree, layoutdlg->dialog);
+    IupSetAttribute(dlg, "FIND_DIALOG", (char*)find_dlg);
+  }
 
   IupShow(find_dlg);
 
