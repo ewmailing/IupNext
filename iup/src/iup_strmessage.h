@@ -18,7 +18,6 @@ void iupStrMessageUpdateLanguage(const char* language);
 
 /* called only in IupOpen and IupClose */
 void iupStrMessageInit(void);
-void iupStrMessageLanguageInit(void);
 void iupStrMessageFinish(void);
 
 

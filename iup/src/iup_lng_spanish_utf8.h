@@ -1,4 +1,4 @@
-﻿/* This file is in UTF-8 encoding with BOM */
+/* This file is in UTF-8 encoding with no BOM */
 static Ihandle* iup_load_lng_spanish_utf8(void)
 {
   return IupSetAtt( "SPANISH", IupUser(), 

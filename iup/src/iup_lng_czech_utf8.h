@@ -1,8 +1,4 @@
-﻿#ifdef _MSC_VER
-/* warning C4566: character represented by universal-character-name cannot be represented in the current code page */
-#pragma warning( disable : 4566 )
-#endif
-
+/* This file is in UTF-8 encoding with no BOM */
 static Ihandle* iup_load_lng_czech_utf8(void)
 {
   return IupSetAtt( "czech_utf8", IupUser(), 

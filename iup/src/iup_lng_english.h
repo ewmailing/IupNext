@@ -1,7 +1,8 @@
 /* This file is in ASCii encoding */
 static Ihandle* iup_load_lng_english (void)
 {
-  return IupSetAtt( "ENGLISH", IupUser(), 
+  /* exclusively for ENGLISH that is initialized in IupOpen */
+  iupSetLngAtt(
     "IUP_APPLY", "Apply", 
     "IUP_ATTENTION", "Attention!", 
     "IUP_BLUE", "&Blue:", 
@@ -42,5 +43,7 @@ static Ihandle* iup_load_lng_english (void)
     "IUP_SIZE", "Size:", 
     "IUP_STYLE", "Style:", 
     "IUP_TRUE", "True", 
-    "IUP_YES", "Yes", NULL );
+    "IUP_YES", "Yes", 
+    NULL );
+  return NULL;
 }

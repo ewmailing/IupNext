@@ -75,7 +75,6 @@ IUP_API int IupOpen(int *argc, char ***argv)
     IupSetGlobal("DEFAULTBUTTONPADDING", "12x4");
 
     iupRegisterInternalClasses();
-    iupStrMessageLanguageInit();
 
     value = getenv("IUP_QUIET");
     if (value && !iupStrBoolean(value)) /* if not defined do NOT print */

@@ -90,6 +90,27 @@ IUP_API char *IupGetLanguage(void)
 
 /**********************************************************************************/
 
+static void iupSetLngAttV(const char* first, va_list arglist)
+{
+  const char *name, *str;
+  name = first;
+  while (name)
+  {
+    str = va_arg(arglist, const char*);
+
+    IupSetLanguageString(name, str);
+
+    name = va_arg(arglist, const char*);
+  }
+}
+
+static void iupSetLngAtt(const char* first, ...)
+{
+  va_list arglist;
+  va_start(arglist, first);
+  iupSetLngAttV(first, arglist);
+  va_end(arglist);
+}
 
 #include "iup_lng_english.h"
 #include "iup_lng_portuguese.h"
@@ -155,11 +176,6 @@ void iupStrMessageUpdateLanguage(const char* language)
   iStrMessageRegisterInternal(language);
 
   iupRegisterUpdateClasses();
-}
-
-void iupStrMessageLanguageInit(void)
-{
-  iStrMessageRegisterInternal("ENGLISH");
 }
 
 #if 0
