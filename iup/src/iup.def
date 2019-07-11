@@ -74,6 +74,7 @@ IupDrawSetClipRect
 IupDrawText
 IupDropButton
 IupElementPropertiesDialog
+IupLayoutFindDialog
 IupExecute
 IupExecuteWait
 IupExitLoop

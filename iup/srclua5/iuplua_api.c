@@ -860,6 +860,11 @@ static int ElementPropertiesDialog(lua_State *L)
   return 1;
 }
 
+static int LayoutFindDialog(lua_State *L)
+{
+  iuplua_pushihandle(L, IupLayoutFindDialog(iuplua_checkihandle(L, 1), iuplua_checkihandle(L, 2)));
+  return 1;
+}
 
 static int ConvertXYToPos(lua_State *L)
 {
@@ -1168,6 +1173,7 @@ void iupluaapi_open(lua_State * L)
     {"LayoutDialog", LayoutDialog},
     {"GlobalsDialog", GlobalsDialog},
     {"ElementPropertiesDialog", ElementPropertiesDialog},
+    {"LayoutFindDialog", LayoutFindDialog},
     {"PostMessage", PostMessage},
     {"SetFocus", SetFocus},
     {"SetGlobal", SetGlobal},
