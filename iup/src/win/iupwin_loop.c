@@ -25,8 +25,16 @@
 #define IWIN_POSTMESSAGE_ID 0x4456
 
 static IFidle win_idle_cb = NULL;
-static int win_main_loop = 0;
+static int win_main_loop_level = 0;
+static UINT win_quit_message = WM_QUIT;
 
+void iupwinSetCustomQuitMessage(int enable)
+{
+  if (enable)
+    win_quit_message = RegisterWindowMessage(TEXT("IUP_QUIT_MESSAGE"));
+  else
+    win_quit_message = WM_QUIT;
+}
 
 IUP_SDK_API void iupdrvSetIdleFunction(Icallback f)
 {
@@ -49,15 +57,20 @@ static int winLoopCallIdle(void)
 IUP_API void IupExitLoop(void)
 {
   char* exit_loop = IupGetGlobal("EXITLOOP");
-  if (win_main_loop > 1 || !exit_loop || iupStrBoolean(exit_loop))
-    PostQuitMessage(0);
+  if (win_main_loop_level > 1 || !exit_loop || iupStrBoolean(exit_loop))
+  {
+    if (win_quit_message == WM_QUIT)
+      PostQuitMessage(0);
+    else
+      PostMessage(NULL, win_quit_message, 0, 0L);
+  }
 }
 
 static void winProcessPostMessage(LPARAM lParam);
 
 static int winLoopProcessMessage(MSG* msg)
 {
-  if (msg->message == WM_QUIT)  /* IUP_CLOSE returned in a callback or IupHide in a popup dialog or all dialogs closed */
+  if (msg->message == win_quit_message)  /* IUP_CLOSE returned in a callback or IupHide in a popup dialog or all dialogs closed */
     return IUP_CLOSE;
   else
   {
@@ -80,17 +93,16 @@ static int winLoopProcessMessage(MSG* msg)
 
 IUP_API int IupMainLoopLevel(void)
 {
-  return win_main_loop;
+  return win_main_loop_level;
 }
 
 IUP_API int IupMainLoop(void)
 {
-  MSG msg;
-  int ret;
+  int ret = IUP_DEFAULT;
   int return_code = IUP_NOERROR;
   static int has_done_entry = 0;
 
-  win_main_loop++;
+  win_main_loop_level++;
 
   if (0 == has_done_entry)
   {
@@ -102,48 +114,32 @@ IUP_API int IupMainLoop(void)
   {
     if (win_idle_cb)
     {
-      ret = 1;
-      if (PeekMessage(&msg, 0, 0, 0, PM_REMOVE))
+      ret = IupLoopStep();
+      if (ret == IUP_CLOSE)
       {
-        if (winLoopProcessMessage(&msg) == IUP_CLOSE)
-        {
-          /* win_main_loop will be decremented at the end of this function */
-          return_code = IUP_CLOSE;
-          break;
-        }
-      }
-      else
-      {
-        if (winLoopCallIdle() == IUP_CLOSE)
-        {
-          /* win_main_loop will be decremented at the end of this function */
-          return_code = IUP_CLOSE;
-          break;
-        }
+        return_code = IUP_CLOSE;
+        break;
       }
     }
     else
     {
-      ret = GetMessage(&msg, NULL, 0, 0);
-      if (ret == -1) /* error */
+      ret = IupLoopStepWait();
+      if (ret == IUP_ERROR)
       {
-        /* win_main_loop will be decremented at the end of this function */
         return_code = IUP_ERROR;
         break;
       }
-      if (ret == 0 || /* WM_QUIT */
-          winLoopProcessMessage(&msg) == IUP_CLOSE)  /* ret != 0 */
+      else if (ret == IUP_CLOSE)
       {
-        /* win_main_loop will be decremented at the end of this function */
         return_code = IUP_NOERROR;
         break;
       }
     }
-  } while (ret);
+  } while (ret == IUP_DEFAULT);
 
-  win_main_loop--;
+  win_main_loop_level--;
 
-  if (win_main_loop == 0)
+  if (win_main_loop_level == 0)
     iupLoopCallExitCb();
 
   return return_code;
@@ -155,9 +151,11 @@ IUP_API int IupLoopStepWait(void)
   int ret = GetMessage(&msg, NULL, 0, 0);
   if (ret == -1) /* error */
     return IUP_ERROR;
+
   if (ret == 0 || /* WM_QUIT */
       winLoopProcessMessage(&msg) == IUP_CLOSE)  /* ret != 0 */
     return IUP_CLOSE;
+
   return IUP_DEFAULT;
 }
 
@@ -187,7 +185,7 @@ IUP_API void IupFlush(void)
   }
 
   /* re post the quit message if still inside MainLoop */
-  if (post_quit && win_main_loop>0)
+  if (post_quit && win_main_loop_level>0)
     IupExitLoop();
 }
 

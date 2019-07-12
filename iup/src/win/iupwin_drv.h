@@ -61,6 +61,9 @@ void iupwinMenuDialogProc(Ihandle* ih, UINT msg, WPARAM wp, LPARAM lp);
 Ihandle* iupwinMenuGetItemHandle(HMENU hmenu, int menuId);
 Ihandle* iupwinMenuGetHandle(HMENU hMenu);
 
+/* loop */
+void iupwinSetCustomQuitMessage(int enable);
+
 
 /***************************/
 /* Procedures and Messages */

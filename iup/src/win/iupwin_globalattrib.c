@@ -373,7 +373,12 @@ IUP_SDK_API int iupdrvSetGlobal(const char* name, const char* value)
       DisableProcessWindowsGhosting();
     return 1;
   }
-  
+  if (iupStrEqual(name, "CUSTOMQUITMESSAGE"))
+  {
+    iupwinSetCustomQuitMessage(iupStrBoolean(value));
+    return 1;
+  }
+
   return 1;
 }
 
