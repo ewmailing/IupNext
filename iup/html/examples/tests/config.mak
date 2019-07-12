@@ -46,7 +46,7 @@ SRC += dialog.c
 SRC += calendar.c
 SRC += predialogs.c
 SRC += timer.c
-SRC += postmessage.c
+#SRC += postmessage.c
 SRC += label.c
 SRC += canvas.c
 SRC += frame.c
@@ -166,8 +166,13 @@ else
   SLIB += $(IUP_LIB)/libiup_mglplot.a
 endif
 
-SRC += webbrowser.c
-USE_IUPWEB = Yes
+#NO_WEBBROWSER_TEST=Yes
+ifndef NO_WEBBROWSER_TEST
+  SRC += webbrowser.c
+  USE_IUPWEB = Yes
+else
+  DEFINES += NO_WEBBROWSER_TEST
+endif
 
 SRC += scintilla.c
 ifneq ($(findstring Win, $(TEC_SYSNAME)), )
