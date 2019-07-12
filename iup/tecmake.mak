@@ -6,7 +6,7 @@
 
 #---------------------------------#
 # Tecmake Version
-VERSION = 4.18
+VERSION = 4.19
 
 
 #---------------------------------#
@@ -1227,7 +1227,7 @@ endif
 
 ifdef LINK_WEBKIT
   ifneq ($(findstring Linux5, $(TEC_UNAME)), )
-    LIBS += webkitgtk-3.0
+    LIBS += webkit2gtk-4.0
   else 
     ifneq ($(findstring Linux4, $(TEC_UNAME)), )
       LIBS += webkitgtk-3.0

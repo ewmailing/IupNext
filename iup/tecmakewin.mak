@@ -6,7 +6,7 @@
 
 #---------------------------------#
 # Tecmake Version
-VERSION = 4.17
+VERSION = 4.19
 
 
 #---------------------------------#
@@ -1035,7 +1035,14 @@ ifeq "$(TEC_CC)" "gcc"
           STDLFLAGS += -static-libstdc++
         endif
       else
-        STDLFLAGS =
+        ifneq ($(findstring w6, $(TEC_UNAME)), )
+          STDLFLAGS = -static-libgcc
+          ifneq "$(findstring .cpp, $(SRC))" ""
+            STDLFLAGS += -static-libstdc++
+          endif
+        else
+          STDLFLAGS =
+        endif
       endif
     else
       STDLFLAGS = r
