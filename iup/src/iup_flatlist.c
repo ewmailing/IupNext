@@ -31,7 +31,7 @@
 
 
 typedef struct _iFlatListItem {
-  char* name;
+  char* title;
   char* image;
   char *fgColor;
   char *bgColor;
@@ -118,7 +118,7 @@ static void iFlatListCopyItem(Ihandle *ih, int from, int to)
     i = count;
   }
 
-  items[i].name = iupStrDup(copy.name);
+  items[i].title = iupStrDup(copy.title);
   items[i].image = iupStrDup(copy.image);
   items[i].fgColor = iupStrDup(copy.fgColor);
   items[i].bgColor = iupStrDup(copy.bgColor);
@@ -132,8 +132,8 @@ static void iFlatListRemoveItem(Ihandle *ih, int start, int remove_count)
   int i;
   for (i = start; i < remove_count; i++)
   {
-    if (items[i].name)
-      free(items[i].name);
+    if (items[i].title)
+      free(items[i].title);
 
     if (items[i].image)
       free(items[i].image);
@@ -171,7 +171,7 @@ static void iFlatListCalcItemMaxSize(Ihandle *ih, iFlatListItem* items, int coun
   for (i = 0; i < count; i++)
   {
     int item_width, item_height;
-    char *text = items[i].name;
+    char *text = items[i].title;
     char* imagename = items[i].image;
 
     iFlatListSetItemFont(ih, items[i].font);
@@ -322,7 +322,7 @@ static int iFlatListRedraw_CB(Ihandle* ih)
 
     iupFlatDrawIcon(ih, dc, x, y, ih->data->line_width, ih->data->line_height,
                     ih->data->img_position, ih->data->icon_spacing, ih->data->horiz_alignment, ih->data->vert_alignment, ih->data->horiz_padding, ih->data->vert_padding,
-                    items[i].image, make_inactive, items[i].name, text_flags, 0, fgcolor, bgcolor, active);
+                    items[i].image, make_inactive, items[i].title, text_flags, 0, fgcolor, bgcolor, active);
 
     if (items[i].selected || ih->data->dragover_pos == i + 1)
     {
@@ -627,7 +627,7 @@ static int iFlatListButton_CB(Ihandle* ih, int button, int pressed, int x, int y
     if (dc_cb)
     {
       iFlatListItem* items = (iFlatListItem*)iupArrayGetData(ih->data->items_array);
-      if (dc_cb(ih, pos, items[pos - 1].name) == IUP_IGNORE)
+      if (dc_cb(ih, pos, items[pos - 1].title) == IUP_IGNORE)
         return IUP_DEFAULT;
     }
   }
@@ -696,6 +696,24 @@ static int iFlatListResize_CB(Ihandle* ih, int width, int height)
   return IUP_DEFAULT;
 }
 
+static void iFlatListScrollFocusVisible(Ihandle* ih)
+{
+  int focus_posy = (ih->data->focus_pos - 1) * (ih->data->line_height + ih->data->spacing);
+  int posy = IupGetInt(ih, "POSY");
+  if (focus_posy < posy)
+    IupSetInt(ih, "POSY", focus_posy);
+  else
+  {
+    int item_height = ih->data->line_height + ih->data->spacing;
+    int dy = IupGetInt(ih, "DY");
+    if (focus_posy + item_height > posy + dy)
+    {
+      posy = focus_posy + item_height - dy;
+      IupSetInt(ih, "POSY", posy);
+    }
+  }
+}
+
 static int iFlatListKUp_CB(Ihandle* ih)
 {
   if (ih->data->has_focus)
@@ -707,6 +725,7 @@ static int iFlatListKUp_CB(Ihandle* ih)
 
       iFlatListSelectItem(ih, ih->data->focus_pos - 1, ctrlPressed, shftPressed);
 
+      iFlatListScrollFocusVisible(ih);
       IupUpdate(ih);
     }
   }
@@ -725,12 +744,87 @@ static int iFlatListKDown_CB(Ihandle* ih)
 
       iFlatListSelectItem(ih, ih->data->focus_pos + 1, ctrlPressed, shftPressed);
 
+      iFlatListScrollFocusVisible(ih);
       IupUpdate(ih);
     }
   }
   return IUP_DEFAULT;
 }
 
+static int iFlatListFindNextItem(Ihandle* ih, char c)
+{
+  int count = iupArrayCount(ih->data->items_array);
+  int start = (ih->data->focus_pos - 1) + 1;
+  int i, end = count;
+  iFlatListItem* items = (iFlatListItem*)iupArrayGetData(ih->data->items_array);
+
+  if (start == end)
+  {
+    end = start - 1;
+    start = 0;
+  }
+
+  c = iup_tolower(c);
+
+  for (i = start; i < end; i++)
+  {
+    char* title = items[i].title;
+
+    if (title && iup_tolower(title[0]) == c)
+      return i + 1;
+  }
+
+  return -1;
+}
+
+static int iFlatListKAny_CB(Ihandle* ih, int c)
+{
+  if (ih->data->has_focus)
+  {
+    int pos = iFlatListFindNextItem(ih, (char)c);
+    if (pos > 0)
+    {
+      int ctrlPressed = 0; /* behave as no ctrl key pressed when using arrow keys */
+      int shftPressed = IupGetInt(NULL, "SHIFTKEY");
+
+      iFlatListSelectItem(ih, pos, ctrlPressed, shftPressed);
+
+      iFlatListScrollFocusVisible(ih);
+      IupUpdate(ih);
+    }
+  }
+  return IUP_DEFAULT;
+}
+
+static int iFlatListKPgUp_CB(Ihandle* ih)
+{
+  if (ih->data->has_focus)
+  {
+    int posy = IupGetInt(ih, "POSY");
+    int dy = IupGetInt(ih, "DY");
+
+    posy -= dy;
+    IupSetInt(ih, "POSY", posy);
+
+    IupUpdate(ih);
+  }
+  return IUP_DEFAULT;
+}
+
+static int iFlatListKPgDn_CB(Ihandle* ih)
+{
+  if (ih->data->has_focus)
+  {
+    int posy = IupGetInt(ih, "POSY");
+    int dy = IupGetInt(ih, "DY");
+
+    posy += dy;
+    IupSetInt(ih, "POSY", posy);
+
+    IupUpdate(ih);
+  }
+  return IUP_DEFAULT;
+}
 
 
 /******************************************************************************************/
@@ -776,7 +870,7 @@ static char* iFlatListGetIdValueAttrib(Ihandle* ih, int pos)
   if (pos < 1 || pos > count)
     return 0;
 
-  return items[pos - 1].name;
+  return items[pos - 1].title;
 }
 
 static int iFlatListSetIdValueAttrib(Ihandle* ih, int pos, const char* value)
@@ -792,14 +886,14 @@ static int iFlatListSetIdValueAttrib(Ihandle* ih, int pos, const char* value)
   {
     iFlatListItem* items = (iFlatListItem*)iupArrayGetData(ih->data->items_array);
 
-    if (items[pos - 1].name)
-      free(items[pos - 1].name);
-    items[pos - 1].name = iupStrDup(value);
+    if (items[pos - 1].title)
+      free(items[pos - 1].title);
+    items[pos - 1].title = iupStrDup(value);
   }
   else
   {
     iFlatListItem* items = (iFlatListItem*)iupArrayInsert(ih->data->items_array, count, pos - 1 - count + 1);
-    items[pos - 1].name = iupStrDup(value);
+    items[pos - 1].title = iupStrDup(value);
   }
 
   if (ih->handle)
@@ -817,7 +911,7 @@ static int iFlatListSetAppendItemAttrib(Ihandle* ih, const char* value)
   {
     iFlatListItem* items = (iFlatListItem*)iupArrayInc(ih->data->items_array);
     int count = iupArrayCount(ih->data->items_array);
-    items[count - 1].name = iupStrDup(value);
+    items[count - 1].title = iupStrDup(value);
   }
 
   if (ih->handle)
@@ -838,7 +932,7 @@ static int iFlatListSetInsertItemAttrib(Ihandle* ih, int pos, const char* value)
   if (value)
   {
     iFlatListItem* items = (iFlatListItem*)iupArrayInsert(ih->data->items_array, pos-1, 1);
-    items[pos - 1].name = iupStrDup(value);
+    items[pos - 1].title = iupStrDup(value);
   }
 
   if (ih->handle)
@@ -983,7 +1077,7 @@ static int iFlatListDropData_CB(Ihandle *ih, char* type, void* data, int len, in
       if (buffer[src_pos - 1] == '+')
       {
         iFlatListItem* items = (iFlatListItem*)iupArrayInsert(ih->data->items_array, pos - 1, 1);
-        items[pos - 1].name = iupStrDup(IupGetAttributeId(ih_source, "", src_pos));
+        items[pos - 1].title = iupStrDup(IupGetAttributeId(ih_source, "", src_pos));
         items[pos - 1].image = iupStrDup(IupGetAttributeId(ih_source, "IMAGE", src_pos));   /* works for IupFlatList only, in IupList is write-only */
         items[pos - 1].fgColor = iupStrDup(IupGetAttributeId(ih_source, "ITEMFGCOLOR", src_pos));
         items[pos - 1].bgColor = iupStrDup(IupGetAttributeId(ih_source, "ITEMBGCOLOR", src_pos));
@@ -1013,7 +1107,7 @@ static int iFlatListDropData_CB(Ihandle *ih, char* type, void* data, int len, in
   {
     iFlatListItem* items = (iFlatListItem*)iupArrayInsert(ih->data->items_array, pos - 1, 1);
     int src_pos = IupGetInt(ih_source, "VALUE");
-    items[pos - 1].name = iupStrDup(IupGetAttributeId(ih_source, "", src_pos));
+    items[pos - 1].title = iupStrDup(IupGetAttributeId(ih_source, "", src_pos));
     items[pos - 1].image = iupStrDup(IupGetAttributeId(ih_source, "IMAGE", src_pos));   /* works for IupFlatList only, in IupList is write-only */
     items[pos - 1].fgColor = iupStrDup(IupGetAttributeId(ih_source, "ITEMFGCOLOR", src_pos));
     items[pos - 1].bgColor = iupStrDup(IupGetAttributeId(ih_source, "ITEMBGCOLOR", src_pos));
@@ -1653,8 +1747,8 @@ static void iFlatListDestroyMethod(Ihandle* ih)
 
   for (i = 0; i < count; i++)
   {
-    if (items[i].name)
-      free(items[i].name);
+    if (items[i].title)
+      free(items[i].title);
 
     if (items[i].image)
       free(items[i].image);
@@ -1707,6 +1801,9 @@ static int iFlatListCreateMethod(Ihandle* ih, void** params)
   IupSetCallback(ih, "K_sDOWN", (Icallback)iFlatListKDown_CB);
   IupSetCallback(ih, "K_cUP", (Icallback)iFlatListKUp_CB);
   IupSetCallback(ih, "K_cDOWN", (Icallback)iFlatListKDown_CB);
+  IupSetCallback(ih, "K_ANY", (Icallback)iFlatListKAny_CB);
+  IupSetCallback(ih, "K_PGUP", (Icallback)iFlatListKPgUp_CB);
+  IupSetCallback(ih, "K_PGDN", (Icallback)iFlatListKPgDn_CB);
 
   return IUP_NOERROR;
 }
