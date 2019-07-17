@@ -255,7 +255,7 @@ static int iDatePickSetValueAttrib(Ihandle* ih, const char* value)
     {
       IupSetInt(txt_year, "VALUE", timeinfo->tm_year + 1900);
       IupSetStrf(txt_month, "VALUE", "%02d", timeinfo->tm_mon + 1);
-      IupSetStrf(txt_month, "VALUE", "%02d", timeinfo->tm_mday);
+      IupSetStrf(txt_day, "VALUE", "%02d", timeinfo->tm_mday);
     }
     else
     {
