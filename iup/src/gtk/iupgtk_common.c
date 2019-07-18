@@ -445,13 +445,22 @@ static GdkColor gtkLighterColor(GdkColor *color)
 #endif
 
 #if GTK_CHECK_VERSION(3, 16, 0)
-static char* gtkGetSelectedColor(void)
+static char* gtkGetSelectedColorStr(void)
 {
   GdkRGBA rgba;
   unsigned char r, g, b;
   iupStrToRGB(IupGetGlobal("TXTHLCOLOR"), &r, &g, &b);
   iupgdkRGBASet(&rgba, r, g, b);
   return gdk_rgba_to_string(&rgba);
+}
+#else
+static GdkRGBA gtkGetSelectedColorRGBA(void)
+{
+  GdkRGBA rgba;
+  unsigned char r, g, b;
+  iupStrToRGB(IupGetGlobal("TXTHLCOLOR"), &r, &g, &b);
+  iupgdkRGBASet(&rgba, r, g, b);
+  return rgba;
 }
 #endif
 
@@ -485,7 +494,7 @@ void iupgtkSetBgColor(InativeHandle* handle, unsigned char r, unsigned char g, u
     provider = gtk_css_provider_new();
     if (is_txt)
     {
-      char* selected = gtkGetSelectedColor();
+      char* selected = gtkGetSelectedColorStr();
 
       css = g_strdup_printf("*          { background-color: %s; }"
                             "*:hover    { background-color: %s; }"
@@ -517,11 +526,15 @@ void iupgtkSetBgColor(InativeHandle* handle, unsigned char r, unsigned char g, u
   gtk_widget_override_background_color(handle, GTK_STATE_FLAG_PRELIGHT, &light_rgba);  /* hover */
 
   if (is_txt)
+  {
+    GdkRGBA selected_rgba = gtkGetSelectedColorRGBA();
     gtk_widget_override_background_color(handle, GTK_STATE_FLAG_INSENSITIVE, &light_rgba);  /* disabled */
+    gtk_widget_override_background_color(handle, GTK_STATE_FLAG_SELECTED, &selected_rgba);
+  }
   else
     gtk_widget_override_background_color(handle, GTK_STATE_FLAG_INSENSITIVE, &rgba);  /* disabled */
 #endif
-#else
+#else  /* GTK 2.x */
   GtkRcStyle *rc_style;  
   GdkColor color;
 
