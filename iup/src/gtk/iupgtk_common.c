@@ -520,7 +520,7 @@ void iupgtkSetBgColor(InativeHandle* handle, unsigned char r, unsigned char g, u
     g_free(css);
     g_object_unref(provider);
   }
-#else
+#else /* GTK < 3.16 */
   gtk_widget_override_background_color(handle, GTK_STATE_FLAG_NORMAL, &rgba);
   gtk_widget_override_background_color(handle, GTK_STATE_FLAG_ACTIVE, &dark_rgba);  /* active */
   gtk_widget_override_background_color(handle, GTK_STATE_FLAG_PRELIGHT, &light_rgba);  /* hover */

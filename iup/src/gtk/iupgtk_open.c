@@ -296,7 +296,7 @@ static void gtkUpdateGlobalColors(GtkWidget* dialog, GtkWidget* text)
   color = style->base[GTK_STATE_SELECTED];
   gtkColorToRGBA(color, color3);
   gtkSetGlobalColorAttrib("TXTHLCOLOR", &color3);
-#else
+#else /* Not Windows */
   GdkRGBA color;
   GtkStyleContext* context = gtk_widget_get_style_context(dialog);
 
@@ -318,7 +318,7 @@ static void gtkUpdateGlobalColors(GtkWidget* dialog, GtkWidget* text)
   gtk_style_context_get_background_color(context, GTK_STATE_FLAG_SELECTED, &color);
   gtkSetGlobalColorAttrib("TXTHLCOLOR", &color);
 #endif
-#else
+#else /* GTK 2.xx */
   GtkStyle* style = gtk_widget_get_style(dialog);
 
   GdkColor color = style->bg[GTK_STATE_NORMAL];
