@@ -88,6 +88,7 @@ void iupdrvTextAddSpin(Ihandle* ih, int *w, int h)
 
 void iupdrvTextAddBorders(Ihandle* ih, int *w, int *h)
 {
+  /* Used also by IupCalendar and IupDatePick in Windows */
   /* LAYOUT_DECORATION_ESTIMATE */
   int border_size = 2 * 3;
   (*w) += border_size;
