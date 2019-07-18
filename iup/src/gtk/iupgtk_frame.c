@@ -159,7 +159,7 @@ static int gtkFrameMapMethod(Ihandle* ih)
     iupAttribSet(ih, "_IUPFRAME_HAS_TITLE", "1");
   else
   {
-    if (iupAttribGet(ih, "BGCOLOR"))
+    if (iupAttribGet(ih, "BGCOLOR") || iupAttribGet(ih, "BACKCOLOR"))
       iupAttribSet(ih, "_IUPFRAME_HAS_BGCOLOR", "1");
   }
 
@@ -196,6 +196,7 @@ void iupdrvFrameInitClass(Iclass* ic)
 
   /* Visual */
   iupClassRegisterAttribute(ic, "BGCOLOR", iupFrameGetBgColorAttrib, gtkFrameSetBgColorAttrib, IUPAF_SAMEASSYSTEM, "DLGBGCOLOR", IUPAF_DEFAULT);
+  iupClassRegisterAttribute(ic, "BACKCOLOR", iupFrameGetBgColorAttrib, gtkFrameSetBgColorAttrib, IUPAF_SAMEASSYSTEM, "DLGBGCOLOR", IUPAF_NO_INHERIT);
   iupClassRegisterAttribute(ic, "SUNKEN", NULL, gtkFrameSetSunkenAttrib, NULL, NULL, IUPAF_NO_INHERIT);
 
   /* Special */

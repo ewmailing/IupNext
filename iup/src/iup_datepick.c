@@ -413,16 +413,20 @@ static int iDatePickCreateMethod(Ihandle* ih, void** params)
   IupSetCallback(tgl, "LEAVEWINDOW_CB", (Icallback)iDatePickToggleLeaveWindow_CB);
 
   box = IupHbox(iDatePickCreateText(), IupLabel("/"), iDatePickCreateText(), IupLabel("/"), iDatePickCreateText(), tgl, NULL);
+  IupSetAttribute(box, "MARGIN", "0x0");
+  IupSetAttribute(box, "GAP", "0");
+
   iupChildTreeAppend(ih, box);
   box->flags |= IUP_INTERNAL;
 
   iDatePickSetOrderAttrib(ih, "DMY");
   iDatePickSetValueAttrib(ih, iDatePickGetTodayAttrib(ih));
-
-  IupSetAttribute(box, "MARGIN", "0x0");
-  IupSetAttribute(box, "GAP", "0");
-
-  IupSetAttribute(ih, "BGCOLOR", IupGetGlobal("TXTBGCOLOR"));
+  
+#if 1 /* GTK_CHECK_VERSION(3, 16, 0) */
+  IupSetAttribute(ih, "BACKCOLOR", IupGetGlobal("TXTBGCOLOR")); /* workaround */
+#else
+  IupSetAttribute(ih, "BGCOLOR", IupGetGlobal("TXTBGCOLOR")); /* NOT Working in GTK > 3.16 */
+#endif
 
   return IUP_NOERROR;
 }
