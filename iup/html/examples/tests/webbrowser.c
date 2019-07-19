@@ -82,7 +82,8 @@ static int back_cb(Ihandle* self)
 {
   Ihandle* web  = (Ihandle*)IupGetAttribute(self, "MY_WEB");
   IupSetAttribute(web, "BACKFORWARD", "-1");
-//  printf("zoom=%s\n", IupGetAttribute(web, "ZOOM"));
+//  IupSetAttribute(web, "GOBACK", NULL);
+  //  printf("zoom=%s\n", IupGetAttribute(web, "ZOOM"));
   return IUP_DEFAULT;
 }
 
@@ -90,6 +91,7 @@ static int forward_cb(Ihandle* self)
 {
   Ihandle* web  = (Ihandle*)IupGetAttribute(self, "MY_WEB");
   IupSetAttribute(web, "BACKFORWARD", "1");
+//  IupSetAttribute(web, "GOFORWARD", NULL);
   return IUP_DEFAULT;
 }
 
