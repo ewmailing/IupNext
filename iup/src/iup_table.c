@@ -32,10 +32,10 @@ typedef struct _ItableContext
 } ItableContext;
 
 /* A key of an item.
- * To avoid lots of string comparisions we store
+ * To avoid lots of string comparisons we store
  * a keyindex as an integer.
  * To find a key in an item list we only have to
- * do integer comparisions.
+ * do integer comparisons.
  * Additionally the key itself is stored in
  * keyStr. In a string indexed hashtable this is
  * a duplicated string, in a pointer indexed hash table
@@ -347,7 +347,10 @@ IUP_SDK_API void* iupTableGet(Itable *it, const char *key)
 
   itemFound = iTableFindItem(it, key, &entry, &itemIndex, &keyIndex);
   if (itemFound)
-    value = entry->items[itemIndex].value;
+  {
+    ItableItem* item = &(entry->items[itemIndex]);
+    value = item->value;
+  }
 
   return value;
 }
@@ -378,9 +381,11 @@ IUP_SDK_API void* iupTableGetTyped(Itable *it, const char *key, Itable_Types *it
   itemFound = iTableFindItem(it, key, &entry, &itemIndex, &keyIndex);
   if (itemFound)
   {
-    value = entry->items[itemIndex].value;
+    ItableItem* item = &(entry->items[itemIndex]);
+
+    value = item->value;
     if (itemType) 
-      *itemType = entry->items[itemIndex].itemType;
+      *itemType = item->itemType;
   }
 
   return value;
@@ -424,8 +429,11 @@ IUP_SDK_API void* iupTableGetCurr(Itable *it)
   if (!it || it->context.entryIndex == (unsigned int)-1
          || it->context.itemIndex == (unsigned int)-1)
     return 0;
-
-  return it->entries[it->context.entryIndex].items[it->context.itemIndex].value;
+  else
+  {
+    ItableItem* item = &(it->entries[it->context.entryIndex].items[it->context.itemIndex]);
+    return item->value;
+  }
 }
 
 IUP_SDK_API int iupTableGetCurrType(Itable *it)
@@ -548,6 +556,7 @@ IUP_SDK_API char *iupTableRemoveCurr(Itable *it)
 static void iTableFreeItemArray(Itable_IndexTypes indexType, unsigned int nextFreeIndex, ItableItem *items)
 {
   unsigned int i;
+  ItableItem* item;
 
   /* Used only in iupTableClear */
 
@@ -559,17 +568,20 @@ static void iTableFreeItemArray(Itable_IndexTypes indexType, unsigned int nextFr
   {
     for (i = 0; i < nextFreeIndex; i++)
     {
-      free((void *)(items[i].key.keyStr));
-      items[i].key.keyStr = NULL;
+      item = items + i;
+      free((void *)(item->key.keyStr));
+      item->key.keyStr = NULL;
     }
   }
 
   for (i = 0; i < nextFreeIndex; i++)
   {
-    if (items[i].itemType == IUPTABLE_STRING)
+    item = items + i;
+
+    if (item->itemType == IUPTABLE_STRING)
     {
-      free(items[i].value);
-      items[i].value = NULL;
+      free(item->value);
+      item->value = NULL;
     }
   }
 
