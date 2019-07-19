@@ -454,6 +454,7 @@ static char* gtkGetSelectedColorStr(void)
   return gdk_rgba_to_string(&rgba);
 }
 #else
+#if GTK_CHECK_VERSION(3, 0, 0)
 static GdkRGBA gtkGetSelectedColorRGBA(void)
 {
   GdkRGBA rgba;
@@ -462,6 +463,7 @@ static GdkRGBA gtkGetSelectedColorRGBA(void)
   iupgdkRGBASet(&rgba, r, g, b);
   return rgba;
 }
+#endif
 #endif
 
 void iupgtkSetBgColor(InativeHandle* handle, unsigned char r, unsigned char g, unsigned char b)
