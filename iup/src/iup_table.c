@@ -280,7 +280,7 @@ IUP_SDK_API void iupTableSet(Itable *it, const char *key, void *value, Itable_Ty
     if (item->itemType == IUPTABLE_STRING)
       free(item->value);
 
-    item->value    = v;
+    item->value = v;
     item->itemType = itemType;
   }
 }
@@ -418,7 +418,7 @@ IUP_SDK_API void iupTableSetCurr(Itable *it, void* value, Itable_Types itemType)
   if (item->itemType == IUPTABLE_STRING)
     free(item->value);
 
-  item->value    = v;
+  item->value = v;
   item->itemType = itemType;
 
 }
