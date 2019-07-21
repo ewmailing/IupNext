@@ -37,7 +37,7 @@ function(HELPERIB_COMPILE_XIBS_INTO_FRAMEWORK xib_files target_name framework_ba
 			ENDIF()
 
 			# Compile the .xib files using the 'ibtool' program with the destination being the app package
-			FOREACH( xib_path_and_file ${IUP_COCOA_XIB_FILES} )
+			FOREACH( xib_path_and_file ${xib_files} )
 				# xib_path_and_file has something like:
 				# /Users/ewing/IupCocoa/src/cocoa/xib/Base.lproj/CanonicalServiceMenu.xib
 
@@ -57,7 +57,7 @@ function(HELPERIB_COMPILE_XIBS_INTO_FRAMEWORK xib_files target_name framework_ba
 					# /foo/build/Debug/iup.framework/Versions/Current/Resources/Base.lproj/CanonicalServiceMenu.nib
 					"${CMAKE_CURRENT_BINARY_DIR}/${CMAKE_CFG_INTDIR}/${framework_name}/${intermediate_resource_dir}/${localized_path_component}/${base_file_name}.nib"
 					"${xib_path_and_file}"
-					COMMENT "Compiling {xib_path_and_file}"
+					COMMENT "Compiling ${xib_path_and_file}"
 				)
 			ENDFOREACH()
 		ELSE()

@@ -519,7 +519,7 @@ void iupdrvFontGetCharSize(Ihandle* ih, int *charwidth, int *charheight)
 	if (charheight) *charheight = [iup_font charHeight];
 }
 
-void iupdrvFontGetTextSize(const char* font_name, const char* str, int *w, int *h)
+void iupdrvFontGetTextSize(const char* font_name, const char* str, int len, int *w, int *h)
 {
 	IupCocoaFont* the_font = cocoaFindFont(font_name);
 	if(the_font)

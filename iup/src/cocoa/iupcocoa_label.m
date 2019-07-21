@@ -585,7 +585,7 @@ static int cocoaLabelSetImageAttrib(Ihandle* ih, const char* value)
 		
 		
 		id the_bitmap;
-		the_bitmap = iupImageGetImage(value, ih, make_inactive);
+		the_bitmap = iupImageGetImage(value, ih, make_inactive, NULL);
 		int width;
 		int height;
 		int bpp;
@@ -664,7 +664,7 @@ static int cocoaLabelMapMethod(Ihandle* ih)
 			
 			
 			id the_bitmap;
-			the_bitmap = iupImageGetImage(name, ih, make_inactive);
+			the_bitmap = iupImageGetImage(name, ih, make_inactive, NULL);
 			int width;
 			int height;
 			int bpp;

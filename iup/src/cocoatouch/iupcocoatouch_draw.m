@@ -115,7 +115,7 @@ void iupdrvDrawResetClip(IdrawCanvas* dc)
 void iupdrvDrawParentBackground(IdrawCanvas* dc)
 {
 }
-void iupdrvDrawText(IdrawCanvas* dc, const char* text, int len, int x, int y, int w, int h, long color, const char* font, int align)
+void iupdrvDrawText(IdrawCanvas* dc, const char* text, int len, int x, int y, int w, int h, long color, const char* font, int flags, double text_orientation)
 {
 }
 void iupdrvDrawSelectRect(IdrawCanvas* dc, int x1, int y1, int x2, int y2)
@@ -158,7 +158,11 @@ void iupdrvDrawFlush(IdrawCanvas* dc)
 {
 }
 
-void iupdrvDrawImage(IdrawCanvas* dc, const char* name, int make_inactive, int x, int y)
+void iupdrvDrawImage(IdrawCanvas* dc, const char* name, int make_inactive, const char* bgcolor, int x, int y, int w, int h)
+{
+}
+
+IUP_SDK_API void iupdrvDrawGetClipRect(IdrawCanvas* dc, int *x1, int *y1, int *x2, int *y2)
 {
 }
 

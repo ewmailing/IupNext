@@ -268,6 +268,15 @@ void iupdrvDrawFocusRect(IdrawCanvas* dc, int x1, int y1, int x2, int y2)
 	
 }
 
+IUP_SDK_API void iupdrvDrawGetClipRect(IdrawCanvas* dc, int *x1, int *y1, int *x2, int *y2)
+{
+  if (x1) *x1 = (int)dc->clip_x1;
+  if (y1) *y1 = (int)dc->clip_y1;
+  if (x2) *x2 = (int)dc->clip_x2;
+  if (y2) *y2 = (int)dc->clip_y2;
+}
+
+
 void iupdrvDrawSetClipRect(IdrawCanvas* dc, int x1, int y1, int x2, int y2)
 {
 	// This gets called a lot, so print only once.
@@ -286,7 +295,10 @@ void iupdrvDrawSetClipRect(IdrawCanvas* dc, int x1, int y1, int x2, int y2)
 	
 	CGContextClipToRect(cg_context, clip_rect);
 #endif
-
+	dc->clip_x1 = (CGFloat)x1;
+	dc->clip_y1 = (CGFloat)y1;
+	dc->clip_x2 = (CGFloat)x2;
+	dc->clip_y2 = (CGFloat)y2;
 }
 
 // This is supposed to remove the clipping.
@@ -321,7 +333,8 @@ void iupdrvDrawParentBackground(IdrawCanvas* dc)
 	
 	CGContextFillRect(cg_context, the_rectangle);
 }
-void iupdrvDrawText(IdrawCanvas* dc, const char* text, int len, int x, int y, int w, int h, long color, const char* font, int align)
+// TODO: text_orientation was added after this implementation was done but before the merge. We need to implement it.
+void iupdrvDrawText(IdrawCanvas* dc, const char* text, int len, int x, int y, int w, int h, long color, const char* font, int flags, double text_orientation)
 {
 	// FIXME: We need to properly implement the font system in order for us to implement this.
 	// FIXME: Need to figure out how to size up the rendered string, and then align it within the specified draw box.
@@ -443,16 +456,18 @@ void iupdrvDrawFlush(IdrawCanvas* dc)
 	// I don't think Apple gives us anything do anything here.
 }
 
-void iupdrvDrawImage(IdrawCanvas* dc, const char* name, int make_inactive, int x, int y)
+// TODO: w,h are new parameters added after this implementation, but before the merge. Need to test w,h implementation.
+void iupdrvDrawImage(IdrawCanvas* dc, const char* name, int make_inactive, const char* bgcolor, int x, int y, int w, int h)
 {
 //	NSLog(@"iupdrvDrawImage not implemented");
 	CGContextRef cg_context = dc->cgContext;
-	NSImage* user_image = (NSImage*)iupImageGetImage(name, dc->ih, make_inactive);
+	NSImage* user_image = (NSImage*)iupImageGetImage(name, dc->ih, make_inactive, bgcolor);
 //	[user_image autorelease]; // BAD: Iup is caching the value and returns the same pointer if cached. This results in a double autorelease.
 //	NSImageRep* user_image_rep = nil;
 
-	NSSize image_size = [user_image size];
-	NSRect target_rect = NSMakeRect(x, y, image_size.width, image_size.height);
+//	NSSize image_size = [user_image size];
+//	NSRect target_rect = NSMakeRect(x, y, image_size.width, image_size.height);
+	NSRect target_rect = NSMakeRect(x, y, w, h);
 	NSGraphicsContext* nsgc = [NSGraphicsContext graphicsContextWithCGContext:cg_context flipped:YES];
 	[NSGraphicsContext saveGraphicsState];
 	[NSGraphicsContext setCurrentContext:nsgc];

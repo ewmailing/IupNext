@@ -22,6 +22,10 @@ struct _IdrawCanvas
 	int focus_x2;
 	int focus_y2;
 */
+	CGFloat clip_x1;
+	CGFloat clip_y1;
+	CGFloat clip_x2;
+	CGFloat clip_y2;
 };
 
 #endif /* __IUPCOCOA_DRAWCANVAS_H */

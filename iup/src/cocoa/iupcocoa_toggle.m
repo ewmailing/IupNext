@@ -281,14 +281,14 @@ static int cocoaToggleMapMethod(Ihandle* ih)
 			make_inactive = 1;
 		}
 		
-		the_bitmap = iupImageGetImage(value, ih, make_inactive);
+		the_bitmap = iupImageGetImage(value, ih, make_inactive, NULL);
 		[the_toggle setImage:the_bitmap];
 		
 		
 		value = iupAttribGet(ih, "IMPRESS");
 		if(value && *value!=0)
 		{
-			the_bitmap = iupImageGetImage(value, ih, make_inactive);
+			the_bitmap = iupImageGetImage(value, ih, make_inactive, NULL);
 			[the_toggle setAlternateImage:the_bitmap];
 		}
 	}
