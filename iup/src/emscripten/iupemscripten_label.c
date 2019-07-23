@@ -219,7 +219,7 @@ static int emscriptenLabelSetImageAttrib(Ihandle* ih, const char* value)
 		
 		// NOTE: Maybe SDL_surface is too low level, and we should be creating the JavaScript imageData.
 		SDL_Surface* sdl_surface;
-		sdl_surface = iupImageGetImage(value, ih, make_inactive);
+		sdl_surface = iupImageGetImage(value, ih, make_inactive, NULL);
 		int width;
 		int height;
 		int bpp;

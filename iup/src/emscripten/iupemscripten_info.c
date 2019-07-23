@@ -189,7 +189,7 @@ IUP_SDK_API char *iupdrvGetUserName(void)
 	return NULL;
 }
 
-IUP_SDK_API int iupdrvGetPreferencePath(char *filename, int str_len, const char *app_name)
+IUP_SDK_API int iupdrvGetPreferencePath(char *filename, int use_system)
 {
   /*
   Everything is supposed to be sandboxed.
@@ -203,6 +203,7 @@ IUP_SDK_API int iupdrvGetPreferencePath(char *filename, int str_len, const char 
   */
 
   /* We put this in a unique Iup directory to try to not conflict with anything the end user might want to setup for their own program. */
+  size_t str_len = strlen(filename);
   size_t num = strlcpy(filename, "/IupIDBFS/", str_len);
   if (num >= str_len)
   {

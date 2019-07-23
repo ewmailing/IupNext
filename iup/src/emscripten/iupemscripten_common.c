@@ -432,6 +432,9 @@ IUP_SDK_API int iupdrvGetScrollbarSize(void)
   return 0;
 }
 
+IUP_SDK_API void iupdrvSetAccessibleTitle(Ihandle *ih, const char* title)
+{
+}
 
 
 IUP_SDK_API void iupdrvBaseRegisterCommonAttrib(Iclass* ic)

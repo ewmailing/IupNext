@@ -3,13 +3,13 @@
 # mkdir -p BUILD/emscripten; cd BUILD/emscripten;
 
 # release build compile command
-# cmake -DCMAKE_TOOLCHAIN_FILE=$EMSCRIPTEN/cmake/Modules/Platform/Emscripten.cmake -DCMAKE_BUILD_TYPE=Release ../..
+# cmake -DCMAKE_TOOLCHAIN_FILE=$EMSDK/fastcomp/emscripten/cmake/Modules/Platform/Emscripten.cmake -DCMAKE_BUILD_TYPE=Release ../..
 
 # compile command for ninja, debug mode, source maps (for some browser debuggers), emrun
-# cmake -GNinja -DCMAKE_TOOLCHAIN_FILE=$EMSCRIPTEN/cmake/Modules/Platform/Emscripten.cmake -DCMAKE_BUILD_TYPE=Debug -DCMAKE_C_FLAGS_DEBUG=-g4 -DCMAKE_EXE_LINKER_FLAGS="--emrun --source-map-base http://localhost:8888/" ../..
+# cmake -GNinja -DCMAKE_TOOLCHAIN_FILE=$EMSDK/fastcomp/emscripten/cmake/Modules/Platform/Emscripten.cmake -DCMAKE_BUILD_TYPE=Debug -DCMAKE_C_FLAGS_DEBUG=-g4 -DCMAKE_EXE_LINKER_FLAGS="--emrun --source-map-base http://localhost:8888/" ../..
 
 # above plus export CMkae compile commands to JSON for some external tools, e.g. lsp
-# cmake -GNinja -DCMAKE_TOOLCHAIN_FILE=$EMSCRIPTEN/cmake/Modules/Platform/Emscripten.cmake -DCMAKE_BUILD_TYPE=Debug -DCMAKE_C_FLAGS_DEBUG=-g4 -DCMAKE_EXE_LINKER_FLAGS="--emrun --source-map-base http://localhost:8888/" -DCMAKE_EXPORT_COMPILE_COMMANDS=1 ../..
+# cmake -GNinja -DCMAKE_TOOLCHAIN_FILE=$EMSDK/fastcomp/emscripten/cmake/Modules/Platform/Emscripten.cmake -DCMAKE_BUILD_TYPE=Debug -DCMAKE_C_FLAGS_DEBUG=-g4 -DCMAKE_EXE_LINKER_FLAGS="--emrun --source-map-base http://localhost:8888/" -DCMAKE_EXPORT_COMPILE_COMMANDS=1 ../..
 
 # For testing/debugging Emscripten, you can use the CLI tool: emrun
 # You should first create a symlink to the src directory because the source-map system doesn't handle out-of-source builds well.
@@ -28,6 +28,16 @@
 # mkdir BUILD; cd BUILD;
 # cmake -DCMAKE_TOOLCHAIN_FILE=../CMakeModules/iOS.toolchain.cmake -GXcode ..
 
+# For Android, open the Android Studio project which will use this to build the NDK parts.
+
+# For Windows, specify the desired generator with -G, or use the CMake-GUI. Don't forget the Win64 if you want 64-bit.
+# mkdir BUILD; cd BUILD;
+# cmake -G "Visual Studio 2019 Visual Studio 16 2019 Win64" ..
+
+# For Linux/other Unices, use -G to specify the generator you want. Omitting -G defaults to the Makefile generator. Most come with Make pre-installed. Ninja is faster.
+# If you are not using a build system that lets you switch between Debug/Release, you should specify the CMAKE_BUILD_TYPE to build the version you want.
+# mkdir BUILD; cd BUILD;
+# cmake -GNinja -DCMAKE_BUILD_TYPE=Release ..
 
 if(APPLE)
 	# We're using the new Mac RPATH policy.
@@ -464,6 +474,8 @@ SET(IUP_COMMON_SOURCE_FILES
 	${CMAKE_SOURCE_DIR}/src/iup_flatbutton.c
 	${CMAKE_SOURCE_DIR}/src/iup_flatframe.c
 	${CMAKE_SOURCE_DIR}/src/iup_flatlabel.c
+	${CMAKE_SOURCE_DIR}/src/iup_flatlist.c
+	${CMAKE_SOURCE_DIR}/src/iup_flatval.c
 	${CMAKE_SOURCE_DIR}/src/iup_flatscrollbar.c
 	${CMAKE_SOURCE_DIR}/src/iup_flatscrollbar.h
 	${CMAKE_SOURCE_DIR}/src/iup_flatscrollbox.c
@@ -482,6 +494,7 @@ SET(IUP_COMMON_SOURCE_FILES
 	${CMAKE_SOURCE_DIR}/src/iup_getparam.c
 	${CMAKE_SOURCE_DIR}/src/iup_globalattrib.c
 	${CMAKE_SOURCE_DIR}/src/iup_globalattrib.h
+	${CMAKE_SOURCE_DIR}/src/iup_globalsdlg.c
 	${CMAKE_SOURCE_DIR}/src/iup_gridbox.c
 	${CMAKE_SOURCE_DIR}/src/iup_hbox.c
 	${CMAKE_SOURCE_DIR}/src/iup_image.c
@@ -512,6 +525,7 @@ SET(IUP_COMMON_SOURCE_FILES
 	${CMAKE_SOURCE_DIR}/src/iup_menu.c
 	${CMAKE_SOURCE_DIR}/src/iup_menu.h
 	${CMAKE_SOURCE_DIR}/src/iup_messagedlg.c
+	${CMAKE_SOURCE_DIR}/src/iup_multibox.c
 	${CMAKE_SOURCE_DIR}/src/iup_names.c
 	${CMAKE_SOURCE_DIR}/src/iup_names.h
 	${CMAKE_SOURCE_DIR}/src/iup_normalizer.c
@@ -532,6 +546,7 @@ SET(IUP_COMMON_SOURCE_FILES
 	${CMAKE_SOURCE_DIR}/src/iup_scanf.c
 	${CMAKE_SOURCE_DIR}/src/iup_scrollbox.c
 	${CMAKE_SOURCE_DIR}/src/iup_show.c
+	${CMAKE_SOURCE_DIR}/src/iup_space.c
 	${CMAKE_SOURCE_DIR}/src/iup_spin.c
 	${CMAKE_SOURCE_DIR}/src/iup_split.c
 	${CMAKE_SOURCE_DIR}/src/iup_stdcontrols.h
@@ -813,8 +828,8 @@ ELSEIF(IUP_USE_ANDROID)
 
 
 	SET(IUPWEB_ANDROID_SOURCE_FILES
-		${CMAKE_SOURCE_DIR}/srcweb/android/iupandroid_webbrowser.c
-		${CMAKE_SOURCE_DIR}/srcweb/android/iupandroid_jni_IupWebView.c
+		${CMAKE_SOURCE_DIR}/srcweb/iupandroid_webbrowser.c
+		${CMAKE_SOURCE_DIR}/srcweb/iupandroid_jni_IupWebView.c
 	)
 	LIST(APPEND IUPWEB_SOURCE_FILES
 		${IUPWEB_ANDROID_SOURCE_FILES}
@@ -1734,7 +1749,7 @@ IF(IUP_USE_LUA)
 		ENDIF()
 
 		# IupLua depends on IupWeb
-		BUILD_IUPLUA_TEST(lua_c_app "${CMAKE_SOURCE_DIR}/html/examples/lua_c_app/lua_app_main.c" "")
+		BUILD_IUPLUA_TEST(lua_c_app "${CMAKE_SOURCE_DIR}/html/examples/C/lua_app_main.c" "")
 
 		IF(IUP_USE_ANDROID)
 			# Android Studio/Gradle lacks a mechanism to copy pre-built libraries to be bundled in the .apk,

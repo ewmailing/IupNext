@@ -93,7 +93,7 @@ IUP_SDK_API void iupdrvFontGetMultiLineStringSize(Ihandle* ih, const char* str, 
 }
 
 // FIXME: This is a quick-and-dirty copy-and-paste from emjsFont_GetMultiLineStringSize to get things working due to Iup internal API changes.
-IUP_SDK_API void iupdrvFontGetTextSize(const char* font, const char* str, int *w, int *h)
+IUP_SDK_API void iupdrvFontGetTextSize(const char* font, const char* str, int len, int *w, int *h)
 {
 	int32_t tmp_width = 0;
 	int32_t tmp_height = 0;
