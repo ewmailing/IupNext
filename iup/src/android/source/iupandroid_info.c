@@ -210,7 +210,7 @@ IUP_SDK_API char *iupdrvGetUserName(void)
 	
 }
 
-IUP_SDK_API int iupdrvGetPreferencePath(char *filename, int str_len, const char *app_name)
+IUP_SDK_API int iupdrvGetPreferencePath(char *filename, int use_system)
 {
 	JNIEnv* jni_env;
     jmethodID method_id;
@@ -253,6 +253,7 @@ IUP_SDK_API int iupdrvGetPreferencePath(char *filename, int str_len, const char 
 
 	c_path_string = (*jni_env)->GetStringUTFChars(jni_env, j_path_string, NULL);
 
+	size_t str_len = strlen(filename);
 	num = strlcpy(filename, c_path_string, str_len);
 
 	(*jni_env)->ReleaseStringUTFChars(jni_env, j_path_string, c_path_string);

@@ -1754,7 +1754,7 @@ IF(IUP_USE_LUA)
 		IF(IUP_USE_ANDROID)
 			# Android Studio/Gradle lacks a mechanism to copy pre-built libraries to be bundled in the .apk,
 			# so we need to manally copy the library into a staging area that Gradle will intercept.
-			file(COPY ${LUA_LIBRARY} DESTINATION ${CMAKE_SOURCE_DIR}/Android/iuptestapplua/build/jniLibs/${ANDROID_ABI}/)
+			file(COPY ${LUA_LIBRARY} DESTINATION ${CMAKE_SOURCE_DIR}/mak.Android/iuptestapplua/build/jniLibs/${ANDROID_ABI}/)
 		ENDIF()
 		
 
@@ -1836,7 +1836,7 @@ elseif(IUP_USE_ANDROID)
 	IF(IUPLUA_ANDROID_BUILD_TEST_LIBRARY)
 
 #		add_library(iuptestapplua SHARED EXCLUDE_FROM_ALL
-#			${CMAKE_SOURCE_DIR}/html/examples/lua_c_app/lua_app_main.c
+#			${CMAKE_SOURCE_DIR}/html/examples/C/lua_app_main.c
 #		)
 #		IF(IUP_OPTION_LUA_BUILD_AS_MODULES)
 #			target_link_libraries(iuptestapplua iupweb iup)
@@ -1857,7 +1857,7 @@ elseif(IUP_USE_ANDROID)
 
 		# This function knows to build libraries for Android. It also is aware of how to bundle our assets.
 		HELPER_CREATE_EXECUTABLE(iuptestapplua 
-			"${CMAKE_SOURCE_DIR}/html/examples/lua_c_app/lua_app_main.c"
+			"${CMAKE_SOURCE_DIR}/html/examples/C/lua_app_main.c"
 			"${WANTS_BUILD_SHARED_LIBRARY}"
 			"${iuptestapplua_libs_to_link}"
 			"${IUP_LINK_LIBRARIES}"

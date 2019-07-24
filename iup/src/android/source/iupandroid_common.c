@@ -462,6 +462,11 @@ int iupdrvGetScrollbarSize(void)
   return 0;
 }
 
+void iupdrvSetAccessibleTitle(Ihandle *ih, const char* title)
+{
+
+}
+
 void iupdrvBaseRegisterCommonAttrib(Iclass* ic)
 {
 	/*

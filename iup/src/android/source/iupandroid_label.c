@@ -225,7 +225,7 @@ static int androidLabelSetImageAttrib(Ihandle* ih, const char* value)
 			}
 
 			// should return a Bitmap, with NewGlobalRef. Don't call DeleteGlobalRef directly. iupdrvImageDestroy should do that.
-			jobject the_bitmap = iupImageGetImage(value, ih, make_inactive);
+			jobject the_bitmap = iupImageGetImage(value, ih, make_inactive, NULL);
 
 			method_id = IUPJNI_GetStaticMethodID(IupLabelHelper_setImage, jni_env, java_class, "setImage", "(JLandroid/widget/ImageView;Landroid/graphics/Bitmap;)V");
 

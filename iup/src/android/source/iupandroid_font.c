@@ -86,7 +86,7 @@ IUP_SDK_API void iupdrvFontGetMultiLineStringSize(Ihandle* ih, const char* str, 
 }
 
 
-IUP_SDK_API void iupdrvFontGetTextSize(const char* font, const char* str, int *w, int *h)
+IUP_SDK_API void iupdrvFontGetTextSize(const char* font, const char* str, int len, int *w, int *h)
 {
 	JNIEnv* jni_env = iupAndroid_GetEnvThreadSafe();
 	jclass java_class = (*jni_env)->FindClass(jni_env, "br/pucrio/tecgraf/iup/IupFontHelper");
