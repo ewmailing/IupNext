@@ -11,6 +11,7 @@
 #include <memory.h>
 
 #include "iup.h"
+#include "iupcbs.h"
 
 #include "iup_object.h"
 #include "iup_attrib.h"
@@ -408,6 +409,14 @@ IUP_SDK_API void* iupdrvImageCreateImageRaw(int width, int height, int bpp, iupC
   }
 
   GlobalUnlock(hHandle);
+
+  if (hHandle)
+  {
+    IFvs cb = (IFvs)IupGetFunction("IMAGECREATE_CB");
+    if (cb)
+      cb(hHandle, "DIB");
+  }
+
   return hHandle;
 }
 
@@ -469,43 +478,7 @@ static int winImageInitDibColors(iupColor* colors, RGBQUAD* bmpcolors, int color
   return ret;
 }
 
-static HBITMAP winImageCreateBitmap(Ihandle *ih, int width, int height, int dmp_bpp, BYTE** bits,
-                                    unsigned char bg_r, unsigned char bg_g, unsigned char bg_b, int make_inactive, iupColor* colors, int colors_count)
-{
-  HDC hDC;
-  HBITMAP hBitmap;
-  BITMAPINFOHEADER* bmih;  /* bitmap info header */
-
-  bmih = malloc(sizeof(BITMAPINFOHEADER) + sizeof(RGBQUAD)*colors_count);
-  if (!bmih)
-    return NULL;
-
-  memset(bmih, 0, sizeof(BITMAPINFOHEADER));
-  bmih->biSize = sizeof(BITMAPINFOHEADER);
-  bmih->biWidth  = width;
-  bmih->biHeight = height;
-  bmih->biPlanes = 1; /* not the same as PLANES */
-  bmih->biBitCount = (WORD)dmp_bpp;
-  bmih->biCompression = BI_RGB;
-  bmih->biClrUsed = colors_count;
-
-  if (colors_count)
-  {
-    /* since colors are only passed to the CreateDIBSection here, must update BGCOLOR and inactive here */
-    RGBQUAD* bitmap_colors = (RGBQUAD*)(((BYTE*)bmih) + sizeof(BITMAPINFOHEADER));
-    if (winImageInitDibColors(colors, bitmap_colors, colors_count, bg_r, bg_g, bg_b, make_inactive))
-      iupAttribSet(ih, "_IUP_BGCOLOR_DEPEND", "1");
-  }
-
-  hDC = GetDC(NULL);
-  hBitmap = CreateDIBSection(hDC, (BITMAPINFO*)bmih, DIB_RGB_COLORS, (void**)bits, NULL, 0x0);
-  ReleaseDC(NULL, hDC);
-  free(bmih);
-
-  return hBitmap;
-}
-
-void* iupdrvImageCreateImage(Ihandle *ih, const char* bgcolor, int make_inactive)
+static void* winImageCreateBitmap(Ihandle *ih, const char* bgcolor, int make_inactive)
 {
   unsigned char bg_r = 0, bg_g = 0, bg_b = 0;
   int y,x,bmp_line_size,data_line_size,
@@ -541,7 +514,35 @@ void* iupdrvImageCreateImage(Ihandle *ih, const char* bgcolor, int make_inactive
     }
   }
 
-  hBitmap = winImageCreateBitmap(ih, width, height, dmp_bpp, &bits, bg_r, bg_g, bg_b, make_inactive, colors, colors_count);
+  {
+    HDC hDC;
+    BITMAPINFOHEADER* bmih = malloc(sizeof(BITMAPINFOHEADER) + sizeof(RGBQUAD)*colors_count);
+    if (!bmih)
+      return NULL;
+
+    memset(bmih, 0, sizeof(BITMAPINFOHEADER));
+    bmih->biSize = sizeof(BITMAPINFOHEADER);
+    bmih->biWidth = width;
+    bmih->biHeight = height;
+    bmih->biPlanes = 1; /* not the same as PLANES */
+    bmih->biBitCount = (WORD)dmp_bpp;
+    bmih->biCompression = BI_RGB;
+    bmih->biClrUsed = colors_count;
+
+    if (colors_count)
+    {
+      /* since colors are only passed to the CreateDIBSection here, must update BGCOLOR and inactive here */
+      RGBQUAD* bitmap_colors = (RGBQUAD*)(((BYTE*)bmih) + sizeof(BITMAPINFOHEADER));
+      if (winImageInitDibColors(colors, bitmap_colors, colors_count, bg_r, bg_g, bg_b, make_inactive))
+        iupAttribSet(ih, "_IUP_BGCOLOR_DEPEND", "1");
+    }
+
+    hDC = GetDC(NULL);
+    hBitmap = CreateDIBSection(hDC, (BITMAPINFO*)bmih, DIB_RGB_COLORS, &bits, NULL, 0x0);
+    ReleaseDC(NULL, hDC);
+    free(bmih);
+  }
+
   if (!hBitmap)
     return NULL;
 
@@ -637,6 +638,12 @@ void* iupdrvImageCreateImage(Ihandle *ih, const char* bgcolor, int make_inactive
 
   if (make_inactive || (channels == 4 && flat_alpha))
     iupAttribSet(ih, "_IUP_BGCOLOR_DEPEND", "1");
+
+  {
+    IFvs cb = (IFvs)IupGetFunction("IMAGECREATE_CB");
+    if (cb)
+      cb(hBitmap, "BITMAP");
+  }
 
   return hBitmap;
 }
@@ -767,14 +774,46 @@ static HICON winImageCreateCursorIcon(Ihandle *ih, int is_cursor)
   return icon;
 }
 
+void* iupdrvImageCreateImage(Ihandle *ih, const char* bgcolor, int make_inactive)
+{
+  void* handle = winImageCreateBitmap(ih, bgcolor, make_inactive);
+
+  if (handle)
+  {
+    IFvs cb = (IFvs)IupGetFunction("IMAGECREATE_CB");
+    if (cb)
+      cb(handle, "BITMAP");
+  }
+
+  return handle;
+}
+
 void* iupdrvImageCreateIcon(Ihandle *ih)
 {
-  return winImageCreateCursorIcon(ih, 0);
+  void* handle = winImageCreateCursorIcon(ih, 0);
+
+  if (handle)
+  {
+    IFvs cb = (IFvs)IupGetFunction("IMAGECREATE_CB");
+    if (cb)
+      cb(handle, "ICON");
+  }
+
+  return handle;
 }
 
 void* iupdrvImageCreateCursor(Ihandle *ih)
 {
-  return winImageCreateCursorIcon(ih, 1);
+  void* handle = winImageCreateCursorIcon(ih, 1);
+
+  if (handle)
+  {
+    IFvs cb = (IFvs)IupGetFunction("IMAGECREATE_CB");
+    if (cb)
+      cb(handle, "CURSOR");
+  }
+
+  return handle;
 }
 
 void* iupdrvImageLoad(const char* name, int type)
@@ -785,6 +824,17 @@ void* iupdrvImageLoad(const char* name, int type)
     hImage = LoadImage(iupwin_dll_hinstance, iupwinStrToSystem(name), iup2win[type], 0, 0, type == IUPIMAGE_IMAGE ? LR_CREATEDIBSECTION : 0);
   if (!hImage)
     hImage = LoadImage(NULL, iupwinStrToSystemFilename(name), iup2win[type], 0, 0, LR_LOADFROMFILE | (type == IUPIMAGE_IMAGE ? LR_CREATEDIBSECTION : 0));
+
+  if (hImage)
+  {
+    IFvs cb = (IFvs)IupGetFunction("IMAGECREATE_CB");
+    if (cb)
+    {
+      char* type_str[3] = { "BITMAP", "ICON", "CURSOR" };
+      cb(hImage, type_str[type]);
+    }
+  }
+
   return hImage;
 }
 
@@ -806,20 +856,35 @@ int iupdrvImageGetInfo(void* handle, int *w, int *h, int *bpp)
 
 IUP_SDK_API void iupdrvImageDestroy(void* handle, int type)
 {
+  char* type_str = NULL;
+  IFvs cb;
+
   switch (type)
   {
   case IUPIMAGE_IMAGE:
-    if (GetObjectType((HBITMAP)handle)==OBJ_BITMAP)
+    if (GetObjectType((HBITMAP)handle) == OBJ_BITMAP)
+    {
+      type_str = "BITMAP";
       DeleteObject((HBITMAP)handle);
+    }
     else
+    {
+      type_str = "DIB";
       GlobalFree((HANDLE)handle);
+    }
     break;
   case IUPIMAGE_ICON:
+    type_str = "ICON";
     DestroyIcon((HICON)handle);
     break;
   case IUPIMAGE_CURSOR:
+    type_str = "CURSOR";
     DestroyCursor((HCURSOR)handle);
     break;
   }
+
+  cb = (IFvs)IupGetFunction("IMAGEDESTROY_CB");
+  if (cb)
+    cb(handle, type_str);
 }
 

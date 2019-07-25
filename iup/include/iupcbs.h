@@ -18,6 +18,7 @@ typedef void (*IFii)(int, int); /* globalkeypress_cb */
 typedef void (*IFiis)(int, int, char*);  /* globalmotion_cb, openfiles_cb */
 typedef void (*IFiiiis)(int, int, int, int, char*);  /* globalbutton_cb */
 typedef void (*IFfiis)(float,int,int,char*);  /* globalwheel_cb */
+typedef void (*IFvs)(void*, char*);  /* handleadd_cb, handleremove_cb, imagecreate_cb, imagedestroy_cb */
 
 typedef int (*IFn)(Ihandle*);  /* default definition, same as Icallback */
 typedef int (*IFni)(Ihandle*, int);   /* k_any, show_cb, toggle_action, spin_cb, branchopen_cb, branchclose_cb, executeleaf_cb, showrename_cb, rightclick_cb, extended_cb, height_cb, width_cb */
