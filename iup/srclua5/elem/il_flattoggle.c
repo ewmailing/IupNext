@@ -31,7 +31,7 @@ int iupflattogglelua_open(lua_State * L)
 {
   iuplua_register(L, FlatToggle, "FlatToggle");
 
-  iuplua_register_cb(L, "FLAT_ACTION", (lua_CFunction)flattoggle_flat_action, NULL);
+  iuplua_register_cb(L, "FLAT_ACTION", (lua_CFunction)flattoggle_flat_action, "flattoggle");
 
 #ifdef IUPLUA_USELOH
 #include "flattoggle.loh"

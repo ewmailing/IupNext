@@ -43,7 +43,7 @@ int iupflatlistlua_open(lua_State * L)
   iuplua_register(L, FlatList, "FlatList");
 
   iuplua_register_cb(L, "FLAT_MOTION_CB", (lua_CFunction)flatlist_flat_motion_cb, NULL);
-  iuplua_register_cb(L, "FLAT_ACTION", (lua_CFunction)flatlist_flat_action, NULL);
+  iuplua_register_cb(L, "FLAT_ACTION", (lua_CFunction)flatlist_flat_action, "flatlist");
 
 #ifdef IUPLUA_USELOH
 #include "flatlist.loh"

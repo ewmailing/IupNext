@@ -181,8 +181,9 @@ function write_initialization(o,t)
    for i,v in pairs(c) do
       local type = "NULL"
       -- Handle callbacks that have same names but different parameters
-      if i == "action" or -- canvas, buttom, item, list, text, toggle, etc  
+      if i == "action" or -- canvas, button, item, list, text, toggle, etc  
          i == "action_cb" or -- matrix and timer
+         i == "flat_action" or -- flatbutton, flatlist, dropbutton, flattoggle
          i == "mousemove_cb" then -- matrix and val
         type = '"'..string.lower(o)..'"'
       end
