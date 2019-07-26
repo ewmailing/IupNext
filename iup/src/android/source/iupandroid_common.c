@@ -46,6 +46,38 @@ static pthread_key_t s_attachThreadKey;
 // We must cache the IupApplication class. See notes for iupAndroid_GetApplication() to understand why.
 static jclass s_classIupApplication = NULL;
 
+
+/*
+*******
+FAQ: Why didn't FindClass find my class?
+Excerpt: 
+If the class name looks right, you could be running into a class loader issue. FindClass wants to start the class search in the class loader associated with your code. It examines the call stack, which will look something like:
+
+    Foo.myfunc(Native Method)
+    Foo.main(Foo.java:10)
+The topmost method is Foo.myfunc. FindClass finds the ClassLoader object associated with the Foo class and uses that.
+
+This usually does what you want. You can get into trouble if you create a thread yourself (perhaps by calling pthread_create and then attaching it with AttachCurrentThread). Now there are no stack frames from your application. If you call FindClass from this thread, the JavaVM will start in the "system" class loader instead of the one associated with your application, so attempts to find app-specific classes will fail.
+
+There are a few ways to work around this:
+
+Do your FindClass lookups once, in JNI_OnLoad, and cache the class references for later use. Any FindClass calls made as part of executing JNI_OnLoad will use the class loader associated with the function that called System.loadLibrary (this is a special rule, provided to make library initialization more convenient). If your app code is loading the library, FindClass will use the correct class loader.
+Pass an instance of the class into the functions that need it, by declaring your native method to take a Class argument and then passing Foo.class in.
+Cache a reference to the ClassLoader object somewhere handy, and issue loadClass calls directly. This requires some effort.
+*******
+
+Problem: Because we are a C-based cross-platform framework, most of our users will probably create a pthread themselves when they need a thread (and AttachCurrentThread).
+This causes the problem in the FAQ.
+Ironically, we are trying to solve our threading problems by calling MainThreadRedirect to get back on the main thread.
+But we can't FindClass from a background thread.
+
+Solution: Since this class is special, we will cache it and avoid the FindClass issue that way.
+So we need to cache it in JNI_OnLoad.
+*/
+static jclass s_classIupMainThreadRedirect = NULL;
+
+
+
 void iupAndroid_ThreadDestroyed(void* user_data)
 {
 	/* The thread is being destroyed, detach it from the Java VM and set the s_attachThreadKey value to NULL as required */
@@ -77,6 +109,13 @@ JNIEXPORT jint JNICALL JNI_OnLoad(JavaVM* java_vm, void* reserved)
 	s_classIupApplication = (jobject)((*jni_env)->NewGlobalRef(jni_env, the_class));
 	(*jni_env)->DeleteLocalRef(jni_env, the_class);
 
+
+
+	// See comments at the top of the file about why we need to cache IupMainThreadRedirect.
+	// This code must be run on the main thread.
+	the_class = (*jni_env)->FindClass(jni_env, "br/pucrio/tecgraf/iup/IupMainThreadRedirect");
+	s_classIupMainThreadRedirect = (jobject)((*jni_env)->NewGlobalRef(jni_env, the_class));
+	(*jni_env)->DeleteLocalRef(jni_env, the_class);
 
     return JNI_VERSION_1_6;
 }
@@ -515,4 +554,29 @@ void iupdrvSleep(int time)
 void iupdrvWarpPointer(int x, int y)
 {
 	
+}
+
+// Even though other platforms implement this in iup*_loop.*,
+// it was more convenient to implement this here so we can keep 
+// s_classIupMainThreadRedirect as a static variable, instead of a global variable.
+void IupPostMessage(Ihandle* ih, const char* s, int i, double d)
+{
+	// We need to call into Java and instruct it to run a block of code 
+	// on the UI Thread that will callback into C and invoke the user's callback function.
+
+	JNIEnv* jni_env = iupAndroid_GetEnvThreadSafe();
+	jobject app_context = (jobject)iupAndroid_GetApplication(jni_env);
+
+	jclass java_class = (*jni_env)->NewLocalRef(jni_env, s_classIupMainThreadRedirect);
+
+	jmethodID method_id = (*jni_env)->GetStaticMethodID(jni_env, java_class, "postMessage", "(Landroid/content/Context;JJLjava/lang/String;JD)V");
+
+	jstring j_string = (*jni_env)->NewStringUTF(jni_env, s);
+
+	void* message_data = NULL; // TODO: Restore message_data as public APIs
+	(*jni_env)->CallStaticVoidMethod(jni_env, java_class, method_id, app_context, (jlong)(intptr_t)ih, (jlong)(intptr_t)message_data, j_string, (jlong)i, (jdouble)d);
+
+	(*jni_env)->DeleteLocalRef(jni_env, j_string);
+
+	(*jni_env)->DeleteLocalRef(jni_env, java_class);
 }
