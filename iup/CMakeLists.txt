@@ -761,47 +761,47 @@ ELSEIF(IUP_USE_ANDROID)
 		# TODO: Get clarification on iup_datepick.c
 		${CMAKE_SOURCE_DIR}/src/iup_datepick.c
 
-		${CMAKE_SOURCE_DIR}/src/android/source/iupandroid_button.c
-		${CMAKE_SOURCE_DIR}/src/android/source/iupandroid_calendar.c
-		${CMAKE_SOURCE_DIR}/src/android/source/iupandroid_canvas.c
-		${CMAKE_SOURCE_DIR}/src/android/source/iupandroid_clipboard.c
-#		${CMAKE_SOURCE_DIR}/src/android/source/iupandroid_colordlg.c # Needs to be deleted
-		${CMAKE_SOURCE_DIR}/src/android/source/iupandroid_common.c
-		${CMAKE_SOURCE_DIR}/src/android/source/iupandroid_dialog.c
-		${CMAKE_SOURCE_DIR}/src/android/source/iupandroid_dragdrop.c
-		${CMAKE_SOURCE_DIR}/src/android/source/iupandroid_draw.c
-		${CMAKE_SOURCE_DIR}/src/android/source/iupandroid_drv.h
-		${CMAKE_SOURCE_DIR}/src/android/source/iupandroid_filedlg.c
-		${CMAKE_SOURCE_DIR}/src/android/source/iupandroid_focus.c
-		${CMAKE_SOURCE_DIR}/src/android/source/iupandroid_font.c
-		${CMAKE_SOURCE_DIR}/src/android/source/iupandroid_fontdlg.c
-		${CMAKE_SOURCE_DIR}/src/android/source/iupandroid_frame.c
-		${CMAKE_SOURCE_DIR}/src/android/source/iupandroid_globalattrib.c
-		${CMAKE_SOURCE_DIR}/src/android/source/iupandroid_help.c
-		${CMAKE_SOURCE_DIR}/src/android/source/iupandroid_image.c
-		${CMAKE_SOURCE_DIR}/src/android/source/iupandroid_info.c
-		${CMAKE_SOURCE_DIR}/src/android/source/iupandroid_jni_IupApplication.c
-		${CMAKE_SOURCE_DIR}/src/android/source/iupandroid_jni_IupActivity.c
-		${CMAKE_SOURCE_DIR}/src/android/source/iupandroid_jni_IupCommon.c
-		${CMAKE_SOURCE_DIR}/src/android/source/iupandroid_jni_IupLaunchActivity.c
-		${CMAKE_SOURCE_DIR}/src/android/source/iupandroid_jnicacheglobals.c
-		${CMAKE_SOURCE_DIR}/src/android/source/iupandroid_jnicacheglobals.h
-		${CMAKE_SOURCE_DIR}/src/android/source/iupandroid_jnimacros.h
-		#${CMAKE_SOURCE_DIR}/src/android/source/iupandroid_key.c
-		${CMAKE_SOURCE_DIR}/src/android/source/iupandroid_label.c
-		${CMAKE_SOURCE_DIR}/src/android/source/iupandroid_list.c
-		${CMAKE_SOURCE_DIR}/src/android/source/iupandroid_loop.c
-		${CMAKE_SOURCE_DIR}/src/android/source/iupandroid_menu.c
-		${CMAKE_SOURCE_DIR}/src/android/source/iupandroid_messagedlg.c
-		${CMAKE_SOURCE_DIR}/src/android/source/iupandroid_open.c
-		${CMAKE_SOURCE_DIR}/src/android/source/iupandroid_progressbar.c
-		${CMAKE_SOURCE_DIR}/src/android/source/iupandroid_tabs.c
-		${CMAKE_SOURCE_DIR}/src/android/source/iupandroid_text.c
-		${CMAKE_SOURCE_DIR}/src/android/source/iupandroid_timer.c
-		${CMAKE_SOURCE_DIR}/src/android/source/iupandroid_tips.c
-		${CMAKE_SOURCE_DIR}/src/android/source/iupandroid_toggle.c
-		${CMAKE_SOURCE_DIR}/src/android/source/iupandroid_tree.c
-		${CMAKE_SOURCE_DIR}/src/android/source/iupandroid_val.c
+		${CMAKE_SOURCE_DIR}/src/android/iupandroid_button.c
+		${CMAKE_SOURCE_DIR}/src/android/iupandroid_calendar.c
+		${CMAKE_SOURCE_DIR}/src/android/iupandroid_canvas.c
+		${CMAKE_SOURCE_DIR}/src/android/iupandroid_clipboard.c
+#		${CMAKE_SOURCE_DIR}/src/android/iupandroid_colordlg.c # Needs to be deleted
+		${CMAKE_SOURCE_DIR}/src/android/iupandroid_common.c
+		${CMAKE_SOURCE_DIR}/src/android/iupandroid_dialog.c
+		${CMAKE_SOURCE_DIR}/src/android/iupandroid_dragdrop.c
+		${CMAKE_SOURCE_DIR}/src/android/iupandroid_draw.c
+		${CMAKE_SOURCE_DIR}/src/android/iupandroid_drv.h
+		${CMAKE_SOURCE_DIR}/src/android/iupandroid_filedlg.c
+		${CMAKE_SOURCE_DIR}/src/android/iupandroid_focus.c
+		${CMAKE_SOURCE_DIR}/src/android/iupandroid_font.c
+		${CMAKE_SOURCE_DIR}/src/android/iupandroid_fontdlg.c
+		${CMAKE_SOURCE_DIR}/src/android/iupandroid_frame.c
+		${CMAKE_SOURCE_DIR}/src/android/iupandroid_globalattrib.c
+		${CMAKE_SOURCE_DIR}/src/android/iupandroid_help.c
+		${CMAKE_SOURCE_DIR}/src/android/iupandroid_image.c
+		${CMAKE_SOURCE_DIR}/src/android/iupandroid_info.c
+		${CMAKE_SOURCE_DIR}/src/android/iupandroid_jni_IupApplication.c
+		${CMAKE_SOURCE_DIR}/src/android/iupandroid_jni_IupActivity.c
+		${CMAKE_SOURCE_DIR}/src/android/iupandroid_jni_IupCommon.c
+		${CMAKE_SOURCE_DIR}/src/android/iupandroid_jni_IupLaunchActivity.c
+		${CMAKE_SOURCE_DIR}/src/android/iupandroid_jnicacheglobals.c
+		${CMAKE_SOURCE_DIR}/src/android/iupandroid_jnicacheglobals.h
+		${CMAKE_SOURCE_DIR}/src/android/iupandroid_jnimacros.h
+		#${CMAKE_SOURCE_DIR}/src/android/iupandroid_key.c
+		${CMAKE_SOURCE_DIR}/src/android/iupandroid_label.c
+		${CMAKE_SOURCE_DIR}/src/android/iupandroid_list.c
+		${CMAKE_SOURCE_DIR}/src/android/iupandroid_loop.c
+		${CMAKE_SOURCE_DIR}/src/android/iupandroid_menu.c
+		${CMAKE_SOURCE_DIR}/src/android/iupandroid_messagedlg.c
+		${CMAKE_SOURCE_DIR}/src/android/iupandroid_open.c
+		${CMAKE_SOURCE_DIR}/src/android/iupandroid_progressbar.c
+		${CMAKE_SOURCE_DIR}/src/android/iupandroid_tabs.c
+		${CMAKE_SOURCE_DIR}/src/android/iupandroid_text.c
+		${CMAKE_SOURCE_DIR}/src/android/iupandroid_timer.c
+		${CMAKE_SOURCE_DIR}/src/android/iupandroid_tips.c
+		${CMAKE_SOURCE_DIR}/src/android/iupandroid_toggle.c
+		${CMAKE_SOURCE_DIR}/src/android/iupandroid_tree.c
+		${CMAKE_SOURCE_DIR}/src/android/iupandroid_val.c
 	)
 
 	LIST(APPEND IUP_SOURCE_FILES
@@ -1446,7 +1446,7 @@ if(IUP_SHOULD_BUILD_IUPWEB)
 		# TARGET_INCLUDE_DIRECTORIES is guaranteed to be available on Android
 		TARGET_INCLUDE_DIRECTORIES(iupweb PRIVATE 
 			"${CMAKE_SOURCE_DIR}/src"
-			"${CMAKE_SOURCE_DIR}/src/android/source"
+			"${CMAKE_SOURCE_DIR}/src/android"
 			"${CMAKE_SOURCE_DIR}/srcweb"
 			"${CMAKE_SOURCE_DIR}/srcweb/android"
 		)
@@ -1783,7 +1783,7 @@ elseif(IUP_USE_ANDROID)
 	# So the build.gradle is required to set -DIUP_ANDROID_BUILD_TEST_LIBRARY=1 when building the testapp.
 	IF(IUP_ANDROID_BUILD_TEST_LIBRARY)
 #		add_library(iuptestapp SHARED EXCLUDE_FROM_ALL
-#			${CMAKE_SOURCE_DIR}/src/android/source/main_c.c
+#			${CMAKE_SOURCE_DIR}/src/android/main_c.c
 #		)
 #		target_link_libraries(iuptestapp iupimglib iup)
 
@@ -1795,7 +1795,7 @@ elseif(IUP_USE_ANDROID)
 		)
 		# This function knows to build libraries for Android. It also is aware of how to bundle our assets.
 		HELPER_CREATE_EXECUTABLE(iuptestapp 
-			"${CMAKE_SOURCE_DIR}/src/android/source/main_c.c"
+			"${CMAKE_SOURCE_DIR}/src/android/main_c.c"
 			"${WANTS_BUILD_SHARED_LIBRARY}"
 			"iupimglib;iup"
 			"${IUP_LINK_LIBRARIES}"
