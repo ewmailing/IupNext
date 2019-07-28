@@ -11,8 +11,11 @@
 IF(APPLE)
 # Make sure we can find the 'ibtool' program.
 	IF(IOS)
+		# FIND_PROGRAM doesn't work for iOS since the toolchain disables host search paths.
 		#FIND_PROGRAM(IBTOOL ibtool HINTS "/Applications/Xcode.app/Contents/Developer/usr/bin" "/usr/bin")
-		SET(IBTOOL "/Applications/Xcode.app/Contents/Developer/usr/bin/ibtool" CACHE PATH "Location of ibtool")
+		#SET(IBTOOL "/Applications/Xcode.app/Contents/Developer/usr/bin/ibtool" CACHE PATH "Location of ibtool")
+		# xcrun will allow us to run ibtool from wherever
+		SET(IBTOOL "/usr/bin/xcrun ibtool" CACHE PATH "Location of ibtool")
 	ELSE()
 		FIND_PROGRAM(IBTOOL ibtool HINTS "${OSX_DEVELOPER_ROOT}/usr/bin" "/usr/bin")
 	ENDIF()

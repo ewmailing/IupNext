@@ -67,10 +67,6 @@ IF(EMSCRIPTEN)
 	# Emscripten documentation says .so is better than .a, but also implies .bc may be best.
 	# TODO: Figure out how .bc fits into all of this.
 	OPTION(WANTS_BUILD_SHARED_LIBRARY "Build dynamic library" ON)
-	# This is primarily to make IupPostMessage work with web workers/pthreads.
-	# Pthreads are still experimental in Emscripten. Spectre/Meltdown have caused browsers to SharedBufferArray which is needed to make Pthreads work in the web browser.
-	# With it off, IupPostMessage will just use setTimeout, which is fine for single threaded apps.
-	OPTION(EMSCRIPTEN_USE_PTHREADS "Compile with Emscripten Pthreads support" OFF)
 ELSEIF(APPLE)
 	IF(IOS)
 		OPTION(WANTS_BUILD_SHARED_LIBRARY "Build dynamic library" OFF)
@@ -80,7 +76,6 @@ ELSEIF(APPLE)
 	ENDIF()
 ELSEIF(UNIX)
 	OPTION(WANTS_BUILD_SHARED_LIBRARY "Build dynamic library" ON)
-
 ELSE()
 	OPTION(WANTS_BUILD_SHARED_LIBRARY "Build dynamic library" ON)
 ENDIF()
@@ -205,6 +200,12 @@ ENDIF()
 
 IF(IUP_OPTION_EMSCRIPTEN)
 	SET(IUP_USE_EMSCRIPTEN 1)
+
+	# This is primarily to make IupPostMessage work with web workers/pthreads.
+	# Pthreads are still experimental in Emscripten. Spectre/Meltdown have caused browsers to SharedBufferArray which is needed to make Pthreads work in the web browser.
+	# With it off, IupPostMessage will just use setTimeout, which is fine for single threaded apps.
+	OPTION(IUP_OPTION_EMSCRIPTEN_USE_PTHREADS "Compile with Emscripten Pthreads support" OFF)
+
 ELSEIF(IUP_OPTION_ANDROID)
 	SET(IUP_USE_ANDROID 1)
 ELSEIF(IUP_OPTION_COCOA)
@@ -268,6 +269,12 @@ ELSEIF(IUP_OPTION_WIN32)
 	SET(IUP_USE_WIN32 1)
 	# Needed for UTF8MODE on Windows
 	OPTION(IUP_OPTION_USE_UNICODE "Comple with Unidode" ON)
+
+	# When on, we use a more general solution to make sure IupPostMessage requests are not lost/blocked by the OS under certain events.
+	# But this solution is a little more intrusive, so it is conservatively off by default for now.
+	# I recommend you enable this if you do not have legacy code and directly manuipulate the Windows PostMessage queues.
+	OPTION(IUP_OPTION_USE_WINHOOKPOST "Use fully pedantic solution for IupPostMessage" OFF)
+
 ELSE()
 	MESSAGE(FATAL_ERROR "Unsupported platform backend")
 
@@ -344,7 +351,7 @@ IF(IUP_USE_EMSCRIPTEN)
 	# SET(CMAKE_EXE_LINKER_FLAGS  "${CMAKE_EXE_LINKER_FLAGS} -s NO_EXIT_RUNTIME=1")
 	SET(CMAKE_EXE_LINKER_FLAGS  "${CMAKE_EXE_LINKER_FLAGS} --shell-file ${CMAKE_SOURCE_DIR}/etc/iupemscripten_shell.html -s EXTRA_EXPORTED_RUNTIME_METHODS=\"['cwrap']\" -s NO_EXIT_RUNTIME=1 -s USE_SDL=2 -s USE_SDL_IMAGE=2 -s SDL2_IMAGE_FORMATS='[\"bmp\",\"png\",\"xpm\"]'")
 
-	IF(EMSCRIPTEN_USE_PTHREADS)
+	IF(IUP_OPTION_EMSCRIPTEN_USE_PTHREADS)
 		SET(IUP_C_FLAGS "${IUP_C_FLAGS} -s USE_PTHREADS=1")
 		SET(IUPEXE_C_FLAGS "${IUP_C_FLAGS} -s USE_PTHREADS=1")
 		SET(CMAKE_EXE_LINKER_FLAGS "${CMAKE_EXE_LINKER_FLAGS} -s USE_PTHREADS=1")
@@ -1130,7 +1137,9 @@ ELSEIF(IUP_USE_WIN32)
 		# FIXME: Should check if other libraries use the UNICODE flag
 		SET(IUPIMGLIB_C_FLAGS "${IUPIMGLIB_C_FLAGS} -DUNICODE")	
 	ENDIF()
-	
+	IF(IUP_OPTION_USE_WINHOOKPOST)
+		SET(IUP_C_FLAGS "${IUP_C_FLAGS} -DUSE_WINHOOKPOST")
+	ENDIF()	
 
 	IF(MSVC)
 		ADD_DEFINITIONS(/D _CRT_SECURE_NO_WARNINGS)
