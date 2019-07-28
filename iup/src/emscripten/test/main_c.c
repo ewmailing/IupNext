@@ -153,7 +153,7 @@ void LabelTest(void)
 	IupSetAttribute(prog, "VALUE", "75");
 
 	IupSetAttribute(text_label, "TITLE", "Text Label");
-	IupSetAttribute(text_label, "DROPFILESTARGET", "YES");
+//	IupSetAttribute(text_label, "DROPFILESTARGET", "YES");
  
 #if 1
 	Ihandle* text_label2 = IupLabel(NULL);

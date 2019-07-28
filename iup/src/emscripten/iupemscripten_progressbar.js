@@ -1,4 +1,4 @@
-/*global document alert IupCommon Pointer_stringify IupCommon autoAddDeps mergeInto LibraryManager*/
+/*global document alert IupCommon UTF8ToString IupCommon autoAddDeps mergeInto LibraryManager*/
 
 var LibraryIupProgressBar = {
   $ProgressBar: {},

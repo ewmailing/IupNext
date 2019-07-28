@@ -1,4 +1,4 @@
-/*global document alert IupCommon Pointer_stringify IupCommon autoAddDeps mergeInto LibraryManager*/
+/*global document alert IupCommon UTF8ToString IupCommon autoAddDeps mergeInto LibraryManager*/
 
 var LibraryIupList = {
   //	$Button__deps: ['$CommonGlobals'],
@@ -97,20 +97,20 @@ var LibraryIupList = {
       case 0:
         // dropdown
         var item = document.createElement('option');
-        item.innerHTML = Pointer_stringify(value);
+        item.innerHTML = UTF8ToString(value);
         widget_object.appendChild(item);
         return "";
       case 1:
         // editbox+dropdown
         var item = document.createElement('option');
-        item.innerHTML = Pointer_stringify(value);
+        item.innerHTML = UTF8ToString(value);
         widget_object.appendChild(item);
         return "";
       case 2:
       case 3:
         // multiple or single list
         var item = document.createElement('option');
-        item.innerHTML = Pointer_stringify(value);
+        item.innerHTML = UTF8ToString(value);
         widget_object.appendChild(item);
         return "";
       case 4:

@@ -1,4 +1,4 @@
-/*global document alert IupCommon Pointer_stringify IupCommon autoAddDeps mergeInto LibraryManager*/
+/*global document alert IupCommon UTF8ToString IupCommon autoAddDeps mergeInto LibraryManager*/
 
 var LibraryIupLabel = {
   //	$Button__deps: ['$CommonGlobals'],
@@ -49,7 +49,7 @@ var LibraryIupLabel = {
     var widget_object = IupCommon.GetObjectForID(handle_id);
     if(widget_object)
     {
-      widget_object.innerHTML = Pointer_stringify(label_title);
+      widget_object.innerHTML = UTF8ToString(label_title);
     }
   },
 
@@ -91,7 +91,7 @@ var LibraryIupLabel = {
 
     // get object to apply alignment to
     var widget_object = IupCommon.GetObjectForID(handle_id);
-    var alignment = Pointer_stringify(value);
+    var alignment = UTF8ToString(value);
 
     // works like ARIGHT:ABOTTOM
     if (alignment === "ARIGHT") {

@@ -1,4 +1,4 @@
-/*global document alert IupCommon Pointer_stringify autoAddDeps mergeInto LibraryManager*/
+/*global document alert IupCommon UTF8ToString autoAddDeps mergeInto LibraryManager*/
 
 var LibraryIupText = {
   //	$Button__deps: ['$CommonGlobals'],
@@ -46,7 +46,7 @@ var LibraryIupText = {
     var widget_object = IupCommon.GetObjectForID(handle_id);
     if (widget_object)
     {
-      widget_object.value = Pointer_stringify(text);
+      widget_object.value = UTF8ToString(text);
     }
   },
 

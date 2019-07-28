@@ -23,7 +23,7 @@ var LibraryIupButton = {
     var widget_object = IupCommon.GetObjectForID(handle_id);
     if(widget_object)
     {
-      widget_object.innerHTML = Pointer_stringify(button_title);
+      widget_object.innerHTML = UTF8ToString(button_title);
     }
   },
 

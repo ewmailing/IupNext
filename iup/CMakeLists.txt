@@ -32,7 +32,7 @@
 
 # For Windows, specify the desired generator with -G, or use the CMake-GUI. Don't forget the Win64 if you want 64-bit.
 # mkdir BUILD; cd BUILD;
-# cmake -G "Visual Studio 2019 Visual Studio 16 2019 Win64" ..
+# cmake -G "Visual Studio 16 2019 Win64" ..
 
 # For Linux/other Unices, use -G to specify the generator you want. Omitting -G defaults to the Makefile generator. Most come with Make pre-installed. Ninja is faster.
 # If you are not using a build system that lets you switch between Debug/Release, you should specify the CMAKE_BUILD_TYPE to build the version you want.
@@ -67,6 +67,10 @@ IF(EMSCRIPTEN)
 	# Emscripten documentation says .so is better than .a, but also implies .bc may be best.
 	# TODO: Figure out how .bc fits into all of this.
 	OPTION(WANTS_BUILD_SHARED_LIBRARY "Build dynamic library" ON)
+	# This is primarily to make IupPostMessage work with web workers/pthreads.
+	# Pthreads are still experimental in Emscripten. Spectre/Meltdown have caused browsers to SharedBufferArray which is needed to make Pthreads work in the web browser.
+	# With it off, IupPostMessage will just use setTimeout, which is fine for single threaded apps.
+	OPTION(EMSCRIPTEN_USE_PTHREADS "Compile with Emscripten Pthreads support" OFF)
 ELSEIF(APPLE)
 	IF(IOS)
 		OPTION(WANTS_BUILD_SHARED_LIBRARY "Build dynamic library" OFF)
@@ -139,8 +143,6 @@ ELSEIF(ANDROID)
 	OPTION(IUP_OPTION_GTK3 "Use GTK3 backend" OFF)
 	OPTION(IUP_OPTION_MOTIF "Use Motif backend" OFF)
 	OPTION(IUP_OPTION_WIN32 "Use Win32 backend" OFF)
-
-	MESSAGE("In android")
 
 ELSEIF(WIN32)
 	OPTION(IUP_OPTION_ANDROID "Use Android backend" OFF)
@@ -342,7 +344,12 @@ IF(IUP_USE_EMSCRIPTEN)
 	# SET(CMAKE_EXE_LINKER_FLAGS  "${CMAKE_EXE_LINKER_FLAGS} -s NO_EXIT_RUNTIME=1")
 	SET(CMAKE_EXE_LINKER_FLAGS  "${CMAKE_EXE_LINKER_FLAGS} --shell-file ${CMAKE_SOURCE_DIR}/etc/iupemscripten_shell.html -s EXTRA_EXPORTED_RUNTIME_METHODS=\"['cwrap']\" -s NO_EXIT_RUNTIME=1 -s USE_SDL=2 -s USE_SDL_IMAGE=2 -s SDL2_IMAGE_FORMATS='[\"bmp\",\"png\",\"xpm\"]'")
 
-
+	IF(EMSCRIPTEN_USE_PTHREADS)
+		SET(IUP_C_FLAGS "${IUP_C_FLAGS} -s USE_PTHREADS=1")
+		SET(IUPEXE_C_FLAGS "${IUP_C_FLAGS} -s USE_PTHREADS=1")
+		SET(CMAKE_EXE_LINKER_FLAGS "${CMAKE_EXE_LINKER_FLAGS} -s USE_PTHREADS=1")
+	ENDIF()
+		
 
 ELSEIF(WANTS_BUILD_SHARED_LIBRARY)
 	IF("${CMAKE_C_COMPILER_ID}" MATCHES "Clang")
