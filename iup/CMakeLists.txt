@@ -954,6 +954,9 @@ ELSEIF(IUP_USE_COCOA)
 		${CMAKE_SOURCE_DIR}/src/cocoa/IUPTextSpinnerFilesOwner.m
 		${CMAKE_SOURCE_DIR}/src/cocoa/IupAppDelegate.h
 		${CMAKE_SOURCE_DIR}/src/cocoa/IupAppDelegate.m
+		${CMAKE_SOURCE_DIR}/src/cocoa/IupCocoaFont.h
+		${CMAKE_SOURCE_DIR}/src/cocoa/IupCocoaTreeToggleTableCellView.h
+		${CMAKE_SOURCE_DIR}/src/cocoa/IupCocoaTreeToggleTableCellView.m
 		${CMAKE_SOURCE_DIR}/src/cocoa/iupcocoa_button.m
 		${CMAKE_SOURCE_DIR}/src/cocoa/iupcocoa_calendar.m
 		${CMAKE_SOURCE_DIR}/src/cocoa/iupcocoa_canvas.m
@@ -962,6 +965,7 @@ ELSEIF(IUP_USE_COCOA)
 		${CMAKE_SOURCE_DIR}/src/cocoa/iupcocoa_common.m
 #		${CMAKE_SOURCE_DIR}/src/cocoa/iupcocoa_datepick.m
 		${CMAKE_SOURCE_DIR}/src/cocoa/iupcocoa_dialog.m
+		${CMAKE_SOURCE_DIR}/src/cocoa/iupcocoa_dragdrop.h
 		${CMAKE_SOURCE_DIR}/src/cocoa/iupcocoa_dragdrop.m
 		${CMAKE_SOURCE_DIR}/src/cocoa/iupcocoa_draw.m
 		${CMAKE_SOURCE_DIR}/src/cocoa/iupcocoa_drv.h
@@ -1416,7 +1420,7 @@ INCLUDE_DIRECTORIES(
 HELPER_CREATE_LIBRARY(iup "${WANTS_BUILD_SHARED_LIBRARY}" "${WANTS_BUILD_FRAMEWORK}" "${IUP_SOURCE_FILES}" "${IUP_PUBLIC_HEADERS}" "" "" "${IUP_FOREIGN_SOURCE_FILES}" "${IUP_LINK_LIBRARIES}" "${IUP_C_FLAGS}" "br.puc-rio.tecgraf.iup")
 IF(IUP_USE_COCOA)
 	# Reuse the Info.plist from the Xcode project
-	HELPERAPPLE_SET_INFOPLIST_FOR_FRAMEWORK(iup "${CMAKE_SOURCE_DIR}/Xcode/iup/iup/Info.plist" "${WANTS_BUILD_FRAMEWORK}")
+	HELPERAPPLE_SET_INFOPLIST_FOR_FRAMEWORK(iup "${CMAKE_SOURCE_DIR}/mak.XcodeMac/iup/iup/Info.plist" "${WANTS_BUILD_FRAMEWORK}")
 	# set_target_properties doesn't work correctly in CMake because it loses the localization directories
 	# set_target_properties(iup PROPERTIES RESOURCE "${IUP_COCOA_XIB_FILES}") 
 	HELPERIB_COMPILE_XIBS_INTO_FRAMEWORK("${IUP_COCOA_XIB_FILES}" iup "iup" "${WANTS_BUILD_FRAMEWORK}")
@@ -1476,7 +1480,7 @@ if(IUP_SHOULD_BUILD_IUPWEB)
 
 	IF(IUP_USE_COCOA)
 		# Reuse the Info.plist from the Xcode project
-		HELPERAPPLE_SET_INFOPLIST_FOR_FRAMEWORK(iupweb "${CMAKE_SOURCE_DIR}/Xcode/iup/iupweb-Info.plist" "${WANTS_BUILD_FRAMEWORK}")
+		HELPERAPPLE_SET_INFOPLIST_FOR_FRAMEWORK(iupweb "${CMAKE_SOURCE_DIR}/mak.XcodeMac/iup/iupweb-Info.plist" "${WANTS_BUILD_FRAMEWORK}")
 	ENDIF()
 
 else()
@@ -1776,9 +1780,9 @@ ENDIF(IUP_USE_LUA)
 if(IUP_USE_EMSCRIPTEN)
 	BUILD_DEV_TEST(dev_test "${CMAKE_SOURCE_DIR}/src/emscripten/test/main_c.c")
 elseif(IUP_USE_COCOATOUCH)
-	BUILD_DEV_TEST(dev_test "${CMAKE_SOURCE_DIR}/XcodeiOS/iup/TestApp/main.c")
+	BUILD_DEV_TEST(dev_test "${CMAKE_SOURCE_DIR}/mak.XcodeiOS/iup/TestApp/main.c")
 elseif(IUP_USE_COCOA)
-	BUILD_DEV_TEST(dev_test "${CMAKE_SOURCE_DIR}/Xcode/iup/TestApp/main.c")
+	BUILD_DEV_TEST(dev_test "${CMAKE_SOURCE_DIR}/mak.XcodeMac/iup/TestApp/main.c")
 elseif(IUP_USE_ANDROID)
 
 	# This is a hack to get around Android Studio/Gradle deficiencies.

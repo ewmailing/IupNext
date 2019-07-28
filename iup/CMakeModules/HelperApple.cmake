@@ -10,7 +10,12 @@
 # FIXME: Expand to support GNUStep. Apple check ensures this won't break other platforms.
 IF(APPLE)
 # Make sure we can find the 'ibtool' program.
-	FIND_PROGRAM(IBTOOL ibtool HINTS "${OSX_DEVELOPER_ROOT}/usr/bin" "/usr/bin")
+	IF(IOS)
+		#FIND_PROGRAM(IBTOOL ibtool HINTS "/Applications/Xcode.app/Contents/Developer/usr/bin" "/usr/bin")
+		SET(IBTOOL "/Applications/Xcode.app/Contents/Developer/usr/bin/ibtool" CACHE PATH "Location of ibtool")
+	ELSE()
+		FIND_PROGRAM(IBTOOL ibtool HINTS "${OSX_DEVELOPER_ROOT}/usr/bin" "/usr/bin")
+	ENDIF()
 	IF(${IBTOOL} STREQUAL "IBTOOL-NOTFOUND")
 		MESSAGE(SEND_ERROR "ibtool can not be found")
 	ENDIF()
