@@ -141,7 +141,7 @@ var LibraryIupFont = {
     var w;
     var h;
 
-    if (widget_object.nodeName == 'SELECT') {
+    if (widget_object && widget_object.nodeName == 'SELECT') {
       temp_object = document.createElement("select");
       var tmp_option = document.createElement("option");
       tmp_option.innerHTML = "WWWWWWWW";

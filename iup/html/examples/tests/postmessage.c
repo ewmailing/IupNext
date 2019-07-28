@@ -8,7 +8,7 @@ static Ihandle *button;
 
 static int postmessage_cb(Ihandle *ih, char* s, int i, double d)
 {
-  IupLog("DEBUG", "In postmessage_cb\n");
+//  IupLog("DEBUG", "In postmessage_cb\n");
   IupLog("DEBUG", "In postmessage_cb, ih:%p, sp:%p, s:%s, i:%d, d:%lf\n", ih, s, s, i, d);
   int is_active = IupGetInt(ih, "ACTIVE");
   IupSetInt(ih, "ACTIVE", !is_active);
@@ -58,7 +58,7 @@ void PostMessageTest(void)
   IupSetCallback(button, "POSTMESSAGE_CB", (Icallback)postmessage_cb);
   dlg = IupDialog(button);
   IupSetAttribute(dlg, "TITLE", "IupPostMessage Test");
-//  IupSetAttribute(dlg, "SIZE", "200x100");
+  IupSetAttribute(dlg, "SIZE", "200x100");
   IupShow(dlg);
 
   pthread_attr_t attr;
@@ -78,7 +78,7 @@ void PostMessageTest(void)
   IupSetCallback(button, "POSTMESSAGE_CB", (Icallback)postmessage_cb);
   dlg = IupDialog(button);
   IupSetAttribute(dlg, "TITLE", "IupPostMessage Test");
-//  IupSetAttribute(dlg, "SIZE", "200x100");
+  IupSetAttribute(dlg, "SIZE", "200x100");
 
   IupShow(dlg);
   timer1 = IupTimer();
