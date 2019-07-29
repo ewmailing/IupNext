@@ -1515,6 +1515,7 @@ function(BUILD_IUP_TEST exe_name source_list resource_list)
 			"${IUPEXE_C_FLAGS}"
 			"${IUPEXE_LINK_FLAGS}"
 			"${_should_exclude_from_all}"
+			"br.puc-rio.tecgraf.${exe_name}"
 			"${resource_list}"
 		)
 
@@ -1538,6 +1539,7 @@ function(BUILD_IUPIMGLIB_TEST exe_name source_list resource_list)
 			"${IUPEXE_C_FLAGS}"
 			"${IUPEXE_LINK_FLAGS}"
 			"${_should_exclude_from_all}"
+			"br.puc-rio.tecgraf.${exe_name}"
 			"${resource_list}"
 		)
 
@@ -1562,6 +1564,7 @@ function(BUILD_IUPWEB_TEST exe_name source_list resource_list)
 				"${IUPEXE_C_FLAGS}"
 				"${IUPEXE_LINK_FLAGS}"
 				"${_should_exclude_from_all}"
+				"br.puc-rio.tecgraf.${exe_name}"
 				"${resource_list}"
 			)
 		endif()
@@ -1586,6 +1589,7 @@ function(BUILD_IUPCONTROLS_TEST exe_name source_list resource_list)
 			"${IUPEXE_C_FLAGS}"
 			"${IUPEXE_LINK_FLAGS}"
 			"${_should_exclude_from_all}"
+			"br.puc-rio.tecgraf.${exe_name}"
 			"${resource_list}"
 		)
 
@@ -1618,6 +1622,7 @@ function(BUILD_IUPLUA_TEST exe_name source_list resource_list)
 				"${IUPEXE_C_FLAGS}"
 				"${IUPEXE_LINK_FLAGS}"
 				"${_should_exclude_from_all}"
+				"br.puc-rio.tecgraf.${exe_name}"
 				"${resource_list}"
 			)
 		endif()
@@ -1670,6 +1675,7 @@ function(BUILD_DEV_TEST exe_name source_list)
 		"${IUPEXE_C_FLAGS}"
 		"${IUPEXE_LINK_FLAGS}"
 		"" # exclude from all
+		"br.puc-rio.tecgraf.${exe_name}"
 		"" # resource list
 	)
 endfunction()
@@ -1822,6 +1828,7 @@ elseif(IUP_USE_ANDROID)
 			"${IUPEXE_C_FLAGS}"
 			"${IUPEXE_LINK_FLAGS}"
 			1 # "${_should_exclude_from_all}"
+			"br.puc-rio.tecgraf.iuptestapp"
 			"${iuptestapp_resources}"
 		)
 
@@ -1847,6 +1854,7 @@ elseif(IUP_USE_ANDROID)
 			"${IUPEXE_C_FLAGS}"
 			"${IUPEXE_LINK_FLAGS}"
 			1 # "${_should_exclude_from_all}"
+			"br.puc-rio.tecgraf.iuptestappwebbrowser"
 			"${iuptestappwebbrowser_resources}"
 		)
 
@@ -1884,6 +1892,7 @@ elseif(IUP_USE_ANDROID)
 			"${IUPEXE_C_FLAGS}"
 			"${IUPEXE_LINK_FLAGS}"
 			1 # "${_should_exclude_from_all}"
+			"br.puc-rio.tecgraf.iuptestapplua"
 			"${iuptestapplua_resources}"
 		)
 
