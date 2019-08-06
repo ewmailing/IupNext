@@ -144,7 +144,7 @@ static int iClassDlgPopup(Iclass* ic, Ihandle* ih, int x, int y)
     return ic->DlgPopup(ih, x, y);  /* ignore parent if implemented */
 
   if (ic->parent)
-    return  iClassDlgPopup(ic->parent, ih, x, y);
+    return iClassDlgPopup(ic->parent, ih, x, y);
 
   return IUP_INVALID;  /* means it is not implemented */
 }
@@ -153,12 +153,12 @@ static int iClassHasDlgPopup(Iclass* ic)
 {
   /* must be before the parent class */
   if (ic->DlgPopup)
-    return IUP_NOERROR;
+    return 1;
 
   if (ic->parent)
-    return  iClassHasDlgPopup(ic->parent);
+    return iClassHasDlgPopup(ic->parent);
 
-  return IUP_INVALID;  /* means it is not implemented */
+  return 0;
 }
 
 
