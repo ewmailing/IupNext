@@ -407,6 +407,7 @@ iupClassObjectComputeNaturalSize
 iupClassObjectCreate
 iupClassObjectDestroy
 iupClassObjectDlgPopup
+iupClassObjectHasDlgPopup
 iupClassObjectGetInnerNativeContainerHandle
 iupClassObjectLayoutUpdate
 iupClassObjectMap

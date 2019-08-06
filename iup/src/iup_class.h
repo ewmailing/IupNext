@@ -427,6 +427,10 @@ IUP_SDK_API void iupClassObjectSetChildrenPosition(Ihandle* ih, int x, int y);
  */
 IUP_SDK_API int iupClassObjectDlgPopup(Ihandle* ih, int x, int y);
 
+/** Checks if class has the \ref Iclass::DlgPopup method.
+* \ingroup iclassobject
+*/
+IUP_SDK_API int iupClassObjectHasDlgPopup(Ihandle* ih);
 
 
 /* Handle attributes, but since the attribute function table is shared by the class hierarchy,
