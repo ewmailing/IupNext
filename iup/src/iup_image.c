@@ -18,6 +18,7 @@
 #include "iup_assert.h"
 #include "iup_stdcontrols.h"
 #include "iup_drvinfo.h"
+#include "iup_array.h"
 
 
 static void iDataResize(int src_width, int src_height, unsigned char *src_map, int dst_width, int dst_height, unsigned char *dst_map, int depth)
@@ -208,9 +209,9 @@ int iupImageStockGetSize(void)
     int size = 16;
     iupStrToInt(stock_size, &size);
 
-    if (size <= 16) 
+    if (size <= 16)
       return 16;
-    else if (size <= 24) 
+    else if (size <= 24)
       return 24;
     else if (size <= 32)
       return 32;
@@ -227,7 +228,7 @@ int iupImageStockGetSize(void)
       return 24;
     else if (dpi <= 192)
       return 32;
-    else 
+    else
       return 48;
   }
 }
@@ -339,14 +340,14 @@ IUP_SDK_API int iupImageInitColorTable(Ihandle *ih, iupColor* colors, int *color
   unsigned char red, green, blue;
   int i, has_alpha = 0;
   static iupColor default_colors[16] = {
-    { 0,0,0,255 }, { 128,0,0,255 }, { 0,128,0,255 }, { 128,128,0,255 },    
-    { 0,0,128,255 }, { 128,0,128,255 }, { 0,128,128,255 }, { 192,192,192,255 },    
-    { 128,128,128,255 }, { 255,0,0,255 }, { 0,255,0,255 }, { 255,255,0,255 },
-    { 0,0,255,255 }, { 255,0,255,255 }, { 0,255,255,255 }, { 255,255,255,255 } };
+    { 0, 0, 0, 255 }, { 128, 0, 0, 255 }, { 0, 128, 0, 255 }, { 128, 128, 0, 255 },
+    { 0, 0, 128, 255 }, { 128, 0, 128, 255 }, { 0, 128, 128, 255 }, { 192, 192, 192, 255 },
+    { 128, 128, 128, 255 }, { 255, 0, 0, 255 }, { 0, 255, 0, 255 }, { 255, 255, 0, 255 },
+    { 0, 0, 255, 255 }, { 255, 0, 255, 255 }, { 0, 255, 255, 255 }, { 255, 255, 255, 255 } };
 
-  memset(colors, 0, sizeof(iupColor)*256);
+  memset(colors, 0, sizeof(iupColor)* 256);
 
-  for (i=0;i<16;i++)
+  for (i = 0; i < 16; i++)
   {
     value = iupAttribGetId(ih, "", i);
 
@@ -371,7 +372,7 @@ IUP_SDK_API int iupImageInitColorTable(Ihandle *ih, iupColor* colors, int *color
     }
   }
 
-  for (;i<256;i++)
+  for (; i < 256; i++)
   {
     value = iupAttribGetId(ih, "", i);
     if (!value)
@@ -403,14 +404,14 @@ void iupImageInitNonBgColors(Ihandle* ih, unsigned char *colors)
 
   memset(colors, 0, 256);
 
-  for (i=0;i<16;i++)
+  for (i = 0; i < 16; i++)
   {
     value = iupAttribGetId(ih, "", i);
     if (!iupStrEqual(value, "BGCOLOR"))
       colors[i] = 1;
   }
 
-  for (;i<256;i++)
+  for (; i < 256; i++)
   {
     value = iupAttribGetId(ih, "", i);
     if (!value)
@@ -423,23 +424,23 @@ void iupImageInitNonBgColors(Ihandle* ih, unsigned char *colors)
 
 IUP_SDK_API void iupImageColorMakeInactive(unsigned char *r, unsigned char *g, unsigned char *b, unsigned char bg_r, unsigned char bg_g, unsigned char bg_b)
 {
-  if (*r==bg_r && *g==bg_g && *b==bg_b)  /* preserve colors identical to the background color */
+  if (*r == bg_r && *g == bg_g && *b == bg_b)  /* preserve colors identical to the background color */
   {
-    *r = bg_r; 
-    *g = bg_g; 
-    *b = bg_b; 
+    *r = bg_r;
+    *g = bg_g;
+    *b = bg_b;
   }
   else
   {
-    int ir = 0, ig = 0, ib = 0, 
-      i = (*r+*g+*b)/3,
-      bg_i = (bg_r+bg_g+bg_b)/3;
+    int ir = 0, ig = 0, ib = 0,
+      i = (*r + *g + *b) / 3,
+      bg_i = (bg_r + bg_g + bg_b) / 3;
 
     if (bg_i)
     {
-      ir = (bg_r*i)/bg_i; 
-      ig = (bg_g*i)/bg_i; 
-      ib = (bg_b*i)/bg_i; 
+      ir = (bg_r*i) / bg_i;
+      ig = (bg_g*i) / bg_i;
+      ib = (bg_b*i) / bg_i;
     }
 
 #define LIGHTER(_c) ((255 + _c)/2)
@@ -570,7 +571,7 @@ void* iupImageGetIcon(const char* name)
 
     return NULL;
   }
-  
+
   /* Check for an already created icon */
   icon = iupAttribGet(ih, "_IUPIMAGE_ICON");
   if (icon)
@@ -603,7 +604,7 @@ void* iupImageGetCursor(const char* name)
 
     return NULL;
   }
-  
+
   /* Check for an already created cursor */
   cursor = iupAttribGet(ih, "_IUPIMAGE_CURSOR");
   if (cursor)
@@ -644,7 +645,7 @@ void* iupImageGetImage(const char* name, Ihandle* ih_parent, int make_inactive, 
 
     /* Check in the stock images. */
     iupImageStockGet(name, &ih, &native_name);
-    if (native_name) 
+    if (native_name)
     {
       handle = iupdrvImageLoad(native_name, IUPIMAGE_IMAGE);
       if (handle)
@@ -681,7 +682,7 @@ void* iupImageGetImage(const char* name, Ihandle* ih_parent, int make_inactive, 
     strcat(cache_name, ")");
     bg_concat = 1;
   }
-  
+
   /* Check for an already created native image */
   handle = (void*)iupAttribGet(ih, cache_name);
   if (handle)
@@ -764,11 +765,11 @@ static Ihandle* iImageGetHandleFromImage(void* handle)
     unsigned char* imgdata;
 
     if (bpp == 32)
-      ih = IupImageRGBA(w,h,NULL);
+      ih = IupImageRGBA(w, h, NULL);
     else if (bpp > 8)
-      ih = IupImageRGB(w,h,NULL);
+      ih = IupImageRGB(w, h, NULL);
     else
-      ih = IupImage(w,h,NULL);
+      ih = IupImage(w, h, NULL);
 
     if (bpp <= 8 && colors_count)
     {
@@ -981,7 +982,7 @@ static int iImageSetReshapeAttrib(Ihandle *ih, const char* value)
     {
       /* must allocate more memory */
       unsigned char* imgdata = (unsigned char*)iupAttribGet(ih, "WID");
-      imgdata = (unsigned char *)realloc(imgdata, sizeof(unsigned char)*w*h*3);
+      imgdata = (unsigned char *)realloc(imgdata, sizeof(unsigned char)*w*h * 3);
       iupAttribSet(ih, "WID", (char*)imgdata);
     }
 
@@ -1023,15 +1024,15 @@ static int iImageCreate(Ihandle* ih, void** params, int bpp)
   int width, height, channels, count;
   unsigned char *imgdata;
 
-  iupASSERT(params!=NULL);
+  iupASSERT(params != NULL);
   if (!params)
     return IUP_ERROR;
 
   width = (int)(params[0]);
   height = (int)(params[1]);
 
-  iupASSERT(width>0);
-  iupASSERT(height>0);
+  iupASSERT(width > 0);
+  iupASSERT(height > 0);
 
   if (width <= 0 || height <= 0)
     return IUP_ERROR;
@@ -1048,9 +1049,9 @@ static int iImageCreate(Ihandle* ih, void** params, int bpp)
   count = width*height*channels;
   imgdata = (unsigned char *)malloc(count);
 
-  if (((int)(params[2])==-1) || ((int)(params[3])==-1)) /* NULL or compacted in one pointer */
+  if (((int)(params[2]) == -1) || ((int)(params[3]) == -1)) /* NULL or compacted in one pointer */
   {
-    if ((int)(params[2])!=-1)
+    if ((int)(params[2]) != -1)
       memcpy(imgdata, params[2], count);
     else
       memset(imgdata, 0, count);
@@ -1058,9 +1059,9 @@ static int iImageCreate(Ihandle* ih, void** params, int bpp)
   else /* one param for each pixel/plane */
   {
     int i;
-    for(i=0; i<count; i++)
+    for (i = 0; i < count; i++)
     {
-      imgdata[i] = (unsigned char)((int)(params[i+2]));
+      imgdata[i] = (unsigned char)((int)(params[i + 2]));
     }
   }
 
@@ -1113,7 +1114,7 @@ IUP_API Ihandle* IupImage(int width, int height, const unsigned char *imgdata)
   void *params[4];
   params[0] = (void*)width;
   params[1] = (void*)height;
-  params[2] = imgdata? (void*)imgdata: (void*)-1;
+  params[2] = imgdata ? (void*)imgdata : (void*)-1;
   params[3] = (void*)-1;
   return IupCreatev("image", params);
 }
@@ -1123,7 +1124,7 @@ IUP_API Ihandle* IupImageRGB(int width, int height, const unsigned char *imgdata
   void *params[4];
   params[0] = (void*)width;
   params[1] = (void*)height;
-  params[2] = imgdata? (void*)imgdata: (void*)-1;
+  params[2] = imgdata ? (void*)imgdata : (void*)-1;
   params[3] = (void*)-1;
   return IupCreatev("imagergb", params);
 }
@@ -1133,7 +1134,7 @@ IUP_API Ihandle* IupImageRGBA(int width, int height, const unsigned char *imgdat
   void *params[4];
   params[0] = (void*)width;
   params[1] = (void*)height;
-  params[2] = imgdata? (void*)imgdata: (void*)-1;
+  params[2] = imgdata ? (void*)imgdata : (void*)-1;
   params[3] = (void*)-1;
   return IupCreatev("imagergba", params);
 }
@@ -1152,14 +1153,14 @@ static Iclass* iImageNewClassBase(char* name)
   ic->Destroy = iImageDestroyMethod;
 
   /* Attribute functions */
-  iupClassRegisterAttribute(ic, "WID", NULL, NULL, NULL, NULL, IUPAF_READONLY|IUPAF_NO_INHERIT|IUPAF_NO_STRING);
-  iupClassRegisterAttribute(ic, "WIDTH", iImageGetWidthAttrib, NULL, NULL, NULL, IUPAF_READONLY|IUPAF_NOT_MAPPED|IUPAF_NO_INHERIT);
-  iupClassRegisterAttribute(ic, "HEIGHT", iImageGetHeightAttrib, NULL, NULL, NULL, IUPAF_READONLY|IUPAF_NOT_MAPPED|IUPAF_NO_INHERIT);
-  iupClassRegisterAttribute(ic, "RASTERSIZE", iupBaseGetRasterSizeAttrib, NULL, NULL, NULL, IUPAF_READONLY|IUPAF_NOT_MAPPED|IUPAF_NO_INHERIT);
+  iupClassRegisterAttribute(ic, "WID", NULL, NULL, NULL, NULL, IUPAF_READONLY | IUPAF_NO_INHERIT | IUPAF_NO_STRING);
+  iupClassRegisterAttribute(ic, "WIDTH", iImageGetWidthAttrib, NULL, NULL, NULL, IUPAF_READONLY | IUPAF_NOT_MAPPED | IUPAF_NO_INHERIT);
+  iupClassRegisterAttribute(ic, "HEIGHT", iImageGetHeightAttrib, NULL, NULL, NULL, IUPAF_READONLY | IUPAF_NOT_MAPPED | IUPAF_NO_INHERIT);
+  iupClassRegisterAttribute(ic, "RASTERSIZE", iupBaseGetRasterSizeAttrib, NULL, NULL, NULL, IUPAF_READONLY | IUPAF_NOT_MAPPED | IUPAF_NO_INHERIT);
   iupClassRegisterAttribute(ic, "BGCOLOR", NULL, NULL, IUPAF_SAMEASSYSTEM, "DLGBGCOLOR", IUPAF_NO_INHERIT);
 
-  iupClassRegisterAttribute(ic, "BPP",      NULL, NULL, NULL, NULL, IUPAF_READONLY|IUPAF_NO_INHERIT);
-  iupClassRegisterAttribute(ic, "CHANNELS", NULL, NULL, NULL, NULL, IUPAF_READONLY|IUPAF_NO_INHERIT);
+  iupClassRegisterAttribute(ic, "BPP", NULL, NULL, NULL, NULL, IUPAF_READONLY | IUPAF_NO_INHERIT);
+  iupClassRegisterAttribute(ic, "CHANNELS", NULL, NULL, NULL, NULL, IUPAF_READONLY | IUPAF_NO_INHERIT);
 
   iupClassRegisterAttribute(ic, "HOTSPOT", NULL, NULL, "0:0", NULL, IUPAF_NO_INHERIT);
 
@@ -1279,11 +1280,49 @@ static int SaveImageC(const char* file_name, Ihandle* ih, const char* name, FILE
 }
 #endif
 
-static int SaveImageC(const char* file_name, Ihandle* ih, const char* name, FILE* packfile)
+static int iImagePrintBuffer(Iarray *buffer, const char *format, va_list arglist)
+{
+  char str[100];
+  int count, len;
+  char *data;
+
+  count = iupArrayCount(buffer);
+
+  len = vsprintf(str, format, arglist);
+
+  if (len < 0)
+    return len;
+
+  iupArrayAdd(buffer, len);
+
+  data = (char*)iupArrayGetData(buffer);
+
+  strcat(data + count, str);
+
+  return len;
+}
+
+static int iImagePrint(FILE *file, Iarray *buffer, char *format, ...)
+{
+  int len;
+  va_list arglist;
+  va_start(arglist, format);
+
+  if (file)
+    len = vfprintf(file, format, arglist);
+  else
+    len = iImagePrintBuffer(buffer, format, arglist);
+
+  va_end(arglist);
+
+  return len;
+}
+
+static int SaveImageC(const char* file_name, Ihandle* ih, const char* name, FILE* packfile, Iarray* buffer)
 {
   int y, x, width, height, channels, linesize;
   unsigned char* data;
-  FILE* file;
+  FILE* file = NULL;
 
   data = (unsigned char*)iupAttribGet(ih, "WID");
   if (!data)
@@ -1291,10 +1330,10 @@ static int SaveImageC(const char* file_name, Ihandle* ih, const char* name, FILE
 
   if (packfile)
     file = packfile;
-  else
+  else if (file_name)
     file = fopen(file_name, "wb");
 
-  if (!file)
+  if (!file && !buffer)
     return 0;
 
   width = IupGetInt(ih, "WIDTH");
@@ -1302,32 +1341,32 @@ static int SaveImageC(const char* file_name, Ihandle* ih, const char* name, FILE
   channels = IupGetInt(ih, "CHANNELS");
   linesize = width*channels;
 
-  if (fprintf(file, "static Ihandle* load_image_%s(void)\n", name)<0)
+  if (iImagePrint(file, buffer, "static Ihandle* load_image_%s(void)\n", name) < 0)
   {
-    if (!packfile)
+    if (file_name)
       fclose(file);
     return 0;
   }
 
-  fprintf(file, "{\n");
-  fprintf(file, "  unsigned char imgdata[] = {\n");
+  iImagePrint(file, buffer, "{\n");
+  iImagePrint(file, buffer, "  unsigned char imgdata[] = {\n");
 
   for (y = 0; y < height; y++)
   {
-    fprintf(file, "    ");
+    iImagePrint(file, buffer, "    ");
 
     for (x = 0; x < linesize; x++)
     {
       if (x != 0)
-        fprintf(file, ", ");
+        iImagePrint(file, buffer, ", ");
 
-      fprintf(file, "%d", (int)data[y*linesize+x]);
+      iImagePrint(file, buffer, "%d", (int)data[y*linesize + x]);
     }
 
-    if (y == height-1)
-      fprintf(file, "};\n\n");
+    if (y == height - 1)
+      iImagePrint(file, buffer, "};\n\n");
     else
-      fprintf(file, ",\n");
+      iImagePrint(file, buffer, ",\n");
   }
 
   if (channels == 1)
@@ -1335,7 +1374,7 @@ static int SaveImageC(const char* file_name, Ihandle* ih, const char* name, FILE
     int c;
     char* color;
 
-    fprintf(file, "  Ihandle* image = IupImage(%d, %d, imgdata);\n\n", width, height);
+    iImagePrint(file, buffer, "  Ihandle* image = IupImage(%d, %d, imgdata);\n\n", width, height);
 
     for (c = 0; c < 256; c++)
     {
@@ -1343,30 +1382,30 @@ static int SaveImageC(const char* file_name, Ihandle* ih, const char* name, FILE
       if (!color)
         break;
 
-      fprintf(file, "  IupSetAttribute(image, \"%d\", \"%s\");\n", c, color);
+      iImagePrint(file, buffer, "  IupSetAttribute(image, \"%d\", \"%s\");\n", c, color);
     }
 
-    fprintf(file, "\n");
+    iImagePrint(file, buffer, "\n");
   }
   else if (channels == 3)
-    fprintf(file, "  Ihandle* image = IupImageRGB(%d, %d, imgdata);\n", width, height);
+    iImagePrint(file, buffer, "  Ihandle* image = IupImageRGB(%d, %d, imgdata);\n", width, height);
   else /* channels == 4 */
-    fprintf(file, "  Ihandle* image = IupImageRGBA(%d, %d, imgdata);\n", width, height);
+    iImagePrint(file, buffer, "  Ihandle* image = IupImageRGBA(%d, %d, imgdata);\n", width, height);
 
-  fprintf(file, "  return image;\n");
-  fprintf(file, "}\n\n");
+  iImagePrint(file, buffer, "  return image;\n");
+  iImagePrint(file, buffer, "}\n\n");
 
-  if (!packfile)
+  if (file_name)
     fclose(file);
 
   return 1;
 }
 
-static int SaveImageLua(const char* file_name, Ihandle* ih, const char* name, FILE* packfile)
+static int SaveImageLua(const char* file_name, Ihandle* ih, const char* name, FILE* packfile, Iarray* buffer)
 {
   int y, x, width, height, channels, linesize;
   unsigned char* data;
-  FILE* file;
+  FILE* file = NULL;
 
   data = (unsigned char*)iupAttribGet(ih, "WID");
   if (!data)
@@ -1374,18 +1413,18 @@ static int SaveImageLua(const char* file_name, Ihandle* ih, const char* name, FI
 
   if (packfile)
     file = packfile;
-  else
+  else if (file_name)
     file = fopen(file_name, "wb");
 
-  if (!file)
+  if (!file && !buffer)
     return 0;
-  
+
   width = IupGetInt(ih, "WIDTH");
   height = IupGetInt(ih, "HEIGHT");
   channels = IupGetInt(ih, "CHANNELS");
   linesize = width*channels;
 
-  if (fprintf(file, "function load_image_%s()\n", name)<0)
+  if (fprintf(file, "function load_image_%s()\n", name) < 0)
   {
     if (!packfile)
       fclose(file);
@@ -1393,29 +1432,29 @@ static int SaveImageLua(const char* file_name, Ihandle* ih, const char* name, FI
   }
 
   if (channels == 1)
-    fprintf(file, "  local %s = iup.image\n", name);
+    iImagePrint(file, buffer, "  local %s = iup.image\n", name);
   else if (channels == 3)
-    fprintf(file, "  local %s = iup.imagergb\n", name);
+    iImagePrint(file, buffer, "  local %s = iup.imagergb\n", name);
   else /* channels == 4 */
-    fprintf(file, "  local %s = iup.imagergba\n", name);
+    iImagePrint(file, buffer, "  local %s = iup.imagergba\n", name);
 
-  fprintf(file, "  {\n");
+  iImagePrint(file, buffer, "  {\n");
 
-  fprintf(file, "    width = %d,\n", width);
-  fprintf(file, "    height = %d,\n", height);
-  fprintf(file, "    pixels = {\n");
+  iImagePrint(file, buffer, "    width = %d,\n", width);
+  iImagePrint(file, buffer, "    height = %d,\n", height);
+  iImagePrint(file, buffer, "    pixels = {\n");
 
   for (y = 0; y < height; y++)
   {
-    fprintf(file, "      ");
+    iImagePrint(file, buffer, "      ");
     for (x = 0; x < linesize; x++)
     {
-      fprintf(file, "%d, ", (int)data[y*linesize+x]);
+      iImagePrint(file, buffer, "%d, ", (int)data[y*linesize + x]);
     }
-    fprintf(file, "\n");
+    iImagePrint(file, buffer, "\n");
   }
 
-  fprintf(file, "    },\n");
+  iImagePrint(file, buffer, "    },\n");
 
   if (channels == 1)
   {
@@ -1423,42 +1462,42 @@ static int SaveImageLua(const char* file_name, Ihandle* ih, const char* name, FI
     char* color;
     unsigned char r, g, b;
 
-    fprintf(file, "    colors = {\n");
+    iImagePrint(file, buffer, "    colors = {\n");
 
-    for(c = 0; c < 256; c++)
+    for (c = 0; c < 256; c++)
     {
       color = IupGetAttributeId(ih, "", c);
       if (!color)
         break;
 
       if (iupStrEqualNoCase(color, "BGCOLOR"))
-        fprintf(file, "      \"BGCOLOR\",\n");
+        iImagePrint(file, buffer, "      \"BGCOLOR\",\n");
       else
       {
         iupStrToRGB(color, &r, &g, &b);
-        fprintf(file, "      \"%d %d %d\",\n", (int)r, (int)g, (int)b);
+        iImagePrint(file, buffer, "      \"%d %d %d\",\n", (int)r, (int)g, (int)b);
       }
     }
 
-    fprintf(file, "    }\n");
+    iImagePrint(file, buffer, "    }\n");
   }
 
-  fprintf(file, "  }\n");
+  iImagePrint(file, buffer, "  }\n");
 
-  fprintf(file, "  return %s\n", name);
-  fprintf(file, "end\n\n");
+  iImagePrint(file, buffer, "  return %s\n", name);
+  iImagePrint(file, buffer, "end\n\n");
 
-  if (!packfile)
+  if (file_name)
     fclose(file);
 
   return 1;
 }
 
-static int SaveImageLED(const char* file_name, Ihandle* ih, const char* name, FILE* packfile)
+static int SaveImageLED(const char* file_name, Ihandle* ih, const char* name, FILE* packfile, Iarray* buffer)
 {
   int y, x, width, height, channels, linesize;
   unsigned char* data;
-  FILE* file;
+  FILE* file = NULL;
 
   data = (unsigned char*)iupAttribGet(ih, "WID");
   if (!data)
@@ -1466,10 +1505,11 @@ static int SaveImageLED(const char* file_name, Ihandle* ih, const char* name, FI
 
   if (packfile)
     file = packfile;
-  else
+  else if (file_name)
     file = fopen(file_name, "wb");
 
-  if (!file)
+
+  if (!file && !buffer)
     return 0;
 
   width = IupGetInt(ih, "WIDTH");
@@ -1483,15 +1523,15 @@ static int SaveImageLED(const char* file_name, Ihandle* ih, const char* name, FI
     unsigned char r, g, b;
     char* color;
 
-    if (fprintf(file, "%s = IMAGE\n", name)<0)
+    if (iImagePrint(file, buffer, "%s = IMAGE\n", name) < 0)
     {
-      if (!packfile)
+      if (file_name)
         fclose(file);
       return 0;
     }
 
-    fprintf(file, "[\n");
-    for(c = 0; c < 256; c++)
+    iImagePrint(file, buffer, "[\n");
+    for (c = 0; c < 256; c++)
     {
       color = IupGetAttributeId(ih, "", c);
       if (!color)
@@ -1503,69 +1543,69 @@ static int SaveImageLED(const char* file_name, Ihandle* ih, const char* name, FI
       }
 
       if (c != 0)
-        fprintf(file, ",\n");
+        iImagePrint(file, buffer, ",\n");
 
       if (iupStrEqualNoCase(color, "BGCOLOR"))
-        fprintf(file, "  %d = \"BGCOLOR\"", c);
+        iImagePrint(file, buffer, "  %d = \"BGCOLOR\"", c);
       else
       {
         iupStrToRGB(color, &r, &g, &b);
-        fprintf(file, "  %d = \"%d %d %d\"", c, (int)r, (int)g, (int)b);
+        iImagePrint(file, buffer, "  %d = \"%d %d %d\"", c, (int)r, (int)g, (int)b);
       }
     }
-    fprintf(file, "\n]\n");
+    iImagePrint(file, buffer, "\n]\n");
   }
   else if (channels == 3)
   {
-    if (fprintf(file, "%s = IMAGERGB\n", name)<0)
+    if (iImagePrint(file, buffer, "%s = IMAGERGB\n", name) < 0)
     {
-      if (!packfile)
+      if (file_name)
         fclose(file);
       return 0;
     }
   }
   else /* channels == 4 */
   {
-    if (fprintf(file, "%s = IMAGERGBA\n", name)<0)
+    if (iImagePrint(file, buffer, "%s = IMAGERGBA\n", name) < 0)
     {
-      if (!packfile)
+      if (file_name)
         fclose(file);
       return 0;
     }
   }
 
-  fprintf(file, "(%d, %d,\n", width, height);
+  iImagePrint(file, buffer, "(%d, %d,\n", width, height);
 
   for (y = 0; y < height; y++)
   {
-    fprintf(file, "  ");
+    iImagePrint(file, buffer, "  ");
     for (x = 0; x < linesize; x++)
     {
-      if (y == height-1 && x==linesize-1)
-        fprintf(file, "%d", (int)data[y*linesize+x]);
+      if (y == height - 1 && x == linesize - 1)
+        iImagePrint(file, buffer, "%d", (int)data[y*linesize + x]);
       else
-        fprintf(file, "%d, ", (int)data[y*linesize+x]);
+        iImagePrint(file, buffer, "%d, ", (int)data[y*linesize + x]);
     }
-    fprintf(file, "\n");
+    iImagePrint(file, buffer, "\n");
   }
 
-  fprintf(file, ")\n\n");
+  iImagePrint(file, buffer, ")\n\n");
 
-  if (!packfile)
+  if (file_name)
     fclose(file);
 
   return 1;
 }
 
-IUP_SDK_API int iupSaveImageAsText(Ihandle* ih, FILE* packfile, const char* format, const char* name)
+IUP_SDK_API int iupImageSaveAsTextPacked(Ihandle* ih, FILE* packfile, const char* format, const char* name)
 {
   int ret = 0;
   if (iupStrEqualNoCase(format, "LED"))
-    ret = SaveImageLED(NULL, ih, name, packfile);
+    ret = SaveImageLED(NULL, ih, name, packfile, NULL);
   else if (iupStrEqualNoCase(format, "LUA"))
-    ret = SaveImageLua(NULL, ih, name, packfile);
+    ret = SaveImageLua(NULL, ih, name, packfile, NULL);
   else if (iupStrEqualNoCase(format, "C"))
-    ret = SaveImageC(NULL, ih, name, packfile);
+    ret = SaveImageC(NULL, ih, name, packfile, NULL);
   return ret;
 }
 
@@ -1579,10 +1619,36 @@ IUP_API int IupSaveImageAsText(Ihandle* ih, const char* file_name, const char* f
       name = "image";
   }
   if (iupStrEqualNoCase(format, "LED"))
-    ret = SaveImageLED(file_name, ih, name, NULL);
+    ret = SaveImageLED(file_name, ih, name, NULL, NULL);
   else if (iupStrEqualNoCase(format, "LUA"))
-    ret = SaveImageLua(file_name, ih, name, NULL);
+    ret = SaveImageLua(file_name, ih, name, NULL, NULL);
   else if (iupStrEqualNoCase(format, "C"))
-    ret = SaveImageC(file_name, ih, name, NULL);
+    ret = SaveImageC(file_name, ih, name, NULL, NULL);
+  return ret;
+}
+
+IUP_SDK_API int iupImageSaveToString(Ihandle* ih, const char* format, const char* name, char **data)
+{
+  Iarray *buffer = iupArrayCreate(1024, sizeof(char *));
+
+  int ret = 0;
+  if (!name)
+  {
+    name = IupGetName(ih);
+    if (!name)
+      name = "image";
+  }
+
+  if (iupStrEqualNoCase(format, "LED"))
+    ret = SaveImageLED(NULL, ih, name, NULL, buffer);
+  else if (iupStrEqualNoCase(format, "LUA"))
+    ret = SaveImageLua(NULL, ih, name, NULL, buffer);
+  else if (iupStrEqualNoCase(format, "C"))
+    ret = SaveImageC(NULL, ih, name, NULL, buffer);
+
+  *data = iupArrayReleaseData(buffer);
+
+  iupArrayDestroy(buffer);
+
   return ret;
 }

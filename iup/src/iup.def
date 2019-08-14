@@ -309,6 +309,7 @@ iupArrayCount
 iupArrayCreate
 iupArrayDestroy
 iupArrayGetData
+iupArrayReleaseData
 iupArrayInc
 iupArrayInsert
 iupArrayRemove
@@ -517,7 +518,7 @@ iupRadioFindToggleParent
 iupRegisterClass
 iupRegisterFindClass
 iupRound
-iupSaveImageAsText
+iupImageSaveAsTextPacked
 iupSetFontFaceAttrib
 iupSetFontSizeAttrib
 iupSetFontStyleAttrib

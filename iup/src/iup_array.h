@@ -37,6 +37,10 @@ IUP_SDK_API void iupArrayDestroy(Iarray* iarray);
  * \ingroup iarray */
 IUP_SDK_API void* iupArrayGetData(Iarray* iarray);
 
+/** Returns the pointer that contains the array, but also release it to be used elsewhere.
+* \ingroup iarray */
+IUP_SDK_API void* iupArrayReleaseData(Iarray* iarray);
+
 /** Increments the number of elements in the array.
  * The array count starts at 0. 
  * If the maximum number of elements is reached, the memory allocated is increased by the initial start count.

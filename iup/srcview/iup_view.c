@@ -16,6 +16,7 @@
 
 #include "iup_str.h"
 #include "iup_object.h"
+#include "iup_image.h"
 
 
 /* #define STOCK_TEST "24" */
@@ -27,12 +28,6 @@
 #ifdef USE_IM
 #include "iupim.h"
 #endif
-
-/* IupImage internal function, used only here */
-IUP_SDK_API int iupSaveImageAsText(Ihandle* ih, FILE* packfile, const char* format, const char* name);
-
-/* IupImage internal function, used only here */
-IUP_SDK_API void iupImageStockLoadAll(void);
 
 static int close_cb(void)
 {
@@ -433,7 +428,7 @@ static int saveallimagesone_cb(void)
         return IUP_DEFAULT;
       }
 
-      if (!iupSaveImageAsText(elem, packfile, imgtype, names[i]))
+      if (!iupImageSaveAsTextPacked(elem, packfile, imgtype, names[i]))
       {
         fclose(packfile);
         IupMessage("Error", "Failed to write to the file.");
@@ -1102,7 +1097,7 @@ static int image_converter(int argc, char **argv)
     intitle = iupStrFileGetTitle(inname);
     replace_dots(intitle);
 
-    if (!iupSaveImageAsText(image, outfile, imgtype, intitle))
+    if (!iupImageSaveAsTextPacked(image, outfile, imgtype, intitle))
     {
       printf("Error: Failed to write to the output file.");
 
