@@ -13,6 +13,7 @@
 #include <ctype.h>
 
 #include "iup.h"
+#include "iupcbs.h"
 
 #include "iup_object.h"
 #include "iup_attrib.h"
@@ -80,14 +81,15 @@ static Ihandle* iLayoutFindNode(Ihandle* tree, const char *str, int start_id, in
   {
     elem = (Ihandle*)IupTreeGetUserId(tree, id);
 
+    if (!elem)  /* for the vled tree */
+      continue;
+
     if (iLayoutFindItemMatch(elem, str, searchType))
       return elem;
   }
 
   return NULL;
 }
-
-static int iLayoutTreeSelection_CB(Ihandle* tree, int id, int status);
 
 static int iLayoutFindDialogNext_CB(Ihandle* ih)
 {
@@ -121,9 +123,10 @@ static int iLayoutFindDialogNext_CB(Ihandle* ih)
   if (obj)
   {
     int id = IupTreeGetId(tree, obj);
-    iLayoutTreeSelection_CB(tree, last_id, 0);
+    IFnii cb = (IFnii)IupGetCallback(tree, "SELECTION_CB");
+    cb(tree, last_id, 0);
     IupSetInt(tree, "VALUE", id);
-    iLayoutTreeSelection_CB(tree, id, 1);
+    cb(tree, id, 1);
 
     IupSetAttribute(lbl_result, "TITLE", "");
   }
@@ -209,7 +212,7 @@ IUP_API Ihandle* IupLayoutFindDialog(Ihandle *tree, Ihandle* elem) /* dialog for
         bt_next,
         bt_close,
         lbl_result,
-        NULL), "NORMALIZESIZE=HORIZONTAL"),
+        NULL), "NORMALIZESIZE=HORIZONTAL, MARGIN=x20"),
       NULL),
     NULL);
   IupSetAttribute(box, "NMARGIN", "10x10");
