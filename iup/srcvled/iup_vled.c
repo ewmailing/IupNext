@@ -837,6 +837,8 @@ static int tabChange_cb(Ihandle* tabs, Ihandle* new_tab, Ihandle* old_tab)
 
 static int loadfile_cb(Ihandle* self, char *t)
 {
+  /* called after the file is loaded */
+
   Ihandle* elementsList = IupGetDialogChild(self, "ELEMENTS_TREE");
 
   load_led(elementsList, t);
@@ -846,6 +848,8 @@ static int loadfile_cb(Ihandle* self, char *t)
 
 static int savefile_cb(Ihandle* self, char *t)
 {
+  /* called after the file is saved */
+
   Ihandle* elementsList = IupGetDialogChild(self, "ELEMENTS_TREE");
 
   unload_led(t);
@@ -1881,7 +1885,7 @@ static Ihandle* buildToolsMenu(void)
     *item_export_all_lua, *item_export_proj_lua, *item_export_c, *item_export_all_c,
     *item_export_proj_c, *item_use_utf8, *toolsMenu;
 
-  item_load = IupItem("Load...", NULL);
+  item_load = IupItem("Reload...", NULL);
   IupSetAttribute(item_load, "NAME", "ITM_LOAD");
   IupSetCallback(item_load, "ACTION", (Icallback)item_load_action_cb);
 
