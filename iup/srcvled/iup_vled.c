@@ -549,9 +549,6 @@ static int unload_led(char *file_name)
     if (!element)
       continue;
 
-    if (strcmp(IupGetClassName(element), "scintilladlg") == 0)
-      element = element;
-
     if (IupGetInt(element, "VLED_INTERNAL") != 0 || isAlien(element, file_name))
       continue;
 
