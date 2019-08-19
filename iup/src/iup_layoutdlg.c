@@ -2178,9 +2178,9 @@ static Ihandle* iLayoutPropertiesCreateDialog(iLayoutDialog* layoutdlg, Ihandle*
   return dlg;
 }
 
-IUP_API Ihandle* IupElementPropertiesDialog(Ihandle* elem)
+IUP_API Ihandle* IupElementPropertiesDialog(Ihandle* parent, Ihandle* elem)
 {
-  Ihandle* dlg = iLayoutPropertiesCreateDialog(NULL, NULL);
+  Ihandle* dlg = iLayoutPropertiesCreateDialog(NULL, parent);
   iLayoutPropertiesUpdate(dlg, elem);
   return dlg;
 }

@@ -44,11 +44,12 @@ callbacks. The callbacks are just for inspection, and custom attributes should b
 handled carefully because they may be not strings. Registered attributes values 
 are shown in red when they were changed by the application. </p>
 <h3><a name="Creation">Creation</a></h3>
-<pre>Ihandle* IupElementPropertiesDialog(Ihandle*<strong> elem</strong>); [in C]
-iup.ElementPropertiesDialog(<strong>elem</strong>: ihandle<span class="style3">)</span> -&gt; (<strong>dlg</strong>: ihandle) [in Lua]
+<pre>Ihandle* IupElementPropertiesDialog(Ihandle*<strong> parent, </strong>Ihandle*<strong> elem</strong>); [in C]
+iup.ElementPropertiesDialog(<strong>parent, elem</strong>: ihandle<span class="style3">)</span> -&gt; (<strong>dlg</strong>: ihandle) [in Lua]
 [NOT available in LED]</pre>
 <div>
-  <strong>elem</strong>: identifier of the element to display the properties. 
+  <strong>parent: </strong>dialog to be used as parent for the properties 
+	dialog. Can be NULL. (since 3.28)<strong><br>elem</strong>: identifier of the element to display the properties. 
 	Not optional.</div>
 <p><u>Returns:</u> the identifier of the 
   created dialog, or NULL if an error occurs.</p>

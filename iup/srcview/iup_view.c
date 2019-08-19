@@ -577,7 +577,7 @@ static int propertiesdlg_cb(Ihandle* self)
   if (name) /* the list may be empty */
   {
     Ihandle* elem = IupGetHandle(name);
-    IupShow(IupElementPropertiesDialog(elem));
+    IupShow(IupElementPropertiesDialog(IupGetDialog(list), elem));
   }
   else
     IupMessage("Error", "No elements.");

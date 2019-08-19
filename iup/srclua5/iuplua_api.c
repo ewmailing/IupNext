@@ -856,7 +856,7 @@ static int GlobalsDialog(lua_State *L)
 
 static int ElementPropertiesDialog(lua_State *L)
 {
-  iuplua_pushihandle(L,IupElementPropertiesDialog(iuplua_checkihandle(L,1)));
+  iuplua_pushihandle(L, IupElementPropertiesDialog(iuplua_checkihandleornil(L, 1), iuplua_checkihandle(L, 2)));
   return 1;
 }
 

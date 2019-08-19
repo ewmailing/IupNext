@@ -1691,7 +1691,7 @@ static int propertiesdlg_cb(Ihandle* self)
   Ihandle *elem = (Ihandle *)IupTreeGetUserId(tree, id);
 
   if (elem)
-    IupShow(IupElementPropertiesDialog(elem));
+    IupShow(IupElementPropertiesDialog(IupGetDialog(tree), elem));
   else
     IupMessage("Error", "No elements.");
 
@@ -2001,6 +2001,7 @@ int main(int argc, char **argv)
 
   IupSetAttribute(main_dialog, "SUBTITLE", "IUP Visual LED");
   IupSetAttributeHandle(main_dialog, "CONFIG", config);
+  IupSetHandle("VLED_MAIN", main_dialog);
 
   IupSetAttribute(main_dialog, "EXTRAFILTERS", "Led Files|*.led|");
 

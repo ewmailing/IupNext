@@ -50,7 +50,7 @@ IUP_SDK_API void iupdrvImageGetRawData(void* handle, unsigned char* imgdata);
 void iupImageSetHandleFromLoaded(const char* name, void* handle);
 Ihandle* iupImageGetImageFromName(const char* name);
 
-#ifdef FILE
+#if defined(FILE) || defined(_INC_STDIO)
 IUP_SDK_API int iupImageSaveAsTextPacked(Ihandle* ih, FILE* packfile, const char* format, const char* name);  /* Used only in IupView */
 #endif
 IUP_SDK_API int iupImageSaveToString(Ihandle* ih, const char* format, const char* name, char **data);  /* Used only in IupVisualLED */
