@@ -1997,7 +1997,7 @@ int main(int argc, char **argv)
 
   IupAppend(panelTabs, elementsFrame);
 
-  IupSetAttribute(panelTabs, "VALUE_HANDLE", elementsFrame);
+  IupSetAttribute(panelTabs, "VALUE_HANDLE", (char*)elementsFrame);
 
   IupSetAttribute(main_dialog, "SUBTITLE", "IUP Visual LED");
   IupSetAttributeHandle(main_dialog, "CONFIG", config);
