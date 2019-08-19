@@ -19,6 +19,7 @@
 #include "iup_ledlex.h"
 #include "iup_attrib.h"
 #include "iup_image.h"
+#include "iup_dlglist.h"
 
 
 
@@ -1760,13 +1761,19 @@ static int hideElement_cb(Ihandle* self)
 
 static int find_cb(Ihandle* ih)
 {
-  Ihandle* find_dlg = (Ihandle*)IupGetAttribute(ih, "FIND_DIALOG");
   Ihandle* tree = (Ihandle*)IupGetAttribute(ih, "ELEMENTS_TREE");
+  Ihandle* find_dlg = (Ihandle*)IupGetAttribute(tree, "FIND_DIALOG");
   int id = IupGetInt(tree, "VALUE");
   Ihandle *elem = (Ihandle *)IupTreeGetUserId(tree, id);
 
+  if (!elem)
+    return IUP_DEFAULT;
+
   if (!find_dlg)
+  {
     find_dlg = IupLayoutFindDialog(tree, elem);
+    IupSetAttribute(tree, "FIND_DIALOG", (char*)find_dlg);
+  }
 
   IupShow(find_dlg);
 
@@ -1941,6 +1948,27 @@ static Ihandle* buildToolsMenu(void)
   return IupSubmenu("&Tools", toolsMenu);
 }
 
+static int exit_cb(Ihandle* ih)
+{
+  int i;
+  Ihandle *dlg;
+  int count = iupDlgListVisibleCount();
+
+  /* hide all other dialogs */
+
+  for (dlg = iupDlgListFirst(), i = 0; dlg && i < count; dlg = iupDlgListNext())
+  {
+    if (dlg != ih && (dlg->handle && IupGetInt(dlg, "VISIBLE")))
+    {
+      IupHide(dlg);
+      i++;
+    }
+  }
+
+  return IUP_DEFAULT;
+}
+
+
 int main(int argc, char **argv)
 {
   Ihandle *main_dialog;
@@ -2015,6 +2043,7 @@ int main(int argc, char **argv)
   IupSetCallback(main_dialog, "CLOSETEXT_CB", (Icallback)closetext_cb);
   IupSetCallback(main_dialog, "CONFIGLOAD_CB", (Icallback)configload_cb);
   IupSetCallback(main_dialog, "MARKERCHANGED_CB", (Icallback)marker_changed_cb);
+  IupSetCallback(main_dialog, "EXIT_CB", (Icallback)exit_cb);
 
   menu = IupGetAttributeHandle(main_dialog, "MENU");
   IupAppend(menu, IupSubmenu("&Help", IupMenu(
@@ -2037,8 +2066,8 @@ int main(int argc, char **argv)
 
   IupMainLoop();
 
-  IupDestroy(config);
   IupDestroy(main_dialog);
+  IupDestroy(config);
 
   IupClose();
   return EXIT_SUCCESS;
