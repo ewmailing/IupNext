@@ -342,7 +342,7 @@ static int isAlien(Ihandle *elem, const char* filename)
 
   elem_file = IupGetAttribute(elem, "VLED_FILENAME");
 
-  if (elem_file && !iupStrEqual(elem_file, filename))
+  if (!elem_file || !iupStrEqual(elem_file, filename))
     return 1;
 
   return 0;
@@ -548,6 +548,9 @@ static int unload_led(char *file_name)
     element = IupGetHandle(name);
     if (!element)
       continue;
+
+    if (strcmp(IupGetClassName(element), "scintilladlg") == 0)
+      element = element;
 
     if (IupGetInt(element, "VLED_INTERNAL") != 0 || isAlien(element, file_name))
       continue;
