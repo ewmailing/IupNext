@@ -31,7 +31,7 @@ static int iparse_checkhandle = 1;
 #define IPARSE_RETURN_IF_ERROR_FREE(_e, _x)   {iparse_error=(_e); if (iparse_error) { if (_x) free(_x); return NULL;} }
 
 
-char* iupLoadLed(const char *buffer, int is_file, int checkhandle)
+IUP_SDK_API char* iupLoadLed(const char *buffer, int is_file, int checkhandle)
 {
   iupASSERT(buffer != NULL);
   if (!buffer)
