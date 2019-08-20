@@ -82,10 +82,12 @@ static int iLexGetc(void)
     return getc(ilex.file);
   else
   {
+    int ret;
     if (*(ilex.f) == 0)
       return EOF;
+    ret = (unsigned char)*(ilex.f);
     ilex.f++;
-    return *(ilex.f - 1);
+    return ret;
   }
 }
 
@@ -351,6 +353,19 @@ int iupLexError (int n, ...)
     break;
   }
   va_end(va);
-  sprintf(ilex_erromsg, "led(%s): bad input at line %d - %s\n", ilex.filename, ilex.line, msg);
+  if (ilex.file)
+    sprintf(ilex_erromsg, "led(%s):\n  -bad input at line %d\n  -%s\n", ilex.filename, ilex.line, msg);
+  else
+  {
+    const char* f = ilex.filename;
+    char* firstline = iupStrDupUntil(&f, '\n');
+    if (firstline)
+    {
+      sprintf(ilex_erromsg, "led(%s):\n  -bad input at line %d\n  -%s\n", firstline, ilex.line, msg);
+      free(firstline);
+    }
+    else
+     sprintf(ilex_erromsg, "led(%s):\n  -bad input at line %d\n  -%s\n", ilex.filename, ilex.line, msg);
+  }
   return n;
 }
