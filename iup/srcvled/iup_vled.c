@@ -509,9 +509,40 @@ static int load_led(Ihandle *list, const char *file_name)
     const char* error_line = strstr(error, error_mark);
     error_line += strlen(error_mark) + 1;
     sscanf(error_line, "%d", &line);
-    IupMessageError(IupGetDialog(list), error);
     IupSetIntId(multitext, "MARKERADD", line-1, 1);
     IupSetStrf(multitext, "CARET", "%d,0", line-1);
+    IupMessageError(IupGetDialog(list), error);
+  }
+  else
+  {
+    mainFlagLedElements(file_name);
+    mainUpdateList(list, file_name);
+  }
+
+  return IUP_DEFAULT;
+}
+
+static int load_buffer(Ihandle *list, const char *file_name)
+{
+  Ihandle* multitext = get_current_multitext(list);
+  char* buffer = IupGetAttribute(multitext, "VALUE");
+  char* error;
+
+  mainFlagInternalElements();
+
+  IupSetInt(multitext, "MARKERDELETEALL", 1);
+
+  error = iupLoadLed(buffer, 0, 0);
+  if (error)
+  {
+    int line;
+    const char* error_mark = "bad input at line";
+    const char* error_line = strstr(error, error_mark);
+    error_line += strlen(error_mark) + 1;
+    sscanf(error_line, "%d", &line);
+    IupSetIntId(multitext, "MARKERADD", line - 1, 1);
+    IupSetStrf(multitext, "CARET", "%d,0", line - 1);
+    IupMessageError(IupGetDialog(list), error);
   }
   else
   {
@@ -835,26 +866,26 @@ static int tabChange_cb(Ihandle* tabs, Ihandle* new_tab, Ihandle* old_tab)
   return IUP_DEFAULT;
 }
 
-static int loadfile_cb(Ihandle* self, char *t)
+static int loadfile_cb(Ihandle* self, char* filename)
 {
   /* called after the file is loaded */
 
   Ihandle* elementsList = IupGetDialogChild(self, "ELEMENTS_TREE");
 
-  load_led(elementsList, t);
+  load_led(elementsList, filename);
 
   return IUP_DEFAULT;
 }
 
-static int savefile_cb(Ihandle* self, char *t)
+static int savefile_cb(Ihandle* self, char* filename)
 {
   /* called after the file is saved */
 
   Ihandle* elementsList = IupGetDialogChild(self, "ELEMENTS_TREE");
 
-  unload_led(t);
+  unload_led(filename);
 
-  load_led(elementsList, t);
+  load_led(elementsList, filename);
 
   return IUP_DEFAULT;
 }
@@ -971,7 +1002,7 @@ static int led_menu_open_cb(Ihandle *ih_menu)
 
 static int tools_menu_open_cb(Ihandle *ih_menu)
 {
-  Ihandle* item_load = IupGetDialogChild(ih_menu, "ITM_LOAD");
+  Ihandle* item_loadbuffer = IupGetDialogChild(ih_menu, "ITM_LOADBUFFER");
   Ihandle* item_import_img = IupGetDialogChild(ih_menu, "ITM_IMP_IMG");
   Ihandle* item_export_img = IupGetDialogChild(ih_menu, "ITM_EXP_IMG");
   Ihandle* item_show_all_img = IupGetDialogChild(ih_menu, "ITM_SHOW_ALL_IMG");
@@ -986,10 +1017,10 @@ static int tools_menu_open_cb(Ihandle *ih_menu)
   char* filename = IupGetAttribute(multitext, "FILENAME");
   int dirty = IupGetInt(multitext, "MODIFIED");
 
-  if (dirty && filename)
-    IupSetAttribute(item_load, "ACTIVE", "YES");
+  if (dirty)
+    IupSetAttribute(item_loadbuffer, "ACTIVE", "YES");
   else
-    IupSetAttribute(item_load, "ACTIVE", "NO");
+    IupSetAttribute(item_loadbuffer, "ACTIVE", "NO");
 
   if (filename)
   {
@@ -1345,7 +1376,7 @@ static int item_linesuncomment_action_cb(Ihandle* ih_item)
   return IUP_DEFAULT;
 }
 
-static int item_load_action_cb(Ihandle *ih_item)
+static int item_loadbuffer_action_cb(Ihandle *ih_item)
 {
   Ihandle* elementsList = IupGetDialogChild(ih_item, "ELEMENTS_TREE");
   Ihandle* multitext = get_current_multitext(ih_item);
@@ -1353,7 +1384,7 @@ static int item_load_action_cb(Ihandle *ih_item)
 
   unload_led(filename);
 
-  load_led(elementsList, filename);
+  load_buffer(elementsList, filename);
 
   return IUP_DEFAULT;
 }
@@ -1885,9 +1916,9 @@ static Ihandle* buildToolsMenu(void)
     *item_export_all_lua, *item_export_proj_lua, *item_export_c, *item_export_all_c,
     *item_export_proj_c, *item_use_utf8, *toolsMenu;
 
-  item_load = IupItem("Reload...", NULL);
-  IupSetAttribute(item_load, "NAME", "ITM_LOAD");
-  IupSetCallback(item_load, "ACTION", (Icallback)item_load_action_cb);
+  item_load = IupItem("Load Buffer", NULL);
+  IupSetAttribute(item_load, "NAME", "ITM_LOADBUFFER");
+  IupSetCallback(item_load, "ACTION", (Icallback)item_loadbuffer_action_cb);
 
   item_import_img = IupItem("Import Images...", NULL);
   IupSetAttribute(item_import_img, "NAME", "ITM_IMP_IMG");
