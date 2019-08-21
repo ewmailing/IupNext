@@ -148,6 +148,7 @@ IUP_API Ihandle* IupLayoutFindDialog(Ihandle *tree, Ihandle* elem) /* dialog for
   Ihandle *txt, *box, *find_dlg;
   Ihandle *type, *handle_name, *name, *title, *attribute, *radio;
   Ihandle *bt_next, *bt_close, *lbl_result;
+  Ihandle *dialog = IupGetDialog(elem);
 
   txt = IupText(NULL);
   IupSetAttribute(txt, "NAME", "FIND_TEXT");
@@ -231,7 +232,7 @@ IUP_API Ihandle* IupLayoutFindDialog(Ihandle *tree, Ihandle* elem) /* dialog for
 
   /* Save the dialog to reuse it */
   IupSetAttribute(find_dlg, "FIND_DIALOG", (char*)find_dlg);  /* from itself */
-  IupSetAttribute(find_dlg, "DIALOG", (char*)IupGetDialog(elem)); /* from the main dialog, use to find NAME */
+  IupSetAttribute(find_dlg, "DIALOG", (char*)dialog); /* from the main dialog, use to find NAME */
 
   return find_dlg;
 }
@@ -1166,6 +1167,8 @@ static int iLayoutMenuFind_CB(Ihandle* ih)
     find_dlg = IupLayoutFindDialog(tree, layoutdlg->dialog);
     IupSetAttribute(dlg, "FIND_DIALOG", (char*)find_dlg);
   }
+
+  IupSetAttribute(IupGetDialogChild(find_dlg, "FIND_NAME"), "ACTIVE", "YES"); /* we are going to disable it in other situations */
 
   IupShow(find_dlg);
 

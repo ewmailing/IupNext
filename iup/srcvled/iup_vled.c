@@ -195,11 +195,9 @@ static void mainUpdateList(Ihandle* tree, const char* file_name)
 {
   char *names[MAX_NAMES];
   int i, num_names = IupGetAllNames(names, MAX_NAMES);
-  int last_child_id = 0;
+  int last_child_id = -1;
 
-  IupSetAttribute(tree, "DELNODE0", "CHILDREN");
-
-  IupStoreAttributeId(tree, "TITLE", 0, file_name);
+  IupSetAttribute(tree, "DELNODE0", "ALL");
 
   for (i = 0; i < num_names; i++)
   {
@@ -214,11 +212,11 @@ static void mainUpdateList(Ihandle* tree, const char* file_name)
     if (elem->iclass->childtype != IUP_CHILDNONE && !isAlien(elem, file_name))
       last_child_id = vLedTreeAddChildren(tree, last_child_id, elem, file_name);
 
-    last_child_id = 0;
+    last_child_id = -1;
   }
 
   IupSetAttribute(tree, "VALUE", "1");
-  IupSetAttribute(tree, "VALUE", "ROOT");
+  IupSetAttribute(tree, "VALUE", "0");
 }
 
 static void replaceDot(char* file_name)
@@ -930,7 +928,7 @@ static int closetext_cb(Ihandle* ih, Ihandle *multitext)
     return IUP_DEFAULT;
 
   unload_led(filename);
-  IupSetAttribute(tree, "DELNODE0", "CHILDREN");
+  IupSetAttribute(tree, "DELNODE0", "ALL");
 
   if (currMutltitext != multitext)
   {
@@ -1800,6 +1798,7 @@ static int find_cb(Ihandle* ih)
   Ihandle* find_dlg = (Ihandle*)IupGetAttribute(tree, "FIND_DIALOG");
   int id = IupGetInt(tree, "VALUE");
   Ihandle *elem = (Ihandle *)IupTreeGetUserId(tree, id);
+  Ihandle *dialog = IupGetDialog(elem);
 
   if (!elem)
     return IUP_DEFAULT;
@@ -1809,6 +1808,11 @@ static int find_cb(Ihandle* ih)
     find_dlg = IupLayoutFindDialog(tree, elem);
     IupSetAttribute(tree, "FIND_DIALOG", (char*)find_dlg);
   }
+
+  if (!dialog)
+    IupSetAttribute(IupGetDialogChild(find_dlg, "FIND_NAME"), "ACTIVE", "NO");
+  else
+    IupSetAttribute(IupGetDialogChild(find_dlg, "FIND_NAME"), "ACTIVE", "YES");
 
   IupShow(find_dlg);
 
@@ -2045,6 +2049,7 @@ int main(int argc, char **argv)
   elementsList = IupTree();
   IupSetAttribute(elementsList, "EXPAND", "YES");
   IupSetAttribute(elementsList, "NAME", "ELEMENTS_TREE");
+  IupSetAttribute(elementsList, "ADDROOT", "NO");
   IupSetCallback(elementsList, "SELECTION_CB", (Icallback)tree_elements_selection_cb);
   IupSetCallback(elementsList, "EXECUTELEAF_CB", (Icallback)executeleaf_cb);
   IupSetCallback(elementsList, "RIGHTCLICK_CB", (Icallback)rightclick_cb);
