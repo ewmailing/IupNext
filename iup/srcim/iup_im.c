@@ -390,7 +390,7 @@ int IupSaveImage(Ihandle* ih, const char* file_name, const char* format)
     {
       char* color = IupGetAttributeId(ih, "", i);
       if (!color)
-        break;
+          break;
 
       if (iupStrEqualNoCase(color, "BGCOLOR"))
       {
@@ -406,7 +406,8 @@ int IupSaveImage(Ihandle* ih, const char* file_name, const char* format)
       }
     }
 
-    imFileSetPalette(ifile, palette, i);
+    if (i > 0)
+      imFileSetPalette(ifile, palette, i);
 
     error = imFileWriteImageInfo(ifile, width, height, IM_MAP|IM_TOPDOWN, IM_BYTE);
   }
@@ -619,7 +620,7 @@ imImage* IupImageToImImage(Ihandle* iup_image)
     {
       char* color = IupGetAttributeId(iup_image, "", i);
       if (!color)
-        break;
+          break;
 
       if (iupStrEqualNoCase(color, "BGCOLOR"))
       {
@@ -635,7 +636,8 @@ imImage* IupImageToImImage(Ihandle* iup_image)
       }
     }
 
-    imImageSetPalette(image, palette, i);
+    if (i > 0)
+      imImageSetPalette(image, palette, i);
   }
 
   return image;
