@@ -4,6 +4,7 @@
  * See Copyright Notice in "iup.h"
  */
 
+#undef GTK_DISABLE_DEPRECATED  /* Since GTK 3.14 gtk_status_icon is deprecated. */
 #include <gtk/gtk.h>
 
 #ifdef HILDON
@@ -40,6 +41,7 @@
 
 
 static void gtkDialogSetMinMax(Ihandle* ih, int min_w, int min_h, int max_w, int max_h);
+
 
 
 /****************************************************************
@@ -1017,8 +1019,8 @@ static int gtkDialogSetBackgroundAttrib(Ihandle* ih, const char* value)
   return 0;
 }
 
-/* gtk_status_icon - deprecated in 3.14, but still available in 3.22 (must enable deprecated in config.mak) */
-#if (GTK_CHECK_VERSION(2, 10, 0) && !GTK_CHECK_VERSION(3, 14, 0)) || !defined(GTK_DISABLE_DEPRECATED)
+/* gtk_status_icon - deprecated in 3.14, but still available in 3.22 */
+#if GTK_CHECK_VERSION(2, 10, 0)
 static int gtkDialogTaskDoubleClick(int button)
 {
   static int last_button = -1;
@@ -1185,8 +1187,8 @@ void iupdrvDialogInitClass(Iclass* ic)
   iupClassRegisterAttribute(ic, "OPACITYIMAGE", NULL, gtkDialogSetShapeImageAttrib, NULL, NULL, IUPAF_NO_INHERIT);
   iupClassRegisterAttribute(ic, "SHAPEIMAGE", NULL, gtkDialogSetShapeImageAttrib, NULL, NULL, IUPAF_NO_INHERIT);
 #endif
-/* gtk_status_icon - deprecated in 3.14, but still available in 3.22 (must enable deprecated in config.mak) */
-#if (GTK_CHECK_VERSION(2, 10, 0) && !GTK_CHECK_VERSION(3, 14, 0)) || !defined(GTK_DISABLE_DEPRECATED)
+/* gtk_status_icon - deprecated in 3.14, but still available in 3.22 */
+#if GTK_CHECK_VERSION(2, 10, 0)
   iupClassRegisterAttribute(ic, "TRAY", NULL, gtkDialogSetTrayAttrib, NULL, NULL, IUPAF_NO_INHERIT);
   iupClassRegisterAttribute(ic, "TRAYIMAGE", NULL, gtkDialogSetTrayImageAttrib, NULL, NULL, IUPAF_NO_INHERIT);
   iupClassRegisterAttribute(ic, "TRAYTIP", NULL, gtkDialogSetTrayTipAttrib, NULL, NULL, IUPAF_NO_INHERIT);
