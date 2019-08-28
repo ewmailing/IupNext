@@ -27,7 +27,7 @@ typedef int (*IFniii)(Ihandle*, int, int, int); /* trayclick_cb, edition_cb */
 typedef int (*IFniiii)(Ihandle*, int, int, int, int); /* dragdrop_cb */
 typedef int (*IFniiiiiiC)(Ihandle*, int, int, int, int, int, int, struct _cdCanvas*);  /* draw_cb */
 typedef int (*IFniiiiii)(Ihandle*, int, int, int, int, int, int);  /* OLD draw_cb */
-typedef int (*IFnsid)(Ihandle*, char*, int, double); /* postmessage_cb */
+typedef int (*IFnsidv)(Ihandle*, char*, int, double, void*); /* postmessage_cb */
 
 typedef int (*IFnff)(Ihandle*, float, float);    /* canvas_action, plotmotion_cb (pplot) */
 typedef int (*IFniff)(Ihandle*,int,float,float);  /* scroll_cb */

@@ -195,16 +195,17 @@ typedef struct {
   char* s;
   int i;
   double d;
+  char* p;
 } winPostMessageUserData;
 
-IUP_API void IupPostMessage(Ihandle* ih, const char* s, int i, double d)
+IUP_API void IupPostMessage(Ihandle* ih, const char* s, int i, double d, void* p)
 {
   winPostMessageUserData* user_data = (winPostMessageUserData*)malloc(sizeof(winPostMessageUserData));
   user_data->ih = ih;
   user_data->s = iupStrDup(s);
   user_data->i = i;
   user_data->d = d;
-
+  user_data->p = p;
   PostThreadMessage(iupwin_mainthreadid, WM_APP, (WPARAM)IWIN_POSTMESSAGE_ID, (LPARAM)user_data);
 }
 
@@ -212,10 +213,9 @@ static void winProcessPostMessage(LPARAM lParam)
 {
   winPostMessageUserData* user_data = (winPostMessageUserData*)lParam;
   Ihandle* ih = user_data->ih;
-  IFnsid post_message_callback = (IFnsid)IupGetCallback(ih, "POSTMESSAGE_CB");
-  if (post_message_callback)
-    post_message_callback(ih, user_data->s, user_data->i, user_data->d);
-
+  IFnsidv cb = (IFnsidv)IupGetCallback(ih, "POSTMESSAGE_CB");
+  if (cb)
+    cb(ih, user_data->s, user_data->i, user_data->d, user_data->p);
   if (user_data->s) free(user_data->s);
   free(user_data);
 }

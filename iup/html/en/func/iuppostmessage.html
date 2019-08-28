@@ -20,22 +20,22 @@ loop regain control. </p>
 <h3>
 Parameters/Return</h3>
 <div>
-  <pre>void IupPostMessage(Ihandle* <strong>ih</strong>, const char* <strong>s</strong>, int <strong>i</strong>, double <strong>d</strong>); [in C]
-iup.PostMessage(<strong>ih</strong>: ihandle, <strong>s</strong>: string <strong>i</strong>, <strong>d</strong>: number) [in Lua]
+  <pre>void IupPostMessage(Ihandle* <strong>ih</strong>, const char* <strong>s</strong>, int <strong>i</strong>, double <strong>d</strong>, void* <strong>p</strong>); [in C]
+iup.PostMessage(<strong>ih</strong>: ihandle, <strong>s</strong>: string <strong>i</strong>, <strong>d</strong>: number, <strong>p</strong>: lightuserdata) [in Lua]
 </pre>
 </div>
 <p><b>ih</b>: identifier of the interface element.<br><strong>s</strong>: 
 string. Can be NULL. It will be internally duplicated if not NULL. <br>
 <strong>i</strong>: integer number.<br><strong>d</strong>: floating point 
-number.</p>
+number.<br><strong>p</strong>: generic pointer.</p>
 <h3>POSTMESSAGE_CB Callback</h3>
-<pre>int function(Ihandle *<strong>ih</strong>,  const char* <strong>s</strong>, int <strong>i</strong>, double <strong>d</strong>); [in C]
-<strong>ih</strong>:postmessage_cb(<strong>s</strong>: string <strong>i</strong>, <strong>d</strong>: number) -&gt; (<strong>ret</strong>: number) [in Lua]</pre>
+<pre>int function(Ihandle *<strong>ih</strong>,  const char* <strong>s</strong>, int <strong>i</strong>, double <strong>d</strong>, void* <strong>p</strong>); [in C]
+<strong>ih</strong>:postmessage_cb(<strong>s</strong>: string <strong>i</strong>, <strong>d</strong>: number, p: userdata) -&gt; (<strong>ret</strong>: number) [in Lua]</pre>
 <p><strong>ih</strong>:
   identifier of the element that activated the 
   event.<br><strong>s</strong>: string.<br>
 <strong>i</strong>: integer number.<br><strong>d</strong>: floating point 
-number.</p>
+number.<br><strong>p</strong>: generic pointer.</p>
 <h3>Notes</h3>
 <p>The variables are stored when the function is called, to be later passed to 
 the callback. It will work even for non native elements.</p>

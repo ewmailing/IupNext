@@ -133,31 +133,28 @@ typedef struct {
   char* s;
   int i;
   double d;
+  char* p;
 } gtkPostMessageUserData;
 
 static gint gtkPostMessageCallback(void *cb_data)
 {
   gtkPostMessageUserData* user_data = (gtkPostMessageUserData*)cb_data;
   Ihandle* ih = user_data->ih;
-  IFnsid post_message_callback = (IFnsid)IupGetCallback(ih, "POSTMESSAGE_CB");
-  if (post_message_callback)
-  {
-    char* s = user_data->s;
-    int i = user_data->i;
-    double d = user_data->d;
-    post_message_callback(ih, (char*)s, i, d);
-  }
+  IFnsidv cb = (IFnsidv)IupGetCallback(ih, "POSTMESSAGE_CB");
+  if (cb)
+    cb(ih, user_data->s, user_data->i, user_data->d, user_data->p);
   if (user_data->s) free(user_data->s);
   free(user_data);
   return FALSE; /* call only once */
 }
 
-IUP_API void IupPostMessage(Ihandle* ih, const char* s, int i, double d)
+IUP_API void IupPostMessage(Ihandle* ih, const char* s, int i, double d, void* p)
 {
   gtkPostMessageUserData* user_data = (gtkPostMessageUserData*)malloc(sizeof(gtkPostMessageUserData));
   user_data->ih = ih;
   user_data->s = iupStrDup(s);
   user_data->i = i;
   user_data->d = d;
-  g_idle_add(gtkPostMessageCallback, user_data);  
+  user_data->p = p;
+  g_idle_add(gtkPostMessageCallback, user_data);
 }

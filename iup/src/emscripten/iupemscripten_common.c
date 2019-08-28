@@ -580,6 +580,7 @@ struct IupEmscriptenPostMessagePayload
 	double usrDouble;
 	char* usrStr;
 	int usrInt;
+  void* usrVoidP;
 };
 
 static void postMessageCallback(int high_bits, int low_bits)
@@ -591,43 +592,33 @@ static void postMessageCallback(int high_bits, int low_bits)
 	intptr_t payload_intptr = (intptr_t)payload_64;
 	struct IupEmscriptenPostMessagePayload* payload = (struct IupEmscriptenPostMessagePayload*)payload_intptr;
 
-
-
-
 	Ihandle* ih = payload->iHandle;
 	char* s = payload->usrStr;
-	void* message_data = payload->messageData;
 	int i = payload->usrInt;
 	double d = payload->usrDouble;
+  void* p = payload->usrVoidP;
 
-	IFnsid post_message_callback = (IFnsid)IupGetCallback(ih, "POSTMESSAGE_CB");
-	if(post_message_callback)
+	IFnsidv cb = (IFnsidv)IupGetCallback(ih, "POSTMESSAGE_CB");
+  if(cb)
 	{
-		post_message_callback(ih, s, i, d);
+    cb(ih, s, i, d, p);
 	}
 	// We made our own copy of the string in IupPostMessage, so we need to free it now that we are done with it.
-	free(payload->usrStr);
+  if (payload->usrStr) free(payload->usrStr);
 	free(payload);
 }
 
-IUP_SDK_API void IupPostMessage(Ihandle* ih, const char* s, int i, double d)
+IUP_SDK_API void IupPostMessage(Ihandle* ih, const char* s, int i, double d, void* p)
 {
-	void* message_data = NULL; // TODO: Restore message_data as public APIs
-
-
 	struct IupEmscriptenPostMessagePayload* payload = (struct IupEmscriptenPostMessagePayload*)calloc(1, sizeof(struct IupEmscriptenPostMessagePayload));
 
 	// There is no parameter for strings. So we need to shove a pointer as an integer. But the string may get freed before the callback, so we need to duplicate it.
-	char* s_copy = strdup(s);
-//	intptr_t ihandle_intptr = (intptr_t)ih;
-//	intptr_t string_intptr = (intptr_t)s_copy;
-//	intptr_t message_data_intptr = (intptr_t)message_data;
 
 	payload->iHandle = ih;
-	payload->usrStr = s_copy;
+  payload->usrStr = iupStrDup(s);    //s can be NULL
 	payload->usrInt = i;
 	payload->usrDouble = d;	
-	payload->messageData = message_data;
+  payload->usrVoidP = p;
 
 	// Split 64-bit pointer into two 32-bit pointers.
 	intptr_t payload_intptr = (intptr_t)payload;
@@ -646,29 +637,26 @@ IUP_SDK_API void IupPostMessage(Ihandle* ih, const char* s, int i, double d)
 #else
 
 
-extern void emjsCommon_IupPostMessageNoThreads(Ihandle* ih, const char* s, int i, double d, void* message_data_intptr);
+extern void emjsCommon_IupPostMessageNoThreads(Ihandle* ih, const char* s, int i, double d, void* p);
 
 // In this case, we don't have to worry about threads.
 // We just want to queue up the message to be processed in the future.
 // setTimeout with an interval of 0, should work fine for this.
-IUP_SDK_API void IupPostMessage(Ihandle* ih, const char* s, int i, double d)
+IUP_SDK_API void IupPostMessage(Ihandle* ih, const char* s, int i, double d, void* p)
 {
-	void* message_data = NULL; // TODO: Restore message_data as public APIs
-	//intptr_t message_data_intptr = (intptr_t)message_data;
-	emjsCommon_IupPostMessageNoThreads(ih, s, i, d, message_data);
+	emjsCommon_IupPostMessageNoThreads(ih, s, i, d, p);
 }
 
 #endif
 // I think I need to compile this even if not used, because I don't have any conditional compilation in the .js files.
 // WARNING: There is some kind of build system dependency bug with EMSCRIPTEN_KEEPALIVE. When I change this function, I need to clean/rebuild, otherwise the changes don't seem to work, even though the test app rebuilds/relinks.
-EMSCRIPTEN_KEEPALIVE void emscriptenIupPostMessageNoThreadsCallbackTrampoline(Ihandle* ih, char* s, int i, double d, void* message_data)
+EMSCRIPTEN_KEEPALIVE void emscriptenIupPostMessageNoThreadsCallbackTrampoline(Ihandle* ih, char* s, int i, double d, void* p)
 {
-	IFnsid post_message_callback = (IFnsid)IupGetCallback(ih, "POSTMESSAGE_CB");
-	if(post_message_callback)
+	IFnsidv cb = (IFnsidv)IupGetCallback(ih, "POSTMESSAGE_CB");
+  if (cb)
 	{
-		post_message_callback(ih, s, i, d);
+    cb(ih, s, i, d, p);
 	}
-
 }
 
 

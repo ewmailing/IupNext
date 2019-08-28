@@ -24,7 +24,7 @@ local ctrl = {
     dropdata_cb = "sonnn",
     customframedraw_cb = "",
     customframeactivate_cb = "n",
-    postmessage_cb = "",
+    postmessage_cb = "sndo",
   }
 }
 

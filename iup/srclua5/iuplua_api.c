@@ -998,7 +998,8 @@ static int PostMessage(lua_State *L)
   const char *s = luaL_checkstring(L, 2);
   int i = (int)luaL_checkinteger(L, 3);
   double d = luaL_checknumber(L, 4);
-  IupPostMessage(ih, s, i, d);
+  void* p = lua_touserdata(L, 5);
+  IupPostMessage(ih, s, i, d, p);
   return 0;
 }
 

@@ -559,7 +559,7 @@ void iupdrvWarpPointer(int x, int y)
 // Even though other platforms implement this in iup*_loop.*,
 // it was more convenient to implement this here so we can keep 
 // s_classIupMainThreadRedirect as a static variable, instead of a global variable.
-void IupPostMessage(Ihandle* ih, const char* s, int i, double d)
+void IupPostMessage(Ihandle* ih, const char* s, int i, double d, void* p)
 {
 	// We need to call into Java and instruct it to run a block of code 
 	// on the UI Thread that will callback into C and invoke the user's callback function.
@@ -573,8 +573,7 @@ void IupPostMessage(Ihandle* ih, const char* s, int i, double d)
 
 	jstring j_string = (*jni_env)->NewStringUTF(jni_env, s);
 
-	void* message_data = NULL; // TODO: Restore message_data as public APIs
-	(*jni_env)->CallStaticVoidMethod(jni_env, java_class, method_id, app_context, (jlong)(intptr_t)ih, (jlong)(intptr_t)message_data, j_string, (jlong)i, (jdouble)d);
+  (*jni_env)->CallStaticVoidMethod(jni_env, java_class, method_id, app_context, (jlong)(intptr_t)ih, j_string, (jlong)i, (jdouble)d, (jlong)(intptr_t)p);
 
 	(*jni_env)->DeleteLocalRef(jni_env, j_string);
 
