@@ -216,7 +216,7 @@ function(HELPER_CREATE_LIBRARY library_name wants_build_shared_library wants_bui
 endfunction()
 
 # indirect_link_libs is for static libraries, where all dependencies must be explicitly linked 
-function(HELPER_CREATE_EXECUTABLE exe_name source_file_list is_using_shared_libs direct_link_libs indirect_link_libs c_flags link_flags exclude_from_all_target resource_file_list)
+function(HELPER_CREATE_EXECUTABLE exe_name source_file_list is_using_shared_libs direct_link_libs indirect_link_libs c_flags link_flags exclude_from_all_target uri_name resource_file_list)
 	if(NOT ANDROID)
 	
 		if(exclude_from_all_target)
@@ -241,6 +241,7 @@ function(HELPER_CREATE_EXECUTABLE exe_name source_file_list is_using_shared_libs
 		SET_TARGET_PROPERTIES(${exe_name} PROPERTIES
 			COMPILE_FLAGS "${c_flags}"
 			LINK_FLAGS "${link_flags}"
+			MACOSX_BUNDLE_GUI_IDENTIFIER "${uri_name}"
 		)
 
 	else()

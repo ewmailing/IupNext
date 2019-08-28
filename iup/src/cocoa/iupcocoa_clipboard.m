@@ -159,7 +159,7 @@ static int cocoaClipboardSetImageAttrib(Ihandle* ih, const char* value)
 		return 0;
 	}
 
-	NSImage* ns_image = (NSImage*)iupImageGetImage(value, ih, 0);
+	NSImage* ns_image = (NSImage*)iupImageGetImage(value, ih, 0, NULL);
 	[paste_board writeObjects:@[ns_image]];
 	return 0;
 }

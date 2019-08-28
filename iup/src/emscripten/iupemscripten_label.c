@@ -33,7 +33,7 @@
 #include <emscripten.h>
 #include "SDL.h"
 
-extern int emjsLabel_CreateText(void);
+extern int emjsLabel_CreateLabel(void);
 extern int emjsLabel_CreateImage(void);
 extern int emjsLabel_CreateSeparatorHorizontal(void);
 extern int emjsLabel_CreateSeparatorVertical(void);
@@ -219,7 +219,7 @@ static int emscriptenLabelSetImageAttrib(Ihandle* ih, const char* value)
 		
 		// NOTE: Maybe SDL_surface is too low level, and we should be creating the JavaScript imageData.
 		SDL_Surface* sdl_surface;
-		sdl_surface = iupImageGetImage(value, ih, make_inactive);
+		sdl_surface = iupImageGetImage(value, ih, make_inactive, NULL);
 		int width;
 		int height;
 		int bpp;
@@ -321,7 +321,7 @@ static int emscriptenLabelMapMethod(Ihandle* ih)
 			ih->data->type = IUP_LABEL_TEXT;
 
 
-			label_id = emjsLabel_CreateText();
+			label_id = emjsLabel_CreateLabel();
 	
 
 		

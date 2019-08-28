@@ -39,8 +39,8 @@ if(APPLE)
 		# Evidence suggests that on modern devices, using Apple's pngcrush is counterproductive.
 		set_xcode_property(${_EXE_NAME} COMPRESS_PNG_FILES NO)
 
-		# Disable LLVM IR bitcode (for now)
-		set_xcode_property(${_EXE_NAME} ENABLE_BITCODE NO)
+		# LLVM IR bitcode
+		set_xcode_property(${_EXE_NAME} ENABLE_BITCODE YES)
 
 		# EVIL HACK: CMake sets the FRAMEWORK_SEARCH_PATHS *sometimes*.
 		# I'm seeing it with the JavaScriptCore builds.

@@ -757,7 +757,7 @@ static void cocoaSourceDragProvideDataForTypeUser(Ihandle* ih, NSPasteboard* pas
 			{
 				// This is an Iup mapped name, not a file name. So we use UTF8String, not fileSystemRepresentation
 				const char* c_string = [ns_string UTF8String];
-				NSImage* ns_image = (NSImage*)iupImageGetImage(c_string, ih, 0);
+				NSImage* ns_image = (NSImage*)iupImageGetImage(c_string, ih, 0, NULL);
 				NSBitmapImageRep* bitmap_image = nil;
 				if([[ns_image representations] count] > 0)
 				{
@@ -834,7 +834,7 @@ static void cocoaSourceDragProvideDataForTypeUser(Ihandle* ih, NSPasteboard* pas
 			{
 				// This is an Iup mapped name, not a file name. So we use UTF8String, not fileSystemRepresentation
 				const char* c_string = [ns_string UTF8String];
-				NSImage* ns_image = (NSImage*)iupImageGetImage(c_string, ih, 0);
+				NSImage* ns_image = (NSImage*)iupImageGetImage(c_string, ih, 0, NULL);
 				NSBitmapImageRep* bitmap_image = nil;
 				if([[ns_image representations] count] > 0)
 				{

@@ -127,6 +127,11 @@ int iupdrvTabsExtraDecor(Ihandle* ih)
 	return 1; // FIXME: Total guess
 }
 
+int iupdrvTabsExtraMargin(void)
+{
+  return 0;
+}
+
 int iupdrvTabsGetLineCountAttrib(Ihandle* ih)
 {
 	(void)ih;
@@ -254,7 +259,7 @@ static int cocoaTabsSetTabImageAttrib(Ihandle* ih, int pos, const char* value)
 	NSImage* bitmap_image = nil;
 	if(value)
 	{
-		bitmap_image = iupImageGetImage(value, ih, 0);
+		bitmap_image = iupImageGetImage(value, ih, 0, NULL);
 	}
 	else
 	{
@@ -600,7 +605,7 @@ static int cocoaTabsComputeFullTabBarWidth(Ihandle* ih)
 		
 		if(tabimage)
 		{
-			void* img = iupImageGetImage(tabimage, ih, 0);
+			void* img = iupImageGetImage(tabimage, ih, 0, NULL);
 			if(img)
 			{
 				has_image = true;

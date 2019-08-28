@@ -106,17 +106,17 @@ var LibraryIupCommon = {
   emjsCommon_Alert: function(message) {
     console.log("alert message: ");
     console.log(message);
-    alert(Pointer_stringify(message));
+    alert(UTF8ToString(message));
   },
 
   emjsCommon_Log: function(message) {
 //    console.log("our log is working");
-      console.log(Pointer_stringify(message));
+      console.log(UTF8ToString(message));
   },
 
 	emjsCommon_IupLog: function(priority, message)
 	{
-		var stringified_message = Pointer_stringify(message);
+		var stringified_message = UTF8ToString(message);
 		/*	 
 		enum IUPLOG_LEVEL
 		{
@@ -155,6 +155,36 @@ var LibraryIupCommon = {
     var current_widget = IupCommon.GetObjectForID(handle_id);
     console.log(current_widget);
     current_widget.style.color = "rgb(" + r + "," + g + "," + b + ")";
+  },
+
+	// Used only the the no-pthreads-path. I don't know how to conditionally compile JavaScript fragments here, so this always gets included, whether used or not.
+	emjsCommon_IupPostMessageNoThreads: function(ih, s, i, d, message_data)
+	{
+    	var postMessageCallback = function(number_ih, str, number_i, number_d, number_message_data)
+		{
+			var c_callback = Module.cwrap('emscriptenIupPostMessageNoThreadsCallbackTrampoline', null, ['number', 'string', 'number', 'number', 'number']);
+
+			c_callback(number_ih, str, number_i, number_d, number_message_data);
+		}
+		// This was a lot of trial & error to figure out how to get the string parameter all the way through.
+		// Ultimately, I needed to use UTF8ToString on the char* to pass through the Trampoline as a 'string'.
+		// This allowed it to re-emerge properly as a string with the correct contents in the EMSCRIPTEN_KEEPALIVE trampoline callback.
+		// But additionally, I'm concerned about the life-cycle of the original char* s passed into the function since callback may happen after the user frees the original string.
+		// So I need to make a copy. But it gets hairy trying to manage the memory on the C side 
+		// because if I strdup() initially, the pointer that surfaces in the trampoline may be different 
+		// because we used UTF8ToString. And I'm also a little nervous about allocating memory on the C-side and _free()'ing it on the JS side.
+		// So instead, we can use UTF8ToString here, which should make a JavaScript copy of the string and we can let the system manage the life-cycle of that.
+		var stringified_s = UTF8ToString(s);
+
+		setTimeout(
+			postMessageCallback,
+			0,
+			ih,
+			stringified_s,
+			i,
+			d,
+			message_data
+		);
   },
 
   iupEmscriptenSetFgColor: function(handle_id, r, g, b) {

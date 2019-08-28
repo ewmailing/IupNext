@@ -37,6 +37,11 @@ int iupdrvTabsExtraDecor(Ihandle* ih)
   return 0;
 }
 
+int iupdrvTabsExtraMargin(void)
+{
+  return 0;
+}
+
 int iupdrvTabsGetLineCountAttrib(Ihandle* ih)
 {
   (void)ih;
@@ -60,22 +65,22 @@ int iupdrvTabsIsTabVisible(Ihandle* child, int pos)
 	
 }
 
-
+/*
 static void emscriptenTabsUnMapMethod(Ihandle* ih)
 {
 	if (ih && ih->handle) {
     iupEmscripten_RemoveIntKeyFromIhandleMap(ih->handle->handleID);
-    emjsText_DestroyText(ih->handle->handleID);
+    emjsTabs_DestroyTabs(ih->handle->handleID);
     free(ih->handle);
     ih->handle = NULL;
   }
 }
-
+*/
 
 void iupdrvTabsInitClass(Iclass* ic)
 {
-  ic->Map = emscriptenTabsMapMethod;
-  ic->UnMap = emscriptenTabsUnMapMethod;
+//  ic->Map = emscriptenTabsMapMethod;
+//  ic->UnMap = emscriptenTabsUnMapMethod;
 
 #if 0
   /* Driver Dependent Class functions */

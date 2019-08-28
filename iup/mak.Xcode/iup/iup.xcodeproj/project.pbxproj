@@ -54,6 +54,13 @@
 		00A3F0D4218FD18900841C0E /* Images.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = 00E3A8FB1B609B8700BEC175 /* Images.xcassets */; };
 		00A3F0D6218FD18900841C0E /* iup.framework in CopyFiles */ = {isa = PBXBuildFile; fileRef = 00E3A5ED1B60578300BEC175 /* iup.framework */; settings = {ATTRIBUTES = (CodeSignOnCopy, RemoveHeadersOnCopy, ); }; };
 		00A3F0D7218FD18900841C0E /* iupim.framework in CopyFiles */ = {isa = PBXBuildFile; fileRef = 00E93AFD214E846100BC6F5B /* iupim.framework */; settings = {ATTRIBUTES = (CodeSignOnCopy, RemoveHeadersOnCopy, ); }; };
+		00AB789522D40C2B008D43D4 /* iupcocoa_dragdrop.h in Headers */ = {isa = PBXBuildFile; fileRef = 00AB789222D40C2B008D43D4 /* iupcocoa_dragdrop.h */; };
+		00AB789722D40C2B008D43D4 /* IupCocoaFont.h in Headers */ = {isa = PBXBuildFile; fileRef = 00AB789422D40C2B008D43D4 /* IupCocoaFont.h */; };
+		00AB789C22D41202008D43D4 /* iup_multibox.c in Sources */ = {isa = PBXBuildFile; fileRef = 00AB789822D41201008D43D4 /* iup_multibox.c */; };
+		00AB789D22D41202008D43D4 /* iup_flatval.c in Sources */ = {isa = PBXBuildFile; fileRef = 00AB789922D41201008D43D4 /* iup_flatval.c */; };
+		00AB789E22D41202008D43D4 /* iup_globalsdlg.c in Sources */ = {isa = PBXBuildFile; fileRef = 00AB789A22D41201008D43D4 /* iup_globalsdlg.c */; };
+		00AB789F22D41202008D43D4 /* iup_space.c in Sources */ = {isa = PBXBuildFile; fileRef = 00AB789B22D41202008D43D4 /* iup_space.c */; };
+		00AB78A122D41243008D43D4 /* iup_flatlist.c in Sources */ = {isa = PBXBuildFile; fileRef = 00AB78A022D41243008D43D4 /* iup_flatlist.c */; };
 		00ADF34F1F45AECD00F91890 /* Encoding.c in Sources */ = {isa = PBXBuildFile; fileRef = 00ADF34E1F45AECD00F91890 /* Encoding.c */; };
 		00B472CE207C43000019005D /* iup_flatseparator.c in Sources */ = {isa = PBXBuildFile; fileRef = 00B472CD207C42FF0019005D /* iup_flatseparator.c */; };
 		00BE4EEE1F4BF35C002B7C86 /* Cocoa.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 00E3A8BD1B605D0B00BEC175 /* Cocoa.framework */; };
@@ -72,6 +79,7 @@
 		00BE4F961F4CAB9A002B7C86 /* QuartzCore.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 00BE4F951F4CAB9A002B7C86 /* QuartzCore.framework */; };
 		00BE4F981F4CABE8002B7C86 /* SystemConfiguration.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 00BE4F971F4CABE8002B7C86 /* SystemConfiguration.framework */; };
 		00C69C462138C1AD00E7F8B4 /* tecgraf.bmp in Resources */ = {isa = PBXBuildFile; fileRef = 00C69C452138C1AC00E7F8B4 /* tecgraf.bmp */; };
+		00D6743622D3F15D00DB1AEF /* iup_export.h in Headers */ = {isa = PBXBuildFile; fileRef = 00D6743522D3F15C00DB1AEF /* iup_export.h */; settings = {ATTRIBUTES = (Public, ); }; };
 		00DECF472063834000FEF83B /* iup_flatlabel.c in Sources */ = {isa = PBXBuildFile; fileRef = 00DECF462063833F00FEF83B /* iup_flatlabel.c */; };
 		00E3A5F91B60578300BEC175 /* iup.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 00E3A5ED1B60578300BEC175 /* iup.framework */; };
 		00E3A6001B60578300BEC175 /* iupTests.m in Sources */ = {isa = PBXBuildFile; fileRef = 00E3A5FF1B60578300BEC175 /* iupTests.m */; };
@@ -410,6 +418,13 @@
 		00A3F0DB218FD18900841C0E /* TestAppSandbox.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = TestAppSandbox.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		00A3F0DC218FD18C00841C0E /* TestApp copy-Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; name = "TestApp copy-Info.plist"; path = "/Users/ewing/Source/GIT/IupMac/iup315/Xcode/iup/TestApp copy-Info.plist"; sourceTree = "<absolute>"; };
 		00A3F0DD218FD1AC00841C0E /* TestAppSandbox.entitlements */ = {isa = PBXFileReference; lastKnownFileType = text.plist.entitlements; path = TestAppSandbox.entitlements; sourceTree = "<group>"; };
+		00AB789222D40C2B008D43D4 /* iupcocoa_dragdrop.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = iupcocoa_dragdrop.h; sourceTree = "<group>"; };
+		00AB789422D40C2B008D43D4 /* IupCocoaFont.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = IupCocoaFont.h; sourceTree = "<group>"; };
+		00AB789822D41201008D43D4 /* iup_multibox.c */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.c; path = iup_multibox.c; sourceTree = "<group>"; };
+		00AB789922D41201008D43D4 /* iup_flatval.c */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.c; path = iup_flatval.c; sourceTree = "<group>"; };
+		00AB789A22D41201008D43D4 /* iup_globalsdlg.c */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.c; path = iup_globalsdlg.c; sourceTree = "<group>"; };
+		00AB789B22D41202008D43D4 /* iup_space.c */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.c; path = iup_space.c; sourceTree = "<group>"; };
+		00AB78A022D41243008D43D4 /* iup_flatlist.c */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.c; path = iup_flatlist.c; sourceTree = "<group>"; };
 		00ADF34E1F45AECD00F91890 /* Encoding.c */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.c; path = Encoding.c; sourceTree = "<group>"; };
 		00B472CD207C42FF0019005D /* iup_flatseparator.c */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.c; path = iup_flatseparator.c; sourceTree = "<group>"; };
 		00BE4F4B1F4BF35C002B7C86 /* iupweb.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; includeInIndex = 0; path = iupweb.framework; sourceTree = BUILT_PRODUCTS_DIR; };
@@ -425,6 +440,7 @@
 		00BE4F951F4CAB9A002B7C86 /* QuartzCore.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = QuartzCore.framework; path = System/Library/Frameworks/QuartzCore.framework; sourceTree = SDKROOT; };
 		00BE4F971F4CABE8002B7C86 /* SystemConfiguration.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = SystemConfiguration.framework; path = System/Library/Frameworks/SystemConfiguration.framework; sourceTree = SDKROOT; };
 		00C69C452138C1AC00E7F8B4 /* tecgraf.bmp */ = {isa = PBXFileReference; lastKnownFileType = image.bmp; name = tecgraf.bmp; path = ../../../html/examples/tests/tecgraf.bmp; sourceTree = "<group>"; };
+		00D6743522D3F15C00DB1AEF /* iup_export.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = iup_export.h; sourceTree = "<group>"; };
 		00DECF462063833F00FEF83B /* iup_flatlabel.c */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.c; path = iup_flatlabel.c; sourceTree = "<group>"; };
 		00E3A5ED1B60578300BEC175 /* iup.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; includeInIndex = 0; path = iup.framework; sourceTree = BUILT_PRODUCTS_DIR; };
 		00E3A5F11B60578300BEC175 /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
@@ -891,6 +907,11 @@
 		00E3A60B1B60583500BEC175 /* src */ = {
 			isa = PBXGroup;
 			children = (
+				00AB78A022D41243008D43D4 /* iup_flatlist.c */,
+				00AB789922D41201008D43D4 /* iup_flatval.c */,
+				00AB789A22D41201008D43D4 /* iup_globalsdlg.c */,
+				00AB789822D41201008D43D4 /* iup_multibox.c */,
+				00AB789B22D41202008D43D4 /* iup_space.c */,
 				00B472CD207C42FF0019005D /* iup_flatseparator.c */,
 				004DBF492070E6DD00962511 /* iup_draw.h */,
 				004DBF4A2070E6DE00962511 /* iup_dropbutton.c */,
@@ -1059,6 +1080,7 @@
 		00E3A83A1B60595300BEC175 /* include */ = {
 			isa = PBXGroup;
 			children = (
+				00D6743522D3F15C00DB1AEF /* iup_export.h */,
 				007E3197204CCC9700ED15CB /* iup_varg.h */,
 				007E3196204CCC9600ED15CB /* iupluascripterdlg.h */,
 				002CC4D21EA241E90007C8E7 /* iup_plus.h */,
@@ -1098,6 +1120,8 @@
 		00E3A8971B605A7500BEC175 /* cocoa */ = {
 			isa = PBXGroup;
 			children = (
+				00AB789222D40C2B008D43D4 /* iupcocoa_dragdrop.h */,
+				00AB789422D40C2B008D43D4 /* IupCocoaFont.h */,
 				00EAD0222166240200D601F8 /* IupCocoaTreeToggleTableCellView.h */,
 				00EAD0232166240500D601F8 /* IupCocoaTreeToggleTableCellView.m */,
 				00006F0F1ECA62AB000636B1 /* IUPCocoaVerticalAlignmentTextFieldCell.h */,
@@ -1269,6 +1293,7 @@
 			buildActionMask = 2147483647;
 			files = (
 				00E3A79C1B60583600BEC175 /* iup_globalattrib.h in Headers */,
+				00AB789722D40C2B008D43D4 /* IupCocoaFont.h in Headers */,
 				00E3A7DF1B60583600BEC175 /* iup_tree.h in Headers */,
 				00E3A7B71B60583600BEC175 /* iup_menu.h in Headers */,
 				00E3A88B1B60595300BEC175 /* iupluaweb.h in Headers */,
@@ -1277,6 +1302,7 @@
 				002CC4D51EA241E90007C8E7 /* iupdraw.h in Headers */,
 				00E3A87F1B60595300BEC175 /* iuplua.h in Headers */,
 				00E3A7821B60583600BEC175 /* iup_classbase.h in Headers */,
+				00D6743622D3F15D00DB1AEF /* iup_export.h in Headers */,
 				00E3A8841B60595300BEC175 /* iupluacontrols.h in Headers */,
 				00E3A7B51B60583600BEC175 /* iup_maskparse.h in Headers */,
 				00E3A7C31B60583600BEC175 /* iup_progressbar.h in Headers */,
@@ -1331,6 +1357,7 @@
 				00E3A7891B60583600BEC175 /* iup_dlglist.h in Headers */,
 				00E3A7751B60583600BEC175 /* iup_box.h in Headers */,
 				00E93B3021523CCD00BC6F5B /* iupcocoa_canvas.h in Headers */,
+				00AB789522D40C2B008D43D4 /* iupcocoa_dragdrop.h in Headers */,
 				00E3A7D11B60583600BEC175 /* iup_str.h in Headers */,
 				00E3A77D1B60583600BEC175 /* iup_childtree.h in Headers */,
 				00E3A7DD1B60583600BEC175 /* iup_toggle.h in Headers */,
@@ -1617,6 +1644,7 @@
 			developmentRegion = English;
 			hasScannedForEncodings = 0;
 			knownRegions = (
+				English,
 				en,
 				Base,
 			);
@@ -1786,6 +1814,7 @@
 				00006F121ECA62AB000636B1 /* IUPCocoaVerticalAlignmentTextFieldCell.m in Sources */,
 				00E93A68214CE09800BC6F5B /* iupmac_key.m in Sources */,
 				00E3A7CB1B60583600BEC175 /* iup_scrollbox.c in Sources */,
+				00AB789C22D41202008D43D4 /* iup_multibox.c in Sources */,
 				00E3A79E1B60583600BEC175 /* iup_hbox.c in Sources */,
 				00E3A7B91B60583600BEC175 /* iup_names.c in Sources */,
 				00E3A8CC1B60851400BEC175 /* iupcocoa_tree.m in Sources */,
@@ -1836,6 +1865,7 @@
 				00E3A8E21B6096EC00BEC175 /* iupcocoa_progressbar.m in Sources */,
 				00E3A7A71B60583600BEC175 /* iup_layoutdlg.c in Sources */,
 				0070FB9B1E0E0B79009A8631 /* IupAppDelegate.m in Sources */,
+				00AB789F22D41202008D43D4 /* iup_space.c in Sources */,
 				00E3A7801B60583600BEC175 /* iup_classattrib.c in Sources */,
 				00E3A77B1B60583600BEC175 /* iup_cbox.c in Sources */,
 				00E3A7901B60583600BEC175 /* iup_fill.c in Sources */,
@@ -1862,6 +1892,7 @@
 				00E3A7711B60583600BEC175 /* iup_attrib.c in Sources */,
 				00346C401B6880140045148B /* iupcocoa_info.m in Sources */,
 				00E3A7791B60583600BEC175 /* iup_canvas.c in Sources */,
+				00AB789E22D41202008D43D4 /* iup_globalsdlg.c in Sources */,
 				00E3A8D61B6090BE00BEC175 /* iupcocoa_messagedlg.m in Sources */,
 				00E3A8C91B6075C400BEC175 /* iupcocoa_tips.m in Sources */,
 				00E3A8D21B6089F400BEC175 /* iupcocoa_fontdlg.m in Sources */,
@@ -1873,6 +1904,7 @@
 				00E3A8C61B60724900BEC175 /* iupcocoa_font.m in Sources */,
 				00E3A7B21B60583600BEC175 /* iup_maskmatch.c in Sources */,
 				00E3A8EA1B6098D300BEC175 /* iupcocoa_text.m in Sources */,
+				00AB78A122D41243008D43D4 /* iup_flatlist.c in Sources */,
 				002CC4CC1EA2416B0007C8E7 /* iup_animatedlabel.c in Sources */,
 				00E3A7AD1B60583600BEC175 /* iup_link.c in Sources */,
 				007E31AB204CDBC500ED15CB /* iup_colorhsi.c in Sources */,
@@ -1880,6 +1912,7 @@
 				00E3A7921B60583600BEC175 /* iup_focus.c in Sources */,
 				00E3A8D51B60906F00BEC175 /* iupcocoa_val.m in Sources */,
 				00E3A7BF1B60583600BEC175 /* iup_open.c in Sources */,
+				00AB789D22D41202008D43D4 /* iup_flatval.c in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -2261,6 +2294,7 @@
 				INFOPLIST_FILE = iup/Info.plist;
 				INSTALL_PATH = "$(LOCAL_LIBRARY_DIR)/Frameworks";
 				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/../Frameworks @loader_path/Frameworks";
+				MACOSX_DEPLOYMENT_TARGET = 10.14;
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				SKIP_INSTALL = YES;
 			};
@@ -2284,6 +2318,7 @@
 				INFOPLIST_FILE = iup/Info.plist;
 				INSTALL_PATH = "$(LOCAL_LIBRARY_DIR)/Frameworks";
 				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/../Frameworks @loader_path/Frameworks";
+				MACOSX_DEPLOYMENT_TARGET = 10.14;
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				SKIP_INSTALL = YES;
 			};

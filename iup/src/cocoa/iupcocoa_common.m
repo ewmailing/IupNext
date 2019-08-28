@@ -782,6 +782,29 @@ int iupdrvGetScrollbarSize(void)
   return 0;
 }
 
+/*
+From Apple's quick documentation:
+Do not include the accessibility element’s type in the label (for example, write Play not Play button.). If possible, use a single word. To help ensure that accessibility clients like VoiceOver read the label with the correct intonation, this label should start with a capital letter. Do not put a period at the end. Always localize the label.
+*/
+IUP_SDK_API void iupdrvSetAccessibleTitle(Ihandle *ih, const char* title)
+{
+	id the_object = ih->handle;
+
+	// Our custom CanvasView is going back and forth between subclassing NSView and NSControl.
+	// Make sure to not implement any other NSViews that do something wonky with the enabled property.
+	if([the_object respondsToSelector:@selector(setAccessibilityLabel:)])
+	{
+		if(!title)
+		{
+			[the_object setAccessibilityLabel:nil];
+		}
+		else
+		{
+            NSString* ns_title = [NSString stringWithUTF8String:title];
+			[the_object setAccessibilityLabel:ns_title];
+		}
+	}
+}
 
 void iupdrvBaseRegisterCommonAttrib(Iclass* ic)
 {

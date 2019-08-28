@@ -3503,7 +3503,7 @@ static void helperReplaceDefaultImages(Ihandle* ih, IupCocoaOutlineView* outline
 {
 	// This was loaded in helperLoadReplacementDefaultImages.
 	// Round-tripping the image through IUP is intentional in case IUP does any additional transformations.
-	NSImage* ns_folder_image_roundtrip = iupImageGetImage(iupAttribGetStr(ih, "IMAGEBRANCHCOLLAPSED"), ih, 0);
+	NSImage* ns_folder_image_roundtrip = iupImageGetImage(iupAttribGetStr(ih, "IMAGEBRANCHCOLLAPSED"), ih, 0, NULL);
 	
 	// We use the same pointer for both. This allows for an optimization to kick in to not reload items when expand/collapse happens.
 	[outline_view setCollapsedImage:ns_folder_image_roundtrip];
@@ -3526,7 +3526,7 @@ static NSImage* helperGetImage(Ihandle* ih, int node_id, const char* value, IupC
 	}
 	else
 	{
-		bitmap_image = (NSImage*)iupImageGetImage(value, ih, 0);
+		bitmap_image = (NSImage*)iupImageGetImage(value, ih, 0, NULL);
 	}
 
 	return bitmap_image;
@@ -3590,7 +3590,7 @@ static void helperSetImageBranchExpanded(IupCocoaOutlineView* outline_view, IupC
 
 static int cocoaTreeSetImageBranchExpandedAttrib(Ihandle* ih, const char* value)
 {
-	NSImage* ns_image = (NSImage*)iupImageGetImage(value, ih, 0);
+	NSImage* ns_image = (NSImage*)iupImageGetImage(value, ih, 0, NULL);
 	IupCocoaOutlineView* outline_view = (IupCocoaOutlineView*)cocoaTreeGetOutlineView(ih);
 
 	[outline_view beginUpdates];
@@ -3629,7 +3629,7 @@ static void helperSetImageBranchCollapsed(IupCocoaOutlineView* outline_view, Iup
 
 static int cocoaTreeSetImageBranchCollapsedAttrib(Ihandle* ih, const char* value)
 {
-	NSImage* ns_image = (NSImage*)iupImageGetImage(value, ih, 0);
+	NSImage* ns_image = (NSImage*)iupImageGetImage(value, ih, 0, NULL);
 	IupCocoaOutlineView* outline_view = (IupCocoaOutlineView*)cocoaTreeGetOutlineView(ih);
 
 	[outline_view beginUpdates];
@@ -3666,7 +3666,7 @@ static void helperSetImageLeaf(IupCocoaOutlineView* outline_view, IupCocoaTreeIt
 
 static int cocoaTreeSetImageLeafAttrib(Ihandle* ih, const char* value)
 {
-	NSImage* ns_image = (NSImage*)iupImageGetImage(value, ih, 0);
+	NSImage* ns_image = (NSImage*)iupImageGetImage(value, ih, 0, NULL);
 	IupCocoaOutlineView* outline_view = (IupCocoaOutlineView*)cocoaTreeGetOutlineView(ih);
 
 	[outline_view beginUpdates];
@@ -4907,7 +4907,7 @@ static int cocoaTreeMapMethod(Ihandle* ih)
 	[outline_view setHeaderView:nil];
 
 	/* Initialize the default images */
-	NSImage* leaf_image = iupImageGetImage(iupAttribGetStr(ih, "IMAGELEAF"), ih, 0);
+	NSImage* leaf_image = iupImageGetImage(iupAttribGetStr(ih, "IMAGELEAF"), ih, 0, NULL);
 //	NSImage* collapsed_image = iupImageGetImage(iupAttribGetStr(ih, "IMAGEBRANCHCOLLAPSED"), ih, 0);
 //	NSImage* expanded_image = iupImageGetImage(iupAttribGetStr(ih, "IMAGEBRANCHEXPANDED"), ih, 0);
 

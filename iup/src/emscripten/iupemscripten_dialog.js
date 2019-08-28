@@ -69,7 +69,7 @@ var LibraryIupDialog = {
 			var new_window_name = null;
 			if(window_name)
 			{
-				new_window_name = Pointer_stringify(window_name);
+				new_window_name = UTF8ToString(window_name);
 			}
 			if(0 === width)
 			{
@@ -91,7 +91,7 @@ var LibraryIupDialog = {
 
 			if(window_name)
 			{
-				dialog.document.title = Pointer_stringify(window_name);
+				dialog.document.title = UTF8ToString(window_name);
 			}
 
 

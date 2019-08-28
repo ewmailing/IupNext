@@ -3,13 +3,13 @@
 # mkdir -p BUILD/emscripten; cd BUILD/emscripten;
 
 # release build compile command
-# cmake -DCMAKE_TOOLCHAIN_FILE=$EMSCRIPTEN/cmake/Modules/Platform/Emscripten.cmake -DCMAKE_BUILD_TYPE=Release ../..
+# cmake -DCMAKE_TOOLCHAIN_FILE=$EMSDK/fastcomp/emscripten/cmake/Modules/Platform/Emscripten.cmake -DCMAKE_BUILD_TYPE=Release ../..
 
 # compile command for ninja, debug mode, source maps (for some browser debuggers), emrun
-# cmake -GNinja -DCMAKE_TOOLCHAIN_FILE=$EMSCRIPTEN/cmake/Modules/Platform/Emscripten.cmake -DCMAKE_BUILD_TYPE=Debug -DCMAKE_C_FLAGS_DEBUG=-g4 -DCMAKE_EXE_LINKER_FLAGS="--emrun --source-map-base http://localhost:8888/" ../..
+# cmake -GNinja -DCMAKE_TOOLCHAIN_FILE=$EMSDK/fastcomp/emscripten/cmake/Modules/Platform/Emscripten.cmake -DCMAKE_BUILD_TYPE=Debug -DCMAKE_C_FLAGS_DEBUG=-g4 -DCMAKE_EXE_LINKER_FLAGS="--emrun --source-map-base http://localhost:8888/" ../..
 
 # above plus export CMkae compile commands to JSON for some external tools, e.g. lsp
-# cmake -GNinja -DCMAKE_TOOLCHAIN_FILE=$EMSCRIPTEN/cmake/Modules/Platform/Emscripten.cmake -DCMAKE_BUILD_TYPE=Debug -DCMAKE_C_FLAGS_DEBUG=-g4 -DCMAKE_EXE_LINKER_FLAGS="--emrun --source-map-base http://localhost:8888/" -DCMAKE_EXPORT_COMPILE_COMMANDS=1 ../..
+# cmake -GNinja -DCMAKE_TOOLCHAIN_FILE=$EMSDK/fastcomp/emscripten/cmake/Modules/Platform/Emscripten.cmake -DCMAKE_BUILD_TYPE=Debug -DCMAKE_C_FLAGS_DEBUG=-g4 -DCMAKE_EXE_LINKER_FLAGS="--emrun --source-map-base http://localhost:8888/" -DCMAKE_EXPORT_COMPILE_COMMANDS=1 ../..
 
 # For testing/debugging Emscripten, you can use the CLI tool: emrun
 # You should first create a symlink to the src directory because the source-map system doesn't handle out-of-source builds well.
@@ -28,6 +28,16 @@
 # mkdir BUILD; cd BUILD;
 # cmake -DCMAKE_TOOLCHAIN_FILE=../CMakeModules/iOS.toolchain.cmake -GXcode ..
 
+# For Android, open the Android Studio project which will use this to build the NDK parts.
+
+# For Windows, specify the desired generator with -G, or use the CMake-GUI. Don't forget the Win64 if you want 64-bit.
+# mkdir BUILD; cd BUILD;
+# cmake -G "Visual Studio 16 2019 Win64" ..
+
+# For Linux/other Unices, use -G to specify the generator you want. Omitting -G defaults to the Makefile generator. Most come with Make pre-installed. Ninja is faster.
+# If you are not using a build system that lets you switch between Debug/Release, you should specify the CMAKE_BUILD_TYPE to build the version you want.
+# mkdir BUILD; cd BUILD;
+# cmake -GNinja -DCMAKE_BUILD_TYPE=Release ..
 
 if(APPLE)
 	# We're using the new Mac RPATH policy.
@@ -66,7 +76,6 @@ ELSEIF(APPLE)
 	ENDIF()
 ELSEIF(UNIX)
 	OPTION(WANTS_BUILD_SHARED_LIBRARY "Build dynamic library" ON)
-
 ELSE()
 	OPTION(WANTS_BUILD_SHARED_LIBRARY "Build dynamic library" ON)
 ENDIF()
@@ -130,8 +139,6 @@ ELSEIF(ANDROID)
 	OPTION(IUP_OPTION_MOTIF "Use Motif backend" OFF)
 	OPTION(IUP_OPTION_WIN32 "Use Win32 backend" OFF)
 
-	MESSAGE("In android")
-
 ELSEIF(WIN32)
 	OPTION(IUP_OPTION_ANDROID "Use Android backend" OFF)
 	OPTION(IUP_OPTION_COCOA "Use Cocoa backend" OFF)
@@ -193,6 +200,12 @@ ENDIF()
 
 IF(IUP_OPTION_EMSCRIPTEN)
 	SET(IUP_USE_EMSCRIPTEN 1)
+
+	# This is primarily to make IupPostMessage work with web workers/pthreads.
+	# Pthreads are still experimental in Emscripten. Spectre/Meltdown have caused browsers to SharedBufferArray which is needed to make Pthreads work in the web browser.
+	# With it off, IupPostMessage will just use setTimeout, which is fine for single threaded apps.
+	OPTION(IUP_OPTION_EMSCRIPTEN_USE_PTHREADS "Compile with Emscripten Pthreads support" OFF)
+
 ELSEIF(IUP_OPTION_ANDROID)
 	SET(IUP_USE_ANDROID 1)
 ELSEIF(IUP_OPTION_COCOA)
@@ -256,6 +269,12 @@ ELSEIF(IUP_OPTION_WIN32)
 	SET(IUP_USE_WIN32 1)
 	# Needed for UTF8MODE on Windows
 	OPTION(IUP_OPTION_USE_UNICODE "Comple with Unidode" ON)
+
+	# When on, we use a more general solution to make sure IupPostMessage requests are not lost/blocked by the OS under certain events.
+	# But this solution is a little more intrusive, so it is conservatively off by default for now.
+	# I recommend you enable this if you do not have legacy code and directly manuipulate the Windows PostMessage queues.
+	OPTION(IUP_OPTION_USE_WINHOOKPOST "Use fully pedantic solution for IupPostMessage" OFF)
+
 ELSE()
 	MESSAGE(FATAL_ERROR "Unsupported platform backend")
 
@@ -332,7 +351,12 @@ IF(IUP_USE_EMSCRIPTEN)
 	# SET(CMAKE_EXE_LINKER_FLAGS  "${CMAKE_EXE_LINKER_FLAGS} -s NO_EXIT_RUNTIME=1")
 	SET(CMAKE_EXE_LINKER_FLAGS  "${CMAKE_EXE_LINKER_FLAGS} --shell-file ${CMAKE_SOURCE_DIR}/etc/iupemscripten_shell.html -s EXTRA_EXPORTED_RUNTIME_METHODS=\"['cwrap']\" -s NO_EXIT_RUNTIME=1 -s USE_SDL=2 -s USE_SDL_IMAGE=2 -s SDL2_IMAGE_FORMATS='[\"bmp\",\"png\",\"xpm\"]'")
 
-
+	IF(IUP_OPTION_EMSCRIPTEN_USE_PTHREADS)
+		SET(IUP_C_FLAGS "${IUP_C_FLAGS} -s USE_PTHREADS=1")
+		SET(IUPEXE_C_FLAGS "${IUP_C_FLAGS} -s USE_PTHREADS=1")
+		SET(CMAKE_EXE_LINKER_FLAGS "${CMAKE_EXE_LINKER_FLAGS} -s USE_PTHREADS=1")
+	ENDIF()
+		
 
 ELSEIF(WANTS_BUILD_SHARED_LIBRARY)
 	IF("${CMAKE_C_COMPILER_ID}" MATCHES "Clang")
@@ -464,6 +488,8 @@ SET(IUP_COMMON_SOURCE_FILES
 	${CMAKE_SOURCE_DIR}/src/iup_flatbutton.c
 	${CMAKE_SOURCE_DIR}/src/iup_flatframe.c
 	${CMAKE_SOURCE_DIR}/src/iup_flatlabel.c
+	${CMAKE_SOURCE_DIR}/src/iup_flatlist.c
+	${CMAKE_SOURCE_DIR}/src/iup_flatval.c
 	${CMAKE_SOURCE_DIR}/src/iup_flatscrollbar.c
 	${CMAKE_SOURCE_DIR}/src/iup_flatscrollbar.h
 	${CMAKE_SOURCE_DIR}/src/iup_flatscrollbox.c
@@ -482,6 +508,7 @@ SET(IUP_COMMON_SOURCE_FILES
 	${CMAKE_SOURCE_DIR}/src/iup_getparam.c
 	${CMAKE_SOURCE_DIR}/src/iup_globalattrib.c
 	${CMAKE_SOURCE_DIR}/src/iup_globalattrib.h
+	${CMAKE_SOURCE_DIR}/src/iup_globalsdlg.c
 	${CMAKE_SOURCE_DIR}/src/iup_gridbox.c
 	${CMAKE_SOURCE_DIR}/src/iup_hbox.c
 	${CMAKE_SOURCE_DIR}/src/iup_image.c
@@ -512,6 +539,7 @@ SET(IUP_COMMON_SOURCE_FILES
 	${CMAKE_SOURCE_DIR}/src/iup_menu.c
 	${CMAKE_SOURCE_DIR}/src/iup_menu.h
 	${CMAKE_SOURCE_DIR}/src/iup_messagedlg.c
+	${CMAKE_SOURCE_DIR}/src/iup_multibox.c
 	${CMAKE_SOURCE_DIR}/src/iup_names.c
 	${CMAKE_SOURCE_DIR}/src/iup_names.h
 	${CMAKE_SOURCE_DIR}/src/iup_normalizer.c
@@ -532,6 +560,7 @@ SET(IUP_COMMON_SOURCE_FILES
 	${CMAKE_SOURCE_DIR}/src/iup_scanf.c
 	${CMAKE_SOURCE_DIR}/src/iup_scrollbox.c
 	${CMAKE_SOURCE_DIR}/src/iup_show.c
+	${CMAKE_SOURCE_DIR}/src/iup_space.c
 	${CMAKE_SOURCE_DIR}/src/iup_spin.c
 	${CMAKE_SOURCE_DIR}/src/iup_split.c
 	${CMAKE_SOURCE_DIR}/src/iup_stdcontrols.h
@@ -746,47 +775,47 @@ ELSEIF(IUP_USE_ANDROID)
 		# TODO: Get clarification on iup_datepick.c
 		${CMAKE_SOURCE_DIR}/src/iup_datepick.c
 
-		${CMAKE_SOURCE_DIR}/src/android/source/iupandroid_button.c
-		${CMAKE_SOURCE_DIR}/src/android/source/iupandroid_calendar.c
-		${CMAKE_SOURCE_DIR}/src/android/source/iupandroid_canvas.c
-		${CMAKE_SOURCE_DIR}/src/android/source/iupandroid_clipboard.c
-#		${CMAKE_SOURCE_DIR}/src/android/source/iupandroid_colordlg.c # Needs to be deleted
-		${CMAKE_SOURCE_DIR}/src/android/source/iupandroid_common.c
-		${CMAKE_SOURCE_DIR}/src/android/source/iupandroid_dialog.c
-		${CMAKE_SOURCE_DIR}/src/android/source/iupandroid_dragdrop.c
-		${CMAKE_SOURCE_DIR}/src/android/source/iupandroid_draw.c
-		${CMAKE_SOURCE_DIR}/src/android/source/iupandroid_drv.h
-		${CMAKE_SOURCE_DIR}/src/android/source/iupandroid_filedlg.c
-		${CMAKE_SOURCE_DIR}/src/android/source/iupandroid_focus.c
-		${CMAKE_SOURCE_DIR}/src/android/source/iupandroid_font.c
-		${CMAKE_SOURCE_DIR}/src/android/source/iupandroid_fontdlg.c
-		${CMAKE_SOURCE_DIR}/src/android/source/iupandroid_frame.c
-		${CMAKE_SOURCE_DIR}/src/android/source/iupandroid_globalattrib.c
-		${CMAKE_SOURCE_DIR}/src/android/source/iupandroid_help.c
-		${CMAKE_SOURCE_DIR}/src/android/source/iupandroid_image.c
-		${CMAKE_SOURCE_DIR}/src/android/source/iupandroid_info.c
-		${CMAKE_SOURCE_DIR}/src/android/source/iupandroid_jni_IupApplication.c
-		${CMAKE_SOURCE_DIR}/src/android/source/iupandroid_jni_IupActivity.c
-		${CMAKE_SOURCE_DIR}/src/android/source/iupandroid_jni_IupCommon.c
-		${CMAKE_SOURCE_DIR}/src/android/source/iupandroid_jni_IupLaunchActivity.c
-		${CMAKE_SOURCE_DIR}/src/android/source/iupandroid_jnicacheglobals.c
-		${CMAKE_SOURCE_DIR}/src/android/source/iupandroid_jnicacheglobals.h
-		${CMAKE_SOURCE_DIR}/src/android/source/iupandroid_jnimacros.h
-		#${CMAKE_SOURCE_DIR}/src/android/source/iupandroid_key.c
-		${CMAKE_SOURCE_DIR}/src/android/source/iupandroid_label.c
-		${CMAKE_SOURCE_DIR}/src/android/source/iupandroid_list.c
-		${CMAKE_SOURCE_DIR}/src/android/source/iupandroid_loop.c
-		${CMAKE_SOURCE_DIR}/src/android/source/iupandroid_menu.c
-		${CMAKE_SOURCE_DIR}/src/android/source/iupandroid_messagedlg.c
-		${CMAKE_SOURCE_DIR}/src/android/source/iupandroid_open.c
-		${CMAKE_SOURCE_DIR}/src/android/source/iupandroid_progressbar.c
-		${CMAKE_SOURCE_DIR}/src/android/source/iupandroid_tabs.c
-		${CMAKE_SOURCE_DIR}/src/android/source/iupandroid_text.c
-		${CMAKE_SOURCE_DIR}/src/android/source/iupandroid_timer.c
-		${CMAKE_SOURCE_DIR}/src/android/source/iupandroid_tips.c
-		${CMAKE_SOURCE_DIR}/src/android/source/iupandroid_toggle.c
-		${CMAKE_SOURCE_DIR}/src/android/source/iupandroid_tree.c
-		${CMAKE_SOURCE_DIR}/src/android/source/iupandroid_val.c
+		${CMAKE_SOURCE_DIR}/src/android/iupandroid_button.c
+		${CMAKE_SOURCE_DIR}/src/android/iupandroid_calendar.c
+		${CMAKE_SOURCE_DIR}/src/android/iupandroid_canvas.c
+		${CMAKE_SOURCE_DIR}/src/android/iupandroid_clipboard.c
+#		${CMAKE_SOURCE_DIR}/src/android/iupandroid_colordlg.c # Needs to be deleted
+		${CMAKE_SOURCE_DIR}/src/android/iupandroid_common.c
+		${CMAKE_SOURCE_DIR}/src/android/iupandroid_dialog.c
+		${CMAKE_SOURCE_DIR}/src/android/iupandroid_dragdrop.c
+		${CMAKE_SOURCE_DIR}/src/android/iupandroid_draw.c
+		${CMAKE_SOURCE_DIR}/src/android/iupandroid_drv.h
+		${CMAKE_SOURCE_DIR}/src/android/iupandroid_filedlg.c
+		${CMAKE_SOURCE_DIR}/src/android/iupandroid_focus.c
+		${CMAKE_SOURCE_DIR}/src/android/iupandroid_font.c
+		${CMAKE_SOURCE_DIR}/src/android/iupandroid_fontdlg.c
+		${CMAKE_SOURCE_DIR}/src/android/iupandroid_frame.c
+		${CMAKE_SOURCE_DIR}/src/android/iupandroid_globalattrib.c
+		${CMAKE_SOURCE_DIR}/src/android/iupandroid_help.c
+		${CMAKE_SOURCE_DIR}/src/android/iupandroid_image.c
+		${CMAKE_SOURCE_DIR}/src/android/iupandroid_info.c
+		${CMAKE_SOURCE_DIR}/src/android/iupandroid_jni_IupApplication.c
+		${CMAKE_SOURCE_DIR}/src/android/iupandroid_jni_IupActivity.c
+		${CMAKE_SOURCE_DIR}/src/android/iupandroid_jni_IupCommon.c
+		${CMAKE_SOURCE_DIR}/src/android/iupandroid_jni_IupLaunchActivity.c
+		${CMAKE_SOURCE_DIR}/src/android/iupandroid_jnicacheglobals.c
+		${CMAKE_SOURCE_DIR}/src/android/iupandroid_jnicacheglobals.h
+		${CMAKE_SOURCE_DIR}/src/android/iupandroid_jnimacros.h
+		#${CMAKE_SOURCE_DIR}/src/android/iupandroid_key.c
+		${CMAKE_SOURCE_DIR}/src/android/iupandroid_label.c
+		${CMAKE_SOURCE_DIR}/src/android/iupandroid_list.c
+		${CMAKE_SOURCE_DIR}/src/android/iupandroid_loop.c
+		${CMAKE_SOURCE_DIR}/src/android/iupandroid_menu.c
+		${CMAKE_SOURCE_DIR}/src/android/iupandroid_messagedlg.c
+		${CMAKE_SOURCE_DIR}/src/android/iupandroid_open.c
+		${CMAKE_SOURCE_DIR}/src/android/iupandroid_progressbar.c
+		${CMAKE_SOURCE_DIR}/src/android/iupandroid_tabs.c
+		${CMAKE_SOURCE_DIR}/src/android/iupandroid_text.c
+		${CMAKE_SOURCE_DIR}/src/android/iupandroid_timer.c
+		${CMAKE_SOURCE_DIR}/src/android/iupandroid_tips.c
+		${CMAKE_SOURCE_DIR}/src/android/iupandroid_toggle.c
+		${CMAKE_SOURCE_DIR}/src/android/iupandroid_tree.c
+		${CMAKE_SOURCE_DIR}/src/android/iupandroid_val.c
 	)
 
 	LIST(APPEND IUP_SOURCE_FILES
@@ -813,8 +842,8 @@ ELSEIF(IUP_USE_ANDROID)
 
 
 	SET(IUPWEB_ANDROID_SOURCE_FILES
-		${CMAKE_SOURCE_DIR}/srcweb/android/iupandroid_webbrowser.c
-		${CMAKE_SOURCE_DIR}/srcweb/android/iupandroid_jni_IupWebView.c
+		${CMAKE_SOURCE_DIR}/srcweb/iupandroid_webbrowser.c
+		${CMAKE_SOURCE_DIR}/srcweb/iupandroid_jni_IupWebView.c
 	)
 	LIST(APPEND IUPWEB_SOURCE_FILES
 		${IUPWEB_ANDROID_SOURCE_FILES}
@@ -932,6 +961,9 @@ ELSEIF(IUP_USE_COCOA)
 		${CMAKE_SOURCE_DIR}/src/cocoa/IUPTextSpinnerFilesOwner.m
 		${CMAKE_SOURCE_DIR}/src/cocoa/IupAppDelegate.h
 		${CMAKE_SOURCE_DIR}/src/cocoa/IupAppDelegate.m
+		${CMAKE_SOURCE_DIR}/src/cocoa/IupCocoaFont.h
+		${CMAKE_SOURCE_DIR}/src/cocoa/IupCocoaTreeToggleTableCellView.h
+		${CMAKE_SOURCE_DIR}/src/cocoa/IupCocoaTreeToggleTableCellView.m
 		${CMAKE_SOURCE_DIR}/src/cocoa/iupcocoa_button.m
 		${CMAKE_SOURCE_DIR}/src/cocoa/iupcocoa_calendar.m
 		${CMAKE_SOURCE_DIR}/src/cocoa/iupcocoa_canvas.m
@@ -940,6 +972,7 @@ ELSEIF(IUP_USE_COCOA)
 		${CMAKE_SOURCE_DIR}/src/cocoa/iupcocoa_common.m
 #		${CMAKE_SOURCE_DIR}/src/cocoa/iupcocoa_datepick.m
 		${CMAKE_SOURCE_DIR}/src/cocoa/iupcocoa_dialog.m
+		${CMAKE_SOURCE_DIR}/src/cocoa/iupcocoa_dragdrop.h
 		${CMAKE_SOURCE_DIR}/src/cocoa/iupcocoa_dragdrop.m
 		${CMAKE_SOURCE_DIR}/src/cocoa/iupcocoa_draw.m
 		${CMAKE_SOURCE_DIR}/src/cocoa/iupcocoa_drv.h
@@ -1104,7 +1137,9 @@ ELSEIF(IUP_USE_WIN32)
 		# FIXME: Should check if other libraries use the UNICODE flag
 		SET(IUPIMGLIB_C_FLAGS "${IUPIMGLIB_C_FLAGS} -DUNICODE")	
 	ENDIF()
-	
+	IF(IUP_OPTION_USE_WINHOOKPOST)
+		SET(IUP_C_FLAGS "${IUP_C_FLAGS} -DUSE_WINHOOKPOST")
+	ENDIF()	
 
 	IF(MSVC)
 		ADD_DEFINITIONS(/D _CRT_SECURE_NO_WARNINGS)
@@ -1394,7 +1429,7 @@ INCLUDE_DIRECTORIES(
 HELPER_CREATE_LIBRARY(iup "${WANTS_BUILD_SHARED_LIBRARY}" "${WANTS_BUILD_FRAMEWORK}" "${IUP_SOURCE_FILES}" "${IUP_PUBLIC_HEADERS}" "" "" "${IUP_FOREIGN_SOURCE_FILES}" "${IUP_LINK_LIBRARIES}" "${IUP_C_FLAGS}" "br.puc-rio.tecgraf.iup")
 IF(IUP_USE_COCOA)
 	# Reuse the Info.plist from the Xcode project
-	HELPERAPPLE_SET_INFOPLIST_FOR_FRAMEWORK(iup "${CMAKE_SOURCE_DIR}/Xcode/iup/iup/Info.plist" "${WANTS_BUILD_FRAMEWORK}")
+	HELPERAPPLE_SET_INFOPLIST_FOR_FRAMEWORK(iup "${CMAKE_SOURCE_DIR}/mak.XcodeMac/iup/iup/Info.plist" "${WANTS_BUILD_FRAMEWORK}")
 	# set_target_properties doesn't work correctly in CMake because it loses the localization directories
 	# set_target_properties(iup PROPERTIES RESOURCE "${IUP_COCOA_XIB_FILES}") 
 	HELPERIB_COMPILE_XIBS_INTO_FRAMEWORK("${IUP_COCOA_XIB_FILES}" iup "iup" "${WANTS_BUILD_FRAMEWORK}")
@@ -1431,7 +1466,7 @@ if(IUP_SHOULD_BUILD_IUPWEB)
 		# TARGET_INCLUDE_DIRECTORIES is guaranteed to be available on Android
 		TARGET_INCLUDE_DIRECTORIES(iupweb PRIVATE 
 			"${CMAKE_SOURCE_DIR}/src"
-			"${CMAKE_SOURCE_DIR}/src/android/source"
+			"${CMAKE_SOURCE_DIR}/src/android"
 			"${CMAKE_SOURCE_DIR}/srcweb"
 			"${CMAKE_SOURCE_DIR}/srcweb/android"
 		)
@@ -1454,7 +1489,7 @@ if(IUP_SHOULD_BUILD_IUPWEB)
 
 	IF(IUP_USE_COCOA)
 		# Reuse the Info.plist from the Xcode project
-		HELPERAPPLE_SET_INFOPLIST_FOR_FRAMEWORK(iupweb "${CMAKE_SOURCE_DIR}/Xcode/iup/iupweb-Info.plist" "${WANTS_BUILD_FRAMEWORK}")
+		HELPERAPPLE_SET_INFOPLIST_FOR_FRAMEWORK(iupweb "${CMAKE_SOURCE_DIR}/mak.XcodeMac/iup/iupweb-Info.plist" "${WANTS_BUILD_FRAMEWORK}")
 	ENDIF()
 
 else()
@@ -1480,6 +1515,7 @@ function(BUILD_IUP_TEST exe_name source_list resource_list)
 			"${IUPEXE_C_FLAGS}"
 			"${IUPEXE_LINK_FLAGS}"
 			"${_should_exclude_from_all}"
+			"br.puc-rio.tecgraf.${exe_name}"
 			"${resource_list}"
 		)
 
@@ -1503,6 +1539,7 @@ function(BUILD_IUPIMGLIB_TEST exe_name source_list resource_list)
 			"${IUPEXE_C_FLAGS}"
 			"${IUPEXE_LINK_FLAGS}"
 			"${_should_exclude_from_all}"
+			"br.puc-rio.tecgraf.${exe_name}"
 			"${resource_list}"
 		)
 
@@ -1527,6 +1564,7 @@ function(BUILD_IUPWEB_TEST exe_name source_list resource_list)
 				"${IUPEXE_C_FLAGS}"
 				"${IUPEXE_LINK_FLAGS}"
 				"${_should_exclude_from_all}"
+				"br.puc-rio.tecgraf.${exe_name}"
 				"${resource_list}"
 			)
 		endif()
@@ -1551,6 +1589,7 @@ function(BUILD_IUPCONTROLS_TEST exe_name source_list resource_list)
 			"${IUPEXE_C_FLAGS}"
 			"${IUPEXE_LINK_FLAGS}"
 			"${_should_exclude_from_all}"
+			"br.puc-rio.tecgraf.${exe_name}"
 			"${resource_list}"
 		)
 
@@ -1583,6 +1622,7 @@ function(BUILD_IUPLUA_TEST exe_name source_list resource_list)
 				"${IUPEXE_C_FLAGS}"
 				"${IUPEXE_LINK_FLAGS}"
 				"${_should_exclude_from_all}"
+				"br.puc-rio.tecgraf.${exe_name}"
 				"${resource_list}"
 			)
 		endif()
@@ -1635,6 +1675,7 @@ function(BUILD_DEV_TEST exe_name source_list)
 		"${IUPEXE_C_FLAGS}"
 		"${IUPEXE_LINK_FLAGS}"
 		"" # exclude from all
+		"br.puc-rio.tecgraf.${exe_name}"
 		"" # resource list
 	)
 endfunction()
@@ -1734,12 +1775,12 @@ IF(IUP_USE_LUA)
 		ENDIF()
 
 		# IupLua depends on IupWeb
-		BUILD_IUPLUA_TEST(lua_c_app "${CMAKE_SOURCE_DIR}/html/examples/lua_c_app/lua_app_main.c" "")
+		BUILD_IUPLUA_TEST(lua_c_app "${CMAKE_SOURCE_DIR}/html/examples/C/lua_app_main.c" "")
 
 		IF(IUP_USE_ANDROID)
 			# Android Studio/Gradle lacks a mechanism to copy pre-built libraries to be bundled in the .apk,
 			# so we need to manally copy the library into a staging area that Gradle will intercept.
-			file(COPY ${LUA_LIBRARY} DESTINATION ${CMAKE_SOURCE_DIR}/Android/iuptestapplua/build/jniLibs/${ANDROID_ABI}/)
+			file(COPY ${LUA_LIBRARY} DESTINATION ${CMAKE_SOURCE_DIR}/mak.Android/iuptestapplua/build/jniLibs/${ANDROID_ABI}/)
 		ENDIF()
 		
 
@@ -1754,9 +1795,9 @@ ENDIF(IUP_USE_LUA)
 if(IUP_USE_EMSCRIPTEN)
 	BUILD_DEV_TEST(dev_test "${CMAKE_SOURCE_DIR}/src/emscripten/test/main_c.c")
 elseif(IUP_USE_COCOATOUCH)
-	BUILD_DEV_TEST(dev_test "${CMAKE_SOURCE_DIR}/XcodeiOS/iup/TestApp/main.c")
+	BUILD_DEV_TEST(dev_test "${CMAKE_SOURCE_DIR}/mak.XcodeiOS/iup/TestApp/main.c")
 elseif(IUP_USE_COCOA)
-	BUILD_DEV_TEST(dev_test "${CMAKE_SOURCE_DIR}/Xcode/iup/TestApp/main.c")
+	BUILD_DEV_TEST(dev_test "${CMAKE_SOURCE_DIR}/mak.XcodeMac/iup/TestApp/main.c")
 elseif(IUP_USE_ANDROID)
 
 	# This is a hack to get around Android Studio/Gradle deficiencies.
@@ -1768,7 +1809,7 @@ elseif(IUP_USE_ANDROID)
 	# So the build.gradle is required to set -DIUP_ANDROID_BUILD_TEST_LIBRARY=1 when building the testapp.
 	IF(IUP_ANDROID_BUILD_TEST_LIBRARY)
 #		add_library(iuptestapp SHARED EXCLUDE_FROM_ALL
-#			${CMAKE_SOURCE_DIR}/src/android/source/main_c.c
+#			${CMAKE_SOURCE_DIR}/src/android/main_c.c
 #		)
 #		target_link_libraries(iuptestapp iupimglib iup)
 
@@ -1780,13 +1821,14 @@ elseif(IUP_USE_ANDROID)
 		)
 		# This function knows to build libraries for Android. It also is aware of how to bundle our assets.
 		HELPER_CREATE_EXECUTABLE(iuptestapp 
-			"${CMAKE_SOURCE_DIR}/src/android/source/main_c.c"
+			"${CMAKE_SOURCE_DIR}/src/android/main_c.c"
 			"${WANTS_BUILD_SHARED_LIBRARY}"
 			"iupimglib;iup"
 			"${IUP_LINK_LIBRARIES}"
 			"${IUPEXE_C_FLAGS}"
 			"${IUPEXE_LINK_FLAGS}"
 			1 # "${_should_exclude_from_all}"
+			"br.puc-rio.tecgraf.iuptestapp"
 			"${iuptestapp_resources}"
 		)
 
@@ -1812,6 +1854,7 @@ elseif(IUP_USE_ANDROID)
 			"${IUPEXE_C_FLAGS}"
 			"${IUPEXE_LINK_FLAGS}"
 			1 # "${_should_exclude_from_all}"
+			"br.puc-rio.tecgraf.iuptestappwebbrowser"
 			"${iuptestappwebbrowser_resources}"
 		)
 
@@ -1821,7 +1864,7 @@ elseif(IUP_USE_ANDROID)
 	IF(IUPLUA_ANDROID_BUILD_TEST_LIBRARY)
 
 #		add_library(iuptestapplua SHARED EXCLUDE_FROM_ALL
-#			${CMAKE_SOURCE_DIR}/html/examples/lua_c_app/lua_app_main.c
+#			${CMAKE_SOURCE_DIR}/html/examples/C/lua_app_main.c
 #		)
 #		IF(IUP_OPTION_LUA_BUILD_AS_MODULES)
 #			target_link_libraries(iuptestapplua iupweb iup)
@@ -1842,13 +1885,14 @@ elseif(IUP_USE_ANDROID)
 
 		# This function knows to build libraries for Android. It also is aware of how to bundle our assets.
 		HELPER_CREATE_EXECUTABLE(iuptestapplua 
-			"${CMAKE_SOURCE_DIR}/html/examples/lua_c_app/lua_app_main.c"
+			"${CMAKE_SOURCE_DIR}/html/examples/C/lua_app_main.c"
 			"${WANTS_BUILD_SHARED_LIBRARY}"
 			"${iuptestapplua_libs_to_link}"
 			"${IUP_LINK_LIBRARIES}"
 			"${IUPEXE_C_FLAGS}"
 			"${IUPEXE_LINK_FLAGS}"
 			1 # "${_should_exclude_from_all}"
+			"br.puc-rio.tecgraf.iuptestapplua"
 			"${iuptestapplua_resources}"
 		)
 

@@ -1,4 +1,4 @@
-/*global document alert IupCommon Pointer_stringify IupCommon autoAddDeps mergeInto LibraryManager*/
+/*global document alert IupCommon UTF8ToString IupCommon autoAddDeps mergeInto LibraryManager*/
 
 var LibraryIupFont = {
   //	$Button__deps: ['$CommonGlobals'],
@@ -13,7 +13,7 @@ var LibraryIupFont = {
     if (widget_object.nodeName == 'SELECT') {
       temp_object = document.createElement("select");
       var tmp_option = document.createElement("option");
-      tmp_option.innerHTML = Pointer_stringify(str);
+      tmp_option.innerHTML = UTF8ToString(str);
       temp_object.appendChild(tmp_option);
       document.body.appendChild(temp_object);
     }
@@ -21,7 +21,7 @@ var LibraryIupFont = {
     else {
       temp_object = document.createElement("div");
       document.body.appendChild(temp_object);
-      temp_object.innerHTML = Pointer_stringify(str);
+      temp_object.innerHTML = UTF8ToString(str);
     }
 
 
@@ -56,7 +56,7 @@ var LibraryIupFont = {
     var widget_object = IupCommon.GetObjectForID(handle_id);
     var temp_object = document.createElement("div");
     document.body.appendChild(temp_object);
-    var user_str = Pointer_stringify(str);
+    var user_str = UTF8ToString(str);
 
     if (widget_object) {
       temp_object.style.fontFamily = widget_object.style.fontFamily;
@@ -103,8 +103,8 @@ var LibraryIupFont = {
 
     var temp_object = document.createElement("div");
     document.body.appendChild(temp_object);
-    var user_str = Pointer_stringify(str);
-    var font_stringified = Pointer_stringify(font_name);
+    var user_str = UTF8ToString(str);
+    var font_stringified = UTF8ToString(font_name);
 
 	  // FIXME: Does this actually work?
     temp_object.style.fontFamily = font_stringified;
@@ -141,7 +141,7 @@ var LibraryIupFont = {
     var w;
     var h;
 
-    if (widget_object.nodeName == 'SELECT') {
+    if (widget_object && widget_object.nodeName == 'SELECT') {
       temp_object = document.createElement("select");
       var tmp_option = document.createElement("option");
       tmp_option.innerHTML = "WWWWWWWW";

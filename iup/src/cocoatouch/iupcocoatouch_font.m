@@ -170,7 +170,7 @@ void iupdrvFontGetCharSize(Ihandle* ih, int* charwidth, int* charheight)
 
 }
 
-void iupdrvFontGetTextSize(const char* font, const char* str, int *w, int *h)
+void iupdrvFontGetTextSize(const char* font, const char* str, int len, int *w, int *h)
 {
 	// FIXME: FindFont was skipped to get things going
 //	UIFont* the_font = cocoaTouchFindFont(ih);

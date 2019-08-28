@@ -544,6 +544,26 @@ int iupdrvGetScrollbarSize(void)
   return 0;
 }
 
+void iupdrvSetAccessibleTitle(Ihandle *ih, const char* title)
+{
+    id the_object = ih->handle;
+    
+    // Our custom CanvasView is going back and forth between subclassing NSView and NSControl.
+    // Make sure to not implement any other NSViews that do something wonky with the enabled property.
+    if([the_object respondsToSelector:@selector(setAccessibilityLabel:)])
+    {
+        if(!title)
+        {
+            [the_object setAccessibilityLabel:nil];
+        }
+        else
+        {
+            NSString* ns_title = [NSString stringWithUTF8String:title];
+            [the_object setAccessibilityLabel:ns_title];
+        }
+    }
+}
+
 
 void iupdrvBaseRegisterCommonAttrib(Iclass* ic)
 {

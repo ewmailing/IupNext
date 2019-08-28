@@ -53,7 +53,7 @@ static int emscriptenProgressBarMapMethod(Ihandle* ih)
   return IUP_NOERROR;
 }
 
-static int emscriptenProgressBarSetValueAttrib(Ihandle* ih, char* value)
+static int emscriptenProgressBarSetValueAttrib(Ihandle* ih, const char* value)
 {
   if (ih->data->marquee) return 0; /* Hypothesis: If user wanted a marquee, just give up setting value because that will be default behavior in browser */
 
