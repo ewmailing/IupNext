@@ -105,10 +105,14 @@ static int dialog_dropfiles_cb(Ihandle *self, char * p0, int p1, int p2, int p3)
   return iuplua_call(L, 4);
 }
 
-static int dialog_postmessage_cb(Ihandle *self)
+static int dialog_postmessage_cb(Ihandle *self, char * p0, int p1, double p2, void* p3)
 {
   lua_State *L = iuplua_call_start(self, "postmessage_cb");
-  return iuplua_call(L, 0);
+  lua_pushstring(L, p0);
+  lua_pushinteger(L, p1);
+  lua_pushnumber(L, p2);
+  lua_pushlightuserdata(L, p3);
+  return iuplua_call(L, 4);
 }
 
 static int dialog_dragdata_cb(Ihandle *self, char * p0, void* p1, int p2)

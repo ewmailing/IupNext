@@ -83,18 +83,18 @@
 <p>Inherits all attributes and callbacks of the <a href="../elem/iupcanvas.html">IupCanvas</a>, 
 but redefines a few attributes.</p>
 <p><strong>"1"</strong>:
-  First item in the list.<br>
+  Title of the first item in the list.<br>
 
   <strong>"2"</strong>:
-  Second item in the list.<br>
+  Title of the second item in the list.<br>
 
   <strong>"3"</strong>:
-  Third item in the list.<br>
+  Title of the third item in the list.<br>
 
   <b>...</b><br>
 
   <strong>"id"</strong>:
-  id<sup>th</sup> item in the list.</p>
+  Title of the id<sup>th</sup> item in the list.</p>
 
   
     
@@ -449,7 +449,10 @@ interactively changed.</p>
 
 
 <p>When the list has focus use the arrow keys to move focus from one item to 
-another.</p>
+another. If the list has multiple selection pressing shift and the arrow will 
+select a range of items. Pressing a letter will select and scroll the list to 
+the next element which title starts with that letter. Pressing PgDn or PgUp the 
+list is scrolled but the selection is not changed.</p>
 <p>When adding or removing items the selection can be changed depending on the 
 operation but the selection callbacks will not be called.</p>
 <p> <strong>Clicking and dragging a item</strong>: if SHOWDRAGDROP=Yes starts a 

@@ -56,7 +56,7 @@ int iupdropbuttonlua_open(lua_State * L)
   iuplua_register_cb(L, "DROPDOWN_CB", (lua_CFunction)dropbutton_dropdown_cb, NULL);
   iuplua_register_cb(L, "FLAT_MOTION_CB", (lua_CFunction)dropbutton_flat_motion_cb, NULL);
   iuplua_register_cb(L, "DROPSHOW_CB", (lua_CFunction)dropbutton_dropshow_cb, NULL);
-  iuplua_register_cb(L, "FLAT_ACTION", (lua_CFunction)dropbutton_flat_action, NULL);
+  iuplua_register_cb(L, "FLAT_ACTION", (lua_CFunction)dropbutton_flat_action, "dropbutton");
 
 #ifdef IUPLUA_USELOH
 #include "dropbutton.loh"

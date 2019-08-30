@@ -62,6 +62,17 @@ IUP_SDK_API void* iupArrayGetData(Iarray* iarray)
   return iarray->data;
 }
 
+IUP_SDK_API void* iupArrayReleaseData(Iarray* iarray)
+{
+  void* data;
+  iupASSERT(iarray != NULL);
+  if (!iarray)
+    return NULL;
+  data = iarray->data;
+  iarray->data = NULL;
+  return data; 
+}
+
 IUP_SDK_API void* iupArrayInc(Iarray* iarray)
 {
   iupASSERT(iarray!=NULL);

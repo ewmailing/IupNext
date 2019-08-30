@@ -195,9 +195,19 @@ static void iFlatButtonNotify(Ihandle* ih, int is_toggle)
   Icallback cb = IupGetCallback(ih, "FLAT_ACTION");
   if (cb)
   {
-    int ret = cb(ih);
-    if (ret == IUP_CLOSE)
-      IupExitLoop();
+    /* to avoid double calls when a dialog is displayed */
+    if (!iupAttribGet(ih, "_IUPFLATBUT_INSIDE_ACTION"))
+    {
+      int ret;
+      iupAttribSet(ih, "_IUPFLATBUT_INSIDE_ACTION", "1");
+
+      ret = cb(ih);
+      if (ret == IUP_CLOSE)
+        IupExitLoop();
+
+      if (ret != IUP_IGNORE && iupObjectCheck(ih))
+        iupAttribSet(ih, "_IUPFLATBUT_INSIDE_ACTION", NULL);
+    }
   }
 
   if (is_toggle)

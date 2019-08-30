@@ -445,7 +445,7 @@ static GdkColor gtkLighterColor(GdkColor *color)
 #endif
 
 #if GTK_CHECK_VERSION(3, 16, 0)
-static char* gtkGetSelectedColor(void)
+static char* gtkGetSelectedColorStr(void)
 {
   GdkRGBA rgba;
   unsigned char r, g, b;
@@ -453,6 +453,17 @@ static char* gtkGetSelectedColor(void)
   iupgdkRGBASet(&rgba, r, g, b);
   return gdk_rgba_to_string(&rgba);
 }
+#else
+#if GTK_CHECK_VERSION(3, 0, 0)
+static GdkRGBA gtkGetSelectedColorRGBA(void)
+{
+  GdkRGBA rgba;
+  unsigned char r, g, b;
+  iupStrToRGB(IupGetGlobal("TXTHLCOLOR"), &r, &g, &b);
+  iupgdkRGBASet(&rgba, r, g, b);
+  return rgba;
+}
+#endif
 #endif
 
 void iupgtkSetBgColor(InativeHandle* handle, unsigned char r, unsigned char g, unsigned char b)
@@ -485,7 +496,7 @@ void iupgtkSetBgColor(InativeHandle* handle, unsigned char r, unsigned char g, u
     provider = gtk_css_provider_new();
     if (is_txt)
     {
-      char* selected = gtkGetSelectedColor();
+      char* selected = gtkGetSelectedColorStr();
 
       css = g_strdup_printf("*          { background-color: %s; }"
                             "*:hover    { background-color: %s; }"
@@ -511,17 +522,21 @@ void iupgtkSetBgColor(InativeHandle* handle, unsigned char r, unsigned char g, u
     g_free(css);
     g_object_unref(provider);
   }
-#else
+#else /* GTK < 3.16 */
   gtk_widget_override_background_color(handle, GTK_STATE_FLAG_NORMAL, &rgba);
   gtk_widget_override_background_color(handle, GTK_STATE_FLAG_ACTIVE, &dark_rgba);  /* active */
   gtk_widget_override_background_color(handle, GTK_STATE_FLAG_PRELIGHT, &light_rgba);  /* hover */
 
   if (is_txt)
+  {
+    GdkRGBA selected_rgba = gtkGetSelectedColorRGBA();
     gtk_widget_override_background_color(handle, GTK_STATE_FLAG_INSENSITIVE, &light_rgba);  /* disabled */
+    gtk_widget_override_background_color(handle, GTK_STATE_FLAG_SELECTED, &selected_rgba);
+  }
   else
     gtk_widget_override_background_color(handle, GTK_STATE_FLAG_INSENSITIVE, &rgba);  /* disabled */
 #endif
-#else
+#else  /* GTK 2.x */
   GtkRcStyle *rc_style;  
   GdkColor color;
 

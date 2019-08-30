@@ -1069,213 +1069,42 @@ static void iMatrixExDestroyMethod(Ihandle* ih)
   free(matex_data);
 }
 
+#include "iup_lng_english_matrix.h"
+#include "iup_lng_portuguese_matrix.h"
+#include "iup_lng_portuguese_matrix_utf8.h"
+#include "iup_lng_spanish_matrix.h"
+#include "iup_lng_spanish_matrix_utf8.h"
+
 static void iMatrixExSetClassUpdate(Iclass* ic)
 {
+  Ihandle* lng = NULL;
+
   (void)ic;
 
   if (iupStrEqualNoCase(IupGetGlobal("LANGUAGE"), "ENGLISH"))
   {
-    IupSetLanguageString("IUP_EXPORT", "Export");
-    IupSetLanguageString("IUP_IMPORT", "Import");
-    IupSetLanguageString("IUP_SETTINGSDLG", "Settings...");
-    IupSetLanguageString("IUP_TEXTSEPARATOR", "Number Separator:");
-    IupSetLanguageString("IUP_OTHERTEXTSEPARATOR", "  - Other Num. Sep.:");
-    IupSetLanguageString("IUP_DECIMALSYMBOL", "Decimal Symbol:");
-    IupSetLanguageString("IUP_UNDOAC", "Undo\tCtrl+Z");
-    IupSetLanguageString("IUP_REDOAC", "Redo\tCtrl+Y");
-    IupSetLanguageString("IUP_UNDOLISTDLG", "Undo List...\tCtrl+U");
-    IupSetLanguageString("IUP_UNDOLIST", "Undo List");
-    IupSetLanguageString("IUP_CURRENTSTATE", "Current State");
-    IupSetLanguageString("IUP_CUTAC", "Cut\tCtrl+X");
-    IupSetLanguageString("IUP_COPYAC", "Copy\tCtrl+C");
-    IupSetLanguageString("IUP_PASTEAC", "Paste\tCtrl+V");
-    IupSetLanguageString("IUP_ERASEAC", "Erase\tDel");
-    IupSetLanguageString("IUP_SELECTALLAC", "Select All\tCtrl+A");
-    IupSetLanguageString("IUP_FINDDLG", "Find...\tCtrl+F");
-    IupSetLanguageString("IUP_GOTODLG", "Go To...\tCtrl+G");
-    IupSetLanguageString("IUP_SORTDLG", "Sort...");
-    IupSetLanguageString("IUP_FREEZE", "Freeze");
-    IupSetLanguageString("IUP_UNFREEZE", "Unfreeze");
-    IupSetLanguageString("IUP_COPYTOSAMECOLUMN", "Copy To (Same Column)");
-    IupSetLanguageString("IUP_ALLLINES", "All lines");
-    IupSetLanguageString("IUP_HERETOTOP", "Here to top");
-    IupSetLanguageString("IUP_HERETOBOTTOM", "Here to bottom");
-    IupSetLanguageString("IUP_INTERVALDLG", "Interval...");
-    IupSetLanguageString("IUP_SELECTEDLINES", "Selected lines");
-
-    IupSetLanguageString("IUP_VISIBILITY", "Visibility");
-    IupSetLanguageString("IUP_HIDECOLUMN", "Hide Column");
-    IupSetLanguageString("IUP_SHOWHIDDENCOLUMNS", "Show Hidden Columns");
-    IupSetLanguageString("IUP_HIDELINE", "Hide Line");
-    IupSetLanguageString("IUP_SHOWHIDDENLINES", "Show Hidden Lines");
-
-    IupSetLanguageString("IUP_COPYTOINTERVAL", "Copy To - Interval");
-    IupSetLanguageString("IUP_GOTO", "Go To");
-    IupSetLanguageString("IUP_LINE", "Line:");
-    IupSetLanguageString("IUP_COLUMN", "Column:");
-    IupSetLanguageString("IUP_LINESTART", "Line Start:");
-    IupSetLanguageString("IUP_LINEEND", "Line End:");
-
-    IupSetLanguageString("IUP_UNITS", "Units:");
-    IupSetLanguageString("IUP_DECIMALS", "Decimals:");
-    IupSetLanguageString("IUP_COLUMNDECIMALS", "Column Decimals");
-    IupSetLanguageString("IUP_COLUMNDECIMALSDLG", "Column Decimals...");
-    IupSetLanguageString("IUP_COLUMNUNITS", "Column Units");
-    IupSetLanguageString("IUP_COLUMNUNITSDLG", "Column Units...");
-
-    IupSetLanguageString("IUP_ERRORINVALIDSELECTION", "Invalid Selection.");
-    IupSetLanguageString("IUP_ERRORNOTEXT", "Empty Text.");
-    IupSetLanguageString("IUP_ERRORINVALIDDATA", "Invalid Data.");
-    IupSetLanguageString("IUP_ERRORNOSELECTION", "Empty Selection.");
-    IupSetLanguageString("IUP_ERRORINVALIDINTERVAL", "Invalid Interval.");
+    lng = iup_load_lng_english_matrix();
   }
   else if (iupStrEqualNoCase(IupGetGlobal("LANGUAGE"), "PORTUGUESE"))
   {
-    IupSetLanguageString("IUP_EXPORT", "Exportar");
-    IupSetLanguageString("IUP_IMPORT", "Importar");
-    IupSetLanguageString("IUP_SETTINGSDLG", "Definições...");
-    IupSetLanguageString("IUP_TEXTSEPARATOR", "Separador de Números:");
-    IupSetLanguageString("IUP_OTHERTEXTSEPARATOR", "  - Outro Sep. de Num.:");
-    IupSetLanguageString("IUP_DECIMALSYMBOL", "Símbolo Decimal:");
-    IupSetLanguageString("IUP_UNDOAC", "Desfazer\tCtrl+Z");
-    IupSetLanguageString("IUP_REDOAC", "Refazer\tCtrl+R");
-    IupSetLanguageString("IUP_UNDOLISTDLG", "Lista de Desfazer...\tCtrl+U");
-    IupSetLanguageString("IUP_UNDOLIST", "Lista de Desfazer");
-    IupSetLanguageString("IUP_CURRENTSTATE", "Estado Corrente");
-    IupSetLanguageString("IUP_CUTAC", "Recortar\tCtrl+X");
-    IupSetLanguageString("IUP_COPYAC", "Copiar\tCtrl+C");
-    IupSetLanguageString("IUP_PASTEAC", "Colar\tCtrl+V");
-    IupSetLanguageString("IUP_ERASEAC", "Apagar\tDel");
-    IupSetLanguageString("IUP_SELECTALLAC", "Selecionar Tudo\tCtrl+T");
-    IupSetLanguageString("IUP_FINDDLG", "Localizar...\tCtrl+L");
-    IupSetLanguageString("IUP_GOTODLG", "Ir Para...\tCtrl+G");
-    IupSetLanguageString("IUP_SORTDLG", "Classificar...");
-    IupSetLanguageString("IUP_FREEZE", "Congelar");
-    IupSetLanguageString("IUP_UNFREEZE", "Descongelar");
-    IupSetLanguageString("IUP_COPYTOSAMECOLUMN", "Copiar Para (Mesma Coluna)");
-    IupSetLanguageString("IUP_ALLLINES", "Todas as linhas");
-    IupSetLanguageString("IUP_HERETOTOP", "Daqui para o topo");
-    IupSetLanguageString("IUP_HERETOBOTTOM", "Daqui para o fim");
-    IupSetLanguageString("IUP_INTERVALDLG", "Intervalo...");
-    IupSetLanguageString("IUP_SELECTEDLINES", "Linhas Selecionadas");
-
-    IupSetLanguageString("IUP_VISIBILITY", "Visibilidade");
-    IupSetLanguageString("IUP_HIDECOLUMN", "Esconder Coluna");
-    IupSetLanguageString("IUP_SHOWHIDDENCOLUMNS", "Mostrar Coluna Escondidas");
-    IupSetLanguageString("IUP_HIDELINE", "Esconder Linha");
-    IupSetLanguageString("IUP_SHOWHIDDENLINES", "Mostrar Linhas Escondidas");
-
-    IupSetLanguageString("IUP_UNITS", "Unidades:");
-    IupSetLanguageString("IUP_DECIMALS", "Decimais:");
-    IupSetLanguageString("IUP_COLUMNDECIMALS", "Decimais da Coluna");
-    IupSetLanguageString("IUP_COLUMNDECIMALSDLG", "Decimais da Coluna...");
-    IupSetLanguageString("IUP_COLUMNUNITS", "Unidades da Coluna");
-    IupSetLanguageString("IUP_COLUMNUNITSDLG", "Unidades da Coluna...");
-
-    IupSetLanguageString("IUP_COPYTOINTERVAL", "Copiar Para - Intervalo");
-    IupSetLanguageString("IUP_GOTO", "Ir Para");
-    IupSetLanguageString("IUP_LINE", "Linha:");
-    IupSetLanguageString("IUP_COLUMN", "Coluna:");
-    IupSetLanguageString("IUP_LINESTART", "Linha Inicial:");
-    IupSetLanguageString("IUP_LINEEND", "Linha Final:");
-
-    IupSetLanguageString("IUP_ERRORINVALIDSELECTION", "Seleção inválida.");
-    IupSetLanguageString("IUP_ERRORNOTEXT", "Texto vazio.");
-    IupSetLanguageString("IUP_ERRORINVALIDDATA", "Dado inválido.");
-    IupSetLanguageString("IUP_ERRORNOSELECTION", "Seleção vazia.");
-    IupSetLanguageString("IUP_ERRORINVALIDINTERVAL", "Intervalo inválido.");
-
     if (IupGetInt(NULL, "UTF8MODE"))
-    {
-      /* When seeing this file assuming ISO8859-1 encoding, above will appear correct.
-      When seeing this file assuming UTF-8 encoding, bellow will appear correct. */
-      IupSetLanguageString("IUP_SETTINGSDLG", "DefiniÃ§Ãµes...");
-      IupSetLanguageString("IUP_TEXTSEPARATOR", "Separador de NÃºmeros:");
-      IupSetLanguageString("IUP_DECIMALSYMBOL", "SÃ­mbolo Decimal:");
-
-      IupSetLanguageString("IUP_ERRORINVALIDSELECTION", "SeleÃ§Ã£o invÃ¡lida.");
-      IupSetLanguageString("IUP_ERRORINVALIDDATA", "Dado invÃ¡lido.");
-      IupSetLanguageString("IUP_ERRORNOSELECTION", "SeleÃ§Ã£o vazia.");
-      IupSetLanguageString("IUP_ERRORINVALIDINTERVAL", "Intervalo invÃ¡lido.");
-    }
+      lng = iup_load_lng_portuguese_matrix_utf8();
+    else
+      lng = iup_load_lng_portuguese_matrix();
   }
   else if (iupStrEqualNoCase(IupGetGlobal("LANGUAGE"), "SPANISH"))
   {
-    IupSetLanguageString("IUP_EXPORT", "Exportar");
-    IupSetLanguageString("IUP_IMPORT", "Importar");
-    IupSetLanguageString("IUP_SETTINGSDLG", "Preferencias...");
-    IupSetLanguageString("IUP_TEXTSEPARATOR", "Separador de Números:");
-    IupSetLanguageString("IUP_OTHERTEXTSEPARATOR", "  - Otro Sep. de Núm.:");
-    IupSetLanguageString("IUP_DECIMALSYMBOL", "Símbolo Decimal:");
-    IupSetLanguageString("IUP_UNDOAC", "Deshacer\tCtrl+Z");
-    IupSetLanguageString("IUP_REDOAC", "Rehacer\tCtrl+R");
-    IupSetLanguageString("IUP_UNDOLISTDLG", "Lista de Deshacer...\tCtrl+U");
-    IupSetLanguageString("IUP_UNDOLIST", "Lista de Deshacer");
-    IupSetLanguageString("IUP_CURRENTSTATE", "Estado Actual");
-    IupSetLanguageString("IUP_CUTAC", "Cortar\tCtrl+X");
-    IupSetLanguageString("IUP_COPYAC", "Copiar\tCtrl+C");
-    IupSetLanguageString("IUP_PASTEAC", "Pegar\tCtrl+V");
-    IupSetLanguageString("IUP_ERASEAC", "Borrar\tDel");
-    IupSetLanguageString("IUP_SELECTALLAC", "Seleccionar Todo\tCtrl+T");
-    IupSetLanguageString("IUP_FINDDLG", "Localizar...\tCtrl+L");
-    IupSetLanguageString("IUP_GOTODLG", "Ir A...\tCtrl+G");
-    IupSetLanguageString("IUP_SORTDLG", "Ordenar...");
-    IupSetLanguageString("IUP_FREEZE", "Congelar");
-    IupSetLanguageString("IUP_UNFREEZE", "Descongelar");
-    IupSetLanguageString("IUP_COPYTOSAMECOLUMN", "Copiar A (Misma Columna)");
-    IupSetLanguageString("IUP_ALLLINES", "Todas las lineas");
-    IupSetLanguageString("IUP_HERETOTOP", "De aquí para arriba");
-    IupSetLanguageString("IUP_HERETOBOTTOM", "De aquí para abajo");
-    IupSetLanguageString("IUP_INTERVALDLG", "Intervalo...");
-    IupSetLanguageString("IUP_SELECTEDLINES", "Lineas seleccionadas");
-
-    IupSetLanguageString("IUP_VISIBILITY", "Visibilidad");
-    IupSetLanguageString("IUP_HIDECOLUMN", "Ocultar Columna");
-    IupSetLanguageString("IUP_SHOWHIDDENCOLUMNS", "Mostrar Columnas Ocultas");
-    IupSetLanguageString("IUP_HIDELINE", "Ocultar Linea");
-    IupSetLanguageString("IUP_SHOWHIDDENLINES", "Mostrar Lineas Ocultas");
-
-    IupSetLanguageString("IUP_COPYTOINTERVAL", "Copiar A - Intervalo");
-    IupSetLanguageString("IUP_GOTO", "Ir A");
-    IupSetLanguageString("IUP_LINE", "Linea:");
-    IupSetLanguageString("IUP_COLUMN", "Columna:");
-    IupSetLanguageString("IUP_LINESTART", "Linea Inicial:");
-    IupSetLanguageString("IUP_LINEEND", "Linea Final:");
-
-    IupSetLanguageString("IUP_UNITS", "Unidades:");
-    IupSetLanguageString("IUP_DECIMALS", "Decimales:");
-    IupSetLanguageString("IUP_COLUMNDECIMALS", "Columna de Decimales");
-    IupSetLanguageString("IUP_COLUMNDECIMALSDLG", "Columna de Decimales...");
-    IupSetLanguageString("IUP_COLUMNUNITS", "Unidades de Columna");
-    IupSetLanguageString("IUP_COLUMNUNITSDLG", "Unidades de Columna...");
-
-    IupSetLanguageString("IUP_ERRORINVALIDSELECTION", "Selección inválida.");
-    IupSetLanguageString("IUP_ERRORNOTEXT", "Texto vacío.");
-    IupSetLanguageString("IUP_ERRORINVALIDDATA", "Dato inválido.");
-    IupSetLanguageString("IUP_ERRORNOSELECTION", "Selección vacía.");
-    IupSetLanguageString("IUP_ERRORINVALIDINTERVAL", "Intervalo inválido.");
-
     if (IupGetInt(NULL, "UTF8MODE"))
-    {
-      /* When seeing this file assuming ISO8859-1 encoding, above will appear correct.
-      When seeing this file assuming UTF-8 encoding, bellow will appear correct. */
-
-      IupSetLanguageString("IUP_ERRORINVALIDSELECTION", "SelecciÃ³n invÃ¡lida.");
-      IupSetLanguageString("IUP_ERRORNOTEXT", "Texto vacÃ­o.");
-      IupSetLanguageString("IUP_ERRORINVALIDDATA", "Dato invÃ¡lido.");
-      IupSetLanguageString("IUP_ERRORNOSELECTION", "SelecciÃ³n vacÃ­a.");
-      IupSetLanguageString("IUP_ERRORINVALIDINTERVAL", "Intervalo invÃ¡lido.");
-      IupSetLanguageString("IUP_TEXTSEPARATOR", "Separador de NÃºmeros:");
-      IupSetLanguageString("IUP_OTHERTEXTSEPARATOR", "  - Otro Sep. de NÃºm.:");
-      IupSetLanguageString("IUP_DECIMALSYMBOL", "SÃ­mbolo Decimal:");
-      IupSetLanguageString("IUP_HERETOTOP", "De aquÃ­ para arriba");
-      IupSetLanguageString("IUP_HERETOBOTTOM", "De aquÃ­ para abajo");
-    }
+      lng = iup_load_lng_spanish_matrix_utf8();
+    else
+      lng = iup_load_lng_spanish_matrix();
   }
 
-  iupMatrixExSetClassUpdateFind(ic);
-  iupMatrixExSetClassUpdateSort(ic);
-  iupMatrixExSetClassUpdateUndo(ic);
+  if (lng)
+  {
+    IupSetLanguagePack(lng);
+    IupDestroy(lng);
+  }
 }
 
 Iclass* iupMatrixExNewClass(void)

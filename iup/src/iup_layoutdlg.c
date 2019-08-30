@@ -13,6 +13,7 @@
 #include <ctype.h>
 
 #include "iup.h"
+#include "iupcbs.h"
 
 #include "iup_object.h"
 #include "iup_attrib.h"
@@ -80,14 +81,15 @@ static Ihandle* iLayoutFindNode(Ihandle* tree, const char *str, int start_id, in
   {
     elem = (Ihandle*)IupTreeGetUserId(tree, id);
 
+    if (!elem)  /* for the vled tree */
+      continue;
+
     if (iLayoutFindItemMatch(elem, str, searchType))
       return elem;
   }
 
   return NULL;
 }
-
-static int iLayoutTreeSelection_CB(Ihandle* tree, int id, int status);
 
 static int iLayoutFindDialogNext_CB(Ihandle* ih)
 {
@@ -121,9 +123,10 @@ static int iLayoutFindDialogNext_CB(Ihandle* ih)
   if (obj)
   {
     int id = IupTreeGetId(tree, obj);
-    iLayoutTreeSelection_CB(tree, last_id, 0);
+    IFnii cb = (IFnii)IupGetCallback(tree, "SELECTION_CB");
+    cb(tree, last_id, 0);
     IupSetInt(tree, "VALUE", id);
-    iLayoutTreeSelection_CB(tree, id, 1);
+    cb(tree, id, 1);
 
     IupSetAttribute(lbl_result, "TITLE", "");
   }
@@ -140,11 +143,12 @@ static int iLayoutFindDialogClose_CB(Ihandle* ih)
   return IUP_DEFAULT;
 }
 
-static Ihandle* iLayoutCreateFindDialog(iLayoutDialog* layoutdlg, Ihandle *ih)
+IUP_API Ihandle* IupLayoutFindDialog(Ihandle *tree, Ihandle* elem) /* dialog for find NAME */
 {
   Ihandle *txt, *box, *find_dlg;
   Ihandle *type, *handle_name, *name, *title, *attribute, *radio;
   Ihandle *bt_next, *bt_close, *lbl_result;
+  Ihandle *dialog = IupGetDialog(elem);
 
   txt = IupText(NULL);
   IupSetAttribute(txt, "NAME", "FIND_TEXT");
@@ -209,7 +213,7 @@ static Ihandle* iLayoutCreateFindDialog(iLayoutDialog* layoutdlg, Ihandle *ih)
         bt_next,
         bt_close,
         lbl_result,
-        NULL), "NORMALIZESIZE=HORIZONTAL"),
+        NULL), "NORMALIZESIZE=HORIZONTAL, MARGIN=x20"),
       NULL),
     NULL);
   IupSetAttribute(box, "NMARGIN", "10x10");
@@ -220,16 +224,15 @@ static Ihandle* iLayoutCreateFindDialog(iLayoutDialog* layoutdlg, Ihandle *ih)
   IupSetAttribute(find_dlg, "DIALOGFRAME", "Yes");
   IupSetAttributeHandle(find_dlg, "DEFAULTENTER", bt_next);
   IupSetAttributeHandle(find_dlg, "DEFAULTESC", bt_close);
-  IupSetAttributeHandle(find_dlg, "PARENTDIALOG", IupGetDialog(ih));
+  IupSetAttributeHandle(find_dlg, "PARENTDIALOG", IupGetDialog(tree));
   IupSetCallback(find_dlg, "CLOSE_CB", (Icallback)iLayoutFindDialogClose_CB);
 
   /* Save the multiline to access it from the callbacks */
-  IupSetAttribute(find_dlg, "TREE", (char*)ih);
+  IupSetAttribute(find_dlg, "TREE", (char*)tree);
 
   /* Save the dialog to reuse it */
   IupSetAttribute(find_dlg, "FIND_DIALOG", (char*)find_dlg);  /* from itself */
-  IupSetAttribute(IupGetDialog(ih), "FIND_DIALOG", (char*)find_dlg); /* from the main dialog */
-  IupSetAttribute(find_dlg, "DIALOG", (char*)layoutdlg->dialog); /* from the main dialog */
+  IupSetAttribute(find_dlg, "DIALOG", (char*)dialog); /* from the main dialog, use to find NAME */
 
   return find_dlg;
 }
@@ -1156,11 +1159,16 @@ static int iLayoutMenuFind_CB(Ihandle* ih)
 {
   Ihandle* dlg = IupGetDialog(ih);
   iLayoutDialog* layoutdlg = (iLayoutDialog*)iupAttribGet(dlg, "_IUP_LAYOUTDIALOG");
-  Ihandle* find_dlg = (Ihandle*)IupGetAttribute(ih, "FIND_DIALOG");
+  Ihandle* find_dlg = (Ihandle*)IupGetAttribute(dlg, "FIND_DIALOG");
   Ihandle* tree = IupGetDialogChild(ih, "TREE");
 
   if (!find_dlg)
-    find_dlg = iLayoutCreateFindDialog(layoutdlg, tree);
+  {
+    find_dlg = IupLayoutFindDialog(tree, layoutdlg->dialog);
+    IupSetAttribute(dlg, "FIND_DIALOG", (char*)find_dlg);
+  }
+
+  IupSetAttribute(IupGetDialogChild(find_dlg, "FIND_NAME"), "ACTIVE", "YES"); /* we are going to disable it in other situations */
 
   IupShow(find_dlg);
 
@@ -2173,9 +2181,9 @@ static Ihandle* iLayoutPropertiesCreateDialog(iLayoutDialog* layoutdlg, Ihandle*
   return dlg;
 }
 
-IUP_API Ihandle* IupElementPropertiesDialog(Ihandle* elem)
+IUP_API Ihandle* IupElementPropertiesDialog(Ihandle* parent, Ihandle* elem)
 {
-  Ihandle* dlg = iLayoutPropertiesCreateDialog(NULL, NULL);
+  Ihandle* dlg = iLayoutPropertiesCreateDialog(NULL, parent);
   iLayoutPropertiesUpdate(dlg, elem);
   return dlg;
 }

@@ -856,10 +856,15 @@ static int GlobalsDialog(lua_State *L)
 
 static int ElementPropertiesDialog(lua_State *L)
 {
-  iuplua_pushihandle(L,IupElementPropertiesDialog(iuplua_checkihandle(L,1)));
+  iuplua_pushihandle(L, IupElementPropertiesDialog(iuplua_checkihandleornil(L, 1), iuplua_checkihandle(L, 2)));
   return 1;
 }
 
+static int LayoutFindDialog(lua_State *L)
+{
+  iuplua_pushihandle(L, IupLayoutFindDialog(iuplua_checkihandle(L, 1), iuplua_checkihandle(L, 2)));
+  return 1;
+}
 
 static int ConvertXYToPos(lua_State *L)
 {
@@ -993,7 +998,8 @@ static int PostMessage(lua_State *L)
   const char *s = luaL_checkstring(L, 2);
   int i = (int)luaL_checkinteger(L, 3);
   double d = luaL_checknumber(L, 4);
-  IupPostMessage(ih, s, i, d);
+  void* p = lua_touserdata(L, 5);
+  IupPostMessage(ih, s, i, d, p);
   return 0;
 }
 
@@ -1168,6 +1174,7 @@ void iupluaapi_open(lua_State * L)
     {"LayoutDialog", LayoutDialog},
     {"GlobalsDialog", GlobalsDialog},
     {"ElementPropertiesDialog", ElementPropertiesDialog},
+    {"LayoutFindDialog", LayoutFindDialog},
     {"PostMessage", PostMessage},
     {"SetFocus", SetFocus},
     {"SetGlobal", SetGlobal},

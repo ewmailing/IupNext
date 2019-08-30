@@ -1630,16 +1630,26 @@ static int item_open_action_cb(Ihandle* ih_item)
     IupSetAttribute(filedlg, "EXTFILTER", "Text Files|*.txt|All Files|*.*|");
   IupSetAttributeHandle(filedlg, "PARENTDIALOG", ih);
   IupSetStrAttribute(filedlg, "DIRECTORY", dir);
+  IupSetAttribute(filedlg, "MULTIPLEFILES", "Yes");
 
   IupPopup(filedlg, IUP_CENTERPARENT, IUP_CENTERPARENT);
 
   if (IupGetInt(filedlg, "STATUS") != -1)
   {
-    char* filename = IupGetAttribute(filedlg, "VALUE");
-    if (!check_open(ih, filename, 0))
-      open_file(ih_item, filename, 1);
+    int i, count = IupGetInt(filedlg, "MULTIVALUECOUNT");
+    dir = IupGetAttributeId(filedlg, "MULTIVALUE", 0);
 
-    dir = IupGetAttribute(filedlg, "DIRECTORY");
+    for (i = 1; i < count; i++)
+    {
+      char* filetitle = IupGetAttributeId(filedlg, "MULTIVALUE", i);
+      char filename[10240];
+      strcpy(filename, dir);
+      strcat(filename, filetitle);
+
+      if (!check_open(ih, filename, 0))
+        open_file(ih_item, filename, 1);
+    }
+
     IupConfigSetVariableStr(config, IupGetAttribute(ih, "SUBTITLE"), "LastDirectory", dir);
   }
 

@@ -273,6 +273,12 @@ static int iDialogCreateMethod(Ihandle* ih, void** params)
 
 static void iDialogDestroyMethod(Ihandle* ih)
 {
+  if (ih->data->menu)
+  {
+    IupDestroy(ih->data->menu);
+    ih->data->menu = NULL;
+  }
+
   iupDlgListRemove(ih);
 }
 
@@ -507,9 +513,18 @@ static void iDialogModalLoop(Ihandle* ih)
 
 int iupDialogPopup(Ihandle* ih, int x, int y)
 {
-  int ret = iupClassObjectDlgPopup(ih, x, y);
-  if (ret != IUP_INVALID) /* IUP_INVALID means it is not implemented */
+  if (iupClassObjectHasDlgPopup(ih))
+  {
+    int ret;
+
+    iDialogSetModal(ih);  /* make sure all other dialogs are inactive */
+
+    ret = iupClassObjectDlgPopup(ih, x, y);
+
+    iDialogUnSetModal(ih);
+
     return ret;
+  }
 
   ih->data->show_state = IUP_SHOW;
 

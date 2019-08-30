@@ -57,6 +57,7 @@ void iupdrvTextAddSpin(Ihandle* ih, int *w, int h)
 
 void iupdrvTextAddBorders(Ihandle* ih, int *x, int *y)
 {
+  /* Used also by IupCalendar in GTK */
   /* LAYOUT_DECORATION_ESTIMATE */
   int border_size = 2 * 5;
   (*x) += border_size;

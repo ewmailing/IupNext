@@ -74,6 +74,7 @@ IupDrawSetClipRect
 IupDrawText
 IupDropButton
 IupElementPropertiesDialog
+IupLayoutFindDialog
 IupExecute
 IupExecuteWait
 IupExitLoop
@@ -308,6 +309,7 @@ iupArrayCount
 iupArrayCreate
 iupArrayDestroy
 iupArrayGetData
+iupArrayReleaseData
 iupArrayInc
 iupArrayInsert
 iupArrayRemove
@@ -406,6 +408,7 @@ iupClassObjectComputeNaturalSize
 iupClassObjectCreate
 iupClassObjectDestroy
 iupClassObjectDlgPopup
+iupClassObjectHasDlgPopup
 iupClassObjectGetInnerNativeContainerHandle
 iupClassObjectLayoutUpdate
 iupClassObjectMap
@@ -515,7 +518,7 @@ iupRadioFindToggleParent
 iupRegisterClass
 iupRegisterFindClass
 iupRound
-iupSaveImageAsText
+iupImageSaveAsTextPacked
 iupSetFontFaceAttrib
 iupSetFontSizeAttrib
 iupSetFontStyleAttrib

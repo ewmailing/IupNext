@@ -198,15 +198,15 @@ void IupFlush(void)
 	[NSApp terminate:nil];
 }
 
-void IupPostMessage(Ihandle* ih, const char* s, int i, double d)
+void IupPostMessage(Ihandle* ih, const char* s, int i, double d, void* p)
 {
 	dispatch_async(dispatch_get_main_queue(),
 		^{
 			//NSLog(@"dispatch_async fired on main_queue");
-			IFnsid post_message_callback = (IFnsid)IupGetCallback(ih, "POSTMESSAGE_CB");
-			if (post_message_callback)
+			IFnsidv cb = (IFnsidv)IupGetCallback(ih, "POSTMESSAGE_CB");
+			if (cb)
 			{
-				post_message_callback(ih, s, i, d);
+				cb(ih, s, i, d, p);
 			}
 		}
 	);

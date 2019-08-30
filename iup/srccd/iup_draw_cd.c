@@ -28,6 +28,9 @@ struct _cdCtxCanvas
 
 static void cdkillcanvas(cdCtxCanvas *ctxcanvas)
 {
+  if (ctxcanvas->dc)
+    iupdrvDrawKillCanvas(ctxcanvas->dc);
+
   memset(ctxcanvas, 0, sizeof(cdCtxCanvas));
   free(ctxcanvas);
 }
@@ -54,13 +57,6 @@ static int cdactivate(cdCtxCanvas *ctxcanvas)
   ctxcanvas->canvas->invert_yaxis = 1;
 
   return CD_OK;
-}
-
-static void cddeactivate(cdCtxCanvas *ctxcanvas)
-{
-  if (ctxcanvas->dc)
-    iupdrvDrawKillCanvas(ctxcanvas->dc);
-  ctxcanvas->dc = NULL;
 }
 
 static void cdflush(cdCtxCanvas *ctxcanvas)
@@ -509,7 +505,6 @@ static void cdinittable(cdCanvas* canvas)
   canvas->cxGetTextSize = cdgettextsize;
 
   canvas->cxKillCanvas = cdkillcanvas;
-  canvas->cxDeactivate = cddeactivate;
   canvas->cxActivate = cdactivate;
 }
 

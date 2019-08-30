@@ -262,7 +262,10 @@ int main(int argc, char* argv[])
 //  IupSetGlobal("OVERLAYSCROLLBAR", "Yes");
 //  IupSetGlobal("UTF8MODE", "Yes");
 //  IupSetGlobal("LANGUAGE", "PORTUGUESE");
-//  IupSetGlobal("DEFAULTDECIMALSYMBOL", ".");
+//  IupSetGlobal("LANGUAGE", "SPANISH");
+//  IupSetGlobal("LANGUAGE", "RUSSIAN");  /* works only with UTF8 */
+//  IupSetGlobal("LANGUAGE", "CZECH");  /* works only with UTF8 */
+  //  IupSetGlobal("DEFAULTDECIMALSYMBOL", ".");
   //  setlocale(LC_NUMERIC, "C");
 //  printf("EXEFILENAME=%s\n", IupGetGlobal("EXEFILENAME"));
 //  IupLog("DEBUG", "IUP version %s\n", IupVersion());

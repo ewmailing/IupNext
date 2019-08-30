@@ -61,7 +61,7 @@ int iupflatbuttonlua_open(lua_State * L)
   iuplua_register(L, FlatButton, "FlatButton");
 
   iuplua_register_cb(L, "FLAT_BUTTON_CB", (lua_CFunction)flatbutton_flat_button_cb, NULL);
-  iuplua_register_cb(L, "FLAT_ACTION", (lua_CFunction)flatbutton_flat_action, NULL);
+  iuplua_register_cb(L, "FLAT_ACTION", (lua_CFunction)flatbutton_flat_action, "flatbutton");
   iuplua_register_cb(L, "FLAT_ENTERWINDOW_CB", (lua_CFunction)flatbutton_flat_enterwindow_cb, NULL);
   iuplua_register_cb(L, "FLAT_LEAVEWINDOW_CB", (lua_CFunction)flatbutton_flat_leavewindow_cb, NULL);
   iuplua_register_cb(L, "FLAT_FOCUS_CB", (lua_CFunction)flatbutton_flat_focus_cb, NULL);

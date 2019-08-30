@@ -111,6 +111,6 @@ IUP_API void IupFlush(void)
 	// real problem...
 }
 
-IUP_API void IupPostMessage(Ihandle* ih, const char* s, int i, double d)
+IUP_API void IupPostMessage(Ihandle* ih, const char* s, int i, double d, void* p)
 {
 }

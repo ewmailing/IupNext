@@ -2,7 +2,7 @@
 #Creates 9 toggles: the first one has an image; the second has an image and is deactivated; the third is regular; the fourth has its foreground color changed; the fifth has its background color changed; the sixth has its foreground and background colors changed; the seventh is deactivated; the eight has its font changed; the ninth has its size changed.. 
 
 
-img_1 = image[1="255 255 255",2="0 192 0"](16,16,
+img_1 = image[0="0 0 0",1="255 255 255",2="0 192 0"](16,16,
   1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,
   1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,
   1,1,1,1,1,1,1,2,1,1,1,1,1,1,1,1,
@@ -20,7 +20,7 @@ img_1 = image[1="255 255 255",2="0 192 0"](16,16,
   1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,
   1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1 )
 
-img_2 = image[1="255 255 255",2="0 192 0"](16,16,
+img_2 = image[0="0 0 0",1="255 255 255",2="0 192 0"](16,16,
   1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,
   1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,
   1,1,1,1,2,2,2,2,2,2,1,1,1,1,1,1,

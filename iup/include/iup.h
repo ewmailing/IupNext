@@ -46,7 +46,7 @@ IUP_API int       IupLoopStepWait  (void);
 IUP_API int       IupMainLoopLevel (void);
 IUP_API void      IupFlush         (void);
 IUP_API void      IupExitLoop      (void);
-IUP_API void      IupPostMessage   (Ihandle* ih, const char* s, int i, double d);
+IUP_API void      IupPostMessage   (Ihandle* ih, const char* s, int i, double d, void* p);
 
 IUP_API int       IupRecordInput(const char* filename, int mode);
 IUP_API int       IupPlayInput(const char* filename);
@@ -339,7 +339,8 @@ IUP_API Ihandle*  IupParamBox(Ihandle* param, ...);
 IUP_API Ihandle*  IupParamBoxv(Ihandle* *param_array);
 
 IUP_API Ihandle* IupLayoutDialog(Ihandle* dialog);
-IUP_API Ihandle* IupElementPropertiesDialog(Ihandle* elem);
+IUP_API Ihandle* IupElementPropertiesDialog(Ihandle* parent, Ihandle* elem);
+IUP_API Ihandle* IupLayoutFindDialog(Ihandle *tree, Ihandle* elem);
 IUP_API Ihandle* IupGlobalsDialog(void);
 
 

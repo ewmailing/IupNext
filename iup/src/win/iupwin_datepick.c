@@ -23,6 +23,9 @@
 #include "iup_str.h"
 #include "iup_drv.h"
 #include "iup_drvfont.h"
+#include "iup_mask.h"
+#include "iup_array.h"
+#include "iup_text.h"
 
 #include "iupwin_drv.h"
 #include "iupwin_handle.h"
@@ -182,8 +185,6 @@ static int winDatePickWmNotify(Ihandle* ih, NMHDR* msg_info, int *result)
 
 /*********************************************************************************************/
 
-void iupdrvTextAddBorders(int *w, int *h);
-
 static void winDatePickComputeNaturalSizeMethod(Ihandle* ih, int *w, int *h, int *children_expand)
 {
   (void)children_expand; /* unset if not a container */
@@ -198,7 +199,7 @@ static void winDatePickComputeNaturalSizeMethod(Ihandle* ih, int *w, int *h, int
   else
   {
     iupdrvFontGetMultiLineStringSize(ih, "WW/WW/WWWW", w, h);
-    iupdrvTextAddBorders(w, h);
+    iupdrvTextAddBorders(ih, w, h);
     *w += iupdrvGetScrollbarSize();
   }
 }

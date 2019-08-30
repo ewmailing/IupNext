@@ -144,9 +144,21 @@ static int iClassDlgPopup(Iclass* ic, Ihandle* ih, int x, int y)
     return ic->DlgPopup(ih, x, y);  /* ignore parent if implemented */
 
   if (ic->parent)
-    return  iClassDlgPopup(ic->parent, ih, x, y);
+    return iClassDlgPopup(ic->parent, ih, x, y);
 
   return IUP_INVALID;  /* means it is not implemented */
+}
+
+static int iClassHasDlgPopup(Iclass* ic)
+{
+  /* must be before the parent class */
+  if (ic->DlgPopup)
+    return 1;
+
+  if (ic->parent)
+    return iClassHasDlgPopup(ic->parent);
+
+  return 0;
 }
 
 
@@ -215,6 +227,10 @@ IUP_SDK_API int iupClassObjectDlgPopup(Ihandle* ih, int x, int y)
   return iClassDlgPopup(ih->iclass, ih, x, y);
 }
 
+IUP_SDK_API int iupClassObjectHasDlgPopup(Ihandle* ih)
+{
+  return iClassHasDlgPopup(ih->iclass);
+}
 
 /*****************************************************************
                         Class Definition
