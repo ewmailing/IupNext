@@ -39,7 +39,7 @@ static Tlist* all_late;
 
 static int nerrors = 0;
 
-#define nheaders 11
+#define nheaders 9
 
 static struct {
   char* name;
@@ -52,7 +52,6 @@ static struct {
   { "iupole",     0 },
   { "iupweb",     0 },
   { "iup_plot",  0 },
-  { "iup_pplot",  0 },
   { "iup_mglplot",  0 },
   { "iup_scintilla",  0 }
 };
@@ -66,8 +65,7 @@ enum headers {
   IUPWEB_H,
   IUPPLOT_H,
   IUPMGLPLOT_H,
-  IUPSCINTILLA_H,
-  IUPMATRIXEX_H 
+  IUPSCINTILLA_H
 };
 
 static void check_empty( Telem* elem );
