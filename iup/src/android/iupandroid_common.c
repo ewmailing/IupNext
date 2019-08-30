@@ -573,7 +573,7 @@ void IupPostMessage(Ihandle* ih, const char* s, int i, double d, void* p)
 
 	jstring j_string = (*jni_env)->NewStringUTF(jni_env, s);
 
-  (*jni_env)->CallStaticVoidMethod(jni_env, java_class, method_id, app_context, (jlong)(intptr_t)ih, j_string, (jlong)i, (jdouble)d, (jlong)(intptr_t)p);
+    (*jni_env)->CallStaticVoidMethod(jni_env, java_class, method_id, app_context, (jlong)(intptr_t)ih, (jlong)(intptr_t)p, j_string, (jlong)i, (jdouble)d);
 
 	(*jni_env)->DeleteLocalRef(jni_env, j_string);
 

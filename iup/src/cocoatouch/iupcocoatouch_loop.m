@@ -11,6 +11,7 @@
 
 #include "iup.h"
 #include "iupcbs.h"
+#include "iup_str.h"
 
 #import "IupAppDelegate.h"
 
@@ -117,3 +118,18 @@ void IupFlush(void)
 #endif
 }
 
+void IupPostMessage(Ihandle* ih, const char* s, int i, double d, void* p)
+{
+	char* s_copy = iupStrDup(s);
+	dispatch_async(dispatch_get_main_queue(),
+		^{
+			//NSLog(@"dispatch_async fired on main_queue");
+			IFnsidv cb = (IFnsidv)IupGetCallback(ih, "POSTMESSAGE_CB");
+			if (cb)
+			{
+				cb(ih, s_copy, i, d, p);
+			}
+			free(s_copy);
+		}
+	);
+}
