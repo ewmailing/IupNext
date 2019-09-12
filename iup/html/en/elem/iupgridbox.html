@@ -62,8 +62,8 @@ iup.gridbox{<strong>child</strong>, ...: ihandle} -&gt; (<strong>ih</strong>: ih
 gridbox(<strong>child</strong>, ...) [in LED]</pre>
   <p><strong>child</strong>, ... :
   List of the identifiers that will be placed 
-  in the box. NULL must be used to define the end of the list in C. It can be empty 
-  in C or Lua, not in LED.</p>
+  in the box. NULL must be used to define the end of the list in C. It can be 
+  empty, but in C must have at least the NULL terminator..</p>
   <p>
   <u>Returns:</u> the identifier of the 
   created element, or NULL if an error occurs.</p>

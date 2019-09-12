@@ -426,14 +426,14 @@ static void check_cb( Telem* elem )
 
 static void check_elem( Telem* elem )
 {
-  if (!verify_nparams( 1, 1, elem )) return;
+  if (!verify_nparams( -1, 1, elem )) return;
   param_elem( elem->params, 1, 0 );
 }
 
 static void check_elemlist( Telem* elem )
 {
   int i;
-  if (!verify_nparams( 1, -1, elem )) return;
+  if (!verify_nparams( -1, -1, elem )) return;
   for (i=0; i<elem->nparams; i++)
     param_elem( elem->params, i+1, 0 );
 }
@@ -441,7 +441,7 @@ static void check_elemlist( Telem* elem )
 static void check_elemlist_rep( Telem* elem )
 {
   int i;
-  if (!verify_nparams( 1, -1, elem )) return;
+  if (!verify_nparams( -1, -1, elem )) return;
   for (i=0; i<elem->nparams; i++)
     param_elem( elem->params, i+1, 1);
 }
@@ -449,7 +449,7 @@ static void check_elemlist_rep( Telem* elem )
 static void check_elemlist2( Telem* elem )
 {
   int i;
-  if (!verify_nparams( 1, 2, elem )) return;
+  if (!verify_nparams( -1, 2, elem )) return;
   for (i=0; i<elem->nparams; i++)
     param_elem( elem->params, i+1, 0 );
 }

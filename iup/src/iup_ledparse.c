@@ -93,7 +93,7 @@ static void* iParseExp(void)
   }
   else
   {
-    iparse_error = iupLexMatch(IUPLEX_TK_NAME);
+    /* iparse_error = iupLexMatch(IUPLEX_TK_NAME); */ /* commented to allow containers to be empty */
     return NULL;  /* force iparse_error */
   }
 

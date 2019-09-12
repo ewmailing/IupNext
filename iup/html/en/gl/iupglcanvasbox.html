@@ -56,10 +56,9 @@ Ihandle* IupGLCanvasBoxv(Ihandle **<strong>children</strong>); [in C]
 iup.glcanvasbox{<strong>child</strong>, ...: ihandle} -&gt; (<strong>elem</strong>: ihandle) [in Lua]
 glcanvasbox(<strong>child</strong>, ...) [in LED]</pre>
 </div>
-  <p><strong>child</strong>, ... :
-  List of the identifiers that will be placed 
-  in the box. NULL must be used to define the end of the list in C. It can be empty 
-  in C or Lua, not in LED.</p>
+  <p><strong>child</strong>, ... : List of the identifiers that will be placed 
+  in the box. NULL must be used to define the end of the list in C. It can be 
+  empty, but in C must have at least the NULL terminator..</p>
   <p>
   <u>Returns:</u> the identifier of the 
   created element, or NULL if an error occurs.</p>
