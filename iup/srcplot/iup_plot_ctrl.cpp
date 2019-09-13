@@ -1537,7 +1537,7 @@ void iupPlotUpdateViewports(Ihandle* ih)
     int px = col * pw;
     int py = lin * ph;
 
-    if (ih->data->merge_view)
+    if (ih->data->merge_view)  /* ignore computed values */
     {
       px = 0;
       py = 0;
