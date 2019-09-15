@@ -39,7 +39,7 @@ static Tlist* all_late;
 
 static int nerrors = 0;
 
-#define nheaders 11
+#define nheaders 9
 
 static struct {
   char* name;
@@ -52,7 +52,6 @@ static struct {
   { "iupole",     0 },
   { "iupweb",     0 },
   { "iup_plot",  0 },
-  { "iup_pplot",  0 },
   { "iup_mglplot",  0 },
   { "iup_scintilla",  0 }
 };
@@ -66,8 +65,7 @@ enum headers {
   IUPWEB_H,
   IUPPLOT_H,
   IUPMGLPLOT_H,
-  IUPSCINTILLA_H,
-  IUPMATRIXEX_H 
+  IUPSCINTILLA_H
 };
 
 static void check_empty( Telem* elem );
@@ -83,10 +81,10 @@ static void check_elemlist2( Telem* elem );
 static void check_elemlist_rep( Telem* elem );
 static void check_string_cb( Telem* elem );
 static void check_string_elem( Telem* elem );
-static void check_iupCpi( Telem* elem );
+static void check_unknown(Telem* elem);
 
 static void code_image( Telem* elem );
-static void code_iupCpi( Telem* elem );
+static void code_unknown(Telem* elem);
 static void code_empty( Telem* elem );
 static void code_string( Telem* elem );
 static void code_string2( Telem* elem );
@@ -194,7 +192,7 @@ elems[] =
   { "GLExpander",   code_elem,         check_elem,        IUPGLCONTROLS_H },
   { "GLScrollBox",  code_elem,         check_elem,        IUPGLCONTROLS_H },
   { "GLSizeBox",    code_elem,         check_elem,        IUPGLCONTROLS_H },
-  { "@@@",          code_iupCpi,       check_iupCpi,      0  }
+  { "@@@",          code_unknown,      check_unknown,     0 }
 };
 #define nelems (sizeof(elems)/sizeof(elems[0]))
 
@@ -428,14 +426,15 @@ static void check_cb( Telem* elem )
 
 static void check_elem( Telem* elem )
 {
-  if (!verify_nparams( 1, 1, elem )) return;
-  param_elem( elem->params, 1, 0 );
+  if (!verify_nparams( -1, 1, elem )) return;
+  if (elem->nparams == 1)
+    param_elem( elem->params, 1, 0 );
 }
 
 static void check_elemlist( Telem* elem )
 {
   int i;
-  if (!verify_nparams( 1, -1, elem )) return;
+  if (!verify_nparams( -1, -1, elem )) return;
   for (i=0; i<elem->nparams; i++)
     param_elem( elem->params, i+1, 0 );
 }
@@ -443,7 +442,7 @@ static void check_elemlist( Telem* elem )
 static void check_elemlist_rep( Telem* elem )
 {
   int i;
-  if (!verify_nparams( 1, -1, elem )) return;
+  if (!verify_nparams( -1, -1, elem )) return;
   for (i=0; i<elem->nparams; i++)
     param_elem( elem->params, i+1, 1);
 }
@@ -451,7 +450,7 @@ static void check_elemlist_rep( Telem* elem )
 static void check_elemlist2( Telem* elem )
 {
   int i;
-  if (!verify_nparams( 1, 2, elem )) return;
+  if (!verify_nparams( -1, 2, elem )) return;
   for (i=0; i<elem->nparams; i++)
     param_elem( elem->params, i+1, 0 );
 }
@@ -477,7 +476,7 @@ static void check_string_elem( Telem* elem )
   param_elem( elem->params, 2, 0 );
 }
 
-static void check_iupCpi( Telem* elem )
+static void check_unknown(Telem* elem)
 {
   warning( "Unknown control %s used", elem->elemname );
 }
@@ -661,7 +660,7 @@ static void codeelemparam( Tparam* param )
 
 /****************************************************************/
 
-static void code_iupCpi( Telem* elem )
+static void code_unknown(Telem* elem)
 {
   int i=0;
   indent();
@@ -735,13 +734,18 @@ static void code_elem( Telem* elem )
 {
   fprintf( outfile, "(\n" );
   indent();
-  codeelemparam( elem->params[0] );
-  fprintf( outfile, "\n" );
+  if (elem->nparams == 1)
+  {
+    codeelemparam( elem->params[0] );
+    fprintf( outfile, "\n" ); 
+  }
   unindent();
   codeindent();
-  fprintf( outfile, ")" );
+  if (elem->nparams == 1)
+    fprintf( outfile, ")" );
+  else
+    fprintf( outfile, "NULL)" );
 }
-
 
 static void code_elemlist( Telem* elem )
 {
