@@ -51,9 +51,9 @@ void iupImageSetHandleFromLoaded(const char* name, void* handle);
 Ihandle* iupImageGetImageFromName(const char* name);
 
 #if defined(FILE) || defined(_INC_STDIO)
-IUP_SDK_API int iupImageSaveAsTextPacked(Ihandle* ih, FILE* packfile, const char* format, const char* name);  /* Used only in IupView */
+IUP_SDK_API int iupImageSaveToFile(Ihandle* ih, FILE* packfile, const char* format, const char* name, int inFunction);  /* Used only in IupView and IupVisualLED */
 #endif
-IUP_SDK_API int iupImageSaveToString(Ihandle* ih, const char* format, const char* name, char **data);  /* Used only in IupVisualLED */
+IUP_SDK_API int iupImageSaveToString(Ihandle* ih, const char* format, const char* name, char **data, int inFunction);  /* Used only in IupVisualLED */
 
 void iupImageStockInit(void);
 void iupImageStockFinish(void);

@@ -428,7 +428,7 @@ static int saveallimagesone_cb(void)
         return IUP_DEFAULT;
       }
 
-      if (!iupImageSaveAsTextPacked(elem, packfile, imgtype, names[i]))
+      if (!iupImageSaveToFile(elem, packfile, imgtype, names[i], 1))
       {
         fclose(packfile);
         IupMessage("Error", "Failed to write to the file.");
@@ -1097,7 +1097,7 @@ static int image_converter(int argc, char **argv)
     intitle = iupStrFileGetTitle(inname);
     replace_dots(intitle);
 
-    if (!iupImageSaveAsTextPacked(image, outfile, imgtype, intitle))
+    if (!iupImageSaveToFile(image, outfile, imgtype, intitle, 1))
     {
       printf("Error: Failed to write to the output file.");
 
