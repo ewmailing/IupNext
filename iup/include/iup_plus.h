@@ -337,6 +337,13 @@ namespace Iup
     User(Ihandle* _ih) : Element(_ih) {}
     User(const Element& elem) : Element(elem.GetHandle()) {}
   };
+  class Thread : public Element
+  {
+  public:
+    Thread() : Element(IupThread()) {}
+    Thread(Ihandle* _ih) : Element(_ih) {}
+    Thread(const Element& elem) : Element(elem.GetHandle()) {}
+  };
   class Param : public Element
   {
   public:

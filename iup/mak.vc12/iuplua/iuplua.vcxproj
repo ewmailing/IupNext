@@ -152,6 +152,7 @@
     <ClCompile Include="..\..\srclua5\elem\il_submenu.c" />
     <ClCompile Include="..\..\srclua5\elem\il_tabs.c" />
     <ClCompile Include="..\..\srclua5\elem\il_text.c" />
+    <ClCompile Include="..\..\srclua5\elem\il_thread.c" />
     <ClCompile Include="..\..\srclua5\elem\il_timer.c" />
     <ClCompile Include="..\..\srclua5\elem\il_toggle.c" />
     <ClCompile Include="..\..\srclua5\elem\il_tree.c" />
@@ -231,6 +232,7 @@
     <None Include="..\..\srclua5\elem\submenu.lua" />
     <None Include="..\..\srclua5\elem\tabs.lua" />
     <None Include="..\..\srclua5\elem\text.lua" />
+    <None Include="..\..\srclua5\elem\thread.lua" />
     <None Include="..\..\srclua5\elem\timer.lua" />
     <None Include="..\..\srclua5\elem\toggle.lua" />
     <None Include="..\..\srclua5\elem\tree.lua" />

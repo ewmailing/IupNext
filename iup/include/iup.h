@@ -245,6 +245,7 @@ IUP_API Ihandle*  IupFlatSeparator(void);
 IUP_API Ihandle*  IupCanvas     (const char* action);
 IUP_API Ihandle*  IupDialog     (Ihandle* child);
 IUP_API Ihandle*  IupUser       (void);
+IUP_API Ihandle*  IupThread     (void);
 IUP_API Ihandle*  IupLabel      (const char* title);
 IUP_API Ihandle*  IupList       (const char* action);
 IUP_API Ihandle*  IupFlatList   (void);

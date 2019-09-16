@@ -104,6 +104,7 @@ void iupRegisterInternalClasses(void)
   iupRegisterClass(iupImageRGBANewClass());
   iupRegisterClass(iupUserNewClass());
   iupRegisterClass(iupClipboardNewClass());
+  iupRegisterClass(iupThreadNewClass());
 
   iupRegisterClass(iupRadioNewClass());
   iupRegisterClass(iupFillNewClass());

@@ -1402,6 +1402,7 @@ IUPLUA_API int iuplua_open(lua_State * L)
   iupprogressbarlua_open(L);
   iupnormalizerlua_open(L);
   iupuserlua_open(L);
+  iupthreadlua_open(L);
   iuptreelua_open(L);
   iupclipboardlua_open(L);
   iupprogressdlglua_open(L);

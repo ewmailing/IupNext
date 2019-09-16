@@ -151,6 +151,7 @@
     <ClCompile Include="..\src\iup_str.c" />
     <ClCompile Include="..\src\iup_strmessage.c" />
     <ClCompile Include="..\src\iup_table.c" />
+    <ClCompile Include="..\src\iup_thread.c" />
     <ClCompile Include="..\src\win\iupwindows_info.c" />
     <ClCompile Include="..\src\win\iupwindows_main.c" />
     <ClCompile Include="..\src\iup_box.c" />

@@ -293,6 +293,7 @@ IupUnmap
 IupUpdate
 IupUpdateChildren
 IupUser
+IupThread
 IupVal
 IupVbox
 IupVboxV
@@ -518,7 +519,7 @@ iupRadioFindToggleParent
 iupRegisterClass
 iupRegisterFindClass
 iupRound
-iupImageSaveAsTextPacked
+iupImageSaveToFile
 iupSetFontFaceAttrib
 iupSetFontSizeAttrib
 iupSetFontStyleAttrib

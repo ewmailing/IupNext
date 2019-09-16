@@ -2025,6 +2025,10 @@ wb_usr.tree =
           link= "ctrl/iuptuio.html"
         },
         {
+          name= {nl= "IupThread"},
+          link= "elem/iupthread.html"
+        },
+        {
           name= {nl= "IupUser"},
           link= "elem/iupuser.html"
         },
