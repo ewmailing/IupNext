@@ -451,7 +451,34 @@ static int iConfigItemRecent_CB(Ihandle* ih_item)
   return IUP_DEFAULT;
 }
 
-static void iConfigBuildRecent(Ihandle* ih, Ihandle* menu, int max_recent, const char* group_name, Icallback recent_cb)
+static int iConfigListRecent_CB(Ihandle* list, char *text, int item, int state)
+{
+  (void)item;
+
+  if (state == 1)
+  {
+    Ihandle* drop_button = IupGetAttributeHandle(IupGetDialog(list), "DROPBUTTON");
+    Icallback recent_cb = IupGetCallback(list, "RECENT_CB");
+
+    if (recent_cb)
+    {
+      Ihandle* ih = (Ihandle*)IupGetAttribute(list, "_IUP_CONFIG");
+      IupSetStrAttribute(ih, "RECENTFILENAME", text);
+      ih->parent = list;
+
+      recent_cb(ih);
+
+      ih->parent = NULL;
+      IupSetAttribute(ih, "RECENTFILENAME", NULL);
+    }
+
+    if (drop_button)
+      IupSetAttribute(drop_button, "SHOWDROPDOWN", "NO");
+  }
+  return IUP_DEFAULT;
+}
+
+static void iConfigBuildRecentMenu(Ihandle* ih, Ihandle* menu, int max_recent, const char* group_name, Icallback recent_cb)
 {
   /* add the new items, reusing old ones */
   int i;
@@ -483,17 +510,53 @@ static void iConfigBuildRecent(Ihandle* ih, Ihandle* menu, int max_recent, const
   } while (value && i <= max_recent);
 }
 
-IUP_API void IupConfigRecentInit(Ihandle* ih, Ihandle* menu, Icallback recent_cb, int max_recent)
+static void iConfigBuildRecentList(Ihandle* ih, Ihandle* list, int max_recent, const char* group_name, Icallback recent_cb)
 {
+  /* add the new items, reusing old ones */
+  int i;
+  const char* value;
+
+  IupSetAttribute(list, "1", NULL);
+
+  i = 1;
+  do
+  {
+    value = IupConfigGetVariableStrId(ih, group_name, "File", i);
+    if (value)
+      IupSetStrAttributeId(list, "", i, value);
+    i++;
+  } while (value && i <= max_recent);
+
+
+  IupSetCallback(list, "RECENT_CB", recent_cb);
+  IupSetAttribute(list, "_IUP_CONFIG", (char*)ih);
+
+  if (iupStrEqual(IupGetClassName(list), "flatlist"))
+    IupSetCallback(list, "FLAT_ACTION", (Icallback)iConfigListRecent_CB);
+  else
+    IupSetCallback(list, "ACTION", (Icallback)iConfigListRecent_CB);
+}
+
+IUP_API void IupConfigRecentInit(Ihandle* ih, Ihandle* menu_list, Icallback recent_cb, int max_recent)
+{
+
   char* recent_name = IupGetAttribute(ih, "RECENTNAME");
   const char* group_name = recent_name;
   if (!group_name) group_name = "Recent";
 
-  IupSetAttribute(ih, iConfigGetRecentAttribName(recent_name, "RECENTMENU"), (char*)menu);
   IupSetCallback(ih, iConfigGetRecentAttribName(recent_name, "RECENT_CB"), recent_cb);
   IupSetInt(ih, iConfigGetRecentAttribName(recent_name, "RECENTMAX"), max_recent);
 
-  iConfigBuildRecent(ih, menu, max_recent, group_name, recent_cb);
+  if (iupStrEqual(IupGetClassName(menu_list), "menu"))
+  {
+    IupSetAttribute(ih, iConfigGetRecentAttribName(recent_name, "RECENTMENU"), (char*)menu_list);
+    iConfigBuildRecentMenu(ih, menu_list, max_recent, group_name, recent_cb);
+  }
+  else
+  {
+    IupSetAttribute(ih, iConfigGetRecentAttribName(recent_name, "RECENTLIST"), (char*)menu_list);
+    iConfigBuildRecentList(ih, menu_list, max_recent, group_name, recent_cb);
+  }
 }
 
 IUP_API void IupConfigRecentUpdate(Ihandle* ih, const char* filename)
@@ -501,6 +564,7 @@ IUP_API void IupConfigRecentUpdate(Ihandle* ih, const char* filename)
   const char* value;
   char* recent_name = IupGetAttribute(ih, "RECENTNAME");
   Ihandle* menu = (Ihandle*)IupGetAttribute(ih, iConfigGetRecentAttribName(recent_name, "RECENTMENU"));
+  Ihandle* list = (Ihandle*)IupGetAttribute(ih, iConfigGetRecentAttribName(recent_name, "RECENTLIST"));
   Icallback recent_cb = IupGetCallback(ih, iConfigGetRecentAttribName(recent_name, "RECENT_CB"));
   int max_recent = IupGetInt(ih, iConfigGetRecentAttribName(recent_name, "RECENTMAX"));
   const char* group_name = recent_name;
@@ -545,7 +609,10 @@ IUP_API void IupConfigRecentUpdate(Ihandle* ih, const char* filename)
   /* push new at start always */
   IupConfigSetVariableStr(ih, group_name, "File1", filename);
 
-  iConfigBuildRecent(ih, menu, max_recent, group_name, recent_cb);
+  if (menu)
+    iConfigBuildRecentMenu(ih, menu, max_recent, group_name, recent_cb);
+  else
+    iConfigBuildRecentList(ih, list, max_recent, group_name, recent_cb);
 }
 
 #endif /* macOS/Cocoa */
