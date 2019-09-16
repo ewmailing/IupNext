@@ -115,6 +115,7 @@
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="..\srcvled\iup_vled.c" />
+    <ClCompile Include="..\srcvled\iup_vled_export.c" />
   </ItemGroup>
   <ItemGroup>
     <ProjectReference Include="iupcontrols.vcxproj">

@@ -22,6 +22,7 @@
 #include "iup_dlglist.h"
 
 
+void ivLedExport(Ihandle* ih, const char* filename, const char* format);
 
 #define MAX_NAMES 5000
 #define FOLDING_MARGIN "20"
@@ -35,6 +36,7 @@ enum {
   FIND_TITLE = 3,
   FIND_ATTRIBUTE = 4
 };
+
 
 static int compare_image_names(const void* i1, const void* i2)
 {
@@ -187,7 +189,7 @@ static int getOpenFileName(char* file)
   return ret;
 }
 
-static int isAlien(Ihandle *elem, const char* filename);
+int isAlien(Ihandle *elem, const char* filename);
 static int vLedTreeAddNode(Ihandle* tree, int id, Ihandle* ih, const char *filename);
 static int vLedTreeAddChildren(Ihandle* tree, int parent_id, Ihandle* parent, const char *filename);
 
@@ -274,7 +276,7 @@ static char* mainGetFileTitle(const char* file_name)
   return strdup_free(file_title, ft_str);
 }
 
-static Ihandle* get_current_multitext(Ihandle* ih)
+Ihandle* get_current_multitext(Ihandle* ih)
 {
   Ihandle* tabs = IupGetDialogChild(ih, "MULTITEXT_TABS");
   return (Ihandle*)IupGetAttribute(tabs, "VALUE_HANDLE");
@@ -307,7 +309,7 @@ static void LoadImageFile(Ihandle* self, const char* file_name)
 
     IupSetHandle(file_title, new_image);
 
-    iupImageSaveToString(new_image, "LED", name, &buffer);
+    iupImageSaveToString(new_image, "LED", name, &buffer, 1);
 
     pos = IupGetInt(currMultitext, "CARETPOS");
     IupTextConvertPosToLinCol(currMultitext, pos, &lin, &col);
@@ -332,7 +334,7 @@ static void LoadImageFile(Ihandle* self, const char* file_name)
   }
 }
 
-static int isAlien(Ihandle *elem, const char* filename)
+int isAlien(Ihandle *elem, const char* filename)
 {
   char *elem_file;
 
@@ -1014,6 +1016,7 @@ static int tools_menu_open_cb(Ihandle *ih_menu)
   Ihandle* multitext = get_current_multitext(ih_menu);
   char* filename = IupGetAttribute(multitext, "FILENAME");
   int dirty = IupGetInt(multitext, "MODIFIED");
+  Ihandle *projConfig =  (Ihandle*)iupAttribGetInherit(ih_menu, "_IUP_PROJECT_CONFIG");
 
   if (dirty)
     IupSetAttribute(item_loadbuffer, "ACTIVE", "YES");
@@ -1027,10 +1030,8 @@ static int tools_menu_open_cb(Ihandle *ih_menu)
     IupSetAttribute(item_show_all_img, "ACTIVE", "YES");
     IupSetAttribute(item_export_lua, "ACTIVE", "YES");
     IupSetAttribute(item_export_all_lua, "ACTIVE", "YES");
-    IupSetAttribute(item_export_proj_lua, "ACTIVE", "YES");
     IupSetAttribute(item_export_c, "ACTIVE", "YES");
     IupSetAttribute(item_export_all_c, "ACTIVE", "YES");
-    IupSetAttribute(item_export_proj_c, "ACTIVE", "YES");
     IupSetAttribute(item_use_utf8, "ACTIVE", "YES");
   }
   else
@@ -1040,11 +1041,20 @@ static int tools_menu_open_cb(Ihandle *ih_menu)
     IupSetAttribute(item_show_all_img, "ACTIVE", "NO");
     IupSetAttribute(item_export_lua, "ACTIVE", "NO");
     IupSetAttribute(item_export_all_lua, "ACTIVE", "NO");
-    IupSetAttribute(item_export_proj_lua, "ACTIVE", "NO");
     IupSetAttribute(item_export_c, "ACTIVE", "NO");
     IupSetAttribute(item_export_all_c, "ACTIVE", "NO");
-    IupSetAttribute(item_export_proj_c, "ACTIVE", "NO");
     IupSetAttribute(item_use_utf8, "ACTIVE", "NO");
+  }
+
+  if (projConfig)
+  {
+    IupSetAttribute(item_export_proj_c, "ACTIVE", "YES");
+    IupSetAttribute(item_export_proj_lua, "ACTIVE", "YES");
+  }
+  else
+  {
+    IupSetAttribute(item_export_proj_c, "ACTIVE", "NO");
+    IupSetAttribute(item_export_proj_lua, "ACTIVE", "NO");
   }
 
   return IUP_DEFAULT;
@@ -1376,14 +1386,6 @@ static int item_linesuncomment_action_cb(Ihandle* ih_item)
 
 static int item_loadbuffer_action_cb(Ihandle *ih_item)
 {
-  Ihandle* elementsList = IupGetDialogChild(ih_item, "ELEMENTS_TREE");
-  Ihandle* multitext = get_current_multitext(ih_item);
-  char *filename = IupGetAttribute(multitext, "FILENAME");
-
-  unload_led(filename);
-
-  load_buffer(elementsList, filename);
-
   return IUP_DEFAULT;
 }
 
@@ -1622,42 +1624,168 @@ static int item_show_all_img_cb(Ihandle *ih_item)
   return IUP_DEFAULT;
 }
 
+static int ivLedGetExportFile(Ihandle* ih, char* filename, char *filetype)
+{
+  Ihandle *file_dlg = 0;
+  Ihandle* dlg = IupGetDialog(ih);
+  int ret;
+  char filter[4096];
+  static char dir[4096] = "";  /* static will make the dir persist from one call to another if not defined */
+
+  file_dlg = IupFileDlg();
+
+  strcpy(filter, "*.");
+  strcat(filter, filetype);
+
+  iupStrFileNameSplit(filename, dir, filter);
+
+  IupSetAttribute(file_dlg, "FILTER", filter);
+  IupSetAttribute(file_dlg, "FILE", filename);
+  IupSetAttribute(file_dlg, "DIRECTORY", dir);
+  IupSetAttribute(file_dlg, "DIALOGTYPE", "SAVE");
+  IupSetAttribute(file_dlg, "ALLOWNEW", "YES");
+  IupSetAttribute(file_dlg, "NOCHANGEDIR", "YES");
+  IupSetAttributeHandle(file_dlg, "PARENTDIALOG", dlg);
+  IupSetAttribute(file_dlg, "ICON", IupGetGlobal("ICON"));
+
+  IupPopup(file_dlg, IUP_CENTERPARENT, IUP_CENTERPARENT);
+
+  ret = IupGetInt(file_dlg, "STATUS");
+  if (ret != -1)
+  {
+    char* value = IupGetAttribute(file_dlg, "VALUE");
+    if (value)
+    {
+      strcpy(filename, value);
+      iupStrFileNameSplit(filename, dir, NULL);
+    }
+  }
+
+  IupDestroy(file_dlg);
+
+  return ret;
+}
+
 static int item_export_lua_action_cb(Ihandle *ih_item)
 {
-  return IUP_DEFAULT;
-}
+  char filename[4096];
+  Ihandle* multitext = get_current_multitext(ih_item);
+  char *currFilename = IupGetAttribute(multitext, "FILENAME");
+  char* title = iupStrFileGetTitle(currFilename);
 
-static int item_export_all_lua_action_cb(Ihandle *ih_item)
-{
-  return IUP_DEFAULT;
-}
+  char *ext = strrchr(title, '.');
+  *ext = 0;
 
-static int item_export_proj_lua_action_cb(Ihandle *ih_item)
-{
+  strcpy(filename, title);
+  strcat(filename, ".lua");
+
+  int ret = ivLedGetExportFile(ih_item, filename, "lua");
+  if (ret != -1) /* ret==0 existing file. TODO: replace existing contents. */
+    ivLedExport(ih_item, filename, "LUA");
+
   return IUP_DEFAULT;
 }
 
 static int item_export_c_action_cb(Ihandle *ih_item)
 {
+  char filename[4096];
+  Ihandle* multitext = get_current_multitext(ih_item);
+  char *currFilename = IupGetAttribute(multitext, "FILENAME");
+  char* title = iupStrFileGetTitle(currFilename);
+
+  char *ext = strrchr(title, '.');
+  *ext = 0;
+
+  strcpy(filename, title);
+  strcat(filename, ".c");
+
+  int ret = ivLedGetExportFile(ih_item, filename, "c");
+  if (ret != -1) /* ret==0 existing file. TODO: replace existing contents. */
+    ivLedExport(ih_item, filename, "C");
+
   return IUP_DEFAULT;
 }
 
-static int item_export_all_c_action_cb(Ihandle *ih_item)
+static int item_export_all_action_cb(Ihandle *ih_item)
 {
+  char *itemName = IupGetAttribute(ih_item, "NAME");
+  Ihandle* tabs = IupGetDialogChild(ih_item, "MULTITEXT_TABS");
+  int count = IupGetInt(tabs, "COUNT");
+  char *folder;
+  int i;
+
+  folder = getfolder();
+
+  for (i = 0; i < count; i++)
+  {
+    char filename[1024];
+    Ihandle *multitext = IupGetChild(tabs, i);
+    char *currFilename = IupGetAttribute(multitext, "FILENAME");
+    char* title = iupStrFileGetTitle(currFilename);
+
+    char *ext = strrchr(title, '.');
+    *ext = 0;
+
+    strcpy(filename, folder);
+    strcat(filename, "\\");
+    strcat(filename, title);
+    if (strcmp(itemName, "ITM_EXP_ALL_LUA") == 0)
+    {
+      strcat(filename, ".lua");
+
+      ivLedExport(ih_item, filename, "LUA");
+    }
+    else
+    {
+      strcat(filename, ".c");
+
+      ivLedExport(ih_item, filename, "C");
+    }
+  }
+
   return IUP_DEFAULT;
 }
 
-static int item_export_proj_c_action_cb(Ihandle *ih_item)
+static int item_export_proj_action_cb(Ihandle *ih_item)
 {
+  char *itemName = IupGetAttribute(ih_item, "NAME");
+  Ihandle* projectTree = IupGetDialogChild(ih_item, "PROJECTTREE");
+  int count = IupGetInt(projectTree, "COUNT");
+  int i;
+
+  char *folder = getfolder();
+
+  for (i = 1; i < count; i++)
+  {
+    char filename[1024];
+    char* currFilename = IupTreeGetUserId(projectTree, i);
+
+    char* title = iupStrFileGetTitle(currFilename);
+
+    char *ext = strrchr(title, '.');
+    *ext = 0;
+
+    strcpy(filename, folder);
+    strcat(filename, "\\");
+    strcat(filename, title);
+    if (strcmp(itemName, "ITM_EXP_PROJ_LUA") == 0)
+    {
+      strcat(filename, ".lua");
+
+      ivLedExport(ih_item, filename, "LUA");
+    }
+    else
+    {
+      strcat(filename, ".c");
+
+      ivLedExport(ih_item, filename, "C");
+    }
+  }
+
   return IUP_DEFAULT;
 }
 
 static int item_use_utf_8_action_cb(Ihandle *ih_item)
-{
-  return IUP_DEFAULT;
-}
-
-static int tree_elements_selection_cb(Ihandle* self, char *t, int i, int v)
 {
   return IUP_DEFAULT;
 }
@@ -1942,11 +2070,11 @@ static Ihandle* buildToolsMenu(void)
 
   item_export_all_lua = IupItem("Export All to Lua...", NULL);
   IupSetAttribute(item_export_all_lua, "NAME", "ITM_EXP_ALL_LUA");
-  IupSetCallback(item_export_all_lua, "ACTION", (Icallback)item_export_all_lua_action_cb);
+  IupSetCallback(item_export_all_lua, "ACTION", (Icallback)item_export_all_action_cb);
 
   item_export_proj_lua = IupItem("Export Project to Lua...", NULL);
   IupSetAttribute(item_export_proj_lua, "NAME", "ITM_EXP_PROJ_LUA");
-  IupSetCallback(item_export_proj_lua, "ACTION", (Icallback)item_export_proj_lua_action_cb);
+  IupSetCallback(item_export_proj_lua, "ACTION", (Icallback)item_export_proj_action_cb);
 
   item_export_c = IupItem("Export to C...", NULL);
   IupSetAttribute(item_export_c, "NAME", "ITM_EXP_C");
@@ -1954,11 +2082,11 @@ static Ihandle* buildToolsMenu(void)
 
   item_export_all_c = IupItem("Export All to C...", NULL);
   IupSetAttribute(item_export_all_c, "NAME", "ITM_EXP_ALL_C");
-  IupSetCallback(item_export_all_c, "ACTION", (Icallback)item_export_all_c_action_cb);
+  IupSetCallback(item_export_all_c, "ACTION", (Icallback)item_export_all_action_cb);
 
   item_export_proj_c = IupItem("Export Project To C...", NULL);
   IupSetAttribute(item_export_proj_c, "NAME", "ITM_EXP_PROJ_C");
-  IupSetCallback(item_export_proj_c, "ACTION", (Icallback)item_export_proj_c_action_cb);
+  IupSetCallback(item_export_proj_c, "ACTION", (Icallback)item_export_proj_action_cb);
 
   item_use_utf8 = IupItem("Use UTF-8", NULL);
   IupSetAttribute(item_use_utf8, "NAME", "ITM_USE_UTF_8");
@@ -2050,7 +2178,6 @@ int main(int argc, char **argv)
   IupSetAttribute(elementsList, "EXPAND", "YES");
   IupSetAttribute(elementsList, "NAME", "ELEMENTS_TREE");
   IupSetAttribute(elementsList, "ADDROOT", "NO");
-  IupSetCallback(elementsList, "SELECTION_CB", (Icallback)tree_elements_selection_cb);
   IupSetCallback(elementsList, "EXECUTELEAF_CB", (Icallback)executeleaf_cb);
   IupSetCallback(elementsList, "RIGHTCLICK_CB", (Icallback)rightclick_cb);
   IupSetAttribute(elementsList, "VISIBLELINES", "3");
