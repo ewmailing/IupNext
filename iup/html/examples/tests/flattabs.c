@@ -476,6 +476,8 @@ static Ihandle* CreateTabs(int tab)
 
 //  IupSetAttribute(tabs, "EXPANDBUTTON", "Yes");
 
+//  IupSetAttribute(tabs, "CHILDSIZEALL", "No");
+
 //  IupSetAttribute(tabs, "SHOWCLOSE", "yes");
 //  IupSetCallback(tabs, "TABCLOSE_CB", (Icallback)cbTabClose);  // remove instead of hide
   //  IupSetAttribute(tabs, "TABSPADDING", "10x50");
