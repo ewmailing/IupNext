@@ -53,6 +53,28 @@ static int StringCompare(lua_State *L)
   return 1;
 }
 
+static int StringChangeCase(lua_State *L)
+{
+  int utf8 = IupGetInt(NULL, "UTF8MODE");
+  const char* str = luaL_checkstring(L, 1);
+  char* dst_str = iupStrDup(str);
+  const char* flag = luaL_checkstring(L, 2);
+  int case_flag = IUP_CASE_UPPER;
+  if (iupStrEqualNoCase(flag, "UPPER"))
+    case_flag = IUP_CASE_UPPER;
+  else if (iupStrEqualNoCase(flag, "LOWER"))
+    case_flag = IUP_CASE_LOWER;
+  else if (iupStrEqualNoCase(flag, "TOGGLE"))
+    case_flag = IUP_CASE_TOGGLE;
+  else if (iupStrEqualNoCase(flag, "TITLE"))
+    case_flag = IUP_CASE_TITLE;
+  iupStrChangeCase(dst_str, str, case_flag, utf8);
+  lua_pushstring(L, dst_str);
+  free(dst_str);
+  return 1;
+}
+
+
 
 /*******************************  Error Handling *****************************************/
 
@@ -1292,6 +1314,7 @@ IUPLUA_API int iuplua_open(lua_State * L)
     {"dostring", il_dostring},
     {"dofile", il_dofile},
     { "StringCompare", StringCompare },
+    { "StringChangeCase", StringChangeCase },
     { "CopyUserData2String", CopyUserData2String },
     { "CopyString2UserData", CopyString2UserData },
 

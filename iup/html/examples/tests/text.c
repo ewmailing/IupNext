@@ -23,7 +23,7 @@ static int btn_append_cb (Ihandle* ih)
   return IUP_DEFAULT;
 }
 
-static int btn_insert_cb (Ihandle* ih)
+static int btn_insert_cb(Ihandle* ih)
 {
   text2multiline(ih, "INSERT"); 
   return IUP_DEFAULT;

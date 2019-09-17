@@ -130,6 +130,8 @@ IUP_SDK_API void iupStrUpper(char* dstr, const char* sstr);
  * \ingroup str */
 IUP_SDK_API int iupStrHasSpace(const char* str);
 
+
+
 /** Checks if the character is a digit. 
  * \ingroup str */
 #define iup_isdigit(_c) (_c>='0' && _c<='9')
@@ -384,6 +386,15 @@ IUP_SDK_API int iupStrCompareEqual(const char *str1, const char *str2, int cases
  *  Uses \ref iupStrCompareEqual.
  * \ingroup str */
 IUP_SDK_API int iupStrCompareFind(const char *str1, const char *str2, int casesensitive, int utf8);
+
+/** Case conversion available for \ref iupStrChangeCase.
+* \ingroup str */
+enum { IUP_CASE_UPPER, IUP_CASE_LOWER, IUP_CASE_TOGGLE, IUP_CASE_TITLE };
+
+/** Converts a string into upper case. Can be used in-place. \n
+* It will work only for Latin-1 characters, even when using utf8=1.
+* \ingroup str */
+IUP_SDK_API void iupStrChangeCase(char* dstr, const char* sstr, int case_flag, int utf8);
 
 
 

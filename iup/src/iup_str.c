@@ -14,6 +14,7 @@
 #include <limits.h>
 #include <stdarg.h>
 #include <locale.h>
+#include <ctype.h>
 
 #include "iup_export.h"
 #include "iup_str.h"
@@ -1272,9 +1273,9 @@ memset(map, 0, 256);
 #undef mm
 }
 
-static char iStrUTF8toLatin1(const char* *l)
+static char iStrUTF8toLatin1(const char* *s)
 {
-  char c = **l;
+  char c = **s;
 
   if (c >= 0) 
     return c;   /* ASCII */
@@ -1283,8 +1284,8 @@ static char iStrUTF8toLatin1(const char* *l)
   {
     short u;
     u  = (c & 0x1F) << 6;    /* first part + make room for second part */
-    (*l)++;
-    c = **l;
+    (*s)++;
+    c = **s;
     u |= (c & 0x3F);         /* second part (10XXXXXX) */
     if (u >= -128 && u < 128)
       return (char)u;
@@ -1294,12 +1295,29 @@ static char iStrUTF8toLatin1(const char* *l)
 
   /* only increment the pointer for the remaining codes */
   if ((c & 0x10) == 0)       /* Use 00010000 to detect 1110XXXX */
-    *l += 3-1;  
+    *s += 3-1;  
   else if ((c & 0x08) == 0)  /* Use 00001000 to detect 11110XXX */
-    *l += 4-1;
+    *s += 4-1;
 
   return 0;
 }
+
+static char* iStrLatin1toUTF8(char* s, char c)
+{
+  unsigned char uc = (unsigned char)c;
+  if (uc < 128) 
+    *s = c; /* s not incremented */
+  else
+  {
+    /* all 11 bit codepoints (0x0 -- 0x7ff) fit within a 2byte utf8 char
+     * firstbyte  = 110 +xxxxx := 0xc0 + (char >> 6) MSB
+     * secondbyte = 10 +xxxxxx := 0x80 + (char & 63) LSB */
+    *s = 0xc0 | (uc >> 6) & 0x1F; s++;  /* 2+1+5 bits */
+    *s = 0x80 | (uc & 0x3F);            /* 1+1+6 bits */
+  }
+  return s;
+}
+
 
 /*
 The Alphanum Algorithm is an improved sorting algorithm for strings
@@ -1484,6 +1502,95 @@ IUP_SDK_API int iupStrCompareEqual(const char *l, const char *r, int casesensiti
     return 1;  /* if second string is at terminator, then it is partially equal */
 
   return 0;
+}
+
+static char iStrToUpperLatin1(char c)
+{
+  unsigned char uc = (unsigned char)c;
+
+  if (c >= 'a' && c <= 'z') 
+    return (c - 'a') + 'A';
+
+  if (uc == 154) return (char)(unsigned char)138; /* š / Š */
+  if (uc == 156) return (char)(unsigned char)140; /* œ / Œ */
+  if (uc == 158) return (char)(unsigned char)142; /* ž / Ž */
+  if (uc == 255) return (char)(unsigned char)159; /* ÿ / Ÿ */
+
+  if (uc == 247) return c;  /* ÷ */
+  if (uc >= 224 && uc <= 254) return (char)(unsigned char)((uc - 224) + 192); /* à - þ / À - Þ */
+
+  return c;
+}
+
+static char iStrToLowerLatin1(char c)
+{
+  unsigned char uc = (unsigned char)c;
+
+  if (c >= 'A' && c <= 'Z')
+    return (c - 'A') + 'a';
+
+  if (uc == 138) return (char)(unsigned char)154; /* š / Š */
+  if (uc == 140) return (char)(unsigned char)156; /* œ / Œ */
+  if (uc == 142) return (char)(unsigned char)158; /* ž / Ž */
+  if (uc == 159) return (char)(unsigned char)255; /* ÿ / Ÿ */
+
+  if (uc == 215) return c;  /* × */
+  if (uc >= 192 && uc <= 222) return (char)(unsigned char)((uc - 192) + 224); /* à - þ / À - Þ */
+
+  return c;
+}
+
+IUP_SDK_API void iupStrChangeCase(char* dstr, const char* sstr, int case_flag, int utf8)
+{
+  int first = 1;
+  if (!sstr || sstr[0] == 0) return;
+  for (; *sstr; sstr++, dstr++)
+  {
+    char src, dst;
+
+    if (utf8)
+      src = iStrUTF8toLatin1(&sstr);  /* may increment an utf8 character */
+    else
+      src = *sstr;
+
+    dst = src;
+
+    switch (case_flag)
+    {
+    case IUP_CASE_UPPER:
+      dst = iStrToUpperLatin1(src);
+      break;
+    case IUP_CASE_LOWER:
+      dst = iStrToLowerLatin1(src);
+      break;
+    case IUP_CASE_TOGGLE:
+    {
+      char c = iStrToUpperLatin1(src);
+      if (c != src) /* was lower */
+        dst = c;
+      else
+        dst = iStrToLowerLatin1(src);
+      break;
+    }
+    case IUP_CASE_TITLE:
+      if (first || (dstr[-1] == ' ' && 
+                    dstr[+1] != 0 && dstr[+1] != ' ' &&
+                    dstr[+2] != 0 && dstr[+2] != ' ' &&
+                    dstr[+3] != 0 && dstr[+3] != ' ')) /* the first letter of the string or the first letter of a word separated by spaces, but with more than 3 characters */
+        dst = iStrToUpperLatin1(src);
+      else
+        dst = iStrToLowerLatin1(src);
+      break;
+    }
+
+    if (utf8)
+      dstr = iStrLatin1toUTF8(dstr, dst);
+    else
+      *dstr = dst;
+
+    first = 0;
+  }
+  *dstr = 0;
 }
 
 static int iStrIncUTF8(const char* str)

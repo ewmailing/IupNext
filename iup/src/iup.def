@@ -550,6 +550,7 @@ iupStrGetFormatPrecision
 iupStrGetLargeMem
 iupStrGetMemory
 iupStrHasSpace
+iupStrChangeCase
 iupStrInsert
 iupStrIsAscii
 iupStrLineCount

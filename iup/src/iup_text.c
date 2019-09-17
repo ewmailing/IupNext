@@ -383,6 +383,30 @@ static int iTextSetMaskRealAttrib(Ihandle* ih, const char* value)
   return 0;
 }
 
+static int iTextSetChangeCaseAttrib(Ihandle* ih, const char* value)
+{
+  int case_flag = -1;
+
+  if (iupStrEqualNoCase(value, "UPPER"))
+    case_flag = IUP_CASE_UPPER;
+  else if (iupStrEqualNoCase(value, "LOWER"))
+    case_flag = IUP_CASE_LOWER;
+  else if (iupStrEqualNoCase(value, "TOGGLE"))
+    case_flag = IUP_CASE_TOGGLE;
+  else if (iupStrEqualNoCase(value, "TITLE"))
+    case_flag = IUP_CASE_TITLE;
+
+  if (case_flag != -1)
+  {
+    int utf8 = IupGetInt(NULL, "UTF8MODE");
+    char* str = IupGetAttribute(ih, "VALUE");
+    iupStrChangeCase(str, str, case_flag, utf8);
+    IupSetStrAttribute(ih, "VALUE", str);
+  }
+
+  return 0;
+}
+
 static int iTextSetMultilineAttrib(Ihandle* ih, const char* value)
 {
   /* valid only before map */
@@ -667,6 +691,7 @@ Iclass* iupTextNewClass(void)
   iupClassRegisterAttribute(ic, "VISIBLECOLUMNS", NULL, NULL, IUPAF_SAMEASSYSTEM, "5", IUPAF_NO_INHERIT);
   iupClassRegisterAttribute(ic, "VISIBLELINES", NULL, NULL, IUPAF_SAMEASSYSTEM, "1", IUPAF_NO_INHERIT);
   iupClassRegisterAttribute(ic, "WORDWRAP", NULL, NULL, NULL, NULL, IUPAF_DEFAULT);
+  iupClassRegisterAttribute(ic, "CHANGECASE", NULL, iTextSetChangeCaseAttrib, NULL, NULL, IUPAF_WRITEONLY | IUPAF_NOT_MAPPED | IUPAF_NO_INHERIT);
 
   iupdrvTextInitClass(ic);
 
