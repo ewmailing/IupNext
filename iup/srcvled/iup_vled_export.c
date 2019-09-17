@@ -16,7 +16,7 @@
 
 int isAlien(Ihandle *elem, const char* filename);
 Ihandle* get_current_multitext(Ihandle* ih);
-#define vledATTRIB_ISINTERNAL(_name) (((_name[0] == 'V' && _name[1] == 'L' && _name[2] == 'E' && _name[3] == 'D') || (_name[0] == 'v' && _name[1] == 'l' && _name[2] == 'e' && _name[3] == 'd')) ? 1 : 0)
+#define VLED_ATTRIB_ISINTERNAL(_name) (((_name[0] == 'V' && _name[1] == 'L' && _name[2] == 'E' && _name[3] == 'D') || (_name[0] == 'v' && _name[1] == 'l' && _name[2] == 'e' && _name[3] == 'd')) ? 1 : 0)
 
 static void iLayoutRemoveExt(char* title, const char* ext)
 {
@@ -209,7 +209,7 @@ static int iLayoutExportElementAttribs(FILE* file, Ihandle* ih, const char* inde
   attr_count = IupGetAllAttributes(ih, attr_names, attr_count);
   for (i = 0; i < attr_count; i++)
   {
-    if (!iupClassAttribIsRegistered(ih->iclass, attr_names[i]) && vledATTRIB_ISINTERNAL(attr_names[i]) == 0)
+    if (!iupClassAttribIsRegistered(ih->iclass, attr_names[i]) && VLED_ATTRIB_ISINTERNAL(attr_names[i]) == 0)
     {
       char* value = iupAttribGetLocal(ih, attr_names[i]);
       iLayoutExportWriteAttrib(file, attr_names[i], value, localIndent, type);
