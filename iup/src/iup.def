@@ -519,7 +519,8 @@ iupRadioFindToggleParent
 iupRegisterClass
 iupRegisterFindClass
 iupRound
-iupImageSaveToFile
+iupImageExportToFile
+iupImageExportToString
 iupSetFontFaceAttrib
 iupSetFontSizeAttrib
 iupSetFontStyleAttrib

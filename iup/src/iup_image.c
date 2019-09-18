@@ -1201,85 +1201,6 @@ Iclass* iupImageRGBANewClass(void)
 /******************************************************************************/
 
 
-#if 0
-/*****************************************************/
-/* This strategy generates libraries that are bigger */
-/*****************************************************/
-static int SaveImageC(const char* file_name, Ihandle* ih, const char* name, FILE* packfile)
-{
-  int y, x, width, height, channels, linesize;
-  unsigned char* data;
-  FILE* file;
-
-  if (packfile)
-    file = packfile;
-  else
-    file = fopen(file_name, "wb");
-
-  if (!file)
-    return 0;
-
-  width = IupGetInt(ih, "WIDTH");
-  height = IupGetInt(ih, "HEIGHT");
-  channels = IupGetInt(ih, "CHANNELS");
-  linesize = width*channels;
-
-  data = (unsigned char*)iupAttribGet(ih, "WID");
-
-  if (fprintf(file, "static Ihandle* load_image_%s(void)\n", name)<0)
-  {
-    if (!packfile)
-      fclose(file);
-    return 0;
-  }
-
-  fprintf(file, "{\n");
-
-  if (channels == 1)
-  {
-    int c;
-    char* color;
-
-    fprintf(file, "  Ihandle* image = IupImage(%d, %d, NULL);\n\n", width, height);
-
-    for (c = 0; c < 256; c++)
-    {
-      color = IupGetAttributeId(ih, "", c);
-      if (!color)
-        break;
-
-      fprintf(file, "  IupSetAttribute(image, \"%d\", \"%s\");\n", c, color);
-    }
-
-    fprintf(file, "\n");
-  }
-  else if (channels == 3)
-    fprintf(file, "  Ihandle* image = IupImageRGB(%d, %d, NULL);\n", width, height);
-  else /* channels == 4 */
-    fprintf(file, "  Ihandle* image = IupImageRGBA(%d, %d, NULL);\n", width, height);
-
-  fprintf(file, "  unsigned char* d = (unsigned char*)IupGetAttribute(image, \"WID\");\n");
-
-  for (y = 0; y < height; y++)
-  {
-    fprintf(file, "    ");
-
-    for (x = 0; x < linesize; x++)
-      fprintf(file, "*d++ = %d; ", (int)(*data++));
-
-    fprintf(file, "\n");
-  }
-
-  fprintf(file, "  return image;\n");
-  fprintf(file, "}\n\n");
-
-  if (!packfile)
-    fclose(file);
-
-  return 1;
-}
-#endif
-
 static int iImagePrintBuffer(Iarray *buffer, const char *format, va_list arglist)
 {
   char str[100];
@@ -1349,10 +1270,15 @@ static int SaveImageC(const char* file_name, Ihandle* ih, const char* name, FILE
         fclose(file);
       return 0;
     }
+    iImagePrint(file, buffer, "{\n");
   }
+  else
+    iImagePrint(file, buffer, "  {\n"); /* to isolate the declarations */
 
-  iImagePrint(file, buffer, "{\n");
-  iImagePrint(file, buffer, "  unsigned char imgdata[] = {\n");
+  if (IupGetInt(NULL, "IMAGEEXPORT_STATICDATA"))
+    iImagePrint(file, buffer, "  static unsigned char imgdata[] = {\n");
+  else
+    iImagePrint(file, buffer, "  unsigned char imgdata[] = {\n");
 
   for (y = 0; y < height; y++)
   {
@@ -1388,7 +1314,8 @@ static int SaveImageC(const char* file_name, Ihandle* ih, const char* name, FILE
       iImagePrint(file, buffer, "  IupSetAttribute(image, \"%d\", \"%s\");\n", c, color);
     }
 
-    iImagePrint(file, buffer, "\n");
+    if (inFunction)
+      iImagePrint(file, buffer, "\n");
   }
   else if (channels == 3)
     iImagePrint(file, buffer, "  Ihandle* image = IupImageRGB(%d, %d, imgdata);\n", width, height);
@@ -1398,7 +1325,10 @@ static int SaveImageC(const char* file_name, Ihandle* ih, const char* name, FILE
   if (inFunction)
     iImagePrint(file, buffer, "  return image;\n");
 
-  iImagePrint(file, buffer, "}\n\n");
+  if (inFunction)
+    iImagePrint(file, buffer, "}\n\n");
+  else
+    iImagePrint(file, buffer, "  }\n\n");
 
   if (file_name)
     fclose(file);
@@ -1628,7 +1558,7 @@ IUP_API int IupSaveImageAsText(Ihandle* ih, const char* file_name, const char* f
   return ret;
 }
 
-IUP_SDK_API int iupImageSaveToFile(Ihandle* ih, FILE* packfile, const char* format, const char* name, int inFunction)
+IUP_SDK_API int iupImageExportToFile(Ihandle* ih, FILE* packfile, const char* format, const char* name, int inFunction)
 {
   int ret = 0;
 
@@ -1648,7 +1578,7 @@ IUP_SDK_API int iupImageSaveToFile(Ihandle* ih, FILE* packfile, const char* form
   return ret;
 }
 
-IUP_SDK_API int iupImageSaveToString(Ihandle* ih, const char* format, const char* name, char **data, int inFunction)
+IUP_SDK_API int iupImageExportToString(Ihandle* ih, char **str, const char* format, const char* name, int inFunction)
 {
   Iarray *buffer = iupArrayCreate(1024, sizeof(char *));
   int ret = 0;
@@ -1667,7 +1597,7 @@ IUP_SDK_API int iupImageSaveToString(Ihandle* ih, const char* format, const char
   else if (iupStrEqualNoCase(format, "C"))
     ret = SaveImageC(NULL, ih, name, NULL, buffer, inFunction);
 
-  *data = iupArrayReleaseData(buffer);
+  *str = iupArrayReleaseData(buffer);
 
   iupArrayDestroy(buffer);
 
