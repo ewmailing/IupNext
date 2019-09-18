@@ -22,10 +22,10 @@
 #include "iup_dlglist.h"
 
 
-void ivLedExport(Ihandle* ih, const char* filename, const char* format);
+void vLedExport(Ihandle* ih, const char* filename, const char* format);
 
-#define MAX_NAMES 5000
-#define FOLDING_MARGIN "20"
+#define VLED_MAX_NAMES 5000
+#define VLED_FOLDING_MARGIN "20"
 
 #define vled_isprint(_c) ((_c) > 31 && (_c) < 127 && _c != 40 && _c != '(' && _c != ')' && _c != '[' && _c != ']' && _c != ',')
 
@@ -65,13 +65,14 @@ static char* getfileformat()
     return options[ret];
 }
 
-static char* getfolder(void)
+static char* getfolder(Ihandle* ih)
 {
   static char folder[10240];
   Ihandle *filedlg = IupFileDlg();
 
   IupSetAttribute(filedlg, "DIALOGTYPE", "DIR");
-  IupSetAttribute(filedlg, "TITLE", "Select Folder for Images");
+  IupSetAttributeHandle(filedlg, "PARENTDIALOG", IupGetDialog(ih));
+  IupSetAttribute(filedlg, "TITLE", "Select Folder for Files");
 
   IupPopup(filedlg, IUP_CENTER, IUP_CENTER);
 
@@ -189,14 +190,14 @@ static int getOpenFileName(char* file)
   return ret;
 }
 
-int isAlien(Ihandle *elem, const char* filename);
+int vLedIsAlien(Ihandle *elem, const char* filename);
 static int vLedTreeAddNode(Ihandle* tree, int id, Ihandle* ih, const char *filename);
 static int vLedTreeAddChildren(Ihandle* tree, int parent_id, Ihandle* parent, const char *filename);
 
 static void mainUpdateList(Ihandle* tree, const char* file_name)
 {
-  char *names[MAX_NAMES];
-  int i, num_names = IupGetAllNames(names, MAX_NAMES);
+  char *names[VLED_MAX_NAMES];
+  int i, num_names = IupGetAllNames(names, VLED_MAX_NAMES);
   int last_child_id = -1;
 
   IupSetAttribute(tree, "DELNODE0", "ALL");
@@ -204,17 +205,20 @@ static void mainUpdateList(Ihandle* tree, const char* file_name)
   for (i = 0; i < num_names; i++)
   {
     Ihandle* elem = IupGetHandle(names[i]);
-    Ihandle*elem_parent = elem->parent;
+    if (elem)
+    {
+      Ihandle* elem_parent = elem->parent;
 
-    if (IupGetInt(elem, "VLED_INTERNAL") != 0 || (elem && isAlien(elem, file_name)) || (elem_parent && !isAlien(elem_parent, file_name)))
-      continue;
+      if (iupAttribGetInt(elem, "VLED_INTERNAL") != 0 || vLedIsAlien(elem, file_name) || (elem_parent && !vLedIsAlien(elem_parent, file_name)))
+        continue;
 
-    last_child_id = vLedTreeAddNode(tree, last_child_id, elem, file_name);
+      last_child_id = vLedTreeAddNode(tree, last_child_id, elem, file_name);
 
-    if (elem->iclass->childtype != IUP_CHILDNONE && !isAlien(elem, file_name))
-      last_child_id = vLedTreeAddChildren(tree, last_child_id, elem, file_name);
+      if (elem->iclass->childtype != IUP_CHILDNONE && !vLedIsAlien(elem, file_name))
+        last_child_id = vLedTreeAddChildren(tree, last_child_id, elem, file_name);
 
-    last_child_id = -1;
+      last_child_id = -1;
+    }
   }
 
   IupSetAttribute(tree, "VALUE", "1");
@@ -276,7 +280,7 @@ static char* mainGetFileTitle(const char* file_name)
   return strdup_free(file_title, ft_str);
 }
 
-Ihandle* get_current_multitext(Ihandle* ih)
+Ihandle* vLedGetCurrentMultitext(Ihandle* ih)
 {
   Ihandle* tabs = IupGetDialogChild(ih, "MULTITEXT_TABS");
   return (Ihandle*)IupGetAttribute(tabs, "VALUE_HANDLE");
@@ -284,7 +288,7 @@ Ihandle* get_current_multitext(Ihandle* ih)
 
 static void LoadImageFile(Ihandle* self, const char* file_name)
 {
-  Ihandle* currMultitext = get_current_multitext(self);
+  Ihandle* currMultitext = vLedGetCurrentMultitext(self);
 
   Ihandle* new_image = IupLoadImage(file_name);
 
@@ -309,7 +313,7 @@ static void LoadImageFile(Ihandle* self, const char* file_name)
 
     IupSetHandle(file_title, new_image);
 
-    iupImageSaveToString(new_image, "LED", name, &buffer, 1);
+    iupImageExportToString(new_image, &buffer, "LED", name, 1);
 
     pos = IupGetInt(currMultitext, "CARETPOS");
     IupTextConvertPosToLinCol(currMultitext, pos, &lin, &col);
@@ -330,18 +334,18 @@ static void LoadImageFile(Ihandle* self, const char* file_name)
   {
     char* err_msg = IupGetGlobal("IUPIM_LASTERROR");
     if (err_msg)
-      IupMessage("Error", err_msg);
+      IupMessageError(IupGetDialog(self), err_msg);
   }
 }
 
-int isAlien(Ihandle *elem, const char* filename)
+int vLedIsAlien(Ihandle *elem, const char* filename)
 {
   char *elem_file;
 
   if (!elem || !filename)
     return 0;
 
-  elem_file = IupGetAttribute(elem, "VLED_FILENAME");
+  elem_file = iupAttribGet(elem, "VLED_FILENAME");
 
   if (!elem_file || !iupStrEqual(elem_file, filename))
     return 1;
@@ -415,7 +419,7 @@ static int vLedTreeAddNode(Ihandle* tree, int id, Ihandle* ih, const char *filen
 
   if (ih->iclass->childtype != IUP_CHILDNONE && !IupGetInt(ih, "LEDPARSER_NOTDEFINED"))
   {
-    if (!ih->parent || isAlien(ih->parent, filename) || ih == vLedTreeGetFirstChild(ih))
+    if (!ih->parent || vLedIsAlien(ih->parent, filename) || ih == vLedTreeGetFirstChild(ih))
     {
       IupSetAttributeId(tree, "ADDBRANCH", id, "");
       id++;
@@ -428,7 +432,7 @@ static int vLedTreeAddNode(Ihandle* tree, int id, Ihandle* ih, const char *filen
   }
   else
   {
-    if (!ih->parent || isAlien(ih->parent, filename) || ih == vLedTreeGetFirstChild(ih))
+    if (!ih->parent || vLedIsAlien(ih->parent, filename) || ih == vLedTreeGetFirstChild(ih))
     {
       IupSetAttributeId(tree, "ADDLEAF", id, "");
       id++;
@@ -440,7 +444,7 @@ static int vLedTreeAddNode(Ihandle* tree, int id, Ihandle* ih, const char *filen
     }
   }
 
-  if (isAlien(ih, filename) || iupStrEqual(ih->iclass->name, "user"))
+  if (vLedIsAlien(ih, filename) || iupStrEqual(ih->iclass->name, "user"))
     link = 1;
 
   vLedTreeSetNodeInfo(tree, id, ih, link);
@@ -458,7 +462,7 @@ static int vLedTreeAddChildren(Ihandle* tree, int parent_id, Ihandle* parent, co
     {
       last_child_id = vLedTreeAddNode(tree, last_child_id, child, filename);
 
-      if (child->iclass->childtype != IUP_CHILDNONE && !isAlien(child, filename))
+      if (child->iclass->childtype != IUP_CHILDNONE && !vLedIsAlien(child, filename))
         vLedTreeAddChildren(tree, last_child_id, child, filename);
     }
   }
@@ -468,33 +472,31 @@ static int vLedTreeAddChildren(Ihandle* tree, int parent_id, Ihandle* parent, co
 
 static void mainFlagInternalElements(void)
 {
-  char *names[MAX_NAMES];
-  int i, num_names = IupGetAllNames(names, MAX_NAMES);
+  char *names[VLED_MAX_NAMES];
+  int i, num_names = IupGetAllNames(names, VLED_MAX_NAMES);
   for (i = 0; i < num_names; i++)
   {
     Ihandle* elem = IupGetHandle(names[i]);
-
-    if (!IupGetAttribute(elem, "VLED_FILENAME") && !IupGetInt(elem, "VLED_INTERNAL"))
-      IupSetAttribute(elem, "VLED_INTERNAL", "YES");
+    if (elem && !iupAttribGet(elem, "VLED_FILENAME") && !iupAttribGetInt(elem, "VLED_INTERNAL"))
+      iupAttribSet(elem, "VLED_INTERNAL", "YES");
   }
 }
 
 static void mainFlagLedElements(const char *file_name)
 {
-  char *names[MAX_NAMES];
-  int i, num_names = IupGetAllNames(names, MAX_NAMES);
+  char *names[VLED_MAX_NAMES];
+  int i, num_names = IupGetAllNames(names, VLED_MAX_NAMES);
   for (i = 0; i < num_names; i++)
   {
     Ihandle* elem = IupGetHandle(names[i]);
-
-    if (!IupGetAttribute(elem, "VLED_FILENAME"))
-      IupStoreAttribute(elem, "VLED_FILENAME", file_name);
+    if (elem && !iupAttribGet(elem, "VLED_FILENAME"))
+      iupAttribSetStr(elem, "VLED_FILENAME", file_name);
   }
 }
 
 static int load_led(Ihandle *list, const char *file_name)
 {
-  Ihandle* multitext = get_current_multitext(list);
+  Ihandle* multitext = vLedGetCurrentMultitext(list);
   char* error;
 
   mainFlagInternalElements();
@@ -524,7 +526,7 @@ static int load_led(Ihandle *list, const char *file_name)
 
 static int load_buffer(Ihandle *list, const char *file_name)
 {
-  Ihandle* multitext = get_current_multitext(list);
+  Ihandle* multitext = vLedGetCurrentMultitext(list);
   char* buffer = IupGetAttribute(multitext, "VALUE");
   char* error;
 
@@ -553,11 +555,11 @@ static int load_buffer(Ihandle *list, const char *file_name)
   return IUP_DEFAULT;
 }
 
-static void unloadNamedElements(Ihandle *element)
+static void unloadNamedElements(Ihandle *elem)
 {
   Ihandle *child;
 
-  for (child = element->firstchild; child; child = child->brother)
+  for (child = elem->firstchild; child; child = child->brother)
   {
     if (child->iclass->childtype != IUP_CHILDNONE)
       unloadNamedElements(child);
@@ -569,47 +571,47 @@ static void unloadNamedElements(Ihandle *element)
 
 static int unload_led(char *file_name)
 {
-  char *names[MAX_NAMES];
-  int i, num_names = IupGetAllNames(names, MAX_NAMES);
+  char *names[VLED_MAX_NAMES];
+  int i, num_names = IupGetAllNames(names, VLED_MAX_NAMES);
 
   for (i = 0; i < num_names; i++)
   {
-    Ihandle *element, *parent, *brother;
+    Ihandle *elem, *parent, *brother;
     char title[80], *name = names[i];
 
-    element = IupGetHandle(name);
-    if (!element)
+    elem = IupGetHandle(name);
+    if (!elem)
       continue;
 
-    if (IupGetInt(element, "VLED_INTERNAL") != 0 || isAlien(element, file_name))
+    if (iupAttribGetInt(elem, "VLED_INTERNAL") != 0 || vLedIsAlien(elem, file_name))
       continue;
 
-    if (strcmp(IupGetClassName(element), "menu") == 0)
+    if (strcmp(IupGetClassName(elem), "menu") == 0)
     {
-      Ihandle *parent = element->parent;
+      Ihandle *parent = elem->parent;
       if (parent && strcmp(IupGetClassName(parent), "dialog") == 0)
         IupSetAttribute(parent, "MENU", NULL);
     }
 
-    if (strcmp(IupGetClassName(element), "dialog") == 0)
+    if (strcmp(IupGetClassName(elem), "dialog") == 0)
     {
-      Ihandle *menu = (Ihandle *) IupGetAttribute(element, "MENU");
+      Ihandle *menu = (Ihandle *) IupGetAttribute(elem, "MENU");
       if (menu)
-        IupSetAttribute(element, "MENU", NULL);
+        IupSetAttribute(elem, "MENU", NULL);
     }
 
-    if (element->iclass->childtype != IUP_CHILDNONE)
-      unloadNamedElements(element);
+    if (elem->iclass->childtype != IUP_CHILDNONE)
+      unloadNamedElements(elem);
 
-    parent = element->parent;
+    parent = elem->parent;
     strcpy(title, name);
 
-    if (parent && isAlien(parent, file_name))
-      brother = element->brother;
+    if (parent && vLedIsAlien(parent, file_name))
+      brother = elem->brother;
 
-    IupDestroy(element);
+    IupDestroy(elem);
 
-    if (parent && isAlien(parent, file_name))
+    if (parent && vLedIsAlien(parent, file_name))
     {
       Ihandle *user = IupUser();
       IupSetAttribute(user, "LEDPARSER_NOTDEFINED", "1");
@@ -780,7 +782,7 @@ static int multitext_map_cb(Ihandle* multitext)
   IupSetAttribute(multitext, "_IUP_FOLDDING", "1");
 
   /* Folding margin=3 */
-  IupSetAttribute(multitext, "MARGINWIDTH3", FOLDING_MARGIN);
+  IupSetAttribute(multitext, "MARGINWIDTH3", VLED_FOLDING_MARGIN);
   IupSetAttribute(multitext, "MARGINMASKFOLDERS3", "Yes");
   IupSetAttribute(multitext, "MARGINSENSITIVE3", "YES");
 
@@ -837,7 +839,7 @@ static int multitext_map_cb(Ihandle* multitext)
   value = IupConfigGetVariableStr(config, "VisualLED", "Folding");
   if (iupStrBoolean(value))
   {
-    IupSetAttribute(multitext, "MARGINWIDTH3", FOLDING_MARGIN);
+    IupSetAttribute(multitext, "MARGINWIDTH3", VLED_FOLDING_MARGIN);
     IupSetAttribute(multitext, "PROPERTY", "fold=1");
     IupSetAttribute(multitext, "_IUP_FOLDDING", "1");
     IupSetAttribute(multitext, "FOLDALL", "EXPAND");
@@ -924,7 +926,7 @@ static int closetext_cb(Ihandle* ih, Ihandle *multitext)
 {
   char *filename = IupGetAttribute(multitext, "FILENAME");
   Ihandle* tree = IupGetDialogChild(ih, "ELEMENTS_TREE");
-  Ihandle* currMutltitext = get_current_multitext(ih);
+  Ihandle* currMutltitext = vLedGetCurrentMultitext(ih);
 
   if (!filename)
     return IUP_DEFAULT;
@@ -977,7 +979,7 @@ static int led_menu_open_cb(Ihandle *ih_menu)
   Ihandle* item_toggle_folding = IupGetDialogChild(ih_menu, "ITM_TOGGLE_FOLDING");
   Ihandle* item_folding = IupGetDialogChild(ih_menu, "ITM_FOLDING");
   Ihandle* item_comments = IupGetDialogChild(ih_menu, "ITM_COMMENTS");
-  Ihandle* multitext = get_current_multitext(ih_menu);
+  Ihandle* multitext = vLedGetCurrentMultitext(ih_menu);
   char *selpos = IupGetAttribute(multitext, "SELECTIONPOS");
 
   if (IupGetInt(item_folding, "VALUE"))
@@ -1007,12 +1009,12 @@ static int tools_menu_open_cb(Ihandle *ih_menu)
   Ihandle* item_export_img = IupGetDialogChild(ih_menu, "ITM_EXP_IMG");
   Ihandle* item_show_all_img = IupGetDialogChild(ih_menu, "ITM_SHOW_ALL_IMG");
   Ihandle* item_export_lua = IupGetDialogChild(ih_menu, "ITM_EXP_LUA");
-  Ihandle* item_export_all_lua = IupGetDialogChild(ih_menu, "ITM_EXP_ALL_LUA");
+  Ihandle* item_export_open_lua = IupGetDialogChild(ih_menu, "ITM_EXPORT_OPEN_LUA");
   Ihandle* item_export_proj_lua = IupGetDialogChild(ih_menu, "ITM_EXP_PROJ_LUA");
   Ihandle* item_export_c = IupGetDialogChild(ih_menu, "ITM_EXP_C");
-  Ihandle* item_export_all_c = IupGetDialogChild(ih_menu, "ITM_EXP_ALL_C");
+  Ihandle* item_export_open_c = IupGetDialogChild(ih_menu, "ITM_EXPORT_OPEN_C");
   Ihandle* item_export_proj_c = IupGetDialogChild(ih_menu, "ITM_EXP_PROJ_C");
-  Ihandle* multitext = get_current_multitext(ih_menu);
+  Ihandle* multitext = vLedGetCurrentMultitext(ih_menu);
   char* filename = IupGetAttribute(multitext, "FILENAME");
   int dirty = IupGetInt(multitext, "MODIFIED");
   Ihandle *projConfig =  (Ihandle*)iupAttribGetInherit(ih_menu, "_IUP_PROJECT_CONFIG");
@@ -1028,9 +1030,9 @@ static int tools_menu_open_cb(Ihandle *ih_menu)
     IupSetAttribute(item_export_img, "ACTIVE", "YES");
     IupSetAttribute(item_show_all_img, "ACTIVE", "YES");
     IupSetAttribute(item_export_lua, "ACTIVE", "YES");
-    IupSetAttribute(item_export_all_lua, "ACTIVE", "YES");
+    IupSetAttribute(item_export_open_lua, "ACTIVE", "YES");
     IupSetAttribute(item_export_c, "ACTIVE", "YES");
-    IupSetAttribute(item_export_all_c, "ACTIVE", "YES");
+    IupSetAttribute(item_export_open_c, "ACTIVE", "YES");
   }
   else
   {
@@ -1038,9 +1040,9 @@ static int tools_menu_open_cb(Ihandle *ih_menu)
     IupSetAttribute(item_export_img, "ACTIVE", "NO");
     IupSetAttribute(item_show_all_img, "ACTIVE", "NO");
     IupSetAttribute(item_export_lua, "ACTIVE", "NO");
-    IupSetAttribute(item_export_all_lua, "ACTIVE", "NO");
+    IupSetAttribute(item_export_open_lua, "ACTIVE", "NO");
     IupSetAttribute(item_export_c, "ACTIVE", "NO");
-    IupSetAttribute(item_export_all_c, "ACTIVE", "NO");
+    IupSetAttribute(item_export_open_c, "ACTIVE", "NO");
   }
 
   if (projConfig)
@@ -1183,7 +1185,7 @@ static int item_folding_action_cb(Ihandle* ih)
       multitext = IupGetChild(tabs, i);
 
       IupSetAttribute(multitext, "PROPERTY", "fold=1");
-      IupSetAttribute(multitext, "MARGINWIDTH3", FOLDING_MARGIN);
+      IupSetAttribute(multitext, "MARGINWIDTH3", VLED_FOLDING_MARGIN);
       IupSetAttribute(multitext, "_IUP_FOLDDING", "1");
       IupSetAttribute(multitext, "FOLDALL", "EXPAND");
     }
@@ -1196,7 +1198,7 @@ static int item_folding_action_cb(Ihandle* ih)
 
 static int item_toggle_folding_action_cb(Ihandle* ih)
 {
-  Ihandle* multitext = get_current_multitext(ih);
+  Ihandle* multitext = vLedGetCurrentMultitext(ih);
   int pos = IupGetInt(multitext, "CARETPOS");
   int lin, col;
 
@@ -1221,7 +1223,7 @@ static int item_toggle_folding_action_cb(Ihandle* ih)
 
 static int item_fold_collapse_action_cb(Ihandle* ih)
 {
-  Ihandle* multitext = get_current_multitext(ih);
+  Ihandle* multitext = vLedGetCurrentMultitext(ih);
 
   IupSetAttribute(multitext, "FOLDALL", "CONTRACT");
 
@@ -1230,7 +1232,7 @@ static int item_fold_collapse_action_cb(Ihandle* ih)
 
 static int item_fold_expand_action_cb(Ihandle* ih)
 {
-  Ihandle* multitext = get_current_multitext(ih);
+  Ihandle* multitext = vLedGetCurrentMultitext(ih);
 
   IupSetAttribute(multitext, "FOLDALL", "EXPAND");
 
@@ -1239,7 +1241,7 @@ static int item_fold_expand_action_cb(Ihandle* ih)
 
 static int item_fold_toggle_action_cb(Ihandle* ih)
 {
-  Ihandle* multitext = get_current_multitext(ih);
+  Ihandle* multitext = vLedGetCurrentMultitext(ih);
 
   IupSetAttribute(multitext, "FOLDALL", "TOGGLE");
 
@@ -1262,7 +1264,7 @@ static int item_fold_level_action_cb(Ihandle* ih_item)
     "Options: %o|Collapse|Expand|Toggle|\n",
     &level, &action, NULL))
   {
-    Ihandle* multitext = get_current_multitext(ih_item);
+    Ihandle* multitext = vLedGetCurrentMultitext(ih_item);
     int lin, count = IupGetInt(multitext, "LINECOUNT");
 
     IupConfigSetVariableInt(config, "VisualLED", "FoldAllLevel", level);
@@ -1299,7 +1301,7 @@ static int item_fold_level_action_cb(Ihandle* ih_item)
 
 static int item_linescomment_action_cb(Ihandle* ih_item)
 {
-  Ihandle* multitext = get_current_multitext(ih_item);
+  Ihandle* multitext = vLedGetCurrentMultitext(ih_item);
   char *sel = IupGetAttribute(multitext, "SELECTION");
   char *text_line;
   int lin, col, lin1, lin2, col1, col2;
@@ -1337,7 +1339,7 @@ static int item_linescomment_action_cb(Ihandle* ih_item)
 
 static int item_linesuncomment_action_cb(Ihandle* ih_item)
 {
-  Ihandle* multitext = get_current_multitext(ih_item);
+  Ihandle* multitext = vLedGetCurrentMultitext(ih_item);
   char *sel = IupGetAttribute(multitext, "SELECTION");
   char *text_line;
   int lin, col, lin1, lin2, col1, col2;
@@ -1384,7 +1386,7 @@ static int item_linesuncomment_action_cb(Ihandle* ih_item)
 static int item_loadbuffer_action_cb(Ihandle *ih_item)
 {
   Ihandle* elementsList = IupGetDialogChild(ih_item, "ELEMENTS_TREE");
-  Ihandle* multitext = get_current_multitext(ih_item);
+  Ihandle* multitext = vLedGetCurrentMultitext(ih_item);
   char *filename = IupGetAttribute(multitext, "FILENAME");
 
   unload_led(filename);
@@ -1433,7 +1435,7 @@ static int item_export_img_cb(Ihandle *ih_item)
   if (!imgtype)
     return IUP_DEFAULT;
 
-  folder = getfolder();
+  folder = getfolder(ih_item);
   if (!folder)
     return IUP_DEFAULT;
 
@@ -1455,7 +1457,7 @@ static int item_export_img_cb(Ihandle *ih_item)
       char buff[80];
 
       /* save only loaded images */
-      char* file_title = IupGetAttribute(elem, "VLED_FILENAME");
+      char* file_title = iupAttribGet(elem, "VLED_FILENAME");
       if (!file_title)
         continue;
 
@@ -1477,7 +1479,7 @@ static int item_export_img_cb(Ihandle *ih_item)
       {
         char* err_msg = IupGetGlobal("IUPIM_LASTERROR");
         if (err_msg)
-          IupMessage("Error", err_msg);
+          IupMessageError(IupGetDialog(ih_item), err_msg);
         return IUP_DEFAULT;
       }
 
@@ -1487,7 +1489,7 @@ static int item_export_img_cb(Ihandle *ih_item)
 
   if (n == 0)
   {
-    IupMessage("Error", "No images.");
+    IupMessageError(IupGetDialog(ih_item), "No images.");
     return IUP_DEFAULT;
   }
 
@@ -1522,7 +1524,7 @@ static int item_show_all_img_cb(Ihandle *ih_item)
 {
   Ihandle *dialog, *box, *files, *tabs, *toggle, *label;
   Ihandle* params[500];
-  Ihandle* images[MAX_NAMES];
+  Ihandle* images[VLED_MAX_NAMES];
   Ihandle* elementsList = IupGetDialogChild(ih_item, "ELEMENTS_TREE");
   int count = IupGetInt(elementsList, "COUNT");
   int i, n = 0, num_images;
@@ -1542,7 +1544,7 @@ static int item_show_all_img_cb(Ihandle *ih_item)
     if (is_image(type))
     {
       /* show only loaded images */
-      char* file_title = IupGetAttribute(elem, "VLED_FILENAME");
+      char* file_title = iupAttribGet(elem, "VLED_FILENAME");
       if (!file_title)
         continue;
 
@@ -1553,7 +1555,7 @@ static int item_show_all_img_cb(Ihandle *ih_item)
 
   if (num_images == 0)
   {
-    IupMessage("Error", "No images.");
+    IupMessageError(IupGetDialog(ih_item), "No images.");
     return IUP_DEFAULT;
   }
 
@@ -1569,7 +1571,7 @@ static int item_show_all_img_cb(Ihandle *ih_item)
     name = IupGetName(elem);
 
     /* show only loaded images */
-    file_title = IupGetAttribute(elem, "VLED_FILENAME");
+    file_title = iupAttribGet(elem, "VLED_FILENAME");
     if (!file_title)
       continue;
 
@@ -1631,7 +1633,6 @@ static int item_show_all_img_cb(Ihandle *ih_item)
 static int ivLedGetExportFile(Ihandle* ih, char* filename, char *filetype)
 {
   Ihandle *file_dlg = 0;
-  Ihandle* dlg = IupGetDialog(ih);
   int ret;
   char filter[4096];
   static char dir[4096] = "";  /* static will make the dir persist from one call to another if not defined */
@@ -1649,7 +1650,7 @@ static int ivLedGetExportFile(Ihandle* ih, char* filename, char *filetype)
   IupSetAttribute(file_dlg, "DIALOGTYPE", "SAVE");
   IupSetAttribute(file_dlg, "ALLOWNEW", "YES");
   IupSetAttribute(file_dlg, "NOCHANGEDIR", "YES");
-  IupSetAttributeHandle(file_dlg, "PARENTDIALOG", dlg);
+  IupSetAttributeHandle(file_dlg, "PARENTDIALOG", IupGetDialog(ih));
   IupSetAttribute(file_dlg, "ICON", IupGetGlobal("ICON"));
 
   IupPopup(file_dlg, IUP_CENTERPARENT, IUP_CENTERPARENT);
@@ -1673,7 +1674,7 @@ static int ivLedGetExportFile(Ihandle* ih, char* filename, char *filetype)
 static int item_export_lua_action_cb(Ihandle *ih_item)
 {
   char filename[4096];
-  Ihandle* multitext = get_current_multitext(ih_item);
+  Ihandle* multitext = vLedGetCurrentMultitext(ih_item);
   char *currFilename = IupGetAttribute(multitext, "FILENAME");
   char* title = iupStrFileGetTitle(currFilename);
 
@@ -1685,7 +1686,7 @@ static int item_export_lua_action_cb(Ihandle *ih_item)
 
   int ret = ivLedGetExportFile(ih_item, filename, "lua");
   if (ret != -1) /* ret==0 existing file. TODO: check if filename is opened. */
-    ivLedExport(ih_item, filename, "LUA");
+    vLedExport(ih_item, filename, "LUA");
 
   return IUP_DEFAULT;
 }
@@ -1693,7 +1694,7 @@ static int item_export_lua_action_cb(Ihandle *ih_item)
 static int item_export_c_action_cb(Ihandle *ih_item)
 {
   char filename[4096];
-  Ihandle* multitext = get_current_multitext(ih_item);
+  Ihandle* multitext = vLedGetCurrentMultitext(ih_item);
   char *currFilename = IupGetAttribute(multitext, "FILENAME");
   char* title = iupStrFileGetTitle(currFilename);
 
@@ -1705,12 +1706,12 @@ static int item_export_c_action_cb(Ihandle *ih_item)
 
   int ret = ivLedGetExportFile(ih_item, filename, "c");
   if (ret != -1) /* ret==0 existing file. TODO: check if filename is opened. */
-    ivLedExport(ih_item, filename, "C");
+    vLedExport(ih_item, filename, "C");
 
   return IUP_DEFAULT;
 }
 
-static int item_export_all_action_cb(Ihandle *ih_item)
+static int item_export_open_action_cb(Ihandle *ih_item)
 {
   char *itemName = IupGetAttribute(ih_item, "NAME");
   Ihandle* tabs = IupGetDialogChild(ih_item, "MULTITEXT_TABS");
@@ -1718,7 +1719,9 @@ static int item_export_all_action_cb(Ihandle *ih_item)
   char *folder;
   int i;
 
-  folder = getfolder();
+  folder = getfolder(ih_item);
+  if (!folder)
+    return IUP_DEFAULT;
 
   for (i = 0; i < count; i++)
   {
@@ -1733,17 +1736,17 @@ static int item_export_all_action_cb(Ihandle *ih_item)
     strcpy(filename, folder);
     strcat(filename, "\\");
     strcat(filename, title);
-    if (strcmp(itemName, "ITM_EXP_ALL_LUA") == 0)
+    if (strcmp(itemName, "ITM_EXPORT_OPEN_LUA") == 0)
     {
       strcat(filename, ".lua");
 
-      ivLedExport(ih_item, filename, "LUA");
+      vLedExport(ih_item, filename, "LUA");
     }
     else
     {
       strcat(filename, ".c");
 
-      ivLedExport(ih_item, filename, "C");
+      vLedExport(ih_item, filename, "C");
     }
   }
 
@@ -1757,7 +1760,9 @@ static int item_export_proj_action_cb(Ihandle *ih_item)
   int count = IupGetInt(projectTree, "COUNT");
   int i;
 
-  char *folder = getfolder();
+  char *folder = getfolder(ih_item);
+  if (!folder)
+    return IUP_DEFAULT;
 
   for (i = 1; i < count; i++)
   {
@@ -1776,13 +1781,13 @@ static int item_export_proj_action_cb(Ihandle *ih_item)
     {
       strcat(filename, ".lua");
 
-      ivLedExport(ih_item, filename, "LUA");
+      vLedExport(ih_item, filename, "LUA");
     }
     else
     {
       strcat(filename, ".c");
 
-      ivLedExport(ih_item, filename, "C");
+      vLedExport(ih_item, filename, "C");
     }
   }
 
@@ -1809,7 +1814,7 @@ static int item_use_utf_8_action_cb(Ihandle *ih_item)
 
 static int executeleaf_cb(Ihandle* self, int id)
 {
-  Ihandle* multitext = get_current_multitext(self);
+  Ihandle* multitext = vLedGetCurrentMultitext(self);
   Ihandle *elem = (Ihandle *)IupTreeGetUserId(self, id);
   char *name = IupGetName(elem);
   Ihandle *parent = elem;
@@ -1872,7 +1877,7 @@ static int propertiesdlg_cb(Ihandle* self)
   if (elem)
     IupShow(IupElementPropertiesDialog(IupGetDialog(tree), elem));
   else
-    IupMessage("Error", "No elements.");
+    IupMessageError(IupGetDialog(self), "No elements.");
 
   return IUP_DEFAULT;
 }
@@ -1899,12 +1904,12 @@ static int showElement_cb(Ihandle* self)
         if (iupStrEqual(type, "menu"))
           IupPopup(elem, IUP_MOUSEPOS, IUP_MOUSEPOS);
         else
-          IupMessage("Error", "Will only show dialogs and independent menus.");
+          IupMessageError(IupGetDialog(self), "Will only show dialogs and independent menus.");
       }
     }
   }
   else
-    IupMessage("Error", "No elements.");
+    IupMessageError(IupGetDialog(self), "No elements.");
 
   return IUP_DEFAULT;
 }
@@ -1932,7 +1937,7 @@ static int hideElement_cb(Ihandle* self)
     }
   }
   else
-    IupMessage("Error", "No elements.");
+    IupMessageError(IupGetDialog(self), "No elements.");
 
   return IUP_DEFAULT;
 }
@@ -2062,7 +2067,7 @@ static Ihandle* buildLedMenu(void)
 static Ihandle* buildToolsMenu(void)
 {
   Ihandle *item_load, *item_import_img, *item_export_img, *item_show_all_img, *item_export_lua,
-    *item_export_all_lua, *item_export_proj_lua, *item_export_c, *item_export_all_c,
+    *item_export_open_lua, *item_export_proj_lua, *item_export_c, *item_export_open_c,
     *item_export_proj_c, *item_use_utf8, *toolsMenu;
 
   item_load = IupItem("Load Buffer", NULL);
@@ -2085,11 +2090,11 @@ static Ihandle* buildToolsMenu(void)
   IupSetAttribute(item_export_lua, "NAME", "ITM_EXP_LUA");
   IupSetCallback(item_export_lua, "ACTION", (Icallback)item_export_lua_action_cb);
 
-  item_export_all_lua = IupItem("Export All to Lua...", NULL);
-  IupSetAttribute(item_export_all_lua, "NAME", "ITM_EXP_ALL_LUA");
-  IupSetCallback(item_export_all_lua, "ACTION", (Icallback)item_export_all_action_cb);
+  item_export_open_lua = IupItem("Export All Open to Lua(s)...", NULL);
+  IupSetAttribute(item_export_open_lua, "NAME", "ITM_EXPORT_OPEN_LUA");
+  IupSetCallback(item_export_open_lua, "ACTION", (Icallback)item_export_open_action_cb);
 
-  item_export_proj_lua = IupItem("Export Project to Lua...", NULL);
+  item_export_proj_lua = IupItem("Export All Project to Lua(s)...", NULL);
   IupSetAttribute(item_export_proj_lua, "NAME", "ITM_EXP_PROJ_LUA");
   IupSetCallback(item_export_proj_lua, "ACTION", (Icallback)item_export_proj_action_cb);
 
@@ -2097,11 +2102,11 @@ static Ihandle* buildToolsMenu(void)
   IupSetAttribute(item_export_c, "NAME", "ITM_EXP_C");
   IupSetCallback(item_export_c, "ACTION", (Icallback)item_export_c_action_cb);
 
-  item_export_all_c = IupItem("Export All to C...", NULL);
-  IupSetAttribute(item_export_all_c, "NAME", "ITM_EXP_ALL_C");
-  IupSetCallback(item_export_all_c, "ACTION", (Icallback)item_export_all_action_cb);
+  item_export_open_c = IupItem("Export All Open to C(s)...", NULL);
+  IupSetAttribute(item_export_open_c, "NAME", "ITM_EXPORT_OPEN_C");
+  IupSetCallback(item_export_open_c, "ACTION", (Icallback)item_export_open_action_cb);
 
-  item_export_proj_c = IupItem("Export Project To C...", NULL);
+  item_export_proj_c = IupItem("Export All Project To C(s)...", NULL);
   IupSetAttribute(item_export_proj_c, "NAME", "ITM_EXP_PROJ_C");
   IupSetCallback(item_export_proj_c, "ACTION", (Icallback)item_export_proj_action_cb);
 
@@ -2120,11 +2125,11 @@ static Ihandle* buildToolsMenu(void)
     item_show_all_img,
     IupSeparator(),
     item_export_lua,
-    item_export_all_lua,
+    item_export_open_lua,
     item_export_proj_lua,
     IupSeparator(),
     item_export_c,
-    item_export_all_c,
+    item_export_open_c,
     item_export_proj_c,
     IupSeparator(),
     item_use_utf8,
@@ -2180,6 +2185,7 @@ int main(int argc, char **argv)
   config = IupConfig();
   IupSetAttribute(config, "APP_NAME", "iupvled");
   IupConfigLoad(config);
+  iupAttribSet(config, "VLED_INTERNAL", "YES");
 
   IupSetGlobal("UTF8MODE", IupConfigGetVariableStr(config, "VisualLED", "UTF-8"));
 
@@ -2251,7 +2257,7 @@ int main(int argc, char **argv)
   }
 
   /* Call NEW_TEXT_CB because the first tab was already created */
-  newtext_cb(main_dialog, get_current_multitext(main_dialog));
+  newtext_cb(main_dialog, vLedGetCurrentMultitext(main_dialog));
 
   IupMainLoop();
 

@@ -12,13 +12,16 @@
 #include "iup_func.h"
 
 
-#define MAX_NAMES 5000
 
-int isAlien(Ihandle *elem, const char* filename);
-Ihandle* get_current_multitext(Ihandle* ih);
+int vLedIsAlien(Ihandle *elem, const char* filename);
+Ihandle* vLedGetCurrentMultitext(Ihandle* ih);
+
+#define VLED_MAX_NAMES 5000
 #define VLED_ATTRIB_ISINTERNAL(_name) (((_name[0] == 'V' && _name[1] == 'L' && _name[2] == 'E' && _name[3] == 'D') || (_name[0] == 'v' && _name[1] == 'l' && _name[2] == 'e' && _name[3] == 'd')) ? 1 : 0)
 
-static void iLayoutRemoveExt(char* title, const char* ext)
+enum{VLED_EXPORT_LUA, VLED_EXPORT_C, VLED_EXPORT_LED};
+
+static void iExportRemoveExt(char* title, const char* ext)
 {
   int len = (int)strlen(title);
   int len_ext = (int)strlen(ext);
@@ -38,41 +41,65 @@ static void iLayoutRemoveExt(char* title, const char* ext)
   }
 }
 
-static int iLayoutHasDigit(const char* name)
+static int iExportHasReserved(const char* name)
 {
+  char c = *name;
+  if (c >= '1' && c <= '9') /* first character can NOT be a number */
+    return 0;
+  
   while (*name)
   {
-    if (isdigit(*name))
+    c = *name;
+
+    /* can only has letters or numbers as characters */
+    if ( c < '0' || 
+        (c > '9' && c < 'A') ||
+        (c > 'Z' && c < 'a') ||
+         c > 'z')
       return 1;
+
     name++;
   }
   return 0;
 }
 
-static void iLayoutExportWriteAttrib(FILE* file, const char* name, const char* value, const char* indent, int type)
+static void iExportWriteAttrib(FILE* file, const char* name, const char* value, const char* indent, int export_format)
 {
   char attribname[1024];
-  if (type == 1)  /* Lua */
+  const char* old_value = value;
+  value = iupStrConvertToC(value);
+
+  if (export_format == VLED_EXPORT_LUA)  /* Lua */
   {
     iupStrLower(attribname, name);
-    if (iLayoutHasDigit(attribname))
+    if (iExportHasReserved(attribname))
       fprintf(file, "%s[\"%s\"] = \"%s\",\n", indent, attribname, value);
     else
       fprintf(file, "%s%s = \"%s\",\n", indent, attribname, value);
   }
-  else if (type == -1) /* LED */
+  else if (export_format == VLED_EXPORT_LED) /* LED */
   {
+    if (iExportHasReserved(attribname))  /* can not be saved in LED */
+    {
+      if (old_value != value)
+        free((char*)value);
+      return;
+    }
+
     iupStrUpper(attribname, name);
-    if (iupStrHasSpace(value))
+    if (iExportHasReserved(value))
       fprintf(file, "%s%s = \"%s\",\n", indent, attribname, value);
     else
       fprintf(file, "%s%s = %s,\n", indent, attribname, value);
   }
-  else
+  else   /* C */
     fprintf(file, "%s\"%s\", \"%s\",\n", indent, name, value);
+
+  if (old_value != value)
+    free((char*)value);
 }
 
-static int iLayoutAttributeChanged(Ihandle* ih, const char* name, const char* value, const char* def_value, int flags)
+static int iExportCheckAttributeChanged(Ihandle* ih, const char* name, const char* value, const char* def_value, int flags)
 {
   if ((flags&IUPAF_NO_STRING) || /* not a string */
       (flags&IUPAF_HAS_ID) ||  /* has id */
@@ -101,7 +128,7 @@ static int iLayoutAttributeChanged(Ihandle* ih, const char* name, const char* va
   return 1;
 }
 
-static int iLayoutExportElementAttribs(FILE* file, Ihandle* ih, const char* indent, int type)
+static int iExportElementAttribs(FILE* file, Ihandle* ih, const char* indent, int export_format)
 {
   int i, wcount = 0, attr_count, has_attrib_id = ih->iclass->has_attrib_id, start_id = 0,
     total_count = IupGetClassAttributes(ih->iclass->name, NULL, 0);
@@ -115,7 +142,7 @@ static int iLayoutExportElementAttribs(FILE* file, Ihandle* ih, const char* inde
       IupClassMatch(ih, "cells"))  /* cells does not have any savable id attributes */
       has_attrib_id = 0;
 
-  if (IupClassMatch(ih, "list"))
+  if (IupClassMatch(ih, "list") || IupClassMatch(ih, "flatlist"))
     start_id = 1;
 
   attr_count = IupGetClassAttributes(ih->iclass->name, attr_names, total_count);
@@ -128,22 +155,16 @@ static int iLayoutExportElementAttribs(FILE* file, Ihandle* ih, const char* inde
 
     iupClassGetAttribNameInfo(ih->iclass, name, &def_value, &flags);
 
-    if (iLayoutAttributeChanged(ih, name, value, def_value, flags))
+    if (iExportCheckAttributeChanged(ih, name, value, def_value, flags))
     {
-      char* str = iupStrConvertToC(value);
-
-      iLayoutExportWriteAttrib(file, name, str, localIndent, type);
-
-      if (str != value)
-        free(str);
-
+      iExportWriteAttrib(file, name, value, localIndent, export_format);
       wcount++;
     }
 
     if (has_attrib_id && flags&IUPAF_HAS_ID)
     {
       flags &= ~IUPAF_HAS_ID; /* clear flag so the next function call can work */
-      if (iLayoutAttributeChanged(ih, name, "X", NULL, flags))
+      if (iExportCheckAttributeChanged(ih, name, "X", NULL, flags))
       {
         if (iupStrEqual(name, "IDVALUE"))
           name = "";
@@ -162,7 +183,7 @@ static int iLayoutExportElementAttribs(FILE* file, Ihandle* ih, const char* inde
               {
                 char str[50];
                 sprintf(str, "%s%d:%d", name, lin, col);
-                iLayoutExportWriteAttrib(file, str, value, localIndent, type);
+                iExportWriteAttrib(file, str, value, localIndent, export_format);
                 wcount++;
               }
             }
@@ -178,7 +199,7 @@ static int iLayoutExportElementAttribs(FILE* file, Ihandle* ih, const char* inde
             {
               char str[50];
               sprintf(str, "%s%d", name, id);
-              iLayoutExportWriteAttrib(file, str, value, indent, type);
+              iExportWriteAttrib(file, str, value, indent, export_format);
               wcount++;
             }
           }
@@ -187,7 +208,7 @@ static int iLayoutExportElementAttribs(FILE* file, Ihandle* ih, const char* inde
     }
   }
 
-  if (type != 0)  /* LED or C */
+  if (export_format != VLED_EXPORT_LUA)  /* LED or C */
   {
     int cb_count = total_count - attr_count;
     IupGetClassCallbacks(ih->iclass->name, attr_names, cb_count);
@@ -196,7 +217,7 @@ static int iLayoutExportElementAttribs(FILE* file, Ihandle* ih, const char* inde
       char* cb_name = iupGetCallbackName(ih, attr_names[i]);
       if (cb_name && cb_name[0] && !iupATTRIB_ISINTERNAL(cb_name))
       {
-        iLayoutExportWriteAttrib(file, attr_names[i], cb_name, localIndent, type);
+        iExportWriteAttrib(file, attr_names[i], cb_name, localIndent, export_format);
         wcount++;
       }
     }
@@ -212,11 +233,11 @@ static int iLayoutExportElementAttribs(FILE* file, Ihandle* ih, const char* inde
     if (!iupClassAttribIsRegistered(ih->iclass, attr_names[i]) && VLED_ATTRIB_ISINTERNAL(attr_names[i]) == 0)
     {
       char* value = iupAttribGetLocal(ih, attr_names[i]);
-      iLayoutExportWriteAttrib(file, attr_names[i], value, localIndent, type);
+      iExportWriteAttrib(file, attr_names[i], value, localIndent, export_format);
     }
   }
 
-  if (type == -1) /* LED */
+  if (export_format == VLED_EXPORT_LED) /* LED */
   {
     /* remove last comma ',' and new line */
     /* if wcount==0, it will remove '[' and new line */
@@ -227,150 +248,125 @@ static int iLayoutExportElementAttribs(FILE* file, Ihandle* ih, const char* inde
   return wcount;
 }
 
-static void iLayoutExportElementC(FILE* file, Ihandle* ih, char *indent)
+static void iExportElementC(FILE* file, Ihandle* ih, const char *indent, const char* terminator)
 {
   char* name = IupGetName(ih);
   const char *elemClass = ih->iclass->name;
-  char localIndent[1024];
-
-  strcpy(localIndent, indent);
-  strcat(localIndent, "  ");
 
   if (name && iupATTRIB_ISINTERNAL(name))
     name = NULL;
 
   fprintf(file, "%sIupSetAtt(%s%s%s, IupCreate(\"%s\"), \n", indent, name ? "\"" : "", name ? name : "NULL", name ? "\"" : "", elemClass);
 
-  iLayoutExportElementAttribs(file, ih, localIndent, 0);  /* C */
+  iExportElementAttribs(file, ih, indent, VLED_EXPORT_C);
+
+  fprintf(file, "%s  NULL)%s\n", indent, terminator);
+
+  if (terminator[0] == ';')
+    fprintf(file, "\n");
 }
 
-static void iStrSet(char* str, char c, int count)
-{
-  while (count)
-  {
-    *str++ = c;
-    count--;
-  }
-  *str = 0;
-}
-
-static void iLayoutExportElementLua(FILE* file, Ihandle* ih, char *indent)
+static void iExportElementLua(FILE* file, Ihandle* ih, const char *indent)
 {
   char* name = IupGetName(ih);
-  char localIndent[1024];
-
-  strcpy(localIndent, indent);
-  strcat(localIndent, "  ");
 
   if (name && iupATTRIB_ISINTERNAL(name))
     name = NULL;
 
   if (name)
-  {
-    int len;
-    char buff[80];
-    sprintf(buff, "local %s = ", name);
-    fprintf(file, "%s", buff);
-    len = (int)strlen(buff);  
-    iStrSet(buff, ' ', len);
-    strcat(localIndent, buff);
-  }
+    fprintf(file, "%slocal %s = ", indent, name);
   else
-    fprintf(file, "%s", localIndent);
+    fprintf(file, "%s", indent);
 
-  fprintf(file, "iup.%s{\n", ih->iclass->name);
+  fprintf(file, "iup.%s\n", ih->iclass->name);
+  fprintf(file, "%s{\n", indent);
 
-  iLayoutExportElementAttribs(file, ih, localIndent, 1);  /* LUA */
+  iExportElementAttribs(file, ih, indent, VLED_EXPORT_LUA);
 
-  fprintf(file, "%s}", localIndent);
+  fprintf(file, "%s}", indent);
 }
 
-static void iLayoutExportContainerC(FILE* file, Ihandle* ih, char *indent)
+static void iExportContainerC(FILE* file, Ihandle* ih, const char *indent, const char* terminator)
 {
   Ihandle *child;
   char* name = IupGetName(ih);
   char localIndent[1024];
 
-  strcpy(localIndent, indent);
-  strcat(localIndent, "  ");
-
   fprintf(file, "%sIupSetAtt(%s%s%s, IupCreatep(\"%s\", \n", indent, name ? "\"" : "", name ? name : "NULL", name ? "\"" : "", ih->iclass->name);
+
+  strcpy(localIndent, indent);
+  strcat(localIndent, "    ");  /* indent twice for IupCreate */
 
   for (child = ih->firstchild; child; child = child->brother)
   {
     char* childName = IupGetName(child);
-    int isContainer = child->iclass->childtype;
+    int isContainer = child->iclass->childtype != IUP_CHILDNONE;
 
     if (childName)
       fprintf(file, "%sIupGetHandle(\"%s\"),\n", localIndent, childName);
     else if (isContainer)
-    {
-      iLayoutExportContainerC(file, child, localIndent);
-      fprintf(file, "%sNULL),\n", localIndent);
-    }
+      iExportContainerC(file, child, localIndent, ",");  /* no ; */
     else
-    {
-      iLayoutExportElementC(file, child, localIndent);
-      fprintf(file, "%sNULL),\n", localIndent);
-    }
+      iExportElementC(file, child, localIndent, ","); /* no ; */
   }
-  fprintf(file, "%sNULL),\n", localIndent);
 
-  iLayoutExportElementAttribs(file, ih, localIndent, 0);  /* C */
+  fprintf(file, "%sNULL),\n", localIndent);  /* IupCreate */
+
+  iExportElementAttribs(file, ih, indent, VLED_EXPORT_C);
+
+  fprintf(file, "%s  NULL)%s\n", indent, terminator);  /* IupSetAtt */
+
+  if (terminator[0] == ';')
+    fprintf(file, "\n");
 }
 
-static void iLayoutExportContainerLua(FILE* file, Ihandle* ih, char *indent)
+static void iExportContainerLua(FILE* file, Ihandle* ih, const char *indent)
 {
   Ihandle *child;
   char* name = IupGetName(ih);
   char localIndent[1024];
 
-  strcpy(localIndent, indent);
-
   if (name)
-  {
-    int len;
-    char buff[80];
-    sprintf(buff, "  local %s = ", name);
-    fprintf(file, "%s", buff);
-    len = (int)strlen(buff);
-    if (len > 80) len = 80;
-    iStrSet(buff, ' ', len);
-    strcat(localIndent, buff);
-  }
+    fprintf(file, "%slocal %s = ", indent, name);
   else
-  {
-    strcat(localIndent, "  ");
-    fprintf(file, "%s", localIndent);
-  }
+    fprintf(file, "%s", indent);
 
-  fprintf(file, "iup.%s{\n", ih->iclass->name);
+  fprintf(file, "iup.%s\n", ih->iclass->name);
+  fprintf(file, "%s{\n", indent);
+
+  strcpy(localIndent, indent);
+  strcat(localIndent, "  ");
 
   for (child = ih->firstchild; child; child = child->brother)
   {
     char* childName = IupGetName(child);
-    int isContainer = child->iclass->childtype;
+    int isContainer = child->iclass->childtype != IUP_CHILDNONE;
 
     if (childName)
-      fprintf(file, "%siup.GetHandle(\"%s\"),\n", localIndent, childName);
+    {
+      if (iupAttribGet(child, "_IUPVLED_EXPORT_SAVED")) /* saved in the same scope */
+        fprintf(file, "%s%s,\n", localIndent, childName);
+      else
+        fprintf(file, "%siup.GetHandle(\"%s\"),\n", localIndent, childName);
+    }
     else if (isContainer)
     {
-      iLayoutExportContainerLua(file, child, localIndent);
+      iExportContainerLua(file, child, localIndent);
       fprintf(file, ",\n");
     }
     else
     {
-      iLayoutExportElementLua(file, child, localIndent);
+      iExportElementLua(file, child, localIndent);
       fprintf(file, ",\n");
     }
   }
 
-  iLayoutExportElementAttribs(file, ih, localIndent, 1);  /* LUA */
-  fprintf(file, "%s}", localIndent);
+  iExportElementAttribs(file, ih, indent, VLED_EXPORT_LUA);
 
+  fprintf(file, "%s}", indent);
 }
 
-static int isRelated(Ihandle *elem, Ihandle *container)
+static int iExportIsRelated(Ihandle *elem, Ihandle *container)
 {
   Ihandle *parent = IupGetParent(elem);
   if (parent == container)
@@ -397,7 +393,7 @@ static int compare_elem(const void* i1, const void* i2)
   const char *elemClass1 = ih1->iclass->name;
   const char *elemClass2 = ih2->iclass->name;
 
-  if (childType1 == 0 && childType2 == 0)
+  if (childType1 == IUP_CHILDNONE && childType2 == IUP_CHILDNONE)
   {
     if (iupStrEqualPartial(elemClass1, "image") && !iupStrEqualPartial(elemClass2, "image"))
       return -1;
@@ -405,66 +401,81 @@ static int compare_elem(const void* i1, const void* i2)
       return 1;
     return strcmp(name1, name2);
   }
-  else if ((childType1 > 0 && childType2 > 0))
+  else if ((childType1 != IUP_CHILDNONE && childType2 != IUP_CHILDNONE))
   {
-    if (isRelated(ih1, ih2))
+    if (iExportIsRelated(ih1, ih2))
       return -1;
-    else if (isRelated(ih2, ih1))
+    else if (iExportIsRelated(ih2, ih1))
       return 1;
     else
       return strcmp(name1, name2);
   }
-  else if (childType2 > 0 && childType1 == 0)
+  else if (childType2 != IUP_CHILDNONE && childType1 == IUP_CHILDNONE)
     return -1;
 
   return 1;
 }
 
-void ivLedExport(Ihandle* ih, const char* filename, const char* format)
+void vLedExport(Ihandle* ih, const char* filename, const char* format)
 {
-  Ihandle* multitext = get_current_multitext(ih);
-  FILE* file = fopen(filename, "wb");
-  char* ledFile = IupGetAttribute(multitext, "FILENAME");
-  char* title = iupStrFileGetTitle(filename);
-  char *names[MAX_NAMES];
-  int num_names = IupGetAllNames(names, MAX_NAMES);
-  Iarray* names_array = iupArrayCreate(1024, sizeof(Ihandle*));  /* just set an initial size, but count is 0 */
-  Ihandle **data = iupArrayGetData(names_array);
-  int i, count;
+  Ihandle* multitext = vLedGetCurrentMultitext(ih);
+  char* led_filename = IupGetAttribute(multitext, "FILENAME");
+  char* title;
+  char *names[VLED_MAX_NAMES];
+  int num_names;
+  Iarray* names_array;
+  Ihandle* *data = NULL;
+  int i, count = 0;
+  FILE* file;
+  int export_format = iupStrEqualNoCase(format, "LUA") ? VLED_EXPORT_LUA : (iupStrEqualNoCase(format, "LED") ? VLED_EXPORT_LED : VLED_EXPORT_C);
 
-  if (!file)
-    return;
+  names_array = iupArrayCreate(1024, sizeof(Ihandle*));  /* just set an initial size, but count is 0 */
+
+  num_names = IupGetAllNames(names, VLED_MAX_NAMES);
 
   for (i = 0; i < num_names; i++)
   {
     Ihandle *elem = IupGetHandle(names[i]);
+    if (elem)
+    {
+      if (iupAttribGetInt(elem, "VLED_INTERNAL") != 0 ||
+          iupStrEqualPartial(names[i], "_IUP_NAME") ||
+          vLedIsAlien(elem, led_filename))
+        continue;
 
-    if (IupGetInt(elem, "VLED_INTERNAL") != 0 || (elem && isAlien(elem, ledFile)))
-      continue;
-
-    count = iupArrayCount(names_array);
-
-    iupArrayAdd(names_array, 1);
-
-    data = iupArrayGetData(names_array);
-
-    data[count] = elem;
+      data = iupArrayAdd(names_array, 1);
+      data[count] = elem;
+      count++;
+    }
   }
 
-  count = iupArrayCount(names_array);
+  if (count == 0)
+  {
+    iupArrayDestroy(names_array);
+    return;
+  }
 
   qsort(data, count, sizeof(Ihandle*), compare_elem);
 
-  if (iupStrEqualNoCase(format, "LUA"))
+  file = fopen(filename, "wb");
+  if (!file)
   {
-    iLayoutRemoveExt(title, "lua");
+    iupArrayDestroy(names_array);
+    return;
+  }
+
+  title = iupStrFileGetTitle(filename);
+
+  if (export_format == VLED_EXPORT_LUA)
+  {
+    iExportRemoveExt(title, "lua");
 
     fprintf(file, "--   Generated by IupVisualLED export to Lua.\n\n");
     fprintf(file, "function create_%s()\n\n", title);
   }
-  else
+  else if (export_format == VLED_EXPORT_C)
   {
-    iLayoutRemoveExt(title, "c");
+    iExportRemoveExt(title, "c");
 
     fprintf(file, "/*   Generated by IupVisualLED export to C.   */\n\n");
     fprintf(file, "#include <stdlib.h>\n");
@@ -472,55 +483,71 @@ void ivLedExport(Ihandle* ih, const char* filename, const char* format)
     fprintf(file, "void create_%s(void)\n", title);
     fprintf(file, "{\n");
   }
+  else /* LED */
+  {
+    fprintf(file, "#   Generated by IupVisualLED export to LED.\n\n");
+  }
 
   for (i = 0; i < count; i++)
   {
     Ihandle *elem = data[i];
-    int isContainer = elem->iclass->childtype;
+    int isContainer = elem->iclass->childtype != IUP_CHILDNONE;
     const char *elemClass = elem->iclass->name;
+    char* name = IupGetName(elem);
 
-    if (strcmp(elemClass, "image") == 0 || strcmp(elemClass, "imagergb") == 0 || strcmp(elemClass, "imagergba") == 0)
+    if (iupStrEqualPartial(elemClass, "image"))
     {
-      iupImageSaveToFile(elem, file, format, IupGetName(elem), 0);
-      if (iupStrEqualNoCase(format, "LUA"))
+      iupImageExportToFile(elem, file, format, name, 0);
+
+      if (export_format == VLED_EXPORT_LUA && name)
       {
-        fprintf(file, "\n");
-        fprintf(file, "\n\n  iup.SetHandle(\"%s\", %s);\n", IupGetName(elem), IupGetName(elem));
-        fprintf(file, "\n");
+        fprintf(file, "  iup.SetHandle(\"%s\", %s)\n\n", name, name);
+        iupAttribSet(elem, "_IUPVLED_EXPORT_SAVED", "1");
       }
     }
     else
     {
       if (!isContainer)
       {
-        if (iupStrEqualNoCase(format, "LUA"))
-          iLayoutExportElementLua(file, elem, "  ");
-        else
-          iLayoutExportElementC(file, elem, "  ");
+        if (export_format == VLED_EXPORT_LUA)
+          iExportElementLua(file, elem, "  ");
+        else if (export_format == VLED_EXPORT_C)
+          iExportElementC(file, elem, "  ", ";");
       }
       else
       {
-        if (iupStrEqualNoCase(format, "LUA"))
-          iLayoutExportContainerLua(file, elem, "  ");
-        else
-          iLayoutExportContainerC(file, elem, "  ");
+        if (export_format == VLED_EXPORT_LUA)
+          iExportContainerLua(file, elem, "  ");
+        else if (export_format == VLED_EXPORT_C)
+          iExportContainerC(file, elem, "  ", ";");
       }
 
-
-      if (iupStrEqualNoCase(format, "LUA"))
-        fprintf(file, "\n\n  iup.SetHandle(\"%s\", %s);\n", IupGetName(elem), IupGetName(elem));
-      else
-        fprintf(file, "    NULL);\n\n");
+      if (export_format == VLED_EXPORT_LUA && name)
+      {
+        fprintf(file, "\n  iup.SetHandle(\"%s\", %s)\n\n", name, name);
+        iupAttribSet(elem, "_IUPVLED_EXPORT_SAVED", "1");
+      }
     }
   }
 
-  if (iupStrEqualNoCase(format, "LUA"))
+  if (export_format == VLED_EXPORT_LUA)
+  {
+    for (i = 0; i < count; i++)
+    {
+      Ihandle *elem = data[i];
+      char* name = IupGetName(elem);
+      if (name)
+        iupAttribSet(elem, "_IUPVLED_EXPORT_SAVED", NULL);
+    }
+  }
+
+  if (export_format == VLED_EXPORT_LUA)
     fprintf(file, "end\n");
-  else
+  else if (export_format == VLED_EXPORT_C)
     fprintf(file, "}\n");
 
   iupArrayDestroy(names_array);
-
   fclose(file);
+  free(title);
 }
 
