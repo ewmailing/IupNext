@@ -989,7 +989,7 @@ IUP_SDK_API int iupStrReplace(char* str, char src, char dst)
 
 IUP_SDK_API void iupStrToUnix(char* str)
 {
-  char* pstr = str;
+  char* p_str = str;
 
   if (!str) return;
   
@@ -998,19 +998,19 @@ IUP_SDK_API void iupStrToUnix(char* str)
     if (*str == '\r')
     {
       if (*(str+1) != '\n')  /* MAC line end */
-        *pstr++ = '\n';
+        *p_str++ = '\n';
       str++;
     }
     else
-      *pstr++ = *str++;
+      *p_str++ = *str++;
   }
   
-  *pstr = *str;
+  *p_str = *str;
 }
 
 IUP_SDK_API void iupStrToMac(char* str)
 {
-  char* pstr = str;
+  char* p_str = str;
 
   if (!str) return;
   
@@ -1020,18 +1020,18 @@ IUP_SDK_API void iupStrToMac(char* str)
     {
       if (*(++str) == '\n')  /* DOS line end */
         str++;
-      *pstr++ = '\r';
+      *p_str++ = '\r';
     }
     else if (*str == '\n')  /* UNIX line end */
     {
       str++;
-      *pstr++ = '\r';
+      *p_str++ = '\r';
     }
     else
-      *pstr++ = *str++;
+      *p_str++ = *str++;
   }
   
-  *pstr = *str;
+  *p_str = *str;
 }
 
 IUP_SDK_API char* iupStrToDos(const char* str)
@@ -1073,57 +1073,60 @@ IUP_SDK_API char* iupStrToDos(const char* str)
 	return newstr;	
 }
 
-#define IUP_ISRESERVED(_c) (_c=='\n' || _c=='\r' || _c=='\t')
+#define IUP_ISRESERVED(_c) (_c=='\n' || _c=='\r' || _c=='\t' || _c=='\\')
 
 IUP_SDK_API char* iupStrConvertToC(const char* str)
 {
-  char* new_str, *pnstr;
-  const char* pstr = str;
+  char* new_str, *p_new_str;
+  const char* p_str = str;
   int len, count=0;
 
   if (!str)
     return NULL;
 
-  while(*pstr)
+  while(*p_str)
   {
-    if (IUP_ISRESERVED(*pstr))
+    if (IUP_ISRESERVED(*p_str))
       count++;
-    pstr++;
+    p_str++;
   }
   if (!count)
     return (char*)str;
 
-  len = (int)(pstr-str);
+  len = (int)(p_str-str);
   new_str = malloc(len+count+1);
-  pstr = str;
-  pnstr = new_str;
-  while(*pstr)
+  p_str = str;
+  p_new_str = new_str;
+  while(*p_str)
   {
-    if (IUP_ISRESERVED(*pstr))
+    if (IUP_ISRESERVED(*p_str))
     {
-      *pnstr = '\\';
-      pnstr++;
+      *p_new_str = '\\';
+      p_new_str++;
 
-      switch(*pstr)
+      switch(*p_str)
       {
       case '\n':
-        *pnstr = 'n';
+        *p_new_str = 'n';
         break;
       case '\r':
-        *pnstr = 'r';
+        *p_new_str = 'r';
         break;
       case '\t':
-        *pnstr = 't';
+        *p_new_str = 't';
+        break;
+      case '\\':
+        *p_new_str = '\\';
         break;
       }
     }
     else
-      *pnstr = *pstr;
+      *p_new_str = *p_str;
 
-    pnstr++;
-    pstr++;
+    p_new_str++;
+    p_str++;
   }
-  *pnstr = 0;
+  *p_new_str = 0;
   return new_str;
 }
 

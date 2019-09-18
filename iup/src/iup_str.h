@@ -88,13 +88,15 @@ IUP_SDK_API int iupStrCountChar(const char *str, char c);
 
 /** Returns a copy of the given string.
  * If str is NULL it will return NULL.
+ * Must free the returned string.
  * \ingroup str */
 IUP_SDK_API char* iupStrDup(const char* str);
 
 /** Returns a new string containing a copy of the string up to the character.
  * The string is then incremented to after the position of the character.
+ * Must free the returned string.
  * \ingroup str */
-IUP_SDK_API char *iupStrDupUntil(const char **str, char c);
+IUP_SDK_API char* iupStrDupUntil(const char **str, char c);
 
 /** Copy the string to the buffer, but limited to the max_size of the buffer.
  * buffer is always properly ended.
@@ -107,12 +109,12 @@ IUP_SDK_API void iupStrCopyN(char* dst_str, int dst_max_size, const char* src_st
  * The buffer is resused after 50 calls. It must NOT be freed.
  * Use size=-1 to free all the internal buffers.
  * \ingroup str */
-IUP_SDK_API char *iupStrGetMemory(int size);
+IUP_SDK_API char* iupStrGetMemory(int size);
 
 /** Returns a very large buffer to be used in unknown size string construction.
  * Use snprintf or vsnprintf with the given size.
  * \ingroup str */
-IUP_SDK_API char *iupStrGetLargeMem(int *size);
+IUP_SDK_API char* iupStrGetLargeMem(int *size);
 
 
 
@@ -295,21 +297,25 @@ IUP_SDK_API int iupStrToStrStr(const char *str, char *str1, char *str2, char sep
 
 /** Returns the file extension of a file name.
  * Supports UNIX and Windows directory separators.
+ * Must free the returned string.
  * \ingroup str */
 IUP_SDK_API char* iupStrFileGetExt(const char *file_name);
 
 /** Returns the file title of a file name.
  * Supports UNIX and Windows directory separators.
+ * Must free the returned string.
  * \ingroup str */
 IUP_SDK_API char* iupStrFileGetTitle(const char *file_name);
 
 /** Returns the file path of a file name.
  * Supports UNIX and Windows directory separators.
  * The returned value includes the last separator.
+ * Must free the returned string.
  * \ingroup str */
 IUP_SDK_API char* iupStrFileGetPath(const char *file_name);
 
 /** Concat path and title addind '/' between if path does not have it.
+ * Must free the returned string.
  * \ingroup str */
 IUP_SDK_API char* iupStrFileMakeFileName(const char* path, const char* title);
 
@@ -337,7 +343,7 @@ IUP_SDK_API void iupStrToMac(char* str);
  * \ingroup str */
 IUP_SDK_API char* iupStrToDos(const char* str);
 
-/** Convert string to C format. Process \n, \r and \t.
+/** Convert string to C format. Process \\, \n, \r and \t.
  * If returned pointer different the input, it must be freed.
  * \ingroup str */
 IUP_SDK_API char* iupStrConvertToC(const char* str);
@@ -349,13 +355,15 @@ IUP_SDK_API char* iupStrConvertToC(const char* str);
 IUP_SDK_API void iupStrRemove(char* value, int start, int end, int dir, int utf8);
 
 /** Remove the interval from the string and insert the new string at the start.
- * \ingroup str */
+* If returned pointer different the input, it must be freed.
+* \ingroup str */
 IUP_SDK_API char* iupStrInsert(const char* value, const char* insert_value, int start, int end, int utf8);
 
 
 
 /** Process the mnemonic in the string. If not found returns str.
- * If found returns a new string. Action can be:
+* If returned pointer different the input, it must be freed.
+* If found returns a new string. Action can be:
 - 1: replace & by c
 - -1: remove & and return in c
 - 0: remove &
