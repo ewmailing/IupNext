@@ -128,68 +128,6 @@ static Ihandle* load_image_shortcut(void)
   return image;
 }
 
-static char* ParseFile(const char* dir, const char* FileName, int *offset)
-{
-  const char* file = FileName;
-  while (*file != 0 && *file != '|')
-    file++;
-
-  if (file == FileName)
-    return NULL;
-
-  {
-    int size = (int)(file - FileName) + 1;
-    int dir_size = (int)strlen(dir);
-    char* file_name = malloc(size + dir_size + 1);
-    memcpy(file_name, dir, dir_size);
-    file_name[dir_size] = '\\';
-    memcpy(file_name + dir_size + 1, FileName, size - 1);
-    file_name[size + dir_size] = 0;
-    *offset += size;
-    return file_name;
-  }
-}
-
-static char* ParseDir(const char* FileName, int *offset)
-{
-  const char* file = FileName;
-  while (*file != 0 && *file != '|')
-    file++;
-
-  if (*file == 0)
-    return NULL;
-
-  {
-    int size = (int)(file - FileName) + 1;
-    char* dir = malloc(size);
-    memcpy(dir, FileName, size - 1);
-    dir[size - 1] = 0;
-    *offset = size;
-    return dir;
-  }
-}
-
-static int getOpenFileName(char* file)
-{
-  Ihandle *gf;
-  int ret;
-  char *value;
-
-  gf = IupFileDlg();
-  IupSetAttribute(gf, "DIALOGTYPE", "OPEN");
-  IupSetAttribute(gf, "TITLE", "Load Image File(s)");
-  IupSetAttribute(gf, "MULTIPLEFILES", "YES");
-  IupPopup(gf, IUP_CENTER, IUP_CENTER);
-
-  value = IupGetAttribute(gf, "VALUE");
-  if (value) strcpy(file, value);
-  ret = IupGetInt(gf, "STATUS");
-
-  IupDestroy(gf);
-
-  return ret;
-}
-
 int vLedIsAlien(Ihandle *elem, const char* filename);
 static int vLedTreeAddNode(Ihandle* tree, int id, Ihandle* ih, const char *filename);
 static int vLedTreeAddChildren(Ihandle* tree, int parent_id, Ihandle* parent, const char *filename);
@@ -572,15 +510,19 @@ static void unloadNamedElements(Ihandle *elem)
 static int unload_led(char *file_name)
 {
   char *names[VLED_MAX_NAMES];
+  Ihandle* named_elems[VLED_MAX_NAMES];
   int i, num_names = IupGetAllNames(names, VLED_MAX_NAMES);
 
   for (i = 0; i < num_names; i++)
+    named_elems[i] = IupGetHandle(names[i]);
+  
+  for (i = 0; i < num_names; i++)
   {
-    Ihandle *elem, *parent, *brother;
-    char title[80], *name = names[i];
+    Ihandle *elem = named_elems[i],
+           *parent, *brother;
+    char old_name[80];
 
-    elem = IupGetHandle(name);
-    if (!elem)
+    if (!iupObjectCheck(elem))  /* it may already being destroyed in the hierarchy */
       continue;
 
     if (iupAttribGetInt(elem, "VLED_INTERNAL") != 0 || vLedIsAlien(elem, file_name))
@@ -604,7 +546,7 @@ static int unload_led(char *file_name)
       unloadNamedElements(elem);
 
     parent = elem->parent;
-    strcpy(title, name);
+    strcpy(old_name, IupGetName(elem));
 
     if (parent && vLedIsAlien(parent, file_name))
       brother = elem->brother;
@@ -615,7 +557,7 @@ static int unload_led(char *file_name)
     {
       Ihandle *user = IupUser();
       IupSetAttribute(user, "LEDPARSER_NOTDEFINED", "1");
-      IupStoreAttribute(user, "LEDPARSER_NAME", title);
+      IupStoreAttribute(user, "LEDPARSER_NAME", old_name);
       IupInsert(parent, brother, user);
     }
   }
@@ -884,6 +826,8 @@ static int savefile_cb(Ihandle* self, char* filename)
   /* called after the file is saved */
 
   Ihandle* elementsList = IupGetDialogChild(self, "ELEMENTS_TREE");
+
+  /* reload the elements because they may have changed */
 
   unload_led(filename);
 
@@ -1397,30 +1341,40 @@ static int item_loadbuffer_action_cb(Ihandle *ih_item)
 
 static int item_import_img_action_cb(Ihandle *ih_item)
 {
-  char FileName[2000] = "*.*";
+  Ihandle* config = get_config(ih_item);
+  Ihandle* filedlg = IupFileDlg();
+  const char* dir = IupConfigGetVariableStr(config, "VisualLED", "LastImageDirectory");
+  if (!dir) dir = IupConfigGetVariableStr(config, "VisualLED", "LastDirectory");
 
-  /* Retrieve a file name */
-  if (getOpenFileName(FileName) == -1)
-    return IUP_DEFAULT;
+  IupSetStrAttribute(filedlg, "DIRECTORY", dir);
+  IupSetAttribute(filedlg, "DIALOGTYPE", "OPEN");
+  IupSetAttribute(filedlg, "TITLE", "Load Image File(s)");
+  IupSetAttribute(filedlg, "MULTIPLEFILES", "YES");
+  IupSetAttributeHandle(filedlg, "PARENTDIALOG", IupGetDialog(ih_item));
+  IupSetAttribute(filedlg, "ICON", IupGetGlobal("ICON"));
+  IupSetAttribute(filedlg, "EXTFILTER", "Image Files|*.bmp;*.jpg;*.png;*.tif;*.tga|All Files|*.*|");
 
-  /* parse multiple files */
+  IupPopup(filedlg, IUP_CENTER, IUP_CENTER);
+
+  if (IupGetInt(filedlg, "STATUS") != -1)
   {
-    int offset;
-    char* file_name;
-    char* dir = ParseDir(FileName, &offset);
-    if (dir)
+    int i, count = IupGetInt(filedlg, "MULTIVALUECOUNT");
+    dir = IupGetAttributeId(filedlg, "MULTIVALUE", 0);
+
+    for (i = 1; i < count; i++)
     {
-      while ((file_name = ParseFile(dir, FileName + offset, &offset)) != NULL)
-      {
-        LoadImageFile(ih_item, file_name);
-        free(file_name);
-      }
-      free(dir);
+      char* filetitle = IupGetAttributeId(filedlg, "MULTIVALUE", i);
+      char filename[10240];
+      strcpy(filename, dir);
+      strcat(filename, filetitle);
+
+      LoadImageFile(ih_item, filename);
     }
-    else
-      LoadImageFile(ih_item, FileName);
+
+    IupConfigSetVariableStr(config, "VisualLED", "LastImageDirectory", dir);
   }
 
+  IupDestroy(filedlg);
   return IUP_DEFAULT;
 }
 
@@ -1630,43 +1584,38 @@ static int item_show_all_img_cb(Ihandle *ih_item)
   return IUP_DEFAULT;
 }
 
-static int ivLedGetExportFile(Ihandle* ih, char* filename, char *filetype)
+static int ivLedGetExportFile(Ihandle* ih, char* filename, const char *filter)
 {
-  Ihandle *file_dlg = 0;
+  Ihandle *filedlg = 0;
   int ret;
-  char filter[4096];
-  static char dir[4096] = "";  /* static will make the dir persist from one call to another if not defined */
+  Ihandle* config = get_config(ih);
+  const char* dir = IupConfigGetVariableStr(config, "VisualLED", "LastExportDirectory");
+  if (!dir) dir = IupConfigGetVariableStr(config, "VisualLED", "LastDirectory");
 
-  file_dlg = IupFileDlg();
+  filedlg = IupFileDlg();
 
-  strcpy(filter, "*.");
-  strcat(filter, filetype);
+  IupSetStrAttribute(filedlg, "EXTFILTER", filter);
+  IupSetStrAttribute(filedlg, "FILE", filename);
+  IupSetStrAttribute(filedlg, "DIRECTORY", dir);
+  IupSetAttribute(filedlg, "DIALOGTYPE", "SAVE");
+  IupSetAttribute(filedlg, "ALLOWNEW", "YES");
+  IupSetAttribute(filedlg, "NOCHANGEDIR", "YES");
+  IupSetAttributeHandle(filedlg, "PARENTDIALOG", IupGetDialog(ih));
+  IupSetAttribute(filedlg, "ICON", IupGetGlobal("ICON"));
 
-  iupStrFileNameSplit(filename, dir, filter);
+  IupPopup(filedlg, IUP_CENTERPARENT, IUP_CENTERPARENT);
 
-  IupSetAttribute(file_dlg, "FILTER", filter);
-  IupSetAttribute(file_dlg, "FILE", filename);
-  IupSetAttribute(file_dlg, "DIRECTORY", dir);
-  IupSetAttribute(file_dlg, "DIALOGTYPE", "SAVE");
-  IupSetAttribute(file_dlg, "ALLOWNEW", "YES");
-  IupSetAttribute(file_dlg, "NOCHANGEDIR", "YES");
-  IupSetAttributeHandle(file_dlg, "PARENTDIALOG", IupGetDialog(ih));
-  IupSetAttribute(file_dlg, "ICON", IupGetGlobal("ICON"));
-
-  IupPopup(file_dlg, IUP_CENTERPARENT, IUP_CENTERPARENT);
-
-  ret = IupGetInt(file_dlg, "STATUS");
+  ret = IupGetInt(filedlg, "STATUS");
   if (ret != -1)
   {
-    char* value = IupGetAttribute(file_dlg, "VALUE");
-    if (value)
-    {
-      strcpy(filename, value);
-      iupStrFileNameSplit(filename, dir, NULL);
-    }
+    char* value = IupGetAttribute(filedlg, "VALUE");
+    strcpy(filename, value);
+
+    dir = IupGetAttribute(filedlg, "DIRECTORY");
+    IupConfigSetVariableStr(config, "VisualLED", "LastExportDirectory", dir);
   }
 
-  IupDestroy(file_dlg);
+  IupDestroy(filedlg);
 
   return ret;
 }
@@ -1684,7 +1633,7 @@ static int item_export_lua_action_cb(Ihandle *ih_item)
   strcpy(filename, title);
   strcat(filename, ".lua");
 
-  int ret = ivLedGetExportFile(ih_item, filename, "lua");
+  int ret = ivLedGetExportFile(ih_item, filename, "Lua Files|*.lua|All Files|*.*|");
   if (ret != -1) /* ret==0 existing file. TODO: check if filename is opened. */
     vLedExport(ih_item, filename, "LUA");
 
@@ -1704,7 +1653,7 @@ static int item_export_c_action_cb(Ihandle *ih_item)
   strcpy(filename, title);
   strcat(filename, ".c");
 
-  int ret = ivLedGetExportFile(ih_item, filename, "c");
+  int ret = ivLedGetExportFile(ih_item, filename, "C Files|*.c|All Files|*.*|");
   if (ret != -1) /* ret==0 existing file. TODO: check if filename is opened. */
     vLedExport(ih_item, filename, "C");
 
