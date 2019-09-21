@@ -54,7 +54,7 @@ static int mousemove_cb(Ihandle *ih, int lin, int col)
   return IUP_DEFAULT;
 }
 
-static int drop(Ihandle *self, Ihandle *drop, int lin, int col)
+static int drop_cb(Ihandle *self, Ihandle *drop, int lin, int col)
 {
   printf("drop_cb(%d, %d)\n", lin, col);
   if ((lin == 3 && col == 1) || (lin == 4 && col == 5))
@@ -88,12 +88,23 @@ static int togglevalue_cb(Ihandle *self, int lin, int col, int value)
   return IUP_DEFAULT;
 }
 
-static int click(Ihandle *self, int lin, int col)
+static int click_cb(Ihandle *self, int lin, int col)
 {
   printf("click_cb(%d, %d)\n", lin, col);
   IupSetAttribute(self,"MARKED", NULL);  /* clear all marks */
   IupSetAttributeId2(self,"MARK", lin, 0, "1");
   IupSetfAttribute(self,"REDRAW", "L%d", lin);
+  return IUP_DEFAULT;
+}
+
+static int release_cb(Ihandle *self, int lin, int col)
+{
+  printf("release_cb(%d, %d)\n", lin, col);
+  if ((lin == 3 && col == 1) || (lin == 4 && col == 5))
+  {
+    IupSetAttribute(self, "EDITMODE", "YES");
+    IupSetAttribute(IupGetChild(self, 1), "SHOWDROPDOWN", "YES");
+  }
   return IUP_DEFAULT;
 }
 
@@ -267,12 +278,13 @@ static Ihandle* create_matrix(void)
   //}
 
   IupSetCallback(mat, "DROPCHECK_CB", (Icallback)dropcheck_cb);
-  IupSetCallback(mat,"DROP_CB",(Icallback)drop);
-//  IupSetCallback(mat,"MENUDROP_CB",(Icallback)drop);
+  IupSetCallback(mat, "DROP_CB", (Icallback)drop_cb);
+//  IupSetCallback(mat,"MENUDROP_CB",(Icallback)drop_cb);
   IupSetCallback(mat, "MOUSEMOVE_CB", (Icallback)mousemove_cb);
-//  IupSetCallback(mat,"CLICK_CB",(Icallback)click);
+//  IupSetCallback(mat,"CLICK_CB",(Icallback)click_cb);
 //  IupSetCallback(mat,"ENTERITEM_CB",(Icallback)enteritem_cb);
   IupSetCallback(mat,"TOGGLEVALUE_CB",(Icallback)togglevalue_cb);
+//  IupSetCallback(mat,"RELEASE_CB",(Icallback)release_cb);
 
   return mat;
 }
