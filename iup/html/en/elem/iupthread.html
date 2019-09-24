@@ -49,6 +49,14 @@ thread() [in LED]</pre>
 <p><b>START</b> (<font SIZE="3">write-only, non inheritable</font>): 
 starts the thread and calls the callback. Can be YES only. The thread exits when 
 the callback is terminated.</p>
+<p><strong>EXIT</strong> (<font SIZE="3">write-only, non inheritable</font>): 
+exit the current thread. Value contains the exit code. </p>
+<p><strong>ISCURRENT</strong> (read-only<font SIZE="3">, non inheritable</font>): 
+returns if the started thread is the current thread.</p>
+<p><strong>YIELD</strong> (<font SIZE="3">write-only, non inheritable</font>): 
+yield execution to another thread. value is ignored.</p>
+<p><strong>JOIN</strong> (<font SIZE="3">write-only, non inheritable</font>):
+<span>Waits until&nbsp;</span>thread<span>&nbsp;finishes. value is ignored.</span></p>
 <p><b>LOCK</b> (<font SIZE="3">non inheritable</font>): 
 uses a mutex to create a lock to allow access to shared data. Can be YES or NO. 
 When set to YES the mutex will be locked, when set to NO the mutex will be 
