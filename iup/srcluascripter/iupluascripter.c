@@ -121,7 +121,7 @@ static int item_help_action_cb(void)
 
 static int item_about_action_cb(void)
 {
-  IupMessage("About", "   IupLua Scripter\n\nAutors:\n   Camilo Freire\n   Antonio Scuri");
+  IupVersionShow();
   return IUP_DEFAULT;
 }
 

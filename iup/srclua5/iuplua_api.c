@@ -799,6 +799,13 @@ static int VersionNumber(lua_State *L)
   return 1;
 }
 
+static int VersionShow(lua_State *L)
+{
+  (void)L;
+  IupVersionShow();
+  return 0;
+}
+
 static int GetNextChild(lua_State *L)
 {
   Ihandle* parent = iuplua_checkihandle(L,1);
@@ -1169,6 +1176,7 @@ void iupluaapi_open(lua_State * L)
     {"GetChild", GetChild},
     {"GetChildPos", GetChildPos},
     {"VersionNumber", VersionNumber},
+    {"VersionShow", VersionShow},
     {"GetBrother", GetBrother},
     {"GetDialogChild", GetDialogChild},
     {"LayoutDialog", LayoutDialog},

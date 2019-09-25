@@ -12,7 +12,7 @@
 #include "iup_imglib.h"
 
 
-void IupImageLibOpen(void)
+IUPIMGLIB_API void IupImageLibOpen(void)
 {
   if (!IupIsOpened())
     return;

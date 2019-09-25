@@ -68,6 +68,7 @@ IUP_API char*     IupLoadBuffer    (const char *buffer);
 IUP_API char*     IupVersion       (void);
 IUP_API char*     IupVersionDate   (void);
 IUP_API int       IupVersionNumber (void);
+IUP_API void      IupVersionShow   (void);
 
 IUP_API void      IupSetLanguage   (const char *lng);
 IUP_API char*     IupGetLanguage   (void);

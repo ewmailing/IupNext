@@ -12,6 +12,8 @@ extern "C" {
 #endif
 
 
+void IupImOpen(void);  /* optional */
+
 Ihandle* IupLoadImage(const char* file_name);
 int IupSaveImage(Ihandle* ih, const char* file_name, const char* format);
 

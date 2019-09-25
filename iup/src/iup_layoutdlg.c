@@ -256,14 +256,14 @@ static char* iLayoutGetElementTreeTitle(Ihandle* ih)
     }
 
     if (name)
-      sprintf(str, "[%s] %.50s \"%.50s\"", IupGetClassName(ih), title, name);
+      sprintf(str, "[%s] \"%.50s\" (%.50s)", IupGetClassName(ih), title, name);
     else
-      sprintf(str, "[%s] %.50s", IupGetClassName(ih), title);
+      sprintf(str, "[%s] \"%.50s\"", IupGetClassName(ih), title);
   }
   else
   {
     if (name)
-      sprintf(str, "[%s] \"%.50s\"", IupGetClassName(ih), name);
+      sprintf(str, "[%s] (%.50s)", IupGetClassName(ih), name);
     else
       sprintf(str, "[%s]", IupGetClassName(ih));
   }

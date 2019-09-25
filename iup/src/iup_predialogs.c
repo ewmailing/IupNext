@@ -431,24 +431,3 @@ IUP_API int IupGetColor(int x, int y, unsigned char *r, unsigned char *g, unsign
   return ret;
 }
 
-IUP_SDK_API void iupShowVersion(void)
-{
-  Ihandle* dlg;
-
-  dlg = IupDialog(IupVbox(IupFrame(IupVbox(
-                      IupLabel(IupVersion()),
-                      IupLabel(IupVersionDate()),
-                      IupLabel(IUP_COPYRIGHT),
-                      NULL)), 
-                    IupButton("_@IUP_OK", NULL),
-                    NULL));
-
-  IupSetAttribute(dlg,"TITLE","IUP Version");
-  IupSetAttribute(dlg,"DIALOGFRAME","YES");
-  IupSetAttribute(dlg,"DIALOGHINT","YES");
-  IupSetAttribute(dlg,"GAP","10");
-  IupSetAttribute(dlg,"MARGIN","10x10");
-
-  IupPopup(dlg, IUP_CENTERPARENT, IUP_CENTERPARENT);
-  IupDestroy(dlg);
-}

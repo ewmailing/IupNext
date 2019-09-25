@@ -5,6 +5,7 @@
  */
 
 #include <im.h>
+#include <im_lib.h>
 #include <im_convert.h>
 #include <im_counter.h>
 #include <im_util.h>
@@ -641,4 +642,18 @@ imImage* IupImageToImImage(Ihandle* iup_image)
   }
 
   return image;
+}
+
+void IupImOpen(void)
+{
+  if (IupGetGlobal("_IUP_IM_OPEN"))
+    return;
+
+  IupSetGlobal("_IUP_IM_OPEN", "1");
+
+  IupSetGlobal("IM_NAME", IM_NAME);
+  IupSetGlobal("IM_VERSION", imVersion());
+  IupSetGlobal("IM_VERSIONDATE", imVersionDate());
+
+  return;
 }

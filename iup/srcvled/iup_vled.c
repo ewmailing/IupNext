@@ -13,6 +13,23 @@
 #include <iupcbs.h>
 #include <iup_scintilla.h>
 #include <iup_config.h>
+#include <iupcontrols.h>
+
+#define USE_NO_OPENGL  
+#define USE_NO_WEB
+#define USE_NO_PLOT
+
+#ifndef USE_NO_OPENGL  
+#include <iupgl.h>
+#include <iupglcontrols.h>
+#endif  
+#ifndef USE_NO_WEB
+#include <iupweb.h>
+#endif  
+#ifndef USE_NO_PLOT
+#include <iup_plot.h>
+#endif  
+
 
 #include "iup_str.h"
 #include "iup_object.h"
@@ -304,11 +321,11 @@ int vLedIsAlien(Ihandle *elem, const char* filename)
 static char* vLedGetElementTreeTitle(Ihandle* ih)
 {
   char* title = iupAttribGetLocal(ih, "TITLE");
-  char* name = IupGetName(ih);
-  char* className = IupGetClassName(ih);
   char* str = iupStrGetMemory(200);
-  if (iupStrEqual(className, "user") != 0)
-    name = IupGetAttribute(ih, "LEDPARSER_NAME");
+  char* name = IupGetName(ih);
+  if (IupClassMatch(ih, "user") && iupAttribGet(ih, "LEDPARSER_NAME"))
+    name = iupAttribGet(ih, "LEDPARSER_NAME");
+
   if (title)
   {
     char buffer[51];
@@ -323,16 +340,16 @@ static char* vLedGetElementTreeTitle(Ihandle* ih)
     }
 
     if (name)
-      sprintf(str, "[%s] %.50s \"%.50s\"", className, title, name);
+      sprintf(str, "[%s] \"%.50s\" (%.50s)", IupGetClassName(ih), title, name);
     else
-      sprintf(str, "[%s] %.50s", className, title);
+      sprintf(str, "[%s] \"%.50s\"", IupGetClassName(ih), title);
   }
   else
   {
     if (name)
-      sprintf(str, "[%s] \"%.50s\"", className, name);
+      sprintf(str, "[%s] (%.50s)", IupGetClassName(ih), name);
     else
-      sprintf(str, "[%s]", className);
+      sprintf(str, "[%s]", IupGetClassName(ih));
   }
   return str;
 }
@@ -538,14 +555,14 @@ static int unload_led(char *file_name)
     if (iupAttribGetInt(elem, "VLED_INTERNAL") != 0 || vLedIsAlien(elem, file_name))
       continue;
 
-    if (strcmp(IupGetClassName(elem), "menu") == 0)
+    if (IupClassMatch(elem, "menu"))
     {
       Ihandle *parent = elem->parent;
-      if (parent && strcmp(IupGetClassName(parent), "dialog") == 0)
+      if (parent && IupClassMatch(parent, "dialog"))
         IupSetAttribute(parent, "MENU", NULL);
     }
 
-    if (strcmp(IupGetClassName(elem), "dialog") == 0)
+    if (IupClassMatch(elem, "dialog"))
     {
       Ihandle *menu = (Ihandle *) IupGetAttribute(elem, "MENU");
       if (menu)
@@ -583,7 +600,7 @@ static int item_help_action_cb(void)
 
 static int item_about_action_cb(void)
 {
-  IupMessage("About", "   IUP Visual LED\n\nAuthors:\n   Camilo Freire\n   Antonio Scuri");
+  IupVersionShow();
   return IUP_DEFAULT;
 }
 
@@ -1843,9 +1860,7 @@ static int showElement_cb(Ihandle* self)
 
   if (elem) /* the list may be empty */
   {
-    char* type = IupGetClassName(elem);
-
-    if (iupStrEqual(type, "dialog"))
+    if (IupClassMatch(elem, "dialog"))
       IupShow(elem);
     else
     {
@@ -1854,7 +1869,7 @@ static int showElement_cb(Ihandle* self)
         IupShow(dialog);
       else
       {
-        if (iupStrEqual(type, "menu"))
+        if (IupClassMatch(elem, "menu"))
           IupPopup(elem, IUP_MOUSEPOS, IUP_MOUSEPOS);
         else
           IupMessageError(IupGetDialog(self), "Will only show dialogs and independent menus.");
@@ -1875,9 +1890,7 @@ static int hideElement_cb(Ihandle* self)
 
   if (elem) /* the list may be empty */
   {
-    char* type = IupGetClassName(elem);
-
-    if (iupStrEqual(type, "dialog"))
+    if (IupClassMatch(elem, "dialog"))
     {
       if (IupGetInt(elem, "VISIBLE"))
         IupHide(elem);
@@ -2130,6 +2143,17 @@ int main(int argc, char **argv)
   IupOpen(&argc, &argv);
   IupImageLibOpen();
   IupScintillaOpen();
+  IupControlsOpen();
+#ifndef USE_NO_OPENGL  
+  IupGLCanvasOpen();
+  IupGLControlsOpen();
+#endif  
+#ifndef USE_NO_WEB
+  IupWebBrowserOpen();
+#endif  
+#ifndef USE_NO_PLOT
+  IupPlotOpen();
+#endif  
 
 #ifdef _DEBUG
   IupSetGlobal("GLOBALLAYOUTDLGKEY", "Yes");

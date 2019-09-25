@@ -301,6 +301,7 @@ IupVboxv
 IupVersion
 IupVersionDate
 IupVersionNumber
+IupVersionShow
 IupZbox
 IupZboxV
 IupZboxv
@@ -524,7 +525,6 @@ iupImageExportToString
 iupSetFontFaceAttrib
 iupSetFontSizeAttrib
 iupSetFontStyleAttrib
-iupShowVersion
 iupStrBoolean
 iupStrCompare
 iupStrCompareEqual

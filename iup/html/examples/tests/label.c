@@ -112,6 +112,8 @@ void LabelTest(void)
   Ihandle *dlg, *label, *image1, *image2, *image3, 
           *box1, *box2, *fill;
 
+  IupImOpen();
+
   box1 = IupVbox(NULL);
   IupSetAttribute(box1, "MARGIN", "5x5");
   IupSetAttribute(box1, "GAP", "5");

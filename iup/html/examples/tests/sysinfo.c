@@ -43,6 +43,8 @@ void SysInfoTest(void)
   printf("  Computer Name: %s\n", IupGetGlobal("COMPUTERNAME"));
   printf("  User Name: %s\n", IupGetGlobal("USERNAME"));
   printf("  Default Font: %s\n", IupGetGlobal("DEFAULTFONT"));
+
+  IupVersionShow();
 }
 
 
