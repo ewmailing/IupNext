@@ -75,6 +75,7 @@ static INT CALLBACK winFileDlgBrowseCallback(HWND hWnd, UINT uMsg, LPARAM lParam
     {
       TCHAR* wstr = iupwinStrToSystemFilename(value);
       winFileDlgStrReplacePathSlash(wstr);
+      SendMessage(hWnd, BFFM_SETEXPANDED, TRUE, (LPARAM)wstr);
       SendMessage(hWnd, BFFM_SETSELECTION, TRUE, (LPARAM)wstr);
       free(value);
     }
