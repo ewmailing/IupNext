@@ -14,7 +14,6 @@
 
 
 int vLedIsAlien(Ihandle *elem, const char* filename);
-Ihandle* vLedGetCurrentMultitext(Ihandle* ih);
 
 #define VLED_MAX_NAMES 5000
 #define VLED_ATTRIB_ISINTERNAL(_name) (((_name[0] == 'V' && _name[1] == 'L' && _name[2] == 'E' && _name[3] == 'D') || (_name[0] == 'v' && _name[1] == 'l' && _name[2] == 'e' && _name[3] == 'd')) ? 1 : 0)
@@ -416,10 +415,8 @@ static int compare_elem(const void* i1, const void* i2)
   return 1;
 }
 
-void vLedExport(Ihandle* ih, const char* filename, const char* format)
+void vLedExport(const char* src_filename, const char* dst_filename, const char* format)
 {
-  Ihandle* multitext = vLedGetCurrentMultitext(ih);
-  char* led_filename = IupGetAttribute(multitext, "FILENAME");
   char* title;
   char *names[VLED_MAX_NAMES];
   int num_names;
@@ -440,7 +437,7 @@ void vLedExport(Ihandle* ih, const char* filename, const char* format)
     {
       if (iupAttribGetInt(elem, "VLED_INTERNAL") != 0 ||
           iupStrEqualPartial(names[i], "_IUP_NAME") ||
-          vLedIsAlien(elem, led_filename))
+          vLedIsAlien(elem, src_filename))
         continue;
 
       data = iupArrayAdd(names_array, 1);
@@ -457,14 +454,14 @@ void vLedExport(Ihandle* ih, const char* filename, const char* format)
 
   qsort(data, count, sizeof(Ihandle*), compare_elem);
 
-  file = fopen(filename, "wb");
+  file = fopen(dst_filename, "wb");
   if (!file)
   {
     iupArrayDestroy(names_array);
     return;
   }
 
-  title = iupStrFileGetTitle(filename);
+  title = iupStrFileGetTitle(dst_filename);
 
   if (export_format == VLED_EXPORT_LUA)
   {

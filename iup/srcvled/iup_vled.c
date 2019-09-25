@@ -22,7 +22,7 @@
 #include "iup_dlglist.h"
 
 
-void vLedExport(Ihandle* ih, const char* filename, const char* format);
+void vLedExport(const char* src_filename, const char* dst_filename, const char* format);
 
 #define VLED_MAX_NAMES 5000
 #define VLED_FOLDING_MARGIN "20"
@@ -65,12 +65,22 @@ static char* getfileformat()
     return options[ret];
 }
 
+static Ihandle* get_config(Ihandle* ih)
+{
+  Ihandle* config = (Ihandle*)IupGetAttribute(IupGetDialog(ih), "CONFIG_HANDLE");
+  return config;
+}
+
 static char* getfolder(Ihandle* ih)
 {
   static char folder[10240];
   Ihandle *filedlg = IupFileDlg();
+  Ihandle* config = get_config(ih);
+  const char* dir = IupConfigGetVariableStr(config, "IupVisualLED", "LastExportDirectory");
+  if (!dir) dir = IupConfigGetVariableStr(config, "IupVisualLED", "LastDirectory");
 
   IupSetAttribute(filedlg, "DIALOGTYPE", "DIR");
+  IupSetStrAttribute(filedlg, "DIRECTORY", dir);
   IupSetAttributeHandle(filedlg, "PARENTDIALOG", IupGetDialog(ih));
   IupSetAttribute(filedlg, "TITLE", "Select Folder for Files");
 
@@ -218,7 +228,7 @@ static char* mainGetFileTitle(const char* file_name)
   return strdup_free(file_title, ft_str);
 }
 
-Ihandle* vLedGetCurrentMultitext(Ihandle* ih)
+static Ihandle* vLedGetCurrentMultitext(Ihandle* ih)
 {
   Ihandle* tabs = IupGetDialogChild(ih, "MULTITEXT_TABS");
   return (Ihandle*)IupGetAttribute(tabs, "VALUE_HANDLE");
@@ -565,12 +575,6 @@ static int unload_led(char *file_name)
   return IUP_DEFAULT;
 }
 
-static Ihandle* get_config(Ihandle* ih)
-{
-  Ihandle* config = (Ihandle*)IupGetAttribute(IupGetDialog(ih), "CONFIG_HANDLE");
-  return config;
-}
-
 static int item_help_action_cb(void)
 {
   IupHelp("http://www.tecgraf.puc-rio.br/iup");
@@ -738,47 +742,47 @@ static int multitext_map_cb(Ihandle* multitext)
 
   IupSetAttribute(multitext, "FOLDFLAGS", "LINEAFTER_CONTRACTED");
 
-  value = IupConfigGetVariableStr(config, "VisualLED", "CommentColor");
+  value = IupConfigGetVariableStr(config, "IupVisualLED", "CommentColor");
   if (value)
     IupSetStrAttribute(multitext, "STYLEFGCOLOR1", value);
   else
-    IupConfigSetVariableStr(config, "VisualLED", "CommentColor", IupGetAttribute(multitext, "STYLEFGCOLOR1"));
+    IupConfigSetVariableStr(config, "IupVisualLED", "CommentColor", IupGetAttribute(multitext, "STYLEFGCOLOR1"));
 
-  value = IupConfigGetVariableStr(config, "VisualLED", "NumberColor");
+  value = IupConfigGetVariableStr(config, "IupVisualLED", "NumberColor");
   if (value)
     IupSetStrAttribute(multitext, "STYLEFGCOLOR2", value);
   else
-    IupConfigSetVariableStr(config, "VisualLED", "NumberColor", IupGetAttribute(multitext, "STYLEFGCOLOR4"));
+    IupConfigSetVariableStr(config, "IupVisualLED", "NumberColor", IupGetAttribute(multitext, "STYLEFGCOLOR4"));
 
-  value = IupConfigGetVariableStr(config, "VisualLED", "KeywordColor");
+  value = IupConfigGetVariableStr(config, "IupVisualLED", "KeywordColor");
   if (value)
     IupSetStrAttribute(multitext, "STYLEFGCOLOR3", value);
   else
-    IupConfigSetVariableStr(config, "VisualLED", "KeywordColor", IupGetAttribute(multitext, "STYLEFGCOLOR5"));
+    IupConfigSetVariableStr(config, "IupVisualLED", "KeywordColor", IupGetAttribute(multitext, "STYLEFGCOLOR5"));
 
-  value = IupConfigGetVariableStr(config, "VisualLED", "StringColor");
+  value = IupConfigGetVariableStr(config, "IupVisualLED", "StringColor");
   if (value)
     IupSetStrAttribute(multitext, "STYLEFGCOLOR4", value);
   else
-    IupConfigSetVariableStr(config, "VisualLED", "StringColor", IupGetAttribute(multitext, "STYLEFGCOLOR6"));
+    IupConfigSetVariableStr(config, "IupVisualLED", "StringColor", IupGetAttribute(multitext, "STYLEFGCOLOR6"));
 
-  value = IupConfigGetVariableStr(config, "VisualLED", "CharacterColor");
+  value = IupConfigGetVariableStr(config, "IupVisualLED", "CharacterColor");
   if (value)
     IupSetStrAttribute(multitext, "STYLEFGCOLOR5", value);
   else
-    IupConfigSetVariableStr(config, "VisualLED", "CharacterColor", IupGetAttribute(multitext, "STYLEFGCOLOR7"));
+    IupConfigSetVariableStr(config, "IupVisualLED", "CharacterColor", IupGetAttribute(multitext, "STYLEFGCOLOR7"));
 
-  value = IupConfigGetVariableStr(config, "VisualLED", "OperatorColor");
+  value = IupConfigGetVariableStr(config, "IupVisualLED", "OperatorColor");
   if (value)
     IupSetStrAttribute(multitext, "STYLEFGCOLOR6", value);
   else
-    IupConfigSetVariableStr(config, "VisualLED", "OperatorColor", IupGetAttribute(multitext, "STYLEFGCOLOR10"));
+    IupConfigSetVariableStr(config, "IupVisualLED", "OperatorColor", IupGetAttribute(multitext, "STYLEFGCOLOR10"));
 
-  value = IupConfigGetVariableStr(config, "VisualLED", "AutoCompletion");
+  value = IupConfigGetVariableStr(config, "IupVisualLED", "AutoCompletion");
   if (value)
     IupSetStrAttribute(multitext, "AUTOCOMPLETION", value);
 
-  value = IupConfigGetVariableStr(config, "VisualLED", "Folding");
+  value = IupConfigGetVariableStr(config, "IupVisualLED", "Folding");
   if (iupStrBoolean(value))
   {
     IupSetAttribute(multitext, "MARGINWIDTH3", VLED_FOLDING_MARGIN);
@@ -891,14 +895,14 @@ static int configload_cb(Ihandle *ih, Ihandle* config)
 {
   const char* value;
 
-  value = IupConfigGetVariableStr(config, "VisualLED", "AutoCompletion");
+  value = IupConfigGetVariableStr(config, "IupVisualLED", "AutoCompletion");
   if (value)
   {
     Ihandle* ih_item = IupGetDialogChild(ih, "ITM_AUTOCOMPLETE");
     IupSetStrAttribute(ih_item, "VALUE", value);
   }
 
-  value = IupConfigGetVariableStr(config, "VisualLED", "Folding");
+  value = IupConfigGetVariableStr(config, "IupVisualLED", "Folding");
   if (value)
   {
     Ihandle* ih_item = IupGetDialogChild(ih, "ITM_FOLDING");
@@ -1033,7 +1037,7 @@ static int item_autocomplete_action_cb(Ihandle* ih_item)
     }
   }
 
-  IupConfigSetVariableStr(config, "VisualLED", "AutoCompletion", IupGetAttribute(ih_item, "VALUE"));
+  IupConfigSetVariableStr(config, "IupVisualLED", "AutoCompletion", IupGetAttribute(ih_item, "VALUE"));
 
   return IUP_DEFAULT;
 }
@@ -1060,12 +1064,12 @@ static int item_style_config_action_cb(Ihandle* ih_item)
     stringColor[30], characterColor[30], operatorColor[30];
   int i;
 
-  strcpy(commentColor, IupConfigGetVariableStr(config, "VisualLED", "CommentColor"));
-  strcpy(numberColor, IupConfigGetVariableStr(config, "VisualLED", "NumberColor"));
-  strcpy(keywordColor, IupConfigGetVariableStr(config, "VisualLED", "KeywordColor"));
-  strcpy(stringColor, IupConfigGetVariableStr(config, "VisualLED", "StringColor"));
-  strcpy(characterColor, IupConfigGetVariableStr(config, "VisualLED", "CharacterColor"));
-  strcpy(operatorColor, IupConfigGetVariableStr(config, "VisualLED", "OperatorColor"));
+  strcpy(commentColor, IupConfigGetVariableStr(config, "IupVisualLED", "CommentColor"));
+  strcpy(numberColor, IupConfigGetVariableStr(config, "IupVisualLED", "NumberColor"));
+  strcpy(keywordColor, IupConfigGetVariableStr(config, "IupVisualLED", "KeywordColor"));
+  strcpy(stringColor, IupConfigGetVariableStr(config, "IupVisualLED", "StringColor"));
+  strcpy(characterColor, IupConfigGetVariableStr(config, "IupVisualLED", "CharacterColor"));
+  strcpy(operatorColor, IupConfigGetVariableStr(config, "IupVisualLED", "OperatorColor"));
 
   if (!IupGetParam("Syntax Colors", setparent_param_cb, IupGetDialog(ih_item),
     "Comment: %c\n"
@@ -1077,12 +1081,12 @@ static int item_style_config_action_cb(Ihandle* ih_item)
     commentColor, numberColor, keywordColor, stringColor, characterColor, operatorColor, NULL))
     return IUP_DEFAULT;
 
-  IupConfigSetVariableStr(config, "VisualLED", "CommentColor", commentColor);
-  IupConfigSetVariableStr(config, "VisualLED", "NumberColor", numberColor);
-  IupConfigSetVariableStr(config, "VisualLED", "KeywordColor", keywordColor);
-  IupConfigSetVariableStr(config, "VisualLED", "StringColor", stringColor);
-  IupConfigSetVariableStr(config, "VisualLED", "CharacterColor", characterColor);
-  IupConfigSetVariableStr(config, "VisualLED", "OperatorColor", operatorColor);
+  IupConfigSetVariableStr(config, "IupVisualLED", "CommentColor", commentColor);
+  IupConfigSetVariableStr(config, "IupVisualLED", "NumberColor", numberColor);
+  IupConfigSetVariableStr(config, "IupVisualLED", "KeywordColor", keywordColor);
+  IupConfigSetVariableStr(config, "IupVisualLED", "StringColor", stringColor);
+  IupConfigSetVariableStr(config, "IupVisualLED", "CharacterColor", characterColor);
+  IupConfigSetVariableStr(config, "IupVisualLED", "OperatorColor", operatorColor);
 
   for (i = 0; i < children_count; i++)
   {
@@ -1135,7 +1139,7 @@ static int item_folding_action_cb(Ihandle* ih)
     }
   }
 
-  IupConfigSetVariableStr(config, "VisualLED", "Folding", IupGetAttribute(ih, "VALUE"));
+  IupConfigSetVariableStr(config, "IupVisualLED", "Folding", IupGetAttribute(ih, "VALUE"));
 
   return IUP_DEFAULT;
 }
@@ -1197,10 +1201,10 @@ static int item_fold_level_action_cb(Ihandle* ih_item)
   int level = 0, action = 0;
   Ihandle* config = get_config(ih_item);
 
-  const char* value = IupConfigGetVariableStr(config, "VisualLED", "FoldAllLevel");
+  const char* value = IupConfigGetVariableStr(config, "IupVisualLED", "FoldAllLevel");
   if (value) iupStrToInt(value, &level);
 
-  value = IupConfigGetVariableStr(config, "VisualLED", "FoldAllLevelAction");
+  value = IupConfigGetVariableStr(config, "IupVisualLED", "FoldAllLevelAction");
   if (value) iupStrToInt(value, &action);
 
   if (IupGetParam("Fold All by Level", setparent_param_cb, IupGetDialog(ih_item),
@@ -1211,8 +1215,8 @@ static int item_fold_level_action_cb(Ihandle* ih_item)
     Ihandle* multitext = vLedGetCurrentMultitext(ih_item);
     int lin, count = IupGetInt(multitext, "LINECOUNT");
 
-    IupConfigSetVariableInt(config, "VisualLED", "FoldAllLevel", level);
-    IupConfigSetVariableInt(config, "VisualLED", "FoldAllLevelAction", action);
+    IupConfigSetVariableInt(config, "IupVisualLED", "FoldAllLevel", level);
+    IupConfigSetVariableInt(config, "IupVisualLED", "FoldAllLevelAction", action);
 
     for (lin = 0; lin < count; lin++)
     {
@@ -1343,8 +1347,8 @@ static int item_import_img_action_cb(Ihandle *ih_item)
 {
   Ihandle* config = get_config(ih_item);
   Ihandle* filedlg = IupFileDlg();
-  const char* dir = IupConfigGetVariableStr(config, "VisualLED", "LastImageDirectory");
-  if (!dir) dir = IupConfigGetVariableStr(config, "VisualLED", "LastDirectory");
+  const char* dir = IupConfigGetVariableStr(config, "IupVisualLED", "LastImageDirectory");
+  if (!dir) dir = IupConfigGetVariableStr(config, "IupVisualLED", "LastDirectory");
 
   IupSetStrAttribute(filedlg, "DIRECTORY", dir);
   IupSetAttribute(filedlg, "DIALOGTYPE", "OPEN");
@@ -1371,7 +1375,7 @@ static int item_import_img_action_cb(Ihandle *ih_item)
       LoadImageFile(ih_item, filename);
     }
 
-    IupConfigSetVariableStr(config, "VisualLED", "LastImageDirectory", dir);
+    IupConfigSetVariableStr(config, "IupVisualLED", "LastImageDirectory", dir);
   }
 
   IupDestroy(filedlg);
@@ -1589,8 +1593,8 @@ static int ivLedGetExportFile(Ihandle* ih, char* filename, const char *filter)
   Ihandle *filedlg = 0;
   int ret;
   Ihandle* config = get_config(ih);
-  const char* dir = IupConfigGetVariableStr(config, "VisualLED", "LastExportDirectory");
-  if (!dir) dir = IupConfigGetVariableStr(config, "VisualLED", "LastDirectory");
+  const char* dir = IupConfigGetVariableStr(config, "IupVisualLED", "LastExportDirectory");
+  if (!dir) dir = IupConfigGetVariableStr(config, "IupVisualLED", "LastDirectory");
 
   filedlg = IupFileDlg();
 
@@ -1612,7 +1616,7 @@ static int ivLedGetExportFile(Ihandle* ih, char* filename, const char *filter)
     strcpy(filename, value);
 
     dir = IupGetAttribute(filedlg, "DIRECTORY");
-    IupConfigSetVariableStr(config, "VisualLED", "LastExportDirectory", dir);
+    IupConfigSetVariableStr(config, "IupVisualLED", "LastExportDirectory", dir);
   }
 
   IupDestroy(filedlg);
@@ -1635,7 +1639,7 @@ static int item_export_lua_action_cb(Ihandle *ih_item)
 
   int ret = ivLedGetExportFile(ih_item, filename, "Lua Files|*.lua|All Files|*.*|");
   if (ret != -1) /* ret==0 existing file. TODO: check if filename is opened. */
-    vLedExport(ih_item, filename, "LUA");
+    vLedExport(currFilename, filename, "LUA");
 
   return IUP_DEFAULT;
 }
@@ -1655,12 +1659,12 @@ static int item_export_c_action_cb(Ihandle *ih_item)
 
   int ret = ivLedGetExportFile(ih_item, filename, "C Files|*.c|All Files|*.*|");
   if (ret != -1) /* ret==0 existing file. TODO: check if filename is opened. */
-    vLedExport(ih_item, filename, "C");
+    vLedExport(currFilename, filename, "C");
 
   return IUP_DEFAULT;
 }
 
-static int item_export_open_action_cb(Ihandle *ih_item)
+static int item_export_all_open_action_cb(Ihandle *ih_item)
 {
   char *itemName = IupGetAttribute(ih_item, "NAME");
   Ihandle* tabs = IupGetDialogChild(ih_item, "MULTITEXT_TABS");
@@ -1689,13 +1693,13 @@ static int item_export_open_action_cb(Ihandle *ih_item)
     {
       strcat(filename, ".lua");
 
-      vLedExport(ih_item, filename, "LUA");
+      vLedExport(currFilename, filename, "LUA");
     }
     else
     {
       strcat(filename, ".c");
 
-      vLedExport(ih_item, filename, "C");
+      vLedExport(currFilename, filename, "C");
     }
   }
 
@@ -1730,13 +1734,13 @@ static int item_export_proj_action_cb(Ihandle *ih_item)
     {
       strcat(filename, ".lua");
 
-      vLedExport(ih_item, filename, "LUA");
+      vLedExport(currFilename, filename, "LUA");
     }
     else
     {
       strcat(filename, ".c");
 
-      vLedExport(ih_item, filename, "C");
+      vLedExport(currFilename, filename, "C");
     }
   }
 
@@ -1749,13 +1753,13 @@ static int item_use_utf_8_action_cb(Ihandle *ih_item)
   if (IupGetInt(NULL, "UTF8MODE"))
   {
     IupSetGlobal("UTF8MODE", "No");
-    IupConfigSetVariableStr(config, "VisualLED", "UTF-8", "No");
+    IupConfigSetVariableStr(config, "IupVisualLED", "UTF-8", "No");
     IupSetAttribute(ih_item, "VALUE", "OFF");
   }
   else
   {
     IupSetGlobal("UTF8MODE", "Yes");
-    IupConfigSetVariableStr(config, "VisualLED", "UTF-8", "Yes");
+    IupConfigSetVariableStr(config, "IupVisualLED", "UTF-8", "Yes");
     IupSetAttribute(ih_item, "VALUE", "ON");
   }
   return IUP_DEFAULT;
@@ -2041,7 +2045,7 @@ static Ihandle* buildToolsMenu(void)
 
   item_export_open_lua = IupItem("Export All Open to Lua(s)...", NULL);
   IupSetAttribute(item_export_open_lua, "NAME", "ITM_EXPORT_OPEN_LUA");
-  IupSetCallback(item_export_open_lua, "ACTION", (Icallback)item_export_open_action_cb);
+  IupSetCallback(item_export_open_lua, "ACTION", (Icallback)item_export_all_open_action_cb);
 
   item_export_proj_lua = IupItem("Export All Project to Lua(s)...", NULL);
   IupSetAttribute(item_export_proj_lua, "NAME", "ITM_EXP_PROJ_LUA");
@@ -2053,7 +2057,7 @@ static Ihandle* buildToolsMenu(void)
 
   item_export_open_c = IupItem("Export All Open to C(s)...", NULL);
   IupSetAttribute(item_export_open_c, "NAME", "ITM_EXPORT_OPEN_C");
-  IupSetCallback(item_export_open_c, "ACTION", (Icallback)item_export_open_action_cb);
+  IupSetCallback(item_export_open_c, "ACTION", (Icallback)item_export_all_open_action_cb);
 
   item_export_proj_c = IupItem("Export All Project To C(s)...", NULL);
   IupSetAttribute(item_export_proj_c, "NAME", "ITM_EXP_PROJ_C");
@@ -2136,7 +2140,7 @@ int main(int argc, char **argv)
   IupConfigLoad(config);
   iupAttribSet(config, "VLED_INTERNAL", "YES");
 
-  IupSetGlobal("UTF8MODE", IupConfigGetVariableStr(config, "VisualLED", "UTF-8"));
+  IupSetGlobal("UTF8MODE", IupConfigGetVariableStr(config, "IupVisualLED", "UTF-8"));
 
   main_dialog = IupScintillaDlg();
 
@@ -2171,7 +2175,7 @@ int main(int argc, char **argv)
 
   IupSetAttribute(panelTabs, "VALUE_HANDLE", (char*)elementsFrame);
 
-  IupSetAttribute(main_dialog, "SUBTITLE", "IUP Visual LED");
+  IupSetAttribute(main_dialog, "SUBTITLE", "IupVisualLED");
   IupSetAttributeHandle(main_dialog, "CONFIG", config);
   IupSetHandle("VLED_MAIN", main_dialog);
 
@@ -2196,7 +2200,7 @@ int main(int argc, char **argv)
     NULL)));
 
   /* show the dialog at the last position, with the last size */
-  IupConfigDialogShow(config, main_dialog, IupGetAttribute(main_dialog, "SUBTITLE"));
+  IupConfigDialogShow(config, main_dialog, "IupVisualLED");
 
   /* open a file from the command line (allow file association in Windows) */
   for (i = 1; i < argc; i++)
