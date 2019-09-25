@@ -528,7 +528,7 @@ static int iLayoutExportElementAttribs(FILE* file, Ihandle* ih, const char* inde
       IupClassMatch(ih, "cells"))  /* cells does not have any savable id attributes */
       has_attrib_id = 0;
 
-  if (IupClassMatch(ih, "list"))
+  if (IupClassMatch(ih, "list") || IupClassMatch(ih, "flatlist"))
     start_id = 1;
 
   attr_count = IupGetClassAttributes(ih->iclass->name, attr_names, total_count);
