@@ -156,16 +156,16 @@ static Ihandle* load_image_shortcut(void)
 }
 
 int vLedIsAlien(Ihandle *elem, const char* filename);
-static int vLedTreeAddNode(Ihandle* tree, int id, Ihandle* ih, const char *filename);
-static int vLedTreeAddChildren(Ihandle* tree, int parent_id, Ihandle* parent, const char *filename);
+static int vLedTreeAddNode(Ihandle* elem_tree, int id, Ihandle* ih, const char *filename);
+static int vLedTreeAddChildren(Ihandle* elem_tree, int parent_id, Ihandle* parent, const char *filename);
 
-static void mainUpdateList(Ihandle* tree, const char* file_name)
+static void mainUpdateList(Ihandle* elem_tree, const char* file_name)
 {
   char *names[VLED_MAX_NAMES];
   int i, num_names = IupGetAllNames(names, VLED_MAX_NAMES);
   int last_child_id = -1;
 
-  IupSetAttribute(tree, "DELNODE0", "ALL");
+  IupSetAttribute(elem_tree, "DELNODE0", "ALL");
 
   for (i = 0; i < num_names; i++)
   {
@@ -177,17 +177,17 @@ static void mainUpdateList(Ihandle* tree, const char* file_name)
       if (iupAttribGetInt(elem, "VLED_INTERNAL") != 0 || vLedIsAlien(elem, file_name) || (elem_parent && !vLedIsAlien(elem_parent, file_name)))
         continue;
 
-      last_child_id = vLedTreeAddNode(tree, last_child_id, elem, file_name);
+      last_child_id = vLedTreeAddNode(elem_tree, last_child_id, elem, file_name);
 
       if (elem->iclass->childtype != IUP_CHILDNONE && !vLedIsAlien(elem, file_name))
-        last_child_id = vLedTreeAddChildren(tree, last_child_id, elem, file_name);
+        last_child_id = vLedTreeAddChildren(elem_tree, last_child_id, elem, file_name);
 
       last_child_id = -1;
     }
   }
 
-  IupSetAttribute(tree, "VALUE", "1");
-  IupSetAttribute(tree, "VALUE", "0");
+  IupSetAttribute(elem_tree, "VALUE", "1");
+  IupSetAttribute(elem_tree, "VALUE", "0");
 }
 
 static void replaceDot(char* file_name)
@@ -354,17 +354,17 @@ static char* vLedGetElementTreeTitle(Ihandle* ih)
   return str;
 }
 
-static void vLedTreeSetNodeInfo(Ihandle* tree, int id, Ihandle* ih, int link)
+static void vLedTreeSetNodeInfo(Ihandle* elem_tree, int id, Ihandle* ih, int link)
 {
-  IupSetAttributeId(tree, "TITLE", id, vLedGetElementTreeTitle(ih));
-  //iLayoutTreeSetNodeColor(tree, id, ih);
-  IupTreeSetUserId(tree, id, ih);
+  IupSetAttributeId(elem_tree, "TITLE", id, vLedGetElementTreeTitle(ih));
+  //iLayoutTreeSetNodeColor(elem_tree, id, ih);
+  IupTreeSetUserId(elem_tree, id, ih);
   if (link)
   {
     if (ih->iclass->childtype != IUP_CHILDNONE)
-      IupSetAttributeId(tree, "IMAGEEXPANDED", id, IupGetAttribute(tree, "IMG_SHORTCUT"));
+      IupSetAttributeId(elem_tree, "IMAGEEXPANDED", id, IupGetAttribute(elem_tree, "IMG_SHORTCUT"));
     else
-      IupSetAttributeId(tree, "IMAGE", id, IupGetAttribute(tree, "IMG_SHORTCUT"));
+      IupSetAttributeId(elem_tree, "IMAGE", id, IupGetAttribute(elem_tree, "IMG_SHORTCUT"));
   }
 }
 
@@ -378,7 +378,7 @@ static Ihandle* vLedTreeGetFirstChild(Ihandle* ih)
   return firstchild;
 }
 
-static int vLedTreeAddNode(Ihandle* tree, int id, Ihandle* ih, const char *filename)
+static int vLedTreeAddNode(Ihandle* elem_tree, int id, Ihandle* ih, const char *filename)
 {
   int link = 0;
 
@@ -386,37 +386,37 @@ static int vLedTreeAddNode(Ihandle* tree, int id, Ihandle* ih, const char *filen
   {
     if (!ih->parent || vLedIsAlien(ih->parent, filename) || ih == vLedTreeGetFirstChild(ih))
     {
-      IupSetAttributeId(tree, "ADDBRANCH", id, "");
+      IupSetAttributeId(elem_tree, "ADDBRANCH", id, "");
       id++;
     }
     else
     {
-      IupSetAttributeId(tree, "INSERTBRANCH", id, "");
-      id = IupGetInt(tree, "LASTADDNODE");
+      IupSetAttributeId(elem_tree, "INSERTBRANCH", id, "");
+      id = IupGetInt(elem_tree, "LASTADDNODE");
     }
   }
   else
   {
     if (!ih->parent || vLedIsAlien(ih->parent, filename) || ih == vLedTreeGetFirstChild(ih))
     {
-      IupSetAttributeId(tree, "ADDLEAF", id, "");
+      IupSetAttributeId(elem_tree, "ADDLEAF", id, "");
       id++;
     }
     else
     {
-      IupSetAttributeId(tree, "INSERTLEAF", id, "");
-      id = IupGetInt(tree, "LASTADDNODE");
+      IupSetAttributeId(elem_tree, "INSERTLEAF", id, "");
+      id = IupGetInt(elem_tree, "LASTADDNODE");
     }
   }
 
   if (vLedIsAlien(ih, filename) || iupStrEqual(ih->iclass->name, "user"))
     link = 1;
 
-  vLedTreeSetNodeInfo(tree, id, ih, link);
+  vLedTreeSetNodeInfo(elem_tree, id, ih, link);
   return id;
 }
 
-static int vLedTreeAddChildren(Ihandle* tree, int parent_id, Ihandle* parent, const char *filename)
+static int vLedTreeAddChildren(Ihandle* elem_tree, int parent_id, Ihandle* parent, const char *filename)
 {
   Ihandle *child;
   int last_child_id = parent_id;
@@ -425,10 +425,10 @@ static int vLedTreeAddChildren(Ihandle* tree, int parent_id, Ihandle* parent, co
   {
     if (!(child->flags & IUP_INTERNAL))
     {
-      last_child_id = vLedTreeAddNode(tree, last_child_id, child, filename);
+      last_child_id = vLedTreeAddNode(elem_tree, last_child_id, child, filename);
 
       if (child->iclass->childtype != IUP_CHILDNONE && !vLedIsAlien(child, filename))
-        vLedTreeAddChildren(tree, last_child_id, child, filename);
+        vLedTreeAddChildren(elem_tree, last_child_id, child, filename);
     }
   }
 
@@ -820,13 +820,13 @@ static int multitext_map_cb(Ihandle* multitext)
 static int tabChange_cb(Ihandle* tabs, Ihandle* new_tab, Ihandle* old_tab)
 {
   char *filename = IupGetAttribute(new_tab, "FILENAME");
-  Ihandle* elementsList = IupGetDialogChild(tabs, "ELEMENTS_TREE");
+  Ihandle* elem_tree = IupGetDialogChild(tabs, "ELEMENTS_TREE");
 
   IFnnn oldTabChange_cb = (IFnnn)IupGetCallback(tabs, "OLDTABCHANGE_CB");
   if (oldTabChange_cb)
     oldTabChange_cb(tabs, new_tab, old_tab);
 
-  mainUpdateList(elementsList, filename);
+  mainUpdateList(elem_tree, filename);
 
   return IUP_DEFAULT;
 }
@@ -835,9 +835,9 @@ static int loadfile_cb(Ihandle* self, char* filename)
 {
   /* called after the file is loaded */
 
-  Ihandle* elementsList = IupGetDialogChild(self, "ELEMENTS_TREE");
+  Ihandle* elem_tree = IupGetDialogChild(self, "ELEMENTS_TREE");
 
-  load_led(elementsList, filename);
+  load_led(elem_tree, filename);
 
   return IUP_DEFAULT;
 }
@@ -846,13 +846,13 @@ static int savefile_cb(Ihandle* self, char* filename)
 {
   /* called after the file is saved */
 
-  Ihandle* elementsList = IupGetDialogChild(self, "ELEMENTS_TREE");
+  Ihandle* elem_tree = IupGetDialogChild(self, "ELEMENTS_TREE");
 
   /* reload the elements because they may have changed */
 
   unload_led(filename);
 
-  load_led(elementsList, filename);
+  load_led(elem_tree, filename);
 
   return IUP_DEFAULT;
 }
@@ -890,19 +890,19 @@ static int newtext_cb(Ihandle* ih, Ihandle *multitext)
 static int closetext_cb(Ihandle* ih, Ihandle *multitext)
 {
   char *filename = IupGetAttribute(multitext, "FILENAME");
-  Ihandle* tree = IupGetDialogChild(ih, "ELEMENTS_TREE");
+  Ihandle* elem_tree = IupGetDialogChild(ih, "ELEMENTS_TREE");
   Ihandle* currMutltitext = vLedGetCurrentMultitext(ih);
 
   if (!filename)
     return IUP_DEFAULT;
 
   unload_led(filename);
-  IupSetAttribute(tree, "DELNODE0", "ALL");
+  IupSetAttribute(elem_tree, "DELNODE0", "ALL");
 
   if (currMutltitext != multitext)
   {
     char *currentFile = IupGetAttribute(currMutltitext, "FILENAME");
-    mainUpdateList(tree, currentFile);
+    mainUpdateList(elem_tree, currentFile);
   }
 
   return IUP_DEFAULT;
@@ -1350,13 +1350,13 @@ static int item_linesuncomment_action_cb(Ihandle* ih_item)
 
 static int item_loadbuffer_action_cb(Ihandle *ih_item)
 {
-  Ihandle* elementsList = IupGetDialogChild(ih_item, "ELEMENTS_TREE");
+  Ihandle* elem_tree = IupGetDialogChild(ih_item, "ELEMENTS_TREE");
   Ihandle* multitext = vLedGetCurrentMultitext(ih_item);
   char *filename = IupGetAttribute(multitext, "FILENAME");
 
   unload_led(filename);
 
-  load_buffer(elementsList, filename);
+  load_buffer(elem_tree, filename);
   return IUP_DEFAULT;
 }
 
@@ -1402,8 +1402,8 @@ static int item_import_img_action_cb(Ihandle *ih_item)
 static int item_export_img_cb(Ihandle *ih_item)
 {
   char* folder;
-  Ihandle* elementsList = IupGetDialogChild(ih_item, "ELEMENTS_TREE");
-  int count = IupGetInt(elementsList, "COUNT");
+  Ihandle* elem_tree = IupGetDialogChild(ih_item, "ELEMENTS_TREE");
+  int count = IupGetInt(elem_tree, "COUNT");
   int i, n = 0;
 
   char* imgtype = getfileformat(1);
@@ -1416,7 +1416,7 @@ static int item_export_img_cb(Ihandle *ih_item)
 
   for (i = 1; i < count; i++)
   {
-    Ihandle *elem = (Ihandle *)IupTreeGetUserId(elementsList, i);
+    Ihandle *elem = (Ihandle *)IupTreeGetUserId(elem_tree, i);
     char *name;
     char* type;
 
@@ -1500,15 +1500,15 @@ static int item_show_all_img_cb(Ihandle *ih_item)
   Ihandle *dialog, *box, *files, *tabs, *toggle, *label;
   Ihandle* params[500];
   Ihandle* images[VLED_MAX_NAMES];
-  Ihandle* elementsList = IupGetDialogChild(ih_item, "ELEMENTS_TREE");
-  int count = IupGetInt(elementsList, "COUNT");
+  Ihandle* elem_tree = IupGetDialogChild(ih_item, "ELEMENTS_TREE");
+  int count = IupGetInt(elem_tree, "COUNT");
   int i, n = 0, num_images;
   files = IupUser();
 
   num_images = 0;
   for (i = 0; i < count; i++)
   {
-    Ihandle *elem = (Ihandle *)IupTreeGetUserId(elementsList, i);
+    Ihandle *elem = (Ihandle *)IupTreeGetUserId(elem_tree, i);
     char* type;
 
     if (!elem)
@@ -1827,25 +1827,50 @@ static int executeleaf_cb(Ihandle* self, int id)
 
 static int locateInLED(Ihandle *ih)
 {
-  Ihandle* tree = (Ihandle*)IupGetAttribute(ih, "ELEMENTS_TREE");
-  int id = IupGetInt(tree, "VALUE");
+  Ihandle* elem_tree = (Ihandle*)IupGetAttribute(ih, "ELEMENTS_TREE");
+  int id = IupGetInt(elem_tree, "VALUE");
 
   if (id == 0)
     return IUP_DEFAULT;
 
-  executeleaf_cb(tree, id);
+  executeleaf_cb(elem_tree, id);
 
+  return IUP_DEFAULT;
+}
+
+
+static int globalsdlg_cb(Ihandle* ih)
+{
+  Ihandle* dlg = IupGetDialog(ih);
+  Ihandle* globals_dlg = (Ihandle*)IupGetAttribute(dlg, "GLOBALS_DIALOG");
+  if (!globals_dlg)
+  {
+    globals_dlg = IupGlobalsDialog();
+    IupSetAttributeHandle(globals_dlg, "PARENTDIALOG", dlg);
+    IupSetAttribute(dlg, "GLOBALS_DIALOG", (char*)globals_dlg);
+  }
+
+  IupShow(globals_dlg);
   return IUP_DEFAULT;
 }
 
 static int propertiesdlg_cb(Ihandle* self)
 {
-  Ihandle* tree = (Ihandle*)IupGetAttribute(self, "ELEMENTS_TREE");
-  int id = IupGetInt(tree, "VALUE");
-  Ihandle *elem = (Ihandle *)IupTreeGetUserId(tree, id);
+  Ihandle* elem_tree = (Ihandle*)IupGetAttribute(self, "ELEMENTS_TREE");
+  int id = IupGetInt(elem_tree, "VALUE");
+  Ihandle *elem = (Ihandle *)IupTreeGetUserId(elem_tree, id);
 
   if (elem)
-    IupShow(IupElementPropertiesDialog(IupGetDialog(tree), elem));
+  {
+    Ihandle* properties_dlg = (Ihandle*)IupGetAttribute(elem_tree, "PROPERTIES_DIALOG");
+    if (!properties_dlg)
+    {
+      properties_dlg = IupElementPropertiesDialog(IupGetDialog(elem_tree), elem);
+      IupSetAttribute(elem_tree, "PROPERTIES_DIALOG", (char*)properties_dlg);
+    }
+
+    IupShow(properties_dlg);
+  }
   else
     IupMessageError(IupGetDialog(self), "No elements.");
 
@@ -1854,9 +1879,9 @@ static int propertiesdlg_cb(Ihandle* self)
 
 static int showElement_cb(Ihandle* self)
 {
-  Ihandle* tree = (Ihandle*)IupGetAttribute(self, "ELEMENTS_TREE");
-  int id = IupGetInt(tree, "VALUE");
-  Ihandle *elem = (Ihandle *)IupTreeGetUserId(tree, id);
+  Ihandle* elem_tree = (Ihandle*)IupGetAttribute(self, "ELEMENTS_TREE");
+  int id = IupGetInt(elem_tree, "VALUE");
+  Ihandle *elem = (Ihandle *)IupTreeGetUserId(elem_tree, id);
 
   if (elem) /* the list may be empty */
   {
@@ -1884,9 +1909,9 @@ static int showElement_cb(Ihandle* self)
 
 static int hideElement_cb(Ihandle* self)
 {
-  Ihandle* tree = (Ihandle*)IupGetAttribute(self, "ELEMENTS_TREE");
-  int id = IupGetInt(tree, "VALUE");
-  Ihandle *elem = (Ihandle *)IupTreeGetUserId(tree, id);
+  Ihandle* elem_tree = (Ihandle*)IupGetAttribute(self, "ELEMENTS_TREE");
+  int id = IupGetInt(elem_tree, "VALUE");
+  Ihandle *elem = (Ihandle *)IupTreeGetUserId(elem_tree, id);
 
   if (elem) /* the list may be empty */
   {
@@ -1910,10 +1935,10 @@ static int hideElement_cb(Ihandle* self)
 
 static int find_cb(Ihandle* ih)
 {
-  Ihandle* tree = (Ihandle*)IupGetAttribute(ih, "ELEMENTS_TREE");
-  Ihandle* find_dlg = (Ihandle*)IupGetAttribute(tree, "FIND_DIALOG");
-  int id = IupGetInt(tree, "VALUE");
-  Ihandle *elem = (Ihandle *)IupTreeGetUserId(tree, id);
+  Ihandle* elem_tree = (Ihandle*)IupGetAttribute(ih, "ELEMENTS_TREE");
+  Ihandle* find_dlg = (Ihandle*)IupGetAttribute(elem_tree, "FIND_DIALOG");
+  int id = IupGetInt(elem_tree, "VALUE");
+  Ihandle *elem = (Ihandle *)IupTreeGetUserId(elem_tree, id);
   Ihandle *dialog = IupGetDialog(elem);
 
   if (!elem)
@@ -1921,8 +1946,8 @@ static int find_cb(Ihandle* ih)
 
   if (!find_dlg)
   {
-    find_dlg = IupLayoutFindDialog(tree, elem);
-    IupSetAttribute(tree, "FIND_DIALOG", (char*)find_dlg);
+    find_dlg = IupLayoutFindDialog(elem_tree, elem);
+    IupSetAttribute(elem_tree, "FIND_DIALOG", (char*)find_dlg);
   }
 
   if (!dialog)
@@ -2098,6 +2123,7 @@ static Ihandle* buildToolsMenu(void)
     item_export_open_c,
     item_export_proj_c,
     IupSeparator(),
+    IupSetCallbacks(IupItem("&Globals...", NULL), "ACTION", globalsdlg_cb, NULL),
     item_use_utf8,
     NULL);
 
@@ -2135,9 +2161,10 @@ int main(int argc, char **argv)
   Ihandle *ledMenu, *toolsMenu;
   Ihandle *panelTabs;
   Ihandle *multitextTabs;
-  Ihandle *elementsList;
+  Ihandle *elem_tree;
   Ihandle *elementsFrame;
   Icallback oldTabChange_cb;
+  Ihandle* extra_dlg;
   int i;
 
   IupOpen(&argc, &argv);
@@ -2179,16 +2206,16 @@ int main(int argc, char **argv)
 
   multitextTabs = IupGetDialogChild(main_dialog, "MULTITEXT_TABS");
 
-  elementsList = IupTree();
-  IupSetAttribute(elementsList, "EXPAND", "YES");
-  IupSetAttribute(elementsList, "NAME", "ELEMENTS_TREE");
-  IupSetAttribute(elementsList, "ADDROOT", "NO");
-  IupSetCallback(elementsList, "EXECUTELEAF_CB", (Icallback)executeleaf_cb);
-  IupSetCallback(elementsList, "RIGHTCLICK_CB", (Icallback)rightclick_cb);
-  IupSetAttribute(elementsList, "VISIBLELINES", "3");
-  IupSetAttributeHandle(elementsList, "IMG_SHORTCUT", load_image_shortcut());
+  elem_tree = IupTree();
+  IupSetAttribute(elem_tree, "EXPAND", "YES");
+  IupSetAttribute(elem_tree, "NAME", "ELEMENTS_TREE");
+  IupSetAttribute(elem_tree, "ADDROOT", "NO");
+  IupSetCallback(elem_tree, "EXECUTELEAF_CB", (Icallback)executeleaf_cb);
+  IupSetCallback(elem_tree, "RIGHTCLICK_CB", (Icallback)rightclick_cb);
+  IupSetAttribute(elem_tree, "VISIBLELINES", "3");
+  IupSetAttributeHandle(elem_tree, "IMG_SHORTCUT", load_image_shortcut());
 
-  elementsFrame = IupFrame(elementsList);
+  elementsFrame = IupFrame(elem_tree);
   IupSetAttribute(elementsFrame, "NAME", "ELEMENTS_FRAME");
   IupSetAttribute(elementsFrame, "MARGIN", "4x4");
   IupSetAttribute(elementsFrame, "GAP", "4");
@@ -2241,6 +2268,16 @@ int main(int argc, char **argv)
   newtext_cb(main_dialog, vLedGetCurrentMultitext(main_dialog));
 
   IupMainLoop();
+
+  extra_dlg = (Ihandle*)IupGetAttribute(elem_tree, "FIND_DIALOG");
+  if (iupObjectCheck(extra_dlg))
+    IupDestroy(extra_dlg);
+  extra_dlg = (Ihandle*)IupGetAttribute(elem_tree, "PROPERTIES_DIALOG");
+  if (iupObjectCheck(extra_dlg))
+    IupDestroy(extra_dlg);
+  extra_dlg = (Ihandle*)IupGetAttribute(main_dialog, "GLOBALS_DIALOG");
+  if (iupObjectCheck(extra_dlg))
+    IupDestroy(extra_dlg);
 
   IupDestroy(main_dialog);
   IupDestroy(config);
