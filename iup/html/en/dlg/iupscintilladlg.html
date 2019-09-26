@@ -58,6 +58,10 @@ filename. If value is NULL uses the current file name.</p>
 saved. (since 3.23)</p>
 <p><strong>FORCECLOSEFILE</strong> (write-only): force a file to close with no 
 save check. (since 3.23)</p>
+<p><strong>OPENPROJECT</strong> (write-only): opens a project file using the 
+value as filename. (since 3.28)</p>
+<p><strong>PROJECTEXT</strong>: project extension to be used in project open and 
+save dialogs. If not defined "prj" will be used. (since 3.28)</p>
 <p><strong>EXTRAFILTERS</strong>: additional filters for File Open and File Save 
 As dialogs in the same format as the IupFileDlg EXTFILTER attribute. The filters 
 will be concatenated at start with the existing filters: "Text Files|*.txt|All 

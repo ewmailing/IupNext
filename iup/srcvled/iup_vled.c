@@ -2202,6 +2202,7 @@ int main(int argc, char **argv)
   IupSetAttribute(main_dialog, "SUBTITLE", "IupVisualLED");
   IupSetAttributeHandle(main_dialog, "CONFIG", config);
   IupSetHandle("VLED_MAIN", main_dialog);
+  IupSetAttribute(main_dialog, "PROJECTEXT", "vled");
 
   IupSetAttribute(main_dialog, "EXTRAFILTERS", "Led Files|*.led|");
 
@@ -2230,7 +2231,10 @@ int main(int argc, char **argv)
   for (i = 1; i < argc; i++)
   {
     const char* filename = argv[i];
-    IupSetStrAttribute(main_dialog, "OPENFILE", filename);
+    if (strstr(filename, ".vled"))
+      IupSetStrAttribute(main_dialog, "OPENPROJECT", filename);
+    else
+      IupSetStrAttribute(main_dialog, "OPENFILE", filename);
   }
 
   /* Call NEW_TEXT_CB because the first tab was already created */

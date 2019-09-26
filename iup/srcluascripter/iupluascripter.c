@@ -1,5 +1,6 @@
 
 #include <stdlib.h>
+#include <string.h>
 
 #include <lua.h>
 #include <lauxlib.h>
@@ -172,7 +173,8 @@ int main(int argc, char **argv)
 
   IupSetAttribute(main_dialog, "SUBTITLE", "IupLuaScripter");
   IupSetAttributeHandle(main_dialog, "CONFIG", config);
-
+  IupSetAttribute(main_dialog, "PROJECTEXT", "luasc");
+  
   menu = IupGetAttributeHandle(main_dialog, "MENU");
   IupAppend(menu, IupSubmenu("&Help", IupMenu(
     IupSetCallbacks(IupItem("&Help...", NULL), "ACTION", (Icallback)item_help_action_cb, NULL),
@@ -186,7 +188,10 @@ int main(int argc, char **argv)
   for (i = 1; i < argc; i++)
   {
     const char* filename = argv[i];
-    IupSetStrAttribute(main_dialog, "OPENFILE", filename);
+    if (strstr(filename, ".luasc"))
+      IupSetStrAttribute(main_dialog, "OPENPROJECT", filename);
+    else
+      IupSetStrAttribute(main_dialog, "OPENFILE", filename);
   }
 
   IupSetGlobal("EXITLOOP", "NO");

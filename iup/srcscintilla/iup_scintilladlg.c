@@ -2517,13 +2517,15 @@ static int item_open_proj_action_cb(Ihandle* ih_item)
   Ihandle *filedlg;
   Ihandle* config;
   const char* dir = NULL;
+  char* project_ext = IupGetAttribute(ih, "PROJECTEXT");
+  if (!project_ext) project_ext = "prj";
 
   config = iScintillaDlgGetConfig(ih_item);
   dir = IupConfigGetVariableStr(config, IupGetAttribute(ih, "SUBTITLE"), "LastDirectory");
 
   filedlg = IupFileDlg();
   IupSetAttribute(filedlg, "DIALOGTYPE", "OPEN");
-  IupSetAttribute(filedlg, "EXTFILTER", "Project Files|*.cfg|All Files|*.*|");
+  IupSetStrf(filedlg, "EXTFILTER", "Project Files|*.%s|All Files|*.*|", project_ext);
   IupSetAttributeHandle(filedlg, "PARENTDIALOG", ih);
   IupSetStrAttribute(filedlg, "DIRECTORY", dir);
   IupSetAttribute(filedlg, "TITLE", "Open Project");
@@ -2563,10 +2565,12 @@ static void saveProject(Ihandle *ih_item, Ihandle *projectConfig, int show_dialo
     Ihandle *config = iScintillaDlgGetConfig(ih);
     const char *dir = IupConfigGetVariableStr(config, IupGetAttribute(ih, "SUBTITLE"), "LastDirectory");
     Ihandle *filedlg = IupFileDlg();
+    char* project_ext = IupGetAttribute(ih, "PROJECTEXT");
+    if (!project_ext) project_ext = "prj";
 
     IupSetAttribute(filedlg, "DIALOGTYPE", "SAVE");
 
-    IupSetAttribute(filedlg, "EXTFILTER", "Project Files|*.cfg|All Files|*.*|");
+    IupSetStrf(filedlg, "EXTFILTER", "Project Files|*.%s|All Files|*.*|", project_ext);
     IupSetAttributeHandle(filedlg, "PARENTDIALOG", ih);
     IupSetStrAttribute(filedlg, "FILE", filename);
     IupSetStrAttribute(filedlg, "DIRECTORY", dir);
@@ -4457,6 +4461,13 @@ static int iScintillaDlgSetOpenFileAttrib(Ihandle* ih, const char* value)
   return 0;
 }
 
+static int iScintillaDlgSetOpenProjectAttrib(Ihandle* ih, const char* value)
+{
+  if (value)
+    open_proj(ih, value);
+  return 0;
+}
+
 static int iScintillaDlgSetSaveFileAttrib(Ihandle* ih, const char* value)
 {
   Ihandle* multitext = iScintillaDlgGetCurrentMultitext(ih);
@@ -5152,8 +5163,10 @@ Iclass* iupScintillaDlgNewClass(void)
   iupClassRegisterAttribute(ic, "OPENFILE", NULL, iScintillaDlgSetOpenFileAttrib, NULL, NULL, IUPAF_WRITEONLY | IUPAF_NO_INHERIT);
   iupClassRegisterAttribute(ic, "SAVEFILE", NULL, iScintillaDlgSetSaveFileAttrib, NULL, NULL, IUPAF_WRITEONLY | IUPAF_NO_INHERIT);
   iupClassRegisterAttribute(ic, "CLOSEFILE", NULL, iScintillaDlgSetCloseFileAttrib, NULL, NULL, IUPAF_WRITEONLY | IUPAF_NO_INHERIT);
+  iupClassRegisterAttribute(ic, "OPENPROJECT", NULL, iScintillaDlgSetOpenProjectAttrib, NULL, NULL, IUPAF_WRITEONLY | IUPAF_NO_INHERIT);
   iupClassRegisterAttribute(ic, "FORCECLOSEFILE", NULL, iScintillaDlgSetForceCloseFileAttrib, NULL, NULL, IUPAF_WRITEONLY | IUPAF_NO_INHERIT);
   iupClassRegisterAttribute(ic, "EXTRAFILTERS", NULL, NULL, NULL, NULL, IUPAF_NOT_MAPPED | IUPAF_NO_INHERIT);
+  iupClassRegisterAttribute(ic, "PROJECTEXT", NULL, NULL, NULL, NULL, IUPAF_NOT_MAPPED | IUPAF_NO_INHERIT);
   iupClassRegisterAttributeId(ic, "TOGGLEMARKER", NULL, iScintillaDlgSetToggleMarkerAttribId, IUPAF_WRITEONLY | IUPAF_NO_INHERIT);
 
   return ic;
