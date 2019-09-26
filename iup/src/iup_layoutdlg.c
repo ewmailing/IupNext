@@ -2176,7 +2176,7 @@ static Ihandle* iLayoutPropertiesCreateDialog(iLayoutDialog* layoutdlg, Ihandle*
   iupAttribSet(dlg, "_IUP_LAYOUTDIALOG", (char*)layoutdlg);
 
   if (layoutdlg)
-  layoutdlg->properties = dlg;
+    layoutdlg->properties = dlg;
 
   return dlg;
 }
