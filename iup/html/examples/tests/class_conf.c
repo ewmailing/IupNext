@@ -8,7 +8,7 @@
 #include "../src/iup_class.h"
 #include "../src/iup_register.h"
 
-#define MAX_ITEMS 200
+#define MAX_ITEMS 1500
 
 static int compare(const void *a, const void *b)
 {
@@ -75,7 +75,7 @@ static char* getCallbackReturn(const char* format)
   case 'd': fstr = "double"; break;
   case 's': fstr = "char*"; break;
   case 'V': fstr = "void*"; break;
-  case 'C': fstr = "struct _cdCanvas*"; break;
+  case 'C': fstr = "cdCanvas*"; break;
   case 'n': fstr = "Ihandle*"; break;
   }
 
@@ -115,8 +115,9 @@ static char* getCallbackParameters(const char* format)
       case 'd': fstr = "double"; break;
       case 's': fstr = "char*"; break;
       case 'V': fstr = "void*"; break;
-      case 'C': fstr = "struct _cdCanvas*"; break;
+      case 'C': fstr = "cdCanvas*"; break;
       case 'n': fstr = "Ihandle*"; break;
+      case '=': return str;
       }
 
       if (fstr)
@@ -141,15 +142,15 @@ static int callbacksList_ActionCB (Ihandle *ih, char *callName, int pos, int sta
   if (state == 1)
   {
     Ihandle* listClasses = IupGetDialogChild(ih, "listClasses");
-    Ihandle* labelInfo = IupGetDialogChild(ih, "labelInfo");
+    Ihandle* txtInfo = IupGetDialogChild(ih, "txtInfo");
     char* className = IupGetAttribute(listClasses, IupGetAttribute(listClasses, "VALUE"));
     Iclass* ic = iupRegisterFindClass(className);
     char* format = iupClassCallbackGetFormat(ic, callName);
     const char* ret = strchr(format, '=');
     if (ret!=NULL)
-      IupSetfAttribute(labelInfo, "TITLE", "%s %s(%s)", getCallbackReturn(format), callName, getCallbackParameters(ret+1));
+      IupSetfAttribute(txtInfo, "VALUE", "%s %s(%s);", getCallbackReturn(ret + 1), callName, getCallbackParameters(format));
     else
-      IupSetfAttribute(labelInfo, "TITLE", "Ihandle* %s(%s)", callName, getCallbackParameters(format));
+      IupSetfAttribute(txtInfo, "VALUE", "int %s(%s);", callName, getCallbackParameters(format));
   }
 
   (void)pos;
@@ -162,7 +163,7 @@ static int attributesList_ActionCB (Ihandle *ih, char *attribName, int pos, int 
   if (state == 1)
   {
     Ihandle* listClasses = IupGetDialogChild(ih, "listClasses");
-    Ihandle* labelInfo = IupGetDialogChild(ih, "labelInfo");
+    Ihandle* txtInfo = IupGetDialogChild(ih, "txtInfo");
     char* className = IupGetAttribute(listClasses, IupGetAttribute(listClasses, "VALUE"));
     Iclass* ic = iupRegisterFindClass(className);
 
@@ -172,25 +173,25 @@ static int attributesList_ActionCB (Ihandle *ih, char *attribName, int pos, int 
       int flags;
       iupClassGetAttribNameInfo(ic, attribName, &def_value, &flags);
 
-      IupSetfAttribute(labelInfo, "TITLE", "Attribute Name: %s\n"
-                                           "Default Value: %s\n"
-                                           "%s\n"
-                                           "%s"
-                                           "%s"
-                                           "%s"
-                                           "%s"
-                                           "%s",
-                                           attribName,
-                                           def_value==NULL? "NULL": def_value,
-                                           flags&(IUPAF_NO_INHERIT|IUPAF_NO_STRING)? "Is Inheritable": "NON Inheritable",
-                                           flags&IUPAF_NO_STRING? "NOT a String\n": "",
-                                           flags&IUPAF_HAS_ID? "Has ID\n": "",
-                                           flags&IUPAF_READONLY? "Read-Only\n": (flags&IUPAF_WRITEONLY? "Write-Only\n": ""),
-                                           flags&IUPAF_IHANDLENAME? "Ihandle* name\n": "",
-                                           flags&IUPAF_NOT_SUPPORTED? "NOT SUPPORTED in this driver": "");
+      IupSetfAttribute(txtInfo, "VALUE", "Attribute Name: %s\n"
+                                         "Default Value: %s\n"
+                                         "  %s\n"
+                                         "  %s"
+                                         "  %s"
+                                         "  %s"
+                                         "  %s"
+                                         "  %s",
+                                         attribName,
+                                         def_value==NULL? "NULL": def_value,
+                                         flags&(IUPAF_NO_INHERIT|IUPAF_NO_STRING)? "Is Inheritable": "NON Inheritable",
+                                         flags&IUPAF_NO_STRING? "NOT a String\n": "",
+                                         flags&IUPAF_HAS_ID? "Has ID\n": "",
+                                         flags&IUPAF_READONLY? "Read-Only\n": (flags&IUPAF_WRITEONLY? "Write-Only\n": ""),
+                                         flags&IUPAF_IHANDLENAME? "Ihandle* name\n": "",
+                                         flags&IUPAF_NOT_SUPPORTED? "NOT SUPPORTED in this driver": "");
     }
     else
-      IupSetAttribute(labelInfo, "TITLE", "Custom Attribute");
+      IupSetAttribute(txtInfo, "VALUE", "Custom Attribute");
   }
 
   (void)pos;
@@ -224,7 +225,7 @@ static int classesList_ActionCB (Ihandle *ih, char *className, int pos, int stat
     int i, attr_n, cb_n;
     Ihandle* listAttributes = IupGetDialogChild(ih, "listAttributes");
     Ihandle* listCallbacks = IupGetDialogChild(ih, "listCallbacks");
-    Ihandle* labelInfo = IupGetDialogChild(ih, "labelInfo");
+    Ihandle* txtInfo = IupGetDialogChild(ih, "txtInfo");
     char **attr_names = (char **) malloc(MAX_ITEMS * sizeof(char *));
     char **cb_names;
     
@@ -248,18 +249,18 @@ static int classesList_ActionCB (Ihandle *ih, char *className, int pos, int stat
     ic = iupRegisterFindClass(className);
 
     /* Update labels (values) */
-    IupSetfAttribute(labelInfo, "TITLE", "Class Name: %s\n"
-                                         "Creation Parameters: (%s)\n"
-                                         "Native Type: %s\n"
-                                         "Container Type: %s\n"
-                                         "%s\n"
-                                         "%s\n",
-                                         ic->name,
-                                         getClassParameters(ic->format),
-                                         getNativeType(ic->nativetype),
-                                         getChildType(ic->childtype),
-                                         ic->is_interactive? "Is Keyboard Interactive": "NOT Keyboard Interactive",
-                                         ic->has_attrib_id? "Has Id Attributes": "");
+    IupSetfAttribute(txtInfo, "VALUE", "Class Name: %s\n"
+                                       "Creation Parameters: (%s)\n"
+                                       "Native Type: %s\n"
+                                       "Container Type: %s\n"
+                                       "%s\n"
+                                       "%s\n",
+                                       ic->name,
+                                       getClassParameters(ic->format),
+                                       getNativeType(ic->nativetype),
+                                       getChildType(ic->childtype),
+                                       ic->is_interactive? "Is Keyboard Interactive": "NOT Keyboard Interactive",
+                                       ic->has_attrib_id? "Has Id Attributes": "");
 
     free(attr_names);
   }
@@ -286,7 +287,7 @@ static void PopulateListOfClasses(Ihandle* ih)
 
 void ClassInfo(void)
 {
-  Ihandle *dialog, *box, *lists, *listClasses, *listAttributes, *listCallbacks, *labelInfo;
+  Ihandle *dialog, *box, *lists, *listClasses, *listAttributes, *listCallbacks, *txtInfo;
   
   listClasses    = IupList(NULL);  /* list of registered classes */
   listAttributes = IupList(NULL);  /* list of attributes of the selected class */
@@ -300,19 +301,20 @@ void ClassInfo(void)
   IupSetCallback(listAttributes, "ACTION", (Icallback) attributesList_ActionCB);
   IupSetCallback(listCallbacks,  "ACTION", (Icallback)  callbacksList_ActionCB);
 
-  labelInfo = IupLabel(NULL);
-  IupSetAttribute(labelInfo, "SIZE", "x60");
-  IupSetAttribute(labelInfo, "EXPAND", "HORIZONTAL");
-  IupSetAttribute(labelInfo, "NAME", "labelInfo");
+  txtInfo = IupText(NULL);
+  IupSetAttribute(txtInfo, "SIZE", "x60");
+  IupSetAttribute(txtInfo, "MULTILINE", "YES");
+  IupSetAttribute(txtInfo, "EXPAND", "YES");
+  IupSetAttribute(txtInfo, "NAME", "txtInfo");
 
   lists = IupVbox(
             IupHbox(
-              IupSetAttributes(IupFrame(IupVbox(listClasses,    NULL)), "TITLE=Classes"),
-              IupSetAttributes(IupFrame(IupVbox(listAttributes, NULL)), "TITLE=Attributes"),
-              IupSetAttributes(IupFrame(IupVbox(listCallbacks,  NULL)), "TITLE=Callbacks"),
+              IupSetAttributes(IupFrame(IupVbox(listClasses,    NULL)), "TITLE=Classes:"),
+              IupSetAttributes(IupFrame(IupVbox(listAttributes, NULL)), "TITLE=Attributes:"),
+              IupSetAttributes(IupFrame(IupVbox(listCallbacks,  NULL)), "TITLE=Callbacks:"),
               NULL),
             IupHbox(
-              IupSetAttributes(IupFrame(IupHbox(labelInfo, NULL)), "TITLE=Info, MARGIN=3x3"),
+              IupSetAttributes(IupFrame(IupHbox(txtInfo, NULL)), "TITLE=Info:, MARGIN=3x3"),
               NULL),
             NULL);
 
