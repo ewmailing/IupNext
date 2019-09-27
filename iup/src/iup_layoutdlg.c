@@ -972,10 +972,11 @@ static int iLayoutMenuNew_CB(Ihandle* ih)
   return IUP_DEFAULT;
 }
 
-static int iLayoutMenuReload_CB(Ihandle* ih)
+static int iLayoutMenuUpdate_CB(Ihandle* ih)
 {
   Ihandle* dlg = IupGetDialog(ih);
   iLayoutDialog* layoutdlg = (iLayoutDialog*)iupAttribGet(dlg, "_IUP_LAYOUTDIALOG");
+  /* rebuild tree and redraw canvas */
   iLayoutTreeRebuild(layoutdlg);
   return IUP_DEFAULT;
 }
@@ -1102,15 +1103,6 @@ static int iLayoutMenuAutoUpdate_CB(Ihandle* ih)
     IupSetAttribute(layoutdlg->timer, "RUN", "No");
   else
     IupSetAttribute(layoutdlg->timer, "RUN", "Yes");
-  return IUP_DEFAULT;
-}
-
-static int iLayoutMenuUpdate_CB(Ihandle* ih)
-{
-  Ihandle* dlg = IupGetDialog(ih);
-  iLayoutDialog* layoutdlg = (iLayoutDialog*)iupAttribGet(dlg, "_IUP_LAYOUTDIALOG");
-  /* rebuild tree and redraw canvas */
-  iLayoutTreeRebuild(layoutdlg);
   return IUP_DEFAULT;
 }
 
@@ -3048,14 +3040,12 @@ IUP_API Ihandle* IupLayoutDialog(Ihandle* dialog)
     IupSetCallbacks(IupItem("New", NULL), "ACTION", iLayoutMenuNew_CB, NULL),
     IupSetCallbacks(IupItem("Load...\tCtrl+O", NULL), "ACTION", iLayoutMenuLoad_CB, NULL),
     IupSetCallbacks(IupItem("Load Visible...", NULL), "ACTION", iLayoutMenuLoadVisible_CB, NULL),
-    IupSetCallbacks(IupItem("Reload", NULL), "ACTION", iLayoutMenuReload_CB, NULL),
     IupSubmenu("&Export", IupMenu(
     IupSetCallbacks(IupItem("C...", NULL), "ACTION", iLayoutMenuExportC_CB, NULL),
     IupSetCallbacks(IupItem("LED...", NULL), "ACTION", iLayoutMenuExportLED_CB, NULL),
     IupSetCallbacks(IupItem("Lua...", NULL), "ACTION", iLayoutMenuExportLua_CB, NULL),
     NULL)),
     IupSeparator(),
-    IupSetCallbacks(IupItem("Refresh\tCtrl+F5", NULL), "ACTION", iLayoutMenuRefresh_CB, NULL),
     IupSetCallbacks(IupItem("Redraw", NULL), "ACTION", iLayoutMenuRedraw_CB, NULL),
     IupSetCallbacks(IupItem("Show", NULL), "ACTION", iLayoutMenuShow_CB, NULL),
     IupSetCallbacks(IupItem("Hide", NULL), "ACTION", iLayoutMenuHide_CB, NULL),
@@ -3064,10 +3054,11 @@ IUP_API Ihandle* IupLayoutDialog(Ihandle* dialog)
     IupSetCallbacks(IupItem("&Close\tEsc", NULL), "ACTION", iLayoutMenuClose_CB, NULL),
     NULL)),
     IupSubmenu("&Layout", IupMenu(
-    IupSetCallbacks(IupSetAttributes(IupItem("&Hierarchy", NULL), "AUTOTOGGLE=YES, VALUE=ON"), "ACTION", iLayoutMenuHierarchy_CB, NULL),
+    IupSetCallbacks(IupSetAttributes(IupItem("&Show Tree", NULL), "AUTOTOGGLE=YES, VALUE=ON"), "ACTION", iLayoutMenuHierarchy_CB, NULL),
+    IupSetCallbacks(IupItem("Refresh\tCtrl+F5", NULL), "ACTION", iLayoutMenuRefresh_CB, NULL),
     IupSeparator(),
     IupSetCallbacks(IupItem("Update (Tree and Draw)\tF5", NULL), "ACTION", iLayoutMenuUpdate_CB, NULL),
-    IupSetCallbacks(IupSetAttributes(IupItem("Auto Update (Draw Only)", NULL), "AUTOTOGGLE=YES, VALUE=OFF"), "ACTION", iLayoutMenuAutoUpdate_CB, NULL),
+    IupSetCallbacks(IupSetAttributes(IupItem("Auto Update Draw", NULL), "AUTOTOGGLE=YES, VALUE=OFF"), "ACTION", iLayoutMenuAutoUpdate_CB, NULL),
     IupSetCallbacks(IupSetAttributes(IupItem("Show Hidden", NULL), "AUTOTOGGLE=YES, VALUE=OFF"), "ACTION", iLayoutMenuShowHidden_CB, NULL),
     IupSetCallbacks(IupSetAttributes(IupItem("Show Internal", NULL), "AUTOTOGGLE=YES, VALUE=OFF"), "ACTION", iLayoutMenuShowInternal_CB, NULL),
     IupSeparator(),
