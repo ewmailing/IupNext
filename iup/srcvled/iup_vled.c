@@ -1767,17 +1767,31 @@ static int item_export_proj_action_cb(Ihandle *ih_item)
 static int item_use_utf_8_action_cb(Ihandle *ih_item)
 {
   Ihandle* config = get_config(ih_item);
-  if (IupGetInt(NULL, "UTF8MODE"))
-  {
-    IupSetGlobal("UTF8MODE", "No");
-    IupConfigSetVariableStr(config, "IupVisualLED", "UTF-8", "No");
-    IupSetAttribute(ih_item, "VALUE", "OFF");
-  }
-  else
+  if (IupGetInt(ih_item, "VALUE"))
   {
     IupSetGlobal("UTF8MODE", "Yes");
     IupConfigSetVariableStr(config, "IupVisualLED", "UTF-8", "Yes");
-    IupSetAttribute(ih_item, "VALUE", "ON");
+  }
+  else
+  {
+    IupSetGlobal("UTF8MODE", NULL);
+    IupConfigSetVariableStr(config, "IupVisualLED", "UTF-8", NULL);
+  }
+  return IUP_DEFAULT;
+}
+
+static int item_imageexport_static_action_cb(Ihandle *ih_item)
+{
+  Ihandle* config = get_config(ih_item);
+  if (IupGetInt(ih_item, "VALUE"))
+  {
+    IupSetGlobal("IMAGEEXPORT_STATIC", "Yes");
+    IupConfigSetVariableStr(config, "IupVisualLED", "ImageExportStatic", "Yes");
+  }
+  else
+  {
+    IupSetGlobal("IMAGEEXPORT_STATIC", NULL);
+    IupConfigSetVariableStr(config, "IupVisualLED", "ImageExportStatic", NULL);
   }
   return IUP_DEFAULT;
 }
@@ -2078,7 +2092,7 @@ static Ihandle* buildToolsMenu(void)
 {
   Ihandle *item_import_img, *item_export_img, *item_show_all_img, *item_export_lua,
     *item_export_open_lua, *item_export_proj_lua, *item_export_c, *item_export_open_c,
-    *item_export_proj_c, *item_use_utf8, *toolsMenu;
+    *item_export_proj_c, *item_use_utf8, *toolsMenu, *item_imageexport_static;
 
   item_import_img = IupItem("Import Images...", NULL);
   IupSetAttribute(item_import_img, "NAME", "ITM_IMP_IMG");
@@ -2117,13 +2131,24 @@ static Ihandle* buildToolsMenu(void)
   IupSetCallback(item_export_proj_c, "ACTION", (Icallback)item_export_proj_action_cb);
 
   item_use_utf8 = IupItem("Use UTF-8", NULL);
+  IupSetAttribute(item_use_utf8, "AUTOTOGGLE", "Yes");
   IupSetCallback(item_use_utf8, "ACTION", (Icallback)item_use_utf_8_action_cb);
   if (IupGetInt(NULL, "UTF8MODE"))
     IupSetAttribute(item_use_utf8, "VALUE", "ON");
   else
     IupSetAttribute(item_use_utf8, "VALUE", "OFF");
 
+  item_imageexport_static = IupItem("Image Export Use \"static\"", NULL);
+  IupSetAttribute(item_imageexport_static, "AUTOTOGGLE", "Yes");
+  IupSetCallback(item_imageexport_static, "ACTION", (Icallback)item_imageexport_static_action_cb);
+  if (IupGetInt(NULL, "IMAGEEXPORT_STATIC"))
+    IupSetAttribute(item_imageexport_static, "VALUE", "ON");
+  else
+    IupSetAttribute(item_imageexport_static, "VALUE", "OFF");
+
   toolsMenu = IupMenu(
+    IupSetCallbacks(IupItem("&Globals...", NULL), "ACTION", globalsdlg_cb, NULL),
+    IupSeparator(),
     item_import_img,
     item_export_img,
     item_show_all_img,
@@ -2136,7 +2161,7 @@ static Ihandle* buildToolsMenu(void)
     item_export_open_c,
     item_export_proj_c,
     IupSeparator(),
-    IupSetCallbacks(IupItem("&Globals...", NULL), "ACTION", globalsdlg_cb, NULL),
+    item_imageexport_static,
     item_use_utf8,
     NULL);
 
@@ -2205,6 +2230,7 @@ int main(int argc, char **argv)
   iupAttribSet(config, "VLED_INTERNAL", "YES");
 
   IupSetGlobal("UTF8MODE", IupConfigGetVariableStr(config, "IupVisualLED", "UTF-8"));
+  IupSetGlobal("IMAGEEXPORT_STATIC", IupConfigGetVariableStr(config, "IupVisualLED", "ImageExportStatic"));
 
   main_dialog = IupScintillaDlg();
 

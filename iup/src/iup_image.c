@@ -1275,7 +1275,7 @@ static int SaveImageC(const char* file_name, Ihandle* ih, const char* name, FILE
   else
     iImagePrint(file, buffer, "  {\n"); /* to isolate the declarations */
 
-  if (IupGetInt(NULL, "IMAGEEXPORT_STATICDATA"))
+  if (IupGetInt(NULL, "IMAGEEXPORT_STATIC"))
     iImagePrint(file, buffer, "  static unsigned char imgdata[] = {\n");
   else
     iImagePrint(file, buffer, "  unsigned char imgdata[] = {\n");
