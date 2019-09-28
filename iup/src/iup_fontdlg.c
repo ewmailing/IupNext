@@ -30,6 +30,7 @@ Iclass* iupFontDlgNewClass(void)
   Iclass* ic = iupClassNew(iupRegisterFindClass("dialog"));
 
   ic->name = "fontdlg";
+  ic->cons = "FontDlg";
   ic->nativetype = IUP_TYPEDIALOG;
   ic->is_interactive = 1;
 

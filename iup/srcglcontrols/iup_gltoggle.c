@@ -290,6 +290,7 @@ Iclass* iupGLToggleNewClass(void)
   Iclass* ic = iupClassNew(iupRegisterFindClass("glbutton"));
 
   ic->name = "gltoggle";
+  ic->cons = "GLToggle";
   ic->format = "s"; /* one string */
   ic->nativetype = IUP_TYPEVOID;
   ic->childtype = IUP_CHILDNONE;

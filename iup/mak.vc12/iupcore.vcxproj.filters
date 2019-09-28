@@ -319,6 +319,9 @@
     <ClCompile Include="..\src\iup_thread.c">
       <Filter>src_controls</Filter>
     </ClCompile>
+    <ClCompile Include="..\src\iup_classinfo.c">
+      <Filter>src_controls</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="..\src\iup_array.h">

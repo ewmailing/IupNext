@@ -477,6 +477,7 @@ Iclass* iupGLSubCanvasNewClass(void)
   Iclass* ic = iupClassNew(NULL);
 
   ic->name = "glsubcanvas";
+  ic->cons = "GLSubCanvas";
   ic->format = NULL;  /* no parameters */
   ic->nativetype = IUP_TYPEVOID;
   ic->childtype = IUP_CHILDNONE;

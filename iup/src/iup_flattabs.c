@@ -1357,7 +1357,7 @@ static int iFlatTabsButton_CB(Ihandle* ih, int button, int pressed, int x, int y
           int childSizeAll = iupAttribGetBoolean(ih, "CHILDSIZEALL");
           if (!childSizeAll)
           {
-            int old_maxsize = IupGetInt2(ih, "MAXSIZE");
+            int old_maxsize = IupGetInt2(ih, "MAXSIZE"); /* title_height */
             int old_x = ih->x;
             int old_y = ih->y;
             IupSetAttribute(ih, "MAXSIZE", NULL);
@@ -1692,7 +1692,7 @@ static int iFlatTabsKillFocus_CB(Ihandle* ih)
 
   if (iupAttribGetBoolean(ih, "EXPANDBUTTON") && !iupAttribGetBoolean(ih, "EXPANDBUTTONSTATE"))
   {
-    ih->currentheight = IupGetInt2(ih, "MAXSIZE");
+    ih->currentheight = IupGetInt2(ih, "MAXSIZE");  /* title_height */
     iupLayoutUpdate(ih);
   }
 
@@ -2413,6 +2413,7 @@ Iclass* iupFlatTabsNewClass(void)
   Iclass* ic = iupClassNew(iupRegisterFindClass("canvas"));
 
   ic->name = "flattabs";
+  ic->cons = "FlatTabs";
   ic->format = "g"; /* array of Ihandle */
   ic->nativetype = IUP_TYPECANVAS;
   ic->childtype = IUP_CHILDMANY;  /* can have children */

@@ -237,11 +237,10 @@ static int iBackgroundBoxCreateMethod(Ihandle* ih, void** params)
   return IUP_NOERROR;
 }
 
-IUP_SDK_API Iclass* iupBackgroundBoxNewBaseClass(const char* name, const char* base_name)
+IUP_SDK_API Iclass* iupBackgroundBoxNewBaseClass(Iclass* ic_base)   /* Used by BackgroundBox and GLBackgroundBox */
 {
-  Iclass* ic = iupClassNew(iupRegisterFindClass(base_name));
+  Iclass* ic = iupClassNew(ic_base);
 
-  ic->name = (char*)name;
   ic->format = "h";   /* one Ihandle* */
   ic->nativetype = IUP_TYPECANVAS;
   ic->childtype = IUP_CHILDMANY+1;  /* 1 child */
@@ -283,7 +282,12 @@ IUP_SDK_API Iclass* iupBackgroundBoxNewBaseClass(const char* name, const char* b
 
 Iclass* iupBackgroundBoxNewClass(void)
 {
-  return iupBackgroundBoxNewBaseClass("backgroundbox", "canvas");
+  Iclass* ic = iupBackgroundBoxNewBaseClass(iupRegisterFindClass("canvas"));
+
+  ic->name = "backgroundbox";
+  ic->cons = "BackgroundBox";
+
+  return ic;
 }
 
 IUP_API Ihandle* IupBackgroundBox(Ihandle* child)

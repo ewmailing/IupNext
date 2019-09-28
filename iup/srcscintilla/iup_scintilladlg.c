@@ -5138,6 +5138,7 @@ Iclass* iupScintillaDlgNewClass(void)
   ic->Create = iScintillaDlgCreateMethod;
 
   ic->name = "scintilladlg";
+  ic->cons = "ScintillaDlg";
   ic->nativetype = IUP_TYPEDIALOG;
   ic->is_interactive = 1;
   ic->childtype = IUP_CHILDNONE;

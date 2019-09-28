@@ -212,6 +212,7 @@ Iclass* iupGLTextNewClass(void)
   Iclass* ic = iupClassNew(iupRegisterFindClass("glsubcanvas"));
 
   ic->name = "gltext";
+  ic->cons = "GLText";
   ic->format = NULL; /* no parameters */
   ic->nativetype = IUP_TYPEVOID;
   ic->childtype = IUP_CHILDNONE;

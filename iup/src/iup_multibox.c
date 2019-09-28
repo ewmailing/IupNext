@@ -507,6 +507,7 @@ Iclass* iupMultiBoxNewClass(void)
   Iclass* ic = iupClassNew(NULL);
 
   ic->name = "multibox";
+  ic->cons = "MultiBox";
   ic->format = "g"; /* array of Ihandle */
   ic->nativetype = IUP_TYPEVOID;
   ic->childtype = IUP_CHILDMANY;  /* can have children */

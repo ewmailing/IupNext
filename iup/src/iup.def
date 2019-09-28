@@ -75,6 +75,7 @@ IupDrawText
 IupDropButton
 IupElementPropertiesDialog
 IupLayoutFindDialog
+IupClassInfoDialog
 IupExecute
 IupExecuteWait
 IupExitLoop

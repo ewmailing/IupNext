@@ -760,6 +760,7 @@ Iclass* iupFlatToggleNewClass(void)
   Iclass* ic = iupClassNew(iupRegisterFindClass("canvas"));
 
   ic->name = "flattoggle";
+  ic->cons = "FlatToggle";
   ic->format = "s"; /* one string */
   ic->nativetype = IUP_TYPECANVAS;
   ic->childtype = IUP_CHILDNONE;

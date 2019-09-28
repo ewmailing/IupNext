@@ -861,6 +861,12 @@ static int GlobalsDialog(lua_State *L)
   return 1;
 }
 
+static int ClassInfoDialog(lua_State *L)
+{
+  iuplua_pushihandle(L, IupClassInfoDialog(iuplua_checkihandleornil(L, 1)));
+  return 1;
+}
+
 static int ElementPropertiesDialog(lua_State *L)
 {
   iuplua_pushihandle(L, IupElementPropertiesDialog(iuplua_checkihandleornil(L, 1), iuplua_checkihandle(L, 2)));
@@ -1182,6 +1188,7 @@ void iupluaapi_open(lua_State * L)
     {"LayoutDialog", LayoutDialog},
     {"GlobalsDialog", GlobalsDialog},
     {"ElementPropertiesDialog", ElementPropertiesDialog},
+    {"ClassInfoDialog", ClassInfoDialog},
     {"LayoutFindDialog", LayoutFindDialog},
     {"PostMessage", PostMessage},
     {"SetFocus", SetFocus},

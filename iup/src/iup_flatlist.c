@@ -1822,6 +1822,7 @@ Iclass* iupFlatListNewClass(void)
   Iclass* ic = iupClassNew(iupRegisterFindClass("canvas"));
 
   ic->name = "flatlist";
+  ic->cons = "FlatList";
   ic->format = NULL;  /* no parameters */
   ic->nativetype = IUP_TYPECANVAS;
   ic->childtype = IUP_CHILDNONE;

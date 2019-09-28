@@ -1139,11 +1139,12 @@ IUP_API Ihandle* IupImageRGBA(int width, int height, const unsigned char *imgdat
   return IupCreatev("imagergba", params);
 }
 
-static Iclass* iImageNewClassBase(char* name)
+static Iclass* iImageNewClassBase(const char* name, const char* cons)
 {
   Iclass* ic = iupClassNew(NULL);
 
   ic->name = name;
+  ic->cons = cons;
   ic->format = "iic"; /* (int,int,unsigned char*) */
   ic->nativetype = IUP_TYPEIMAGE;
   ic->childtype = IUP_CHILDNONE;
@@ -1175,7 +1176,7 @@ static Iclass* iImageNewClassBase(char* name)
 
 Iclass* iupImageNewClass(void)
 {
-  Iclass* ic = iImageNewClassBase("image");
+  Iclass* ic = iImageNewClassBase("image", NULL);
   ic->New = iupImageNewClass;
   ic->Create = iImageCreateMethod;
   return ic;
@@ -1183,7 +1184,7 @@ Iclass* iupImageNewClass(void)
 
 Iclass* iupImageRGBNewClass(void)
 {
-  Iclass* ic = iImageNewClassBase("imagergb");
+  Iclass* ic = iImageNewClassBase("imagergb", "ImageRGB");
   ic->New = iupImageRGBNewClass;
   ic->Create = iImageRGBCreateMethod;
   return ic;
@@ -1191,7 +1192,7 @@ Iclass* iupImageRGBNewClass(void)
 
 Iclass* iupImageRGBANewClass(void)
 {
-  Iclass* ic = iImageNewClassBase("imagergba");
+  Iclass* ic = iImageNewClassBase("imagergba", "ImageRGBA");
   ic->New = iupImageRGBANewClass;
   ic->Create = iImageRGBACreateMethod;
   return ic;

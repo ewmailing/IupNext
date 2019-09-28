@@ -1092,6 +1092,7 @@ Iclass* iupColorDlgNewClass(void)
   ic->Map = iColorDlgMapMethod;
 
   ic->name = "colordlg";
+  ic->cons = "ColorDlg";
   ic->nativetype = IUP_TYPEDIALOG;
   ic->is_interactive = 1;
   ic->childtype = IUP_CHILDNONE;

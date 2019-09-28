@@ -1112,6 +1112,7 @@ Iclass* iupMatrixExNewClass(void)
   Iclass* ic = iupClassNew(iupRegisterFindClass("matrix"));
 
   ic->name = "matrixex";
+  ic->cons = "MatrixEx";
   ic->format = "";
   ic->nativetype = IUP_TYPECANVAS;
   ic->childtype = IUP_CHILDNONE;

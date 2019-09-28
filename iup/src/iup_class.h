@@ -46,6 +46,7 @@ struct Iclass_
 {
   /* Class configuration parameters. */
   const char* name;     /**< class name. No default, must be initialized. */
+  const char* cons;     /**< constructor name in C, if more than the first letter uppercase, or NULL. */
   const char* format;   /**< Creation parameters format of the class. \n
                    * Used only for LED parsing. \n
                    * It can have none (NULL), one or more of the following.

@@ -237,6 +237,7 @@ Iclass* iupFlatLabelNewClass(void)
   Iclass* ic = iupClassNew(iupRegisterFindClass("canvas"));
 
   ic->name = "flatlabel";
+  ic->cons = "FlatLabel";
   ic->format = "s"; /* one string */
   ic->nativetype = IUP_TYPECANVAS;
   ic->childtype = IUP_CHILDNONE;

@@ -230,6 +230,7 @@ Iclass* iupFlatFrameNewClass(void)
   Iclass* ic = iupClassNew(iupRegisterFindClass("backgroundbox"));
 
   ic->name = "flatframe";
+  ic->cons = "FlatFrame";
   ic->format = "h"; /* one Ihandle* */
   ic->nativetype = IUP_TYPECANVAS;
   ic->childtype = IUP_CHILDMANY+1;   /* 1 child */

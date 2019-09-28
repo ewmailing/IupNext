@@ -411,6 +411,7 @@ static Iclass* iTuioNewClass(void)
   Iclass* ic = iupClassNew(NULL);
 
   ic->name = (char*)"tuioclient";
+  ic->cons = (char*)"TuioClient";
   ic->format = (char*)"i";  /* (int) */
   ic->nativetype = IUP_TYPEVOID;
   ic->childtype = IUP_CHILDNONE;

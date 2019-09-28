@@ -499,6 +499,7 @@ Iclass* iupGLCanvasBoxNewClass(void)
   Iclass* ic = iupClassNew(iupRegisterFindClass("glcanvas"));
 
   ic->name = "glcanvasbox";
+  ic->cons = "GLCanvasBox";
   ic->format = "g"; /* array of Ihandle */
   ic->nativetype = IUP_TYPECANVAS;
   ic->childtype = IUP_CHILDMANY;  /* can have children */

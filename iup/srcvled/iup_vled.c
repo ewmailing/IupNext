@@ -1852,7 +1852,6 @@ static int locateInLED(Ihandle *ih)
   return IUP_DEFAULT;
 }
 
-
 static int globalsdlg_cb(Ihandle* ih)
 {
   Ihandle* dlg = IupGetDialog(ih);
@@ -1865,6 +1864,20 @@ static int globalsdlg_cb(Ihandle* ih)
   }
 
   IupShow(globals_dlg);
+  return IUP_DEFAULT;
+}
+
+static int classinfo_cb(Ihandle* ih)
+{
+  Ihandle* dlg = IupGetDialog(ih);
+  Ihandle* classinfo_dlg = (Ihandle*)IupGetAttribute(dlg, "CLASSINFO_DIALOG");
+  if (!classinfo_dlg)
+  {
+    classinfo_dlg = IupClassInfoDialog(dlg);
+    IupSetAttribute(dlg, "CLASSINFO_DIALOG", (char*)classinfo_dlg);
+  }
+
+  IupShow(classinfo_dlg);
   return IUP_DEFAULT;
 }
 
@@ -2148,6 +2161,7 @@ static Ihandle* buildToolsMenu(void)
 
   toolsMenu = IupMenu(
     IupSetCallbacks(IupItem("&Globals...", NULL), "ACTION", globalsdlg_cb, NULL),
+    IupSetCallbacks(IupItem("&Class Info...", NULL), "ACTION", classinfo_cb, NULL),
     IupSeparator(),
     item_import_img,
     item_export_img,
@@ -2315,6 +2329,9 @@ int main(int argc, char **argv)
   if (iupObjectCheck(extra_dlg))
     IupDestroy(extra_dlg);
   extra_dlg = (Ihandle*)IupGetAttribute(main_dialog, "GLOBALS_DIALOG");
+  if (iupObjectCheck(extra_dlg))
+    IupDestroy(extra_dlg);
+  extra_dlg = (Ihandle*)IupGetAttribute(main_dialog, "CLASSINFO_DIALOG");
   if (iupObjectCheck(extra_dlg))
     IupDestroy(extra_dlg);
 

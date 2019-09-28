@@ -622,14 +622,6 @@ IUP_API Ihandle* IupText(const char* action)
   return IupCreatev("text", params);
 }
 
-IUP_API Ihandle* IupMultiLine(const char* action)
-{
-  void *params[2];
-  params[0] = (void*)action;
-  params[1] = NULL;
-  return IupCreatev("multiline", params);
-}
-
 Iclass* iupTextNewClass(void)
 {
   Iclass* ic = iupClassNew(NULL);
@@ -698,11 +690,20 @@ Iclass* iupTextNewClass(void)
   return ic;
 }
 
+IUP_API Ihandle* IupMultiLine(const char* action)
+{
+  void *params[2];
+  params[0] = (void*)action;
+  params[1] = NULL;
+  return IupCreatev("multiline", params);
+}
+
 Iclass* iupMultilineNewClass(void)
 {
   Iclass* ic = iupClassNew(iupRegisterFindClass("text"));
 
   ic->name = "multiline";   /* register the multiline name, so LED will work */
+  ic->cons = "MultiLine";
   ic->format = "a"; /* one ACTION callback name */
   ic->nativetype = IUP_TYPECONTROL;
   ic->childtype = IUP_CHILDNONE;

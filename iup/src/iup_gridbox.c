@@ -1163,6 +1163,7 @@ Iclass* iupGridBoxNewClass(void)
   Iclass* ic = iupClassNew(NULL);
 
   ic->name = "gridbox";
+  ic->cons = "GridBox";
   ic->format = "g"; /* array of Ihandle */
   ic->nativetype = IUP_TYPEVOID;
   ic->childtype = IUP_CHILDMANY;  /* can have children */

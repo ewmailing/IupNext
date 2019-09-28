@@ -493,6 +493,7 @@ Iclass* iupGLValNewClass(void)
   Iclass* ic = iupClassNew(iupRegisterFindClass("glsubcanvas"));
 
   ic->name = "glval";
+  ic->cons = "GLVal";
   ic->format = NULL; /* no parameters */
   ic->nativetype = IUP_TYPEVOID;
   ic->childtype = IUP_CHILDNONE;

@@ -383,7 +383,8 @@ Iclass* iupScrollBoxNewClass(void)
 {
   Iclass* ic = iupClassNew(iupRegisterFindClass("canvas"));
 
-  ic->name   = "scrollbox";
+  ic->name = "scrollbox";
+  ic->cons = "ScrollBox";
   ic->format = "h";   /* one Ihandle* */
   ic->nativetype = IUP_TYPECANVAS;
   ic->childtype = IUP_CHILDMANY+1;  /* 1 child */

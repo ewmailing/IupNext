@@ -615,6 +615,7 @@ Iclass* iupFlatButtonNewClass(void)
   Iclass* ic = iupClassNew(iupRegisterFindClass("canvas"));
 
   ic->name = "flatbutton";
+  ic->cons = "FlatButton";
   ic->format = "s"; /* one string */
   ic->nativetype = IUP_TYPECANVAS;
   ic->childtype = IUP_CHILDNONE;

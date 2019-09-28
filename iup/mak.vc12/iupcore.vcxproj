@@ -96,6 +96,7 @@
     <ClCompile Include="..\src\iup_class.c" />
     <ClCompile Include="..\src\iup_classattrib.c" />
     <ClCompile Include="..\src\iup_classbase.c" />
+    <ClCompile Include="..\src\iup_classinfo.c" />
     <ClCompile Include="..\src\iup_colorbar.c" />
     <ClCompile Include="..\src\iup_colorbrowser.c" />
     <ClCompile Include="..\src\iup_colorhsi.c" />

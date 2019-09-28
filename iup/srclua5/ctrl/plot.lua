@@ -5,7 +5,6 @@ local ctrl = {
   nick = "plot",
   parent = iup.WIDGET,
   creation = "",
-  funcname = "Plot",
   subdir = "ctrl",
   callback = {
     drawsample_cb = "nnddn",

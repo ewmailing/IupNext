@@ -320,14 +320,15 @@ Iclass* iupProgressDlgNewClass(void)
 {
   Iclass* ic = iupClassNew(iupRegisterFindClass("dialog"));
 
-  ic->New = iupProgressDlgNewClass;
-  ic->Create = iProgressDlgCreateMethod;
-  ic->Destroy = iProgressDlgDestroyMethod;
-
   ic->name = "progressdlg";
+  ic->cons = "ProgressDlg";
   ic->nativetype = IUP_TYPEDIALOG;
   ic->is_interactive = 1;
   ic->childtype = IUP_CHILDNONE;
+
+  ic->New = iupProgressDlgNewClass;
+  ic->Create = iProgressDlgCreateMethod;
+  ic->Destroy = iProgressDlgDestroyMethod;
 
   iupClassRegisterCallback(ic, "CANCEL_CB", "");
 

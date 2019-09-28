@@ -178,6 +178,7 @@ Iclass* iupGLButtonNewClass(void)
   Iclass* ic = iupClassNew(iupRegisterFindClass("gllabel"));
 
   ic->name = "glbutton";
+  ic->cons = "GLButton";
   ic->format = "s"; /* one string */
   ic->nativetype = IUP_TYPEVOID;
   ic->childtype = IUP_CHILDNONE;
