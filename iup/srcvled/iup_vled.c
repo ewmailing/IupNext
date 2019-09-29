@@ -430,7 +430,7 @@ static void autoload_off(Ihandle *elem_tree)
 static int load_led(Ihandle *elem_tree, const char *filename, int use_buffer)
 {
   Ihandle* multitext = vLedGetCurrentMultitext(elem_tree);
-  char* error;
+  const char* error;
 
   IupSetInt(multitext, "MARKERDELETEALL", 1);
 

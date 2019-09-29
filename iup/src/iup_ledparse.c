@@ -33,7 +33,7 @@ static int iparse_saveinfo = 0;
 
 
 
-IUP_SDK_API char* iupLoadLed(const char *filename, const char *buffer, int save_info)
+IUP_SDK_API const char* iupLoadLed(const char *filename, const char *buffer, int save_info)
 {
   iupASSERT(buffer != NULL || filename != NULL);
   if (!buffer && !filename)
@@ -69,12 +69,12 @@ IUP_SDK_API char* iupLoadLed(const char *filename, const char *buffer, int save_
 
 IUP_API char* IupLoad(const char *filename)
 {
-  return iupLoadLed(filename, NULL, 0);  /* no save info */
+  return (char*)iupLoadLed(filename, NULL, 0);  /* no save info */
 }
 
 IUP_API char* IupLoadBuffer(const char *buffer)
 {
-  return iupLoadLed(NULL, buffer, 0);  /* no save info */
+  return (char*)iupLoadLed(NULL, buffer, 0);  /* no save info */
 }
 
 static void* iParseExp(void)
@@ -95,8 +95,13 @@ static void* iParseExp(void)
   }
   else
   {
-    /* iparse_error = iupLexMatch(IUPLEX_TK_NAME); */ /* commented to allow containers to be empty */
-    return NULL;  /* force iparse_error */
+    if (iupLexFollowedBy(IUPLEX_TK_ENDP)) /* allow empty containers */
+      return NULL;
+    else
+    {
+      iparse_error = iupLexMatch(IUPLEX_TK_NAME);
+      return NULL;  /* force iparse_error */
+    }
   }
 
   match = iupLexSeenMatch(IUPLEX_TK_SET,&iparse_error); 
@@ -138,11 +143,11 @@ static void* iParseControlParam(char type)
   {
   case 'a':
     IPARSE_RETURN_IF_ERROR(iupLexMatch(IUPLEX_TK_NAME));
-    return iupLexGetName();
+    return (void*)iupLexGetName();
 
   case 's':
     IPARSE_RETURN_IF_ERROR(iupLexMatch(IUPLEX_TK_STR));
-    return iupLexGetName();
+    return (void*)iupLexGetName();
 
   case 'b':
   case 'c':
