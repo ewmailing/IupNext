@@ -15,7 +15,6 @@
 
 int vLedIsAlien(Ihandle *elem, const char* filename);
 
-#define VLED_MAX_NAMES 5000
 #define VLED_ATTRIB_ISINTERNAL(_name) (((_name[0] == 'V' && _name[1] == 'L' && _name[2] == 'E' && _name[3] == 'D') || (_name[0] == 'v' && _name[1] == 'l' && _name[2] == 'e' && _name[3] == 'd')) ? 1 : 0)
 
 enum{VLED_EXPORT_LUA, VLED_EXPORT_C, VLED_EXPORT_LED};
@@ -229,7 +228,7 @@ static int iExportElementAttribs(FILE* file, Ihandle* ih, const char* indent, in
   attr_count = IupGetAllAttributes(ih, attr_names, attr_count);
   for (i = 0; i < attr_count; i++)
   {
-    if (!iupClassAttribIsRegistered(ih->iclass, attr_names[i]) && VLED_ATTRIB_ISINTERNAL(attr_names[i]) == 0)
+    if (!iupClassAttribIsRegistered(ih->iclass, attr_names[i]) && !VLED_ATTRIB_ISINTERNAL(attr_names[i]))
     {
       char* value = iupAttribGetLocal(ih, attr_names[i]);
       iExportWriteAttrib(file, attr_names[i], value, localIndent, export_format);
@@ -418,7 +417,7 @@ static int compare_elem(const void* i1, const void* i2)
 void vLedExport(const char* src_filename, const char* dst_filename, const char* format)
 {
   char* title;
-  char *names[VLED_MAX_NAMES];
+  char* *names;
   int num_names;
   Iarray* names_array;
   Ihandle* *data = NULL;
@@ -428,15 +427,16 @@ void vLedExport(const char* src_filename, const char* dst_filename, const char* 
 
   names_array = iupArrayCreate(1024, sizeof(Ihandle*));  /* just set an initial size, but count is 0 */
 
-  num_names = IupGetAllNames(names, VLED_MAX_NAMES);
+  num_names = IupGetAllNames(NULL, -1);
+  names = malloc(sizeof(char*)*num_names);
+  IupGetAllNames(names, num_names);
 
   for (i = 0; i < num_names; i++)
   {
     Ihandle *elem = IupGetHandle(names[i]);
     if (elem)
     {
-      if (iupAttribGetInt(elem, "VLED_INTERNAL") != 0 ||
-          iupStrEqualPartial(names[i], "_IUP_NAME") ||
+      if (iupStrEqualPartial(names[i], "_IUP_NAME") ||
           vLedIsAlien(elem, src_filename))
         continue;
 
@@ -449,6 +449,7 @@ void vLedExport(const char* src_filename, const char* dst_filename, const char* 
   if (count == 0)
   {
     iupArrayDestroy(names_array);
+    free(names);
     return;
   }
 
@@ -458,6 +459,7 @@ void vLedExport(const char* src_filename, const char* dst_filename, const char* 
   if (!file)
   {
     iupArrayDestroy(names_array);
+    free(names);
     return;
   }
 
@@ -546,5 +548,6 @@ void vLedExport(const char* src_filename, const char* dst_filename, const char* 
   iupArrayDestroy(names_array);
   fclose(file);
   free(title);
+  free(names);
 }
 

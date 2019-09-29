@@ -15,6 +15,7 @@
 #include "iup_object.h"
 #include "iup_ledlex.h"
 #include "iup_str.h"
+#include "iup_attrib.h"
 #include "iup_assert.h"
             
             
@@ -26,25 +27,26 @@ static Ihandle* iParseFunction (Iclass *ic);
 static int iParseError (int err, char *s);
 
 static int iparse_error = 0;
-static int iparse_checkhandle = 1;
+static int iparse_saveinfo = 0;
 #define IPARSE_RETURN_IF_ERROR(_e)        {iparse_error=(_e); if (iparse_error) return NULL;}
 #define IPARSE_RETURN_IF_ERROR_FREE(_e, _x)   {iparse_error=(_e); if (iparse_error) { if (_x) free(_x); return NULL;} }
 
 
-IUP_SDK_API char* iupLoadLed(const char *buffer, int is_file, int checkhandle)
+
+IUP_SDK_API char* iupLoadLed(const char *filename, const char *buffer, int save_info)
 {
-  iupASSERT(buffer != NULL);
-  if (!buffer)
+  iupASSERT(buffer != NULL || filename != NULL);
+  if (!buffer && !filename)
   {
-    if (is_file)
-      return "invalid file name";
-    else
+    if (buffer)
       return "invalid buffer";
+    else
+      return "invalid file name";
   }
 
-  iparse_checkhandle = checkhandle;
+  iparse_saveinfo = save_info;
 
-  iparse_error = iupLexStart(buffer, is_file);
+  iparse_error = iupLexStart(filename, buffer);
   if (iparse_error)
   {
     iupLexClose();
@@ -67,12 +69,12 @@ IUP_SDK_API char* iupLoadLed(const char *buffer, int is_file, int checkhandle)
 
 IUP_API char* IupLoad(const char *filename)
 {
-  return iupLoadLed(filename, 1, 1);
+  return iupLoadLed(filename, NULL, 0);  /* no save info */
 }
 
 IUP_API char* IupLoadBuffer(const char *buffer)
 {
-  return iupLoadLed(buffer, 0, 1);
+  return iupLoadLed(NULL, buffer, 0);  /* no save info */
 }
 
 static void* iParseExp(void)
@@ -112,7 +114,7 @@ static void* iParseExp(void)
     ih = IupGetHandle(nm);
     if (!ih)
     {
-      if (iparse_checkhandle)
+      if (!iparse_saveinfo)
       {
         IPARSE_RETURN_IF_ERROR_FREE(iParseError(IPARSE_SYMBNOTDEF, nm), nm);
       }
@@ -282,9 +284,12 @@ static Ihandle* iParseFunction(Iclass *ic)
   ih = iParseControl(ic);
   IPARSE_RETURN_IF_ERROR_FREE(iparse_error, attr);
 
+  if (iparse_saveinfo)
+    iupAttribSetStr(ih, "_IUPLED_LEDFILENAME", iupLexFilename());
+
   if (attr)
   {
-    IupSetAttributes(ih, attr);
+    iupAttribParse(ih, attr, iparse_saveinfo);
     free(attr);
     attr = NULL;
   }

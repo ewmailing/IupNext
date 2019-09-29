@@ -216,6 +216,9 @@ IUP_SDK_API char* iupAttribGetInheritNativeParent(Ihandle* ih, const char* name)
  * \ingroup attrib */
 IUP_SDK_API char* iupAttribGetLocal(Ihandle* ih, const char* name);
 
+/** Parse a string of attributes.
+  *\ingroup attrib */
+IUP_SDK_API void iupAttribParse(Ihandle *ih, const char* str, int save_led_info);
 
 
 /** Set an internal name to a handle.

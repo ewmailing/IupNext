@@ -26,10 +26,10 @@
 static int SaveImageAsText(lua_State *L)
 {
   Ihandle *ih = iuplua_checkihandle(L, 1);
-  const char *file_name = luaL_checkstring(L, 2);
+  const char *filename = luaL_checkstring(L, 2);
   const char *format = luaL_checkstring(L, 3);
   const char *name = luaL_optstring(L, 4, NULL);
-  lua_pushboolean(L, IupSaveImageAsText(ih, file_name, format, name));
+  lua_pushboolean(L, IupSaveImageAsText(ih, filename, format, name));
   return 1;
 }
 

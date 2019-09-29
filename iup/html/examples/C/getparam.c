@@ -54,7 +54,7 @@ int main(int argc, char **argv)
   char pcolor[100] = "255 0 128";
   int plist = 2;
   char pstring2[200] = "second text\nsecond line";
-  char pfile_name[500] = "test.jpg";
+  char pfilename[500] = "test.jpg";
   
   IupOpen(&argc, &argv);
   IupSetLanguage("ENGLISH");
@@ -74,7 +74,7 @@ int main(int argc, char **argv)
                    "Color: %c{Color Tip}\n"
                    "Sep3 %t\n"
                    "Multiline: %m{Multiline Tip}\n",
-                   &pboolean, &pinteger, &preal, &pinteger2, &preal2, &pangle, pstring, &plist, pfile_name, pcolor, pstring2, NULL))
+                   &pboolean, &pinteger, &preal, &pinteger2, &preal2, &pangle, pstring, &plist, pfilename, pcolor, pstring2, NULL))
     return IUP_DEFAULT;
   
   IupMessagef("IupGetParam",
@@ -89,7 +89,7 @@ int main(int argc, char **argv)
               "FileName: %s\n"
               "Color: %s\n"
               "Multiline: %s",
-              pboolean, pinteger, (double)preal, pinteger2, (double)preal2, (double)pangle, pstring, plist, pfile_name, pcolor, pstring2);
+              pboolean, pinteger, (double)preal, pinteger2, (double)preal2, (double)pangle, pstring, plist, pfilename, pcolor, pstring2);
 
   IupClose();
 

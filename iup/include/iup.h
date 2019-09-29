@@ -285,7 +285,7 @@ IUP_API Ihandle*  IupSpinbox    (Ihandle* child);
 IUP_API int IupStringCompare(const char* str1, const char* str2, int casesensitive, int lexicographic);
 
 /* IupImage utilities */
-IUP_API int IupSaveImageAsText(Ihandle* ih, const char* file_name, const char* format, const char* name);
+IUP_API int IupSaveImageAsText(Ihandle* ih, const char* filename, const char* format, const char* name);
 IUP_API Ihandle* IupImageGetHandle(const char* name);
 
 /* IupText and IupScintilla utilities */

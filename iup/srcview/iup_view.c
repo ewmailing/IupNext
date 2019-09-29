@@ -268,25 +268,25 @@ static int saveallimages_cb(void)
 
     if (is_image(type))
     {
-      char file_name[10240] = "";
+      char filename[10240] = "";
 
       /* save only loaded images */
       char* file_title = IupGetAttribute(elem, "_FILE_TITLE");
       if (!file_title)
         continue;
 
-      strcpy(file_name, folder);
-      strcat(file_name, "/");
-      strcat(file_name, file_title);
-      strcat(file_name, "_");
-      strcat(file_name, names[i]);
-      strcat(file_name, ".");
-      strcat(file_name, StrLower(imgtype));
+      strcpy(filename, folder);
+      strcat(filename, "/");
+      strcat(filename, file_title);
+      strcat(filename, "_");
+      strcat(filename, names[i]);
+      strcat(filename, ".");
+      strcat(filename, StrLower(imgtype));
 
-      if (!IupSaveImageAsText(elem, file_name, imgtype, names[i]))
+      if (!IupSaveImageAsText(elem, filename, imgtype, names[i]))
       {
 #ifdef USE_IM
-        if (!IupSaveImage(elem, file_name, imgtype))
+        if (!IupSaveImage(elem, filename, imgtype))
         {
           char* err_msg = IupGetGlobal("IUPIM_LASTERROR");
           if (err_msg)
@@ -334,18 +334,18 @@ static int GetSaveAsFile(char* file, const char* imgtype)
   return ret;
 }
 
-static void replaceDot(char* file_name)
+static void replaceDot(char* filename)
 {
   /* replace all "." by "_" */
   /* replace all "-" by "_" */
-  while(*file_name)
+  while(*filename)
   {
-    if (*file_name == '.') 
-      *file_name = '_';
-    if (*file_name == '-') 
-      *file_name = '_';
+    if (*filename == '.') 
+      *filename = '_';
+    if (*filename == '-') 
+      *filename = '_';
 
-    file_name++;
+    filename++;
   }
 }
 
@@ -358,13 +358,13 @@ static char* strdup_free(const char* str, char* str_ptr)
   return tmp;
 }
 
-static char* mainGetFileTitle(const char* file_name)
+static char* mainGetFileTitle(const char* filename)
 {
-  int i, last = 1, len = (int)strlen(file_name);
+  int i, last = 1, len = (int)strlen(filename);
   char* file_title = malloc(len+1);
   char* dot, *ft_str = file_title;
 
-  memcpy(file_title, file_name, len+1);
+  memcpy(file_title, filename, len+1);
   
   dot = strchr(file_title, '.');
   if (dot) *dot = 0;
@@ -391,7 +391,7 @@ static char* mainGetFileTitle(const char* file_name)
 
 static int saveallimagesone_cb(void)
 {
-  char file_name[10240] = "*.";
+  char filename[10240] = "*.";
   char *names[MAX_NAMES];
   int i, n = 0, num_names = IupGetAllNames(names, MAX_NAMES); 
   FILE* packfile = NULL;
@@ -400,8 +400,8 @@ static int saveallimagesone_cb(void)
   if (!imgtype)
     return IUP_DEFAULT;
 
-  strcat(file_name, StrLower(imgtype));
-  if (GetSaveAsFile(file_name, imgtype) == -1)
+  strcat(filename, StrLower(imgtype));
+  if (GetSaveAsFile(filename, imgtype) == -1)
     return IUP_DEFAULT;
 
   for (i = 0; i < num_names; i++)
@@ -420,7 +420,7 @@ static int saveallimagesone_cb(void)
       }
 
       if (!packfile)
-        packfile = fopen(file_name, "wb");
+        packfile = fopen(filename, "wb");
 
       if (!packfile)
       {
@@ -445,7 +445,7 @@ static int saveallimagesone_cb(void)
   {
     if (iupStrEqualNoCase(imgtype, "C"))  /* only for C files */
     {
-      char* title = mainGetFileTitle(file_name);
+      char* title = mainGetFileTitle(filename);
       fprintf(packfile, "void load_all_images_%s(void)\n{\n", title);
       free(title);
 
@@ -481,19 +481,19 @@ static int saveimage_cb(Ihandle* self)
 
     if (is_image(type))
     {
-      char file_name[10240];
+      char filename[10240];
 
       char* imgtype = getfileformat(1);
       if (!imgtype)
         return IUP_DEFAULT;
 
-      sprintf(file_name, "%s.%s", name, StrLower(imgtype));
-      if (GetSaveAsFile(file_name, imgtype) != -1)
+      sprintf(filename, "%s.%s", name, StrLower(imgtype));
+      if (GetSaveAsFile(filename, imgtype) != -1)
       {
-        if (!IupSaveImageAsText(elem, file_name, imgtype, name))
+        if (!IupSaveImageAsText(elem, filename, imgtype, name))
         {
 #ifdef USE_IM
-          if (!IupSaveImage(elem, file_name, imgtype))
+          if (!IupSaveImage(elem, filename, imgtype))
           {
             char* err_msg = IupGetGlobal("IUPIM_LASTERROR");
             if (err_msg)
@@ -710,13 +710,13 @@ static int destroyall_cb(Ihandle* self)
   return IUP_DEFAULT;
 }
 
-static void mainUpdateList(Ihandle* self, const char* file_name)
+static void mainUpdateList(Ihandle* self, const char* filename)
 {
   char *names[MAX_NAMES];
   char str_item[20];
   Ihandle* list = (Ihandle*)IupGetAttribute(self, "mainList");
   int i, n = 0, num_names = IupGetAllNames(names, MAX_NAMES); 
-  char* file_title = mainGetFileTitle(file_name);
+  char* file_title = mainGetFileTitle(filename);
   for (i = 0; i < num_names; i++)
   {
     Ihandle* elem = IupGetHandle(names[i]);
@@ -774,19 +774,19 @@ static int loadbuffer_cb(Ihandle* self)
 
 static int loadled_cb(Ihandle* self)
 {
-  char file_name[10240] = "./*.led";
-  int ret = IupGetFile(file_name);
+  char filename[10240] = "./*.led";
+  int ret = IupGetFile(filename);
   if (ret == 0)
   {
     char* error;
 
     mainUpdateInternals();
 
-    error = IupLoad(file_name);
+    error = IupLoad(filename);
     if (error)
       IupMessage("Error", error);
     else
-      mainUpdateList(self, file_name);
+      mainUpdateList(self, filename);
   }
   return IUP_DEFAULT;
 }
@@ -805,13 +805,13 @@ static char* ParseFile(const char* dir, const char* FileName, int *offset)
   {
     int size = (int)(file - FileName) + 1;
     int dir_size = (int)strlen(dir);
-    char* file_name = malloc(size+dir_size+1);
-    memcpy(file_name, dir, dir_size);
-    file_name[dir_size] = '\\';
-    memcpy(file_name+dir_size+1, FileName, size-1);
-    file_name[size+dir_size] = 0;
+    char* filename = malloc(size+dir_size+1);
+    memcpy(filename, dir, dir_size);
+    filename[dir_size] = '\\';
+    memcpy(filename+dir_size+1, FileName, size-1);
+    filename[size+dir_size] = 0;
     *offset += size;
-    return file_name;
+    return filename;
   }
 }
 
@@ -835,15 +835,15 @@ static char* ParseDir(const char* FileName, int *offset)
 }
 #endif
 
-static void LoadImageFile(Ihandle* self, const char* file_name)
+static void LoadImageFile(Ihandle* self, const char* filename)
 {
-  Ihandle* new_image = IupLoadImage(file_name);
+  Ihandle* new_image = IupLoadImage(filename);
   if (new_image)
   {
-    char* file_title = mainGetFileTitle(file_name);
+    char* file_title = mainGetFileTitle(filename);
     IupSetHandle(file_title, new_image);
     free(file_title);
-    mainUpdateList(self, file_name);
+    mainUpdateList(self, filename);
   }
   else
   {
@@ -888,14 +888,14 @@ static int loadimage_cb(Ihandle* self)
   /* parse multiple files */
   {
     int offset;
-    char* file_name;
+    char* filename;
     char* dir = ParseDir(FileName, &offset);
     if (dir)
     {
-      while ((file_name = ParseFile(dir, FileName + offset, &offset)) != NULL)
+      while ((filename = ParseFile(dir, FileName + offset, &offset)) != NULL)
       {
-        LoadImageFile(self, file_name);
-        free(file_name);
+        LoadImageFile(self, filename);
+        free(filename);
       }
       free(dir);
     }
@@ -910,17 +910,17 @@ static int loadimage_cb(Ihandle* self)
 }
 #endif
 
-static int dropfile_cb(Ihandle *self, char* file_name)
+static int dropfile_cb(Ihandle *self, char* filename)
 {
   char* error;
 
   mainUpdateInternals();
 
-  error = IupLoad(file_name);
+  error = IupLoad(filename);
   if (error)
     IupMessage("Error", error);
   else
-    mainUpdateList(self, file_name);
+    mainUpdateList(self, filename);
 
   return IUP_DEFAULT;
 }

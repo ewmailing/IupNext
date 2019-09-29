@@ -818,17 +818,17 @@ IUP_SDK_API int iupStrToStrStr(const char *str, char *str1, char *str2, char sep
   }
 }
 
-IUP_SDK_API char* iupStrFileGetPath(const char *file_name)
+IUP_SDK_API char* iupStrFileGetPath(const char *filename)
 {
-  if (!file_name)
+  if (!filename)
     return NULL;
   else
   {
     /* Starts at the last character */
-    int len = (int)strlen(file_name) - 1;
+    int len = (int)strlen(filename) - 1;
     while (len != 0)
     {
-      if (file_name[len] == '\\' || file_name[len] == '/')
+      if (filename[len] == '\\' || filename[len] == '/')
       {
         len++;
         break;
@@ -841,7 +841,7 @@ IUP_SDK_API char* iupStrFileGetPath(const char *file_name)
 
     {
       char* path = malloc(len + 1);
-      memcpy(path, file_name, len);
+      memcpy(path, filename, len);
       path[len] = 0;
 
       return path;
@@ -849,18 +849,18 @@ IUP_SDK_API char* iupStrFileGetPath(const char *file_name)
   }
 }
 
-IUP_SDK_API char* iupStrFileGetTitle(const char *file_name)
+IUP_SDK_API char* iupStrFileGetTitle(const char *filename)
 {
-  if (!file_name)
+  if (!filename)
     return NULL;
   else
   {
     /* Starts at the last character */
-    int len = (int)strlen(file_name);
+    int len = (int)strlen(filename);
     int offset = len - 1;
     while (offset != 0)
     {
-      if (file_name[offset] == '\\' || file_name[offset] == '/')
+      if (filename[offset] == '\\' || filename[offset] == '/')
       {
         offset++;
         break;
@@ -872,28 +872,28 @@ IUP_SDK_API char* iupStrFileGetTitle(const char *file_name)
     {
       int title_size = len - offset + 1;
       char* file_title = malloc(title_size);
-      memcpy(file_title, file_name + offset, title_size);
+      memcpy(file_title, filename + offset, title_size);
       return file_title;
     }
   }
 }
 
-IUP_SDK_API char* iupStrFileGetExt(const char *file_name)
+IUP_SDK_API char* iupStrFileGetExt(const char *filename)
 {
-  if (!file_name)
+  if (!filename)
     return NULL;
   else
   {
     /* Starts at the last character */
-    int len = (int)strlen(file_name);
+    int len = (int)strlen(filename);
     int offset = len - 1;
     while (offset != 0)
     {
       /* if found a path separator stop. */
-      if (file_name[offset] == '\\' || file_name[offset] == '/')
+      if (filename[offset] == '\\' || filename[offset] == '/')
         return NULL;
 
-      if (file_name[offset] == '.')
+      if (filename[offset] == '.')
       {
         offset++;
         break;
@@ -908,7 +908,7 @@ IUP_SDK_API char* iupStrFileGetExt(const char *file_name)
     {
       int ext_size = len - offset + 1;
       char* file_ext = (char*)malloc(ext_size);
-      memcpy(file_ext, file_name + offset, ext_size);
+      memcpy(file_ext, filename + offset, ext_size);
       return file_ext;
     }
   }
@@ -922,44 +922,44 @@ IUP_SDK_API char* iupStrFileMakeFileName(const char* path, const char* title)
   {
     int size_path = (int)strlen(path);
     int size_title = (int)strlen(title);
-    char *file_name = malloc(size_path + size_title + 2);
-    memcpy(file_name, path, size_path);
+    char *filename = malloc(size_path + size_title + 2);
+    memcpy(filename, path, size_path);
 
     if (path[size_path - 1] != '/')
     {
-      file_name[size_path] = '/';
+      filename[size_path] = '/';
       size_path++;
     }
 
-    memcpy(file_name + size_path, title, size_title);
-    file_name[size_path + size_title] = 0;
+    memcpy(filename + size_path, title, size_title);
+    filename[size_path + size_title] = 0;
 
-    return file_name;
+    return filename;
   }
 }
 
-IUP_SDK_API void iupStrFileNameSplit(const char* file_name, char *path, char *title)
+IUP_SDK_API void iupStrFileNameSplit(const char* filename, char *path, char *title)
 {
   int i, n;
 
-  if (!file_name)
+  if (!filename)
     return;
 
   /* Look for last folder separator and split title from path */
-  n = (int)strlen(file_name);
+  n = (int)strlen(filename);
   for (i = n - 1; i >= 0; i--)
   {
-    if (file_name[i] == '\\' || file_name[i] == '/') 
+    if (filename[i] == '\\' || filename[i] == '/') 
     {
       if (path)
       {
-        strncpy(path, file_name, i+1);
+        strncpy(path, filename, i+1);
         path[i+1] = 0;
       }
 
       if (title)
       {
-        strcpy(title, file_name+i+1);
+        strcpy(title, filename+i+1);
         title[n-i] = 0;
       }
 

@@ -248,7 +248,6 @@ void iupImageStockGet(const char* name, Ihandle* *ih, const char* *native_name)
       int autoscale = IupGetInt(NULL, "IMAGESTOCKAUTOSCALE");
 
       istock->image = istock->func();
-      iupAttribSet(istock->image, "IMAGESTOCK", "Yes");
 
       *ih = istock->image;
 
@@ -307,7 +306,7 @@ static int iImageStockExtended(const char* name)
 
 IUP_SDK_API void iupImageStockLoadAll(void)
 {
-  /* Used only in IupView */
+  /* Used only in IupView and IupVisualLED */
   char* name = iupTableFirst(istock_table);
   while (name)
   {
@@ -1245,7 +1244,7 @@ static int iImagePrint(FILE *file, Iarray *buffer, char *format, ...)
   return len;
 }
 
-static int SaveImageC(const char* file_name, Ihandle* ih, const char* name, FILE* packfile, Iarray* buffer, int inFunction)
+static int SaveImageC(const char* filename, Ihandle* ih, const char* name, FILE* packfile, Iarray* buffer, int inFunction)
 {
   int y, x, width, height, channels, linesize;
   unsigned char* data;
@@ -1257,8 +1256,8 @@ static int SaveImageC(const char* file_name, Ihandle* ih, const char* name, FILE
 
   if (packfile)
     file = packfile;
-  else if (file_name)
-    file = fopen(file_name, "wb");
+  else if (filename)
+    file = fopen(filename, "wb");
 
   if (!file && !buffer)
     return 0;
@@ -1272,7 +1271,7 @@ static int SaveImageC(const char* file_name, Ihandle* ih, const char* name, FILE
   {
     if (iImagePrint(file, buffer, "static Ihandle* load_image_%s(void)\n", name) < 0)
     {
-      if (file_name)
+      if (filename)
         fclose(file);
       return 0;
     }
@@ -1336,13 +1335,13 @@ static int SaveImageC(const char* file_name, Ihandle* ih, const char* name, FILE
   else
     iImagePrint(file, buffer, "  }\n\n");
 
-  if (file_name)
+  if (filename)
     fclose(file);
 
   return 1;
 }
 
-static int SaveImageLua(const char* file_name, Ihandle* ih, const char* name, FILE* packfile, Iarray* buffer, int inFunction)
+static int SaveImageLua(const char* filename, Ihandle* ih, const char* name, FILE* packfile, Iarray* buffer, int inFunction)
 {
   int y, x, width, height, channels, linesize;
   unsigned char* data;
@@ -1354,8 +1353,8 @@ static int SaveImageLua(const char* file_name, Ihandle* ih, const char* name, FI
 
   if (packfile)
     file = packfile;
-  else if (file_name)
-    file = fopen(file_name, "wb");
+  else if (filename)
+    file = fopen(filename, "wb");
 
   if (!file && !buffer)
     return 0;
@@ -1434,13 +1433,13 @@ static int SaveImageLua(const char* file_name, Ihandle* ih, const char* name, FI
     iImagePrint(file, buffer, "end\n\n");
   }
 
-  if (file_name)
+  if (filename)
     fclose(file);
 
   return 1;
 }
 
-static int SaveImageLED(const char* file_name, Ihandle* ih, const char* name, FILE* packfile, Iarray* buffer)
+static int SaveImageLED(const char* filename, Ihandle* ih, const char* name, FILE* packfile, Iarray* buffer)
 {
   int y, x, width, height, channels, linesize;
   unsigned char* data;
@@ -1452,8 +1451,8 @@ static int SaveImageLED(const char* file_name, Ihandle* ih, const char* name, FI
 
   if (packfile)
     file = packfile;
-  else if (file_name)
-    file = fopen(file_name, "wb");
+  else if (filename)
+    file = fopen(filename, "wb");
 
 
   if (!file && !buffer)
@@ -1472,7 +1471,7 @@ static int SaveImageLED(const char* file_name, Ihandle* ih, const char* name, FI
 
     if (iImagePrint(file, buffer, "%s = IMAGE\n", name) < 0)
     {
-      if (file_name)
+      if (filename)
         fclose(file);
       return 0;
     }
@@ -1506,7 +1505,7 @@ static int SaveImageLED(const char* file_name, Ihandle* ih, const char* name, FI
   {
     if (iImagePrint(file, buffer, "%s = IMAGERGB\n", name) < 0)
     {
-      if (file_name)
+      if (filename)
         fclose(file);
       return 0;
     }
@@ -1515,7 +1514,7 @@ static int SaveImageLED(const char* file_name, Ihandle* ih, const char* name, FI
   {
     if (iImagePrint(file, buffer, "%s = IMAGERGBA\n", name) < 0)
     {
-      if (file_name)
+      if (filename)
         fclose(file);
       return 0;
     }
@@ -1538,13 +1537,13 @@ static int SaveImageLED(const char* file_name, Ihandle* ih, const char* name, FI
 
   iImagePrint(file, buffer, ")\n\n");
 
-  if (file_name)
+  if (filename)
     fclose(file);
 
   return 1;
 }
 
-IUP_API int IupSaveImageAsText(Ihandle* ih, const char* file_name, const char* format, const char* name)
+IUP_API int IupSaveImageAsText(Ihandle* ih, const char* filename, const char* format, const char* name)
 {
   int ret = 0;
 
@@ -1556,11 +1555,11 @@ IUP_API int IupSaveImageAsText(Ihandle* ih, const char* file_name, const char* f
   }
 
   if (iupStrEqualNoCase(format, "LED"))
-    ret = SaveImageLED(file_name, ih, name, NULL, NULL);
+    ret = SaveImageLED(filename, ih, name, NULL, NULL);
   else if (iupStrEqualNoCase(format, "LUA"))
-    ret = SaveImageLua(file_name, ih, name, NULL, NULL, 0);
+    ret = SaveImageLua(filename, ih, name, NULL, NULL, 0);
   else if (iupStrEqualNoCase(format, "C"))
-    ret = SaveImageC(file_name, ih, name, NULL, NULL, 0);
+    ret = SaveImageC(filename, ih, name, NULL, NULL, 0);
   return ret;
 }
 

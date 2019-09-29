@@ -582,7 +582,7 @@ static void saveProjectOpenFiles(Ihandle *ih, Ihandle *projectConfig)
   for (multitext = tabs->firstchild; multitext; multitext = multitext->brother)
   {
     filename = IupGetAttribute(multitext, "FILENAME");
-    if (!filename || iupStrEqual(filename, "Untitled"))
+    if (!filename || iupStrEqualPartial(filename, "Untitled"))
       continue;
 
     IupConfigSetVariableStrId(projectConfig, "ProjectOpenFiles", "File", i, filename);
@@ -683,7 +683,7 @@ static void updateTitle(Ihandle* multitext, int is_dirty)
   if (is_dirty)
     dirty_sign = "*";
 
-  if (!filename) filename = "Untitled";
+  if (!filename) filename = IupGetAttribute(multitext, "NEW_FILENAME");
 
   title = strFileTitle(filename);
 
@@ -840,7 +840,7 @@ static void update_dialog_title(Ihandle* multitext)
   if (IupGetInt(multitext, "MODIFIED"))
     dirty_sign = "*";
 
-  if (!filename) filename = "Untitled";
+  if (!filename) filename = IupGetAttribute(multitext, "NEW_FILENAME");
 
   IupSetfAttribute(ih, "TITLE", "%s%s - %s", strFileTitle(filename), dirty_sign, subtitle);
 }
@@ -1063,6 +1063,9 @@ static Ihandle* iScintillaDlgGetCurrentMultitext(Ihandle* ih)
 static void new_file(Ihandle* ih_item)
 {
   Ihandle* multitext = iScintillaDlgNewMultitext(ih_item);
+  static int new_count = 1;
+  IupSetStrf(multitext, "NEW_FILENAME", "Untitled #%d", new_count);
+  new_count++;
 
   IupSetAttribute(multitext, "FILENAME", NULL);
   IupSetAttribute(multitext, "VALUE", ""); /* empty text */
@@ -1518,7 +1521,7 @@ static int window_menu_open_cb(Ihandle* ih_menu)
   for (m_multitext = tabs->firstchild, pos = 0, item_windowN = item_window1; m_multitext && pos < WINDOWMENU_MAX && item_windowN; m_multitext = m_multitext->brother, pos++, item_windowN = item_windowN->brother)
   {
     char* filename = IupGetAttribute(m_multitext, "FILENAME");
-    if (!filename) filename = "Untitled";
+    if (!filename) filename = IupGetAttribute(m_multitext, "NEW_FILENAME");
 
     IupSetfAttribute(item_windowN, "TITLE", "&%d %s", pos + 1, strFileTitle(filename));
 
@@ -2435,7 +2438,7 @@ static int item_new_blank_proj_action_cb(Ihandle* ih_item)
 
   tree_project_clear(projectTree);
 
-  IupSetAttribute(projectTree, "TITLE0", "Untitled");
+  IupSetAttribute(projectTree, "TITLE0", "Untitled Project");
 
   if (cb)
     cb(ih, projectConfig);
@@ -2474,7 +2477,7 @@ static int item_new_proj_action_cb(Ihandle* ih_item)
   {
     filename = IupGetAttribute(multitext, "FILENAME");
 
-    if (!filename || iupStrEqual(filename, "Untitled"))
+    if (!filename || iupStrEqualPartial(filename, "Untitled"))
       continue;
 
     if (!check_inproject(projectTree, filename))
@@ -2630,7 +2633,7 @@ static int item_close_proj_action_cb(Ihandle* ih_item)
 
   tree_project_clear(projectTree);
 
-  IupSetAttribute(projectTree, "TITLE0", "Untitled");
+  IupSetAttribute(projectTree, "TITLE0", "Untitled Project");
 
   IupSetAttribute(projectSplit, "VALUE", "0");
 
@@ -4554,14 +4557,14 @@ static int iScintillaDlgCreateMethod(Ihandle* ih, void** params)
   IupSetAttribute(tabs, "NAME", "MULTITEXT_TABS");
   IupSetAttribute(tabs, "SHOWCLOSE", "YES");
   IupSetAttribute(tabs, "TABCHANGEONCHECK", "YES");
-  IupSetAttribute(tabs, "TABTITLE0", "Untitled");
+  IupSetAttribute(tabs, "TABTITLE0", "Untitled #1");
   IupSetCallback(tabs, "TABCLOSE_CB", (Icallback)tabs_close_cb);
   IupSetCallback(tabs, "TABCHANGE_CB", (Icallback)tabs_change_cb);
   IupSetCallback(tabs, "RIGHTCLICK_CB", (Icallback)tabs_rightclick_cb);
 
   projectTree = IupTree();
   IupSetAttribute(projectTree, "NAME", "PROJECTTREE");
-  IupSetAttribute(projectTree, "TITLE0", "Untitled");
+  IupSetAttribute(projectTree, "TITLE0", "Untitled Project");
   IupSetAttribute(projectTree, "SHOWRENAME", "Yes");
   IupSetAttribute(projectTree, "IMAGELEAF", "IMGPAPER");
   IupSetCallback(projectTree, "EXECUTELEAF_CB", (Icallback)tree_executeleaf_cb);

@@ -299,20 +299,20 @@ IUP_SDK_API int iupStrToStrStr(const char *str, char *str1, char *str2, char sep
  * Supports UNIX and Windows directory separators.
  * Must free the returned string.
  * \ingroup str */
-IUP_SDK_API char* iupStrFileGetExt(const char *file_name);
+IUP_SDK_API char* iupStrFileGetExt(const char *filename);
 
 /** Returns the file title of a file name.
  * Supports UNIX and Windows directory separators.
  * Must free the returned string.
  * \ingroup str */
-IUP_SDK_API char* iupStrFileGetTitle(const char *file_name);
+IUP_SDK_API char* iupStrFileGetTitle(const char *filename);
 
 /** Returns the file path of a file name.
  * Supports UNIX and Windows directory separators.
  * The returned value includes the last separator.
  * Must free the returned string.
  * \ingroup str */
-IUP_SDK_API char* iupStrFileGetPath(const char *file_name);
+IUP_SDK_API char* iupStrFileGetPath(const char *filename);
 
 /** Concat path and title addind '/' between if path does not have it.
  * Must free the returned string.
