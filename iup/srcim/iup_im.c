@@ -384,8 +384,8 @@ int IupSaveImage(Ihandle* ih, const char* filename, const char* format)
     error = imFileWriteImageInfo(ifile, width, height, IM_RGB|IM_TOPDOWN|IM_PACKED|IM_ALPHA, IM_BYTE);
   else /* bpp == 8 */
   {
-    long palette[256];
     int i;
+    long* palette = imPaletteGray();
 
     for (i = 0; i < 256; i++)
     {
@@ -407,8 +407,8 @@ int IupSaveImage(Ihandle* ih, const char* filename, const char* format)
       }
     }
 
-    if (i > 0)
-      imFileSetPalette(ifile, palette, i);
+    imFileSetPalette(ifile, palette, 256);
+    imPaletteRelease(palette);
 
     error = imFileWriteImageInfo(ifile, width, height, IM_MAP|IM_TOPDOWN, IM_BYTE);
   }
