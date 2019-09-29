@@ -248,6 +248,8 @@ void iupImageStockGet(const char* name, Ihandle* *ih, const char* *native_name)
       int autoscale = IupGetInt(NULL, "IMAGESTOCKAUTOSCALE");
 
       istock->image = istock->func();
+      iupAttribSet(istock->image, "IMAGESTOCK", "Yes");
+
       *ih = istock->image;
 
       stock_size = iupImageStockGetSize();
@@ -284,7 +286,7 @@ static void iImageStockLoad(const char *name)
   if (ih)
   {
     IupSetHandle(name, ih);
-    iupAttribSetStr(ih, "_IUPIMAGE_STOCK", name);
+    iupAttribSetStr(ih, "_IUPIMAGE_STOCK_LOAD", name);
   }
   else if (native_name)
   {
@@ -1089,7 +1091,7 @@ static int iImageRGBACreateMethod(Ihandle* ih, void** params)
 
 static void iImageDestroyMethod(Ihandle* ih)
 {
-  char* stock_name;
+  char* stock_load;
 
   unsigned char* imgdata = (unsigned char*)iupAttribGet(ih, "WID");
   if (imgdata)
@@ -1098,9 +1100,12 @@ static void iImageDestroyMethod(Ihandle* ih)
     free(imgdata);
   }
 
-  stock_name = iupAttribGet(ih, "_IUPIMAGE_STOCK");
-  if (stock_name)
-    iImageStockUnload(stock_name);
+  stock_load = iupAttribGet(ih, "_IUPIMAGE_STOCK_LOAD");
+  if (stock_load)
+  {
+    iImageStockUnload(stock_load);
+    iupAttribSetStr(ih, "_IUPIMAGE_STOCK_LOAD", NULL);
+  }
 
   iImageClearCache(ih);
 }
