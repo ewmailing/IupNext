@@ -233,6 +233,13 @@ version 3.x.</p>
 	with iup_lng*.h. Czech and Russian strings contributed by Ji&#345;í Klimeš and 
 	Alexey Bogdanov are now included in the source code, but the main library 
 	need to be rebuild using a specific define to embed those localizations.</span></font></li>
+	<li>
+	<font SIZE="3">
+	<span class="hist_changed" style="color: rgb(0, 128, 0); font-weight: bold;">
+	<strong>Changed:</strong></span><span class="auto-style1"> reset the numeric 
+	locale to &quot;C&quot; in <strong>IupOpen</strong> after calling gtk_init. This is 
+	the default configuration in IUP, but gtk_init changes the locale to match 
+	the system language.</span></font></li>
 
 	<li>
 	<font SIZE="3"><span style="color: #008000">
