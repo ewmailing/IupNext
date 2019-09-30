@@ -27,7 +27,7 @@ static NSFont *font = NULL;
 @implementation MyFontPanel
 - (void)setPreviewHeight:(CGFloat)height
 {
-_fontPanelPreviewHeight = height;
+//_fontPanelPreviewHeight = height;
 }
 @end
 
