@@ -1391,10 +1391,26 @@ static Ihandle* check_open(Ihandle* ih, const char* check_filename, int save)
   return NULL; /* does NOT exists, continue */
 }
 
+static int find_ext(const char* filename, const char* ext)
+{
+  char file_ext[10] = ".";
+  int len = (int)strlen(filename);
+  int ext_len = (int)strlen(ext);
+  if (ext_len > len) return 0;
+
+  iupStrLower(file_ext, filename + len - ext_len);
+
+  return strcmp(file_ext, ext) == 0;
+}
+
 static int dropfiles_cb(Ihandle* ih, const char* filename, int num, int x, int y)
 {
   static int last = 1;
   static int remove_empty = 0;
+  char ext[10] = ".";
+  char* project_ext = IupGetAttribute(ih, "PROJECTEXT");
+  if (!project_ext) project_ext = "prj";
+  strcat(ext, project_ext);
 
   (void)x;
   (void)y;
@@ -1413,8 +1429,13 @@ static int dropfiles_cb(Ihandle* ih, const char* filename, int num, int x, int y
     last = 0;
   }
 
-  if (!check_open(ih, filename, 0))
-    open_file(ih, filename, 0);
+  if (find_ext(filename, ext))
+    open_proj(IupGetDialog(ih), filename);
+  else
+  {
+    if (!check_open(ih, filename, 0))
+      open_file(ih, filename, 0);
+  }
 
   if (num == 0)
   {

@@ -2158,8 +2158,8 @@ static Ihandle* buildToolsMenu(void)
     IupSetAttribute(item_imageexport_static, "VALUE", "OFF");
 
   toolsMenu = IupMenu(
-    IupSetCallbacks(IupItem("&Globals...", NULL), "ACTION", globalsdlg_cb, NULL),
-    IupSetCallbacks(IupItem("&Class Info...", NULL), "ACTION", classinfo_cb, NULL),
+    IupSetCallbacks(IupItem("Globals...", NULL), "ACTION", globalsdlg_cb, NULL),
+    IupSetCallbacks(IupItem("Class Info...", NULL), "ACTION", classinfo_cb, NULL),
     IupSeparator(),
     item_import_img,
     item_export_img,
