@@ -98,7 +98,8 @@ IUP_API int IupMainLoopLevel(void)
 
 IUP_API int IupMainLoop(void)
 {
-  int ret = IUP_DEFAULT;
+  MSG msg;
+  int ret;
   int return_code = IUP_NOERROR;
   static int has_done_entry = 0;
 
@@ -106,36 +107,48 @@ IUP_API int IupMainLoop(void)
 
   if (0 == has_done_entry)
   {
-	  has_done_entry = 1;
-	  iupLoopCallEntryCb();
+    has_done_entry = 1;
+    iupLoopCallEntryCb();
   }
 
-  do 
+  do
   {
     if (win_idle_cb)
     {
-      ret = IupLoopStep();
-      if (ret == IUP_CLOSE)
+      ret = 1;
+      if (PeekMessage(&msg, 0, 0, 0, PM_REMOVE))
       {
-        return_code = IUP_CLOSE;
-        break;
+        if (winLoopProcessMessage(&msg) == IUP_CLOSE)
+        {
+          return_code = IUP_CLOSE;
+          break;
+        }
+      }
+      else
+      {
+        if (winLoopCallIdle() == IUP_CLOSE)
+        {
+          return_code = IUP_CLOSE;
+          break;
+        }
       }
     }
     else
     {
-      ret = IupLoopStepWait();
-      if (ret == IUP_ERROR)
+      ret = GetMessage(&msg, NULL, 0, 0);
+      if (ret == -1) /* error */
       {
         return_code = IUP_ERROR;
         break;
       }
-      else if (ret == IUP_CLOSE)
+      if (ret == 0 || /* WM_QUIT */
+          winLoopProcessMessage(&msg) == IUP_CLOSE)  /* ret != 0 */
       {
         return_code = IUP_NOERROR;
         break;
       }
     }
-  } while (ret == IUP_DEFAULT);
+  } while (ret);
 
   win_main_loop_level--;
 
