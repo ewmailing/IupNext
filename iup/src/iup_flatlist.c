@@ -1700,6 +1700,9 @@ static void iFlatListComputeNaturalSizeMethod(Ihandle* ih, int *w, int *h, int *
   else
     num_lines = count;
 
+  if (max_h == 0)
+    iupdrvFontGetCharSize(ih, NULL, &max_h);
+
   *h = max_h * num_lines;
   *h += (num_lines - 1) * ih->data->spacing;
 
