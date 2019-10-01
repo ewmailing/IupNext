@@ -18,14 +18,15 @@ static int compare_names(const void *a, const void *b)
 
 static char* getClassParameters(const char* format)
 {
-  static char str[100], *pstr;
+  static char str[200], *pstr;
   pstr = &str[0];
 
-  str[0] = 0;  /* clear for the case where there is no parameters */
+  str[0] = 0;  /* clear for the case where there are no parameters */
 
   if (format && format[0]!=0)
   {
     int i, count = (int)strlen(format);
+    if (count > 10) count = 10;
 
     for (i=0; i<count; i++)
     {
@@ -47,9 +48,9 @@ static char* getClassParameters(const char* format)
       if (fstr)
       {
         if (i!=0)
-          pstr += sprintf(pstr, ", ");
+          pstr += sprintf(pstr, "%s", ", ");
 
-        pstr += sprintf(pstr, fstr);
+        pstr += sprintf(pstr, "%s", fstr);
       }
       else
       {
@@ -65,7 +66,6 @@ static char* getClassParameters(const char* format)
 static char* getCallbackReturn(const char* format)
 {
   char* fstr = NULL;
-  static char str[100];
 
   switch(format[0])
   {
@@ -81,26 +81,25 @@ static char* getCallbackReturn(const char* format)
   }
 
   if (fstr)
-    sprintf(str, fstr);
+    return fstr;
   else
   {
     IupMessagef("Internal Error:", "Invalid callback return format: %c", format[0]);
     return NULL;
   }
-
-  return str;
 }
 
 static char* getCallbackParameters(const char* format)
 {
-  static char str[100], *pstr;
+  static char str[200], *pstr;
   pstr = &str[0];
 
-  pstr += sprintf(pstr, "Ihandle*");  /* First parameter in all callbacks */
+  pstr += sprintf(pstr, "%s", "Ihandle*");  /* First parameter in all callbacks */
 
   if (format && format[0]!=0)
   {
     int i, count = (int)strlen(format);
+    if (count > 10) count = 10;
 
     for (i=0; i<count; i++)
     {
@@ -122,8 +121,8 @@ static char* getCallbackParameters(const char* format)
 
       if (fstr)
       {
-        pstr += sprintf(pstr, ", ");
-        pstr += sprintf(pstr, fstr);
+        pstr += sprintf(pstr, "%s", ", ");
+        pstr += sprintf(pstr, "%s", fstr);
       }
       else
       {
@@ -210,7 +209,7 @@ static char* getChildType(int childtype)
   char* str[] = {"NO CHILD", "MANY CHILDREN"}; 
   if (childtype > IUP_CHILDMANY)
   {
-    static char buf[20];
+    static char buf[100];
     sprintf(buf, "%d CHILDREN", childtype-IUP_CHILDMANY);
     return buf;
   }
