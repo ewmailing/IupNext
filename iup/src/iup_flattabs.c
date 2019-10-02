@@ -1360,10 +1360,12 @@ static int iFlatTabsButton_CB(Ihandle* ih, int button, int pressed, int x, int y
             int old_maxsize = IupGetInt2(ih, "MAXSIZE"); /* title_height */
             int old_x = ih->x;
             int old_y = ih->y;
+            int old_width = ih->currentwidth;
             IupSetAttribute(ih, "MAXSIZE", NULL);
 
             iupLayoutCompute(ih);
 
+            ih->currentwidth = old_width;
             ih->x = old_x;
             ih->y = old_y;
             IupSetStrf(ih, "MAXSIZE", "x%d", old_maxsize);
