@@ -84,7 +84,7 @@ static char* getCallbackReturn(const char* format)
     return fstr;
   else
   {
-    IupMessagef("Internal Error:", "Invalid callback return format: %c", format[0]);
+    IupMessagef("Internal Error:", "Invalid callback return format: %s", format);
     return NULL;
   }
 }
@@ -119,16 +119,13 @@ static char* getCallbackParameters(const char* format)
       case '=': return str;
       }
 
-      if (fstr)
-      {
-        pstr += sprintf(pstr, "%s", ", ");
-        pstr += sprintf(pstr, "%s", fstr);
-      }
-      else
+      if (!fstr)
       {
         IupMessagef("Internal Error:", "Invalid callback format: %s", format);
         return NULL;
       }
+
+      pstr += sprintf(pstr, ", %s", fstr);
     }
   }
 
@@ -302,7 +299,7 @@ static int button_help_CB(Ihandle* ih)
   Ihandle* listClasses = IupGetDialogChild(ih, "listClasses");
   char* className = IupGetAttribute(listClasses, IupGetAttribute(listClasses, "VALUE"));
   if (!className)
-    IupMessage("Attention", "Select a class from the list first!");
+    IupMessageError(IupGetDialog(ih), "Select a class from the list first!");
   else
   {
     char* folder = "elem";
