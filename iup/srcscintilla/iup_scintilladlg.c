@@ -565,6 +565,20 @@ static Ihandle* iScintillaDlgGetProjectConfig(Ihandle* ih)
   return (Ihandle*)iupAttribGetInherit(ih, "_IUP_PROJECT_CONFIG");
 }
 
+static char* getProjectRelativeFilename(Ihandle* projectConfig, const char* filename)
+{
+  char *project_filename = IupGetAttribute(projectConfig, "APP_FILENAME");
+  //TODO
+  return iupStrDup(filename);
+}
+
+static char* setProjectRelativeFilename(Ihandle* projectConfig, const char* filename)
+{
+  char *project_filename = IupGetAttribute(projectConfig, "APP_FILENAME");
+  //TODO
+  return iupStrDup(filename);
+}
+
 static void saveProjectOpenFiles(Ihandle *ih, Ihandle *projectConfig)
 {
   Ihandle* tabs = IupGetDialogChild(ih, "MULTITEXT_TABS");
@@ -585,7 +599,10 @@ static void saveProjectOpenFiles(Ihandle *ih, Ihandle *projectConfig)
     if (!filename || iupStrEqualPartial(filename, "Untitled"))
       continue;
 
+    filename = getProjectRelativeFilename(projectConfig, filename);
     IupConfigSetVariableStrId(projectConfig, "ProjectOpenFiles", "File", i, filename);
+    free(filename);
+
     i++;
   }
 
@@ -607,7 +624,9 @@ static void saveProjectFiles(Ihandle *projectTree, Ihandle *projectConfig)
   filename = IupTreeGetUserId(projectTree, i);
   while (filename != NULL)
   {
+    filename = getProjectRelativeFilename(projectConfig, filename);
     IupConfigSetVariableStrId(projectConfig, "ProjectFiles", "File", i, filename);
+    free(filename);
 
     i++;
     filename = IupTreeGetUserId(projectTree, i);
@@ -2513,25 +2532,30 @@ static int item_new_proj_action_cb(Ihandle* ih_item)
 
 static void loadProjectFiles(Ihandle *projectConfig, Ihandle *projectTree)
 {
-  const char *value;
+  const char *filename;
   int count, i;
 
   count = IupConfigGetVariableInt(projectConfig, "ProjectFiles", "Count");
 
   for (i = 1; i <= count; i++)
   {
-    value = IupConfigGetVariableStrId(projectConfig, "ProjectFiles", "File", i);
-    if (!check_inproject(projectTree, value))
-      addFileToProjectTree(projectTree, value);
+    filename = IupConfigGetVariableStrId(projectConfig, "ProjectFiles", "File", i);
+
+    filename = setProjectRelativeFilename(projectConfig, filename);
+    if (!check_inproject(projectTree, filename))
+      addFileToProjectTree(projectTree, filename);
+    free((void*)filename);
   }
 
   count = IupConfigGetVariableInt(projectConfig, "ProjectOpenFiles", "Count");
 
   for (i = 1; i <= count; i++)
   {
-    value = IupConfigGetVariableStrId(projectConfig, "ProjectOpenFiles", "File", i);
-    if (!check_open(projectTree, value, 0))
-      open_file(projectTree, value, 1);
+    filename = IupConfigGetVariableStrId(projectConfig, "ProjectOpenFiles", "File", i);
+    filename = setProjectRelativeFilename(projectConfig, filename);
+    if (!check_open(projectTree, filename, 0))
+      open_file(projectTree, filename, 1);
+    free((void*)filename);
   }
 }
 
