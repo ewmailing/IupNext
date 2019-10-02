@@ -290,7 +290,7 @@ IUP_SDK_API void iupdrvDrawText(IdrawCanvas* dc, const char* text, int len, int 
   int layout_center = flags & IUP_DRAW_LAYOUTCENTER;
 
   if (text_orientation && layout_center)
-    iupDrawGetTextInnerBounds(w, h, text_orientation, &layout_w, &layout_h);
+    iupDrawGetTextSize(dc->ih, text, len, &layout_w, &layout_h, 0);
 
   iupgdkColorSet(&c, color);
   gdk_gc_set_rgb_fg_color(dc->pixmap_gc, &c);

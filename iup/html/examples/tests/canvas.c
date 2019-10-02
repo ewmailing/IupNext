@@ -227,7 +227,9 @@ static void drawTest(Ihandle *ih, int posx)  //_Lines
   IupSetAttribute(ih, "DRAWCOLOR", "0 0 0");
   IupSetAttribute(ih, "DRAWFONT", "Helvetica, -30");
   IupSetAttribute(ih, "DRAWTEXTALIGNMENT", "ACENTER");
-  //  IupSetAttribute(ih, "DRAWTEXTORIENTATION", "60");
+//  IupSetAttribute(ih, "DRAWTEXTORIENTATION", "60");
+//  IupSetAttribute(ih, "DRAWTEXTORIENTATION", "-30");
+//  IupSetAttribute(ih, "DRAWTEXTORIENTATION", IupGetAttribute(ih, "MOUSE_TEXTORIENTATION"));
 //  IupSetAttribute(ih, "DRAWTEXTLAYOUTCENTER", "Yes");
   IupDrawGetTextSize(ih, "Text", -1, &w, &h);
   IupSetAttribute(ih, "DRAWSTYLE", "STROKE");
@@ -236,7 +238,7 @@ static void drawTest(Ihandle *ih, int posx)  //_Lines
   //  IupSetAttribute(ih, "DRAWTEXTWRAP", "Yes");
   //  IupSetAttribute(ih, "DRAWTEXTELLIPSIS", "Yes");
   //  IupSetAttribute(ih, "DRAWTEXTCLIP", "Yes");
-  IupDrawText(ih, "Text", 0, 20, 70, -1, -1);
+  IupDrawText(ih, "Text", 0, 20, 70, w, h);
 //  IupDrawText(ih, "Very Large Text", 0, 20, 70, w, h);
 //  IupDrawText(ih, "Text\nSecond Line", 0, 20, 70, -1, -1);
   IupSetAttribute(ih, "DRAWTEXTORIENTATION", "0");
@@ -500,11 +502,21 @@ static int enterwindow_cb(Ihandle *ih)
 
 static int button_cb(Ihandle *ih,int but,int pressed,int x,int y,char* status)
 {
-  if (but==IUP_BUTTON1 && pressed)
+  if (but == IUP_BUTTON1 && pressed)
+  {
     IupSetAttribute(ih, "CURSOR", "CROSS");
+
+//    IupSetInt(ih, "MOUSE_TEXTORIENTATION", IupGetInt(ih, "MOUSE_TEXTORIENTATION") + 10);
+//    IupUpdate(ih);
+  }
   if (but==IUP_BUTTON1 && !pressed)
     IupSetAttribute(ih, "CURSOR", NULL);
   printf("BUTTON_CB(but=%c (%d), x=%d, y=%d [%s])\n",(char)but,pressed,x,y, status);
+  if (but == IUP_BUTTON3 && pressed)
+  {
+//    IupSetInt(ih, "MOUSE_TEXTORIENTATION", IupGetInt(ih, "MOUSE_TEXTORIENTATION") - 10);
+//    IupUpdate(ih);
+  }
   return IUP_DEFAULT;
 }
 
@@ -588,6 +600,7 @@ void CanvasTest(void)
   IupSetAttribute(canvas, "DROPTARGET", "YES");
   IupSetAttribute(canvas, "DROPTYPES", "TEXT");
   IupSetCallback (canvas, "DROPDATA_CB", (Icallback)testDropData_cb);
+//  IupSetAttribute(canvas, "DRAWUSEDIRECT2D", "Yes");
 
 //  IupSetAttribute(canvas, "BORDER", "NO");
 //  IupSetAttribute(canvas, "CURSOR", "CROSS");

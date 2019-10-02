@@ -387,7 +387,7 @@ void iupdrvDrawTextWDL(IdrawCanvas* dc, const char* text, int len, int x, int y,
   int layout_w = w, layout_h = h;
 
   if (text_orientation && layout_center)
-    iupDrawGetTextInnerBounds(w, h, text_orientation, &layout_w, &layout_h);
+    iupDrawGetTextSize(dc->ih, text, len, &layout_w, &layout_h, 0);
 
   rect.x0 = iupInt2Float(x);
   rect.x1 = iupInt2Float(x + layout_w);

@@ -441,7 +441,6 @@ iupDrawCalcShadows
 iupDrawColor
 iupDrawColorMakeInactive
 iupDrawGetTextFlags
-iupDrawGetTextInnerBounds
 iupDrawGetTextSize
 iupDrawHorizSunkenMark
 iupDrawParentBackground
