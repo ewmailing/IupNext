@@ -455,6 +455,8 @@ int   iupClassObjectAttribIsNotString(Ihandle* ih, const char* name);
 /* Used only in iupAttribIsIhandle */
 int   iupClassObjectAttribIsIhandle(Ihandle* ih, const char* name);
 
+IUP_SDK_API int iupClassObjectAttribIsCallback(Ihandle* ih, const char* name);
+
 /* Used only in iupAttribSetTheme */
 int   iupClassObjectAttribCanCopy(Ihandle* ih, const char* name);
 

@@ -504,6 +504,14 @@ int iupClassObjectAttribIsIhandle(Ihandle* ih, const char* name)
   return 0;
 }
 
+IUP_SDK_API int iupClassObjectAttribIsCallback(Ihandle* ih, const char* name)
+{
+  IattribFunc* afunc = (IattribFunc*)iupTableGet(ih->iclass->attrib_func, name);
+  if (afunc && (afunc->flags & IUPAF_CALLBACK))
+    return 1;
+  return 0;
+}
+
 int iupClassAttribIsRegistered(Iclass* ic, const char* name)
 {
   IattribFunc* afunc = NULL;
