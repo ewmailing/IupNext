@@ -476,6 +476,8 @@ void iupClassGetAttribNameInfo(Iclass* ic, const char* name, char* *def_value, i
 /* Used in iupClassRegisterAttribute and iGlobalChangingDefaultColor */
 int iupClassIsGlobalDefault(const char* name, int colors);
 
+void iupClassInfoGetDesc(Iclass* ic, Ihandle* ih, const char* attrib_name);
+void iupClassInfoShowHelp(const char* className);
 
 /* Other functions declared in <iup.h> and implemented here. 
 IupGetClassType

@@ -213,6 +213,34 @@ static char* getChildType(int childtype)
     return str[childtype];
 }
 
+void iupClassInfoGetDesc(Iclass* ic, Ihandle* ih, const char* attrib_name)
+{
+  char constructor[50];
+
+  if (ic->cons)
+    strcpy(constructor, ic->cons);
+  else
+  {
+    strcpy(constructor, ic->name);
+    constructor[0] = (char)toupper(constructor[0]);
+  }
+
+  IupSetfAttribute(ih, attrib_name, "Ihandle* Iup%s(%s);\n"
+                   "Class Name: %s\n"
+                   "Native Type: %s\n"
+                   "Container Type: %s\n"
+                   "Flags:\n"
+                   "%s"
+                   "%s",
+                   constructor,
+                   getClassParameters(ic->format),
+                   ic->name,
+                   getNativeType(ic->nativetype),
+                   getChildType(ic->childtype),
+                   ic->is_interactive ? "  Is Keyboard Interactive\n" : "  NOT Keyboard Interactive\n",
+                   ic->has_attrib_id ? "  Has Id Attributes\n" : "");
+}
+
 static int classesList_ActionCB (Ihandle *ih, char *className, int pos, int state)
 {
   if (state == 1)
@@ -223,7 +251,6 @@ static int classesList_ActionCB (Ihandle *ih, char *className, int pos, int stat
     Ihandle* listCallbacks = IupGetDialogChild(ih, "listCallbacks");
     Ihandle* txtInfo = IupGetDialogChild(ih, "txtInfo");
     char **attr_names;
-    char constructor[50];
     
     total_n = IupGetClassAttributes(className, NULL, -1); /* total include callbacks */
     attr_names = (char **)malloc(total_n * sizeof(char *));
@@ -254,29 +281,7 @@ static int classesList_ActionCB (Ihandle *ih, char *className, int pos, int stat
 
     ic = iupRegisterFindClass(className);
 
-    if (ic->cons)
-      strcpy(constructor, ic->cons);
-    else
-    {
-      strcpy(constructor, ic->name);
-      constructor[0] = (char)toupper(constructor[0]);
-    }
-
-    /* Update labels (values) */
-    IupSetfAttribute(txtInfo, "VALUE", "Ihandle* Iup%s(%s);\n"
-                                       "Class Name: %s\n"
-                                       "Native Type: %s\n"
-                                       "Container Type: %s\n"
-                                       "Flags:\n"
-                                       "%s"
-                                       "%s",
-                                       constructor,
-                                       getClassParameters(ic->format),
-                                       ic->name,
-                                       getNativeType(ic->nativetype),
-                                       getChildType(ic->childtype),
-                                       ic->is_interactive? "  Is Keyboard Interactive\n": "  NOT Keyboard Interactive\n",
-                                       ic->has_attrib_id? "  Has Id Attributes\n": "");
+    iupClassInfoGetDesc(ic, txtInfo, "VALUE");
 
     free(attr_names);
   }
@@ -303,44 +308,47 @@ static void PopulateListOfClasses(Ihandle* ih)
   free(list);
 }
 
-static int button_help_CB(Ihandle* ih)
+void iupClassInfoShowHelp(const char* className)
 {
   char url[1024];
+  char* folder = "elem";
+  char* sep = "";
+
+  if (strstr(className, "dlg") || iupStrEqual(className, "dialog"))
+    folder = "dlg";
+  else if (iupStrEqualPartial(className, "matrix") ||
+            iupStrEqualPartial(className, "mgl") ||
+            iupStrEqual(className, "plot") ||
+            iupStrEqual(className, "scintilla") ||
+            iupStrEqual(className, "cells") ||
+            iupStrEqual(className, "glbackgroundbox") ||
+            iupStrEqual(className, "glcanvas") ||
+            iupStrEqual(className, "olecontrol") ||
+            iupStrEqual(className, "tuioclient") ||
+            iupStrEqual(className, "webbrowser"))
+            folder = "ctrl";
+  else if (className[0] == 'G' && className[0] == 'L')
+    folder = "gl";
+
+  if (iupStrEqualPartial(className, "mgl") ||
+      iupStrEqual(className, "plot") ||
+      iupStrEqual(className, "scintilla"))
+      sep = "_";
+
+  /* sprintf(url, "http://www.tecgraf.puc-rio.br/iup/en/%s/iup%s%s.html", folder, sep, className); -- direct page version */
+  sprintf(url, "http://www.tecgraf.puc-rio.br/iup/index.html?url=%s/iup%s%s.html", folder, sep, className);
+
+  IupHelp(url);
+}
+
+static int button_help_CB(Ihandle* ih)
+{
   Ihandle* listClasses = IupGetDialogChild(ih, "listClasses");
   char* className = IupGetAttribute(listClasses, IupGetAttribute(listClasses, "VALUE"));
   if (!className)
     IupMessageError(IupGetDialog(ih), "Select a class from the list first!");
   else
-  {
-    char* folder = "elem";
-    char* sep = "";
-
-    if (strstr(className, "dlg") || iupStrEqual(className, "dialog"))
-      folder = "dlg";
-    else if (iupStrEqualPartial(className, "matrix") ||
-             iupStrEqualPartial(className, "mgl") ||
-             iupStrEqual(className, "plot") ||
-             iupStrEqual(className, "scintilla") ||
-             iupStrEqual(className, "cells") ||
-             iupStrEqual(className, "glbackgroundbox") ||
-             iupStrEqual(className, "glcanvas") ||
-             iupStrEqual(className, "olecontrol") ||
-             iupStrEqual(className, "tuioclient") ||
-             iupStrEqual(className, "webbrowser"))
-             folder = "ctrl";
-    else if (className[0] == 'G' && className[0] == 'L')
-      folder = "gl";
-
-    if (iupStrEqualPartial(className, "mgl") ||
-        iupStrEqual(className, "plot") ||
-        iupStrEqual(className, "scintilla"))
-        sep = "_";
-
-    /* sprintf(url, "http://www.tecgraf.puc-rio.br/iup/en/%s/iup%s%s.html", folder, sep, className); -- direct page version */
-    sprintf(url, "http://www.tecgraf.puc-rio.br/iup/index.html?url=%s/iup%s%s.html", folder, sep, className);
-
-    IupHelp(url);
-  }
+    iupClassInfoShowHelp(className);
   return IUP_DEFAULT;
 }
 
