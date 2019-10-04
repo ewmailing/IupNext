@@ -15,8 +15,6 @@
 
 int vLedIsAlien(Ihandle *elem, const char* filename);
 
-#define VLED_ATTRIB_ISINTERNAL(_name) (((_name[0] == 'V' && _name[1] == 'L' && _name[2] == 'E' && _name[3] == 'D') || (_name[0] == 'v' && _name[1] == 'l' && _name[2] == 'e' && _name[3] == 'd')) ? 1 : 0)
-
 enum{VLED_EXPORT_LUA, VLED_EXPORT_C, VLED_EXPORT_LED};
 
 static void iExportRemoveExt(char* title, const char* ext)
@@ -49,10 +47,10 @@ static int iExportHasReserved(const char* name)
   {
     c = *name;
 
-    /* can only has letters or numbers as characters */
+    /* can only has letters or numbers as characters, or underscore */
     if ( c < '0' || 
         (c > '9' && c < 'A') ||
-        (c > 'Z' && c < 'a') ||
+        (c > 'Z' && c < 'a' && c != '_') ||
          c > 'z')
       return 1;
 
@@ -97,138 +95,22 @@ static void iExportWriteAttrib(FILE* file, const char* name, const char* value, 
     free((char*)value);
 }
 
-static int iExportCheckAttributeChanged(Ihandle* ih, const char* name, const char* value, const char* def_value, int flags)
+static void iExportElementAttribs(FILE* file, Ihandle* ih, const char* indent, int export_format)
 {
-  if ((flags&IUPAF_NO_STRING) || /* not a string */
-      (flags&IUPAF_HAS_ID) ||  /* has id */
-      (flags&(IUPAF_READONLY | IUPAF_WRITEONLY)))  /* can only read or only write */
-      return 0;
-
-  if (!value || value[0] == 0 || iupATTRIB_ISINTERNAL(value))
-    return 0;
-
-  if ((flags&IUPAF_NO_SAVE) && iupBaseNoSaveCheck(ih, name))  /* can not be saved */
-    return 0;
-
-  if (def_value && iupStrEqualNoCase(def_value, value))  /* equal to the default value */
-    return 0;
-
-  if (!def_value && iupStrFalse(value))  /* default=NULL and value=NO */
-    return 0;
-
-  if (!(flags&IUPAF_NO_INHERIT) && ih->parent) /* if inherit, check if the same value is defined at parent */
-  {
-    char* parent_value = iupAttribGetInherit(ih->parent, name);
-    if (parent_value && iupStrEqualNoCase(value, parent_value))
-      return 0;
-  }
-
-  return 1;
-}
-
-static int iExportElementAttribs(FILE* file, Ihandle* ih, const char* indent, int export_format)
-{
-  int i, wcount = 0, attr_count, has_attrib_id = ih->iclass->has_attrib_id, start_id = 0,
-    total_count = IupGetClassAttributes(ih->iclass->name, NULL, 0);
-  char **attr_names = (char **)malloc(total_count * sizeof(char *));
+  int i, attr_count;
+  char **attr_names;
   char localIndent[1024];
 
   strcpy(localIndent, indent);
   strcat(localIndent, "  ");
 
-  if (IupClassMatch(ih, "tree") || /* tree can only set id attributes after map, so they can not be saved */
-      IupClassMatch(ih, "cells"))  /* cells does not have any savable id attributes */
-      has_attrib_id = 0;
+  attr_count = iupAttribGetAllSaved(ih, NULL, 0);
+  attr_names = (char **)malloc(attr_count * sizeof(char *));
 
-  if (IupClassMatch(ih, "list") || IupClassMatch(ih, "flatlist"))
-    start_id = 1;
-
-  attr_count = IupGetClassAttributes(ih->iclass->name, attr_names, total_count);
+  attr_count = iupAttribGetAllSaved(ih, attr_names, attr_count);
   for (i = 0; i < attr_count; i++)
   {
-    char *name = attr_names[i];
-    char* value = iupAttribGetLocal(ih, name);
-    char* def_value;
-    int flags;
-
-    iupClassGetAttribNameInfo(ih->iclass, name, &def_value, &flags);
-
-    if (iExportCheckAttributeChanged(ih, name, value, def_value, flags))
-    {
-      iExportWriteAttrib(file, name, value, localIndent, export_format);
-      wcount++;
-    }
-
-    if (has_attrib_id && flags&IUPAF_HAS_ID)
-    {
-      flags &= ~IUPAF_HAS_ID; /* clear flag so the next function call can work */
-      if (iExportCheckAttributeChanged(ih, name, "X", NULL, flags))
-      {
-        if (iupStrEqual(name, "IDVALUE"))
-          name = "";
-
-        if (flags&IUPAF_HAS_ID2)
-        {
-          int lin, col,
-            numcol = IupGetInt(ih, "NUMCOL") + 1,
-            numlin = IupGetInt(ih, "NUMLIN") + 1;
-          for (lin = 0; lin < numlin; lin++)
-          {
-            for (col = 0; col < numcol; col++)
-            {
-              value = IupGetAttributeId2(ih, name, lin, col);
-              if (value && value[0] && !iupATTRIB_ISINTERNAL(value))
-              {
-                char str[50];
-                sprintf(str, "%s%d:%d", name, lin, col);
-                iExportWriteAttrib(file, str, value, localIndent, export_format);
-                wcount++;
-              }
-            }
-          }
-        }
-        else
-        {
-          int id, count = IupGetInt(ih, "COUNT");
-          for (id = start_id; id < count + start_id; id++)
-          {
-            value = IupGetAttributeId(ih, name, id);
-            if (value && value[0] && !iupATTRIB_ISINTERNAL(value))
-            {
-              char str[50];
-              sprintf(str, "%s%d", name, id);
-              iExportWriteAttrib(file, str, value, indent, export_format);
-              wcount++;
-            }
-          }
-        }
-      }
-    }
-  }
-
-  if (export_format != VLED_EXPORT_LUA)  /* LED or C */
-  {
-    int cb_count = total_count - attr_count;
-    IupGetClassCallbacks(ih->iclass->name, attr_names, cb_count);
-    for (i = 0; i < cb_count; i++)
-    {
-      char* cb_name = iupGetCallbackName(ih, attr_names[i]);
-      if (cb_name && cb_name[0] && !iupATTRIB_ISINTERNAL(cb_name))
-      {
-        iExportWriteAttrib(file, attr_names[i], cb_name, localIndent, export_format);
-        wcount++;
-      }
-    }
-  }
-
-  attr_count = IupGetAllAttributes(ih, NULL, 0);
-  if (attr_count > total_count)
-    attr_names = (char **)realloc(attr_names, attr_count * sizeof(char *));
-
-  attr_count = IupGetAllAttributes(ih, attr_names, attr_count);
-  for (i = 0; i < attr_count; i++)
-  {
-    if (!iupClassAttribIsRegistered(ih->iclass, attr_names[i]) && !VLED_ATTRIB_ISINTERNAL(attr_names[i]))
+    if (export_format != VLED_EXPORT_LUA || !iupClassObjectAttribIsCallback(ih, attr_names[i]))
     {
       char* value = iupAttribGetLocal(ih, attr_names[i]);
       iExportWriteAttrib(file, attr_names[i], value, localIndent, export_format);
@@ -243,7 +125,6 @@ static int iExportElementAttribs(FILE* file, Ihandle* ih, const char* indent, in
   }
 
   free(attr_names);
-  return wcount;
 }
 
 static void iExportElementC(FILE* file, Ihandle* ih, const char *indent, const char* terminator)
