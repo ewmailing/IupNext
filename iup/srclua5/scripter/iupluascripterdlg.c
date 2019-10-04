@@ -595,9 +595,9 @@ static int multitext_valuechanged_cb(Ihandle* multitext)
   if (IupGetInt(multitext, "AUTOCOMPLETION"))
   {
     const char *t;
-    int pos = IupGetInt(multitext, "CARETPOS");
-    char *text = IupGetAttribute(multitext, "VALUE");
-    text[pos + 1] = '\0';
+    char *text = IupGetAttribute(multitext, "LINEVALUE");
+    int col = IupGetInt2(multitext, "CARET");
+    text[col + 1] = '\0';
     t = getLastNonAlphaNumeric(text);
     if (t != NULL && *t != '\n' && *t != 0)
     {

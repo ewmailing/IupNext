@@ -613,9 +613,9 @@ static int multitext_valuechanged_cb(Ihandle* multitext)
   if (IupGetInt(multitext, "AUTOCOMPLETION"))
   {
     const char *t;
-    int pos = IupGetInt(multitext, "CARETPOS");
-    char *text = IupGetAttribute(multitext, "VALUE");
-    text[pos + 1] = '\0';
+    char *text = IupGetAttribute(multitext, "LINEVALUE");
+    int col = IupGetInt2(multitext, "CARET");
+    text[col + 1] = '\0';
     t = getLastNonAlphaNumeric(text);
     if (t != NULL && *t != '\n' && *t != 0)
     {
@@ -2277,8 +2277,15 @@ int main(int argc, char **argv)
   IupInsert(menu, IupGetChild(menu, IupGetChildCount(menu) - 1), toolsMenu);
 
   panelTabs = IupGetDialogChild(main_dialog, "PANEL_TABS");
-
   multitextTabs = IupGetDialogChild(main_dialog, "MULTITEXT_TABS");
+
+  IupSetCallback(main_dialog, "LOADFILE_CB", (Icallback)loadfile_cb);
+  IupSetCallback(main_dialog, "SAVEFILE_CB", (Icallback)savefile_cb);
+  IupSetCallback(main_dialog, "NEWTEXT_CB", (Icallback)newtext_cb);
+  IupSetCallback(main_dialog, "CLOSETEXT_CB", (Icallback)closetext_cb);
+  IupSetCallback(main_dialog, "CONFIGLOAD_CB", (Icallback)configload_cb);
+  IupSetCallback(main_dialog, "MARKERCHANGED_CB", (Icallback)marker_changed_cb);
+  IupSetCallback(main_dialog, "EXIT_CB", (Icallback)exit_cb);
 
   elem_tree = IupTree();
   IupSetAttribute(elem_tree, "EXPAND", "YES");
@@ -2301,23 +2308,14 @@ int main(int argc, char **argv)
   IupSetAttribute(panelTabs, "VALUE_HANDLE", (char*)elementsFrame);
 
   IupSetAttribute(main_dialog, "SUBTITLE", "IupVisualLED");
+  IupSetAttribute(main_dialog, "PROJECTEXT", "vled");
+  IupSetAttribute(main_dialog, "EXTRAFILTERS", "Led Files|*.led|");
   IupSetAttributeHandle(main_dialog, "CONFIG", config);
   IupSetHandle("VLED_MAIN", main_dialog);
-  IupSetAttribute(main_dialog, "PROJECTEXT", "vled");
-
-  IupSetAttribute(main_dialog, "EXTRAFILTERS", "Led Files|*.led|");
 
   oldTabChange_cb = IupGetCallback(multitextTabs, "TABCHANGE_CB");
   IupSetCallback(multitextTabs, "OLDTABCHANGE_CB", oldTabChange_cb);
   IupSetCallback(multitextTabs, "TABCHANGE_CB", (Icallback)tabChange_cb);
-
-  IupSetCallback(main_dialog, "LOADFILE_CB", (Icallback)loadfile_cb);
-  IupSetCallback(main_dialog, "SAVEFILE_CB", (Icallback)savefile_cb);
-  IupSetCallback(main_dialog, "NEWTEXT_CB", (Icallback)newtext_cb);
-  IupSetCallback(main_dialog, "CLOSETEXT_CB", (Icallback)closetext_cb);
-  IupSetCallback(main_dialog, "CONFIGLOAD_CB", (Icallback)configload_cb);
-  IupSetCallback(main_dialog, "MARKERCHANGED_CB", (Icallback)marker_changed_cb);
-  IupSetCallback(main_dialog, "EXIT_CB", (Icallback)exit_cb);
 
   menu = IupGetAttributeHandle(main_dialog, "MENU");
   IupAppend(menu, IupSubmenu("&Help", IupMenu(
