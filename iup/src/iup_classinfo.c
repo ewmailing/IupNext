@@ -9,7 +9,6 @@
 #include "iup_register.h"
 #include "iup_str.h"
 
-#define MAX_ITEMS 1500
 
 static int compare_names(const void *a, const void *b)
 {
@@ -219,30 +218,39 @@ static int classesList_ActionCB (Ihandle *ih, char *className, int pos, int stat
   if (state == 1)
   {
     Iclass* ic;
-    int i, attr_n, cb_n;
+    int i, total_n, attr_n, cb_n;
     Ihandle* listAttributes = IupGetDialogChild(ih, "listAttributes");
     Ihandle* listCallbacks = IupGetDialogChild(ih, "listCallbacks");
     Ihandle* txtInfo = IupGetDialogChild(ih, "txtInfo");
-    char **attr_names = (char **) malloc(MAX_ITEMS * sizeof(char *));
-    char **cb_names;
+    char **attr_names;
     char constructor[50];
     
-    attr_n = IupGetClassAttributes(className, attr_names, MAX_ITEMS);
-    qsort(attr_names, attr_n, sizeof(char*), compare_names);
+    total_n = IupGetClassAttributes(className, NULL, -1); /* total include callbacks */
+    attr_names = (char **)malloc(total_n * sizeof(char *));
 
-    cb_names = attr_names + attr_n;
-    cb_n = IupGetClassCallbacks(className, cb_names, MAX_ITEMS);
-    qsort(cb_names, cb_n, sizeof(char*), compare_names);
+    /************ attributes ************/
+
+    attr_n = IupGetClassAttributes(className, attr_names, total_n);
+    qsort(attr_names, attr_n, sizeof(char*), compare_names);
 
     /* Clear lists */
     IupSetAttribute(listAttributes, "REMOVEITEM", NULL);
-    IupSetAttribute(listCallbacks,  "REMOVEITEM", NULL);
 
     /* Populate lists */
     for (i = 0; i < attr_n; i++)
       IupSetAttribute(listAttributes, "APPENDITEM", attr_names[i]);
+
+    /************ callbacks ************/
+
+    IupSetAttribute(listCallbacks, "REMOVEITEM", NULL);
+
+    cb_n = IupGetClassCallbacks(className, attr_names, total_n);
+    qsort(attr_names, cb_n, sizeof(char*), compare_names);
+
     for (i = 0; i < cb_n; i++)
-      IupSetAttribute(listCallbacks, "APPENDITEM", cb_names[i]);
+      IupSetAttribute(listCallbacks, "APPENDITEM", attr_names[i]);
+
+    /***********************************/
 
     ic = iupRegisterFindClass(className);
 
@@ -280,14 +288,16 @@ static int classesList_ActionCB (Ihandle *ih, char *className, int pos, int stat
 static void PopulateListOfClasses(Ihandle* ih)
 {
   Ihandle* listClasses = IupGetDialogChild(ih, "listClasses");
-  int i, n;
-  char **list = (char **) malloc(MAX_ITEMS * sizeof(char *));
+  int i, num_classes;
+  char **list;
 
-  n = IupGetAllClasses(list, MAX_ITEMS);
-  
-  qsort(list, n, sizeof(char*), compare_names);
+  num_classes = IupGetAllClasses(NULL, -1);
+  list = (char **)malloc(num_classes * sizeof(char *));
+  IupGetAllClasses(list, num_classes);
 
-  for(i = 0; i < n; i++)
+  qsort(list, num_classes, sizeof(char*), compare_names);
+
+  for (i = 0; i < num_classes; i++)
     IupSetAttribute(listClasses, "APPENDITEM", list[i]);
 
   free(list);
