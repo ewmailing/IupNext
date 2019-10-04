@@ -290,7 +290,7 @@ static Ihandle* iParseFunction(Iclass *ic)
   IPARSE_RETURN_IF_ERROR_FREE(iparse_error, attr);
 
   if (iparse_saveinfo)
-    iupAttribSetStr(ih, "_IUPLED_LEDFILENAME", iupLexFilename());
+    iupAttribSetStr(ih, "_IUPLED_FILENAME", iupLexFilename());
 
   if (attr)
   {

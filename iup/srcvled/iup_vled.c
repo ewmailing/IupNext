@@ -295,7 +295,7 @@ int vLedIsAlien(Ihandle *elem, const char* filename)
   if (!elem || !filename)
     return 0;
 
-  elem_file = iupAttribGet(elem, "_IUPLED_LEDFILENAME");
+  elem_file = iupAttribGet(elem, "_IUPLED_FILENAME");
 
   if (!elem_file || !iupStrEqual(elem_file, filename))
     return 1;
@@ -549,14 +549,6 @@ static int item_about_action_cb(void)
   return IUP_DEFAULT;
 }
 
-static char* getLedKeywords(void)
-{
-  return "IMAGE IMAGERGB IMAGERGBA TIMER USER BUTTON CANVAS FLATBUTTON FLATTOGGLE DIALOG FILL FILEDLG MESSAGEDLG COLORDLG FONTDLG PROGRESSBAR FRAME FLATFRAME HBOX ITEM LABEL FLATLABEL LIST "
-    "SBOX SCROLLBOX FLATSCROLLBOX DETACHBOX BACKGROUNDBOX EXPANDER DROPBUTTON MENU MULTILINE RADIO SEPARATOR SUBMENU TEXT VAL TREE TABS FLATTABS TOGGLE VBOX ZBOX GRIDBOX NORMALIZER LINK "
-    "CBOX FLATSEPARATOR SPACE SPIN SPINBOX SPLIT GAUGE COLORBAR COLORBROWSER DIAL ANIMATEDLABEL CELLS MATRIX MATRIXLIST MATRIXEX GLCANVAS GLBACKGROUNDBOX OLECONTROL PLOT MGLPLOT SCINTILLA "
-    "WEBBROWSER GLCANVASBOX GLSUBCANVAS GLLABEL GLSEPARATOR GLBUTTON GLTOGGLE GLTEXT GLPROGRESSBAR GLVAL GLLINK GLFRAME GLEXPANDER GLSCROLLBOX GLSIZEBOX FLATMULTIBOX FLATLIST FLATVAL";
-}
-
 static const char *getLastNonAlphaNumeric(const char *text)
 {
   int len = (int)strlen(text);
@@ -627,7 +619,9 @@ static int multitext_valuechanged_cb(Ihandle* multitext)
     t = getLastNonAlphaNumeric(text);
     if (t != NULL && *t != '\n' && *t != 0)
     {
-      char *fList = filterList(t, getLedKeywords());
+      Ihandle* ih = IupGetDialog(multitext);
+      char* keywords = IupGetAttribute(ih, "LED_KEYWORDS");
+      char *fList = filterList(t, keywords);
       if (strlen(fList) > 0)
         IupSetAttributeId(multitext, "AUTOCSHOW", (int)strlen(t) - 1, fList);
       free(fList);
@@ -650,6 +644,35 @@ static int multitext_kesc_cb(Ihandle *multitext)
   return IUP_CONTINUE;
 }
 
+static void set_keywords(Ihandle* multitext)
+{
+  Ihandle* ih = IupGetDialog(multitext);
+  char* value = IupGetAttribute(ih, "LED_KEYWORDS");
+  if (!value)
+  {
+    char keywords[2048] = "";
+    char *p_keyw;
+    int i, num_classes;
+    char **list;
+
+    num_classes = IupGetAllClasses(NULL, -1);
+    list = (char **)malloc(num_classes * sizeof(char *));
+    IupGetAllClasses(list, num_classes);
+
+    p_keyw = &keywords[0];
+
+    for (i = 0; i < num_classes; i++)
+      p_keyw += sprintf(p_keyw, "%s ", list[i]);
+
+    iupStrUpper(keywords, keywords);
+    IupSetStrAttribute(ih, "LED_KEYWORDS", keywords);
+    value = IupGetAttribute(ih, "LED_KEYWORDS");
+
+    free(list);
+  }
+
+  IupSetStrAttribute(multitext, "KEYWORDS0", value);
+}
 
 static int multitext_map_cb(Ihandle* multitext)
 {
@@ -657,7 +680,7 @@ static int multitext_map_cb(Ihandle* multitext)
   const char *value;
 
   IupSetAttribute(multitext, "LEXERLANGUAGE", "led");
-  IupSetAttribute(multitext, "KEYWORDS0", getLedKeywords());
+  set_keywords(multitext);
 
   IupSetAttribute(multitext, "STYLEFGCOLOR1", "0 128 0");    /* 1-Led comment */
   IupSetAttribute(multitext, "STYLEFGCOLOR2", "255 128 0");  /* 2-Number  */
@@ -1407,7 +1430,7 @@ static int item_export_img_cb(Ihandle *ih_item)
       continue;
 
     /* save only loaded images of the current file */
-    if (!iupStrEqual(iupAttribGet(elem, "_IUPLED_LEDFILENAME"), currFilename))
+    if (!iupStrEqual(iupAttribGet(elem, "_IUPLED_FILENAME"), currFilename))
       continue;
 
     {
@@ -1498,7 +1521,7 @@ static int item_show_all_img_cb(Ihandle *ih_item)
         continue;
 
       /* show only loaded images */
-      if (!show_stock && !iupAttribGet(elem, "_IUPLED_LEDFILENAME"))
+      if (!show_stock && !iupAttribGet(elem, "_IUPLED_FILENAME"))
         continue;
 
       images[num_images] = elem;
@@ -1528,7 +1551,7 @@ static int item_show_all_img_cb(Ihandle *ih_item)
     if (show_stock)
       filename = "IupImgLib";
     else
-      filename = iupAttribGet(elem, "_IUPLED_LEDFILENAME");
+      filename = iupAttribGet(elem, "_IUPLED_FILENAME");
     if (!filename)
       continue;
 
