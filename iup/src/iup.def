@@ -340,6 +340,8 @@ iupAttribGetIntId
 iupAttribGetIntId2
 iupAttribGetIntInt
 iupAttribGetLocal
+iupAttribParse
+iupAttribGetAllSaved
 iupAttribGetStr
 iupAttribIsIhandle
 iupAttribIsNotString
