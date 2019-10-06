@@ -1124,6 +1124,10 @@ wb_usr.tree =
               name= {nl= "IupGlobalsDialog"},
               link= "dlg/iupglobalsdialog.html"
             },
+            {
+              name= {nl= "IupClassInfoDialog"},
+              link= "dlg/iupclassinfodialog.html"
+            },
           }
         }
       }

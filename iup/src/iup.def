@@ -74,7 +74,6 @@ IupDrawSetClipRect
 IupDrawText
 IupDropButton
 IupElementPropertiesDialog
-IupLayoutFindDialog
 IupClassInfoDialog
 IupExecute
 IupExecuteWait
@@ -501,6 +500,8 @@ iupKeyProcessNavigation
 iupKeySetMnemonic
 iupLayoutApplyMinMaxSize
 iupLayoutUpdate
+iupLayoutFindElementDialog
+iupLayoutPropertiesUpdate
 iupLineFileClose
 iupLineFileEOF
 iupLineFileGetBuffer

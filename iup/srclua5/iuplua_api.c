@@ -873,12 +873,6 @@ static int ElementPropertiesDialog(lua_State *L)
   return 1;
 }
 
-static int LayoutFindDialog(lua_State *L)
-{
-  iuplua_pushihandle(L, IupLayoutFindDialog(iuplua_checkihandle(L, 1), iuplua_checkihandle(L, 2)));
-  return 1;
-}
-
 static int ConvertXYToPos(lua_State *L)
 {
   lua_pushinteger(L, IupConvertXYToPos(iuplua_checkihandle(L, 1), (int)luaL_checkinteger(L, 2), (int)luaL_checkinteger(L, 3)));
@@ -1186,10 +1180,9 @@ void iupluaapi_open(lua_State * L)
     {"GetBrother", GetBrother},
     {"GetDialogChild", GetDialogChild},
     {"LayoutDialog", LayoutDialog},
-    {"GlobalsDialog", GlobalsDialog},
     {"ElementPropertiesDialog", ElementPropertiesDialog},
+    {"GlobalsDialog", GlobalsDialog},
     {"ClassInfoDialog", ClassInfoDialog},
-    {"LayoutFindDialog", LayoutFindDialog},
     {"PostMessage", PostMessage},
     {"SetFocus", SetFocus},
     {"SetGlobal", SetGlobal},

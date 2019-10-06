@@ -38,6 +38,8 @@
 #include "iup_image.h"
 #include "iup_dlglist.h"
 #include "iup_register.h"
+#include "iup_layout.h"
+
 
 
 void vLedExport(const char* src_filename, const char* dst_filename, const char* format);
@@ -1913,6 +1915,20 @@ static int item_imageexport_static_action_cb(Ihandle *ih_item)
   return IUP_DEFAULT;
 }
 
+static int tree_selection_cb(Ihandle* tree, int id, int status)
+{
+  if (status == 1)
+  {
+    Ihandle* properties_dlg = (Ihandle*)IupGetAttribute(tree, "PROPERTIES_DIALOG");
+    if (properties_dlg && IupGetInt(properties_dlg, "VISIBLE"))
+    {
+      Ihandle* elem = (Ihandle*)IupTreeGetUserId(tree, id);
+      iupLayoutPropertiesUpdate(properties_dlg, elem);
+    }
+  }
+  return IUP_DEFAULT;
+}
+
 static int tree_executeleaf_cb(Ihandle* self, int id)
 {
   Ihandle* multitext = vLedGetCurrentMultitext(self);
@@ -1956,7 +1972,7 @@ static int tree_executeleaf_cb(Ihandle* self, int id)
   return IUP_DEFAULT;
 }
 
-static int locateInLED(Ihandle *ih)
+static int locateInLED_cb(Ihandle *ih)
 {
   Ihandle* elem_tree = (Ihandle*)IupGetAttribute(ih, "ELEMENTS_TREE");
   int id = IupGetInt(elem_tree, "VALUE");
@@ -1981,6 +1997,7 @@ static int globalsdlg_cb(Ihandle* ih)
     IupSetAttribute(dlg, "GLOBALS_DIALOG", (char*)globals_dlg);
   }
 
+  IupConfigSetVariableInt(config, "GlobalsDialog", "Maximized", 0);
   IupConfigDialogShow(config, globals_dlg, "GlobalsDialog");
 
   return IUP_DEFAULT;
@@ -1997,31 +2014,41 @@ static int classinfo_cb(Ihandle* ih)
     IupSetAttribute(dlg, "CLASSINFO_DIALOG", (char*)classinfo_dlg);
   }
 
+  IupConfigSetVariableInt(config, "ClassInfoDialog", "Maximized", 0);
   IupConfigDialogShow(config, classinfo_dlg, "ClassInfoDialog");
+
+  return IUP_DEFAULT;
+}
+
+static int layoutdlg_cb(Ihandle* self)
+{
+  Ihandle* elem_tree = (Ihandle*)IupGetAttribute(self, "ELEMENTS_TREE");
+  int id = IupGetInt(elem_tree, "VALUE");
+  Ihandle *elem = (Ihandle *)IupTreeGetUserId(elem_tree, id);
+  Ihandle* dialog = IupGetDialog(elem);
+  if (dialog)
+    IupShow(IupLayoutDialog(dialog));  /* LayoutDialog is destroyed on close */
+  else
+    IupMessageError(IupGetDialog(elem_tree), "The element must be a dialog or be inside a dialog.");
 
   return IUP_DEFAULT;
 }
 
 static int propertiesdlg_cb(Ihandle* self)
 {
-  Ihandle* config = get_config(self);
   Ihandle* elem_tree = (Ihandle*)IupGetAttribute(self, "ELEMENTS_TREE");
   int id = IupGetInt(elem_tree, "VALUE");
   Ihandle *elem = (Ihandle *)IupTreeGetUserId(elem_tree, id);
-  if (elem)
+  Ihandle* config = get_config(elem_tree);
+  Ihandle* properties_dlg = (Ihandle*)IupGetAttribute(elem_tree, "PROPERTIES_DIALOG");
+  if (!properties_dlg)
   {
-    Ihandle* properties_dlg = (Ihandle*)IupGetAttribute(elem_tree, "PROPERTIES_DIALOG");
-    if (!properties_dlg)
-    {
-      properties_dlg = IupElementPropertiesDialog(IupGetDialog(elem_tree), elem);
-      IupSetAttribute(elem_tree, "PROPERTIES_DIALOG", (char*)properties_dlg);
-    }
-
-    IupConfigDialogShow(config, properties_dlg, "ElementPropertiesDialog");
+    properties_dlg = IupElementPropertiesDialog(IupGetDialog(elem_tree), elem);
+    IupSetAttribute(elem_tree, "PROPERTIES_DIALOG", (char*)properties_dlg);
   }
-  else
-    IupMessageError(IupGetDialog(self), "No elements.");
 
+  IupConfigSetVariableInt(config, "ElementPropertiesDialog", "Maximized", 0);
+  IupConfigDialogShow(config, properties_dlg, "ElementPropertiesDialog");
   return IUP_DEFAULT;
 }
 
@@ -2030,59 +2057,34 @@ static int showElement_cb(Ihandle* self)
   Ihandle* elem_tree = (Ihandle*)IupGetAttribute(self, "ELEMENTS_TREE");
   int id = IupGetInt(elem_tree, "VALUE");
   Ihandle *elem = (Ihandle *)IupTreeGetUserId(elem_tree, id);
-  if (elem) /* the tree may be empty */
-  {
-    if (IupClassMatch(elem, "dialog"))
-      IupShow(elem);
-    else
-    {
-      Ihandle* dialog = IupGetDialog(elem);
-      if (dialog)
-        IupShow(dialog);
-      else
-      {
-        if (IupClassMatch(elem, "menu"))
-          IupPopup(elem, IUP_MOUSEPOS, IUP_MOUSEPOS);
-        else
-          IupMessageError(IupGetDialog(self), "Will only show dialogs and independent menus.");
-      }
-    }
-  }
+  Ihandle* dialog = IupGetDialog(elem);
+  if (dialog)
+    IupShow(dialog);
   else
-    IupMessageError(IupGetDialog(self), "No elements.");
-
+  {
+    if (IupClassMatch(elem, "menu"))
+      IupPopup(elem, IUP_MOUSEPOS, IUP_MOUSEPOS);
+    else
+      IupMessageError(IupGetDialog(elem_tree), "Will only show dialogs and independent menus.");
+  }
   return IUP_DEFAULT;
 }
 
-static int hideElement_cb(Ihandle* self)
+static int hideDialog_cb(Ihandle* self)
 {
   Ihandle* elem_tree = (Ihandle*)IupGetAttribute(self, "ELEMENTS_TREE");
   int id = IupGetInt(elem_tree, "VALUE");
   Ihandle *elem = (Ihandle *)IupTreeGetUserId(elem_tree, id);
-  if (elem) /* the tree may be empty */
-  {
-    if (IupClassMatch(elem, "dialog"))
-    {
-      if (IupGetInt(elem, "VISIBLE"))
-        IupHide(elem);
-    }
-    else
-    {
-      Ihandle* dialog = IupGetDialog(elem);
-      if (IupGetInt(dialog, "VISIBLE"))
-        IupHide(dialog);
-    }
-  }
-  else
-    IupMessageError(IupGetDialog(self), "No elements.");
-
+  Ihandle* dialog = IupGetDialog(elem);
+  if (IupGetInt(dialog, "VISIBLE"))
+    IupHide(dialog);
   return IUP_DEFAULT;
 }
 
-static int find_cb(Ihandle* ih)
+static int findElement_cb(Ihandle* self)
 {
-  Ihandle* config = get_config(ih);
-  Ihandle* elem_tree = (Ihandle*)IupGetAttribute(ih, "ELEMENTS_TREE");
+  Ihandle* elem_tree = (Ihandle*)IupGetAttribute(self, "ELEMENTS_TREE");
+  Ihandle* config = get_config(elem_tree);
   Ihandle* find_dlg = (Ihandle*)IupGetAttribute(elem_tree, "FIND_DIALOG");
   int id = IupGetInt(elem_tree, "VALUE");
   Ihandle *dialog;
@@ -2092,7 +2094,7 @@ static int find_cb(Ihandle* ih)
 
   if (!find_dlg)
   {
-    find_dlg = IupLayoutFindDialog(elem_tree, elem);
+    find_dlg = iupLayoutFindElementDialog(elem_tree, elem);
     IupSetAttribute(elem_tree, "FIND_DIALOG", (char*)find_dlg);
   }
 
@@ -2102,27 +2104,30 @@ static int find_cb(Ihandle* ih)
   else
     IupSetAttribute(IupGetDialogChild(find_dlg, "FIND_NAME"), "ACTIVE", "YES");
 
+  IupConfigSetVariableInt(config, "FindElementDialog", "Maximized", 0);
   IupConfigDialogShow(config, find_dlg, "FindElementDialog");
 
   return IUP_DEFAULT;
 }
 
-static int tree_rightclick_cb(Ihandle* ih, int id)
+static int tree_rightclick_cb(Ihandle* tree, int id)
 {
   Ihandle *popup_menu;
 
-  IupSetInt(ih, "VALUE", id);
+  IupSetInt(tree, "VALUE", id);
 
   popup_menu = IupMenu(
-    IupSetCallbacks(IupItem("Locate", "locateInLED"), "ACTION", locateInLED, NULL),
-    IupSetCallbacks(IupItem("Properties...", "propertiesDlg"), "ACTION", propertiesdlg_cb, NULL),
-    IupSetCallbacks(IupItem("Show Dialog", "showElement"), "ACTION", showElement_cb, NULL),
-    IupSetCallbacks(IupItem("Hide Dialog", "hideElement"), "ACTION", hideElement_cb, NULL),
+    IupSetCallbacks(IupItem("Locate in LED", NULL), "ACTION", locateInLED_cb, NULL),
     IupSeparator(),
-    IupSetCallbacks(IupItem("Find...", "findInElement"), "ACTION", find_cb, NULL),
+    IupSetCallbacks(IupItem("Show...", NULL), "ACTION", showElement_cb, NULL),
+    IupSetCallbacks(IupItem("Hide Dialog", NULL), "ACTION", hideDialog_cb, NULL),
+    IupSetCallbacks(IupItem("Dialog Layout...", NULL), "ACTION", (Icallback)layoutdlg_cb, NULL),
+    IupSetCallbacks(IupItem("Element Properties...", NULL), "ACTION", propertiesdlg_cb, NULL),
+    IupSeparator(),
+    IupSetCallbacks(IupItem("Find Element...", "findElement"), "ACTION", findElement_cb, NULL),
     NULL);
 
-  iupAttribSet(popup_menu, "ELEMENTS_TREE", (char*)ih);
+  iupAttribSet(popup_menu, "ELEMENTS_TREE", (char*)tree);
 
   IupPopup(popup_menu, IUP_MOUSEPOS, IUP_MOUSEPOS);
 
@@ -2367,6 +2372,7 @@ int main(int argc, char **argv)
   IupConfigLoad(config);
 
   main_dialog = IupScintillaDlg();
+  IupSetAttributeHandle(NULL, "PARENTDIALOG", main_dialog);
 
   ledMenu = buildLedMenu(config);
   menu = IupGetAttributeHandle(main_dialog, "MENU");
@@ -2390,6 +2396,7 @@ int main(int argc, char **argv)
   IupSetAttribute(elem_tree, "EXPAND", "YES");
   IupSetAttribute(elem_tree, "NAME", "ELEMENTS_TREE");
   IupSetAttribute(elem_tree, "ADDROOT", "NO");
+  IupSetCallback(elem_tree, "SELECTION_CB", (Icallback)tree_selection_cb);
   IupSetCallback(elem_tree, "EXECUTELEAF_CB", (Icallback)tree_executeleaf_cb);
   IupSetCallback(elem_tree, "RIGHTCLICK_CB", (Icallback)tree_rightclick_cb);
   IupSetAttribute(elem_tree, "VISIBLELINES", "3");

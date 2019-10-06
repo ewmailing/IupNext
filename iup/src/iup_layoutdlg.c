@@ -29,6 +29,8 @@
 #include "iup_drv.h"
 #include "iup_func.h"
 #include "iup_register.h"
+#include "iup_layout.h"
+
 
 enum {
   FIND_TYPE = 0,
@@ -143,7 +145,7 @@ static int iLayoutFindDialogClose_CB(Ihandle* ih)
   return IUP_DEFAULT;
 }
 
-IUP_API Ihandle* IupLayoutFindDialog(Ihandle *tree, Ihandle* elem) /* dialog for find NAME */
+IUP_SDK_API Ihandle* iupLayoutFindElementDialog(Ihandle *tree, Ihandle* elem)
 {
   Ihandle *txt, *box, *find_dlg;
   Ihandle *type, *handle_name, *name, *title, *attribute, *radio;
@@ -225,7 +227,6 @@ IUP_API Ihandle* IupLayoutFindDialog(Ihandle *tree, Ihandle* elem) /* dialog for
   IupSetAttributeHandle(find_dlg, "DEFAULTENTER", bt_next);
   IupSetAttributeHandle(find_dlg, "DEFAULTESC", bt_close);
   IupSetAttributeHandle(find_dlg, "PARENTDIALOG", IupGetDialog(tree));
-  IupSetCallback(find_dlg, "CLOSE_CB", (Icallback)iLayoutFindDialogClose_CB);
 
   /* Save the multiline to access it from the callbacks */
   IupSetAttribute(find_dlg, "TREE", (char*)tree);
@@ -1047,7 +1048,7 @@ static int iLayoutMenuGlobals_CB(Ihandle* ih)
   if (!layoutdlg->globals)
   {
     layoutdlg->globals = IupGlobalsDialog();
-    IupSetAttributeHandle(layoutdlg->globals, "PARENTDIALOG", IupGetDialog(ih));
+    IupSetAttributeHandle(layoutdlg->globals, "PARENTDIALOG", dlg);
   }
   IupShow(layoutdlg->globals);
   return IUP_DEFAULT;
@@ -1147,7 +1148,7 @@ static int iLayoutMenuOpacity_CB(Ihandle* ih)
   return IUP_DEFAULT;
 }
 
-static int iLayoutMenuFind_CB(Ihandle* ih)
+static int iLayoutMenuFindElement_CB(Ihandle* ih)
 {
   Ihandle* dlg = IupGetDialog(ih);
   iLayoutDialog* layoutdlg = (iLayoutDialog*)iupAttribGet(dlg, "_IUP_LAYOUTDIALOG");
@@ -1156,7 +1157,7 @@ static int iLayoutMenuFind_CB(Ihandle* ih)
 
   if (!find_dlg)
   {
-    find_dlg = IupLayoutFindDialog(tree, layoutdlg->dialog);
+    find_dlg = iupLayoutFindElementDialog(tree, layoutdlg->dialog);
     IupSetAttribute(dlg, "FIND_DIALOG", (char*)find_dlg);
   }
 
@@ -1571,7 +1572,7 @@ static int iLayoutCanvas_CB(Ihandle* canvas, float fposx, float fposy)
 ***************************************************************************/
 
 
-static void iLayoutPropertiesUpdate(Ihandle* properties, Ihandle* ih)
+IUP_SDK_API void iupLayoutPropertiesUpdate(Ihandle* properties, Ihandle* ih)
 {
   int i, j, attr_count, cb_count, total_count = IupGetClassAttributes(ih->iclass->name, NULL, 0);
   char **attr_names = (char **)malloc(total_count * sizeof(char *));
@@ -1952,7 +1953,7 @@ static int iLayoutPropertiesSetStr_CB(Ihandle* button)
   else
     IupStoreAttribute(elem, name, value);
 
-  iLayoutPropertiesUpdate(IupGetDialog(button), elem);
+  iupLayoutPropertiesUpdate(IupGetDialog(button), elem);
 
   return IUP_DEFAULT;
 }
@@ -2176,7 +2177,7 @@ static Ihandle* iLayoutPropertiesCreateDialog(iLayoutDialog* layoutdlg, Ihandle*
 IUP_API Ihandle* IupElementPropertiesDialog(Ihandle* parent, Ihandle* elem)
 {
   Ihandle* dlg = iLayoutPropertiesCreateDialog(NULL, parent);
-  iLayoutPropertiesUpdate(dlg, elem);
+  iupLayoutPropertiesUpdate(dlg, elem);
   return dlg;
 }
 
@@ -2195,7 +2196,7 @@ static int iLayoutContextMenuProperties_CB(Ihandle* menu)
   if (!layoutdlg->properties)
     iLayoutPropertiesCreateDialog(layoutdlg, dlg);
 
-  iLayoutPropertiesUpdate(layoutdlg->properties, elem);
+  iupLayoutPropertiesUpdate(layoutdlg->properties, elem);
 
   IupShow(layoutdlg->properties);
 
@@ -2481,7 +2482,7 @@ static int iLayoutContextMenuRemove_CB(Ihandle* menu)
       if (iupChildTreeIsChild(elem, propelem))
       {
         /* if current element will be removed, then use the previous element on the tree |*/
-        iLayoutPropertiesUpdate(layoutdlg->properties, (Ihandle*)IupTreeGetUserId(layoutdlg->tree, id - 1));
+        iupLayoutPropertiesUpdate(layoutdlg->properties, (Ihandle*)IupTreeGetUserId(layoutdlg->tree, id - 1));
       }
     }
 
@@ -2660,7 +2661,7 @@ static void iLayoutUpdateMark(iLayoutDialog* layoutdlg, Ihandle* ih, int id)
   IupUpdate(IupGetBrother(layoutdlg->tree));
 
   if (layoutdlg->properties && IupGetInt(layoutdlg->properties, "VISIBLE"))
-    iLayoutPropertiesUpdate(layoutdlg->properties, ih);
+    iupLayoutPropertiesUpdate(layoutdlg->properties, ih);
 }
 
 static Ihandle* iLayoutGetElementByPos(Ihandle* ih, int native_parent_x, int native_parent_y, int x, int y, int dlgvisible, int shownotmapped)
@@ -2936,12 +2937,12 @@ static int iLayoutDialogKAny_CB(Ihandle* dlg, int key)
   {
     Ihandle* find_dlg = (Ihandle*)IupGetAttribute(dlg, "FIND_DIALOG");
     if (!find_dlg)
-      return iLayoutMenuFind_CB(dlg);
+      return iLayoutMenuFindElement_CB(dlg);
     else
       return iLayoutFindDialogNext_CB(find_dlg);
   }
   case K_cF:
-    return iLayoutMenuFind_CB(dlg);
+    return iLayoutMenuFindElement_CB(dlg);
   case K_cMinus:
   case K_cPlus:
     {
@@ -3035,24 +3036,8 @@ IUP_API Ihandle* IupLayoutDialog(Ihandle* dialog)
   IupSetAttribute(split, "VALUE", "300");
   IupSetAttribute(split, "AUTOHIDE", "Yes");
 
+
   menu = IupMenu(
-    IupSubmenu("&Dialog", IupMenu(
-    IupSetCallbacks(IupItem("New", NULL), "ACTION", iLayoutMenuNew_CB, NULL),
-    IupSetCallbacks(IupItem("Load...\tCtrl+O", NULL), "ACTION", iLayoutMenuLoad_CB, NULL),
-    IupSetCallbacks(IupItem("Load Visible...", NULL), "ACTION", iLayoutMenuLoadVisible_CB, NULL),
-    IupSubmenu("&Export", IupMenu(
-    IupSetCallbacks(IupItem("C...", NULL), "ACTION", iLayoutMenuExportC_CB, NULL),
-    IupSetCallbacks(IupItem("LED...", NULL), "ACTION", iLayoutMenuExportLED_CB, NULL),
-    IupSetCallbacks(IupItem("Lua...", NULL), "ACTION", iLayoutMenuExportLua_CB, NULL),
-    NULL)),
-    IupSeparator(),
-    IupSetCallbacks(IupItem("Redraw", NULL), "ACTION", iLayoutMenuRedraw_CB, NULL),
-    IupSetCallbacks(IupItem("Show", NULL), "ACTION", iLayoutMenuShow_CB, NULL),
-    IupSetCallbacks(IupItem("Hide", NULL), "ACTION", iLayoutMenuHide_CB, NULL),
-    IupSeparator(),
-    IupSetCallbacks(IupItem("&Globals...", NULL), "ACTION", iLayoutMenuGlobals_CB, NULL),
-    IupSetCallbacks(IupItem("&Close\tEsc", NULL), "ACTION", iLayoutMenuClose_CB, NULL),
-    NULL)),
     IupSubmenu("&Layout", IupMenu(
     IupSetCallbacks(IupSetAttributes(IupItem("&Show Tree", NULL), "AUTOTOGGLE=YES, VALUE=ON"), "ACTION", iLayoutMenuHierarchy_CB, NULL),
     IupSetCallbacks(IupItem("Refresh\tCtrl+F5", NULL), "ACTION", iLayoutMenuRefresh_CB, NULL),
@@ -3064,9 +3049,32 @@ IUP_API Ihandle* IupLayoutDialog(Ihandle* dialog)
     IupSeparator(),
     IupSetCallbacks(IupItem("Opacity\tCtrl+/Ctrl-", NULL), "ACTION", iLayoutMenuOpacity_CB, NULL),
     IupSeparator(),
-    IupSetCallbacks(IupItem("Find...\tCtrl+F", NULL), "ACTION", iLayoutMenuFind_CB, NULL),
+    IupSetCallbacks(IupItem("Find Element...\tCtrl+F", NULL), "ACTION", iLayoutMenuFindElement_CB, NULL),
     NULL)),
     NULL);
+
+  if (!dialog || !iupAttribGet(dialog, "_IUPLED_FILENAME"))
+  {
+    Ihandle* dlg_menu = IupSubmenu("&Dialog", IupMenu(
+      IupSetCallbacks(IupItem("New", NULL), "ACTION", iLayoutMenuNew_CB, NULL),
+      IupSetCallbacks(IupItem("Load...\tCtrl+O", NULL), "ACTION", iLayoutMenuLoad_CB, NULL),
+      IupSetCallbacks(IupItem("Load Visible...", NULL), "ACTION", iLayoutMenuLoadVisible_CB, NULL),
+      IupSubmenu("&Export", IupMenu(
+      IupSetCallbacks(IupItem("C...", NULL), "ACTION", iLayoutMenuExportC_CB, NULL),
+      IupSetCallbacks(IupItem("LED...", NULL), "ACTION", iLayoutMenuExportLED_CB, NULL),
+      IupSetCallbacks(IupItem("Lua...", NULL), "ACTION", iLayoutMenuExportLua_CB, NULL),
+      NULL)),
+      IupSeparator(),
+      IupSetCallbacks(IupItem("Redraw", NULL), "ACTION", iLayoutMenuRedraw_CB, NULL),
+      IupSetCallbacks(IupItem("Show", NULL), "ACTION", iLayoutMenuShow_CB, NULL),
+      IupSetCallbacks(IupItem("Hide", NULL), "ACTION", iLayoutMenuHide_CB, NULL),
+      IupSeparator(),
+      IupSetCallbacks(IupItem("&Globals...", NULL), "ACTION", iLayoutMenuGlobals_CB, NULL),
+      IupSetCallbacks(IupItem("&Close\tEsc", NULL), "ACTION", iLayoutMenuClose_CB, NULL),
+      NULL));
+
+    IupInsert(menu, NULL, dlg_menu);
+  }
 
   dlg = IupDialog(IupVbox(split, status, NULL));
   IupSetAttribute(dlg, "TITLE", "Dialog Layout");

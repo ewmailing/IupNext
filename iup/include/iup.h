@@ -342,7 +342,6 @@ IUP_API Ihandle*  IupParamBoxv(Ihandle* *param_array);
 
 IUP_API Ihandle* IupLayoutDialog(Ihandle* dialog);
 IUP_API Ihandle* IupElementPropertiesDialog(Ihandle* parent, Ihandle* elem);
-IUP_API Ihandle* IupLayoutFindDialog(Ihandle *tree, Ihandle* elem);
 IUP_API Ihandle* IupGlobalsDialog(void);
 IUP_API Ihandle* IupClassInfoDialog(Ihandle* parent);
 
