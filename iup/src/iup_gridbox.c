@@ -1211,7 +1211,7 @@ Iclass* iupGridBoxNewClass(void)
 
   iupClassRegisterAttribute(ic, "ALIGNMENTLIN", iGridBoxGetAlignmentLinAttrib, iGridBoxSetAlignmentLinAttrib, IUPAF_SAMEASSYSTEM, "ATOP", IUPAF_NOT_MAPPED|IUPAF_NO_INHERIT);
   iupClassRegisterAttribute(ic, "ALIGNMENTCOL", iGridBoxGetAlignmentColAttrib, iGridBoxSetAlignmentColAttrib, IUPAF_SAMEASSYSTEM, "ALEFT", IUPAF_NOT_MAPPED|IUPAF_NO_INHERIT);
-  iupClassRegisterAttribute(ic, "ORIENTATION", iGridBoxGetOrientationAttrib, iGridBoxSetOrientationAttrib, NULL, NULL, IUPAF_NOT_MAPPED|IUPAF_NO_INHERIT);
+  iupClassRegisterAttribute(ic, "ORIENTATION", iGridBoxGetOrientationAttrib, iGridBoxSetOrientationAttrib, IUPAF_SAMEASSYSTEM, "HORIZONTAL", IUPAF_NOT_MAPPED | IUPAF_NO_INHERIT);
   iupClassRegisterAttribute(ic, "NUMDIV", iGridBoxGetNumDivAttrib, iGridBoxSetNumDivAttrib, IUPAF_SAMEASSYSTEM, "AUTO", IUPAF_NOT_MAPPED|IUPAF_NO_INHERIT);
   iupClassRegisterAttribute(ic, "NUMCOL", iGridBoxGetNumColAttrib, NULL, NULL, NULL, IUPAF_READONLY|IUPAF_NOT_MAPPED|IUPAF_NO_INHERIT);
   iupClassRegisterAttribute(ic, "NUMLIN", iGridBoxGetNumLinAttrib, NULL, NULL, NULL, IUPAF_READONLY|IUPAF_NOT_MAPPED|IUPAF_NO_INHERIT);
