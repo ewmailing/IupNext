@@ -424,17 +424,11 @@ IUP_SDK_API Ihandle* iupChildTreeGetPrevBrother(Ihandle* ih)
 
 IUP_API int IupGetChildCount(Ihandle* ih)
 {
-  int count = 0;
-  Ihandle* child;
-
   iupASSERT(iupObjectCheck(ih));
   if (!iupObjectCheck(ih))
     return -1;
 
-  for (child = ih->firstchild; child; child = child->brother)
-    count++;
-
-  return count;
+  return iChildTreeCount(ih);
 }
 
 IUP_API Ihandle* IupGetNextChild(Ihandle* ih, Ihandle* child)
