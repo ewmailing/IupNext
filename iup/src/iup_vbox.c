@@ -84,6 +84,12 @@ static char* iVboxGetAlignmentAttrib(Ihandle* ih)
   return iupStrReturnStr(align2str[ih->data->alignment]);
 }
 
+static char* iVboxGetOrientationAttrib(Ihandle* ih)
+{
+  (void)ih;
+  return "VERTICAL";
+}
+
 static void iVboxComputeNaturalSizeMethod(Ihandle* ih, int *w, int *h, int *children_expand)
 {
   Ihandle* child;
@@ -306,6 +312,8 @@ Iclass* iupVboxNewClass(void)
   /* Overwrite Common */
   iupClassRegisterAttribute(ic, "SIZE", iupBaseGetSizeAttrib, iVboxSetSizeAttrib, NULL, NULL, IUPAF_NO_SAVE|IUPAF_NOT_MAPPED|IUPAF_NO_INHERIT);
   iupClassRegisterAttribute(ic, "RASTERSIZE", iupBaseGetRasterSizeAttrib, iVboxSetRasterSizeAttrib, NULL, NULL, IUPAF_NO_SAVE|IUPAF_NOT_MAPPED|IUPAF_NO_INHERIT);
+
+  iupClassRegisterAttribute(ic, "ORIENTATION", iVboxGetOrientationAttrib, NULL, IUPAF_SAMEASSYSTEM, "VERTICAL", IUPAF_READONLY | IUPAF_NOT_MAPPED | IUPAF_NO_INHERIT);
 
   /* Vbox only */
   iupClassRegisterAttribute(ic, "ALIGNMENT", iVboxGetAlignmentAttrib, iVboxSetAlignmentAttrib, IUPAF_SAMEASSYSTEM, "ALEFT", IUPAF_NOT_MAPPED|IUPAF_NO_INHERIT);
