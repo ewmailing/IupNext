@@ -102,19 +102,6 @@ static int iBackgroundBoxGetBorder(Ihandle* ih)
     return 0;
 }
 
-static char* iBackgroundBoxGetClientOffsetAttrib(Ihandle* ih)
-{
-  int dx = 0, dy = 0;
-
-  /* only native offset here */
-  if (iupAttribGetBoolean(ih, "BORDER"))
-  {
-    dx = 1;
-    dy = 1;
-  }
-  return iupStrReturnIntInt(dx, dy, 'x');
-}
-
 static char* iBackgroundBoxGetClientSizeAttrib(Ihandle* ih)
 {
   int border = iBackgroundBoxGetBorder(ih);
@@ -256,7 +243,7 @@ IUP_SDK_API Iclass* iupBackgroundBoxNewBaseClass(Iclass* ic_base)   /* Used by B
 
   /* Base Container */
   iupClassRegisterAttribute(ic, "EXPAND", iBackgroundBoxGetExpandAttrib, iBackgroundBoxSetExpandAttrib, IUPAF_SAMEASSYSTEM, "YES", IUPAF_NOT_MAPPED | IUPAF_NO_INHERIT);
-  iupClassRegisterAttribute(ic, "CLIENTOFFSET", iBackgroundBoxGetClientOffsetAttrib, NULL, NULL, NULL, IUPAF_NOT_MAPPED | IUPAF_READONLY | IUPAF_NO_INHERIT);
+  iupClassRegisterAttribute(ic, "CLIENTOFFSET", iupBaseCanvasGetClientOffsetAttrib, NULL, NULL, NULL, IUPAF_NOT_MAPPED | IUPAF_READONLY | IUPAF_NO_INHERIT);
   iupClassRegisterAttribute(ic, "CLIENTSIZE", iBackgroundBoxGetClientSizeAttrib, NULL, NULL, NULL, IUPAF_READONLY | IUPAF_NOT_MAPPED | IUPAF_NO_INHERIT);
 
   /* Native Container */

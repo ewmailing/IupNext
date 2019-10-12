@@ -90,6 +90,7 @@ void iupdrvDialogSetPosition(Ihandle *ih, int x, int y);
 void iupdrvDialogGetSize(Ihandle* ih, InativeHandle* handle, int *w, int *h);
 int iupdrvDialogIsVisible(Ihandle* ih);
 int iupDialogSetClientSizeAttrib(Ihandle* ih, const char* value);
+char* iupDialogGetClientSizeAttrib(Ihandle *ih);
 
 
 #endif

@@ -118,6 +118,8 @@ IUP_SDK_API char* iupBaseGetSizeAttrib(Ihandle* ih);
 IUP_SDK_API char* iupBaseGetCurrentSizeAttrib(Ihandle* ih);
 IUP_SDK_API char* iupBaseGetRasterSizeAttrib(Ihandle* ih);
 IUP_SDK_API char* iupBaseGetClientOffsetAttrib(Ihandle* ih);
+IUP_SDK_API char* iupBaseCanvasGetClientOffsetAttrib(Ihandle* ih);
+IUP_SDK_API char* iupBaseCanvasGetClientSizeAttrib(Ihandle* ih);
 IUP_SDK_API int iupBaseSetMaxSizeAttrib(Ihandle* ih, const char* value);
 IUP_SDK_API int iupBaseSetMinSizeAttrib(Ihandle* ih, const char* value);
 IUP_SDK_API char* iupBaseGetExpandAttrib(Ihandle* ih);

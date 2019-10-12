@@ -797,13 +797,18 @@ static char* gtkDialogGetActiveWindowAttrib(Ihandle* ih)
 
 static char* gtkDialogGetClientSizeAttrib(Ihandle *ih)
 {
-  int width, height;
-  gtk_window_get_size((GtkWindow*)ih->handle, &width, &height);
+  if (ih->handle)
+  {
+    int width, height;
+    gtk_window_get_size((GtkWindow*)ih->handle, &width, &height);
 
-  /* remove the menu because it is placed inside the client area */
-  height -= gtkDialogGetMenuSize(ih);
+    /* remove the menu because it is placed inside the client area */
+    height -= gtkDialogGetMenuSize(ih);
 
-  return iupStrReturnIntInt(width, height, 'x');
+    return iupStrReturnIntInt(width, height, 'x');
+  }
+  else
+    return iupDialogGetClientSizeAttrib(ih);
 }
 
 static char* gtkDialogGetClientOffsetAttrib(Ihandle *ih)
@@ -1164,8 +1169,8 @@ void iupdrvDialogInitClass(Iclass* ic)
   iupClassRegisterAttribute(ic, "BGCOLOR", NULL, iupdrvBaseSetBgColorAttrib, "DLGBGCOLOR", NULL, IUPAF_DEFAULT);  /* force new default value */
 
   /* Base Container */
-  iupClassRegisterAttribute(ic, "CLIENTSIZE", gtkDialogGetClientSizeAttrib, iupDialogSetClientSizeAttrib, NULL, NULL, IUPAF_NO_SAVE|IUPAF_NO_DEFAULTVALUE|IUPAF_NO_INHERIT);  /* dialog is the only not read-only */
-  iupClassRegisterAttribute(ic, "CLIENTOFFSET", gtkDialogGetClientOffsetAttrib, NULL, NULL, NULL, IUPAF_NO_DEFAULTVALUE|IUPAF_READONLY|IUPAF_NO_INHERIT);
+  iupClassRegisterAttribute(ic, "CLIENTSIZE", gtkDialogGetClientSizeAttrib, iupDialogSetClientSizeAttrib, NULL, NULL, IUPAF_NOT_MAPPED | IUPAF_NO_SAVE | IUPAF_NO_DEFAULTVALUE | IUPAF_NO_INHERIT);  /* dialog is the only not read-only */
+  iupClassRegisterAttribute(ic, "CLIENTOFFSET", gtkDialogGetClientOffsetAttrib, NULL, NULL, NULL, IUPAF_NOT_MAPPED | IUPAF_NO_DEFAULTVALUE | IUPAF_READONLY | IUPAF_NO_INHERIT);
 
   /* Special */
   iupClassRegisterAttribute(ic, "TITLE", NULL, gtkDialogSetTitleAttrib, NULL, NULL, IUPAF_NO_DEFAULTVALUE|IUPAF_NO_INHERIT);

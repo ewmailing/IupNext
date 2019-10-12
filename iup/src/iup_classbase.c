@@ -127,6 +127,34 @@ IUP_SDK_API char* iupBaseGetClientOffsetAttrib(Ihandle* ih)
   return "0x0";
 }
 
+IUP_SDK_API char* iupBaseCanvasGetClientOffsetAttrib(Ihandle* ih)
+{
+  int dx = 0, dy = 0;
+  if (iupAttribGetBoolean(ih, "BORDER"))
+  {
+    dx = 1;
+    dy = 1;
+  }
+  return iupStrReturnIntInt(dx, dy, 'x');
+}
+
+IUP_SDK_API char* iupBaseCanvasGetClientSizeAttrib(Ihandle* ih)
+{
+  int width = ih->currentwidth;
+  int height = ih->currentheight;
+
+  if (iupAttribGetBoolean(ih, "BORDER"))
+  {
+    width -= 2;
+    height -= 2;
+  }
+
+  if (width < 0) width = 0;
+  if (height < 0) height = 0;
+
+  return iupStrReturnIntInt(width, height, 'x');
+}
+
 IUP_SDK_API char* iupBaseGetCurrentSizeAttrib(Ihandle* ih)
 {
   int width = ih->currentwidth;
