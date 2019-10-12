@@ -411,6 +411,7 @@ static int iFlatScrollBoxCreateMethod(Ihandle* ih, void** params)
   IupSetCallback(ih, "WHEEL_CB", (Icallback)iFlatScrollBoxWheel_CB);
 
   IupSetAttribute(ih, "CANFOCUS", "NO");
+  IupSetAttribute(ih, "WHEELDROPFOCUS", "YES");
 
   if (params)
   {

@@ -735,6 +735,12 @@ IUP_SDK_API void iupFlatScrollBarWheelUpdate(Ihandle* ih, float delta)
   int dy = iupAttribGetInt(ih, "DY");
   int liney = iFlatScrollBarGetLineY(ih, dy);
 
+  if (iupAttribGetBoolean(ih, "WHEELDROPFOCUS"))
+  {
+    Ihandle* ih_focus = IupGetFocus();
+    iupAttribSetClassObject(ih_focus, "SHOWDROPDOWN", "NO");
+  }
+
   posy -= (int)(delta * liney);
   iFlatScrollBarNormalizePos(&posy, iupAttribGetInt(ih, "YMAX"), dy);
   iupAttribSetInt(ih, "POSY", posy);

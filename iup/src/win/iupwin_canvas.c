@@ -24,6 +24,7 @@
 #include "iup_drvfont.h"
 #include "iup_canvas.h"
 #include "iup_key.h"
+#include "iup_focus.h"
 
 #include "iupwin_drv.h"
 #include "iupwin_handle.h"
@@ -517,6 +518,13 @@ static int winCanvasMsgProc(Ihandle* ih, UINT msg, WPARAM wp, LPARAM lp, LRESULT
     {
       IFnfiis cb = (IFnfiis)IupGetCallback(ih, "WHEEL_CB");
       short delta = (short)HIWORD(wp);
+
+      if (iupAttribGetBoolean(ih, "WHEELDROPFOCUS"))
+      {
+        Ihandle* ih_focus = IupGetFocus();
+        iupAttribSetClassObject(ih_focus, "SHOWDROPDOWN", "NO");
+      }
+
       if (cb)
       {
         char status[IUPKEY_STATUS_SIZE] = IUPKEY_STATUS_INIT;

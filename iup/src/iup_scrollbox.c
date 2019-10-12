@@ -369,6 +369,7 @@ static int iScrollBoxCreateMethod(Ihandle* ih, void** params)
   IupSetCallback(ih, "MOTION_CB",    (Icallback)iScrollBoxMotion_CB);
 
   IupSetAttribute(ih, "CANFOCUS", "NO");
+  IupSetAttribute(ih, "WHEELDROPFOCUS", "YES");
 
   if (params)
   {
