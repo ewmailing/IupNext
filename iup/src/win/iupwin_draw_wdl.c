@@ -469,7 +469,7 @@ void iupdrvDrawSelectRectWDL(IdrawCanvas* dc, int x1, int y1, int x2, int y2)
   iupDrawCheckSwapCoord(x1, x2);
   iupDrawCheckSwapCoord(y1, y2);
 
-  brush = wdCreateSolidBrush(dc->hCanvas, WD_ARGB(153, 0, 0, 255));
+  brush = wdCreateSolidBrush(dc->hCanvas, WD_ARGB(153, 0, 0, 255));  /* R=0, G=0, B=255, A=153 (blue semi-transparent) */
   wdFillRect(dc->hCanvas, brush, iupInt2Float(x1 - 0.5f), iupInt2Float(y1 - 0.5f), iupInt2Float(x2 + 0.5f), iupInt2Float(y2 + 0.5f));
   wdDestroyBrush(brush);
 }
