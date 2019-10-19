@@ -106,6 +106,7 @@
     <ClCompile Include="..\src\iup_dlglist.c" />
     <ClCompile Include="..\src\iup_draw.c" />
     <ClCompile Include="..\src\iup_dropbutton.c" />
+    <ClCompile Include="..\src\iup_elempropdlg.c" />
     <ClCompile Include="..\src\iup_expander.c" />
     <ClCompile Include="..\src\iup_flatbutton.c" />
     <ClCompile Include="..\src\iup_flatframe.c">
