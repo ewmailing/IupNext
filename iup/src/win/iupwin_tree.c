@@ -64,7 +64,6 @@ typedef struct tagNMTVITEMCHANGE {
 #ifndef TVM_SETEXTENDEDSTYLE
 #define TVM_SETEXTENDEDSTYLE      (TV_FIRST + 44)
 #endif
-
 /* End Cygwin/MingW */
 
 
@@ -493,12 +492,12 @@ static HTREEITEM winTreeCopyItem(Ihandle* ih, HTREEITEM hItem, HTREEITEM hParent
   HTREEITEM new_hItem;
   TVITEM item; 
   TVINSERTSTRUCT tvins;
-  TCHAR title[255];
+  TCHAR* title = malloc(iupAttribGetInt(ih, "_IUP_MAXTITLE_SIZE")*sizeof(TCHAR));
 
   item.hItem = hItem;
   item.mask = TVIF_HANDLE | TVIF_PARAM | TVIF_IMAGE | TVIF_SELECTEDIMAGE | TVIF_TEXT | TVIF_STATE | TVIF_PARAM;
   item.pszText = title;
-  item.cchTextMax = 255;
+  item.cchTextMax = iupAttribGetInt(ih, "_IUP_MAXTITLE_SIZE");
   SendMessage(ih->handle, TVM_GETITEM, 0, (LPARAM)(LPTVITEM)&item);
 
   if (is_copy) /* during a copy the itemdata reference is not reused */
@@ -525,6 +524,7 @@ static HTREEITEM winTreeCopyItem(Ihandle* ih, HTREEITEM hItem, HTREEITEM hParent
   item.stateMask = TVIS_STATEIMAGEMASK;
   SendMessage(ih->handle, TVM_SETITEM, 0, (LPARAM)(LPTVITEM)&item);
 
+  free(title);
   return new_hItem;
 }
 
@@ -1157,22 +1157,27 @@ static void winTreeGetTitle(Ihandle* ih, HTREEITEM hItem, TCHAR* title)
   item.hItem = hItem;
   item.mask = TVIF_HANDLE | TVIF_TEXT; 
   item.pszText = title;
-  item.cchTextMax = 255;
+  item.cchTextMax = iupAttribGetInt(ih, "_IUP_MAXTITLE_SIZE");
   SendMessage(ih->handle, TVM_GETITEM, 0, (LPARAM)(LPTVITEM)&item);
 }
 
 static char* winTreeGetTitleAttrib(Ihandle* ih, int id)
 {
-  TCHAR title[255];
+  TCHAR *title;
+  char* str;
   HTREEITEM hItem = iupTreeGetNode(ih, id);
   if (!hItem)
     return NULL;
+  title = malloc(iupAttribGetInt(ih, "_IUP_MAXTITLE_SIZE")*sizeof(TCHAR));
   winTreeGetTitle(ih, hItem, title);
-  return iupStrReturnStr(iupwinStrFromSystem(title));
+  str = iupStrReturnStr(iupwinStrFromSystem(title));
+  free(title);
+  return str;
 }
 
 static int winTreeSetTitleAttrib(Ihandle* ih, int id, const char* value)
-{
+{                                          
+  int size;
   TVITEM item; 
   HTREEITEM hItem = iupTreeGetNode(ih, id);
   if (!hItem)
@@ -1185,6 +1190,10 @@ static int winTreeSetTitleAttrib(Ihandle* ih, int id, const char* value)
   item.mask = TVIF_HANDLE | TVIF_TEXT; 
   item.pszText = iupwinStrToSystem(value);
   SendMessage(ih->handle, TVM_SETITEM, 0, (LPARAM)(const LPTVITEM)&item);
+
+  size = lstrlen(item.pszText) + 1;
+  if (size > iupAttribGetInt(ih, "_IUP_MAXTITLE_SIZE"))
+    iupAttribSetInt(ih, "_IUP_MAXTITLE_SIZE", size);
   return 0;
 }
 
@@ -1223,7 +1232,7 @@ static int winTreeSetTitleFontAttrib(Ihandle* ih, int id, const char* value)
     if (itemData->hFont)
     {
       TVITEM item;
-      TCHAR title[255];
+      TCHAR* title = malloc(iupAttribGetInt(ih, "_IUP_MAXTITLE_SIZE")*sizeof(TCHAR));
 
       winTreeGetTitle(ih, hItem, title);
 
@@ -1231,9 +1240,10 @@ static int winTreeSetTitleFontAttrib(Ihandle* ih, int id, const char* value)
       item.stateMask = TVIS_BOLD;
       item.hItem = hItem;
       item.pszText = title;   /* reset text to resize item */
-      item.cchTextMax = 255;
+      item.cchTextMax = iupAttribGetInt(ih, "_IUP_MAXTITLE_SIZE");
       item.state = (strstr(value, "Bold")||strstr(value, "BOLD"))? TVIS_BOLD: 0;
       SendMessage(ih->handle, TVM_SETITEM, 0, (LPARAM)&item);
+      free(title);
     }
   }
   else
@@ -2949,13 +2959,13 @@ static HTREEITEM winTreeDragDropCopyItem(Ihandle* src, Ihandle* dst, HTREEITEM h
   HTREEITEM new_hItem;
   TVITEM item; 
   TVINSERTSTRUCT tvins;
-  TCHAR title[255];
+  TCHAR* title = malloc(iupAttribGetInt(src, "_IUP_MAXTITLE_SIZE")*sizeof(TCHAR));
   winTreeItemData* itemDataNew;
 
   item.hItem = hItem;
   item.mask = TVIF_HANDLE | TVIF_PARAM | TVIF_IMAGE | TVIF_SELECTEDIMAGE | TVIF_TEXT | TVIF_STATE | TVIF_PARAM;
   item.pszText = title;
-  item.cchTextMax = 255;
+  item.cchTextMax = iupAttribGetInt(src, "_IUP_MAXTITLE_SIZE");
   SendMessage(src->handle, TVM_GETITEM, 0, (LPARAM)(LPTVITEM)&item);
 
   /* create a new one */
@@ -2978,6 +2988,7 @@ static HTREEITEM winTreeDragDropCopyItem(Ihandle* src, Ihandle* dst, HTREEITEM h
   item.stateMask = TVIS_STATEIMAGEMASK;
   SendMessage(dst->handle, TVM_SETITEM, 0, (LPARAM)(LPTVITEM)&item);
 
+  free(title);
   return new_hItem;
 }
 
@@ -3091,6 +3102,8 @@ static int winTreeMapMethod(Ihandle* ih)
 
   IupSetCallback(ih, "_IUPWIN_CTRLMSGPROC_CB", (Icallback)winTreeMsgProc);
   IupSetCallback(ih, "_IUPWIN_NOTIFY_CB",   (Icallback)winTreeWmNotify);
+
+  iupAttribSetInt(ih, "_IUP_MAXTITLE_SIZE", 260);
 
   /* Force background color update before setting the images */
   {
