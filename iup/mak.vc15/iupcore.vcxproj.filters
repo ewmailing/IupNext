@@ -322,7 +322,7 @@
     <ClCompile Include="..\src\iup_classinfo.c">
       <Filter>src_controls</Filter>
     </ClCompile>
-    <ClCompile Include="..\src\iup_flattree.c">
+    <ClCompile Include="..\src\iup_elempropdlg.c">
       <Filter>src_controls</Filter>
     </ClCompile>
   </ItemGroup>
