@@ -2333,6 +2333,8 @@ static int iLayoutCanvasMotion_CB(Ihandle* canvas, int x, int y, char* status)
       else 
       {
         Ihandle* child_min = NULL;
+        int is_horizontal = iupStrEqualNoCase(IupGetAttribute(container, "ORIENTATION"), "HORIZONTAL");
+        int is_multi = IupClassMatch(container, "gridbox") || IupClassMatch(container, "multibox");
 
         if (IupClassMatch(container, "zbox") || IupClassMatch(container, "tabs") || IupClassMatch(container, "flattabs"))
         {
@@ -2349,7 +2351,15 @@ static int iLayoutCanvasMotion_CB(Ihandle* canvas, int x, int y, char* status)
             int c_x = child->x + child->currentwidth / 2;
             int c_y = child->y + child->currentheight / 2;
 
-            d = iSqr(c_x - r_x) + iSqr(c_y - r_y);
+            if (is_multi)
+              d = iSqr(c_x - r_x) + iSqr(c_y - r_y);
+            else
+            {
+              if (is_horizontal)
+                d = abs(c_x - r_x);
+              else
+                d = abs(c_y - r_y);
+            }
 
             if (child == container->firstchild || d < d_min)
             {
@@ -2359,23 +2369,35 @@ static int iLayoutCanvasMotion_CB(Ihandle* canvas, int x, int y, char* status)
           }
         }
 
-        if (iupStrEqualNoCase(IupGetAttribute(container, "ORIENTATION"), "HORIZONTAL"))  /* insertion line will be a vertical line to mark an horizontal position */
+        if (is_horizontal)  /* insertion line will be a vertical line to mark an horizontal position */
         {
           int c_x = child_min->x + child_min->currentwidth / 2;
-          int x;
-          int y1 = container_y;
-          int y2 = container_y + container->currentheight - 1;
+          int xx;
+          int y1;
+          int y2;
 
-          if (r_x < c_x)
+          if (is_multi)
           {
-            x = native_parent_x + iLayoutGetBetweenPosX(NULL, child_min);
+            y1 = native_parent_y + child_min->y;
+            y2 = native_parent_y + child_min->y + child_min->currentheight - 1;
+
+            if (r_x < c_x)
+              xx = native_parent_x + child_min->x;
+            else
+              xx = native_parent_x + child_min->x + child_min->currentwidth - 1;
           }
           else
           {
-            x = native_parent_x + iLayoutGetBetweenPosX(child_min, NULL);
+            y1 = container_y;
+            y2 = container_y + container->currentheight - 1;
+
+            if (r_x < c_x)
+              xx = native_parent_x + iLayoutGetBetweenPosX(NULL, child_min);
+            else
+              xx = native_parent_x + iLayoutGetBetweenPosX(child_min, NULL);
           }
 
-          iupAttribSetStrf(canvas, "INSERTCURSOR_LINE", "%d,%d,%d,%d", x, y1, x, y2);
+          iupAttribSetStrf(canvas, "INSERTCURSOR_LINE", "%d,%d,%d,%d", xx, y1, xx, y2);
           iupAttribSet(canvas, "INSERTCURSOR_POINT", NULL);
           IupUpdate(canvas);
           return IUP_DEFAULT;
@@ -2383,20 +2405,32 @@ static int iLayoutCanvasMotion_CB(Ihandle* canvas, int x, int y, char* status)
         else /* ORIENTATION=VERTICAL */    /* insertion line will be an horizontal line to mark a vertical position */
         {
           int c_y = child_min->y + child_min->currentheight / 2;
-          int y;
-          int x1 = container_x;
-          int x2 = container_x + container->currentwidth - 1;
+          int yy;
+          int x1;
+          int x2;
 
-          if (r_y < c_y)
+          if (is_multi)
           {
-            y = native_parent_y + iLayoutGetBetweenPosY(NULL, child_min);
+            x1 = native_parent_x + child_min->x;
+            x2 = native_parent_x + child_min->x + child_min->currentwidth - 1;
+
+            if (r_y < c_y)
+              yy = native_parent_y + child_min->y;
+            else
+              yy = native_parent_y + child_min->y + child_min->currentheight - 1;
           }
           else
           {
-            y = native_parent_y + iLayoutGetBetweenPosY(child_min, NULL);
+            x1 = container_x;
+            x2 = container_x + container->currentwidth - 1;
+
+            if (r_y < c_y)
+              yy = native_parent_y + iLayoutGetBetweenPosY(NULL, child_min);
+            else
+              yy = native_parent_y + iLayoutGetBetweenPosY(child_min, NULL);
           }
 
-          iupAttribSetStrf(canvas, "INSERTCURSOR_LINE", "%d,%d,%d,%d", x1, y, x2, y);
+          iupAttribSetStrf(canvas, "INSERTCURSOR_LINE", "%d,%d,%d,%d", x1, yy, x2, yy);
           iupAttribSet(canvas, "INSERTCURSOR_POINT", NULL);
           IupUpdate(canvas);
           return IUP_DEFAULT;
