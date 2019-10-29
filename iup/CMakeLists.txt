@@ -409,8 +409,10 @@ SET(IUP_PUBLIC_HEADERS
 	${CMAKE_SOURCE_DIR}/include/iupcbs.h
 	${CMAKE_SOURCE_DIR}/include/iupdef.h
 	${CMAKE_SOURCE_DIR}/include/iupdraw.h
+	${CMAKE_SOURCE_DIR}/include/iupfiledlg.h
 	${CMAKE_SOURCE_DIR}/include/iupkey.h
 	${CMAKE_SOURCE_DIR}/include/iup_config.h
+	${CMAKE_SOURCE_DIR}/include/iup_export.h
 	${CMAKE_SOURCE_DIR}/include/iup_varg.h
 )
 SET(IUPIMGLIB_PUBLIC_HEADERS
@@ -422,6 +424,7 @@ SET(IUPWEB_PUBLIC_HEADERS
 	${CMAKE_SOURCE_DIR}/include/iupweb.h
 )
 SET(IUPCD_PUBLIC_HEADERS
+	${CMAKE_SOURCE_DIR}/include/iupdraw_cd.h
 )
 SET(IUPCONTROLS_PUBLIC_HEADERS
 	${CMAKE_SOURCE_DIR}/include/iupcontrols.h
