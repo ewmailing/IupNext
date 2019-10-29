@@ -1077,6 +1077,8 @@ ELSEIF(IUP_USE_WIN32)
 		${CMAKE_SOURCE_DIR}/src/win/iupwin_dragdrop.c
 		${CMAKE_SOURCE_DIR}/src/win/iupwin_draw.c
 		${CMAKE_SOURCE_DIR}/src/win/iupwin_draw.h
+		${CMAKE_SOURCE_DIR}/src/win/iupwin_draw_gdi.c
+		${CMAKE_SOURCE_DIR}/src/win/iupwin_draw_wdl.c
 		${CMAKE_SOURCE_DIR}/src/win/iupwin_drv.h
 		${CMAKE_SOURCE_DIR}/src/win/iupwin_filedlg.c
 		${CMAKE_SOURCE_DIR}/src/win/iupwin_focus.c
@@ -1087,6 +1089,7 @@ ELSEIF(IUP_USE_WIN32)
 		${CMAKE_SOURCE_DIR}/src/win/iupwin_handle.c
 		${CMAKE_SOURCE_DIR}/src/win/iupwin_handle.h
 		${CMAKE_SOURCE_DIR}/src/win/iupwin_image.c
+		${CMAKE_SOURCE_DIR}/src/win/iupwin_image_wdl.c
 		${CMAKE_SOURCE_DIR}/src/win/iupwin_info.c
 		${CMAKE_SOURCE_DIR}/src/win/iupwin_info.h
 		${CMAKE_SOURCE_DIR}/src/win/iupwin_key.c
@@ -1110,7 +1113,34 @@ ELSEIF(IUP_USE_WIN32)
 		${CMAKE_SOURCE_DIR}/src/win/iupwindows_help.c
 		${CMAKE_SOURCE_DIR}/src/win/iupwindows_info.c
 		${CMAKE_SOURCE_DIR}/src/win/iupwindows_main.c
+		${CMAKE_SOURCE_DIR}/src/win/wdl/backend-d2d.c
+		${CMAKE_SOURCE_DIR}/src/win/wdl/backend-d2d.h
+		${CMAKE_SOURCE_DIR}/src/win/wdl/backend-dwrite.c
+		${CMAKE_SOURCE_DIR}/src/win/wdl/backend-dwrite.h
+		${CMAKE_SOURCE_DIR}/src/win/wdl/backend-gdix.c
+		${CMAKE_SOURCE_DIR}/src/win/wdl/backend-gdix.h
+		${CMAKE_SOURCE_DIR}/src/win/wdl/backend-wic.c
+		${CMAKE_SOURCE_DIR}/src/win/wdl/backend-wic.h
+		${CMAKE_SOURCE_DIR}/src/win/wdl/bitblt.c
+		${CMAKE_SOURCE_DIR}/src/win/wdl/brush.c
+		${CMAKE_SOURCE_DIR}/src/win/wdl/cachedimage.c
+		${CMAKE_SOURCE_DIR}/src/win/wdl/canvas.c
+		${CMAKE_SOURCE_DIR}/src/win/wdl/draw.c
+		${CMAKE_SOURCE_DIR}/src/win/wdl/fill.c
+		${CMAKE_SOURCE_DIR}/src/win/wdl/font.c
+		${CMAKE_SOURCE_DIR}/src/win/wdl/image.c
+		${CMAKE_SOURCE_DIR}/src/win/wdl/init.c
+		${CMAKE_SOURCE_DIR}/src/win/wdl/lock.h
+		${CMAKE_SOURCE_DIR}/src/win/wdl/memstream.c
+		${CMAKE_SOURCE_DIR}/src/win/wdl/memstream.h
+		${CMAKE_SOURCE_DIR}/src/win/wdl/misc.c
+		${CMAKE_SOURCE_DIR}/src/win/wdl/misc.h
+		${CMAKE_SOURCE_DIR}/src/win/wdl/path.c
+		${CMAKE_SOURCE_DIR}/src/win/wdl/string.c
+		${CMAKE_SOURCE_DIR}/src/win/wdl/strokestyle.c
+		${CMAKE_SOURCE_DIR}/src/win/wdl/wdl.h
 	)
+	INCLUDE_DIRECTORIES("${CMAKE_SOURCE_DIR}/src/win;${CMAKE_SOURCE_DIR}/src/win/wdl" )
 
 	LIST(APPEND IUP_SOURCE_FILES
 		${IUP_WIN32_SOURCE_FILES}
@@ -1131,11 +1161,13 @@ ELSEIF(IUP_USE_WIN32)
 
 	# Use explicit names instead
 	LIST(APPEND IUP_LINK_LIBRARIES 
-		ole32 comdlg32 comctl32 gdi32
+		 Windowscodecs ole32 comdlg32 comctl32 gdi32
+#		 kernel32 user32 gdi32 winspool comdlg32 advapi32 shell32 uuid oleaut32 ole32 comctl32 windowscodecs
 	)	
 
 	# FIXME: The other build systems pass -DNOTREEVIEW, but searching the codebase, it seems to only exist in one place and it is to #undef NOTREEVIEW. Maybe this flag can be removed.
-	SET(IUP_C_FLAGS "${IUP_C_FLAGS} -D_WIN32_WINNT=0x0501 -D_WIN32_IE=0x0600 -DWINVER=0x0501 -DNOTREEVIEW")
+	SET(IUP_C_FLAGS "${IUP_C_FLAGS} -D_WIN32_WINNT=0x0501 -D_WIN32_IE=0x0600 -DWINVER=0x0501 -DNOTREEVIEW -DUSE_NEW_DRAW=1 -DCOBJMACROS")
+
 	SET(IUPIMGLIB_C_FLAGS "${IUP_C_FLAGS} -D_WIN32_WINNT=0x0501 -D_WIN32_IE=0x0600 -DWINVER=0x0501 -DNOTREEVIEW")
 	IF(IUP_OPTION_USE_UNICODE)
 		SET(IUP_C_FLAGS "${IUP_C_FLAGS} -DUNICODE")
