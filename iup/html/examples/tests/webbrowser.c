@@ -22,7 +22,8 @@ static int history_cb(Ihandle* ih)
 	IupSetAttribute(web_ih, "COPY", NULL);
 	IupSetAttribute(web_ih, "PRINT", NULL);
 */	
-	
+	IupSetAttribute(web_ih, "PRINT", NULL);
+
   int back = IupGetInt(web_ih, "BACKCOUNT");
   int fwrd = IupGetInt(web_ih, "FORWARDCOUNT");
 
@@ -191,12 +192,20 @@ void WebBrowserTest(void)
   IupShow(dlg);
 }
 
+// IupNext will require EntryPoint
+#ifndef USE_ENTRY_POINT
+  #if defined(__APPLE__) || defined(__ANDROID__) || defined(__EMSCRIPTEN__)
+    #define USE_ENTRY_POINT
+  #endif
+#endif
+
 #ifndef BIG_TEST
 int main(int argc, char* argv[])
 {
   IupOpen(&argc, &argv);
 
 #ifdef USE_ENTRY_POINT
+  // Platforms that require ENTRY_POINT must wait to start their IUP code until the entry point callback.
   IupSetFunction("ENTRY_POINT", (Icallback)WebBrowserTest);
 #else
   WebBrowserTest();

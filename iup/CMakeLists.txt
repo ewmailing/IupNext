@@ -938,7 +938,8 @@ ELSEIF(IUP_USE_COCOATOUCH)
 
 	FIND_LIBRARY(APPLE_WEBKIT_LIBRARY WebKit)
 	SET(IUPWEB_COCOATOUCH_SOURCE_FILES
-		${CMAKE_SOURCE_DIR}/srcweb/iupcocoatouch_webbrowser.m
+#		${CMAKE_SOURCE_DIR}/srcweb/iupcocoatouch_webbrowser.m
+		${CMAKE_SOURCE_DIR}/srcweb/iupwkwebview_webbrowser.m
 	)
 	LIST(APPEND IUPWEB_SOURCE_FILES
 		${IUPWEB_COCOATOUCH_SOURCE_FILES}
@@ -1045,7 +1046,8 @@ ELSEIF(IUP_USE_COCOA)
 
 	FIND_LIBRARY(APPLE_WEBKIT_LIBRARY WebKit)
 	SET(IUPWEB_COCOA_SOURCE_FILES
-		${CMAKE_SOURCE_DIR}/srcweb/iupcocoa_webbrowser.m
+#		${CMAKE_SOURCE_DIR}/srcweb/iupcocoa_webbrowser.m
+		${CMAKE_SOURCE_DIR}/srcweb/iupwkwebview_webbrowser.m
 	)
 	LIST(APPEND IUPWEB_SOURCE_FILES
 		${IUPWEB_COCOA_SOURCE_FILES}

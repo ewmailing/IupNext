@@ -9,6 +9,7 @@
 /* Begin PBXBuildFile section */
 		00006F111ECA62AB000636B1 /* IUPCocoaVerticalAlignmentTextFieldCell.h in Headers */ = {isa = PBXBuildFile; fileRef = 00006F0F1ECA62AB000636B1 /* IUPCocoaVerticalAlignmentTextFieldCell.h */; };
 		00006F121ECA62AB000636B1 /* IUPCocoaVerticalAlignmentTextFieldCell.m in Sources */ = {isa = PBXBuildFile; fileRef = 00006F101ECA62AB000636B1 /* IUPCocoaVerticalAlignmentTextFieldCell.m */; };
+		001CC8BB2341CCAC00563BD4 /* iupwkwebview_webbrowser.m in Sources */ = {isa = PBXBuildFile; fileRef = 001CC8BA2341CCAC00563BD4 /* iupwkwebview_webbrowser.m */; };
 		002CC4CC1EA2416B0007C8E7 /* iup_animatedlabel.c in Sources */ = {isa = PBXBuildFile; fileRef = 002CC4C61EA2416B0007C8E7 /* iup_animatedlabel.c */; };
 		002CC4CD1EA2416B0007C8E7 /* iup_datepick.c in Sources */ = {isa = PBXBuildFile; fileRef = 002CC4C71EA2416B0007C8E7 /* iup_datepick.c */; };
 		002CC4CE1EA2416B0007C8E7 /* iup_draw.c in Sources */ = {isa = PBXBuildFile; fileRef = 002CC4C81EA2416B0007C8E7 /* iup_draw.c */; };
@@ -67,7 +68,6 @@
 		00BE4F641F4BF479002B7C86 /* iupweb.h in Headers */ = {isa = PBXBuildFile; fileRef = 00E3A8681B60595300BEC175 /* iupweb.h */; settings = {ATTRIBUTES = (Public, ); }; };
 		00BE4F661F4BF48F002B7C86 /* iup_webbrowser.h in Headers */ = {isa = PBXBuildFile; fileRef = 00BE4F521F4BF40F002B7C86 /* iup_webbrowser.h */; };
 		00BE4F6B1F4C7CCC002B7C86 /* WebKit.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 00BE4F6A1F4C7CCC002B7C86 /* WebKit.framework */; };
-		00BE4F6F1F4C7CFE002B7C86 /* iupcocoa_webbrowser.m in Sources */ = {isa = PBXBuildFile; fileRef = 00BE4F671F4C75A8002B7C86 /* iupcocoa_webbrowser.m */; };
 		00BE4F701F4C7D03002B7C86 /* iup_webbrowser.c in Sources */ = {isa = PBXBuildFile; fileRef = 00BE4F511F4BF40F002B7C86 /* iup_webbrowser.c */; };
 		00BE4F711F4C9564002B7C86 /* iup.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 00E3A5ED1B60578300BEC175 /* iup.framework */; };
 		00BE4F731F4C95E4002B7C86 /* iup_export.h in Headers */ = {isa = PBXBuildFile; fileRef = 00BE4F721F4C95E4002B7C86 /* iup_export.h */; };
@@ -382,6 +382,8 @@
 /* Begin PBXFileReference section */
 		00006F0F1ECA62AB000636B1 /* IUPCocoaVerticalAlignmentTextFieldCell.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = IUPCocoaVerticalAlignmentTextFieldCell.h; sourceTree = "<group>"; };
 		00006F101ECA62AB000636B1 /* IUPCocoaVerticalAlignmentTextFieldCell.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = IUPCocoaVerticalAlignmentTextFieldCell.m; sourceTree = "<group>"; };
+		001CC8BA2341CCAC00563BD4 /* iupwkwebview_webbrowser.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = iupwkwebview_webbrowser.m; sourceTree = "<group>"; };
+		001CC8BC2342141A00563BD4 /* webbrowser.entitlements */ = {isa = PBXFileReference; lastKnownFileType = text.plist.entitlements; path = webbrowser.entitlements; sourceTree = "<group>"; };
 		002CC4C61EA2416B0007C8E7 /* iup_animatedlabel.c */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.c; path = iup_animatedlabel.c; sourceTree = "<group>"; };
 		002CC4C71EA2416B0007C8E7 /* iup_datepick.c */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.c; path = iup_datepick.c; sourceTree = "<group>"; };
 		002CC4C81EA2416B0007C8E7 /* iup_draw.c */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.c; path = iup_draw.c; sourceTree = "<group>"; };
@@ -804,6 +806,7 @@
 		00BE4F4D1F4BF40F002B7C86 /* srcweb */ = {
 			isa = PBXGroup;
 			children = (
+				001CC8BA2341CCAC00563BD4 /* iupwkwebview_webbrowser.m */,
 				00BE4F671F4C75A8002B7C86 /* iupcocoa_webbrowser.m */,
 				00BE4F511F4BF40F002B7C86 /* iup_webbrowser.c */,
 				00BE4F521F4BF40F002B7C86 /* iup_webbrowser.h */,
@@ -825,6 +828,7 @@
 		00BE4F791F4C967F002B7C86 /* webbrowser */ = {
 			isa = PBXGroup;
 			children = (
+				001CC8BC2342141A00563BD4 /* webbrowser.entitlements */,
 				00BE4F8C1F4C96BD002B7C86 /* webbrowser.c */,
 				00BE4F881F4C9680002B7C86 /* Info.plist */,
 			);
@@ -1762,7 +1766,7 @@
 			buildActionMask = 2147483647;
 			files = (
 				00BE4F701F4C7D03002B7C86 /* iup_webbrowser.c in Sources */,
-				00BE4F6F1F4C7CFE002B7C86 /* iupcocoa_webbrowser.m in Sources */,
+				001CC8BB2341CCAC00563BD4 /* iupwkwebview_webbrowser.m in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -2104,6 +2108,7 @@
 			isa = XCBuildConfiguration;
 			buildSettings = {
 				CLANG_ENABLE_OBJC_ARC = NO;
+				CODE_SIGN_IDENTITY = "";
 				COMBINE_HIDPI_IMAGES = YES;
 				DEFINES_MODULE = YES;
 				DYLIB_COMPATIBILITY_VERSION = 1;
@@ -2119,6 +2124,7 @@
 				INFOPLIST_FILE = "iupweb-Info.plist";
 				INSTALL_PATH = "$(LOCAL_LIBRARY_DIR)/Frameworks";
 				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/../Frameworks @loader_path/Frameworks";
+				PRODUCT_BUNDLE_IDENTIFIER = "org.puc-rio.tecgraf.iupweb";
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				SKIP_INSTALL = YES;
 			};
@@ -2128,6 +2134,7 @@
 			isa = XCBuildConfiguration;
 			buildSettings = {
 				CLANG_ENABLE_OBJC_ARC = NO;
+				CODE_SIGN_IDENTITY = "";
 				COMBINE_HIDPI_IMAGES = YES;
 				DEFINES_MODULE = YES;
 				DYLIB_COMPATIBILITY_VERSION = 1;
@@ -2142,6 +2149,7 @@
 				INFOPLIST_FILE = "iupweb-Info.plist";
 				INSTALL_PATH = "$(LOCAL_LIBRARY_DIR)/Frameworks";
 				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/../Frameworks @loader_path/Frameworks";
+				PRODUCT_BUNDLE_IDENTIFIER = "org.puc-rio.tecgraf.iupweb";
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				SKIP_INSTALL = YES;
 			};
@@ -2157,6 +2165,7 @@
 				CLANG_WARN_DOCUMENTATION_COMMENTS = YES;
 				CLANG_WARN_INFINITE_RECURSION = YES;
 				CLANG_WARN_SUSPICIOUS_MOVE = YES;
+				CODE_SIGN_ENTITLEMENTS = webbrowser/webbrowser.entitlements;
 				CODE_SIGN_IDENTITY = "-";
 				COMBINE_HIDPI_IMAGES = YES;
 				ENABLE_TESTABILITY = YES;
@@ -2178,6 +2187,7 @@
 				CLANG_WARN_DOCUMENTATION_COMMENTS = YES;
 				CLANG_WARN_INFINITE_RECURSION = YES;
 				CLANG_WARN_SUSPICIOUS_MOVE = YES;
+				CODE_SIGN_ENTITLEMENTS = webbrowser/webbrowser.entitlements;
 				CODE_SIGN_IDENTITY = "-";
 				COMBINE_HIDPI_IMAGES = YES;
 				INFOPLIST_FILE = webbrowser/Info.plist;
@@ -2206,6 +2216,7 @@
 				CLANG_WARN_OBJC_ROOT_CLASS = YES_ERROR;
 				CLANG_WARN_UNREACHABLE_CODE = YES;
 				CLANG_WARN__DUPLICATE_METHOD_MATCH = YES;
+				CODE_SIGN_IDENTITY = " ";
 				COPY_PHASE_STRIP = NO;
 				CURRENT_PROJECT_VERSION = 1;
 				DEBUG_INFORMATION_FORMAT = dwarf;
@@ -2254,6 +2265,7 @@
 				CLANG_WARN_OBJC_ROOT_CLASS = YES_ERROR;
 				CLANG_WARN_UNREACHABLE_CODE = YES;
 				CLANG_WARN__DUPLICATE_METHOD_MATCH = YES;
+				CODE_SIGN_IDENTITY = " ";
 				COPY_PHASE_STRIP = NO;
 				CURRENT_PROJECT_VERSION = 1;
 				DEBUG_INFORMATION_FORMAT = "dwarf-with-dsym";
@@ -2281,6 +2293,7 @@
 			isa = XCBuildConfiguration;
 			buildSettings = {
 				CLANG_ENABLE_OBJC_ARC = NO;
+				CODE_SIGN_IDENTITY = "";
 				COMBINE_HIDPI_IMAGES = YES;
 				DEFINES_MODULE = YES;
 				DYLIB_COMPATIBILITY_VERSION = 1;
@@ -2297,6 +2310,7 @@
 				INSTALL_PATH = "$(LOCAL_LIBRARY_DIR)/Frameworks";
 				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/../Frameworks @loader_path/Frameworks";
 				MACOSX_DEPLOYMENT_TARGET = 10.14;
+				PRODUCT_BUNDLE_IDENTIFIER = "org.puc-rio.tecgraf.iup";
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				SKIP_INSTALL = YES;
 			};
@@ -2306,6 +2320,7 @@
 			isa = XCBuildConfiguration;
 			buildSettings = {
 				CLANG_ENABLE_OBJC_ARC = NO;
+				CODE_SIGN_IDENTITY = "";
 				COMBINE_HIDPI_IMAGES = YES;
 				DEFINES_MODULE = YES;
 				DYLIB_COMPATIBILITY_VERSION = 1;
@@ -2321,6 +2336,7 @@
 				INSTALL_PATH = "$(LOCAL_LIBRARY_DIR)/Frameworks";
 				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/../Frameworks @loader_path/Frameworks";
 				MACOSX_DEPLOYMENT_TARGET = 10.14;
+				PRODUCT_BUNDLE_IDENTIFIER = "org.puc-rio.tecgraf.iup";
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				SKIP_INSTALL = YES;
 			};
@@ -2442,6 +2458,7 @@
 				CLANG_WARN_STRICT_PROTOTYPES = YES;
 				CLANG_WARN_SUSPICIOUS_MOVE = YES;
 				CLANG_WARN_UNGUARDED_AVAILABILITY = YES_AGGRESSIVE;
+				CODE_SIGN_IDENTITY = "";
 				ENABLE_TESTABILITY = YES;
 				EXECUTABLE_PREFIX = lib;
 				GCC_C_LANGUAGE_STANDARD = gnu11;
@@ -2471,6 +2488,7 @@
 				CLANG_WARN_STRICT_PROTOTYPES = YES;
 				CLANG_WARN_SUSPICIOUS_MOVE = YES;
 				CLANG_WARN_UNGUARDED_AVAILABILITY = YES_AGGRESSIVE;
+				CODE_SIGN_IDENTITY = "";
 				EXECUTABLE_PREFIX = lib;
 				GCC_C_LANGUAGE_STANDARD = gnu11;
 				MACOSX_DEPLOYMENT_TARGET = 10.13;
@@ -2499,6 +2517,7 @@
 				CLANG_WARN_STRICT_PROTOTYPES = YES;
 				CLANG_WARN_SUSPICIOUS_MOVE = YES;
 				CLANG_WARN_UNGUARDED_AVAILABILITY = YES_AGGRESSIVE;
+				CODE_SIGN_IDENTITY = "";
 				COMBINE_HIDPI_IMAGES = YES;
 				DEFINES_MODULE = YES;
 				DYLIB_COMPATIBILITY_VERSION = 1;
@@ -2541,6 +2560,7 @@
 				CLANG_WARN_STRICT_PROTOTYPES = YES;
 				CLANG_WARN_SUSPICIOUS_MOVE = YES;
 				CLANG_WARN_UNGUARDED_AVAILABILITY = YES_AGGRESSIVE;
+				CODE_SIGN_IDENTITY = "";
 				COMBINE_HIDPI_IMAGES = YES;
 				DEFINES_MODULE = YES;
 				DYLIB_COMPATIBILITY_VERSION = 1;
