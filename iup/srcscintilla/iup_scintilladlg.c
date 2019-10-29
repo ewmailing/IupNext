@@ -565,18 +565,125 @@ static Ihandle* iScintillaDlgGetProjectConfig(Ihandle* ih)
   return (Ihandle*)iupAttribGetInherit(ih, "_IUP_PROJECT_CONFIG");
 }
 
-static char* getProjectRelativeFilename(Ihandle* projectConfig, const char* filename)
+static char* getProjectRelativeFilename(const char *app_filename, const char* filename)
 {
-  char *project_filename = IupGetAttribute(projectConfig, "APP_FILENAME");
-  //TODO
-  return iupStrDup(filename);
+  char *appdelim, *filedelim, *lastappdelim = NULL;
+  const char *lastdelim;
+  int i = 0;
+  char rel_filename[10240], app_folder[1024], folder[1024];
+
+  /* filename here has an absolute path, must find its relative path to app_filename */
+
+  lastdelim = filename;
+
+  appdelim = strpbrk(app_filename, "\\/");
+  filedelim = strpbrk(filename, "\\/");
+
+  /* compare each folder from start */
+
+  memset(app_folder, '\0', sizeof(app_folder));
+  if (appdelim)
+    strncpy(app_folder, app_filename, appdelim - app_filename);
+  memset(folder, '\0', sizeof(folder));
+  if (filedelim)
+    strncpy(folder, filename, filedelim - filename);
+
+  if (!iupStrEqual(app_folder, folder))
+    return iupStrDup(filename);
+
+  while (filedelim != NULL || appdelim != NULL)
+  {
+    lastdelim = filedelim;
+    lastappdelim = appdelim;
+
+    appdelim = strpbrk(appdelim+1, "\\/");
+    filedelim = strpbrk(filedelim+1, "\\/");
+
+    memset(app_folder, '\0', sizeof(app_folder));
+    if (appdelim)
+      strncpy(app_folder, app_filename, appdelim - app_filename);
+    memset(folder, '\0', sizeof(folder));
+    if (filedelim)
+      strncpy(folder, filename, filedelim - filename);
+
+    if (!iupStrEqual(app_folder, folder))
+      break;
+  }
+
+  /* up to here there are folders that match */
+
+  /* count the remaining folders in project folder */
+  while (lastappdelim != NULL)
+  {
+    lastappdelim = strpbrk(lastappdelim+1, "\\/");
+    i++;
+  }
+  i--;
+
+  strcpy(rel_filename, "");
+
+  /* add that count of relative folders */
+  while (i > 0)
+  {
+    strcat(rel_filename, "../");
+    i--;
+  }
+
+  /* add the remaining filename folders and everything else */
+  strcat(rel_filename, lastdelim+1);
+
+  return iupStrDup(rel_filename);
 }
 
-static char* setProjectRelativeFilename(Ihandle* projectConfig, const char* filename)
+static char* setProjectRelativeFilename(const char* app_filename, const char* filename)
 {
-  char *project_filename = IupGetAttribute(projectConfig, "APP_FILENAME");
-  //TODO
-  return iupStrDup(filename);
+  char *project_path = iupStrFileGetPath(app_filename);
+  const char *filedelim, *lastfiledelim;
+  char folder[1024], full_filename[10240];
+  int i = 0, n, len;
+
+  if (*(filename + 1) == ':')    /* filename here should be a relative path, if it has a driver separator, it is not */
+    return iupStrDup(filename);
+
+  len = (int)strlen(project_path);
+  *(project_path + len - 1) = '\0';  /* removes the last separator */
+
+  /* search for folders */
+  lastfiledelim = filename;
+  filedelim = strpbrk(filename, "\\/");
+  while (filedelim)
+  {
+    memset(folder, '\0', sizeof(folder));
+    strncpy(folder, filename, filedelim - lastfiledelim);
+
+    if (!iupStrEqual(folder, "..")) /* a relative path usually starts with .. */
+      break;
+
+    i++;  /* count the number of .. */
+    lastfiledelim = filedelim+1;
+    filedelim = strpbrk(filedelim+1, "\\/");
+  }
+
+  for (n = 0; n < i; n++)  /* for all .. remove the same number from project_path */
+  {
+    char *delim = strpbrk(project_path, "\\/");  
+    char *lastdelim = NULL;
+    while (delim)
+    {
+      lastdelim = delim;
+      delim = strpbrk(delim + 1, "\\/");
+    }
+    if (lastdelim)
+      *lastdelim = '\0';
+  }
+
+  strcpy(full_filename, project_path);
+  strcat(full_filename, "/");
+  strcat(full_filename, lastfiledelim);
+
+  free(project_path);
+
+  return iupStrDup(full_filename);
 }
 
 static void saveProjectOpenFiles(Ihandle *ih, Ihandle *projectConfig)
@@ -586,6 +693,7 @@ static void saveProjectOpenFiles(Ihandle *ih, Ihandle *projectConfig)
   char* filename;
   int i;
   int count = IupConfigGetVariableInt(projectConfig, "ProjectOpenFiles", "Count");
+  const char *app_filename = IupGetAttribute(projectConfig, "APP_FILENAME");
 
   /* clear everything before saving */
   for (i = 1; i <= count; i++)
@@ -599,7 +707,7 @@ static void saveProjectOpenFiles(Ihandle *ih, Ihandle *projectConfig)
     if (!filename || iupStrEqualPartial(filename, "Untitled"))
       continue;
 
-    filename = getProjectRelativeFilename(projectConfig, filename);
+    filename = getProjectRelativeFilename(app_filename, filename);
     IupConfigSetVariableStrId(projectConfig, "ProjectOpenFiles", "File", i, filename);
     free(filename);
 
@@ -612,6 +720,7 @@ static void saveProjectOpenFiles(Ihandle *ih, Ihandle *projectConfig)
 static void saveProjectFiles(Ihandle *projectTree, Ihandle *projectConfig)
 {
   int count = IupConfigGetVariableInt(projectConfig, "PojectFiles", "Count");
+  const char *app_filename = IupGetAttribute(projectConfig, "APP_FILENAME");
   char *filename;
   int i;
 
@@ -624,7 +733,7 @@ static void saveProjectFiles(Ihandle *projectTree, Ihandle *projectConfig)
   filename = IupTreeGetUserId(projectTree, i);
   while (filename != NULL)
   {
-    filename = getProjectRelativeFilename(projectConfig, filename);
+    filename = getProjectRelativeFilename(app_filename, filename);
     IupConfigSetVariableStrId(projectConfig, "ProjectFiles", "File", i, filename);
     free(filename);
 
@@ -2532,6 +2641,7 @@ static int item_new_proj_action_cb(Ihandle* ih_item)
 
 static void loadProjectFiles(Ihandle *projectConfig, Ihandle *projectTree)
 {
+  char *app_filename = IupGetAttribute(projectConfig, "APP_FILENAME");
   const char *filename;
   int count, i;
 
@@ -2541,7 +2651,7 @@ static void loadProjectFiles(Ihandle *projectConfig, Ihandle *projectTree)
   {
     filename = IupConfigGetVariableStrId(projectConfig, "ProjectFiles", "File", i);
 
-    filename = setProjectRelativeFilename(projectConfig, filename);
+    filename = setProjectRelativeFilename(app_filename, filename);
     if (!check_inproject(projectTree, filename))
       addFileToProjectTree(projectTree, filename);
     free((void*)filename);
@@ -2552,7 +2662,7 @@ static void loadProjectFiles(Ihandle *projectConfig, Ihandle *projectTree)
   for (i = 1; i <= count; i++)
   {
     filename = IupConfigGetVariableStrId(projectConfig, "ProjectOpenFiles", "File", i);
-    filename = setProjectRelativeFilename(projectConfig, filename);
+    filename = setProjectRelativeFilename(app_filename, filename);
     if (!check_open(projectTree, filename, 0))
       open_file(projectTree, filename, 1);
     free((void*)filename);
@@ -3321,8 +3431,6 @@ static int find_next_action_cb(Ihandle* ih_item)
     Ihandle* tabs = IupGetDialogChild(ih, "MULTITEXT_TABS");
     Ihandle* projectTree = IupGetDialogChild(ih, "PROJECTTREE");
     Ihandle* sciDummy = IupGetDialogChild(find_dlg, "SCI_DUMMY");
-    Ihandle* currentMultitext = iScintillaDlgGetCurrentMultitext(ih);
-    Ihandle *multitext = currentMultitext;
     Ihandle* find_txt = IupGetDialogChild(find_dlg, "FIND_TEXT");
     int count = IupGetInt(tabs, "COUNT");
     int find_start, find_end;
@@ -3333,6 +3441,7 @@ static int find_next_action_cb(Ihandle* ih_item)
     str_to_find = IupGetAttribute(find_txt, "VALUE");
     if (str_to_find && str_to_find[0] != 0)
     {
+      Ihandle* multitext = iScintillaDlgGetCurrentMultitext(ih);
       int searchIn = IupGetInt(IupGetDialogChild(find_dlg, "LST_SEARCH_IN"), "VALUE");
       int wrap = IupGetInt(IupGetDialogChild(find_dlg, "WRAP"), "VALUE");
       int down = IupGetInt(IupGetDialogChild(find_dlg, "DOWN"), "VALUE");
@@ -3341,16 +3450,16 @@ static int find_next_action_cb(Ihandle* ih_item)
       int regexp = IupGetInt(IupGetDialogChild(find_dlg, "REG_EXP"), "VALUE");
       int posix = IupGetInt(IupGetDialogChild(find_dlg, "POSIX"), "VALUE");
 
-      if (!down && IupGetAttribute(currentMultitext, "SELECTIONPOS"))
+      if (!down && IupGetAttribute(multitext, "SELECTIONPOS"))
       {
         int st, ed;
-        IupGetIntInt(currentMultitext, "SELECTIONPOS", &st, &ed);
+        IupGetIntInt(multitext, "SELECTIONPOS", &st, &ed);
         find_start = st;
       }
       else
-        find_start = IupGetInt(currentMultitext, "CARETPOS");
+        find_start = IupGetInt(multitext, "CARETPOS");
 
-      find_end = down ? IupGetInt(currentMultitext, "COUNT") : 0;
+      find_end = down ? IupGetInt(multitext, "COUNT") : 0;
 
       if (searchIn == 1)
         count = 1;
@@ -3419,7 +3528,7 @@ static int find_next_action_cb(Ihandle* ih_item)
 
       if (!found)
       {
-        Ihandle* multitext = iScintillaDlgGetCurrentMultitext(ih);
+        multitext = iScintillaDlgGetCurrentMultitext(ih);
         /* update statusbar */
         Ihandle *lbl_statusbar = IupGetDialogChild(multitext, "STATUSBAR");
         IupSetfAttribute(lbl_statusbar, "TITLE", "Text \"%s\" not found.", str_to_find);
@@ -3548,7 +3657,6 @@ static int find_all_action_cb(Ihandle* bt_replace)
         while (find_start != pos_start || find_end != pos_end)
         {
           int lin, col;
-          int count;
           char *filename = IupGetAttribute(multitext, "FILENAME");
 
           IupTextConvertPosToLinCol(multitext, pos_start, &lin, &col);
