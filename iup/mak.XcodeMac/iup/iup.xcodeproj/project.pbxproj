@@ -6,6 +6,23 @@
 	objectVersion = 46;
 	objects = {
 
+/* Begin PBXAggregateTarget section */
+		006E70962369466F00CA0753 /* AllLibraries */ = {
+			isa = PBXAggregateTarget;
+			buildConfigurationList = 006E70972369466F00CA0753 /* Build configuration list for PBXAggregateTarget "AllLibraries" */;
+			buildPhases = (
+			);
+			dependencies = (
+				006E709B2369468500CA0753 /* PBXTargetDependency */,
+				006E709F2369468500CA0753 /* PBXTargetDependency */,
+				006E70A12369468500CA0753 /* PBXTargetDependency */,
+				006E709D2369468500CA0753 /* PBXTargetDependency */,
+			);
+			name = AllLibraries;
+			productName = AllLibraries;
+		};
+/* End PBXAggregateTarget section */
+
 /* Begin PBXBuildFile section */
 		00006F111ECA62AB000636B1 /* IUPCocoaVerticalAlignmentTextFieldCell.h in Headers */ = {isa = PBXBuildFile; fileRef = 00006F0F1ECA62AB000636B1 /* IUPCocoaVerticalAlignmentTextFieldCell.h */; };
 		00006F121ECA62AB000636B1 /* IUPCocoaVerticalAlignmentTextFieldCell.m in Sources */ = {isa = PBXBuildFile; fileRef = 00006F101ECA62AB000636B1 /* IUPCocoaVerticalAlignmentTextFieldCell.m */; };
@@ -33,6 +50,9 @@
 		005DCBA51EBD659600A66253 /* IupMainMenu.xib in Resources */ = {isa = PBXBuildFile; fileRef = 005DCBA21EBD659500A66253 /* IupMainMenu.xib */; };
 		005DCBAE1EBDD27300A66253 /* CanonicalServiceMenu.xib in Resources */ = {isa = PBXBuildFile; fileRef = 005DCBAA1EBDD27300A66253 /* CanonicalServiceMenu.xib */; };
 		005DCBAF1EBDD27300A66253 /* CanonicalWindowMenu.xib in Resources */ = {isa = PBXBuildFile; fileRef = 005DCBAC1EBDD27300A66253 /* CanonicalWindowMenu.xib */; };
+		006E70932368320600CA0753 /* iupluafiledlg.h in Headers */ = {isa = PBXBuildFile; fileRef = 006E70902368320500CA0753 /* iupluafiledlg.h */; };
+		006E70942368320600CA0753 /* iupdraw_cd.h in Headers */ = {isa = PBXBuildFile; fileRef = 006E70912368320500CA0753 /* iupdraw_cd.h */; };
+		006E70952368320600CA0753 /* iupfiledlg.h in Headers */ = {isa = PBXBuildFile; fileRef = 006E70922368320500CA0753 /* iupfiledlg.h */; };
 		0070FB9A1E0E0B79009A8631 /* IupAppDelegate.h in Headers */ = {isa = PBXBuildFile; fileRef = 0070FB981E0E0B79009A8631 /* IupAppDelegate.h */; };
 		0070FB9B1E0E0B79009A8631 /* IupAppDelegate.m in Sources */ = {isa = PBXBuildFile; fileRef = 0070FB991E0E0B79009A8631 /* IupAppDelegate.m */; };
 		007E3198204CCC9800ED15CB /* iupluascripterdlg.h in Headers */ = {isa = PBXBuildFile; fileRef = 007E3196204CCC9600ED15CB /* iupluascripterdlg.h */; settings = {ATTRIBUTES = (Public, ); }; };
@@ -313,6 +333,34 @@
 /* End PBXBuildFile section */
 
 /* Begin PBXContainerItemProxy section */
+		006E709A2369468500CA0753 /* PBXContainerItemProxy */ = {
+			isa = PBXContainerItemProxy;
+			containerPortal = 00E3A5E41B60578300BEC175 /* Project object */;
+			proxyType = 1;
+			remoteGlobalIDString = 00E3A5EC1B60578300BEC175;
+			remoteInfo = iup;
+		};
+		006E709C2369468500CA0753 /* PBXContainerItemProxy */ = {
+			isa = PBXContainerItemProxy;
+			containerPortal = 00E3A5E41B60578300BEC175 /* Project object */;
+			proxyType = 1;
+			remoteGlobalIDString = 00E93AFC214E846100BC6F5B;
+			remoteInfo = iupim;
+		};
+		006E709E2369468500CA0753 /* PBXContainerItemProxy */ = {
+			isa = PBXContainerItemProxy;
+			containerPortal = 00E3A5E41B60578300BEC175 /* Project object */;
+			proxyType = 1;
+			remoteGlobalIDString = 00E93A6C214E826C00BC6F5B;
+			remoteInfo = iupimglib;
+		};
+		006E70A02369468500CA0753 /* PBXContainerItemProxy */ = {
+			isa = PBXContainerItemProxy;
+			containerPortal = 00E3A5E41B60578300BEC175 /* Project object */;
+			proxyType = 1;
+			remoteGlobalIDString = 00BE4E761F4BF35C002B7C86;
+			remoteInfo = iupweb;
+		};
 		00A3F0CA218FD18900841C0E /* PBXContainerItemProxy */ = {
 			isa = PBXContainerItemProxy;
 			containerPortal = 00E3A5E41B60578300BEC175 /* Project object */;
@@ -404,6 +452,9 @@
 		005DCBA31EBD659500A66253 /* Base */ = {isa = PBXFileReference; lastKnownFileType = file.xib; name = Base; path = Base.lproj/IupMainMenu.xib; sourceTree = "<group>"; };
 		005DCBAB1EBDD27300A66253 /* Base */ = {isa = PBXFileReference; lastKnownFileType = file.xib; name = Base; path = Base.lproj/CanonicalServiceMenu.xib; sourceTree = "<group>"; };
 		005DCBAD1EBDD27300A66253 /* Base */ = {isa = PBXFileReference; lastKnownFileType = file.xib; name = Base; path = Base.lproj/CanonicalWindowMenu.xib; sourceTree = "<group>"; };
+		006E70902368320500CA0753 /* iupluafiledlg.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = iupluafiledlg.h; sourceTree = "<group>"; };
+		006E70912368320500CA0753 /* iupdraw_cd.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = iupdraw_cd.h; sourceTree = "<group>"; };
+		006E70922368320500CA0753 /* iupfiledlg.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = iupfiledlg.h; sourceTree = "<group>"; };
 		0070FB981E0E0B79009A8631 /* IupAppDelegate.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = IupAppDelegate.h; sourceTree = "<group>"; };
 		0070FB991E0E0B79009A8631 /* IupAppDelegate.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = IupAppDelegate.m; sourceTree = "<group>"; };
 		007E3196204CCC9600ED15CB /* iupluascripterdlg.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = iupluascripterdlg.h; sourceTree = "<group>"; };
@@ -1084,6 +1135,9 @@
 		00E3A83A1B60595300BEC175 /* include */ = {
 			isa = PBXGroup;
 			children = (
+				006E70912368320500CA0753 /* iupdraw_cd.h */,
+				006E70922368320500CA0753 /* iupfiledlg.h */,
+				006E70902368320500CA0753 /* iupluafiledlg.h */,
 				00D6743522D3F15C00DB1AEF /* iup_export.h */,
 				007E3197204CCC9700ED15CB /* iup_varg.h */,
 				007E3196204CCC9600ED15CB /* iupluascripterdlg.h */,
@@ -1296,6 +1350,7 @@
 			isa = PBXHeadersBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				006E70932368320600CA0753 /* iupluafiledlg.h in Headers */,
 				00E3A79C1B60583600BEC175 /* iup_globalattrib.h in Headers */,
 				00AB789722D40C2B008D43D4 /* IupCocoaFont.h in Headers */,
 				00E3A7DF1B60583600BEC175 /* iup_tree.h in Headers */,
@@ -1338,6 +1393,7 @@
 				00E3A76E1B60583600BEC175 /* iup_array.h in Headers */,
 				00E3A87E1B60595300BEC175 /* iupkey.h in Headers */,
 				00E3A7991B60583600BEC175 /* iup_func.h in Headers */,
+				006E70952368320600CA0753 /* iupfiledlg.h in Headers */,
 				00E3A86A1B60595300BEC175 /* iup_class_cbs.hpp in Headers */,
 				00E3A88F1B60595300BEC175 /* iupole.h in Headers */,
 				00E3A8871B60595300BEC175 /* iupluaim.h in Headers */,
@@ -1354,6 +1410,7 @@
 				00E3A8721B60595300BEC175 /* iupcbs.h in Headers */,
 				00E3A7AF1B60583600BEC175 /* iup_list.h in Headers */,
 				00E3A7BA1B60583600BEC175 /* iup_names.h in Headers */,
+				006E70942368320600CA0753 /* iupdraw_cd.h in Headers */,
 				00E3A7721B60583600BEC175 /* iup_attrib.h in Headers */,
 				00E3A87D1B60595300BEC175 /* iupim.h in Headers */,
 				00E3A7BC1B60583600BEC175 /* iup_normalizer.h in Headers */,
@@ -1610,6 +1667,10 @@
 				LastUpgradeCheck = 0640;
 				ORGANIZATIONNAME = "Tecgraf, PUC-Rio, Brazil";
 				TargetAttributes = {
+					006E70962369466F00CA0753 = {
+						CreatedOnToolsVersion = 11.1;
+						ProvisioningStyle = Automatic;
+					};
 					00A3F0C8218FD18900841C0E = {
 						ProvisioningStyle = Manual;
 						SystemCapabilities = {
@@ -1667,6 +1728,7 @@
 				00E93A6C214E826C00BC6F5B /* iupimglib */,
 				00E93AFC214E846100BC6F5B /* iupim */,
 				00A3F0C8218FD18900841C0E /* TestAppSandbox */,
+				006E70962369466F00CA0753 /* AllLibraries */,
 			);
 		};
 /* End PBXProject section */
@@ -1986,6 +2048,26 @@
 /* End PBXSourcesBuildPhase section */
 
 /* Begin PBXTargetDependency section */
+		006E709B2369468500CA0753 /* PBXTargetDependency */ = {
+			isa = PBXTargetDependency;
+			target = 00E3A5EC1B60578300BEC175 /* iup */;
+			targetProxy = 006E709A2369468500CA0753 /* PBXContainerItemProxy */;
+		};
+		006E709D2369468500CA0753 /* PBXTargetDependency */ = {
+			isa = PBXTargetDependency;
+			target = 00E93AFC214E846100BC6F5B /* iupim */;
+			targetProxy = 006E709C2369468500CA0753 /* PBXContainerItemProxy */;
+		};
+		006E709F2369468500CA0753 /* PBXTargetDependency */ = {
+			isa = PBXTargetDependency;
+			target = 00E93A6C214E826C00BC6F5B /* iupimglib */;
+			targetProxy = 006E709E2369468500CA0753 /* PBXContainerItemProxy */;
+		};
+		006E70A12369468500CA0753 /* PBXTargetDependency */ = {
+			isa = PBXTargetDependency;
+			target = 00BE4E761F4BF35C002B7C86 /* iupweb */;
+			targetProxy = 006E70A02369468500CA0753 /* PBXContainerItemProxy */;
+		};
 		00A3F0C9218FD18900841C0E /* PBXTargetDependency */ = {
 			isa = PBXTargetDependency;
 			target = 00E93AFC214E846100BC6F5B /* iupim */;
@@ -2068,6 +2150,22 @@
 /* End PBXVariantGroup section */
 
 /* Begin XCBuildConfiguration section */
+		006E70982369466F00CA0753 /* Debug */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				CODE_SIGN_STYLE = Automatic;
+				PRODUCT_NAME = "$(TARGET_NAME)";
+			};
+			name = Debug;
+		};
+		006E70992369466F00CA0753 /* Release */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				CODE_SIGN_STYLE = Automatic;
+				PRODUCT_NAME = "$(TARGET_NAME)";
+			};
+			name = Release;
+		};
 		00A3F0D9218FD18900841C0E /* Debug */ = {
 			isa = XCBuildConfiguration;
 			buildSettings = {
@@ -2607,6 +2705,15 @@
 /* End XCBuildConfiguration section */
 
 /* Begin XCConfigurationList section */
+		006E70972369466F00CA0753 /* Build configuration list for PBXAggregateTarget "AllLibraries" */ = {
+			isa = XCConfigurationList;
+			buildConfigurations = (
+				006E70982369466F00CA0753 /* Debug */,
+				006E70992369466F00CA0753 /* Release */,
+			);
+			defaultConfigurationIsVisible = 0;
+			defaultConfigurationName = Release;
+		};
 		00A3F0D8218FD18900841C0E /* Build configuration list for PBXNativeTarget "TestAppSandbox" */ = {
 			isa = XCConfigurationList;
 			buildConfigurations = (

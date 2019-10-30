@@ -6,6 +6,22 @@
 	objectVersion = 50;
 	objects = {
 
+/* Begin PBXAggregateTarget section */
+		006E70A223694C3E00CA0753 /* AllLibraries */ = {
+			isa = PBXAggregateTarget;
+			buildConfigurationList = 006E70A323694C3E00CA0753 /* Build configuration list for PBXAggregateTarget "AllLibraries" */;
+			buildPhases = (
+			);
+			dependencies = (
+				006E70A723694C4C00CA0753 /* PBXTargetDependency */,
+				006E70A923694C4C00CA0753 /* PBXTargetDependency */,
+				006E70AB23694C4C00CA0753 /* PBXTargetDependency */,
+			);
+			name = AllLibraries;
+			productName = AllLibraries;
+		};
+/* End PBXAggregateTarget section */
+
 /* Begin PBXBuildFile section */
 		0015BEB520733505004D70D5 /* iup_dropbutton.c in Sources */ = {isa = PBXBuildFile; fileRef = 0015BEB220733503004D70D5 /* iup_dropbutton.c */; };
 		0015BEB620733505004D70D5 /* iup_flattoggle.c in Sources */ = {isa = PBXBuildFile; fileRef = 0015BEB420733504004D70D5 /* iup_flattoggle.c */; };
@@ -220,6 +236,30 @@
 		63C74A231E1250E40098517B /* iup_imglib_logos8.c in Sources */ = {isa = PBXBuildFile; fileRef = 63C74A1A1E1250E40098517B /* iup_imglib_logos8.c */; };
 /* End PBXBuildFile section */
 
+/* Begin PBXContainerItemProxy section */
+		006E70A623694C4C00CA0753 /* PBXContainerItemProxy */ = {
+			isa = PBXContainerItemProxy;
+			containerPortal = 0070F8F61E025C88009A8631 /* Project object */;
+			proxyType = 1;
+			remoteGlobalIDString = 0070F8FD1E025C88009A8631;
+			remoteInfo = iup;
+		};
+		006E70A823694C4C00CA0753 /* PBXContainerItemProxy */ = {
+			isa = PBXContainerItemProxy;
+			containerPortal = 0070F8F61E025C88009A8631 /* Project object */;
+			proxyType = 1;
+			remoteGlobalIDString = 256D30DF22E40DD400B31C54;
+			remoteInfo = iupimglib;
+		};
+		006E70AA23694C4C00CA0753 /* PBXContainerItemProxy */ = {
+			isa = PBXContainerItemProxy;
+			containerPortal = 0070F8F61E025C88009A8631 /* Project object */;
+			proxyType = 1;
+			remoteGlobalIDString = 00BE4F991F4E11CE002B7C86;
+			remoteInfo = iupweb;
+		};
+/* End PBXContainerItemProxy section */
+
 /* Begin PBXCopyFilesBuildPhase section */
 		0070F8FC1E025C88009A8631 /* CopyFiles */ = {
 			isa = PBXCopyFilesBuildPhase;
@@ -268,6 +308,10 @@
 		0030B60720648F10002699E5 /* iup_flatlabel.c */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.c; path = iup_flatlabel.c; sourceTree = "<group>"; };
 		0052B9461F1B0C490036F199 /* iup_loop.c */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.c; path = iup_loop.c; sourceTree = "<group>"; };
 		0052B9471F1B0C490036F199 /* iup_loop.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = iup_loop.h; sourceTree = "<group>"; };
+		006E708C236831AD00CA0753 /* iup_export.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = iup_export.h; sourceTree = "<group>"; };
+		006E708D236831AD00CA0753 /* iupdraw_cd.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = iupdraw_cd.h; sourceTree = "<group>"; };
+		006E708E236831AD00CA0753 /* iupfiledlg.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = iupfiledlg.h; sourceTree = "<group>"; };
+		006E708F236831C400CA0753 /* iupluafiledlg.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = iupluafiledlg.h; sourceTree = "<group>"; };
 		0070F8FE1E025C88009A8631 /* libiup.a */ = {isa = PBXFileReference; explicitFileType = archive.ar; includeInIndex = 0; path = libiup.a; sourceTree = BUILT_PRODUCTS_DIR; };
 		0070F90B1E025CD1009A8631 /* iup.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = iup.h; sourceTree = "<group>"; };
 		0070F90C1E025CD1009A8631 /* iup_class_cbs.hpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.h; path = iup_class_cbs.hpp; sourceTree = "<group>"; };
@@ -686,6 +730,10 @@
 		0070F90A1E025CD1009A8631 /* include */ = {
 			isa = PBXGroup;
 			children = (
+				006E708F236831C400CA0753 /* iupluafiledlg.h */,
+				006E708C236831AD00CA0753 /* iup_export.h */,
+				006E708D236831AD00CA0753 /* iupdraw_cd.h */,
+				006E708E236831AD00CA0753 /* iupfiledlg.h */,
 				007E31AC204CEC9E00ED15CB /* iup_varg.h */,
 				007E31AD204CEC9F00ED15CB /* iupluascripterdlg.h */,
 				002CC4E51EA2D1980007C8E7 /* iup_plus.h */,
@@ -1212,6 +1260,9 @@
 				LastUpgradeCheck = 0820;
 				ORGANIZATIONNAME = "Tecgraf, PUC-Rio, Brazil";
 				TargetAttributes = {
+					006E70A223694C3E00CA0753 = {
+						CreatedOnToolsVersion = 11.1;
+					};
 					0070F8FD1E025C88009A8631 = {
 						CreatedOnToolsVersion = 8.2;
 						ProvisioningStyle = Automatic;
@@ -1249,6 +1300,7 @@
 				00BE4F991F4E11CE002B7C86 /* iupweb */,
 				00BE50261F4E13BA002B7C86 /* webbrowser */,
 				256D30DF22E40DD400B31C54 /* iupimglib */,
+				006E70A223694C3E00CA0753 /* AllLibraries */,
 			);
 		};
 /* End PBXProject section */
@@ -1551,6 +1603,24 @@
 		};
 /* End PBXSourcesBuildPhase section */
 
+/* Begin PBXTargetDependency section */
+		006E70A723694C4C00CA0753 /* PBXTargetDependency */ = {
+			isa = PBXTargetDependency;
+			target = 0070F8FD1E025C88009A8631 /* iup */;
+			targetProxy = 006E70A623694C4C00CA0753 /* PBXContainerItemProxy */;
+		};
+		006E70A923694C4C00CA0753 /* PBXTargetDependency */ = {
+			isa = PBXTargetDependency;
+			target = 256D30DF22E40DD400B31C54 /* iupimglib */;
+			targetProxy = 006E70A823694C4C00CA0753 /* PBXContainerItemProxy */;
+		};
+		006E70AB23694C4C00CA0753 /* PBXTargetDependency */ = {
+			isa = PBXTargetDependency;
+			target = 00BE4F991F4E11CE002B7C86 /* iupweb */;
+			targetProxy = 006E70AA23694C4C00CA0753 /* PBXContainerItemProxy */;
+		};
+/* End PBXTargetDependency section */
+
 /* Begin PBXVariantGroup section */
 		0070FB821E02913A009A8631 /* Main.storyboard */ = {
 			isa = PBXVariantGroup;
@@ -1571,6 +1641,22 @@
 /* End PBXVariantGroup section */
 
 /* Begin XCBuildConfiguration section */
+		006E70A423694C3E00CA0753 /* Debug */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				CODE_SIGN_STYLE = Automatic;
+				PRODUCT_NAME = "$(TARGET_NAME)";
+			};
+			name = Debug;
+		};
+		006E70A523694C3E00CA0753 /* Release */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				CODE_SIGN_STYLE = Automatic;
+				PRODUCT_NAME = "$(TARGET_NAME)";
+			};
+			name = Release;
+		};
 		0070F9051E025C88009A8631 /* Debug */ = {
 			isa = XCBuildConfiguration;
 			buildSettings = {
@@ -1989,6 +2075,15 @@
 /* End XCBuildConfiguration section */
 
 /* Begin XCConfigurationList section */
+		006E70A323694C3E00CA0753 /* Build configuration list for PBXAggregateTarget "AllLibraries" */ = {
+			isa = XCConfigurationList;
+			buildConfigurations = (
+				006E70A423694C3E00CA0753 /* Debug */,
+				006E70A523694C3E00CA0753 /* Release */,
+			);
+			defaultConfigurationIsVisible = 0;
+			defaultConfigurationName = Release;
+		};
 		0070F8F91E025C88009A8631 /* Build configuration list for PBXProject "iup" */ = {
 			isa = XCConfigurationList;
 			buildConfigurations = (
