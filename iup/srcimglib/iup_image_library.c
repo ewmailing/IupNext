@@ -11,8 +11,9 @@
 
 #include "iup_imglib.h"
 
+#include "iup_export.h"
 
-void IupImageLibOpen(void)
+IUPIMGLIB_API void IupImageLibOpen(void)
 {
   if (!IupIsOpened())
     return;
