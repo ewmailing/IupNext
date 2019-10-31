@@ -1681,16 +1681,13 @@ static int iLayoutContextMenuHandleName_CB(Ihandle* menu)
   return IUP_DEFAULT;
 }
 
-static int iLayoutContextMenuAdd_CB(Ihandle* menu)
+static char* iLayoutSelectClassDialog(Ihandle* parent)
 {
-  iLayoutDialog* layoutdlg = (iLayoutDialog*)iupAttribGetInherit(menu, "_IUP_LAYOUTDIALOG");
-  Ihandle* ref_elem = (Ihandle*)iupAttribGetInherit(menu, "_IUP_LAYOUTCONTEXTELEMENT");
-  Ihandle* dlg = (Ihandle*)iupAttribGetInherit(menu, "_IUP_LAYOUTDLG");
   int ret, count, i;
   char** class_list_str, **p_str;
 
   count = IupGetAllClasses(NULL, 0);
-  class_list_str = (char**)malloc(count*sizeof(char*));
+  class_list_str = (char**)malloc(count * sizeof(char*));
 
   IupGetAllClasses(class_list_str, count);
   qsort(class_list_str, count, sizeof(char*), iLayoutCompareStr);
@@ -1703,12 +1700,12 @@ static int iLayoutContextMenuAdd_CB(Ihandle* menu)
     if (iclass->nativetype == IUP_TYPEVOID ||
         iclass->nativetype == IUP_TYPECONTROL ||
         iclass->nativetype == IUP_TYPECANVAS)
-        *p_str++ = class_list_str[i];
+      *p_str++ = class_list_str[i];
   }
   count = (int)(p_str - class_list_str);
 
   IupStoreGlobal("_IUP_OLD_PARENTDIALOG", IupGetGlobal("PARENTDIALOG"));
-  IupSetAttributeHandle(NULL, "PARENTDIALOG", dlg);
+  IupSetAttributeHandle(NULL, "PARENTDIALOG", parent);
 
   ret = IupListDialog(1, "Available Classes", count, (const char**)class_list_str, 1, 10, count < 15 ? count + 1 : 15, NULL);
 
@@ -1717,9 +1714,29 @@ static int iLayoutContextMenuAdd_CB(Ihandle* menu)
 
   if (ret != -1)
   {
+    char* name = class_list_str[ret];
+    free(class_list_str);
+    return name;
+  }
+  else
+  {
+    free(class_list_str);
+    return NULL;
+  }
+}
+
+static int iLayoutContextMenuInsert_CB(Ihandle* menu)
+{
+  Ihandle* dlg = (Ihandle*)iupAttribGetInherit(menu, "_IUP_LAYOUTDLG");
+  char* name = iLayoutSelectClassDialog(dlg);
+  if (name)
+  {
+    iLayoutDialog* layoutdlg = (iLayoutDialog*)iupAttribGetInherit(menu, "_IUP_LAYOUTDIALOG");
+    Ihandle* ref_elem = (Ihandle*)iupAttribGetInherit(menu, "_IUP_LAYOUTCONTEXTELEMENT");
     Ihandle* ret_ih = NULL;
     int add_child = IupGetInt(menu, "_IUP_ADDCHILD");
-    Ihandle* new_ih = IupCreate(class_list_str[ret]);
+
+    Ihandle* new_ih = IupCreate(name);
     int ref_id = IupTreeGetId(layoutdlg->tree, ref_elem);
 
     if (add_child)
@@ -1768,7 +1785,78 @@ static int iLayoutContextMenuAdd_CB(Ihandle* menu)
     iLayoutUpdateLayout(layoutdlg);
   }
 
-  free(class_list_str);
+  return IUP_DEFAULT;
+}
+
+static int iLayoutContextMenuInsertCursor_CB(Ihandle* menu)
+{
+  Ihandle* dlg = (Ihandle*)iupAttribGetInherit(menu, "_IUP_LAYOUTDLG");
+  char* name = iLayoutSelectClassDialog(dlg);
+  if (name)
+  {
+    iLayoutDialog* layoutdlg = (iLayoutDialog*)iupAttribGetInherit(menu, "_IUP_LAYOUTDIALOG");
+    Ihandle* container = (Ihandle*)iupAttribGetInherit(menu, "INSERTCURSOR"); /* the container */
+    Ihandle* ref_elem = (Ihandle*)iupAttribGetInherit(menu, "INSERTCURSOR_ELEMENT");
+    Ihandle* ret_ih = NULL;
+
+    Ihandle* new_ih = IupCreate(name);
+    int ref_id;
+    
+    if (!ref_elem)
+    {
+      int cx, cy;
+      if (sscanf(iupAttribGetInherit(menu, "INSERTCURSOR_ELEMENT_POS"), "%d,%d", &cx, &cy) == 2) /* cbox */
+      {
+        ret_ih = IupAppend(container, new_ih);
+        ref_elem = iupChildTreeGetPrevBrother(new_ih);
+        IupSetInt(new_ih, "CX", cx);
+        IupSetInt(new_ih, "CY", cy);
+        if (ref_elem)
+          ref_id = IupTreeGetId(layoutdlg->tree, ref_elem);
+        else
+          ref_id = IupTreeGetId(layoutdlg->tree, container); /* empty cbox */
+      }
+      else /* empty box */
+      {
+        ref_id = IupTreeGetId(layoutdlg->tree, container);
+        ret_ih = IupAppend(container, new_ih);
+      }
+    }
+    else
+    {
+      int insert_before = IupGetInt(menu, "INSERTCURSOR_BEFORE");
+
+      ref_id = IupTreeGetId(layoutdlg->tree, ref_elem);
+
+      if (insert_before)
+      {
+        ref_id--;
+        IupInsert(container, ref_elem, new_ih);
+      }
+      else
+      {
+        /* add as brother after reference */
+        if (ref_elem->brother)
+          /* add before the brother, so it will be the brother */
+          ret_ih = IupInsert(container, ref_elem->brother, new_ih);
+        else
+          ret_ih = IupAppend(container, new_ih);
+      }
+    }
+
+    if (!ret_ih)
+    {
+      IupMessage("Error", "Add failed. Invalid operation for this node.");
+      return IUP_DEFAULT;
+    }
+
+    layoutdlg->changed = 1;
+
+    /* add to the tree */
+    iLayoutTreeAddNode(layoutdlg->tree, ref_id, new_ih);
+
+    iLayoutUpdateLayout(layoutdlg);
+  }
 
   return IUP_DEFAULT;
 }
@@ -1951,8 +2039,6 @@ static int iLayoutContextMenuPaste_CB(Ihandle* menu)
   Ihandle* ref_elem = (Ihandle*)iupAttribGetInherit(menu, "_IUP_LAYOUTCONTEXTELEMENT");
   int paste_child = IupGetInt(menu, "_IUP_PASTECHILD");
   int ref_id = IupTreeGetId(layoutdlg->tree, ref_elem);
-  if (!iupObjectCheck(layoutdlg->copy))
-    return IUP_DEFAULT;
 
   new_ih = IupCreate(layoutdlg->copy->iclass->name);
   IupCopyClassAttributes(layoutdlg->copy, new_ih);
@@ -1998,6 +2084,75 @@ static int iLayoutContextMenuPaste_CB(Ihandle* menu)
   return IUP_DEFAULT;
 }
 
+static int iLayoutContextMenuPasteCursor_CB(Ihandle* menu)
+{
+  Ihandle* new_ih, *ret_ih = NULL;
+  iLayoutDialog* layoutdlg = (iLayoutDialog*)iupAttribGetInherit(menu, "_IUP_LAYOUTDIALOG");
+  Ihandle* container = (Ihandle*)iupAttribGetInherit(menu, "INSERTCURSOR"); /* the container */
+  Ihandle* ref_elem = (Ihandle*)iupAttribGetInherit(menu, "INSERTCURSOR_ELEMENT");
+  int ref_id;
+
+  new_ih = IupCreate(layoutdlg->copy->iclass->name);
+  IupCopyClassAttributes(layoutdlg->copy, new_ih);
+
+  if (!ref_elem)
+  {
+    int cx, cy;
+    if (sscanf(iupAttribGetInherit(menu, "INSERTCURSOR_ELEMENT_POS"), "%d,%d", &cx, &cy) == 2) /* cbox */
+    {
+      ret_ih = IupAppend(container, new_ih);
+      ref_elem = iupChildTreeGetPrevBrother(new_ih);
+      IupSetInt(new_ih, "CX", cx);
+      IupSetInt(new_ih, "CY", cy);
+      if (ref_elem)
+        ref_id = IupTreeGetId(layoutdlg->tree, ref_elem);
+      else
+        ref_id = IupTreeGetId(layoutdlg->tree, container);  /* empty cbox */
+    }
+    else /* empty box */
+    {
+      ref_id = IupTreeGetId(layoutdlg->tree, container);
+      ret_ih = IupAppend(container, new_ih);
+    }
+  }
+  else
+  {
+    int insert_before = IupGetInt(menu, "INSERTCURSOR_BEFORE");
+
+    ref_id = IupTreeGetId(layoutdlg->tree, ref_elem);
+
+    if (insert_before)
+    {
+      ref_id--;
+      IupInsert(container, ref_elem, new_ih);
+    }
+    else
+    {
+      /* add as brother after reference */
+      if (ref_elem->brother)
+        /* add before the brother, so it will be the brother */
+        ret_ih = IupInsert(container, ref_elem->brother, new_ih);
+      else
+        ret_ih = IupAppend(container, new_ih);
+    }
+  }
+
+  if (!ret_ih)
+  {
+    IupMessage("Error", "Paste failed. Invalid operation for this node.");
+    return IUP_DEFAULT;
+  }
+
+  layoutdlg->changed = 1;
+
+  /* add to the tree */
+  iLayoutTreeAddNode(layoutdlg->tree, ref_id, new_ih);
+
+  iLayoutUpdateLayout(layoutdlg);
+
+  return IUP_DEFAULT;
+}
+
 static void iLayoutContextMenu(iLayoutDialog* layoutdlg, Ihandle* elem, Ihandle* dlg)
 {
   Ihandle* menu;
@@ -2008,6 +2163,15 @@ static void iLayoutContextMenu(iLayoutDialog* layoutdlg, Ihandle* elem, Ihandle*
   int can_unmap = elem->handle != NULL;
   int can_blink = (elem->iclass->nativetype != IUP_TYPEVOID && IupGetInt(elem, "VISIBLE"));
   int can_focus = iupFocusCanAccept(elem);
+  Ihandle* canvas = IupGetBrother(layoutdlg->tree);
+  Ihandle* insert_cursor = (Ihandle*)IupGetAttribute(canvas, "INSERTCURSOR");
+  int can_cursor = insert_cursor != NULL;
+
+  if (!iupObjectCheck(layoutdlg->copy))
+  {
+    layoutdlg->copy = NULL;
+    can_paste = 0;
+  }
 
   menu = IupMenu(
     IupSetCallbacks(IupItem("Properties...", NULL), "ACTION", iLayoutContextMenuProperties_CB, NULL),
@@ -2023,17 +2187,29 @@ static void iLayoutContextMenu(iLayoutDialog* layoutdlg, Ihandle* elem, Ihandle*
     IupSetCallbacks(IupSetAttributes(IupItem("Copy", NULL), can_copy ? "ACTIVE=Yes" : "ACTIVE=No"), "ACTION", iLayoutContextMenuCopy_CB, NULL),
     IupSetCallbacks(IupSetAttributes(IupItem("Paste Child", NULL), can_paste && is_container ? "ACTIVE=Yes, _IUP_PASTECHILD=1" : "ACTIVE=No, _IUP_PASTECHILD=1"), "ACTION", iLayoutContextMenuPaste_CB, NULL),
     IupSetCallbacks(IupSetAttributes(IupItem("Paste Brother", NULL), can_paste ? "ACTIVE=Yes" : "ACTIVE=No"), "ACTION", iLayoutContextMenuPaste_CB, NULL),
+    IupSetCallbacks(IupSetAttributes(IupItem("Paste at Cursor", NULL), can_paste && can_cursor ? "ACTIVE=Yes" : "ACTIVE=No"), "ACTION", iLayoutContextMenuPasteCursor_CB, NULL),
     IupSeparator(),
-    IupSetCallbacks(IupSetAttributes(IupItem("Add Child...", NULL), is_container ? "ACTIVE=Yes, _IUP_ADDCHILD=1" : "ACTIVE=No, _IUP_ADDCHILD=1"), "ACTION", iLayoutContextMenuAdd_CB, NULL),
-    IupSetCallbacks(IupSetAttributes(IupItem("Add Brother...", NULL), "_IUP_ADDCHILD=0"), "ACTION", iLayoutContextMenuAdd_CB, NULL),
+    IupSetCallbacks(IupSetAttributes(IupItem("Insert Child...", NULL), is_container ? "ACTIVE=Yes, _IUP_ADDCHILD=1" : "ACTIVE=No, _IUP_ADDCHILD=1"), "ACTION", iLayoutContextMenuInsert_CB, NULL),
+    IupSetCallbacks(IupSetAttributes(IupItem("Insert Brother...", NULL), "_IUP_ADDCHILD=0"), "ACTION", iLayoutContextMenuInsert_CB, NULL),
+    IupSetCallbacks(IupSetAttributes(IupItem("Insert at Cursor...", NULL), can_cursor ? "ACTIVE=Yes" : "ACTIVE=No"), "ACTION", iLayoutContextMenuInsertCursor_CB, NULL),
     IupSetCallbacks(IupItem("Remove...\tDel", NULL), "ACTION", iLayoutContextMenuRemove_CB, NULL),
     NULL);
+
+  if (can_cursor)
+  {
+    iupAttribSet(menu, "INSERTCURSOR", (char*)insert_cursor);
+    iupAttribSetStr(menu, "INSERTCURSOR_ELEMENT_POS", iupAttribGet(canvas, "INSERTCURSOR_ELEMENT_POS"));
+    iupAttribSet(menu, "INSERTCURSOR_ELEMENT", iupAttribGet(canvas, "INSERTCURSOR_ELEMENT"));
+    iupAttribSetStr(menu, "INSERTCURSOR_BEFORE", iupAttribGet(canvas, "INSERTCURSOR_BEFORE"));
+  }
 
   iupAttribSet(menu, "_IUP_LAYOUTCONTEXTELEMENT", (char*)elem);
   iupAttribSet(menu, "_IUP_LAYOUTDIALOG", (char*)layoutdlg);
   iupAttribSet(menu, "_IUP_LAYOUTDLG", (char*)dlg);
 
   IupPopup(menu, IUP_MOUSEPOS, IUP_MOUSEPOS);
+
+  IupDestroy(menu);
 }
 
 
@@ -2219,7 +2395,7 @@ static int iLayoutCanvasButton_CB(Ihandle* canvas, int but, int pressed, int x, 
     Ihandle* dlg = IupGetDialog(canvas);
     iLayoutDialog* layoutdlg = (iLayoutDialog*)iupAttribGet(dlg, "_IUP_LAYOUTDIALOG");
     Ihandle* elem = iLayoutGetDialogElementByPos(layoutdlg, x, y);
-    if (elem && elem != layoutdlg->dialog)
+    if (elem)
       iLayoutContextMenu(layoutdlg, elem, dlg);
   }
   return IUP_DEFAULT;
@@ -2321,12 +2497,15 @@ static int iLayoutCanvasMotion_CB(Ihandle* canvas, int x, int y, char* status)
       int r_x = x - native_parent_x;
       int r_y = y - native_parent_y;
 
-      iupAttribSet(canvas, "INSERTCURSOR", "1");
+      iupAttribSet(canvas, "INSERTCURSOR", (char*)container);
 
       if (IupClassMatch(container, "cbox"))
       {
         iupAttribSetStrf(canvas, "INSERTCURSOR_POINT", "%d,%d", x, y);
+        iupAttribSetStrf(canvas, "INSERTCURSOR_ELEMENT_POS", "%d,%d", r_x - container->x, r_y - container->y);
         iupAttribSet(canvas, "INSERTCURSOR_LINE", NULL);
+        iupAttribSet(canvas, "INSERTCURSOR_ELEMENT", NULL);
+        iupAttribSet(canvas, "INSERTCURSOR_BEFORE", NULL);
         IupUpdate(canvas);
         return IUP_DEFAULT;
       }
@@ -2369,71 +2548,125 @@ static int iLayoutCanvasMotion_CB(Ihandle* canvas, int x, int y, char* status)
           }
         }
 
-        if (is_horizontal)  /* insertion line will be a vertical line to mark an horizontal position */
+        if (!child_min) /* empty container */
         {
-          int c_x = child_min->x + child_min->currentwidth / 2;
-          int xx;
-          int y1;
-          int y2;
-
-          if (is_multi)
+          if (is_horizontal)  /* insertion line will be a vertical line to mark an horizontal position */
           {
-            y1 = native_parent_y + child_min->y;
-            y2 = native_parent_y + child_min->y + child_min->currentheight - 1;
+            int y1 = container_y;
+            int y2 = container_y + container->currentheight - 1;
+            int xx = container_x;
 
-            if (r_x < c_x)
-              xx = native_parent_x + child_min->x;
-            else
-              xx = native_parent_x + child_min->x + child_min->currentwidth - 1;
+            iupAttribSetStrf(canvas, "INSERTCURSOR_LINE", "%d,%d,%d,%d", xx, y1, xx, y2);
+            iupAttribSet(canvas, "INSERTCURSOR_POINT", NULL);
+            iupAttribSet(canvas, "INSERTCURSOR_ELEMENT_POS", NULL);
+            iupAttribSet(canvas, "INSERTCURSOR_ELEMENT", NULL);
+            iupAttribSet(canvas, "INSERTCURSOR_BEFORE", NULL);
+            IupUpdate(canvas);
+            return IUP_DEFAULT;
           }
-          else
+          else /* ORIENTATION=VERTICAL */    /* insertion line will be an horizontal line to mark a vertical position */
           {
-            y1 = container_y;
-            y2 = container_y + container->currentheight - 1;
+            int x1 = container_x;
+            int x2 = container_x + container->currentwidth - 1;
+            int yy = container_y;
 
-            if (r_x < c_x)
-              xx = native_parent_x + iLayoutGetBetweenPosX(NULL, child_min);
-            else
-              xx = native_parent_x + iLayoutGetBetweenPosX(child_min, NULL);
+            iupAttribSetStrf(canvas, "INSERTCURSOR_LINE", "%d,%d,%d,%d", x1, yy, x2, yy);
+            iupAttribSet(canvas, "INSERTCURSOR_POINT", NULL);
+            iupAttribSet(canvas, "INSERTCURSOR_ELEMENT_POS", NULL);
+            iupAttribSet(canvas, "INSERTCURSOR_ELEMENT", NULL);
+            iupAttribSet(canvas, "INSERTCURSOR_BEFORE", NULL);
+            IupUpdate(canvas);
+            return IUP_DEFAULT;
           }
-
-          iupAttribSetStrf(canvas, "INSERTCURSOR_LINE", "%d,%d,%d,%d", xx, y1, xx, y2);
-          iupAttribSet(canvas, "INSERTCURSOR_POINT", NULL);
-          IupUpdate(canvas);
-          return IUP_DEFAULT;
         }
-        else /* ORIENTATION=VERTICAL */    /* insertion line will be an horizontal line to mark a vertical position */
+        else
         {
-          int c_y = child_min->y + child_min->currentheight / 2;
-          int yy;
-          int x1;
-          int x2;
-
-          if (is_multi)
+          if (is_horizontal)  /* insertion line will be a vertical line to mark an horizontal position */
           {
-            x1 = native_parent_x + child_min->x;
-            x2 = native_parent_x + child_min->x + child_min->currentwidth - 1;
+            int c_x = child_min->x + child_min->currentwidth / 2;
+            int xx;
+            int y1;
+            int y2;
+            int insert_before = 0;
 
-            if (r_y < c_y)
-              yy = native_parent_y + child_min->y;
+            if (is_multi)
+            {
+              y1 = native_parent_y + child_min->y;
+              y2 = native_parent_y + child_min->y + child_min->currentheight - 1;
+
+              if (r_x < c_x)
+              {
+                insert_before = 1;
+                xx = native_parent_x + child_min->x;
+              }
+              else
+                xx = native_parent_x + child_min->x + child_min->currentwidth - 1;
+            }
             else
-              yy = native_parent_y + child_min->y + child_min->currentheight - 1;
+            {
+              y1 = container_y;
+              y2 = container_y + container->currentheight - 1;
+
+              if (r_x < c_x)
+              {
+                insert_before = 1;
+                xx = native_parent_x + iLayoutGetBetweenPosX(NULL, child_min);
+              }
+              else
+                xx = native_parent_x + iLayoutGetBetweenPosX(child_min, NULL);
+            }
+
+            iupAttribSetStrf(canvas, "INSERTCURSOR_LINE", "%d,%d,%d,%d", xx, y1, xx, y2);
+            iupAttribSet(canvas, "INSERTCURSOR_ELEMENT", (char*)child_min);
+            iupAttribSetInt(canvas, "INSERTCURSOR_BEFORE", insert_before);
+            iupAttribSet(canvas, "INSERTCURSOR_POINT", NULL);
+            iupAttribSet(canvas, "INSERTCURSOR_ELEMENT_POS", NULL);
+            IupUpdate(canvas);
+            return IUP_DEFAULT;
           }
-          else
+          else /* ORIENTATION=VERTICAL */    /* insertion line will be an horizontal line to mark a vertical position */
           {
-            x1 = container_x;
-            x2 = container_x + container->currentwidth - 1;
+            int c_y = child_min->y + child_min->currentheight / 2;
+            int yy;
+            int x1;
+            int x2;
+            int insert_before = 0;
 
-            if (r_y < c_y)
-              yy = native_parent_y + iLayoutGetBetweenPosY(NULL, child_min);
+            if (is_multi)
+            {
+              x1 = native_parent_x + child_min->x;
+              x2 = native_parent_x + child_min->x + child_min->currentwidth - 1;
+
+              if (r_y < c_y)
+              {
+                insert_before = 1;
+                yy = native_parent_y + child_min->y;
+              }
+              else
+                yy = native_parent_y + child_min->y + child_min->currentheight - 1;
+            }
             else
-              yy = native_parent_y + iLayoutGetBetweenPosY(child_min, NULL);
-          }
+            {
+              x1 = container_x;
+              x2 = container_x + container->currentwidth - 1;
 
-          iupAttribSetStrf(canvas, "INSERTCURSOR_LINE", "%d,%d,%d,%d", x1, yy, x2, yy);
-          iupAttribSet(canvas, "INSERTCURSOR_POINT", NULL);
-          IupUpdate(canvas);
-          return IUP_DEFAULT;
+              if (r_y < c_y)
+              {
+                insert_before = 1;
+                yy = native_parent_y + iLayoutGetBetweenPosY(NULL, child_min);
+              }
+              else
+                yy = native_parent_y + iLayoutGetBetweenPosY(child_min, NULL);
+            }
+
+            iupAttribSetStrf(canvas, "INSERTCURSOR_LINE", "%d,%d,%d,%d", x1, yy, x2, yy);
+            iupAttribSet(canvas, "INSERTCURSOR_ELEMENT", (char*)child_min);
+            iupAttribSetInt(canvas, "INSERTCURSOR_BEFORE", insert_before);
+            iupAttribSet(canvas, "INSERTCURSOR_POINT", NULL);
+            iupAttribSet(canvas, "INSERTCURSOR_ELEMENT_POS", NULL);
+            IupUpdate(canvas);
+            return IUP_DEFAULT;
+          }
         }
       }
     }
@@ -2443,7 +2676,10 @@ static int iLayoutCanvasMotion_CB(Ihandle* canvas, int x, int y, char* status)
   {
     iupAttribSet(canvas, "INSERTCURSOR", NULL);
     iupAttribSet(canvas, "INSERTCURSOR_POINT", NULL);
+    iupAttribSet(canvas, "INSERTCURSOR_ELEMENT_POS", NULL);
     iupAttribSet(canvas, "INSERTCURSOR_LINE", NULL);
+    iupAttribSet(canvas, "INSERTCURSOR_ELEMENT", NULL);
+    iupAttribSet(canvas, "INSERTCURSOR_BEFORE", NULL);
     IupUpdate(canvas);
   }
   return IUP_DEFAULT;
