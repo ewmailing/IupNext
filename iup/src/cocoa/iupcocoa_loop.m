@@ -16,6 +16,7 @@
 
 static IFidle mac_idle_cb = NULL;
 static int mac_main_loop = 0;
+extern NSMutableArray* g_stackOfModals;
 
 
 void iupdrvSetIdleFunction(Icallback f)
@@ -27,7 +28,23 @@ void IupExitLoop(void)
 {
 	if([NSApp isRunning])
 	{
-		// This is trickier than it should be...
+		// This is trickier than it should be (2)...
+		// IUP_CLOSE in callbacks is a big problem. I think the other implementations assume that modal loops are driven by nested calls to Loop.
+		// But modal dialogs really don't work like that on Mac.
+		// So I think to exit a modal dialog via IupPopup, typically you have a control (e.g. button) callback return IUP_CLOSE.
+		// This on other platforms calls IupExitLoop.
+		// And there is a nested counter that unrolls.
+		// But since modal dialogs here don't work like this, we end up quiting the program.
+		// I'm not sure how to handle this. I think I need to talk to Scuri about this. This may require API verification and maybe a redesign.
+		// But for now, I can add a hack that looks for if a modal window is present. If so, this will stop the modal call.
+		bool was_in_modal = cocoaDialogExitModal();
+		if(was_in_modal)
+		{
+			return;
+		}
+
+
+		// This is trickier than it should be (1)...
 		// If IUP triggered the exit by calling IupExitLoop (via IUP_CLOSE directive)
 		// then this branch is taken and we need to call [NSApp stop:nil] to quit.
 		// But if the user quits naturally, e.g. Quit menu,

@@ -24,6 +24,8 @@
 
 static NSAutoreleasePool* s_autoreleasePool = nil;
 static IupAppDelegate* s_appDelegate = nil;
+// This is a hack to try to get around modal dialogs, IUP_CLOSE, and the fact that IupExitLoop doesn't work the same way.
+NSMutableArray* g_stackOfModals = nil;
 
 
 #if 0
@@ -149,6 +151,10 @@ int iupdrvOpen(int *argc, char ***argv)
 		[NSWindow setAllowsAutomaticWindowTabbing:NO];
 	}
 	
+	if(nil == g_stackOfModals)
+	{
+		g_stackOfModals = [[NSMutableArray alloc] init];
+	}
 	
 //  IupSetGlobal("DRIVER", "MAC");
   IupSetGlobal("DRIVER", "Cocoa");
@@ -177,7 +183,10 @@ void iupdrvClose(void)
 
 	// I think the NSStatusItems get cleaned up via Iup because they are IupDialogs and Iup should run through the UnMapMethod.
 
-
+	// Consider: What if there are modal sessions left when closing? But since this variable is a hack, I don't think this is the right mechanism to use to try to clean this. The IUP core would be better.
+	[g_stackOfModals release];
+	g_stackOfModals = nil;
+	
 	[s_appDelegate release];
 	s_appDelegate = nil;
 	
