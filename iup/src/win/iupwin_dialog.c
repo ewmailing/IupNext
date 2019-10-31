@@ -141,8 +141,14 @@ void iupdrvDialogSetVisible(Ihandle* ih, int visible)
     if (iupAttribGetBoolean(ih, "MAXIMIZEATPARENT"))
     {
       Ihandle* parent = IupGetAttributeHandle(ih, "PARENTDIALOG");
-      if (parent)
+      if (parent && parent->handle)
         winDialogMaximizeAtParent(ih->handle, parent->handle);
+    }
+    else if (iupAttribGetBoolean(ih, "MAXIMIZEATDIALOG"))
+    {
+      Ihandle* dialog = IupGetAttributeHandle(ih, "MAXIMIZEDIALOG");
+      if (dialog && dialog->handle)
+        winDialogMaximizeAtParent(ih->handle, dialog->handle);
     }
   }
 
@@ -2116,6 +2122,8 @@ void iupdrvDialogInitClass(Iclass* ic)
   iupClassRegisterAttribute(ic, "SHOWNOACTIVATE", NULL, NULL, NULL, NULL, IUPAF_NO_INHERIT);
   iupClassRegisterAttribute(ic, "SHOWMINIMIZENEXT", NULL, NULL, NULL, NULL, IUPAF_NO_INHERIT);
   iupClassRegisterAttribute(ic, "MAXIMIZEATPARENT", NULL, NULL, NULL, NULL, IUPAF_NO_INHERIT);
+  iupClassRegisterAttribute(ic, "MAXIMIZEATDIALOG", NULL, NULL, NULL, NULL, IUPAF_NO_INHERIT);
+  iupClassRegisterAttribute(ic, "MAXIMIZEDIALOG", NULL, NULL, NULL, NULL, IUPAF_NO_DEFAULTVALUE | IUPAF_IHANDLENAME | IUPAF_NO_INHERIT);
 
   iupClassRegisterAttribute(ic, "COMPOSITED", NULL, NULL, NULL, NULL, IUPAF_NOT_MAPPED);
 
