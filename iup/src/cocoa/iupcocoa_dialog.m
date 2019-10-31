@@ -274,7 +274,7 @@ static void cocoaDialogEndModal(Ihandle* ih)
 	[g_stackOfModals removeLastObject];
 }
 
-bool cocoaDialogExitModal(Ihandle* ih)
+bool cocoaDialogExitModal()
 {
 	if([g_stackOfModals count] > 0)
 	{

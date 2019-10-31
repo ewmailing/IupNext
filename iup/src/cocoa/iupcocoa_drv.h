@@ -122,7 +122,7 @@ NSImage* iupCocoaImageNSImageFromPixels(int width, int height, int bpp, iupColor
 
 
 // Kind of a hack to handle IUP_CLOSE for modal dialogs
-bool cocoaDialogExitModal(Ihandle* ih);
+bool cocoaDialogExitModal(void);
 
 
 #if 0
