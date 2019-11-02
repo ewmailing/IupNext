@@ -149,6 +149,15 @@ static void iChildTreeInsert(Ihandle* parent, Ihandle* ref_child, Ihandle* child
   if (!ref_child)
     ref_child = parent->firstchild;
 
+  if ((ref_child == parent->firstchild) && (ref_child->flags & IUP_INTERNAL))
+  {
+    /* the first child is internal, so add after it */
+    child->parent = parent;
+    child->brother = ref_child->brother;
+    ref_child->brother = child;
+    return;
+  }
+
   /* Finds the reference child entry inside the parent's child list */
   for (c = parent->firstchild; c; c = c->brother)
   {
@@ -211,8 +220,7 @@ IUP_API Ihandle* IupInsert(Ihandle* parent, Ihandle* ref_child, Ihandle* child)
 
 
   /* if already at the parent box, allow to move even if mapped */
-  if (parent->iclass->nativetype == IUP_TYPEVOID &&
-      iChildTreeFind(parent, child))
+  if (parent->iclass->nativetype == IUP_TYPEVOID && iChildTreeFind(parent, child))
   {
     iChildTreeDetach(parent, child);
     iChildTreeInsert(parent, ref_child, child);
@@ -271,8 +279,7 @@ IUP_API Ihandle* IupAppend(Ihandle* parent, Ihandle* child)
 
 
   /* if already at the parent box, allow to move even if mapped */
-  if (parent->iclass->nativetype == IUP_TYPEVOID &&
-      iChildTreeFind(parent, child))
+  if (parent->iclass->nativetype == IUP_TYPEVOID && iChildTreeFind(parent, child))
   {
     iChildTreeDetach(parent, child);
     iupChildTreeAppend(parent, child);
