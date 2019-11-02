@@ -11,7 +11,7 @@
 #ifdef IUP_USE_GTK
 #include <glib.h>
 /* #include <gthread.h> */
-#elseif WIN32
+#elif defined(_WIN32)
 #include <windows.h>
 #else
 #warning "FIXME: IupThread platform not identified/supported"
@@ -36,7 +36,7 @@ static int iThreadSetJoinAttrib(Ihandle* ih, const char* value)
 #ifdef IUP_USE_GTK
   GThread* thread = (GThread*)iupAttribGet(ih, "THREAD");
   g_thread_join(thread);
-#elseif WIN32
+#elif defined(_WIN32)
   HANDLE thread = (HANDLE)iupAttribGet(ih, "THREAD");
   WaitForSingleObject(thread, INFINITE);
 #endif
@@ -52,7 +52,7 @@ static int iThreadSetYieldAttrib(Ihandle* ih, const char* value)
 
 #ifdef IUP_USE_GTK
   g_thread_yield();
-#elseif WIN32
+#elif defined(_WIN32)
   SwitchToThread();
 #endif
   return 0;
@@ -63,7 +63,7 @@ static char* iThreadGetIsCurrentAttrib(Ihandle* ih)
 #ifdef IUP_USE_GTK
   GThread* thread = (GThread*)iupAttribGet(ih, "THREAD");
   return iupStrReturnBoolean(thread == g_thread_self());
-#elseif WIN32
+#elif defined(_WIN32)
   HANDLE thread = (HANDLE)iupAttribGet(ih, "THREAD");
   return iupStrReturnBoolean(thread == GetCurrentThread());
 #else
@@ -78,7 +78,7 @@ static int iThreadSetExitAttrib(Ihandle* ih, const char* value)
 
 #ifdef IUP_USE_GTK
   g_thread_exit((gpointer)exit_code);
-#elseif WIN32
+#elif defined(_WIN32)
   ExitThread(exit_code);
 #endif	
 
@@ -93,7 +93,7 @@ static int iThreadSetLockAttrib(Ihandle* ih, const char* value)
 #ifdef IUP_USE_GTK
     GMutex* mutex = (GMutex*)iupAttribGet(ih, "MUTEX");
     g_mutex_lock(mutex);
-#elseif WIN32
+#elif defined(_WIN32)
     HANDLE mutex = (HANDLE)iupAttribGet(ih, "MUTEX");
     WaitForSingleObject(mutex, INFINITE);
 #endif	
@@ -103,7 +103,7 @@ static int iThreadSetLockAttrib(Ihandle* ih, const char* value)
 #ifdef IUP_USE_GTK
     GMutex* mutex = (GMutex*)iupAttribGet(ih, "MUTEX");
     g_mutex_unlock(mutex);
-#elseif WIN32
+#elif defined(_WIN32)
     HANDLE mutex = (HANDLE)iupAttribGet(ih, "MUTEX");
     ReleaseMutex(mutex);
 #endif
@@ -114,7 +114,7 @@ static int iThreadSetLockAttrib(Ihandle* ih, const char* value)
 
 #ifdef IUP_USE_GTK
 static void* ClientThreadFunc(void* obj)
-#elseif WIN32
+#elif defined(_WIN32)
 static DWORD WINAPI ClientThreadFunc(LPVOID obj)
 #else
 static void* ClientThreadFunc(void* obj)
@@ -139,7 +139,7 @@ static int iThreadSetStartAttrib(Ihandle* ih, const char* value)
     old_thread = (GThread*)iupAttribGet(ih, "THREAD");
     if (old_thread) g_thread_unref(old_thread);
     iupAttribSet(ih, "THREAD", (char*)thread);
-#elseif WIN32
+#elif defined(_WIN32)
     DWORD threadId;
     HANDLE thread = CreateThread(0, 0, ClientThreadFunc, ih, 0, &threadId);
     HANDLE old_thread = (HANDLE)iupAttribGet(ih, "THREAD");
@@ -155,7 +155,7 @@ static int iThreadCreateMethod(Ihandle* ih, void **params)
 {
 #ifdef IUP_USE_GTK
   GMutex* mutex = (GMutex*)malloc(sizeof(GMutex));
-#elseif WIN32
+#elif defined(_WIN32)
   HANDLE mutex;
 #else
   void* mutex = NULL;
@@ -164,7 +164,7 @@ static int iThreadCreateMethod(Ihandle* ih, void **params)
 
 #ifdef IUP_USE_GTK
   g_mutex_init(mutex);
-#elseif WIN32
+#elif defined(_WIN32)
   mutex = CreateMutexA(NULL, FALSE, "mutex");
 #endif
 
@@ -181,7 +181,7 @@ static void iThreadDestroyMethod(Ihandle* ih)
   g_mutex_clear(mutex);
   free(mutex);
   if (thread) g_thread_unref(thread);
-#elseif WIN32
+#elif defined(_WIN32)
   HANDLE mutex = (HANDLE)iupAttribGet(ih, "MUTEX");
   HANDLE thread = (HANDLE)iupAttribGet(ih, "THREAD");
   CloseHandle(mutex);
