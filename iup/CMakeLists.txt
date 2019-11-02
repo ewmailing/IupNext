@@ -465,6 +465,7 @@ SET(IUP_COMMON_SOURCE_FILES
 	${CMAKE_SOURCE_DIR}/src/iup_classattrib.c
 	${CMAKE_SOURCE_DIR}/src/iup_classbase.c
 	${CMAKE_SOURCE_DIR}/src/iup_classbase.h
+	${CMAKE_SOURCE_DIR}/src/iup_classinfo.c
 	${CMAKE_SOURCE_DIR}/src/iup_colorbar.c
 	${CMAKE_SOURCE_DIR}/src/iup_colorbrowser.c
 	${CMAKE_SOURCE_DIR}/src/iup_colordlg.c
@@ -532,6 +533,13 @@ SET(IUP_COMMON_SOURCE_FILES
 	${CMAKE_SOURCE_DIR}/src/iup_link.c
 	${CMAKE_SOURCE_DIR}/src/iup_list.c
 	${CMAKE_SOURCE_DIR}/src/iup_list.h
+	${CMAKE_SOURCE_DIR}/src/iup_lng_czech_utf8.h
+	${CMAKE_SOURCE_DIR}/src/iup_lng_english.h
+	${CMAKE_SOURCE_DIR}/src/iup_lng_portuguese.h
+	${CMAKE_SOURCE_DIR}/src/iup_lng_portuguese_utf8.h
+	${CMAKE_SOURCE_DIR}/src/iup_lng_russian_utf8.h
+	${CMAKE_SOURCE_DIR}/src/iup_lng_spanish.h
+	${CMAKE_SOURCE_DIR}/src/iup_lng_spanish_utf8.h
 	${CMAKE_SOURCE_DIR}/src/iup_loop.c
 	${CMAKE_SOURCE_DIR}/src/iup_loop.h
 	${CMAKE_SOURCE_DIR}/src/iup_mask.c
@@ -578,6 +586,7 @@ SET(IUP_COMMON_SOURCE_FILES
 	${CMAKE_SOURCE_DIR}/src/iup_tabs.h
 	${CMAKE_SOURCE_DIR}/src/iup_text.c
 	${CMAKE_SOURCE_DIR}/src/iup_text.h
+	${CMAKE_SOURCE_DIR}/src/iup_thread.c
 	${CMAKE_SOURCE_DIR}/src/iup_timer.c
 	${CMAKE_SOURCE_DIR}/src/iup_timer.h
 	${CMAKE_SOURCE_DIR}/src/iup_toggle.c
@@ -1357,6 +1366,9 @@ ELSEIF(IUP_USE_GTK3 OR IUP_USE_GTK2)
 
 	ENDIF()
 
+
+	SET(IUP_C_FLAGS "${IUP_C_FLAGS} -DGTK_DISABLE_DEPRECATED")
+	
 	IF(IUP_USE_GTK2)
 		LIST(APPEND IUP_SOURCE_FILES
 			${IUP_GTK2_SOURCE_FILES}
@@ -1380,6 +1392,7 @@ ELSEIF(IUP_USE_GTK3 OR IUP_USE_GTK2)
 		LIST(APPEND IUPWEB_LINK_LIBRARIES 
 			${GTK3_LIBRARIES}
 		)
+		SET(IUP_C_FLAGS "${IUP_C_FLAGS} -DGDK_DISABLE_DEPRECATED -DGSEAL_ENABLE")
 		
 	ELSE()
 		MESSAGE("Unsupported GTK version")

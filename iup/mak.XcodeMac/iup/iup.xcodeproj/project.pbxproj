@@ -53,6 +53,16 @@
 		006E70932368320600CA0753 /* iupluafiledlg.h in Headers */ = {isa = PBXBuildFile; fileRef = 006E70902368320500CA0753 /* iupluafiledlg.h */; };
 		006E70942368320600CA0753 /* iupdraw_cd.h in Headers */ = {isa = PBXBuildFile; fileRef = 006E70912368320500CA0753 /* iupdraw_cd.h */; };
 		006E70952368320600CA0753 /* iupfiledlg.h in Headers */ = {isa = PBXBuildFile; fileRef = 006E70922368320500CA0753 /* iupfiledlg.h */; };
+		006E70B6236D2C1B00CA0753 /* iup_lng_russian_utf8.h in Headers */ = {isa = PBXBuildFile; fileRef = 006E70AC236D2C1700CA0753 /* iup_lng_russian_utf8.h */; };
+		006E70B7236D2C1B00CA0753 /* iup_lng_czech_utf8.h in Headers */ = {isa = PBXBuildFile; fileRef = 006E70AD236D2C1800CA0753 /* iup_lng_czech_utf8.h */; };
+		006E70B8236D2C1B00CA0753 /* iup_lng_spanish_utf8.h in Headers */ = {isa = PBXBuildFile; fileRef = 006E70AE236D2C1800CA0753 /* iup_lng_spanish_utf8.h */; };
+		006E70B9236D2C1B00CA0753 /* iup_lng_portuguese_utf8.h in Headers */ = {isa = PBXBuildFile; fileRef = 006E70AF236D2C1900CA0753 /* iup_lng_portuguese_utf8.h */; };
+		006E70BA236D2C1B00CA0753 /* iup_elempropdlg.c in Sources */ = {isa = PBXBuildFile; fileRef = 006E70B0236D2C1900CA0753 /* iup_elempropdlg.c */; };
+		006E70BB236D2C1B00CA0753 /* iup_lng_portuguese.h in Headers */ = {isa = PBXBuildFile; fileRef = 006E70B1236D2C1900CA0753 /* iup_lng_portuguese.h */; };
+		006E70BC236D2C1B00CA0753 /* iup_lng_english.h in Headers */ = {isa = PBXBuildFile; fileRef = 006E70B2236D2C1A00CA0753 /* iup_lng_english.h */; };
+		006E70BD236D2C1B00CA0753 /* iup_lng_spanish.h in Headers */ = {isa = PBXBuildFile; fileRef = 006E70B3236D2C1A00CA0753 /* iup_lng_spanish.h */; };
+		006E70BE236D2C1B00CA0753 /* iup_thread.c in Sources */ = {isa = PBXBuildFile; fileRef = 006E70B4236D2C1A00CA0753 /* iup_thread.c */; };
+		006E70BF236D2C1B00CA0753 /* iup_classinfo.c in Sources */ = {isa = PBXBuildFile; fileRef = 006E70B5236D2C1B00CA0753 /* iup_classinfo.c */; };
 		0070FB9A1E0E0B79009A8631 /* IupAppDelegate.h in Headers */ = {isa = PBXBuildFile; fileRef = 0070FB981E0E0B79009A8631 /* IupAppDelegate.h */; };
 		0070FB9B1E0E0B79009A8631 /* IupAppDelegate.m in Sources */ = {isa = PBXBuildFile; fileRef = 0070FB991E0E0B79009A8631 /* IupAppDelegate.m */; };
 		007E3198204CCC9800ED15CB /* iupluascripterdlg.h in Headers */ = {isa = PBXBuildFile; fileRef = 007E3196204CCC9600ED15CB /* iupluascripterdlg.h */; settings = {ATTRIBUTES = (Public, ); }; };
@@ -455,6 +465,16 @@
 		006E70902368320500CA0753 /* iupluafiledlg.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = iupluafiledlg.h; sourceTree = "<group>"; };
 		006E70912368320500CA0753 /* iupdraw_cd.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = iupdraw_cd.h; sourceTree = "<group>"; };
 		006E70922368320500CA0753 /* iupfiledlg.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = iupfiledlg.h; sourceTree = "<group>"; };
+		006E70AC236D2C1700CA0753 /* iup_lng_russian_utf8.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = iup_lng_russian_utf8.h; sourceTree = "<group>"; };
+		006E70AD236D2C1800CA0753 /* iup_lng_czech_utf8.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = iup_lng_czech_utf8.h; sourceTree = "<group>"; };
+		006E70AE236D2C1800CA0753 /* iup_lng_spanish_utf8.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = iup_lng_spanish_utf8.h; sourceTree = "<group>"; };
+		006E70AF236D2C1900CA0753 /* iup_lng_portuguese_utf8.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = iup_lng_portuguese_utf8.h; sourceTree = "<group>"; };
+		006E70B0236D2C1900CA0753 /* iup_elempropdlg.c */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.c; path = iup_elempropdlg.c; sourceTree = "<group>"; };
+		006E70B1236D2C1900CA0753 /* iup_lng_portuguese.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = iup_lng_portuguese.h; sourceTree = "<group>"; };
+		006E70B2236D2C1A00CA0753 /* iup_lng_english.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = iup_lng_english.h; sourceTree = "<group>"; };
+		006E70B3236D2C1A00CA0753 /* iup_lng_spanish.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = iup_lng_spanish.h; sourceTree = "<group>"; };
+		006E70B4236D2C1A00CA0753 /* iup_thread.c */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.c; path = iup_thread.c; sourceTree = "<group>"; };
+		006E70B5236D2C1B00CA0753 /* iup_classinfo.c */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.c; path = iup_classinfo.c; sourceTree = "<group>"; };
 		0070FB981E0E0B79009A8631 /* IupAppDelegate.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = IupAppDelegate.h; sourceTree = "<group>"; };
 		0070FB991E0E0B79009A8631 /* IupAppDelegate.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = IupAppDelegate.m; sourceTree = "<group>"; };
 		007E3196204CCC9600ED15CB /* iupluascripterdlg.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = iupluascripterdlg.h; sourceTree = "<group>"; };
@@ -962,6 +982,16 @@
 		00E3A60B1B60583500BEC175 /* src */ = {
 			isa = PBXGroup;
 			children = (
+				006E70B5236D2C1B00CA0753 /* iup_classinfo.c */,
+				006E70B0236D2C1900CA0753 /* iup_elempropdlg.c */,
+				006E70AD236D2C1800CA0753 /* iup_lng_czech_utf8.h */,
+				006E70B2236D2C1A00CA0753 /* iup_lng_english.h */,
+				006E70AF236D2C1900CA0753 /* iup_lng_portuguese_utf8.h */,
+				006E70B1236D2C1900CA0753 /* iup_lng_portuguese.h */,
+				006E70AC236D2C1700CA0753 /* iup_lng_russian_utf8.h */,
+				006E70AE236D2C1800CA0753 /* iup_lng_spanish_utf8.h */,
+				006E70B3236D2C1A00CA0753 /* iup_lng_spanish.h */,
+				006E70B4236D2C1A00CA0753 /* iup_thread.c */,
 				00AB78A022D41243008D43D4 /* iup_flatlist.c */,
 				00AB789922D41201008D43D4 /* iup_flatval.c */,
 				00AB789A22D41201008D43D4 /* iup_globalsdlg.c */,
@@ -1392,6 +1422,7 @@
 				00E3A7A01B60583600BEC175 /* iup_image.h in Headers */,
 				00E3A76E1B60583600BEC175 /* iup_array.h in Headers */,
 				00E3A87E1B60595300BEC175 /* iupkey.h in Headers */,
+				006E70B7236D2C1B00CA0753 /* iup_lng_czech_utf8.h in Headers */,
 				00E3A7991B60583600BEC175 /* iup_func.h in Headers */,
 				006E70952368320600CA0753 /* iupfiledlg.h in Headers */,
 				00E3A86A1B60595300BEC175 /* iup_class_cbs.hpp in Headers */,
@@ -1410,9 +1441,11 @@
 				00E3A8721B60595300BEC175 /* iupcbs.h in Headers */,
 				00E3A7AF1B60583600BEC175 /* iup_list.h in Headers */,
 				00E3A7BA1B60583600BEC175 /* iup_names.h in Headers */,
+				006E70B6236D2C1B00CA0753 /* iup_lng_russian_utf8.h in Headers */,
 				006E70942368320600CA0753 /* iupdraw_cd.h in Headers */,
 				00E3A7721B60583600BEC175 /* iup_attrib.h in Headers */,
 				00E3A87D1B60595300BEC175 /* iupim.h in Headers */,
+				006E70B9236D2C1B00CA0753 /* iup_lng_portuguese_utf8.h in Headers */,
 				00E3A7BC1B60583600BEC175 /* iup_normalizer.h in Headers */,
 				00E3A7C11B60583600BEC175 /* iup_predialogs.h in Headers */,
 				00E3A7891B60583600BEC175 /* iup_dlglist.h in Headers */,
@@ -1429,19 +1462,23 @@
 				002CC4CF1EA2416B0007C8E7 /* iup_drvdraw.h in Headers */,
 				00E3A87C1B60595300BEC175 /* iupglcontrols.h in Headers */,
 				00E3A7A61B60583600BEC175 /* iup_layout.h in Headers */,
+				006E70BD236D2C1B00CA0753 /* iup_lng_spanish.h in Headers */,
 				00E3A7A41B60583600BEC175 /* iup_label.h in Headers */,
 				00BE4F731F4C95E4002B7C86 /* iup_export.h in Headers */,
 				00E3A7C81B60583600BEC175 /* iup_register.h in Headers */,
 				00E3A86B1B60595300BEC175 /* iup_config.h in Headers */,
+				006E70BC236D2C1B00CA0753 /* iup_lng_english.h in Headers */,
 				00E3A7CF1B60583600BEC175 /* iup_stdcontrols.h in Headers */,
 				004DBF4C2070E6DF00962511 /* iup_draw.h in Headers */,
 				00E3A86C1B60595300BEC175 /* iup_mglplot.h in Headers */,
+				006E70BB236D2C1B00CA0753 /* iup_lng_portuguese.h in Headers */,
 				00E3A7A21B60583600BEC175 /* iup_key.h in Headers */,
 				00E3A7DB1B60583600BEC175 /* iup_timer.h in Headers */,
 				00E3A87B1B60595300BEC175 /* iupgl.h in Headers */,
 				00E3A7BE1B60583600BEC175 /* iup_object.h in Headers */,
 				00E3A7AC1B60583600BEC175 /* iup_linefile.h in Headers */,
 				00E93B0C214FCE2000BC6F5B /* iupcocoa_draw.h in Headers */,
+				006E70B8236D2C1B00CA0753 /* iup_lng_spanish_utf8.h in Headers */,
 				00E3A7E21B60583600BEC175 /* iup_val.h in Headers */,
 				00E3A8831B60595300BEC175 /* iuplua_scintilla.h in Headers */,
 			);
@@ -1845,6 +1882,7 @@
 			buildActionMask = 2147483647;
 			files = (
 				00E3A8E71B60984800BEC175 /* iupcocoa_tabs.m in Sources */,
+				006E70BE236D2C1B00CA0753 /* iup_thread.c in Sources */,
 				00E3A7761B60583600BEC175 /* iup_button.c in Sources */,
 				00E3A7C41B60583600BEC175 /* iup_progressdlg.c in Sources */,
 				00E3A7D61B60583600BEC175 /* iup_tabs.c in Sources */,
@@ -1894,6 +1932,7 @@
 				00E3A7B41B60583600BEC175 /* iup_maskparse.c in Sources */,
 				00E3A8DA1B6094C300BEC175 /* iupcocoa_frame.m in Sources */,
 				00E3A7B61B60583600BEC175 /* iup_menu.c in Sources */,
+				006E70BA236D2C1B00CA0753 /* iup_elempropdlg.c in Sources */,
 				00E3A7741B60583600BEC175 /* iup_box.c in Sources */,
 				00E3A77E1B60583600BEC175 /* iup_class.c in Sources */,
 				00E3A78E1B60583600BEC175 /* iup_expander.c in Sources */,
@@ -1941,6 +1980,7 @@
 				007E31A5204CDBC500ED15CB /* iup_colorbrowser.c in Sources */,
 				00E3A8E51B6097F600BEC175 /* iupcocoa_focus.m in Sources */,
 				00E3A7811B60583600BEC175 /* iup_classbase.c in Sources */,
+				006E70BF236D2C1B00CA0753 /* iup_classinfo.c in Sources */,
 				00E3A7DA1B60583600BEC175 /* iup_timer.c in Sources */,
 				00E3A79A1B60583600BEC175 /* iup_getparam.c in Sources */,
 				00E3A7731B60583600BEC175 /* iup_backgroundbox.c in Sources */,
@@ -2171,7 +2211,6 @@
 			buildSettings = {
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
 				CODE_SIGN_ENTITLEMENTS = TestAppSandbox.entitlements;
-				CODE_SIGN_IDENTITY = "-";
 				CODE_SIGN_STYLE = Manual;
 				COMBINE_HIDPI_IMAGES = YES;
 				DEVELOPMENT_TEAM = "";
@@ -2191,7 +2230,6 @@
 			buildSettings = {
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
 				CODE_SIGN_ENTITLEMENTS = TestAppSandbox.entitlements;
-				CODE_SIGN_IDENTITY = "-";
 				CODE_SIGN_STYLE = Manual;
 				COMBINE_HIDPI_IMAGES = YES;
 				DEVELOPMENT_TEAM = "";
@@ -2206,7 +2244,6 @@
 			isa = XCBuildConfiguration;
 			buildSettings = {
 				CLANG_ENABLE_OBJC_ARC = NO;
-				CODE_SIGN_IDENTITY = "";
 				COMBINE_HIDPI_IMAGES = YES;
 				DEFINES_MODULE = YES;
 				DYLIB_COMPATIBILITY_VERSION = 1;
@@ -2232,7 +2269,6 @@
 			isa = XCBuildConfiguration;
 			buildSettings = {
 				CLANG_ENABLE_OBJC_ARC = NO;
-				CODE_SIGN_IDENTITY = "";
 				COMBINE_HIDPI_IMAGES = YES;
 				DEFINES_MODULE = YES;
 				DYLIB_COMPATIBILITY_VERSION = 1;
@@ -2264,7 +2300,6 @@
 				CLANG_WARN_INFINITE_RECURSION = YES;
 				CLANG_WARN_SUSPICIOUS_MOVE = YES;
 				CODE_SIGN_ENTITLEMENTS = webbrowser/webbrowser.entitlements;
-				CODE_SIGN_IDENTITY = "-";
 				COMBINE_HIDPI_IMAGES = YES;
 				ENABLE_TESTABILITY = YES;
 				INFOPLIST_FILE = webbrowser/Info.plist;
@@ -2286,7 +2321,6 @@
 				CLANG_WARN_INFINITE_RECURSION = YES;
 				CLANG_WARN_SUSPICIOUS_MOVE = YES;
 				CODE_SIGN_ENTITLEMENTS = webbrowser/webbrowser.entitlements;
-				CODE_SIGN_IDENTITY = "-";
 				COMBINE_HIDPI_IMAGES = YES;
 				INFOPLIST_FILE = webbrowser/Info.plist;
 				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/../Frameworks";
@@ -2314,7 +2348,6 @@
 				CLANG_WARN_OBJC_ROOT_CLASS = YES_ERROR;
 				CLANG_WARN_UNREACHABLE_CODE = YES;
 				CLANG_WARN__DUPLICATE_METHOD_MATCH = YES;
-				CODE_SIGN_IDENTITY = " ";
 				COPY_PHASE_STRIP = NO;
 				CURRENT_PROJECT_VERSION = 1;
 				DEBUG_INFORMATION_FORMAT = dwarf;
@@ -2363,7 +2396,6 @@
 				CLANG_WARN_OBJC_ROOT_CLASS = YES_ERROR;
 				CLANG_WARN_UNREACHABLE_CODE = YES;
 				CLANG_WARN__DUPLICATE_METHOD_MATCH = YES;
-				CODE_SIGN_IDENTITY = " ";
 				COPY_PHASE_STRIP = NO;
 				CURRENT_PROJECT_VERSION = 1;
 				DEBUG_INFORMATION_FORMAT = "dwarf-with-dsym";
@@ -2391,7 +2423,6 @@
 			isa = XCBuildConfiguration;
 			buildSettings = {
 				CLANG_ENABLE_OBJC_ARC = NO;
-				CODE_SIGN_IDENTITY = "";
 				COMBINE_HIDPI_IMAGES = YES;
 				DEFINES_MODULE = YES;
 				DYLIB_COMPATIBILITY_VERSION = 1;
@@ -2418,7 +2449,6 @@
 			isa = XCBuildConfiguration;
 			buildSettings = {
 				CLANG_ENABLE_OBJC_ARC = NO;
-				CODE_SIGN_IDENTITY = "";
 				COMBINE_HIDPI_IMAGES = YES;
 				DEFINES_MODULE = YES;
 				DYLIB_COMPATIBILITY_VERSION = 1;
@@ -2476,7 +2506,6 @@
 			isa = XCBuildConfiguration;
 			buildSettings = {
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
-				CODE_SIGN_IDENTITY = "";
 				COMBINE_HIDPI_IMAGES = YES;
 				GCC_PREPROCESSOR_DEFINITIONS = (
 					"DEBUG=1",
@@ -2492,7 +2521,6 @@
 			isa = XCBuildConfiguration;
 			buildSettings = {
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
-				CODE_SIGN_IDENTITY = "";
 				COMBINE_HIDPI_IMAGES = YES;
 				INFOPLIST_FILE = TestApp/Info.plist;
 				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/../Frameworks";
@@ -2556,7 +2584,6 @@
 				CLANG_WARN_STRICT_PROTOTYPES = YES;
 				CLANG_WARN_SUSPICIOUS_MOVE = YES;
 				CLANG_WARN_UNGUARDED_AVAILABILITY = YES_AGGRESSIVE;
-				CODE_SIGN_IDENTITY = "";
 				ENABLE_TESTABILITY = YES;
 				EXECUTABLE_PREFIX = lib;
 				GCC_C_LANGUAGE_STANDARD = gnu11;
@@ -2586,7 +2613,6 @@
 				CLANG_WARN_STRICT_PROTOTYPES = YES;
 				CLANG_WARN_SUSPICIOUS_MOVE = YES;
 				CLANG_WARN_UNGUARDED_AVAILABILITY = YES_AGGRESSIVE;
-				CODE_SIGN_IDENTITY = "";
 				EXECUTABLE_PREFIX = lib;
 				GCC_C_LANGUAGE_STANDARD = gnu11;
 				MACOSX_DEPLOYMENT_TARGET = 10.13;
@@ -2615,7 +2641,6 @@
 				CLANG_WARN_STRICT_PROTOTYPES = YES;
 				CLANG_WARN_SUSPICIOUS_MOVE = YES;
 				CLANG_WARN_UNGUARDED_AVAILABILITY = YES_AGGRESSIVE;
-				CODE_SIGN_IDENTITY = "";
 				COMBINE_HIDPI_IMAGES = YES;
 				DEFINES_MODULE = YES;
 				DYLIB_COMPATIBILITY_VERSION = 1;
@@ -2658,7 +2683,6 @@
 				CLANG_WARN_STRICT_PROTOTYPES = YES;
 				CLANG_WARN_SUSPICIOUS_MOVE = YES;
 				CLANG_WARN_UNGUARDED_AVAILABILITY = YES_AGGRESSIVE;
-				CODE_SIGN_IDENTITY = "";
 				COMBINE_HIDPI_IMAGES = YES;
 				DEFINES_MODULE = YES;
 				DYLIB_COMPATIBILITY_VERSION = 1;
