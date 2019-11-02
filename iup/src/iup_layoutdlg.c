@@ -304,7 +304,22 @@ static int iLayoutHasDigit(const char* name)
 
 static int iLayoutCompareStr(const void *a, const void *b)
 {
-  return strcmp(*(char**)a, *(char**)b);
+  int ret;
+  const char* str1 = *(const char**)a;
+  const char* str2 = *(const char**)b;
+  int flat1 = 0, flat2 = 0;
+  if (iupStrEqualPartial(str1, "flat")) { str1 += 4; flat1 = 1; } /* don't consider "flat" prefix */
+  if (iupStrEqualPartial(str2, "flat")) { str2 += 4; flat2 = 1; }
+  ret = strcmp(str1, str2);
+  if (ret == 0)
+  {
+    if (flat1)
+      return 1;
+    if (flat2)
+      return -1;
+    return 0;
+  }
+  return ret;
 }
 
 IUP_SDK_API int iupLayoutAttributeChanged(Ihandle* ih, const char* name, const char* value, const char* def_value, int flags)
@@ -1681,10 +1696,83 @@ static int iLayoutContextMenuHandleName_CB(Ihandle* menu)
   return IUP_DEFAULT;
 }
 
-static char* iLayoutSelectClassDialog(Ihandle* parent)
+static int iLayoutSelectClassOK_CB(Ihandle* ih)
 {
-  int ret, count, i;
+  iupAttribSet(IupGetDialog(ih), "STATUS", "1");
+  return IUP_CLOSE;
+}
+
+static int iLayoutSelectClassCancel_CB(Ihandle* ih)
+{
+  iupAttribSet(IupGetDialog(ih), "STATUS", "-1");
+  return IUP_CLOSE;
+}
+
+static int iLayoutSelectClassTreeExecuteLeaf_CB(Ihandle *ih, int id)
+{
+  (void)id;
+  iupAttribSet(IupGetDialog(ih), "STATUS", "1");
+  IupExitLoop();
+  return IUP_DEFAULT;
+}
+
+static const char* iLayoutSelectClassDialog(Ihandle* parent)
+{
+  Ihandle *tree, *ok, *dlg, *cancel, *dlg_box, *button_box;
+  int last_containers_id, last_standard_id, last_additional_id;
+  const char* value = NULL;
+  int count, i;
   char** class_list_str, **p_str;
+
+  tree = IupTree();
+  IupSetAttribute(tree, "ADDROOT", "NO");
+  IupSetAttribute(tree, "IMAGELEAF", "IMGEMPTY");
+  IupSetAttribute(tree, "SIZE", "120x160");
+
+  ok = IupButton("_@IUP_OK", NULL);
+  IupSetStrAttribute(ok, "PADDING", IupGetGlobal("DEFAULTBUTTONPADDING"));
+  IupSetCallback(ok, "ACTION", (Icallback)iLayoutSelectClassOK_CB);
+
+  cancel = IupButton("_@IUP_CANCEL", NULL);
+  IupSetStrAttribute(cancel, "PADDING", IupGetGlobal("DEFAULTBUTTONPADDING"));
+  IupSetCallback(cancel, "ACTION", (Icallback)iLayoutSelectClassCancel_CB);
+
+  button_box = IupHbox(
+    IupFill(),
+    ok,
+    cancel,
+    NULL);
+  IupSetAttribute(button_box, "MARGIN", "0x0");
+  IupSetAttribute(button_box, "NORMALIZESIZE", "HORIZONTAL");
+
+  dlg_box = IupVbox(
+    tree,
+    button_box,
+    NULL);
+
+  IupSetAttribute(dlg_box, "MARGIN", "10x10");
+  IupSetAttribute(dlg_box, "GAP", "10");
+
+  dlg = IupDialog(dlg_box);
+
+  IupSetCallback(tree, "EXECUTELEAF_CB", (Icallback)iLayoutSelectClassTreeExecuteLeaf_CB);
+
+  IupSetStrAttribute(dlg, "TITLE", "Select IUP Class");
+  IupSetAttribute(dlg, "MINBOX", "NO");
+  IupSetAttribute(dlg, "MAXBOX", "NO");
+  IupSetAttributeHandle(dlg, "DEFAULTENTER", ok);
+  IupSetAttributeHandle(dlg, "DEFAULTESC", cancel);
+  IupSetAttributeHandle(dlg, "PARENTDIALOG", parent);
+  IupSetAttribute(dlg, "ICON", IupGetGlobal("ICON"));
+
+  IupMap(dlg);
+
+  IupSetAttribute(tree, "ADDBRANCH-1", "Containers");
+  last_containers_id = 0;
+  IupSetAttribute(tree, "INSERTBRANCH0", "Standard");
+  last_standard_id = 1;
+  IupSetAttribute(tree, "INSERTBRANCH1", "Additional");
+  last_additional_id = 2;
 
   count = IupGetAllClasses(NULL, 0);
   class_list_str = (char**)malloc(count * sizeof(char*));
@@ -1704,31 +1792,65 @@ static char* iLayoutSelectClassDialog(Ihandle* parent)
   }
   count = (int)(p_str - class_list_str);
 
-  IupStoreGlobal("_IUP_OLD_PARENTDIALOG", IupGetGlobal("PARENTDIALOG"));
-  IupSetAttributeHandle(NULL, "PARENTDIALOG", parent);
-
-  ret = IupListDialog(1, "Available Classes", count, (const char**)class_list_str, 1, 10, count < 15 ? count + 1 : 15, NULL);
-
-  IupStoreGlobal("PARENTDIALOG", IupGetGlobal("_IUP_OLD_PARENTDIALOG"));
-  IupSetGlobal("_IUP_OLD_PARENTDIALOG", NULL);
-
-  if (ret != -1)
+  for (i = 0; i < count; i++)
   {
-    char* name = class_list_str[ret];
-    free(class_list_str);
-    return name;
+    char* name = class_list_str[i];
+    Iclass *elemClass = iupRegisterFindClass(name);
+    char constructor[50];
+
+    if (elemClass->cons)
+      strcpy(constructor, elemClass->cons);
+    else
+    {
+      strcpy(constructor, name);
+      constructor[0] = (char)toupper(constructor[0]);
+    }
+
+    if (elemClass->childtype != IUP_CHILDNONE && elemClass->is_internal) /* internal containers */
+    {
+      IupSetStrfId(tree, "ADDLEAF", last_containers_id, "Iup%s", constructor);
+      last_containers_id++;
+      last_standard_id++;
+      last_additional_id++;
+    }
+    else if (elemClass->is_internal)
+    {
+      IupSetStrfId(tree, "ADDLEAF", last_standard_id, "Iup%s", constructor);
+      last_standard_id++;
+      last_additional_id++;
+    }
+    else /* additional */
+    {
+      IupSetStrfId(tree, "ADDLEAF", last_additional_id, "Iup%s", constructor);
+      last_additional_id++;
+    }
   }
-  else
+
+  IupSetAttribute(tree, "USERSIZE", NULL);
+
+  IupPopup(dlg, IUP_CENTERPARENT, IUP_CENTERPARENT);
+
+  if (IupGetInt(dlg, "STATUS") == 1)
   {
-    free(class_list_str);
-    return NULL;
+    Iclass *elemClass;
+    int id = IupGetInt(tree, "VALUE");
+    char* name = IupGetAttributeId(tree, "TITLE", id);
+    name += 3;
+    iupStrLower(name, name);
+    elemClass = iupRegisterFindClass(name);
+    value = elemClass->name;
   }
+
+  IupDestroy(dlg);
+
+  free(class_list_str);
+  return value;
 }
 
 static int iLayoutContextMenuInsert_CB(Ihandle* menu)
 {
   Ihandle* dlg = (Ihandle*)iupAttribGetInherit(menu, "_IUP_LAYOUTDLG");
-  char* name = iLayoutSelectClassDialog(dlg);
+  const char* name = iLayoutSelectClassDialog(dlg);
   if (name)
   {
     iLayoutDialog* layoutdlg = (iLayoutDialog*)iupAttribGetInherit(menu, "_IUP_LAYOUTDIALOG");
@@ -1791,7 +1913,7 @@ static int iLayoutContextMenuInsert_CB(Ihandle* menu)
 static int iLayoutContextMenuInsertCursor_CB(Ihandle* menu)
 {
   Ihandle* dlg = (Ihandle*)iupAttribGetInherit(menu, "_IUP_LAYOUTDLG");
-  char* name = iLayoutSelectClassDialog(dlg);
+  const char* name = iLayoutSelectClassDialog(dlg);
   if (name)
   {
     iLayoutDialog* layoutdlg = (iLayoutDialog*)iupAttribGetInherit(menu, "_IUP_LAYOUTDIALOG");
@@ -2922,6 +3044,7 @@ IUP_API Ihandle* IupLayoutDialog(Ihandle* dialog)
   IupSetCallback(tree, "EXECUTELEAF_CB", (Icallback)iLayoutTreeExecuteLeaf_CB);
   IupSetCallback(tree, "RIGHTCLICK_CB", (Icallback)iLayoutTreeRightClick_CB);
   IupSetCallback(tree, "DRAGDROP_CB", (Icallback)iLayoutTreeDragDrop_CB);
+  IupSetAttribute(tree, "IMAGELEAF", "IMGEMPTY");
 
   status = IupLabel(NULL);
   IupSetAttribute(status, "EXPAND", "HORIZONTAL");
