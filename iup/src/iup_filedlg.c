@@ -30,6 +30,7 @@ Iclass* iupFileDlgNewClass(void)
   Iclass* ic = iupClassNew(iupRegisterFindClass("dialog"));
 
   ic->name = "filedlg";
+  ic->cons = "FileDlg";
   ic->nativetype = IUP_TYPEDIALOG;
   ic->is_interactive = 1;
 

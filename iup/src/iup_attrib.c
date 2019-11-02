@@ -99,6 +99,34 @@ IUP_API void IupCopyAttributes(Ihandle* src_ih, Ihandle* dst_ih)
   }
 }
 
+#define iupATTRIB_ISSAVED(_name) (_name[0] == '_' && _name[1] == 'I' &&  _name[2] == 'U' && _name[3] == 'P' && _name[4] == 'S' && _name[5] == 'A' && _name[6] == 'V' && _name[7] == 'E' && _name[8] == 'D' && _name[9] == '_')  /* "_IUPSAVED_" */
+
+IUP_SDK_API int iupAttribGetAllSaved(Ihandle* ih, char** names, int n)
+{
+  char *name;
+  int i = 0;
+
+  if (!names || n == 0 || n == -1)
+    return iupTableCount(ih->attrib);
+
+  name = iupTableFirst(ih->attrib);
+  while (name)
+  {
+    if (iupATTRIB_ISSAVED(name))
+    {
+      names[i] = name + sizeof("_IUPSAVED_") - 1;
+      i++;
+
+      if (i == n)
+        break;
+    }
+
+    name = iupTableNext(ih->attrib);
+  }
+
+  return i;
+}
+
 IUP_API int IupGetAllAttributes(Ihandle* ih, char** names, int n)
 {
   char *name;
@@ -1459,7 +1487,7 @@ static int iAttribToken(char* env_buffer)
   }
 }
 
-static void iAttribParse(Ihandle *ih, const char* str)
+IUP_SDK_API void iupAttribParse(Ihandle *ih, const char* str, int save_led_info)
 {
   char env_buffer[256];
   char* name=NULL;
@@ -1480,6 +1508,14 @@ static void iAttribParse(Ihandle *ih, const char* str)
       if (name)
       {
         IupStoreAttribute(ih, name, value);
+
+        if (save_led_info)
+        {
+          char led_name[100] = "_IUPSAVED_";
+          strcat(led_name, name);
+          iupAttribSetStr(ih, led_name, value);
+        }
+
         free(name);
       }
       if (end)
@@ -1511,7 +1547,7 @@ IUP_API Ihandle* IupSetAttributes(Ihandle *ih, const char* str)
   if (!iupObjectCheck(ih))
     return ih;
   if (str)
-    iAttribParse(ih, str);
+    iupAttribParse(ih, str, 0);
   return ih;
 }
 

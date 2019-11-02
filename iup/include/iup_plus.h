@@ -281,6 +281,7 @@ namespace Iup
   inline Dialog GlobalsDialog() { return Dialog(IupGlobalsDialog()); }
   inline Dialog ElementPropertiesDialog(const Dialog& parent, const Control& control) { return Dialog(IupElementPropertiesDialog(parent.GetHandle(), control.GetHandle())); }
   inline Dialog ElementPropertiesDialog(const Control& control) { return Dialog(IupElementPropertiesDialog(0, control.GetHandle())); }
+  inline Dialog ClassInfoDialog(const Dialog& parent) { return Dialog(IupClassInfoDialog(parent.GetHandle())); }
   inline Container Control::GetParent() { return Container(IupGetParent(ih)); }
   inline int Control::Reparent(const Container& new_parent, const Control& ref_child) { return IupReparent(ih, new_parent.GetHandle(), ref_child.GetHandle()); }
 
@@ -336,6 +337,13 @@ namespace Iup
     User() : Element(IupUser()) {}
     User(Ihandle* _ih) : Element(_ih) {}
     User(const Element& elem) : Element(elem.GetHandle()) {}
+  };
+  class Thread : public Element
+  {
+  public:
+    Thread() : Element(IupThread()) {}
+    Thread(Ihandle* _ih) : Element(_ih) {}
+    Thread(const Element& elem) : Element(elem.GetHandle()) {}
   };
   class Param : public Element
   {

@@ -543,7 +543,8 @@ Iclass* iupDetachBoxNewClass(void)
 {
   Iclass* ic = iupClassNew(NULL);
 
-  ic->name   = "detachbox";
+  ic->name = "detachbox";
+  ic->cons = "DetachBox";
   ic->format = "h";   /* one Ihandle* */
   ic->nativetype = IUP_TYPEVOID;
   ic->childtype = IUP_CHILDMANY+2; /* canvas+child */

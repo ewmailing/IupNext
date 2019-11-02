@@ -47,6 +47,7 @@ Iclass* iupGaugeNewClass(void);
 Iclass* iupColorbarNewClass(void);
 Iclass* iupColorBrowserNewClass(void);
 Iclass* iupSpaceNewClass(void);
+Iclass* iupThreadNewClass(void);
 
 Iclass* iupMenuNewClass(void);
 Iclass* iupItemNewClass(void);
@@ -92,7 +93,7 @@ void iupdrvFileDlgInitClass(Iclass* ic);
 
 /************************************************/
 
-IUP_SDK_API Iclass* iupBackgroundBoxNewBaseClass(const char* name, const char* base_name);
+IUP_SDK_API Iclass* iupBackgroundBoxNewBaseClass(Iclass* ic_base);
 
 /* Common definition of the canvas class */
 typedef struct _iupCanvas {

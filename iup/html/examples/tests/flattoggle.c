@@ -270,6 +270,7 @@ void FlatToggleTest(void)
   IupSetAttribute(toggle5, "CHECKRIGHT", "YES");
 //  IupSetAttribute(toggle6, "CHECKALIGN", "ATOP");
 //  IupSetAttribute(toggle6, "CHECKALIGN", "ABOTTOM");
+  IupSetAttribute(toggle4, "SELECTEDNOTIFY", "YES");
 
   /* Creating box that contains the toggles */
   box = IupHbox(

@@ -1396,6 +1396,7 @@ Iclass* iupMatrixListNewClass(void)
   Iclass* ic = iupClassNew(iupRegisterFindClass("matrix"));
   
   ic->name = "matrixlist";
+  ic->cons = "MatrixList";
   ic->format = NULL; /* no parameters */
   ic->nativetype = IUP_TYPECANVAS;
   ic->childtype = IUP_CHILDNONE;

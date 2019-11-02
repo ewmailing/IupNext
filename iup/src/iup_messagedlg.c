@@ -30,6 +30,7 @@ Iclass* iupMessageDlgNewClass(void)
   Iclass* ic = iupClassNew(iupRegisterFindClass("dialog"));
 
   ic->name = "messagedlg";
+  ic->cons = "MessageDlg";
   ic->nativetype = IUP_TYPEDIALOG;
   ic->is_interactive = 1;
 

@@ -23,14 +23,14 @@
 static struct          /* lexical variables */
 {
   const char* filename;   /* file name */
-  const char* f;
+  const char* buffer, *p_buffer;
   FILE* file;             /* file handle */
   int token;              /* lookahead iLexToken */
   char name[40960];       /* lexical identifier value */
   float number;           /* lexical number value */
   int line;               /* line number */
   Iclass *ic;             /* control class when func is CONTROL_ */
-} ilex = {NULL, NULL, NULL, 0, "", (float) 0.0, 0, NULL};
+} ilex = { NULL, NULL, NULL, NULL, 0, "", 0, 0, NULL };
 
 static int iLexGetChar (void);
 static int iLexToken(int *erro);
@@ -38,31 +38,38 @@ static int iLexCapture (char* dlm);
 static void iLexSkipComment (void);
 static int iLexCaptureAttr (void);
 
-int iupLexStart(const char* filename, int is_file)      /* initialize lexical analysis */
+int iupLexStart(const char* filename, const char *buffer)      /* initialize lexical analysis */
 {
-  ilex.filename = filename;
-  if (is_file)
+  memset(&ilex, 0, sizeof(ilex));
+
+  if (buffer)
   {
-    ilex.file = fopen (ilex.filename,"r");
-    if (!ilex.file)
-      return iupLexError (IUPLEX_FILENOTOPENED, filename);
+    ilex.filename = filename;
+    ilex.buffer = buffer;
+    ilex.p_buffer = buffer;
   }
   else
   {
-    ilex.f = ilex.filename;
-    ilex.file = NULL;
+    ilex.file = fopen(filename, "r");
+    if (!ilex.file)
+      return iupLexError(IUPLEX_FILENOTOPENED, filename);
+    ilex.filename = filename;
   }
-  ilex.line = 0;
   ilex.line = 1;
   return iupLexAdvance();
 }
 
+const char* iupLexFilename(void)
+{
+  return ilex.filename;
+}
+
 void iupLexClose(void)
 {
-  if (!ilex.file)
-    return;
-  fclose (ilex.file);
-  ilex.file = NULL;
+  if (ilex.file)
+    fclose(ilex.file);
+
+  memset(&ilex, 0, sizeof(ilex));
 }
 
 static void iLexUngetc(int c)
@@ -71,8 +78,8 @@ static void iLexUngetc(int c)
     ungetc(c, ilex.file);
   else
   {
-    if (c != EOF && ilex.filename < ilex.f)
-      ilex.f--;
+    if (c != EOF && ilex.buffer < ilex.p_buffer)
+      ilex.p_buffer--;
   }
 }
 
@@ -83,10 +90,10 @@ static int iLexGetc(void)
   else
   {
     int ret;
-    if (*(ilex.f) == 0)
+    if (*(ilex.p_buffer) == 0)
       return EOF;
-    ret = (unsigned char)*(ilex.f);
-    ilex.f++;
+    ret = (unsigned char)*(ilex.p_buffer);
+    ilex.p_buffer++;
     return ret;
   }
 }
@@ -313,7 +320,7 @@ static char* iupTokenStr(int t)
 
 static char ilex_erromsg[10240];
 
-char *iupLexGetError(void)
+const char *iupLexGetError(void)
 {
   return ilex_erromsg;
 }
@@ -353,11 +360,11 @@ int iupLexError (int n, ...)
     break;
   }
   va_end(va);
-  if (ilex.file)
+  if (ilex.file || ilex.filename)
     sprintf(ilex_erromsg, "led(%s):\n  -bad input at line %d\n  -%s\n", ilex.filename, ilex.line, msg);
   else
   {
-    const char* f = ilex.filename;
+    const char* f = ilex.buffer;
     char* firstline = iupStrDupUntil(&f, '\n');
     if (firstline)
     {
@@ -365,7 +372,7 @@ int iupLexError (int n, ...)
       free(firstline);
     }
     else
-     sprintf(ilex_erromsg, "led(%s):\n  -bad input at line %d\n  -%s\n", ilex.filename, ilex.line, msg);
+      sprintf(ilex_erromsg, "led(%s):\n  -bad input at line %d\n  -%s\n", ilex.buffer, ilex.line, msg);
   }
   return n;
 }

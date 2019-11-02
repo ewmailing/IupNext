@@ -14,9 +14,6 @@ extern "C" {
 /* Used by the IupScanf implementations in C and Lua */
 IUP_SDK_API int iupDataEntry(int maxlin, int* maxcol, int* maxscr, char* title, char** text, char** data);
 
-/* Popups a dialog with IUP Version, used in IupOpen */
-IUP_SDK_API void iupShowVersion(void);
-
 /* Other functions declared in <iup.h> and implemented here. 
 IupListDialog
 IupAlarm

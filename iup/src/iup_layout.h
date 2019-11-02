@@ -21,6 +21,13 @@ IUP_SDK_API void iupLayoutApplyMinMaxSize(Ihandle* ih, int *w, int *h);
 IupRefresh
 */
 
+/* at iup_layout_dlg */
+
+IUP_SDK_API Ihandle* iupLayoutFindElementDialog(Ihandle *tree, Ihandle* elem);
+IUP_SDK_API void iupLayoutPropertiesUpdate(Ihandle* properties, Ihandle* elem);
+IUP_SDK_API char* iupLayoutGetElementTitle(Ihandle* elem);
+IUP_SDK_API int iupLayoutAttributeChanged(Ihandle* elem, const char* name, const char* value, const char* def_value, int flags);
+
 
 #ifdef __cplusplus
 }

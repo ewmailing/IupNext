@@ -209,6 +209,13 @@ static void motCanvasInputCallback(Widget w, Ihandle *ih, XtPointer call_data)
       if ((evt->type==ButtonPress) && (but_evt->button==Button4 || but_evt->button==Button5))
       {                                             
         IFnfiis wcb = (IFnfiis)IupGetCallback(ih, "WHEEL_CB");
+
+        if (iupAttribGetBoolean(ih, "WHEELDROPFOCUS"))
+        {
+          Ihandle* ih_focus = IupGetFocus();
+          iupAttribSetClassObject(ih_focus, "SHOWDROPDOWN", "NO");
+        }
+
         if (wcb)
         {
           char status[IUPKEY_STATUS_SIZE] = IUPKEY_STATUS_INIT;

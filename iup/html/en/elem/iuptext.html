@@ -138,6 +138,13 @@ the text will be scrolled only when it receives the focus.</p>
 	unique index "pos". Useful for indexing the VALUE string. See the 
 	Notes below if using UTF-8 strings in GTK. (since 
 	3.0)</p>
+<p><strong>CHANGECASE</strong> (<font size="3">non inheritable</font>): Change 
+case according to given conversion. Can be UPPER, LOWER, TOGGLE, or TITLE. TITLE 
+case change first letter of words separated by spaces to upper case others to 
+lower case, but first letter is changed only if word has more than 3 characters, 
+for instance: &quot;Best of the World&quot;. Supports Latin-1 encoding only, even when 
+using UTF-8. <span>
+	Does not depends on current locale. </span>(since 3.28)</p>
 
 <p><strong>CLIPBOARD</strong> (write-only): clear, cut, copy or paste the selection to 
 or from the clipboard. Values: "CLEAR", "CUT", "COPY" or "PASTE". 

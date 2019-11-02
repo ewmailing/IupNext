@@ -48,7 +48,6 @@ IUP_SDK_API void iupDrawSunkenRect(Ihandle *ih, int x1, int y1, int x2, int y2, 
 
 IUP_SDK_API void iupDrawParentBackground(IdrawCanvas* dc, Ihandle* ih);
 IUP_SDK_API char* iupDrawGetTextSize(Ihandle* ih, const char* str, int len, int *w, int *h, double text_orientation);
-IUP_SDK_API void iupDrawGetTextInnerBounds(int o_w, int o_h, double text_orientation, int *w, int *h);
 IUP_SDK_API int iupDrawGetTextFlags(Ihandle* ih, const char* align_name, const char* wrap_name, const char* ellipsis_name);
 
 

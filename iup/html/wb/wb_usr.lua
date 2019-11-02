@@ -1124,6 +1124,10 @@ wb_usr.tree =
               name= {nl= "IupGlobalsDialog"},
               link= "dlg/iupglobalsdialog.html"
             },
+            {
+              name= {nl= "IupClassInfoDialog"},
+              link= "dlg/iupclassinfodialog.html"
+            },
           }
         }
       }
@@ -2023,6 +2027,10 @@ wb_usr.tree =
         {
           name= {nl= "IupTuio"},
           link= "ctrl/iuptuio.html"
+        },
+        {
+          name= {nl= "IupThread"},
+          link= "elem/iupthread.html"
         },
         {
           name= {nl= "IupUser"},

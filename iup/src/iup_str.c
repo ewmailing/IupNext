@@ -14,6 +14,7 @@
 #include <limits.h>
 #include <stdarg.h>
 #include <locale.h>
+#include <ctype.h>
 
 #include "iup_export.h"
 #include "iup_str.h"
@@ -817,17 +818,17 @@ IUP_SDK_API int iupStrToStrStr(const char *str, char *str1, char *str2, char sep
   }
 }
 
-IUP_SDK_API char* iupStrFileGetPath(const char *file_name)
+IUP_SDK_API char* iupStrFileGetPath(const char *filename)
 {
-  if (!file_name)
+  if (!filename)
     return NULL;
   else
   {
     /* Starts at the last character */
-    int len = (int)strlen(file_name) - 1;
+    int len = (int)strlen(filename) - 1;
     while (len != 0)
     {
-      if (file_name[len] == '\\' || file_name[len] == '/')
+      if (filename[len] == '\\' || filename[len] == '/')
       {
         len++;
         break;
@@ -840,7 +841,7 @@ IUP_SDK_API char* iupStrFileGetPath(const char *file_name)
 
     {
       char* path = malloc(len + 1);
-      memcpy(path, file_name, len);
+      memcpy(path, filename, len);
       path[len] = 0;
 
       return path;
@@ -848,18 +849,18 @@ IUP_SDK_API char* iupStrFileGetPath(const char *file_name)
   }
 }
 
-IUP_SDK_API char* iupStrFileGetTitle(const char *file_name)
+IUP_SDK_API char* iupStrFileGetTitle(const char *filename)
 {
-  if (!file_name)
+  if (!filename)
     return NULL;
   else
   {
     /* Starts at the last character */
-    int len = (int)strlen(file_name);
+    int len = (int)strlen(filename);
     int offset = len - 1;
     while (offset != 0)
     {
-      if (file_name[offset] == '\\' || file_name[offset] == '/')
+      if (filename[offset] == '\\' || filename[offset] == '/')
       {
         offset++;
         break;
@@ -871,28 +872,28 @@ IUP_SDK_API char* iupStrFileGetTitle(const char *file_name)
     {
       int title_size = len - offset + 1;
       char* file_title = malloc(title_size);
-      memcpy(file_title, file_name + offset, title_size);
+      memcpy(file_title, filename + offset, title_size);
       return file_title;
     }
   }
 }
 
-IUP_SDK_API char* iupStrFileGetExt(const char *file_name)
+IUP_SDK_API char* iupStrFileGetExt(const char *filename)
 {
-  if (!file_name)
+  if (!filename)
     return NULL;
   else
   {
     /* Starts at the last character */
-    int len = (int)strlen(file_name);
+    int len = (int)strlen(filename);
     int offset = len - 1;
     while (offset != 0)
     {
       /* if found a path separator stop. */
-      if (file_name[offset] == '\\' || file_name[offset] == '/')
+      if (filename[offset] == '\\' || filename[offset] == '/')
         return NULL;
 
-      if (file_name[offset] == '.')
+      if (filename[offset] == '.')
       {
         offset++;
         break;
@@ -907,7 +908,7 @@ IUP_SDK_API char* iupStrFileGetExt(const char *file_name)
     {
       int ext_size = len - offset + 1;
       char* file_ext = (char*)malloc(ext_size);
-      memcpy(file_ext, file_name + offset, ext_size);
+      memcpy(file_ext, filename + offset, ext_size);
       return file_ext;
     }
   }
@@ -921,44 +922,44 @@ IUP_SDK_API char* iupStrFileMakeFileName(const char* path, const char* title)
   {
     int size_path = (int)strlen(path);
     int size_title = (int)strlen(title);
-    char *file_name = malloc(size_path + size_title + 2);
-    memcpy(file_name, path, size_path);
+    char *filename = malloc(size_path + size_title + 2);
+    memcpy(filename, path, size_path);
 
     if (path[size_path - 1] != '/')
     {
-      file_name[size_path] = '/';
+      filename[size_path] = '/';
       size_path++;
     }
 
-    memcpy(file_name + size_path, title, size_title);
-    file_name[size_path + size_title] = 0;
+    memcpy(filename + size_path, title, size_title);
+    filename[size_path + size_title] = 0;
 
-    return file_name;
+    return filename;
   }
 }
 
-IUP_SDK_API void iupStrFileNameSplit(const char* file_name, char *path, char *title)
+IUP_SDK_API void iupStrFileNameSplit(const char* filename, char *path, char *title)
 {
   int i, n;
 
-  if (!file_name)
+  if (!filename)
     return;
 
   /* Look for last folder separator and split title from path */
-  n = (int)strlen(file_name);
+  n = (int)strlen(filename);
   for (i = n - 1; i >= 0; i--)
   {
-    if (file_name[i] == '\\' || file_name[i] == '/') 
+    if (filename[i] == '\\' || filename[i] == '/') 
     {
       if (path)
       {
-        strncpy(path, file_name, i+1);
+        strncpy(path, filename, i+1);
         path[i+1] = 0;
       }
 
       if (title)
       {
-        strcpy(title, file_name+i+1);
+        strcpy(title, filename+i+1);
         title[n-i] = 0;
       }
 
@@ -988,7 +989,7 @@ IUP_SDK_API int iupStrReplace(char* str, char src, char dst)
 
 IUP_SDK_API void iupStrToUnix(char* str)
 {
-  char* pstr = str;
+  char* p_str = str;
 
   if (!str) return;
   
@@ -997,19 +998,19 @@ IUP_SDK_API void iupStrToUnix(char* str)
     if (*str == '\r')
     {
       if (*(str+1) != '\n')  /* MAC line end */
-        *pstr++ = '\n';
+        *p_str++ = '\n';
       str++;
     }
     else
-      *pstr++ = *str++;
+      *p_str++ = *str++;
   }
   
-  *pstr = *str;
+  *p_str = *str;
 }
 
 IUP_SDK_API void iupStrToMac(char* str)
 {
-  char* pstr = str;
+  char* p_str = str;
 
   if (!str) return;
   
@@ -1019,18 +1020,18 @@ IUP_SDK_API void iupStrToMac(char* str)
     {
       if (*(++str) == '\n')  /* DOS line end */
         str++;
-      *pstr++ = '\r';
+      *p_str++ = '\r';
     }
     else if (*str == '\n')  /* UNIX line end */
     {
       str++;
-      *pstr++ = '\r';
+      *p_str++ = '\r';
     }
     else
-      *pstr++ = *str++;
+      *p_str++ = *str++;
   }
   
-  *pstr = *str;
+  *p_str = *str;
 }
 
 IUP_SDK_API char* iupStrToDos(const char* str)
@@ -1072,57 +1073,60 @@ IUP_SDK_API char* iupStrToDos(const char* str)
 	return newstr;	
 }
 
-#define IUP_ISRESERVED(_c) (_c=='\n' || _c=='\r' || _c=='\t')
+#define IUP_ISRESERVED(_c) (_c=='\n' || _c=='\r' || _c=='\t' || _c=='\\')
 
 IUP_SDK_API char* iupStrConvertToC(const char* str)
 {
-  char* new_str, *pnstr;
-  const char* pstr = str;
+  char* new_str, *p_new_str;
+  const char* p_str = str;
   int len, count=0;
 
   if (!str)
     return NULL;
 
-  while(*pstr)
+  while(*p_str)
   {
-    if (IUP_ISRESERVED(*pstr))
+    if (IUP_ISRESERVED(*p_str))
       count++;
-    pstr++;
+    p_str++;
   }
   if (!count)
     return (char*)str;
 
-  len = (int)(pstr-str);
+  len = (int)(p_str-str);
   new_str = malloc(len+count+1);
-  pstr = str;
-  pnstr = new_str;
-  while(*pstr)
+  p_str = str;
+  p_new_str = new_str;
+  while(*p_str)
   {
-    if (IUP_ISRESERVED(*pstr))
+    if (IUP_ISRESERVED(*p_str))
     {
-      *pnstr = '\\';
-      pnstr++;
+      *p_new_str = '\\';
+      p_new_str++;
 
-      switch(*pstr)
+      switch(*p_str)
       {
       case '\n':
-        *pnstr = 'n';
+        *p_new_str = 'n';
         break;
       case '\r':
-        *pnstr = 'r';
+        *p_new_str = 'r';
         break;
       case '\t':
-        *pnstr = 't';
+        *p_new_str = 't';
+        break;
+      case '\\':
+        *p_new_str = '\\';
         break;
       }
     }
     else
-      *pnstr = *pstr;
+      *p_new_str = *p_str;
 
-    pnstr++;
-    pstr++;
+    p_new_str++;
+    p_str++;
   }
-  *pnstr = 0;
+  *p_new_str = 0;
   return new_str;
 }
 
@@ -1272,9 +1276,9 @@ memset(map, 0, 256);
 #undef mm
 }
 
-static char iStrUTF8toLatin1(const char* *l)
+static char iStrUTF8toLatin1(const char* *s)
 {
-  char c = **l;
+  char c = **s;
 
   if (c >= 0) 
     return c;   /* ASCII */
@@ -1283,8 +1287,8 @@ static char iStrUTF8toLatin1(const char* *l)
   {
     short u;
     u  = (c & 0x1F) << 6;    /* first part + make room for second part */
-    (*l)++;
-    c = **l;
+    (*s)++;
+    c = **s;
     u |= (c & 0x3F);         /* second part (10XXXXXX) */
     if (u >= -128 && u < 128)
       return (char)u;
@@ -1294,12 +1298,29 @@ static char iStrUTF8toLatin1(const char* *l)
 
   /* only increment the pointer for the remaining codes */
   if ((c & 0x10) == 0)       /* Use 00010000 to detect 1110XXXX */
-    *l += 3-1;  
+    *s += 3-1;  
   else if ((c & 0x08) == 0)  /* Use 00001000 to detect 11110XXX */
-    *l += 4-1;
+    *s += 4-1;
 
   return 0;
 }
+
+static char* iStrLatin1toUTF8(char* s, char c)
+{
+  unsigned char uc = (unsigned char)c;
+  if (uc < 128) 
+    *s = c; /* s not incremented */
+  else
+  {
+    /* all 11 bit codepoints (0x0 -- 0x7ff) fit within a 2byte utf8 char
+     * firstbyte  = 110 +xxxxx := 0xc0 + (char >> 6) MSB
+     * secondbyte = 10 +xxxxxx := 0x80 + (char & 63) LSB */
+    *s = 0xc0 | (uc >> 6) & 0x1F; s++;  /* 2+1+5 bits */
+    *s = 0x80 | (uc & 0x3F);            /* 1+1+6 bits */
+  }
+  return s;
+}
+
 
 /*
 The Alphanum Algorithm is an improved sorting algorithm for strings
@@ -1484,6 +1505,95 @@ IUP_SDK_API int iupStrCompareEqual(const char *l, const char *r, int casesensiti
     return 1;  /* if second string is at terminator, then it is partially equal */
 
   return 0;
+}
+
+static char iStrToUpperLatin1(char c)
+{
+  unsigned char uc = (unsigned char)c;
+
+  if (c >= 'a' && c <= 'z') 
+    return (c - 'a') + 'A';
+
+  if (uc == 154) return (char)(unsigned char)138; /* š / Š */
+  if (uc == 156) return (char)(unsigned char)140; /* œ / Œ */
+  if (uc == 158) return (char)(unsigned char)142; /* ž / Ž */
+  if (uc == 255) return (char)(unsigned char)159; /* ÿ / Ÿ */
+
+  if (uc == 247) return c;  /* ÷ */
+  if (uc >= 224 && uc <= 254) return (char)(unsigned char)((uc - 224) + 192); /* à - þ / À - Þ */
+
+  return c;
+}
+
+static char iStrToLowerLatin1(char c)
+{
+  unsigned char uc = (unsigned char)c;
+
+  if (c >= 'A' && c <= 'Z')
+    return (c - 'A') + 'a';
+
+  if (uc == 138) return (char)(unsigned char)154; /* š / Š */
+  if (uc == 140) return (char)(unsigned char)156; /* œ / Œ */
+  if (uc == 142) return (char)(unsigned char)158; /* ž / Ž */
+  if (uc == 159) return (char)(unsigned char)255; /* ÿ / Ÿ */
+
+  if (uc == 215) return c;  /* × */
+  if (uc >= 192 && uc <= 222) return (char)(unsigned char)((uc - 192) + 224); /* à - þ / À - Þ */
+
+  return c;
+}
+
+IUP_SDK_API void iupStrChangeCase(char* dstr, const char* sstr, int case_flag, int utf8)
+{
+  int first = 1;
+  if (!sstr || sstr[0] == 0) return;
+  for (; *sstr; sstr++, dstr++)
+  {
+    char src, dst;
+
+    if (utf8)
+      src = iStrUTF8toLatin1(&sstr);  /* may increment an utf8 character */
+    else
+      src = *sstr;
+
+    dst = src;
+
+    switch (case_flag)
+    {
+    case IUP_CASE_UPPER:
+      dst = iStrToUpperLatin1(src);
+      break;
+    case IUP_CASE_LOWER:
+      dst = iStrToLowerLatin1(src);
+      break;
+    case IUP_CASE_TOGGLE:
+    {
+      char c = iStrToUpperLatin1(src);
+      if (c != src) /* was lower */
+        dst = c;
+      else
+        dst = iStrToLowerLatin1(src);
+      break;
+    }
+    case IUP_CASE_TITLE:
+      if (first || (dstr[-1] == ' ' && 
+                    dstr[+1] != 0 && dstr[+1] != ' ' &&
+                    dstr[+2] != 0 && dstr[+2] != ' ' &&
+                    dstr[+3] != 0 && dstr[+3] != ' ')) /* the first letter of the string or the first letter of a word separated by spaces, but with more than 3 characters */
+        dst = iStrToUpperLatin1(src);
+      else
+        dst = iStrToLowerLatin1(src);
+      break;
+    }
+
+    if (utf8)
+      dstr = iStrLatin1toUTF8(dstr, dst);
+    else
+      *dstr = dst;
+
+    first = 0;
+  }
+  *dstr = 0;
 }
 
 static int iStrIncUTF8(const char* str)

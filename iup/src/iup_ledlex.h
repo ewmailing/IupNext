@@ -30,8 +30,9 @@ extern "C" {
 #define IUPLEX_NOTENDATTR      3
 #define IUPLEX_PARSEERROR      4
 
-char*   iupLexGetError   (void);
-int     iupLexStart      (const char *filename, int is_file);
+const char* iupLexGetError(void);
+const char* iupLexFilename(void);
+int     iupLexStart      (const char *filename, const char *buffer);
 void    iupLexClose      (void);
 int     iupLexLookAhead  (void);
 int     iupLexAdvance    (void);
@@ -46,7 +47,8 @@ float   iupLexGetNumber  (void);
 int     iupLexError      (int n, ...);
 Iclass* iupLexGetClass   (void);
 
-IUP_SDK_API char* iupLoadLed(const char *buffer, int is_file, int checkhandle);
+IUP_SDK_API const char* iupLoadLed(const char *filename, const char *buffer, int save_info);
+
 
 #ifdef __cplusplus
 }

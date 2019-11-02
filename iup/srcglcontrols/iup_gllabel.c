@@ -67,6 +67,7 @@ Iclass* iupGLLabelNewClass(void)
   Iclass* ic = iupClassNew(iupRegisterFindClass("glsubcanvas"));
 
   ic->name = "gllabel";
+  ic->cons = "GLLabel";
   ic->format = "s"; /* one string */
   ic->nativetype = IUP_TYPEVOID;
   ic->childtype = IUP_CHILDNONE;

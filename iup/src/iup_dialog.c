@@ -46,6 +46,18 @@ static char* iDialogGetBorderSizeAttrib(Ihandle* ih)
   return iupStrReturnInt(border);
 }
 
+char* iupDialogGetClientSizeAttrib(Ihandle *ih)
+{
+  int width = ih->currentwidth, height = ih->currentheight;
+  int border = 0, caption = 0, menu = 0;
+  iupdrvDialogGetDecoration(ih, &border, &caption, &menu);
+  width -= 2 * border;
+  height -= 2 * border + caption + menu;
+  if (width < 0) width = 0;
+  if (height < 0) height = 0;
+  return iupStrReturnIntInt(width, height, 'x');
+}
+
 int iupDialogSetClientSizeAttrib(Ihandle* ih, const char* value)
 {
   int width = 0, height = 0;

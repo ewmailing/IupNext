@@ -46,6 +46,7 @@ struct Iclass_
 {
   /* Class configuration parameters. */
   const char* name;     /**< class name. No default, must be initialized. */
+  const char* cons;     /**< constructor name in C, if more than the first letter uppercase, or NULL. */
   const char* format;   /**< Creation parameters format of the class. \n
                    * Used only for LED parsing. \n
                    * It can have none (NULL), one or more of the following.
@@ -454,6 +455,8 @@ int   iupClassObjectAttribIsNotString(Ihandle* ih, const char* name);
 /* Used only in iupAttribIsIhandle */
 int   iupClassObjectAttribIsIhandle(Ihandle* ih, const char* name);
 
+IUP_SDK_API int iupClassObjectAttribIsCallback(Ihandle* ih, const char* name);
+
 /* Used only in iupAttribSetTheme */
 int   iupClassObjectAttribCanCopy(Ihandle* ih, const char* name);
 
@@ -473,6 +476,8 @@ void iupClassGetAttribNameInfo(Iclass* ic, const char* name, char* *def_value, i
 /* Used in iupClassRegisterAttribute and iGlobalChangingDefaultColor */
 int iupClassIsGlobalDefault(const char* name, int colors);
 
+void iupClassInfoGetDesc(Iclass* ic, Ihandle* ih, const char* attrib_name);
+void iupClassInfoShowHelp(const char* className);
 
 /* Other functions declared in <iup.h> and implemented here. 
 IupGetClassType

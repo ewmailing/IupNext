@@ -595,9 +595,9 @@ static int multitext_valuechanged_cb(Ihandle* multitext)
   if (IupGetInt(multitext, "AUTOCOMPLETION"))
   {
     const char *t;
-    int pos = IupGetInt(multitext, "CARETPOS");
-    char *text = IupGetAttribute(multitext, "VALUE");
-    text[pos + 1] = '\0';
+    char *text = IupGetAttribute(multitext, "LINEVALUE");
+    int col = IupGetInt2(multitext, "CARET");
+    text[col + 1] = '\0';
     t = getLastNonAlphaNumeric(text);
     if (t != NULL && *t != '\n' && *t != 0)
     {
@@ -1404,6 +1404,7 @@ static Iclass* iupLuaScripterDlgNewClass(void)
   ic->Create = iLuaScripterDlgCreateMethod;
 
   ic->name = "luascripterdlg";
+  ic->cons = "LuaScripterDlg";
   ic->nativetype = IUP_TYPEDIALOG;
   ic->is_interactive = 1;
   ic->childtype = IUP_CHILDNONE;
@@ -1460,7 +1461,7 @@ void IupLuaScripterDlgOpen(lua_State *L)
 }
 
 /* TODO:
-- condicional Breakpoints, Hit Count, When Hit
+- ** condicional Breakpoints, Hit Count, When Hit
 - sub-folder level for Projects
 - multi-language (Portuguese, Spanish)
 - detachable Console, Debug, Breakpoints (problem with IupGetDialogChild(NAME))?

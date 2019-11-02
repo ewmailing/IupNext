@@ -239,6 +239,12 @@ static int iDatePickTextKAny_CB(Ihandle* ih_text, int key)
 /*********************************************************************************************/
 
 
+static int iDatePickSetShowDropdownAttrib(Ihandle* ih, const char* value)
+{
+  iDatePickToggleAction_CB(ih, iupStrBoolean(value));
+  return 0;
+}
+
 static int iDatePickSetValueAttrib(Ihandle* ih, const char* value)
 {
   if (iupStrEqualNoCase(value, "TODAY"))
@@ -446,6 +452,7 @@ Iclass* iupDatePickNewClass(void)
   Iclass* ic = iupClassNew(iupRegisterFindClass("frame"));
 
   ic->name = "datepick";
+  ic->cons = "DatePick";
   ic->format = NULL;  /* no parameters */
   ic->nativetype = IUP_TYPECONTROL;
   ic->childtype = IUP_CHILDNONE;
@@ -467,6 +474,7 @@ Iclass* iupDatePickNewClass(void)
   iupClassRegisterAttribute(ic, "ZEROPRECED", NULL, NULL, NULL, NULL, IUPAF_NOT_MAPPED | IUPAF_NO_INHERIT);
 
   iupClassRegisterAttribute(ic, "CALENDARWEEKNUMBERS", NULL, NULL, NULL, NULL, IUPAF_NO_DEFAULTVALUE | IUPAF_NO_INHERIT);
+  iupClassRegisterAttribute(ic, "SHOWDROPDOWN", NULL, iDatePickSetShowDropdownAttrib, NULL, NULL, IUPAF_WRITEONLY | IUPAF_NO_INHERIT);
 
   return ic;
 }

@@ -26,7 +26,7 @@ extern "C" {
  * See \ref iup_childtree.h
  * \ingroup object */
 
-/** Returns the native parent. It simply excludes containers that are from IUP_TYPEVOID classes.
+/** Returns the native parent. It simply skips parents that are from IUP_TYPEVOID classes.
  * \ingroup childtree */
 IUP_SDK_API Ihandle* iupChildTreeGetNativeParent(Ihandle* ih);
 

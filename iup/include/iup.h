@@ -68,6 +68,7 @@ IUP_API char*     IupLoadBuffer    (const char *buffer);
 IUP_API char*     IupVersion       (void);
 IUP_API char*     IupVersionDate   (void);
 IUP_API int       IupVersionNumber (void);
+IUP_API void      IupVersionShow   (void);
 
 IUP_API void      IupSetLanguage   (const char *lng);
 IUP_API char*     IupGetLanguage   (void);
@@ -245,6 +246,7 @@ IUP_API Ihandle*  IupFlatSeparator(void);
 IUP_API Ihandle*  IupCanvas     (const char* action);
 IUP_API Ihandle*  IupDialog     (Ihandle* child);
 IUP_API Ihandle*  IupUser       (void);
+IUP_API Ihandle*  IupThread     (void);
 IUP_API Ihandle*  IupLabel      (const char* title);
 IUP_API Ihandle*  IupList       (const char* action);
 IUP_API Ihandle*  IupFlatList   (void);
@@ -283,7 +285,7 @@ IUP_API Ihandle*  IupSpinbox    (Ihandle* child);
 IUP_API int IupStringCompare(const char* str1, const char* str2, int casesensitive, int lexicographic);
 
 /* IupImage utilities */
-IUP_API int IupSaveImageAsText(Ihandle* ih, const char* file_name, const char* format, const char* name);
+IUP_API int IupSaveImageAsText(Ihandle* ih, const char* filename, const char* format, const char* name);
 IUP_API Ihandle* IupImageGetHandle(const char* name);
 
 /* IupText and IupScintilla utilities */
@@ -340,8 +342,8 @@ IUP_API Ihandle*  IupParamBoxv(Ihandle* *param_array);
 
 IUP_API Ihandle* IupLayoutDialog(Ihandle* dialog);
 IUP_API Ihandle* IupElementPropertiesDialog(Ihandle* parent, Ihandle* elem);
-IUP_API Ihandle* IupLayoutFindDialog(Ihandle *tree, Ihandle* elem);
 IUP_API Ihandle* IupGlobalsDialog(void);
+IUP_API Ihandle* IupClassInfoDialog(Ihandle* parent);
 
 
 #ifdef __cplusplus

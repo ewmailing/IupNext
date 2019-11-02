@@ -555,6 +555,7 @@ Iclass* iupWebBrowserNewClass(void)
   Iclass* ic = iupClassNew(NULL);
 
   ic->name = "webbrowser";
+  ic->cons = "WebBrowser";
   ic->format = NULL; /* no parameters */
   ic->nativetype  = IUP_TYPECONTROL;
   ic->childtype = IUP_CHILDNONE;

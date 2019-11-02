@@ -230,7 +230,7 @@ static void iFlatTabsSetCurrentTab(Ihandle* ih, Ihandle* child)
   }
 
   if (!iupAttribGetBoolean(ih, "CHILDSIZEALL"))
-    IupRefresh(ih);
+    IupRefresh(ih);  /* recalculate layout if CHILDSIZEALL=no */
 
   if (ih->handle)
     iupdrvPostRedraw(ih);
@@ -1354,7 +1354,24 @@ static int iFlatTabsButton_CB(Ihandle* ih, int button, int pressed, int x, int y
 
         if (iupAttribGetBoolean(ih, "EXPANDBUTTON") && !iupAttribGetBoolean(ih, "EXPANDBUTTONSTATE"))
         {
-          ih->currentheight = iupAttribGetInt(ih, "_IUPFTABS_FULLHEIGHT");
+          int childSizeAll = iupAttribGetBoolean(ih, "CHILDSIZEALL");
+          if (!childSizeAll)
+          {
+            int old_maxsize = IupGetInt2(ih, "MAXSIZE"); /* title_height */
+            int old_x = ih->x;
+            int old_y = ih->y;
+            int old_width = ih->currentwidth;
+            IupSetAttribute(ih, "MAXSIZE", NULL);
+
+            iupLayoutCompute(ih);
+
+            ih->currentwidth = old_width;
+            ih->x = old_x;
+            ih->y = old_y;
+            IupSetStrf(ih, "MAXSIZE", "x%d", old_maxsize);
+          }
+          else
+            ih->currentheight = iupAttribGetInt(ih, "_IUPFTABS_FULLHEIGHT");
           IupSetAttribute(ih, "ZORDER", "TOP");
           iupLayoutUpdate(ih);
         }
@@ -1677,7 +1694,7 @@ static int iFlatTabsKillFocus_CB(Ihandle* ih)
 
   if (iupAttribGetBoolean(ih, "EXPANDBUTTON") && !iupAttribGetBoolean(ih, "EXPANDBUTTONSTATE"))
   {
-    ih->currentheight = IupGetInt2(ih, "MAXSIZE");
+    ih->currentheight = IupGetInt2(ih, "MAXSIZE");  /* title_height */
     iupLayoutUpdate(ih);
   }
 
@@ -2249,7 +2266,7 @@ static void iFlatTabsComputeNaturalSizeMethod(Ihandle* ih, int *w, int *h, int *
   int children_naturalwidth, children_naturalheight;
   int tabType = iupAttribGetInt(ih, "_IUPTAB_TYPE");
   int childSizeAll = iupAttribGetBoolean(ih, "CHILDSIZEALL");
-  Ihandle* current_child = childSizeAll? NULL: iFlatTabsGetCurrentTab(ih);
+  Ihandle* current_child = (!childSizeAll)? iFlatTabsGetCurrentTab(ih): NULL;
   int height, width;
 
   /* calculate total children natural size (even for hidden children) */
@@ -2398,6 +2415,7 @@ Iclass* iupFlatTabsNewClass(void)
   Iclass* ic = iupClassNew(iupRegisterFindClass("canvas"));
 
   ic->name = "flattabs";
+  ic->cons = "FlatTabs";
   ic->format = "g"; /* array of Ihandle */
   ic->nativetype = IUP_TYPECANVAS;
   ic->childtype = IUP_CHILDMANY;  /* can have children */

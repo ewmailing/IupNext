@@ -74,7 +74,7 @@ IupDrawSetClipRect
 IupDrawText
 IupDropButton
 IupElementPropertiesDialog
-IupLayoutFindDialog
+IupClassInfoDialog
 IupExecute
 IupExecuteWait
 IupExitLoop
@@ -293,6 +293,7 @@ IupUnmap
 IupUpdate
 IupUpdateChildren
 IupUser
+IupThread
 IupVal
 IupVbox
 IupVboxV
@@ -300,6 +301,7 @@ IupVboxv
 IupVersion
 IupVersionDate
 IupVersionNumber
+IupVersionShow
 IupZbox
 IupZboxV
 IupZboxv
@@ -337,6 +339,8 @@ iupAttribGetIntId
 iupAttribGetIntId2
 iupAttribGetIntInt
 iupAttribGetLocal
+iupAttribParse
+iupAttribGetAllSaved
 iupAttribGetStr
 iupAttribIsIhandle
 iupAttribIsNotString
@@ -438,7 +442,6 @@ iupDrawCalcShadows
 iupDrawColor
 iupDrawColorMakeInactive
 iupDrawGetTextFlags
-iupDrawGetTextInnerBounds
 iupDrawGetTextSize
 iupDrawHorizSunkenMark
 iupDrawParentBackground
@@ -497,6 +500,8 @@ iupKeyProcessNavigation
 iupKeySetMnemonic
 iupLayoutApplyMinMaxSize
 iupLayoutUpdate
+iupLayoutFindElementDialog
+iupLayoutPropertiesUpdate
 iupLineFileClose
 iupLineFileEOF
 iupLineFileGetBuffer
@@ -518,11 +523,11 @@ iupRadioFindToggleParent
 iupRegisterClass
 iupRegisterFindClass
 iupRound
-iupImageSaveAsTextPacked
+iupImageExportToFile
+iupImageExportToString
 iupSetFontFaceAttrib
 iupSetFontSizeAttrib
 iupSetFontStyleAttrib
-iupShowVersion
 iupStrBoolean
 iupStrCompare
 iupStrCompareEqual
@@ -549,6 +554,7 @@ iupStrGetFormatPrecision
 iupStrGetLargeMem
 iupStrGetMemory
 iupStrHasSpace
+iupStrChangeCase
 iupStrInsert
 iupStrIsAscii
 iupStrLineCount

@@ -50,17 +50,17 @@ IUP_SDK_API void iupdrvImageGetRawData(void* handle, unsigned char* imgdata);
 void iupImageSetHandleFromLoaded(const char* name, void* handle);
 Ihandle* iupImageGetImageFromName(const char* name);
 
-#if defined(FILE) || defined(_INC_STDIO)
-IUP_SDK_API int iupImageSaveAsTextPacked(Ihandle* ih, FILE* packfile, const char* format, const char* name);  /* Used only in IupView */
+#if defined(FILE) || defined(_INC_STDIO) || defined(_STDIO_H_) || defined(_STDIO_H)
+IUP_SDK_API int iupImageExportToFile(Ihandle* ih, FILE* file, const char* format, const char* name, int inFunction);  /* Used only in IupView and IupVisualLED */
 #endif
-IUP_SDK_API int iupImageSaveToString(Ihandle* ih, const char* format, const char* name, char **data);  /* Used only in IupVisualLED */
+IUP_SDK_API int iupImageExportToString(Ihandle* ih, char **str, const char* format, const char* name, int inFunction);  /* Used only in IupVisualLED */
 
 void iupImageStockInit(void);
 void iupImageStockFinish(void);
 typedef Ihandle* (*iupImageStockCreateFunc)(void);
 IUP_SDK_API void iupImageStockSet(const char *name, iupImageStockCreateFunc func, const char* native_name);
 IUP_SDK_API void iupImageStockSetNoResize(const char *name, iupImageStockCreateFunc func, const char* native_name);
-IUP_SDK_API void iupImageStockLoadAll(void);  /* Used only in IupView */
+IUP_SDK_API void iupImageStockLoadAll(void);  /* Used only in IupView and IupVisualLED */
 int iupImageStockGetSize(void);
 void iupImageStockGet(const char* name, Ihandle* *ih, const char* *native_name);
 

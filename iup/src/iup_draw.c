@@ -204,22 +204,6 @@ static void iDrawRotatePoint(int x, int y, int *rx, int *ry, double sin_theta, d
   t = (x * sin_theta) + (y * cos_theta); *ry = iupROUND(t);
 }
 
-IUP_SDK_API void iupDrawGetTextInnerBounds(int o_w, int o_h, double text_orientation, int *w, int *h)
-{
-  if (text_orientation == 90)
-  {
-    *w = o_h;
-    *h = o_w;
-  }
-  else
-  {
-    double cos_theta = cos(text_orientation * IUP_DEG2RAD);
-    double sin_theta = sin(text_orientation * IUP_DEG2RAD);
-    *w = iupRound((1.0 / (cos_theta*cos_theta - sin_theta*sin_theta)) * (o_w * cos_theta - o_h * sin_theta));
-    *h = iupRound((1.0 / (cos_theta*cos_theta - sin_theta*sin_theta)) * (-o_w * sin_theta + o_h * cos_theta));
-  }
-}
-
 static void iDrawGetTextBounds(int w, int h, double text_orientation, int *o_w, int *o_h)
 {
   int xmin, xmax, ymin, ymax, x_r, y_r;

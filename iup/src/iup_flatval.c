@@ -823,6 +823,7 @@ Iclass* iupFlatValNewClass(void)
   Iclass* ic = iupClassNew(iupRegisterFindClass("canvas"));
 
   ic->name = "flatval";
+  ic->cons = "FlatVal";
   ic->format = NULL; /* no parameters */
   ic->nativetype = IUP_TYPECANVAS;
   ic->childtype = IUP_CHILDNONE;

@@ -476,11 +476,15 @@ static Ihandle* CreateTabs(int tab)
 
 //  IupSetAttribute(tabs, "EXPANDBUTTON", "Yes");
 
+//  IupSetAttribute(tabs, "CHILDSIZEALL", "No");
+
 //  IupSetAttribute(tabs, "SHOWCLOSE", "yes");
 //  IupSetCallback(tabs, "TABCLOSE_CB", (Icallback)cbTabClose);  // remove instead of hide
   //  IupSetAttribute(tabs, "TABSPADDING", "10x50");
 //  IupSetAttribute(tabs, "TABSFONTSIZE", "36");
-//  IupSetAttribute(tabs, "TABSTEXTORIENTATION", "90");
+//  IupSetAttribute(tabs, "TABSTEXTORIENTATION", "60");
+//  IupSetAttribute(tabs, "TABSTEXTORIENTATION", "-30");
+//  IupSetAttribute(tabs, "TABSTEXTORIENTATION", "-90");
 
   IupSetAttribute(tabs, "TABFONTSTYLE4", "Bold");
 

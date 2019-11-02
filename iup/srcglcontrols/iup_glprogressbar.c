@@ -266,6 +266,7 @@ Iclass* iupGLProgressBarNewClass(void)
   Iclass* ic = iupClassNew(iupRegisterFindClass("glsubcanvas"));
 
   ic->name = "glprogressbar";
+  ic->cons = "GLProgressBar";
   ic->format = NULL; /* no parameters */
   ic->nativetype = IUP_TYPEVOID;
   ic->childtype = IUP_CHILDNONE;

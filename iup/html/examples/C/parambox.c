@@ -54,7 +54,7 @@ int main(int argc, char **argv)
   char pstring[100] = "string text";
   char pcolor[100] = "255 0 128";
   int plist = 2;
-  char pfile_name[500] = "test.jpg";
+  char pfilename[500] = "test.jpg";
   Ihandle *dlg, *box, *hbox2, *param1, *param2, *param3, *param4, *param5, *param6, *param7, *param8, *param9, *param10, *param11, *param12, *parambox;
   
   IupOpen(&argc, &argv);
@@ -81,7 +81,7 @@ int main(int argc, char **argv)
   IupSetFloat(param8, "VALUE", pangle);
   IupSetAttribute(param9, "VALUE", pstring);
   IupSetInt(param10, "VALUE", plist);
-  IupSetAttribute(param11, "VALUE", pfile_name);
+  IupSetAttribute(param11, "VALUE", pfilename);
   IupSetAttribute(param12, "VALUE", pcolor);
  
   hbox2 = IupHbox(IupLabel("Settings"), IupButton("Extra Button", NULL), NULL);
@@ -108,7 +108,7 @@ int main(int argc, char **argv)
     pangle = IupGetFloat(param8, "VALUE");
     strcpy(pstring, IupGetAttribute(param9, "VALUE"));
     plist = IupGetInt(param10, "VALUE");
-    strcpy(pfile_name, IupGetAttribute(param11, "VALUE"));
+    strcpy(pfilename, IupGetAttribute(param11, "VALUE"));
     strcpy(pcolor, IupGetAttribute(param12, "VALUE"));
 
     IupMessagef("IupGetParam",
@@ -122,7 +122,7 @@ int main(int argc, char **argv)
                 "List Index: %d\n"
                 "FileName: %s\n"
                 "Color: %s\n",
-                pboolean, pinteger, (double)preal, pinteger2, (double)preal2, (double)pangle, pstring, plist, pfile_name, pcolor);
+                pboolean, pinteger, (double)preal, pinteger2, (double)preal2, (double)pangle, pstring, plist, pfilename, pcolor);
   }
 
   IupMainLoop();

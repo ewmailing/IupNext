@@ -12,7 +12,6 @@ local ctrl = {
     switch_cb = "nn",
     extended_cb = "n",
    },
-  funcname = "Colorbar",
 }
 
 iup.PRIMARY = -1

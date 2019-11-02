@@ -62,6 +62,13 @@ FORMAT attribute in Windows. It will NOT affect the VALUE attribute order.
 Default: &quot;DMY&quot;. </p>
 <p><strong>SEPARATOR</strong>: Separator between day, month and year. Must be 
 set before ORDER in Windows. Default: &quot;/&quot;.</p>
+<p><b>
+  SHOWDROPDOWN</b> (write-only): opens or closes the dropdown calendar. Can be
+  "YES" or
+  "NO". Ignored if set before map. In Windows, it works only for NO. (since 
+3.28)</p>
+
+  
 <p><strong>TODAY</strong> (read-only): Returns the date corresponding to today 
 in VALUE format.</p>
 <p><strong>VALUE</strong>: the current date always in the format 

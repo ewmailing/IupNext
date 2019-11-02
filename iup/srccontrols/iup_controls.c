@@ -8,6 +8,8 @@
 #include "iup.h"
 #include "iupcontrols.h"
 
+#include <cd.h>
+
 #include "iup_object.h"
 #include "iup_childtree.h"
 #include "iup_register.h"
@@ -29,6 +31,10 @@ int IupControlsOpen(void)
   iupRegisterClass(iupMatrixExNewClass());
 
   IupSetGlobal("_IUP_CONTROLS_OPEN", "1");
+
+  IupSetGlobal("CD_NAME", CD_NAME);
+  IupSetGlobal("CD_VERSION", cdVersion());
+  IupSetGlobal("CD_VERSIONDATE", cdVersionDate());
 
   return IUP_NOERROR;
 }

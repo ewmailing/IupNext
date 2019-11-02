@@ -7,6 +7,7 @@
 #include <stdio.h>          
 #include <stdlib.h>
 #include <string.h>          
+#include <locale.h>
 
 #include <gtk/gtk.h>
 
@@ -398,6 +399,9 @@ int iupdrvOpen(int *argc, char ***argv)
 
   if (!gtk_init_check(argc, argv))
     return IUP_ERROR;
+
+  /* reset to the C default numeric locale after gtk_init */
+  setlocale(LC_NUMERIC, "C");
 
 #if defined(IUPGTK_DEBUG)
   g_log_set_default_handler(iupgtk_log, NULL);

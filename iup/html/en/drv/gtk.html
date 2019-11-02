@@ -23,6 +23,11 @@ Critical features need at least version 2.8.</p>
 <p>Currently it is not available for IRIX, AIX and SunOS. But is it available 
 for SunOS10 and it is not available for Linux24.</p>
 <h3>Tips</h3>
+<h4>Locale</h4>
+<p>Since 3.28, in IupOpen we call setlocale(LC_NUMERIC, "C") to reset the locale 
+to the default for C applications. Because GTK is changing the locale in 
+gtk_init to match the system language, and this affects the parse of the decimal 
+separator of floating point numbers in strings.</p>
 <h4>Inspecting Native Controls</h4>
 <p>The <strong>GTK+ Inspector</strong> tool included in GTK is very useful to 
 inspect GTK controls position, size and visibility. To enable the GTK+ 

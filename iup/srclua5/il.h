@@ -76,6 +76,7 @@ int iupflatseparatorlua_open(lua_State * L);
 int iupspacelua_open(lua_State * L);
 int iupflatlistlua_open(lua_State * L);
 int iupflatvallua_open(lua_State * L);
+int iupthreadlua_open(lua_State * L);
 
 void iupgetparamlua_open (lua_State * L);
 void iupconfiglua_open(lua_State * L);

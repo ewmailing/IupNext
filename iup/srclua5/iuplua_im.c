@@ -90,7 +90,10 @@ static int LoadAnimationFrames(lua_State *L)
 
 int iupimlua_open(lua_State *L)
 {
+  IupImOpen();
+
   iuplua_get_env(L);
+  iuplua_register(L, LoadImage, "LoadImage");
   iuplua_register(L, LoadImage, "LoadImage");
   iuplua_register(L, SaveImage, "SaveImage");
   iuplua_register(L, LoadAnimation, "LoadAnimation");

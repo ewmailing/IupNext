@@ -216,6 +216,12 @@ static gboolean gtkCanvasScrollEvent(GtkWidget *widget, GdkEventScroll *evt, Iha
   if (evt->direction > GDK_SCROLL_RIGHT)
     return TRUE;
 
+  if (iupAttribGetBoolean(ih, "WHEELDROPFOCUS"))
+  {
+    Ihandle* ih_focus = IupGetFocus();
+    iupAttribSetClassObject(ih_focus, "SHOWDROPDOWN", "NO");
+  }
+
   if (wcb)
   {
     int delta = evt->direction==GDK_SCROLL_UP||evt->direction==GDK_SCROLL_LEFT? 1: -1;

@@ -153,10 +153,10 @@ names can not have periods &quot;.&quot;.</p>
 <pre>void <strong>IupConfigCopy</strong>(Ihandle* <strong>ih1</strong>, Ihandle* <strong>ih2</strong>, const char* <strong>exclude_prefix</strong>); (since 3.23)</pre>
 <p>Copy all the variables from config ih1 to ih2, but excludes groups that start 
 with the given prefix (it can be NULL). </p>
-<h3>Recent File Menu</h3>
-<pre>void <strong>IupConfigRecentInit</strong>(Ihandle* <strong>ih</strong>, Ihandle* <strong>menu</strong>, Icallback <strong>recent_cb</strong>, int <strong>max_recent</strong>);
-<span class="auto-style2"><strong>iup.</strong></span><strong>ConfigRecentInit</strong>(<b>ih, menu</b>: ihandle, <strong>max_recent</strong>: number)  [in Lua]
-<span class="auto-style2">or <strong>ih</strong>:</span><strong>RecentInit</strong>(<b>menu</b>: ihandle, <strong>max_recent</strong>: number)  [in Lua]
+<h3>Recent File Menu/List</h3>
+<pre>void <strong>IupConfigRecentInit</strong>(Ihandle* <strong>ih</strong>, Ihandle* <strong>menu_list</strong>, Icallback <strong>recent_cb</strong>, int <strong>max_recent</strong>);
+<span class="auto-style2"><strong>iup.</strong></span><strong>ConfigRecentInit</strong>(<b>ih, menu<strong>_list</strong></b>: ihandle, <strong>max_recent</strong>: number)  [in Lua]
+<span class="auto-style2">or <strong>ih</strong>:</span><strong>RecentInit</strong>(<b>menu<strong>_list</strong></b>: ihandle, <strong>max_recent</strong>: number)  [in Lua]
 <strong>ih:</strong>recent_cb() -&gt; (<strong>ret</strong>: number) [in Lua]
 
 void <strong>IupConfigRecentUpdate</strong>(Ihandle* <strong>ih</strong>, const char* <strong>filename</strong>);
@@ -164,9 +164,9 @@ void <strong>IupConfigRecentUpdate</strong>(Ihandle* <strong>ih</strong>, const 
 <span class="auto-style2">or <strong>ih:</strong></span><strong>RecentUpdate</strong>(<strong>filename</strong>: string)  [in Lua]
 </pre>
 
-<p><b>ih</b>: Identifier of the configuration database<br><strong>menu</strong>: 
-menu where the recent file items will be listed. Sets the internal RECENTMENU 
-attribute.<br>
+<p><b>ih</b>: Identifier of the configuration database<br><strong>menu_list</strong>: 
+menu or list where the recent file items will be listed. Sets the internal RECENTMENU 
+or RECENTLIST attributes. (list support since 3.28)<br>
 
   <strong>recent_cb</strong>: callback that will be called when a recent file 
 item is selected on the menu. Sets the internal RECENT_CB callback.<br>
@@ -174,14 +174,15 @@ item is selected on the menu. Sets the internal RECENT_CB callback.<br>
 internal RECENTMAX attribute.<br>
 
 <strong>filename</strong>: name of the file that where just saved or open</p>
-<p>These functions store and manage a &quot;Recent Files&quot; menu for the application. 
-Call <strong>IupConfigRecentInit </strong>once to initialize the menu. Then 
+<p>These functions store and manage a &quot;Recent Files&quot; menu or list for the application. 
+Call <strong>IupConfigRecentInit </strong>once to initialize the menu or the 
+list. Then 
 every time a file is open or saved call <strong>IupConfigRecentUpdate</strong> 
-so that the menu list is updated. The last file will be always on the top of the 
+so that the menu or list is updated. The last file will be always on the top of the 
 list. </p>
 <p>Inside the RECENT_CB callback the RECENTFILENAME attribute contains the filename, but 
-the ih handle is not the menu, it is the IupConfig handle. But also inside the 
-callback the IupConfig will inherit attributes from the menu as if it was its 
+the ih handle is not the menu or list, it is the IupConfig handle. But also inside the 
+callback the IupConfig will inherit attributes from the menu or list as if it was its 
 parent. (since 3.15)</p>
 <p>The recent file list is stored by default in the group &quot;Recent&quot; in the 
 configuration file. To change the default set the internal attribute RECENTNAME, 

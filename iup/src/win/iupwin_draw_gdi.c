@@ -287,7 +287,7 @@ static void iwinDrawRectangleSimAA(IdrawCanvas* dc, int x1, int y1, int x2, int 
     dummy_GpBrush* brush;
     gdix_vtable->fn_CreateSolidFill(iupColor2ARGB(color), &brush);
 
-    gdix_vtable->fn_FillRectangle(graphics, brush, (float)(x1 - 0.5f), (float)(y1 - 0.5f), (float)(x2 - x1 + 1), (float)(y2 - y1 + 1));   // in this case Size = Max - Min 
+    gdix_vtable->fn_FillRectangle(graphics, brush, (float)(x1 - 0.5f), (float)(y1 - 0.5f), (float)(x2 - x1 + 1), (float)(y2 - y1 + 1));   /* in this case Size = Max - Min  */
 
     gdix_vtable->fn_DeleteBrush(brush);
   }
@@ -297,7 +297,7 @@ static void iwinDrawRectangleSimAA(IdrawCanvas* dc, int x1, int y1, int x2, int 
     gdix_vtable->fn_CreatePen1(iupColor2ARGB(color), (float)line_width, dummy_UnitPixel, &pen);
     iwinDrawSetLineStyleSimAA(style, pen);
 
-    gdix_vtable->fn_DrawRectangle(graphics, pen, (float)x1, (float)y1, (float)(x2 - x1), (float)(y2 - y1));   // in this case Size = Max - Min 
+    gdix_vtable->fn_DrawRectangle(graphics, pen, (float)x1, (float)y1, (float)(x2 - x1), (float)(y2 - y1));   /* in this case Size = Max - Min */
 
     gdix_vtable->fn_DeletePen(pen);
   }
@@ -708,7 +708,7 @@ IUP_SDK_API void iupdrvDrawText(IdrawCanvas* dc, const char* text, int len, int 
     hOldFont = SelectObject(dc->hBitmapDC, hFont);
 
     if (text_orientation && layout_center)
-      iupDrawGetTextInnerBounds(w, h, text_orientation, &layout_w, &layout_h);
+      iupDrawGetTextSize(dc->ih, text, len, &layout_w, &layout_h, 0);
 
     rect.left = x;
     rect.right = x + layout_w;

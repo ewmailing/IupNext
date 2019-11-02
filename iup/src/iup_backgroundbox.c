@@ -102,19 +102,6 @@ static int iBackgroundBoxGetBorder(Ihandle* ih)
     return 0;
 }
 
-static char* iBackgroundBoxGetClientOffsetAttrib(Ihandle* ih)
-{
-  int dx = 0, dy = 0;
-
-  /* only native offset here */
-  if (iupAttribGetBoolean(ih, "BORDER"))
-  {
-    dx = 1;
-    dy = 1;
-  }
-  return iupStrReturnIntInt(dx, dy, 'x');
-}
-
 static char* iBackgroundBoxGetClientSizeAttrib(Ihandle* ih)
 {
   int border = iBackgroundBoxGetBorder(ih);
@@ -237,11 +224,10 @@ static int iBackgroundBoxCreateMethod(Ihandle* ih, void** params)
   return IUP_NOERROR;
 }
 
-IUP_SDK_API Iclass* iupBackgroundBoxNewBaseClass(const char* name, const char* base_name)
+IUP_SDK_API Iclass* iupBackgroundBoxNewBaseClass(Iclass* ic_base)   /* Used by BackgroundBox and GLBackgroundBox */
 {
-  Iclass* ic = iupClassNew(iupRegisterFindClass(base_name));
+  Iclass* ic = iupClassNew(ic_base);
 
-  ic->name = (char*)name;
   ic->format = "h";   /* one Ihandle* */
   ic->nativetype = IUP_TYPECANVAS;
   ic->childtype = IUP_CHILDMANY+1;  /* 1 child */
@@ -257,7 +243,7 @@ IUP_SDK_API Iclass* iupBackgroundBoxNewBaseClass(const char* name, const char* b
 
   /* Base Container */
   iupClassRegisterAttribute(ic, "EXPAND", iBackgroundBoxGetExpandAttrib, iBackgroundBoxSetExpandAttrib, IUPAF_SAMEASSYSTEM, "YES", IUPAF_NOT_MAPPED | IUPAF_NO_INHERIT);
-  iupClassRegisterAttribute(ic, "CLIENTOFFSET", iBackgroundBoxGetClientOffsetAttrib, NULL, NULL, NULL, IUPAF_NOT_MAPPED | IUPAF_READONLY | IUPAF_NO_INHERIT);
+  iupClassRegisterAttribute(ic, "CLIENTOFFSET", iupBaseCanvasGetClientOffsetAttrib, NULL, NULL, NULL, IUPAF_NOT_MAPPED | IUPAF_READONLY | IUPAF_NO_INHERIT);
   iupClassRegisterAttribute(ic, "CLIENTSIZE", iBackgroundBoxGetClientSizeAttrib, NULL, NULL, NULL, IUPAF_READONLY | IUPAF_NOT_MAPPED | IUPAF_NO_INHERIT);
 
   /* Native Container */
@@ -283,7 +269,12 @@ IUP_SDK_API Iclass* iupBackgroundBoxNewBaseClass(const char* name, const char* b
 
 Iclass* iupBackgroundBoxNewClass(void)
 {
-  return iupBackgroundBoxNewBaseClass("backgroundbox", "canvas");
+  Iclass* ic = iupBackgroundBoxNewBaseClass(iupRegisterFindClass("canvas"));
+
+  ic->name = "backgroundbox";
+  ic->cons = "BackgroundBox";
+
+  return ic;
 }
 
 IUP_API Ihandle* IupBackgroundBox(Ihandle* child)

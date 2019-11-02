@@ -72,7 +72,7 @@ void GetParamTest(void)
   char pcolor[100] = "255 0 128";
   int plist = 2, poptions = 1;
   char pstring2[200] = "second text\nsecond line";
-  char file_name[500] = "test.jpg";
+  char filename[500] = "test.jpg";
   char dir_name[500] = "d:/";
 
   if (!IupGetParam("Title", param_action, 0,
@@ -96,7 +96,7 @@ void GetParamTest(void)
                    "Font:%n\n"
                    "Sep3 %t\n"
                    "Multiline:%m\n",
-                   &pboolean, &pinteger, &preal, &pinteger2, &preal2, &pangle, pstring, &poptions, &plist, pdate, file_name, dir_name, pcolor, pfont, pstring2, NULL))
+                   &pboolean, &pinteger, &preal, &pinteger2, &preal2, &pangle, pstring, &poptions, &plist, pdate, filename, dir_name, pcolor, pfont, pstring2, NULL))
     return;
   
   IupMessagef("IupGetParam",
@@ -114,7 +114,7 @@ void GetParamTest(void)
               "Color: %s\n"
               "Font: %s\n"
               "Multiline: %s",
-              pboolean, pinteger, (double)preal, pinteger2, (double)preal2, (double)pangle, pstring, poptions, plist, pdate, file_name, pcolor, pfont, pstring2);
+              pboolean, pinteger, (double)preal, pinteger2, (double)preal2, (double)pangle, pstring, poptions, plist, pdate, filename, pcolor, pfont, pstring2);
 }
 
 #ifndef BIG_TEST
