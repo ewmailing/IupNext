@@ -1963,7 +1963,7 @@ static int iLayoutContextMenuInsertCursor_CB(Ihandle* menu)
     if (!ref_elem)
     {
       int cx, cy;
-      if (sscanf(iupAttribGetInherit(menu, "INSERTCURSOR_ELEMENT_POS"), "%d,%d", &cx, &cy) == 2) /* cbox */
+      if (IupGetIntInt(menu, "INSERTCURSOR_ELEMENT_POS", &cx, &cy) == 2) /* cbox */
       {
         ret_ih = IupAppend(container, new_ih);
         ref_elem = iupChildTreeGetPrevBrother(new_ih);
@@ -2240,6 +2240,8 @@ static int iLayoutContextMenuPasteInsertBrother_CB(Ihandle* menu)
       return IUP_DEFAULT;
     }
 
+    layoutdlg->cut_elem = NULL;
+
     iLayoutTreeRebuild(layoutdlg);
   }
 
@@ -2279,6 +2281,8 @@ static int iLayoutContextMenuPasteInsertChild_CB(Ihandle* menu)
       IupMessage("Error", "Paste failed (Cut). Invalid operation for this node.");
       return IUP_DEFAULT;
     }
+
+    layoutdlg->cut_elem = NULL;
 
     iLayoutTreeRebuild(layoutdlg);
   }
@@ -2320,6 +2324,8 @@ static int iLayoutContextMenuPasteAppendChild_CB(Ihandle* menu)
       return IUP_DEFAULT;
     }
 
+    layoutdlg->cut_elem = NULL;
+
     iLayoutTreeRebuild(layoutdlg);
   }
 
@@ -2342,7 +2348,7 @@ static int iLayoutContextMenuPasteCursor_CB(Ihandle* menu)
     if (!ref_elem)
     {
       int cx, cy;
-      if (sscanf(iupAttribGetInherit(menu, "INSERTCURSOR_ELEMENT_POS"), "%d,%d", &cx, &cy) == 2) /* cbox */
+      if (IupGetIntInt(menu, "INSERTCURSOR_ELEMENT_POS", &cx, &cy) == 2) /* cbox */
       {
         ret_ih = IupAppend(container, new_ih);
         ref_elem = iupChildTreeGetPrevBrother(new_ih);
@@ -2412,12 +2418,14 @@ static int iLayoutContextMenuPasteCursor_CB(Ihandle* menu)
     if (!ref_elem)
     {
       int cx, cy;
-      if (sscanf(iupAttribGetInherit(menu, "INSERTCURSOR_ELEMENT_POS"), "%d,%d", &cx, &cy) == 2) /* cbox */
+      if (IupGetIntInt(menu, "INSERTCURSOR_ELEMENT_POS", &cx, &cy) == 2) /* cbox */
       {
         IupSetInt(layoutdlg->cut_elem, "CX", cx);
         IupSetInt(layoutdlg->cut_elem, "CY", cy);
       }
     }
+
+    layoutdlg->cut_elem = NULL;
 
     iLayoutTreeRebuild(layoutdlg);
   }
