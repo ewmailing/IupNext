@@ -27,7 +27,8 @@ typedef enum _InativeType {
   IUP_TYPECANVAS,   /**< Drawing canvas, also used as a base control for custom controls. */ 
   IUP_TYPEDIALOG,   /**< DIALOG */
   IUP_TYPEIMAGE,    /**< IMAGE */
-  IUP_TYPEMENU      /**< MENU, SUBMENU, ITEM, SEPARATOR */
+  IUP_TYPEMENU,     /**< MENU, SUBMENU, ITEM, SEPARATOR */
+  IUP_TYPEOTHER     /**< Other resources - TIMER, CLIPBOARD, USER, etc */
 } InativeType;
 
 /** Possible number of children.
@@ -67,6 +68,7 @@ struct Iclass_
   int is_interactive; /**< keyboard interactive boolean, 
                        * true if the class can have the keyboard input focus. Default is false. */
   int has_attrib_id;  /**< indicate if any attribute is numbered. Default is not. Can be 1 or 2. */
+  int is_internal;    /**< indicate an internal class initialized in IupOpen. */
 
   Iclass* parent; /**< class parent to implement inheritance.
                    * Class name must be different. \n

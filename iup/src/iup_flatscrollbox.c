@@ -427,6 +427,7 @@ Iclass* iupFlatScrollBoxNewClass(void)
   Iclass* ic = iupClassNew(iupRegisterFindClass("canvas"));
 
   ic->name   = "flatscrollbox";
+  ic->cons = "FlatScrollBox";
   ic->format = "h";   /* one Ihandle* */
   ic->nativetype = IUP_TYPECANVAS;
   ic->childtype = IUP_CHILDMANY+3;  /* 1 child + 2 scrollbars */

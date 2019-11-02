@@ -908,6 +908,7 @@ Iclass* iupGLExpanderNewClass(void)
   Iclass* ic = iupClassNew(iupRegisterFindClass("glsubcanvas"));
 
   ic->name   = "glexpander";
+  ic->cons = "GLExpander";
   ic->format = "h";   /* one Ihandle* */
   ic->nativetype = IUP_TYPEVOID;
   ic->childtype = IUP_CHILDMANY+1;  /* 1 child */

@@ -684,6 +684,7 @@ Iclass* iupWebBrowserNewClass(void)
   Iclass* ic = iupClassNew(iupRegisterFindClass("olecontrol"));
 
   ic->name = "webbrowser";
+  ic->cons = "WebBrowser";
   ic->format = NULL; /* no parameters */
   ic->nativetype = IUP_TYPECANVAS;
   ic->childtype = IUP_CHILDNONE;

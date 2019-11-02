@@ -27,12 +27,13 @@ iup.GetClassType(<strong>ih</strong>: ihandle) -&gt; (<strong>name</strong>: str
 <p><span class="style2">Returns</span>: the class type.</p>
 <h3>Notes</h3>
 <p>There are only a few pre-defined class types:</p>
-<pre>&quot;void&quot; - No native representation - HBOX, VBOX, ZBOX, FILL, RADIO
-&quot;control&quot; - Native controls - BUTTON, LABEL, TOGGLE, LIST, TEXT, MULTILINE, ITEM, SEPARATOR, SUBMENU, FRAME, others
-&quot;canvas&quot; - Drawing canvas, also used as a base control for custom controls.
-&quot;dialog&quot;
-&quot;image&quot;
-&quot;menu&quot;</pre>
+<pre>&quot;void&quot; - No native representation - HBOX, VBOX, ZBOX, FILL, RADIO, ...
+&quot;control&quot; - Native controls - BUTTON, LABEL, TOGGLE, LIST, TEXT, MULTILINE, FRAME, ...
+&quot;canvas&quot; - Drawing canvas, also used as a base control for custom controls (Flat* elements, GL*, Plot, Matrix, ...)
+&quot;dialog&quot; - dialogs, pre-defined dialogs
+&quot;image&quot; - all image types
+&quot;menu&quot; - all menu types: MENU, SUBMENU, ITEM, SEPARATOR
+&quot;other&quot; - other resources: TIMER, CLIPBOARD, USER, ... (since 3.28)</pre>
 
 <h3>See Also</h3>
 <p>

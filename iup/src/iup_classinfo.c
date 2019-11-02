@@ -196,7 +196,7 @@ static int attributesList_ActionCB (Ihandle *ih, char *attribName, int pos, int 
 
 static char* getNativeType(InativeType nativetype)
 {
-  char* str[] = {"VOID", "CONTROL", "CANVAS", "DIALOG", "IMAGE", "MENU"}; 
+  char* str[] = {"VOID", "CONTROL", "CANVAS", "DIALOG", "IMAGE", "MENU", "OTHER" }; 
   return str[nativetype];
 }
 
