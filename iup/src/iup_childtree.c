@@ -337,6 +337,10 @@ IUP_API int IupReparent(Ihandle* child, Ihandle* parent, Ihandle* ref_child)
   if (parent == child->parent && (ref_child == child || (ref_child == NULL && child->brother == NULL)))
     return IUP_ERROR;
 
+  /* child can not be grand-parent of parent */
+  if (iupChildTreeIsParent(child, parent))
+    return IUP_ERROR;
+
   if (parent->iclass->childtype == IUP_CHILDNONE)
     return IUP_ERROR;
   if (parent->iclass->childtype > IUP_CHILDMANY && 
@@ -476,18 +480,13 @@ IUP_API Ihandle* IupGetParent(Ihandle *ih)
   return ih->parent;
 }
 
-IUP_SDK_API int iupChildTreeIsChild(Ihandle* ih, Ihandle* child)
+IUP_SDK_API int iupChildTreeIsParent(Ihandle* ih, Ihandle* parent)
 {
-  Ihandle* parent;
-
-  if (ih == child)
-    return 1;
-
-  parent = child->parent;
   while (parent)
   {
     if (parent == ih)
       return 1;
+
     parent = parent->parent;
   }
 

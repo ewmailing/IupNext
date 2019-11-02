@@ -320,7 +320,7 @@ IUP_API char* IupGetClassName(Ihandle *ih)
 
 IUP_API char* IupGetClassType(Ihandle *ih)
 {
-  static char* type2str[] = {"void", "control", "canvas", "dialog", "image", "menu"};
+  static char* type2str[] = { "void", "control", "canvas", "dialog", "image", "menu", "other" };
 
   iupASSERT(iupObjectCheck(ih));
   if (!iupObjectCheck(ih))
