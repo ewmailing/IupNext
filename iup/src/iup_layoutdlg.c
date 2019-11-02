@@ -1871,7 +1871,8 @@ static int iLayoutContextMenuNewInsertBrother_CB(Ihandle* menu)
 
     if (!ret_ih)
     {
-      IupMessage("Error", "Add failed. Invalid operation for this node.");
+      IupMessage("Error", "New failed. Invalid operation for this node.");
+      IupDestroy(new_ih);
       return IUP_DEFAULT;
     }
 
@@ -1901,7 +1902,8 @@ static int iLayoutContextMenuNewInsertChild_CB(Ihandle* menu)
     /* add as first child */
     if (!IupInsert(ref_elem, NULL, new_ih))
     {
-      IupMessage("Error", "Add failed. Invalid operation for this node.");
+      IupMessage("Error", "New failed. Invalid operation for this node.");
+      IupDestroy(new_ih);
       return IUP_DEFAULT;
     }
 
@@ -1931,7 +1933,8 @@ static int iLayoutContextMenuNewAppendChild_CB(Ihandle* menu)
     /* add as last child */
     if (!IupAppend(ref_elem, new_ih))
     {
-      IupMessage("Error", "Add failed. Invalid operation for this node.");
+      IupMessage("Error", "New failed. Invalid operation for this node.");
+      IupDestroy(new_ih);
       return IUP_DEFAULT;
     }
 
@@ -1946,7 +1949,7 @@ static int iLayoutContextMenuNewAppendChild_CB(Ihandle* menu)
   return IUP_DEFAULT;
 }
 
-static int iLayoutContextMenuInsertCursor_CB(Ihandle* menu)
+static int iLayoutContextMenuNewInsertCursor_CB(Ihandle* menu)
 {
   Ihandle* dlg = (Ihandle*)iupAttribGetInherit(menu, "_IUP_LAYOUTDLG");
   const char* name = iLayoutSelectClassDialog(dlg);
@@ -2004,7 +2007,8 @@ static int iLayoutContextMenuInsertCursor_CB(Ihandle* menu)
 
     if (!ret_ih)
     {
-      IupMessage("Error", "Add failed. Invalid operation for this node.");
+      IupMessage("Error", "New failed. Invalid operation for this node.");
+      IupDestroy(new_ih);
       return IUP_DEFAULT;
     }
 
@@ -2222,6 +2226,7 @@ static int iLayoutContextMenuPasteInsertBrother_CB(Ihandle* menu)
     if (!ret_ih)
     {
       IupMessage("Error", "Paste failed (Copy). Invalid operation for this node.");
+      IupDestroy(new_ih);
       return IUP_DEFAULT;
     }
 
@@ -2264,6 +2269,7 @@ static int iLayoutContextMenuPasteInsertChild_CB(Ihandle* menu)
     if (!IupInsert(ref_elem, NULL, new_ih))
     {
       IupMessage("Error", "Paste failed (Copy). Invalid operation for this node.");
+      IupDestroy(new_ih);
       return IUP_DEFAULT;
     }
 
@@ -2306,6 +2312,7 @@ static int iLayoutContextMenuPasteAppendChild_CB(Ihandle* menu)
     if (!IupAppend(ref_elem, new_ih))
     {
       IupMessage("Error", "Paste failed (Copy). Invalid operation for this node.");
+      IupDestroy(new_ih);
       return IUP_DEFAULT;
     }
 
@@ -2390,6 +2397,7 @@ static int iLayoutContextMenuPasteCursor_CB(Ihandle* menu)
     if (!ret_ih)
     {
       IupMessage("Error", "Paste failed (Copy). Invalid operation for this node.");
+      IupDestroy(new_ih);
       return IUP_DEFAULT;
     }
 
@@ -2415,7 +2423,7 @@ static int iLayoutContextMenuPasteCursor_CB(Ihandle* menu)
       return IUP_DEFAULT;
     }
 
-    if (!ref_elem)
+    if (IupClassMatch(container, "cbox"))
     {
       int cx, cy;
       if (IupGetIntInt(menu, "INSERTCURSOR_ELEMENT_POS", &cx, &cy) == 2) /* cbox */
@@ -2517,7 +2525,7 @@ static void iLayoutContextMenu(iLayoutDialog* layoutdlg, Ihandle* elem, Ihandle*
     IupSetCallbacks(IupSetAttributes(IupItem("Paste Insert Brother", NULL), can_paste && can_brother && can_paste_cut ? "ACTIVE=Yes" : "ACTIVE=No"), "ACTION", iLayoutContextMenuPasteInsertBrother_CB, NULL),
     IupSeparator(),
     IupSetCallbacks(IupSetAttributes(IupItem("New Insert Child...", NULL), can_child ? "ACTIVE=Yes" : "ACTIVE=No"), "ACTION", iLayoutContextMenuNewInsertChild_CB, NULL),
-    IupSetCallbacks(IupSetAttributes(IupItem("New Insert at Cursor...", NULL), can_cursor ? "ACTIVE=Yes" : "ACTIVE=No"), "ACTION", iLayoutContextMenuInsertCursor_CB, NULL),
+    IupSetCallbacks(IupSetAttributes(IupItem("New Insert at Cursor...", NULL), can_cursor ? "ACTIVE=Yes" : "ACTIVE=No"), "ACTION", iLayoutContextMenuNewInsertCursor_CB, NULL),
     IupSetCallbacks(IupSetAttributes(IupItem("New Append Child...", NULL), can_child ? "ACTIVE=Yes" : "ACTIVE=No"), "ACTION", iLayoutContextMenuNewAppendChild_CB, NULL),
     IupSetCallbacks(IupSetAttributes(IupItem("New Insert Brother...", NULL), can_brother ? "ACTIVE=Yes" : "ACTIVE=No"), "ACTION", iLayoutContextMenuNewInsertBrother_CB, NULL),
     IupSeparator(),
@@ -2741,7 +2749,43 @@ static int iLayoutCanvasButton_CB(Ihandle* canvas, int but, int pressed, int x, 
       int press_y = iupAttribGetInt(canvas, "_IUP_PRESS_Y");
       if (press_x == x && press_y == y)
         iLayoutSelectTreeItem(layoutdlg, elem);
+      else
+      {
+        /* drag and drop the element at INSERTCURSOR */
+        Ihandle* container = (Ihandle*)iupAttribGetInherit(canvas, "INSERTCURSOR"); /* the container */
+        if (container)
+        {
+          Ihandle* ref_elem = (Ihandle*)iupAttribGetInherit(canvas, "INSERTCURSOR_ELEMENT");
+          if (ref_elem)
+          {
+            int insert_before = IupGetInt(canvas, "INSERTCURSOR_BEFORE");
+            if (!insert_before)
+              ref_elem = ref_elem->brother;
+          }
+
+          if (IupReparent(elem, container, ref_elem) == IUP_ERROR)
+          {
+            IupMessage("Error", "Move failed. Invalid operation for this node.");
+            return IUP_DEFAULT;
+          }
+
+          if (IupClassMatch(container, "cbox"))
+          {
+            int cx, cy;
+            if (IupGetIntInt(canvas, "INSERTCURSOR_ELEMENT_POS", &cx, &cy) == 2) /* cbox */
+            {
+              IupSetInt(elem, "CX", cx);
+              IupSetInt(elem, "CY", cy);
+            }
+          }
+
+          iLayoutTreeRebuild(layoutdlg);
+        }
+      }
     }
+
+    if (!iupStrEqual(IupGetAttribute(canvas, "CURSOR"), "ARROW"))
+      IupSetAttribute(canvas, "CURSOR", "ARROW");
   }
   else if (but == IUP_BUTTON3 && pressed)
   {
@@ -2832,6 +2876,9 @@ static int iLayoutCanvasMotion_CB(Ihandle* canvas, int x, int y, char* status)
     Ihandle* elem = (Ihandle*)iupAttribGet(canvas, "_IUP_PRESS_ELEM");
     if (elem)
     {
+      if (!iupStrEqual(IupGetAttribute(canvas, "CURSOR"), "MOVE"))
+        IupSetAttribute(canvas, "CURSOR", "MOVE");
+
       if (IupClassMatch(elem->parent, "cbox")) /* can drag immediate cbox children */
       {
         int press_x = iupAttribGetInt(canvas, "_IUP_PRESS_X");
@@ -2844,10 +2891,9 @@ static int iLayoutCanvasMotion_CB(Ihandle* canvas, int x, int y, char* status)
         IupSetInt(elem, "CY", press_cy + off_y);
         IupRefreshChildren(elem->parent);
         IupRedraw(canvas, 0);
+        return IUP_DEFAULT;
       }
     }
-
-    return IUP_DEFAULT;
   }
 
   if (mark->iclass->childtype == IUP_CHILDNONE)
