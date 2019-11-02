@@ -2708,6 +2708,11 @@ static int iLayoutCanvasButton_CB(Ihandle* canvas, int but, int pressed, int x, 
     Ihandle* dlg = IupGetDialog(canvas);
     iLayoutDialog* layoutdlg = (iLayoutDialog*)iupAttribGet(dlg, "_IUP_LAYOUTDIALOG");
     Ihandle* elem = iLayoutGetDialogElementByPos(layoutdlg, x, y);
+
+    iupAttribSet(canvas, "_IUP_PRESS_X", NULL);
+    iupAttribSet(canvas, "_IUP_PRESS_Y", NULL);
+    iupAttribSet(canvas, "_IUP_PRESS_ELEM", NULL);
+
     if (elem)
     {
       if (iup_isdouble(status))
@@ -2716,6 +2721,25 @@ static int iLayoutCanvasButton_CB(Ihandle* canvas, int but, int pressed, int x, 
         IupUpdate(canvas);
       }
       else
+      {
+        iupAttribSetInt(canvas, "_IUP_PRESS_X", x);
+        iupAttribSetInt(canvas, "_IUP_PRESS_Y", y);
+        iupAttribSetInt(canvas, "_IUP_PRESS_CX", IupGetInt(elem, "CX"));
+        iupAttribSetInt(canvas, "_IUP_PRESS_CY", IupGetInt(elem, "CY"));
+        iupAttribSet(canvas, "_IUP_PRESS_ELEM", (char*)elem);
+      }
+    }
+  }
+  else if (but == IUP_BUTTON1 && !pressed)
+  {
+    Ihandle* elem = (Ihandle*)iupAttribGet(canvas, "_IUP_PRESS_ELEM");
+    if (elem)
+    {
+      Ihandle* dlg = IupGetDialog(canvas);
+      iLayoutDialog* layoutdlg = (iLayoutDialog*)iupAttribGet(dlg, "_IUP_LAYOUTDIALOG");
+      int press_x = iupAttribGetInt(canvas, "_IUP_PRESS_X");
+      int press_y = iupAttribGetInt(canvas, "_IUP_PRESS_Y");
+      if (press_x == x && press_y == y)
         iLayoutSelectTreeItem(layoutdlg, elem);
     }
   }
@@ -2802,6 +2826,29 @@ static int iLayoutCanvasMotion_CB(Ihandle* canvas, int x, int y, char* status)
   int container_x, container_y;
   int native_parent_x = 0, native_parent_y = 0;
   (void)status;
+
+  if (iup_isbutton1(status))
+  {
+    Ihandle* elem = (Ihandle*)iupAttribGet(canvas, "_IUP_PRESS_ELEM");
+    if (elem)
+    {
+      if (IupClassMatch(elem->parent, "cbox")) /* can drag immediate cbox children */
+      {
+        int press_x = iupAttribGetInt(canvas, "_IUP_PRESS_X");
+        int press_y = iupAttribGetInt(canvas, "_IUP_PRESS_Y");
+        int press_cx = iupAttribGetInt(canvas, "_IUP_PRESS_CX");
+        int press_cy = iupAttribGetInt(canvas, "_IUP_PRESS_CY");
+        int off_x = x - press_x;
+        int off_y = y - press_y;
+        IupSetInt(elem, "CX", press_cx + off_x);
+        IupSetInt(elem, "CY", press_cy + off_y);
+        IupRefreshChildren(elem->parent);
+        IupRedraw(canvas, 0);
+      }
+    }
+
+    return IUP_DEFAULT;
+  }
 
   if (mark->iclass->childtype == IUP_CHILDNONE)
   {
