@@ -133,6 +133,13 @@ static int iLayoutPropertiesIdTextChanged_CB(Ihandle* id_text)
   return IUP_DEFAULT;
 }
 
+static void iLayoutPropertiesCallAttribChanged(Ihandle* dlg, char* name)
+{
+  IFns cb = (IFns)IupGetCallback(dlg, "ATTRIBCHANGED_CB");
+  if (cb)
+    cb(dlg, name);
+}
+
 static int iLayoutPropertiesSet_CB(Ihandle* button)
 {
   Ihandle* list1 = (Ihandle*)iupAttribGetInherit(button, "_IUP_PROPLIST1");
@@ -140,7 +147,6 @@ static int iLayoutPropertiesSet_CB(Ihandle* button)
   if (item)
   {
     Ihandle* dlg = IupGetDialog(button);
-    Icallback cb = IupGetCallback(dlg, "PROPERTIESCHANGED_CB");
     Ihandle* elem = (Ihandle*)iupAttribGetInherit(button, "_IUP_PROPELEMENT");
     Ihandle* txt1 = IupGetDialogChild(button, "VALUE1A");
     char* value = IupGetAttribute(txt1, "VALUE");
@@ -149,17 +155,17 @@ static int iLayoutPropertiesSet_CB(Ihandle* button)
 
     if (IupGetInt(id_text, "ACTIVE"))
     {
+      char nameid[100];
       char* id = IupGetAttribute(id_text, "VALUE");
-      if (id && id[0] != 0)
-      {
-        char nameid[100];
-        sprintf(nameid, "%s%s", name, id);
+      if (!id || id[0] == 0)
+        id = "";
 
-        if (!value || iupStrEqual(value, "NULL"))
-          IupSetAttribute(elem, nameid, NULL);
-        else
-          IupStoreAttribute(elem, nameid, value);
-      }
+      sprintf(nameid, "%s%s", name, id);
+
+      if (!value || iupStrEqual(value, "NULL"))
+        IupSetAttribute(elem, nameid, NULL);
+      else
+        IupStoreAttribute(elem, nameid, value);
     }
     else
     {
@@ -175,8 +181,7 @@ static int iLayoutPropertiesSet_CB(Ihandle* button)
       IupStoreAttribute(colorbut, "BGCOLOR", value);
     }
 
-    if (cb)
-      cb(dlg);
+    iLayoutPropertiesCallAttribChanged(dlg, name);
   }
   return IUP_DEFAULT;
 }
@@ -193,7 +198,6 @@ static int iLayoutPropertiesSetColor_CB(Ihandle *colorbut)
   if (IupGetInt(color_dlg, "STATUS") == 1)
   {
     Ihandle* dlg = IupGetDialog(colorbut);
-    Icallback cb = IupGetCallback(dlg, "PROPERTIESCHANGED_CB");
     Ihandle* elem = (Ihandle*)iupAttribGetInherit(colorbut, "_IUP_PROPELEMENT");
     Ihandle* list1 = (Ihandle*)iupAttribGetInherit(colorbut, "_IUP_PROPLIST1");
     Ihandle* txt1 = IupGetDialogChild(colorbut, "VALUE1A");
@@ -206,19 +210,18 @@ static int iLayoutPropertiesSetColor_CB(Ihandle *colorbut)
 
     if (IupGetInt(id_text, "ACTIVE"))
     {
+      char nameid[100];
       char* id = IupGetAttribute(id_text, "VALUE");
-      if (id && id[0]!=0)
-      {
-        char nameid[100];
-        sprintf(nameid, "%s%s", name, id);
-        IupStoreAttribute(elem, nameid, value);
-      }
+      if (!id || id[0] == 0)
+        id = "";
+
+      sprintf(nameid, "%s%s", name, id);
+      IupStoreAttribute(elem, nameid, value);
     }
     else
       IupStoreAttribute(elem, name, value);
 
-    if (cb)
-      cb(dlg);
+    iLayoutPropertiesCallAttribChanged(dlg, name);
   }
 
   IupDestroy(color_dlg);
@@ -239,7 +242,6 @@ static int iLayoutPropertiesSetFont_CB(Ihandle *fontbut)
   if (IupGetInt(font_dlg, "STATUS") == 1)
   {
     Ihandle* dlg = IupGetDialog(fontbut);
-    Icallback cb = IupGetCallback(dlg, "PROPERTIESCHANGED_CB");
     Ihandle* elem = (Ihandle*)iupAttribGetInherit(fontbut, "_IUP_PROPELEMENT");
     Ihandle* list1 = (Ihandle*)iupAttribGetInherit(fontbut, "_IUP_PROPLIST1");
     char* value = IupGetAttribute(font_dlg, "VALUE");
@@ -250,19 +252,18 @@ static int iLayoutPropertiesSetFont_CB(Ihandle *fontbut)
 
     if (IupGetInt(id_text, "ACTIVE"))
     {
+      char nameid[100];
       char* id = IupGetAttribute(id_text, "VALUE");
-      if (id && id[0] != 0)
-      {
-        char nameid[100];
-        sprintf(nameid, "%s%s", name, id);
-        IupStoreAttribute(elem, nameid, value);
-      }
+      if (!id || id[0] == 0)
+        id = "";
+
+      sprintf(nameid, "%s%s", name, id);
+      IupStoreAttribute(elem, nameid, value);
     }
     else
       IupStoreAttribute(elem, name, value);
 
-    if (cb)
-      cb(dlg);
+    iLayoutPropertiesCallAttribChanged(dlg, name);
   }
 
   IupDestroy(font_dlg);
@@ -394,6 +395,7 @@ static int iLayoutPropertiesGetAsString_CB(Ihandle *button)
 
 static int iLayoutPropertiesSetStr_CB(Ihandle* button)
 {
+  Ihandle* dlg = IupGetDialog(button);
   Ihandle* elem = (Ihandle*)iupAttribGetInherit(button, "_IUP_PROPELEMENT");
   char* name = IupGetAttribute(IupGetDialogChild(button, "NAME22"), "VALUE");
   char* value = IupGetAttribute(IupGetDialogChild(button, "VALUE22"), "VALUE");
@@ -402,7 +404,9 @@ static int iLayoutPropertiesSetStr_CB(Ihandle* button)
   else
     IupStoreAttribute(elem, name, value);
 
-  iupLayoutPropertiesUpdate(IupGetDialog(button), elem);
+  iupLayoutPropertiesUpdate(dlg, elem);
+
+  iLayoutPropertiesCallAttribChanged(dlg, name);
 
   return IUP_DEFAULT;
 }

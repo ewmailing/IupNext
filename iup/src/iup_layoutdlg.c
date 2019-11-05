@@ -1047,7 +1047,7 @@ static int iLayoutMenuClose_CB(Ihandle* ih)
   }
 }
 
-static int iLayoutMenuHierarchy_CB(Ihandle* ih)
+static int iLayoutMenuShowTree_CB(Ihandle* ih)
 {
   Ihandle* dlg = IupGetDialog(ih);
   Ihandle* split = IupGetChild(IupGetChild(dlg, 0), 0);
@@ -1629,9 +1629,13 @@ static int iLayoutCanvas_CB(Ihandle* canvas, float fposx, float fposy)
                           Context Menu
 ***************************************************************************/
 
-static int iLayoutPropertiedChanged_CB(Ihandle* properties)
+static int iLayoutAttribChanged_CB(Ihandle* properties, char* name)
 {
   iLayoutDialog* layoutdlg = (iLayoutDialog*)iupAttribGetInherit(properties, "_IUP_LAYOUTDIALOG");
+  Ihandle* dlg = IupGetDialog(layoutdlg->tree);
+  IFns cb = (IFns)IupGetCallback(dlg, "ATTRIBCHANGED_CB");
+  if (cb)
+    cb(dlg, name);
 
   layoutdlg->changed = 1;
 
@@ -1650,7 +1654,7 @@ static int iLayoutContextMenuProperties_CB(Ihandle* menu)
   {
     layoutdlg->properties = IupElementPropertiesDialog(dlg, elem);
     IupSetAttribute(layoutdlg->properties, "_IUP_LAYOUTDIALOG", (char*)layoutdlg);
-    IupSetCallback(layoutdlg->properties, "PROPERTIESCHANGED_CB", iLayoutPropertiedChanged_CB);
+    IupSetCallback(layoutdlg->properties, "ATTRIBCHANGED_CB", (Icallback)iLayoutAttribChanged_CB);
   }
   else
     iupLayoutPropertiesUpdate(layoutdlg->properties, elem);
@@ -1664,6 +1668,14 @@ static void iLayoutTreeUpdateTitle(iLayoutDialog* layoutdlg, Ihandle* ih)
 {
   int id = IupTreeGetId(layoutdlg->tree, ih);
   IupSetAttributeId(layoutdlg->tree, "TITLE", id, iupLayoutGetElementTitle(ih));
+}
+
+static void iLayoutCallLayoutChangedCb(iLayoutDialog* layoutdlg)
+{
+  Ihandle* dlg = IupGetDialog(layoutdlg->tree);
+  IFn cb = (IFn)IupGetCallback(dlg, "LAYOUTCHANGED_CB");
+  if (cb)
+    cb(dlg);
 }
 
 static int iLayoutContextMenuHandleName_CB(Ihandle* menu)
@@ -1686,12 +1698,14 @@ static int iLayoutContextMenuHandleName_CB(Ihandle* menu)
       {
         IupSetHandle(elem_name, NULL);
         iLayoutTreeUpdateTitle(layoutdlg, elem);
+        iLayoutCallLayoutChangedCb(layoutdlg);
       }
     }
     else
     {
       IupSetHandle(name, elem);
       iLayoutTreeUpdateTitle(layoutdlg, elem);
+      iLayoutCallLayoutChangedCb(layoutdlg);
     }
   }
 
@@ -1882,6 +1896,8 @@ static int iLayoutContextMenuNewInsertBrother_CB(Ihandle* menu)
     iLayoutTreeAddNode(layoutdlg->tree, ref_id, new_ih);
 
     iLayoutUpdateLayout(layoutdlg);
+
+    iLayoutCallLayoutChangedCb(layoutdlg);
   }
 
   return IUP_DEFAULT;
@@ -1913,6 +1929,8 @@ static int iLayoutContextMenuNewInsertChild_CB(Ihandle* menu)
     iLayoutTreeAddNode(layoutdlg->tree, ref_id, new_ih);
 
     iLayoutUpdateLayout(layoutdlg);
+
+    iLayoutCallLayoutChangedCb(layoutdlg);
   }
 
   return IUP_DEFAULT;
@@ -1944,6 +1962,8 @@ static int iLayoutContextMenuNewAppendChild_CB(Ihandle* menu)
     iLayoutTreeAddNode(layoutdlg->tree, ref_id, new_ih);
 
     iLayoutUpdateLayout(layoutdlg);
+
+    iLayoutCallLayoutChangedCb(layoutdlg);
   }
 
   return IUP_DEFAULT;
@@ -2018,6 +2038,8 @@ static int iLayoutContextMenuNewInsertCursor_CB(Ihandle* menu)
     iLayoutTreeAddNode(layoutdlg->tree, ref_id, new_ih);
 
     iLayoutUpdateLayout(layoutdlg);
+
+    iLayoutCallLayoutChangedCb(layoutdlg);
   }
 
   return IUP_DEFAULT;
@@ -2179,6 +2201,8 @@ static int iLayoutContextMenuRemove_CB(Ihandle* menu)
     IupDestroy(elem);
 
     iLayoutUpdateLayout(layoutdlg);
+
+    iLayoutCallLayoutChangedCb(layoutdlg);
   }
 
   IupDestroy(msg_dlg);
@@ -2236,6 +2260,8 @@ static int iLayoutContextMenuPasteInsertBrother_CB(Ihandle* menu)
     iLayoutTreeAddNode(layoutdlg->tree, ref_id, new_ih);
 
     iLayoutUpdateLayout(layoutdlg);
+
+    iLayoutCallLayoutChangedCb(layoutdlg);
   }
   else
   {
@@ -2248,6 +2274,8 @@ static int iLayoutContextMenuPasteInsertBrother_CB(Ihandle* menu)
     layoutdlg->cut_elem = NULL;
 
     iLayoutTreeRebuild(layoutdlg);
+
+    iLayoutCallLayoutChangedCb(layoutdlg);
   }
 
   return IUP_DEFAULT;
@@ -2279,6 +2307,8 @@ static int iLayoutContextMenuPasteInsertChild_CB(Ihandle* menu)
     iLayoutTreeAddNode(layoutdlg->tree, ref_id, new_ih);
 
     iLayoutUpdateLayout(layoutdlg);
+
+    iLayoutCallLayoutChangedCb(layoutdlg);
   }
   else
   {
@@ -2291,6 +2321,8 @@ static int iLayoutContextMenuPasteInsertChild_CB(Ihandle* menu)
     layoutdlg->cut_elem = NULL;
 
     iLayoutTreeRebuild(layoutdlg);
+
+    iLayoutCallLayoutChangedCb(layoutdlg);
   }
 
   return IUP_DEFAULT;
@@ -2322,6 +2354,8 @@ static int iLayoutContextMenuPasteAppendChild_CB(Ihandle* menu)
     iLayoutTreeAddNode(layoutdlg->tree, ref_id, new_ih);
 
     iLayoutUpdateLayout(layoutdlg);
+
+    iLayoutCallLayoutChangedCb(layoutdlg);
   }
   else
   {
@@ -2334,6 +2368,8 @@ static int iLayoutContextMenuPasteAppendChild_CB(Ihandle* menu)
     layoutdlg->cut_elem = NULL;
 
     iLayoutTreeRebuild(layoutdlg);
+
+    iLayoutCallLayoutChangedCb(layoutdlg);
   }
 
   return IUP_DEFAULT;
@@ -2407,6 +2443,8 @@ static int iLayoutContextMenuPasteCursor_CB(Ihandle* menu)
     iLayoutTreeAddNode(layoutdlg->tree, ref_id, new_ih);
 
     iLayoutUpdateLayout(layoutdlg);
+
+    iLayoutCallLayoutChangedCb(layoutdlg);
   }
   else
   {
@@ -2436,6 +2474,8 @@ static int iLayoutContextMenuPasteCursor_CB(Ihandle* menu)
     layoutdlg->cut_elem = NULL;
 
     iLayoutTreeRebuild(layoutdlg);
+
+    iLayoutCallLayoutChangedCb(layoutdlg);
   }
 
   return IUP_DEFAULT;
@@ -2780,6 +2820,8 @@ static int iLayoutCanvasButton_CB(Ihandle* canvas, int but, int pressed, int x, 
           }
 
           iLayoutTreeRebuild(layoutdlg);
+
+          iLayoutCallLayoutChangedCb(layoutdlg);
         }
       }
     }
@@ -2881,6 +2923,7 @@ static int iLayoutCanvasMotion_CB(Ihandle* canvas, int x, int y, char* status)
 
       if (IupClassMatch(elem->parent, "cbox")) /* can drag immediate cbox children */
       {
+        iLayoutDialog* layoutdlg = (iLayoutDialog*)iupAttribGet(dlg, "_IUP_LAYOUTDIALOG");
         int press_x = iupAttribGetInt(canvas, "_IUP_PRESS_X");
         int press_y = iupAttribGetInt(canvas, "_IUP_PRESS_Y");
         int press_cx = iupAttribGetInt(canvas, "_IUP_PRESS_CX");
@@ -2891,10 +2934,13 @@ static int iLayoutCanvasMotion_CB(Ihandle* canvas, int x, int y, char* status)
         IupSetInt(elem, "CY", press_cy + off_y);
         IupRefreshChildren(elem->parent);
         IupRedraw(canvas, 0);
-        return IUP_DEFAULT;
+
+        iLayoutCallLayoutChangedCb(layoutdlg); //TODO???
       }
     }
   }
+
+  /* starting here is all for the INSERTCURSOR management */
 
   if (mark->iclass->childtype == IUP_CHILDNONE)
   {
@@ -3220,6 +3266,8 @@ static int iLayoutTreeDragDrop_CB(Ihandle* tree, int drag_id, int drop_id, int i
 
   iLayoutUpdateLayout(layoutdlg);
 
+  iLayoutCallLayoutChangedCb(layoutdlg);
+
   /* since we are only moving existing nodes,
      title, map state, and user data was not changed.
      there is no need to update the node info */
@@ -3369,7 +3417,7 @@ IUP_API Ihandle* IupLayoutDialog(Ihandle* dialog)
 
   menu = IupMenu(
     IupSubmenu("&Layout", IupMenu(
-    IupSetCallbacks(IupSetAttributes(IupItem("&Show Tree", NULL), "AUTOTOGGLE=YES, VALUE=ON"), "ACTION", iLayoutMenuHierarchy_CB, NULL),
+    IupSetCallbacks(IupSetAttributes(IupItem("&Show Tree", NULL), "AUTOTOGGLE=YES, VALUE=ON"), "ACTION", iLayoutMenuShowTree_CB, NULL),
     IupSetCallbacks(IupItem("Refresh\tCtrl+F5", NULL), "ACTION", iLayoutMenuRefresh_CB, NULL),
     IupSeparator(),
     IupSetCallbacks(IupItem("Update (Tree and Draw)\tF5", NULL), "ACTION", iLayoutMenuUpdate_CB, NULL),
