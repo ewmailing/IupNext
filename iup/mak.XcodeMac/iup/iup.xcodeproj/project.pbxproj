@@ -6,9 +6,27 @@
 	objectVersion = 46;
 	objects = {
 
+/* Begin PBXAggregateTarget section */
+		006E70962369466F00CA0753 /* AllLibraries */ = {
+			isa = PBXAggregateTarget;
+			buildConfigurationList = 006E70972369466F00CA0753 /* Build configuration list for PBXAggregateTarget "AllLibraries" */;
+			buildPhases = (
+			);
+			dependencies = (
+				006E709B2369468500CA0753 /* PBXTargetDependency */,
+				006E709F2369468500CA0753 /* PBXTargetDependency */,
+				006E70A12369468500CA0753 /* PBXTargetDependency */,
+				006E709D2369468500CA0753 /* PBXTargetDependency */,
+			);
+			name = AllLibraries;
+			productName = AllLibraries;
+		};
+/* End PBXAggregateTarget section */
+
 /* Begin PBXBuildFile section */
 		00006F111ECA62AB000636B1 /* IUPCocoaVerticalAlignmentTextFieldCell.h in Headers */ = {isa = PBXBuildFile; fileRef = 00006F0F1ECA62AB000636B1 /* IUPCocoaVerticalAlignmentTextFieldCell.h */; };
 		00006F121ECA62AB000636B1 /* IUPCocoaVerticalAlignmentTextFieldCell.m in Sources */ = {isa = PBXBuildFile; fileRef = 00006F101ECA62AB000636B1 /* IUPCocoaVerticalAlignmentTextFieldCell.m */; };
+		001CC8BB2341CCAC00563BD4 /* iupwkwebview_webbrowser.m in Sources */ = {isa = PBXBuildFile; fileRef = 001CC8BA2341CCAC00563BD4 /* iupwkwebview_webbrowser.m */; };
 		002CC4CC1EA2416B0007C8E7 /* iup_animatedlabel.c in Sources */ = {isa = PBXBuildFile; fileRef = 002CC4C61EA2416B0007C8E7 /* iup_animatedlabel.c */; };
 		002CC4CD1EA2416B0007C8E7 /* iup_datepick.c in Sources */ = {isa = PBXBuildFile; fileRef = 002CC4C71EA2416B0007C8E7 /* iup_datepick.c */; };
 		002CC4CE1EA2416B0007C8E7 /* iup_draw.c in Sources */ = {isa = PBXBuildFile; fileRef = 002CC4C81EA2416B0007C8E7 /* iup_draw.c */; };
@@ -32,6 +50,19 @@
 		005DCBA51EBD659600A66253 /* IupMainMenu.xib in Resources */ = {isa = PBXBuildFile; fileRef = 005DCBA21EBD659500A66253 /* IupMainMenu.xib */; };
 		005DCBAE1EBDD27300A66253 /* CanonicalServiceMenu.xib in Resources */ = {isa = PBXBuildFile; fileRef = 005DCBAA1EBDD27300A66253 /* CanonicalServiceMenu.xib */; };
 		005DCBAF1EBDD27300A66253 /* CanonicalWindowMenu.xib in Resources */ = {isa = PBXBuildFile; fileRef = 005DCBAC1EBDD27300A66253 /* CanonicalWindowMenu.xib */; };
+		006E70932368320600CA0753 /* iupluafiledlg.h in Headers */ = {isa = PBXBuildFile; fileRef = 006E70902368320500CA0753 /* iupluafiledlg.h */; };
+		006E70942368320600CA0753 /* iupdraw_cd.h in Headers */ = {isa = PBXBuildFile; fileRef = 006E70912368320500CA0753 /* iupdraw_cd.h */; };
+		006E70952368320600CA0753 /* iupfiledlg.h in Headers */ = {isa = PBXBuildFile; fileRef = 006E70922368320500CA0753 /* iupfiledlg.h */; };
+		006E70B6236D2C1B00CA0753 /* iup_lng_russian_utf8.h in Headers */ = {isa = PBXBuildFile; fileRef = 006E70AC236D2C1700CA0753 /* iup_lng_russian_utf8.h */; };
+		006E70B7236D2C1B00CA0753 /* iup_lng_czech_utf8.h in Headers */ = {isa = PBXBuildFile; fileRef = 006E70AD236D2C1800CA0753 /* iup_lng_czech_utf8.h */; };
+		006E70B8236D2C1B00CA0753 /* iup_lng_spanish_utf8.h in Headers */ = {isa = PBXBuildFile; fileRef = 006E70AE236D2C1800CA0753 /* iup_lng_spanish_utf8.h */; };
+		006E70B9236D2C1B00CA0753 /* iup_lng_portuguese_utf8.h in Headers */ = {isa = PBXBuildFile; fileRef = 006E70AF236D2C1900CA0753 /* iup_lng_portuguese_utf8.h */; };
+		006E70BA236D2C1B00CA0753 /* iup_elempropdlg.c in Sources */ = {isa = PBXBuildFile; fileRef = 006E70B0236D2C1900CA0753 /* iup_elempropdlg.c */; };
+		006E70BB236D2C1B00CA0753 /* iup_lng_portuguese.h in Headers */ = {isa = PBXBuildFile; fileRef = 006E70B1236D2C1900CA0753 /* iup_lng_portuguese.h */; };
+		006E70BC236D2C1B00CA0753 /* iup_lng_english.h in Headers */ = {isa = PBXBuildFile; fileRef = 006E70B2236D2C1A00CA0753 /* iup_lng_english.h */; };
+		006E70BD236D2C1B00CA0753 /* iup_lng_spanish.h in Headers */ = {isa = PBXBuildFile; fileRef = 006E70B3236D2C1A00CA0753 /* iup_lng_spanish.h */; };
+		006E70BE236D2C1B00CA0753 /* iup_thread.c in Sources */ = {isa = PBXBuildFile; fileRef = 006E70B4236D2C1A00CA0753 /* iup_thread.c */; };
+		006E70BF236D2C1B00CA0753 /* iup_classinfo.c in Sources */ = {isa = PBXBuildFile; fileRef = 006E70B5236D2C1B00CA0753 /* iup_classinfo.c */; };
 		0070FB9A1E0E0B79009A8631 /* IupAppDelegate.h in Headers */ = {isa = PBXBuildFile; fileRef = 0070FB981E0E0B79009A8631 /* IupAppDelegate.h */; };
 		0070FB9B1E0E0B79009A8631 /* IupAppDelegate.m in Sources */ = {isa = PBXBuildFile; fileRef = 0070FB991E0E0B79009A8631 /* IupAppDelegate.m */; };
 		007E3198204CCC9800ED15CB /* iupluascripterdlg.h in Headers */ = {isa = PBXBuildFile; fileRef = 007E3196204CCC9600ED15CB /* iupluascripterdlg.h */; settings = {ATTRIBUTES = (Public, ); }; };
@@ -67,7 +98,6 @@
 		00BE4F641F4BF479002B7C86 /* iupweb.h in Headers */ = {isa = PBXBuildFile; fileRef = 00E3A8681B60595300BEC175 /* iupweb.h */; settings = {ATTRIBUTES = (Public, ); }; };
 		00BE4F661F4BF48F002B7C86 /* iup_webbrowser.h in Headers */ = {isa = PBXBuildFile; fileRef = 00BE4F521F4BF40F002B7C86 /* iup_webbrowser.h */; };
 		00BE4F6B1F4C7CCC002B7C86 /* WebKit.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 00BE4F6A1F4C7CCC002B7C86 /* WebKit.framework */; };
-		00BE4F6F1F4C7CFE002B7C86 /* iupcocoa_webbrowser.m in Sources */ = {isa = PBXBuildFile; fileRef = 00BE4F671F4C75A8002B7C86 /* iupcocoa_webbrowser.m */; };
 		00BE4F701F4C7D03002B7C86 /* iup_webbrowser.c in Sources */ = {isa = PBXBuildFile; fileRef = 00BE4F511F4BF40F002B7C86 /* iup_webbrowser.c */; };
 		00BE4F711F4C9564002B7C86 /* iup.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 00E3A5ED1B60578300BEC175 /* iup.framework */; };
 		00BE4F731F4C95E4002B7C86 /* iup_export.h in Headers */ = {isa = PBXBuildFile; fileRef = 00BE4F721F4C95E4002B7C86 /* iup_export.h */; };
@@ -313,6 +343,34 @@
 /* End PBXBuildFile section */
 
 /* Begin PBXContainerItemProxy section */
+		006E709A2369468500CA0753 /* PBXContainerItemProxy */ = {
+			isa = PBXContainerItemProxy;
+			containerPortal = 00E3A5E41B60578300BEC175 /* Project object */;
+			proxyType = 1;
+			remoteGlobalIDString = 00E3A5EC1B60578300BEC175;
+			remoteInfo = iup;
+		};
+		006E709C2369468500CA0753 /* PBXContainerItemProxy */ = {
+			isa = PBXContainerItemProxy;
+			containerPortal = 00E3A5E41B60578300BEC175 /* Project object */;
+			proxyType = 1;
+			remoteGlobalIDString = 00E93AFC214E846100BC6F5B;
+			remoteInfo = iupim;
+		};
+		006E709E2369468500CA0753 /* PBXContainerItemProxy */ = {
+			isa = PBXContainerItemProxy;
+			containerPortal = 00E3A5E41B60578300BEC175 /* Project object */;
+			proxyType = 1;
+			remoteGlobalIDString = 00E93A6C214E826C00BC6F5B;
+			remoteInfo = iupimglib;
+		};
+		006E70A02369468500CA0753 /* PBXContainerItemProxy */ = {
+			isa = PBXContainerItemProxy;
+			containerPortal = 00E3A5E41B60578300BEC175 /* Project object */;
+			proxyType = 1;
+			remoteGlobalIDString = 00BE4E761F4BF35C002B7C86;
+			remoteInfo = iupweb;
+		};
 		00A3F0CA218FD18900841C0E /* PBXContainerItemProxy */ = {
 			isa = PBXContainerItemProxy;
 			containerPortal = 00E3A5E41B60578300BEC175 /* Project object */;
@@ -382,6 +440,8 @@
 /* Begin PBXFileReference section */
 		00006F0F1ECA62AB000636B1 /* IUPCocoaVerticalAlignmentTextFieldCell.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = IUPCocoaVerticalAlignmentTextFieldCell.h; sourceTree = "<group>"; };
 		00006F101ECA62AB000636B1 /* IUPCocoaVerticalAlignmentTextFieldCell.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = IUPCocoaVerticalAlignmentTextFieldCell.m; sourceTree = "<group>"; };
+		001CC8BA2341CCAC00563BD4 /* iupwkwebview_webbrowser.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = iupwkwebview_webbrowser.m; sourceTree = "<group>"; };
+		001CC8BC2342141A00563BD4 /* webbrowser.entitlements */ = {isa = PBXFileReference; lastKnownFileType = text.plist.entitlements; path = webbrowser.entitlements; sourceTree = "<group>"; };
 		002CC4C61EA2416B0007C8E7 /* iup_animatedlabel.c */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.c; path = iup_animatedlabel.c; sourceTree = "<group>"; };
 		002CC4C71EA2416B0007C8E7 /* iup_datepick.c */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.c; path = iup_datepick.c; sourceTree = "<group>"; };
 		002CC4C81EA2416B0007C8E7 /* iup_draw.c */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.c; path = iup_draw.c; sourceTree = "<group>"; };
@@ -402,6 +462,19 @@
 		005DCBA31EBD659500A66253 /* Base */ = {isa = PBXFileReference; lastKnownFileType = file.xib; name = Base; path = Base.lproj/IupMainMenu.xib; sourceTree = "<group>"; };
 		005DCBAB1EBDD27300A66253 /* Base */ = {isa = PBXFileReference; lastKnownFileType = file.xib; name = Base; path = Base.lproj/CanonicalServiceMenu.xib; sourceTree = "<group>"; };
 		005DCBAD1EBDD27300A66253 /* Base */ = {isa = PBXFileReference; lastKnownFileType = file.xib; name = Base; path = Base.lproj/CanonicalWindowMenu.xib; sourceTree = "<group>"; };
+		006E70902368320500CA0753 /* iupluafiledlg.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = iupluafiledlg.h; sourceTree = "<group>"; };
+		006E70912368320500CA0753 /* iupdraw_cd.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = iupdraw_cd.h; sourceTree = "<group>"; };
+		006E70922368320500CA0753 /* iupfiledlg.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = iupfiledlg.h; sourceTree = "<group>"; };
+		006E70AC236D2C1700CA0753 /* iup_lng_russian_utf8.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = iup_lng_russian_utf8.h; sourceTree = "<group>"; };
+		006E70AD236D2C1800CA0753 /* iup_lng_czech_utf8.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = iup_lng_czech_utf8.h; sourceTree = "<group>"; };
+		006E70AE236D2C1800CA0753 /* iup_lng_spanish_utf8.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = iup_lng_spanish_utf8.h; sourceTree = "<group>"; };
+		006E70AF236D2C1900CA0753 /* iup_lng_portuguese_utf8.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = iup_lng_portuguese_utf8.h; sourceTree = "<group>"; };
+		006E70B0236D2C1900CA0753 /* iup_elempropdlg.c */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.c; path = iup_elempropdlg.c; sourceTree = "<group>"; };
+		006E70B1236D2C1900CA0753 /* iup_lng_portuguese.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = iup_lng_portuguese.h; sourceTree = "<group>"; };
+		006E70B2236D2C1A00CA0753 /* iup_lng_english.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = iup_lng_english.h; sourceTree = "<group>"; };
+		006E70B3236D2C1A00CA0753 /* iup_lng_spanish.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = iup_lng_spanish.h; sourceTree = "<group>"; };
+		006E70B4236D2C1A00CA0753 /* iup_thread.c */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.c; path = iup_thread.c; sourceTree = "<group>"; };
+		006E70B5236D2C1B00CA0753 /* iup_classinfo.c */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.c; path = iup_classinfo.c; sourceTree = "<group>"; };
 		0070FB981E0E0B79009A8631 /* IupAppDelegate.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = IupAppDelegate.h; sourceTree = "<group>"; };
 		0070FB991E0E0B79009A8631 /* IupAppDelegate.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = IupAppDelegate.m; sourceTree = "<group>"; };
 		007E3196204CCC9600ED15CB /* iupluascripterdlg.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = iupluascripterdlg.h; sourceTree = "<group>"; };
@@ -804,6 +877,7 @@
 		00BE4F4D1F4BF40F002B7C86 /* srcweb */ = {
 			isa = PBXGroup;
 			children = (
+				001CC8BA2341CCAC00563BD4 /* iupwkwebview_webbrowser.m */,
 				00BE4F671F4C75A8002B7C86 /* iupcocoa_webbrowser.m */,
 				00BE4F511F4BF40F002B7C86 /* iup_webbrowser.c */,
 				00BE4F521F4BF40F002B7C86 /* iup_webbrowser.h */,
@@ -825,6 +899,7 @@
 		00BE4F791F4C967F002B7C86 /* webbrowser */ = {
 			isa = PBXGroup;
 			children = (
+				001CC8BC2342141A00563BD4 /* webbrowser.entitlements */,
 				00BE4F8C1F4C96BD002B7C86 /* webbrowser.c */,
 				00BE4F881F4C9680002B7C86 /* Info.plist */,
 			);
@@ -907,6 +982,16 @@
 		00E3A60B1B60583500BEC175 /* src */ = {
 			isa = PBXGroup;
 			children = (
+				006E70B5236D2C1B00CA0753 /* iup_classinfo.c */,
+				006E70B0236D2C1900CA0753 /* iup_elempropdlg.c */,
+				006E70AD236D2C1800CA0753 /* iup_lng_czech_utf8.h */,
+				006E70B2236D2C1A00CA0753 /* iup_lng_english.h */,
+				006E70AF236D2C1900CA0753 /* iup_lng_portuguese_utf8.h */,
+				006E70B1236D2C1900CA0753 /* iup_lng_portuguese.h */,
+				006E70AC236D2C1700CA0753 /* iup_lng_russian_utf8.h */,
+				006E70AE236D2C1800CA0753 /* iup_lng_spanish_utf8.h */,
+				006E70B3236D2C1A00CA0753 /* iup_lng_spanish.h */,
+				006E70B4236D2C1A00CA0753 /* iup_thread.c */,
 				00AB78A022D41243008D43D4 /* iup_flatlist.c */,
 				00AB789922D41201008D43D4 /* iup_flatval.c */,
 				00AB789A22D41201008D43D4 /* iup_globalsdlg.c */,
@@ -1080,6 +1165,9 @@
 		00E3A83A1B60595300BEC175 /* include */ = {
 			isa = PBXGroup;
 			children = (
+				006E70912368320500CA0753 /* iupdraw_cd.h */,
+				006E70922368320500CA0753 /* iupfiledlg.h */,
+				006E70902368320500CA0753 /* iupluafiledlg.h */,
 				00D6743522D3F15C00DB1AEF /* iup_export.h */,
 				007E3197204CCC9700ED15CB /* iup_varg.h */,
 				007E3196204CCC9600ED15CB /* iupluascripterdlg.h */,
@@ -1292,6 +1380,7 @@
 			isa = PBXHeadersBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				006E70932368320600CA0753 /* iupluafiledlg.h in Headers */,
 				00E3A79C1B60583600BEC175 /* iup_globalattrib.h in Headers */,
 				00AB789722D40C2B008D43D4 /* IupCocoaFont.h in Headers */,
 				00E3A7DF1B60583600BEC175 /* iup_tree.h in Headers */,
@@ -1333,7 +1422,9 @@
 				00E3A7A01B60583600BEC175 /* iup_image.h in Headers */,
 				00E3A76E1B60583600BEC175 /* iup_array.h in Headers */,
 				00E3A87E1B60595300BEC175 /* iupkey.h in Headers */,
+				006E70B7236D2C1B00CA0753 /* iup_lng_czech_utf8.h in Headers */,
 				00E3A7991B60583600BEC175 /* iup_func.h in Headers */,
+				006E70952368320600CA0753 /* iupfiledlg.h in Headers */,
 				00E3A86A1B60595300BEC175 /* iup_class_cbs.hpp in Headers */,
 				00E3A88F1B60595300BEC175 /* iupole.h in Headers */,
 				00E3A8871B60595300BEC175 /* iupluaim.h in Headers */,
@@ -1350,8 +1441,11 @@
 				00E3A8721B60595300BEC175 /* iupcbs.h in Headers */,
 				00E3A7AF1B60583600BEC175 /* iup_list.h in Headers */,
 				00E3A7BA1B60583600BEC175 /* iup_names.h in Headers */,
+				006E70B6236D2C1B00CA0753 /* iup_lng_russian_utf8.h in Headers */,
+				006E70942368320600CA0753 /* iupdraw_cd.h in Headers */,
 				00E3A7721B60583600BEC175 /* iup_attrib.h in Headers */,
 				00E3A87D1B60595300BEC175 /* iupim.h in Headers */,
+				006E70B9236D2C1B00CA0753 /* iup_lng_portuguese_utf8.h in Headers */,
 				00E3A7BC1B60583600BEC175 /* iup_normalizer.h in Headers */,
 				00E3A7C11B60583600BEC175 /* iup_predialogs.h in Headers */,
 				00E3A7891B60583600BEC175 /* iup_dlglist.h in Headers */,
@@ -1368,19 +1462,23 @@
 				002CC4CF1EA2416B0007C8E7 /* iup_drvdraw.h in Headers */,
 				00E3A87C1B60595300BEC175 /* iupglcontrols.h in Headers */,
 				00E3A7A61B60583600BEC175 /* iup_layout.h in Headers */,
+				006E70BD236D2C1B00CA0753 /* iup_lng_spanish.h in Headers */,
 				00E3A7A41B60583600BEC175 /* iup_label.h in Headers */,
 				00BE4F731F4C95E4002B7C86 /* iup_export.h in Headers */,
 				00E3A7C81B60583600BEC175 /* iup_register.h in Headers */,
 				00E3A86B1B60595300BEC175 /* iup_config.h in Headers */,
+				006E70BC236D2C1B00CA0753 /* iup_lng_english.h in Headers */,
 				00E3A7CF1B60583600BEC175 /* iup_stdcontrols.h in Headers */,
 				004DBF4C2070E6DF00962511 /* iup_draw.h in Headers */,
 				00E3A86C1B60595300BEC175 /* iup_mglplot.h in Headers */,
+				006E70BB236D2C1B00CA0753 /* iup_lng_portuguese.h in Headers */,
 				00E3A7A21B60583600BEC175 /* iup_key.h in Headers */,
 				00E3A7DB1B60583600BEC175 /* iup_timer.h in Headers */,
 				00E3A87B1B60595300BEC175 /* iupgl.h in Headers */,
 				00E3A7BE1B60583600BEC175 /* iup_object.h in Headers */,
 				00E3A7AC1B60583600BEC175 /* iup_linefile.h in Headers */,
 				00E93B0C214FCE2000BC6F5B /* iupcocoa_draw.h in Headers */,
+				006E70B8236D2C1B00CA0753 /* iup_lng_spanish_utf8.h in Headers */,
 				00E3A7E21B60583600BEC175 /* iup_val.h in Headers */,
 				00E3A8831B60595300BEC175 /* iuplua_scintilla.h in Headers */,
 			);
@@ -1606,6 +1704,10 @@
 				LastUpgradeCheck = 0640;
 				ORGANIZATIONNAME = "Tecgraf, PUC-Rio, Brazil";
 				TargetAttributes = {
+					006E70962369466F00CA0753 = {
+						CreatedOnToolsVersion = 11.1;
+						ProvisioningStyle = Automatic;
+					};
 					00A3F0C8218FD18900841C0E = {
 						ProvisioningStyle = Manual;
 						SystemCapabilities = {
@@ -1663,6 +1765,7 @@
 				00E93A6C214E826C00BC6F5B /* iupimglib */,
 				00E93AFC214E846100BC6F5B /* iupim */,
 				00A3F0C8218FD18900841C0E /* TestAppSandbox */,
+				006E70962369466F00CA0753 /* AllLibraries */,
 			);
 		};
 /* End PBXProject section */
@@ -1762,7 +1865,7 @@
 			buildActionMask = 2147483647;
 			files = (
 				00BE4F701F4C7D03002B7C86 /* iup_webbrowser.c in Sources */,
-				00BE4F6F1F4C7CFE002B7C86 /* iupcocoa_webbrowser.m in Sources */,
+				001CC8BB2341CCAC00563BD4 /* iupwkwebview_webbrowser.m in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -1779,6 +1882,7 @@
 			buildActionMask = 2147483647;
 			files = (
 				00E3A8E71B60984800BEC175 /* iupcocoa_tabs.m in Sources */,
+				006E70BE236D2C1B00CA0753 /* iup_thread.c in Sources */,
 				00E3A7761B60583600BEC175 /* iup_button.c in Sources */,
 				00E3A7C41B60583600BEC175 /* iup_progressdlg.c in Sources */,
 				00E3A7D61B60583600BEC175 /* iup_tabs.c in Sources */,
@@ -1828,6 +1932,7 @@
 				00E3A7B41B60583600BEC175 /* iup_maskparse.c in Sources */,
 				00E3A8DA1B6094C300BEC175 /* iupcocoa_frame.m in Sources */,
 				00E3A7B61B60583600BEC175 /* iup_menu.c in Sources */,
+				006E70BA236D2C1B00CA0753 /* iup_elempropdlg.c in Sources */,
 				00E3A7741B60583600BEC175 /* iup_box.c in Sources */,
 				00E3A77E1B60583600BEC175 /* iup_class.c in Sources */,
 				00E3A78E1B60583600BEC175 /* iup_expander.c in Sources */,
@@ -1875,6 +1980,7 @@
 				007E31A5204CDBC500ED15CB /* iup_colorbrowser.c in Sources */,
 				00E3A8E51B6097F600BEC175 /* iupcocoa_focus.m in Sources */,
 				00E3A7811B60583600BEC175 /* iup_classbase.c in Sources */,
+				006E70BF236D2C1B00CA0753 /* iup_classinfo.c in Sources */,
 				00E3A7DA1B60583600BEC175 /* iup_timer.c in Sources */,
 				00E3A79A1B60583600BEC175 /* iup_getparam.c in Sources */,
 				00E3A7731B60583600BEC175 /* iup_backgroundbox.c in Sources */,
@@ -1982,6 +2088,26 @@
 /* End PBXSourcesBuildPhase section */
 
 /* Begin PBXTargetDependency section */
+		006E709B2369468500CA0753 /* PBXTargetDependency */ = {
+			isa = PBXTargetDependency;
+			target = 00E3A5EC1B60578300BEC175 /* iup */;
+			targetProxy = 006E709A2369468500CA0753 /* PBXContainerItemProxy */;
+		};
+		006E709D2369468500CA0753 /* PBXTargetDependency */ = {
+			isa = PBXTargetDependency;
+			target = 00E93AFC214E846100BC6F5B /* iupim */;
+			targetProxy = 006E709C2369468500CA0753 /* PBXContainerItemProxy */;
+		};
+		006E709F2369468500CA0753 /* PBXTargetDependency */ = {
+			isa = PBXTargetDependency;
+			target = 00E93A6C214E826C00BC6F5B /* iupimglib */;
+			targetProxy = 006E709E2369468500CA0753 /* PBXContainerItemProxy */;
+		};
+		006E70A12369468500CA0753 /* PBXTargetDependency */ = {
+			isa = PBXTargetDependency;
+			target = 00BE4E761F4BF35C002B7C86 /* iupweb */;
+			targetProxy = 006E70A02369468500CA0753 /* PBXContainerItemProxy */;
+		};
 		00A3F0C9218FD18900841C0E /* PBXTargetDependency */ = {
 			isa = PBXTargetDependency;
 			target = 00E93AFC214E846100BC6F5B /* iupim */;
@@ -2064,12 +2190,27 @@
 /* End PBXVariantGroup section */
 
 /* Begin XCBuildConfiguration section */
+		006E70982369466F00CA0753 /* Debug */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				CODE_SIGN_STYLE = Automatic;
+				PRODUCT_NAME = "$(TARGET_NAME)";
+			};
+			name = Debug;
+		};
+		006E70992369466F00CA0753 /* Release */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				CODE_SIGN_STYLE = Automatic;
+				PRODUCT_NAME = "$(TARGET_NAME)";
+			};
+			name = Release;
+		};
 		00A3F0D9218FD18900841C0E /* Debug */ = {
 			isa = XCBuildConfiguration;
 			buildSettings = {
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
 				CODE_SIGN_ENTITLEMENTS = TestAppSandbox.entitlements;
-				CODE_SIGN_IDENTITY = "-";
 				CODE_SIGN_STYLE = Manual;
 				COMBINE_HIDPI_IMAGES = YES;
 				DEVELOPMENT_TEAM = "";
@@ -2089,7 +2230,6 @@
 			buildSettings = {
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
 				CODE_SIGN_ENTITLEMENTS = TestAppSandbox.entitlements;
-				CODE_SIGN_IDENTITY = "-";
 				CODE_SIGN_STYLE = Manual;
 				COMBINE_HIDPI_IMAGES = YES;
 				DEVELOPMENT_TEAM = "";
@@ -2119,6 +2259,7 @@
 				INFOPLIST_FILE = "iupweb-Info.plist";
 				INSTALL_PATH = "$(LOCAL_LIBRARY_DIR)/Frameworks";
 				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/../Frameworks @loader_path/Frameworks";
+				PRODUCT_BUNDLE_IDENTIFIER = "org.puc-rio.tecgraf.iupweb";
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				SKIP_INSTALL = YES;
 			};
@@ -2142,6 +2283,7 @@
 				INFOPLIST_FILE = "iupweb-Info.plist";
 				INSTALL_PATH = "$(LOCAL_LIBRARY_DIR)/Frameworks";
 				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/../Frameworks @loader_path/Frameworks";
+				PRODUCT_BUNDLE_IDENTIFIER = "org.puc-rio.tecgraf.iupweb";
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				SKIP_INSTALL = YES;
 			};
@@ -2157,7 +2299,7 @@
 				CLANG_WARN_DOCUMENTATION_COMMENTS = YES;
 				CLANG_WARN_INFINITE_RECURSION = YES;
 				CLANG_WARN_SUSPICIOUS_MOVE = YES;
-				CODE_SIGN_IDENTITY = "-";
+				CODE_SIGN_ENTITLEMENTS = webbrowser/webbrowser.entitlements;
 				COMBINE_HIDPI_IMAGES = YES;
 				ENABLE_TESTABILITY = YES;
 				INFOPLIST_FILE = webbrowser/Info.plist;
@@ -2178,7 +2320,7 @@
 				CLANG_WARN_DOCUMENTATION_COMMENTS = YES;
 				CLANG_WARN_INFINITE_RECURSION = YES;
 				CLANG_WARN_SUSPICIOUS_MOVE = YES;
-				CODE_SIGN_IDENTITY = "-";
+				CODE_SIGN_ENTITLEMENTS = webbrowser/webbrowser.entitlements;
 				COMBINE_HIDPI_IMAGES = YES;
 				INFOPLIST_FILE = webbrowser/Info.plist;
 				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/../Frameworks";
@@ -2225,6 +2367,7 @@
 				GCC_WARN_UNINITIALIZED_AUTOS = YES_AGGRESSIVE;
 				GCC_WARN_UNUSED_FUNCTION = YES;
 				GCC_WARN_UNUSED_VARIABLE = YES;
+				HEADER_SEARCH_PATHS = ../../include;
 				MACOSX_DEPLOYMENT_TARGET = 10.10;
 				MTL_ENABLE_DEBUG_INFO = YES;
 				ONLY_ACTIVE_ARCH = YES;
@@ -2266,6 +2409,7 @@
 				GCC_WARN_UNINITIALIZED_AUTOS = YES_AGGRESSIVE;
 				GCC_WARN_UNUSED_FUNCTION = YES;
 				GCC_WARN_UNUSED_VARIABLE = YES;
+				HEADER_SEARCH_PATHS = ../../include;
 				MACOSX_DEPLOYMENT_TARGET = 10.10;
 				MTL_ENABLE_DEBUG_INFO = NO;
 				SDKROOT = macosx;
@@ -2295,6 +2439,7 @@
 				INSTALL_PATH = "$(LOCAL_LIBRARY_DIR)/Frameworks";
 				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/../Frameworks @loader_path/Frameworks";
 				MACOSX_DEPLOYMENT_TARGET = 10.14;
+				PRODUCT_BUNDLE_IDENTIFIER = "org.puc-rio.tecgraf.iup";
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				SKIP_INSTALL = YES;
 			};
@@ -2319,6 +2464,7 @@
 				INSTALL_PATH = "$(LOCAL_LIBRARY_DIR)/Frameworks";
 				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/../Frameworks @loader_path/Frameworks";
 				MACOSX_DEPLOYMENT_TARGET = 10.14;
+				PRODUCT_BUNDLE_IDENTIFIER = "org.puc-rio.tecgraf.iup";
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				SKIP_INSTALL = YES;
 			};
@@ -2558,7 +2704,6 @@
 			isa = XCBuildConfiguration;
 			buildSettings = {
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
-				CODE_SIGN_IDENTITY = "-";
 				COMBINE_HIDPI_IMAGES = YES;
 				GCC_PREPROCESSOR_DEFINITIONS = (
 					"DEBUG=1",
@@ -2574,7 +2719,6 @@
 			isa = XCBuildConfiguration;
 			buildSettings = {
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
-				CODE_SIGN_IDENTITY = "-";
 				COMBINE_HIDPI_IMAGES = YES;
 				INFOPLIST_FILE = TestApp/Info.plist;
 				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/../Frameworks";
@@ -2585,6 +2729,15 @@
 /* End XCBuildConfiguration section */
 
 /* Begin XCConfigurationList section */
+		006E70972369466F00CA0753 /* Build configuration list for PBXAggregateTarget "AllLibraries" */ = {
+			isa = XCConfigurationList;
+			buildConfigurations = (
+				006E70982369466F00CA0753 /* Debug */,
+				006E70992369466F00CA0753 /* Release */,
+			);
+			defaultConfigurationIsVisible = 0;
+			defaultConfigurationName = Release;
+		};
 		00A3F0D8218FD18900841C0E /* Build configuration list for PBXNativeTarget "TestAppSandbox" */ = {
 			isa = XCConfigurationList;
 			buildConfigurations = (

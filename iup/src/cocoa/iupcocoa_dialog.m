@@ -37,6 +37,23 @@
 #include "iupcocoa_drv.h"
 
 static void* TRAYMENUIHANDLE_ASSOCIATED_OBJ_KEY = "TRAYMENUIHANDLE_ASSOCIATED_OBJ_KEY";
+extern NSMutableArray* g_stackOfModals;
+
+@interface ModalInfo : NSObject
+{
+	Ihandle* _ih;
+	NSModalSession _modalSession;
+}
+@property(assign, nonatomic) Ihandle* ih;
+@property(assign, nonatomic) NSModalSession modalSession;
+@end
+@implementation ModalInfo
+@synthesize ih;
+@synthesize modalSession;
+@end
+
+
+
 
 static NSWindow* cocoaDialogGetWindow(Ihandle* ih)
 {
@@ -95,6 +112,11 @@ static void cocoaDialogRunModalLoop(Ihandle* ih, NSWindow* the_window)
 	iupAttribSet(ih, "_COCOA_MODAL_SESSION", (const char*)the_session);
 	
 	
+	ModalInfo* modal_info = [[[ModalInfo alloc] init] autorelease];
+	[modal_info setIh:ih];
+	[modal_info setModalSession:the_session];
+	[g_stackOfModals addObject:modal_info];
+
 	for(;;)
 	{
 		if([NSApp runModalSession:the_session] != NSModalResponseContinue)
@@ -227,6 +249,7 @@ static void cocoaDialogStartModal(Ihandle* ih)
 	
 }
 
+
 static void cocoaDialogEndModal(Ihandle* ih)
 {
 	
@@ -245,6 +268,25 @@ static void cocoaDialogEndModal(Ihandle* ih)
 	iupAttribSet(ih, "_COCOA_MODAL", "NO");
 	iupAttribSet(ih, "_COCOA_MODAL_SESSION", NULL);
 	
+	ModalInfo* modal_info = [g_stackOfModals lastObject];
+	NSCAssert([modal_info ih] == ih, @"ih pointers need to match");
+	NSCAssert([modal_info modalSession] == the_session, @"sessions need to match");
+	[g_stackOfModals removeLastObject];
+}
+
+bool cocoaDialogExitModal()
+{
+	if([g_stackOfModals count] > 0)
+	{
+		ModalInfo* modal_info = [g_stackOfModals lastObject];
+		
+		cocoaDialogEndModal([modal_info ih]);
+		return true;
+	}
+	else
+	{
+		return false;
+	}
 }
 
 

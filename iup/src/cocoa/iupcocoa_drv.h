@@ -119,6 +119,12 @@ int iupCocoaImageCaluclateBytesPerRow(int width, int bytes_per_pixel);
 NSBitmapImageRep* iupCocoaImageNSBitmapImageRepFromPixels(int width, int height, int bpp, iupColor* colors, int colors_count, unsigned char *imgdata);
 NSImage* iupCocoaImageNSImageFromPixels(int width, int height, int bpp, iupColor* colors, int colors_count, unsigned char *imgdata);
 
+
+
+// Kind of a hack to handle IUP_CLOSE for modal dialogs
+bool cocoaDialogExitModal(void);
+
+
 #if 0
 /* global variables, declared in iupmac_globalattrib.c */
 extern int iupmac_utf8autoconvert;         
@@ -177,6 +183,7 @@ void iupmacUpdateGlobalColors(GtkStyle* style);
 
 /* dialog */
 gboolean iupmacDialogDeleteEvent(GtkWidget *widget, GdkEvent *evt, Ihandle *ih);
+
 
 #endif
 

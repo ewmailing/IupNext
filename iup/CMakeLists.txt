@@ -383,7 +383,7 @@ ELSEIF(WANTS_BUILD_SHARED_LIBRARY)
 	SET(IUP_C_FLAGS "${IUP_C_FLAGS} -DIUP_BUILD_LIBRARY -DIUP_DLL")
 		
 	# Yes, IUP_BUILD_LIBRARY and not IUPIMG_BUILD_LIBRARY because the header is in iup.h
-	SET(IUPIMGLIB_C_FLAGS "${IUPIMGLIB_C_FLAGS} -DIUP_BUILD_LIBRARY -DIUP_DLL")
+	SET(IUPIMGLIB_C_FLAGS "${IUPIMGLIB_C_FLAGS} -DIUPIMGLIB_BUILD_LIBRARY")
 	SET(IUPOLE_C_FLAGS "${IUPOLE_C_FLAGS} -DIUPOLE_BUILD_LIBRARY")
 	SET(IUPWEB_C_FLAGS "${IUPWEB_C_FLAGS} -DIUPWEB_BUILD_LIBRARY")
 	SET(IUPCD_C_FLAGS "${IUPCD_C_FLAGS} -DIUPCD_BUILD_LIBRARY")
@@ -409,8 +409,10 @@ SET(IUP_PUBLIC_HEADERS
 	${CMAKE_SOURCE_DIR}/include/iupcbs.h
 	${CMAKE_SOURCE_DIR}/include/iupdef.h
 	${CMAKE_SOURCE_DIR}/include/iupdraw.h
+	${CMAKE_SOURCE_DIR}/include/iupfiledlg.h
 	${CMAKE_SOURCE_DIR}/include/iupkey.h
 	${CMAKE_SOURCE_DIR}/include/iup_config.h
+	${CMAKE_SOURCE_DIR}/include/iup_export.h
 	${CMAKE_SOURCE_DIR}/include/iup_varg.h
 )
 SET(IUPIMGLIB_PUBLIC_HEADERS
@@ -422,6 +424,7 @@ SET(IUPWEB_PUBLIC_HEADERS
 	${CMAKE_SOURCE_DIR}/include/iupweb.h
 )
 SET(IUPCD_PUBLIC_HEADERS
+	${CMAKE_SOURCE_DIR}/include/iupdraw_cd.h
 )
 SET(IUPCONTROLS_PUBLIC_HEADERS
 	${CMAKE_SOURCE_DIR}/include/iupcontrols.h
@@ -462,6 +465,7 @@ SET(IUP_COMMON_SOURCE_FILES
 	${CMAKE_SOURCE_DIR}/src/iup_classattrib.c
 	${CMAKE_SOURCE_DIR}/src/iup_classbase.c
 	${CMAKE_SOURCE_DIR}/src/iup_classbase.h
+	${CMAKE_SOURCE_DIR}/src/iup_classinfo.c
 	${CMAKE_SOURCE_DIR}/src/iup_colorbar.c
 	${CMAKE_SOURCE_DIR}/src/iup_colorbrowser.c
 	${CMAKE_SOURCE_DIR}/src/iup_colordlg.c
@@ -529,6 +533,13 @@ SET(IUP_COMMON_SOURCE_FILES
 	${CMAKE_SOURCE_DIR}/src/iup_link.c
 	${CMAKE_SOURCE_DIR}/src/iup_list.c
 	${CMAKE_SOURCE_DIR}/src/iup_list.h
+	${CMAKE_SOURCE_DIR}/src/iup_lng_czech_utf8.h
+	${CMAKE_SOURCE_DIR}/src/iup_lng_english.h
+	${CMAKE_SOURCE_DIR}/src/iup_lng_portuguese.h
+	${CMAKE_SOURCE_DIR}/src/iup_lng_portuguese_utf8.h
+	${CMAKE_SOURCE_DIR}/src/iup_lng_russian_utf8.h
+	${CMAKE_SOURCE_DIR}/src/iup_lng_spanish.h
+	${CMAKE_SOURCE_DIR}/src/iup_lng_spanish_utf8.h
 	${CMAKE_SOURCE_DIR}/src/iup_loop.c
 	${CMAKE_SOURCE_DIR}/src/iup_loop.h
 	${CMAKE_SOURCE_DIR}/src/iup_mask.c
@@ -575,6 +586,7 @@ SET(IUP_COMMON_SOURCE_FILES
 	${CMAKE_SOURCE_DIR}/src/iup_tabs.h
 	${CMAKE_SOURCE_DIR}/src/iup_text.c
 	${CMAKE_SOURCE_DIR}/src/iup_text.h
+	${CMAKE_SOURCE_DIR}/src/iup_thread.c
 	${CMAKE_SOURCE_DIR}/src/iup_timer.c
 	${CMAKE_SOURCE_DIR}/src/iup_timer.h
 	${CMAKE_SOURCE_DIR}/src/iup_toggle.c
@@ -939,7 +951,8 @@ ELSEIF(IUP_USE_COCOATOUCH)
 
 	FIND_LIBRARY(APPLE_WEBKIT_LIBRARY WebKit)
 	SET(IUPWEB_COCOATOUCH_SOURCE_FILES
-		${CMAKE_SOURCE_DIR}/srcweb/iupcocoatouch_webbrowser.m
+#		${CMAKE_SOURCE_DIR}/srcweb/iupcocoatouch_webbrowser.m
+		${CMAKE_SOURCE_DIR}/srcweb/iupwkwebview_webbrowser.m
 	)
 	LIST(APPEND IUPWEB_SOURCE_FILES
 		${IUPWEB_COCOATOUCH_SOURCE_FILES}
@@ -1046,7 +1059,8 @@ ELSEIF(IUP_USE_COCOA)
 
 	FIND_LIBRARY(APPLE_WEBKIT_LIBRARY WebKit)
 	SET(IUPWEB_COCOA_SOURCE_FILES
-		${CMAKE_SOURCE_DIR}/srcweb/iupcocoa_webbrowser.m
+#		${CMAKE_SOURCE_DIR}/srcweb/iupcocoa_webbrowser.m
+		${CMAKE_SOURCE_DIR}/srcweb/iupwkwebview_webbrowser.m
 	)
 	LIST(APPEND IUPWEB_SOURCE_FILES
 		${IUPWEB_COCOA_SOURCE_FILES}
@@ -1073,6 +1087,8 @@ ELSEIF(IUP_USE_WIN32)
 		${CMAKE_SOURCE_DIR}/src/win/iupwin_dragdrop.c
 		${CMAKE_SOURCE_DIR}/src/win/iupwin_draw.c
 		${CMAKE_SOURCE_DIR}/src/win/iupwin_draw.h
+		${CMAKE_SOURCE_DIR}/src/win/iupwin_draw_gdi.c
+		${CMAKE_SOURCE_DIR}/src/win/iupwin_draw_wdl.c
 		${CMAKE_SOURCE_DIR}/src/win/iupwin_drv.h
 		${CMAKE_SOURCE_DIR}/src/win/iupwin_filedlg.c
 		${CMAKE_SOURCE_DIR}/src/win/iupwin_focus.c
@@ -1083,6 +1099,7 @@ ELSEIF(IUP_USE_WIN32)
 		${CMAKE_SOURCE_DIR}/src/win/iupwin_handle.c
 		${CMAKE_SOURCE_DIR}/src/win/iupwin_handle.h
 		${CMAKE_SOURCE_DIR}/src/win/iupwin_image.c
+		${CMAKE_SOURCE_DIR}/src/win/iupwin_image_wdl.c
 		${CMAKE_SOURCE_DIR}/src/win/iupwin_info.c
 		${CMAKE_SOURCE_DIR}/src/win/iupwin_info.h
 		${CMAKE_SOURCE_DIR}/src/win/iupwin_key.c
@@ -1106,7 +1123,34 @@ ELSEIF(IUP_USE_WIN32)
 		${CMAKE_SOURCE_DIR}/src/win/iupwindows_help.c
 		${CMAKE_SOURCE_DIR}/src/win/iupwindows_info.c
 		${CMAKE_SOURCE_DIR}/src/win/iupwindows_main.c
+		${CMAKE_SOURCE_DIR}/src/win/wdl/backend-d2d.c
+		${CMAKE_SOURCE_DIR}/src/win/wdl/backend-d2d.h
+		${CMAKE_SOURCE_DIR}/src/win/wdl/backend-dwrite.c
+		${CMAKE_SOURCE_DIR}/src/win/wdl/backend-dwrite.h
+		${CMAKE_SOURCE_DIR}/src/win/wdl/backend-gdix.c
+		${CMAKE_SOURCE_DIR}/src/win/wdl/backend-gdix.h
+		${CMAKE_SOURCE_DIR}/src/win/wdl/backend-wic.c
+		${CMAKE_SOURCE_DIR}/src/win/wdl/backend-wic.h
+		${CMAKE_SOURCE_DIR}/src/win/wdl/bitblt.c
+		${CMAKE_SOURCE_DIR}/src/win/wdl/brush.c
+		${CMAKE_SOURCE_DIR}/src/win/wdl/cachedimage.c
+		${CMAKE_SOURCE_DIR}/src/win/wdl/canvas.c
+		${CMAKE_SOURCE_DIR}/src/win/wdl/draw.c
+		${CMAKE_SOURCE_DIR}/src/win/wdl/fill.c
+		${CMAKE_SOURCE_DIR}/src/win/wdl/font.c
+		${CMAKE_SOURCE_DIR}/src/win/wdl/image.c
+		${CMAKE_SOURCE_DIR}/src/win/wdl/init.c
+		${CMAKE_SOURCE_DIR}/src/win/wdl/lock.h
+		${CMAKE_SOURCE_DIR}/src/win/wdl/memstream.c
+		${CMAKE_SOURCE_DIR}/src/win/wdl/memstream.h
+		${CMAKE_SOURCE_DIR}/src/win/wdl/misc.c
+		${CMAKE_SOURCE_DIR}/src/win/wdl/misc.h
+		${CMAKE_SOURCE_DIR}/src/win/wdl/path.c
+		${CMAKE_SOURCE_DIR}/src/win/wdl/string.c
+		${CMAKE_SOURCE_DIR}/src/win/wdl/strokestyle.c
+		${CMAKE_SOURCE_DIR}/src/win/wdl/wdl.h
 	)
+	INCLUDE_DIRECTORIES("${CMAKE_SOURCE_DIR}/src/win;${CMAKE_SOURCE_DIR}/src/win/wdl" )
 
 	LIST(APPEND IUP_SOURCE_FILES
 		${IUP_WIN32_SOURCE_FILES}
@@ -1127,16 +1171,18 @@ ELSEIF(IUP_USE_WIN32)
 
 	# Use explicit names instead
 	LIST(APPEND IUP_LINK_LIBRARIES 
-		ole32 comdlg32 comctl32 gdi32
+		 Windowscodecs ole32 comdlg32 comctl32 gdi32
+#		 kernel32 user32 gdi32 winspool comdlg32 advapi32 shell32 uuid oleaut32 ole32 comctl32 windowscodecs
 	)	
 
 	# FIXME: The other build systems pass -DNOTREEVIEW, but searching the codebase, it seems to only exist in one place and it is to #undef NOTREEVIEW. Maybe this flag can be removed.
-	SET(IUP_C_FLAGS "${IUP_C_FLAGS} -D_WIN32_WINNT=0x0501 -D_WIN32_IE=0x0600 -DWINVER=0x0501 -DNOTREEVIEW")
-	SET(IUPIMGLIB_C_FLAGS "${IUP_C_FLAGS} -D_WIN32_WINNT=0x0501 -D_WIN32_IE=0x0600 -DWINVER=0x0501 -DNOTREEVIEW")
+	SET(IUP_C_FLAGS "${IUP_C_FLAGS} -D_WIN32_WINNT=0x0501 -D_WIN32_IE=0x0600 -DWINVER=0x0501 -DNOTREEVIEW -DUSE_NEW_DRAW=1 -DCOBJMACROS -D_UNICODE")
+
+#	SET(IUPIMGLIB_C_FLAGS "${IUP_C_FLAGS} -D_WIN32_WINNT=0x0501 -D_WIN32_IE=0x0600 -DWINVER=0x0501 -DNOTREEVIEW")
 	IF(IUP_OPTION_USE_UNICODE)
 		SET(IUP_C_FLAGS "${IUP_C_FLAGS} -DUNICODE")
 		# FIXME: Should check if other libraries use the UNICODE flag
-		SET(IUPIMGLIB_C_FLAGS "${IUPIMGLIB_C_FLAGS} -DUNICODE")	
+#		SET(IUPIMGLIB_C_FLAGS "${IUPIMGLIB_C_FLAGS} -DUNICODE")	
 	ENDIF()
 	IF(IUP_OPTION_USE_WINHOOKPOST)
 		SET(IUP_C_FLAGS "${IUP_C_FLAGS} -DUSE_WINHOOKPOST")
@@ -1320,6 +1366,9 @@ ELSEIF(IUP_USE_GTK3 OR IUP_USE_GTK2)
 
 	ENDIF()
 
+
+	SET(IUP_C_FLAGS "${IUP_C_FLAGS} -DGTK_DISABLE_DEPRECATED")
+	
 	IF(IUP_USE_GTK2)
 		LIST(APPEND IUP_SOURCE_FILES
 			${IUP_GTK2_SOURCE_FILES}
@@ -1343,6 +1392,7 @@ ELSEIF(IUP_USE_GTK3 OR IUP_USE_GTK2)
 		LIST(APPEND IUPWEB_LINK_LIBRARIES 
 			${GTK3_LIBRARIES}
 		)
+		SET(IUP_C_FLAGS "${IUP_C_FLAGS} -DGDK_DISABLE_DEPRECATED -DGSEAL_ENABLE")
 		
 	ELSE()
 		MESSAGE("Unsupported GTK version")
