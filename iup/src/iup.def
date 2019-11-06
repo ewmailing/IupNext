@@ -402,7 +402,7 @@ iupChildTreeAppend
 iupChildTreeGetNativeParent
 iupChildTreeGetNativeParentHandle
 iupChildTreeGetPrevBrother
-iupChildTreeIsChild
+iupChildTreeIsParent
 iupClassCallbackGetFormat
 iupClassMatch
 iupClassNew

@@ -38,9 +38,10 @@ IUP_SDK_API InativeHandle* iupChildTreeGetNativeParentHandle(Ihandle* ih);
  * \ingroup childtree */
 IUP_SDK_API void iupChildTreeAppend(Ihandle* parent, Ihandle* child);
 
-/** Checks if the child belongs to the parent tree.
+/** Checks if the element is in the parent tree.\n 
+ * Which means the element is a grand-parent of parent.
  * \ingroup childtree */
-IUP_SDK_API int iupChildTreeIsChild(Ihandle* ih, Ihandle* child);
+IUP_SDK_API int iupChildTreeIsParent(Ihandle* ih, Ihandle* parent);
 
 /** Returns the previous brother if any.
  * \ingroup childtree */

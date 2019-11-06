@@ -476,7 +476,7 @@ Iclass* iupClipboardNewClass(void)
 
   ic->name = "clipboard";
   ic->format = NULL;  /* no parameters */
-  ic->nativetype = IUP_TYPECONTROL;
+  ic->nativetype = IUP_TYPEOTHER;
   ic->childtype = IUP_CHILDNONE;
   ic->is_interactive = 0;
 

@@ -22,8 +22,7 @@ static int history_cb(Ihandle* ih)
 	IupSetAttribute(web_ih, "COPY", NULL);
 	IupSetAttribute(web_ih, "PRINT", NULL);
 */	
-	IupSetAttribute(web_ih, "PRINT", NULL);
-
+	
   int back = IupGetInt(web_ih, "BACKCOUNT");
   int fwrd = IupGetInt(web_ih, "FORWARDCOUNT");
 
@@ -198,7 +197,6 @@ void WebBrowserTest(void)
     #define USE_ENTRY_POINT
   #endif
 #endif
-
 #ifndef BIG_TEST
 int main(int argc, char* argv[])
 {

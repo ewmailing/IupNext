@@ -15,9 +15,9 @@
 #include <iup_config.h>
 #include <iupcontrols.h>
 
-#define USE_NO_OPENGL  
-#define USE_NO_WEB
-#define USE_NO_PLOT
+//#define USE_NO_OPENGL  
+//#define USE_NO_WEB
+//#define USE_NO_PLOT
 
 #ifndef USE_NO_OPENGL  
 #include <iupgl.h>
@@ -492,7 +492,7 @@ static int unload_led(const char *filename)
   for (i = 0; i < num_names; i++)
   {
     Ihandle *elem = named_elems[i],
-           *parent, *brother;
+           *parent, *brother = NULL;
     char old_name[80];
 
     if (!iupObjectCheck(elem))  /* it may already being destroyed in the hierarchy */
@@ -503,7 +503,7 @@ static int unload_led(const char *filename)
 
     if (IupClassMatch(elem, "menu"))
     {
-      Ihandle *parent = elem->parent;
+      parent = elem->parent;
       if (parent && IupClassMatch(parent, "dialog"))
         IupSetAttribute(parent, "MENU", NULL);
     }
@@ -2401,6 +2401,7 @@ int main(int argc, char **argv)
   IupSetCallback(elem_tree, "RIGHTCLICK_CB", (Icallback)tree_rightclick_cb);
   IupSetAttribute(elem_tree, "VISIBLELINES", "3");
   IupSetAttributeHandle(elem_tree, "IMG_SHORTCUT", load_image_shortcut());
+  IupSetAttribute(elem_tree, "IMAGELEAF", "IMGEMPTY");
 
   elementsFrame = IupFrame(elem_tree);
   IupSetAttribute(elementsFrame, "NAME", "ELEMENTS_FRAME");

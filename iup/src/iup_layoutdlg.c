@@ -47,7 +47,8 @@ typedef struct _iLayoutDialog {
   Ihandle *tree, *status, *timer;
   Ihandle *properties;  /* elements from the layout dialog */
   Ihandle *globals;
-  Ihandle *copy;
+  Ihandle *copy_elem;
+  Ihandle *cut_elem;
 } iLayoutDialog;
 
 static int iLayoutFindItemMatch(Ihandle *ih, const char *str, int searchType)
@@ -304,7 +305,22 @@ static int iLayoutHasDigit(const char* name)
 
 static int iLayoutCompareStr(const void *a, const void *b)
 {
-  return strcmp(*(char**)a, *(char**)b);
+  int ret;
+  const char* str1 = *(const char**)a;
+  const char* str2 = *(const char**)b;
+  int flat1 = 0, flat2 = 0;
+  if (iupStrEqualPartial(str1, "flat")) { str1 += 4; flat1 = 1; } /* don't consider "flat" prefix */
+  if (iupStrEqualPartial(str2, "flat")) { str2 += 4; flat2 = 1; }
+  ret = strcmp(str1, str2);
+  if (ret == 0)
+  {
+    if (flat1)
+      return 1;
+    if (flat2)
+      return -1;
+    return 0;
+  }
+  return ret;
 }
 
 IUP_SDK_API int iupLayoutAttributeChanged(Ihandle* ih, const char* name, const char* value, const char* def_value, int flags)
@@ -454,7 +470,8 @@ static void iLayoutTreeRebuild(iLayoutDialog* layoutdlg)
   IupSetAttribute(tree, "DELNODE0", "CHILDREN");
 
   layoutdlg->changed = 0;
-  layoutdlg->copy = NULL;
+  layoutdlg->copy_elem = NULL;
+  layoutdlg->cut_elem = NULL;
 
   iLayoutTreeSetNodeInfo(tree, 0, layoutdlg->dialog);
   iLayoutTreeAddChildren(tree, 0, layoutdlg->dialog);
@@ -1030,7 +1047,7 @@ static int iLayoutMenuClose_CB(Ihandle* ih)
   }
 }
 
-static int iLayoutMenuHierarchy_CB(Ihandle* ih)
+static int iLayoutMenuShowTree_CB(Ihandle* ih)
 {
   Ihandle* dlg = IupGetDialog(ih);
   Ihandle* split = IupGetChild(IupGetChild(dlg, 0), 0);
@@ -1612,9 +1629,13 @@ static int iLayoutCanvas_CB(Ihandle* canvas, float fposx, float fposy)
                           Context Menu
 ***************************************************************************/
 
-static int iLayoutPropertiedChanged_CB(Ihandle* properties)
+static int iLayoutAttribChanged_CB(Ihandle* properties, char* name)
 {
   iLayoutDialog* layoutdlg = (iLayoutDialog*)iupAttribGetInherit(properties, "_IUP_LAYOUTDIALOG");
+  Ihandle* dlg = IupGetDialog(layoutdlg->tree);
+  IFns cb = (IFns)IupGetCallback(dlg, "ATTRIBCHANGED_CB");
+  if (cb)
+    cb(dlg, name);
 
   layoutdlg->changed = 1;
 
@@ -1633,7 +1654,7 @@ static int iLayoutContextMenuProperties_CB(Ihandle* menu)
   {
     layoutdlg->properties = IupElementPropertiesDialog(dlg, elem);
     IupSetAttribute(layoutdlg->properties, "_IUP_LAYOUTDIALOG", (char*)layoutdlg);
-    IupSetCallback(layoutdlg->properties, "PROPERTIESCHANGED_CB", iLayoutPropertiedChanged_CB);
+    IupSetCallback(layoutdlg->properties, "ATTRIBCHANGED_CB", (Icallback)iLayoutAttribChanged_CB);
   }
   else
     iupLayoutPropertiesUpdate(layoutdlg->properties, elem);
@@ -1647,6 +1668,14 @@ static void iLayoutTreeUpdateTitle(iLayoutDialog* layoutdlg, Ihandle* ih)
 {
   int id = IupTreeGetId(layoutdlg->tree, ih);
   IupSetAttributeId(layoutdlg->tree, "TITLE", id, iupLayoutGetElementTitle(ih));
+}
+
+static void iLayoutCallLayoutChangedCb(iLayoutDialog* layoutdlg)
+{
+  Ihandle* dlg = IupGetDialog(layoutdlg->tree);
+  IFn cb = (IFn)IupGetCallback(dlg, "LAYOUTCHANGED_CB");
+  if (cb)
+    cb(dlg);
 }
 
 static int iLayoutContextMenuHandleName_CB(Ihandle* menu)
@@ -1669,22 +1698,97 @@ static int iLayoutContextMenuHandleName_CB(Ihandle* menu)
       {
         IupSetHandle(elem_name, NULL);
         iLayoutTreeUpdateTitle(layoutdlg, elem);
+        iLayoutCallLayoutChangedCb(layoutdlg);
       }
     }
     else
     {
       IupSetHandle(name, elem);
       iLayoutTreeUpdateTitle(layoutdlg, elem);
+      iLayoutCallLayoutChangedCb(layoutdlg);
     }
   }
 
   return IUP_DEFAULT;
 }
 
-static char* iLayoutSelectClassDialog(Ihandle* parent)
+static int iLayoutSelectClassOK_CB(Ihandle* ih)
 {
-  int ret, count, i;
+  iupAttribSet(IupGetDialog(ih), "STATUS", "1");
+  return IUP_CLOSE;
+}
+
+static int iLayoutSelectClassCancel_CB(Ihandle* ih)
+{
+  iupAttribSet(IupGetDialog(ih), "STATUS", "-1");
+  return IUP_CLOSE;
+}
+
+static int iLayoutSelectClassTreeExecuteLeaf_CB(Ihandle *ih, int id)
+{
+  (void)id;
+  iupAttribSet(IupGetDialog(ih), "STATUS", "1");
+  IupExitLoop();
+  return IUP_DEFAULT;
+}
+
+static const char* iLayoutSelectClassDialog(Ihandle* parent)
+{
+  Ihandle *tree, *ok, *dlg, *cancel, *dlg_box, *button_box;
+  int last_containers_id, last_standard_id, last_additional_id;
+  const char* value = NULL;
+  int count, i;
   char** class_list_str, **p_str;
+
+  tree = IupTree();
+  IupSetAttribute(tree, "ADDROOT", "NO");
+  IupSetAttribute(tree, "IMAGELEAF", "IMGEMPTY");
+  IupSetAttribute(tree, "SIZE", "120x160");
+
+  ok = IupButton("_@IUP_OK", NULL);
+  IupSetStrAttribute(ok, "PADDING", IupGetGlobal("DEFAULTBUTTONPADDING"));
+  IupSetCallback(ok, "ACTION", (Icallback)iLayoutSelectClassOK_CB);
+
+  cancel = IupButton("_@IUP_CANCEL", NULL);
+  IupSetStrAttribute(cancel, "PADDING", IupGetGlobal("DEFAULTBUTTONPADDING"));
+  IupSetCallback(cancel, "ACTION", (Icallback)iLayoutSelectClassCancel_CB);
+
+  button_box = IupHbox(
+    IupFill(),
+    ok,
+    cancel,
+    NULL);
+  IupSetAttribute(button_box, "MARGIN", "0x0");
+  IupSetAttribute(button_box, "NORMALIZESIZE", "HORIZONTAL");
+
+  dlg_box = IupVbox(
+    tree,
+    button_box,
+    NULL);
+
+  IupSetAttribute(dlg_box, "MARGIN", "10x10");
+  IupSetAttribute(dlg_box, "GAP", "10");
+
+  dlg = IupDialog(dlg_box);
+
+  IupSetCallback(tree, "EXECUTELEAF_CB", (Icallback)iLayoutSelectClassTreeExecuteLeaf_CB);
+
+  IupSetStrAttribute(dlg, "TITLE", "Select IUP Class");
+  IupSetAttribute(dlg, "MINBOX", "NO");
+  IupSetAttribute(dlg, "MAXBOX", "NO");
+  IupSetAttributeHandle(dlg, "DEFAULTENTER", ok);
+  IupSetAttributeHandle(dlg, "DEFAULTESC", cancel);
+  IupSetAttributeHandle(dlg, "PARENTDIALOG", parent);
+  IupSetAttribute(dlg, "ICON", IupGetGlobal("ICON"));
+
+  IupMap(dlg);
+
+  IupSetAttribute(tree, "ADDBRANCH-1", "Containers");
+  last_containers_id = 0;
+  IupSetAttribute(tree, "INSERTBRANCH0", "Standard");
+  last_standard_id = 1;
+  IupSetAttribute(tree, "INSERTBRANCH1", "Additional");
+  last_additional_id = 2;
 
   count = IupGetAllClasses(NULL, 0);
   class_list_str = (char**)malloc(count * sizeof(char*));
@@ -1704,76 +1808,85 @@ static char* iLayoutSelectClassDialog(Ihandle* parent)
   }
   count = (int)(p_str - class_list_str);
 
-  IupStoreGlobal("_IUP_OLD_PARENTDIALOG", IupGetGlobal("PARENTDIALOG"));
-  IupSetAttributeHandle(NULL, "PARENTDIALOG", parent);
-
-  ret = IupListDialog(1, "Available Classes", count, (const char**)class_list_str, 1, 10, count < 15 ? count + 1 : 15, NULL);
-
-  IupStoreGlobal("PARENTDIALOG", IupGetGlobal("_IUP_OLD_PARENTDIALOG"));
-  IupSetGlobal("_IUP_OLD_PARENTDIALOG", NULL);
-
-  if (ret != -1)
+  for (i = 0; i < count; i++)
   {
-    char* name = class_list_str[ret];
-    free(class_list_str);
-    return name;
+    char* name = class_list_str[i];
+    Iclass *elemClass = iupRegisterFindClass(name);
+    char constructor[50];
+
+    if (elemClass->cons)
+      strcpy(constructor, elemClass->cons);
+    else
+    {
+      strcpy(constructor, name);
+      constructor[0] = (char)toupper(constructor[0]);
+    }
+
+    if (elemClass->childtype != IUP_CHILDNONE && elemClass->is_internal) /* internal containers */
+    {
+      IupSetStrfId(tree, "ADDLEAF", last_containers_id, "Iup%s", constructor);
+      last_containers_id++;
+      last_standard_id++;
+      last_additional_id++;
+    }
+    else if (elemClass->is_internal)
+    {
+      IupSetStrfId(tree, "ADDLEAF", last_standard_id, "Iup%s", constructor);
+      last_standard_id++;
+      last_additional_id++;
+    }
+    else /* additional */
+    {
+      IupSetStrfId(tree, "ADDLEAF", last_additional_id, "Iup%s", constructor);
+      last_additional_id++;
+    }
   }
-  else
+
+  IupSetAttribute(tree, "USERSIZE", NULL);
+
+  IupPopup(dlg, IUP_CENTERPARENT, IUP_CENTERPARENT);
+
+  if (IupGetInt(dlg, "STATUS") == 1)
   {
-    free(class_list_str);
-    return NULL;
+    Iclass *elemClass;
+    int id = IupGetInt(tree, "VALUE");
+    char* name = IupGetAttributeId(tree, "TITLE", id);
+    name += 3;
+    iupStrLower(name, name);
+    elemClass = iupRegisterFindClass(name);
+    value = elemClass->name;
   }
+
+  IupDestroy(dlg);
+
+  free(class_list_str);
+  return value;
 }
 
-static int iLayoutContextMenuInsert_CB(Ihandle* menu)
+static int iLayoutContextMenuNewInsertBrother_CB(Ihandle* menu)
 {
   Ihandle* dlg = (Ihandle*)iupAttribGetInherit(menu, "_IUP_LAYOUTDLG");
-  char* name = iLayoutSelectClassDialog(dlg);
+  const char* name = iLayoutSelectClassDialog(dlg);
   if (name)
   {
     iLayoutDialog* layoutdlg = (iLayoutDialog*)iupAttribGetInherit(menu, "_IUP_LAYOUTDIALOG");
     Ihandle* ref_elem = (Ihandle*)iupAttribGetInherit(menu, "_IUP_LAYOUTCONTEXTELEMENT");
     Ihandle* ret_ih = NULL;
-    int add_child = IupGetInt(menu, "_IUP_ADDCHILD");
 
     Ihandle* new_ih = IupCreate(name);
     int ref_id = IupTreeGetId(layoutdlg->tree, ref_elem);
 
-    if (add_child)
-    {
-      if (ref_elem->firstchild && (ref_elem->firstchild->flags & IUP_INTERNAL))
-      {
-        /* the first child is internal, so add after it */
-        if (ref_elem->firstchild->brother)
-          ret_ih = IupInsert(ref_elem, ref_elem->firstchild->brother, new_ih);
-        else
-          ret_ih = IupAppend(ref_elem, new_ih);
-      }
-      else
-      {
-        /* add as first child */
-        ret_ih = IupInsert(ref_elem, NULL, new_ih);
-      }
-    }
+    /* add as brother after reference */
+    if (ref_elem->brother)
+      /* add before the brother, so it will be the brother */
+      ret_ih = IupInsert(ref_elem->parent, ref_elem->brother, new_ih);
     else
-    {
-      if (!ref_elem->parent)
-      {
-        IupMessage("Error", "Can NOT add here as brother.");
-        return IUP_DEFAULT;
-      }
-
-      /* add as brother after reference */
-      if (ref_elem->brother)
-        /* add before the brother, so it will be the brother */
-        ret_ih = IupInsert(ref_elem->parent, ref_elem->brother, new_ih);
-      else
-        ret_ih = IupAppend(ref_elem->parent, new_ih);
-    }
+      ret_ih = IupAppend(ref_elem->parent, new_ih);
 
     if (!ret_ih)
     {
-      IupMessage("Error", "Add failed. Invalid operation for this node.");
+      IupMessage("Error", "New failed. Invalid operation for this node.");
+      IupDestroy(new_ih);
       return IUP_DEFAULT;
     }
 
@@ -1783,15 +1896,83 @@ static int iLayoutContextMenuInsert_CB(Ihandle* menu)
     iLayoutTreeAddNode(layoutdlg->tree, ref_id, new_ih);
 
     iLayoutUpdateLayout(layoutdlg);
+
+    iLayoutCallLayoutChangedCb(layoutdlg);
   }
 
   return IUP_DEFAULT;
 }
 
-static int iLayoutContextMenuInsertCursor_CB(Ihandle* menu)
+static int iLayoutContextMenuNewInsertChild_CB(Ihandle* menu)
 {
   Ihandle* dlg = (Ihandle*)iupAttribGetInherit(menu, "_IUP_LAYOUTDLG");
-  char* name = iLayoutSelectClassDialog(dlg);
+  const char* name = iLayoutSelectClassDialog(dlg);
+  if (name)
+  {
+    iLayoutDialog* layoutdlg = (iLayoutDialog*)iupAttribGetInherit(menu, "_IUP_LAYOUTDIALOG");
+    Ihandle* ref_elem = (Ihandle*)iupAttribGetInherit(menu, "_IUP_LAYOUTCONTEXTELEMENT");
+
+    Ihandle* new_ih = IupCreate(name);
+    int ref_id = IupTreeGetId(layoutdlg->tree, ref_elem);
+
+    /* add as first child */
+    if (!IupInsert(ref_elem, NULL, new_ih))
+    {
+      IupMessage("Error", "New failed. Invalid operation for this node.");
+      IupDestroy(new_ih);
+      return IUP_DEFAULT;
+    }
+
+    layoutdlg->changed = 1;
+
+    /* add to the tree */
+    iLayoutTreeAddNode(layoutdlg->tree, ref_id, new_ih);
+
+    iLayoutUpdateLayout(layoutdlg);
+
+    iLayoutCallLayoutChangedCb(layoutdlg);
+  }
+
+  return IUP_DEFAULT;
+}
+
+static int iLayoutContextMenuNewAppendChild_CB(Ihandle* menu)
+{
+  Ihandle* dlg = (Ihandle*)iupAttribGetInherit(menu, "_IUP_LAYOUTDLG");
+  const char* name = iLayoutSelectClassDialog(dlg);
+  if (name)
+  {
+    iLayoutDialog* layoutdlg = (iLayoutDialog*)iupAttribGetInherit(menu, "_IUP_LAYOUTDIALOG");
+    Ihandle* ref_elem = (Ihandle*)iupAttribGetInherit(menu, "_IUP_LAYOUTCONTEXTELEMENT");
+
+    Ihandle* new_ih = IupCreate(name);
+    int ref_id = IupTreeGetId(layoutdlg->tree, ref_elem);
+
+    /* add as last child */
+    if (!IupAppend(ref_elem, new_ih))
+    {
+      IupMessage("Error", "New failed. Invalid operation for this node.");
+      IupDestroy(new_ih);
+      return IUP_DEFAULT;
+    }
+
+    layoutdlg->changed = 1;
+
+    /* add to the tree */
+    iLayoutTreeAddNode(layoutdlg->tree, ref_id, new_ih);
+
+    iLayoutUpdateLayout(layoutdlg);
+
+    iLayoutCallLayoutChangedCb(layoutdlg);
+  }
+
+  return IUP_DEFAULT;
+}
+
+static int iLayoutContextMenuNewInsertCursor_CB(Ihandle* menu)
+{
+  Ihandle* dlg = (Ihandle*)iupAttribGetInherit(menu, "_IUP_LAYOUTDLG");
+  const char* name = iLayoutSelectClassDialog(dlg);
   if (name)
   {
     iLayoutDialog* layoutdlg = (iLayoutDialog*)iupAttribGetInherit(menu, "_IUP_LAYOUTDIALOG");
@@ -1805,7 +1986,7 @@ static int iLayoutContextMenuInsertCursor_CB(Ihandle* menu)
     if (!ref_elem)
     {
       int cx, cy;
-      if (sscanf(iupAttribGetInherit(menu, "INSERTCURSOR_ELEMENT_POS"), "%d,%d", &cx, &cy) == 2) /* cbox */
+      if (IupGetIntInt(menu, "INSERTCURSOR_ELEMENT_POS", &cx, &cy) == 2) /* cbox */
       {
         ret_ih = IupAppend(container, new_ih);
         ref_elem = iupChildTreeGetPrevBrother(new_ih);
@@ -1846,7 +2027,8 @@ static int iLayoutContextMenuInsertCursor_CB(Ihandle* menu)
 
     if (!ret_ih)
     {
-      IupMessage("Error", "Add failed. Invalid operation for this node.");
+      IupMessage("Error", "New failed. Invalid operation for this node.");
+      IupDestroy(new_ih);
       return IUP_DEFAULT;
     }
 
@@ -1856,6 +2038,8 @@ static int iLayoutContextMenuInsertCursor_CB(Ihandle* menu)
     iLayoutTreeAddNode(layoutdlg->tree, ref_id, new_ih);
 
     iLayoutUpdateLayout(layoutdlg);
+
+    iLayoutCallLayoutChangedCb(layoutdlg);
   }
 
   return IUP_DEFAULT;
@@ -2007,7 +2191,7 @@ static int iLayoutContextMenuRemove_CB(Ihandle* menu)
     if (layoutdlg->properties && IupGetInt(layoutdlg->properties, "VISIBLE"))
     {
       Ihandle* propelem = (Ihandle*)iupAttribGetInherit(layoutdlg->properties, "_IUP_PROPELEMENT");
-      if (iupChildTreeIsChild(elem, propelem))
+      if (iupChildTreeIsParent(elem, propelem))
       {
         /* if current element will be removed, then use the previous element on the tree |*/
         iupLayoutPropertiesUpdate(layoutdlg->properties, (Ihandle*)IupTreeGetUserId(layoutdlg->tree, id - 1));
@@ -2017,6 +2201,8 @@ static int iLayoutContextMenuRemove_CB(Ihandle* menu)
     IupDestroy(elem);
 
     iLayoutUpdateLayout(layoutdlg);
+
+    iLayoutCallLayoutChangedCb(layoutdlg);
   }
 
   IupDestroy(msg_dlg);
@@ -2028,33 +2214,31 @@ static int iLayoutContextMenuCopy_CB(Ihandle* menu)
 {
   iLayoutDialog* layoutdlg = (iLayoutDialog*)iupAttribGetInherit(menu, "_IUP_LAYOUTDIALOG");
   Ihandle* elem = (Ihandle*)iupAttribGetInherit(menu, "_IUP_LAYOUTCONTEXTELEMENT");
-  layoutdlg->copy = elem;
+  layoutdlg->copy_elem = elem;
+  layoutdlg->cut_elem = NULL;
   return IUP_DEFAULT;
 }
 
-static int iLayoutContextMenuPaste_CB(Ihandle* menu)
+static int iLayoutContextMenuCut_CB(Ihandle* menu)
+{
+  iLayoutDialog* layoutdlg = (iLayoutDialog*)iupAttribGetInherit(menu, "_IUP_LAYOUTDIALOG");
+  Ihandle* elem = (Ihandle*)iupAttribGetInherit(menu, "_IUP_LAYOUTCONTEXTELEMENT");
+  layoutdlg->copy_elem = NULL;
+  layoutdlg->cut_elem = elem;
+  return IUP_DEFAULT;
+}
+
+static int iLayoutContextMenuPasteInsertBrother_CB(Ihandle* menu)
 {
   Ihandle* new_ih, *ret_ih = NULL;
   iLayoutDialog* layoutdlg = (iLayoutDialog*)iupAttribGetInherit(menu, "_IUP_LAYOUTDIALOG");
   Ihandle* ref_elem = (Ihandle*)iupAttribGetInherit(menu, "_IUP_LAYOUTCONTEXTELEMENT");
-  int paste_child = IupGetInt(menu, "_IUP_PASTECHILD");
   int ref_id = IupTreeGetId(layoutdlg->tree, ref_elem);
 
-  new_ih = IupCreate(layoutdlg->copy->iclass->name);
-  IupCopyClassAttributes(layoutdlg->copy, new_ih);
-
-  if (paste_child)
+  if (layoutdlg->copy_elem)
   {
-    /* add as first child */
-    ret_ih = IupInsert(ref_elem, NULL, new_ih);
-  }
-  else
-  {
-    if (!ref_elem->parent)
-    {
-      IupMessage("Error", "Can NOT paste here as brother.");
-      return IUP_DEFAULT;
-    }
+    new_ih = IupCreate(layoutdlg->copy_elem->iclass->name);
+    IupCopyClassAttributes(layoutdlg->copy_elem, new_ih);
 
     /* add as brother after reference */
     if (ref_elem->brother)
@@ -2062,24 +2246,131 @@ static int iLayoutContextMenuPaste_CB(Ihandle* menu)
       ret_ih = IupInsert(ref_elem->parent, ref_elem->brother, new_ih);
     else
       ret_ih = IupAppend(ref_elem->parent, new_ih);
-  }
 
-  if (!ret_ih)
+    if (!ret_ih)
+    {
+      IupMessage("Error", "Paste failed (Copy). Invalid operation for this node.");
+      IupDestroy(new_ih);
+      return IUP_DEFAULT;
+    }
+
+    layoutdlg->changed = 1;
+
+    /* add to the tree */
+    iLayoutTreeAddNode(layoutdlg->tree, ref_id, new_ih);
+
+    iLayoutUpdateLayout(layoutdlg);
+
+    iLayoutCallLayoutChangedCb(layoutdlg);
+  }
+  else
   {
-    IupMessage("Error", "Paste failed. Invalid operation for this node.");
-    return IUP_DEFAULT;
+    if (IupReparent(layoutdlg->cut_elem, ref_elem->parent, ref_elem->brother) == IUP_ERROR)
+    {
+      IupMessage("Error", "Paste failed (Cut). Invalid operation for this node.");
+      return IUP_DEFAULT;
+    }
+
+    layoutdlg->cut_elem = NULL;
+
+    iLayoutTreeRebuild(layoutdlg);
+
+    iLayoutCallLayoutChangedCb(layoutdlg);
   }
 
-  layoutdlg->changed = 1;
+  return IUP_DEFAULT;
+}
 
-  /* add to the tree */
-  iLayoutTreeAddNode(layoutdlg->tree, ref_id, new_ih);
+static int iLayoutContextMenuPasteInsertChild_CB(Ihandle* menu)
+{
+  Ihandle* new_ih;
+  iLayoutDialog* layoutdlg = (iLayoutDialog*)iupAttribGetInherit(menu, "_IUP_LAYOUTDIALOG");
+  Ihandle* ref_elem = (Ihandle*)iupAttribGetInherit(menu, "_IUP_LAYOUTCONTEXTELEMENT");
+  int ref_id = IupTreeGetId(layoutdlg->tree, ref_elem);
 
-  iLayoutUpdateLayout(layoutdlg);
+  if (layoutdlg->copy_elem)
+  {
+    new_ih = IupCreate(layoutdlg->copy_elem->iclass->name);
+    IupCopyClassAttributes(layoutdlg->copy_elem, new_ih);
 
-  /* since we are only moving existing nodes,
-     title, map state, and user data was not changed.
-     there is no need to update the node info */
+    /* add as first child */
+    if (!IupInsert(ref_elem, NULL, new_ih))
+    {
+      IupMessage("Error", "Paste failed (Copy). Invalid operation for this node.");
+      IupDestroy(new_ih);
+      return IUP_DEFAULT;
+    }
+
+    layoutdlg->changed = 1;
+
+    /* add to the tree */
+    iLayoutTreeAddNode(layoutdlg->tree, ref_id, new_ih);
+
+    iLayoutUpdateLayout(layoutdlg);
+
+    iLayoutCallLayoutChangedCb(layoutdlg);
+  }
+  else
+  {
+    if (IupReparent(layoutdlg->cut_elem, ref_elem, ref_elem->firstchild) == IUP_ERROR)
+    {
+      IupMessage("Error", "Paste failed (Cut). Invalid operation for this node.");
+      return IUP_DEFAULT;
+    }
+
+    layoutdlg->cut_elem = NULL;
+
+    iLayoutTreeRebuild(layoutdlg);
+
+    iLayoutCallLayoutChangedCb(layoutdlg);
+  }
+
+  return IUP_DEFAULT;
+}
+
+static int iLayoutContextMenuPasteAppendChild_CB(Ihandle* menu)
+{
+  Ihandle* new_ih;
+  iLayoutDialog* layoutdlg = (iLayoutDialog*)iupAttribGetInherit(menu, "_IUP_LAYOUTDIALOG");
+  Ihandle* ref_elem = (Ihandle*)iupAttribGetInherit(menu, "_IUP_LAYOUTCONTEXTELEMENT");
+  int ref_id = IupTreeGetId(layoutdlg->tree, ref_elem);
+
+  if (layoutdlg->copy_elem)
+  {
+    new_ih = IupCreate(layoutdlg->copy_elem->iclass->name);
+    IupCopyClassAttributes(layoutdlg->copy_elem, new_ih);
+
+    /* add as last child */
+    if (!IupAppend(ref_elem, new_ih))
+    {
+      IupMessage("Error", "Paste failed (Copy). Invalid operation for this node.");
+      IupDestroy(new_ih);
+      return IUP_DEFAULT;
+    }
+
+    layoutdlg->changed = 1;
+
+    /* add to the tree */
+    iLayoutTreeAddNode(layoutdlg->tree, ref_id, new_ih);
+
+    iLayoutUpdateLayout(layoutdlg);
+
+    iLayoutCallLayoutChangedCb(layoutdlg);
+  }
+  else
+  {
+    if (IupReparent(layoutdlg->cut_elem, ref_elem, NULL) == IUP_ERROR)
+    {
+      IupMessage("Error", "Paste failed (Cut). Invalid operation for this node.");
+      return IUP_DEFAULT;
+    }
+
+    layoutdlg->cut_elem = NULL;
+
+    iLayoutTreeRebuild(layoutdlg);
+
+    iLayoutCallLayoutChangedCb(layoutdlg);
+  }
 
   return IUP_DEFAULT;
 }
@@ -2092,73 +2383,118 @@ static int iLayoutContextMenuPasteCursor_CB(Ihandle* menu)
   Ihandle* ref_elem = (Ihandle*)iupAttribGetInherit(menu, "INSERTCURSOR_ELEMENT");
   int ref_id;
 
-  new_ih = IupCreate(layoutdlg->copy->iclass->name);
-  IupCopyClassAttributes(layoutdlg->copy, new_ih);
-
-  if (!ref_elem)
+  if (layoutdlg->copy_elem)
   {
-    int cx, cy;
-    if (sscanf(iupAttribGetInherit(menu, "INSERTCURSOR_ELEMENT_POS"), "%d,%d", &cx, &cy) == 2) /* cbox */
-    {
-      ret_ih = IupAppend(container, new_ih);
-      ref_elem = iupChildTreeGetPrevBrother(new_ih);
-      IupSetInt(new_ih, "CX", cx);
-      IupSetInt(new_ih, "CY", cy);
-      if (ref_elem)
-        ref_id = IupTreeGetId(layoutdlg->tree, ref_elem);
-      else
-        ref_id = IupTreeGetId(layoutdlg->tree, container);  /* empty cbox */
-    }
-    else /* empty box */
-    {
-      ref_id = IupTreeGetId(layoutdlg->tree, container);
-      ret_ih = IupAppend(container, new_ih);
-    }
-  }
-  else
-  {
-    int insert_before = IupGetInt(menu, "INSERTCURSOR_BEFORE");
+    new_ih = IupCreate(layoutdlg->copy_elem->iclass->name);
+    IupCopyClassAttributes(layoutdlg->copy_elem, new_ih);
 
-    ref_id = IupTreeGetId(layoutdlg->tree, ref_elem);
-
-    if (insert_before)
+    if (!ref_elem)
     {
-      ref_id--;
-      IupInsert(container, ref_elem, new_ih);
+      int cx, cy;
+      if (IupGetIntInt(menu, "INSERTCURSOR_ELEMENT_POS", &cx, &cy) == 2) /* cbox */
+      {
+        ret_ih = IupAppend(container, new_ih);
+        ref_elem = iupChildTreeGetPrevBrother(new_ih);
+        IupSetInt(new_ih, "CX", cx);
+        IupSetInt(new_ih, "CY", cy);
+        if (ref_elem)
+          ref_id = IupTreeGetId(layoutdlg->tree, ref_elem);
+        else
+          ref_id = IupTreeGetId(layoutdlg->tree, container);  /* empty cbox */
+      }
+      else /* empty box */
+      {
+        ref_id = IupTreeGetId(layoutdlg->tree, container);
+        ret_ih = IupAppend(container, new_ih);
+      }
     }
     else
     {
-      /* add as brother after reference */
-      if (ref_elem->brother)
-        /* add before the brother, so it will be the brother */
-        ret_ih = IupInsert(container, ref_elem->brother, new_ih);
+      int insert_before = IupGetInt(menu, "INSERTCURSOR_BEFORE");
+
+      ref_id = IupTreeGetId(layoutdlg->tree, ref_elem);
+
+      if (insert_before)
+      {
+        ref_id--;
+        IupInsert(container, ref_elem, new_ih);
+      }
       else
-        ret_ih = IupAppend(container, new_ih);
+      {
+        /* add as brother after reference */
+        if (ref_elem->brother)
+          /* add before the brother, so it will be the brother */
+          ret_ih = IupInsert(container, ref_elem->brother, new_ih);
+        else
+          ret_ih = IupAppend(container, new_ih);
+      }
     }
-  }
 
-  if (!ret_ih)
+    if (!ret_ih)
+    {
+      IupMessage("Error", "Paste failed (Copy). Invalid operation for this node.");
+      IupDestroy(new_ih);
+      return IUP_DEFAULT;
+    }
+
+    layoutdlg->changed = 1;
+
+    /* add to the tree */
+    iLayoutTreeAddNode(layoutdlg->tree, ref_id, new_ih);
+
+    iLayoutUpdateLayout(layoutdlg);
+
+    iLayoutCallLayoutChangedCb(layoutdlg);
+  }
+  else
   {
-    IupMessage("Error", "Paste failed. Invalid operation for this node.");
-    return IUP_DEFAULT;
+    if (ref_elem)
+    {
+      int insert_before = IupGetInt(menu, "INSERTCURSOR_BEFORE");
+      if (!insert_before)
+        ref_elem = ref_elem->brother;
+    }
+
+    if (IupReparent(layoutdlg->cut_elem, container, ref_elem) == IUP_ERROR)
+    {
+      IupMessage("Error", "Paste failed (Cut). Invalid operation for this node.");
+      return IUP_DEFAULT;
+    }
+
+    if (IupClassMatch(container, "cbox"))
+    {
+      int cx, cy;
+      if (IupGetIntInt(menu, "INSERTCURSOR_ELEMENT_POS", &cx, &cy) == 2) /* cbox */
+      {
+        IupSetInt(layoutdlg->cut_elem, "CX", cx);
+        IupSetInt(layoutdlg->cut_elem, "CY", cy);
+      }
+    }
+
+    layoutdlg->cut_elem = NULL;
+
+    iLayoutTreeRebuild(layoutdlg);
+
+    iLayoutCallLayoutChangedCb(layoutdlg);
   }
-
-  layoutdlg->changed = 1;
-
-  /* add to the tree */
-  iLayoutTreeAddNode(layoutdlg->tree, ref_id, new_ih);
-
-  iLayoutUpdateLayout(layoutdlg);
 
   return IUP_DEFAULT;
+}
+
+static int iLayoutIsEmptyContainer(Ihandle* elem)
+{
+  int child_count = IupGetChildCount(elem);
+  if (elem->firstchild && (elem->firstchild->flags & IUP_INTERNAL))
+    child_count--;
+  return child_count == 0;
 }
 
 static void iLayoutContextMenu(iLayoutDialog* layoutdlg, Ihandle* elem, Ihandle* dlg)
 {
   Ihandle* menu;
   int is_container = elem->iclass->childtype != IUP_CHILDNONE;
-  int can_copy = !is_container || elem->firstchild == NULL;
-  int can_paste = layoutdlg->copy != NULL;
+  int can_copy = !is_container || iLayoutIsEmptyContainer(elem);
+  int can_paste, can_cut = 1;
   int can_map = (elem->handle == NULL) && (elem->parent == NULL || elem->parent->handle != NULL);
   int can_unmap = elem->handle != NULL;
   int can_blink = (elem->iclass->nativetype != IUP_TYPEVOID && IupGetInt(elem, "VISIBLE"));
@@ -2166,11 +2502,48 @@ static void iLayoutContextMenu(iLayoutDialog* layoutdlg, Ihandle* elem, Ihandle*
   Ihandle* canvas = IupGetBrother(layoutdlg->tree);
   Ihandle* insert_cursor = (Ihandle*)IupGetAttribute(canvas, "INSERTCURSOR");
   int can_cursor = insert_cursor != NULL;
+  int can_brother = 1;
+  int can_child = 1;
+  int can_paste_cut = 1;
+  int can_paste_cut_cursor = 1;
 
-  if (!iupObjectCheck(layoutdlg->copy))
+  if (!iupObjectCheck(layoutdlg->copy_elem))
+    layoutdlg->copy_elem = NULL;
+  if (!iupObjectCheck(layoutdlg->cut_elem))
+    layoutdlg->cut_elem = NULL;
+
+  can_paste = layoutdlg->copy_elem != NULL || layoutdlg->cut_elem != NULL;
+
+  if (IupClassMatch(elem, "dialog"))
   {
-    layoutdlg->copy = NULL;
-    can_paste = 0;
+    can_copy = 0;
+    can_cut = 0;
+  }
+
+  if (layoutdlg->cut_elem)
+  {
+    if (iupChildTreeIsParent(layoutdlg->cut_elem, elem))
+      can_paste_cut = 0;
+
+    if (iupChildTreeIsParent(layoutdlg->cut_elem, insert_cursor))
+      can_paste_cut_cursor = 0;
+  }
+
+  if (elem->iclass->childtype == IUP_CHILDNONE)  /* not a container */
+    can_child = 0;
+  if (elem->iclass->childtype > IUP_CHILDMANY &&    /* container is full */
+      IupGetChildCount(elem) == elem->iclass->childtype - IUP_CHILDMANY)
+    can_child = 0;
+
+  if (!elem->parent)
+    can_brother = 0;
+  else
+  {
+    if (elem->parent->iclass->childtype == IUP_CHILDNONE)
+      can_brother = 0;
+    if (elem->parent->iclass->childtype > IUP_CHILDMANY &&
+        IupGetChildCount(elem->parent) == elem->parent->iclass->childtype - IUP_CHILDMANY)
+      can_brother = 0;
   }
 
   menu = IupMenu(
@@ -2185,13 +2558,17 @@ static void iLayoutContextMenu(iLayoutDialog* layoutdlg, Ihandle* elem, Ihandle*
     IupSetCallbacks(IupSetAttributes(IupItem("Set Focus", NULL), can_focus ? "ACTIVE=Yes" : "ACTIVE=No"), "ACTION", iLayoutContextMenuSetFocus_CB, NULL),
     IupSeparator(),
     IupSetCallbacks(IupSetAttributes(IupItem("Copy", NULL), can_copy ? "ACTIVE=Yes" : "ACTIVE=No"), "ACTION", iLayoutContextMenuCopy_CB, NULL),
-    IupSetCallbacks(IupSetAttributes(IupItem("Paste Child", NULL), can_paste && is_container ? "ACTIVE=Yes, _IUP_PASTECHILD=1" : "ACTIVE=No, _IUP_PASTECHILD=1"), "ACTION", iLayoutContextMenuPaste_CB, NULL),
-    IupSetCallbacks(IupSetAttributes(IupItem("Paste Brother", NULL), can_paste ? "ACTIVE=Yes" : "ACTIVE=No"), "ACTION", iLayoutContextMenuPaste_CB, NULL),
-    IupSetCallbacks(IupSetAttributes(IupItem("Paste at Cursor", NULL), can_paste && can_cursor ? "ACTIVE=Yes" : "ACTIVE=No"), "ACTION", iLayoutContextMenuPasteCursor_CB, NULL),
+    IupSetCallbacks(IupSetAttributes(IupItem("Cut", NULL), can_cut ? "ACTIVE=Yes" : "ACTIVE=No"), "ACTION", iLayoutContextMenuCut_CB, NULL),
+    IupSetCallbacks(IupSetAttributes(IupItem("Paste Insert Child", NULL), can_paste && can_child && can_paste_cut ? "ACTIVE=Yes" : "ACTIVE=No"), "ACTION", iLayoutContextMenuPasteInsertChild_CB, NULL),
+    IupSetCallbacks(IupSetAttributes(IupItem("Paste Insert at Cursor", NULL), can_paste && can_cursor && can_paste_cut_cursor ? "ACTIVE=Yes" : "ACTIVE=No"), "ACTION", iLayoutContextMenuPasteCursor_CB, NULL),
+    IupSetCallbacks(IupSetAttributes(IupItem("Paste Append Child", NULL), can_paste && can_child && can_paste_cut ? "ACTIVE=Yes" : "ACTIVE=No"), "ACTION", iLayoutContextMenuPasteAppendChild_CB, NULL),
+    IupSetCallbacks(IupSetAttributes(IupItem("Paste Insert Brother", NULL), can_paste && can_brother && can_paste_cut ? "ACTIVE=Yes" : "ACTIVE=No"), "ACTION", iLayoutContextMenuPasteInsertBrother_CB, NULL),
     IupSeparator(),
-    IupSetCallbacks(IupSetAttributes(IupItem("Insert Child...", NULL), is_container ? "ACTIVE=Yes, _IUP_ADDCHILD=1" : "ACTIVE=No, _IUP_ADDCHILD=1"), "ACTION", iLayoutContextMenuInsert_CB, NULL),
-    IupSetCallbacks(IupSetAttributes(IupItem("Insert Brother...", NULL), "_IUP_ADDCHILD=0"), "ACTION", iLayoutContextMenuInsert_CB, NULL),
-    IupSetCallbacks(IupSetAttributes(IupItem("Insert at Cursor...", NULL), can_cursor ? "ACTIVE=Yes" : "ACTIVE=No"), "ACTION", iLayoutContextMenuInsertCursor_CB, NULL),
+    IupSetCallbacks(IupSetAttributes(IupItem("New Insert Child...", NULL), can_child ? "ACTIVE=Yes" : "ACTIVE=No"), "ACTION", iLayoutContextMenuNewInsertChild_CB, NULL),
+    IupSetCallbacks(IupSetAttributes(IupItem("New Insert at Cursor...", NULL), can_cursor ? "ACTIVE=Yes" : "ACTIVE=No"), "ACTION", iLayoutContextMenuNewInsertCursor_CB, NULL),
+    IupSetCallbacks(IupSetAttributes(IupItem("New Append Child...", NULL), can_child ? "ACTIVE=Yes" : "ACTIVE=No"), "ACTION", iLayoutContextMenuNewAppendChild_CB, NULL),
+    IupSetCallbacks(IupSetAttributes(IupItem("New Insert Brother...", NULL), can_brother ? "ACTIVE=Yes" : "ACTIVE=No"), "ACTION", iLayoutContextMenuNewInsertBrother_CB, NULL),
+    IupSeparator(),
     IupSetCallbacks(IupItem("Remove...\tDel", NULL), "ACTION", iLayoutContextMenuRemove_CB, NULL),
     NULL);
 
@@ -2379,6 +2756,11 @@ static int iLayoutCanvasButton_CB(Ihandle* canvas, int but, int pressed, int x, 
     Ihandle* dlg = IupGetDialog(canvas);
     iLayoutDialog* layoutdlg = (iLayoutDialog*)iupAttribGet(dlg, "_IUP_LAYOUTDIALOG");
     Ihandle* elem = iLayoutGetDialogElementByPos(layoutdlg, x, y);
+
+    iupAttribSet(canvas, "_IUP_PRESS_X", NULL);
+    iupAttribSet(canvas, "_IUP_PRESS_Y", NULL);
+    iupAttribSet(canvas, "_IUP_PRESS_ELEM", NULL);
+
     if (elem)
     {
       if (iup_isdouble(status))
@@ -2387,8 +2769,65 @@ static int iLayoutCanvasButton_CB(Ihandle* canvas, int but, int pressed, int x, 
         IupUpdate(canvas);
       }
       else
-        iLayoutSelectTreeItem(layoutdlg, elem);
+      {
+        iupAttribSetInt(canvas, "_IUP_PRESS_X", x);
+        iupAttribSetInt(canvas, "_IUP_PRESS_Y", y);
+        iupAttribSetInt(canvas, "_IUP_PRESS_CX", IupGetInt(elem, "CX"));
+        iupAttribSetInt(canvas, "_IUP_PRESS_CY", IupGetInt(elem, "CY"));
+        iupAttribSet(canvas, "_IUP_PRESS_ELEM", (char*)elem);
+      }
     }
+  }
+  else if (but == IUP_BUTTON1 && !pressed)
+  {
+    Ihandle* elem = (Ihandle*)iupAttribGet(canvas, "_IUP_PRESS_ELEM");
+    if (elem)
+    {
+      Ihandle* dlg = IupGetDialog(canvas);
+      iLayoutDialog* layoutdlg = (iLayoutDialog*)iupAttribGet(dlg, "_IUP_LAYOUTDIALOG");
+      int press_x = iupAttribGetInt(canvas, "_IUP_PRESS_X");
+      int press_y = iupAttribGetInt(canvas, "_IUP_PRESS_Y");
+      if (press_x == x && press_y == y)
+        iLayoutSelectTreeItem(layoutdlg, elem);
+      else
+      {
+        /* drag and drop the element at INSERTCURSOR */
+        Ihandle* container = (Ihandle*)iupAttribGetInherit(canvas, "INSERTCURSOR"); /* the container */
+        if (container)
+        {
+          Ihandle* ref_elem = (Ihandle*)iupAttribGetInherit(canvas, "INSERTCURSOR_ELEMENT");
+          if (ref_elem)
+          {
+            int insert_before = IupGetInt(canvas, "INSERTCURSOR_BEFORE");
+            if (!insert_before)
+              ref_elem = ref_elem->brother;
+          }
+
+          if (IupReparent(elem, container, ref_elem) == IUP_ERROR)
+          {
+            IupMessage("Error", "Move failed. Invalid operation for this node.");
+            return IUP_DEFAULT;
+          }
+
+          if (IupClassMatch(container, "cbox"))
+          {
+            int cx, cy;
+            if (IupGetIntInt(canvas, "INSERTCURSOR_ELEMENT_POS", &cx, &cy) == 2) /* cbox */
+            {
+              IupSetInt(elem, "CX", cx);
+              IupSetInt(elem, "CY", cy);
+            }
+          }
+
+          iLayoutTreeRebuild(layoutdlg);
+
+          iLayoutCallLayoutChangedCb(layoutdlg);
+        }
+      }
+    }
+
+    if (!iupStrEqual(IupGetAttribute(canvas, "CURSOR"), "ARROW"))
+      IupSetAttribute(canvas, "CURSOR", "ARROW");
   }
   else if (but == IUP_BUTTON3 && pressed)
   {
@@ -2474,8 +2913,49 @@ static int iLayoutCanvasMotion_CB(Ihandle* canvas, int x, int y, char* status)
   int native_parent_x = 0, native_parent_y = 0;
   (void)status;
 
+  if (iup_isbutton1(status))
+  {
+    Ihandle* elem = (Ihandle*)iupAttribGet(canvas, "_IUP_PRESS_ELEM");
+    if (elem)
+    {
+      if (!iupStrEqual(IupGetAttribute(canvas, "CURSOR"), "MOVE"))
+        IupSetAttribute(canvas, "CURSOR", "MOVE");
+
+      if (IupClassMatch(elem->parent, "cbox")) /* can drag immediate cbox children */
+      {
+        iLayoutDialog* layoutdlg = (iLayoutDialog*)iupAttribGet(dlg, "_IUP_LAYOUTDIALOG");
+        int press_x = iupAttribGetInt(canvas, "_IUP_PRESS_X");
+        int press_y = iupAttribGetInt(canvas, "_IUP_PRESS_Y");
+        int press_cx = iupAttribGetInt(canvas, "_IUP_PRESS_CX");
+        int press_cy = iupAttribGetInt(canvas, "_IUP_PRESS_CY");
+        int off_x = x - press_x;
+        int off_y = y - press_y;
+        IupSetInt(elem, "CX", press_cx + off_x);
+        IupSetInt(elem, "CY", press_cy + off_y);
+        IupRefreshChildren(elem->parent);
+        IupRedraw(canvas, 0);
+
+        iLayoutCallLayoutChangedCb(layoutdlg); //TODO???
+      }
+    }
+  }
+
+  /* starting here is all for the INSERTCURSOR management */
+
   if (mark->iclass->childtype == IUP_CHILDNONE)
+  {
+    if (iupAttribGet(canvas, "INSERTCURSOR"))
+    {
+      iupAttribSet(canvas, "INSERTCURSOR", NULL);
+      iupAttribSet(canvas, "INSERTCURSOR_POINT", NULL);
+      iupAttribSet(canvas, "INSERTCURSOR_ELEMENT_POS", NULL);
+      iupAttribSet(canvas, "INSERTCURSOR_LINE", NULL);
+      iupAttribSet(canvas, "INSERTCURSOR_ELEMENT", NULL);
+      iupAttribSet(canvas, "INSERTCURSOR_BEFORE", NULL);
+      IupUpdate(canvas);
+    }
     return IUP_DEFAULT;
+  }
 
   x += IupGetInt(canvas, "POSX");
   y += IupGetInt(canvas, "POSY");
@@ -2786,6 +3266,8 @@ static int iLayoutTreeDragDrop_CB(Ihandle* tree, int drag_id, int drop_id, int i
 
   iLayoutUpdateLayout(layoutdlg);
 
+  iLayoutCallLayoutChangedCb(layoutdlg);
+
   /* since we are only moving existing nodes,
      title, map state, and user data was not changed.
      there is no need to update the node info */
@@ -2824,8 +3306,6 @@ static int iLayoutDialogKAny_CB(Ihandle* dlg, int key)
     return iLayoutMenuUpdate_CB(dlg);
   case K_ESC:
     return iLayoutMenuClose_CB(dlg);
-  case K_cO:
-    return iLayoutMenuLoad_CB(dlg);
   case K_cF5:
     return iLayoutMenuRefresh_CB(dlg);
   case K_F3:
@@ -2922,6 +3402,7 @@ IUP_API Ihandle* IupLayoutDialog(Ihandle* dialog)
   IupSetCallback(tree, "EXECUTELEAF_CB", (Icallback)iLayoutTreeExecuteLeaf_CB);
   IupSetCallback(tree, "RIGHTCLICK_CB", (Icallback)iLayoutTreeRightClick_CB);
   IupSetCallback(tree, "DRAGDROP_CB", (Icallback)iLayoutTreeDragDrop_CB);
+  IupSetAttribute(tree, "IMAGELEAF", "IMGEMPTY");
 
   status = IupLabel(NULL);
   IupSetAttribute(status, "EXPAND", "HORIZONTAL");
@@ -2936,7 +3417,7 @@ IUP_API Ihandle* IupLayoutDialog(Ihandle* dialog)
 
   menu = IupMenu(
     IupSubmenu("&Layout", IupMenu(
-    IupSetCallbacks(IupSetAttributes(IupItem("&Show Tree", NULL), "AUTOTOGGLE=YES, VALUE=ON"), "ACTION", iLayoutMenuHierarchy_CB, NULL),
+    IupSetCallbacks(IupSetAttributes(IupItem("&Show Tree", NULL), "AUTOTOGGLE=YES, VALUE=ON"), "ACTION", iLayoutMenuShowTree_CB, NULL),
     IupSetCallbacks(IupItem("Refresh\tCtrl+F5", NULL), "ACTION", iLayoutMenuRefresh_CB, NULL),
     IupSeparator(),
     IupSetCallbacks(IupItem("Update (Tree and Draw)\tF5", NULL), "ACTION", iLayoutMenuUpdate_CB, NULL),
@@ -2987,6 +3468,11 @@ IUP_API Ihandle* IupLayoutDialog(Ihandle* dialog)
   iupAttribSet(dlg, "OPACITY", "255");
 
   iupAttribSet(dlg, "DESTROYWHENCLOSED", "Yes");
+
+  if (!dialog || !iupAttribGet(dialog, "_IUPLED_FILENAME"))
+  {
+    IupSetCallback(dlg, "K_cO", (Icallback)iLayoutMenuLoad_CB);
+  }
 
   {
     int w = 0, h = 0;
