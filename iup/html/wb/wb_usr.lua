@@ -210,13 +210,21 @@ wb_usr.tree =
           }
         },
         {
-          name= {en= "Executables"},
-          link= "executables.html",
+          name= {en= "Tools"},
+          link= "tools.html",
           folder=
           {
             {
-              name= {en= "LED Compiler for C"},
+              name= {en= "LED Compiler"},
               link= "ledc.html"
+            },
+            {
+              name= {en= "IupVisualLED"},
+              link= "iupvisualled.html"
+            },
+            {
+              name= {en= "IupLuaScripter"},
+              link= "iupluascripter.html"
             },
           }
         },
