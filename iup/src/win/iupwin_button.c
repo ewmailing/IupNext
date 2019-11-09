@@ -535,6 +535,8 @@ static int winButtonMsgProc(Ihandle* ih, UINT msg, WPARAM wp, LPARAM lp, LRESULT
   case WM_MBUTTONDOWN:
   case WM_RBUTTONDOWN:
     {
+      iupwinFlagButtonDown(ih, msg);
+
       /* Process BUTTON_CB */
       (void)iupwinButtonDown(ih, msg, wp, lp); /* ignore return value */
 
@@ -552,6 +554,12 @@ static int winButtonMsgProc(Ihandle* ih, UINT msg, WPARAM wp, LPARAM lp, LRESULT
   case WM_MBUTTONUP:
   case WM_RBUTTONUP:
     {
+      if (!iupwinFlagButtonUp(ih, msg))
+      {
+        *result = 0;
+        return 1;
+      }
+
       /* Process BUTTON_CB */
       (void)iupwinButtonUp(ih, msg, wp, lp); /* ignore return value */
       

@@ -652,6 +652,8 @@ static int winDialogCustomFrameProc(Ihandle* ih, UINT msg, WPARAM wp, LPARAM lp,
     {
       SetCapture(ih->handle);
 
+      iupwinFlagButtonDown(ih, msg);
+
       if (iupwinButtonDown(ih, msg, wp, lp))
       {
         /* refresh the cursor, it could have been changed in BUTTON_CB */
@@ -679,6 +681,12 @@ static int winDialogCustomFrameProc(Ihandle* ih, UINT msg, WPARAM wp, LPARAM lp,
   case WM_MBUTTONUP:
   case WM_RBUTTONUP:
     {
+      if (!iupwinFlagButtonUp(ih, msg))
+      {
+        *result = 0;
+        return 1;
+      }
+
       ReleaseCapture();
 
       if (iupwinButtonUp(ih, msg, wp, lp))

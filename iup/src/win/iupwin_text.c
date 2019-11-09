@@ -1986,6 +1986,8 @@ static int winTextMsgProc(Ihandle* ih, UINT msg, WPARAM wp, LPARAM lp, LRESULT *
   case WM_MBUTTONDOWN:
   case WM_RBUTTONDOWN:
     {
+      iupwinFlagButtonDown(ih, msg);
+
       if (iupwinButtonDown(ih, msg, wp, lp)==-1)
       {
         *result = 0;
@@ -1998,6 +2000,12 @@ static int winTextMsgProc(Ihandle* ih, UINT msg, WPARAM wp, LPARAM lp, LRESULT *
   case WM_RBUTTONUP:
   case WM_LBUTTONUP:
     {
+      if (!iupwinFlagButtonUp(ih, msg))
+      {
+        *result = 0;
+        return 1;
+      }
+
       if (iupwinButtonUp(ih, msg, wp, lp)==-1)
       {
         *result = 0;

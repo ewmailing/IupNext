@@ -1231,7 +1231,6 @@ static int winTreeSetTitleFontAttrib(Ihandle* ih, int id, const char* value)
     itemData->hFont = iupwinGetHFont(value);
     if (itemData->hFont)
     {
-      TVITEM item;
       TCHAR* title = malloc(iupAttribGetInt(ih, "_IUP_MAXTITLE_SIZE")*sizeof(TCHAR));
 
       winTreeGetTitle(ih, hItem, title);
@@ -2556,6 +2555,8 @@ static int winTreeMsgProc(Ihandle* ih, UINT msg, WPARAM wp, LPARAM lp, LRESULT *
       return 0;
     }
   case WM_LBUTTONDOWN:
+    iupwinFlagButtonDown(ih, msg);
+
     if (iupwinButtonDown(ih, msg, wp, lp)==-1)
     {
       *result = 0;
@@ -2599,6 +2600,8 @@ static int winTreeMsgProc(Ihandle* ih, UINT msg, WPARAM wp, LPARAM lp, LRESULT *
   case WM_LBUTTONDBLCLK:
   case WM_MBUTTONDBLCLK:
   case WM_RBUTTONDBLCLK:
+    iupwinFlagButtonDown(ih, msg);
+
     if (iupwinButtonDown(ih, msg, wp, lp)==-1)
     {
       *result = 0;
@@ -2643,6 +2646,12 @@ static int winTreeMsgProc(Ihandle* ih, UINT msg, WPARAM wp, LPARAM lp, LRESULT *
   case WM_LBUTTONUP:
   case WM_MBUTTONUP:
   case WM_RBUTTONUP:
+    if (!iupwinFlagButtonUp(ih, msg))
+    {
+      *result = 0;
+      return 1;
+    }
+
     if (iupwinButtonUp(ih, msg, wp, lp)==-1)
     {
       *result = 0;

@@ -837,8 +837,8 @@ static int winFileDlgPopup(Ihandle *ih, int x, int y)
             char* filename = iupwinStrFromSystemFilename(openfilename.lpstrFile + i + 1);
             if (iupAttribGetBoolean(ih, "MULTIVALUEPATH"))
             {
-              char* value = iupAttribGet(ih, "VALUE");
               char nameid[100];
+              value = iupAttribGet(ih, "VALUE");
               sprintf(nameid, "MULTIVALUE%d", count);
               iupAttribSetStrf(ih, nameid, "%s%s", dir, filename);
 

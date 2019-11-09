@@ -549,6 +549,19 @@ static int k_any(Ihandle *ih, int c)
   printf("  isShiftXkey(%d)\n", iup_isShiftXkey(c));
   printf("  isCtrlXkey(%d)\n", iup_isCtrlXkey(c));
   printf("  isAltXkey(%d)\n", iup_isAltXkey(c));
+
+  if (c == K_cF)
+  {
+    Ihandle* file_dlg = IupFileDlg();
+    IupSetAttributeHandle(file_dlg, "PARENTDIALOG", IupGetDialog(ih));
+    IupPopup(file_dlg, IUP_CENTERPARENT, IUP_CENTERPARENT);
+    if (IupGetInt(file_dlg, "STATUS") != -1)
+    {
+      char* value = IupGetAttribute(file_dlg, "VALUE");
+      printf("value=%s\n", value);
+    }
+    IupDestroy(file_dlg);
+  }
   return IUP_DEFAULT;
 }
 
@@ -618,7 +631,7 @@ void CanvasTest(void)
   IupSetCallback(canvas, "LEAVEWINDOW_CB", (Icallback)leavewindow_cb);
 
   IupSetCallback(canvas, "BUTTON_CB",    (Icallback)button_cb);
-  IupSetCallback(canvas, "MOTION_CB",    (Icallback)motion_cb);
+ // IupSetCallback(canvas, "MOTION_CB",    (Icallback)motion_cb);
   IupSetCallback(canvas, "SCROLL_CB",  (Icallback)scroll_cb);
   IupSetCallback(canvas, "WHEEL_CB",    (Icallback)wheel_cb);
 

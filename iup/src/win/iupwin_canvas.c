@@ -283,9 +283,9 @@ static void winCanvasGetScrollInfo(HWND hWnd, int *ipos, int *ipage, int flag, i
 
 static void winCanvasCallScrollCallback(Ihandle* ih, int op)
 {
-  IFniff cb = (IFniff)IupGetCallback(ih, "SCROLL_CB");
-  if (cb)
-    cb(ih, op, (float)ih->data->posx, (float)ih->data->posy);
+  IFniff scroll_cb = (IFniff)IupGetCallback(ih, "SCROLL_CB");
+  if (scroll_cb)
+    scroll_cb(ih, op, (float)ih->data->posx, (float)ih->data->posy);
   else
   {
     IFnff cb = (IFnff)IupGetCallback(ih, "ACTION");
@@ -573,6 +573,8 @@ static int winCanvasMsgProc(Ihandle* ih, UINT msg, WPARAM wp, LPARAM lp, LRESULT
 
       SetCapture(ih->handle);
 
+      iupwinFlagButtonDown(ih, msg);
+
       if (iupwinButtonDown(ih, msg, wp, lp))
       {
         /* refresh the cursor, it could have been changed in BUTTON_CB */
@@ -614,6 +616,12 @@ static int winCanvasMsgProc(Ihandle* ih, UINT msg, WPARAM wp, LPARAM lp, LRESULT
   case WM_MBUTTONUP:
   case WM_RBUTTONUP:
     {
+      if (!iupwinFlagButtonUp(ih, msg))
+      {
+        *result = 0;
+        return 1;
+      }
+
       ReleaseCapture();
 
       if (iupwinButtonUp(ih, msg, wp, lp))

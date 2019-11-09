@@ -64,7 +64,7 @@
 <p>Check the <a href="migration_guide.html">Migration Guide</a> for a summary of 
 the important changes and how to proceed when migrating from version 2.x to 
 version 3.x.</p>
-<h3>SVN (05/Nov/2019)</h3>
+<h3>SVN (09/Nov/2019)</h3>
 
 <ul>
 
@@ -443,6 +443,14 @@ IupScrollBox</strong> and <strong>IupGLCanvasBox</strong>.</span></font></li>
             style="color: #000000"><span class="hist_fixed">Fixed: </span> 
 	</span></span>file paths of in a project are now saved relative to the 
 	project file path in <strong>IupScintillaDlg</strong>.</font></li>
+	<li>
+	<font SIZE="3"><span style="color: #008000">
+	<span
+            style="color: #000000"><span class="hist_fixed">Fixed: </span> 
+	</span></span>a double click in a dialog that is closed at that moment may 
+	generate a spurious button release in the dialog underneath in Windows. We 
+	added a workaround were we have control of the button down/up message 
+	processing. But not all controls will handle that case. </font></li>
 
 </ul>
 <h3><a href="http://sourceforge.net/projects/iup/files/3.27/">Version 3.27</a> (30/Apr/2019)</h3>

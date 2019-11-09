@@ -908,6 +908,53 @@ IUP_DRV_API int iupwinButtonDown(Ihandle* ih, UINT msg, WPARAM wp, LPARAM lp)
   return 1;
 }
 
+void iupwinFlagButtonDown(Ihandle* ih, UINT msg)
+{
+  if (msg == WM_XBUTTONDOWN || msg == WM_XBUTTONDBLCLK)
+    iupAttribSet(ih, "_IUP_WM_XBUTTONDOWN", "1");
+  else if (msg == WM_LBUTTONDOWN || msg == WM_LBUTTONDBLCLK)
+    iupAttribSet(ih, "_IUP_WM_LBUTTONDOWN", "1");
+  else if (msg == WM_MBUTTONDOWN || msg == WM_MBUTTONDBLCLK)
+    iupAttribSet(ih, "_IUP_WM_MBUTTONDOWN", "1");
+  else if (msg == WM_RBUTTONDOWN || msg == WM_RBUTTONDBLCLK)
+    iupAttribSet(ih, "_IUP_WM_RBUTTONDOWN", "1");
+}
+
+int iupwinFlagButtonUp(Ihandle* ih, UINT msg)
+{
+  /* return false if a match button down was NOT flagged */
+
+  if (msg == WM_XBUTTONDOWN)
+  {
+    if (!iupAttribGet(ih, "_IUP_WM_XBUTTONDOWN"))
+      return 0;
+    else
+      iupAttribSet(ih, "_IUP_WM_XBUTTONDOWN", NULL);
+  }
+  else if (msg == WM_LBUTTONUP)
+  {
+    if (!iupAttribGet(ih, "_IUP_WM_LBUTTONDOWN"))
+      return 0;
+    else
+      iupAttribSet(ih, "_IUP_WM_LBUTTONDOWN", NULL);
+  }
+  else if (msg == WM_MBUTTONDOWN)
+  {
+    if (!iupAttribGet(ih, "_IUP_WM_MBUTTONDOWN"))
+      return 0;
+    else
+      iupAttribSet(ih, "_IUP_WM_MBUTTONDOWN", NULL);
+  }
+  else if (msg == WM_RBUTTONDOWN)
+  {
+    if (!iupAttribGet(ih, "_IUP_WM_RBUTTONDOWN"))
+      return 0;
+    else
+      iupAttribSet(ih, "_IUP_WM_RBUTTONDOWN", NULL);
+  }
+  return 1;
+}
+
 IUP_DRV_API int iupwinButtonUp(Ihandle* ih, UINT msg, WPARAM wp, LPARAM lp)
 {
   char status[IUPKEY_STATUS_SIZE] = IUPKEY_STATUS_INIT;

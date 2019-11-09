@@ -1539,6 +1539,8 @@ static int winListComboListProc(Ihandle* ih, HWND cblist, UINT msg, WPARAM wp, L
   case WM_LBUTTONDOWN:
   case WM_MBUTTONDOWN:
   case WM_RBUTTONDOWN:
+    iupwinFlagButtonDown(ih, msg);
+
     if (iupwinButtonDown(ih, msg, wp, lp)==-1)
     {
       *result = 0;
@@ -1548,6 +1550,12 @@ static int winListComboListProc(Ihandle* ih, HWND cblist, UINT msg, WPARAM wp, L
   case WM_MBUTTONUP:
   case WM_RBUTTONUP:
   case WM_LBUTTONUP:
+    if (!iupwinFlagButtonUp(ih, msg))
+    {
+      *result = 0;
+      return 1;
+    }
+
     if (iupwinButtonUp(ih, msg, wp, lp)==-1)
     {
       *result = 0;

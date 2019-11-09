@@ -108,6 +108,8 @@ IUP_DRV_API int iupwinButtonDown(Ihandle* ih, UINT msg, WPARAM wp, LPARAM lp);
 IUP_DRV_API int iupwinMouseMove(Ihandle* ih, UINT msg, WPARAM wp, LPARAM lp);
 void iupwinTrackMouseLeave(Ihandle* ih);
 void iupwinRefreshCursor(Ihandle* ih);
+void iupwinFlagButtonDown(Ihandle* ih, UINT msg);
+int iupwinFlagButtonUp(Ihandle* ih, UINT msg);
 
 int iupwinListDND(Ihandle *ih, UINT uNotification, POINT pt);
 
