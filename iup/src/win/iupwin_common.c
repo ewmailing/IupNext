@@ -908,7 +908,7 @@ IUP_DRV_API int iupwinButtonDown(Ihandle* ih, UINT msg, WPARAM wp, LPARAM lp)
   return 1;
 }
 
-void iupwinFlagButtonDown(Ihandle* ih, UINT msg)
+IUP_DRV_API void iupwinFlagButtonDown(Ihandle* ih, UINT msg)
 {
   if (msg == WM_XBUTTONDOWN || msg == WM_XBUTTONDBLCLK)
     iupAttribSet(ih, "_IUP_WM_XBUTTONDOWN", "1");
@@ -920,7 +920,7 @@ void iupwinFlagButtonDown(Ihandle* ih, UINT msg)
     iupAttribSet(ih, "_IUP_WM_RBUTTONDOWN", "1");
 }
 
-int iupwinFlagButtonUp(Ihandle* ih, UINT msg)
+IUP_DRV_API int iupwinFlagButtonUp(Ihandle* ih, UINT msg)
 {
   /* return false if a match button down was NOT flagged */
 

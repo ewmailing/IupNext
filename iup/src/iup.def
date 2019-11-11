@@ -365,6 +365,8 @@ iupAttribSetStrId
 iupAttribSetStrId2
 iupAttribSetStrf
 iupBackgroundBoxNewBaseClass
+iupBaseCanvasGetClientOffsetAttrib
+iupBaseCanvasGetClientSizeAttrib
 iupBaseCallValueChangedCb
 iupBaseComputeNaturalSize
 iupBaseContainerGetExpandAttrib
@@ -693,6 +695,8 @@ iupwinBaseMsgProc
 iupwinButtonDown
 iupwinButtonUp
 iupwinCreateWindow
+iupwinFlagButtonUp
+iupwinFlagButtonDown
 iupwinMouseMove
 iupwinSetInstance
 iupwinShowLastError
