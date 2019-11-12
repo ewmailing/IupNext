@@ -103,7 +103,7 @@
     </ResourceCompile>
     <Link>
       <AdditionalOptions>/MACHINE:X64 %(AdditionalOptions)</AdditionalOptions>
-      <AdditionalDependencies>setargv.obj;comctl32.lib;ole32.lib;iup.lib;iupcontrols.lib;cd.lib;freetype6.lib;zlib1.lib;iupcd.lib;iupgl.lib;opengl32.lib;glu32.lib;iupimglib.lib;im.lib;iupim.lib;iup_scintilla.lib;imm32.lib;vld.lib;%(AdditionalDependencies)</AdditionalDependencies>
+      <AdditionalDependencies>setargv.obj;comctl32.lib;ole32.lib;iup.lib;iupcontrols.lib;cd.lib;freetype6.lib;zlib1.lib;iupcd.lib;iupgl.lib;opengl32.lib;glu32.lib;iupimglib.lib;im.lib;iupim.lib;iup_scintilla.lib;imm32.lib;vld.lib;iupweb.lib;iupole.lib;iup_plot.lib;iupglcontrols.lib;ftgl.lib;cdcontextplus.lib;gdiplus.lib;cdgl.lib;%(AdditionalDependencies)</AdditionalDependencies>
       <SuppressStartupBanner>true</SuppressStartupBanner>
       <AdditionalLibraryDirectories>..\..\im\lib\Debug_64;..\..\cd\lib\Debug_64;..\lib\Debug_64;..\..\freetype\lib\Debug_64;..\..\ftgl\lib\Debug_64;..\..\zlib\lib\Debug_64;\LNG\vld\lib\Win64;%(AdditionalLibraryDirectories)</AdditionalLibraryDirectories>
       <GenerateDebugInformation>true</GenerateDebugInformation>
