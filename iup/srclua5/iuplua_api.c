@@ -849,19 +849,6 @@ static int GetDialogChild(lua_State *L)
   return 1;
 }
 
-static int attribchanged_cb(Ihandle *self, char * p0)
-{
-  lua_State *L = iuplua_call_start(self, "attribchanged_cb");
-  lua_pushstring(L, p0);
-  return iuplua_call(L, 1);
-}
-
-static int layoutchanged_cb(Ihandle *self)
-{
-  lua_State *L = iuplua_call_start(self, "layoutchanged_cb");
-  return iuplua_call(L, 0);
-}
-
 static int LayoutDialog(lua_State *L)
 {
   iuplua_pushihandle(L,IupLayoutDialog(iuplua_checkihandleornil(L,1)));
@@ -1243,7 +1230,4 @@ void iupluaapi_open(lua_State * L)
 
   /* iup table is already at the top of the stack */
   iuplua_register_funcs(L, funcs);
-
-  iuplua_register_cb(L, "ATTRIBCHANGED_CB", (lua_CFunction)attribchanged_cb, NULL);
-  iuplua_register_cb(L, "LAYOUTCHANGED_CB", (lua_CFunction)layoutchanged_cb, NULL);
 }

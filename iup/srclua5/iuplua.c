@@ -1074,6 +1074,19 @@ static int multitouch_cb(Ihandle *ih, int count, int* pid, int* px, int* py, int
   return iuplua_call(L, 5);
 }
 
+static int attribchanged_cb(Ihandle *self, char * p0)
+{
+  lua_State *L = iuplua_call_start(self, "attribchanged_cb");
+  lua_pushstring(L, p0);
+  return iuplua_call(L, 1);
+}
+
+static int layoutchanged_cb(Ihandle *self)
+{
+  lua_State *L = iuplua_call_start(self, "layoutchanged_cb");
+  return iuplua_call(L, 0);
+}
+
 static void entry_point(void)
 {
   lua_State *L = iuplua_call_global_start("entry_point");
@@ -1374,6 +1387,10 @@ IUPLUA_API int iuplua_open(lua_State * L)
   iuplua_register_cb(L, "GLOBALKEYPRESS_CB", (lua_CFunction)globalkeypress_cb, NULL);
   iuplua_register_cb(L, "GLOBALCTRLFUNC_CB", (lua_CFunction)globalctrlfunc_cb, NULL);
   iuplua_register_cb(L, "IDLE_ACTION", (lua_CFunction)globalidle_cb, NULL);
+
+  /* Other callbacks */
+  iuplua_register_cb(L, "ATTRIBCHANGED_CB", (lua_CFunction)attribchanged_cb, NULL);
+  iuplua_register_cb(L, "LAYOUTCHANGED_CB", (lua_CFunction)layoutchanged_cb, NULL);
 
   /* Register Keys */
   iupKeyForEach(register_key, (void*)L);
