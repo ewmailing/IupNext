@@ -201,11 +201,39 @@ void iupwinMenuDialogProc(Ihandle* ih_dialog, UINT msg, WPARAM wp, LPARAM lp)
   }
 }
 
+static int iwinMenuGetPopupAlign(Ihandle* ih)
+{
+  char* value = iupAttribGet(ih, "POPUPALIGN");
+  if (value)
+  {
+    int horiz_alignment, vert_alignment;
+    char value1[30], value2[30];
+    iupStrToStrStr(value, value1, value2, ':');
+
+    horiz_alignment = TPM_LEFTALIGN;
+    if (iupStrEqualNoCase(value1, "ARIGHT"))
+      horiz_alignment = TPM_RIGHTALIGN;
+    else if (iupStrEqualNoCase(value1, "ACENTER"))
+      horiz_alignment = TPM_CENTERALIGN;
+
+    vert_alignment = TPM_TOPALIGN;
+    if (iupStrEqualNoCase(value2, "ABOTTOM"))
+      vert_alignment = TPM_BOTTOMALIGN;
+    else if (iupStrEqualNoCase(value2, "ACENTER"))
+      vert_alignment = TPM_VCENTERALIGN;
+
+    return horiz_alignment | vert_alignment;
+  }
+
+  return TPM_LEFTALIGN;
+}
+
 int iupdrvMenuPopup(Ihandle* ih, int x, int y)
 {
   HWND hWndActive = GetActiveWindow();
   int tray_menu = 0;
   int menuId;
+  int align;
 
   if (!hWndActive)
   {
@@ -238,8 +266,10 @@ int iupdrvMenuPopup(Ihandle* ih, int x, int y)
     }
   }
 
+  align = iwinMenuGetPopupAlign(ih);
+
   /* stop processing here. messages will not go to the message loop */
-  menuId = TrackPopupMenu((HMENU)ih->handle, TPM_LEFTALIGN|TPM_RIGHTBUTTON|TPM_RETURNCMD, x, y, 0, hWndActive, NULL);
+  menuId = TrackPopupMenu((HMENU)ih->handle, align |TPM_RIGHTBUTTON|TPM_RETURNCMD, x, y, 0, hWndActive, NULL);
 
   if (tray_menu)
   {

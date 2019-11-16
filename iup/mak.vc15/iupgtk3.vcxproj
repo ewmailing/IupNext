@@ -32,11 +32,9 @@
   </ImportGroup>
   <ImportGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'" Label="PropertySheets">
     <Import Project="$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props" Condition="exists('$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props')" Label="LocalAppDataPlatform" />
-    
   </ImportGroup>
   <ImportGroup Condition="'$(Configuration)|$(Platform)'=='Debug|x64'" Label="PropertySheets">
     <Import Project="$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props" Condition="exists('$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props')" Label="LocalAppDataPlatform" />
-    
   </ImportGroup>
   <PropertyGroup Label="UserMacros" />
   <PropertyGroup>
@@ -70,7 +68,7 @@
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">
     <ClCompile>
       <Optimization>Disabled</Optimization>
-      <AdditionalIncludeDirectories>..\src;..\src\gtk;..\include;\lng\gtk3_x64\include\atk-1.0;\lng\gtk3_x64\include\cairo;\lng\gtk3_x64\include\glib-2.0;\lng\gtk3_x64\include\gtk-3.0;\lng\gtk3_x64\include\pango-1.0;\lng\gtk3_x64\include\gdk-pixbuf-2.0;\lng\gtk3_x64\lib\glib-2.0\include;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <AdditionalIncludeDirectories>..\src;..\src\gtk;..\include;\lng\vcpkg\installed\x64-windows\include;\lng\vcpkg\installed\x64-windows\include\atk;\lng\vcpkg\installed\x64-windows\include\cairo;\lng\vcpkg\installed\x64-windows\include\glib;\lng\vcpkg\installed\x64-windows\include\pango;\lng\vcpkg\installed\x64-windows\include\gdk-pixbuf;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
       <PreprocessorDefinitions>WIN32;_DEBUG;_LIB;IUP_ASSERT;_CRT_SECURE_NO_DEPRECATE;GTK_DISABLE_DEPRECATED;GDK_DISABLE_DEPRECATED;GSEAL_ENABLE;DEBUG;inline=;%(PreprocessorDefinitions)</PreprocessorDefinitions>
       <MinimalRebuild>false</MinimalRebuild>
       <BasicRuntimeChecks>EnableFastChecks</BasicRuntimeChecks>

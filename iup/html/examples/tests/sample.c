@@ -241,13 +241,16 @@ static void show_menu(Ihandle* ih)
   x = IupGetInt(ih, "X");
   y = IupGetInt(ih, "Y") + IupGetInt2(ih, "RASTERSIZE");
 
+//  IupSetAttribute(menu, "POPUPALIGN", "ARIGHT:ATOP");
+//  IupSetAttribute(menu, "POPUPALIGN", "ARIGHT:ABOTTOM");
+
   IupPopup(menu, x, y);
   IupDestroy(menu);
 }
 
 static int action1_cb(Ihandle* ih)
 {
-  IupSetAttribute(IupGetDialog(ih), "BACKGROUND", "255 128 128");
+//  IupSetAttribute(IupGetDialog(ih), "BACKGROUND", "255 128 128");
   show_menu(ih);
   return IUP_DEFAULT;
 }

@@ -33,11 +33,9 @@
   </ImportGroup>
   <ImportGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'" Label="PropertySheets">
     <Import Project="$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props" Condition="exists('$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props')" Label="LocalAppDataPlatform" />
-    
   </ImportGroup>
   <ImportGroup Condition="'$(Configuration)|$(Platform)'=='Debug|x64'" Label="PropertySheets">
     <Import Project="$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props" Condition="exists('$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props')" Label="LocalAppDataPlatform" />
-    
   </ImportGroup>
   <PropertyGroup Label="UserMacros" />
   <PropertyGroup>
@@ -116,9 +114,9 @@
     </ResourceCompile>
     <Link>
       <AdditionalOptions>/MACHINE:X64 %(AdditionalOptions)</AdditionalOptions>
-      <AdditionalDependencies>comctl32.lib;ole32.lib;opengl32.lib;glu32.lib;gtk-win32-3.0.lib;gdk-win32-3.0.lib;gdk_pixbuf-2.0.lib;pango-1.0.lib;pangowin32-1.0.lib;gobject-2.0.lib;gmodule-2.0.lib;glib-2.0.lib;iupgtk3.lib;iupgl.lib;iupcontrols.lib;iupglcontrols.lib;iupimglib.lib;iup_plot.lib;iup_mglplot.lib;cdgdk3.lib;ftgl.lib;zlib1.lib;iupcd.lib;cdgl.lib;cairo.lib;pangocairo-1.0.lib;freetype6.lib;im.lib;%(AdditionalDependencies)</AdditionalDependencies>
+      <AdditionalDependencies>comctl32.lib;ole32.lib;opengl32.lib;glu32.lib;gtk-3.0.lib;gdk-3.0.lib;gdk_pixbuf-2.0.lib;pango-1.0.lib;pangowin32-1.0.lib;gobject-2.0.lib;gmodule-2.0.lib;glib-2.0.lib;iupgtk3.lib;iupgl.lib;iupcontrols.lib;iupglcontrols.lib;iupimglib.lib;iup_plot.lib;iup_mglplot.lib;cdgdk3.lib;ftgl.lib;zlib1.lib;iupcd.lib;cdgl.lib;cairo.lib;pangocairo-1.0.lib;freetype6.lib;im.lib;%(AdditionalDependencies)</AdditionalDependencies>
       <SuppressStartupBanner>true</SuppressStartupBanner>
-      <AdditionalLibraryDirectories>..\lib\Debug_64;\lng\gtk3_x64\lib;..\..\cd\lib\Debug_64;..\..\im\lib\Debug_64;..\..\freetype\lib\Debug_64;..\..\ftgl\lib\Debug_64;..\..\zlib\lib\Debug_64;%(AdditionalLibraryDirectories)</AdditionalLibraryDirectories>
+      <AdditionalLibraryDirectories>..\lib\Debug_64;\lng\vcpkg\installed\x64-windows\lib;..\..\cd\lib\Debug_64;..\..\im\lib\Debug_64;..\..\freetype\lib\Debug_64;..\..\ftgl\lib\Debug_64;..\..\zlib\lib\Debug_64;%(AdditionalLibraryDirectories)</AdditionalLibraryDirectories>
       <GenerateDebugInformation>true</GenerateDebugInformation>
       <ProgramDatabaseFile>$(TargetDir)$(TargetName).pdb</ProgramDatabaseFile>
       <SubSystem>Console</SubSystem>
@@ -156,10 +154,12 @@
     <ClCompile Include="..\html\examples\tests\flatbutton.c" />
     <ClCompile Include="..\html\examples\tests\flatframe.c" />
     <ClCompile Include="..\html\examples\tests\flatlabel.c" />
+    <ClCompile Include="..\html\examples\tests\flatlist.c" />
     <ClCompile Include="..\html\examples\tests\flatsample.c" />
     <ClCompile Include="..\html\examples\tests\flatscrollbox.c" />
     <ClCompile Include="..\html\examples\tests\flattabs.c" />
     <ClCompile Include="..\html\examples\tests\flattoggle.c" />
+    <ClCompile Include="..\html\examples\tests\flatval.c" />
     <ClCompile Include="..\html\examples\tests\frame.c" />
     <ClCompile Include="..\html\examples\tests\gauge.c" />
     <ClCompile Include="..\html\examples\tests\getcolor.c" />
@@ -181,6 +181,7 @@
     <ClCompile Include="..\html\examples\tests\menu.c" />
     <ClCompile Include="..\html\examples\tests\mgllabel.c" />
     <ClCompile Include="..\html\examples\tests\mglplot.c" />
+    <ClCompile Include="..\html\examples\tests\multibox.c" />
     <ClCompile Include="..\html\examples\tests\plot.c" />
     <ClCompile Include="..\html\examples\tests\predialogs.c" />
     <ClCompile Include="..\html\examples\tests\progressbar.c" />

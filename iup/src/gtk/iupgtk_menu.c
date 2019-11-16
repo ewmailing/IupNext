@@ -41,12 +41,39 @@
 typedef struct _ImenuPos
 {
   int x, y;
+  Ihandle* ih;
 } ImenuPos;
 
 static void gtkMenuPositionFunc(GtkMenu *menu, gint *x, gint *y, gboolean *push_in, ImenuPos *menupos)
 {
+  char* value = iupAttribGet(menupos->ih, "POPUPALIGN");
+
   *x = menupos->x;
   *y = menupos->y;
+
+  if (value)
+  {
+    GtkRequisition size;
+    char value1[30], value2[30];
+    iupStrToStrStr(value, value1, value2, ':');
+
+#if GTK_CHECK_VERSION(3, 0, 0)
+    gtk_widget_get_preferred_size(menupos->ih->handle, NULL, &size);
+#else
+    gtk_widget_size_request(menupos->ih->handle, &size);
+#endif
+
+    if (iupStrEqualNoCase(value1, "ARIGHT"))
+      *x -= size.width;
+    else if (iupStrEqualNoCase(value1, "ACENTER"))
+      *x -= size.width/2;
+
+    if (iupStrEqualNoCase(value2, "ABOTTOM"))
+      *y -= size.height;
+    else if (iupStrEqualNoCase(value2, "ACENTER"))
+      *y -= size.height/2;
+  }
+
   *push_in = FALSE;
   (void)menu;
 }
@@ -56,6 +83,7 @@ int iupdrvMenuPopup(Ihandle* ih, int x, int y)
   ImenuPos menupos;
   menupos.x = x;
   menupos.y = y;
+  menupos.ih = ih;
   gtk_menu_popup((GtkMenu*)ih->handle, NULL, NULL, (GtkMenuPositionFunc)gtkMenuPositionFunc,
                  (gpointer)&menupos, 0, gtk_get_current_event_time());
   gtk_main();
@@ -266,8 +294,6 @@ static int gtkMenuMapMethod(Ihandle* ih)
     else
     {
       /* top level menu used for IupPopup */
-      iupAttribSet(ih, "_IUPGTK_POPUP_MENU", "1");
-
       g_signal_connect(G_OBJECT(ih->handle), "map", G_CALLBACK(gtkMenuMap), ih);
       g_signal_connect(G_OBJECT(ih->handle), "unmap", G_CALLBACK(gtkPopupMenuUnMap), ih);
     }
