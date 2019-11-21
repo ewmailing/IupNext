@@ -6,6 +6,9 @@
 
 #ifdef GTK_DISABLE_DEPRECATED
 #define IUP_USE_GTK
+#if !GLIB_CHECK_VERSION(2, 32, 0)
+#define OLD_GLIB
+#endif
 #endif
 
 #ifdef IUP_USE_GTK
@@ -135,9 +138,15 @@ static int iThreadSetStartAttrib(Ihandle* ih, const char* value)
     GThread* thread, *old_thread;
     char* name = iupAttribGet(ih, "THREADNAME");
     if (!name) name = "IupThread";
+#ifdef OLD_GLIB
+    thread = g_thread_create(ClientThreadFunc, ih, FALSE, NULL);
+#else
     thread = g_thread_new(name, ClientThreadFunc, ih);
+#endif
     old_thread = (GThread*)iupAttribGet(ih, "THREAD");
+#ifndef OLD_GLIB
     if (old_thread) g_thread_unref(old_thread);
+#endif
     iupAttribSet(ih, "THREAD", (char*)thread);
 #elif defined(_WIN32)
     DWORD threadId;
@@ -154,7 +163,11 @@ static int iThreadSetStartAttrib(Ihandle* ih, const char* value)
 static int iThreadCreateMethod(Ihandle* ih, void **params)
 {
 #ifdef IUP_USE_GTK
+#ifdef OLD_GLIB
+  GMutex* mutex = g_mutex_new();
+#else
   GMutex* mutex = (GMutex*)malloc(sizeof(GMutex));
+#endif
 #elif defined(_WIN32)
   HANDLE mutex;
 #else
@@ -163,7 +176,9 @@ static int iThreadCreateMethod(Ihandle* ih, void **params)
   (void)params;
 
 #ifdef IUP_USE_GTK
+#ifndef OLD_GLIB
   g_mutex_init(mutex);
+#endif
 #elif defined(_WIN32)
   mutex = CreateMutexA(NULL, FALSE, "mutex");
 #endif
@@ -178,9 +193,15 @@ static void iThreadDestroyMethod(Ihandle* ih)
 #ifdef IUP_USE_GTK
   GMutex* mutex = (GMutex*)iupAttribGet(ih, "MUTEX");
   GThread* thread = (GThread*)iupAttribGet(ih, "THREAD");
+#ifdef OLD_GLIB
+  g_mutex_free(mutex);
+#else
   g_mutex_clear(mutex);
+#endif
   free(mutex);
+#ifndef OLD_GLIB
   if (thread) g_thread_unref(thread);
+#endif
 #elif defined(_WIN32)
   HANDLE mutex = (HANDLE)iupAttribGet(ih, "MUTEX");
   HANDLE thread = (HANDLE)iupAttribGet(ih, "THREAD");
