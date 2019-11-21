@@ -6,7 +6,7 @@
 
 #ifdef GTK_DISABLE_DEPRECATED
 #define IUP_USE_GTK
-#if !GLIB_CHECK_VERSION(2, 32, 0)
+#ifndef GLIB_CHECK_VERSION
 #define OLD_GLIB
 #endif
 #endif
