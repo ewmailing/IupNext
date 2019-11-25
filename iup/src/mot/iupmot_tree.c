@@ -1630,11 +1630,7 @@ static int motTreeSpacingFunc(Ihandle* ih, Widget wItem, int id, void *data)
 
 static int motTreeSetSpacingAttrib(Ihandle* ih, const char* value)
 {
-  if (!iupStrToInt(value, &ih->data->spacing))
-    ih->data->spacing = 1;
-
-  if (ih->data->spacing < 1)
-    ih->data->spacing = 1;
+  iupStrToInt(value, &ih->data->spacing);
 
   if (ih->handle)
   {

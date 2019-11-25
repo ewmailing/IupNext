@@ -1071,11 +1071,7 @@ static int winTreeSetTopItemAttrib(Ihandle* ih, const char* value)
 
 static int winTreeSetSpacingAttrib(Ihandle* ih, const char* value)
 {
-  if (!iupStrToInt(value, &ih->data->spacing))
-    ih->data->spacing = 1;
-
-  if(ih->data->spacing < 1)
-    ih->data->spacing = 1;
+  iupStrToInt(value, &ih->data->spacing);
 
   if (ih->handle)
   {

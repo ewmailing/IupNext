@@ -963,11 +963,7 @@ static int gtkTreeSetTopItemAttrib(Ihandle* ih, const char* value)
 
 static int gtkTreeSetSpacingAttrib(Ihandle* ih, const char* value)
 {
-  if(!iupStrToInt(value, &ih->data->spacing))
-    ih->data->spacing = 1;
-
-  if(ih->data->spacing < 1)
-    ih->data->spacing = 1;
+  iupStrToInt(value, &ih->data->spacing);
 
   if (ih->handle)
   {
