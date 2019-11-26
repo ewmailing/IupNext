@@ -522,7 +522,8 @@ static int winCanvasMsgProc(Ihandle* ih, UINT msg, WPARAM wp, LPARAM lp, LRESULT
       if (iupAttribGetBoolean(ih, "WHEELDROPFOCUS"))
       {
         Ihandle* ih_focus = IupGetFocus();
-        iupAttribSetClassObject(ih_focus, "SHOWDROPDOWN", "NO");
+        if (ih_focus)
+          iupAttribSetClassObject(ih_focus, "SHOWDROPDOWN", "NO");
       }
 
       if (cb)
