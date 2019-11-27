@@ -990,11 +990,15 @@ static int iFlatScrollBarSetShowFloatingAttrib(Ihandle* ih, const char *value)
   }
   else
   {
+    int sb = iupFlatScrollBarGet(ih);
     Ihandle* sb_vert = iFlatScrollBarGetVertical(ih);
     Ihandle* sb_horiz = iFlatScrollBarGetHorizontal(ih);
 
-    IupSetAttribute(sb_vert, "VISIBLE", "Yes");
-    IupSetAttribute(sb_horiz, "VISIBLE", "Yes");
+    if (sb & IUP_SB_VERT)
+      IupSetAttribute(sb_vert, "VISIBLE", "Yes");
+
+    if (sb & IUP_SB_HORIZ)
+      IupSetAttribute(sb_horiz, "VISIBLE", "Yes");
   }
 
   return 1;
