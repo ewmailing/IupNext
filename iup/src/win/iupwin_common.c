@@ -559,18 +559,16 @@ int iupwinBaseContainerMsgProc(Ihandle* ih, UINT msg, WPARAM wp, LPARAM lp, LRES
     }
   case WM_MOUSEWHEEL:
   {
-    /* if not a canvas based container, must forward the message to the canvas child under the mouse if any. 
-       when it is a canvas, the canvas will forward to the parent. */
+    /* Notice that this message is sent to the focus window. Also it will be automatically propagated to the native parent. 
+       But we want it to be sent to the canvas under the cursor.
+       If this is a canvas based container, the message was already processed. 
+       So, if it is not a canvas based container, we will do the propagation to the canvas under the cursor, if any.
+       But this can potentially generate an infinite loop, so we use _IUP_WHEEL_PROPAGATING as a stop condition. 
+       */
     if (!IupClassMatch(ih, "canvas"))
     {
       HWND hChild;
       POINT p;
-
-      if (IupGetDialog(ih) == ih && iupAttribGet(ih, "_IUP_WHEEL_PROPAGATING")) /* to avoid the dialog to propagate again to the child */
-      {
-        iupAttribSet(ih, "_IUP_WHEEL_PROPAGATING", NULL);
-        break;
-      }
 
       p.x = GET_X_LPARAM(lp); p.y = GET_Y_LPARAM(lp);
       ScreenToClient(ih->handle, &p);
@@ -579,8 +577,16 @@ int iupwinBaseContainerMsgProc(Ihandle* ih, UINT msg, WPARAM wp, LPARAM lp, LRES
       if (hChild)
       {
         Ihandle* child = iupwinHandleGet(hChild);
-        if (iupObjectCheck(child) && IupClassMatch(child, "canvas"))  /* will check of all canvas based control classes */
-          SendMessage(child->handle, WM_MOUSEWHEEL, wp, lp);
+        if (iupObjectCheck(child) && IupClassMatch(child, "canvas"))
+        {
+          if (!iupAttribGet(child, "_IUP_WHEEL_PROPAGATING")) /* to avoid a parent to propagate again to the child */
+            SendMessage(child->handle, WM_MOUSEWHEEL, wp, lp);
+          else
+            iupAttribSet(child, "_IUP_WHEEL_PROPAGATING", NULL);
+
+          *result = 0; /* process the message and abort parent propagation */
+          return 1;
+        }
       }
     }
     break;

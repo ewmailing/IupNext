@@ -556,7 +556,7 @@ static int winCanvasMsgProc(Ihandle* ih, UINT msg, WPARAM wp, LPARAM lp, LRESULT
         }
       }
 
-      iupAttribSet(IupGetDialog(ih), "_IUP_WHEEL_PROPAGATING", "1"); /* to avoid the dialog to propagate again to the child */
+      iupAttribSet(ih, "_IUP_WHEEL_PROPAGATING", "1"); /* to avoid a parent to propagate again to the child */
       break; /* let DefWindowProc forward the message to the parent */
     }
   case WM_XBUTTONDBLCLK:
