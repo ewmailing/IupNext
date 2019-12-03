@@ -1146,9 +1146,9 @@ static int iFlatListDragData_CB(Ihandle *ih, char* type, void *data, int len)
     In this case, unmark all and mark only this item.  */
     if (buffer[pos - 1] == '-')
     {
-      int len = (int)strlen(buffer);
+      int buf_len = (int)strlen(buffer);
       IupSetAttribute(ih, "SELECTION", "NONE");
-      memset(buffer, '-', len);
+      memset(buffer, '-', buf_len);
       buffer[pos - 1] = '+';
       IupSetAttribute(ih, "VALUE", buffer);
     }
@@ -1747,6 +1747,8 @@ static void iFlatListDestroyMethod(Ihandle* ih)
 {
   int i, count = iupArrayCount(ih->data->items_array);
   iFlatListItem* items = iupArrayGetData(ih->data->items_array);
+
+  iupFlatScrollBarRelease(ih);
 
   for (i = 0; i < count; i++)
   {

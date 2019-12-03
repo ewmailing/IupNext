@@ -13,6 +13,7 @@ extern "C" {
 
 
 IUP_SDK_API int iupFlatScrollBarCreate(Ihandle* ih);
+IUP_SDK_API void iupFlatScrollBarRelease(Ihandle* ih);
 IUP_SDK_API void iupFlatScrollBarRegister(Iclass* ic);
 
 IUP_SDK_API int iupFlatScrollBarGet(Ihandle* ih);

@@ -1219,6 +1219,16 @@ IUP_SDK_API int iupFlatScrollBarCreate(Ihandle* ih)
   return 1;
 }
 
+IUP_SDK_API void iupFlatScrollBarRelease(Ihandle* ih)
+{
+  Ihandle* timer = (Ihandle*)iupAttribGet(ih, "_IUP_FLOATTIMER");
+  if (timer)
+  {
+    IupSetAttribute(timer, "RUN", "NO");
+    IupDestroy(timer);
+  }
+}
+
 IUP_SDK_API void iupFlatScrollBarRegister(Iclass* ic)
 {
   iupClassRegisterCallback(ic, "FLATSCROLL_CB", "");

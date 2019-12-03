@@ -423,6 +423,11 @@ static int iFlatScrollBoxCreateMethod(Ihandle* ih, void** params)
   return IUP_NOERROR;
 }
 
+static void iFlatScrollBoxDestroyMethod(Ihandle* ih)
+{
+  iupFlatScrollBarRelease(ih);
+}
+
 Iclass* iupFlatScrollBoxNewClass(void)
 {
   Iclass* ic = iupClassNew(iupRegisterFindClass("canvas"));
@@ -437,6 +442,7 @@ Iclass* iupFlatScrollBoxNewClass(void)
   /* Class functions */
   ic->New = iupFlatScrollBoxNewClass;
   ic->Create  = iFlatScrollBoxCreateMethod;
+  ic->Destroy = iFlatScrollBoxDestroyMethod;
 
   ic->ComputeNaturalSize = iFlatScrollBoxComputeNaturalSizeMethod;
   ic->SetChildrenCurrentSize = iFlatScrollBoxSetChildrenCurrentSizeMethod;
