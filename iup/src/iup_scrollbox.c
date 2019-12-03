@@ -223,14 +223,14 @@ static void iScrollBoxUpdateVisibleScrollArea(Ihandle* ih, int view_width, int v
   then it has scrollbars
   but this affects the opposite direction */
 
-  if (view_width > ih->currentwidth)  /* check for horizontal scrollbar */
+  if (view_width > ih->currentwidth && sb_horiz)  /* check for horizontal scrollbar */
     canvas_height -= sb_size;                /* affect vertical size */
-  if (view_height > ih->currentheight)
+  if (view_height > ih->currentheight && sb_vert)
     canvas_width -= sb_size;
 
-  if (view_width <= ih->currentwidth && view_width > canvas_width)
+  if (view_width <= ih->currentwidth && view_width > canvas_width && sb_horiz)
     canvas_height -= sb_size;
-  if (view_height <= ih->currentheight && view_height > canvas_height)
+  if (view_height <= ih->currentheight && view_height > canvas_height && sb_vert)
     canvas_width -= sb_size;
 
   if (canvas_width < 0) canvas_width = 0;

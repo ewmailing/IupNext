@@ -283,14 +283,14 @@ static void iFlatScrollBoxUpdateVisibleScrollArea(Ihandle* ih, int view_width, i
     then it has scrollbars
     but this affects the opposite direction */
 
-    if (view_width > ih->currentwidth)  /* check for horizontal scrollbar */
+    if (view_width > ih->currentwidth && sb_horiz)  /* check for horizontal scrollbar */
       canvas_height -= sb_size;                /* affect vertical size */
-    if (view_height > ih->currentheight)
+    if (view_height > ih->currentheight && sb_vert)
       canvas_width -= sb_size;
 
-    if (view_width <= ih->currentwidth && view_width > canvas_width)
+    if (view_width <= ih->currentwidth && view_width > canvas_width && sb_horiz)
       canvas_height -= sb_size;
-    if (view_height <= ih->currentheight && view_height > canvas_height)
+    if (view_height <= ih->currentheight && view_height > canvas_height && sb_vert)
       canvas_width -= sb_size;
   }
 
@@ -314,8 +314,9 @@ static void iFlatScrollBoxSetChildrenCurrentSizeMethod(Ihandle* ih, int shrink)
   if (child)
   {
     int w, h, has_sb_horiz=0, has_sb_vert=0;
-    int sb_vert = iupFlatScrollBarGet(ih) & IUP_SB_VERT;
-    int sb_horiz = iupFlatScrollBarGet(ih) & IUP_SB_HORIZ;
+    int sb = iupFlatScrollBarGet(ih);
+    int sb_vert = sb & IUP_SB_VERT;
+    int sb_horiz = sb & IUP_SB_HORIZ;
 
     /* If child is greater than scrollbox area, use child natural size,
        else use current scrollbox size;
