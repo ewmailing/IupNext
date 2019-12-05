@@ -985,16 +985,12 @@ static int iLayoutMenuLoadVisible_CB(Ihandle* ih)
 ***************************************************************************/
 
 
-static void iLayoutDrawElement(IdrawCanvas* dc, Ihandle* ih, int marked, int native_parent_x, int native_parent_y)
+static void iLayoutDrawElement(IdrawCanvas* dc, Ihandle* ih, int marked, int native_parent_x, int native_parent_y, int clip_x1, int clip_y1, int clip_x2, int clip_y2)
 {
   int x, y, w, h;
   char *bgcolor;
   long color, fg, fg_void, bg, fg_max;
-
-  bg = iupDrawColor(255, 255, 255, 255);  /* background color */
-  fg = iupDrawColor(0, 0, 0, 255);        /* foreground color */
-  fg_void = iupDrawColor(160, 160, 160, 255);  /* foreground color for void elements */
-  fg_max = iupDrawColor(255, 0, 0, 255);      /* foreground color for elements that are maximizing parent size */
+  int box_x1, box_y1, box_x2, box_y2;
 
   x = ih->x + native_parent_x;
   y = ih->y + native_parent_y;
@@ -1003,19 +999,39 @@ static void iLayoutDrawElement(IdrawCanvas* dc, Ihandle* ih, int marked, int nat
   if (w <= 0) w = 1;
   if (h <= 0) h = 1;
 
+  box_x1 = x;
+  box_y1 = y;
+  box_x2 = x + w - 1;
+  box_y2 = y + h - 1;
+
+  if (box_x1 > clip_x2) return;
+  if (box_y1 > clip_y2) return;
+  if (box_x2 < clip_x1) return;
+  if (box_y2 < clip_y1) return;
+
+  if (box_x1 < clip_x1) box_x1 = clip_x1;
+  if (box_y1 < clip_y1) box_y1 = clip_y1;
+  if (box_x2 > clip_x2) box_x2 = clip_x2;
+  if (box_y2 > clip_y2) box_y2 = clip_y2;
+
+  bg = iupDrawColor(255, 255, 255, 255);  /* background color */
+  fg = iupDrawColor(0, 0, 0, 255);        /* foreground color */
+  fg_void = iupDrawColor(160, 160, 160, 255);  /* foreground color for void elements */
+  fg_max = iupDrawColor(255, 0, 0, 255);      /* foreground color for elements that are maximizing parent size */
+
   bgcolor = IupGetAttribute(ih, "BGCOLOR");
   if (bgcolor && ih->iclass->nativetype != IUP_TYPEVOID)
   {
     color = iupDrawStrToColor(bgcolor, bg);
-    iupdrvDrawRectangle(dc, x, y, x + w - 1, y + h - 1, color, IUP_DRAW_FILL, 1);
+    iupdrvDrawRectangle(dc, box_x1, box_y1, box_x2, box_y2, color, IUP_DRAW_FILL, 1);
   }
 
   if (ih->iclass->nativetype == IUP_TYPEVOID)
-    iupdrvDrawRectangle(dc, x, y, x + w - 1, y + h - 1, fg_void, IUP_DRAW_STROKE_DASH, 1);
+    iupdrvDrawRectangle(dc, box_x1, box_y1, box_x2, box_y2, fg_void, IUP_DRAW_STROKE_DASH, 1);
   else
-    iupdrvDrawRectangle(dc, x, y, x + w - 1, y + h - 1, fg, IUP_DRAW_STROKE, 1);
+    iupdrvDrawRectangle(dc, box_x1, box_y1, box_x2, box_y2, fg, IUP_DRAW_STROKE, 1);
 
-  iupdrvDrawSetClipRect(dc, x, y, x + w - 1, y + h - 1);
+  iupdrvDrawSetClipRect(dc, box_x1, box_y1, box_x2, box_y2);
 
   if (ih->iclass->childtype == IUP_CHILDNONE)
   {
@@ -1158,16 +1174,7 @@ static void iLayoutDrawElement(IdrawCanvas* dc, Ihandle* ih, int marked, int nat
   iupdrvDrawResetClip(dc);
 
   if (marked)
-  {
-    x = ih->x + native_parent_x;
-    y = ih->y + native_parent_y;
-    w = ih->currentwidth;
-    h = ih->currentheight;
-    if (w <= 0) w = 1;
-    if (h <= 0) h = 1;
-
-    iupdrvDrawSelectRect(dc, x, y, x + w - 1, y + h - 1);
-  }
+    iupdrvDrawSelectRect(dc, box_x1, box_y1, box_x2, box_y2);
 }
 
 static int iLayoutElementIsVisible(Ihandle* ih, int dlgvisible)
@@ -1185,7 +1192,7 @@ static int iLayoutElementIsVisible(Ihandle* ih, int dlgvisible)
   }
 }
 
-static void iLayoutDrawElementTree(IdrawCanvas* dc, int showhidden, int dlgvisible, int shownotmapped, int showinternal, Ihandle* mark, Ihandle* ih, int native_parent_x, int native_parent_y)
+static void iLayoutDrawElementTree(IdrawCanvas* dc, int showhidden, int dlgvisible, int shownotmapped, int showinternal, Ihandle* mark, Ihandle* ih, int native_parent_x, int native_parent_y, int clip_x1, int clip_y1, int clip_x2, int clip_y2)
 {
   Ihandle *child;
   int dx, dy;
@@ -1194,34 +1201,37 @@ static void iLayoutDrawElementTree(IdrawCanvas* dc, int showhidden, int dlgvisib
       (shownotmapped || ih->handle))
   {
     /* draw the element */
-    iLayoutDrawElement(dc, ih, ih == mark, native_parent_x, native_parent_y);
+    iLayoutDrawElement(dc, ih, ih == mark, native_parent_x, native_parent_y, clip_x1, clip_y1, clip_x2, clip_y2);
 
-    if (ih->iclass->childtype != IUP_CHILDNONE)
+    /* if ih is a native parent, then update the offset and clipping */
+    if (ih->iclass->childtype != IUP_CHILDNONE && ih->iclass->nativetype != IUP_TYPEVOID)
     {
-      /* if ih is a native parent, then update the offset */
-      if (ih->iclass->nativetype != IUP_TYPEVOID)
-      {
-        dx = 0, dy = 0;
-        IupGetIntInt(ih, "CLIENTOFFSET", &dx, &dy);
-        native_parent_x += ih->x + dx;
-        native_parent_y += ih->y + dy;
+      dx = 0, dy = 0;
+      IupGetIntInt(ih, "CLIENTOFFSET", &dx, &dy);
+      native_parent_x += ih->x + dx;
+      native_parent_y += ih->y + dy;
 
-        /* if ih is a Zbox like, then draw only the active child */
-        if (IupClassMatch(ih, "zbox") || IupClassMatch(ih, "tabs") || IupClassMatch(ih, "flattabs"))
-        {
-          child = (Ihandle*)IupGetAttribute(ih, "VALUE_HANDLE");
-          if (child)
-            iLayoutDrawElementTree(dc, showhidden, dlgvisible, shownotmapped, showinternal, mark, child, native_parent_x, native_parent_y);
-          return;
-        }
-      }
+      if (native_parent_x > clip_x1) clip_x1 = native_parent_x;
+      if (native_parent_y > clip_y1) clip_y1 = native_parent_y;
+      if (native_parent_x + ih->currentwidth < clip_x2) clip_x2 = native_parent_x + ih->currentwidth;
+      if (native_parent_y + ih->currentheight < clip_y2) clip_y2 = native_parent_y + ih->currentheight;
     }
 
     /* draw its children */
-    for (child = ih->firstchild; child; child = child->brother)
+    /* if ih is a Zbox like, then draw only the active child */
+    if (IupClassMatch(ih, "zbox") || IupClassMatch(ih, "tabs") || IupClassMatch(ih, "flattabs"))
     {
-      if (!(child->flags & IUP_INTERNAL) || showinternal)
-        iLayoutDrawElementTree(dc, showhidden, dlgvisible, shownotmapped, showinternal, mark, child, native_parent_x, native_parent_y);
+      child = (Ihandle*)IupGetAttribute(ih, "VALUE_HANDLE");
+      if (child)
+        iLayoutDrawElementTree(dc, showhidden, dlgvisible, shownotmapped, showinternal, mark, child, native_parent_x, native_parent_y, clip_x1, clip_y1, clip_x2, clip_y2);
+    }
+    else
+    {
+      for (child = ih->firstchild; child; child = child->brother)
+      {
+        if (!(child->flags & IUP_INTERNAL) || showinternal)
+          iLayoutDrawElementTree(dc, showhidden, dlgvisible, shownotmapped, showinternal, mark, child, native_parent_x, native_parent_y, clip_x1, clip_y1, clip_x2, clip_y2);
+      }
     }
   }
 }
@@ -1245,7 +1255,7 @@ static void iLayoutDrawDialog(iLayoutDialog* layoutdlg, int showhidden, int show
     IupGetIntInt(layoutdlg->dialog, "CLIENTOFFSET", &native_parent_x, &native_parent_y);
     native_parent_x -= posx;
     native_parent_y -= posy;
-    iLayoutDrawElementTree(dc, showhidden, dlgvisible, shownotmapped, showinternal, mark, layoutdlg->dialog->firstchild, native_parent_x, native_parent_y);
+    iLayoutDrawElementTree(dc, showhidden, dlgvisible, shownotmapped, showinternal, mark, layoutdlg->dialog->firstchild, native_parent_x, native_parent_y, native_parent_x, native_parent_y, native_parent_x + layoutdlg->dialog->currentwidth-1, native_parent_y + layoutdlg->dialog->currentheight -1);
   }
 }
 
