@@ -108,6 +108,7 @@
     <ClCompile Include="..\src\iup_dropbutton.c" />
     <ClCompile Include="..\src\iup_elempropdlg.c" />
     <ClCompile Include="..\src\iup_expander.c" />
+    <ClCompile Include="..\src\iup_export.c" />
     <ClCompile Include="..\src\iup_flatbutton.c" />
     <ClCompile Include="..\src\iup_flatframe.c">
       <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">false</ExcludedFromBuild>

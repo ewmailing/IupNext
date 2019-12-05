@@ -467,6 +467,7 @@ iupFlatGetImageNameId
 iupFlatGetImagePosition
 iupFlatGetVerticalAlignment
 iupFlatScrollBarCreate
+iupFlatScrollBarRelease
 iupFlatScrollBarGet
 iupFlatScrollBarMotionUpdate
 iupFlatScrollBarRegister
@@ -504,6 +505,7 @@ iupLayoutApplyMinMaxSize
 iupLayoutUpdate
 iupLayoutFindElementDialog
 iupLayoutPropertiesUpdate
+iupLayoutExportNamedElemList
 iupLineFileClose
 iupLineFileEOF
 iupLineFileGetBuffer
@@ -551,6 +553,7 @@ iupStrFileGetPath
 iupStrFileGetTitle
 iupStrFileMakeFileName
 iupStrFileNameSplit
+iupStrTmpFileName
 iupStrFindMnemonic
 iupStrGetFormatPrecision
 iupStrGetLargeMem

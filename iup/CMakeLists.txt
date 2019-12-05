@@ -487,6 +487,7 @@ SET(IUP_COMMON_SOURCE_FILES
 	${CMAKE_SOURCE_DIR}/src/iup_drvfont.h
 	${CMAKE_SOURCE_DIR}/src/iup_drvinfo.h
 	${CMAKE_SOURCE_DIR}/src/iup_expander.c
+	${CMAKE_SOURCE_DIR}/src/iup_export.c
 	${CMAKE_SOURCE_DIR}/src/iup_elempropdlg.c
 	${CMAKE_SOURCE_DIR}/src/iup_filedlg.c
 	${CMAKE_SOURCE_DIR}/src/iup_fill.c
