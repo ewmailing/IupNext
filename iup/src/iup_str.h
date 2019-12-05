@@ -323,6 +323,11 @@ IUP_SDK_API char* iupStrFileMakeFileName(const char* path, const char* title);
  * \ingroup str */
 IUP_SDK_API void iupStrFileNameSplit(const char* filename, char* path, char* title);
 
+/** Returns a filename for a temporary file.
+ * A file with the result name is created and must be removed after use.
+  * \ingroup str */
+IUP_SDK_API int iupStrTmpFileName(char* filename, const char* prefix);
+
 
 
 /** Replace a character in a string.

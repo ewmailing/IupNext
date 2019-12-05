@@ -1821,3 +1821,38 @@ IUP_SDK_API void iupStrPrintfDoubleLocale(char *str, const char *format, double 
 
   iStrResetLocale(old_locale);
 }
+
+#ifdef WIN32
+#include <windows.h>
+#endif
+
+IUP_SDK_API int iupStrTmpFileName(char* filename, const char* prefix)
+{
+#ifdef WIN32
+  char tmpPath[10240];
+  if (GetTempPathA(10240, tmpPath) == 0)
+    return 0;
+  if (GetTempFileNameA(tmpPath, prefix, 0, filename) == 0)
+    return 0;
+#elif OLD_TMPFILENAME
+  char* tmp = tempnam(NULL, prefix);
+  if (!tmp)
+    return 0;
+  strcpy(filename, tmp);
+  free(tmp);
+#else
+  char* dirname = getenv("TMPDIR");
+  if (!dirname) dirname = "/tmp";
+  if (strlen(dirname) >= 10240 - 10)
+    return 0;
+  strcpy(filename, dirname);
+  strcat(filename, "/");
+  strcat(filename, prefix);
+  strcat(filename, "XXXXXX"); /* will be replaced by mkstemp */
+  int fd = mkstemp(filename);
+  if (fd == -1)
+    return 0;
+  close(fd);
+#endif
+  return 1;
+}
