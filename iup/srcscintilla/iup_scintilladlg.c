@@ -1206,7 +1206,7 @@ static void open_file(Ihandle* ih_item, const char* filename, int check_empty)
   char* str = readFile(filename);
   if (str)
   {
-    IFns load_cb;
+    IFnn load_cb;
     Ihandle* ih = IupGetDialog(ih_item);
     Ihandle* tabs = IupGetDialogChild(ih_item, "MULTITEXT_TABS");
     Ihandle* multitext = iScintillaDlgNewMultitext(ih_item);
@@ -1228,9 +1228,9 @@ static void open_file(Ihandle* ih_item, const char* filename, int check_empty)
 
     free(str);
 
-    load_cb = (IFns)IupGetCallback(ih, "LOADFILE_CB");
+    load_cb = (IFnn)IupGetCallback(ih, "LOADFILE_CB");
     if (load_cb)
-      load_cb(ih, (char*)filename);
+      load_cb(ih, multitext);
 
     if (check_empty && IupGetChildCount(tabs) == 2)
     {
@@ -1303,14 +1303,14 @@ static void save_file(Ihandle* multitext)
     Ihandle* ih = IupGetDialog(multitext);
     if (writeFile(filename, str, count))
     {
-      IFns save_cb;
+      IFnn save_cb;
 
       IupSetAttribute(multitext, "SAVEPOINT", NULL); /* this will update title */
       IupSetAttribute(multitext, "UNDO", NULL); /* clear undo */
 
-      save_cb = (IFns)IupGetCallback(ih, "SAVEFILE_CB");
+      save_cb = (IFnn)IupGetCallback(ih, "SAVEFILE_CB");
       if (save_cb)
-        save_cb(ih, (char*)filename);
+        save_cb(ih, multitext);
     }
     else
       IupMessageError(ih, "IUP_ERRORFILESAVE");
@@ -1327,7 +1327,7 @@ static void saveas_file(Ihandle* multitext, const char* filename)
     Ihandle* config = iScintillaDlgGetConfig(multitext);
     char* old_filename = iupStrDup(IupGetAttribute(multitext, "FILENAME"));
     IFnss cb;
-    IFns save_cb;
+    IFnn save_cb;
 
     IupSetAttribute(config, "RECENTNAME", "ScintillaRecent");
     IupConfigRecentUpdate(config, filename);
@@ -1337,9 +1337,9 @@ static void saveas_file(Ihandle* multitext, const char* filename)
     IupSetAttribute(multitext, "SAVEPOINT", NULL); /* this will update title */
     IupSetAttribute(multitext, "UNDO", NULL); /* clear undo */
 
-    save_cb = (IFns)IupGetCallback(ih, "SAVEFILE_CB");
+    save_cb = (IFnn)IupGetCallback(ih, "SAVEFILE_CB");
     if (save_cb)
-      save_cb(ih, (char*)filename);
+      save_cb(ih, multitext);
 
     cb = (IFnss)IupGetCallback(ih, "NEWFILENAME_CB");
     if (cb)
@@ -5306,8 +5306,8 @@ Iclass* iupScintillaDlgNewClass(void)
   iupClassRegisterCallback(ic, "NEWTEXT_CB", "i");
   iupClassRegisterCallback(ic, "CLOSETEXT_CB", "i");
   iupClassRegisterCallback(ic, "NEWFILENAME_CB", "ss");
-  iupClassRegisterCallback(ic, "LOADFILE_CB", "s");
-  iupClassRegisterCallback(ic, "SAVEFILE_CB", "s");
+  iupClassRegisterCallback(ic, "LOADFILE_CB", "i");
+  iupClassRegisterCallback(ic, "SAVEFILE_CB", "i");
   iupClassRegisterCallback(ic, "CONFIGSAVE_CB", "i");
   iupClassRegisterCallback(ic, "CONFIGLOAD_CB", "i");
   iupClassRegisterCallback(ic, "EXIT_CB", "");

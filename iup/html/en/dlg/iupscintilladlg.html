@@ -148,24 +148,26 @@ new_filename</strong>: current filename.</p>
 
   
     
-<pre>int function(Ihandle*<strong> ih</strong>, char* <strong>filename</strong>); [in C]<br><strong>elem</strong>:loadfile_cb(<strong>filename</strong>: string) -&gt; (<strong>ret</strong>: number) [in Lua]</pre>
+<pre>int function(Ihandle*<strong> ih</strong>, Ihandle* <strong>multitext</strong>); [in C]<br><strong>elem</strong>:loadfile_cb(<strong>multitext</strong>: ihandle) -&gt; (<strong>ret</strong>: number) [in Lua]</pre>
 
     
 <p class="info"><strong>ih</strong>:
   identifier of the element that activated the 
-  event.<br><strong>filename</strong>: file name.</p>
+  event.<br><strong>multitext</strong>: identifier of the scintilla element that 
+is affected.</p>
 
   
 <p><strong>SAVEFILE_CB</strong>: Called after the file is saved. (since 3.28)</p>
 
   
     
-<pre>int function(Ihandle*<strong> ih</strong>, char* <strong>filename</strong>); [in C]<br><strong>elem</strong>:savefile_cb(<strong>filename</strong>: string) -&gt; (<strong>ret</strong>: number) [in Lua]</pre>
+<pre>int function(Ihandle*<strong> ih</strong>, Ihandle* <strong>multitext</strong>); [in C]<br><strong>elem</strong>:savefile_cb(<strong>multitext</strong>: ihandle) -&gt; (<strong>ret</strong>: number) [in Lua]</pre>
 
     
 <p class="info"><strong>ih</strong>:
   identifier of the element that activated the 
-  event.<br><strong>filename</strong>: file name.</p>
+  event.<br><strong>multitext</strong>: identifier of the scintilla element that 
+is affected.</p>
 
   
 <p><strong>RESTOREMARKERS_CB</strong>: Called when the markers in the Scitilla 

@@ -64,17 +64,17 @@ static int scintilladlg_configsave_cb(Ihandle *self, Ihandle * p0)
   return iuplua_call(L, 1);
 }
 
-static int scintilladlg_loadfile_cb(Ihandle *self, char * p0)
+static int scintilladlg_loadfile_cb(Ihandle *self, Ihandle * p0)
 {
   lua_State *L = iuplua_call_start(self, "loadfile_cb");
-  lua_pushstring(L, p0);
+  iuplua_pushihandle(L, p0);
   return iuplua_call(L, 1);
 }
 
-static int scintilladlg_savefile_cb(Ihandle *self, char * p0)
+static int scintilladlg_savefile_cb(Ihandle *self, Ihandle * p0)
 {
   lua_State *L = iuplua_call_start(self, "savefile_cb");
-  lua_pushstring(L, p0);
+  iuplua_pushihandle(L, p0);
   return iuplua_call(L, 1);
 }
 
