@@ -279,7 +279,7 @@ static int iLayoutPropertiesList1_CB(Ihandle *list1, char *name, int item, int s
     char* def_value;
     int flags;
     Ihandle* elem = (Ihandle*)iupAttribGetInherit(list1, "_IUP_PROPELEMENT");
-    char* value = IupGetAttribute(elem, name);
+    char* value = iupAttribGetLocal(elem, name);  /* do NOT check for inherited values */
     Ihandle* txt1 = IupGetDialogChild(list1, "VALUE1A");
     Ihandle* lbl2 = IupGetDialogChild(list1, "VALUE1B");
     Ihandle* lbl3 = IupGetDialogChild(list1, "VALUE1C");
@@ -313,7 +313,7 @@ static int iLayoutPropertiesList1_CB(Ihandle *list1, char *name, int item, int s
                      flags&IUPAF_IHANDLENAME ? "Ihandle* name\n" : "",
                      flags&IUPAF_NOT_SUPPORTED ? "NOT SUPPORTED in this driver" : "");
 
-    if (iupLayoutAttributeChanged(elem, name, value, def_value, flags))
+    if (iupLayoutAttributeHasChanged(elem, name, value, def_value, flags))
       IupSetAttribute(txt1, "FGCOLOR", "255 0 0");
     else
       IupSetAttribute(txt1, "FGCOLOR", "0 0 0");
@@ -421,9 +421,9 @@ static int iLayoutPropertiesList3_CB(Ihandle *list3, char *text, int item, int s
     Ihandle* txt = IupGetDialogChild(list3, "VALUE3");
     if (cb)
     {
-      char* name = iupGetCallbackName(elem, text);
-      if (name)
-        IupSetfAttribute(txt, "VALUE", "%p\n\"%s\"", cb, name);
+      char* cb_name = iupGetCallbackName(elem, text);
+      if (cb_name)
+        IupSetfAttribute(txt, "VALUE", "%p\n\"%s\"", cb, cb_name);
       else
         IupSetfAttribute(txt, "VALUE", "%p", cb);
     }

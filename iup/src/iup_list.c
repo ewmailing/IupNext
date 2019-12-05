@@ -741,7 +741,7 @@ static int iListDropData_CB(Ihandle *ih, char* type, void* data, int len, int x,
 
     if (IupGetInt(ih_source, "DRAGSOURCEMOVE") && !is_ctrl)
     {
-      int src_pos = iupAttribGetInt(ih_source, "_IUP_LIST_SOURCEPOS");
+      src_pos = iupAttribGetInt(ih_source, "_IUP_LIST_SOURCEPOS");
       IupSetInt(ih_source, "REMOVEITEM", src_pos);
     }
   }
@@ -765,9 +765,9 @@ static int iListDragData_CB(Ihandle *ih, char* type, void *data, int len)
        In this case, unmark all and mark only this item.  */
     if(buffer[pos-1] == '-')
     {
-      int len = (int)strlen(buffer);
+      int buf_len = (int)strlen(buffer);
       IupSetAttribute(ih, "SELECTION", "NONE");
-      memset(buffer, '-', len);
+      memset(buffer, '-', buf_len);
       buffer[pos-1] = '+';
       IupSetAttribute(ih, "VALUE", buffer);
     }

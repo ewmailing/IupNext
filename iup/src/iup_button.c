@@ -177,6 +177,7 @@ Iclass* iupButtonNewClass(void)
 
   ic->name = "button";
   ic->format = "sa"; /* one string, and one ACTION callback name */
+  ic->format_attr = "TITLE";
   ic->nativetype = IUP_TYPECONTROL;
   ic->childtype = IUP_CHILDNONE;
   ic->is_interactive = 1;

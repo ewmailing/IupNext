@@ -262,7 +262,6 @@ IUP_SDK_API void iupTableSet(Itable *it, const char *key, void *value, Itable_Ty
   else
   {
     /* change an existing item */
-    void *v;
     item = &(entry->items[itemIndex]);
 
     if (itemType == IUPTABLE_STRING && item->itemType == IUPTABLE_STRING)

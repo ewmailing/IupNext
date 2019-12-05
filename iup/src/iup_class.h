@@ -51,15 +51,16 @@ struct Iclass_
   const char* format;   /**< Creation parameters format of the class. \n
                    * Used only for LED parsing. \n
                    * It can have none (NULL), one or more of the following.
-                   * - "b" = (unsigned char) - byte
-                   * - "c" = (unsigned char*) - array of byte
-                   * - "i" = (int) - integer
-                   * - "j" = (int*) - array of integer
-                   * - "f" = (float) - real
-                   * - "s" = (char*) - string 
+                   * - "b" = (unsigned char) - byte            >> unused <<
+                   * - "j" = (int*) - array of integer         >> unused <<
+                   * - "f" = (float) - real                    >> unused <<
+                   * - "i" = (int) - integer                   >> used in IupImage* only <<
+                   * - "c" = (unsigned char*) - array of byte  >> used in IupImage* only <<
+                   * - "s" = (char*) - string                  >> usually is for TITLE <<
                    * - "a" = (char*) - name of the ACTION callback
                    * - "h" = (Ihandle*) - element handle
-                   * - "g" = (Ihandle**) - array of element handle */
+                   * - "g" = (Ihandle**) - array of element handle (when used there are no other parameters) */
+  const char* format_attr; /**< attribute name of the first creation parameter when format[0] is 's' or 'a' */
   InativeType nativetype; /**< native type. Default is IUP_TYPEVOID. */
   int childtype;   /**< children count enum: none, many, or n, as described in \ref IchildType. Default is IUP_CHILDNONE. \n
                     * This identifies a container that can be manipulated with IupReparent, IupAppend and IupInsert. \n

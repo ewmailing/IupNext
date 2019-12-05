@@ -289,13 +289,13 @@ static int iParamValAction_CB(Ihandle *self)
     {
       double min = iupAttribGetDouble(param, "MIN");
       double step = iupAttribGetDouble(ctrl, "_IUPGP_INCSTEP");
-      double val = iupAttribGetDouble(param, "VALUE");
+      val = iupAttribGetDouble(param, "VALUE");
       IupSetInt(ctrl, "SPINVALUE", iupRound((val - min) / step));
     }
     else
     {
-      int val = IupGetInt(ctrl, "VALUE");
-      IupSetInt(ctrl, "SPINVALUE", val);
+      int ival = IupGetInt(ctrl, "VALUE");
+      IupSetInt(ctrl, "SPINVALUE", ival);
     }
   }
 
@@ -838,7 +838,7 @@ static Ihandle* iParamCreateCtrlBox(Ihandle* param, const char *type)
         double min = iupAttribGetDouble(param, "MIN");
         double max = iupAttribGetDouble(param, "MAX");
         double step = iupAttribGetDouble(param, "STEP");
-        double val = iupAttribGetDouble(param, "VALUE");
+        val = iupAttribGetDouble(param, "VALUE");
         if (step == 0) step = (max-min)/20.0;
         IupSetfAttribute(ctrl, "MASKFLOAT", IUP_DOUBLE2STR":"IUP_DOUBLE2STR, min, max);
                              

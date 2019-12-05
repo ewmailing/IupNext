@@ -292,6 +292,7 @@ Iclass* iupGLToggleNewClass(void)
   ic->name = "gltoggle";
   ic->cons = "GLToggle";
   ic->format = "s"; /* one string */
+  ic->format_attr = "TITLE";
   ic->nativetype = IUP_TYPEVOID;
   ic->childtype = IUP_CHILDNONE;
   ic->is_interactive = 0;

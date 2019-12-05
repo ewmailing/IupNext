@@ -59,7 +59,7 @@ enum { IUP_POS_BOTTOMLEFT, IUP_POS_TOPLEFT, IUP_POS_BOTTOMRIGHT, IUP_POS_TOPRIGH
 
 static int iDropButtonRedraw_CB(Ihandle* ih)
 {
-  char *image = iupAttribGet(ih, "IMAGE");
+  const char *image = iupAttribGet(ih, "IMAGE");
   char* title = iupAttribGet(ih, "TITLE");
   int active = IupGetInt(ih, "ACTIVE");  /* native implementation */
   char* fgcolor = iupAttribGetStr(ih, "FGCOLOR");
@@ -244,9 +244,6 @@ static int iDropButtonRedraw_CB(Ihandle* ih)
 
   if (arrow_images)
   {
-    int make_inactive;
-    const char* image;
-
     image = iupFlatGetImageName(ih, "ARROWIMAGE", NULL, arrow_active ? ih->data->pressed : 0, arrow_active ? ih->data->highlighted : 0, arrow_active, &make_inactive);
     iupdrvDrawImage(dc, image, make_inactive, bgcolor, arrow_x, arrow_y, -1, -1);
   }

@@ -1233,7 +1233,6 @@ static int iFlatTabsFindTab(Ihandle* ih, int cur_x, int cur_y, int show_close, i
       int i, total_extra_size = 0;
       for (i = 1; i <= extra_buttons; i++)
       {
-        int extra_size;
         if (tabType == ITABS_TOP || tabType == ITABS_BOTTOM)
           extra_size = iFlatTabsGetExtraWidthId(ih, i, img_position, horiz_padding, vert_padding, NULL);
         else
@@ -1318,10 +1317,10 @@ static void iFlatTabsToggleExpand(Ihandle* ih)
 
 static int iFlatTabsButton_CB(Ihandle* ih, int button, int pressed, int x, int y, char* status)
 {
-  IFniiiis cb = (IFniiiis)IupGetCallback(ih, "FLAT_BUTTON_CB");
-  if (cb)
+  IFniiiis button_cb = (IFniiiis)IupGetCallback(ih, "FLAT_BUTTON_CB");
+  if (button_cb)
   {
-    if (cb(ih, button, pressed, x, y, status) == IUP_IGNORE)
+    if (button_cb(ih, button, pressed, x, y, status) == IUP_IGNORE)
       return IUP_DEFAULT;
   }
 

@@ -228,6 +228,7 @@ Iclass* iupItemNewClass(void)
 
   ic->name = "item";
   ic->format = "sa";  /* one string and one ACTION callback name */
+  ic->format_attr = "TITLE";
   ic->nativetype = IUP_TYPEMENU;
   ic->childtype = IUP_CHILDNONE;
   ic->is_interactive = 1;
@@ -263,6 +264,7 @@ Iclass* iupSubmenuNewClass(void)
 
   ic->name = "submenu";
   ic->format = "sh"; /* one string and one Ihandle */
+  ic->format_attr = "TITLE";
   ic->nativetype = IUP_TYPEMENU;
   ic->childtype = IUP_CHILDMANY+1;  /* 1 child */
   ic->is_interactive = 1;

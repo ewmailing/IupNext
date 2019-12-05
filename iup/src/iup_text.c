@@ -66,8 +66,8 @@ int iupEditCallActionCb(Ihandle* ih, IFnis cb, const char* insert_value, int sta
 
   if (mask && iupMaskCheck((Imask*)mask, new_value)==0)
   {
-    IFns cb = (IFns)IupGetCallback(ih, "MASKFAIL_CB");
-    if (cb) cb(ih, new_value);
+    IFns fail_cb = (IFns)IupGetCallback(ih, "MASKFAIL_CB");
+    if (fail_cb) fail_cb(ih, new_value);
     if (new_value != value) free(new_value);
     return 0; /* abort */
   }

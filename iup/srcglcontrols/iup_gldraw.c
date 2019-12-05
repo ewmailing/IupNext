@@ -137,19 +137,19 @@ void iupGLDrawRect(Ihandle* ih, int xmin, int xmax, int ymin, int ymax, float li
 
   if (round)
   {
-    int r = 2;
+    int rd = 2;
 
-    glVertex2i(xmin, ymax-r);
-    glVertex2i(xmin+r, ymax);
+    glVertex2i(xmin, ymax-rd);
+    glVertex2i(xmin+rd, ymax);
 
-    glVertex2i(xmax-r, ymax);
-    glVertex2i(xmax, ymax-r);
+    glVertex2i(xmax-rd, ymax);
+    glVertex2i(xmax, ymax-rd);
 
-    glVertex2i(xmax, ymin+r);
-    glVertex2i(xmax-r, ymin);
+    glVertex2i(xmax, ymin+rd);
+    glVertex2i(xmax-rd, ymin);
 
-    glVertex2i(xmin+r, ymin);
-    glVertex2i(xmin, ymin+r);
+    glVertex2i(xmin+rd, ymin);
+    glVertex2i(xmin, ymin+rd);
   }
   else
   {

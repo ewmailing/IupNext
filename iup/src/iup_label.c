@@ -167,6 +167,7 @@ Iclass* iupLabelNewClass(void)
 
   ic->name = "label";
   ic->format = "s"; /* one string */
+  ic->format_attr = "TITLE";
   ic->nativetype = IUP_TYPECONTROL;
   ic->childtype = IUP_CHILDNONE;
   ic->is_interactive = 0;

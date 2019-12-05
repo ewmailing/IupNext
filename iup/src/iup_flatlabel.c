@@ -239,6 +239,7 @@ Iclass* iupFlatLabelNewClass(void)
   ic->name = "flatlabel";
   ic->cons = "FlatLabel";
   ic->format = "s"; /* one string */
+  ic->format_attr = "TITLE";
   ic->nativetype = IUP_TYPECANVAS;
   ic->childtype = IUP_CHILDNONE;
   ic->is_interactive = 0;

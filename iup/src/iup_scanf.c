@@ -169,8 +169,8 @@ IUP_API int IupScanf (const char *format, ...)
       break;
     case 's':
       {
-        char *s=(char *)va_arg(va,char *);
-        iupStrCopyN(s, 4096, text[i]);
+        char *str=(char *)va_arg(va,char *);
+        iupStrCopyN(str, 4096, text[i]);
       }
       break;
     }

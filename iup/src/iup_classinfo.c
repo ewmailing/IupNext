@@ -15,7 +15,7 @@ static int compare_names(const void *a, const void *b)
   return strcmp( * ( char** ) a, * ( char** ) b );
 }
 
-static char* getClassParameters(const char* format)
+static char* getClassParameters(const char* format, const char* format_attr)
 {
   static char str[200], *pstr;
   pstr = &str[0];
@@ -31,17 +31,17 @@ static char* getClassParameters(const char* format)
     {
       char* fstr = NULL;
 
-      switch(tolower(format[i]))
+      switch(format[i])
       {
-      case 'b': fstr = "unsigned char"; break;
-      case 'c': fstr = "unsigned char*"; break;
-      case 'i': fstr = "int"; break;
-      case 'j': fstr = "int*"; break;
-      case 'f': fstr = "float"; break;
-      case 's': fstr = "char*"; break;
-      case 'a': fstr = "char*"; break;
-      case 'h': fstr = "Ihandle*"; break;
-      case 'g': fstr = "Ihandle**"; break;
+      case 'b': fstr = "unsigned char"; break;   /* unused */
+      case 'j': fstr = "int*"; break;            /* unused */
+      case 'f': fstr = "float"; break;           /* unused */
+      case 'i': fstr = (i == 0)? "int w": "int h"; break;     /* used in IupImage* only */
+      case 'c': fstr = "const unsigned char* pixels"; break;  /* used in IupImage* only */
+      case 's': fstr = "const char* "; break;  /* to be complemented */
+      case 'a': fstr = "const char* action"; break;
+      case 'h': fstr = "Ihandle* ih"; break;
+      case 'g': fstr = "Ihandle** ih_array"; break;  /* when used there are no other parameters */
       }
 
       if (fstr)
@@ -50,6 +50,18 @@ static char* getClassParameters(const char* format)
           pstr += sprintf(pstr, "%s", ", ");
 
         pstr += sprintf(pstr, "%s", fstr);
+
+        if (format[i] == 's')
+        {
+          if (i == 0 && format_attr)
+          {
+            char attr[100];
+            iupStrLower(attr, format_attr);
+            pstr += sprintf(pstr, "%s", attr);
+          }
+          else
+            pstr += sprintf(pstr, "%s", "title");
+        }
       }
       else
       {
@@ -233,7 +245,7 @@ void iupClassInfoGetDesc(Iclass* ic, Ihandle* ih, const char* attrib_name)
                    "%s"
                    "%s",
                    constructor,
-                   getClassParameters(ic->format),
+                   getClassParameters(ic->format, ic->format_attr),
                    ic->name,
                    getNativeType(ic->nativetype),
                    getChildType(ic->childtype),

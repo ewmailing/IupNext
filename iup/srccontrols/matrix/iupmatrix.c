@@ -1848,6 +1848,11 @@ static int iMatrixCreateMethod(Ihandle* ih, void **params)
   return IUP_NOERROR;
 }
 
+static void iMatrixDestroyMethod(Ihandle* ih)
+{
+  iupFlatScrollBarRelease(ih);
+}
+
 static int iMatrixMapMethod(Ihandle* ih)
 {
 #ifdef USE_OLD_CDIUP
@@ -2121,6 +2126,7 @@ Iclass* iupMatrixNewClass(void)
 
   ic->name = "matrix";
   ic->format = "a"; /* one ACTION_CB callback name */
+  ic->format_attr = "ACTION_CB";
   ic->nativetype = IUP_TYPECANVAS;
   ic->childtype = IUP_CHILDNONE;
   ic->is_interactive = 1;
@@ -2129,6 +2135,7 @@ Iclass* iupMatrixNewClass(void)
   /* Class functions */
   ic->New = iupMatrixNewClass;
   ic->Create = iMatrixCreateMethod;
+  ic->Destroy = iMatrixDestroyMethod;
   ic->Map = iMatrixMapMethod;
   ic->UnMap = iMatrixUnMapMethod;
   ic->ComputeNaturalSize = iMatrixComputeNaturalSizeMethod;

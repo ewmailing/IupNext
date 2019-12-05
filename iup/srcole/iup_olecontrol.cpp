@@ -174,6 +174,7 @@ static Iclass* iOleControlNewClass(void)
   ic->name = "olecontrol";
   ic->cons = "OleControl";
   ic->format = "s"; /* one string */
+  ic->format_attr = "PROGID";
   ic->nativetype = IUP_TYPECANVAS;
   ic->childtype = IUP_CHILDNONE;
   ic->is_interactive = 1;

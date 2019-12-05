@@ -330,10 +330,10 @@ static int iFlatValRedraw_CB(Ihandle* ih)
 
 static int iFlatValButton_CB(Ihandle* ih, int button, int pressed, int x, int y, char* status)
 {
-  IFniiiis cb = (IFniiiis)IupGetCallback(ih, "FLAT_BUTTON_CB");
-  if (cb)
+  IFniiiis button_cb = (IFniiiis)IupGetCallback(ih, "FLAT_BUTTON_CB");
+  if (button_cb)
   {
-    if (cb(ih, button, pressed, x, y, status) == IUP_IGNORE)
+    if (button_cb(ih, button, pressed, x, y, status) == IUP_IGNORE)
       return IUP_DEFAULT;
   }
 
