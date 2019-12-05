@@ -227,9 +227,9 @@ IUP_API Ihandle*  IupBackgroundBox(Ihandle* child);
 IUP_API Ihandle*  IupFrame      (Ihandle* child);
 IUP_API Ihandle*  IupFlatFrame  (Ihandle* child);
 
-IUP_API Ihandle*  IupImage      (int width, int height, const unsigned char *pixmap);
-IUP_API Ihandle*  IupImageRGB   (int width, int height, const unsigned char *pixmap);
-IUP_API Ihandle*  IupImageRGBA  (int width, int height, const unsigned char *pixmap);
+IUP_API Ihandle*  IupImage      (int width, int height, const unsigned char* pixels);
+IUP_API Ihandle*  IupImageRGB   (int width, int height, const unsigned char* pixels);
+IUP_API Ihandle*  IupImageRGBA  (int width, int height, const unsigned char* pixels);
 
 IUP_API Ihandle*  IupItem       (const char* title, const char* action);
 IUP_API Ihandle*  IupSubmenu    (const char* title, Ihandle* child);

@@ -290,7 +290,7 @@ bool iupPlotDataSet::FindPieSample(iupPlotTrafo *inTrafoX, iupPlotTrafo *inTrafo
 
   for (int i = 0; i < theCount; i++)
   {
-    double theY = mDataY->GetSample(i);
+    theY = mDataY->GetSample(i);
 
     if (theY <= 0)
       continue;

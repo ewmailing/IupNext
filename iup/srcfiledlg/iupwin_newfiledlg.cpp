@@ -101,7 +101,7 @@ IFACEMETHODIMP winNewFileDlgEventHandler::OnFileOk(IFileDialog *pfd)
         if (SUCCEEDED(hr))
         {
           PWSTR pszFilePath = NULL;
-          HRESULT hr = psi->GetDisplayName(SIGDN_FILESYSPATH, &pszFilePath);
+          hr = psi->GetDisplayName(SIGDN_FILESYSPATH, &pszFilePath);
           if (SUCCEEDED(hr))
           {
             filename = iupwinStrFromSystemFilename(pszFilePath);
@@ -121,7 +121,7 @@ IFACEMETHODIMP winNewFileDlgEventHandler::OnFileOk(IFileDialog *pfd)
           hr = psiaResult->GetItemAt(0, &psi); // get a selected item from the IShellItemArray
           if (SUCCEEDED(hr))
           {
-            HRESULT hr = psi->GetDisplayName(SIGDN_FILESYSPATH, &pszFilePath);
+            hr = psi->GetDisplayName(SIGDN_FILESYSPATH, &pszFilePath);
             if (SUCCEEDED(hr))
             {
               filename = iupwinStrFromSystemFilename(pszFilePath);
@@ -135,7 +135,7 @@ IFACEMETHODIMP winNewFileDlgEventHandler::OnFileOk(IFileDialog *pfd)
     else
     {
       IFileSaveDialog *pfsd;
-      HRESULT hr = pfd->QueryInterface(IID_PPV_ARGS(&pfsd));
+      hr = pfd->QueryInterface(IID_PPV_ARGS(&pfsd));
       if (SUCCEEDED(hr))
       {
         IShellItem *psi;
@@ -143,7 +143,7 @@ IFACEMETHODIMP winNewFileDlgEventHandler::OnFileOk(IFileDialog *pfd)
         if (SUCCEEDED(hr))
         {
           PWSTR pszFilePath = NULL;
-          HRESULT hr = psi->GetDisplayName(SIGDN_FILESYSPATH, &pszFilePath);
+          hr = psi->GetDisplayName(SIGDN_FILESYSPATH, &pszFilePath);
           if (SUCCEEDED(hr))
           {
             filename = iupwinStrFromSystemFilename(pszFilePath);
@@ -188,7 +188,7 @@ IFACEMETHODIMP winNewFileDlgEventHandler::OnSelectionChange(IFileDialog *pfd)
     if (SUCCEEDED(hr))
     {
       SFGAOF attr;
-      HRESULT hr = psi->GetAttributes(SFGAO_FILESYSTEM | SFGAO_FOLDER, &attr);
+      hr = psi->GetAttributes(SFGAO_FILESYSTEM | SFGAO_FOLDER, &attr);
       if (SUCCEEDED(hr) && (attr & SFGAO_FILESYSTEM))
       {
         PWSTR pszFilePath = NULL;
@@ -795,9 +795,10 @@ static int winNewFileDlgPopup(Ihandle *ih, int x, int y)
 
                 if (iupAttribGetBoolean(ih, "MULTIVALUEPATH"))
                 {
-                  char* value = iupAttribGet(ih, "VALUE");
                   char nameid[100];
                   char *fname = iupStrFileGetTitle(filename);
+                  value = iupAttribGet(ih, "VALUE");
+
                   sprintf(nameid, "MULTIVALUE%d", i + 1);
                   iupAttribSetStrf(ih, nameid, "%s%s", dir, fname);
 
@@ -812,7 +813,7 @@ static int winNewFileDlgPopup(Ihandle *ih, int x, int y)
                     iupAttribSetStrf(ih, "VALUE", "%s|", filename);
                   else
                   {
-                    char* value = iupAttribGet(ih, "VALUE");
+                    value = iupAttribGet(ih, "VALUE");
                     iupAttribSetStrf(ih, "VALUE", "%s%s|", value, filename);
                   }
                 }

@@ -1487,7 +1487,7 @@ static int iAttribToken(char* env_buffer)
   }
 }
 
-IUP_SDK_API void iupAttribParse(Ihandle *ih, const char* str, int save_led_info)
+IUP_SDK_API void iupAttribParse(Ihandle *ih, const char* str, int save_info)
 {
   char env_buffer[256];
   char* name=NULL;
@@ -1509,11 +1509,11 @@ IUP_SDK_API void iupAttribParse(Ihandle *ih, const char* str, int save_led_info)
       {
         IupStoreAttribute(ih, name, value);
 
-        if (save_led_info)
+        if (save_info)
         {
-          char led_name[100] = "_IUPSAVED_";
+          char led_name[200] = "_IUPSAVED_";
           strcat(led_name, name);
-          iupAttribSetStr(ih, led_name, value);
+          iupAttribSet(ih, led_name, "1");
         }
 
         free(name);
