@@ -2,7 +2,7 @@ PROJNAME = iup
 APPNAME := iupvled
 OPT = YES
 
-SRC = iup_vled.c iup_vled_export.c
+SRC = iup_vled.c
 
 IUP := ..
 
