@@ -266,6 +266,33 @@ static Ihandle* iParseControl(Iclass *ic)
     params[i] = NULL;
     new_control = iupObjectCreate(ic, params);
 
+    if (iparse_saveinfo)
+    {
+      for (i = 0; i < num_format; i++)
+      {
+        if (format[i] == 's' || format[i] == 'a')
+        {
+          const char* name = NULL;
+          if (i == 0)
+            name = ic->format_attr;
+          if (!name)
+          {
+            if (format[i] == 'a')
+              name = "ACTION";
+            else
+              name = "TITLE";
+          }
+
+          if (name)
+          {
+            char led_name[200] = "_IUPSAVED_";
+            strcat(led_name, name);
+            iupAttribSet(new_control, led_name, "1");
+          }
+        }
+      }
+    }
+
     iParseRelaseParamArray(params, format, num_format);
 
     free(params);
