@@ -574,19 +574,18 @@ static const char *getLastNonAlphaNumeric(const char *text)
 
 static char *filterList(const char *text, const char *list)
 {
-  char *filteredList[1024];
+  char *filteredList[1024]; /* maximum number of items */
   char *retList;
-  int count = 0;
+  int count = 0, text_len = (int)strlen(text);
 
   int i, len;
   const char *lastValue = list;
   const char *nextValue = iupStrNextValue(list, (int)strlen(list), &len, ' ');
   while (len != 0)
   {
-    if ((int)strlen(text) <= len && iupStrEqualPartial(lastValue, text))
+    if (text_len <= len && iupStrEqualPartial(lastValue, text))
     {
       char *value = malloc(80);
-
       strncpy(value, lastValue, len);
       value[len] = 0;
       filteredList[count++] = value;
@@ -595,7 +594,7 @@ static char *filterList(const char *text, const char *list)
     nextValue = iupStrNextValue(nextValue, (int)strlen(nextValue), &len, ' ');
   }
 
-  retList = malloc(1024);
+  retList = malloc(10240);
   retList[0] = 0;
   for (i = 0; i < count; i++)
   {
@@ -847,31 +846,38 @@ static int savefile_cb(Ihandle* self, Ihandle* multitext)
 
 static char* changeTabsForSpaces(const char *text, int tabsize)
 {
-  static char newText[1024];
+  char *newText;
   int len = (int)strlen(text);
-  int i, j, charcount = 0;
+  int i, j, new_i = 0, tabs = 0;
+
+  for (i = 0; i < len; i++)
+  {
+    if (text[i] == '\t')
+      tabs++;
+  }
+
+  newText = malloc(len + tabs * tabsize);
 
   for (i = 0; i < len; i++)
   {
     char c = text[i];
-
     if (c == '\t')
     {
-      int nWhites = tabsize - (charcount % tabsize);
+      int nWhites = tabsize - (new_i % tabsize);
 
       for (j = 0; j < nWhites; j++)
       {
-        newText[charcount] = ' ';
-        charcount++;
+        newText[new_i] = ' ';
+        new_i++;
       }
       continue;
     }
 
-    newText[charcount] = c;
-    charcount++;
+    newText[new_i] = c;
+    new_i++;
   }
 
-  newText[charcount] = '\0';
+  newText[new_i] = '\0';
 
   return newText;
 }
@@ -882,7 +888,7 @@ static Iclass* find_class_at_pos(Ihandle* multitext, int pos)
   int tabSize = IupGetInt(multitext, "TABSIZE");
   char *text;
   Iclass* ic;
-  char word[1024];
+  char* word;
   char* wordpos = IupGetAttributeId(multitext, "WORDPOS", pos);
   if (wordpos == NULL)
     return NULL;
@@ -891,12 +897,13 @@ static Iclass* find_class_at_pos(Ihandle* multitext, int pos)
   IupTextConvertPosToLinCol(multitext, start, &lin, &start_col);
   IupTextConvertPosToLinCol(multitext, end, &lin, &end_col);
   text = IupGetAttributeId(multitext, "LINE", lin);
-  text = changeTabsForSpaces(text, tabSize);
+  text = changeTabsForSpaces(text, tabSize); /* this allocates a new string that can be changed */
   text[end_col] = '\0';
-  strcpy(word, text + start_col);
+  word = text + start_col;
   iupStrLower(word, word);
 
   ic = iupRegisterFindClass(word);
+  free(text);
 
   return ic;
 }
@@ -2058,7 +2065,7 @@ static int item_export_all_open_action_cb(Ihandle *ih_item)
 
   for (i = 0; i < count; i++)
   {
-    char filename[1024];
+    char filename[10240];
     Ihandle *multitext = IupGetChild(tabs, i);
     char *currFilename = IupGetAttribute(multitext, "FILENAME");
     char* title = iupStrFileGetTitle(currFilename);
@@ -2106,7 +2113,7 @@ static int item_export_proj_action_cb(Ihandle *ih_item)
 
   for (i = 1; i < count; i++)
   {
-    char filename[1024];
+    char filename[10240];
     char* currFilename = IupTreeGetUserId(projectTree, i);
 
     char* title = iupStrFileGetTitle(currFilename);
