@@ -856,6 +856,9 @@ static char* changeTabsForSpaces(const char *text, int tabsize)
       tabs++;
   }
 
+  if (tabs == 0)
+    return iupStrDup(text);
+
   newText = malloc(len + tabs * tabsize);
 
   for (i = 0; i < len; i++)

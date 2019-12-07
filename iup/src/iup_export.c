@@ -315,7 +315,7 @@ static void iLayoutExportElementLED(FILE* file, Ihandle* ih, const char* indent,
           if (!childname)
             iLayoutExportElementLED(file, child, localIndent, saved_info);   /* here process the ones that does NOT have names */
           else
-            fprintf(file, "%s%s", indent, childname);
+            fprintf(file, "%s%s", localIndent, childname);
 
           if (child->brother)
             fprintf(file, ",\n");
@@ -343,12 +343,7 @@ static void iLayoutExportElementLED(FILE* file, Ihandle* ih, const char* indent,
 
           value = iupAttribGetLocal(ih, attribname);  /* do NOT check for inherited values */
           if (value)
-          {
-            if (iLayoutExportHasReserved(value, 0))
-              fprintf(file, "\"%s\"", value);
-            else
-              fprintf(file, "%s", value);
-          }
+            fprintf(file, "\"%s\"", value); /* always with quotes in constructor */
           else
             fprintf(file, "\"\"");  /* empty string */
         }
