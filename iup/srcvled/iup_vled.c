@@ -498,13 +498,20 @@ static int unload_led(const char *filename)
   {
     Ihandle *elem = named_elems[i],
            *parent, *brother = NULL;
-    char old_name[80];
+    char old_name[100] = "";
+    int save_not_defined = 0;
 
     if (!iupObjectCheck(elem))  /* it may already being destroyed in the hierarchy */
+    {
+      named_elems[i] = NULL;
       continue;
+    }
 
     if (vLedIsAlien(elem, filename))
+    {
+      named_elems[i] = NULL;
       continue;
+    }
 
     if (IupClassMatch(elem, "menu"))
     {
@@ -524,20 +531,31 @@ static int unload_led(const char *filename)
       unloadNamedElements(elem);
 
     parent = elem->parent;
-    strcpy(old_name, IupGetName(elem));
 
+    brother = NULL;
     if (parent && vLedIsAlien(parent, filename))
+    {
+      strcpy(old_name, IupGetName(elem));
       brother = elem->brother;
+      save_not_defined = 1;
+    }
 
-    IupDestroy(elem);
+    IupDetach(elem);
 
-    if (parent && vLedIsAlien(parent, filename))
+    if (save_not_defined)
     {
       Ihandle *user = IupUser();
       IupSetAttribute(user, "LEDPARSER_NOTDEFINED", "1");
       IupStoreAttribute(user, "LEDPARSER_NAME", old_name);
       IupInsert(parent, brother, user);
     }
+  }
+
+  for (i = 0; i < num_names; i++)
+  {
+    Ihandle *elem = named_elems[i];
+    if (iupObjectCheck(elem))
+      IupDestroy(elem);
   }
 
   free(names);
@@ -1562,6 +1580,9 @@ static void rewrite_led(Ihandle* multitext)
       char* filename = IupGetAttribute(multitext, "FILENAME");
 
       IupSetStrAttribute(multitext, "VALUE", new_buffer);
+
+      unload_led(filename);
+      IupSetAttribute(multitext, "LOADED", NULL);
 
       if (IupConfigGetVariableIntDef(config, "IupVisualLED", "AutoLoad", 1))
         load_led(elem_tree, filename, 1);
