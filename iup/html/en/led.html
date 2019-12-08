@@ -12,29 +12,35 @@
 <p>LED is a dialog-specification language whose purpose is not to be a complete 
 programming language, but rather to make dialog specification simpler than in C. </p>
 <p>In LED, attributes and expressions follow this form:</p>
-<p>elem = element[<b>attribute1=value1,attribute2=value2,</b>...](...expression...)</p>
-<p>The names of the elements must not contain the “iup” prefix. Attribute values 
-are always interpreted as strings, but they need to be in quotes (“…”) only when 
-they include spaces. 
-</p>
+<pre>name = element[attribute1=value1,attribute2=value2<b>,</b>...](expression)</pre>
+<p>The element must not contain the “iup” prefix. Attribute values 
+are always interpreted as strings, but they need to be in quotes (“…” or '...') only when 
+they include spaces. </p>
 <p>Expressions are mandatory and contain parameters for creating 
 the element.<u1:p>
 </u1:p>
-<u1:p></u1:p>
-</p>
+<u1:p>Each element constructor has a different set of parameters, see each 
+element documentation.</u1:p></p>
 <p>In LED there is no distinction between upper and lower case, except for 
 attribute values.<u1:p>
 </u1:p>
 <u1:p></u1:p>
 </p>
 <p>
+<u1:p>To insert line breaks in string values use '\n'. The LED file itself can 
+contain line breaks in DOS or Windows format, not in Mac format.</u1:p></p>
+<p>
+<u1:p>Comments start with the '#' character and goes all the way until the end 
+of the line.</u1:p></p>
+<p>
 Also<u1:p> there is no NULL definition, but containers can be empty (since 
 3.28).</u1:p></p>
 <p>The <a href="func/iupload.html">IupLoad</a> function can parse a text file and create 
 the IUP elements defined in it. Naturally, the same file cannot be loaded more 
 than once, because the elements would be created again. The file parse 
-does not map the elements to the native system.</p>
-<p>The LED files are dynamically loaded and must be packaged together with the 
+does not map the elements to the native system, but it does create those 
+elements.</p>
+<p>LED files can be dynamically loaded by the application and must be packaged together with the 
 application’s executable. However, this often becomes an inconvenience. To deal 
 with it, there is the 
 <a href="ledc.html">LEDC</a> compiler that creates a C module from the LED 

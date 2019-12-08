@@ -34,7 +34,7 @@ static struct          /* lexical variables */
 
 static int iLexGetChar (void);
 static int iLexToken(int *erro);
-static int iLexCapture (char* dlm);
+static int iLexCapture (const char* dlm);
 static void iLexSkipComment (void);
 static int iLexCaptureAttr (void);
 
@@ -191,7 +191,7 @@ static int iLexToken(int *erro)
       iLexSkipComment();
       continue;
 
-    case ' ':          /* ignore whitespace */
+    case ' ':          /* ignore whitespace and control characters */
     case '\t':
     case '\n':
     case '\r':
@@ -199,7 +199,7 @@ static int iLexToken(int *erro)
     case '\v':
       continue;
 
-    case '=':          /* attribuicao */
+    case '=':          /* assignment */
       return IUPLEX_TK_SET;
 
     case ',':
@@ -245,7 +245,7 @@ static int iLexToken(int *erro)
   }
 }
 
-static int iLexCapture (char* dlm)
+static int iLexCapture (const char* dlm)
 {
   int i=0;
   int c;
