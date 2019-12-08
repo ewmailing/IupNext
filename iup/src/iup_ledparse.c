@@ -112,7 +112,14 @@ static void* iParseExp(void)
     ih = (Ihandle*)iParseExp();  
     IPARSE_RETURN_IF_ERROR_FREE(iparse_error, nm);
     if (ih)
+    {
+      if (iparse_saveinfo && IupGetHandle(nm))
+      {
+        IPARSE_RETURN_IF_ERROR_FREE(iParseError(IPARSE_SYMBEXIST, nm), nm);
+      }
+
       IupSetHandle(nm, ih);
+    }
   }
   else
   {
@@ -337,12 +344,12 @@ static int iParseError(int err, char *s)
   switch (err)
   {
   case IPARSE_SYMBEXIST:
-    sprintf(msg, "symbol '%s' already exists", s);
+    sprintf(msg, "handle name '%s' already exists", s);
     break;
-  case IUPLEX_NOTMATCH:
-    sprintf(msg, "symbol '%s' not defined", s);
+  case IPARSE_SYMBNOTDEF:
+    sprintf(msg, "handle name '%s' not defined", s);
     break;
   }
 
-  return iupLexError(IUPLEX_PARSEERROR, msg);
+  return iupLexError(IUPLEX_ERR_PARSE, msg);
 }
