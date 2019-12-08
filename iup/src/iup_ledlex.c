@@ -52,7 +52,7 @@ int iupLexStart(const char* filename, const char *buffer)      /* initialize lex
   {
     ilex.file = fopen(filename, "r");
     if (!ilex.file)
-      return iupLexError(IUPLEX_FILENOTOPENED, filename);
+      return iupLexError(IUPLEX_ERR_FILENOTOPENED, filename);
     ilex.filename = filename;
   }
   ilex.line = 1;
@@ -120,7 +120,7 @@ int iupLexMatch(int t)
   if (ilex.token==t)
     return iupLexAdvance();
   else
-    return iupLexError (IUPLEX_NOTMATCH, ilex.token, t);
+    return iupLexError (IUPLEX_ERR_NOTMATCH, ilex.token, t);
 }
 
 
@@ -214,7 +214,7 @@ static int iLexToken(int *erro)
     case '[':          /* attributes */
       if (iLexCaptureAttr() == IUPLEX_TK_END)
       {
-        *erro=iupLexError (IUPLEX_NOTENDATTR);
+        *erro=iupLexError (IUPLEX_ERR_NOTENDATTR);
         return 0;
       }
       return IUPLEX_TK_ATTR;
@@ -332,13 +332,13 @@ int iupLexError (int n, ...)
   va_start(va,n);
   switch (n)
   {
-  case IUPLEX_FILENOTOPENED:
+  case IUPLEX_ERR_FILENOTOPENED:
     {
       char *fn=va_arg(va,char *);
       sprintf (msg, "cannot open file %s", fn);
     }
     break;
-  case IUPLEX_NOTMATCH:
+  case IUPLEX_ERR_NOTMATCH:
     {
       int tr=va_arg(va,int);        /* iLexToken read */
       int te=va_arg(va,int);        /* iLexToken expected */
@@ -347,12 +347,12 @@ int iupLexError (int n, ...)
       sprintf (msg, "expected %s but found %s", ste, str);
     }
     break;
-  case IUPLEX_NOTENDATTR:
+  case IUPLEX_ERR_NOTENDATTR:
     {
       sprintf (msg, "missing ']'");
     }
     break;
-  case IUPLEX_PARSEERROR:
+  case IUPLEX_ERR_PARSE:
     {
       char* s=va_arg(va,char*);        /* iLexToken expected */
       sprintf(msg,"%.*s",(int)(sizeof(msg)-1),s);

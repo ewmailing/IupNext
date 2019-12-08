@@ -25,10 +25,10 @@ extern "C" {
 #define IUPLEX_TK_ENDATTR     10
 
 /* ERRORS */
-#define IUPLEX_FILENOTOPENED   1
-#define IUPLEX_NOTMATCH        2
-#define IUPLEX_NOTENDATTR      3
-#define IUPLEX_PARSEERROR      4
+#define IUPLEX_ERR_FILENOTOPENED   1
+#define IUPLEX_ERR_NOTMATCH        2
+#define IUPLEX_ERR_NOTENDATTR      3
+#define IUPLEX_ERR_PARSE           4
 
 const char* iupLexGetError(void);
 const char* iupLexFilename(void);
