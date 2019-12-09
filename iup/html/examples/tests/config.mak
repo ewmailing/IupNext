@@ -174,12 +174,17 @@ else
   DEFINES += NO_WEBBROWSER_TEST
 endif
 
-SRC += scintilla.c
-ifneq ($(findstring Win, $(TEC_SYSNAME)), )
-  LIBS += iup_scintilla imm32
+#NO_SCINTILLA_TEST=Yes
+ifndef NO_SCINTILLA_TEST
+  SRC += scintilla.c
+  ifneq ($(findstring Win, $(TEC_SYSNAME)), )
+    LIBS += iup_scintilla imm32
+  else
+    SLIB += $(IUP_LIB)/libiup_scintilla.a
+    LIBS += atk-1.0
+  endif
 else
-  SLIB += $(IUP_LIB)/libiup_scintilla.a
-  LIBS += atk-1.0
+  DEFINES += NO_SCINTILLA_TEST
 endif
 
 USE_IM = Yes
