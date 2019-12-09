@@ -172,6 +172,11 @@ Iclass *iupLexGetClass(void)
   return ilex.ic;
 }
 
+int iupLexGetLine(void)
+{
+  return ilex.line;
+}
+
 static int iLexToken(int *erro)
 {
   for (;;)
