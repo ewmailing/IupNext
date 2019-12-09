@@ -66,6 +66,15 @@ static int compare_image_names(const void* i1, const void* i2)
   return strcmp(name1, name2);
 }
 
+static int compare_named_handles(const void* i1, const void* i2)
+{
+  Ihandle* ih1 = *((Ihandle**)i1);
+  Ihandle* ih2 = *((Ihandle**)i2);
+  int line1 = iupAttribGetInt(ih1, "LEDPARSER_LINE");
+  int line2 = iupAttribGetInt(ih2, "LEDPARSER_LINE");
+  return line1-line2;
+}
+
 static char* getfileformat()
 {
 #define NUM_FORMATS 4
@@ -138,44 +147,6 @@ static Ihandle* load_image_shortcut(void)
 
   Ihandle* image = IupImageRGBA(16, 16, imgdata);
   return image;
-}
-
-static int vLedIsAlien(Ihandle *elem, const char* filename);
-static int vLedTreeAddNode(Ihandle* elem_tree, int id, Ihandle* ih, const char *filename);
-static int vLedTreeAddChildren(Ihandle* elem_tree, int parent_id, Ihandle* parent, const char *filename);
-
-static void updateElemTree(Ihandle* elem_tree, const char* filename)
-{
-  int last_child_id = -1;
-  int i, num_names = IupGetAllNames(NULL, -1);
-  char* *names = malloc(sizeof(char*)*num_names);
-  IupGetAllNames(names, num_names);
-
-  IupSetAttribute(elem_tree, "DELNODE0", "ALL");
-
-  for (i = 0; i < num_names; i++)
-  {
-    Ihandle* elem = IupGetHandle(names[i]);
-    if (iupObjectCheck(elem))
-    {
-      Ihandle* elem_parent = elem->parent;
-
-      if (vLedIsAlien(elem, filename) || (elem_parent && !vLedIsAlien(elem_parent, filename)))
-        continue;
-
-      last_child_id = vLedTreeAddNode(elem_tree, last_child_id, elem, filename);
-
-      if (elem->iclass->childtype != IUP_CHILDNONE && !vLedIsAlien(elem, filename))
-        last_child_id = vLedTreeAddChildren(elem_tree, last_child_id, elem, filename);
-
-      last_child_id = -1;
-    }
-  }
-
-  IupSetAttribute(elem_tree, "VALUE", "1");
-  IupSetAttribute(elem_tree, "VALUE", "0");
-
-  free(names);
 }
 
 static void replaceDot(char* filename)
@@ -311,8 +282,13 @@ static char* vLedGetElementTreeTitle(Ihandle* ih)
   char* title = iupAttribGetLocal(ih, "TITLE");
   char* str = iupStrGetMemory(200);
   char* name = IupGetName(ih);
-  if (IupClassMatch(ih, "user") && iupAttribGet(ih, "LEDPARSER_NAME"))
-    name = iupAttribGet(ih, "LEDPARSER_NAME");
+  char* not_def = NULL;
+
+  if (IupClassMatch(ih, "user") && iupAttribGet(ih, "LEDPARSER_NOTDEF_NAME"))
+  {
+    name = iupAttribGet(ih, "LEDPARSER_NOTDEF_NAME");
+    not_def = " - not defined";
+  }
 
   if (title)
   {
@@ -328,14 +304,14 @@ static char* vLedGetElementTreeTitle(Ihandle* ih)
     }
 
     if (name)
-      sprintf(str, "[%s] \"%.50s\" (%.50s)", IupGetClassName(ih), title, name);
+      sprintf(str, "[%s] \"%.50s\" (%.50s)%s", IupGetClassName(ih), title, name, not_def? not_def: "");
     else
       sprintf(str, "[%s] \"%.50s\"", IupGetClassName(ih), title);
   }
   else
   {
     if (name)
-      sprintf(str, "[%s] (%.50s)", IupGetClassName(ih), name);
+      sprintf(str, "[%s] (%.50s)%s", IupGetClassName(ih), name, not_def ? not_def : "");
     else
       sprintf(str, "[%s]", IupGetClassName(ih));
   }
@@ -346,12 +322,12 @@ static void vLedTreeSetNodeInfo(Ihandle* elem_tree, int id, Ihandle* ih, int lin
 {
   IupSetAttributeId(elem_tree, "TITLE", id, vLedGetElementTreeTitle(ih));
   IupTreeSetUserId(elem_tree, id, ih);
+
   if (link)
   {
     if (ih->iclass->childtype != IUP_CHILDNONE)
       IupSetAttributeId(elem_tree, "IMAGEEXPANDED", id, IupGetAttribute(elem_tree, "IMG_SHORTCUT"));
-    else
-      IupSetAttributeId(elem_tree, "IMAGE", id, IupGetAttribute(elem_tree, "IMG_SHORTCUT"));
+    IupSetAttributeId(elem_tree, "IMAGE", id, IupGetAttribute(elem_tree, "IMG_SHORTCUT"));
   }
 }
 
@@ -365,61 +341,111 @@ static Ihandle* vLedTreeGetFirstChild(Ihandle* ih)
   return firstchild;
 }
 
-static int vLedTreeAddNode(Ihandle* elem_tree, int id, Ihandle* ih, const char *filename)
+static int vLedTreeAddNode(Ihandle* elem_tree, int id, Ihandle* ih, const char *filename, int add, int root)
 {
   int link = 0;
 
-  if (ih->iclass->childtype != IUP_CHILDNONE && !IupGetInt(ih, "LEDPARSER_NOTDEFINED"))
+  if (ih->iclass->childtype != IUP_CHILDNONE && !iupAttribGet(ih, "LEDPARSER_NOTDEF_NAME"))
   {
-    if (!ih->parent || vLedIsAlien(ih->parent, filename) || ih == vLedTreeGetFirstChild(ih))
-    {
+    if (add)
       IupSetAttributeId(elem_tree, "ADDBRANCH", id, "");
-      id++;
-    }
     else
-    {
       IupSetAttributeId(elem_tree, "INSERTBRANCH", id, "");
-      id = IupGetInt(elem_tree, "LASTADDNODE");
-    }
   }
   else
   {
-    if (!ih->parent || vLedIsAlien(ih->parent, filename) || ih == vLedTreeGetFirstChild(ih))
-    {
+    if (add)
       IupSetAttributeId(elem_tree, "ADDLEAF", id, "");
-      id++;
-    }
     else
-    {
       IupSetAttributeId(elem_tree, "INSERTLEAF", id, "");
-      id = IupGetInt(elem_tree, "LASTADDNODE");
-    }
   }
 
-  if (vLedIsAlien(ih, filename) || iupStrEqual(ih->iclass->name, "user"))
+  if (vLedIsAlien(ih, filename) || iupAttribGet(ih, "LEDPARSER_NOTDEF_NAME") || (IupGetName(ih) && !root))
     link = 1;
 
+  id = IupGetInt(elem_tree, "LASTADDNODE");
+
   vLedTreeSetNodeInfo(elem_tree, id, ih, link);
+
   return id;
 }
 
-static int vLedTreeAddChildren(Ihandle* elem_tree, int parent_id, Ihandle* parent, const char *filename)
+static int vLedTreeAddChildren(Ihandle* elem_tree, int last_child_id, Ihandle* parent, const char *filename)
 {
   Ihandle *child;
-  int last_child_id = parent_id;
+  int add = 1;  /* add only for the first element */
 
   for (child = parent->firstchild; child; child = child->brother)
   {
-    if (!(child->flags & IUP_INTERNAL))
+    if (!(child->flags & IUP_INTERNAL)) /* only non-internal */
     {
-      last_child_id = vLedTreeAddNode(elem_tree, last_child_id, child, filename);
+      last_child_id = vLedTreeAddNode(elem_tree, last_child_id, child, filename, add, 0);  /* add element node or a link */
 
-      if (child->iclass->childtype != IUP_CHILDNONE && !vLedIsAlien(child, filename))
+      if (child->iclass->childtype != IUP_CHILDNONE && !vLedIsAlien(child, filename) && !IupGetName(child))  /* add its children if not a link and not named */
         vLedTreeAddChildren(elem_tree, last_child_id, child, filename);
+
+      add = 0; /* use insert */
     }
   }
 
   return last_child_id;
+}
+
+static void updateElemTree(Ihandle* elem_tree, const char* filename)
+{
+  int last_child_id = -1;
+  int i, j, num_names = IupGetAllNames(NULL, -1);
+  char* *names = malloc(sizeof(char*)*num_names);
+  IupGetAllNames(names, num_names);
+  int num_named_handles = 0;
+  Ihandle* *named_handles;
+
+  IupSetAttribute(elem_tree, "DELNODE0", "ALL");
+
+  for (i = 0; i < num_names; i++)
+  {
+    Ihandle* elem = IupGetHandle(names[i]);
+    if (iupObjectCheck(elem))
+    {
+      if (vLedIsAlien(elem, filename))
+        names[i] = NULL;
+      else
+        num_named_handles++;
+    }
+  }
+
+  if (num_named_handles == 0)
+    return;
+
+  named_handles = malloc(sizeof(Ihandle*)*num_named_handles);
+
+  j = 0;
+  for (i = 0; i < num_names; i++)
+  {
+    if (names[i])
+    {
+      Ihandle* elem = IupGetHandle(names[i]);
+      named_handles[j] = elem;
+      j++;
+    }
+  }
+
+  qsort(named_handles, num_named_handles, sizeof(Ihandle*), compare_named_handles);
+
+  for (i = 0; i < num_named_handles; i++)
+  {
+    Ihandle* elem = named_handles[i];
+
+    last_child_id = vLedTreeAddNode(elem_tree, last_child_id, elem, filename, 0, 1);  /* here use insert always */
+
+    if (elem->iclass->childtype != IUP_CHILDNONE)
+      vLedTreeAddChildren(elem_tree, last_child_id, elem, filename);
+  }
+
+  IupSetAttribute(elem_tree, "VALUE", "1");
+  IupSetAttribute(elem_tree, "VALUE", "0");
+
+  free(names);
 }
 
 static int unload_led(const char *filename);
@@ -545,8 +571,7 @@ static int unload_led(const char *filename)
     if (save_not_defined)
     {
       Ihandle *user = IupUser();
-      IupSetAttribute(user, "LEDPARSER_NOTDEFINED", "1");
-      IupStoreAttribute(user, "LEDPARSER_NAME", old_name);
+      iupAttribSetStr(user, "LEDPARSER_NOTDEF_NAME", old_name);
       IupInsert(parent, brother, user);
     }
   }
@@ -837,6 +862,10 @@ static int loadfile_cb(Ihandle* main_dialog, Ihandle* multitext)
   Ihandle* elem_tree = vLedGetElemTree(multitext);
   Ihandle* config = get_config(main_dialog);
   char* filename = IupGetAttribute(multitext, "FILENAME");
+
+  /* reload the elements because they may have changed */
+  unload_led(filename);
+  IupSetAttribute(multitext, "LOADED", NULL);
 
   if (IupConfigGetVariableIntDef(config, "IupVisualLED", "AutoLoad", 1))
     load_led(elem_tree, filename, 0);
@@ -2447,7 +2476,7 @@ static int findElement_cb(Ihandle* ih_item)
 {
   Ihandle* elem_tree = (Ihandle*)IupGetAttribute(ih_item, "ELEMENTS_TREE");
   Ihandle* config = get_config(elem_tree);
-  Ihandle* find_dlg = (Ihandle*)IupGetAttribute(IupGetParent(elem_tree), "FIND_DIALOG");
+  Ihandle* find_dlg = (Ihandle*)IupGetAttribute(IupGetParent(elem_tree), "FIND_ELEM_DIALOG");
   int id = IupGetInt(elem_tree, "VALUE");
   Ihandle *dialog;
   Ihandle *elem = (Ihandle *)IupTreeGetUserId(elem_tree, id);
@@ -2457,7 +2486,7 @@ static int findElement_cb(Ihandle* ih_item)
   if (!find_dlg)
   {
     find_dlg = iupLayoutFindElementDialog(elem_tree, elem);
-    IupSetAttribute(IupGetParent(elem_tree), "FIND_DIALOG", (char*)find_dlg);
+    IupSetAttribute(IupGetParent(elem_tree), "FIND_ELEM_DIALOG", (char*)find_dlg);
   }
 
   dialog = IupGetDialog(elem);
@@ -2480,14 +2509,15 @@ static int tree_rightclick_cb(Ihandle* elem_tree, int id)
 
   popup_menu = IupMenu(
     IupSetCallbacks(IupItem("Locate in LED", NULL), "ACTION", locateInLED_cb, NULL),  /* same as executeleaf_cb */
+    IupSeparator(),
     IupSetCallbacks(IupItem("Collapse All", NULL), "ACTION", collapseAll_cb, NULL),
     IupSetCallbacks(IupItem("Expand All", NULL), "ACTION", expandAll_cb, NULL),
     IupSeparator(),
     IupSetCallbacks(IupItem("Show...", NULL), "ACTION", showElement_cb, NULL),
     IupSetCallbacks(IupItem("Hide Dialog", NULL), "ACTION", hideDialog_cb, NULL),
     IupSetCallbacks(IupItem("Dialog Layout...", NULL), "ACTION", (Icallback)layoutdlg_cb, NULL),
-    IupSetCallbacks(IupItem("Element Properties...", NULL), "ACTION", propertiesdlg_cb, NULL),
     IupSeparator(),
+    IupSetCallbacks(IupItem("Element Properties...", NULL), "ACTION", propertiesdlg_cb, NULL),
     IupSetCallbacks(IupItem("Find Element...", "findElement"), "ACTION", findElement_cb, NULL),
     NULL);
 
@@ -2826,7 +2856,7 @@ int main(int argc, char **argv)
 
   IupMainLoop();
 
-  extra_dlg = (Ihandle*)IupGetAttribute(elem_tree_box, "FIND_DIALOG");
+  extra_dlg = (Ihandle*)IupGetAttribute(elem_tree_box, "FIND_ELEM_DIALOG");
   if (iupObjectCheck(extra_dlg))
   {
     IupConfigDialogClosed(config, extra_dlg, "FindElementDialog");
