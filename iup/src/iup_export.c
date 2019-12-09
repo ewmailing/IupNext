@@ -482,16 +482,37 @@ static void iLayoutExportElementC(FILE* file, Ihandle* ih, const char *indent, c
     fprintf(file, "\n");
 }
 
-static int iLayoutExportIsRelated(Ihandle *elem, Ihandle *container)
+static int iLayoutExportCompareElem(const void* i1, const void* i2)
 {
-  Ihandle *parent = IupGetParent(elem);
-  if (parent == container)
+  Ihandle* ih1 = *((Ihandle**)i1);
+  Ihandle* ih2 = *((Ihandle**)i2);
+
+  int line1 = iupAttribGetInt(ih1, "LEDPARSER_LINE");
+  int line2 = iupAttribGetInt(ih2, "LEDPARSER_LINE");
+  if (line1 != 0 && line2 != 0)
+    return line1 - line2;
+
+  if (iupChildTreeIsParent(ih1, ih2))  /* if ih1 is a grand-parent of ih2 then ih1 > ih2 */
+    return 1;
+  else if (iupChildTreeIsParent(ih2, ih1))  /* if ih2 is a grand-parent of ih1 then ih1 < ih2 */
     return -1;
 
-  return iupChildTreeIsParent(elem, parent);
+  /* images before others */
+  if (iupStrEqualPartial(ih1->iclass->name, "image") && !iupStrEqualPartial(ih2->iclass->name, "image"))
+    return -1;  /* ih1(image) < ih2 */
+  else if (!iupStrEqualPartial(ih1->iclass->name, "image") && iupStrEqualPartial(ih2->iclass->name, "image"))
+    return 1;  /* ih1 > ih2(image) */
+
+  /* menus before others */
+  if (IupClassMatch(ih1, "menu") && !IupClassMatch(ih2, "menu"))
+    return -1;
+  else if (IupClassMatch(ih2, "menu") && !IupClassMatch(ih1, "menu"))
+    return 1;
+
+  return strcmp(IupGetName(ih1), IupGetName(ih2)); /* sort elements by their names */
 }
 
-static int iLayoutExportCompareElem(const void* i1, const void* i2)
+static int iLayoutExportCompareElem_OLD(const void* i1, const void* i2)
 {
   Ihandle* ih1 = *((Ihandle**)i1);
   Ihandle* ih2 = *((Ihandle**)i2);
@@ -502,25 +523,31 @@ static int iLayoutExportCompareElem(const void* i1, const void* i2)
   {
     const char *elemClass1 = ih1->iclass->name;
     const char *elemClass2 = ih2->iclass->name;
+    /* images before everything else */
     if (iupStrEqualPartial(elemClass1, "image") && !iupStrEqualPartial(elemClass2, "image"))
-      return -1;
-    else if (iupStrEqualPartial(elemClass2, "image") && !iupStrEqualPartial(elemClass1, "image"))
-      return 1;
-    return strcmp(IupGetName(ih1), IupGetName(ih2)); /* sort elements by their names */
+      return -1;  /* ih1(image) < ih2 */
+    else if (!iupStrEqualPartial(elemClass1, "image") && iupStrEqualPartial(elemClass2, "image"))
+      return 1;  /* ih1 > ih2(image) */
+    else
+      return strcmp(IupGetName(ih1), IupGetName(ih2)); /* sort elements by their names */
   }
   else if ((childType1 != IUP_CHILDNONE && childType2 != IUP_CHILDNONE)) /* both are containers */
   {
-    if (iLayoutExportIsRelated(ih1, ih2))
+    if (iupChildTreeIsParent(ih1, ih2))  /* if ih1 is a grand-parent of ih2 then ih1 > ih2 */
+      return 1;
+    else if (iupChildTreeIsParent(ih2, ih1))  /* if ih2 is a grand-parent of ih1 then ih1 < ih2 */
       return -1;
-    else if (iLayoutExportIsRelated(ih2, ih1))
+    else if (IupClassMatch(ih1, "menu") && !IupClassMatch(ih2, "submenu"))  /* menu before others */
+      return -1;
+    else if (IupClassMatch(ih2, "menu") && !IupClassMatch(ih1, "submenu"))
       return 1;
     else
       return strcmp(IupGetName(ih1), IupGetName(ih2)); /* sort elements by their names */
   }
   else if (childType1 == IUP_CHILDNONE && childType2 != IUP_CHILDNONE)  /* container are always after non containers */
-    return -1;
+    return -1; /* ih1 < ih2 */
   else  /* childType1 != IUP_CHILDNONE && childType2 == IUP_CHILDNONE */
-    return 1;
+    return 1;  /* ih1 > ih2 */
 }
 
 IUP_SDK_API void iupLayoutExportNamedElemList(FILE* file, Ihandle* *named_elem, int count, int export_format, int saved_info)
