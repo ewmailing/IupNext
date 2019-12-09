@@ -328,6 +328,7 @@ static void vLedTreeSetNodeInfo(Ihandle* elem_tree, int id, Ihandle* ih, int lin
     if (ih->iclass->childtype != IUP_CHILDNONE)
       IupSetAttributeId(elem_tree, "IMAGEEXPANDED", id, IupGetAttribute(elem_tree, "IMG_SHORTCUT"));
     IupSetAttributeId(elem_tree, "IMAGE", id, IupGetAttribute(elem_tree, "IMG_SHORTCUT"));
+    IupSetAttributeId(elem_tree, "LINK", id, "1");
   }
 }
 
@@ -2269,13 +2270,40 @@ static int tree_selection_cb(Ihandle* elem_tree, int id, int status)
   return IUP_DEFAULT;
 }
 
+static void search_in_text(Ihandle* multitext, const char* str)
+{
+  int pos_start, pos_end, find_start, find_end;
+
+  IupSetAttribute(multitext, "SEARCHFLAGS", "WHOLEWORD");
+
+  find_start = 0;
+  find_end = IupGetInt(multitext, "COUNT");
+
+  IupSetInt(multitext, "TARGETSTART", find_start);
+  IupSetInt(multitext, "TARGETEND", find_end);
+
+  IupSetAttribute(multitext, "SEARCHINTARGET", str);
+
+  pos_start = IupGetInt(multitext, "TARGETSTART");
+  pos_end = IupGetInt(multitext, "TARGETEND");
+
+  if (pos_start != 0 || pos_end != find_end)
+  {
+    IupSetFocus(multitext);
+    IupSetInt(multitext, "CARETPOS", pos_start);
+    IupSetInt(multitext, "SCROLLTOPOS", pos_start);
+    IupSetfAttribute(multitext, "SELECTIONPOS", "%d:%d", pos_start, pos_end);
+  }
+}
+
 static int tree_executeleaf_cb(Ihandle* elem_tree, int id)
 {
   Ihandle* multitext = vLedGetCurrentMultitext(elem_tree);
   Ihandle *elem = (Ihandle *)IupTreeGetUserId(elem_tree, id);
+  char* filename = IupGetAttribute(multitext, "FILENAME");
   char *name = IupGetName(elem);
   Ihandle *parent = elem;
-  int pos_start, pos_end, find_start, find_end;
+  int link;
 
   while(!name)
   {
@@ -2288,26 +2316,28 @@ static int tree_executeleaf_cb(Ihandle* elem_tree, int id)
   if (!name)
     return IUP_DEFAULT;
 
-  IupSetAttribute(multitext, "SEARCHFLAGS", "WHOLEWORD");
+  if (vLedIsAlien(elem, filename) || iupAttribGet(elem, "LEDPARSER_NOTDEF_NAME"))
+    return IUP_DEFAULT;
 
-  find_start = 0;
-  find_end = IupGetInt(multitext, "COUNT");
-
-  IupSetInt(multitext, "TARGETSTART", find_start);
-  IupSetInt(multitext, "TARGETEND", find_end);
-
-  IupSetAttribute(multitext, "SEARCHINTARGET", name);
-
-  pos_start = IupGetInt(multitext, "TARGETSTART");
-  pos_end = IupGetInt(multitext, "TARGETEND");
-
-  if (pos_start != 0 || pos_end != find_end)
+  link = IupGetIntId(elem_tree, "LINK", id);
+  if (link)
   {
-    IupSetFocus(multitext);
-    IupSetInt(multitext, "CARETPOS", pos_start);
-    IupSetInt(multitext, "SCROLLTOPOS", pos_start);
-    IupSetfAttribute(multitext, "SELECTIONPOS", "%d:%d", pos_start, pos_end);
+    int i, root_count = IupGetInt(elem_tree, "ROOTCOUNT");
+
+    id = 0;
+    for (i = 0; i < root_count; i++)
+    {
+      if (elem == (Ihandle *)IupTreeGetUserId(elem_tree, id))
+      {
+        IupSetInt(elem_tree, "VALUE", id);
+        return IUP_DEFAULT;
+      }
+
+      id = IupGetIntId(elem_tree, "NEXT", id);
+    }
   }
+  else
+    search_in_text(multitext, name);
 
   return IUP_DEFAULT;
 }
