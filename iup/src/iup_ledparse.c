@@ -123,7 +123,7 @@ static void* iParseExp(void)
       if (iparse_saveinfo && nm)
       {
         int line = iupLexGetLine();
-        iupAttribSetInt(ih, "LEDPARSER_LINE", line);
+        iupAttribSetInt(ih, "LEDPARSER_LINE", line);  /* not an exact location, but enough for its use */
       }
     }
   }
