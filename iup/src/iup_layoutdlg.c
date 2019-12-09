@@ -97,7 +97,7 @@ static Ihandle* iLayoutFindNode(Ihandle* tree, const char *str, int start_id, in
 
 static int iLayoutFindDialogNext_CB(Ihandle* ih)
 {
-  Ihandle* find_dlg = (Ihandle*)IupGetAttribute(ih, "FIND_DIALOG");
+  Ihandle* find_dlg = (Ihandle*)IupGetAttribute(ih, "FIND_ELEM_DIALOG");
   Ihandle* dialog = (Ihandle*)IupGetAttribute(find_dlg, "DIALOG");
   Ihandle* tree = (Ihandle*)IupGetAttribute(find_dlg, "TREE");
   Ihandle* lbl_result = IupGetDialogChild(find_dlg, "FIND_RESULT");
@@ -234,7 +234,7 @@ IUP_SDK_API Ihandle* iupLayoutFindElementDialog(Ihandle *tree, Ihandle* elem)
   IupSetAttribute(find_dlg, "TREE", (char*)tree);
 
   /* Save the dialog to reuse it */
-  IupSetAttribute(find_dlg, "FIND_DIALOG", (char*)find_dlg);  /* from itself */
+  IupSetAttribute(find_dlg, "FIND_ELEM_DIALOG", (char*)find_dlg);  /* from itself */
   IupSetAttribute(find_dlg, "DIALOG", (char*)dialog); /* from the main dialog, use to find NAME */
 
   return find_dlg;
@@ -853,13 +853,13 @@ static int iLayoutMenuFindElement_CB(Ihandle* ih)
 {
   Ihandle* dlg = IupGetDialog(ih);
   iLayoutDialog* layoutdlg = (iLayoutDialog*)iupAttribGet(dlg, "_IUP_LAYOUTDIALOG");
-  Ihandle* find_dlg = (Ihandle*)IupGetAttribute(dlg, "FIND_DIALOG");
+  Ihandle* find_dlg = (Ihandle*)IupGetAttribute(dlg, "FIND_ELEM_DIALOG");
   Ihandle* tree = IupGetDialogChild(ih, "TREE");
 
   if (!find_dlg)
   {
     find_dlg = iupLayoutFindElementDialog(tree, layoutdlg->dialog);
-    IupSetAttribute(dlg, "FIND_DIALOG", (char*)find_dlg);
+    IupSetAttribute(dlg, "FIND_ELEM_DIALOG", (char*)find_dlg);
   }
 
   IupSetAttribute(IupGetDialogChild(find_dlg, "FIND_NAME"), "ACTIVE", "YES"); /* we are going to disable it in other situations */
@@ -3015,7 +3015,7 @@ static int iLayoutDialogKAny_CB(Ihandle* dlg, int key)
     return iLayoutMenuRefresh_CB(dlg);
   case K_F3:
   {
-    Ihandle* find_dlg = (Ihandle*)IupGetAttribute(dlg, "FIND_DIALOG");
+    Ihandle* find_dlg = (Ihandle*)IupGetAttribute(dlg, "FIND_ELEM_DIALOG");
     if (!find_dlg)
       return iLayoutMenuFindElement_CB(dlg);
     else
