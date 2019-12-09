@@ -82,11 +82,11 @@ static void* iParseExp(void)
   char* nm = NULL;
   Ihandle* ih = NULL;
 
-  int match = iupLexSeenMatch(IUPLEX_TK_FUNC,&iparse_error);
+  int match = iupLexSeenMatch(IUPLEX_TK_FUNC, &iparse_error);
   IPARSE_RETURN_IF_ERROR_FREE(iparse_error, nm);
 
   if (match)
-    return iParseFunction(iupLexGetClass());
+    return iParseFunction(iupLexGetClass());  /* control + attributes + parameters = return ih */
 
   if (iupLexLookAhead() == IUPLEX_TK_NAME)
   {
@@ -104,10 +104,10 @@ static void* iParseExp(void)
     }
   }
 
-  match = iupLexSeenMatch(IUPLEX_TK_SET,&iparse_error); 
+  match = iupLexSeenMatch(IUPLEX_TK_SET, &iparse_error); 
   IPARSE_RETURN_IF_ERROR_FREE(iparse_error, nm);
 
-  if (match)
+  if (match) /* new control '=' */
   {
     ih = (Ihandle*)iParseExp();  
     IPARSE_RETURN_IF_ERROR_FREE(iparse_error, nm);
@@ -119,9 +119,15 @@ static void* iParseExp(void)
       }
 
       IupSetHandle(nm, ih);
+
+      if (iparse_saveinfo && nm)
+      {
+        int line = iupLexGetLine();
+        iupAttribSetInt(ih, "LEDPARSER_LINE", line);
+      }
     }
   }
-  else
+  else  /* just a name */
   {
     ih = IupGetHandle(nm);
     if (!ih)
@@ -134,8 +140,7 @@ static void* iParseExp(void)
       {
         /* dummy element to be replaced later */
         ih = IupUser();
-        IupSetAttribute(ih, "LEDPARSER_NOTDEFINED", "1");
-        IupSetStrAttribute(ih, "LEDPARSER_NAME", nm);
+        iupAttribSetStr(ih, "LEDPARSER_NOTDEF_NAME", nm);
       }
     }
   }
