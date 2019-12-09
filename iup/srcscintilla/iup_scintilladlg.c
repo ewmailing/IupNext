@@ -1286,7 +1286,32 @@ static void open_proj(Ihandle *ih, const char *filename)
 
 static void revert_file(Ihandle* multitext)
 {
-  IupSetAttribute(multitext, "UNDO", "ALL");
+  char* filename = IupGetAttribute(multitext, "FILENAME");
+  char* str = readFile(filename);
+  if (str)
+  {
+    IFnn load_cb;
+    Ihandle* ih = IupGetDialog(multitext);
+    Ihandle* config = iScintillaDlgGetConfig(multitext);
+    Ihandle* projectConfig = iScintillaDlgGetProjectConfig(ih);
+
+    IupSetStrAttribute(multitext, "VALUE", str);
+    IupSetAttribute(multitext, "SAVEPOINT", NULL); /* this will update title */
+    IupSetAttribute(multitext, "UNDO", NULL); /* clear undo */
+
+    if (projectConfig)
+      restoreMarkers(projectConfig, multitext);
+    else
+      restoreMarkers(config, multitext);
+
+    free(str);
+
+    load_cb = (IFnn)IupGetCallback(ih, "LOADFILE_CB");
+    if (load_cb)
+      load_cb(ih, multitext);
+  }
+  else
+    IupMessageError(IupGetDialog(multitext), "IUP_ERRORFILEOPEN");
 }
 
 static int item_saveas_action_cb(Ihandle* ih_item);
@@ -4112,6 +4137,13 @@ static int item_redo_action_cb(Ihandle* ih_item)
   return IUP_DEFAULT;
 }
 
+static int item_undo_all_action_cb(Ihandle* ih_item)
+{
+  Ihandle* multitext = iScintillaDlgGetCurrentMultitext(ih_item);
+  IupSetAttribute(multitext, "UNDO", "ALL");
+  return IUP_DEFAULT;
+}
+
 static int item_uppercase_action_cb(Ihandle* ih_item)
 {
   char *text;
@@ -4695,7 +4727,7 @@ static int iScintillaDlgCreateMethod(Ihandle* ih, void** params)
   Ihandle *item_togglemark, *item_nextmark, *item_previousmark, *item_clearmarks, *item_cutmarked, *item_copymarked, *item_pastetomarked, *item_removemarked,
     *item_invertmarks, *item_tabtospace, *item_allspacetotab, *item_leadingspacetotab;
   Ihandle *item_trimleading, *item_trimtrailing, *item_trimtraillead, *item_eoltospace, *item_eol_cr, *item_eol_crlf, *item_eol_lf, *item_removespaceeol;
-  Ihandle *item_undo, *item_redo, *item_pagesetup, *item_print;
+  Ihandle *item_undo, *item_redo, *item_pagesetup, *item_print, *item_undo_all;
   Ihandle *case_menu, *item_uppercase, *item_lowercase;
   Ihandle *btn_cut, *btn_copy, *btn_paste, *btn_find, *btn_new, *btn_open, *btn_save;
   Ihandle *sub_menu_format, *format_menu, *item_font, *item_tab, *item_replace;
@@ -4941,6 +4973,10 @@ static int iScintillaDlgCreateMethod(Ihandle* ih, void** params)
   IupSetAttribute(item_undo, "NAME", "ITEM_UNDO");
   IupSetCallback(item_undo, "ACTION", (Icallback)item_undo_action_cb);
 
+  item_undo_all = IupItem("Undo All", NULL);
+  IupSetAttribute(item_undo_all, "NAME", "ITEM_UNDO_ALL");
+  IupSetCallback(item_undo_all, "ACTION", (Icallback)item_undo_all_action_cb);
+
   item_redo = IupItem("Redo\tCtrl+Y", NULL);
   IupSetAttribute(item_redo, "NAME", "ITEM_REDO");
   IupSetCallback(item_redo, "ACTION", (Icallback)item_redo_action_cb);
@@ -5135,6 +5171,7 @@ static int iScintillaDlgCreateMethod(Ihandle* ih, void** params)
   edit_menu = IupMenu(
     item_undo,
     item_redo,
+    item_undo_all,
     IupSeparator(),
     item_cut,
     item_copy,
