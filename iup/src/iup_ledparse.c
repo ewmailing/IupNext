@@ -123,7 +123,7 @@ static void* iParseExp(void)
       if (iparse_saveinfo && nm)
       {
         int line = iupLexGetLine();
-        iupAttribSetInt(ih, "LEDPARSER_LINE", line);  /* not an exact location, but enough for its use */
+        iupAttribSetInt(ih, "_IUPLED_LINE", line);  /* not an exact location, but enough for its use */
       }
     }
   }
@@ -140,7 +140,7 @@ static void* iParseExp(void)
       {
         /* dummy element to be replaced later */
         ih = IupUser();
-        iupAttribSetStr(ih, "LEDPARSER_NOTDEF_NAME", nm);
+        iupAttribSetStr(ih, "_IUPLED_NOTDEF_NAME", nm);
       }
     }
   }
@@ -297,7 +297,7 @@ static Ihandle* iParseControl(Iclass *ic)
 
           if (name)
           {
-            char led_name[200] = "_IUPSAVED_";
+            char led_name[200] = "_IUPLED_SAVED_";
             strcat(led_name, name);
             iupAttribSet(new_control, led_name, "1");
           }

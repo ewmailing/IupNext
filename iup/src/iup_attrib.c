@@ -99,7 +99,20 @@ IUP_API void IupCopyAttributes(Ihandle* src_ih, Ihandle* dst_ih)
   }
 }
 
-#define iupATTRIB_ISSAVED(_name) (_name[0] == '_' && _name[1] == 'I' &&  _name[2] == 'U' && _name[3] == 'P' && _name[4] == 'S' && _name[5] == 'A' && _name[6] == 'V' && _name[7] == 'E' && _name[8] == 'D' && _name[9] == '_')  /* "_IUPSAVED_" */
+#define iupATTRIB_ISSAVED(_name) (_name[0]  == '_' && \
+                                  _name[1]  == 'I' && \
+                                  _name[2]  == 'U' && \
+                                  _name[3]  == 'P' && \
+                                  _name[4]  == 'L' && \
+                                  _name[5]  == 'E' && \
+                                  _name[6]  == 'D' && \
+                                  _name[7]  == '_' && \
+                                  _name[8]  == 'S' && \
+                                  _name[9]  == 'A' && \
+                                  _name[10] == 'V' && \
+                                  _name[11] == 'E' && \
+                                  _name[12] == 'D' && \
+                                  _name[13] == '_')  /* "_IUPLED_SAVED_" */
 
 IUP_SDK_API int iupAttribGetAllSaved(Ihandle* ih, char** names, int n)
 {
@@ -114,7 +127,7 @@ IUP_SDK_API int iupAttribGetAllSaved(Ihandle* ih, char** names, int n)
   {
     if (iupATTRIB_ISSAVED(name))
     {
-      names[i] = name + sizeof("_IUPSAVED_") - 1;
+      names[i] = name + sizeof("_IUPLED_SAVED_") - 1;
       i++;
 
       if (i == n)
@@ -1487,7 +1500,7 @@ static int iAttribToken(char* env_buffer)
   }
 }
 
-IUP_SDK_API void iupAttribParse(Ihandle *ih, const char* str, int save_info)
+IUP_SDK_API void iupAttribParse(Ihandle *ih, const char* str, int save_led_info)
 {
   char env_buffer[256];
   char* name=NULL;
@@ -1509,9 +1522,9 @@ IUP_SDK_API void iupAttribParse(Ihandle *ih, const char* str, int save_info)
       {
         IupStoreAttribute(ih, name, value);
 
-        if (save_info)
+        if (save_led_info)
         {
-          char led_name[200] = "_IUPSAVED_";
+          char led_name[200] = "_IUPLED_SAVED_";
           strcat(led_name, name);
           iupAttribSet(ih, led_name, "1");
         }
