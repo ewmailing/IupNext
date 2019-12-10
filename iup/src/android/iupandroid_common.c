@@ -113,7 +113,7 @@ JNIEXPORT jint JNICALL JNI_OnLoad(JavaVM* java_vm, void* reserved)
 
 	// See comments at the top of the file about why we need to cache IupMainThreadRedirect.
 	// This code must be run on the main thread.
-	the_class = (*jni_env)->FindClass(jni_env, "br/pucrio/tecgraf/iup/IupMainThreadRedirect");
+	the_class = (*jni_env)->FindClass(jni_env, "br/pucrio/tecgraf/iup/IupPostMessage");
 	s_classIupMainThreadRedirect = (jobject)((*jni_env)->NewGlobalRef(jni_env, the_class));
 	(*jni_env)->DeleteLocalRef(jni_env, the_class);
 
