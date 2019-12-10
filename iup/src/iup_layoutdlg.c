@@ -495,6 +495,8 @@ static void iLayoutFindNamedElem(Ihandle* ih, Iarray* names_array)
   char* name;
   Ihandle* *named_elem = NULL;
 
+  /* this already sorts the elements in the order of dependency */
+
   for (child = ih->firstchild; child; child = child->brother)
   {
     if (!(child->flags & IUP_INTERNAL))
