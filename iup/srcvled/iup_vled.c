@@ -70,8 +70,8 @@ static int compare_named_handles(const void* i1, const void* i2)
 {
   Ihandle* ih1 = *((Ihandle**)i1);
   Ihandle* ih2 = *((Ihandle**)i2);
-  int line1 = iupAttribGetInt(ih1, "LEDPARSER_LINE");
-  int line2 = iupAttribGetInt(ih2, "LEDPARSER_LINE");
+  int line1 = iupAttribGetInt(ih1, "_IUPLED_LINE");
+  int line2 = iupAttribGetInt(ih2, "_IUPLED_LINE");
   return line1-line2;
 }
 
@@ -284,9 +284,9 @@ static char* vLedGetElementTreeTitle(Ihandle* ih)
   char* name = IupGetName(ih);
   char* not_def = NULL;
 
-  if (IupClassMatch(ih, "user") && iupAttribGet(ih, "LEDPARSER_NOTDEF_NAME"))
+  if (IupClassMatch(ih, "user") && iupAttribGet(ih, "_IUPLED_NOTDEF_NAME"))
   {
-    name = iupAttribGet(ih, "LEDPARSER_NOTDEF_NAME");
+    name = iupAttribGet(ih, "_IUPLED_NOTDEF_NAME");
     not_def = " - not defined";
   }
 
@@ -346,7 +346,7 @@ static int vLedTreeAddNode(Ihandle* elem_tree, int id, Ihandle* ih, const char *
 {
   int link = 0;
 
-  if (ih->iclass->childtype != IUP_CHILDNONE && !iupAttribGet(ih, "LEDPARSER_NOTDEF_NAME"))
+  if (ih->iclass->childtype != IUP_CHILDNONE && !iupAttribGet(ih, "_IUPLED_NOTDEF_NAME"))
   {
     if (add)
       IupSetAttributeId(elem_tree, "ADDBRANCH", id, "");
@@ -361,7 +361,7 @@ static int vLedTreeAddNode(Ihandle* elem_tree, int id, Ihandle* ih, const char *
       IupSetAttributeId(elem_tree, "INSERTLEAF", id, "");
   }
 
-  if (vLedIsAlien(ih, filename) || iupAttribGet(ih, "LEDPARSER_NOTDEF_NAME") || (IupGetName(ih) && !root))
+  if (vLedIsAlien(ih, filename) || iupAttribGet(ih, "_IUPLED_NOTDEF_NAME") || (IupGetName(ih) && !root))
     link = 1;
 
   id = IupGetInt(elem_tree, "LASTADDNODE");
@@ -572,7 +572,7 @@ static int unload_led(const char *filename)
     if (save_not_defined)
     {
       Ihandle *user = IupUser();
-      iupAttribSetStr(user, "LEDPARSER_NOTDEF_NAME", old_name);
+      iupAttribSetStr(user, "_IUPLED_NOTDEF_NAME", old_name);
       IupInsert(parent, brother, user);
     }
   }
@@ -2318,7 +2318,7 @@ static int tree_executeleaf_cb(Ihandle* elem_tree, int id)
   if (!name)
     return IUP_DEFAULT;
 
-  if (vLedIsAlien(elem, filename) || iupAttribGet(elem, "LEDPARSER_NOTDEF_NAME"))
+  if (vLedIsAlien(elem, filename) || iupAttribGet(elem, "_IUPLED_NOTDEF_NAME"))
     return IUP_DEFAULT;
 
   link = IupGetIntId(elem_tree, "LINK", id);
@@ -2406,9 +2406,75 @@ static int classinfo_cb(Ihandle* ih)
   return IUP_DEFAULT;
 }
 
-static int layoutchanged_cb(Ihandle* dlg)
+static void iLayoutFixChildLedLines(Ihandle* parent, const char* filename)
+{
+  Ihandle *child;
+
+  int parent_line = iupAttribGetInt(parent, "_IUPLED_LINE");
+
+  for (child = parent->firstchild; child; child = child->brother)
+  {
+    if (!(child->flags & IUP_INTERNAL))
+    {
+      if (!vLedIsAlien(child, filename) && IupGetName(child))
+        iupAttribSetInt(child, "_IUPLED_LINE", parent_line - 1);
+
+      iLayoutFixChildLedLines(child, filename);
+    }
+  }
+}
+
+static int layoutchanged_cb(Ihandle* dlg, Ihandle* elem)
 {
   Ihandle* multitext = (Ihandle*)IupGetAttribute(dlg, "MULTITEXT");
+
+  if (elem)
+  {
+    char* filename = IupGetAttribute(multitext, "FILENAME");
+
+    if (!iupAttribGet(elem, "_IUPLED_FILENAME")) /* new element */
+      iupAttribSetStr(elem, "_IUPLED_FILENAME", filename);
+
+    if (IupGetName(elem))  /* if it has name then it must have line for controlling export order */
+    {
+      if (!iupAttribGet(elem, "_IUPLED_LINE"))
+      {
+        Ihandle* parent = elem->parent;
+        while (parent && !vLedIsAlien(parent, filename))
+        {
+          int parent_line = iupAttribGetInt(parent, "_IUPLED_LINE");
+          if (parent_line)
+          {
+            iupAttribSetInt(elem, "_IUPLED_LINE", parent_line - 1);
+            break;
+          }
+          parent = parent->parent;
+        }
+      }
+      else
+      {
+        Ihandle* parent = elem->parent;
+        int elem_line = iupAttribGetInt(elem, "_IUPLED_LINE");
+        int rebuild_lines = 0;
+        while (parent && !vLedIsAlien(parent, filename))
+        {
+          int parent_line = iupAttribGetInt(parent, "_IUPLED_LINE");
+          if (parent_line < elem_line)  /* inconsistent */
+          {
+            while (parent->parent && !vLedIsAlien(parent->parent, filename))
+              parent = parent->parent;
+
+            rebuild_lines = 1;
+            break;
+          }
+          parent = parent->parent;
+        }
+
+        if (rebuild_lines)
+          iLayoutFixChildLedLines(parent, filename);
+      }
+    }
+  }
 
   rewrite_led(multitext);
 
@@ -2419,7 +2485,7 @@ static int attribchanged_cb(Ihandle* dlg, char* name)  /* called for layout_dlg 
 {
   Ihandle* multitext = (Ihandle*)IupGetAttribute(dlg, "MULTITEXT");
   Ihandle* elem = (Ihandle*)IupGetAttribute(dlg, "ELEM");
-  char led_name[200] = "_IUPSAVED_";
+  char led_name[200] = "_IUPLED_SAVED_";
   strcat(led_name, name);
   iupAttribSet(elem, led_name, "1");
 
@@ -2439,7 +2505,7 @@ static int layoutdlg_cb(Ihandle* ih_item)
   {
     Ihandle* layout_dlg = IupLayoutDialog(dialog);
     IupSetCallback(layout_dlg, "ATTRIBCHANGED_CB", (Icallback)attribchanged_cb);
-    IupSetCallback(layout_dlg, "LAYOUTCHANGED_CB", layoutchanged_cb);
+    IupSetCallback(layout_dlg, "LAYOUTCHANGED_CB", (Icallback)layoutchanged_cb);
     IupSetAttribute(layout_dlg, "MULTITEXT", (char*)multitext);
 
     IupShow(layout_dlg);  /* LayoutDialog is automatically destroyed on close */
