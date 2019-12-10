@@ -48,7 +48,7 @@ dependencies {
 //		exclude group: 'com.android.support', module: 'support-annotations'
 //	})
 	implementation rootProject.ext.appCompat
-	implementation rootProject.ext.designSupport
+//	implementation rootProject.ext.designSupport
 //	implementation rootProject.ext.constraintSupport
 
 	//	testCompile 'junit:junit:4.12'
