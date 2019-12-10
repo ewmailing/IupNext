@@ -1374,12 +1374,12 @@ static void iLayoutTreeUpdateTitle(iLayoutDialog* layoutdlg, Ihandle* ih)
   IupSetAttributeId(layoutdlg->tree, "TITLE", id, iupLayoutGetElementTitle(ih));
 }
 
-static void iLayoutCallLayoutChangedCb(iLayoutDialog* layoutdlg)
+static void iLayoutCallLayoutChangedCb(iLayoutDialog* layoutdlg, Ihandle* elem)
 {
   Ihandle* dlg = IupGetDialog(layoutdlg->tree);
-  IFn cb = (IFn)IupGetCallback(dlg, "LAYOUTCHANGED_CB");
+  IFnn cb = (IFnn)IupGetCallback(dlg, "LAYOUTCHANGED_CB");
   if (cb)
-    cb(dlg);
+    cb(dlg, elem);
 }
 
 static int iLayoutContextMenuHandleName_CB(Ihandle* menu)
@@ -1402,14 +1402,14 @@ static int iLayoutContextMenuHandleName_CB(Ihandle* menu)
       {
         IupSetHandle(elem_name, NULL);
         iLayoutTreeUpdateTitle(layoutdlg, elem);
-        iLayoutCallLayoutChangedCb(layoutdlg);
+        iLayoutCallLayoutChangedCb(layoutdlg, elem);
       }
     }
     else
     {
       IupSetHandle(name, elem);
       iLayoutTreeUpdateTitle(layoutdlg, elem);
-      iLayoutCallLayoutChangedCb(layoutdlg);
+      iLayoutCallLayoutChangedCb(layoutdlg, elem);
     }
   }
 
@@ -1601,7 +1601,7 @@ static int iLayoutContextMenuNewInsertBrother_CB(Ihandle* menu)
 
     iLayoutUpdateLayout(layoutdlg);
 
-    iLayoutCallLayoutChangedCb(layoutdlg);
+    iLayoutCallLayoutChangedCb(layoutdlg, new_ih);
   }
 
   return IUP_DEFAULT;
@@ -1634,7 +1634,7 @@ static int iLayoutContextMenuNewInsertChild_CB(Ihandle* menu)
 
     iLayoutUpdateLayout(layoutdlg);
 
-    iLayoutCallLayoutChangedCb(layoutdlg);
+    iLayoutCallLayoutChangedCb(layoutdlg, new_ih);
   }
 
   return IUP_DEFAULT;
@@ -1667,7 +1667,7 @@ static int iLayoutContextMenuNewAppendChild_CB(Ihandle* menu)
 
     iLayoutUpdateLayout(layoutdlg);
 
-    iLayoutCallLayoutChangedCb(layoutdlg);
+    iLayoutCallLayoutChangedCb(layoutdlg, new_ih);
   }
 
   return IUP_DEFAULT;
@@ -1743,7 +1743,7 @@ static int iLayoutContextMenuNewInsertCursor_CB(Ihandle* menu)
 
     iLayoutUpdateLayout(layoutdlg);
 
-    iLayoutCallLayoutChangedCb(layoutdlg);
+    iLayoutCallLayoutChangedCb(layoutdlg, new_ih);
   }
 
   return IUP_DEFAULT;
@@ -1906,7 +1906,7 @@ static int iLayoutContextMenuRemove_CB(Ihandle* menu)
 
     iLayoutUpdateLayout(layoutdlg);
 
-    iLayoutCallLayoutChangedCb(layoutdlg);
+    iLayoutCallLayoutChangedCb(layoutdlg, NULL);
   }
 
   IupDestroy(msg_dlg);
@@ -1965,7 +1965,7 @@ static int iLayoutContextMenuPasteInsertBrother_CB(Ihandle* menu)
 
     iLayoutUpdateLayout(layoutdlg);
 
-    iLayoutCallLayoutChangedCb(layoutdlg);
+    iLayoutCallLayoutChangedCb(layoutdlg, new_ih);
   }
   else
   {
@@ -1975,11 +1975,11 @@ static int iLayoutContextMenuPasteInsertBrother_CB(Ihandle* menu)
       return IUP_DEFAULT;
     }
 
-    layoutdlg->cut_elem = NULL;
-
     iLayoutTreeRebuild(layoutdlg);
 
-    iLayoutCallLayoutChangedCb(layoutdlg);
+    iLayoutCallLayoutChangedCb(layoutdlg, layoutdlg->cut_elem);
+
+    layoutdlg->cut_elem = NULL;
   }
 
   return IUP_DEFAULT;
@@ -2012,7 +2012,7 @@ static int iLayoutContextMenuPasteInsertChild_CB(Ihandle* menu)
 
     iLayoutUpdateLayout(layoutdlg);
 
-    iLayoutCallLayoutChangedCb(layoutdlg);
+    iLayoutCallLayoutChangedCb(layoutdlg, new_ih);
   }
   else
   {
@@ -2022,11 +2022,11 @@ static int iLayoutContextMenuPasteInsertChild_CB(Ihandle* menu)
       return IUP_DEFAULT;
     }
 
-    layoutdlg->cut_elem = NULL;
-
     iLayoutTreeRebuild(layoutdlg);
 
-    iLayoutCallLayoutChangedCb(layoutdlg);
+    iLayoutCallLayoutChangedCb(layoutdlg, layoutdlg->cut_elem);
+
+    layoutdlg->cut_elem = NULL;
   }
 
   return IUP_DEFAULT;
@@ -2059,7 +2059,7 @@ static int iLayoutContextMenuPasteAppendChild_CB(Ihandle* menu)
 
     iLayoutUpdateLayout(layoutdlg);
 
-    iLayoutCallLayoutChangedCb(layoutdlg);
+    iLayoutCallLayoutChangedCb(layoutdlg, new_ih);
   }
   else
   {
@@ -2069,11 +2069,11 @@ static int iLayoutContextMenuPasteAppendChild_CB(Ihandle* menu)
       return IUP_DEFAULT;
     }
 
-    layoutdlg->cut_elem = NULL;
-
     iLayoutTreeRebuild(layoutdlg);
 
-    iLayoutCallLayoutChangedCb(layoutdlg);
+    iLayoutCallLayoutChangedCb(layoutdlg, layoutdlg->cut_elem);
+
+    layoutdlg->cut_elem = NULL;
   }
 
   return IUP_DEFAULT;
@@ -2148,7 +2148,7 @@ static int iLayoutContextMenuPasteCursor_CB(Ihandle* menu)
 
     iLayoutUpdateLayout(layoutdlg);
 
-    iLayoutCallLayoutChangedCb(layoutdlg);
+    iLayoutCallLayoutChangedCb(layoutdlg, new_ih);
   }
   else
   {
@@ -2175,11 +2175,11 @@ static int iLayoutContextMenuPasteCursor_CB(Ihandle* menu)
       }
     }
 
-    layoutdlg->cut_elem = NULL;
-
     iLayoutTreeRebuild(layoutdlg);
 
-    iLayoutCallLayoutChangedCb(layoutdlg);
+    iLayoutCallLayoutChangedCb(layoutdlg, layoutdlg->cut_elem);
+
+    layoutdlg->cut_elem = NULL;
   }
 
   return IUP_DEFAULT;
@@ -2525,7 +2525,7 @@ static int iLayoutCanvasButton_CB(Ihandle* canvas, int but, int pressed, int x, 
 
           iLayoutTreeRebuild(layoutdlg);
 
-          iLayoutCallLayoutChangedCb(layoutdlg);
+          iLayoutCallLayoutChangedCb(layoutdlg, elem);
         }
       }
     }
@@ -2973,7 +2973,7 @@ static int iLayoutTreeDragDrop_CB(Ihandle* tree, int drag_id, int drop_id, int i
 
   iLayoutUpdateLayout(layoutdlg);
 
-  iLayoutCallLayoutChangedCb(layoutdlg);
+  iLayoutCallLayoutChangedCb(layoutdlg, drag_elem);
 
   /* since we are only moving existing nodes,
      title, map state, and user data was not changed.

@@ -1081,10 +1081,11 @@ static int attribchanged_cb(Ihandle *self, char * p0)
   return iuplua_call(L, 1);
 }
 
-static int layoutchanged_cb(Ihandle *self)
+static int layoutchanged_cb(Ihandle *self, Ihandle* elem)
 {
   lua_State *L = iuplua_call_start(self, "layoutchanged_cb");
-  return iuplua_call(L, 0);
+  iuplua_pushihandle(L, elem);
+  return iuplua_call(L, 1);
 }
 
 static void entry_point(void)

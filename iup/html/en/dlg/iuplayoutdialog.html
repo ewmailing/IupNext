@@ -63,7 +63,7 @@ destroyed when closed. Default: Yes.</p>
 <p><strong>ATTRIBCHANGED_CB</strong>: Called when an attribute is changed in the 
 Properties dialog. 
 (since 3.28)</p>
-<pre>int function(Ihandle *<strong>ih</strong>, char* <strong>name</strong>); [in C]<br><strong>elem</strong>:attribchanged_cb(<strong>name</strong>: string) -&gt; (<strong>ret</strong>: number) [in Lua]</pre>
+<pre>int function(Ihandle *<strong>ih</strong>, char* <strong>name</strong>); [in C]<br><strong>ih</strong>:attribchanged_cb(<strong>name</strong>: string) -&gt; (<strong>ret</strong>: number) [in Lua]</pre>
 
 <blockquote>
 
@@ -76,11 +76,13 @@ Properties dialog.
   
 <p><strong>LAYOUTCHANGED_CB</strong>: Called when the layout is changed. (since 
 3.28)</p>
-<pre>int function(Ihandle *<strong>ih</strong>); [in C]<br><strong>elem</strong>:layoutchanged_cb() -&gt; (<strong>ret</strong>: number) [in Lua]</pre>
+<pre>int function(Ihandle *<strong>ih, </strong>Ihandle *<strong>elem</strong>); [in C]<br><strong>ih</strong>:layoutchanged_cb() -&gt; (<strong>ret</strong>: number) [in Lua]</pre>
 
 <blockquote>
 
-<p><strong>ih</strong>: identifier of the element that activated the event.</p>
+<p><strong>ih</strong>: identifier of the element that activated the event.<br>
+<strong>elem</strong>: identifier of the element that changed the layout. Can be 
+NULL.</p>
 </blockquote>
 
 <h3><a name="Notes">Notes</a></h3>
