@@ -123,7 +123,6 @@ int iupLexMatch(int t)
     return iupLexError (IUPLEX_ERR_NOTMATCH, ilex.token, t);
 }
 
-
 int iupLexSeenMatch(int t, int *erro)
 {
   if (ilex.token==t)
