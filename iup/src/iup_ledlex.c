@@ -292,7 +292,11 @@ static void iLexSkipComment (void)
 
 static int iLexGetChar (void)
 {
-  int c = iLexGetc(); if (c == '\n') ++ilex.line;
+  int c = iLexGetc(); 
+  
+  if (c == '\n') 
+    ilex.line++;
+
   if (c == '\\')
   {
     c = iLexGetc();
@@ -301,6 +305,7 @@ static int iLexGetChar (void)
     else if (c == '\\')
       return '\\';
   }
+
   return c;
 }
 
@@ -365,6 +370,7 @@ int iupLexError (int n, ...)
     break;
   }
   va_end(va);
+
   if (ilex.file || ilex.filename)
     sprintf(ilex_erromsg, "led(%s):\n  -bad input at line %d\n  -%s\n", ilex.filename, ilex.line, msg);
   else
