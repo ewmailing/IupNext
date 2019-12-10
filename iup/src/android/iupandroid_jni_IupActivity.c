@@ -66,11 +66,12 @@ JNIEXPORT void JNICALL Java_br_pucrio_tecgraf_iup_IupActivity_OnActivityResult(J
 	Ihandle* ih = (Ihandle*)(intptr_t)ihandle_ptr;
 	if(ih)
 	{
-		__android_log_print(ANDROID_LOG_INFO, "Java_br_pucrio_tecgraf_iup_IupActivity_onActivityResult", "Java_br_pucrio_tecgraf_iup_IupActivity_onActivityResult");
+//		__android_log_print(ANDROID_LOG_INFO, "Java_br_pucrio_tecgraf_iup_IupActivity_onActivityResult", "Java_br_pucrio_tecgraf_iup_IupActivity_onActivityResult");
 
 		IFniiv callback_function = (IFniiv)IupGetCallback(ih, "ONACTIVITYRESULT_CB");
 		if(callback_function)
 		{
+//			__android_log_print(ANDROID_LOG_INFO, "Java_br_pucrio_tecgraf_iup_IupActivity_onActivityResult", "invoking callback for ONACTIVITYRESULT_CB");
 			callback_function(ih, request_code, result_code, intent_data);
 		}
 	}

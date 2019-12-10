@@ -352,14 +352,20 @@ public class IupActivity extends AppCompatActivity
 */
 
 
-	native protected void OnActivityResult(int request_code, int result_code, Intent intent_data);
+	native protected void OnActivityResult(long ihandle_ptr, int request_code, int result_code, Intent intent_data);
 	// Things like in-app-purchases need to hook into this callback so we must expose it for IupAndroid users.
 	@Override
 	protected void onActivityResult(int request_code, int result_code, Intent intent_data)
 	{
+		Log.i("IupActivity", "onActivityResult start");
+
 		super.onActivityResult(request_code, result_code, intent_data);
+
 		// Pass on the activity result to the helper for handling
-		this.OnActivityResult(request_code, result_code, intent_data);
+		Intent the_intent = getIntent();
+		long ihandle_ptr = the_intent.getLongExtra("Ihandle", 0);
+
+		this.OnActivityResult(ihandle_ptr, request_code, result_code, intent_data);
 	}
 
 	@Override
