@@ -1,13 +1,7 @@
 package br.pucrio.tecgraf.iup;
-import java.lang.Object;
-import android.content.Context;
-import android.support.v7.view.ContextThemeWrapper;
-import android.view.View;
-import android.util.Log;
+import androidx.appcompat.view.ContextThemeWrapper;
+
 import android.widget.ProgressBar;
- 
-import br.pucrio.tecgraf.iup.IupApplication;
-import br.pucrio.tecgraf.iup.IupCommon;
 
 public final class IupProgressBarHelper
 {

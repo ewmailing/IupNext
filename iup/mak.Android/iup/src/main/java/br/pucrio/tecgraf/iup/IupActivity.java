@@ -1,6 +1,5 @@
 package br.pucrio.tecgraf.iup;
 
-import android.content.Context;
 import android.app.Activity;
 import android.content.pm.ActivityInfo;
 import android.content.res.Configuration;
@@ -9,7 +8,7 @@ import android.os.Build;
 //import android.support.v4.view.OnApplyWindowInsetsListener;
 //import android.support.v4.view.ViewCompat;
 //import android.support.v4.view.WindowInsetsCompat;
-import android.support.v7.app.AppCompatActivity;
+import androidx.appcompat.app.AppCompatActivity;
 import android.view.View;
 import android.os.Bundle;
 //import android.content.res.AssetManager;
@@ -18,13 +17,10 @@ import android.util.Log;
 import android.view.ViewGroup;
 import android.view.ViewTreeObserver;
 import android.view.Window;
-import android.view.WindowInsets;
 import android.view.WindowManager;
 import android.widget.RelativeLayout;
 
 import android.content.Intent;
-
-import br.pucrio.tecgraf.iup.IupCommon;
 
 
 // <sigh>: Android's default Activity transitions look terrible and nonsensical.

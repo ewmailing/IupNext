@@ -1,19 +1,11 @@
 package br.pucrio.tecgraf.iup;
 
-import android.support.v7.view.ContextThemeWrapper;
-import android.support.v7.widget.AppCompatEditText;
+import androidx.appcompat.view.ContextThemeWrapper;
+import androidx.appcompat.widget.AppCompatEditText;
 import android.text.InputType;
 import android.text.method.KeyListener;
-import android.view.View;
-import java.lang.Object;
-import android.content.Context;
-import android.view.View;
 //import android.app.Activity;
-import android.util.Log;
 import android.widget.EditText;
-
-import br.pucrio.tecgraf.iup.IupApplication;
-import br.pucrio.tecgraf.iup.IupCommon;
 
 public final class IupTextHelper
 {

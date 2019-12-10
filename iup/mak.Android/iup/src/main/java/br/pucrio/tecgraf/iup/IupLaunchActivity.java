@@ -1,24 +1,16 @@
 package br.pucrio.tecgraf.iup;
 
-import android.content.Context;
-import android.app.Activity;
-
 import android.app.AlertDialog;
 import android.content.DialogInterface;
 
-import android.support.v7.app.AppCompatActivity;
-import android.view.View;
+import androidx.appcompat.app.AppCompatActivity;
+
 import android.os.Bundle;
 //import android.content.res.AssetManager;
 import android.util.Log;
 
 import android.content.pm.PackageManager;
 import android.content.pm.ApplicationInfo;
-
-import android.view.ViewGroup;
-
-import android.content.Intent;
-
 
 
 public class IupLaunchActivity extends AppCompatActivity

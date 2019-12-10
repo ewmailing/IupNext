@@ -5,18 +5,11 @@
  * Stack Overflow uses the Attribution-ShareAlike 3.0 Unported (CC BY-SA 3.0) license. https://creativecommons.org/licenses/by-sa/3.0/
  */
 package br.pucrio.tecgraf.iup;
-import java.lang.Object;
 import android.content.Context;
 import android.graphics.Canvas;
-import android.support.v7.view.ContextThemeWrapper;
+import androidx.appcompat.view.ContextThemeWrapper;
 import android.util.AttributeSet;
-import android.view.MotionEvent;
-import android.view.View;
-import android.util.Log;
 import android.widget.ProgressBar;
- 
-import br.pucrio.tecgraf.iup.IupApplication;
-import br.pucrio.tecgraf.iup.IupCommon;
 
 public class IupProgressBarVertical extends ProgressBar
 {

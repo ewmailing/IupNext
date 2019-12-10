@@ -3,11 +3,10 @@ import java.lang.Object;
 import android.app.Activity;
 import android.content.Context;
 import android.content.ContextWrapper;
-import android.support.v7.view.ContextThemeWrapper;
+import androidx.appcompat.view.ContextThemeWrapper;
 import android.util.Log;
 import android.view.View;
 import android.view.ViewGroup;
-import android.webkit.WebView;
 import android.widget.RelativeLayout;
 
 // Can we use this?
