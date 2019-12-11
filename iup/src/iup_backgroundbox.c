@@ -71,13 +71,6 @@ static int iBackgroundBoxSetBackImageAttrib(Ihandle* ih, const char* value)
   return 1;  /* save on the hash table */
 }
 
-static int iBackgroundBoxSetBgColorAttrib(Ihandle* ih, const char* value)
-{
-  (void)value;
-  IupUpdate(ih); /* post a redraw */
-  return 1;  /* save on the hash table */
-}
-
 static char* iBackgroundBoxGetExpandAttrib(Ihandle* ih)
 {
   if (iupAttribGetBoolean(ih, "CANVASBOX"))
@@ -250,7 +243,9 @@ IUP_SDK_API Iclass* iupBackgroundBoxNewBaseClass(Iclass* ic_base)   /* Used by B
   iupClassRegisterAttribute(ic, "CHILDOFFSET", NULL, NULL, NULL, NULL, IUPAF_NOT_MAPPED | IUPAF_NO_INHERIT);
 
   /* replace IupCanvas behavior */
-  iupClassRegisterAttribute(ic, "BGCOLOR", iBackgroundBoxGetBgColorAttrib, iBackgroundBoxSetBgColorAttrib, IUPAF_SAMEASSYSTEM, "DLGBGCOLOR", IUPAF_NO_SAVE | IUPAF_DEFAULT);
+  iupClassRegisterReplaceAttribFunc(ic, "BGCOLOR", iBackgroundBoxGetBgColorAttrib, NULL);
+  iupClassRegisterReplaceAttribDef(ic, "BGCOLOR", "DLGBGCOLOR", NULL);
+
   iupClassRegisterReplaceAttribDef  (ic, "BORDER", "NO", NULL);
   iupClassRegisterReplaceAttribFlags(ic, "BORDER", IUPAF_NO_INHERIT);
   iupClassRegisterAttribute(ic, "CANFOCUS", NULL, NULL, IUPAF_SAMEASSYSTEM, "NO", IUPAF_NO_INHERIT);
