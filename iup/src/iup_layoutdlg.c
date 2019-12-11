@@ -1300,7 +1300,7 @@ static void iLayoutDrawCursor(Ihandle* canvas, IdrawCanvas* dc, int posx, int po
   }
 }
 
-static int iLayoutCanvas_CB(Ihandle* canvas, float fposx, float fposy)
+static int iLayoutCanvasRedraw_CB(Ihandle* canvas, float fposx, float fposy)
 {
   Ihandle* dlg = IupGetDialog(canvas);
   iLayoutDialog* layoutdlg = (iLayoutDialog*)iupAttribGet(dlg, "_IUP_LAYOUTDIALOG");
@@ -3090,7 +3090,7 @@ IUP_API Ihandle* IupLayoutDialog(Ihandle* dialog)
   IupSetAttribute(layoutdlg->timer, "_IUP_LAYOUTDIALOG", (char*)layoutdlg);
 
   canvas = IupCanvas(NULL);
-  IupSetCallback(canvas, "ACTION", (Icallback)iLayoutCanvas_CB);
+  IupSetCallback(canvas, "ACTION", (Icallback)iLayoutCanvasRedraw_CB);
   IupSetCallback(canvas, "BUTTON_CB", (Icallback)iLayoutCanvasButton_CB);
   IupSetCallback(canvas, "MOTION_CB", (Icallback)iLayoutCanvasMotion_CB);
   IupSetCallback(canvas, "RESIZE_CB", (Icallback)iLayoutCanvasResize_CB);
