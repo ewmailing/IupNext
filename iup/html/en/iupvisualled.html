@@ -14,6 +14,9 @@
 	letter-spacing: normal;
 	background-color: #FFFFFF;
 }
+.auto-style3 {
+	text-align: center;
+}
 </style>
 </head>
 <body>
@@ -38,7 +41,42 @@ order they are declared in the code. Some elements in the hierarchy tree are
 links to the element itself, a double click will select the actual element. A 
 double click in the element will select it in the code. The automatic load can 
 be disabled and the load or unload can be done manually in the LED menu.</p>
-<p>&nbsp;</p>
+<p>Internally
+<span style="color: rgb(0, 0, 0); font-family: tahoma, verdana, arial, helvetica, geneva, sans-serif; font-size: medium; font-style: normal; font-variant-ligatures: normal; font-variant-caps: normal; font-weight: 400; letter-spacing: normal; orphans: 2; text-align: start; text-indent: 0px; text-transform: none; white-space: normal; widows: 2; word-spacing: 0px; -webkit-text-stroke-width: 0px; background-color: rgb(255, 255, 255); text-decoration-style: initial; text-decoration-color: initial; display: inline !important; float: none;">
+the main dialog inherits from the<span>&nbsp;</span></span><a href="dlg/iupscintilladlg.html" style="font-family: tahoma, verdana, arial, helvetica, geneva, sans-serif; font-size: medium; font-style: normal; font-variant-ligatures: normal; font-variant-caps: normal; font-weight: 400; letter-spacing: normal; orphans: 2; text-align: start; text-indent: 0px; text-transform: none; white-space: normal; widows: 2; word-spacing: 0px; -webkit-text-stroke-width: 0px; background-color: rgb(255, 255, 255);">IupScintillaDlg</a><span style="color: rgb(0, 0, 0); font-family: tahoma, verdana, arial, helvetica, geneva, sans-serif; font-size: medium; font-style: normal; font-variant-ligatures: normal; font-variant-caps: normal; font-weight: 400; letter-spacing: normal; orphans: 2; text-align: start; text-indent: 0px; text-transform: none; white-space: normal; widows: 2; word-spacing: 0px; -webkit-text-stroke-width: 0px; background-color: rgb(255, 255, 255); text-decoration-style: initial; text-decoration-color: initial; display: inline !important; float: none;"><span>&nbsp;</span>dialog 
+and provides a very powerful multiple file text editor.</span></p>
+<p class="auto-style3"><span class="auto-style2">&lt;imagem do main dialog&gt;</span></p>
+<h3>Openning a File</h3>
+<p>A file can be opened from the File/Open menu item, the Recent submenu, from 
+the project file list, it can be dragged and dropped from the system file 
+manager in Windows and in Linux, or from the command line. The command line will 
+process regular led files and if the extension is vled it will open a project 
+file. So the executable can be associated with the led and vled extensions, so 
+the user will be able to double click these files in the system file manager.</p>
+<h3>Load and Unload</h3>
+<p>By default automatic loading is enabled, so when a file is opened its 
+elements are created and the tree of elements is filled. But even in this 
+configuration after editing the text the changes are not automatically 
+processed. To do so, the LED/Load menu item must be called after finished 
+editing. </p>
+<h3>New Controls</h3>
+<p>In the context menu of the tree of elements, the layout of a dialog can be 
+displayed and its hierarchy edited. But whenever an element is added or removed 
+from the layout the LED is re-written to reflect the changes. When this occurs 
+all comments are lost and the file is completely reformatted even for small 
+modifications. For now this is what we need to do to keep the LED in sync with 
+the new dialog layout. Maybe in the future we will be able to update selected 
+regions of the LED.</p>
+<p>The layout of a dialog allow also to move controls around or the insert at a 
+visually specified location. First select the container where you want to move 
+or insert the element. The you will notice a green line indicating the insertion 
+point. </p>
+<p class="auto-style3">&lt;imagem da linha verde&gt;</p>
+<h3>Tools</h3>
+<p>x</p>
+<p class="auto-style3">&lt;imagens dos dialogos&gt;</p>
+<h3>Export</h3>
+<p>x</p>
 <p align="center">
 <img border="0" src="images/iupvisualled.png"></p>
 
