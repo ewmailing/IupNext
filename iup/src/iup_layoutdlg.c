@@ -3138,7 +3138,7 @@ IUP_API Ihandle* IupLayoutDialog(Ihandle* dialog)
     NULL)),
     NULL);
 
-  if (!dialog || !iupAttribGet(dialog, "_IUPLED_FILENAME"))
+  if (layoutdlg->destroy || !iupAttribGet(dialog, "_IUPLED_FILENAME"))
   {
     Ihandle* dlg_menu = IupSubmenu("&Dialog", IupMenu(
       IupSetCallbacks(IupItem("New", NULL), "ACTION", iLayoutMenuNew_CB, NULL),
@@ -3176,7 +3176,7 @@ IUP_API Ihandle* IupLayoutDialog(Ihandle* dialog)
 
   iupAttribSet(dlg, "DESTROYWHENCLOSED", "Yes");
 
-  if (!dialog || !iupAttribGet(dialog, "_IUPLED_FILENAME"))
+  if (layoutdlg->destroy || !iupAttribGet(dialog, "_IUPLED_FILENAME"))
   {
     IupSetCallback(dlg, "K_cO", (Icallback)iLayoutMenuLoad_CB);
   }
