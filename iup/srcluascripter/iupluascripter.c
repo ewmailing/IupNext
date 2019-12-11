@@ -114,9 +114,15 @@ static void iuplua_openlibs(lua_State *L)
 #endif
 }
 
-static int item_help_action_cb(void)
+static int item_iup_action_cb(void)
 {
   IupHelp("http://www.tecgraf.puc-rio.br/iup");
+  return IUP_DEFAULT;
+}
+
+static int item_help_action_cb(void)
+{
+  IupHelp("http://www.tecgraf.puc-rio.br/iup/index.html?url=iupluascripter.html");
   return IUP_DEFAULT;
 }
 
@@ -177,6 +183,7 @@ int main(int argc, char **argv)
   
   menu = IupGetAttributeHandle(main_dialog, "MENU");
   IupAppend(menu, IupSubmenu("&Help", IupMenu(
+    IupSetCallbacks(IupItem("&IUP...", NULL), "ACTION", (Icallback)item_iup_action_cb, NULL),
     IupSetCallbacks(IupItem("&Help...", NULL), "ACTION", (Icallback)item_help_action_cb, NULL),
     IupSetCallbacks(IupItem("&About...", NULL), "ACTION", (Icallback)item_about_action_cb, NULL),
     NULL)));
