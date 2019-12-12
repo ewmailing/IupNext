@@ -449,7 +449,7 @@ static void updateElemTree(Ihandle* elem_tree, const char* filename)
   free(names);
 }
 
-static int unload_led(const char *filename);
+static int unload_led(Ihandle* multitext, const char *filename);
 
 static void autoload_off(Ihandle *elem_tree)
 {
@@ -485,7 +485,7 @@ static int load_led(Ihandle *elem_tree, const char *filename, int use_buffer)
 
   if (error)
   {
-    unload_led(filename);
+    unload_led(multitext, filename);
     IupSetAttribute(multitext, "LOADED", NULL);
   }
   else
@@ -511,7 +511,36 @@ static void unloadNamedElements(Ihandle *elem)
   }
 }
 
-static int unload_led(const char *filename)
+static void check_layout_prop_dialogs(Ihandle* ih)
+{
+  int i, count = iupDlgListCount();
+  Ihandle* dlg;
+  Ihandle* elem_tree_box = IupGetDialogChild(ih, "ELEM_TREE_BOX");
+
+  dlg = (Ihandle*)IupGetAttribute(elem_tree_box, "PROPERTIES_DIALOG");
+  if (iupObjectCheck(dlg)) /* properties dialog exists */
+  {
+    Ihandle* elem = (Ihandle*)iupAttribGet(dlg, "_IUP_PROPELEMENT");
+    if (!iupObjectCheck(elem)) /* if elem is not valid anymore then hide the properties dialog */
+      IupHide(dlg);
+  }
+
+  for (dlg = iupDlgListFirst(), i = 0; dlg && i < count; i++)
+  {
+    Ihandle* next_dlg = iupDlgListNext();
+
+    if (iupAttribGet(dlg, "_IUP_LAYOUTDIALOG")) /* is a IupLayoutDialog */
+    {
+      Ihandle* dlg_elem = (Ihandle*)iupAttribGet(dlg, "_IUP_LAYOUTDIALOG_DIALOG");
+      if (!iupObjectCheck(dlg_elem)) /* if dlg_elem is not valid anymore then destroy the layout dialog */
+        IupDestroy(dlg);
+    }
+
+    dlg = next_dlg;
+  }
+}
+
+static int unload_led(Ihandle* multitext, const char *filename)
 {
   int i, num_names = IupGetAllNames(NULL, -1);
   char* *names = malloc(sizeof(char*)*num_names);
@@ -583,6 +612,8 @@ static int unload_led(const char *filename)
     if (iupObjectCheck(elem))
       IupDestroy(elem);
   }
+
+  check_layout_prop_dialogs(multitext);
 
   free(names);
   free(named_elems);
@@ -862,23 +893,28 @@ static int tabChange_cb(Ihandle* tabs, Ihandle* new_multitext, Ihandle* old_mult
   return IUP_DEFAULT;
 }
 
-static int loadfile_cb(Ihandle* main_dialog, Ihandle* multitext)
+static void reload_led(Ihandle* multitext)
 {
-  /* called after the file is loaded */
-
   Ihandle* elem_tree = vLedGetElemTree(multitext);
-  Ihandle* config = get_config(main_dialog);
+  Ihandle* config = get_config(multitext);
   char* filename = IupGetAttribute(multitext, "FILENAME");
 
-  /* reload the elements because they may have changed */
-  unload_led(filename);
+  unload_led(multitext, filename);
   IupSetAttribute(multitext, "LOADED", NULL);
 
   if (IupConfigGetVariableIntDef(config, "IupVisualLED", "AutoLoad", 1))
     load_led(elem_tree, filename, 0);
   else
     autoload_off(elem_tree);
+}
 
+static int loadfile_cb(Ihandle* main_dialog, Ihandle* multitext)
+{
+  /* called after the file is loaded */
+
+  reload_led(multitext);
+
+  (void)main_dialog;
   return IUP_DEFAULT;
 }
 
@@ -886,19 +922,9 @@ static int savefile_cb(Ihandle* main_dialog, Ihandle* multitext)
 {
   /* called after the file is saved */
 
-  Ihandle* elem_tree = vLedGetElemTree(multitext);
-  Ihandle* config = get_config(main_dialog);
-  char* filename = IupGetAttribute(multitext, "FILENAME");
+  reload_led(multitext);
 
-  /* reload the elements because they may have changed */
-  unload_led(filename);
-  IupSetAttribute(multitext, "LOADED", NULL);
-
-  if (IupConfigGetVariableIntDef(config, "IupVisualLED", "AutoLoad", 1))
-    load_led(elem_tree, filename, 0);
-  else
-    autoload_off(elem_tree);
-
+  (void)main_dialog;
   return IUP_DEFAULT;
 }
 
@@ -1066,7 +1092,7 @@ static int closetext_cb(Ihandle* main_dialog, Ihandle *multitext)
   Ihandle* elem_tree = vLedGetElemTree(multitext);
   if (!filename) filename = IupGetAttribute(multitext, "NEW_FILENAME");
 
-  unload_led(filename);
+  unload_led(multitext, filename);
 
   IupDestroy(elem_tree);
 
@@ -1534,7 +1560,7 @@ static int item_load_action_cb(Ihandle *ih_item)
   int dirty = IupGetInt(multitext, "MODIFIED");
   if (!filename) filename = IupGetAttribute(multitext, "NEW_FILENAME");
 
-  unload_led(filename);
+  unload_led(multitext, filename);
   IupSetAttribute(multitext, "LOADED", NULL);
 
   if (dirty)
@@ -1552,7 +1578,7 @@ static int item_unload_action_cb(Ihandle *ih_item)
   char *filename = IupGetAttribute(multitext, "FILENAME");
   if (!filename) filename = IupGetAttribute(multitext, "NEW_FILENAME");
 
-  unload_led(filename);
+  unload_led(multitext, filename);
   IupSetAttribute(multitext, "LOADED", NULL);
   IupSetAttribute(elem_tree, "DELNODE0", "ALL");
 
@@ -1612,18 +1638,12 @@ static void rewrite_led(Ihandle* multitext)
     if (new_buffer)
     {
       Ihandle* elem_tree = vLedGetElemTree(multitext);
-      Ihandle* config = get_config(multitext);
       char* filename = IupGetAttribute(multitext, "FILENAME");
 
       IupSetStrAttribute(multitext, "VALUE", new_buffer);
 
-      unload_led(filename);
-      IupSetAttribute(multitext, "LOADED", NULL);
-
-      if (IupConfigGetVariableIntDef(config, "IupVisualLED", "AutoLoad", 1))
-        load_led(elem_tree, filename, 1);
-      else
-        autoload_off(elem_tree);
+      IupSetInt(multitext, "MARKERDELETEALL", 1);
+      updateElemTree(elem_tree, filename);
 
       free(new_buffer);
     }

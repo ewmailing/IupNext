@@ -3171,6 +3171,7 @@ IUP_API Ihandle* IupLayoutDialog(Ihandle* dialog)
   IupSetCallback(dlg, "K_ANY", (Icallback)iLayoutDialogKAny_CB);
   IupSetCallback(dlg, "CLOSE_CB", iLayoutDialogClose_CB);
   iupAttribSet(dlg, "_IUP_LAYOUTDIALOG", (char*)layoutdlg);
+  iupAttribSet(dlg, "_IUP_LAYOUTDIALOG_DIALOG", (char*)dialog);
   IupSetAttributeHandle(dlg, "MENU", menu);
   iupAttribSet(dlg, "OPACITY", "255");
 
