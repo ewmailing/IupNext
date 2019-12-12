@@ -67,9 +67,9 @@ static void iLayoutExportWriteAttrib(FILE* file, const char* name, const char* v
 
     iupStrUpper(attribname, name);
     if (iLayoutExportHasReserved(value, 0))
-      fprintf(file, "%s%s = \"%s\",\n", indent, attribname, value);
+      fprintf(file, "%s=\"%s\", ", attribname, value);
     else
-      fprintf(file, "%s%s = %s,\n", indent, attribname, value);
+      fprintf(file, "%s=%s, ", attribname, value);
   }
   else   /* C */
     fprintf(file, "%s\"%s\", \"%s\",\n", indent, name, value);
@@ -144,10 +144,10 @@ static void iLayoutExportSavedAttribs(FILE* file, Ihandle* ih, const char* inden
 
   if (export_format == IUP_LAYOUT_EXPORT_LED) /* LED */
   {
-    /* remove last comma ',' and new line (wcount!=0) */
-    /* OR */
-    /* remove "[\n" (wcount==0) */
-    fseek(file, -2, SEEK_CUR);
+    if (wcount != 0)
+      fseek(file, -2, SEEK_CUR);  /* remove last comma ',' and space */
+    else
+      fseek(file, -1, SEEK_CUR);/* remove "[" */
 
     if (wcount != 0)
       fprintf(file, "]"); /* end of attributes (no new line) */
@@ -254,10 +254,10 @@ static void iLayoutExportChangedAttribs(FILE* file, Ihandle* ih, const char* ind
 
   if (export_format == IUP_LAYOUT_EXPORT_LED ) /* LED */
   {
-    /* remove last comma ',' and new line (wcount!=0) */
-    /* OR */
-    /* remove "[\n" (wcount==0) */
-    fseek(file, -2, SEEK_CUR);
+    if (wcount != 0)
+      fseek(file, -2, SEEK_CUR);  /* remove last comma ',' and space */
+    else
+      fseek(file, -1, SEEK_CUR);/* remove "[" */
 
     if (wcount != 0)
       fprintf(file, "]"); /* end of attributes (no new line) */
@@ -284,9 +284,9 @@ static void iLayoutExportElementLED(FILE* file, Ihandle* ih, const char* indent,
 
   iupStrUpper(classname, ih->iclass->name);
   if (name)
-    fprintf(file, "%s = %s[\n", name, classname);  /* start of attributes */
+    fprintf(file, "%s = %s[", name, classname);  /* start of attributes */
   else
-    fprintf(file, "%s%s[\n", indent, classname);
+    fprintf(file, "%s%s[", indent, classname);
 
   if (saved_info)
     iLayoutExportSavedAttribs(file, ih, indent, IUP_LAYOUT_EXPORT_LED);
