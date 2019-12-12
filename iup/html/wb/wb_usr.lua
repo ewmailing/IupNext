@@ -14,7 +14,7 @@ wb_usr = {
 wb_usr.messages = {
   en = {
     title = "IUP - Portable User Interface",
-    bar_title = "IUP - Version 3.27"
+    bar_title = "IUP - Version 3.28"
   }
 }
 
