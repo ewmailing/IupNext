@@ -293,17 +293,6 @@ static void iLayoutRemoveExt(char* title, const char* ext)
   }
 }
 
-static int iLayoutHasDigit(const char* name)
-{
-  while (*name)
-  {
-    if (isdigit(*name))
-      return 1;
-    name++;
-  }
-  return 0;
-}
-
 static int iLayoutCompareClassNames(const void *a, const void *b)
 {
   int ret;
