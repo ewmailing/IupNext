@@ -826,6 +826,9 @@ static int iLayoutMenuOpacity_CB(Ihandle* ih)
   if (opacity == 0)
     opacity = 255;
 
+  IupStoreGlobal("_IUP_OLD_PARENTDIALOG", IupGetGlobal("PARENTDIALOG"));
+  IupSetAttributeHandle(NULL, "PARENTDIALOG", dlg);
+
   if (IupGetParam("Dialog Layout", iLayoutGetParamOpacity_CB, dlg,
                   "Opacity: %i[0,255]\n",
                   &opacity, NULL))
@@ -836,6 +839,9 @@ static int iLayoutMenuOpacity_CB(Ihandle* ih)
     else
       IupSetInt(dlg, "OPACITY", opacity);
   }
+
+  IupStoreGlobal("PARENTDIALOG", IupGetGlobal("_IUP_OLD_PARENTDIALOG"));
+  IupSetGlobal("_IUP_OLD_PARENTDIALOG", NULL);
 
   return IUP_DEFAULT;
 }
@@ -1381,6 +1387,9 @@ static int iLayoutContextMenuHandleName_CB(Ihandle* menu)
   if (elem_name)
     strcpy(name, elem_name);
 
+  IupStoreGlobal("_IUP_OLD_PARENTDIALOG", IupGetGlobal("PARENTDIALOG"));
+  IupSetAttributeHandle(NULL, "PARENTDIALOG", IupGetDialog(layoutdlg->tree));
+
   if (IupGetParam("Handle Name", NULL, NULL,
                   "Name: %s\n",
                   name, NULL))
@@ -1401,6 +1410,9 @@ static int iLayoutContextMenuHandleName_CB(Ihandle* menu)
       iLayoutCallLayoutChangedCb(layoutdlg, elem);
     }
   }
+
+  IupStoreGlobal("PARENTDIALOG", IupGetGlobal("_IUP_OLD_PARENTDIALOG"));
+  IupSetGlobal("_IUP_OLD_PARENTDIALOG", NULL);
 
   return IUP_DEFAULT;
 }
@@ -1556,6 +1568,17 @@ static const char* iLayoutSelectClassDialog(Ihandle* parent)
   return value;
 }
 
+static void iLayoutError(iLayoutDialog* layoutdlg, const char* msg)
+{
+  IupStoreGlobal("_IUP_OLD_PARENTDIALOG", IupGetGlobal("PARENTDIALOG"));
+  IupSetAttributeHandle(NULL, "PARENTDIALOG", IupGetDialog(layoutdlg->tree));
+
+  IupMessage("Error", msg);
+
+  IupStoreGlobal("PARENTDIALOG", IupGetGlobal("_IUP_OLD_PARENTDIALOG"));
+  IupSetGlobal("_IUP_OLD_PARENTDIALOG", NULL);
+}
+
 static int iLayoutContextMenuNewInsertBrother_CB(Ihandle* menu)
 {
   Ihandle* dlg = (Ihandle*)iupAttribGetInherit(menu, "_IUP_LAYOUTDLG");
@@ -1578,7 +1601,7 @@ static int iLayoutContextMenuNewInsertBrother_CB(Ihandle* menu)
 
     if (!ret_ih)
     {
-      IupMessage("Error", "New failed. Invalid operation for this node.");
+      iLayoutError(layoutdlg, "New failed. Invalid operation for this node.");
       IupDestroy(new_ih);
       return IUP_DEFAULT;
     }
@@ -1611,7 +1634,7 @@ static int iLayoutContextMenuNewInsertChild_CB(Ihandle* menu)
     /* add as first child */
     if (!IupInsert(ref_elem, NULL, new_ih))
     {
-      IupMessage("Error", "New failed. Invalid operation for this node.");
+      iLayoutError(layoutdlg, "New failed. Invalid operation for this node.");
       IupDestroy(new_ih);
       return IUP_DEFAULT;
     }
@@ -1644,7 +1667,7 @@ static int iLayoutContextMenuNewAppendChild_CB(Ihandle* menu)
     /* add as last child */
     if (!IupAppend(ref_elem, new_ih))
     {
-      IupMessage("Error", "New failed. Invalid operation for this node.");
+      iLayoutError(layoutdlg, "New failed. Invalid operation for this node.");
       IupDestroy(new_ih);
       return IUP_DEFAULT;
     }
@@ -1720,7 +1743,7 @@ static int iLayoutContextMenuNewInsertCursor_CB(Ihandle* menu)
 
     if (!ret_ih)
     {
-      IupMessage("Error", "New failed. Invalid operation for this node.");
+      iLayoutError(layoutdlg, "New failed. Invalid operation for this node.");
       IupDestroy(new_ih);
       return IUP_DEFAULT;
     }
@@ -1759,7 +1782,7 @@ static int iLayoutContextMenuMap_CB(Ihandle* menu)
 
   if (IupMap(elem) == IUP_ERROR)
   {
-    IupMessage("Error", "IupMap failed.");
+    iLayoutError(layoutdlg, "IupMap failed.");
     return IUP_DEFAULT;
   }
 
@@ -1859,7 +1882,7 @@ static int iLayoutContextMenuRemove_CB(Ihandle* menu)
 
   if (elem->flags & IUP_INTERNAL)
   {
-    IupMessage("Error", "Can NOT remove this child. It is an internal element of the container.");
+    iLayoutError(layoutdlg, "Can NOT remove this child. It is an internal element of the container.");
     return IUP_DEFAULT;
   }
 
@@ -1868,6 +1891,7 @@ static int iLayoutContextMenuRemove_CB(Ihandle* menu)
   IupSetAttribute(msg_dlg, "BUTTONS", "OKCANCEL");
   IupSetAttribute(msg_dlg, "TITLE", "Element Remove");
   IupSetAttribute(msg_dlg, "VALUE", "Remove the selected element?");
+  IupSetAttributeHandle(msg_dlg, "PARENTDIALOG", IupGetDialog(layoutdlg->tree));
 
   IupPopup(msg_dlg, IUP_MOUSEPOS, IUP_MOUSEPOS);
 
@@ -1942,7 +1966,7 @@ static int iLayoutContextMenuPasteInsertBrother_CB(Ihandle* menu)
 
     if (!ret_ih)
     {
-      IupMessage("Error", "Paste failed (Copy). Invalid operation for this node.");
+      iLayoutError(layoutdlg, "Paste failed (Copy). Invalid operation for this node.");
       IupDestroy(new_ih);
       return IUP_DEFAULT;
     }
@@ -1960,7 +1984,7 @@ static int iLayoutContextMenuPasteInsertBrother_CB(Ihandle* menu)
   {
     if (IupReparent(layoutdlg->cut_elem, ref_elem->parent, ref_elem->brother) == IUP_ERROR)
     {
-      IupMessage("Error", "Paste failed (Cut). Invalid operation for this node.");
+      iLayoutError(layoutdlg, "Paste failed (Cut). Invalid operation for this node.");
       return IUP_DEFAULT;
     }
 
@@ -1989,7 +2013,7 @@ static int iLayoutContextMenuPasteInsertChild_CB(Ihandle* menu)
     /* add as first child */
     if (!IupInsert(ref_elem, NULL, new_ih))
     {
-      IupMessage("Error", "Paste failed (Copy). Invalid operation for this node.");
+      iLayoutError(layoutdlg, "Paste failed (Copy). Invalid operation for this node.");
       IupDestroy(new_ih);
       return IUP_DEFAULT;
     }
@@ -2007,7 +2031,7 @@ static int iLayoutContextMenuPasteInsertChild_CB(Ihandle* menu)
   {
     if (IupReparent(layoutdlg->cut_elem, ref_elem, ref_elem->firstchild) == IUP_ERROR)
     {
-      IupMessage("Error", "Paste failed (Cut). Invalid operation for this node.");
+      iLayoutError(layoutdlg, "Paste failed (Cut). Invalid operation for this node.");
       return IUP_DEFAULT;
     }
 
@@ -2036,7 +2060,7 @@ static int iLayoutContextMenuPasteAppendChild_CB(Ihandle* menu)
     /* add as last child */
     if (!IupAppend(ref_elem, new_ih))
     {
-      IupMessage("Error", "Paste failed (Copy). Invalid operation for this node.");
+      iLayoutError(layoutdlg, "Paste failed (Copy). Invalid operation for this node.");
       IupDestroy(new_ih);
       return IUP_DEFAULT;
     }
@@ -2054,7 +2078,7 @@ static int iLayoutContextMenuPasteAppendChild_CB(Ihandle* menu)
   {
     if (IupReparent(layoutdlg->cut_elem, ref_elem, NULL) == IUP_ERROR)
     {
-      IupMessage("Error", "Paste failed (Cut). Invalid operation for this node.");
+      iLayoutError(layoutdlg, "Paste failed (Cut). Invalid operation for this node.");
       return IUP_DEFAULT;
     }
 
@@ -2125,7 +2149,7 @@ static int iLayoutContextMenuPasteCursor_CB(Ihandle* menu)
 
     if (!ret_ih)
     {
-      IupMessage("Error", "Paste failed (Copy). Invalid operation for this node.");
+      iLayoutError(layoutdlg, "Paste failed (Copy). Invalid operation for this node.");
       IupDestroy(new_ih);
       return IUP_DEFAULT;
     }
@@ -2150,7 +2174,7 @@ static int iLayoutContextMenuPasteCursor_CB(Ihandle* menu)
 
     if (IupReparent(layoutdlg->cut_elem, container, ref_elem) == IUP_ERROR)
     {
-      IupMessage("Error", "Paste failed (Cut). Invalid operation for this node.");
+      iLayoutError(layoutdlg, "Paste failed (Cut). Invalid operation for this node.");
       return IUP_DEFAULT;
     }
 
@@ -2498,7 +2522,7 @@ static int iLayoutCanvasButton_CB(Ihandle* canvas, int but, int pressed, int x, 
 
           if (IupReparent(elem, container, ref_elem) == IUP_ERROR)
           {
-            IupMessage("Error", "Move failed. Invalid operation for this node.");
+            iLayoutError(layoutdlg, "Move failed. Invalid operation for this node.");
             return IUP_DEFAULT;
           }
 
@@ -2900,13 +2924,13 @@ static int iLayoutTreeDragDrop_CB(Ihandle* tree, int drag_id, int drop_id, int i
   /* no support for copy */
   if (iscontrol)
   {
-    IupMessage("Error", "Copy not supported for drag&drop.");
+    iLayoutError(layoutdlg, "Copy not supported for drag&drop.");
     return IUP_IGNORE;
   }
 
   if (drag_elem->flags & IUP_INTERNAL)
   {
-    IupMessage("Error", "Can NOT drag an internal element. This element exists only inside this container.");
+    iLayoutError(layoutdlg, "Can NOT drag an internal element. This element exists only inside this container.");
     return IUP_IGNORE;
   }
 
@@ -2937,7 +2961,7 @@ static int iLayoutTreeDragDrop_CB(Ihandle* tree, int drag_id, int drop_id, int i
   {
     if (!drop_elem->parent)
     {
-      IupMessage("Error", "Can NOT drop here as brother.");
+      iLayoutError(layoutdlg, "Can NOT drop here as brother.");
       return IUP_IGNORE;
     }
 
@@ -2954,7 +2978,7 @@ static int iLayoutTreeDragDrop_CB(Ihandle* tree, int drag_id, int drop_id, int i
 
   if (error == IUP_ERROR)
   {
-    IupMessage("Error", "Drop failed. Invalid operation for this node.");
+    iLayoutError(layoutdlg, "Drop failed. Invalid operation for this node.");
     return IUP_IGNORE;
   }
 
