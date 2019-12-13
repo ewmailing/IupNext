@@ -532,6 +532,10 @@ static int motDialogSetTitleAttrib(Ihandle* ih, const char* value)
     value = "";
 
   iupmotSetTitle(ih->handle, value);
+
+  if (iupAttribGetBoolean(ih, "CUSTOMFRAME") || iupAttribGetBoolean(ih, "CUSTOMFRAMESIMULATE"))
+    return 0;
+
   return 1;
 }
 

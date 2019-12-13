@@ -1523,7 +1523,11 @@ static int winDialogSetTitleAttrib(Ihandle* ih, const char* value)
   }
   else
     iupwinSetTitleAttrib(ih, value);
-  return 1; 
+
+  if (iupAttribGetBoolean(ih, "CUSTOMFRAME") || iupAttribGetBoolean(ih, "CUSTOMFRAMESIMULATE"))
+    return 0;
+
+  return 1;
 }
 
 static int winDialogSetBgColorAttrib(Ihandle* ih, const char* value)

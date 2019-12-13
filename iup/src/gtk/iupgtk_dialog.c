@@ -787,6 +787,10 @@ static int gtkDialogSetTitleAttrib(Ihandle* ih, const char* value)
   if (!value)
     value = "";
   gtk_window_set_title((GtkWindow*)ih->handle, iupgtkStrConvertToSystem(value));
+
+  if (iupAttribGetBoolean(ih, "CUSTOMFRAME") || iupAttribGetBoolean(ih, "CUSTOMFRAMESIMULATE"))
+    return 0;
+
   return 1;
 }
 
