@@ -2,8 +2,8 @@ ifeq ($(OS), Windows_NT)
   WINLIBS = iupole iupfiledlg
 endif
 
-.PHONY: do_all iup iupgtk iupmot iupcd iupcontrols iupgl iupglcontrols iup_plot iup_mglplot iup_scintilla iupim iupimglib ledc iupview iuplua5 iupluaconsole iupluascripter iupole iupfiledlg iupweb iuptuio
-do_all: iup iupcd iupcontrols iupgl iupglcontrols iup_plot iup_mglplot iup_scintilla iupim iupimglib $(WINLIBS) iupweb iuptuio ledc iupview iuplua5 iupluaconsole iupluascripter
+.PHONY: do_all iup iupgtk iupmot iupcd iupcontrols iupgl iupglcontrols iup_plot iup_mglplot iup_scintilla iupim iupimglib ledc iupview iupvled iuplua5 iupluaconsole iupluascripter iupole iupfiledlg iupweb iuptuio
+do_all: iup iupcd iupcontrols iupgl iupglcontrols iup_plot iup_mglplot iup_scintilla iupim iupimglib $(WINLIBS) iupweb iuptuio ledc iupview iupvled iuplua5 iupluaconsole iupluascripter
 
 iup iupgtk iupmot:
 	@$(MAKE) --no-print-directory -C ./src/ $@
@@ -43,3 +43,5 @@ ledc:
 	@$(MAKE) --no-print-directory -C ./srcledc/
 iupview: iupcontrols iup
 	@$(MAKE) --no-print-directory -C ./srcview/
+iupvled: iupcontrols iup
+	@$(MAKE) --no-print-directory -C ./srcvled/

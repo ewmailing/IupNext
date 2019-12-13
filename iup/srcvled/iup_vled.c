@@ -397,9 +397,10 @@ static void updateElemTree(Ihandle* elem_tree, const char* filename)
   int last_child_id = -1;
   int i, j, num_names = IupGetAllNames(NULL, -1);
   char* *names = malloc(sizeof(char*)*num_names);
-  IupGetAllNames(names, num_names);
   int num_named_handles = 0;
   Ihandle* *named_handles;
+  
+  IupGetAllNames(names, num_names);
 
   IupSetAttribute(elem_tree, "DELNODE0", "ALL");
 
@@ -1775,12 +1776,12 @@ static int item_export_img_cb(Ihandle *ih_item)
 {
   char* folder;
   int i, num_images, num_names = IupGetAllNames(NULL, -1);
-  char* *names;
+  char* *names, *imgtype;
   Ihandle* multitext = vLedGetCurrentMultitext(ih_item);
   char *currFilename = IupGetAttribute(multitext, "FILENAME");
   if (!currFilename) currFilename = IupGetAttribute(multitext, "NEW_FILENAME");
 
-  char* imgtype = getfileformat(1);
+  imgtype = getfileformat(1);
   if (!imgtype)
     return IUP_DEFAULT;
 
@@ -2168,6 +2169,7 @@ static int ivLedGetExportFile(Ihandle* ih, char* filename, const char *filter)
 
 static int item_export_led_action_cb(Ihandle *ih_item)
 {
+  int ret;
   char filename[4096];
   Ihandle* multitext = vLedGetCurrentMultitext(ih_item);
   char *currFilename = IupGetAttribute(multitext, "FILENAME");
@@ -2179,7 +2181,7 @@ static int item_export_led_action_cb(Ihandle *ih_item)
   strcpy(filename, title);
   strcat(filename, ".led");
 
-  int ret = ivLedGetExportFile(ih_item, filename, "LED Files|*.led|All Files|*.*|");
+  ret = ivLedGetExportFile(ih_item, filename, "LED Files|*.led|All Files|*.*|");
   if (ret != -1) /* ret==0 existing file. TODO: check if filename is opened. */
     vLedExport(multitext, currFilename, filename, IUP_LAYOUT_EXPORT_LED);
 
@@ -2188,6 +2190,7 @@ static int item_export_led_action_cb(Ihandle *ih_item)
 
 static int item_export_lua_action_cb(Ihandle *ih_item)
 {
+  int ret;
   char filename[4096];
   Ihandle* multitext = vLedGetCurrentMultitext(ih_item);
   char *currFilename = IupGetAttribute(multitext, "FILENAME");
@@ -2199,7 +2202,7 @@ static int item_export_lua_action_cb(Ihandle *ih_item)
   strcpy(filename, title);
   strcat(filename, ".lua");
 
-  int ret = ivLedGetExportFile(ih_item, filename, "Lua Files|*.lua|All Files|*.*|");
+  ret = ivLedGetExportFile(ih_item, filename, "Lua Files|*.lua|All Files|*.*|");
   if (ret != -1) /* ret==0 existing file. TODO: check if filename is opened. */
     vLedExport(multitext, currFilename, filename, IUP_LAYOUT_EXPORT_LUA);
 
@@ -2208,6 +2211,7 @@ static int item_export_lua_action_cb(Ihandle *ih_item)
 
 static int item_export_c_action_cb(Ihandle *ih_item)
 {
+  int ret;
   char filename[4096];
   Ihandle* multitext = vLedGetCurrentMultitext(ih_item);
   char *currFilename = IupGetAttribute(multitext, "FILENAME");
@@ -2219,7 +2223,7 @@ static int item_export_c_action_cb(Ihandle *ih_item)
   strcpy(filename, title);
   strcat(filename, ".c");
 
-  int ret = ivLedGetExportFile(ih_item, filename, "C Files|*.c|All Files|*.*|");
+  ret = ivLedGetExportFile(ih_item, filename, "C Files|*.c|All Files|*.*|");
   if (ret != -1) /* ret==0 existing file. TODO: check if filename is opened. */
     vLedExport(multitext, currFilename, filename, IUP_LAYOUT_EXPORT_C);
 

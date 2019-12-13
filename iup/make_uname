@@ -56,6 +56,10 @@ cd srcview
 ./make_uname $1 $2 $3 $4 $5 $6 $7 $8
 cd ..
 
+cd srcvled
+./make_uname $1 $2 $3 $4 $5 $6 $7 $8
+cd ..
+
 cd srclua5
 #./make_uname $1 $2 $3 $4 $5 $6 $7 $8
 ./make_uname USE_LUA51=Yes $1 $2 $3 $4 $5 $6 $7 $8
