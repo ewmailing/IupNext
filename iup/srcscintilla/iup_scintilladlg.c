@@ -3553,9 +3553,10 @@ static int find_next_action_cb(Ihandle* ih_item)
 
       if (!found)
       {
+        Ihandle *lbl_statusbar;
         multitext = iScintillaDlgGetCurrentMultitext(ih);
         /* update statusbar */
-        Ihandle *lbl_statusbar = IupGetDialogChild(multitext, "STATUSBAR");
+        lbl_statusbar = IupGetDialogChild(multitext, "STATUSBAR");
         IupSetfAttribute(lbl_statusbar, "TITLE", "Text \"%s\" not found.", str_to_find);
       }
     }
