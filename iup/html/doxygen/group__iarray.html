@@ -31,25 +31,26 @@ Collaboration diagram for Simple Array:</div>
 <table class="memberdecls">
 <tr><td colspan="2"><h3><a name="func-members"></a>
 Functions</h3></td></tr>
-<tr><td class="memItemLeft" align="right" valign="top">Iarray *&nbsp;</td><td class="memItemRight" valign="bottom"><a class="el" href="group__iarray.html#ga844d098a353c5a8c0b54a9ded85f774e">iupArrayCreate</a> (int start_max_count, int elem_size)</td></tr>
-<tr><td class="memItemLeft" align="right" valign="top">void&nbsp;</td><td class="memItemRight" valign="bottom"><a class="el" href="group__iarray.html#ga62a5dff11a8541fd2965bb5aac3fe9f8">iupArrayDestroy</a> (Iarray *iarray)</td></tr>
-<tr><td class="memItemLeft" align="right" valign="top">void *&nbsp;</td><td class="memItemRight" valign="bottom"><a class="el" href="group__iarray.html#ga97ab4efac0d84289a9d11bc8049337ae">iupArrayGetData</a> (Iarray *iarray)</td></tr>
-<tr><td class="memItemLeft" align="right" valign="top">void *&nbsp;</td><td class="memItemRight" valign="bottom"><a class="el" href="group__iarray.html#gad7b1773f6bf20aac4c7e16d76ca47eab">iupArrayInc</a> (Iarray *iarray)</td></tr>
-<tr><td class="memItemLeft" align="right" valign="top">void *&nbsp;</td><td class="memItemRight" valign="bottom"><a class="el" href="group__iarray.html#ga5d6c471b2c080ff80b45358711ca648f">iupArrayAdd</a> (Iarray *iarray, int add_count)</td></tr>
-<tr><td class="memItemLeft" align="right" valign="top">void *&nbsp;</td><td class="memItemRight" valign="bottom"><a class="el" href="group__iarray.html#ga5ee7305622c49905566cb1c2b393bf11">iupArrayInsert</a> (Iarray *iarray, int index, int insert_count)</td></tr>
-<tr><td class="memItemLeft" align="right" valign="top">void&nbsp;</td><td class="memItemRight" valign="bottom"><a class="el" href="group__iarray.html#gacf3f03012b7eda9d0971a2bd72b00332">iupArrayRemove</a> (Iarray *iarray, int index, int remove_count)</td></tr>
-<tr><td class="memItemLeft" align="right" valign="top">int&nbsp;</td><td class="memItemRight" valign="bottom"><a class="el" href="group__iarray.html#gadc4913c3f22eb8d53824d92dc6d7d271">iupArrayCount</a> (Iarray *iarray)</td></tr>
+<tr><td class="memItemLeft" align="right" valign="top">IUP_SDK_API Iarray *&nbsp;</td><td class="memItemRight" valign="bottom"><a class="el" href="group__iarray.html#ga847e0da8e571d6d669e1bc97fbb923a0">iupArrayCreate</a> (int start_max_count, int elem_size)</td></tr>
+<tr><td class="memItemLeft" align="right" valign="top">IUP_SDK_API void&nbsp;</td><td class="memItemRight" valign="bottom"><a class="el" href="group__iarray.html#gad30748c9c2b7b716371d62c6af5c827a">iupArrayDestroy</a> (Iarray *iarray)</td></tr>
+<tr><td class="memItemLeft" align="right" valign="top">IUP_SDK_API void *&nbsp;</td><td class="memItemRight" valign="bottom"><a class="el" href="group__iarray.html#gaf1f145a494b810f050a331d287f638eb">iupArrayGetData</a> (Iarray *iarray)</td></tr>
+<tr><td class="memItemLeft" align="right" valign="top">IUP_SDK_API void *&nbsp;</td><td class="memItemRight" valign="bottom"><a class="el" href="group__iarray.html#gad28e128efaf8b4cbb37c9df9bb1c1e9c">iupArrayReleaseData</a> (Iarray *iarray)</td></tr>
+<tr><td class="memItemLeft" align="right" valign="top">IUP_SDK_API void *&nbsp;</td><td class="memItemRight" valign="bottom"><a class="el" href="group__iarray.html#ga7be196a335b33a44698f25d4f0849f09">iupArrayInc</a> (Iarray *iarray)</td></tr>
+<tr><td class="memItemLeft" align="right" valign="top">IUP_SDK_API void *&nbsp;</td><td class="memItemRight" valign="bottom"><a class="el" href="group__iarray.html#ga0455eb7a0acabd8b772b565252b7e2c5">iupArrayAdd</a> (Iarray *iarray, int add_count)</td></tr>
+<tr><td class="memItemLeft" align="right" valign="top">IUP_SDK_API void *&nbsp;</td><td class="memItemRight" valign="bottom"><a class="el" href="group__iarray.html#ga0ae8737f1e372341a23701a5119c6b9f">iupArrayInsert</a> (Iarray *iarray, int index, int insert_count)</td></tr>
+<tr><td class="memItemLeft" align="right" valign="top">IUP_SDK_API void&nbsp;</td><td class="memItemRight" valign="bottom"><a class="el" href="group__iarray.html#ga2cbaf775416e77defb09e79a9c5f6b78">iupArrayRemove</a> (Iarray *iarray, int index, int remove_count)</td></tr>
+<tr><td class="memItemLeft" align="right" valign="top">IUP_SDK_API int&nbsp;</td><td class="memItemRight" valign="bottom"><a class="el" href="group__iarray.html#gae3f7bcbdcac5e25f0655e261f447f803">iupArrayCount</a> (Iarray *iarray)</td></tr>
 </table>
 <hr/><a name="_details"></a><h3>Detailed Description</h3>
 <dl class="user"><dt><b></b></dt><dd>Expandable array using a simple pointer. </dd></dl>
 <dl class="user"><dt><b></b></dt><dd>See <a class="el" href="iup__array_8h.html">iup_array.h</a> </dd></dl>
 <hr/><h3>Function Documentation</h3>
-<a class="anchor" id="ga844d098a353c5a8c0b54a9ded85f774e"></a><!-- doxytag: member="iup_array.h::iupArrayCreate" ref="ga844d098a353c5a8c0b54a9ded85f774e" args="(int start_max_count, int elem_size)" -->
+<a class="anchor" id="ga847e0da8e571d6d669e1bc97fbb923a0"></a><!-- doxytag: member="iup_array.h::iupArrayCreate" ref="ga847e0da8e571d6d669e1bc97fbb923a0" args="(int start_max_count, int elem_size)" -->
 <div class="memitem">
 <div class="memproto">
       <table class="memname">
         <tr>
-          <td class="memname">Iarray* iupArrayCreate </td>
+          <td class="memname">IUP_SDK_API Iarray* iupArrayCreate </td>
           <td>(</td>
           <td class="paramtype">int&nbsp;</td>
           <td class="paramname"> <em>start_max_count</em>, </td>
@@ -68,16 +69,16 @@ Functions</h3></td></tr>
       </table>
 </div>
 <div class="memdoc">
-<p>Creates an array with an initial room for elements, and the element size. The array count starts at 0. And the maximum number of elements starts at the given count. The maximum number of elements is increased by the start_max_count, every time it needs more memory. Data is always initialized with zeros. Must call <a class="el" href="group__iarray.html#gad7b1773f6bf20aac4c7e16d76ca47eab">iupArrayInc</a>, <a class="el" href="group__iarray.html#ga5d6c471b2c080ff80b45358711ca648f">iupArrayAdd</a> or <a class="el" href="group__iarray.html#ga5ee7305622c49905566cb1c2b393bf11">iupArrayInsert</a> to properly increase the number of elements. </p>
+<p>Creates an array with an initial room for elements, and the element size. The array count starts at 0. And the maximum number of elements starts at the given count. The maximum number of elements is increased by the start_max_count, every time it needs more memory. Data is always initialized with zeros. Must call <a class="el" href="group__iarray.html#ga7be196a335b33a44698f25d4f0849f09">iupArrayInc</a>, <a class="el" href="group__iarray.html#ga0455eb7a0acabd8b772b565252b7e2c5">iupArrayAdd</a> or <a class="el" href="group__iarray.html#ga0ae8737f1e372341a23701a5119c6b9f">iupArrayInsert</a> to properly increase the number of elements. </p>
 
 </div>
 </div>
-<a class="anchor" id="ga62a5dff11a8541fd2965bb5aac3fe9f8"></a><!-- doxytag: member="iup_array.h::iupArrayDestroy" ref="ga62a5dff11a8541fd2965bb5aac3fe9f8" args="(Iarray *iarray)" -->
+<a class="anchor" id="gad30748c9c2b7b716371d62c6af5c827a"></a><!-- doxytag: member="iup_array.h::iupArrayDestroy" ref="gad30748c9c2b7b716371d62c6af5c827a" args="(Iarray *iarray)" -->
 <div class="memitem">
 <div class="memproto">
       <table class="memname">
         <tr>
-          <td class="memname">void iupArrayDestroy </td>
+          <td class="memname">IUP_SDK_API void iupArrayDestroy </td>
           <td>(</td>
           <td class="paramtype">Iarray *&nbsp;</td>
           <td class="paramname"> <em>iarray</em></td>
@@ -91,12 +92,12 @@ Functions</h3></td></tr>
 
 </div>
 </div>
-<a class="anchor" id="ga97ab4efac0d84289a9d11bc8049337ae"></a><!-- doxytag: member="iup_array.h::iupArrayGetData" ref="ga97ab4efac0d84289a9d11bc8049337ae" args="(Iarray *iarray)" -->
+<a class="anchor" id="gaf1f145a494b810f050a331d287f638eb"></a><!-- doxytag: member="iup_array.h::iupArrayGetData" ref="gaf1f145a494b810f050a331d287f638eb" args="(Iarray *iarray)" -->
 <div class="memitem">
 <div class="memproto">
       <table class="memname">
         <tr>
-          <td class="memname">void* iupArrayGetData </td>
+          <td class="memname">IUP_SDK_API void* iupArrayGetData </td>
           <td>(</td>
           <td class="paramtype">Iarray *&nbsp;</td>
           <td class="paramname"> <em>iarray</em></td>
@@ -110,12 +111,31 @@ Functions</h3></td></tr>
 
 </div>
 </div>
-<a class="anchor" id="gad7b1773f6bf20aac4c7e16d76ca47eab"></a><!-- doxytag: member="iup_array.h::iupArrayInc" ref="gad7b1773f6bf20aac4c7e16d76ca47eab" args="(Iarray *iarray)" -->
+<a class="anchor" id="gad28e128efaf8b4cbb37c9df9bb1c1e9c"></a><!-- doxytag: member="iup_array.h::iupArrayReleaseData" ref="gad28e128efaf8b4cbb37c9df9bb1c1e9c" args="(Iarray *iarray)" -->
 <div class="memitem">
 <div class="memproto">
       <table class="memname">
         <tr>
-          <td class="memname">void* iupArrayInc </td>
+          <td class="memname">IUP_SDK_API void* iupArrayReleaseData </td>
+          <td>(</td>
+          <td class="paramtype">Iarray *&nbsp;</td>
+          <td class="paramname"> <em>iarray</em></td>
+          <td>&nbsp;)&nbsp;</td>
+          <td></td>
+        </tr>
+      </table>
+</div>
+<div class="memdoc">
+<p>Returns the pointer that contains the array, but also release it to be used elsewhere. </p>
+
+</div>
+</div>
+<a class="anchor" id="ga7be196a335b33a44698f25d4f0849f09"></a><!-- doxytag: member="iup_array.h::iupArrayInc" ref="ga7be196a335b33a44698f25d4f0849f09" args="(Iarray *iarray)" -->
+<div class="memitem">
+<div class="memproto">
+      <table class="memname">
+        <tr>
+          <td class="memname">IUP_SDK_API void* iupArrayInc </td>
           <td>(</td>
           <td class="paramtype">Iarray *&nbsp;</td>
           <td class="paramname"> <em>iarray</em></td>
@@ -129,12 +149,12 @@ Functions</h3></td></tr>
 
 </div>
 </div>
-<a class="anchor" id="ga5d6c471b2c080ff80b45358711ca648f"></a><!-- doxytag: member="iup_array.h::iupArrayAdd" ref="ga5d6c471b2c080ff80b45358711ca648f" args="(Iarray *iarray, int add_count)" -->
+<a class="anchor" id="ga0455eb7a0acabd8b772b565252b7e2c5"></a><!-- doxytag: member="iup_array.h::iupArrayAdd" ref="ga0455eb7a0acabd8b772b565252b7e2c5" args="(Iarray *iarray, int add_count)" -->
 <div class="memitem">
 <div class="memproto">
       <table class="memname">
         <tr>
-          <td class="memname">void* iupArrayAdd </td>
+          <td class="memname">IUP_SDK_API void* iupArrayAdd </td>
           <td>(</td>
           <td class="paramtype">Iarray *&nbsp;</td>
           <td class="paramname"> <em>iarray</em>, </td>
@@ -157,12 +177,12 @@ Functions</h3></td></tr>
 
 </div>
 </div>
-<a class="anchor" id="ga5ee7305622c49905566cb1c2b393bf11"></a><!-- doxytag: member="iup_array.h::iupArrayInsert" ref="ga5ee7305622c49905566cb1c2b393bf11" args="(Iarray *iarray, int index, int insert_count)" -->
+<a class="anchor" id="ga0ae8737f1e372341a23701a5119c6b9f"></a><!-- doxytag: member="iup_array.h::iupArrayInsert" ref="ga0ae8737f1e372341a23701a5119c6b9f" args="(Iarray *iarray, int index, int insert_count)" -->
 <div class="memitem">
 <div class="memproto">
       <table class="memname">
         <tr>
-          <td class="memname">void* iupArrayInsert </td>
+          <td class="memname">IUP_SDK_API void* iupArrayInsert </td>
           <td>(</td>
           <td class="paramtype">Iarray *&nbsp;</td>
           <td class="paramname"> <em>iarray</em>, </td>
@@ -191,12 +211,12 @@ Functions</h3></td></tr>
 
 </div>
 </div>
-<a class="anchor" id="gacf3f03012b7eda9d0971a2bd72b00332"></a><!-- doxytag: member="iup_array.h::iupArrayRemove" ref="gacf3f03012b7eda9d0971a2bd72b00332" args="(Iarray *iarray, int index, int remove_count)" -->
+<a class="anchor" id="ga2cbaf775416e77defb09e79a9c5f6b78"></a><!-- doxytag: member="iup_array.h::iupArrayRemove" ref="ga2cbaf775416e77defb09e79a9c5f6b78" args="(Iarray *iarray, int index, int remove_count)" -->
 <div class="memitem">
 <div class="memproto">
       <table class="memname">
         <tr>
-          <td class="memname">void iupArrayRemove </td>
+          <td class="memname">IUP_SDK_API void iupArrayRemove </td>
           <td>(</td>
           <td class="paramtype">Iarray *&nbsp;</td>
           <td class="paramname"> <em>iarray</em>, </td>
@@ -225,12 +245,12 @@ Functions</h3></td></tr>
 
 </div>
 </div>
-<a class="anchor" id="gadc4913c3f22eb8d53824d92dc6d7d271"></a><!-- doxytag: member="iup_array.h::iupArrayCount" ref="gadc4913c3f22eb8d53824d92dc6d7d271" args="(Iarray *iarray)" -->
+<a class="anchor" id="gae3f7bcbdcac5e25f0655e261f447f803"></a><!-- doxytag: member="iup_array.h::iupArrayCount" ref="gae3f7bcbdcac5e25f0655e261f447f803" args="(Iarray *iarray)" -->
 <div class="memitem">
 <div class="memproto">
       <table class="memname">
         <tr>
-          <td class="memname">int iupArrayCount </td>
+          <td class="memname">IUP_SDK_API int iupArrayCount </td>
           <td>(</td>
           <td class="paramtype">Iarray *&nbsp;</td>
           <td class="paramname"> <em>iarray</em></td>
@@ -245,7 +265,7 @@ Functions</h3></td></tr>
 </div>
 </div>
 </div>
-<hr class="footer"/><address class="footer"><small>Generated on Mon Apr 29 2019 14:49:54 for SDK by&nbsp;
+<hr class="footer"/><address class="footer"><small>Generated on Fri Dec 13 2019 14:22:07 for SDK by&nbsp;
 <a href="http://www.doxygen.org/index.html">
 <img class="footer" src="doxygen.png" alt="doxygen"/></a> 1.7.1 </small></address>
 </body>

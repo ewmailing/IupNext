@@ -31,23 +31,23 @@ Collaboration diagram for Key Coding and Key Callbacks:</div>
 <table class="memberdecls">
 <tr><td colspan="2"><h3><a name="func-members"></a>
 Functions</h3></td></tr>
-<tr><td class="memItemLeft" align="right" valign="top">char *&nbsp;</td><td class="memItemRight" valign="bottom"><a class="el" href="group__key.html#ga2d5fdd2977d457d905b9473cd79134ba">iupKeyCodeToName</a> (int code)</td></tr>
-<tr><td class="memItemLeft" align="right" valign="top">void&nbsp;</td><td class="memItemRight" valign="bottom"><a class="el" href="group__key.html#ga607deab8fe427ec43ac8eefb6171aba7">iupKeyForEach</a> (void(*func)(const char *name, int code, void *user_data), void *user_data)</td></tr>
-<tr><td class="memItemLeft" align="right" valign="top">int&nbsp;</td><td class="memItemRight" valign="bottom"><a class="el" href="group__key.html#ga3d23f85c60d9dfca38f386f7b3eac5b9">iupKeyCallKeyCb</a> (Ihandle *ih, int c)</td></tr>
-<tr><td class="memItemLeft" align="right" valign="top">int&nbsp;</td><td class="memItemRight" valign="bottom"><a class="el" href="group__key.html#ga75bc7a7960daa956ab0f5b8a240baa5c">iupKeyCallKeyPressCb</a> (Ihandle *ih, int code, int press)</td></tr>
-<tr><td class="memItemLeft" align="right" valign="top">int&nbsp;</td><td class="memItemRight" valign="bottom"><a class="el" href="group__key.html#gac1d190d8721ed3f15e0841939abecf73">iupKeyProcessNavigation</a> (Ihandle *ih, int code, int shift)</td></tr>
-<tr><td class="memItemLeft" align="right" valign="top">int&nbsp;</td><td class="memItemRight" valign="bottom"><a class="el" href="group__key.html#ga02d92e7c9b672c8559988473445e66f7">iupKeyProcessMnemonic</a> (Ihandle *ih, int code)</td></tr>
-<tr><td class="memItemLeft" align="right" valign="top">void&nbsp;</td><td class="memItemRight" valign="bottom"><a class="el" href="group__key.html#gafbd5dae5461a9d32d3919dec303b3324">iupKeySetMnemonic</a> (Ihandle *ih, int code, int pos)</td></tr>
+<tr><td class="memItemLeft" align="right" valign="top">IUP_SDK_API char *&nbsp;</td><td class="memItemRight" valign="bottom"><a class="el" href="group__key.html#gabdb702f93ce99100104eb724d89fec7c">iupKeyCodeToName</a> (int code)</td></tr>
+<tr><td class="memItemLeft" align="right" valign="top">IUP_SDK_API void&nbsp;</td><td class="memItemRight" valign="bottom"><a class="el" href="group__key.html#ga9ed0a994f1a8435264c8eaa02547c0ee">iupKeyForEach</a> (void(*func)(const char *name, int code, void *user_data), void *user_data)</td></tr>
+<tr><td class="memItemLeft" align="right" valign="top">IUP_SDK_API int&nbsp;</td><td class="memItemRight" valign="bottom"><a class="el" href="group__key.html#gab94a91d6002153655e352835fedda9e6">iupKeyCallKeyCb</a> (Ihandle *ih, int c)</td></tr>
+<tr><td class="memItemLeft" align="right" valign="top">IUP_SDK_API int&nbsp;</td><td class="memItemRight" valign="bottom"><a class="el" href="group__key.html#ga2bcdb0481b4fe60ec0383f80fdeef5d0">iupKeyCallKeyPressCb</a> (Ihandle *ih, int code, int press)</td></tr>
+<tr><td class="memItemLeft" align="right" valign="top">IUP_SDK_API int&nbsp;</td><td class="memItemRight" valign="bottom"><a class="el" href="group__key.html#ga035be26116be6d28752a8e8ec207aaa2">iupKeyProcessNavigation</a> (Ihandle *ih, int code, int shift)</td></tr>
+<tr><td class="memItemLeft" align="right" valign="top">IUP_SDK_API int&nbsp;</td><td class="memItemRight" valign="bottom"><a class="el" href="group__key.html#ga157cd1bd0868be30c0f2a18ab6507f5e">iupKeyProcessMnemonic</a> (Ihandle *ih, int code)</td></tr>
+<tr><td class="memItemLeft" align="right" valign="top">IUP_SDK_API void&nbsp;</td><td class="memItemRight" valign="bottom"><a class="el" href="group__key.html#ga36e86fe253f905cbfe1ba29f2f7c1f20">iupKeySetMnemonic</a> (Ihandle *ih, int code, int pos)</td></tr>
 </table>
 <hr/><a name="_details"></a><h3>Detailed Description</h3>
 <dl class="user"><dt><b></b></dt><dd>See <a class="el" href="iup__key_8h.html">iup_key.h</a> </dd></dl>
 <hr/><h3>Function Documentation</h3>
-<a class="anchor" id="ga2d5fdd2977d457d905b9473cd79134ba"></a><!-- doxytag: member="iup_key.h::iupKeyCodeToName" ref="ga2d5fdd2977d457d905b9473cd79134ba" args="(int code)" -->
+<a class="anchor" id="gabdb702f93ce99100104eb724d89fec7c"></a><!-- doxytag: member="iup_key.h::iupKeyCodeToName" ref="gabdb702f93ce99100104eb724d89fec7c" args="(int code)" -->
 <div class="memitem">
 <div class="memproto">
       <table class="memname">
         <tr>
-          <td class="memname">char* iupKeyCodeToName </td>
+          <td class="memname">IUP_SDK_API char* iupKeyCodeToName </td>
           <td>(</td>
           <td class="paramtype">int&nbsp;</td>
           <td class="paramname"> <em>code</em></td>
@@ -61,12 +61,12 @@ Functions</h3></td></tr>
 
 </div>
 </div>
-<a class="anchor" id="ga607deab8fe427ec43ac8eefb6171aba7"></a><!-- doxytag: member="iup_key.h::iupKeyForEach" ref="ga607deab8fe427ec43ac8eefb6171aba7" args="(void(*func)(const char *name, int code, void *user_data), void *user_data)" -->
+<a class="anchor" id="ga9ed0a994f1a8435264c8eaa02547c0ee"></a><!-- doxytag: member="iup_key.h::iupKeyForEach" ref="ga9ed0a994f1a8435264c8eaa02547c0ee" args="(void(*func)(const char *name, int code, void *user_data), void *user_data)" -->
 <div class="memitem">
 <div class="memproto">
       <table class="memname">
         <tr>
-          <td class="memname">void iupKeyForEach </td>
+          <td class="memname">IUP_SDK_API void iupKeyForEach </td>
           <td>(</td>
           <td class="paramtype">void(*)(const char *name, int code, void *user_data)&nbsp;</td>
           <td class="paramname"> <em>func</em>, </td>
@@ -90,12 +90,12 @@ Functions</h3></td></tr>
 
 </div>
 </div>
-<a class="anchor" id="ga3d23f85c60d9dfca38f386f7b3eac5b9"></a><!-- doxytag: member="iup_key.h::iupKeyCallKeyCb" ref="ga3d23f85c60d9dfca38f386f7b3eac5b9" args="(Ihandle *ih, int c)" -->
+<a class="anchor" id="gab94a91d6002153655e352835fedda9e6"></a><!-- doxytag: member="iup_key.h::iupKeyCallKeyCb" ref="gab94a91d6002153655e352835fedda9e6" args="(Ihandle *ih, int c)" -->
 <div class="memitem">
 <div class="memproto">
       <table class="memname">
         <tr>
-          <td class="memname">int iupKeyCallKeyCb </td>
+          <td class="memname">IUP_SDK_API int iupKeyCallKeyCb </td>
           <td>(</td>
           <td class="paramtype">Ihandle *&nbsp;</td>
           <td class="paramname"> <em>ih</em>, </td>
@@ -118,12 +118,12 @@ Functions</h3></td></tr>
 
 </div>
 </div>
-<a class="anchor" id="ga75bc7a7960daa956ab0f5b8a240baa5c"></a><!-- doxytag: member="iup_key.h::iupKeyCallKeyPressCb" ref="ga75bc7a7960daa956ab0f5b8a240baa5c" args="(Ihandle *ih, int code, int press)" -->
+<a class="anchor" id="ga2bcdb0481b4fe60ec0383f80fdeef5d0"></a><!-- doxytag: member="iup_key.h::iupKeyCallKeyPressCb" ref="ga2bcdb0481b4fe60ec0383f80fdeef5d0" args="(Ihandle *ih, int code, int press)" -->
 <div class="memitem">
 <div class="memproto">
       <table class="memname">
         <tr>
-          <td class="memname">int iupKeyCallKeyPressCb </td>
+          <td class="memname">IUP_SDK_API int iupKeyCallKeyPressCb </td>
           <td>(</td>
           <td class="paramtype">Ihandle *&nbsp;</td>
           <td class="paramname"> <em>ih</em>, </td>
@@ -152,12 +152,12 @@ Functions</h3></td></tr>
 
 </div>
 </div>
-<a class="anchor" id="gac1d190d8721ed3f15e0841939abecf73"></a><!-- doxytag: member="iup_key.h::iupKeyProcessNavigation" ref="gac1d190d8721ed3f15e0841939abecf73" args="(Ihandle *ih, int code, int shift)" -->
+<a class="anchor" id="ga035be26116be6d28752a8e8ec207aaa2"></a><!-- doxytag: member="iup_key.h::iupKeyProcessNavigation" ref="ga035be26116be6d28752a8e8ec207aaa2" args="(Ihandle *ih, int code, int shift)" -->
 <div class="memitem">
 <div class="memproto">
       <table class="memname">
         <tr>
-          <td class="memname">int iupKeyProcessNavigation </td>
+          <td class="memname">IUP_SDK_API int iupKeyProcessNavigation </td>
           <td>(</td>
           <td class="paramtype">Ihandle *&nbsp;</td>
           <td class="paramname"> <em>ih</em>, </td>
@@ -186,12 +186,12 @@ Functions</h3></td></tr>
 
 </div>
 </div>
-<a class="anchor" id="ga02d92e7c9b672c8559988473445e66f7"></a><!-- doxytag: member="iup_key.h::iupKeyProcessMnemonic" ref="ga02d92e7c9b672c8559988473445e66f7" args="(Ihandle *ih, int code)" -->
+<a class="anchor" id="ga157cd1bd0868be30c0f2a18ab6507f5e"></a><!-- doxytag: member="iup_key.h::iupKeyProcessMnemonic" ref="ga157cd1bd0868be30c0f2a18ab6507f5e" args="(Ihandle *ih, int code)" -->
 <div class="memitem">
 <div class="memproto">
       <table class="memname">
         <tr>
-          <td class="memname">int iupKeyProcessMnemonic </td>
+          <td class="memname">IUP_SDK_API int iupKeyProcessMnemonic </td>
           <td>(</td>
           <td class="paramtype">Ihandle *&nbsp;</td>
           <td class="paramname"> <em>ih</em>, </td>
@@ -214,12 +214,12 @@ Functions</h3></td></tr>
 
 </div>
 </div>
-<a class="anchor" id="gafbd5dae5461a9d32d3919dec303b3324"></a><!-- doxytag: member="iup_key.h::iupKeySetMnemonic" ref="gafbd5dae5461a9d32d3919dec303b3324" args="(Ihandle *ih, int code, int pos)" -->
+<a class="anchor" id="ga36e86fe253f905cbfe1ba29f2f7c1f20"></a><!-- doxytag: member="iup_key.h::iupKeySetMnemonic" ref="ga36e86fe253f905cbfe1ba29f2f7c1f20" args="(Ihandle *ih, int code, int pos)" -->
 <div class="memitem">
 <div class="memproto">
       <table class="memname">
         <tr>
-          <td class="memname">void iupKeySetMnemonic </td>
+          <td class="memname">IUP_SDK_API void iupKeySetMnemonic </td>
           <td>(</td>
           <td class="paramtype">Ihandle *&nbsp;</td>
           <td class="paramname"> <em>ih</em>, </td>
@@ -249,7 +249,7 @@ Functions</h3></td></tr>
 </div>
 </div>
 </div>
-<hr class="footer"/><address class="footer"><small>Generated on Mon Apr 29 2019 14:49:54 for SDK by&nbsp;
+<hr class="footer"/><address class="footer"><small>Generated on Fri Dec 13 2019 14:22:07 for SDK by&nbsp;
 <a href="http://www.doxygen.org/index.html">
 <img class="footer" src="doxygen.png" alt="doxygen"/></a> 1.7.1 </small></address>
 </body>

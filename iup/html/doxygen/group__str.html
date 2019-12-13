@@ -11,6 +11,7 @@
 <div class="header">
   <div class="summary">
 <a href="#define-members">Defines</a> &#124;
+<a href="#enum-members">Enumerations</a> &#124;
 <a href="#func-members">Functions</a>  </div>
   <div class="headertitle">
 <h2>String Utilities<br/>
@@ -37,70 +38,79 @@ Defines</h3></td></tr>
 <tr><td class="memItemLeft" align="right" valign="top">#define&nbsp;</td><td class="memItemRight" valign="bottom"><a class="el" href="group__str.html#ga54286fd8d3ed76577d7258f5bceb2c6c">iup_tolower</a>(_c)&nbsp;&nbsp;&nbsp;((_c &gt;= 'A' &amp;&amp; _c &lt;= 'Z')? (_c - 'A') + 'a': _c)</td></tr>
 <tr><td class="memItemLeft" align="right" valign="top">#define&nbsp;</td><td class="memItemRight" valign="bottom"><a class="el" href="group__str.html#ga4b501af92deb6a79047183827e1e085b">IUP_FLOAT2STR</a>&nbsp;&nbsp;&nbsp;&quot;%.9f&quot;</td></tr>
 <tr><td class="memItemLeft" align="right" valign="top">#define&nbsp;</td><td class="memItemRight" valign="bottom"><a class="el" href="group__str.html#ga62c092307ec64c69d4d336792ccd81d7">IUP_DOUBLE2STR</a>&nbsp;&nbsp;&nbsp;&quot;%.18f&quot;</td></tr>
+<tr><td colspan="2"><h3><a name="enum-members"></a>
+Enumerations</h3></td></tr>
+<tr><td class="memItemLeft" align="right" valign="top">enum &nbsp;</td><td class="memItemRight" valign="bottom">{ <b>IUP_CASE_UPPER</b>, 
+<b>IUP_CASE_LOWER</b>, 
+<b>IUP_CASE_TOGGLE</b>, 
+<b>IUP_CASE_TITLE</b>
+ }</td></tr>
 <tr><td colspan="2"><h3><a name="func-members"></a>
 Functions</h3></td></tr>
-<tr><td class="memItemLeft" align="right" valign="top">int&nbsp;</td><td class="memItemRight" valign="bottom"><a class="el" href="group__str.html#gaee67268b488a7b09fb918b38bcdc6b7b">iupStrEqual</a> (const char *str1, const char *str2)</td></tr>
-<tr><td class="memItemLeft" align="right" valign="top">int&nbsp;</td><td class="memItemRight" valign="bottom"><a class="el" href="group__str.html#ga875bd5408840877d27ceeaaa8a9a6953">iupStrEqualNoCase</a> (const char *str1, const char *str2)</td></tr>
-<tr><td class="memItemLeft" align="right" valign="top">int&nbsp;</td><td class="memItemRight" valign="bottom"><a class="el" href="group__str.html#ga8b338f6811c7199ecdb41ed2b427c652">iupStrEqualNoCaseNoSpace</a> (const char *str1, const char *str2)</td></tr>
-<tr><td class="memItemLeft" align="right" valign="top">int&nbsp;</td><td class="memItemRight" valign="bottom"><a class="el" href="group__str.html#gac5ebf4858fb79934690dc9e95e203754">iupStrEqualPartial</a> (const char *str1, const char *str2)</td></tr>
-<tr><td class="memItemLeft" align="right" valign="top">int&nbsp;</td><td class="memItemRight" valign="bottom"><a class="el" href="group__str.html#ga599c362242ef090e17fa64051e110146">iupStrEqualNoCasePartial</a> (const char *str1, const char *str2)</td></tr>
-<tr><td class="memItemLeft" align="right" valign="top">int&nbsp;</td><td class="memItemRight" valign="bottom"><a class="el" href="group__str.html#gae78f682549b545518a6e8e163d251b71">iupStrBoolean</a> (const char *str)</td></tr>
-<tr><td class="memItemLeft" align="right" valign="top">int&nbsp;</td><td class="memItemRight" valign="bottom"><a class="el" href="group__str.html#gaf73e6315197888d2fcb6728fc6b3d20b">iupStrFalse</a> (const char *str)</td></tr>
-<tr><td class="memItemLeft" align="right" valign="top">int&nbsp;</td><td class="memItemRight" valign="bottom"><a class="el" href="group__str.html#ga269afa466326ce0a1c93745d74b1697c">iupStrLineCount</a> (const char *str, int len)</td></tr>
-<tr><td class="memItemLeft" align="right" valign="top">const char *&nbsp;</td><td class="memItemRight" valign="bottom"><a class="el" href="group__str.html#ga03f156a565f38134086774119662e47c">iupStrNextLine</a> (const char *str, int *len)</td></tr>
-<tr><td class="memItemLeft" align="right" valign="top">const char *&nbsp;</td><td class="memItemRight" valign="bottom"><a class="el" href="group__str.html#gaf4cdc8c627659bf782b8385dd47fec5a">iupStrNextValue</a> (const char *str, int str_len, int *len, char sep)</td></tr>
-<tr><td class="memItemLeft" align="right" valign="top">int&nbsp;</td><td class="memItemRight" valign="bottom"><a class="el" href="group__str.html#gad3750cb7c49991ca40e2b69af68f534b">iupStrCountChar</a> (const char *str, char c)</td></tr>
-<tr><td class="memItemLeft" align="right" valign="top">char *&nbsp;</td><td class="memItemRight" valign="bottom"><a class="el" href="group__str.html#ga0e492d7228c785bcf555a8cfad10c3eb">iupStrDup</a> (const char *str)</td></tr>
-<tr><td class="memItemLeft" align="right" valign="top">char *&nbsp;</td><td class="memItemRight" valign="bottom"><a class="el" href="group__str.html#ga088130ff2478546193bc7a9bdce49509">iupStrDupUntil</a> (const char **str, char c)</td></tr>
-<tr><td class="memItemLeft" align="right" valign="top">void&nbsp;</td><td class="memItemRight" valign="bottom"><a class="el" href="group__str.html#ga3433256b0b12ce3c056b2fcc165fc800">iupStrCopyN</a> (char *dst_str, int dst_max_size, const char *src_str)</td></tr>
-<tr><td class="memItemLeft" align="right" valign="top">char *&nbsp;</td><td class="memItemRight" valign="bottom"><a class="el" href="group__str.html#ga6fd19ec94b8fa6eafab4c8d117063e17">iupStrGetMemory</a> (int size)</td></tr>
-<tr><td class="memItemLeft" align="right" valign="top">char *&nbsp;</td><td class="memItemRight" valign="bottom"><a class="el" href="group__str.html#ga4d1152163fab0dc8393181c5bb7cdb7a">iupStrGetLargeMem</a> (int *size)</td></tr>
-<tr><td class="memItemLeft" align="right" valign="top">void&nbsp;</td><td class="memItemRight" valign="bottom"><a class="el" href="group__str.html#ga0d208252df1bfbee5356061ada14ad26">iupStrLower</a> (char *dstr, const char *sstr)</td></tr>
-<tr><td class="memItemLeft" align="right" valign="top">void&nbsp;</td><td class="memItemRight" valign="bottom"><a class="el" href="group__str.html#ga4b826c9e4bc29d01eb3e72cf63a60a0a">iupStrUpper</a> (char *dstr, const char *sstr)</td></tr>
-<tr><td class="memItemLeft" align="right" valign="top">int&nbsp;</td><td class="memItemRight" valign="bottom"><a class="el" href="group__str.html#gac145a269358ebe3b39d80a03774f98fd">iupStrHasSpace</a> (const char *str)</td></tr>
-<tr><td class="memItemLeft" align="right" valign="top">int&nbsp;</td><td class="memItemRight" valign="bottom"><a class="el" href="group__str.html#gae3f6c4f24824f5b3a032926785558899">iupStrIsAscii</a> (const char *str)</td></tr>
-<tr><td class="memItemLeft" align="right" valign="top">char *&nbsp;</td><td class="memItemRight" valign="bottom"><a class="el" href="group__str.html#gae48150ea324670a47e08600bc9601761">iupStrReturnStrf</a> (const char *format,...)</td></tr>
-<tr><td class="memItemLeft" align="right" valign="top">char *&nbsp;</td><td class="memItemRight" valign="bottom"><a class="el" href="group__str.html#ga1a32e716d7d977dbf2e9f740f9cc8b0d">iupStrReturnStr</a> (const char *str)</td></tr>
-<tr><td class="memItemLeft" align="right" valign="top">char *&nbsp;</td><td class="memItemRight" valign="bottom"><a class="el" href="group__str.html#gae9bce060f9302afdae01350a428a5d53">iupStrReturnBoolean</a> (int i)</td></tr>
-<tr><td class="memItemLeft" align="right" valign="top">char *&nbsp;</td><td class="memItemRight" valign="bottom"><a class="el" href="group__str.html#ga75c4f81d82da85c8823fd89064b1a5da">iupStrReturnChecked</a> (int i)</td></tr>
-<tr><td class="memItemLeft" align="right" valign="top">char *&nbsp;</td><td class="memItemRight" valign="bottom"><a class="el" href="group__str.html#ga2ea89794c4bf0f7a0e7e915b370f0cda">iupStrReturnInt</a> (int i)</td></tr>
-<tr><td class="memItemLeft" align="right" valign="top">char *&nbsp;</td><td class="memItemRight" valign="bottom"><a class="el" href="group__str.html#ga4a47e6bc78779d4639e73c5d948eb336">iupStrReturnUInt</a> (unsigned int i)</td></tr>
-<tr><td class="memItemLeft" align="right" valign="top">char *&nbsp;</td><td class="memItemRight" valign="bottom"><a class="el" href="group__str.html#gaaacd74f85563a556af4174d88b7f81e6">iupStrReturnFloat</a> (float f)</td></tr>
-<tr><td class="memItemLeft" align="right" valign="top">char *&nbsp;</td><td class="memItemRight" valign="bottom"><a class="el" href="group__str.html#ga51b0b9de315b90c2c434df4106143313">iupStrReturnDouble</a> (double d)</td></tr>
-<tr><td class="memItemLeft" align="right" valign="top">char *&nbsp;</td><td class="memItemRight" valign="bottom"><a class="el" href="group__str.html#ga475cc8b7670fedc8961e3f338dc3755f">iupStrReturnRGB</a> (unsigned char r, unsigned char g, unsigned char b)</td></tr>
-<tr><td class="memItemLeft" align="right" valign="top">char *&nbsp;</td><td class="memItemRight" valign="bottom"><a class="el" href="group__str.html#gab1a6e6a8445fcf3f308d418712d67a97">iupStrReturnRGBA</a> (unsigned char r, unsigned char g, unsigned char b, unsigned char a)</td></tr>
-<tr><td class="memItemLeft" align="right" valign="top">char *&nbsp;</td><td class="memItemRight" valign="bottom"><a class="el" href="group__str.html#gaebd651a4e7628e30f7a2cf756b6202ae">iupStrReturnStrStr</a> (const char *str1, const char *str2, char sep)</td></tr>
-<tr><td class="memItemLeft" align="right" valign="top">char *&nbsp;</td><td class="memItemRight" valign="bottom"><a class="el" href="group__str.html#ga125ea02d6ff38eca055e9e34b7fdc80a">iupStrReturnIntInt</a> (int i1, int i2, char sep)</td></tr>
-<tr><td class="memItemLeft" align="right" valign="top">int&nbsp;</td><td class="memItemRight" valign="bottom"><a class="el" href="group__str.html#ga0dc017918a199f5b4f654e5c7ed4b66a">iupStrGetFormatPrecision</a> (const char *format)</td></tr>
-<tr><td class="memItemLeft" align="right" valign="top">void&nbsp;</td><td class="memItemRight" valign="bottom"><a class="el" href="group__str.html#gaeca45c19b5af48d896e18a1d559959fd">iupStrPrintfDoubleLocale</a> (char *str, const char *format, double d, const char *decimal_symbol)</td></tr>
-<tr><td class="memItemLeft" align="right" valign="top">int&nbsp;</td><td class="memItemRight" valign="bottom"><a class="el" href="group__str.html#ga7a30ddaca45891ee62eee58681d240a9">iupStrToRGB</a> (const char *str, unsigned char *r, unsigned char *g, unsigned char *b)</td></tr>
-<tr><td class="memItemLeft" align="right" valign="top">int&nbsp;</td><td class="memItemRight" valign="bottom"><a class="el" href="group__str.html#ga39dadb34414e297f49e3b49fd5f37cae">iupStrToRGBA</a> (const char *str, unsigned char *r, unsigned char *g, unsigned char *b, unsigned char *a)</td></tr>
-<tr><td class="memItemLeft" align="right" valign="top">int&nbsp;</td><td class="memItemRight" valign="bottom"><a class="el" href="group__str.html#ga38e8272a99d36ff444e56eb8f96a3a62">iupStrToInt</a> (const char *str, int *i)</td></tr>
-<tr><td class="memItemLeft" align="right" valign="top">int&nbsp;</td><td class="memItemRight" valign="bottom"><a class="el" href="group__str.html#ga2f224ee2f247927328ad6dcae2397db7">iupStrToUInt</a> (const char *str, unsigned int *i)</td></tr>
-<tr><td class="memItemLeft" align="right" valign="top">int&nbsp;</td><td class="memItemRight" valign="bottom"><a class="el" href="group__str.html#ga36d8139dc7f472c8725d6ecbc9d46141">iupStrToIntInt</a> (const char *str, int *i1, int *i2, char sep)</td></tr>
-<tr><td class="memItemLeft" align="right" valign="top">int&nbsp;</td><td class="memItemRight" valign="bottom"><a class="el" href="group__str.html#ga8e2f5fd2c84f6bfe1ca97c2b259ffbdf">iupStrToFloat</a> (const char *str, float *f)</td></tr>
-<tr><td class="memItemLeft" align="right" valign="top">int&nbsp;</td><td class="memItemRight" valign="bottom"><a class="el" href="group__str.html#ga4c0e961397f48f335cde548b5ca98615">iupStrToDouble</a> (const char *str, double *d)</td></tr>
-<tr><td class="memItemLeft" align="right" valign="top">int&nbsp;</td><td class="memItemRight" valign="bottom"><a class="el" href="group__str.html#gaf8ac9fa162cde19732e07307564c5709">iupStrToDoubleLocale</a> (const char *str, double *d, const char *decimal_symbol)</td></tr>
-<tr><td class="memItemLeft" align="right" valign="top">int&nbsp;</td><td class="memItemRight" valign="bottom"><a class="el" href="group__str.html#gaa34892f5c087dc083b47c62c337e1eb3">iupStrToFloatFloat</a> (const char *str, float *f1, float *f2, char sep)</td></tr>
-<tr><td class="memItemLeft" align="right" valign="top">int&nbsp;</td><td class="memItemRight" valign="bottom"><a class="el" href="group__str.html#gabf61fba47dec33b2e835aadceba67308">iupStrToDoubleDouble</a> (const char *str, double *f1, double *f2, char sep)</td></tr>
-<tr><td class="memItemLeft" align="right" valign="top">int&nbsp;</td><td class="memItemRight" valign="bottom"><a class="el" href="group__str.html#ga9766e7cba47e60881de4648a32e9b046">iupStrToStrStr</a> (const char *str, char *str1, char *str2, char sep)</td></tr>
-<tr><td class="memItemLeft" align="right" valign="top">char *&nbsp;</td><td class="memItemRight" valign="bottom"><a class="el" href="group__str.html#ga5a65b4ff4d7e72ca9c21f52ebc37cf9f">iupStrFileGetExt</a> (const char *file_name)</td></tr>
-<tr><td class="memItemLeft" align="right" valign="top">char *&nbsp;</td><td class="memItemRight" valign="bottom"><a class="el" href="group__str.html#ga98f7152a35d3f30b4b6eb9d5ae68fde1">iupStrFileGetTitle</a> (const char *file_name)</td></tr>
-<tr><td class="memItemLeft" align="right" valign="top">char *&nbsp;</td><td class="memItemRight" valign="bottom"><a class="el" href="group__str.html#ga2e1af87f3b6f88c6826d7248508a12f6">iupStrFileGetPath</a> (const char *file_name)</td></tr>
-<tr><td class="memItemLeft" align="right" valign="top">char *&nbsp;</td><td class="memItemRight" valign="bottom"><a class="el" href="group__str.html#ga7f6e45251635ccbbe20cb27802c3b8a8">iupStrFileMakeFileName</a> (const char *path, const char *title)</td></tr>
-<tr><td class="memItemLeft" align="right" valign="top">void&nbsp;</td><td class="memItemRight" valign="bottom"><a class="el" href="group__str.html#ga5136501653ca3b90358eb78526f8735c">iupStrFileNameSplit</a> (const char *filename, char *path, char *title)</td></tr>
-<tr><td class="memItemLeft" align="right" valign="top">int&nbsp;</td><td class="memItemRight" valign="bottom"><a class="el" href="group__str.html#gacd10d03b74a8f1282d5ec49326dc958c">iupStrReplace</a> (char *str, char src, char dst)</td></tr>
-<tr><td class="memItemLeft" align="right" valign="top">void&nbsp;</td><td class="memItemRight" valign="bottom"><a class="el" href="group__str.html#gae7072878f92eef101a8e09e29e840eb6">iupStrToUnix</a> (char *str)</td></tr>
-<tr><td class="memItemLeft" align="right" valign="top">void&nbsp;</td><td class="memItemRight" valign="bottom"><a class="el" href="group__str.html#gadec827d7727234d93d94516e918e6e1d">iupStrToMac</a> (char *str)</td></tr>
-<tr><td class="memItemLeft" align="right" valign="top">char *&nbsp;</td><td class="memItemRight" valign="bottom"><a class="el" href="group__str.html#ga843687a04d28d5130c72854690404d9f">iupStrToDos</a> (const char *str)</td></tr>
-<tr><td class="memItemLeft" align="right" valign="top">char *&nbsp;</td><td class="memItemRight" valign="bottom"><a class="el" href="group__str.html#ga2dac4fd6d09147d0ee59bac181195898">iupStrConvertToC</a> (const char *str)</td></tr>
-<tr><td class="memItemLeft" align="right" valign="top">void&nbsp;</td><td class="memItemRight" valign="bottom"><a class="el" href="group__str.html#ga56c8bf8630f4ccd83fd910097efc1efc">iupStrRemove</a> (char *value, int start, int end, int dir, int utf8)</td></tr>
-<tr><td class="memItemLeft" align="right" valign="top">char *&nbsp;</td><td class="memItemRight" valign="bottom"><a class="el" href="group__str.html#ga02a4f5a78be99883697a79268593bc26">iupStrInsert</a> (const char *value, const char *insert_value, int start, int end, int utf8)</td></tr>
-<tr><td class="memItemLeft" align="right" valign="top">char *&nbsp;</td><td class="memItemRight" valign="bottom"><a class="el" href="group__str.html#ga476eb16b2bcae204eb95f0425fb951b9">iupStrProcessMnemonic</a> (const char *str, char *c, int action)</td></tr>
-<tr><td class="memItemLeft" align="right" valign="top">int&nbsp;</td><td class="memItemRight" valign="bottom"><a class="el" href="group__str.html#gaf42336b9c15c8f35033f96b5b2f9a83e">iupStrFindMnemonic</a> (const char *str)</td></tr>
-<tr><td class="memItemLeft" align="right" valign="top">int&nbsp;</td><td class="memItemRight" valign="bottom"><a class="el" href="group__str.html#gaee88f98cce1f7b5293f0aa1651b9a29f">iupStrCompare</a> (const char *str1, const char *str2, int casesensitive, int utf8)</td></tr>
-<tr><td class="memItemLeft" align="right" valign="top">int&nbsp;</td><td class="memItemRight" valign="bottom"><a class="el" href="group__str.html#ga6bb16559b81a13e4e913e3d6c28ec1fa">iupStrCompareEqual</a> (const char *str1, const char *str2, int casesensitive, int utf8, int partial)</td></tr>
-<tr><td class="memItemLeft" align="right" valign="top">int&nbsp;</td><td class="memItemRight" valign="bottom"><a class="el" href="group__str.html#ga239a3c72bb071ecd1ee7e6c9a6a2d7e2">iupStrCompareFind</a> (const char *str1, const char *str2, int casesensitive, int utf8)</td></tr>
+<tr><td class="memItemLeft" align="right" valign="top">IUP_SDK_API int&nbsp;</td><td class="memItemRight" valign="bottom"><a class="el" href="group__str.html#ga00ca707e5fac2609580c902056dd4a08">iupStrEqual</a> (const char *str1, const char *str2)</td></tr>
+<tr><td class="memItemLeft" align="right" valign="top">IUP_SDK_API int&nbsp;</td><td class="memItemRight" valign="bottom"><a class="el" href="group__str.html#ga22beb52b3592c694a5fab72583c92439">iupStrEqualNoCase</a> (const char *str1, const char *str2)</td></tr>
+<tr><td class="memItemLeft" align="right" valign="top">IUP_SDK_API int&nbsp;</td><td class="memItemRight" valign="bottom"><a class="el" href="group__str.html#ga55022a701d2de566241900134ff04048">iupStrEqualNoCaseNoSpace</a> (const char *str1, const char *str2)</td></tr>
+<tr><td class="memItemLeft" align="right" valign="top">IUP_SDK_API int&nbsp;</td><td class="memItemRight" valign="bottom"><a class="el" href="group__str.html#ga7852b30ed35fc5adca0ecc6e61bcb59e">iupStrEqualPartial</a> (const char *str1, const char *str2)</td></tr>
+<tr><td class="memItemLeft" align="right" valign="top">IUP_SDK_API int&nbsp;</td><td class="memItemRight" valign="bottom"><a class="el" href="group__str.html#ga3b9389ec4a2abba15257e1cb249edb3c">iupStrEqualNoCasePartial</a> (const char *str1, const char *str2)</td></tr>
+<tr><td class="memItemLeft" align="right" valign="top">IUP_SDK_API int&nbsp;</td><td class="memItemRight" valign="bottom"><a class="el" href="group__str.html#gaafe1b5cc259297d47418cda1f7848e00">iupStrBoolean</a> (const char *str)</td></tr>
+<tr><td class="memItemLeft" align="right" valign="top">IUP_SDK_API int&nbsp;</td><td class="memItemRight" valign="bottom"><a class="el" href="group__str.html#gae01ceb64dfc3ff8d827c8d49729434dd">iupStrFalse</a> (const char *str)</td></tr>
+<tr><td class="memItemLeft" align="right" valign="top">IUP_SDK_API int&nbsp;</td><td class="memItemRight" valign="bottom"><a class="el" href="group__str.html#ga2dcade2d31e969e9337166acb399a8a5">iupStrLineCount</a> (const char *str, int len)</td></tr>
+<tr><td class="memItemLeft" align="right" valign="top">IUP_SDK_API const char *&nbsp;</td><td class="memItemRight" valign="bottom"><a class="el" href="group__str.html#gaa008bae4e2fe1bfa41c0a0d7506f6ea0">iupStrNextLine</a> (const char *str, int *len)</td></tr>
+<tr><td class="memItemLeft" align="right" valign="top">IUP_SDK_API const char *&nbsp;</td><td class="memItemRight" valign="bottom"><a class="el" href="group__str.html#gaa52d7fae8068d640a6f43a5699f2a167">iupStrNextValue</a> (const char *str, int str_len, int *len, char sep)</td></tr>
+<tr><td class="memItemLeft" align="right" valign="top">IUP_SDK_API int&nbsp;</td><td class="memItemRight" valign="bottom"><a class="el" href="group__str.html#ga93ba39944e2e46e3497c79654a51869b">iupStrCountChar</a> (const char *str, char c)</td></tr>
+<tr><td class="memItemLeft" align="right" valign="top">IUP_SDK_API char *&nbsp;</td><td class="memItemRight" valign="bottom"><a class="el" href="group__str.html#ga27d536aba9e2766b586433258b7ba220">iupStrDup</a> (const char *str)</td></tr>
+<tr><td class="memItemLeft" align="right" valign="top">IUP_SDK_API char *&nbsp;</td><td class="memItemRight" valign="bottom"><a class="el" href="group__str.html#ga4ab5a34ed880a83e0a0c92b7ffd79062">iupStrDupUntil</a> (const char **str, char c)</td></tr>
+<tr><td class="memItemLeft" align="right" valign="top">IUP_SDK_API void&nbsp;</td><td class="memItemRight" valign="bottom"><a class="el" href="group__str.html#gadb2fbc4399ef18d31d3853a3f9017273">iupStrCopyN</a> (char *dst_str, int dst_max_size, const char *src_str)</td></tr>
+<tr><td class="memItemLeft" align="right" valign="top">IUP_SDK_API char *&nbsp;</td><td class="memItemRight" valign="bottom"><a class="el" href="group__str.html#ga8b9bf257fd506f05cd4af992f594ecec">iupStrGetMemory</a> (int size)</td></tr>
+<tr><td class="memItemLeft" align="right" valign="top">IUP_SDK_API char *&nbsp;</td><td class="memItemRight" valign="bottom"><a class="el" href="group__str.html#gae80e1887bc1d66bbe9b0fde5df56285a">iupStrGetLargeMem</a> (int *size)</td></tr>
+<tr><td class="memItemLeft" align="right" valign="top">IUP_SDK_API void&nbsp;</td><td class="memItemRight" valign="bottom"><a class="el" href="group__str.html#gab7f52fe9c251f1ed8cf42a46c772cec2">iupStrLower</a> (char *dstr, const char *sstr)</td></tr>
+<tr><td class="memItemLeft" align="right" valign="top">IUP_SDK_API void&nbsp;</td><td class="memItemRight" valign="bottom"><a class="el" href="group__str.html#ga1647690acd2dd09f818e3fbe7a8fa4c1">iupStrUpper</a> (char *dstr, const char *sstr)</td></tr>
+<tr><td class="memItemLeft" align="right" valign="top">IUP_SDK_API int&nbsp;</td><td class="memItemRight" valign="bottom"><a class="el" href="group__str.html#ga9824b697588bfd0d497962d6600236af">iupStrHasSpace</a> (const char *str)</td></tr>
+<tr><td class="memItemLeft" align="right" valign="top">IUP_SDK_API int&nbsp;</td><td class="memItemRight" valign="bottom"><a class="el" href="group__str.html#ga8cead1eccea8c72fa8975ae1c3849f1a">iupStrIsAscii</a> (const char *str)</td></tr>
+<tr><td class="memItemLeft" align="right" valign="top">IUP_SDK_API char *&nbsp;</td><td class="memItemRight" valign="bottom"><a class="el" href="group__str.html#ga859b5e84b0afcfe4cba750f6dea2f9ca">iupStrReturnStrf</a> (const char *format,...)</td></tr>
+<tr><td class="memItemLeft" align="right" valign="top">IUP_SDK_API char *&nbsp;</td><td class="memItemRight" valign="bottom"><a class="el" href="group__str.html#ga1eb30361fe032b7f4eea3fe7d0d059c8">iupStrReturnStr</a> (const char *str)</td></tr>
+<tr><td class="memItemLeft" align="right" valign="top">IUP_SDK_API char *&nbsp;</td><td class="memItemRight" valign="bottom"><a class="el" href="group__str.html#gae5b3213886247ca3629b903387583f2c">iupStrReturnBoolean</a> (int i)</td></tr>
+<tr><td class="memItemLeft" align="right" valign="top">IUP_SDK_API char *&nbsp;</td><td class="memItemRight" valign="bottom"><a class="el" href="group__str.html#gaade1f7eb8cd376390bacb9d7c4a52068">iupStrReturnChecked</a> (int i)</td></tr>
+<tr><td class="memItemLeft" align="right" valign="top">IUP_SDK_API char *&nbsp;</td><td class="memItemRight" valign="bottom"><a class="el" href="group__str.html#ga15176deaeb16fc1e3daaf518d1e46d94">iupStrReturnInt</a> (int i)</td></tr>
+<tr><td class="memItemLeft" align="right" valign="top">IUP_SDK_API char *&nbsp;</td><td class="memItemRight" valign="bottom"><a class="el" href="group__str.html#gaf312044a6428088e305de0dedc127701">iupStrReturnUInt</a> (unsigned int i)</td></tr>
+<tr><td class="memItemLeft" align="right" valign="top">IUP_SDK_API char *&nbsp;</td><td class="memItemRight" valign="bottom"><a class="el" href="group__str.html#ga97a6f1a84d36f7dc3e320e2bf5a97f85">iupStrReturnFloat</a> (float f)</td></tr>
+<tr><td class="memItemLeft" align="right" valign="top">IUP_SDK_API char *&nbsp;</td><td class="memItemRight" valign="bottom"><a class="el" href="group__str.html#ga99731cc36eecc7e86a84050bfbb1ddca">iupStrReturnDouble</a> (double d)</td></tr>
+<tr><td class="memItemLeft" align="right" valign="top">IUP_SDK_API char *&nbsp;</td><td class="memItemRight" valign="bottom"><a class="el" href="group__str.html#ga36b3fb2922720c126a926ce98ba6e739">iupStrReturnRGB</a> (unsigned char r, unsigned char g, unsigned char b)</td></tr>
+<tr><td class="memItemLeft" align="right" valign="top">IUP_SDK_API char *&nbsp;</td><td class="memItemRight" valign="bottom"><a class="el" href="group__str.html#ga0e561c5e5ca3025961b800a95209f16e">iupStrReturnRGBA</a> (unsigned char r, unsigned char g, unsigned char b, unsigned char a)</td></tr>
+<tr><td class="memItemLeft" align="right" valign="top">IUP_SDK_API char *&nbsp;</td><td class="memItemRight" valign="bottom"><a class="el" href="group__str.html#ga57a36757b9a246ff627c657207ce9511">iupStrReturnStrStr</a> (const char *str1, const char *str2, char sep)</td></tr>
+<tr><td class="memItemLeft" align="right" valign="top">IUP_SDK_API char *&nbsp;</td><td class="memItemRight" valign="bottom"><a class="el" href="group__str.html#ga8cbf3300757f07dca0beb966b18c7095">iupStrReturnIntInt</a> (int i1, int i2, char sep)</td></tr>
+<tr><td class="memItemLeft" align="right" valign="top">IUP_SDK_API int&nbsp;</td><td class="memItemRight" valign="bottom"><a class="el" href="group__str.html#ga415d13781942a0e844a35be0ee8ff5a1">iupStrGetFormatPrecision</a> (const char *format)</td></tr>
+<tr><td class="memItemLeft" align="right" valign="top">IUP_SDK_API void&nbsp;</td><td class="memItemRight" valign="bottom"><a class="el" href="group__str.html#ga69d4b10dd3ce9b46fa0a69d393527a0f">iupStrPrintfDoubleLocale</a> (char *str, const char *format, double d, const char *decimal_symbol)</td></tr>
+<tr><td class="memItemLeft" align="right" valign="top">IUP_SDK_API int&nbsp;</td><td class="memItemRight" valign="bottom"><a class="el" href="group__str.html#gae7189c6acb73735ee802c82cecdcde1a">iupStrToRGB</a> (const char *str, unsigned char *r, unsigned char *g, unsigned char *b)</td></tr>
+<tr><td class="memItemLeft" align="right" valign="top">IUP_SDK_API int&nbsp;</td><td class="memItemRight" valign="bottom"><a class="el" href="group__str.html#ga3e35a2cc92ba247dd15d578bbe7943f8">iupStrToRGBA</a> (const char *str, unsigned char *r, unsigned char *g, unsigned char *b, unsigned char *a)</td></tr>
+<tr><td class="memItemLeft" align="right" valign="top">IUP_SDK_API int&nbsp;</td><td class="memItemRight" valign="bottom"><a class="el" href="group__str.html#ga8d912adc00774a276991db90e5d09882">iupStrToInt</a> (const char *str, int *i)</td></tr>
+<tr><td class="memItemLeft" align="right" valign="top">IUP_SDK_API int&nbsp;</td><td class="memItemRight" valign="bottom"><a class="el" href="group__str.html#ga41fe6e90c92e86b769de532454b9b040">iupStrToUInt</a> (const char *str, unsigned int *i)</td></tr>
+<tr><td class="memItemLeft" align="right" valign="top">IUP_SDK_API int&nbsp;</td><td class="memItemRight" valign="bottom"><a class="el" href="group__str.html#gade43076a62a3ae42029aa9633b00f01b">iupStrToIntInt</a> (const char *str, int *i1, int *i2, char sep)</td></tr>
+<tr><td class="memItemLeft" align="right" valign="top">IUP_SDK_API int&nbsp;</td><td class="memItemRight" valign="bottom"><a class="el" href="group__str.html#ga13ac6163f23d46efe6f478ef844d9cd2">iupStrToFloat</a> (const char *str, float *f)</td></tr>
+<tr><td class="memItemLeft" align="right" valign="top">IUP_SDK_API int&nbsp;</td><td class="memItemRight" valign="bottom"><a class="el" href="group__str.html#ga59ed7ea2779c181dd0dee9e7a011bfed">iupStrToDouble</a> (const char *str, double *d)</td></tr>
+<tr><td class="memItemLeft" align="right" valign="top">IUP_SDK_API int&nbsp;</td><td class="memItemRight" valign="bottom"><a class="el" href="group__str.html#gaa0770b4758ee5a17f2cc5015d1b37aa2">iupStrToDoubleLocale</a> (const char *str, double *d, const char *decimal_symbol)</td></tr>
+<tr><td class="memItemLeft" align="right" valign="top">IUP_SDK_API int&nbsp;</td><td class="memItemRight" valign="bottom"><a class="el" href="group__str.html#ga026d80afbdcde61488119f8a2319998b">iupStrToFloatFloat</a> (const char *str, float *f1, float *f2, char sep)</td></tr>
+<tr><td class="memItemLeft" align="right" valign="top">IUP_SDK_API int&nbsp;</td><td class="memItemRight" valign="bottom"><a class="el" href="group__str.html#ga05d0bb72f1bdeb5c2c1a71cc6ee9f41e">iupStrToDoubleDouble</a> (const char *str, double *f1, double *f2, char sep)</td></tr>
+<tr><td class="memItemLeft" align="right" valign="top">IUP_SDK_API int&nbsp;</td><td class="memItemRight" valign="bottom"><a class="el" href="group__str.html#ga6bd14af0328f875833fb1d1240cd03b2">iupStrToStrStr</a> (const char *str, char *str1, char *str2, char sep)</td></tr>
+<tr><td class="memItemLeft" align="right" valign="top">IUP_SDK_API char *&nbsp;</td><td class="memItemRight" valign="bottom"><a class="el" href="group__str.html#ga0615e796eb9ed330b690c078f3ccc021">iupStrFileGetExt</a> (const char *filename)</td></tr>
+<tr><td class="memItemLeft" align="right" valign="top">IUP_SDK_API char *&nbsp;</td><td class="memItemRight" valign="bottom"><a class="el" href="group__str.html#gacc5eec3f11f97f5398c9c17b08b5d6f7">iupStrFileGetTitle</a> (const char *filename)</td></tr>
+<tr><td class="memItemLeft" align="right" valign="top">IUP_SDK_API char *&nbsp;</td><td class="memItemRight" valign="bottom"><a class="el" href="group__str.html#ga41052b5c9318c3698d7c3ff0f5b7026d">iupStrFileGetPath</a> (const char *filename)</td></tr>
+<tr><td class="memItemLeft" align="right" valign="top">IUP_SDK_API char *&nbsp;</td><td class="memItemRight" valign="bottom"><a class="el" href="group__str.html#ga77bf431a7ee1facb660a23e14672c21a">iupStrFileMakeFileName</a> (const char *path, const char *title)</td></tr>
+<tr><td class="memItemLeft" align="right" valign="top">IUP_SDK_API void&nbsp;</td><td class="memItemRight" valign="bottom"><a class="el" href="group__str.html#ga996a988b195bca328b58bd80e30c32b0">iupStrFileNameSplit</a> (const char *filename, char *path, char *title)</td></tr>
+<tr><td class="memItemLeft" align="right" valign="top">IUP_SDK_API int&nbsp;</td><td class="memItemRight" valign="bottom"><a class="el" href="group__str.html#gae0cb917a12298e9e3c0baea3e96e5d0b">iupStrTmpFileName</a> (char *filename, const char *prefix)</td></tr>
+<tr><td class="memItemLeft" align="right" valign="top">IUP_SDK_API int&nbsp;</td><td class="memItemRight" valign="bottom"><a class="el" href="group__str.html#gabd071cffc0f636ccc5061608155f3739">iupStrReplace</a> (char *str, char src, char dst)</td></tr>
+<tr><td class="memItemLeft" align="right" valign="top">IUP_SDK_API void&nbsp;</td><td class="memItemRight" valign="bottom"><a class="el" href="group__str.html#gae7aeffef8a99b3ed07b7b75b688fc525">iupStrToUnix</a> (char *str)</td></tr>
+<tr><td class="memItemLeft" align="right" valign="top">IUP_SDK_API void&nbsp;</td><td class="memItemRight" valign="bottom"><a class="el" href="group__str.html#ga7f6dec6385bd46ce68cb35ca6a06e53f">iupStrToMac</a> (char *str)</td></tr>
+<tr><td class="memItemLeft" align="right" valign="top">IUP_SDK_API char *&nbsp;</td><td class="memItemRight" valign="bottom"><a class="el" href="group__str.html#gabe72e0fe7de4173ff6c78350f2a4d824">iupStrToDos</a> (const char *str)</td></tr>
+<tr><td class="memItemLeft" align="right" valign="top">IUP_SDK_API char *&nbsp;</td><td class="memItemRight" valign="bottom"><a class="el" href="group__str.html#ga75e05a9a0b1db44789438c5ca29002f6">iupStrConvertToC</a> (const char *str)</td></tr>
+<tr><td class="memItemLeft" align="right" valign="top">IUP_SDK_API void&nbsp;</td><td class="memItemRight" valign="bottom"><a class="el" href="group__str.html#ga2f1b66fdd8b2fb85ff77aae0105ceed7">iupStrRemove</a> (char *value, int start, int end, int dir, int utf8)</td></tr>
+<tr><td class="memItemLeft" align="right" valign="top">IUP_SDK_API char *&nbsp;</td><td class="memItemRight" valign="bottom"><a class="el" href="group__str.html#ga569d83e2b80f8cb1622cf803770a86ab">iupStrInsert</a> (const char *value, const char *insert_value, int start, int end, int utf8)</td></tr>
+<tr><td class="memItemLeft" align="right" valign="top">IUP_SDK_API char *&nbsp;</td><td class="memItemRight" valign="bottom"><a class="el" href="group__str.html#ga5d3a3c51b0adbef5e484994dd81d8809">iupStrProcessMnemonic</a> (const char *str, char *c, int action)</td></tr>
+<tr><td class="memItemLeft" align="right" valign="top">IUP_SDK_API int&nbsp;</td><td class="memItemRight" valign="bottom"><a class="el" href="group__str.html#ga259ea22940c446fa6482b1ac7c7cf81a">iupStrFindMnemonic</a> (const char *str)</td></tr>
+<tr><td class="memItemLeft" align="right" valign="top">IUP_SDK_API int&nbsp;</td><td class="memItemRight" valign="bottom"><a class="el" href="group__str.html#ga50f8799c87341d746b5fdcfca8189fd9">iupStrCompare</a> (const char *str1, const char *str2, int casesensitive, int utf8)</td></tr>
+<tr><td class="memItemLeft" align="right" valign="top">IUP_SDK_API int&nbsp;</td><td class="memItemRight" valign="bottom"><a class="el" href="group__str.html#gaf71feac77392e7f2b9230f1125ee4387">iupStrCompareEqual</a> (const char *str1, const char *str2, int casesensitive, int utf8, int partial)</td></tr>
+<tr><td class="memItemLeft" align="right" valign="top">IUP_SDK_API int&nbsp;</td><td class="memItemRight" valign="bottom"><a class="el" href="group__str.html#ga56356f42a1dcef5012fb7db755cab356">iupStrCompareFind</a> (const char *str1, const char *str2, int casesensitive, int utf8)</td></tr>
+<tr><td class="memItemLeft" align="right" valign="top">IUP_SDK_API void&nbsp;</td><td class="memItemRight" valign="bottom"><a class="el" href="group__str.html#ga118fc11bd9126b7168488baee84f7cc4">iupStrChangeCase</a> (char *dstr, const char *sstr, int case_flag, int utf8)</td></tr>
 </table>
 <hr/><a name="_details"></a><h3>Detailed Description</h3>
 <dl class="user"><dt><b></b></dt><dd>See <a class="el" href="iup__str_8h.html">iup_str.h</a> </dd></dl>
@@ -192,13 +202,28 @@ Functions</h3></td></tr>
 
 </div>
 </div>
-<hr/><h3>Function Documentation</h3>
-<a class="anchor" id="gaee67268b488a7b09fb918b38bcdc6b7b"></a><!-- doxytag: member="iup_str.h::iupStrEqual" ref="gaee67268b488a7b09fb918b38bcdc6b7b" args="(const char *str1, const char *str2)" -->
+<hr/><h3>Enumeration Type Documentation</h3>
+<a class="anchor" id="ga6b7b47dd702d9e331586d485013fd1ea"></a><!-- doxytag: member="iup_str.h::@18" ref="ga6b7b47dd702d9e331586d485013fd1ea" args="" -->
 <div class="memitem">
 <div class="memproto">
       <table class="memname">
         <tr>
-          <td class="memname">int iupStrEqual </td>
+          <td class="memname">anonymous enum</td>
+        </tr>
+      </table>
+</div>
+<div class="memdoc">
+<p>Case conversion available for <a class="el" href="group__str.html#ga118fc11bd9126b7168488baee84f7cc4">iupStrChangeCase</a>. </p>
+
+</div>
+</div>
+<hr/><h3>Function Documentation</h3>
+<a class="anchor" id="ga00ca707e5fac2609580c902056dd4a08"></a><!-- doxytag: member="iup_str.h::iupStrEqual" ref="ga00ca707e5fac2609580c902056dd4a08" args="(const char *str1, const char *str2)" -->
+<div class="memitem">
+<div class="memproto">
+      <table class="memname">
+        <tr>
+          <td class="memname">IUP_SDK_API int iupStrEqual </td>
           <td>(</td>
           <td class="paramtype">const char *&nbsp;</td>
           <td class="paramname"> <em>str1</em>, </td>
@@ -221,12 +246,12 @@ Functions</h3></td></tr>
 
 </div>
 </div>
-<a class="anchor" id="ga875bd5408840877d27ceeaaa8a9a6953"></a><!-- doxytag: member="iup_str.h::iupStrEqualNoCase" ref="ga875bd5408840877d27ceeaaa8a9a6953" args="(const char *str1, const char *str2)" -->
+<a class="anchor" id="ga22beb52b3592c694a5fab72583c92439"></a><!-- doxytag: member="iup_str.h::iupStrEqualNoCase" ref="ga22beb52b3592c694a5fab72583c92439" args="(const char *str1, const char *str2)" -->
 <div class="memitem">
 <div class="memproto">
       <table class="memname">
         <tr>
-          <td class="memname">int iupStrEqualNoCase </td>
+          <td class="memname">IUP_SDK_API int iupStrEqualNoCase </td>
           <td>(</td>
           <td class="paramtype">const char *&nbsp;</td>
           <td class="paramname"> <em>str1</em>, </td>
@@ -249,12 +274,12 @@ Functions</h3></td></tr>
 
 </div>
 </div>
-<a class="anchor" id="ga8b338f6811c7199ecdb41ed2b427c652"></a><!-- doxytag: member="iup_str.h::iupStrEqualNoCaseNoSpace" ref="ga8b338f6811c7199ecdb41ed2b427c652" args="(const char *str1, const char *str2)" -->
+<a class="anchor" id="ga55022a701d2de566241900134ff04048"></a><!-- doxytag: member="iup_str.h::iupStrEqualNoCaseNoSpace" ref="ga55022a701d2de566241900134ff04048" args="(const char *str1, const char *str2)" -->
 <div class="memitem">
 <div class="memproto">
       <table class="memname">
         <tr>
-          <td class="memname">int iupStrEqualNoCaseNoSpace </td>
+          <td class="memname">IUP_SDK_API int iupStrEqualNoCaseNoSpace </td>
           <td>(</td>
           <td class="paramtype">const char *&nbsp;</td>
           <td class="paramname"> <em>str1</em>, </td>
@@ -279,12 +304,12 @@ Functions</h3></td></tr>
 
 </div>
 </div>
-<a class="anchor" id="gac5ebf4858fb79934690dc9e95e203754"></a><!-- doxytag: member="iup_str.h::iupStrEqualPartial" ref="gac5ebf4858fb79934690dc9e95e203754" args="(const char *str1, const char *str2)" -->
+<a class="anchor" id="ga7852b30ed35fc5adca0ecc6e61bcb59e"></a><!-- doxytag: member="iup_str.h::iupStrEqualPartial" ref="ga7852b30ed35fc5adca0ecc6e61bcb59e" args="(const char *str1, const char *str2)" -->
 <div class="memitem">
 <div class="memproto">
       <table class="memname">
         <tr>
-          <td class="memname">int iupStrEqualPartial </td>
+          <td class="memname">IUP_SDK_API int iupStrEqualPartial </td>
           <td>(</td>
           <td class="paramtype">const char *&nbsp;</td>
           <td class="paramname"> <em>str1</em>, </td>
@@ -308,12 +333,12 @@ Functions</h3></td></tr>
 
 </div>
 </div>
-<a class="anchor" id="ga599c362242ef090e17fa64051e110146"></a><!-- doxytag: member="iup_str.h::iupStrEqualNoCasePartial" ref="ga599c362242ef090e17fa64051e110146" args="(const char *str1, const char *str2)" -->
+<a class="anchor" id="ga3b9389ec4a2abba15257e1cb249edb3c"></a><!-- doxytag: member="iup_str.h::iupStrEqualNoCasePartial" ref="ga3b9389ec4a2abba15257e1cb249edb3c" args="(const char *str1, const char *str2)" -->
 <div class="memitem">
 <div class="memproto">
       <table class="memname">
         <tr>
-          <td class="memname">int iupStrEqualNoCasePartial </td>
+          <td class="memname">IUP_SDK_API int iupStrEqualNoCasePartial </td>
           <td>(</td>
           <td class="paramtype">const char *&nbsp;</td>
           <td class="paramname"> <em>str1</em>, </td>
@@ -338,12 +363,12 @@ Functions</h3></td></tr>
 
 </div>
 </div>
-<a class="anchor" id="gae78f682549b545518a6e8e163d251b71"></a><!-- doxytag: member="iup_str.h::iupStrBoolean" ref="gae78f682549b545518a6e8e163d251b71" args="(const char *str)" -->
+<a class="anchor" id="gaafe1b5cc259297d47418cda1f7848e00"></a><!-- doxytag: member="iup_str.h::iupStrBoolean" ref="gaafe1b5cc259297d47418cda1f7848e00" args="(const char *str)" -->
 <div class="memitem">
 <div class="memproto">
       <table class="memname">
         <tr>
-          <td class="memname">int iupStrBoolean </td>
+          <td class="memname">IUP_SDK_API int iupStrBoolean </td>
           <td>(</td>
           <td class="paramtype">const char *&nbsp;</td>
           <td class="paramname"> <em>str</em></td>
@@ -358,12 +383,12 @@ Functions</h3></td></tr>
 
 </div>
 </div>
-<a class="anchor" id="gaf73e6315197888d2fcb6728fc6b3d20b"></a><!-- doxytag: member="iup_str.h::iupStrFalse" ref="gaf73e6315197888d2fcb6728fc6b3d20b" args="(const char *str)" -->
+<a class="anchor" id="gae01ceb64dfc3ff8d827c8d49729434dd"></a><!-- doxytag: member="iup_str.h::iupStrFalse" ref="gae01ceb64dfc3ff8d827c8d49729434dd" args="(const char *str)" -->
 <div class="memitem">
 <div class="memproto">
       <table class="memname">
         <tr>
-          <td class="memname">int iupStrFalse </td>
+          <td class="memname">IUP_SDK_API int iupStrFalse </td>
           <td>(</td>
           <td class="paramtype">const char *&nbsp;</td>
           <td class="paramname"> <em>str</em></td>
@@ -379,12 +404,12 @@ Functions</h3></td></tr>
 
 </div>
 </div>
-<a class="anchor" id="ga269afa466326ce0a1c93745d74b1697c"></a><!-- doxytag: member="iup_str.h::iupStrLineCount" ref="ga269afa466326ce0a1c93745d74b1697c" args="(const char *str, int len)" -->
+<a class="anchor" id="ga2dcade2d31e969e9337166acb399a8a5"></a><!-- doxytag: member="iup_str.h::iupStrLineCount" ref="ga2dcade2d31e969e9337166acb399a8a5" args="(const char *str, int len)" -->
 <div class="memitem">
 <div class="memproto">
       <table class="memname">
         <tr>
-          <td class="memname">int iupStrLineCount </td>
+          <td class="memname">IUP_SDK_API int iupStrLineCount </td>
           <td>(</td>
           <td class="paramtype">const char *&nbsp;</td>
           <td class="paramname"> <em>str</em>, </td>
@@ -407,12 +432,12 @@ Functions</h3></td></tr>
 
 </div>
 </div>
-<a class="anchor" id="ga03f156a565f38134086774119662e47c"></a><!-- doxytag: member="iup_str.h::iupStrNextLine" ref="ga03f156a565f38134086774119662e47c" args="(const char *str, int *len)" -->
+<a class="anchor" id="gaa008bae4e2fe1bfa41c0a0d7506f6ea0"></a><!-- doxytag: member="iup_str.h::iupStrNextLine" ref="gaa008bae4e2fe1bfa41c0a0d7506f6ea0" args="(const char *str, int *len)" -->
 <div class="memitem">
 <div class="memproto">
       <table class="memname">
         <tr>
-          <td class="memname">const char* iupStrNextLine </td>
+          <td class="memname">IUP_SDK_API const char* iupStrNextLine </td>
           <td>(</td>
           <td class="paramtype">const char *&nbsp;</td>
           <td class="paramname"> <em>str</em>, </td>
@@ -435,12 +460,12 @@ Functions</h3></td></tr>
 
 </div>
 </div>
-<a class="anchor" id="gaf4cdc8c627659bf782b8385dd47fec5a"></a><!-- doxytag: member="iup_str.h::iupStrNextValue" ref="gaf4cdc8c627659bf782b8385dd47fec5a" args="(const char *str, int str_len, int *len, char sep)" -->
+<a class="anchor" id="gaa52d7fae8068d640a6f43a5699f2a167"></a><!-- doxytag: member="iup_str.h::iupStrNextValue" ref="gaa52d7fae8068d640a6f43a5699f2a167" args="(const char *str, int str_len, int *len, char sep)" -->
 <div class="memitem">
 <div class="memproto">
       <table class="memname">
         <tr>
-          <td class="memname">const char* iupStrNextValue </td>
+          <td class="memname">IUP_SDK_API const char* iupStrNextValue </td>
           <td>(</td>
           <td class="paramtype">const char *&nbsp;</td>
           <td class="paramname"> <em>str</em>, </td>
@@ -475,12 +500,12 @@ Functions</h3></td></tr>
 
 </div>
 </div>
-<a class="anchor" id="gad3750cb7c49991ca40e2b69af68f534b"></a><!-- doxytag: member="iup_str.h::iupStrCountChar" ref="gad3750cb7c49991ca40e2b69af68f534b" args="(const char *str, char c)" -->
+<a class="anchor" id="ga93ba39944e2e46e3497c79654a51869b"></a><!-- doxytag: member="iup_str.h::iupStrCountChar" ref="ga93ba39944e2e46e3497c79654a51869b" args="(const char *str, char c)" -->
 <div class="memitem">
 <div class="memproto">
       <table class="memname">
         <tr>
-          <td class="memname">int iupStrCountChar </td>
+          <td class="memname">IUP_SDK_API int iupStrCountChar </td>
           <td>(</td>
           <td class="paramtype">const char *&nbsp;</td>
           <td class="paramname"> <em>str</em>, </td>
@@ -503,12 +528,12 @@ Functions</h3></td></tr>
 
 </div>
 </div>
-<a class="anchor" id="ga0e492d7228c785bcf555a8cfad10c3eb"></a><!-- doxytag: member="iup_str.h::iupStrDup" ref="ga0e492d7228c785bcf555a8cfad10c3eb" args="(const char *str)" -->
+<a class="anchor" id="ga27d536aba9e2766b586433258b7ba220"></a><!-- doxytag: member="iup_str.h::iupStrDup" ref="ga27d536aba9e2766b586433258b7ba220" args="(const char *str)" -->
 <div class="memitem">
 <div class="memproto">
       <table class="memname">
         <tr>
-          <td class="memname">char* iupStrDup </td>
+          <td class="memname">IUP_SDK_API char* iupStrDup </td>
           <td>(</td>
           <td class="paramtype">const char *&nbsp;</td>
           <td class="paramname"> <em>str</em></td>
@@ -518,16 +543,16 @@ Functions</h3></td></tr>
       </table>
 </div>
 <div class="memdoc">
-<p>Returns a copy of the given string. If str is NULL it will return NULL. </p>
+<p>Returns a copy of the given string. If str is NULL it will return NULL. Must free the returned string. </p>
 
 </div>
 </div>
-<a class="anchor" id="ga088130ff2478546193bc7a9bdce49509"></a><!-- doxytag: member="iup_str.h::iupStrDupUntil" ref="ga088130ff2478546193bc7a9bdce49509" args="(const char **str, char c)" -->
+<a class="anchor" id="ga4ab5a34ed880a83e0a0c92b7ffd79062"></a><!-- doxytag: member="iup_str.h::iupStrDupUntil" ref="ga4ab5a34ed880a83e0a0c92b7ffd79062" args="(const char **str, char c)" -->
 <div class="memitem">
 <div class="memproto">
       <table class="memname">
         <tr>
-          <td class="memname">char* iupStrDupUntil </td>
+          <td class="memname">IUP_SDK_API char* iupStrDupUntil </td>
           <td>(</td>
           <td class="paramtype">const char **&nbsp;</td>
           <td class="paramname"> <em>str</em>, </td>
@@ -546,16 +571,16 @@ Functions</h3></td></tr>
       </table>
 </div>
 <div class="memdoc">
-<p>Returns a new string containing a copy of the string up to the character. The string is then incremented to after the position of the character. </p>
+<p>Returns a new string containing a copy of the string up to the character. The string is then incremented to after the position of the character. Must free the returned string. </p>
 
 </div>
 </div>
-<a class="anchor" id="ga3433256b0b12ce3c056b2fcc165fc800"></a><!-- doxytag: member="iup_str.h::iupStrCopyN" ref="ga3433256b0b12ce3c056b2fcc165fc800" args="(char *dst_str, int dst_max_size, const char *src_str)" -->
+<a class="anchor" id="gadb2fbc4399ef18d31d3853a3f9017273"></a><!-- doxytag: member="iup_str.h::iupStrCopyN" ref="gadb2fbc4399ef18d31d3853a3f9017273" args="(char *dst_str, int dst_max_size, const char *src_str)" -->
 <div class="memitem">
 <div class="memproto">
       <table class="memname">
         <tr>
-          <td class="memname">void iupStrCopyN </td>
+          <td class="memname">IUP_SDK_API void iupStrCopyN </td>
           <td>(</td>
           <td class="paramtype">char *&nbsp;</td>
           <td class="paramname"> <em>dst_str</em>, </td>
@@ -584,12 +609,12 @@ Functions</h3></td></tr>
 
 </div>
 </div>
-<a class="anchor" id="ga6fd19ec94b8fa6eafab4c8d117063e17"></a><!-- doxytag: member="iup_str.h::iupStrGetMemory" ref="ga6fd19ec94b8fa6eafab4c8d117063e17" args="(int size)" -->
+<a class="anchor" id="ga8b9bf257fd506f05cd4af992f594ecec"></a><!-- doxytag: member="iup_str.h::iupStrGetMemory" ref="ga8b9bf257fd506f05cd4af992f594ecec" args="(int size)" -->
 <div class="memitem">
 <div class="memproto">
       <table class="memname">
         <tr>
-          <td class="memname">char* iupStrGetMemory </td>
+          <td class="memname">IUP_SDK_API char* iupStrGetMemory </td>
           <td>(</td>
           <td class="paramtype">int&nbsp;</td>
           <td class="paramname"> <em>size</em></td>
@@ -604,12 +629,12 @@ Functions</h3></td></tr>
 
 </div>
 </div>
-<a class="anchor" id="ga4d1152163fab0dc8393181c5bb7cdb7a"></a><!-- doxytag: member="iup_str.h::iupStrGetLargeMem" ref="ga4d1152163fab0dc8393181c5bb7cdb7a" args="(int *size)" -->
+<a class="anchor" id="gae80e1887bc1d66bbe9b0fde5df56285a"></a><!-- doxytag: member="iup_str.h::iupStrGetLargeMem" ref="gae80e1887bc1d66bbe9b0fde5df56285a" args="(int *size)" -->
 <div class="memitem">
 <div class="memproto">
       <table class="memname">
         <tr>
-          <td class="memname">char* iupStrGetLargeMem </td>
+          <td class="memname">IUP_SDK_API char* iupStrGetLargeMem </td>
           <td>(</td>
           <td class="paramtype">int *&nbsp;</td>
           <td class="paramname"> <em>size</em></td>
@@ -623,12 +648,12 @@ Functions</h3></td></tr>
 
 </div>
 </div>
-<a class="anchor" id="ga0d208252df1bfbee5356061ada14ad26"></a><!-- doxytag: member="iup_str.h::iupStrLower" ref="ga0d208252df1bfbee5356061ada14ad26" args="(char *dstr, const char *sstr)" -->
+<a class="anchor" id="gab7f52fe9c251f1ed8cf42a46c772cec2"></a><!-- doxytag: member="iup_str.h::iupStrLower" ref="gab7f52fe9c251f1ed8cf42a46c772cec2" args="(char *dstr, const char *sstr)" -->
 <div class="memitem">
 <div class="memproto">
       <table class="memname">
         <tr>
-          <td class="memname">void iupStrLower </td>
+          <td class="memname">IUP_SDK_API void iupStrLower </td>
           <td>(</td>
           <td class="paramtype">char *&nbsp;</td>
           <td class="paramname"> <em>dstr</em>, </td>
@@ -652,12 +677,12 @@ Functions</h3></td></tr>
 
 </div>
 </div>
-<a class="anchor" id="ga4b826c9e4bc29d01eb3e72cf63a60a0a"></a><!-- doxytag: member="iup_str.h::iupStrUpper" ref="ga4b826c9e4bc29d01eb3e72cf63a60a0a" args="(char *dstr, const char *sstr)" -->
+<a class="anchor" id="ga1647690acd2dd09f818e3fbe7a8fa4c1"></a><!-- doxytag: member="iup_str.h::iupStrUpper" ref="ga1647690acd2dd09f818e3fbe7a8fa4c1" args="(char *dstr, const char *sstr)" -->
 <div class="memitem">
 <div class="memproto">
       <table class="memname">
         <tr>
-          <td class="memname">void iupStrUpper </td>
+          <td class="memname">IUP_SDK_API void iupStrUpper </td>
           <td>(</td>
           <td class="paramtype">char *&nbsp;</td>
           <td class="paramname"> <em>dstr</em>, </td>
@@ -681,12 +706,12 @@ Functions</h3></td></tr>
 
 </div>
 </div>
-<a class="anchor" id="gac145a269358ebe3b39d80a03774f98fd"></a><!-- doxytag: member="iup_str.h::iupStrHasSpace" ref="gac145a269358ebe3b39d80a03774f98fd" args="(const char *str)" -->
+<a class="anchor" id="ga9824b697588bfd0d497962d6600236af"></a><!-- doxytag: member="iup_str.h::iupStrHasSpace" ref="ga9824b697588bfd0d497962d6600236af" args="(const char *str)" -->
 <div class="memitem">
 <div class="memproto">
       <table class="memname">
         <tr>
-          <td class="memname">int iupStrHasSpace </td>
+          <td class="memname">IUP_SDK_API int iupStrHasSpace </td>
           <td>(</td>
           <td class="paramtype">const char *&nbsp;</td>
           <td class="paramname"> <em>str</em></td>
@@ -700,12 +725,12 @@ Functions</h3></td></tr>
 
 </div>
 </div>
-<a class="anchor" id="gae3f6c4f24824f5b3a032926785558899"></a><!-- doxytag: member="iup_str.h::iupStrIsAscii" ref="gae3f6c4f24824f5b3a032926785558899" args="(const char *str)" -->
+<a class="anchor" id="ga8cead1eccea8c72fa8975ae1c3849f1a"></a><!-- doxytag: member="iup_str.h::iupStrIsAscii" ref="ga8cead1eccea8c72fa8975ae1c3849f1a" args="(const char *str)" -->
 <div class="memitem">
 <div class="memproto">
       <table class="memname">
         <tr>
-          <td class="memname">int iupStrIsAscii </td>
+          <td class="memname">IUP_SDK_API int iupStrIsAscii </td>
           <td>(</td>
           <td class="paramtype">const char *&nbsp;</td>
           <td class="paramname"> <em>str</em></td>
@@ -719,12 +744,12 @@ Functions</h3></td></tr>
 
 </div>
 </div>
-<a class="anchor" id="gae48150ea324670a47e08600bc9601761"></a><!-- doxytag: member="iup_str.h::iupStrReturnStrf" ref="gae48150ea324670a47e08600bc9601761" args="(const char *format,...)" -->
+<a class="anchor" id="ga859b5e84b0afcfe4cba750f6dea2f9ca"></a><!-- doxytag: member="iup_str.h::iupStrReturnStrf" ref="ga859b5e84b0afcfe4cba750f6dea2f9ca" args="(const char *format,...)" -->
 <div class="memitem">
 <div class="memproto">
       <table class="memname">
         <tr>
-          <td class="memname">char* iupStrReturnStrf </td>
+          <td class="memname">IUP_SDK_API char* iupStrReturnStrf </td>
           <td>(</td>
           <td class="paramtype">const char *&nbsp;</td>
           <td class="paramname"> <em>format</em>, </td>
@@ -743,16 +768,16 @@ Functions</h3></td></tr>
       </table>
 </div>
 <div class="memdoc">
-<p>Returns combined values in a formatted string using <a class="el" href="group__str.html#ga6fd19ec94b8fa6eafab4c8d117063e17">iupStrGetMemory</a>. This is not supposed to be used for very large strings, just for combinations of numeric data or constant strings. </p>
+<p>Returns combined values in a formatted string using <a class="el" href="group__str.html#ga8b9bf257fd506f05cd4af992f594ecec">iupStrGetMemory</a>. This is not supposed to be used for very large strings, just for combinations of numeric data or constant strings. </p>
 
 </div>
 </div>
-<a class="anchor" id="ga1a32e716d7d977dbf2e9f740f9cc8b0d"></a><!-- doxytag: member="iup_str.h::iupStrReturnStr" ref="ga1a32e716d7d977dbf2e9f740f9cc8b0d" args="(const char *str)" -->
+<a class="anchor" id="ga1eb30361fe032b7f4eea3fe7d0d059c8"></a><!-- doxytag: member="iup_str.h::iupStrReturnStr" ref="ga1eb30361fe032b7f4eea3fe7d0d059c8" args="(const char *str)" -->
 <div class="memitem">
 <div class="memproto">
       <table class="memname">
         <tr>
-          <td class="memname">char* iupStrReturnStr </td>
+          <td class="memname">IUP_SDK_API char* iupStrReturnStr </td>
           <td>(</td>
           <td class="paramtype">const char *&nbsp;</td>
           <td class="paramname"> <em>str</em></td>
@@ -762,16 +787,16 @@ Functions</h3></td></tr>
       </table>
 </div>
 <div class="memdoc">
-<p>Returns a string value in a string using <a class="el" href="group__str.html#ga6fd19ec94b8fa6eafab4c8d117063e17">iupStrGetMemory</a>. </p>
+<p>Returns a string value in a string using <a class="el" href="group__str.html#ga8b9bf257fd506f05cd4af992f594ecec">iupStrGetMemory</a>. </p>
 
 </div>
 </div>
-<a class="anchor" id="gae9bce060f9302afdae01350a428a5d53"></a><!-- doxytag: member="iup_str.h::iupStrReturnBoolean" ref="gae9bce060f9302afdae01350a428a5d53" args="(int i)" -->
+<a class="anchor" id="gae5b3213886247ca3629b903387583f2c"></a><!-- doxytag: member="iup_str.h::iupStrReturnBoolean" ref="gae5b3213886247ca3629b903387583f2c" args="(int i)" -->
 <div class="memitem">
 <div class="memproto">
       <table class="memname">
         <tr>
-          <td class="memname">char* iupStrReturnBoolean </td>
+          <td class="memname">IUP_SDK_API char* iupStrReturnBoolean </td>
           <td>(</td>
           <td class="paramtype">int&nbsp;</td>
           <td class="paramname"> <em>i</em></td>
@@ -785,12 +810,12 @@ Functions</h3></td></tr>
 
 </div>
 </div>
-<a class="anchor" id="ga75c4f81d82da85c8823fd89064b1a5da"></a><!-- doxytag: member="iup_str.h::iupStrReturnChecked" ref="ga75c4f81d82da85c8823fd89064b1a5da" args="(int i)" -->
+<a class="anchor" id="gaade1f7eb8cd376390bacb9d7c4a52068"></a><!-- doxytag: member="iup_str.h::iupStrReturnChecked" ref="gaade1f7eb8cd376390bacb9d7c4a52068" args="(int i)" -->
 <div class="memitem">
 <div class="memproto">
       <table class="memname">
         <tr>
-          <td class="memname">char* iupStrReturnChecked </td>
+          <td class="memname">IUP_SDK_API char* iupStrReturnChecked </td>
           <td>(</td>
           <td class="paramtype">int&nbsp;</td>
           <td class="paramname"> <em>i</em></td>
@@ -804,12 +829,12 @@ Functions</h3></td></tr>
 
 </div>
 </div>
-<a class="anchor" id="ga2ea89794c4bf0f7a0e7e915b370f0cda"></a><!-- doxytag: member="iup_str.h::iupStrReturnInt" ref="ga2ea89794c4bf0f7a0e7e915b370f0cda" args="(int i)" -->
+<a class="anchor" id="ga15176deaeb16fc1e3daaf518d1e46d94"></a><!-- doxytag: member="iup_str.h::iupStrReturnInt" ref="ga15176deaeb16fc1e3daaf518d1e46d94" args="(int i)" -->
 <div class="memitem">
 <div class="memproto">
       <table class="memname">
         <tr>
-          <td class="memname">char* iupStrReturnInt </td>
+          <td class="memname">IUP_SDK_API char* iupStrReturnInt </td>
           <td>(</td>
           <td class="paramtype">int&nbsp;</td>
           <td class="paramname"> <em>i</em></td>
@@ -819,16 +844,16 @@ Functions</h3></td></tr>
       </table>
 </div>
 <div class="memdoc">
-<p>Returns an int value in a string using <a class="el" href="group__str.html#ga6fd19ec94b8fa6eafab4c8d117063e17">iupStrGetMemory</a>. </p>
+<p>Returns an int value in a string using <a class="el" href="group__str.html#ga8b9bf257fd506f05cd4af992f594ecec">iupStrGetMemory</a>. </p>
 
 </div>
 </div>
-<a class="anchor" id="ga4a47e6bc78779d4639e73c5d948eb336"></a><!-- doxytag: member="iup_str.h::iupStrReturnUInt" ref="ga4a47e6bc78779d4639e73c5d948eb336" args="(unsigned int i)" -->
+<a class="anchor" id="gaf312044a6428088e305de0dedc127701"></a><!-- doxytag: member="iup_str.h::iupStrReturnUInt" ref="gaf312044a6428088e305de0dedc127701" args="(unsigned int i)" -->
 <div class="memitem">
 <div class="memproto">
       <table class="memname">
         <tr>
-          <td class="memname">char* iupStrReturnUInt </td>
+          <td class="memname">IUP_SDK_API char* iupStrReturnUInt </td>
           <td>(</td>
           <td class="paramtype">unsigned int&nbsp;</td>
           <td class="paramname"> <em>i</em></td>
@@ -838,16 +863,16 @@ Functions</h3></td></tr>
       </table>
 </div>
 <div class="memdoc">
-<p>Returns an unsigned int value in a string using <a class="el" href="group__str.html#ga6fd19ec94b8fa6eafab4c8d117063e17">iupStrGetMemory</a>. </p>
+<p>Returns an unsigned int value in a string using <a class="el" href="group__str.html#ga8b9bf257fd506f05cd4af992f594ecec">iupStrGetMemory</a>. </p>
 
 </div>
 </div>
-<a class="anchor" id="gaaacd74f85563a556af4174d88b7f81e6"></a><!-- doxytag: member="iup_str.h::iupStrReturnFloat" ref="gaaacd74f85563a556af4174d88b7f81e6" args="(float f)" -->
+<a class="anchor" id="ga97a6f1a84d36f7dc3e320e2bf5a97f85"></a><!-- doxytag: member="iup_str.h::iupStrReturnFloat" ref="ga97a6f1a84d36f7dc3e320e2bf5a97f85" args="(float f)" -->
 <div class="memitem">
 <div class="memproto">
       <table class="memname">
         <tr>
-          <td class="memname">char* iupStrReturnFloat </td>
+          <td class="memname">IUP_SDK_API char* iupStrReturnFloat </td>
           <td>(</td>
           <td class="paramtype">float&nbsp;</td>
           <td class="paramname"> <em>f</em></td>
@@ -857,16 +882,16 @@ Functions</h3></td></tr>
       </table>
 </div>
 <div class="memdoc">
-<p>Returns a float value in a string using <a class="el" href="group__str.html#ga6fd19ec94b8fa6eafab4c8d117063e17">iupStrGetMemory</a>. </p>
+<p>Returns a float value in a string using <a class="el" href="group__str.html#ga8b9bf257fd506f05cd4af992f594ecec">iupStrGetMemory</a>. </p>
 
 </div>
 </div>
-<a class="anchor" id="ga51b0b9de315b90c2c434df4106143313"></a><!-- doxytag: member="iup_str.h::iupStrReturnDouble" ref="ga51b0b9de315b90c2c434df4106143313" args="(double d)" -->
+<a class="anchor" id="ga99731cc36eecc7e86a84050bfbb1ddca"></a><!-- doxytag: member="iup_str.h::iupStrReturnDouble" ref="ga99731cc36eecc7e86a84050bfbb1ddca" args="(double d)" -->
 <div class="memitem">
 <div class="memproto">
       <table class="memname">
         <tr>
-          <td class="memname">char* iupStrReturnDouble </td>
+          <td class="memname">IUP_SDK_API char* iupStrReturnDouble </td>
           <td>(</td>
           <td class="paramtype">double&nbsp;</td>
           <td class="paramname"> <em>d</em></td>
@@ -876,16 +901,16 @@ Functions</h3></td></tr>
       </table>
 </div>
 <div class="memdoc">
-<p>Returns a double value in a string using <a class="el" href="group__str.html#ga6fd19ec94b8fa6eafab4c8d117063e17">iupStrGetMemory</a>. </p>
+<p>Returns a double value in a string using <a class="el" href="group__str.html#ga8b9bf257fd506f05cd4af992f594ecec">iupStrGetMemory</a>. </p>
 
 </div>
 </div>
-<a class="anchor" id="ga475cc8b7670fedc8961e3f338dc3755f"></a><!-- doxytag: member="iup_str.h::iupStrReturnRGB" ref="ga475cc8b7670fedc8961e3f338dc3755f" args="(unsigned char r, unsigned char g, unsigned char b)" -->
+<a class="anchor" id="ga36b3fb2922720c126a926ce98ba6e739"></a><!-- doxytag: member="iup_str.h::iupStrReturnRGB" ref="ga36b3fb2922720c126a926ce98ba6e739" args="(unsigned char r, unsigned char g, unsigned char b)" -->
 <div class="memitem">
 <div class="memproto">
       <table class="memname">
         <tr>
-          <td class="memname">char* iupStrReturnRGB </td>
+          <td class="memname">IUP_SDK_API char* iupStrReturnRGB </td>
           <td>(</td>
           <td class="paramtype">unsigned char&nbsp;</td>
           <td class="paramname"> <em>r</em>, </td>
@@ -910,16 +935,16 @@ Functions</h3></td></tr>
       </table>
 </div>
 <div class="memdoc">
-<p>Returns a RGB value in a string using <a class="el" href="group__str.html#ga6fd19ec94b8fa6eafab4c8d117063e17">iupStrGetMemory</a>. </p>
+<p>Returns a RGB value in a string using <a class="el" href="group__str.html#ga8b9bf257fd506f05cd4af992f594ecec">iupStrGetMemory</a>. </p>
 
 </div>
 </div>
-<a class="anchor" id="gab1a6e6a8445fcf3f308d418712d67a97"></a><!-- doxytag: member="iup_str.h::iupStrReturnRGBA" ref="gab1a6e6a8445fcf3f308d418712d67a97" args="(unsigned char r, unsigned char g, unsigned char b, unsigned char a)" -->
+<a class="anchor" id="ga0e561c5e5ca3025961b800a95209f16e"></a><!-- doxytag: member="iup_str.h::iupStrReturnRGBA" ref="ga0e561c5e5ca3025961b800a95209f16e" args="(unsigned char r, unsigned char g, unsigned char b, unsigned char a)" -->
 <div class="memitem">
 <div class="memproto">
       <table class="memname">
         <tr>
-          <td class="memname">char* iupStrReturnRGBA </td>
+          <td class="memname">IUP_SDK_API char* iupStrReturnRGBA </td>
           <td>(</td>
           <td class="paramtype">unsigned char&nbsp;</td>
           <td class="paramname"> <em>r</em>, </td>
@@ -950,16 +975,16 @@ Functions</h3></td></tr>
       </table>
 </div>
 <div class="memdoc">
-<p>Returns a RGBA value in a string using <a class="el" href="group__str.html#ga6fd19ec94b8fa6eafab4c8d117063e17">iupStrGetMemory</a>. </p>
+<p>Returns a RGBA value in a string using <a class="el" href="group__str.html#ga8b9bf257fd506f05cd4af992f594ecec">iupStrGetMemory</a>. </p>
 
 </div>
 </div>
-<a class="anchor" id="gaebd651a4e7628e30f7a2cf756b6202ae"></a><!-- doxytag: member="iup_str.h::iupStrReturnStrStr" ref="gaebd651a4e7628e30f7a2cf756b6202ae" args="(const char *str1, const char *str2, char sep)" -->
+<a class="anchor" id="ga57a36757b9a246ff627c657207ce9511"></a><!-- doxytag: member="iup_str.h::iupStrReturnStrStr" ref="ga57a36757b9a246ff627c657207ce9511" args="(const char *str1, const char *str2, char sep)" -->
 <div class="memitem">
 <div class="memproto">
       <table class="memname">
         <tr>
-          <td class="memname">char* iupStrReturnStrStr </td>
+          <td class="memname">IUP_SDK_API char* iupStrReturnStrStr </td>
           <td>(</td>
           <td class="paramtype">const char *&nbsp;</td>
           <td class="paramname"> <em>str1</em>, </td>
@@ -984,16 +1009,16 @@ Functions</h3></td></tr>
       </table>
 </div>
 <div class="memdoc">
-<p>Returns two string values in a string using <a class="el" href="group__str.html#ga6fd19ec94b8fa6eafab4c8d117063e17">iupStrGetMemory</a>. </p>
+<p>Returns two string values in a string using <a class="el" href="group__str.html#ga8b9bf257fd506f05cd4af992f594ecec">iupStrGetMemory</a>. </p>
 
 </div>
 </div>
-<a class="anchor" id="ga125ea02d6ff38eca055e9e34b7fdc80a"></a><!-- doxytag: member="iup_str.h::iupStrReturnIntInt" ref="ga125ea02d6ff38eca055e9e34b7fdc80a" args="(int i1, int i2, char sep)" -->
+<a class="anchor" id="ga8cbf3300757f07dca0beb966b18c7095"></a><!-- doxytag: member="iup_str.h::iupStrReturnIntInt" ref="ga8cbf3300757f07dca0beb966b18c7095" args="(int i1, int i2, char sep)" -->
 <div class="memitem">
 <div class="memproto">
       <table class="memname">
         <tr>
-          <td class="memname">char* iupStrReturnIntInt </td>
+          <td class="memname">IUP_SDK_API char* iupStrReturnIntInt </td>
           <td>(</td>
           <td class="paramtype">int&nbsp;</td>
           <td class="paramname"> <em>i1</em>, </td>
@@ -1018,16 +1043,16 @@ Functions</h3></td></tr>
       </table>
 </div>
 <div class="memdoc">
-<p>Returns two int values in a string using <a class="el" href="group__str.html#ga6fd19ec94b8fa6eafab4c8d117063e17">iupStrGetMemory</a>. </p>
+<p>Returns two int values in a string using <a class="el" href="group__str.html#ga8b9bf257fd506f05cd4af992f594ecec">iupStrGetMemory</a>. </p>
 
 </div>
 </div>
-<a class="anchor" id="ga0dc017918a199f5b4f654e5c7ed4b66a"></a><!-- doxytag: member="iup_str.h::iupStrGetFormatPrecision" ref="ga0dc017918a199f5b4f654e5c7ed4b66a" args="(const char *format)" -->
+<a class="anchor" id="ga415d13781942a0e844a35be0ee8ff5a1"></a><!-- doxytag: member="iup_str.h::iupStrGetFormatPrecision" ref="ga415d13781942a0e844a35be0ee8ff5a1" args="(const char *format)" -->
 <div class="memitem">
 <div class="memproto">
       <table class="memname">
         <tr>
-          <td class="memname">int iupStrGetFormatPrecision </td>
+          <td class="memname">IUP_SDK_API int iupStrGetFormatPrecision </td>
           <td>(</td>
           <td class="paramtype">const char *&nbsp;</td>
           <td class="paramname"> <em>format</em></td>
@@ -1041,12 +1066,12 @@ Functions</h3></td></tr>
 
 </div>
 </div>
-<a class="anchor" id="gaeca45c19b5af48d896e18a1d559959fd"></a><!-- doxytag: member="iup_str.h::iupStrPrintfDoubleLocale" ref="gaeca45c19b5af48d896e18a1d559959fd" args="(char *str, const char *format, double d, const char *decimal_symbol)" -->
+<a class="anchor" id="ga69d4b10dd3ce9b46fa0a69d393527a0f"></a><!-- doxytag: member="iup_str.h::iupStrPrintfDoubleLocale" ref="ga69d4b10dd3ce9b46fa0a69d393527a0f" args="(char *str, const char *format, double d, const char *decimal_symbol)" -->
 <div class="memitem">
 <div class="memproto">
       <table class="memname">
         <tr>
-          <td class="memname">void iupStrPrintfDoubleLocale </td>
+          <td class="memname">IUP_SDK_API void iupStrPrintfDoubleLocale </td>
           <td>(</td>
           <td class="paramtype">char *&nbsp;</td>
           <td class="paramname"> <em>str</em>, </td>
@@ -1081,12 +1106,12 @@ Functions</h3></td></tr>
 
 </div>
 </div>
-<a class="anchor" id="ga7a30ddaca45891ee62eee58681d240a9"></a><!-- doxytag: member="iup_str.h::iupStrToRGB" ref="ga7a30ddaca45891ee62eee58681d240a9" args="(const char *str, unsigned char *r, unsigned char *g, unsigned char *b)" -->
+<a class="anchor" id="gae7189c6acb73735ee802c82cecdcde1a"></a><!-- doxytag: member="iup_str.h::iupStrToRGB" ref="gae7189c6acb73735ee802c82cecdcde1a" args="(const char *str, unsigned char *r, unsigned char *g, unsigned char *b)" -->
 <div class="memitem">
 <div class="memproto">
       <table class="memname">
         <tr>
-          <td class="memname">int iupStrToRGB </td>
+          <td class="memname">IUP_SDK_API int iupStrToRGB </td>
           <td>(</td>
           <td class="paramtype">const char *&nbsp;</td>
           <td class="paramname"> <em>str</em>, </td>
@@ -1121,12 +1146,12 @@ Functions</h3></td></tr>
 
 </div>
 </div>
-<a class="anchor" id="ga39dadb34414e297f49e3b49fd5f37cae"></a><!-- doxytag: member="iup_str.h::iupStrToRGBA" ref="ga39dadb34414e297f49e3b49fd5f37cae" args="(const char *str, unsigned char *r, unsigned char *g, unsigned char *b, unsigned char *a)" -->
+<a class="anchor" id="ga3e35a2cc92ba247dd15d578bbe7943f8"></a><!-- doxytag: member="iup_str.h::iupStrToRGBA" ref="ga3e35a2cc92ba247dd15d578bbe7943f8" args="(const char *str, unsigned char *r, unsigned char *g, unsigned char *b, unsigned char *a)" -->
 <div class="memitem">
 <div class="memproto">
       <table class="memname">
         <tr>
-          <td class="memname">int iupStrToRGBA </td>
+          <td class="memname">IUP_SDK_API int iupStrToRGBA </td>
           <td>(</td>
           <td class="paramtype">const char *&nbsp;</td>
           <td class="paramname"> <em>str</em>, </td>
@@ -1167,12 +1192,12 @@ Functions</h3></td></tr>
 
 </div>
 </div>
-<a class="anchor" id="ga38e8272a99d36ff444e56eb8f96a3a62"></a><!-- doxytag: member="iup_str.h::iupStrToInt" ref="ga38e8272a99d36ff444e56eb8f96a3a62" args="(const char *str, int *i)" -->
+<a class="anchor" id="ga8d912adc00774a276991db90e5d09882"></a><!-- doxytag: member="iup_str.h::iupStrToInt" ref="ga8d912adc00774a276991db90e5d09882" args="(const char *str, int *i)" -->
 <div class="memitem">
 <div class="memproto">
       <table class="memname">
         <tr>
-          <td class="memname">int iupStrToInt </td>
+          <td class="memname">IUP_SDK_API int iupStrToInt </td>
           <td>(</td>
           <td class="paramtype">const char *&nbsp;</td>
           <td class="paramname"> <em>str</em>, </td>
@@ -1195,12 +1220,12 @@ Functions</h3></td></tr>
 
 </div>
 </div>
-<a class="anchor" id="ga2f224ee2f247927328ad6dcae2397db7"></a><!-- doxytag: member="iup_str.h::iupStrToUInt" ref="ga2f224ee2f247927328ad6dcae2397db7" args="(const char *str, unsigned int *i)" -->
+<a class="anchor" id="ga41fe6e90c92e86b769de532454b9b040"></a><!-- doxytag: member="iup_str.h::iupStrToUInt" ref="ga41fe6e90c92e86b769de532454b9b040" args="(const char *str, unsigned int *i)" -->
 <div class="memitem">
 <div class="memproto">
       <table class="memname">
         <tr>
-          <td class="memname">int iupStrToUInt </td>
+          <td class="memname">IUP_SDK_API int iupStrToUInt </td>
           <td>(</td>
           <td class="paramtype">const char *&nbsp;</td>
           <td class="paramname"> <em>str</em>, </td>
@@ -1223,12 +1248,12 @@ Functions</h3></td></tr>
 
 </div>
 </div>
-<a class="anchor" id="ga36d8139dc7f472c8725d6ecbc9d46141"></a><!-- doxytag: member="iup_str.h::iupStrToIntInt" ref="ga36d8139dc7f472c8725d6ecbc9d46141" args="(const char *str, int *i1, int *i2, char sep)" -->
+<a class="anchor" id="gade43076a62a3ae42029aa9633b00f01b"></a><!-- doxytag: member="iup_str.h::iupStrToIntInt" ref="gade43076a62a3ae42029aa9633b00f01b" args="(const char *str, int *i1, int *i2, char sep)" -->
 <div class="memitem">
 <div class="memproto">
       <table class="memname">
         <tr>
-          <td class="memname">int iupStrToIntInt </td>
+          <td class="memname">IUP_SDK_API int iupStrToIntInt </td>
           <td>(</td>
           <td class="paramtype">const char *&nbsp;</td>
           <td class="paramname"> <em>str</em>, </td>
@@ -1263,12 +1288,12 @@ Functions</h3></td></tr>
 
 </div>
 </div>
-<a class="anchor" id="ga8e2f5fd2c84f6bfe1ca97c2b259ffbdf"></a><!-- doxytag: member="iup_str.h::iupStrToFloat" ref="ga8e2f5fd2c84f6bfe1ca97c2b259ffbdf" args="(const char *str, float *f)" -->
+<a class="anchor" id="ga13ac6163f23d46efe6f478ef844d9cd2"></a><!-- doxytag: member="iup_str.h::iupStrToFloat" ref="ga13ac6163f23d46efe6f478ef844d9cd2" args="(const char *str, float *f)" -->
 <div class="memitem">
 <div class="memproto">
       <table class="memname">
         <tr>
-          <td class="memname">int iupStrToFloat </td>
+          <td class="memname">IUP_SDK_API int iupStrToFloat </td>
           <td>(</td>
           <td class="paramtype">const char *&nbsp;</td>
           <td class="paramname"> <em>str</em>, </td>
@@ -1291,12 +1316,12 @@ Functions</h3></td></tr>
 
 </div>
 </div>
-<a class="anchor" id="ga4c0e961397f48f335cde548b5ca98615"></a><!-- doxytag: member="iup_str.h::iupStrToDouble" ref="ga4c0e961397f48f335cde548b5ca98615" args="(const char *str, double *d)" -->
+<a class="anchor" id="ga59ed7ea2779c181dd0dee9e7a011bfed"></a><!-- doxytag: member="iup_str.h::iupStrToDouble" ref="ga59ed7ea2779c181dd0dee9e7a011bfed" args="(const char *str, double *d)" -->
 <div class="memitem">
 <div class="memproto">
       <table class="memname">
         <tr>
-          <td class="memname">int iupStrToDouble </td>
+          <td class="memname">IUP_SDK_API int iupStrToDouble </td>
           <td>(</td>
           <td class="paramtype">const char *&nbsp;</td>
           <td class="paramname"> <em>str</em>, </td>
@@ -1319,12 +1344,12 @@ Functions</h3></td></tr>
 
 </div>
 </div>
-<a class="anchor" id="gaf8ac9fa162cde19732e07307564c5709"></a><!-- doxytag: member="iup_str.h::iupStrToDoubleLocale" ref="gaf8ac9fa162cde19732e07307564c5709" args="(const char *str, double *d, const char *decimal_symbol)" -->
+<a class="anchor" id="gaa0770b4758ee5a17f2cc5015d1b37aa2"></a><!-- doxytag: member="iup_str.h::iupStrToDoubleLocale" ref="gaa0770b4758ee5a17f2cc5015d1b37aa2" args="(const char *str, double *d, const char *decimal_symbol)" -->
 <div class="memitem">
 <div class="memproto">
       <table class="memname">
         <tr>
-          <td class="memname">int iupStrToDoubleLocale </td>
+          <td class="memname">IUP_SDK_API int iupStrToDoubleLocale </td>
           <td>(</td>
           <td class="paramtype">const char *&nbsp;</td>
           <td class="paramname"> <em>str</em>, </td>
@@ -1353,12 +1378,12 @@ Functions</h3></td></tr>
 
 </div>
 </div>
-<a class="anchor" id="gaa34892f5c087dc083b47c62c337e1eb3"></a><!-- doxytag: member="iup_str.h::iupStrToFloatFloat" ref="gaa34892f5c087dc083b47c62c337e1eb3" args="(const char *str, float *f1, float *f2, char sep)" -->
+<a class="anchor" id="ga026d80afbdcde61488119f8a2319998b"></a><!-- doxytag: member="iup_str.h::iupStrToFloatFloat" ref="ga026d80afbdcde61488119f8a2319998b" args="(const char *str, float *f1, float *f2, char sep)" -->
 <div class="memitem">
 <div class="memproto">
       <table class="memname">
         <tr>
-          <td class="memname">int iupStrToFloatFloat </td>
+          <td class="memname">IUP_SDK_API int iupStrToFloatFloat </td>
           <td>(</td>
           <td class="paramtype">const char *&nbsp;</td>
           <td class="paramname"> <em>str</em>, </td>
@@ -1393,12 +1418,12 @@ Functions</h3></td></tr>
 
 </div>
 </div>
-<a class="anchor" id="gabf61fba47dec33b2e835aadceba67308"></a><!-- doxytag: member="iup_str.h::iupStrToDoubleDouble" ref="gabf61fba47dec33b2e835aadceba67308" args="(const char *str, double *f1, double *f2, char sep)" -->
+<a class="anchor" id="ga05d0bb72f1bdeb5c2c1a71cc6ee9f41e"></a><!-- doxytag: member="iup_str.h::iupStrToDoubleDouble" ref="ga05d0bb72f1bdeb5c2c1a71cc6ee9f41e" args="(const char *str, double *f1, double *f2, char sep)" -->
 <div class="memitem">
 <div class="memproto">
       <table class="memname">
         <tr>
-          <td class="memname">int iupStrToDoubleDouble </td>
+          <td class="memname">IUP_SDK_API int iupStrToDoubleDouble </td>
           <td>(</td>
           <td class="paramtype">const char *&nbsp;</td>
           <td class="paramname"> <em>str</em>, </td>
@@ -1433,12 +1458,12 @@ Functions</h3></td></tr>
 
 </div>
 </div>
-<a class="anchor" id="ga9766e7cba47e60881de4648a32e9b046"></a><!-- doxytag: member="iup_str.h::iupStrToStrStr" ref="ga9766e7cba47e60881de4648a32e9b046" args="(const char *str, char *str1, char *str2, char sep)" -->
+<a class="anchor" id="ga6bd14af0328f875833fb1d1240cd03b2"></a><!-- doxytag: member="iup_str.h::iupStrToStrStr" ref="ga6bd14af0328f875833fb1d1240cd03b2" args="(const char *str, char *str1, char *str2, char sep)" -->
 <div class="memitem">
 <div class="memproto">
       <table class="memname">
         <tr>
-          <td class="memname">int iupStrToStrStr </td>
+          <td class="memname">IUP_SDK_API int iupStrToStrStr </td>
           <td>(</td>
           <td class="paramtype">const char *&nbsp;</td>
           <td class="paramname"> <em>str</em>, </td>
@@ -1473,69 +1498,69 @@ Functions</h3></td></tr>
 
 </div>
 </div>
-<a class="anchor" id="ga5a65b4ff4d7e72ca9c21f52ebc37cf9f"></a><!-- doxytag: member="iup_str.h::iupStrFileGetExt" ref="ga5a65b4ff4d7e72ca9c21f52ebc37cf9f" args="(const char *file_name)" -->
+<a class="anchor" id="ga0615e796eb9ed330b690c078f3ccc021"></a><!-- doxytag: member="iup_str.h::iupStrFileGetExt" ref="ga0615e796eb9ed330b690c078f3ccc021" args="(const char *filename)" -->
 <div class="memitem">
 <div class="memproto">
       <table class="memname">
         <tr>
-          <td class="memname">char* iupStrFileGetExt </td>
+          <td class="memname">IUP_SDK_API char* iupStrFileGetExt </td>
           <td>(</td>
           <td class="paramtype">const char *&nbsp;</td>
-          <td class="paramname"> <em>file_name</em></td>
+          <td class="paramname"> <em>filename</em></td>
           <td>&nbsp;)&nbsp;</td>
           <td></td>
         </tr>
       </table>
 </div>
 <div class="memdoc">
-<p>Returns the file extension of a file name. Supports UNIX and Windows directory separators. </p>
+<p>Returns the file extension of a file name. Supports UNIX and Windows directory separators. Must free the returned string. </p>
 
 </div>
 </div>
-<a class="anchor" id="ga98f7152a35d3f30b4b6eb9d5ae68fde1"></a><!-- doxytag: member="iup_str.h::iupStrFileGetTitle" ref="ga98f7152a35d3f30b4b6eb9d5ae68fde1" args="(const char *file_name)" -->
+<a class="anchor" id="gacc5eec3f11f97f5398c9c17b08b5d6f7"></a><!-- doxytag: member="iup_str.h::iupStrFileGetTitle" ref="gacc5eec3f11f97f5398c9c17b08b5d6f7" args="(const char *filename)" -->
 <div class="memitem">
 <div class="memproto">
       <table class="memname">
         <tr>
-          <td class="memname">char* iupStrFileGetTitle </td>
+          <td class="memname">IUP_SDK_API char* iupStrFileGetTitle </td>
           <td>(</td>
           <td class="paramtype">const char *&nbsp;</td>
-          <td class="paramname"> <em>file_name</em></td>
+          <td class="paramname"> <em>filename</em></td>
           <td>&nbsp;)&nbsp;</td>
           <td></td>
         </tr>
       </table>
 </div>
 <div class="memdoc">
-<p>Returns the file title of a file name. Supports UNIX and Windows directory separators. </p>
+<p>Returns the file title of a file name. Supports UNIX and Windows directory separators. Must free the returned string. </p>
 
 </div>
 </div>
-<a class="anchor" id="ga2e1af87f3b6f88c6826d7248508a12f6"></a><!-- doxytag: member="iup_str.h::iupStrFileGetPath" ref="ga2e1af87f3b6f88c6826d7248508a12f6" args="(const char *file_name)" -->
+<a class="anchor" id="ga41052b5c9318c3698d7c3ff0f5b7026d"></a><!-- doxytag: member="iup_str.h::iupStrFileGetPath" ref="ga41052b5c9318c3698d7c3ff0f5b7026d" args="(const char *filename)" -->
 <div class="memitem">
 <div class="memproto">
       <table class="memname">
         <tr>
-          <td class="memname">char* iupStrFileGetPath </td>
+          <td class="memname">IUP_SDK_API char* iupStrFileGetPath </td>
           <td>(</td>
           <td class="paramtype">const char *&nbsp;</td>
-          <td class="paramname"> <em>file_name</em></td>
+          <td class="paramname"> <em>filename</em></td>
           <td>&nbsp;)&nbsp;</td>
           <td></td>
         </tr>
       </table>
 </div>
 <div class="memdoc">
-<p>Returns the file path of a file name. Supports UNIX and Windows directory separators. The returned value includes the last separator. </p>
+<p>Returns the file path of a file name. Supports UNIX and Windows directory separators. The returned value includes the last separator. Must free the returned string. </p>
 
 </div>
 </div>
-<a class="anchor" id="ga7f6e45251635ccbbe20cb27802c3b8a8"></a><!-- doxytag: member="iup_str.h::iupStrFileMakeFileName" ref="ga7f6e45251635ccbbe20cb27802c3b8a8" args="(const char *path, const char *title)" -->
+<a class="anchor" id="ga77bf431a7ee1facb660a23e14672c21a"></a><!-- doxytag: member="iup_str.h::iupStrFileMakeFileName" ref="ga77bf431a7ee1facb660a23e14672c21a" args="(const char *path, const char *title)" -->
 <div class="memitem">
 <div class="memproto">
       <table class="memname">
         <tr>
-          <td class="memname">char* iupStrFileMakeFileName </td>
+          <td class="memname">IUP_SDK_API char* iupStrFileMakeFileName </td>
           <td>(</td>
           <td class="paramtype">const char *&nbsp;</td>
           <td class="paramname"> <em>path</em>, </td>
@@ -1554,16 +1579,16 @@ Functions</h3></td></tr>
       </table>
 </div>
 <div class="memdoc">
-<p>Concat path and title addind '/' between if path does not have it. </p>
+<p>Concat path and title addind '/' between if path does not have it. Must free the returned string. </p>
 
 </div>
 </div>
-<a class="anchor" id="ga5136501653ca3b90358eb78526f8735c"></a><!-- doxytag: member="iup_str.h::iupStrFileNameSplit" ref="ga5136501653ca3b90358eb78526f8735c" args="(const char *filename, char *path, char *title)" -->
+<a class="anchor" id="ga996a988b195bca328b58bd80e30c32b0"></a><!-- doxytag: member="iup_str.h::iupStrFileNameSplit" ref="ga996a988b195bca328b58bd80e30c32b0" args="(const char *filename, char *path, char *title)" -->
 <div class="memitem">
 <div class="memproto">
       <table class="memname">
         <tr>
-          <td class="memname">void iupStrFileNameSplit </td>
+          <td class="memname">IUP_SDK_API void iupStrFileNameSplit </td>
           <td>(</td>
           <td class="paramtype">const char *&nbsp;</td>
           <td class="paramname"> <em>filename</em>, </td>
@@ -1592,12 +1617,40 @@ Functions</h3></td></tr>
 
 </div>
 </div>
-<a class="anchor" id="gacd10d03b74a8f1282d5ec49326dc958c"></a><!-- doxytag: member="iup_str.h::iupStrReplace" ref="gacd10d03b74a8f1282d5ec49326dc958c" args="(char *str, char src, char dst)" -->
+<a class="anchor" id="gae0cb917a12298e9e3c0baea3e96e5d0b"></a><!-- doxytag: member="iup_str.h::iupStrTmpFileName" ref="gae0cb917a12298e9e3c0baea3e96e5d0b" args="(char *filename, const char *prefix)" -->
 <div class="memitem">
 <div class="memproto">
       <table class="memname">
         <tr>
-          <td class="memname">int iupStrReplace </td>
+          <td class="memname">IUP_SDK_API int iupStrTmpFileName </td>
+          <td>(</td>
+          <td class="paramtype">char *&nbsp;</td>
+          <td class="paramname"> <em>filename</em>, </td>
+        </tr>
+        <tr>
+          <td class="paramkey"></td>
+          <td></td>
+          <td class="paramtype">const char *&nbsp;</td>
+          <td class="paramname"> <em>prefix</em></td><td>&nbsp;</td>
+        </tr>
+        <tr>
+          <td></td>
+          <td>)</td>
+          <td></td><td></td><td></td>
+        </tr>
+      </table>
+</div>
+<div class="memdoc">
+<p>Returns a filename for a temporary file. A file with the result name is created and must be removed after use. </p>
+
+</div>
+</div>
+<a class="anchor" id="gabd071cffc0f636ccc5061608155f3739"></a><!-- doxytag: member="iup_str.h::iupStrReplace" ref="gabd071cffc0f636ccc5061608155f3739" args="(char *str, char src, char dst)" -->
+<div class="memitem">
+<div class="memproto">
+      <table class="memname">
+        <tr>
+          <td class="memname">IUP_SDK_API int iupStrReplace </td>
           <td>(</td>
           <td class="paramtype">char *&nbsp;</td>
           <td class="paramname"> <em>str</em>, </td>
@@ -1626,12 +1679,12 @@ Functions</h3></td></tr>
 
 </div>
 </div>
-<a class="anchor" id="gae7072878f92eef101a8e09e29e840eb6"></a><!-- doxytag: member="iup_str.h::iupStrToUnix" ref="gae7072878f92eef101a8e09e29e840eb6" args="(char *str)" -->
+<a class="anchor" id="gae7aeffef8a99b3ed07b7b75b688fc525"></a><!-- doxytag: member="iup_str.h::iupStrToUnix" ref="gae7aeffef8a99b3ed07b7b75b688fc525" args="(char *str)" -->
 <div class="memitem">
 <div class="memproto">
       <table class="memname">
         <tr>
-          <td class="memname">void iupStrToUnix </td>
+          <td class="memname">IUP_SDK_API void iupStrToUnix </td>
           <td>(</td>
           <td class="paramtype">char *&nbsp;</td>
           <td class="paramname"> <em>str</em></td>
@@ -1646,12 +1699,12 @@ Functions</h3></td></tr>
 
 </div>
 </div>
-<a class="anchor" id="gadec827d7727234d93d94516e918e6e1d"></a><!-- doxytag: member="iup_str.h::iupStrToMac" ref="gadec827d7727234d93d94516e918e6e1d" args="(char *str)" -->
+<a class="anchor" id="ga7f6dec6385bd46ce68cb35ca6a06e53f"></a><!-- doxytag: member="iup_str.h::iupStrToMac" ref="ga7f6dec6385bd46ce68cb35ca6a06e53f" args="(char *str)" -->
 <div class="memitem">
 <div class="memproto">
       <table class="memname">
         <tr>
-          <td class="memname">void iupStrToMac </td>
+          <td class="memname">IUP_SDK_API void iupStrToMac </td>
           <td>(</td>
           <td class="paramtype">char *&nbsp;</td>
           <td class="paramname"> <em>str</em></td>
@@ -1665,12 +1718,12 @@ Functions</h3></td></tr>
 
 </div>
 </div>
-<a class="anchor" id="ga843687a04d28d5130c72854690404d9f"></a><!-- doxytag: member="iup_str.h::iupStrToDos" ref="ga843687a04d28d5130c72854690404d9f" args="(const char *str)" -->
+<a class="anchor" id="gabe72e0fe7de4173ff6c78350f2a4d824"></a><!-- doxytag: member="iup_str.h::iupStrToDos" ref="gabe72e0fe7de4173ff6c78350f2a4d824" args="(const char *str)" -->
 <div class="memitem">
 <div class="memproto">
       <table class="memname">
         <tr>
-          <td class="memname">char* iupStrToDos </td>
+          <td class="memname">IUP_SDK_API char* iupStrToDos </td>
           <td>(</td>
           <td class="paramtype">const char *&nbsp;</td>
           <td class="paramname"> <em>str</em></td>
@@ -1685,12 +1738,12 @@ Functions</h3></td></tr>
 
 </div>
 </div>
-<a class="anchor" id="ga2dac4fd6d09147d0ee59bac181195898"></a><!-- doxytag: member="iup_str.h::iupStrConvertToC" ref="ga2dac4fd6d09147d0ee59bac181195898" args="(const char *str)" -->
+<a class="anchor" id="ga75e05a9a0b1db44789438c5ca29002f6"></a><!-- doxytag: member="iup_str.h::iupStrConvertToC" ref="ga75e05a9a0b1db44789438c5ca29002f6" args="(const char *str)" -->
 <div class="memitem">
 <div class="memproto">
       <table class="memname">
         <tr>
-          <td class="memname">char* iupStrConvertToC </td>
+          <td class="memname">IUP_SDK_API char* iupStrConvertToC </td>
           <td>(</td>
           <td class="paramtype">const char *&nbsp;</td>
           <td class="paramname"> <em>str</em></td>
@@ -1700,17 +1753,17 @@ Functions</h3></td></tr>
       </table>
 </div>
 <div class="memdoc">
-<p>Convert string to C format. Process <br/>
+<p>Convert string to C format. Process \, <br/>
 ,  and . If returned pointer different the input, it must be freed. </p>
 
 </div>
 </div>
-<a class="anchor" id="ga56c8bf8630f4ccd83fd910097efc1efc"></a><!-- doxytag: member="iup_str.h::iupStrRemove" ref="ga56c8bf8630f4ccd83fd910097efc1efc" args="(char *value, int start, int end, int dir, int utf8)" -->
+<a class="anchor" id="ga2f1b66fdd8b2fb85ff77aae0105ceed7"></a><!-- doxytag: member="iup_str.h::iupStrRemove" ref="ga2f1b66fdd8b2fb85ff77aae0105ceed7" args="(char *value, int start, int end, int dir, int utf8)" -->
 <div class="memitem">
 <div class="memproto">
       <table class="memname">
         <tr>
-          <td class="memname">void iupStrRemove </td>
+          <td class="memname">IUP_SDK_API void iupStrRemove </td>
           <td>(</td>
           <td class="paramtype">char *&nbsp;</td>
           <td class="paramname"> <em>value</em>, </td>
@@ -1751,12 +1804,12 @@ Functions</h3></td></tr>
 
 </div>
 </div>
-<a class="anchor" id="ga02a4f5a78be99883697a79268593bc26"></a><!-- doxytag: member="iup_str.h::iupStrInsert" ref="ga02a4f5a78be99883697a79268593bc26" args="(const char *value, const char *insert_value, int start, int end, int utf8)" -->
+<a class="anchor" id="ga569d83e2b80f8cb1622cf803770a86ab"></a><!-- doxytag: member="iup_str.h::iupStrInsert" ref="ga569d83e2b80f8cb1622cf803770a86ab" args="(const char *value, const char *insert_value, int start, int end, int utf8)" -->
 <div class="memitem">
 <div class="memproto">
       <table class="memname">
         <tr>
-          <td class="memname">char* iupStrInsert </td>
+          <td class="memname">IUP_SDK_API char* iupStrInsert </td>
           <td>(</td>
           <td class="paramtype">const char *&nbsp;</td>
           <td class="paramname"> <em>value</em>, </td>
@@ -1793,16 +1846,16 @@ Functions</h3></td></tr>
       </table>
 </div>
 <div class="memdoc">
-<p>Remove the interval from the string and insert the new string at the start. </p>
+<p>Remove the interval from the string and insert the new string at the start. If returned pointer different the input, it must be freed. </p>
 
 </div>
 </div>
-<a class="anchor" id="ga476eb16b2bcae204eb95f0425fb951b9"></a><!-- doxytag: member="iup_str.h::iupStrProcessMnemonic" ref="ga476eb16b2bcae204eb95f0425fb951b9" args="(const char *str, char *c, int action)" -->
+<a class="anchor" id="ga5d3a3c51b0adbef5e484994dd81d8809"></a><!-- doxytag: member="iup_str.h::iupStrProcessMnemonic" ref="ga5d3a3c51b0adbef5e484994dd81d8809" args="(const char *str, char *c, int action)" -->
 <div class="memitem">
 <div class="memproto">
       <table class="memname">
         <tr>
-          <td class="memname">char* iupStrProcessMnemonic </td>
+          <td class="memname">IUP_SDK_API char* iupStrProcessMnemonic </td>
           <td>(</td>
           <td class="paramtype">const char *&nbsp;</td>
           <td class="paramname"> <em>str</em>, </td>
@@ -1827,7 +1880,7 @@ Functions</h3></td></tr>
       </table>
 </div>
 <div class="memdoc">
-<p>Process the mnemonic in the string. If not found returns str. If found returns a new string. Action can be:</p>
+<p>Process the mnemonic in the string. If not found returns str. If returned pointer different the input, it must be freed. If found returns a new string. Action can be:</p>
 <ul>
 <li>1: replace &amp; by c</li>
 <li>-1: remove &amp; and return in c</li>
@@ -1836,12 +1889,12 @@ Functions</h3></td></tr>
 
 </div>
 </div>
-<a class="anchor" id="gaf42336b9c15c8f35033f96b5b2f9a83e"></a><!-- doxytag: member="iup_str.h::iupStrFindMnemonic" ref="gaf42336b9c15c8f35033f96b5b2f9a83e" args="(const char *str)" -->
+<a class="anchor" id="ga259ea22940c446fa6482b1ac7c7cf81a"></a><!-- doxytag: member="iup_str.h::iupStrFindMnemonic" ref="ga259ea22940c446fa6482b1ac7c7cf81a" args="(const char *str)" -->
 <div class="memitem">
 <div class="memproto">
       <table class="memname">
         <tr>
-          <td class="memname">int iupStrFindMnemonic </td>
+          <td class="memname">IUP_SDK_API int iupStrFindMnemonic </td>
           <td>(</td>
           <td class="paramtype">const char *&nbsp;</td>
           <td class="paramname"> <em>str</em></td>
@@ -1855,12 +1908,12 @@ Functions</h3></td></tr>
 
 </div>
 </div>
-<a class="anchor" id="gaee88f98cce1f7b5293f0aa1651b9a29f"></a><!-- doxytag: member="iup_str.h::iupStrCompare" ref="gaee88f98cce1f7b5293f0aa1651b9a29f" args="(const char *str1, const char *str2, int casesensitive, int utf8)" -->
+<a class="anchor" id="ga50f8799c87341d746b5fdcfca8189fd9"></a><!-- doxytag: member="iup_str.h::iupStrCompare" ref="ga50f8799c87341d746b5fdcfca8189fd9" args="(const char *str1, const char *str2, int casesensitive, int utf8)" -->
 <div class="memitem">
 <div class="memproto">
       <table class="memname">
         <tr>
-          <td class="memname">int iupStrCompare </td>
+          <td class="memname">IUP_SDK_API int iupStrCompare </td>
           <td>(</td>
           <td class="paramtype">const char *&nbsp;</td>
           <td class="paramname"> <em>str1</em>, </td>
@@ -1898,12 +1951,12 @@ Functions</h3></td></tr>
 
 </div>
 </div>
-<a class="anchor" id="ga6bb16559b81a13e4e913e3d6c28ec1fa"></a><!-- doxytag: member="iup_str.h::iupStrCompareEqual" ref="ga6bb16559b81a13e4e913e3d6c28ec1fa" args="(const char *str1, const char *str2, int casesensitive, int utf8, int partial)" -->
+<a class="anchor" id="gaf71feac77392e7f2b9230f1125ee4387"></a><!-- doxytag: member="iup_str.h::iupStrCompareEqual" ref="gaf71feac77392e7f2b9230f1125ee4387" args="(const char *str1, const char *str2, int casesensitive, int utf8, int partial)" -->
 <div class="memitem">
 <div class="memproto">
       <table class="memname">
         <tr>
-          <td class="memname">int iupStrCompareEqual </td>
+          <td class="memname">IUP_SDK_API int iupStrCompareEqual </td>
           <td>(</td>
           <td class="paramtype">const char *&nbsp;</td>
           <td class="paramname"> <em>str1</em>, </td>
@@ -1946,12 +1999,12 @@ Functions</h3></td></tr>
 
 </div>
 </div>
-<a class="anchor" id="ga239a3c72bb071ecd1ee7e6c9a6a2d7e2"></a><!-- doxytag: member="iup_str.h::iupStrCompareFind" ref="ga239a3c72bb071ecd1ee7e6c9a6a2d7e2" args="(const char *str1, const char *str2, int casesensitive, int utf8)" -->
+<a class="anchor" id="ga56356f42a1dcef5012fb7db755cab356"></a><!-- doxytag: member="iup_str.h::iupStrCompareFind" ref="ga56356f42a1dcef5012fb7db755cab356" args="(const char *str1, const char *str2, int casesensitive, int utf8)" -->
 <div class="memitem">
 <div class="memproto">
       <table class="memname">
         <tr>
-          <td class="memname">int iupStrCompareFind </td>
+          <td class="memname">IUP_SDK_API int iupStrCompareFind </td>
           <td>(</td>
           <td class="paramtype">const char *&nbsp;</td>
           <td class="paramname"> <em>str1</em>, </td>
@@ -1983,12 +2036,53 @@ Functions</h3></td></tr>
 </div>
 <div class="memdoc">
 <p>Returns a non zero value if the second string is found inside the first string. <br/>
- Uses <a class="el" href="group__str.html#ga6bb16559b81a13e4e913e3d6c28ec1fa">iupStrCompareEqual</a>. </p>
+ Uses <a class="el" href="group__str.html#gaf71feac77392e7f2b9230f1125ee4387">iupStrCompareEqual</a>. </p>
+
+</div>
+</div>
+<a class="anchor" id="ga118fc11bd9126b7168488baee84f7cc4"></a><!-- doxytag: member="iup_str.h::iupStrChangeCase" ref="ga118fc11bd9126b7168488baee84f7cc4" args="(char *dstr, const char *sstr, int case_flag, int utf8)" -->
+<div class="memitem">
+<div class="memproto">
+      <table class="memname">
+        <tr>
+          <td class="memname">IUP_SDK_API void iupStrChangeCase </td>
+          <td>(</td>
+          <td class="paramtype">char *&nbsp;</td>
+          <td class="paramname"> <em>dstr</em>, </td>
+        </tr>
+        <tr>
+          <td class="paramkey"></td>
+          <td></td>
+          <td class="paramtype">const char *&nbsp;</td>
+          <td class="paramname"> <em>sstr</em>, </td>
+        </tr>
+        <tr>
+          <td class="paramkey"></td>
+          <td></td>
+          <td class="paramtype">int&nbsp;</td>
+          <td class="paramname"> <em>case_flag</em>, </td>
+        </tr>
+        <tr>
+          <td class="paramkey"></td>
+          <td></td>
+          <td class="paramtype">int&nbsp;</td>
+          <td class="paramname"> <em>utf8</em></td><td>&nbsp;</td>
+        </tr>
+        <tr>
+          <td></td>
+          <td>)</td>
+          <td></td><td></td><td></td>
+        </tr>
+      </table>
+</div>
+<div class="memdoc">
+<p>Converts a string into upper case. Can be used in-place. <br/>
+ It will work only for Latin-1 characters, even when using utf8=1. </p>
 
 </div>
 </div>
 </div>
-<hr class="footer"/><address class="footer"><small>Generated on Mon Apr 29 2019 14:49:54 for SDK by&nbsp;
+<hr class="footer"/><address class="footer"><small>Generated on Fri Dec 13 2019 14:22:07 for SDK by&nbsp;
 <a href="http://www.doxygen.org/index.html">
 <img class="footer" src="doxygen.png" alt="doxygen"/></a> 1.7.1 </small></address>
 </body>

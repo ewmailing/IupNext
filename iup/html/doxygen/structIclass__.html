@@ -27,11 +27,14 @@ Collaboration diagram for Iclass_:</div>
 <tr><td colspan="2"><h3><a name="pub-attribs"></a>
 Data Fields</h3></td></tr>
 <tr><td class="memItemLeft" align="right" valign="top">const char *&nbsp;</td><td class="memItemRight" valign="bottom"><a class="el" href="structIclass__.html#a3274491dd72936204898ce590ba21000">name</a></td></tr>
+<tr><td class="memItemLeft" align="right" valign="top">const char *&nbsp;</td><td class="memItemRight" valign="bottom"><a class="el" href="structIclass__.html#a0bdb620fc5d8cc269879b28028e64e62">cons</a></td></tr>
 <tr><td class="memItemLeft" align="right" valign="top">const char *&nbsp;</td><td class="memItemRight" valign="bottom"><a class="el" href="structIclass__.html#a7869bf2dc2c952ead1000e2c202cd8e2">format</a></td></tr>
+<tr><td class="memItemLeft" align="right" valign="top">const char *&nbsp;</td><td class="memItemRight" valign="bottom"><a class="el" href="structIclass__.html#acb0736a57db536348edbecd344bb327c">format_attr</a></td></tr>
 <tr><td class="memItemLeft" align="right" valign="top"><a class="el" href="group__iclass.html#gae8a98499641bdc02bc239e9f7c87e159">InativeType</a>&nbsp;</td><td class="memItemRight" valign="bottom"><a class="el" href="structIclass__.html#a9511b3b37a0256ed22f52016b625509a">nativetype</a></td></tr>
 <tr><td class="memItemLeft" align="right" valign="top">int&nbsp;</td><td class="memItemRight" valign="bottom"><a class="el" href="structIclass__.html#a66edf2eb323d261bd9c9d2be5c2a4cb9">childtype</a></td></tr>
 <tr><td class="memItemLeft" align="right" valign="top">int&nbsp;</td><td class="memItemRight" valign="bottom"><a class="el" href="structIclass__.html#af9eeb47377ddbf5675b6d181d948408c">is_interactive</a></td></tr>
 <tr><td class="memItemLeft" align="right" valign="top">int&nbsp;</td><td class="memItemRight" valign="bottom"><a class="el" href="structIclass__.html#a87084c0c98ee13e4d10fdf1f101b67e8">has_attrib_id</a></td></tr>
+<tr><td class="memItemLeft" align="right" valign="top">int&nbsp;</td><td class="memItemRight" valign="bottom"><a class="el" href="structIclass__.html#af08d6c9084a8e315a49e190fb74bb076">is_internal</a></td></tr>
 <tr><td class="memItemLeft" align="right" valign="top"><a class="el" href="structIclass__.html">Iclass</a> *&nbsp;</td><td class="memItemRight" valign="bottom"><a class="el" href="structIclass__.html#a6ac8ecd49b673ee6cb00977a6e0bbfb9">parent</a></td></tr>
 <tr><td class="memItemLeft" align="right" valign="top">Itable *&nbsp;</td><td class="memItemRight" valign="bottom"><a class="el" href="structIclass__.html#aefccb80cb7e293e023d007b354750fec">attrib_func</a></td></tr>
 <tr><td class="memItemLeft" align="right" valign="top"><a class="el" href="structIclass__.html">Iclass</a> *(*&nbsp;</td><td class="memItemRight" valign="bottom"><a class="el" href="structIclass__.html#a0ea76f80f2821a568c2aeb28b3c9209b">New</a> )(void)</td></tr>
@@ -66,6 +69,20 @@ Data Fields</h3></td></tr>
 
 </div>
 </div>
+<a class="anchor" id="a0bdb620fc5d8cc269879b28028e64e62"></a><!-- doxytag: member="Iclass_::cons" ref="a0bdb620fc5d8cc269879b28028e64e62" args="" -->
+<div class="memitem">
+<div class="memproto">
+      <table class="memname">
+        <tr>
+          <td class="memname">const char* <a class="el" href="structIclass__.html#a0bdb620fc5d8cc269879b28028e64e62">Iclass_::cons</a></td>
+        </tr>
+      </table>
+</div>
+<div class="memdoc">
+<p>constructor name in C, if more than the first letter uppercase, or NULL. </p>
+
+</div>
+</div>
 <a class="anchor" id="a7869bf2dc2c952ead1000e2c202cd8e2"></a><!-- doxytag: member="Iclass_::format" ref="a7869bf2dc2c952ead1000e2c202cd8e2" args="" -->
 <div class="memitem">
 <div class="memproto">
@@ -80,16 +97,30 @@ Data Fields</h3></td></tr>
  Used only for LED parsing. <br/>
  It can have none (NULL), one or more of the following.</p>
 <ul>
-<li>"b" = (unsigned char) - byte</li>
-<li>"c" = (unsigned char*) - array of byte</li>
-<li>"i" = (int) - integer</li>
-<li>"j" = (int*) - array of integer</li>
-<li>"f" = (float) - real</li>
-<li>"s" = (char*) - string</li>
+<li>"b" = (unsigned char) - byte &gt;&gt; unused &lt;&lt;</li>
+<li>"j" = (int*) - array of integer &gt;&gt; unused &lt;&lt;</li>
+<li>"f" = (float) - real &gt;&gt; unused &lt;&lt;</li>
+<li>"i" = (int) - integer &gt;&gt; used in IupImage* only &lt;&lt;</li>
+<li>"c" = (unsigned char*) - array of byte &gt;&gt; used in IupImage* only &lt;&lt;</li>
+<li>"s" = (char*) - string &gt;&gt; usually is for TITLE &lt;&lt;</li>
 <li>"a" = (char*) - name of the ACTION callback</li>
 <li>"h" = (Ihandle*) - element handle</li>
-<li>"g" = (Ihandle**) - array of element handle </li>
+<li>"g" = (Ihandle**) - array of element handle (when used there are no other parameters) </li>
 </ul>
+
+</div>
+</div>
+<a class="anchor" id="acb0736a57db536348edbecd344bb327c"></a><!-- doxytag: member="Iclass_::format_attr" ref="acb0736a57db536348edbecd344bb327c" args="" -->
+<div class="memitem">
+<div class="memproto">
+      <table class="memname">
+        <tr>
+          <td class="memname">const char* <a class="el" href="structIclass__.html#acb0736a57db536348edbecd344bb327c">Iclass_::format_attr</a></td>
+        </tr>
+      </table>
+</div>
+<div class="memdoc">
+<p>attribute name of the first creation parameter when format[0] is 's' or 'a' </p>
 
 </div>
 </div>
@@ -152,6 +183,20 @@ Data Fields</h3></td></tr>
 
 </div>
 </div>
+<a class="anchor" id="af08d6c9084a8e315a49e190fb74bb076"></a><!-- doxytag: member="Iclass_::is_internal" ref="af08d6c9084a8e315a49e190fb74bb076" args="" -->
+<div class="memitem">
+<div class="memproto">
+      <table class="memname">
+        <tr>
+          <td class="memname">int <a class="el" href="structIclass__.html#af08d6c9084a8e315a49e190fb74bb076">Iclass_::is_internal</a></td>
+        </tr>
+      </table>
+</div>
+<div class="memdoc">
+<p>indicate an internal class initialized in IupOpen. </p>
+
+</div>
+</div>
 <a class="anchor" id="a6ac8ecd49b673ee6cb00977a6e0bbfb9"></a><!-- doxytag: member="Iclass_::parent" ref="a6ac8ecd49b673ee6cb00977a6e0bbfb9" args="" -->
 <div class="memitem">
 <div class="memproto">
@@ -196,7 +241,7 @@ Data Fields</h3></td></tr>
 </div>
 <div class="memdoc">
 <p>Method that allocates a new instance of the class. <br/>
- Used by inherited classes in <a class="el" href="group__iclass.html#ga1267f5e3f79035ade3e84f640acf19bc">iupClassNew</a>. </p>
+ Used by inherited classes in <a class="el" href="group__iclass.html#gac0997edb6c0b1a5c939831aa6ef54370">iupClassNew</a>. </p>
 
 </div>
 </div>
@@ -210,7 +255,7 @@ Data Fields</h3></td></tr>
       </table>
 </div>
 <div class="memdoc">
-<p>Method that release the memory allocated by the class. Called only once at <a class="el" href="group__iclass.html#ga6593657d4d7cde142b0432d3fa85ef24">iupClassRelease</a>. </p>
+<p>Method that release the memory allocated by the class. Called only once at <a class="el" href="group__iclass.html#ga17b6bc7326a66db0f65f772cba24917c">iupClassRelease</a>. </p>
 
 </div>
 </div>
@@ -291,7 +336,7 @@ Data Fields</h3></td></tr>
 </div>
 <div class="memdoc">
 <p>Returns the internal native parent. The default implementation returns the handle of itself. <br/>
- Called from <a class="el" href="group__childtree.html#ga9cd77c4f2e4e996f430021bfe4f277d8">iupChildTreeGetNativeParentHandle</a>. <br/>
+ Called from <a class="el" href="group__childtree.html#ga7ca11f10c7a356ee9c51c8d115feeda7">iupChildTreeGetNativeParentHandle</a>. <br/>
  This allows native elements to have an internal container that will be the actual native parent, or in other words allows native elements to be a combination of other native elements in a single IUP element. The actual native parent may depend on the child tree (see IupTabs for an example). </p>
 
 </div>
@@ -353,7 +398,7 @@ Data Fields</h3></td></tr>
 <div class="memdoc">
 <p>Method that computes the natural size based on the user size and the actual natural size. <br/>
  Should update expand if a container, but does NOT depends on expand to compute the natural size. <br/>
- Must call the <a class="el" href="group__iclassbase.html#gac9115e87066a32157a9549e6da64081e">iupBaseComputeNaturalSize</a> for each children. First calculate the native size for the children, then for the element. <br/>
+ Must call the <a class="el" href="group__iclassbase.html#ga12562165a8a933daa348593dda4d9f51">iupBaseComputeNaturalSize</a> for each children. First calculate the native size for the children, then for the element. <br/>
  Also called before the element is mapped, so it must be independent of the native control. First call done at iupLayoutCompute for the dialog. </p>
 
 </div>
@@ -370,7 +415,7 @@ Data Fields</h3></td></tr>
 <div class="memdoc">
 <p>Method that calculates and updates the current size of children based on the available size, the natural size and the expand configuration. <br/>
  Called only if there is any children.<br/>
- Must call <a class="el" href="group__iclassbase.html#gab4ed3fbf4deb8b1c4c1e88564e5cc93d">iupBaseSetCurrentSize</a> for each children. shrink is the dialog attribute passed here for optimization. <br/>
+ Must call <a class="el" href="group__iclassbase.html#ga9bed5fb8fa43100c3c126b1a5002be15">iupBaseSetCurrentSize</a> for each children. shrink is the dialog attribute passed here for optimization. <br/>
  Also called before the element is mapped, so it must be independent of the native control. First call done at iupLayoutCompute for the dialog. </p>
 
 </div>
@@ -387,7 +432,7 @@ Data Fields</h3></td></tr>
 <div class="memdoc">
 <p>Method that calculates and updates the position relative to the parent. <br/>
  Called only if there is any children.<br/>
- Must call <a class="el" href="group__iclassbase.html#ga43ca6d057b26cdbf73ddc2eb123f83a6">iupBaseSetPosition</a> for each children. Also called before the element is mapped, so it must be independent of the native control. First call done at iupLayoutCompute for the dialog. </p>
+ Must call <a class="el" href="group__iclassbase.html#ga31184573bec1fac3d163b2eab34bdc51">iupBaseSetPosition</a> for each children. Also called before the element is mapped, so it must be independent of the native control. First call done at iupLayoutCompute for the dialog. </p>
 
 </div>
 </div>
@@ -409,7 +454,7 @@ Data Fields</h3></td></tr>
 </div>
 </div>
 </div>
-<hr class="footer"/><address class="footer"><small>Generated on Mon Apr 29 2019 14:49:54 for SDK by&nbsp;
+<hr class="footer"/><address class="footer"><small>Generated on Fri Dec 13 2019 14:22:07 for SDK by&nbsp;
 <a href="http://www.doxygen.org/index.html">
 <img class="footer" src="doxygen.png" alt="doxygen"/></a> 1.7.1 </small></address>
 </body>

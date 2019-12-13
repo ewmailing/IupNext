@@ -31,23 +31,23 @@ Collaboration diagram for Child Tree Utilities:</div>
 <table class="memberdecls">
 <tr><td colspan="2"><h3><a name="func-members"></a>
 Functions</h3></td></tr>
-<tr><td class="memItemLeft" align="right" valign="top">Ihandle *&nbsp;</td><td class="memItemRight" valign="bottom"><a class="el" href="group__childtree.html#ga9e56f464469f564869a239fdbd7cba8a">iupChildTreeGetNativeParent</a> (Ihandle *ih)</td></tr>
-<tr><td class="memItemLeft" align="right" valign="top"><a class="el" href="group__object.html#gad7c818b0280c1947556ca9cb3ce948b8">InativeHandle</a> *&nbsp;</td><td class="memItemRight" valign="bottom"><a class="el" href="group__childtree.html#ga9cd77c4f2e4e996f430021bfe4f277d8">iupChildTreeGetNativeParentHandle</a> (Ihandle *ih)</td></tr>
-<tr><td class="memItemLeft" align="right" valign="top">void&nbsp;</td><td class="memItemRight" valign="bottom"><a class="el" href="group__childtree.html#gab79966051e8e13ca539b12b8872f5edb">iupChildTreeAppend</a> (Ihandle *parent, Ihandle *child)</td></tr>
-<tr><td class="memItemLeft" align="right" valign="top">int&nbsp;</td><td class="memItemRight" valign="bottom"><a class="el" href="group__childtree.html#ga38f68c94022376776a8ea0bedae38f11">iupChildTreeIsChild</a> (Ihandle *ih, Ihandle *child)</td></tr>
-<tr><td class="memItemLeft" align="right" valign="top">Ihandle *&nbsp;</td><td class="memItemRight" valign="bottom"><a class="el" href="group__childtree.html#gada030e1d2c0cde0cffde63c478b24320">iupChildTreeGetPrevBrother</a> (Ihandle *ih)</td></tr>
+<tr><td class="memItemLeft" align="right" valign="top">IUP_SDK_API Ihandle *&nbsp;</td><td class="memItemRight" valign="bottom"><a class="el" href="group__childtree.html#ga7d9dfeaf3c360a766b743798f0a4904a">iupChildTreeGetNativeParent</a> (Ihandle *ih)</td></tr>
+<tr><td class="memItemLeft" align="right" valign="top">IUP_SDK_API <a class="el" href="group__object.html#gad7c818b0280c1947556ca9cb3ce948b8">InativeHandle</a> *&nbsp;</td><td class="memItemRight" valign="bottom"><a class="el" href="group__childtree.html#ga7ca11f10c7a356ee9c51c8d115feeda7">iupChildTreeGetNativeParentHandle</a> (Ihandle *ih)</td></tr>
+<tr><td class="memItemLeft" align="right" valign="top">IUP_SDK_API void&nbsp;</td><td class="memItemRight" valign="bottom"><a class="el" href="group__childtree.html#gaa25ed3a7a725a938e3421b90e4d40fae">iupChildTreeAppend</a> (Ihandle *parent, Ihandle *child)</td></tr>
+<tr><td class="memItemLeft" align="right" valign="top">IUP_SDK_API int&nbsp;</td><td class="memItemRight" valign="bottom"><a class="el" href="group__childtree.html#ga88eb07a00a75be4fdee069d959dbd619">iupChildTreeIsParent</a> (Ihandle *ih, Ihandle *parent)</td></tr>
+<tr><td class="memItemLeft" align="right" valign="top">IUP_SDK_API Ihandle *&nbsp;</td><td class="memItemRight" valign="bottom"><a class="el" href="group__childtree.html#ga9311e7bb3f13958179edc41edda0a778">iupChildTreeGetPrevBrother</a> (Ihandle *ih)</td></tr>
 </table>
 <hr/><a name="_details"></a><h3>Detailed Description</h3>
-<dl class="user"><dt><b></b></dt><dd>Some native containers have an internal native child that will be the actual container for the children. This native container is returned by <a class="el" href="group__iclassobject.html#gacbd9179f3ab412cb3c33a8fee7a612a1">iupClassObjectGetInnerNativeContainerHandle</a> and it is used in iupChildTreeGetNativeParentHandle. </dd></dl>
+<dl class="user"><dt><b></b></dt><dd>Some native containers have an internal native child that will be the actual container for the children. This native container is returned by <a class="el" href="group__iclassobject.html#gadf5edf55c89c07e1db738b9c09c3c8e9">iupClassObjectGetInnerNativeContainerHandle</a> and it is used in iupChildTreeGetNativeParentHandle. </dd></dl>
 <dl class="user"><dt><b></b></dt><dd>Some native elements need an extra parent, the ih-&gt;handle points to the main element itself, NOT to the extra parent. This extra parent is stored as "_IUP_EXTRAPARENT". In this case the native parent of ih-&gt;handle is the extra parent, and the extra parent is added as child to the element actual native parent. </dd></dl>
 <dl class="user"><dt><b></b></dt><dd>See <a class="el" href="iup__childtree_8h.html">iup_childtree.h</a> </dd></dl>
 <hr/><h3>Function Documentation</h3>
-<a class="anchor" id="ga9e56f464469f564869a239fdbd7cba8a"></a><!-- doxytag: member="iup_childtree.h::iupChildTreeGetNativeParent" ref="ga9e56f464469f564869a239fdbd7cba8a" args="(Ihandle *ih)" -->
+<a class="anchor" id="ga7d9dfeaf3c360a766b743798f0a4904a"></a><!-- doxytag: member="iup_childtree.h::iupChildTreeGetNativeParent" ref="ga7d9dfeaf3c360a766b743798f0a4904a" args="(Ihandle *ih)" -->
 <div class="memitem">
 <div class="memproto">
       <table class="memname">
         <tr>
-          <td class="memname">Ihandle* iupChildTreeGetNativeParent </td>
+          <td class="memname">IUP_SDK_API Ihandle* iupChildTreeGetNativeParent </td>
           <td>(</td>
           <td class="paramtype">Ihandle *&nbsp;</td>
           <td class="paramname"> <em>ih</em></td>
@@ -57,16 +57,16 @@ Functions</h3></td></tr>
       </table>
 </div>
 <div class="memdoc">
-<p>Returns the native parent. It simply excludes containers that are from IUP_TYPEVOID classes. </p>
+<p>Returns the native parent. It simply skips parents that are from IUP_TYPEVOID classes. </p>
 
 </div>
 </div>
-<a class="anchor" id="ga9cd77c4f2e4e996f430021bfe4f277d8"></a><!-- doxytag: member="iup_childtree.h::iupChildTreeGetNativeParentHandle" ref="ga9cd77c4f2e4e996f430021bfe4f277d8" args="(Ihandle *ih)" -->
+<a class="anchor" id="ga7ca11f10c7a356ee9c51c8d115feeda7"></a><!-- doxytag: member="iup_childtree.h::iupChildTreeGetNativeParentHandle" ref="ga7ca11f10c7a356ee9c51c8d115feeda7" args="(Ihandle *ih)" -->
 <div class="memitem">
 <div class="memproto">
       <table class="memname">
         <tr>
-          <td class="memname"><a class="el" href="group__object.html#gad7c818b0280c1947556ca9cb3ce948b8">InativeHandle</a>* iupChildTreeGetNativeParentHandle </td>
+          <td class="memname">IUP_SDK_API <a class="el" href="group__object.html#gad7c818b0280c1947556ca9cb3ce948b8">InativeHandle</a>* iupChildTreeGetNativeParentHandle </td>
           <td>(</td>
           <td class="paramtype">Ihandle *&nbsp;</td>
           <td class="paramname"> <em>ih</em></td>
@@ -76,16 +76,16 @@ Functions</h3></td></tr>
       </table>
 </div>
 <div class="memdoc">
-<p>Returns the native parent handle. Uses <a class="el" href="group__childtree.html#ga9e56f464469f564869a239fdbd7cba8a">iupChildTreeGetNativeParent</a> and <a class="el" href="group__iclassobject.html#gacbd9179f3ab412cb3c33a8fee7a612a1">iupClassObjectGetInnerNativeContainerHandle</a>. </p>
+<p>Returns the native parent handle. Uses <a class="el" href="group__childtree.html#ga7d9dfeaf3c360a766b743798f0a4904a">iupChildTreeGetNativeParent</a> and <a class="el" href="group__iclassobject.html#gadf5edf55c89c07e1db738b9c09c3c8e9">iupClassObjectGetInnerNativeContainerHandle</a>. </p>
 
 </div>
 </div>
-<a class="anchor" id="gab79966051e8e13ca539b12b8872f5edb"></a><!-- doxytag: member="iup_childtree.h::iupChildTreeAppend" ref="gab79966051e8e13ca539b12b8872f5edb" args="(Ihandle *parent, Ihandle *child)" -->
+<a class="anchor" id="gaa25ed3a7a725a938e3421b90e4d40fae"></a><!-- doxytag: member="iup_childtree.h::iupChildTreeAppend" ref="gaa25ed3a7a725a938e3421b90e4d40fae" args="(Ihandle *parent, Ihandle *child)" -->
 <div class="memitem">
 <div class="memproto">
       <table class="memname">
         <tr>
-          <td class="memname">void iupChildTreeAppend </td>
+          <td class="memname">IUP_SDK_API void iupChildTreeAppend </td>
           <td>(</td>
           <td class="paramtype">Ihandle *&nbsp;</td>
           <td class="paramname"> <em>parent</em>, </td>
@@ -108,12 +108,12 @@ Functions</h3></td></tr>
 
 </div>
 </div>
-<a class="anchor" id="ga38f68c94022376776a8ea0bedae38f11"></a><!-- doxytag: member="iup_childtree.h::iupChildTreeIsChild" ref="ga38f68c94022376776a8ea0bedae38f11" args="(Ihandle *ih, Ihandle *child)" -->
+<a class="anchor" id="ga88eb07a00a75be4fdee069d959dbd619"></a><!-- doxytag: member="iup_childtree.h::iupChildTreeIsParent" ref="ga88eb07a00a75be4fdee069d959dbd619" args="(Ihandle *ih, Ihandle *parent)" -->
 <div class="memitem">
 <div class="memproto">
       <table class="memname">
         <tr>
-          <td class="memname">int iupChildTreeIsChild </td>
+          <td class="memname">IUP_SDK_API int iupChildTreeIsParent </td>
           <td>(</td>
           <td class="paramtype">Ihandle *&nbsp;</td>
           <td class="paramname"> <em>ih</em>, </td>
@@ -122,7 +122,7 @@ Functions</h3></td></tr>
           <td class="paramkey"></td>
           <td></td>
           <td class="paramtype">Ihandle *&nbsp;</td>
-          <td class="paramname"> <em>child</em></td><td>&nbsp;</td>
+          <td class="paramname"> <em>parent</em></td><td>&nbsp;</td>
         </tr>
         <tr>
           <td></td>
@@ -132,16 +132,17 @@ Functions</h3></td></tr>
       </table>
 </div>
 <div class="memdoc">
-<p>Checks if the child belongs to the parent tree. </p>
+<p>Checks if the element is in the parent tree.<br/>
+ Which means the element is a grand-parent of parent. </p>
 
 </div>
 </div>
-<a class="anchor" id="gada030e1d2c0cde0cffde63c478b24320"></a><!-- doxytag: member="iup_childtree.h::iupChildTreeGetPrevBrother" ref="gada030e1d2c0cde0cffde63c478b24320" args="(Ihandle *ih)" -->
+<a class="anchor" id="ga9311e7bb3f13958179edc41edda0a778"></a><!-- doxytag: member="iup_childtree.h::iupChildTreeGetPrevBrother" ref="ga9311e7bb3f13958179edc41edda0a778" args="(Ihandle *ih)" -->
 <div class="memitem">
 <div class="memproto">
       <table class="memname">
         <tr>
-          <td class="memname">Ihandle* iupChildTreeGetPrevBrother </td>
+          <td class="memname">IUP_SDK_API Ihandle* iupChildTreeGetPrevBrother </td>
           <td>(</td>
           <td class="paramtype">Ihandle *&nbsp;</td>
           <td class="paramname"> <em>ih</em></td>
@@ -156,7 +157,7 @@ Functions</h3></td></tr>
 </div>
 </div>
 </div>
-<hr class="footer"/><address class="footer"><small>Generated on Mon Apr 29 2019 14:49:54 for SDK by&nbsp;
+<hr class="footer"/><address class="footer"><small>Generated on Fri Dec 13 2019 14:22:07 for SDK by&nbsp;
 <a href="http://www.doxygen.org/index.html">
 <img class="footer" src="doxygen.png" alt="doxygen"/></a> 1.7.1 </small></address>
 </body>

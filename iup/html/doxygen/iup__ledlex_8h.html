@@ -44,20 +44,22 @@ Defines</h3></td></tr>
 #define&nbsp;</td><td class="memItemRight" valign="bottom"><b>IUPLEX_TK_FUNC</b>&nbsp;&nbsp;&nbsp;9</td></tr>
 <tr><td class="memItemLeft" align="right" valign="top"><a class="anchor" id="a42fa05f294a7133dbc78c706c3b59d9f"></a><!-- doxytag: member="iup_ledlex.h::IUPLEX_TK_ENDATTR" ref="a42fa05f294a7133dbc78c706c3b59d9f" args="" -->
 #define&nbsp;</td><td class="memItemRight" valign="bottom"><b>IUPLEX_TK_ENDATTR</b>&nbsp;&nbsp;&nbsp;10</td></tr>
-<tr><td class="memItemLeft" align="right" valign="top"><a class="anchor" id="a02b49a754f9643b2351961be3109cca1"></a><!-- doxytag: member="iup_ledlex.h::IUPLEX_FILENOTOPENED" ref="a02b49a754f9643b2351961be3109cca1" args="" -->
-#define&nbsp;</td><td class="memItemRight" valign="bottom"><b>IUPLEX_FILENOTOPENED</b>&nbsp;&nbsp;&nbsp;1</td></tr>
-<tr><td class="memItemLeft" align="right" valign="top"><a class="anchor" id="a70ee17518449e43b5c9e2d4f17c27d17"></a><!-- doxytag: member="iup_ledlex.h::IUPLEX_NOTMATCH" ref="a70ee17518449e43b5c9e2d4f17c27d17" args="" -->
-#define&nbsp;</td><td class="memItemRight" valign="bottom"><b>IUPLEX_NOTMATCH</b>&nbsp;&nbsp;&nbsp;2</td></tr>
-<tr><td class="memItemLeft" align="right" valign="top"><a class="anchor" id="a7c6f170dd2ebc70a052bab988a306b85"></a><!-- doxytag: member="iup_ledlex.h::IUPLEX_NOTENDATTR" ref="a7c6f170dd2ebc70a052bab988a306b85" args="" -->
-#define&nbsp;</td><td class="memItemRight" valign="bottom"><b>IUPLEX_NOTENDATTR</b>&nbsp;&nbsp;&nbsp;3</td></tr>
-<tr><td class="memItemLeft" align="right" valign="top"><a class="anchor" id="a5a144746242c0f07bcd8f8bfc444590d"></a><!-- doxytag: member="iup_ledlex.h::IUPLEX_PARSEERROR" ref="a5a144746242c0f07bcd8f8bfc444590d" args="" -->
-#define&nbsp;</td><td class="memItemRight" valign="bottom"><b>IUPLEX_PARSEERROR</b>&nbsp;&nbsp;&nbsp;4</td></tr>
+<tr><td class="memItemLeft" align="right" valign="top"><a class="anchor" id="a47cc7e1b6183e5cefcada6f1bd0fdac0"></a><!-- doxytag: member="iup_ledlex.h::IUPLEX_ERR_FILENOTOPENED" ref="a47cc7e1b6183e5cefcada6f1bd0fdac0" args="" -->
+#define&nbsp;</td><td class="memItemRight" valign="bottom"><b>IUPLEX_ERR_FILENOTOPENED</b>&nbsp;&nbsp;&nbsp;1</td></tr>
+<tr><td class="memItemLeft" align="right" valign="top"><a class="anchor" id="abf27a5e6f5b11d32c4384ee281d0ad88"></a><!-- doxytag: member="iup_ledlex.h::IUPLEX_ERR_NOTMATCH" ref="abf27a5e6f5b11d32c4384ee281d0ad88" args="" -->
+#define&nbsp;</td><td class="memItemRight" valign="bottom"><b>IUPLEX_ERR_NOTMATCH</b>&nbsp;&nbsp;&nbsp;2</td></tr>
+<tr><td class="memItemLeft" align="right" valign="top"><a class="anchor" id="a6f2516d6ec3d84ef7216a78018b31383"></a><!-- doxytag: member="iup_ledlex.h::IUPLEX_ERR_NOTENDATTR" ref="a6f2516d6ec3d84ef7216a78018b31383" args="" -->
+#define&nbsp;</td><td class="memItemRight" valign="bottom"><b>IUPLEX_ERR_NOTENDATTR</b>&nbsp;&nbsp;&nbsp;3</td></tr>
+<tr><td class="memItemLeft" align="right" valign="top"><a class="anchor" id="a7dda9f2f3a7ef697418a4a54a0e99a9a"></a><!-- doxytag: member="iup_ledlex.h::IUPLEX_ERR_PARSE" ref="a7dda9f2f3a7ef697418a4a54a0e99a9a" args="" -->
+#define&nbsp;</td><td class="memItemRight" valign="bottom"><b>IUPLEX_ERR_PARSE</b>&nbsp;&nbsp;&nbsp;4</td></tr>
 <tr><td colspan="2"><h3><a name="func-members"></a>
 Functions</h3></td></tr>
-<tr><td class="memItemLeft" align="right" valign="top"><a class="anchor" id="a403a28d21773cecd6f1d007379770421"></a><!-- doxytag: member="iup_ledlex.h::iupLexGetError" ref="a403a28d21773cecd6f1d007379770421" args="(void)" -->
-char *&nbsp;</td><td class="memItemRight" valign="bottom"><b>iupLexGetError</b> (void)</td></tr>
-<tr><td class="memItemLeft" align="right" valign="top"><a class="anchor" id="adf7a242e28e89a32ccfa9935899d71fb"></a><!-- doxytag: member="iup_ledlex.h::iupLexStart" ref="adf7a242e28e89a32ccfa9935899d71fb" args="(const char *filename, int is_file)" -->
-int&nbsp;</td><td class="memItemRight" valign="bottom"><b>iupLexStart</b> (const char *filename, int is_file)</td></tr>
+<tr><td class="memItemLeft" align="right" valign="top"><a class="anchor" id="a3ecab8c579cfe9a4a58d0423ec2e07f8"></a><!-- doxytag: member="iup_ledlex.h::iupLexGetError" ref="a3ecab8c579cfe9a4a58d0423ec2e07f8" args="(void)" -->
+const char *&nbsp;</td><td class="memItemRight" valign="bottom"><b>iupLexGetError</b> (void)</td></tr>
+<tr><td class="memItemLeft" align="right" valign="top"><a class="anchor" id="a327d95177c3bfa93f544f14f21314889"></a><!-- doxytag: member="iup_ledlex.h::iupLexFilename" ref="a327d95177c3bfa93f544f14f21314889" args="(void)" -->
+const char *&nbsp;</td><td class="memItemRight" valign="bottom"><b>iupLexFilename</b> (void)</td></tr>
+<tr><td class="memItemLeft" align="right" valign="top"><a class="anchor" id="acb11ad9640b39e8c680e11c0305287c1"></a><!-- doxytag: member="iup_ledlex.h::iupLexStart" ref="acb11ad9640b39e8c680e11c0305287c1" args="(const char *filename, const char *buffer)" -->
+int&nbsp;</td><td class="memItemRight" valign="bottom"><b>iupLexStart</b> (const char *filename, const char *buffer)</td></tr>
 <tr><td class="memItemLeft" align="right" valign="top"><a class="anchor" id="a895d4d21364b1463ba4a2eae0e7a2364"></a><!-- doxytag: member="iup_ledlex.h::iupLexClose" ref="a895d4d21364b1463ba4a2eae0e7a2364" args="(void)" -->
 void&nbsp;</td><td class="memItemRight" valign="bottom"><b>iupLexClose</b> (void)</td></tr>
 <tr><td class="memItemLeft" align="right" valign="top"><a class="anchor" id="a12c28bc0ab9d903361fbe32310d08a3a"></a><!-- doxytag: member="iup_ledlex.h::iupLexLookAhead" ref="a12c28bc0ab9d903361fbe32310d08a3a" args="(void)" -->
@@ -84,11 +86,15 @@ float&nbsp;</td><td class="memItemRight" valign="bottom"><b>iupLexGetNumber</b> 
 int&nbsp;</td><td class="memItemRight" valign="bottom"><b>iupLexError</b> (int n,...)</td></tr>
 <tr><td class="memItemLeft" align="right" valign="top"><a class="anchor" id="ae4fad8b3ebfda7f07ff7b6cd8fda6a91"></a><!-- doxytag: member="iup_ledlex.h::iupLexGetClass" ref="ae4fad8b3ebfda7f07ff7b6cd8fda6a91" args="(void)" -->
 <a class="el" href="structIclass__.html">Iclass</a> *&nbsp;</td><td class="memItemRight" valign="bottom"><b>iupLexGetClass</b> (void)</td></tr>
+<tr><td class="memItemLeft" align="right" valign="top"><a class="anchor" id="a7b8d8de3b524914fb7410e6ffe0b22ba"></a><!-- doxytag: member="iup_ledlex.h::iupLexGetLine" ref="a7b8d8de3b524914fb7410e6ffe0b22ba" args="(void)" -->
+int&nbsp;</td><td class="memItemRight" valign="bottom"><b>iupLexGetLine</b> (void)</td></tr>
+<tr><td class="memItemLeft" align="right" valign="top"><a class="anchor" id="a19097650166fdd206aff8bd807adb9a9"></a><!-- doxytag: member="iup_ledlex.h::iupLoadLed" ref="a19097650166fdd206aff8bd807adb9a9" args="(const char *filename, const char *buffer, int save_info)" -->
+IUP_SDK_API const char *&nbsp;</td><td class="memItemRight" valign="bottom"><b>iupLoadLed</b> (const char *filename, const char *buffer, int save_info)</td></tr>
 </table>
 <hr/><a name="_details"></a><h3>Detailed Description</h3>
 <p>See Copyright Notice in "iup.h" </p>
 </div>
-<hr class="footer"/><address class="footer"><small>Generated on Mon Apr 29 2019 14:49:53 for SDK by&nbsp;
+<hr class="footer"/><address class="footer"><small>Generated on Fri Dec 13 2019 14:22:06 for SDK by&nbsp;
 <a href="http://www.doxygen.org/index.html">
 <img class="footer" src="doxygen.png" alt="doxygen"/></a> 1.7.1 </small></address>
 </body>

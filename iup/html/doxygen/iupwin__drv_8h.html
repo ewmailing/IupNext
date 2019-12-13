@@ -48,8 +48,10 @@ typedef int(*&nbsp;</td><td class="memItemRight" valign="bottom"><b>IFwmCommand<
 typedef int(*&nbsp;</td><td class="memItemRight" valign="bottom"><b>IwinMsgProc</b> )(Ihandle *ih, UINT msg, WPARAM wp, LPARAM lp, LRESULT *result)</td></tr>
 <tr><td colspan="2"><h3><a name="func-members"></a>
 Functions</h3></td></tr>
-<tr><td class="memItemLeft" align="right" valign="top"><a class="anchor" id="a85288bd4f5c362ee18762a4291b2e246"></a><!-- doxytag: member="iupwin_drv.h::iupwinShowLastError" ref="a85288bd4f5c362ee18762a4291b2e246" args="(void)" -->
-void&nbsp;</td><td class="memItemRight" valign="bottom"><b>iupwinShowLastError</b> (void)</td></tr>
+<tr><td class="memItemLeft" align="right" valign="top"><a class="anchor" id="ad64551d314e177ced6a4bc8a333c7580"></a><!-- doxytag: member="iupwin_drv.h::iupwinShowLastError" ref="ad64551d314e177ced6a4bc8a333c7580" args="(void)" -->
+IUP_DRV_API void&nbsp;</td><td class="memItemRight" valign="bottom"><b>iupwinShowLastError</b> (void)</td></tr>
+<tr><td class="memItemLeft" align="right" valign="top"><a class="anchor" id="ac8ae5702c4daf0897dec2eb05cd87749"></a><!-- doxytag: member="iupwin_drv.h::iupwinSetInstance" ref="ac8ae5702c4daf0897dec2eb05cd87749" args="(HINSTANCE hInstance)" -->
+IUP_DRV_API void&nbsp;</td><td class="memItemRight" valign="bottom"><b>iupwinSetInstance</b> (HINSTANCE hInstance)</td></tr>
 <tr><td class="memItemLeft" align="right" valign="top"><a class="anchor" id="a6b556ce7f21a273687115656b130ae38"></a><!-- doxytag: member="iupwin_drv.h::iupwinWmSetFocus" ref="a6b556ce7f21a273687115656b130ae38" args="(Ihandle *ih)" -->
 void&nbsp;</td><td class="memItemRight" valign="bottom"><b>iupwinWmSetFocus</b> (Ihandle *ih)</td></tr>
 <tr><td class="memItemLeft" align="right" valign="top"><a class="anchor" id="a9b14a7bea4ea3aa1f2c280cd814039f7"></a><!-- doxytag: member="iupwin_drv.h::iupwinGetKeyBoardCues" ref="a9b14a7bea4ea3aa1f2c280cd814039f7" args="(void)" -->
@@ -92,30 +94,36 @@ void&nbsp;</td><td class="memItemRight" valign="bottom"><b>iupwinMenuDialogProc<
 Ihandle *&nbsp;</td><td class="memItemRight" valign="bottom"><b>iupwinMenuGetItemHandle</b> (HMENU hmenu, int menuId)</td></tr>
 <tr><td class="memItemLeft" align="right" valign="top"><a class="anchor" id="a1378fdd7f417070936ab0e957e8b2d63"></a><!-- doxytag: member="iupwin_drv.h::iupwinMenuGetHandle" ref="a1378fdd7f417070936ab0e957e8b2d63" args="(HMENU hMenu)" -->
 Ihandle *&nbsp;</td><td class="memItemRight" valign="bottom"><b>iupwinMenuGetHandle</b> (HMENU hMenu)</td></tr>
-<tr><td class="memItemLeft" align="right" valign="top"><a class="anchor" id="afcebc5f40aa5633c0851f67592c25018"></a><!-- doxytag: member="iupwin_drv.h::iupwinBaseMsgProc" ref="afcebc5f40aa5633c0851f67592c25018" args="(Ihandle *ih, UINT msg, WPARAM wp, LPARAM lp, LRESULT *result)" -->
-int&nbsp;</td><td class="memItemRight" valign="bottom"><b>iupwinBaseMsgProc</b> (Ihandle *ih, UINT msg, WPARAM wp, LPARAM lp, LRESULT *result)</td></tr>
+<tr><td class="memItemLeft" align="right" valign="top"><a class="anchor" id="a797210bdff7edfd321c04883cb0a0de8"></a><!-- doxytag: member="iupwin_drv.h::iupwinSetCustomQuitMessage" ref="a797210bdff7edfd321c04883cb0a0de8" args="(int enable)" -->
+void&nbsp;</td><td class="memItemRight" valign="bottom"><b>iupwinSetCustomQuitMessage</b> (int enable)</td></tr>
+<tr><td class="memItemLeft" align="right" valign="top"><a class="anchor" id="a9c5ad82a85308472506930b58a04798f"></a><!-- doxytag: member="iupwin_drv.h::iupwinBaseMsgProc" ref="a9c5ad82a85308472506930b58a04798f" args="(Ihandle *ih, UINT msg, WPARAM wp, LPARAM lp, LRESULT *result)" -->
+IUP_DRV_API int&nbsp;</td><td class="memItemRight" valign="bottom"><b>iupwinBaseMsgProc</b> (Ihandle *ih, UINT msg, WPARAM wp, LPARAM lp, LRESULT *result)</td></tr>
 <tr><td class="memItemLeft" align="right" valign="top"><a class="anchor" id="a61ef3b626972655032166eded1477c52"></a><!-- doxytag: member="iupwin_drv.h::iupwinBaseContainerMsgProc" ref="a61ef3b626972655032166eded1477c52" args="(Ihandle *ih, UINT msg, WPARAM wp, LPARAM lp, LRESULT *result)" -->
 int&nbsp;</td><td class="memItemRight" valign="bottom"><b>iupwinBaseContainerMsgProc</b> (Ihandle *ih, UINT msg, WPARAM wp, LPARAM lp, LRESULT *result)</td></tr>
 <tr><td class="memItemLeft" align="right" valign="top"><a class="anchor" id="a76b96b77eb6427f08f8e083b6841258c"></a><!-- doxytag: member="iupwin_drv.h::iupwinBaseWndProc" ref="a76b96b77eb6427f08f8e083b6841258c" args="(HWND hwnd, UINT msg, WPARAM wp, LPARAM lp)" -->
 LRESULT CALLBACK&nbsp;</td><td class="memItemRight" valign="bottom"><b>iupwinBaseWndProc</b> (HWND hwnd, UINT msg, WPARAM wp, LPARAM lp)</td></tr>
 <tr><td class="memItemLeft" align="right" valign="top"><a class="anchor" id="ad66f0548c486761d7001c4a1dbd66e52"></a><!-- doxytag: member="iupwin_drv.h::iupwinChangeWndProc" ref="ad66f0548c486761d7001c4a1dbd66e52" args="(Ihandle *ih, WNDPROC newProc)" -->
 void&nbsp;</td><td class="memItemRight" valign="bottom"><b>iupwinChangeWndProc</b> (Ihandle *ih, WNDPROC newProc)</td></tr>
-<tr><td class="memItemLeft" align="right" valign="top"><a class="anchor" id="a8f2bd4acc613de1c057ad5b3d019b45c"></a><!-- doxytag: member="iupwin_drv.h::iupwinButtonUp" ref="a8f2bd4acc613de1c057ad5b3d019b45c" args="(Ihandle *ih, UINT msg, WPARAM wp, LPARAM lp)" -->
-int&nbsp;</td><td class="memItemRight" valign="bottom"><b>iupwinButtonUp</b> (Ihandle *ih, UINT msg, WPARAM wp, LPARAM lp)</td></tr>
-<tr><td class="memItemLeft" align="right" valign="top"><a class="anchor" id="a98bee899173c28997b14bf4a199918eb"></a><!-- doxytag: member="iupwin_drv.h::iupwinButtonDown" ref="a98bee899173c28997b14bf4a199918eb" args="(Ihandle *ih, UINT msg, WPARAM wp, LPARAM lp)" -->
-int&nbsp;</td><td class="memItemRight" valign="bottom"><b>iupwinButtonDown</b> (Ihandle *ih, UINT msg, WPARAM wp, LPARAM lp)</td></tr>
-<tr><td class="memItemLeft" align="right" valign="top"><a class="anchor" id="a985e80255f5b7dca6425a287cd6b1634"></a><!-- doxytag: member="iupwin_drv.h::iupwinMouseMove" ref="a985e80255f5b7dca6425a287cd6b1634" args="(Ihandle *ih, UINT msg, WPARAM wp, LPARAM lp)" -->
-int&nbsp;</td><td class="memItemRight" valign="bottom"><b>iupwinMouseMove</b> (Ihandle *ih, UINT msg, WPARAM wp, LPARAM lp)</td></tr>
+<tr><td class="memItemLeft" align="right" valign="top"><a class="anchor" id="acba23a136c434f6815258b01e0053eb3"></a><!-- doxytag: member="iupwin_drv.h::iupwinButtonUp" ref="acba23a136c434f6815258b01e0053eb3" args="(Ihandle *ih, UINT msg, WPARAM wp, LPARAM lp)" -->
+IUP_DRV_API int&nbsp;</td><td class="memItemRight" valign="bottom"><b>iupwinButtonUp</b> (Ihandle *ih, UINT msg, WPARAM wp, LPARAM lp)</td></tr>
+<tr><td class="memItemLeft" align="right" valign="top"><a class="anchor" id="a1514d1191817e8b2432553199924f2c8"></a><!-- doxytag: member="iupwin_drv.h::iupwinButtonDown" ref="a1514d1191817e8b2432553199924f2c8" args="(Ihandle *ih, UINT msg, WPARAM wp, LPARAM lp)" -->
+IUP_DRV_API int&nbsp;</td><td class="memItemRight" valign="bottom"><b>iupwinButtonDown</b> (Ihandle *ih, UINT msg, WPARAM wp, LPARAM lp)</td></tr>
+<tr><td class="memItemLeft" align="right" valign="top"><a class="anchor" id="a7b2ff5a2627b1646950c74a0d9a6b9cb"></a><!-- doxytag: member="iupwin_drv.h::iupwinMouseMove" ref="a7b2ff5a2627b1646950c74a0d9a6b9cb" args="(Ihandle *ih, UINT msg, WPARAM wp, LPARAM lp)" -->
+IUP_DRV_API int&nbsp;</td><td class="memItemRight" valign="bottom"><b>iupwinMouseMove</b> (Ihandle *ih, UINT msg, WPARAM wp, LPARAM lp)</td></tr>
 <tr><td class="memItemLeft" align="right" valign="top"><a class="anchor" id="a267a045631461ba21bddeb2115c491eb"></a><!-- doxytag: member="iupwin_drv.h::iupwinTrackMouseLeave" ref="a267a045631461ba21bddeb2115c491eb" args="(Ihandle *ih)" -->
 void&nbsp;</td><td class="memItemRight" valign="bottom"><b>iupwinTrackMouseLeave</b> (Ihandle *ih)</td></tr>
 <tr><td class="memItemLeft" align="right" valign="top"><a class="anchor" id="affb21cd7c1eaab99dec785c92a15bbed"></a><!-- doxytag: member="iupwin_drv.h::iupwinRefreshCursor" ref="affb21cd7c1eaab99dec785c92a15bbed" args="(Ihandle *ih)" -->
 void&nbsp;</td><td class="memItemRight" valign="bottom"><b>iupwinRefreshCursor</b> (Ihandle *ih)</td></tr>
+<tr><td class="memItemLeft" align="right" valign="top"><a class="anchor" id="affb8d5260f52e05c8345a7785e9b151a"></a><!-- doxytag: member="iupwin_drv.h::iupwinFlagButtonDown" ref="affb8d5260f52e05c8345a7785e9b151a" args="(Ihandle *ih, UINT msg)" -->
+IUP_DRV_API void&nbsp;</td><td class="memItemRight" valign="bottom"><b>iupwinFlagButtonDown</b> (Ihandle *ih, UINT msg)</td></tr>
+<tr><td class="memItemLeft" align="right" valign="top"><a class="anchor" id="a0c796e71cc3a256267df1f1ffcfada26"></a><!-- doxytag: member="iupwin_drv.h::iupwinFlagButtonUp" ref="a0c796e71cc3a256267df1f1ffcfada26" args="(Ihandle *ih, UINT msg)" -->
+IUP_DRV_API int&nbsp;</td><td class="memItemRight" valign="bottom"><b>iupwinFlagButtonUp</b> (Ihandle *ih, UINT msg)</td></tr>
 <tr><td class="memItemLeft" align="right" valign="top"><a class="anchor" id="acc924dbf8c82fc208aaa2057813626eb"></a><!-- doxytag: member="iupwin_drv.h::iupwinListDND" ref="acc924dbf8c82fc208aaa2057813626eb" args="(Ihandle *ih, UINT uNotification, POINT pt)" -->
 int&nbsp;</td><td class="memItemRight" valign="bottom"><b>iupwinListDND</b> (Ihandle *ih, UINT uNotification, POINT pt)</td></tr>
 <tr><td class="memItemLeft" align="right" valign="top"><a class="anchor" id="adac861e3098d160f575fd41ddfadbaf5"></a><!-- doxytag: member="iupwin_drv.h::iupwinCreateWindowEx" ref="adac861e3098d160f575fd41ddfadbaf5" args="(HWND hParent, LPCTSTR lpClassName, DWORD dwExStyle, DWORD dwStyle, int serial, void *clientdata)" -->
 HWND&nbsp;</td><td class="memItemRight" valign="bottom"><b>iupwinCreateWindowEx</b> (HWND hParent, LPCTSTR lpClassName, DWORD dwExStyle, DWORD dwStyle, int serial, void *clientdata)</td></tr>
-<tr><td class="memItemLeft" align="right" valign="top"><a class="anchor" id="aee751fa41418ff6f0fbd770034ce57e1"></a><!-- doxytag: member="iupwin_drv.h::iupwinCreateWindow" ref="aee751fa41418ff6f0fbd770034ce57e1" args="(Ihandle *ih, LPCTSTR lpClassName, DWORD dwExStyle, DWORD dwStyle, void *clientdata)" -->
-int&nbsp;</td><td class="memItemRight" valign="bottom"><b>iupwinCreateWindow</b> (Ihandle *ih, LPCTSTR lpClassName, DWORD dwExStyle, DWORD dwStyle, void *clientdata)</td></tr>
+<tr><td class="memItemLeft" align="right" valign="top"><a class="anchor" id="a3e1d91caf49ad3354b7b24082b718afb"></a><!-- doxytag: member="iupwin_drv.h::iupwinCreateWindow" ref="a3e1d91caf49ad3354b7b24082b718afb" args="(Ihandle *ih, LPCTSTR lpClassName, DWORD dwExStyle, DWORD dwStyle, void *clientdata)" -->
+IUP_DRV_API int&nbsp;</td><td class="memItemRight" valign="bottom"><b>iupwinCreateWindow</b> (Ihandle *ih, LPCTSTR lpClassName, DWORD dwExStyle, DWORD dwStyle, void *clientdata)</td></tr>
 <tr><td class="memItemLeft" align="right" valign="top"><a class="anchor" id="a351da4b661bc11452606f976488f77c9"></a><!-- doxytag: member="iupwin_drv.h::iupwinGetNativeParentStyle" ref="a351da4b661bc11452606f976488f77c9" args="(Ihandle *ih, DWORD *dwExStyle, DWORD *dwStyle)" -->
 void&nbsp;</td><td class="memItemRight" valign="bottom"><b>iupwinGetNativeParentStyle</b> (Ihandle *ih, DWORD *dwExStyle, DWORD *dwStyle)</td></tr>
 <tr><td class="memItemLeft" align="right" valign="top"><a class="anchor" id="a384d8ad72668961409b593fc820dbdd5"></a><!-- doxytag: member="iupwin_drv.h::iupwinMergeStyle" ref="a384d8ad72668961409b593fc820dbdd5" args="(Ihandle *ih, DWORD old_mask, DWORD value)" -->
@@ -150,11 +158,13 @@ HINSTANCE&nbsp;</td><td class="memItemRight" valign="bottom"><b>iupwin_hinstance
 int&nbsp;</td><td class="memItemRight" valign="bottom"><b>iupwin_comctl32ver6</b></td></tr>
 <tr><td class="memItemLeft" align="right" valign="top"><a class="anchor" id="a64c6fd557cb3d5270485bbc06e3b8904"></a><!-- doxytag: member="iupwin_drv.h::iupwin_dll_hinstance" ref="a64c6fd557cb3d5270485bbc06e3b8904" args="" -->
 HINSTANCE&nbsp;</td><td class="memItemRight" valign="bottom"><b>iupwin_dll_hinstance</b></td></tr>
+<tr><td class="memItemLeft" align="right" valign="top"><a class="anchor" id="ad4a71710c870e8c6ecd62227418b5822"></a><!-- doxytag: member="iupwin_drv.h::iupwin_mainthreadid" ref="ad4a71710c870e8c6ecd62227418b5822" args="" -->
+DWORD&nbsp;</td><td class="memItemRight" valign="bottom"><b>iupwin_mainthreadid</b></td></tr>
 </table>
 <hr/><a name="_details"></a><h3>Detailed Description</h3>
 <p>See Copyright Notice in "iup.h" </p>
 </div>
-<hr class="footer"/><address class="footer"><small>Generated on Mon Apr 29 2019 14:49:54 for SDK by&nbsp;
+<hr class="footer"/><address class="footer"><small>Generated on Fri Dec 13 2019 14:22:06 for SDK by&nbsp;
 <a href="http://www.doxygen.org/index.html">
 <img class="footer" src="doxygen.png" alt="doxygen"/></a> 1.7.1 </small></address>
 </body>
