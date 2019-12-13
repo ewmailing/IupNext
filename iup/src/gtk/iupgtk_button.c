@@ -429,6 +429,8 @@ static int gtkButtonMapMethod(Ihandle* ih)
     ih->handle = gtk_event_box_new();
     gtk_container_add((GtkContainer*)ih->handle, img);
     gtk_widget_show(img);
+    gtk_widget_realize(img);
+    gtk_widget_queue_draw(img);
     iupAttribSet(ih, "_IUPGTK_EVENTBOX", "1");
   }
   else
