@@ -810,7 +810,8 @@ static int iDropButtonCreateMethod(Ihandle* ih, void** params)
 
 static void iDropButtonDestroyMethod(Ihandle* ih)
 {
-  IupDestroy(ih->data->dropdialog);
+  if (iupObjectCheck(ih->data->dropdialog))  /* the dialog can be destroyed during the destroy of the list of dialogs */
+    IupDestroy(ih->data->dropdialog);
 }
 
 static void iDropButtonComputeNaturalSizeMethod(Ihandle* ih, int *w, int *h, int *children_expand)
