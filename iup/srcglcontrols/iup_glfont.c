@@ -167,12 +167,13 @@ static int iGLGetFontFilenameFromSystem(const char *font_name, int is_bold, int 
   FcPattern *pat;
   int bResult = 0;
 
+  /* Use "fc-match monospace|sans|serif" in Lunux to find a match */
   if (iupStrEqualNoCase(font_name, "Courier") || iupStrEqualNoCase(font_name, "Courier New") || iupStrEqualNoCase(font_name, "Monospace"))
-    font_name = "freemono";
+    font_name = "DejaVu Sans Mono";
   else if (iupStrEqualNoCase(font_name, "Times") || iupStrEqualNoCase(font_name, "Times New Roman") || iupStrEqualNoCase(font_name, "Serif"))
-    font_name = "freeserif";
+    font_name = "DejaVu Serif";
   else if (iupStrEqualNoCase(font_name, "Helvetica") || iupStrEqualNoCase(font_name, "Arial") || iupStrEqualNoCase(font_name, "Sans"))
-    font_name = "freesans";
+    font_name = "DejaVu Sans";
 
   if (is_bold && is_italic)
   {
@@ -198,7 +199,8 @@ static int iGLGetFontFilenameFromSystem(const char *font_name, int is_bold, int 
     strcpy(styles[0], "Regular");
     strcpy(styles[1], "Normal");
     strcpy(styles[2], "Medium");
-    style_size = 3;
+    strcpy(styles[3], "Book");
+    style_size = 4;
   }
 
   pat = FcPatternCreate();
@@ -221,25 +223,25 @@ static int iGLGetFontFilenameFromSystem(const char *font_name, int is_bold, int 
       FcPatternGetString(fs->fonts[j], FC_STYLE, 0, &style);
       FcPatternGetString(fs->fonts[j], FC_FAMILY, 0, &family);
 
-      if (iupStrEqualNoCasePartial((char*)family, font_name))
+      if (iupStrEqualNoCase((char*)family, font_name))
       {
-        /* check if the font is of the correct type. */
         for (s = 0; s < style_size; s++)
         {
           if (iupStrEqualNoCase(styles[s], (char*)style))
           {
             strcpy(fileName, (char*)file);
-            bResult = 1;
             FcFontSetDestroy(fs);
-            return bResult;
+            return 1;
           }
-
-          /* set value to use if no more correct font of same family is found. */
-          strcpy(fileName, (char*)file);
-          bResult = 1;
         }
+
+        /* set a value to be used if the style is not found. 
+           the last family found will be used */
+        strcpy(fileName, (char*)file);
+        bResult = 1;
       }
     }
+
     FcFontSetDestroy(fs);
   }
 
