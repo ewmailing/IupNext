@@ -429,8 +429,6 @@ static int gtkButtonMapMethod(Ihandle* ih)
     ih->handle = gtk_event_box_new();
     gtk_container_add((GtkContainer*)ih->handle, img);
     gtk_widget_show(img);
-    gtk_widget_realize(img);
-    gtk_widget_queue_draw(img);
     iupAttribSet(ih, "_IUPGTK_EVENTBOX", "1");
   }
   else
@@ -525,6 +523,12 @@ static int gtkButtonMapMethod(Ihandle* ih)
 
   g_signal_connect(G_OBJECT(ih->handle), "button-press-event", G_CALLBACK(gtkButtonEvent), ih);
   g_signal_connect(G_OBJECT(ih->handle), "button-release-event",G_CALLBACK(gtkButtonEvent), ih);
+
+  if (!has_border)
+  {
+    GtkWidget* img = gtk_bin_get_child((GtkBin*)ih->handle);
+    gtk_widget_realize(img);
+  }
 
   gtk_widget_realize(ih->handle);
 
