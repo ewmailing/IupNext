@@ -2450,9 +2450,6 @@ static int locateInLED_cb(Ihandle* ih_item)
   Ihandle* elem_tree = (Ihandle*)IupGetAttribute(ih_item, "ELEMENTS_TREE");
   int id = IupGetInt(elem_tree, "VALUE");
 
-  if (id == 0)
-    return IUP_DEFAULT;
-
   tree_executeleaf_cb(elem_tree, id);
 
   return IUP_DEFAULT;
@@ -2666,7 +2663,7 @@ static int hideDialog_cb(Ihandle* ih_item)
   int id = IupGetInt(elem_tree, "VALUE");
   Ihandle *elem = (Ihandle *)IupTreeGetUserId(elem_tree, id);
   Ihandle* dialog = IupGetDialog(elem);
-  if (IupGetInt(dialog, "VISIBLE"))
+  if (dialog && IupGetInt(dialog, "VISIBLE"))
     IupHide(dialog);
   return IUP_DEFAULT;
 }
@@ -2703,6 +2700,14 @@ static int findElement_cb(Ihandle* ih_item)
 static int tree_rightclick_cb(Ihandle* elem_tree, int id)
 {
   Ihandle *popup_menu;
+  Ihandle *elem = (Ihandle *)IupTreeGetUserId(elem_tree, id);
+  int show_elem = 0;
+
+  Ihandle* dialog = IupGetDialog(elem);
+  if (dialog)
+    show_elem = 1;
+  else if (IupClassMatch(elem, "menu"))  /* popup menu */
+    show_elem = 2;
 
   IupSetInt(elem_tree, "VALUE", id);
 
@@ -2712,9 +2717,16 @@ static int tree_rightclick_cb(Ihandle* elem_tree, int id)
     IupSetCallbacks(IupItem("Collapse All", NULL), "ACTION", collapseAll_cb, NULL),
     IupSetCallbacks(IupItem("Expand All", NULL), "ACTION", expandAll_cb, NULL),
     IupSeparator(),
-    IupSetCallbacks(IupItem("Show...", NULL), "ACTION", showElement_cb, NULL),
-    IupSetCallbacks(IupItem("Hide Dialog", NULL), "ACTION", hideDialog_cb, NULL),
-    IupSetCallbacks(IupItem("Dialog Layout...", NULL), "ACTION", (Icallback)layoutdlg_cb, NULL),
+    show_elem?
+      (show_elem==1?
+        IupSetCallbacks(IupItem("Show Dialog...", NULL), "ACTION", showElement_cb, NULL):
+        IupSetCallbacks(IupItem("Show Menu...", NULL), "ACTION", showElement_cb, NULL)):
+      IupSetAttributes(IupItem("Show...", NULL), "ACTIVE=NO"),
+    show_elem==1 ?
+      IupSetCallbacks(IupItem("Hide Dialog", NULL), "ACTION", hideDialog_cb, NULL):
+      IupSetAttributes(IupItem("Hide Dialog", NULL), "ACTIVE=NO"),
+    IupSeparator(),
+    IupSetAttributes(IupSetCallbacks(IupItem("Edit Dialog Layout...", NULL), "ACTION", (Icallback)layoutdlg_cb, NULL), show_elem==1? "ACTIVE=YES": "ACTIVE=NO"),
     IupSeparator(),
     IupSetCallbacks(IupItem("Element Properties...", NULL), "ACTION", propertiesdlg_cb, NULL),
     IupSetCallbacks(IupItem("Find Element...", "findElement"), "ACTION", findElement_cb, NULL),
