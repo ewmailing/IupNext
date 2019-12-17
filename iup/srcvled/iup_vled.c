@@ -2112,7 +2112,7 @@ static void vLedExport(Ihandle* multitext, const char* src_filename, const char*
     else
       comments = load_comments(src_filename);
 
-    fprintf(file, comments);
+    fprintf(file, "%s", comments);
 
     if (!multitext)
       free(comments);
