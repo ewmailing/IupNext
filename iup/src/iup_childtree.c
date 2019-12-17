@@ -92,34 +92,6 @@ IUP_API void IupDetach(Ihandle *child)
   iupClassObjectChildRemoved(parent, child, pos);
 }
 
-#ifdef IUP_ASSERT
-static int iChildTreeFindRec(Ihandle* parent, Ihandle* child)
-{
-  Ihandle *c;
-
-  /* Finds the reference child entry inside the parent's child list */
-  for (c = parent->firstchild; c; c = c->brother)
-  {
-    if (c == child) /* Found the right child */
-      return 1;
-
-    if (iChildTreeFindRec(c, child))
-      return 1;
-  }
-
-  return 0;
-}
-
-static int iChildTreeCheckInside(Ihandle* parent, Ihandle* child)
-{
-  /* top parent */
-  while (parent->parent)
-    parent = parent->parent;
-
-  return iChildTreeFindRec(parent, child);
-}
-#endif  /* IUP_ASSERT */
-
 static int iChildTreeFind(Ihandle* parent, Ihandle* child)
 {
   Ihandle *c;
@@ -204,13 +176,22 @@ IUP_API Ihandle* IupInsert(Ihandle* parent, Ihandle* ref_child, Ihandle* child)
   if (!iupObjectCheck(child))
     return NULL;
 
-#ifdef IUP_ASSERT
-  if (iChildTreeCheckInside(parent, child))
+  iupASSERT(iupObjectCheck(child));
+
+  if (child->parent != NULL && child->parent != parent)
   {
-    iupError("Duplicate Child Found!\n(type(%s) - name(%s))", child->iclass->name, IupGetName(child));
+#ifdef IUP_ASSERT
+    iupError("Child Already Inside a Parent!\n"
+             "  child = type(%s) - name(%s)\n"
+             "  child->parent = type(%s) - name(%s)\n"
+             "  parent = type(%s) - name(%s)",
+             child->iclass->name, IupGetName(child),
+             child->parent->iclass->name, IupGetName(child->parent),
+             parent->iclass->name, IupGetName(parent)
+             );
+#endif
     return NULL;
   }
-#endif
 
   if (parent->iclass->childtype == IUP_CHILDNONE)
     return NULL;
@@ -263,13 +244,20 @@ IUP_API Ihandle* IupAppend(Ihandle* parent, Ihandle* child)
   if (!iupObjectCheck(child))
     return NULL;
 
-#ifdef IUP_ASSERT
-  if (iChildTreeCheckInside(parent, child))
+  if (child->parent != NULL && child->parent != parent)
   {
-    iupError("Duplicate Child Found!\n(type(%s) - name(%s))", child->iclass->name, IupGetName(child));
+#ifdef IUP_ASSERT
+    iupError("Child Already Inside a Parent!\n"
+             "  child = type(%s) - name(%s)\n"
+             "  child->parent = type(%s) - name(%s)\n"
+             "  parent = type(%s) - name(%s)",
+             child->iclass->name, IupGetName(child),
+             child->parent->iclass->name, IupGetName(child->parent),
+             parent->iclass->name, IupGetName(parent)
+             );
+#endif
     return NULL;
   }
-#endif
 
   if (parent->iclass->childtype == IUP_CHILDNONE)
     return NULL;
