@@ -28,6 +28,7 @@ typedef struct _IfontNameMap {
 #define IFONT_NAME_MAP_SIZE 7
 
 static IfontNameMap ifont_name_map[IFONT_NAME_MAP_SIZE] = {
+/*  pango        X11                      Windows                Mac  */
   {"sans",      "helvetica",              "arial",               "Helvetica Neue"},
   {NULL,        "new century schoolbook", "century schoolbook",  "BiauKai"}, /* Century Schoolbook seems to be private/hidden on Mac. Trying BiauKai as substitute. */
   {"monospace", "courier",                "courier new",         "Courier New"},
