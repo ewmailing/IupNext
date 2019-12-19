@@ -215,16 +215,18 @@ static int iGLGetFontFilenameFromSystem(const char *font_name, int is_bold, int 
 
     for (j = 0; j < fs->nfont; j++)
     {
-      FcChar8 *file;
-      FcChar8 *style;
       FcChar8 *family;
 
-      FcPatternGetString(fs->fonts[j], FC_FILE, 0, &file);
-      FcPatternGetString(fs->fonts[j], FC_STYLE, 0, &style);
       FcPatternGetString(fs->fonts[j], FC_FAMILY, 0, &family);
 
       if (iupStrEqualNoCase((char*)family, font_name))
       {
+        FcChar8 *file;
+        FcChar8 *style;
+
+        FcPatternGetString(fs->fonts[j], FC_FILE, 0, &file);
+        FcPatternGetString(fs->fonts[j], FC_STYLE, 0, &style);
+
         for (s = 0; s < style_size; s++)
         {
           if (iupStrEqualNoCase(styles[s], (char*)style))
