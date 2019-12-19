@@ -240,10 +240,20 @@ IUP_SDK_API Ihandle* iupLayoutFindElementDialog(Ihandle *tree, Ihandle* elem)
   return find_dlg;
 }
 
+static char* iLayoutGetName(Ihandle* ih)
+{
+  char* name = IupGetName(ih);
+  if (name && iupStrEqualPartial(name, "_IUP_NAME"))
+    name = NULL;
+  if (!name && ih->iclass->nativetype == IUP_TYPEDIALOG)
+    name = iupAttribGet(ih, "_IUP_DIALOG_NAME");
+  return name;
+}
+
 IUP_SDK_API char* iupLayoutGetElementTitle(Ihandle* ih)
 {
   char* title = iupAttribGetLocal(ih, "TITLE");
-  char* name = IupGetName(ih);
+  char* name = iLayoutGetName(ih);
   char* str = iupStrGetMemory(200);
   if (title)
   {
@@ -467,16 +477,6 @@ static void iLayoutTreeRebuild(iLayoutDialog* layoutdlg)
                          Layout Export
 ***************************************************************************/
 
-
-static char* iLayoutGetName(Ihandle* ih)
-{
-  char* name = IupGetName(ih);
-  if (name && iupATTRIB_ISINTERNAL(name))
-    name = NULL;
-  if (!name && ih->iclass->nativetype == IUP_TYPEDIALOG)
-    name = iupAttribGet(ih, "_IUP_DIALOG_NAME");
-  return name;
-}
 
 static void iLayoutFindNamedElem(Ihandle* ih, Iarray* names_array)
 {
@@ -1383,7 +1383,7 @@ static int iLayoutContextMenuHandleName_CB(Ihandle* menu)
   Ihandle* elem = (Ihandle*)iupAttribGetInherit(menu, "_IUP_LAYOUTCONTEXTELEMENT");
   char name[256] = "";
 
-  char* elem_name = IupGetName(elem);
+  char* elem_name = iLayoutGetName(elem);
   if (elem_name)
     strcpy(name, elem_name);
 

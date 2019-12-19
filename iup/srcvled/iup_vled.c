@@ -66,6 +66,14 @@ static int compare_image_names(const void* i1, const void* i2)
   return strcmp(name1, name2);
 }
 
+static char* vLedGetName(Ihandle* ih)
+{
+  char* name = IupGetName(ih);
+  if (name && iupStrEqualPartial(name, "_IUP_NAME"))  /* ignore internal names */
+    return NULL;
+  return name;
+}
+
 static int compare_named_handles(const void* i1, const void* i2)
 {
   Ihandle* ih1 = *((Ihandle**)i1);
@@ -281,7 +289,7 @@ static char* vLedGetElementTreeTitle(Ihandle* ih)
 {
   char* title = iupAttribGetLocal(ih, "TITLE");
   char* str = iupStrGetMemory(200);
-  char* name = IupGetName(ih);
+  char* name = vLedGetName(ih);
   char* not_def = NULL;
 
   if (IupClassMatch(ih, "user") && iupAttribGet(ih, "_IUPLED_NOTDEF_NAME"))
@@ -361,7 +369,7 @@ static int vLedTreeAddNode(Ihandle* elem_tree, int id, Ihandle* ih, const char *
       IupSetAttributeId(elem_tree, "INSERTLEAF", id, "");
   }
 
-  if (vLedIsAlien(ih, filename) || iupAttribGet(ih, "_IUPLED_NOTDEF_NAME") || (IupGetName(ih) && !root))
+  if (vLedIsAlien(ih, filename) || iupAttribGet(ih, "_IUPLED_NOTDEF_NAME") || (vLedGetName(ih) && !root))
     link = 1;
 
   id = IupGetInt(elem_tree, "LASTADDNODE");
@@ -382,7 +390,7 @@ static int vLedTreeAddChildren(Ihandle* elem_tree, int last_child_id, Ihandle* p
     {
       last_child_id = vLedTreeAddNode(elem_tree, last_child_id, child, filename, add, 0);  /* add element node or a link */
 
-      if (child->iclass->childtype != IUP_CHILDNONE && !vLedIsAlien(child, filename) && !IupGetName(child))  /* add its children if not a link and not named */
+      if (child->iclass->childtype != IUP_CHILDNONE && !vLedIsAlien(child, filename) && !vLedGetName(child))  /* add its children if not a link and not named */
         vLedTreeAddChildren(elem_tree, last_child_id, child, filename);
 
       add = 0; /* use insert */
@@ -409,11 +417,13 @@ static void updateElemTree(Ihandle* elem_tree, const char* filename)
     Ihandle* elem = IupGetHandle(names[i]);
     if (iupObjectCheck(elem))
     {
-      if (vLedIsAlien(elem, filename))
+      if (vLedIsAlien(elem, filename) || iupStrEqualPartial(names[i], "_IUP_NAME"))
         names[i] = NULL;
       else
         num_named_handles++;
     }
+    else
+      names[i] = NULL;
   }
 
   if (num_named_handles == 0)
@@ -566,7 +576,7 @@ static void unloadNamedElements(Ihandle *elem)
     if (child->iclass->childtype != IUP_CHILDNONE)
       unloadNamedElements(child);
 
-    if (IupGetName(child))
+    if (vLedGetName(child))
       IupDetach(child);
   }
 }
@@ -602,15 +612,21 @@ static void check_layout_prop_dialogs(Ihandle* ih)
 
 static int unload_led(Ihandle* multitext, const char *filename)
 {
-  int i, num_names = IupGetAllNames(NULL, -1);
+  int i, num_named_elems = 0, num_names = IupGetAllNames(NULL, -1);
   char* *names = malloc(sizeof(char*)*num_names);
   Ihandle* *named_elems = malloc(sizeof(Ihandle*)*num_names);
   IupGetAllNames(names, num_names);
 
   for (i = 0; i < num_names; i++)
-    named_elems[i] = IupGetHandle(names[i]);
+  {
+    if (!iupStrEqualPartial(names[i], "_IUP_NAME"))
+    {
+      named_elems[num_named_elems] = IupGetHandle(names[i]);
+      num_named_elems++;
+    }
+  }
   
-  for (i = 0; i < num_names; i++)
+  for (i = 0; i < num_named_elems; i++)
   {
     Ihandle *elem = named_elems[i],
            *parent, *brother = NULL;
@@ -651,7 +667,7 @@ static int unload_led(Ihandle* multitext, const char *filename)
     brother = NULL;
     if (parent && vLedIsAlien(parent, filename))
     {
-      strcpy(old_name, IupGetName(elem));
+      strcpy(old_name, vLedGetName(elem));
       brother = elem->brother;
       save_not_defined = 1;
     }
@@ -666,7 +682,7 @@ static int unload_led(Ihandle* multitext, const char *filename)
     }
   }
 
-  for (i = 0; i < num_names; i++)
+  for (i = 0; i < num_named_elems; i++)
   {
     Ihandle *elem = named_elems[i];
     if (iupObjectCheck(elem))
@@ -1920,7 +1936,7 @@ static int item_show_all_img_cb(Ihandle *ih_item)
     char* filename;
 
     elem = images[i];
-    name = IupGetName(elem);
+    name = vLedGetName(elem);
 
     if (show_stock)
       filename = "IupImgLib";
@@ -2035,7 +2051,7 @@ static void iLayoutFindNamedElem(const char* src_filename, Iarray* names_array)
     Ihandle *elem = IupGetHandle(names[i]);
     if (elem)
     {
-      if (iupATTRIB_ISINTERNAL(names[i]) ||
+      if (iupStrEqualPartial(names[i], "_IUP_NAME") ||
           vLedIsAlien(elem, src_filename))
         continue;
 
@@ -2404,7 +2420,7 @@ static int tree_executeleaf_cb(Ihandle* elem_tree, int id)
   Ihandle* multitext = vLedGetCurrentMultitext(elem_tree);
   Ihandle *elem = (Ihandle *)IupTreeGetUserId(elem_tree, id);
   char* filename = IupGetAttribute(multitext, "FILENAME");
-  char *name = IupGetName(elem);
+  char *name = vLedGetName(elem);
   Ihandle *parent = elem;
   int link;
 
@@ -2413,7 +2429,7 @@ static int tree_executeleaf_cb(Ihandle* elem_tree, int id)
     parent = IupGetParent(parent);
     if (!parent)
       break;
-    name = IupGetName(parent);
+    name = vLedGetName(parent);
   }
 
   if (!name)
@@ -2514,7 +2530,7 @@ static void iLayoutFixChildLedLines(Ihandle* parent, const char* filename)
   {
     if (!(child->flags & IUP_INTERNAL))
     {
-      if (!vLedIsAlien(child, filename) && IupGetName(child))
+      if (!vLedIsAlien(child, filename) && vLedGetName(child))
         iupAttribSetInt(child, "_IUPLED_LINE", parent_line - 1);
 
       iLayoutFixChildLedLines(child, filename);
@@ -2533,7 +2549,7 @@ static int layoutchanged_cb(Ihandle* dlg, Ihandle* elem)
     if (!iupAttribGet(elem, "_IUPLED_FILENAME")) /* new element */
       iupAttribSetStr(elem, "_IUPLED_FILENAME", filename);
 
-    if (IupGetName(elem))  /* if it has name then it must have line for controlling export order */
+    if (vLedGetName(elem))  /* if it has name then it must have line for controlling export order */
     {
       if (!iupAttribGet(elem, "_IUPLED_LINE"))
       {
