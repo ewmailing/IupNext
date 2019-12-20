@@ -164,15 +164,15 @@ IUP_SDK_API Ihandle* iupLayoutFindElementDialog(Ihandle *tree, Ihandle* elem)
   IupSetInt(type, "SEARCH_TYPE", 0);
   IupSetAttribute(type, "TIP", "Element Type (Class Name)");
 
-  handle_name = IupToggle("Handle", NULL);
+  handle_name = IupToggle("Handle Name", NULL);
   IupSetAttribute(handle_name, "NAME", "FIND_HANDLE");
   IupSetInt(handle_name, "SEARCH_TYPE", 1);
-  IupSetAttribute(handle_name, "TIP", "Handle Name");
+  IupSetAttribute(handle_name, "TIP", "Handle Name set using IupSetHandle or declared in LED");
 
-  name = IupToggle("Name", NULL);
+  name = IupToggle("NAME Attribute", NULL);
   IupSetAttribute(name, "NAME", "FIND_NAME");
   IupSetInt(name, "SEARCH_TYPE", 2);
-  IupSetAttribute(name, "TIP", "NAME attribute");
+  IupSetAttribute(name, "TIP", "NAME attribute used for IupGetDialogChild");
 
   title = IupToggle("Title", NULL);
   IupSetAttribute(title, "NAME", "FIND_TITLE");

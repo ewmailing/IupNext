@@ -958,7 +958,7 @@ static Ihandle* vLedGetElemTree(Ihandle* multitext)
 static int tabChange_cb(Ihandle* tabs, Ihandle* new_multitext, Ihandle* old_multitext)
 {
   Ihandle* elem_tree_box = IupGetDialogChild(tabs, "ELEM_TREE_BOX");
-  Ihandle* elem_tree = (Ihandle*)IupGetAttribute(new_multitext, "ELEM_TREE");
+  Ihandle* elem_tree = vLedGetElemTree(new_multitext);
 
   IFnnn oldTabChange_cb = (IFnnn)IupGetCallback(tabs, "OLDTABCHANGE_CB");
   if (oldTabChange_cb)
@@ -1173,6 +1173,33 @@ static int closetext_cb(Ihandle* main_dialog, Ihandle *multitext)
   IupDestroy(elem_tree);
 
   (void)main_dialog;
+  return IUP_DEFAULT;
+}
+
+static int configsave_cb(Ihandle *main_dialog, Ihandle* config)
+{
+  Ihandle* elem_tree_box = IupGetDialogChild(main_dialog, "ELEM_TREE_BOX");
+  Ihandle* extra_dlg = (Ihandle*)IupGetAttribute(elem_tree_box, "FIND_ELEM_DIALOG");
+  if (iupObjectCheck(extra_dlg))
+  {
+    IupConfigSetVariableStr(config, "FindElementDialog", "FindText", IupGetAttribute(IupGetDialogChild(extra_dlg, "FIND_TEXT"), "VALUE"));
+    IupConfigSetVariableStr(config, "FindElementDialog", "Target", IupGetAttribute((Ihandle*)IupGetAttribute(IupGetDialogChild(extra_dlg, "TARGET"), "VALUE_HANDLE"), "NAME"));
+
+    IupConfigDialogClosed(config, extra_dlg, "FindElementDialog");
+  }
+
+  extra_dlg = (Ihandle*)IupGetAttribute(elem_tree_box, "PROPERTIES_DIALOG");
+  if (iupObjectCheck(extra_dlg))
+    IupConfigDialogClosed(config, extra_dlg, "ElementPropertiesDialog");
+
+  extra_dlg = (Ihandle*)IupGetAttribute(main_dialog, "GLOBALS_DIALOG");
+  if (iupObjectCheck(extra_dlg))
+    IupConfigDialogClosed(config, extra_dlg, "GlobalsDialog");
+
+  extra_dlg = (Ihandle*)IupGetAttribute(main_dialog, "CLASSINFO_DIALOG");
+  if (iupObjectCheck(extra_dlg))
+    IupConfigDialogClosed(config, extra_dlg, "ClassInfoDialog");
+
   return IUP_DEFAULT;
 }
 
@@ -2684,9 +2711,16 @@ static int hideDialog_cb(Ihandle* ih_item)
   return IUP_DEFAULT;
 }
 
+static Ihandle* get_elem_tree(Ihandle* dlg)
+{
+  Ihandle* multitext = vLedGetCurrentMultitext(dlg);
+  Ihandle* elem_tree = vLedGetElemTree(multitext);
+  return elem_tree;
+}
+
 static int findElement_cb(Ihandle* ih_item)
 {
-  Ihandle* elem_tree = (Ihandle*)IupGetAttribute(ih_item, "ELEMENTS_TREE");
+  Ihandle* elem_tree = IupClassMatch(ih_item, "dialog") ? get_elem_tree(ih_item) : (Ihandle*)IupGetAttribute(ih_item, "ELEMENTS_TREE");
   Ihandle* config = get_config(elem_tree);
   Ihandle* find_dlg = (Ihandle*)IupGetAttribute(IupGetParent(elem_tree), "FIND_ELEM_DIALOG");
   int id = IupGetInt(elem_tree, "VALUE");
@@ -2699,6 +2733,9 @@ static int findElement_cb(Ihandle* ih_item)
   {
     find_dlg = iupLayoutFindElementDialog(elem_tree, elem);
     IupSetAttribute(IupGetParent(elem_tree), "FIND_ELEM_DIALOG", (char*)find_dlg);
+
+    IupSetStrAttribute(IupGetDialogChild(find_dlg, "FIND_TEXT"), "VALUE", IupConfigGetVariableStr(config, "FindElementDialog", "FindText"));
+    IupSetAttribute(IupGetDialogChild(find_dlg, "TARGET"), "VALUE_HANDLE", (char*)IupGetDialogChild(find_dlg, IupConfigGetVariableStr(config, "FindElementDialog", "Target")));
   }
 
   dialog = IupGetDialog(elem);
@@ -2745,7 +2782,7 @@ static int tree_rightclick_cb(Ihandle* elem_tree, int id)
     IupSetAttributes(IupSetCallbacks(IupItem("Edit Dialog Layout...", NULL), "ACTION", (Icallback)layoutdlg_cb, NULL), show_elem==1? "ACTIVE=YES": "ACTIVE=NO"),
     IupSeparator(),
     IupSetCallbacks(IupItem("Element Properties...", NULL), "ACTION", propertiesdlg_cb, NULL),
-    IupSetCallbacks(IupItem("Find Element...", "findElement"), "ACTION", findElement_cb, NULL),
+    IupSetCallbacks(IupItem("Find Element...\tCtrl+E", "findElement"), "ACTION", findElement_cb, NULL),
     NULL);
 
   iupAttribSet(popup_menu, "ELEMENTS_TREE", (char*)elem_tree);
@@ -3031,9 +3068,11 @@ int main(int argc, char **argv)
   IupSetCallback(main_dialog, "SAVEFILE_CB", (Icallback)savefile_cb);
   IupSetCallback(main_dialog, "NEWTEXT_CB", (Icallback)newtext_cb);
   IupSetCallback(main_dialog, "CLOSETEXT_CB", (Icallback)closetext_cb);
+  IupSetCallback(main_dialog, "CONFIGSAVE_CB", (Icallback)configsave_cb);
   IupSetCallback(main_dialog, "CONFIGLOAD_CB", (Icallback)configload_cb);
   IupSetCallback(main_dialog, "MARKERCHANGED_CB", (Icallback)marker_changed_cb);
   IupSetCallback(main_dialog, "EXIT_CB", (Icallback)exit_cb);
+  IupSetCallback(main_dialog, "K_cE", (Icallback)findElement_cb);
 
   elem_tree_box = IupZbox(NULL);
   IupSetAttribute(elem_tree_box, "NAME", "ELEM_TREE_BOX");
@@ -3086,28 +3125,19 @@ int main(int argc, char **argv)
 
   extra_dlg = (Ihandle*)IupGetAttribute(elem_tree_box, "FIND_ELEM_DIALOG");
   if (iupObjectCheck(extra_dlg))
-  {
-    IupConfigDialogClosed(config, extra_dlg, "FindElementDialog");
     IupDestroy(extra_dlg);
-  }
+  
   extra_dlg = (Ihandle*)IupGetAttribute(elem_tree_box, "PROPERTIES_DIALOG");
   if (iupObjectCheck(extra_dlg))
-  {
-    IupConfigDialogClosed(config, extra_dlg, "ElementPropertiesDialog");
     IupDestroy(extra_dlg);
-  }
+  
   extra_dlg = (Ihandle*)IupGetAttribute(main_dialog, "GLOBALS_DIALOG");
   if (iupObjectCheck(extra_dlg))
-  {
-    IupConfigDialogClosed(config, extra_dlg, "GlobalsDialog");
     IupDestroy(extra_dlg);
-  }
+  
   extra_dlg = (Ihandle*)IupGetAttribute(main_dialog, "CLASSINFO_DIALOG");
   if (iupObjectCheck(extra_dlg))
-  {
-    IupConfigDialogClosed(config, extra_dlg, "ClassInfoDialog");
     IupDestroy(extra_dlg);
-  }
 
   IupDestroy(main_dialog);
   IupDestroy(config);
