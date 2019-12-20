@@ -72,7 +72,7 @@ IUP_API int IupOpen(int *argc, char ***argv)
 
     IupSetGlobal("DEFAULTFONT", iupdrvGetSystemFont());  /* Use SetGlobal because iupdrvGetSystemFont returns a static string */
     IupSetGlobal("DEFAULTPRECISION", "2");
-    IupSetGlobal("DEFAULTBUTTONPADDING", "12x4");
+    IupSetGlobal("DEFAULTBUTTONPADDING", "12x4");  /* used by pre-defined dialogs */
 
     iupRegisterInternalClasses();
 
