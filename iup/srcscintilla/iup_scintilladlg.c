@@ -707,9 +707,13 @@ static void saveProjectOpenFiles(Ihandle *ih, Ihandle *projectConfig)
     if (!filename || iupStrEqualPartial(filename, "Untitled"))
       continue;
 
-    filename = getProjectRelativeFilename(app_filename, filename);
+    if (app_filename)
+      filename = getProjectRelativeFilename(app_filename, filename);
+
     IupConfigSetVariableStrId(projectConfig, "ProjectOpenFiles", "File", i, filename);
-    free(filename);
+
+    if (app_filename)
+      free(filename);
 
     i++;
   }
@@ -733,9 +737,13 @@ static void saveProjectFiles(Ihandle *projectTree, Ihandle *projectConfig)
   filename = IupTreeGetUserId(projectTree, i);
   while (filename != NULL)
   {
-    filename = getProjectRelativeFilename(app_filename, filename);
+    if (app_filename)
+      filename = getProjectRelativeFilename(app_filename, filename);
+
     IupConfigSetVariableStrId(projectConfig, "ProjectFiles", "File", i, filename);
-    free(filename);
+
+    if (app_filename)
+      free(filename);
 
     i++;
     filename = IupTreeGetUserId(projectTree, i);
