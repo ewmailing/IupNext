@@ -81,7 +81,7 @@ IUP_SDK_API void iupLayoutPropertiesUpdate(Ihandle* properties, Ihandle* ih)
 
   iupAttribSet(properties, "_IUP_PROPELEMENT", (char*)ih);
 
-  IupStoreAttribute(IupGetDialogChild(properties, "ELEMTITLE"), "TITLE", iupLayoutGetElementTitle(ih));
+  IupStoreAttribute(IupGetDialogChild(properties, "ELEMTITLE"), "VALUE", iupLayoutGetElementTitle(ih));
 
   free(attr_names);
 }
@@ -574,7 +574,7 @@ static Ihandle* iLayoutPropertiesCreateDialog(Ihandle* parent)
 
   box33 = IupVbox(
     IupLabel("Value:"),
-    IupSetAttributes(IupText(""), "EXPAND=HORIZONTAL, READONLY=Yes, NAME=VALUE3"),
+    IupSetAttributes(IupText(NULL), "EXPAND=HORIZONTAL, READONLY=Yes, NAME=VALUE3"),
     NULL);
   IupSetAttribute(box33, "MARGIN", "0x0");
   IupSetAttribute(box33, "GAP", "0");
@@ -600,7 +600,7 @@ static Ihandle* iLayoutPropertiesCreateDialog(Ihandle* parent)
   iLayoutPropertiesTabChangePos_CB(tabs, 0, 0);
 
   dlg_box = IupVbox(
-    IupSetAttributes(IupLabel(""), "EXPAND=HORIZONTAL, NAME=ELEMTITLE"),
+    IupSetAttributes(IupText(NULL), "EXPAND=HORIZONTAL, READONLY=Yes, NAME=ELEMTITLE, BORDER=NO"),
     tabs,
     button_box,
     NULL);
@@ -619,6 +619,8 @@ static Ihandle* iLayoutPropertiesCreateDialog(Ihandle* parent)
   iupAttribSet(dlg, "_IUP_PROPLIST1", (char*)list1);
   iupAttribSet(dlg, "_IUP_PROPLIST2", (char*)list2);
   iupAttribSet(dlg, "_IUP_PROPLIST3", (char*)list3);
+
+  IupStoreAttribute(IupGetDialogChild(dlg, "ELEMTITLE"), "BGCOLOR", IupGetAttribute(dlg, "BGCOLOR"));
 
   return dlg;
 }
