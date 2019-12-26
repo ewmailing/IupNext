@@ -219,7 +219,8 @@ static gboolean gtkCanvasScrollEvent(GtkWidget *widget, GdkEventScroll *evt, Iha
   if (iupAttribGetBoolean(ih, "WHEELDROPFOCUS"))
   {
     Ihandle* ih_focus = IupGetFocus();
-    iupAttribSetClassObject(ih_focus, "SHOWDROPDOWN", "NO");
+    if (iupObjectCheck(ih_focus))
+      iupAttribSetClassObject(ih_focus, "SHOWDROPDOWN", "NO");
   }
 
   if (wcb)
