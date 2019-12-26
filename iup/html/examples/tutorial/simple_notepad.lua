@@ -552,8 +552,8 @@ function create_find_dialog()
     box, 
     title = "Find", 
     dialogframe = "Yes", 
-    defaultenter = bt_next, 
-    defaultesc = bt_close,
+    defaultenter = bt_find_next, 
+    defaultesc = bt_find_close,
     parentdialog = iup.GetDialog(multitext),
     close_cb = bt_find_close_action,
 

@@ -237,8 +237,8 @@ function item_find:action()
       box, 
       title = "Find", 
       dialogframe = "Yes", 
-      defaultenter = bt_next, 
-      defaultesc = bt_close,
+      defaultenter = bt_find_next, 
+      defaultesc = bt_find_close,
       parentdialog = iup.GetDialog(self)
       }
 
