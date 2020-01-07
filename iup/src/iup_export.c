@@ -496,7 +496,7 @@ IUP_SDK_API void iupLayoutExportNamedElemList(FILE* file, Ihandle* *named_elem, 
     if (iupStrEqualPartial(elem->iclass->name, "image"))
     {
       char* format[] = { "LUA", "C", "LED" };
-      iupImageExportToFile(elem, file, format[export_format], name, 0);
+      iupImageExportToFile(elem, file, format[export_format], name, 0);  /* don't put it inside a function (Lua and C) */
     }
     else
     {
@@ -883,9 +883,9 @@ IUP_API int IupSaveImageAsText(Ihandle* ih, const char* filename, const char* fo
   if (iupStrEqualNoCase(format, "LED"))
     ret = SaveImageLED(filename, ih, name, NULL, NULL);
   else if (iupStrEqualNoCase(format, "LUA"))
-    ret = SaveImageLua(filename, ih, name, NULL, NULL, 0);
+    ret = SaveImageLua(filename, ih, name, NULL, NULL, 1);
   else if (iupStrEqualNoCase(format, "C"))
-    ret = SaveImageC(filename, ih, name, NULL, NULL, 0);
+    ret = SaveImageC(filename, ih, name, NULL, NULL, 1);
   return ret;
 }
 
