@@ -240,9 +240,6 @@ IUP_SDK_API char* iupKeyCodeToName(int code)
   unsigned char mod = 0;
   const char* base_name;
 
-  if (code <= 0)
-    return NULL;
-  
   base_name = iKeyBaseCodeToName(iup_XkeyBase(code), &mod);
   if (!base_name)
   {

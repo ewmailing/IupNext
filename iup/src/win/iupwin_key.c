@@ -245,17 +245,17 @@ static int winKeyMap2Iup(int wincode)
        and except when other modifiers are used */
     if ((wincode < K_exclam || wincode > K_tilde) ||
         (has_ctrl || has_alt || has_sys))
-      code |= iup_XkeyShift(code);  
+      code = iup_XkeyShift(code);  
   }
 
   if (has_ctrl)   /* Ctrl */
-    code |= iup_XkeyCtrl(code);
+    code = iup_XkeyCtrl(code);
 
   if (has_alt)    /* Alt */
-    code |= iup_XkeyAlt(code);
+    code = iup_XkeyAlt(code);
 
   if (has_sys)    /* Apple/Win */
-    code |= iup_XkeySys(code);
+    code = iup_XkeySys(code);
 
   return code;
 }

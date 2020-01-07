@@ -148,7 +148,7 @@ static int motKeyMap2Iup(KeySym motcode, unsigned int state)
        and except when other modifiers are used */
     if ((motcode < K_exclam || motcode > K_tilde) ||
         (state & (ControlMask|Mod1Mask|Mod5Mask|Mod4Mask)))
-      code |= iup_XkeyShift(code);
+      code = iup_XkeyShift(code);
   }
 
   if (state & ControlMask)   /* Ctrl */

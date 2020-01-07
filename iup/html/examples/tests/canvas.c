@@ -549,6 +549,7 @@ static int k_any(Ihandle *ih, int c)
   printf("  isShiftXkey(%d)\n", iup_isShiftXkey(c));
   printf("  isCtrlXkey(%d)\n", iup_isCtrlXkey(c));
   printf("  isAltXkey(%d)\n", iup_isAltXkey(c));
+  printf("  isSysXkey(%d)\n", iup_isSysXkey(c));
 
   if (c == K_cF)
   {
