@@ -6,7 +6,7 @@
 
 #---------------------------------#
 # Tecmake Version
-VERSION = 4.19
+VERSION = 4.20
 
 
 #---------------------------------#
@@ -125,8 +125,6 @@ ifndef TEC_UNAME
       TEC_UNAME:=$(TEC_UNAME)_arm
     endif    
     ifeq ($(TEC_SYSARCH), arm64)
-      # Our dynamic library build is not working in arm64
-      NO_DYNAMIC ?= Yes 
       BUILD_64=Yes
       TEC_UNAME:=$(TEC_UNAME)_arm64
     endif    
@@ -627,6 +625,10 @@ ifneq ($(findstring Linux, $(TEC_UNAME)), )
     ifeq ($(TEC_SYSARCH), ia64)
       STDFLAGS += -fPIC
       X11_LIB := /usr/X11R6/lib
+    # arm64 config - AIR
+    else ifeq ($(TEC_SYSARCH), arm64)
+      STDFLAGS += -fPIC
+      X11_LIB := /usr/lib/aarch64-linux-gnu/
     else
       STDFLAGS += -m64 -fPIC
       X11_LIB := /usr/X11R6/lib64
@@ -853,7 +855,7 @@ ifdef USE_LUA50
 endif
 
 ifdef USE_LUA51
-  LUA_SFX := 5.1
+  LUA_SFX ?= 5.1
   LIBLUA_SFX := 51
   override USE_LUA = Yes
   LUA := $(LUA51)
@@ -1346,8 +1348,8 @@ ifdef USE_GTK
   
   ifdef USE_PKGCONFIG
     # get compile/link flags via pkg-config
-    PKGINCS += $(shell pkg-config --cflags gtk+-$(GTKSFX).0 gdk-$(GTKSFX).0)
-    PKGLIBS += $(shell pkg-config --libs gtk+-$(GTKSFX).0 gdk-$(GTKSFX).0)
+    PKGINCS += $(shell pkg-config --cflags gtk+-$(GTKSFX).0 gdk-$(GTKSFX).0 gtk+-unix-print-$(GTKSFX).0)
+    PKGLIBS += $(shell pkg-config --libs gtk+-$(GTKSFX).0 gdk-$(GTKSFX).0 gtk+-unix-print-$(GTKSFX).0)
     GTK_BASE := $(shell pkg-config --variable=prefix gtk+-$(GTKSFX).0)
     GTK := $(GTK_BASE)    
   else
