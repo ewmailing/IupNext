@@ -760,6 +760,7 @@ static void gtkTreeChildRebuildCacheRec(Ihandle* ih, GtkTreeModel *model, GtkTre
 
 static void gtkTreeRebuildNodeCache(Ihandle* ih, int id, GtkTreeIter iterItem)
 {
+  /* preserve cache user_data */
   GtkTreeModel* model = gtk_tree_view_get_model(GTK_TREE_VIEW(ih->handle));
   ih->data->node_cache[id].node_handle = iterItem.user_data;
   gtkTreeChildRebuildCacheRec(ih, model, &iterItem, &id);
@@ -2814,7 +2815,7 @@ void iupdrvTreeDragDropCopyNode(Ihandle* src, Ihandle* dst, InodeHandle *itemSrc
   gtkTreeDragDropCopyChildren(src, dst, &iterItemSrc, &iterNewItem);
 
   count = dst->data->node_count - old_count;
-  iupTreeDragDropCopyCache(dst, id_dst, id_new, count);
+  iupTreeCopyMoveCache(dst, id_dst, id_new, count, 1);  /* update only the dst control cache */
   gtkTreeRebuildNodeCache(dst, id_new, iterNewItem);
 }
 

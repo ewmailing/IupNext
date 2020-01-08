@@ -141,6 +141,7 @@ static void motTreeChildRebuildCacheRec(Ihandle* ih, Widget wItem, int *id)
 
 static void motTreeRebuildNodeCache(Ihandle* ih, int id, Widget wItem)
 {
+  /* preserve cache user_data */
   ih->data->node_cache[id].node_handle = wItem;
   motTreeChildRebuildCacheRec(ih, wItem, &id);
 }
@@ -2755,7 +2756,7 @@ void iupdrvTreeDragDropCopyNode(Ihandle* src, Ihandle* dst, InodeHandle *itemSrc
   motTreeDragDropCopyChildren(src, dst, wItemSrc, wItemNew);
 
   count = dst->data->node_count - old_count;
-  iupTreeDragDropCopyCache(dst, id_dst, id_new, count);
+  iupTreeCopyMoveCache(dst, id_dst, id_new, count, 1);  /* update only the dst control cache */
   motTreeRebuildNodeCache(dst, id_new, wItemNew);
 }
 

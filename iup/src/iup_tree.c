@@ -398,6 +398,7 @@ void iupTreeCopyMoveCache(Ihandle* ih, int id_src, int id_dst, int count, int is
   if (id_dst < 0 || id_dst >= ih->data->node_count)
     return;
 
+  /* dst can NOT be inside src+count area */
   iupASSERT(id_dst < id_src || id_dst > id_src+count);
   if (id_dst >= id_src && id_dst <= id_src+count)
     return;
@@ -409,11 +410,7 @@ void iupTreeCopyMoveCache(Ihandle* ih, int id_src, int id_dst, int count, int is
 
   /* add space for new nodes */
   remain_count = ih->data->node_count - (id_dst + count);
-  memmove(ih->data->node_cache+id_dst+count, ih->data->node_cache+id_dst, remain_count*sizeof(InodeData));
-
-  /* compensate because we add space for new nodes */
-  if (id_src > id_dst)
-    id_src += count;
+  memmove(ih->data->node_cache + id_dst+count, ih->data->node_cache + id_dst, remain_count * sizeof(InodeData));
 
   if (is_copy) 
   {
@@ -422,6 +419,10 @@ void iupTreeCopyMoveCache(Ihandle* ih, int id_src, int id_dst, int count, int is
   }
   else /* move = copy + delete */
   {
+    /* compensate because we added space for new nodes */
+    if (id_src > id_dst)
+      id_src += count;
+
     /* copy userdata from src to dst */
     memcpy(ih->data->node_cache+id_dst, ih->data->node_cache+id_src, count*sizeof(InodeData));
 
@@ -435,6 +436,7 @@ void iupTreeCopyMoveCache(Ihandle* ih, int id_src, int id_dst, int count, int is
 
   iupAttribSet(ih, "LASTADDNODE", NULL);
 }
+
 
 /*************************************************************************/
 
@@ -634,37 +636,6 @@ static int iTreeSetUserDataAttrib(Ihandle* ih, int id, const char* value)
 
 /*****************************************************************************************/
 
-
-void iupTreeDragDropCopyCache(Ihandle* ih, int id_src, int id_dst, int count)
-{
-  int remain_count;
-
-  iupASSERT(id_src >= 0 && id_src < ih->data->node_count);
-  if (id_src < 0 || id_src >= ih->data->node_count)
-    return;
-
-  iupASSERT(id_dst >= 0 && id_dst < ih->data->node_count);
-  if (id_dst < 0 || id_dst >= ih->data->node_count)
-    return;
-
-  /* id_dst here points to the final position for a copy operation */
-
-  /* node_count here contains the final count for a copy operation */
-  iupTreeIncCacheMem(ih);
-
-  /* add space for new nodes */
-  remain_count = ih->data->node_count - (id_dst + count);
-  memmove(ih->data->node_cache+id_dst+count, ih->data->node_cache+id_dst, remain_count*sizeof(InodeData));
-
-  /* compensate because we add space for new nodes */
-  if (id_src > id_dst)
-    id_src += count;
-
-  /* during a copy, the userdata is not reused, so clear it */
-  memset(ih->data->node_cache+id_dst, 0, count*sizeof(InodeData));
-
-  iupAttribSet(ih, "LASTADDNODE", NULL);
-}
 
 static int iTreeDropData_CB(Ihandle *ih, char* type, void* data, int len, int x, int y)
 {

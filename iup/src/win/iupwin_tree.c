@@ -148,6 +148,7 @@ static void winTreeChildRebuildCacheRec(Ihandle* ih, HTREEITEM hItem, int *id)
 
 static void winTreeRebuildNodeCache(Ihandle* ih, int id, HTREEITEM hItem)
 {
+  /* preserve cache user_data */
   ih->data->node_cache[id].node_handle = hItem;
   winTreeChildRebuildCacheRec(ih, hItem, &id);
 }
@@ -3056,7 +3057,7 @@ void iupdrvTreeDragDropCopyNode(Ihandle* src, Ihandle* dst, InodeHandle *itemSrc
   winTreeDragDropCopyChildren(src, dst, hItemSrc, hItemNew);
 
   count = dst->data->node_count - old_count;
-  iupTreeDragDropCopyCache(dst, id_dst, id_new, count);
+  iupTreeCopyMoveCache(dst, id_dst, id_new, count, 1);  /* update only the dst control cache */
   winTreeRebuildNodeCache(dst, id_new, hItemNew);
 }
 
