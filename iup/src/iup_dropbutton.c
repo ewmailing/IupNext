@@ -99,7 +99,7 @@ static int iDropButtonRedraw_CB(Ihandle* ih)
   bgcolor_button = bgcolor;
   bgcolor_arrow = bgcolor;
 
-  if (ih->data->pressed || (ih->data->dropped && !ih->data->highlighted))
+  if ((ih->data->pressed && ih->data->highlighted) || (ih->data->dropped && !ih->data->highlighted))
   {
     char* presscolor = iupAttribGetStr(ih, "PSCOLOR");
     if (presscolor)
@@ -142,7 +142,7 @@ static int iDropButtonRedraw_CB(Ihandle* ih)
   {
     char* bordercolor = iupAttribGetStr(ih, "BORDERCOLOR");
 
-    if (ih->data->pressed || (ih->data->dropped && !ih->data->highlighted))
+    if ((ih->data->pressed && ih->data->highlighted) || (ih->data->dropped && !ih->data->highlighted))
     {
       char* presscolor = iupAttribGetStr(ih, "BORDERPSCOLOR");
       if (presscolor)
@@ -173,7 +173,7 @@ static int iDropButtonRedraw_CB(Ihandle* ih)
   }
 
   /* simulate pressed when dropped and has images (but colors and borders are not included) */
-  image_pressed = ih->data->pressed;
+  image_pressed = ih->data->pressed && ih->data->highlighted;
   if (ih->data->dropped && !ih->data->pressed && (bgimage || image))
     image_pressed = 1;
 
@@ -363,7 +363,7 @@ static void iDropButtonNotify(Ihandle* ih, int pressed)
     return;
   }
 
-  if (!pressed && !ih->data->over_arrow)
+  if (!pressed && !ih->data->over_arrow && ih->data->highlighted)  /* released inside the button area */
   {
     Icallback cb;
 
@@ -390,8 +390,8 @@ static void iDropButtonNotify(Ihandle* ih, int pressed)
 
 static int iDropButtonMotion_CB(Ihandle* ih, int x, int y, char* status)
 {
-  int drop_onarrow = iupAttribGetBoolean(ih, "DROPONARROW");
-  int over_arrow = 1;
+  int drop_onarrow, over_arrow, redraw = 0;
+
   IFniis cb = (IFniis)IupGetCallback(ih, "FLAT_MOTION_CB");
   if (cb)
   {
@@ -399,14 +399,41 @@ static int iDropButtonMotion_CB(Ihandle* ih, int x, int y, char* status)
       return IUP_DEFAULT;
   }
 
+  drop_onarrow = iupAttribGetBoolean(ih, "DROPONARROW");
+  over_arrow = 1;
   if (drop_onarrow && (x < ih->currentwidth - ih->data->arrow_size))
       over_arrow = 0;
 
   if (over_arrow != ih->data->over_arrow)
   {
     ih->data->over_arrow = over_arrow;
-    iupdrvRedrawNow(ih);
+    redraw = 1;
   }
+
+  if (iup_isbutton1(status) && !over_arrow)
+  {
+    /* handle when mouse is pressed and moved to/from inside the canvas */
+    if (x < 0 || x > ih->currentwidth - 1 ||
+        y < 0 || y > ih->currentheight - 1)
+    {
+      if (ih->data->highlighted)
+      {
+        redraw = 1;
+        ih->data->highlighted = 0;
+      }
+    }
+    else
+    {
+      if (!ih->data->highlighted)
+      {
+        redraw = 1;
+        ih->data->highlighted = 1;
+      }
+    }
+  }
+
+  if (redraw)
+    iupdrvRedrawNow(ih);
 
   return IUP_DEFAULT;
 }

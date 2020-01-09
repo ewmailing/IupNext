@@ -211,19 +211,19 @@ static int killfocus_cb(Ihandle *ih)
 
 static int leavewindow_cb(Ihandle *ih)
 {
-  printf("LEAVEWINDOW_CB(%s)\n", get_name(ih));
+  printf("FLAT_LEAVEWINDOW_CB(%s)\n", get_name(ih));
   return IUP_DEFAULT;
 }
 
 static int enterwindow_cb(Ihandle *ih)
 {
-  printf("ENTERWINDOW_CB(%s)\n", get_name(ih));
+  printf("FLAT_ENTERWINDOW_CB(%s)\n", get_name(ih));
   return IUP_DEFAULT;
 }
 
 static int button_cb(Ihandle *ih,int but,int pressed,int x,int y,char* status)
 {
-  printf("BUTTON_CB(%s, but=%c (%d), x=%d, y=%d [%s])\n", get_name(ih),(char)but,pressed,x,y, status);
+  printf("FLAT_BUTTON_CB(%s, but=%c (%d), x=%d, y=%d [%s])\n", get_name(ih),(char)but,pressed,x,y, status);
   return IUP_DEFAULT;
 }
 

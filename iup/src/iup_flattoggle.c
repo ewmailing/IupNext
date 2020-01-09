@@ -100,7 +100,7 @@ static int iFlatToggleRedraw_CB(Ihandle* ih)
   }
   else
   {
-    if (ih->data->pressed || (selected && !ih->data->highlighted))
+    if ((ih->data->pressed && ih->data->highlighted) || (selected && !ih->data->highlighted))
     {
       char* presscolor = iupAttribGetStr(ih, "PSCOLOR");
       if (presscolor)
@@ -136,7 +136,7 @@ static int iFlatToggleRedraw_CB(Ihandle* ih)
   {
     char* bordercolor = iupAttribGetStr(ih, "BORDERCOLOR");
 
-    if (ih->data->pressed || (selected && !ih->data->highlighted))
+    if ((ih->data->pressed && ih->data->highlighted) || (selected && !ih->data->highlighted))
     {
       char* presscolor = iupAttribGetStr(ih, "BORDERPSCOLOR");
       if (presscolor)
@@ -155,7 +155,7 @@ static int iFlatToggleRedraw_CB(Ihandle* ih)
   }
 
   /* simulate pressed when selected and has images (but colors and borders are not included) */
-  image_pressed = ih->data->pressed;
+  image_pressed = ih->data->pressed && ih->data->highlighted;
   if (selected && !ih->data->pressed && (bgimage || image))
     image_pressed = 1;
 
@@ -242,11 +242,22 @@ static int iFlatToggleRedraw_CB(Ihandle* ih)
       if (!check_fgcolor)
         check_fgcolor = fgcolor;
 
-      if (ih->data->pressed || (selected && !ih->data->highlighted))
+      if ((ih->data->pressed && ih->data->highlighted) || (selected && !ih->data->highlighted))
       {
         char* presscolor = iupAttribGetStr(ih, "CHECKPSCOLOR");
         if (presscolor)
           check_fgcolor = presscolor;
+        else
+        {
+          if (ih->data->highlighted)
+          {
+            char* hlcolor = iupAttribGetStr(ih, "HLCOLOR");
+            if (hlcolor)
+              check_bgcolor = hlcolor;
+
+            check_fgcolor = bordercolor; /* only when highlighted */
+          }
+        }
       }
       else if (ih->data->highlighted)
       {
@@ -340,7 +351,7 @@ static int iFlatToggleButton_CB(Ihandle* ih, int button, int pressed, int x, int
     int selected =  (notdef) ? -1 : iupAttribGetInt(ih, "VALUE");
     Ihandle* last_tg = NULL;
 
-    if (!pressed)
+    if (!pressed && ih->data->highlighted)  /* released inside the button area */
     {
       if (selected>0)  /* was ON */
       {
@@ -390,7 +401,7 @@ static int iFlatToggleButton_CB(Ihandle* ih, int button, int pressed, int x, int
     ih->data->pressed = pressed;
     iupdrvRedrawNow(ih);
 
-    if (!pressed)
+    if (!pressed && ih->data->highlighted)  /* released inside the button area */
     {
       if (last_tg && ih != last_tg)
         iFlatToggleNotify(last_tg);
@@ -402,6 +413,44 @@ static int iFlatToggleButton_CB(Ihandle* ih, int button, int pressed, int x, int
         iFlatToggleNotify(ih);
     }
   }
+
+  return IUP_DEFAULT;
+}
+
+static int iFlatToggleMotion_CB(Ihandle* ih, int x, int y, char* status)
+{
+  int redraw = 0;
+  IFniis cb = (IFniis)IupGetCallback(ih, "FLAT_MOTION_CB");
+  if (cb)
+  {
+    if (cb(ih, x, y, status) == IUP_IGNORE)
+      return IUP_DEFAULT;
+  }
+
+  if (iup_isbutton1(status))
+  {
+    /* handle when mouse is pressed and moved to/from inside the canvas */
+    if (x < 0 || x > ih->currentwidth - 1 ||
+        y < 0 || y > ih->currentheight - 1)
+    {
+      if (ih->data->highlighted)
+      {
+        redraw = 1;
+        ih->data->highlighted = 0;
+      }
+    }
+    else
+    {
+      if (!ih->data->highlighted)
+      {
+        redraw = 1;
+        ih->data->highlighted = 1;
+      }
+    }
+  }
+
+  if (redraw)
+    iupdrvRedrawNow(ih);
 
   return IUP_DEFAULT;
 }
@@ -695,6 +744,7 @@ static int iFlatToggleCreateMethod(Ihandle* ih, void** params)
   /* internal callbacks */
   IupSetCallback(ih, "ACTION", (Icallback)iFlatToggleRedraw_CB);
   IupSetCallback(ih, "BUTTON_CB", (Icallback)iFlatToggleButton_CB);
+  IupSetCallback(ih, "MOTION_CB", (Icallback)iFlatToggleMotion_CB);
   IupSetCallback(ih, "FOCUS_CB", (Icallback)iFlatToggleFocus_CB);
   IupSetCallback(ih, "LEAVEWINDOW_CB", iFlatToggleLeaveWindow_CB);
   IupSetCallback(ih, "ENTERWINDOW_CB", iFlatToggleEnterWindow_CB);
@@ -776,6 +826,7 @@ Iclass* iupFlatToggleNewClass(void)
   /* Callbacks */
   iupClassRegisterCallback(ic, "FLAT_ACTION", "i");
   iupClassRegisterCallback(ic, "FLAT_BUTTON_CB", "iiiis");
+  iupClassRegisterCallback(ic, "FLAT_MOTION_CB", "iis");
   iupClassRegisterCallback(ic, "FLAT_FOCUS_CB", "i");
   iupClassRegisterCallback(ic, "FLAT_ENTERWINDOW_CB", "ii");
   iupClassRegisterCallback(ic, "FLAT_LEAVEWINDOW_CB", "");
