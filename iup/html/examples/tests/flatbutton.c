@@ -2,7 +2,7 @@
 #include <stdio.h>
 #include "iup.h"
 #include "iupkey.h"
-
+#include "iupim.h"
 
 
 #define TEST_IMAGE_SIZE 20
@@ -385,17 +385,35 @@ void FlatButtonTest(void)
   //IupSetAttribute(button, "IMAGE", "TECGRAF_BITMAP");
   IupAppend(box2, button);
 
+  //{
+  //  char filename[1024];
+  //  IupGetFile(filename);
+  //  image1 = IupLoadImage(filename);
+  //}
+
+//  image1 = IupLoadImage("D:\\Downloads\\unnamed.png");
+//  image1 = IupLoadImage("unnamed.png");
+//  image1 = IupLoadImage("../../../unnamed.png");
+
   button = IupFlatButton(NULL);
 //  IupSetAttribute(button, "ALIGNMENT", "ALEFT:ATOP");
 //  IupSetAttribute(button, "RASTERSIZE", "200x100");
 //  IupSetAttribute(button, "IMAGEPOSITION", "BOTTOM");
-  IupSetAttribute(button, "PADDING", "5x5");
-  IupSetAttribute(button, "TITLE", "Text");
+//  IupSetAttribute(button, "PADDING", "5x5");
+//  IupSetAttribute(button, "TITLE", "Text");
 //  IupSetAttribute(button, "FONT", "Helvetica, 14");
-  IupSetAttribute(button, "IMAGE", "IUP_Tecgraf");
-//  IupSetAttributeHandle(button, "IMAGE", image1);
+  //IupSetAttribute(button, "IMAGE", "IUP_Tecgraf");
 //  IupSetAttributeHandle(button, "IMAGEINACTIVE", image1i);
-//  IupSetAttributeHandle(button, "IMAGEPRESS", image1p);
+//  IupSetAttribute(button, "TITLE", "");
+  IupSetAttributeHandle(button, "IMAGE", image1);
+//  IupSetAttributeHandle(button, "IMAGEPRESS", image1);
+//  IupSetAttribute(button, "BORDERWIDTH", "0");
+//  IupSetAttribute(button, "FOCUSFEEDBACK", "NO");
+//  IupSetAttribute(button, "CANFOCUS", "NO");
+//  IupSetAttribute(button, "HLCOLOR", NULL);
+//  IupSetAttribute(button, "PSCOLOR", NULL);
+//  IupSetAttribute(button, "SPACING", "0");
+
   IupSetAttribute(button, "TIP", "Image Label");
   IupSetAttribute(button, "NAME", "button4");
   if (toggle) IupSetAttribute(button, "TOGGLE", "Yes");
@@ -404,7 +422,6 @@ void FlatButtonTest(void)
 
   button = IupFlatButton(NULL);
   IupSetAttributeHandle(button, "IMAGE", image2);
-
   IupSetAttribute(button, "IMAGEPOSITION", "TOP");
   IupSetAttribute(button, "PADDING", "15x15");
   IupSetAttribute(button, "TOGGLE", "Yes");
