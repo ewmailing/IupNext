@@ -340,16 +340,6 @@ static void vLedTreeSetNodeInfo(Ihandle* elem_tree, int id, Ihandle* ih, int lin
   }
 }
 
-static Ihandle* vLedTreeGetFirstChild(Ihandle* ih)
-{
-  Ihandle* firstchild = ih->parent->firstchild;
-
-  while (firstchild && firstchild->flags & IUP_INTERNAL)
-    firstchild = firstchild->brother;
-
-  return firstchild;
-}
-
 static int vLedTreeAddNode(Ihandle* elem_tree, int id, Ihandle* ih, const char *filename, int add, int root)
 {
   int link = 0;
