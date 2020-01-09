@@ -42,8 +42,14 @@ struct _IcontrolData
   double step;
 
   int border_width;
-  int has_focus;
   int focus_width;
+
+  /* aux */
+  int has_focus,
+      highlighted,
+      pressed,
+      start_x, start_y,
+      dragging;
 };
 
 
@@ -278,17 +284,15 @@ static int iFlatValRedraw_CB(Ihandle* ih)
   }
   else
   {
-    int pressed = iupAttribGetInt(ih, "_IUPFLATVAL_PRESSED");
-    int highlight = iupAttribGetInt(ih, "_IUPFLATVAL_HIGHLIGHT");
     char* fgcolor = iupAttribGetStr(ih, "FGCOLOR");
 
-    if (pressed)
+    if (ih->data->pressed)
     {
       char* presscolor = iupAttribGetStr(ih, "PSCOLOR");
       if (presscolor)
         fgcolor = presscolor;
     }
-    else if (highlight)
+    else if (ih->data->highlighted)
     {
       char* hlcolor = iupAttribGetStr(ih, "HLCOLOR");
       if (hlcolor)
@@ -299,13 +303,13 @@ static int iFlatValRedraw_CB(Ihandle* ih)
     iupFlatDrawBox(dc, x1 + border_width, x2 - border_width, y1 + border_width, y2 - border_width,
                    fgcolor, bgcolor, active);
 
-    if (pressed)
+    if (ih->data->pressed)
     {
       char* presscolor = iupAttribGetStr(ih, "BORDERPSCOLOR");
       if (presscolor)
         bordercolor = presscolor;
     }
-    else if (highlight)
+    else if (ih->data->highlighted)
     {
       char* hlcolor = iupAttribGetStr(ih, "BORDERHLCOLOR");
       if (hlcolor)
@@ -342,24 +346,24 @@ static int iFlatValButton_CB(Ihandle* ih, int button, int pressed, int x, int y,
     if (pressed)
     {
       if (!iFlatValIsInsideHandler(ih, x, y))
-        iupAttribSet(ih, "_IUPFLATVAL_PRESSED", NULL);
+        ih->data->pressed = 0;
       else
       {
-        iupAttribSet(ih, "_IUPFLATVAL_PRESSED", "1");
-        iupAttribSetInt(ih, "_IUP_START_X", x);
-        iupAttribSetInt(ih, "_IUP_START_Y", y);
+        ih->data->pressed = 1;
+        ih->data->start_x = x;
+        ih->data->start_y = y;
       }
     }
     else
     {
-      if (iupAttribGet(ih, "_IUP_DRAG"))
+      if (ih->data->dragging)
       {
         IFni cb = (IFni)IupGetCallback(ih, "VALUECHANGING_CB");
         if (cb) cb(ih, 0);
 
-        iupAttribSet(ih, "_IUP_DRAG", NULL);
+        ih->data->dragging = 0;
       }
-      else if (!iupAttribGet(ih, "_IUPFLATVAL_PRESSED")) /* click outside the handler */
+      else if (!ih->data->pressed) /* click outside the handler */
       {
         int is_horizontal = ih->data->orientation == IFLATVAL_HORIZONTAL;
         int p, p1, p2, dx, dy, handler_op_size, pginc, handPos;
@@ -375,7 +379,7 @@ static int iFlatValButton_CB(Ihandle* ih, int button, int pressed, int x, int y,
         if (iFlatValMoveHandler(ih, dx, dy))
           iupBaseCallValueChangedCb(ih);
       }
-      iupAttribSet(ih, "_IUPFLATVAL_PRESSED", NULL);
+      ih->data->pressed = 0;
     }
 
     iupdrvRedrawNow(ih);
@@ -389,7 +393,6 @@ static int iFlatValMotion_CB(Ihandle* ih, int x, int y, char* status)
 {
   IFniis motion_cb = (IFniis)IupGetCallback(ih, "FLAT_MOTION_CB");
   int redraw = 0;
-  int pressed = iupAttribGetInt(ih, "_IUPFLATVAL_PRESSED");
 
   if (motion_cb)
   {
@@ -400,32 +403,29 @@ static int iFlatValMotion_CB(Ihandle* ih, int x, int y, char* status)
   /* special highlight processing for handler area */
   if (iFlatValIsInsideHandler(ih, x, y))
   {
-    if (!iupAttribGet(ih, "_IUPFLATVAL_HIGHLIGHT"))
+    if (!ih->data->highlighted)
     {
       redraw = 1;
-      iupAttribSet(ih, "_IUPFLATVAL_HIGHLIGHT", "1");
+      ih->data->highlighted = 1;
     }
   }
   else
   {
-    if (iupAttribGet(ih, "_IUPFLATVAL_HIGHLIGHT"))
+    if (ih->data->highlighted)
     {
       redraw = 1;
-      iupAttribSet(ih, "_IUPFLATVAL_HIGHLIGHT", NULL);
+      ih->data->highlighted = 0;
     }
   }
 
-  if (pressed)
+  if (ih->data->pressed)
   {
-    int start_x = iupAttribGetInt(ih, "_IUP_START_X");
-    int start_y = iupAttribGetInt(ih, "_IUP_START_Y");
-
-    if (iFlatValMoveHandler(ih, x - start_x, y - start_y))
+    if (iFlatValMoveHandler(ih, x - ih->data->start_x, y - ih->data->start_y))
     {
       iupdrvRedrawNow(ih);
       redraw = 0;
 
-      if (!iupAttribGet(ih, "_IUP_DRAG"))
+      if (!ih->data->dragging)
       {
         IFni cb = (IFni)IupGetCallback(ih, "VALUECHANGING_CB");
         if (cb) cb(ih, 1);
@@ -433,11 +433,11 @@ static int iFlatValMotion_CB(Ihandle* ih, int x, int y, char* status)
 
       iupBaseCallValueChangedCb(ih);
 
-      iupAttribSet(ih, "_IUP_DRAG", "1");
+      ih->data->dragging = 1;
     }
 
-    iupAttribSetInt(ih, "_IUP_START_X", x);
-    iupAttribSetInt(ih, "_IUP_START_Y", y);
+    ih->data->start_x = x;
+    ih->data->start_y = y;
   }
 
   if (redraw)
@@ -458,9 +458,9 @@ static int iFlatValEnterWindow_CB(Ihandle* ih, int x, int y)
 
   /* special highlight processing for handler area */
   if (iFlatValIsInsideHandler(ih, x, y))
-    iupAttribSet(ih, "_IUPFLATVAL_HIGHLIGHT", "1");
+    ih->data->highlighted = 1;
   else
-    iupAttribSet(ih, "_IUPFLATVAL_HIGHLIGHT", NULL);
+    ih->data->highlighted = 0;
 
   IupUpdate(ih);
 
@@ -491,7 +491,7 @@ static int iFlatValLeaveWindow_CB(Ihandle* ih)
       return IUP_DEFAULT;
   }
 
-  iupAttribSet(ih, "_IUPFLATVAL_HIGHLIGHT", NULL);
+  ih->data->highlighted = 0;
 
   IupUpdate(ih);
 
@@ -540,6 +540,23 @@ static int iFlatValKDown_CB(Ihandle* ih)
     iupBaseCallValueChangedCb(ih);
 
   IupUpdate(ih);
+
+  return IUP_DEFAULT;
+}
+
+static int iFlatValWheel_CB(Ihandle* ih, float delta, int x, int y, char* status)
+{
+  IFnfiis cb = (IFnfiis)IupGetCallback(ih, "FLAT_WHEEL_CB");
+  if (cb)
+  {
+    if (cb(ih, delta, x, y, status) == IUP_IGNORE)
+      return IUP_DEFAULT;
+  }
+
+  if (delta > 0)
+    iFlatValKUp_CB(ih);
+  else
+    iFlatValKDown_CB(ih);
 
   return IUP_DEFAULT;
 }
@@ -805,6 +822,7 @@ static int iFlatValCreateMethod(Ihandle* ih, void **params)
   IupSetCallback(ih, "MOTION_CB", (Icallback)iFlatValMotion_CB);
   IupSetCallback(ih, "LEAVEWINDOW_CB", (Icallback)iFlatValLeaveWindow_CB);
   IupSetCallback(ih, "ENTERWINDOW_CB", (Icallback)iFlatValEnterWindow_CB);
+  IupSetCallback(ih, "WHEEL_CB", (Icallback)iFlatValWheel_CB);
   IupSetCallback(ih, "FOCUS_CB", (Icallback)iFlatValFocus_CB);
   IupSetCallback(ih, "K_UP", (Icallback)iFlatValKUp_CB);
   IupSetCallback(ih, "K_DOWN", (Icallback)iFlatValKDown_CB);
@@ -846,6 +864,7 @@ Iclass* iupFlatValNewClass(void)
   iupClassRegisterCallback(ic, "FLAT_ENTERWINDOW_CB", "ii");
   iupClassRegisterCallback(ic, "FLAT_LEAVEWINDOW_CB", "");
   iupClassRegisterCallback(ic, "FLAT_FOCUS_CB", "i");
+  iupClassRegisterCallback(ic, "FLAT_WHEEL_CB", "fiis");
   iupClassRegisterCallback(ic, "VALUECHANGED_CB", "");
   iupClassRegisterCallback(ic, "VALUECHANGING_CB", "i");
 
