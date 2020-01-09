@@ -44,7 +44,8 @@ struct _IcontrolData
       highlighted,
       pressed, 
       over_arrow,
-      dropped;
+      dropped,
+      close_on_focus;
 
   Ihandle* dropchild;
   Ihandle* dropdialog;
@@ -352,7 +353,7 @@ static void iDropButtonNotify(Ihandle* ih, int pressed)
     int arrow_active = iupAttribGetBoolean(ih, "ARROWACTIVE");
     if (arrow_active && ih->data->dropchild)
     {
-      if (iupAttribGet(ih, "_IUPDROP_CLOSE_ON_FOCUS"))
+      if (ih->data->close_on_focus)
         return;
 
       ih->data->dropped = !ih->data->dropped;
@@ -382,7 +383,7 @@ static void iDropButtonNotify(Ihandle* ih, int pressed)
   }
 
   if (!pressed)
-    iupAttribSet(ih, "_IUPDROP_CLOSE_ON_FOCUS", NULL);
+    ih->data->close_on_focus = 0;
 
   iupdrvRedrawNow(ih);
 }
@@ -501,7 +502,7 @@ static int iDropButtonSetShowDropdownAttrib(Ihandle* ih, const char* value)
 {
   if (ih->data->dropchild)
   {
-    iupAttribSet(ih, "_IUPDROP_CLOSE_ON_FOCUS", NULL);
+    ih->data->close_on_focus = 0;
     ih->data->dropped = iupStrBoolean(value);
     iDropButtonShowDrop(ih);
   }
@@ -725,9 +726,9 @@ static int iDropButtonDialogFocusCB(Ihandle* dlg, int focus)
   {
     /* count not use highlighted because in GTK we get a leavewindow when clicking the button and the dialog is dropped */
     if (iDropButtonMouseOnTop(ih))
-      iupAttribSet(ih, "_IUPDROP_CLOSE_ON_FOCUS", "1");
+      ih->data->close_on_focus = 1;
     else
-      iupAttribSet(ih, "_IUPDROP_CLOSE_ON_FOCUS", NULL);
+      ih->data->close_on_focus = 0;
 
     ih->data->dropped = 0;
     iDropButtonShowDrop(ih);

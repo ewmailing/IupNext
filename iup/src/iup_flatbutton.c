@@ -43,7 +43,8 @@ struct _IcontrolData
   /* aux */
   int has_focus,
     highlighted,
-    pressed;
+    pressed,
+    inside_action;
 };
 
 
@@ -196,17 +197,18 @@ static void iFlatButtonNotify(Ihandle* ih, int is_toggle)
   if (cb)
   {
     /* to avoid double calls when a dialog is displayed */
-    if (!iupAttribGet(ih, "_IUPFLATBUT_INSIDE_ACTION"))
+    if (!ih->data->inside_action)
     {
       int ret;
-      iupAttribSet(ih, "_IUPFLATBUT_INSIDE_ACTION", "1");
+
+      ih->data->inside_action = 1;
 
       ret = cb(ih);
       if (ret == IUP_CLOSE)
         IupExitLoop();
 
       if (ret != IUP_IGNORE && iupObjectCheck(ih))
-        iupAttribSet(ih, "_IUPFLATBUT_INSIDE_ACTION", NULL);
+        ih->data->inside_action = 0;
     }
   }
 
