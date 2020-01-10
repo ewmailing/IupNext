@@ -2045,7 +2045,8 @@ static int winTreeSetValueAttrib(Ihandle* ih, const char* value)
   {
     int i;
     HTREEITEM hItemPrev = hItemFocus;
-    HTREEITEM hItemNext = hItemFocus;
+    HTREEITEM hItemNext;
+
     for(i = 0; i < 10; i++)
     {
       hItemNext = hItemPrev;
@@ -2062,7 +2063,7 @@ static int winTreeSetValueAttrib(Ihandle* ih, const char* value)
   else if(iupStrEqualNoCase(value, "PGDN"))
   {
     int i;
-    HTREEITEM hItemPrev = hItemFocus;
+    HTREEITEM hItemPrev;
     HTREEITEM hItemNext = hItemFocus;
     
     for(i = 0; i < 10; i++)
