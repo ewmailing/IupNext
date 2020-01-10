@@ -410,7 +410,6 @@ IUP_SDK_API void* iupdrvImageCreateImageRaw(int width, int height, int bpp, iupC
 
   GlobalUnlock(hHandle);
 
-  if (hHandle)
   {
     IFvs cb = (IFvs)IupGetFunction("IMAGECREATE_CB");
     if (cb)
