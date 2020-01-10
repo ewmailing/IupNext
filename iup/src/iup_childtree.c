@@ -25,7 +25,7 @@ IUP_API Ihandle* IupGetDialog(Ihandle* ih)
   if (!iupObjectCheck(ih))
     return NULL;
 
-  for (ih = ih; ih->parent; ih = ih->parent)
+  for (; ih->parent; ih = ih->parent)
     ; /* empty*/
 
   if (ih->iclass->nativetype == IUP_TYPEDIALOG)
