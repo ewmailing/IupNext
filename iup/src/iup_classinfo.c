@@ -339,7 +339,7 @@ void iupClassInfoShowHelp(const char* className)
             iupStrEqual(className, "tuioclient") ||
             iupStrEqual(className, "webbrowser"))
             folder = "ctrl";
-  else if (className[0] == 'G' && className[0] == 'L')
+  else if (className[0] == 'G' && className[1] == 'L')
     folder = "gl";
 
   if (iupStrEqualPartial(className, "mgl") ||
