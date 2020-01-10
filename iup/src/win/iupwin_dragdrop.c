@@ -700,7 +700,7 @@ static void winCallDropDataCB(Ihandle* ih, CLIPFORMAT cf, HGLOBAL hData, int x, 
 
     targetData = GlobalLock(hData);
     size = GlobalSize(hData);
-    if(size <= 0 || !targetData)
+    if(size == 0 || !targetData)
       return;
 
     winGetClipboardFormatName(cf, type, 256);

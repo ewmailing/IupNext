@@ -291,8 +291,11 @@ static int winClipboardSetNativeImageAttrib(Ihandle *ih, const char *value)
 static HANDLE winCopyHandle(HANDLE hHandle)
 {
   void *src_data, *dst_data;
+  HANDLE hNewHandle;
   SIZE_T size = GlobalSize(hHandle);
-  HANDLE hNewHandle = GlobalAlloc(GMEM_MOVEABLE, size); 
+  if (size == 0)
+    return NULL;
+  hNewHandle = GlobalAlloc(GMEM_MOVEABLE, size); 
   if (!hNewHandle)
     return NULL;
 
@@ -384,7 +387,7 @@ static char* winClipboardGetFormatDataAttrib(Ihandle *ih)
     return NULL;
 
   format_id = winClipboardGetFormatId(ih);
-  if (format_id==0)
+  if (format_id == 0)
     return NULL;
 
   hHandle = GetClipboardData(format_id);
@@ -395,7 +398,7 @@ static char* winClipboardGetFormatDataAttrib(Ihandle *ih)
   }
   
   size = (int)GlobalSize(hHandle);
-  if (size <= 0)
+  if (size == 0)
   {
     CloseClipboard();
     return NULL;
