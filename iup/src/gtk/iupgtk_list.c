@@ -587,8 +587,6 @@ static int gtkListSetSelectionAttrib(Ihandle* ih, const char* value)
   GtkEntry* entry;
   if (!ih->data->has_editbox)
     return 0;
-  if (!value)
-    return 0;
 
   entry = (GtkEntry*)iupAttribGet(ih, "_IUPGTK_ENTRY");
   if (!value || iupStrEqualNoCase(value, "NONE"))
