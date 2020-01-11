@@ -1356,7 +1356,6 @@ static void gtkListSelectionChanged(GtkTreeSelection* selection, Ihandle* ih)
     IFnsii cb = (IFnsii)IupGetCallback(ih, "ACTION");
     if (cb)
     {
-      GtkTreeSelection* selection = gtk_tree_view_get_selection(GTK_TREE_VIEW(ih->handle));
       GtkTreeIter iter;
       GtkTreeModel* tree_model;
       if (gtk_tree_selection_get_selected(selection, &tree_model, &iter))
