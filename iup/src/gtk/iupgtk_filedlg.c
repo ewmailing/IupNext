@@ -545,8 +545,10 @@ static int gtkFileDlgPopup(Ihandle* ih, int x, int y)
 
         if (file_cb)
         {
-          char *filename = gtk_file_chooser_get_filename(GTK_FILE_CHOOSER(dialog));
-          int ret = file_cb(ih, iupgtkStrConvertFromFilename(filename), "OK");
+          int ret;
+
+          filename = gtk_file_chooser_get_filename(GTK_FILE_CHOOSER(dialog));
+          ret = file_cb(ih, iupgtkStrConvertFromFilename(filename), "OK");
           g_free(filename);
           
           if (ret == IUP_IGNORE || ret == IUP_CONTINUE)
