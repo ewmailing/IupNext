@@ -382,7 +382,7 @@ static void gtkTabsChildAddedMethod(Ihandle* ih, Ihandle* child)
 #endif
     gtk_widget_show(tab_page);
 
-    tab_container = gtk_fixed_new(); /* can not use iupgtkNativeContainerNew in GTK3 */
+    tab_container = gtk_fixed_new(); /* can not use iupgtkNativeContainerNew here in GTK3 */
     gtk_widget_show(tab_container);
     gtk_container_add((GtkContainer*)tab_page, tab_container);
 
