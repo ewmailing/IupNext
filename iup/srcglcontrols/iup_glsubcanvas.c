@@ -420,7 +420,7 @@ static int iGLSubCanvasSetZorderAttrib(Ihandle* ih, const char* value)
   if (iupStrEqualNoCase(value, "BOTTOM"))
     top = 0;
 
-  /* move everyone in the same hierachy */
+  /* move everyone in the same hierarchy */
   while (ih != gl_parent)
   {
     if (iGLSubCanvasSetZorder(ih->parent, ih, top))
