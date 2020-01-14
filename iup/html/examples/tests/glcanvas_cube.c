@@ -209,8 +209,12 @@ static void draw_cube(void)
 
 static double model_view_matrix[16];
 static int use_model_matrix = 0;
+static int start_x, start_y;
+static int moving = 0;
 
-static void init(void)
+#define INVERT_Y(_y) (height-y)
+
+static void set_transform(void)
 {
   glClearColor(1, 1, 1, 0.0);
 
@@ -231,8 +235,42 @@ static void init(void)
     glLoadMatrixd(model_view_matrix);
 }
 
-static int pos_x, pos_y;
-static int move = 0;
+static void rotate_transform(Ihandle* ih, int x, int y, double dif_x, double dif_y)
+{
+  double dx, dy, dz;
+  double x1, y1, z1;
+  double x2, y2, z2;
+  double angle, norma;
+  int height = IupGetInt2(ih, "RASTERSIZE");
+  double mv[16];
+  double pm[16];
+  int    vp[4];
+
+  IupGLMakeCurrent(ih);
+
+  glGetDoublev(GL_MODELVIEW_MATRIX, mv);
+  glGetDoublev(GL_PROJECTION_MATRIX, pm);
+  glGetIntegerv(GL_VIEWPORT, vp);
+
+  angle = sqrt(dif_x*dif_x + dif_y * dif_y);
+
+  gluUnProject(x, INVERT_Y(y), 0.0,
+               mv, pm, vp,
+               &x1, &y1, &z1);
+  gluUnProject((double)(dif_y + x), (double)(dif_x + INVERT_Y(y)), 0.0,
+               mv, pm, vp,
+               &x2, &y2, &z2);
+  dx = x2 - x1; dy = y2 - y1; dz = z2 - z1;
+  norma = sqrt(dx*dx + dy * dy + dz * dz);
+  dx /= norma; dy /= norma; dz /= norma;
+
+  glMatrixMode(GL_MODELVIEW);
+  glTranslated(0.5, 0.5, 0.5);
+  glRotated(angle, dx, dy, dz);
+  glTranslated(-0.5, -0.5, -0.5);
+  glGetDoublev(GL_MODELVIEW_MATRIX, model_view_matrix);
+  use_model_matrix = 1;
+}
 
 static int button_cb(Ihandle *ih,int but,int pressed,int x,int y,char* status)
 {
@@ -243,73 +281,38 @@ static int button_cb(Ihandle *ih,int but,int pressed,int x,int y,char* status)
   {
     if (pressed)
     {
-      pos_x = x;
-      pos_y = y;
-      move = 1;
+      start_x = x;
+      start_y = y;
+      moving = 1;
     }
     else
     {
-      move = 0;
+      moving = 0;
     }
   }
   return IUP_DEFAULT;
 }
 
-#define INVERT_Y(_y) (height-y)
-
 static int motion_cb(Ihandle *ih,int x,int y,char* status)
 {
   (void)status;
 
-  if (move)
+  if (moving)
   {
     double dif_x, dif_y;
-    double dx, dy, dz;
-    double x1, y1, z1;
-    double x2, y2, z2;
-    double angle, norma;
-    int height = IupGetInt2(ih, "RASTERSIZE");
-    double mv[16];
-    double pm[16];
-    int    vp[4];
 
-    IupGLMakeCurrent(ih);
-
-    glGetDoublev(GL_MODELVIEW_MATRIX, mv);
-    glGetDoublev(GL_PROJECTION_MATRIX, pm);
-    glGetIntegerv(GL_VIEWPORT, vp);
-
-    dif_x = x - pos_x;
-    dif_y = y - pos_y;
+    dif_x = x - start_x;
+    dif_y = y - start_y;
 
     if (dif_x == 0 && dif_y == 0)
       return IUP_DEFAULT;
 
-    pos_x = x;
-    pos_y = y;
+    rotate_transform(ih, x, y, dif_x, dif_y);
 
-    angle = sqrt(dif_x*dif_x + dif_y*dif_y);
+    start_x = x;
+    start_y = y;
 
-    gluUnProject(pos_x, INVERT_Y(pos_y), 0.0,
-      mv, pm, vp,
-      &x1, &y1, &z1);
-    gluUnProject((double)(dif_y + pos_x), (double)(dif_x + INVERT_Y(pos_y)), 0.0,
-      mv, pm, vp,
-      &x2, &y2, &z2);
-    dx = x2-x1; dy = y2-y1; dz = z2-z1;
-    norma = sqrt(dx*dx + dy*dy + dz*dz);
-    dx /= norma; dy /= norma; dz /= norma;
-
-    glMatrixMode(GL_MODELVIEW);
-    glTranslated(0.5, 0.5, 0.5);
-    glRotated (angle, dx, dy, dz);
-    glTranslated(-0.5, -0.5, -0.5);
-    glGetDoublev(GL_MODELVIEW_MATRIX, model_view_matrix);
-    use_model_matrix = 1;
-
-    draw_cube();
-  
-    IupGLSwapBuffers(ih); 
+    IupRedraw(ih, 0);
   }
   return IUP_DEFAULT;
 }
@@ -318,7 +321,7 @@ static int action(Ihandle *ih)
 {
   IupGLMakeCurrent(ih);
 
-  init();
+  set_transform();
 
   draw_cube();
 
@@ -371,8 +374,8 @@ void GLCanvasCubeTest(void)
     *hbox, *vbox, *glabel, *gsep1, *gsep2, *gbutton1, *gbutton2,
     *pbar1, *pbar2, *glink, *gval1, *gval2, *gframe1, *gframe2,
     *gexp1, *gexp2, *image_open, *image_close, *image_high,
-    *gframe3, *vbox2, *gtoggle3, *gtoggle4, *gtoggle5, *gsbox,
-    *text, *vbox3, *matrix, *image_val, *gtext;
+    *gframe3, *vbox2, *gtoggle3, *gtoggle4, *gtoggle5, *gsbox, //*image_val,
+    *text, *vbox3, *matrix, *gtext;
 
   IupGLCanvasOpen();
   IupGLControlsOpen();
@@ -502,8 +505,8 @@ void GLCanvasCubeTest(void)
 
   vbox2 = IupVbox(
     IupRadio(IupSetAttributes(IupVbox(gtoggle3, gtoggle4, NULL), "MARGIN=0x0")),
-    gtoggle5,
     gtext,
+    gtoggle5,
     NULL);
 
   gsbox = IupSetAttributes(IupGLScrollBox(vbox2), "RASTERSIZE=90x90");
