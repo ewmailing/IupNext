@@ -20,7 +20,12 @@ DEFINES = FTGL_LIBRARY_STATIC
 ifneq ($(findstring dll, $(TEC_UNAME)), )
   DEFINES = FTGL_LIBRARY
 endif
-
+ifneq ($(findstring Linux, $(TEC_UNAME)), )
+  DEFINES += GL_EDITDLG
+endif
+ifneq ($(findstring SunOS, $(TEC_UNAME)), )
+  DEFINES += GL_EDITDLG
+endif
 ifneq ($(findstring cygw, $(TEC_UNAME)), )
   LIBS += fontconfig
 endif
