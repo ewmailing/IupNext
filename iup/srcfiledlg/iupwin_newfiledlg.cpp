@@ -327,50 +327,58 @@ static HRESULT winNewFileDlgEventHandler_CreateInstance(REFIID riid, void **ppv,
   return hr;
 }
 
-static COMDLG_FILTERSPEC *winNewFileDlgCreateFilterSpecs(char *name, int *size)
+static COMDLG_FILTERSPEC *winNewFileDlgCreateFilterSpecs(char *extfilter, int *size)
 {
   int i = 0;
+  int pair;
+  char *p_extfilter;
   int buffSize = 50;
   COMDLG_FILTERSPEC* filters = (COMDLG_FILTERSPEC*)malloc((buffSize)*sizeof(COMDLG_FILTERSPEC));
 
   /* replace symbols "|" by terminator "\0" */
 
-  while (*name)
+  while (*extfilter)
   {
-    char *filter;
-    filter = name;
-    while (*filter)
+    pair = 0;
+
+    p_extfilter = extfilter;
+    while (*p_extfilter)
     {
-      if (*filter == '|')
+      if (*p_extfilter == '|')
       {
-        *filter = 0;
-        filters[i].pszName = iupwinStrToSystem(name);
+        *p_extfilter = 0;
+        filters[i].pszName = iupwinStrToSystem(extfilter);
+        p_extfilter++;
         break;
       }
-      filter++;
+      p_extfilter++;
     }
 
-    if (*filter == 0)
+    if (*p_extfilter == 0)
       break;
 
-    name = ++filter;
+    extfilter = p_extfilter;
 
-    while (*filter)
+    while (*p_extfilter)
     {
-      if (*filter == '|')
+      if (*p_extfilter == '|')
       {
-        *filter = 0;
-        filters[i].pszSpec = iupwinStrToSystem(name);
+        *p_extfilter = 0;
+        filters[i].pszSpec = iupwinStrToSystem(extfilter);
+        p_extfilter++;
+        pair = 1;
         break;
       }
-      filter++;
+      p_extfilter++;
     }
 
-    if (*filter == 0)
+    if (pair)
+      i++;
+
+    if (*p_extfilter == 0)
       break;
 
-    i++;
-    name = ++filter;
+    extfilter = p_extfilter;
 
     if (i == 50)
       break;
