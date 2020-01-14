@@ -28,7 +28,6 @@
 static Ihandle* iGLCanvasBoxPickChild(Ihandle* ih, int x, int y, int top)
 {
   Ihandle* child = ih->firstchild;
-
   if (child)
   {
     /* ih is a container then must check first for the client area */
@@ -44,7 +43,7 @@ static Ihandle* iGLCanvasBoxPickChild(Ihandle* ih, int x, int y, int top)
     if (x >= client_x && x < client_x + client_w &&
         y >= client_y && y < client_y + client_h)
     {
-      Ihandle* child_array[100];
+      Ihandle** child_array = (Ihandle**)malloc(sizeof(Ihandle*) * IupGetChildCount(ih));
       int i=0;
       while (child)
       {
@@ -52,16 +51,17 @@ static Ihandle* iGLCanvasBoxPickChild(Ihandle* ih, int x, int y, int top)
         child = child->brother;
         i++;
       }
-      i--;
 
-      while (i >= 0)
+      while (i > 0)
       {
-        child = child_array[i];
+        child = child_array[i - 1]; /* start with the last child */
 
         if (iupAttribGetInt(child, "VISIBLE") &&
             x >= child->x && x < child->x + child->currentwidth &&
             y >= child->y && y < child->y + child->currentheight)
         {
+          free(child_array);
+
           ih = iGLCanvasBoxPickChild(child, x, y, 0);
           if (ih)
             return ih;
@@ -71,13 +71,15 @@ static Ihandle* iGLCanvasBoxPickChild(Ihandle* ih, int x, int y, int top)
 
         i--;
       }
+
+      free(child_array);
     }
   }
 
   return NULL;
 }
 
-static void iGLCanvasBoxCallChildAction(Ihandle* ih, Ihandle* gl_parent)
+static void iGLCanvasBoxCallGLChildAction(Ihandle* ih, Ihandle* gl_parent)
 {
   Ihandle* child = ih->firstchild;
   while (child)
@@ -89,17 +91,19 @@ static void iGLCanvasBoxCallChildAction(Ihandle* ih, Ihandle* gl_parent)
         cb(child);
     }
 
-    iGLCanvasBoxCallChildAction(child, gl_parent);
+    iGLCanvasBoxCallGLChildAction(child, gl_parent);
     child = child->brother;
   }
 }
 
 static int iGLCanvasBoxSwapBuffers_CB(Ihandle* ih)
 {
+  /* called before the actual SwapBuffers */
+
   iupGLSubCanvasSaveState(ih);
 
-  /* redraw all children */
-  iGLCanvasBoxCallChildAction(ih, ih);
+  /* redraw all GL children */
+  iGLCanvasBoxCallGLChildAction(ih, ih);
 
   iupGLSubCanvasRestoreState(ih);
 
@@ -116,7 +120,8 @@ static int iGLCanvasBoxACTION(Ihandle* ih, float posx, float posy)
   if (cb)
     cb(ih, posx, posy);
 
-  if (!iupStrEqualNoCase(iupAttribGetStr(ih, "BUFFER"), "DOUBLE"))
+  /* if double buffer is disabled must manually call our SwapBuffers callback, assuming IupGLSwapBuffers is not called inside APP_ACTION */
+  if (!cb || !iupStrEqualNoCase(iupAttribGetStr(ih, "BUFFER"), "DOUBLE"))  
     iGLCanvasBoxSwapBuffers_CB(ih);
 
   return IUP_DEFAULT;
@@ -125,8 +130,9 @@ static int iGLCanvasBoxACTION(Ihandle* ih, float posx, float posy)
 static int iGLCanvasBoxBUTTON_CB(Ihandle* ih, int button, int pressed, int x, int y, char* status)
 {
   IFniiiis cb;
+  Ihandle* child;
 
-  Ihandle* child = iGLCanvasBoxPickChild(ih, x, y, 1);
+  child = iGLCanvasBoxPickChild(ih, x, y, 1);
 
   if (child || !pressed)
     iupAttribSet(ih, "_IUP_GLBOX_SELFBUTTON", NULL);
@@ -278,8 +284,9 @@ static int iGLCanvasBoxMOTION_CB(Ihandle* ih, int x, int y, char *status)
 static int iGLCanvasBoxWHEEL_CB(Ihandle* ih, float delta, int x, int y, char *status)
 {
   IFnfiis cb;
+  Ihandle* child;
 
-  Ihandle* child = iGLCanvasBoxPickChild(ih, x, y, 1);
+  child = iGLCanvasBoxPickChild(ih, x, y, 1);
   if (child)
   {
     int ret = IUP_DEFAULT;
@@ -313,7 +320,7 @@ static int iGLCanvasBoxLEAVEWINDOW_CB(Ihandle* ih)
 
 static int iGLCanvasBoxSetRedrawAttrib(Ihandle* ih, const char* value)
 {
-  iGLCanvasBoxACTION(ih, IupGetFloat(ih, "POSX"), IupGetFloat(ih, "POSY"));
+  IupRedraw(ih, 0);
   (void)value;
   return 0;
 }
@@ -422,11 +429,15 @@ static void iGLCanvasBoxSetChildrenPositionMethod(Ihandle* ih, int x, int y)
 #define CB_NAMES_COUNT 5
 static const char* iglcanvasbox_cb_names[CB_NAMES_COUNT] = {
   "ACTION", 
-  "BUTTON_CB", "MOTION_CB", "WHEEL_CB",
+  "BUTTON_CB", 
+  "MOTION_CB", 
+  "WHEEL_CB",
   "LEAVEWINDOW_CB" };
 static Icallback iglcanvasbox_cbs[CB_NAMES_COUNT] = {
   (Icallback)iGLCanvasBoxACTION, 
-  (Icallback)iGLCanvasBoxBUTTON_CB, (Icallback)iGLCanvasBoxMOTION_CB, (Icallback)iGLCanvasBoxWHEEL_CB,
+  (Icallback)iGLCanvasBoxBUTTON_CB, 
+  (Icallback)iGLCanvasBoxMOTION_CB, 
+  (Icallback)iGLCanvasBoxWHEEL_CB,
   (Icallback)iGLCanvasBoxLEAVEWINDOW_CB };
 
 static int iGLCanvasBoxMapMethod(Ihandle* ih)
