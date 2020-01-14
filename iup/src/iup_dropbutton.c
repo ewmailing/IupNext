@@ -780,6 +780,7 @@ static Ihandle* iDropButtonCreateDropDialog(Ihandle* ih)
   IupSetAttribute(dlg, "MAXBOX", "NO");
   IupSetAttribute(dlg, "MINBOX", "NO");
   IupSetAttribute(dlg, "NOFLUSH", "Yes");
+  IupSetAttribute(dlg, "BORDER", "NO");
 
   IupSetAttributeHandle(dlg, "DROPBUTTON", ih);
 
