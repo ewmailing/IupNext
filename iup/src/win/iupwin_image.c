@@ -411,6 +411,7 @@ IUP_SDK_API void* iupdrvImageCreateImageRaw(int width, int height, int bpp, iupC
   GlobalUnlock(hHandle);
 
   {
+    /* internal callback for memory monitoring called after allocation */
     IFvs cb = (IFvs)IupGetFunction("IMAGECREATE_CB");
     if (cb)
       cb(hHandle, "DIB");
@@ -882,6 +883,7 @@ IUP_SDK_API void iupdrvImageDestroy(void* handle, int type)
     break;
   }
 
+  /* internal callback for memory monitoring called after release */
   cb = (IFvs)IupGetFunction("IMAGEDESTROY_CB");
   if (cb)
     cb(handle, type_str);
