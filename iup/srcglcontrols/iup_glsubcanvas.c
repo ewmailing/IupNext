@@ -255,8 +255,9 @@ int iupGLSubCanvasRedraw(Ihandle* ih)
 
 void iupGLSubCanvasStartMoving(Ihandle* ih, int x, int y)
 {
-  iupAttribSetInt(ih, "_IUP_START_X", ih->x + x);
-  iupAttribSetInt(ih, "_IUP_START_Y", ih->y + y);
+  /* Used for MOVABLE controls */
+  iupAttribSetInt(ih, "_IUP_GLSUBCANVAS_START_X", ih->x + x);
+  iupAttribSetInt(ih, "_IUP_GLSUBCANVAS_START_Y", ih->y + y);
 
   if (iupAttribGetInt(ih, "MOVETOTOP"))
     IupSetAttribute(ih, "ZORDER", "TOP");
@@ -264,9 +265,10 @@ void iupGLSubCanvasStartMoving(Ihandle* ih, int x, int y)
 
 int iupGLSubCanvasMove(Ihandle* ih, int x, int y)
 {
+  /* Used for MOVABLE controls */
   int moved = 0;
-  int start_x = iupAttribGetInt(ih, "_IUP_START_X");
-  int start_y = iupAttribGetInt(ih, "_IUP_START_Y");
+  int start_x = iupAttribGetInt(ih, "_IUP_GLSUBCANVAS_START_X");
+  int start_y = iupAttribGetInt(ih, "_IUP_GLSUBCANVAS_START_Y");
 
   x += ih->x;
   y += ih->y;
@@ -290,8 +292,8 @@ int iupGLSubCanvasMove(Ihandle* ih, int x, int y)
       cb(ih, ih->x, ih->y);
   }
 
-  iupAttribSetInt(ih, "_IUP_START_X", x);
-  iupAttribSetInt(ih, "_IUP_START_Y", y);
+  iupAttribSetInt(ih, "_IUP_GLSUBCANVAS_START_X", x);
+  iupAttribSetInt(ih, "_IUP_GLSUBCANVAS_START_Y", y);
   return moved;
 }
 
