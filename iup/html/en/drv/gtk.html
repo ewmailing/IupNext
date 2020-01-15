@@ -43,12 +43,11 @@ most Tecgraf applications are heavily graphics dependent. The main change is
 that GDK does not have drawing primitives anymore, and all drawing is performed 
 by Cairo. Cairo does not have support for XOR used by many drawing applications 
 to perform a selection rubber band. Also Cairo could have a different behavior 
-for some primitives. So while the applications are adapted to the new situation 
-the pre-compiled files will remain with GTK 2.x</p>
-<p>To build the driver with GTK 3.x support define USE_GTK3=Yes before calling 
+for some primitives. </p>
+<p>Since Linux 3.13 the default is to use GTK 3.</p>
+<p>For older Linux to build the driver with GTK 3.x support define USE_GTK3=Yes before calling 
 make in the &quot;iup/src&quot; folder. Just the main library must be rebuilt. Also, if CD 
 is used, the CD main library must be rebuilt with the same parameter.</p>
-<p>Since Linux 3.13 the default is to use GTK 3.</p>
 <h4>Dependencies</h4>
 <p>GTK is in fact composed of several libraries. The GTK package contains the 
 GDK library and depends on the ATK, Cairo, Glib and Pango libraries.</p>
