@@ -159,6 +159,9 @@ static int iGLSizeBoxMOTION_CB(Ihandle* ih, int x, int y, char* status)
 {
   iGLSizeBoxSetCursor(ih, x, y);
 
+  if (!iup_isbutton1(status))
+    ih->data->isholding = 0;
+
   if (ih->data->isholding)
   {
     int final_x = ih->x + x;
@@ -173,7 +176,6 @@ static int iGLSizeBoxMOTION_CB(Ihandle* ih, int x, int y, char* status)
     iGLSizeBoxResizeChild(ih, ih->data->hold_resizer, w, h);
   }
 
-  (void)status;
   return IUP_DEFAULT;
 }
 
