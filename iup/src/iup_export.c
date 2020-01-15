@@ -695,7 +695,7 @@ static int SaveImageLua(const char* filename, Ihandle* ih, const char* name, FIL
 
   if (inFunction)
   {
-    if (fprintf(file, "function load_image_%s()\n", name) < 0)
+    if (iImagePrint(file, buffer, "function load_image_%s()\n", name) < 0)
     {
       if (!packfile)
         fclose(file);
