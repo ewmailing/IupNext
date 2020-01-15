@@ -7,7 +7,7 @@ void ScanfTest(void)
   int ret;
   int integer = 12;
   float real = 1e-3f;
-  char text[300]="This is a vector of characters";
+  char text[300]="This is an array of characters";
   char *fmt =
   {
    "IupScanf Example\n"

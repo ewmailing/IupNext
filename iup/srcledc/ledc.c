@@ -846,7 +846,7 @@ Telem* elem( char* name, Tlist* attrs, Tlist* params )
   if (params)
   {
     ret->nparams = params->size;
-    ret->params = list2paramvector( params );
+    ret->params = list2param( params );
   }
   else
   {
@@ -926,7 +926,7 @@ Tlist* revertlist( Tlist* l )
   return l;
 }
 
-Tparam** list2paramvector( Tlist* params )
+Tparam** list2param( Tlist* params )
 {
   int i = params->size;
   if (i)

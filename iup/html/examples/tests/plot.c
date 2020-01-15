@@ -1008,7 +1008,7 @@ void PlotTest(void)
     IupSetfAttribute(vboxr[ii], "TABTITLE", "Plot %d", ii); /* name each tab */
     IupSetHandle(IupGetAttribute(vboxr[ii], "TABTITLE"), vboxr[ii]);
   }
-  vboxr[MAXPLOT] = NULL; /* mark end of vector */
+  vboxr[MAXPLOT] = NULL; /* mark end of array */
 
   //  tabs = IupZboxv(vboxr);
   //  IupSetAttribute(tabs, "VALUE", "Plot 3");

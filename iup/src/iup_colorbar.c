@@ -38,7 +38,7 @@ struct _IcontrolData
 
   int w;                  /* size of the canvas - width                             */
   int h;                  /* size of the canvas - height                            */
-  long colors[256];       /* color vector                                           */
+  long colors[256];       /* color array                                            */
   int num_cells;          /* number of cells at the widgets                         */
   int num_parts;          /* number of sections used to split the colors cells area */
   int vertical;           /* vertical orientation flag                              */
@@ -857,7 +857,7 @@ static int iColorbarCreateMethod(Ihandle* ih, void **params)
   ih->data->dark_shadow = iupDrawColor(128, 128, 128, 255);
   ih->data->flatcolor = iupDrawColor(0, 0, 0, 255);
 
-  /* Initialization of the color vector */
+  /* Initialization of the color array */
   for (i = 0; i < ICOLORBAR_DEFAULT_NUM_CELLS; i++)
   {
     ih->data->colors[i] = iupDrawColor((unsigned char)default_colors[i].r,

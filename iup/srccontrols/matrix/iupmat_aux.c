@@ -250,7 +250,7 @@ void iupMatrixAuxUpdateLast(ImatLinColData *p)
   }
 }
 
-/* Fill the sizes vector with the width/heigh of all the columns/lines.
+/* Fill the sizes array with the width/heigh of all the columns/lines.
    Calculate the value of total_visible_size */
 static void iMatrixAuxFillSizeVec(Ihandle* ih, int m)
 {
