@@ -14,7 +14,7 @@
 #include <GL/gl.h>
 #include <GL/glu.h>
 
-#define CANVAS_SIZE "750x400"
+#define CANVAS_SIZE "1100x600"
 
 static void fill_charac(char *charac)
 {
@@ -37,7 +37,8 @@ static void fill_charac(char *charac)
     }
   }
 
-  charac[off+4] = 0;
+  charac[off+3] = 0;
+//  charac[off+4] = 0;
 }
 
 void UpdateCoordSys(void)
@@ -70,7 +71,10 @@ static int redraw_cb(Ihandle *ih)
 
   cdCanvasActivate(cdcanvas);
   cdCanvasClear(cdcanvas);
-  cdCanvasText(cdcanvas, 10, 10, charac);
+  if (IupGetAttribute(ih, "_APP_CDCANVAS_VECTOR"))
+    cdCanvasVectorText(cdcanvas, 0, 0, charac);
+  else
+    cdCanvasText(cdcanvas, 0, 0, charac);
   cdCanvasFlush(cdcanvas);
 
   if (IupGetAttribute(ih, "_APP_CDCANVAS_GL"))
@@ -82,6 +86,7 @@ static int redraw_cb(Ihandle *ih)
 static int map_cb(Ihandle *ih)
 {
   cdCanvas *cdcanvas;
+  int size_px;
 
   cdcanvas = cdCreateCanvas(CD_IUP, ih);
   if (!cdcanvas)
@@ -94,14 +99,20 @@ static int map_cb(Ihandle *ih)
   cdCanvasFont(cdcanvas, "Courier", CD_PLAIN, 14);
   cdCanvasTextAlignment(cdcanvas, CD_SOUTH_WEST);
 
+  cdCanvasMM2Pixel(cdcanvas, 0, (14 / CD_MM2PT), NULL, &size_px);
+  cdCanvasVectorCharSize(cdcanvas, size_px);
+
   return IUP_DEFAULT;
 }
 
-static int mapgl_cb(Ihandle *ih)
+static int gl_map_cb(Ihandle *ih)
 {
   cdCanvas *cdcanvas;
+  double res;
 
-  cdcanvas = cdCreateCanvas(CD_GL, CANVAS_SIZE);
+  IupGLMakeCurrent(ih);
+  res = IupGetDouble(NULL, "SCREENDPI") / 25.4;
+  cdcanvas = cdCreateCanvasf(CD_GL, "%s %g", CANVAS_SIZE, res);
   if (!cdcanvas)
     return IUP_DEFAULT;
 
@@ -112,6 +123,20 @@ static int mapgl_cb(Ihandle *ih)
   cdCanvasForeground(cdcanvas, CD_BLACK);
   cdCanvasFont(cdcanvas, "Courier", CD_PLAIN, 14);
   cdCanvasTextAlignment(cdcanvas, CD_SOUTH_WEST);
+
+  return IUP_DEFAULT;
+}
+
+static int gl_resize_cb(Ihandle* ih)
+{
+  int canvas_width, canvas_height;
+  double res = IupGetDouble(NULL, "SCREENDPI") / 25.4;
+  cdCanvas *cdcanvas = (cdCanvas*)IupGetAttribute(ih, "_APP_CDCANVAS");
+
+  IupGetIntInt(ih, "DRAWSIZE", &canvas_width, &canvas_height);
+
+  IupGLMakeCurrent(ih);
+  cdCanvasSetfAttribute(cdcanvas, "SIZE", "%dx%d %g", canvas_width, canvas_height, res);
 
   return IUP_DEFAULT;
 }
@@ -140,7 +165,7 @@ static int list_cb (Ihandle *h, char *t, int o, int selected)
 void CharacTest(void)
 {
   char charac[10240];
-  Ihandle *dlg, *frm, *zbox, *label, *cd_canvas, *cd_canvas_gl, *list;
+  Ihandle *dlg, *frm, *zbox, *label, *cd_canvas, *cd_canvas_gl, *cd_canvas_vector, *list;
 
   IupGLCanvasOpen();
 
@@ -148,29 +173,42 @@ void CharacTest(void)
   
   label = IupLabel(NULL);
   cd_canvas = IupCanvas(NULL);
+  cd_canvas_vector = IupCanvas(NULL);
   cd_canvas_gl = IupGLCanvas(NULL);
 
   IupSetAttribute(label, "EXPAND", "YES");
   IupStoreAttribute(label, "TITLE", charac);
   IupSetAttribute(label, "RASTERSIZE", CANVAS_SIZE);
+  IupSetAttribute(label, "ALIGNMENT", "ALEFT:ABOTTOM");
+  label = IupBackgroundBox(label);
+  IupStoreAttribute(label, "BGCOLOR", "255 255 255");
+  IupStoreAttribute(label, "BORDER", "Yes");
 
   IupSetAttribute(cd_canvas, "RASTERSIZE", CANVAS_SIZE);
   IupSetCallback(cd_canvas, "ACTION",  (Icallback)redraw_cb);
   IupSetCallback(cd_canvas, "MAP_CB",  (Icallback)map_cb);
   IupSetCallback(cd_canvas, "UNMAP_CB",  (Icallback)unmap_cb);
 
+  IupSetAttribute(cd_canvas_vector, "RASTERSIZE", CANVAS_SIZE);
+  IupSetCallback(cd_canvas_vector, "ACTION", (Icallback)redraw_cb);
+  IupSetCallback(cd_canvas_vector, "MAP_CB", (Icallback)map_cb);
+  IupSetCallback(cd_canvas_vector, "UNMAP_CB", (Icallback)unmap_cb);
+  IupSetAttribute(cd_canvas_vector, "_APP_CDCANVAS_VECTOR", "1");
+
   IupSetAttribute(cd_canvas_gl, "RASTERSIZE", CANVAS_SIZE);
   IupSetAttribute(cd_canvas_gl, "BUFFER", "DOUBLE");
   IupSetCallback(cd_canvas_gl, "ACTION",  (Icallback)redraw_cb);
-  IupSetCallback(cd_canvas_gl, "MAP_CB",  (Icallback)mapgl_cb);
+  IupSetCallback(cd_canvas_gl, "MAP_CB",  (Icallback)gl_map_cb);
   IupSetCallback(cd_canvas_gl, "UNMAP_CB",  (Icallback)unmap_cb);
-   
-  zbox = IupZbox(label, cd_canvas, cd_canvas_gl, NULL);
+  IupSetCallback(cd_canvas_gl, "RESIZE_CB", (Icallback)gl_resize_cb);
 
-  IupSetHandle ("zbox", zbox);
-  IupSetHandle ("label", label);
-  IupSetHandle ("cd_canvas", cd_canvas);
-  IupSetHandle ("cd_canvas_gl", cd_canvas_gl);
+  zbox = IupZbox(label, cd_canvas, cd_canvas_gl, cd_canvas_vector, NULL);
+
+  IupSetHandle("zbox", zbox);
+  IupSetHandle("label", label);
+  IupSetHandle("cd_canvas", cd_canvas);
+  IupSetHandle("cd_canvas_gl", cd_canvas_gl);
+  IupSetHandle("cd_canvas_vector", cd_canvas_vector);
 
   IupSetAttribute (zbox, "ALIGNMENT", "ACENTER");
   IupSetAttribute (zbox, "VALUE", "label");
@@ -193,7 +231,7 @@ void CharacTest(void)
     )
   );
 
-  IupSetAttributes (list, "1=label, 2=cd_canvas, 3=cd_canvas_gl, VALUE=1");
+  IupSetAttributes (list, "1=label, 2=cd_canvas, 3=cd_canvas_gl, 4=cd_canvas_vector, VALUE=1");
   IupSetCallback (list, "ACTION", (Icallback) list_cb);
 
   IupSetAttribute (frm, "TITLE", "Select:");

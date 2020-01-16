@@ -146,7 +146,7 @@ static TestItems test_list[] = {
   { "CellsCheckboard", CellsCheckboardTest },
   {"CellsDegrade", CellsDegradeTest},
   {"CellsNumbering", CellsNumberingTest},
-  {"CharacTest", CharacTest},
+  {"Characters", CharacTest},
   {"Classes Info", ClassInfo},
   {"Clipboard", ClipboardTest},
   {"ColorBrowser", ColorBrowserTest},
