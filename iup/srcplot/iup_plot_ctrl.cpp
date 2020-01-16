@@ -483,7 +483,8 @@ static int iPlotDataSetValues_CB(Ihandle* ih_item)
 
   IupPopup(dlg, IUP_CENTER, IUP_CENTER);
 
-  IupSetAttribute(ih, "REDRAW", NULL);
+  if (IupGetInt(ih, "EDITABLEVALUES"))
+    IupSetAttribute(ih, "REDRAW", NULL);
 
   IupDestroy(dlg);
 
