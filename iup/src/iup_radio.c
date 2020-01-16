@@ -56,6 +56,7 @@ static int iRadioChildIsToggle(Ihandle* child)
 {
   if (IupClassMatch(child, "toggle") || 
       IupClassMatch(child, "gltoggle") ||
+      IupClassMatch(child, "flattoggle") ||
       (IupClassMatch(child, "flatbutton") && iupAttribGetBoolean(child, "TOGGLE")))
     return 1;
   else
