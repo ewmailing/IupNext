@@ -631,8 +631,8 @@ static int iMatrixSetFitToSizeAttrib(Ihandle* ih, const char* value)
   }
 
   ih->data->need_calcsize = 1;
-  if (ih->handle)
-    iupMatrixDraw(ih, 1);
+
+  IupUpdate(ih); /* post a redraw, because FITTOSIZE can be set inside a resize_cb */
   return 0;
 }
 
@@ -703,8 +703,8 @@ static int iMatrixSetFitToTextAttrib(Ihandle* ih, const char* value)
   }
 
   ih->data->need_calcsize = 1;
-  if (ih->handle)
-    iupMatrixDraw(ih, 1);
+
+  IupUpdate(ih); /* post a redraw, because FITTOSIZE can be set inside a resize_cb */
   return 0;
 }
 
