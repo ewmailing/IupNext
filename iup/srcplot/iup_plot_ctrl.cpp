@@ -257,7 +257,7 @@ static int iPlotPrint_CB(Ihandle* self)
   return IUP_DEFAULT;
 }
 
-static double iPlotDataSetValuesNumericGetValue_CB(Ihandle *ih_matrix, int lin, int col)
+static double iPlotDataSetValuesMatrixNumericGetValue_CB(Ihandle *ih_matrix, int lin, int col)
 {
   Ihandle* ih = (Ihandle*)IupGetAttribute(ih_matrix, "PLOT");
   int plot_current = iupAttribGetInt(ih_matrix, "_IUP_PLOT_CURRENT");
@@ -289,7 +289,7 @@ static double iPlotDataSetValuesNumericGetValue_CB(Ihandle *ih_matrix, int lin, 
     return y;
 }
 
-static char* iPlotDataSetValuesValue_CB(Ihandle *ih_matrix, int lin, int col)
+static char* iPlotDataSetValuesMatrixValue_CB(Ihandle *ih_matrix, int lin, int col)
 {
   Ihandle* ih = (Ihandle*)IupGetAttribute(ih_matrix, "PLOT");
   int plot_current = iupAttribGetInt(ih_matrix, "_IUP_PLOT_CURRENT");
@@ -322,7 +322,7 @@ static char* iPlotDataSetValuesValue_CB(Ihandle *ih_matrix, int lin, int col)
   return NULL;
 }
 
-static int iPlotDataSetValuesNumericSetValue_CB(Ihandle* ih_matrix, int lin, int col, double new_value)
+static int iPlotDataSetValuesMatrixNumericSetValue_CB(Ihandle* ih_matrix, int lin, int col, double new_value)
 {
   Ihandle* ih = (Ihandle*)IupGetAttribute(ih_matrix, "PLOT");
   int plot_current = iupAttribGetInt(ih_matrix, "_IUP_PLOT_CURRENT");
@@ -358,7 +358,7 @@ static int iPlotDataSetValuesNumericSetValue_CB(Ihandle* ih_matrix, int lin, int
   return IUP_DEFAULT;
 }
 
-static int iPlotDataSetValuesValueEdit_CB(Ihandle* ih_matrix, int lin, int col, char* new_value)
+static int iPlotDataSetValuesMatrixValueEdit_CB(Ihandle* ih_matrix, int lin, int col, char* new_value)
 {
   Ihandle* ih = (Ihandle*)IupGetAttribute(ih_matrix, "PLOT");
   int plot_current = iupAttribGetInt(ih_matrix, "_IUP_PLOT_CURRENT");
@@ -386,12 +386,14 @@ static int iPlotDataSetValuesValueEdit_CB(Ihandle* ih_matrix, int lin, int col, 
   return IUP_DEFAULT;
 }
 
-static int iPlotDataSetValuesResize_CB(Ihandle *ih, int, int)
+static int iPlotDataSetValuesMatrixResize_CB(Ihandle *ih, int, int)
 {
   IupSetAttribute(ih, "RASTERWIDTH1", NULL);
   IupSetAttribute(ih, "RASTERWIDTH2", NULL);
 
   IupSetAttribute(ih, "FITTOSIZE", "COLUMNS");
+
+  IupUpdate(ih); /* post a redraw, because FITTOSIZE will invalidade the current redraw */
 
   return IUP_DEFAULT;
 }
@@ -408,15 +410,15 @@ static int iPlotDataSetValues_CB(Ihandle* ih_item)
   int plot_current = iupAttribGetInt(ih_menu, "_IUP_PLOT_CURRENT");
   int ds = iupAttribGetInt(ih_menu, "_IUP_DS");
 
+  Ihandle *matrix = IupCreate("matrixex");  /* IupControlsOpen must have been called somewhere */
+  if (!matrix)
+    return IUP_DEFAULT;
+
   IupSetInt(ih, "PLOT_CURRENT", plot_current);
   IupSetInt(ih, "CURRENT", ds);
 
   char* ds_name = IupGetAttribute(ih, "DS_NAME");
   Ihandle* label = IupLabel(ds_name);
-
-  Ihandle *matrix = IupCreate("matrixex");
-  if (!matrix)
-    return IUP_DEFAULT;
 
   Ihandle *button = IupButton("Close", NULL);
 
@@ -465,14 +467,14 @@ static int iPlotDataSetValues_CB(Ihandle* ih_item)
   IupSetStrAttribute(matrix, "NUMERICFORMAT2", IupGetAttribute(ih, "AXS_YTICKFORMAT"));
   IupSetAttribute(matrix, "MASK*:2", IUP_MASK_FLOAT);
 
-  IupSetCallback(matrix, "NUMERICGETVALUE_CB", (Icallback)iPlotDataSetValuesNumericGetValue_CB);
-  IupSetCallback(matrix, "RESIZEMATRIX_CB", (Icallback)iPlotDataSetValuesResize_CB);
-  IupSetCallback(matrix, "VALUE_CB", (Icallback)iPlotDataSetValuesValue_CB);
+  IupSetCallback(matrix, "NUMERICGETVALUE_CB", (Icallback)iPlotDataSetValuesMatrixNumericGetValue_CB);
+  IupSetCallback(matrix, "RESIZEMATRIX_CB", (Icallback)iPlotDataSetValuesMatrixResize_CB);
+  IupSetCallback(matrix, "VALUE_CB", (Icallback)iPlotDataSetValuesMatrixValue_CB);
 
   if (IupGetInt(ih, "EDITABLEVALUES"))
   {
-    IupSetCallback(matrix, "NUMERICSETVALUE_CB", (Icallback)iPlotDataSetValuesNumericSetValue_CB);
-    IupSetCallback(matrix, "VALUE_EDIT_CB", (Icallback)iPlotDataSetValuesValueEdit_CB);
+    IupSetCallback(matrix, "NUMERICSETVALUE_CB", (Icallback)iPlotDataSetValuesMatrixNumericSetValue_CB);
+    IupSetCallback(matrix, "VALUE_EDIT_CB", (Icallback)iPlotDataSetValuesMatrixValueEdit_CB);
   }
 
   IupSetCallback(button, "ACTION", (Icallback)iPlotDataSetValuesButton_CB);
@@ -838,7 +840,7 @@ static const char* iPlotGetParamValue(Ihandle* param)
 
 static void iPlotPropertiesCheckUpdateXY(Ihandle* ih, Ihandle* parambox, Ihandle* param, int param_index)
 {
-  Icallback check = IupGetCallback(param, "PLOT_ATTRIBCHECK");
+  Icallback check = IupGetCallback(param, "PLOT_ATTRIBCHECK_CB");
   if (check == iPlotCheckAutoXY ||
       check == iPlotCheckLegendXY)
   {
@@ -861,7 +863,7 @@ static void iPlotPropertiesCheckUpdateXY(Ihandle* ih, Ihandle* parambox, Ihandle
 
 static void iPlotPropertiesCheckParam(Ihandle* parambox, Ihandle* param, int param_index)
 {
-  Icallback check = IupGetCallback(param, "PLOT_ATTRIBCHECK");
+  Icallback check = IupGetCallback(param, "PLOT_ATTRIBCHECK_CB");
   if (check)
   {
     /* disable or enable the next childcount params */
@@ -1074,7 +1076,7 @@ static void iPlotPropertiesAddParamBox(Ihandle* ih, Ihandle* zbox, iPlotAttribPa
     {
       IupSetStrAttribute(params[count], "PLOT_ATTRIB", attribs[count].name);
       IupSetAttribute(params[count], "PLOT_ATTRIBLIST", (char*)(attribs[count].list));
-      IupSetCallback(params[count], "PLOT_ATTRIBCHECK", attribs[count].check);
+      IupSetCallback(params[count], "PLOT_ATTRIBCHECK_CB", attribs[count].check);
 
       // From Plot
       char* value = IupGetAttribute(ih, attribs[count].name);
