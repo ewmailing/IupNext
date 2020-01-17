@@ -652,6 +652,30 @@ static int iLayoutGetExportFile(Ihandle* parent, char* filename)
                              Layout Dialog Menus
 ***************************************************************************/
 
+static void iLayoutUpdateTitle(Ihandle* dlg, iLayoutDialog* layoutdlg)
+{
+  if (layoutdlg->dialog)
+  {
+    char* title = iupAttribGetLocal(layoutdlg->dialog, "TITLE");
+    char* name = iLayoutGetName(layoutdlg->dialog);
+    if (title)
+    {
+      if (name)
+        IupSetStrf(dlg, "TITLE", "Dialog Layout - \"%.50s\" (%.50s)", title, name);
+      else
+        IupSetStrf(dlg, "TITLE", "Dialog Layout - \"%.50s\"", title);
+    }
+    else
+    {
+      if (name)
+        IupSetStrf(dlg, "TITLE", "Dialog Layout - (%.50s)", name);
+      else
+        IupSetAttribute(dlg, "TITLE", "Dialog Layout");
+    }
+  }
+  else
+    IupSetAttribute(dlg, "TITLE", "Dialog Layout");
+}
 
 static int iLayoutMenuNew_CB(Ihandle* ih)
 {
@@ -660,6 +684,7 @@ static int iLayoutMenuNew_CB(Ihandle* ih)
   if (layoutdlg->destroy)
     IupDestroy(layoutdlg->dialog);
   layoutdlg->dialog = IupDialog(NULL);
+  iLayoutUpdateTitle(dlg, layoutdlg);
   layoutdlg->destroy = 1;
   iLayoutTreeRebuild(layoutdlg);
   return IUP_DEFAULT;
@@ -936,6 +961,7 @@ static void iLayoutDialogLoad(Ihandle* dlg, iLayoutDialog* layoutdlg, int only_v
     if (layoutdlg->destroy)
       IupDestroy(layoutdlg->dialog);
     layoutdlg->dialog = dlg_list[ret];
+    iLayoutUpdateTitle(dlg, layoutdlg);
     layoutdlg->destroy = 0;
 
     IupGetIntInt(layoutdlg->dialog, "CLIENTSIZE", &w, &h);
@@ -3089,13 +3115,6 @@ IUP_API Ihandle* IupLayoutDialog(Ihandle* dialog)
   iLayoutDialog* layoutdlg;
 
   layoutdlg = calloc(1, sizeof(iLayoutDialog));
-  if (dialog)
-    layoutdlg->dialog = dialog;
-  else
-  {
-    layoutdlg->dialog = IupDialog(NULL);
-    layoutdlg->destroy = 1;
-  }
 
   layoutdlg->timer = IupTimer();
   IupSetCallback(layoutdlg->timer, "ACTION_CB", iLayoutTimerAutoUpdate_CB);
@@ -3133,7 +3152,6 @@ IUP_API Ihandle* IupLayoutDialog(Ihandle* dialog)
   split = IupSplit(tree, canvas);
   IupSetAttribute(split, "VALUE", "300");
   IupSetAttribute(split, "AUTOHIDE", "Yes");
-
 
   menu = IupMenu(
     IupSubmenu("&Layout", IupMenu(
@@ -3189,6 +3207,15 @@ IUP_API Ihandle* IupLayoutDialog(Ihandle* dialog)
   iupAttribSet(dlg, "OPACITY", "255");
 
   iupAttribSet(dlg, "DESTROYWHENCLOSED", "Yes");
+
+  if (dialog)
+    layoutdlg->dialog = dialog;
+  else
+  {
+    layoutdlg->dialog = IupDialog(NULL);
+    layoutdlg->destroy = 1;
+  }
+  iLayoutUpdateTitle(dlg, layoutdlg);
 
   if (layoutdlg->destroy || !iupAttribGet(dialog, "_IUPLED_FILENAME"))
   {
