@@ -393,8 +393,6 @@ static int iPlotDataSetValuesMatrixResize_CB(Ihandle *ih, int, int)
 
   IupSetAttribute(ih, "FITTOSIZE", "COLUMNS");
 
-  IupUpdate(ih); /* post a redraw, because FITTOSIZE will invalidade the current redraw */
-
   return IUP_DEFAULT;
 }
 
