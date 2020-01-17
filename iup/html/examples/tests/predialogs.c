@@ -352,7 +352,7 @@ static void new_file(char* dialogtype, int preview)
 //    IupSetAttribute(dlg, "EXTFILTER", "TEXT|*.txt|");
 //    IupSetAttribute(dlg, "EXTFILTER", "BMP FILES|*.bmp|JPEG FILES|*.jpg|");
     IupSetAttribute(dlg, "EXTFILTER", "All Files|*.*|Image Files|*.bmp;*.jpg|Text Files|*.txt|");
-//    IupSetAttribute(dlg, "FILTERUSED", "2"); 
+    IupSetAttribute(dlg, "FILTERUSED", "2"); 
   }
   IupSetAttribute(dlg, "FILE", "test.bmp");
 //  IupSetAttributes(dlg, "FILE = \"\\tecgraf\\iup\\test.bmp\""); // OK
@@ -397,11 +397,13 @@ static void new_file(char* dialogtype, int preview)
       printf("OK\n");
       printf("  New file - VALUE(%s)\n", IupGetAttribute(dlg, "VALUE")); 
       printf("  DIRECTORY(%s)\n", IupGetAttribute(dlg, "DIRECTORY")); 
+      printf("  FILTERUSED(%s)\n", IupGetAttribute(dlg, "FILTERUSED"));
       break; 
     case 0 : 
       printf("OK\n");
       printf("  File exists - VALUE(%s)\n", IupGetAttribute(dlg, "VALUE"));
       printf("  DIRECTORY(%s)\n", IupGetAttribute(dlg, "DIRECTORY")); 
+      printf("  FILTERUSED(%s)\n", IupGetAttribute(dlg, "FILTERUSED"));
 
       if (IupGetInt(dlg, "MULTIPLEFILES"))
       {

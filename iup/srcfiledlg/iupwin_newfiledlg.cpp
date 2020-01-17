@@ -285,7 +285,7 @@ IFACEMETHODIMP winNewFileDlgEventHandler::OnTypeChange(IFileDialog *pfd)
     strcat(buffer, "\\");
     strcat(buffer, filename);
     pfd->GetFileTypeIndex(&index);
-    iupAttribSetInt(ih, "FILTERUSED", index - 1);
+    iupAttribSetInt(ih, "FILTERUSED", index);
     ret = cb(ih, buffer, "FILTER");
     free(buffer);
     if (ret == IUP_CONTINUE)
@@ -776,6 +776,7 @@ static int winNewFileDlgPopup(Ihandle *ih, int x, int y)
         else
         {
           char* dir = NULL;
+          int dir_len = 0, count = 0;
           DWORD i;
           for (i = 0; i < dwNumItems; i++)
           {
@@ -789,57 +790,66 @@ static int winNewFileDlgPopup(Ihandle *ih, int x, int y)
               {
                 char* filename = iupwinStrFromSystemFilename(pszFilePath);
 
-                if (i == 0)
+                if (count == 0)
                 {
-                  dir = iupStrFileGetPath(filename);
+                  dir = iupStrFileGetPath(filename);  /* includes last separator */
+                  dir_len = (int)strlen(dir);
 
                   if (iupAttribGetBoolean(ih, "MULTIVALUEPATH"))
+                  {
+                    dir[dir_len-1] = 0; /* removes the last separator */
                     iupAttribSetStrf(ih, "VALUE", "%s|", dir);
+                    dir[dir_len-1] = '\\';
+                  }
 
-                  iupAttribSetStrf(ih, "DIRECTORY", "%s", dir);  /* add the last separator */
+                  iupAttribSetStrf(ih, "DIRECTORY", "%s", dir);
 
                   iupAttribSetStrId(ih, "MULTIVALUE", 0, dir);  /* same as directory, includes last separator */
+                  count++;
                 }
 
                 if (iupAttribGetBoolean(ih, "MULTIVALUEPATH"))
                 {
-                  char nameid[100];
-                  char *fname = iupStrFileGetTitle(filename);
                   value = iupAttribGet(ih, "VALUE");
-
-                  sprintf(nameid, "MULTIVALUE%d", i + 1);
-                  iupAttribSetStrf(ih, nameid, "%s%s", dir, fname);
-
-                  iupAttribSetStrf(ih, "VALUE", "%s%s|", value, iupAttribGetId(ih, "MULTIVALUE", i + 1));
-                  free(fname);
+                  iupAttribSetStrId(ih, "MULTIVALUE", count, filename);
+                  iupAttribSetStrf(ih, "VALUE", "%s%s|", value, filename);
                 }
                 else
                 {
-                  iupAttribSetStrId(ih, "MULTIVALUE", i + 1, filename);
+                  iupAttribSetStrId(ih, "MULTIVALUE", count, filename + dir_len);
 
-                  if (i == 0)
-                    iupAttribSetStrf(ih, "VALUE", "%s|", filename);
+                  if (count == 1)
+                  {
+                    dir[dir_len - 1] = 0; /* removes the last separator */
+                    iupAttribSetStrf(ih, "VALUE", "%s|", dir);
+                    dir[dir_len - 1] = '\\';
+                  }
                   else
                   {
                     value = iupAttribGet(ih, "VALUE");
-                    iupAttribSetStrf(ih, "VALUE", "%s%s|", value, filename);
+                    iupAttribSetStrf(ih, "VALUE", "%s%s|", value, filename + dir_len);
                   }
                 }
 
                 CoTaskMemFree(pszFilePath);
+                count++;
               }
 
               psi->Release();
             }
-            iupAttribSetInt(ih, "MULTIVALUECOUNT", i + 2);
           }
 
+          iupAttribSetInt(ih, "MULTIVALUECOUNT", count);
           iupAttribSet(ih, "STATUS", "0");
           iupAttribSet(ih, "FILEEXIST", "YES");
         }
         psiaResult->Release();
       }
     }
+
+    UINT index;
+    pfd->GetFileTypeIndex(&index);
+    iupAttribSetInt(ih, "FILTERUSED", index);
   }
   else
   {
