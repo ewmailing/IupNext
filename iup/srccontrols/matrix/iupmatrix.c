@@ -969,7 +969,7 @@ static int iMatrixSetFlatAttrib(Ihandle* ih, const char* value)
   else
     ih->data->flat = 0;
 
-  IupUpdate(ih);
+  IupUpdate(ih);  /* post a redraw */
   return 0; /* do not store value in hash table */
 }
 
