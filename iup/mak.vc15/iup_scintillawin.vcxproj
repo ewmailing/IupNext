@@ -29,6 +29,7 @@
     <PlatformToolset>v141</PlatformToolset>
   </PropertyGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.props" />
+  <Import Project="scintilla_version.props" />
   <ImportGroup Label="ExtensionSettings">
   </ImportGroup>
   <ImportGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'" Label="PropertySheets">
@@ -59,8 +60,8 @@
     <ClCompile>
       <Optimization>Disabled</Optimization>
       <InlineFunctionExpansion>Default</InlineFunctionExpansion>
-      <AdditionalIncludeDirectories>..\src;..\src\win;..\include;..\srcscintilla\scintilla\include;..\srcscintilla\scintilla\lexlib;..\srcscintilla\scintilla\src;..\srcscintilla\scintilla\win32;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
-      <PreprocessorDefinitions>WIN32;_DEBUG;_LIB;IUP_ASSERT;_CRT_SECURE_NO_DEPRECATE;STATIC_BUILD;SCI_LEXER;UNICODE;SCI_NAMESPACE;%(PreprocessorDefinitions)</PreprocessorDefinitions>
+      <AdditionalIncludeDirectories>..\src;..\src\win;..\include;..\srcscintilla\scintilla$(SCINTILLA_VERSION)\include;..\srcscintilla\scintilla$(SCINTILLA_VERSION)\lexlib;..\srcscintilla\scintilla$(SCINTILLA_VERSION)\src;..\srcscintilla\scintilla$(SCINTILLA_VERSION)\win32;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <PreprocessorDefinitions>WIN32;_DEBUG;_LIB;IUP_ASSERT;_CRT_SECURE_NO_DEPRECATE;_SCL_SECURE_NO_WARNINGS;STATIC_BUILD;SCI_LEXER;UNICODE;SCI_NAMESPACE;%(PreprocessorDefinitions)</PreprocessorDefinitions>
       <MinimalRebuild>false</MinimalRebuild>
       <BasicRuntimeChecks>EnableFastChecks</BasicRuntimeChecks>
       <RuntimeLibrary>MultiThreadedDebug</RuntimeLibrary>
@@ -79,8 +80,8 @@
     <ClCompile>
       <Optimization>Disabled</Optimization>
       <InlineFunctionExpansion>Default</InlineFunctionExpansion>
-      <AdditionalIncludeDirectories>..\src;..\src\win;..\include;..\srcscintilla\scintilla\include;..\srcscintilla\scintilla\lexlib;..\srcscintilla\scintilla\src;..\srcscintilla\scintilla\win32;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
-      <PreprocessorDefinitions>WIN32;_DEBUG;_LIB;IUP_ASSERT;_CRT_SECURE_NO_DEPRECATE;STATIC_BUILD;SCI_LEXER;UNICODE;SCI_NAMESPACE;%(PreprocessorDefinitions)</PreprocessorDefinitions>
+      <AdditionalIncludeDirectories>..\src;..\src\win;..\include;..\srcscintilla\scintilla$(SCINTILLA_VERSION)\include;..\srcscintilla\scintilla$(SCINTILLA_VERSION)\lexlib;..\srcscintilla\scintilla$(SCINTILLA_VERSION)\src;..\srcscintilla\scintilla$(SCINTILLA_VERSION)\win32;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <PreprocessorDefinitions>WIN32;_DEBUG;_LIB;IUP_ASSERT;_CRT_SECURE_NO_DEPRECATE;_SCL_SECURE_NO_WARNINGS;STATIC_BUILD;SCI_LEXER;UNICODE;SCI_NAMESPACE;%(PreprocessorDefinitions)</PreprocessorDefinitions>
       <MinimalRebuild>false</MinimalRebuild>
       <BasicRuntimeChecks>EnableFastChecks</BasicRuntimeChecks>
       <RuntimeLibrary>MultiThreadedDebug</RuntimeLibrary>
@@ -100,13 +101,13 @@
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="..\srcscintilla\iup_scintilla_win.c" />
-    <ClCompile Include="..\srcscintilla\scintilla\win32\HanjaDic.cxx" />
-    <ClCompile Include="..\srcscintilla\scintilla\win32\PlatWin.cxx" />
-    <ClCompile Include="..\srcscintilla\scintilla\win32\ScintillaWin.cxx" />
+    <ClCompile Include="..\srcscintilla\scintilla$(SCINTILLA_VERSION)\win32\HanjaDic.cxx" />
+    <ClCompile Include="..\srcscintilla\scintilla$(SCINTILLA_VERSION)\win32\PlatWin.cxx" />
+    <ClCompile Include="..\srcscintilla\scintilla$(SCINTILLA_VERSION)\win32\ScintillaWin.cxx" />
   </ItemGroup>
   <ItemGroup>
-    <ClInclude Include="..\srcscintilla\scintilla\win32\HanjaDic.h" />
-    <ClInclude Include="..\srcscintilla\scintilla\win32\PlatWin.h" />
+    <ClInclude Include="..\srcscintilla\scintilla$(SCINTILLA_VERSION)\win32\HanjaDic.h" />
+    <ClInclude Include="..\srcscintilla\scintilla$(SCINTILLA_VERSION)\win32\PlatWin.h" />
   </ItemGroup>
   <ItemGroup>
     <None Include="..\srcscintilla\iup_scintilla.def" />

@@ -114,7 +114,7 @@
       <AdditionalIncludeDirectories>..\etc</AdditionalIncludeDirectories>
     </ResourceCompile>
     <Link>
-      <AdditionalDependencies>gdiplus.lib;cdcontextplus.lib;comctl32.lib;ole32.lib;opengl32.lib;glu32.lib;iup.lib;iupgl.lib;iupcontrols.lib;iupglcontrols.lib;iupimglib.lib;iup_scintilla.lib;Imm32.lib;cd.lib;freetype6.lib;zlib1.lib;iupcd.lib;iup_plot.lib;iup_mglplot.lib;cdgl.lib;ftgl.lib;iupim.lib;im.lib;im_process.lib;iupole.lib;iupweb.lib;iupfiledlg.lib;%(AdditionalDependencies)</AdditionalDependencies>
+      <AdditionalDependencies>gdiplus.lib;cdcontextplus.lib;comctl32.lib;ole32.lib;opengl32.lib;glu32.lib;iup.lib;iupgl.lib;iupcontrols.lib;iupglcontrols.lib;iupimglib.lib;iup_scintilla.lib;Imm32.lib;cd.lib;freetype6.lib;zlib1.lib;iupcd.lib;iup_plot.lib;iup_mglplot.lib;cdgl.lib;ftgl.lib;iupim.lib;im.lib;im_process.lib;iupole.lib;iupweb.lib;iupfiledlg.lib;msimg32.lib;%(AdditionalDependencies)</AdditionalDependencies>
       <SuppressStartupBanner>true</SuppressStartupBanner>
       <AdditionalLibraryDirectories>..\lib\Debug_64;..\..\cd\lib\Debug_64;..\..\im\lib\Debug_64;..\..\freetype\lib\Debug_64;..\..\ftgl\lib\Debug_64;..\..\zlib\lib\Debug_64;\lng\vld\lib\Win64;%(AdditionalLibraryDirectories)</AdditionalLibraryDirectories>
       <GenerateDebugInformation>true</GenerateDebugInformation>
