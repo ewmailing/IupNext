@@ -668,95 +668,92 @@ typedef enum
   IUP_DLG_EDGE_SOUTH_EAST
 } iupWindowEdge;
 
-static int iDialogCustomFrameButton_CB(Ihandle* ih, int button, int pressed, int x, int y, char* status)
+static int iDialogCustomFrameSimulateButton_CB(Ihandle* ih, int button, int pressed, int x, int y, char* status)
 {
-  int is_resizing = iupAttribGetInt(ih, "_IUPDLG_RESIZING");
+  int is_resizing, border, edge;
 
   if (button != IUP_BUTTON1 || iup_isdouble(status))
     return IUP_DEFAULT;
 
-  if (pressed)
-  {
-    int border = 5;
-    int edge = -1;
+  is_resizing = iupAttribGetInt(ih, "_IUPDLG_RESIZING");
+  border = 5;
+  edge = -1;
 
-    if (x < border)
+  if (x < border)
+  {
+    if (y < 2 * border)
+      edge = IUP_DLG_EDGE_NORTH_WEST;
+    else if (y > ih->currentheight - 2 * border)
+      edge = IUP_DLG_EDGE_SOUTH_WEST;
+    else
+      edge = IUP_DLG_EDGE_WEST;
+  }
+  else if (x > ih->currentwidth - border)
+  {
+    if (y < 2 * border)
+      edge = IUP_DLG_EDGE_NORTH_EAST;
+    else if (y > ih->currentheight - 2 * border)
+      edge = IUP_DLG_EDGE_SOUTH_EAST;
+    else
+      edge = IUP_DLG_EDGE_EAST;
+  }
+  else
+  {
+    if (y < border)
     {
-      if (y < 2 * border)
+      if (x < 2 * border)
         edge = IUP_DLG_EDGE_NORTH_WEST;
-      else if (y > ih->currentheight - 2 * border)
-        edge = IUP_DLG_EDGE_SOUTH_WEST;
-      else
-        edge = IUP_DLG_EDGE_WEST;
-    }
-    else if (x > ih->currentwidth - border)
-    {
-      if (y < 2 * border)
+      else if (x > ih->currentwidth - 2 * border)
         edge = IUP_DLG_EDGE_NORTH_EAST;
-      else if (y > ih->currentheight - 2 * border)
+      else
+        edge = IUP_DLG_EDGE_NORTH;
+    }
+    else if (y > ih->currentheight - border)
+    {
+      if (x < 2 * border)
+        edge = IUP_DLG_EDGE_SOUTH_WEST;
+      else if (x > ih->currentwidth - 2 * border)
         edge = IUP_DLG_EDGE_SOUTH_EAST;
       else
-        edge = IUP_DLG_EDGE_EAST;
-    }
-    else
-    {
-      if (y < border)
-      {
-        if (x < 2 * border)
-          edge = IUP_DLG_EDGE_NORTH_WEST;
-        else if (x > ih->currentwidth - 2 * border)
-          edge = IUP_DLG_EDGE_NORTH_EAST;
-        else
-          edge = IUP_DLG_EDGE_NORTH;
-      }
-      else if (y > ih->currentheight - border)
-      {
-        if (x < 2 * border)
-          edge = IUP_DLG_EDGE_SOUTH_WEST;
-        else if (x > ih->currentwidth - 2 * border)
-          edge = IUP_DLG_EDGE_SOUTH_EAST;
-        else
-          edge = IUP_DLG_EDGE_SOUTH;
-      }
-    }
-
-    if (edge != -1)
-    {
-      if (!is_resizing && pressed)  /* DRAG BEGIN */
-      {
-        int cur_start_x, cur_start_y, dlg_start_x, dlg_start_y;
-
-        iupAttribSet(ih, "_IUPDLG_RESIZING", "1");
-
-        IupGetIntInt(NULL, "CURSORPOS", &cur_start_x, &cur_start_y);
-        dlg_start_x = IupGetInt(ih, "X");
-        dlg_start_y = IupGetInt(ih, "Y");
-
-        iupAttribSetInt(ih, "_IUPDLG_START_X", dlg_start_x);
-        iupAttribSetInt(ih, "_IUPDLG_START_Y", dlg_start_y);
-        iupAttribSetInt(ih, "_IUPDLG_START_W", ih->currentwidth);
-        iupAttribSetInt(ih, "_IUPDLG_START_H", ih->currentheight);
-        iupAttribSetInt(ih, "_IUPDLG_CUR_START_X", cur_start_x);
-        iupAttribSetInt(ih, "_IUPDLG_CUR_START_Y", cur_start_y);
-
-        iupAttribSetInt(ih, "_IUPDLG_RESIZE_EDGE", edge);
-      }
-      else if (is_resizing && !pressed)  /* DRAG END */
-        iupAttribSet(ih, "_IUPDLG_RESIZING", NULL);
+        edge = IUP_DLG_EDGE_SOUTH;
     }
   }
 
-  (void)status;
+  if (edge != -1)
+  {
+    if (!is_resizing && pressed)  /* DRAG BEGIN */
+    {
+      int cur_start_x, cur_start_y, dlg_start_x, dlg_start_y;
+
+      iupAttribSet(ih, "_IUPDLG_RESIZING", "1");
+
+      IupGetIntInt(NULL, "CURSORPOS", &cur_start_x, &cur_start_y);
+      dlg_start_x = IupGetInt(ih, "X");
+      dlg_start_y = IupGetInt(ih, "Y");
+
+      iupAttribSetInt(ih, "_IUPDLG_START_X", dlg_start_x);
+      iupAttribSetInt(ih, "_IUPDLG_START_Y", dlg_start_y);
+      iupAttribSetInt(ih, "_IUPDLG_START_W", ih->currentwidth);
+      iupAttribSetInt(ih, "_IUPDLG_START_H", ih->currentheight);
+      iupAttribSetInt(ih, "_IUPDLG_CUR_START_X", cur_start_x);
+      iupAttribSetInt(ih, "_IUPDLG_CUR_START_Y", cur_start_y);
+
+      iupAttribSetInt(ih, "_IUPDLG_RESIZE_EDGE", edge);
+    }
+    else if (is_resizing && !pressed)  /* DRAG END */
+      iupAttribSet(ih, "_IUPDLG_RESIZING", NULL);
+  }
+
   return IUP_DEFAULT;
 }
 
-static void iDialogCustomFrameSetCursor(Ihandle* ih, const char* value)
+static void iDialogCustomFrameSimulateSetCursor(Ihandle* ih, const char* value)
 {
   iupdrvBaseSetCursorAttrib(ih, value);
   iupAttribSet(ih, "_IUPDLG_RESETCURSOR", "1");
 }
 
-static int iDialogCustomFrameMotion_CB(Ihandle* ih, int x, int y, char *status)
+static int iDialogCustomFrameSimulateMotion_CB(Ihandle* ih, int x, int y, char *status)
 {
   int is_resizing = iupAttribGetInt(ih, "_IUPDLG_RESIZING");
   int border = 5;
@@ -765,22 +762,22 @@ static int iDialogCustomFrameMotion_CB(Ihandle* ih, int x, int y, char *status)
   if (x < border)
   {
     if (y < 2 * border)
-      iDialogCustomFrameSetCursor(ih, "RESIZE_NW");
+      iDialogCustomFrameSimulateSetCursor(ih, "RESIZE_NW");
     else if (y > ih->currentheight - 2 * border)
-      iDialogCustomFrameSetCursor(ih, "RESIZE_SW");
+      iDialogCustomFrameSimulateSetCursor(ih, "RESIZE_SW");
     else
-      iDialogCustomFrameSetCursor(ih, "RESIZE_W");
+      iDialogCustomFrameSimulateSetCursor(ih, "RESIZE_W");
 
     set = 1;
   }
   else if (x > ih->currentwidth - border)
   {
     if (y < 2 * border)
-      iDialogCustomFrameSetCursor(ih, "RESIZE_NE");
+      iDialogCustomFrameSimulateSetCursor(ih, "RESIZE_NE");
     else if (y > ih->currentheight - 2 * border)
-      iDialogCustomFrameSetCursor(ih, "RESIZE_SE");
+      iDialogCustomFrameSimulateSetCursor(ih, "RESIZE_SE");
     else
-      iDialogCustomFrameSetCursor(ih, "RESIZE_E");
+      iDialogCustomFrameSimulateSetCursor(ih, "RESIZE_E");
 
     set = 1;
   }
@@ -789,22 +786,22 @@ static int iDialogCustomFrameMotion_CB(Ihandle* ih, int x, int y, char *status)
     if (y < border)
     {
       if (x < 2 * border)
-        iDialogCustomFrameSetCursor(ih, "RESIZE_NW");
+        iDialogCustomFrameSimulateSetCursor(ih, "RESIZE_NW");
       else if (x > ih->currentwidth - 2 * border)
-        iDialogCustomFrameSetCursor(ih, "RESIZE_NE");
+        iDialogCustomFrameSimulateSetCursor(ih, "RESIZE_NE");
       else
-        iDialogCustomFrameSetCursor(ih, "RESIZE_N");
+        iDialogCustomFrameSimulateSetCursor(ih, "RESIZE_N");
 
       set = 1;
     }
     else if (y > ih->currentheight - border)
     {
       if (x < 2 * border)
-        iDialogCustomFrameSetCursor(ih, "RESIZE_SW");
+        iDialogCustomFrameSimulateSetCursor(ih, "RESIZE_SW");
       else if (x > ih->currentwidth - 2 * border)
-        iDialogCustomFrameSetCursor(ih, "RESIZE_SE");
+        iDialogCustomFrameSimulateSetCursor(ih, "RESIZE_SE");
       else
-        iDialogCustomFrameSetCursor(ih, "RESIZE_S");
+        iDialogCustomFrameSimulateSetCursor(ih, "RESIZE_S");
 
       set = 1;
     }
@@ -895,7 +892,7 @@ static int iDialogCustomFrameMotion_CB(Ihandle* ih, int x, int y, char *status)
   return IUP_DEFAULT;
 }
 
-static int iDialogCustomFrameCaptionButton_CB(Ihandle* caption, int button, int pressed, int x, int y, char* status)
+static int iDialogCustomFrameSimulateCaptionButton_CB(Ihandle* caption, int button, int pressed, int x, int y, char* status)
 {
   Ihandle* ih = IupGetDialog(caption);
   int is_moving = iupAttribGetInt(ih, "_IUPDLG_MOVING");
@@ -909,7 +906,9 @@ static int iDialogCustomFrameCaptionButton_CB(Ihandle* caption, int button, int 
       IupSetAttribute(ih, "PLACEMENT", NULL);
     else
       IupSetAttribute(ih, "PLACEMENT", "MAXIMIZED");
+
     IupShow(ih);
+
     return IUP_DEFAULT;
   }
 
@@ -938,7 +937,7 @@ static int iDialogCustomFrameCaptionButton_CB(Ihandle* caption, int button, int 
   return IUP_DEFAULT;
 }
 
-static int iDialogCustomFrameCaptionMotion_CB(Ihandle* caption, int x, int y, char *status)
+static int iDialogCustomFrameSimulateCaptionMotion_CB(Ihandle* caption, int x, int y, char *status)
 {
   Ihandle* ih = IupGetDialog(caption);
   int is_moving = iupAttribGetInt(ih, "_IUPDLG_MOVING");
@@ -979,10 +978,10 @@ void iupDialogCustomFrameSimulateCheckCallbacks(Ihandle* ih)
   if (ih_caption)
   {
     if (!IupGetCallback(ih_caption, "BUTTON_CB"))
-      IupSetCallback(ih_caption, "BUTTON_CB", (Icallback)iDialogCustomFrameCaptionButton_CB);
+      IupSetCallback(ih_caption, "BUTTON_CB", (Icallback)iDialogCustomFrameSimulateCaptionButton_CB);
 
     if (!IupGetCallback(ih_caption, "MOTION_CB"))
-      IupSetCallback(ih_caption, "MOTION_CB", (Icallback)iDialogCustomFrameCaptionMotion_CB);
+      IupSetCallback(ih_caption, "MOTION_CB", (Icallback)iDialogCustomFrameSimulateCaptionMotion_CB);
   }
 }
 
@@ -992,8 +991,8 @@ static int iDialogSetCustomFrameSimulateAttrib(Ihandle* ih, const char* value)
   {
     iupDialogCustomFrameSimulateCheckCallbacks(ih);
 
-    IupSetCallback(ih, "BUTTON_CB", (Icallback)iDialogCustomFrameButton_CB);
-    IupSetCallback(ih, "MOTION_CB", (Icallback)iDialogCustomFrameMotion_CB);
+    IupSetCallback(ih, "BUTTON_CB", (Icallback)iDialogCustomFrameSimulateButton_CB);
+    IupSetCallback(ih, "MOTION_CB", (Icallback)iDialogCustomFrameSimulateMotion_CB);
 
     iupAttribSet(ih, "RESIZE", "NO");
     iupAttribSet(ih, "MENUBOX", "NO");
