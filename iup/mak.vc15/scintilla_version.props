@@ -2,7 +2,7 @@
 <Project ToolsVersion="4.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
   <ImportGroup Label="PropertySheets" />
   <PropertyGroup Label="UserMacros">
-    <SCINTILLA_VERSION>375</SCINTILLA_VERSION>
+    <SCINTILLA_VERSION>3112</SCINTILLA_VERSION>
   </PropertyGroup>
   <PropertyGroup>
     <_PropertySheetDisplayName>Scintilla Version Properties</_PropertySheetDisplayName>

@@ -34,11 +34,9 @@
   </ImportGroup>
   <ImportGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'" Label="PropertySheets">
     <Import Project="$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props" Condition="exists('$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props')" Label="LocalAppDataPlatform" />
-    
   </ImportGroup>
   <ImportGroup Condition="'$(Configuration)|$(Platform)'=='Debug|x64'" Label="PropertySheets">
     <Import Project="$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props" Condition="exists('$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props')" Label="LocalAppDataPlatform" />
-    
   </ImportGroup>
   <PropertyGroup Label="UserMacros" />
   <PropertyGroup>
@@ -322,6 +320,17 @@
     <ClCompile Include="..\srcscintilla\scintilla$(SCINTILLA_VERSION)\lexlib\PropSetSimple.cxx" />
     <ClCompile Include="..\srcscintilla\scintilla$(SCINTILLA_VERSION)\lexlib\StyleContext.cxx" />
     <ClCompile Include="..\srcscintilla\scintilla$(SCINTILLA_VERSION)\lexlib\WordList.cxx" />
+    <ClCompile Include="..\srcscintilla\scintilla3112\lexers\LexCIL.cxx" />
+    <ClCompile Include="..\srcscintilla\scintilla3112\lexers\LexDataflex.cxx" />
+    <ClCompile Include="..\srcscintilla\scintilla3112\lexers\LexHollywood.cxx" />
+    <ClCompile Include="..\srcscintilla\scintilla3112\lexers\LexMaxima.cxx" />
+    <ClCompile Include="..\srcscintilla\scintilla3112\lexers\LexNim.cxx" />
+    <ClCompile Include="..\srcscintilla\scintilla3112\lexers\LexSAS.cxx" />
+    <ClCompile Include="..\srcscintilla\scintilla3112\lexers\LexStata.cxx" />
+    <ClCompile Include="..\srcscintilla\scintilla3112\lexers\LexX12.cxx" />
+    <ClCompile Include="..\srcscintilla\scintilla3112\lexlib\DefaultLexer.cxx" />
+    <ClCompile Include="..\srcscintilla\scintilla3112\src\DBCS.cxx" />
+    <ClCompile Include="..\srcscintilla\scintilla3112\src\UniqueString.cxx" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">

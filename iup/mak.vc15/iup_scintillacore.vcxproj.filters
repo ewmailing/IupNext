@@ -449,6 +449,41 @@
     <ClCompile Include="..\srcscintilla\scintilla$(SCINTILLA_VERSION)\lexers\LexLed.cxx">
       <Filter>Scintilla\Lexers</Filter>
     </ClCompile>
+    <ClCompile Include="..\srcscintilla\scintilla$(SCINTILLA_VERSION)\lexers\LexEDIFACT.cxx" />
+    <ClCompile Include="..\srcscintilla\scintilla$(SCINTILLA_VERSION)\lexers\LexIndent.cxx" />
+    <ClCompile Include="..\srcscintilla\scintilla3112\src\DBCS.cxx">
+      <Filter>Scintilla-3.11</Filter>
+    </ClCompile>
+    <ClCompile Include="..\srcscintilla\scintilla3112\src\UniqueString.cxx">
+      <Filter>Scintilla-3.11</Filter>
+    </ClCompile>
+    <ClCompile Include="..\srcscintilla\scintilla3112\lexlib\DefaultLexer.cxx">
+      <Filter>Scintilla-3.11</Filter>
+    </ClCompile>
+    <ClCompile Include="..\srcscintilla\scintilla3112\lexers\LexCIL.cxx">
+      <Filter>Scintilla-3.11</Filter>
+    </ClCompile>
+    <ClCompile Include="..\srcscintilla\scintilla3112\lexers\LexDataflex.cxx">
+      <Filter>Scintilla-3.11</Filter>
+    </ClCompile>
+    <ClCompile Include="..\srcscintilla\scintilla3112\lexers\LexHollywood.cxx">
+      <Filter>Scintilla-3.11</Filter>
+    </ClCompile>
+    <ClCompile Include="..\srcscintilla\scintilla3112\lexers\LexMaxima.cxx">
+      <Filter>Scintilla-3.11</Filter>
+    </ClCompile>
+    <ClCompile Include="..\srcscintilla\scintilla3112\lexers\LexNim.cxx">
+      <Filter>Scintilla-3.11</Filter>
+    </ClCompile>
+    <ClCompile Include="..\srcscintilla\scintilla3112\lexers\LexSAS.cxx">
+      <Filter>Scintilla-3.11</Filter>
+    </ClCompile>
+    <ClCompile Include="..\srcscintilla\scintilla3112\lexers\LexStata.cxx">
+      <Filter>Scintilla-3.11</Filter>
+    </ClCompile>
+    <ClCompile Include="..\srcscintilla\scintilla3112\lexers\LexX12.cxx">
+      <Filter>Scintilla-3.11</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="..\srcscintilla\scintilla$(SCINTILLA_VERSION)\src\Indicator.h">
@@ -641,6 +676,9 @@
     </Filter>
     <Filter Include="Scintilla\lexlib">
       <UniqueIdentifier>{64cf7d88-65f7-4c3e-8312-b75a2ecdc40c}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Scintilla-3.11">
+      <UniqueIdentifier>{33fc5376-9c1d-4d0f-9141-33844820b7dd}</UniqueIdentifier>
     </Filter>
   </ItemGroup>
 </Project>
