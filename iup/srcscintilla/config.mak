@@ -41,18 +41,14 @@ ifdef SCINTILLA_OLD
   # CentOS 5
   SCINTILLA := scintilla353
 else
-  SCINTILLA := scintilla
+  SCINTILLA := scintilla366
 endif
 ifdef SCINTILLA_NEW
   # minimum GCC 4.8 (Linux313_64) and MSVC 2015 (vc14)
   # Needs C++ 11 support
   USE_CPP11 = Yes
-  ifdef SCINTILLA4
-    # NOT WORKING - compile error in std::string_view
-    SCINTILLA := scintilla410
-  else
-    SCINTILLA := scintilla375
-  endif
+  SCINTILLA := scintilla375
+#  SCINTILLA := scintilla3112
 endif
 
 INCLUDES += $(SCINTILLA)/lexlib $(SCINTILLA)/src $(SCINTILLA)/include
