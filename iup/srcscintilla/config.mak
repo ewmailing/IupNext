@@ -41,15 +41,25 @@ ifdef SCINTILLA_OLD
   # CentOS 5
   SCINTILLA := scintilla353
 else
-  SCINTILLA := scintilla366
-endif
-ifdef SCINTILLA_NEW
-  # minimum GCC 4.8 (Linux313_64) and MSVC 2015 (vc14)
-  # Needs C++ 11 support
-  USE_CPP11 = Yes
-  SCINTILLA := scintilla375
-#  SCINTILLA := scintilla3112
-#  SCINTILLA3112 := Yes
+  #
+  # TODO: define SCINTILLA_NEW according to the TEC_UNAME
+  #
+  ifdef SCINTILLA_NEW
+    # minimum GCC 4.8 (Linux313_64) and MSVC 2015 (vc14)
+    # Needs C++ 11 support
+    USE_CPP11 = Yes
+    
+    # TODO: compile scintilla3112 in all CPP11 systems,
+    #       if OK then remove scintilla375
+    
+    ifdef SCINTILLA3112
+      SCINTILLA := scintilla3112
+    else
+      SCINTILLA := scintilla375
+    endif
+  else
+    SCINTILLA := scintilla366
+  endif
 endif
 
 INCLUDES += $(SCINTILLA)/lexlib $(SCINTILLA)/src $(SCINTILLA)/include
@@ -78,6 +88,7 @@ else
   
   ifdef SCINTILLA_NEW
     LIBS += msimg32
+    DEFINES += _SCL_SECURE_NO_WARNINGS
   endif
   
   ifneq ($(findstring gcc, $(TEC_UNAME)), )
@@ -140,8 +151,9 @@ ifdef SCINTILLA_NEW
   SRCSCINTILLA += lexers/LexEDIFACT.cxx lexers/LexIndent.cxx
   ifdef SCINTILLA3112
     SRCSCINTILLA += lexers/LexCIL.cxx lexers/LexDataflex.cxx lexers/LexHollywood.cxx \
-                    lexers/LexLPeg.cxx lexers/LexMaxima.cxx lexers/LexNim.cxx \
+                    lexers/LexMaxima.cxx lexers/LexNim.cxx \
                     lexers/LexSAS.cxx lexers/LexStata.cxx lexers/LexX12.cxx
+                    # lexers/LexLPeg.cxx 
   endif
 endif
 
