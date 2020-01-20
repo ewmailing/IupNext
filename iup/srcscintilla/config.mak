@@ -49,6 +49,7 @@ ifdef SCINTILLA_NEW
   USE_CPP11 = Yes
   SCINTILLA := scintilla375
 #  SCINTILLA := scintilla3112
+#  SCINTILLA3112 := Yes
 endif
 
 INCLUDES += $(SCINTILLA)/lexlib $(SCINTILLA)/src $(SCINTILLA)/include
@@ -69,9 +70,6 @@ ifdef USE_GTK
   endif
   ifdef SCINTILLA_NEW
     LIBS += atk-1.0
-  endif
-  ifdef SCINTILLA4
-    CPPFLAGS = -std=gnu++17
   endif
 else
   INCLUDES += ../src/win $(SCINTILLA)/win32
@@ -103,8 +101,8 @@ SRCSCINTILLA = src/AutoComplete.cxx src/CallTip.cxx src/Catalogue.cxx src/CellBu
                src/UniConversion.cxx src/ViewStyle.cxx src/XPM.cxx src/CaseConvert.cxx src/CaseFolder.cxx \
                src/EditModel.cxx src/EditView.cxx src/MarginView.cxx
                
-ifdef SCINTILLA4
-  SRCSCINTILLA += src/DBCS.cxx
+ifdef SCINTILLA3112
+  SRCSCINTILLA += src/DBCS.cxx src/UniqueString.cxx
 endif
 
 SRCSCINTILLA += lexers/LexA68k.cxx lexers/LexAbaqus.cxx lexers/LexAda.cxx lexers/LexAPDL.cxx \
@@ -135,21 +133,22 @@ ifdef SCINTILLA_OLD
   SRCSCINTILLA += lexers/LexOthers.cxx
 else
   SRCSCINTILLA += lexers/LexBatch.cxx lexers/LexDiff.cxx lexers/LexErrorList.cxx \
-				lexers/LexMake.cxx lexers/LexNull.cxx lexers/LexProps.cxx lexers/LexJSON.cxx
+                  lexers/LexMake.cxx lexers/LexNull.cxx lexers/LexProps.cxx lexers/LexJSON.cxx
 endif
 
 ifdef SCINTILLA_NEW
   SRCSCINTILLA += lexers/LexEDIFACT.cxx lexers/LexIndent.cxx
-  ifdef SCINTILLA4
-    SRCSCINTILLA +=  lexers/LexMaxima.cxx
+  ifdef SCINTILLA3112
+    SRCSCINTILLA += lexers/LexCIL.cxx lexers/LexDataflex.cxx lexers/LexHollywood.cxx \
+                    lexers/LexLPeg.cxx lexers/LexMaxima.cxx lexers/LexNim.cxx \
+                    lexers/LexSAS.cxx lexers/LexStata.cxx lexers/LexX12.cxx
   endif
 endif
 
 SRCSCINTILLA += lexlib/Accessor.cxx lexlib/CharacterSet.cxx lexlib/LexerBase.cxx lexlib/LexerModule.cxx \
                 lexlib/LexerNoExceptions.cxx lexlib/LexerSimple.cxx lexlib/PropSetSimple.cxx \
                 lexlib/StyleContext.cxx lexlib/WordList.cxx lexlib/CharacterCategory.cxx
-               
-ifdef SCINTILLA4
+ifdef SCINTILLA3112
   SRCSCINTILLA += lexlib/DefaultLexer.cxx
 endif
 
