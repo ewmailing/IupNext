@@ -2,8 +2,12 @@ ifeq ($(OS), Windows_NT)
   WINLIBS = iupole iupfiledlg
 endif
 
-.PHONY: do_all iup iupgtk iupmot iupcd iupcontrols iupgl iupglcontrols iup_plot iup_mglplot iup_scintilla iupim iupimglib ledc iupview iupvled iuplua5 iupluaconsole iupluascripter iupole iupfiledlg iupweb iuptuio
-do_all: iup iupcd iupcontrols iupgl iupglcontrols iup_plot iup_mglplot iup_scintilla iupim iupimglib $(WINLIBS) iupweb iuptuio ledc iupview iupvled iuplua5 iupluaconsole iupluascripter
+TARGETS := iup iupcd iupcontrols iupgl iupglcontrols iup_plot iup_mglplot iup_scintilla iupim iupimglib $(WINLIBS) iupweb iuptuio ledc iupview iupvled iuplua5 iupluaconsole iupluascripter
+TARGETS := $(filter-out $(EXCLUDE_TARGETS), $(TARGETS))
+OTHERDEPENDENCIES := iupgtk iupmot
+
+.PHONY: do_all $(TARGETS) $(OTHERDEPENDENCIES)
+do_all: $(TARGETS)
 
 iup iupgtk iupmot:
 	@$(MAKE) --no-print-directory -C ./src/ $@
