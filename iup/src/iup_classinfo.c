@@ -214,7 +214,6 @@ static char* getNativeType(InativeType nativetype)
 
 static char* getChildType(int childtype)
 {
-  char* str[] = {"NO CHILD", "MANY CHILDREN"}; 
   if (childtype > IUP_CHILDMANY)
   {
     static char buf[100];
@@ -222,7 +221,10 @@ static char* getChildType(int childtype)
     return buf;
   }
   else
+  {
+    static const char * str[] = {"NO CHILD", "MANY CHILDREN"}; 
     return str[childtype];
+  }
 }
 
 void iupClassInfoGetDesc(Iclass* ic, Ihandle* ih, const char* attrib_name)
