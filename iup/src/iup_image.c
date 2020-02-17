@@ -713,7 +713,6 @@ void* iupImageGetImage(const char* name, Ihandle* ih_parent, int make_inactive, 
 
 void iupImageGetInfo(const char* name, int *w, int *h, int *bpp)
 {
-  void* handle;
   Ihandle *ih;
 
   if (!name)
@@ -723,6 +722,7 @@ void iupImageGetInfo(const char* name, int *w, int *h, int *bpp)
   if (!ih)
   {
     const char* native_name = NULL;
+    void* handle;
 
     /* Check in the system resources. */
     handle = iupdrvImageLoad(name, IUPIMAGE_IMAGE);
@@ -757,12 +757,12 @@ void iupImageGetInfo(const char* name, int *w, int *h, int *bpp)
 
 static Ihandle* iImageGetHandleFromImage(void* handle)
 {
-  Ihandle* ih = NULL;
-  int w, h, bpp, i;
+  int w, h, bpp;
   iupColor colors[256];
   int colors_count = 0;
   if (iupdrvImageGetRawInfo(handle, &w, &h, &bpp, colors, &colors_count))
   {
+    Ihandle* ih;
     unsigned char* imgdata;
 
     if (bpp == 32)
@@ -774,15 +774,17 @@ static Ihandle* iImageGetHandleFromImage(void* handle)
 
     if (bpp <= 8 && colors_count)
     {
+	  int i;
       for (i = 0; i < colors_count; i++)
         IupSetRGBId(ih, "", i, colors[i].r, colors[i].g, colors[i].b);
     }
 
     imgdata = (unsigned char*)iupAttribGet(ih, "WID");
     iupdrvImageGetData(handle, imgdata);
+	return ih;
   }
 
-  return ih;
+  return NULL;
 }
 
 IUP_API Ihandle* IupImageGetHandle(const char* name)

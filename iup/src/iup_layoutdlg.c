@@ -1973,14 +1973,14 @@ static int iLayoutContextMenuCut_CB(Ihandle* menu)
 
 static int iLayoutContextMenuPasteInsertBrother_CB(Ihandle* menu)
 {
-  Ihandle* new_ih, *ret_ih = NULL;
+  Ihandle* ret_ih = NULL;
   iLayoutDialog* layoutdlg = (iLayoutDialog*)iupAttribGetInherit(menu, "_IUP_LAYOUTDIALOG");
   Ihandle* ref_elem = (Ihandle*)iupAttribGetInherit(menu, "_IUP_LAYOUTCONTEXTELEMENT");
   int ref_id = IupTreeGetId(layoutdlg->tree, ref_elem);
 
   if (layoutdlg->copy_elem)
   {
-    new_ih = IupCreate(layoutdlg->copy_elem->iclass->name);
+	Ihandle* new_ih = IupCreate(layoutdlg->copy_elem->iclass->name);
     IupCopyClassAttributes(layoutdlg->copy_elem, new_ih);
 
     /* add as brother after reference */
@@ -2026,14 +2026,13 @@ static int iLayoutContextMenuPasteInsertBrother_CB(Ihandle* menu)
 
 static int iLayoutContextMenuPasteInsertChild_CB(Ihandle* menu)
 {
-  Ihandle* new_ih;
   iLayoutDialog* layoutdlg = (iLayoutDialog*)iupAttribGetInherit(menu, "_IUP_LAYOUTDIALOG");
   Ihandle* ref_elem = (Ihandle*)iupAttribGetInherit(menu, "_IUP_LAYOUTCONTEXTELEMENT");
   int ref_id = IupTreeGetId(layoutdlg->tree, ref_elem);
 
   if (layoutdlg->copy_elem)
   {
-    new_ih = IupCreate(layoutdlg->copy_elem->iclass->name);
+    Ihandle* new_ih = IupCreate(layoutdlg->copy_elem->iclass->name);
     IupCopyClassAttributes(layoutdlg->copy_elem, new_ih);
 
     /* add as first child */
@@ -2073,13 +2072,13 @@ static int iLayoutContextMenuPasteInsertChild_CB(Ihandle* menu)
 
 static int iLayoutContextMenuPasteAppendChild_CB(Ihandle* menu)
 {
-  Ihandle* new_ih;
   iLayoutDialog* layoutdlg = (iLayoutDialog*)iupAttribGetInherit(menu, "_IUP_LAYOUTDIALOG");
   Ihandle* ref_elem = (Ihandle*)iupAttribGetInherit(menu, "_IUP_LAYOUTCONTEXTELEMENT");
   int ref_id = IupTreeGetId(layoutdlg->tree, ref_elem);
 
   if (layoutdlg->copy_elem)
   {
+    Ihandle* new_ih;
     new_ih = IupCreate(layoutdlg->copy_elem->iclass->name);
     IupCopyClassAttributes(layoutdlg->copy_elem, new_ih);
 
@@ -2120,15 +2119,15 @@ static int iLayoutContextMenuPasteAppendChild_CB(Ihandle* menu)
 
 static int iLayoutContextMenuPasteCursor_CB(Ihandle* menu)
 {
-  Ihandle* new_ih, *ret_ih = NULL;
+  Ihandle* ret_ih = NULL;
   iLayoutDialog* layoutdlg = (iLayoutDialog*)iupAttribGetInherit(menu, "_IUP_LAYOUTDIALOG");
   Ihandle* container = (Ihandle*)iupAttribGetInherit(menu, "INSERTCURSOR"); /* the container */
   Ihandle* ref_elem = (Ihandle*)iupAttribGetInherit(menu, "INSERTCURSOR_ELEMENT");
-  int ref_id;
 
   if (layoutdlg->copy_elem)
   {
-    new_ih = IupCreate(layoutdlg->copy_elem->iclass->name);
+    int ref_id;
+    Ihandle* new_ih = IupCreate(layoutdlg->copy_elem->iclass->name);
     IupCopyClassAttributes(layoutdlg->copy_elem, new_ih);
 
     if (!ref_elem)
@@ -2402,9 +2401,6 @@ static void iLayoutUpdateMark(iLayoutDialog* layoutdlg, Ihandle* ih, int id)
 
 static Ihandle* iLayoutGetElementByPos(Ihandle* ih, int native_parent_x, int native_parent_y, int x, int y, int showhidden, int dlgvisible, int shownotmapped)
 {
-  Ihandle *child, *elem;
-  int dx, dy;
-
   if ((showhidden || iLayoutElementIsVisible(ih, dlgvisible)) &&
       (shownotmapped || ih->handle))
   {
@@ -2414,12 +2410,13 @@ static Ihandle* iLayoutGetElementByPos(Ihandle* ih, int native_parent_x, int nat
         x < ih->x + native_parent_x + ih->currentwidth &&
         y < ih->y + native_parent_y + ih->currentheight)
     {
+      Ihandle *child, *elem;
       if (ih->iclass->childtype != IUP_CHILDNONE)
       {
         /* if ih is a native parent, then update the offset */
         if (ih->iclass->nativetype != IUP_TYPEVOID)
         {
-          dx = 0, dy = 0;
+          int dx = 0, dy = 0;
           IupGetIntInt(ih, "CLIENTOFFSET", &dx, &dy);
           native_parent_x += ih->x + dx;
           native_parent_y += ih->y + dy;
