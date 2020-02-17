@@ -455,10 +455,10 @@ IUP_SDK_API char *iupStrGetMemory(int size)
 
 IUP_SDK_API char* iupStrReturnStrf(const char* format, ...)
 {
-  char* str = iupStrGetMemory(1024);
+  char* str = iupStrGetMemory(10240);
   va_list arglist;
   va_start(arglist, format);
-  vsnprintf(str, 1024, format, arglist);
+  vsnprintf(str, 10240, format, arglist);
   va_end(arglist);
   return str;
 }

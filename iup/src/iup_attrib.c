@@ -1107,10 +1107,10 @@ IUP_SDK_API void iupAttribSetStr(Ihandle* ih, const char* name, const char* valu
 
 IUP_SDK_API void iupAttribSetStrf(Ihandle *ih, const char* name, const char* f, ...)
 {
-  char* value = iupStrGetMemory(1024);
+  char* value = iupStrGetMemory(10240);
   va_list arglist;
   va_start(arglist, f);
-  vsnprintf(value, 1024, f, arglist);
+  vsnprintf(value, 10240, f, arglist);
   va_end(arglist);
   iupAttribSetStr(ih, name, value);
 }
