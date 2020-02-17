@@ -899,9 +899,8 @@ static void iListGetItemImageInfo(Ihandle *ih, int id, int *img_w, int *img_h)
 
 static void iListGetNaturalItemsSize(Ihandle *ih, int *w, int *h)
 {
-  char *value;
-  int max_w = 0, max_h = 0;
   int visiblecolumns, i, 
+      max_h = 0,
       count = iListGetCount(ih);
 
   *w = 0;
@@ -917,6 +916,7 @@ static void iListGetNaturalItemsSize(Ihandle *ih, int *w, int *h)
   }
   else
   {
+    char *value;
     int item_w;
 
     for (i=1; i<=count; i++)
@@ -937,6 +937,7 @@ static void iListGetNaturalItemsSize(Ihandle *ih, int *w, int *h)
 
   if (ih->data->show_image)
   {
+    int max_w = 0;
     for (i=1; i<=count; i++)
     {
       int img_w, img_h;

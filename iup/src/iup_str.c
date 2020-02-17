@@ -272,7 +272,6 @@ IUP_SDK_API void iupStrCopyN(char* dst_str, int dst_max_size, const char* src_st
 IUP_SDK_API char* iupStrDupUntil(const char **str, char c)
 {
   const char *p_str;
-  char *new_str;
   if (!str || str[0]==0)
     return NULL;
 
@@ -281,6 +280,7 @@ IUP_SDK_API char* iupStrDupUntil(const char **str, char c)
     return NULL;
   else
   {
+    char *new_str;
     int i;
     int sl = (int)(p_str - (*str));
 
@@ -299,7 +299,7 @@ IUP_SDK_API char* iupStrDupUntil(const char **str, char c)
 
 static char *iStrDupUntilNoCase(char **str, char sep)
 {
-  char *p_str,*new_str;
+  char *p_str;
   if (!str || str[0]==0)
     return NULL;
 
@@ -312,6 +312,7 @@ static char *iStrDupUntilNoCase(char **str, char sep)
     return NULL;
   else
   {
+    char *new_str;
     int i;
     int sl=(int)(p_str - (*str));
 
@@ -400,10 +401,9 @@ IUP_SDK_API char *iupStrGetMemory(int size)
   static int buffers_sizes[MAX_BUFFERS];
   static int buffers_index = -1;
 
-  int i;
-
   if (size == -1) /* Frees memory */
   {
+    int i;
     buffers_index = -1;
     for (i = 0; i < MAX_BUFFERS; i++)
     {

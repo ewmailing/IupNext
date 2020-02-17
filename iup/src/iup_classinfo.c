@@ -212,7 +212,7 @@ static char* getNativeType(InativeType nativetype)
   return str[nativetype];
 }
 
-static char* getChildType(int childtype)
+static const char* getChildType(int childtype)
 {
   if (childtype > IUP_CHILDMANY)
   {
@@ -222,7 +222,7 @@ static char* getChildType(int childtype)
   }
   else
   {
-    static const char * str[] = {"NO CHILD", "MANY CHILDREN"}; 
+    static const char * str[] = {"NO CHILD", "MANY CHILDREN"};
     return str[childtype];
   }
 }
