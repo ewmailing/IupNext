@@ -184,7 +184,6 @@ IUP_API Ihandle* IupSetHandle(const char *name, Ihandle *ih)
 
 IUP_API char* IupGetName(Ihandle* ih)
 {
-  char *name;
   if (!ih) /* no iupASSERT needed here */
     return NULL;
 
@@ -193,11 +192,7 @@ IUP_API char* IupGetName(Ihandle* ih)
   if (iupObjectCheck(ih)) /* if ih is an Ihandle* */
   {
     /* check for a name */
-    name = iupAttribGetHandleName(ih);
-    if (name)
-      return name;
-    else
-      return NULL;
+    return iupAttribGetHandleName(ih);
   }
 
   /* search for a name */
