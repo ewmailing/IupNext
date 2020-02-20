@@ -53,7 +53,8 @@ timer() [in LED]</pre>
 <p><strong>ACTION_CB</strong>: 
   Called every time the defined time interval is reached. To stop the callback 
 from being called simply stop de timer with RUN=NO. Inside the callback the 
-attribute ELAPSEDTIME returns the time elapsed since the timer was started (since 
+attribute ELAPSEDTIME returns the time elapsed since the timer was started in 
+milliseconds (since 
 3.15).</p>
   
     <pre>int function(Ihandle *<strong>ih)</strong>; [in C]
