@@ -52,7 +52,9 @@ element is destroyed. A new format must be added before used. (since 3.7)</p>
 <p><strong>EMFAVAILABLE</strong> (read-only) [Windows Only]: informs if there is a 
 Windows Enhanced Metafile available at the clipboard. (Since 3.2)</p>
 <p><strong>FORMAT</strong>: set the current format to be used by the 
-FORMATAVAILABLE and FORMATDATA attributes. (since 3.7)</p>
+FORMATAVAILABLE and FORMATDATA attributes. This is a custom format string. The 
+application copy and paste functions must know what it is copying and pasting in 
+FORMATDATA based on that string. (since 3.7)</p>
 <p><strong>FORMATAVAILABLE</strong> (read-only): informs if there is a data in 
 the FORMAT available at the clipboard. If FORMAT is not set returns NULL. (since 
 3.7)</p>
