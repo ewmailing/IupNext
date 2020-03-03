@@ -484,6 +484,9 @@
     <ClCompile Include="..\srcscintilla\scintilla3112\lexers\LexX12.cxx">
       <Filter>Scintilla-3.11</Filter>
     </ClCompile>
+    <ClCompile Include="..\srcscintilla\scintilla3112\lexers\LexLPeg.cxx">
+      <Filter>Scintilla-3.11</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="..\srcscintilla\scintilla$(SCINTILLA_VERSION)\src\Indicator.h">

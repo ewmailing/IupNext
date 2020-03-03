@@ -323,6 +323,7 @@
     <ClCompile Include="..\srcscintilla\scintilla3112\lexers\LexCIL.cxx" />
     <ClCompile Include="..\srcscintilla\scintilla3112\lexers\LexDataflex.cxx" />
     <ClCompile Include="..\srcscintilla\scintilla3112\lexers\LexHollywood.cxx" />
+    <ClCompile Include="..\srcscintilla\scintilla3112\lexers\LexLPeg.cxx" />
     <ClCompile Include="..\srcscintilla\scintilla3112\lexers\LexMaxima.cxx" />
     <ClCompile Include="..\srcscintilla\scintilla3112\lexers\LexNim.cxx" />
     <ClCompile Include="..\srcscintilla\scintilla3112\lexers\LexSAS.cxx" />
