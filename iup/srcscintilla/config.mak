@@ -152,8 +152,8 @@ ifdef SCINTILLA_NEW
   ifdef SCINTILLA3112
     SRCSCINTILLA += lexers/LexCIL.cxx lexers/LexDataflex.cxx lexers/LexHollywood.cxx \
                     lexers/LexMaxima.cxx lexers/LexNim.cxx \
-                    lexers/LexSAS.cxx lexers/LexStata.cxx lexers/LexX12.cxx
-                    # lexers/LexLPeg.cxx 
+                    lexers/LexSAS.cxx lexers/LexStata.cxx lexers/LexX12.cxx \
+                    lexers/LexLPeg.cxx 
   endif
 endif
 
