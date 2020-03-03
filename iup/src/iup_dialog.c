@@ -76,6 +76,7 @@ static void iDialogAdjustPos(Ihandle *ih, int *x, int *y)
   int screen_width = 0, screen_height = 0;
   int current_x = 0, current_y = 0;
   int parent_x = 0, parent_y = 0;
+  int parent_width = 0, parent_height = 0;
 
   /* the dialog is already mapped here */
 
@@ -97,25 +98,25 @@ static void iDialogAdjustPos(Ihandle *ih, int *x, int *y)
   }
 
   if (*x == IUP_CENTER || *y == IUP_CENTER ||
-      *x == IUP_RIGHT  || *y == IUP_RIGHT ||
-      *x == IUP_CENTERPARENT || *y == IUP_CENTERPARENT)
+      *x == IUP_RIGHT  || *y == IUP_RIGHT)
     iupdrvGetScreenSize(&screen_width, &screen_height);
 
-  if (*x == IUP_CENTERPARENT || *y == IUP_CENTERPARENT)
+  if (*x == IUP_CENTERPARENT || *y == IUP_CENTERPARENT ||
+      *x == IUP_LEFTPARENT   || *y == IUP_TOPPARENT    || 
+      *x == IUP_RIGHTPARENT  || *y == IUP_BOTTOMPARENT)
   {
     InativeHandle* parent = iupDialogGetNativeParent(ih);
     if (parent)
     {
       Ihandle* ih_parent = IupGetAttributeHandle(ih, "PARENTDIALOG");
-
       iupdrvDialogGetPosition(ih_parent, parent, &parent_x, &parent_y);
-
-      if (*x == IUP_CENTERPARENT && *y == IUP_CENTERPARENT)
-        iupdrvDialogGetSize(ih_parent, parent, &screen_width, &screen_height);
-      else if (*x == IUP_CENTERPARENT)
-        iupdrvDialogGetSize(ih_parent, parent, &screen_width, NULL);
-      else if (*y == IUP_CENTERPARENT)
-        iupdrvDialogGetSize(ih_parent, parent, NULL, &screen_height);
+      iupdrvDialogGetSize(ih_parent, parent, &parent_width, &parent_height);
+    }
+    else
+    {
+      iupdrvGetScreenSize(&screen_width, &screen_height);
+      parent_width = screen_width;
+      parent_height = screen_height;
     }
   }
 
@@ -131,9 +132,9 @@ static void iDialogAdjustPos(Ihandle *ih, int *x, int *y)
       parent_x = 0; 
       parent_y = 0;
 
-      /* screen size is now the size of the mdi client */
-      screen_width = client->currentwidth;
-      screen_height = client->currentheight;
+      /* screen/parent size is now the size of the mdi client */
+      parent_width = screen_width = client->currentwidth;
+      parent_height = screen_height = client->currentheight;
 
       iupdrvScreenToClient(client, &current_x, &current_y);
       iupdrvScreenToClient(client, &cursor_x, &cursor_y);
@@ -143,7 +144,7 @@ static void iDialogAdjustPos(Ihandle *ih, int *x, int *y)
   switch (*x)
   {
   case IUP_CENTERPARENT:
-    *x = (screen_width - ih->currentwidth)/2 + parent_x;
+    *x = (parent_width - ih->currentwidth)/2 + parent_x;
     break;
   case IUP_CENTER:
     *x = (screen_width - ih->currentwidth)/2;
@@ -153,6 +154,12 @@ static void iDialogAdjustPos(Ihandle *ih, int *x, int *y)
     break;
   case IUP_RIGHT:
     *x = screen_width - ih->currentwidth;
+    break;
+  case IUP_LEFTPARENT:
+    *x = parent_x;
+    break;
+  case IUP_RIGHTPARENT:
+    *x = parent_width - ih->currentwidth;
     break;
   case IUP_MOUSEPOS:
     *x = cursor_x;
@@ -165,16 +172,22 @@ static void iDialogAdjustPos(Ihandle *ih, int *x, int *y)
   switch (*y)
   {
   case IUP_CENTERPARENT:
-    *y = (screen_height - ih->currentheight)/2 + parent_y;
+    *y = (parent_height - ih->currentheight)/2 + parent_y;
     break;
   case IUP_CENTER:
     *y = (screen_height - ih->currentheight)/2;
     break;
-  case IUP_LEFT:
+  case IUP_TOP:
     *y = 0;
     break;
-  case IUP_RIGHT:
+  case IUP_BOTTOM:
     *y = screen_height - ih->currentheight;
+    break;
+  case IUP_TOPPARENT:
+    *y = parent_y;
+    break;
+  case IUP_BOTTOMPARENT:
+    *y = parent_height - ih->currentheight;
     break;
   case IUP_MOUSEPOS:
     *y = cursor_y;

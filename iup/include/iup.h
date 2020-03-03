@@ -377,8 +377,12 @@ IUP_API Ihandle* IupClassInfoDialog(Ihandle* parent);
 #define IUP_MOUSEPOS      0xFFFC  /* 65532 */
 #define IUP_CURRENT       0xFFFB  /* 65531 */
 #define IUP_CENTERPARENT  0xFFFA  /* 65530 */
-#define IUP_TOP       IUP_LEFT
-#define IUP_BOTTOM    IUP_RIGHT
+#define IUP_LEFTPARENT    0xFFF9  /* 65529 */
+#define IUP_RIGHTPARENT   0xFFF8  /* 65528 */
+#define IUP_TOP           IUP_LEFT
+#define IUP_BOTTOM        IUP_RIGHT
+#define IUP_TOPPARENT     IUP_LEFTPARENT
+#define IUP_BOTTOMPARENT  IUP_RIGHTPARENT
 
 /************************************************************************/
 /*               SHOW_CB Callback Values                                */

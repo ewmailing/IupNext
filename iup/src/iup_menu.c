@@ -79,8 +79,7 @@ static void iMenuAdjustPos(int *x, int *y)
   int screen_width = 0, screen_height = 0;
 
   if (*x == IUP_CENTER || *y == IUP_CENTER ||
-      *x == IUP_RIGHT  || *y == IUP_RIGHT ||
-      *x == IUP_CENTERPARENT || *y == IUP_CENTERPARENT)
+      *x == IUP_RIGHT  || *y == IUP_RIGHT)
     iupdrvGetScreenSize(&screen_width, &screen_height);
 
   if (*x == IUP_MOUSEPOS || *y == IUP_MOUSEPOS)
