@@ -54,6 +54,36 @@ else
     
     ifdef SCINTILLA3112
       SCINTILLA := scintilla3112
+      
+      ifdef LPEG_LEXER
+        DEFINES += LPEG_LEXER
+        
+        # To not link with the Lua dynamic library in UNIX
+        NO_LUALINK = Yes
+        
+        # Depends on Lua
+        ifdef USE_LUA_VERSION
+          USE_LUA51:=
+          USE_LUA52:=
+          USE_LUA53:=
+          ifeq ($(USE_LUA_VERSION), 53)
+            USE_LUA53:=Yes
+          endif
+          ifeq ($(USE_LUA_VERSION), 52)
+            USE_LUA52:=Yes
+          endif
+          ifeq ($(USE_LUA_VERSION), 51)
+            USE_LUA51:=Yes
+          endif
+        endif
+        
+        # Depends on LPEG
+        ifdef LINK_LPEG
+          DEFINES += LINK_LPEG
+          # No need for includes
+          LIBS += $(LPEG)
+        endif
+      endif
     else
       SCINTILLA := scintilla375
     endif

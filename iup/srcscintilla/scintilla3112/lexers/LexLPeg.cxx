@@ -29,7 +29,9 @@ extern "C" {
 #include "lua.h"
 #include "lualib.h"
 #include "lauxlib.h"
-LUALIB_API int luaopen_lpeg(lua_State *L);
+#ifdef LINK_LPEG
+  LUALIB_API int luaopen_lpeg(lua_State *L);
+#endif
 }
 
 #if _WIN32
@@ -493,7 +495,9 @@ public:
 			l_openlib(luaopen_io, LUA_IOLIBNAME); // for `package.searchpath()`
 #endif
 			l_openlib(luaopen_package, LUA_LOADLIBNAME);
+#ifdef LINK_LPEG
 			l_openlib(luaopen_lpeg, "lpeg");
+#endif
 #if _WIN32
 			lua_pushboolean(L, 1), lua_setglobal(L, "WIN32");
 #endif
