@@ -159,7 +159,7 @@ static void iDialogAdjustPos(Ihandle *ih, int *x, int *y)
     *x = parent_x;
     break;
   case IUP_RIGHTPARENT:
-    *x = parent_width - ih->currentwidth;
+    *x = parent_width - ih->currentwidth + parent_x;
     break;
   case IUP_MOUSEPOS:
     *x = cursor_x;
@@ -187,7 +187,7 @@ static void iDialogAdjustPos(Ihandle *ih, int *x, int *y)
     *y = parent_y;
     break;
   case IUP_BOTTOMPARENT:
-    *y = parent_height - ih->currentheight;
+    *y = parent_height - ih->currentheight + parent_y;
     break;
   case IUP_MOUSEPOS:
     *y = cursor_y;
