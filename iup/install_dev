@@ -35,7 +35,7 @@ Copy_Dev_Extra_CD()
 Copy_Dev_To_System()
 {
   mkdir -p $TEC_SYSTEM_INC/$1
-  cp -fv include/*.h $TEC_SYSTEM_INC/$1
+  cp -fv include/*.h include/*.hpp $TEC_SYSTEM_INC/$1
   cp -fv $2lib$1*.a $TEC_SYSTEM_LIB
   
   if [ $1 == cd ]; then
