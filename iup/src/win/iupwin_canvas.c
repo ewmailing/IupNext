@@ -300,7 +300,7 @@ static void winCanvasCallScrollCallback(Ihandle* ih, int op)
 
 static void winCanvasProcessHorScroll(Ihandle* ih, WORD winop)
 {
-  double xmin, xmax, posx, linex;
+  double xmin, xmax, posx;
   int ipagex, iposx, ilinex, op;
 
   /* unused */
@@ -323,7 +323,7 @@ static void winCanvasProcessHorScroll(Ihandle* ih, WORD winop)
   else
   {
     /* line and page conversions are the same */
-    linex = iupAttribGetDouble(ih,"LINEX");
+    double linex = iupAttribGetDouble(ih,"LINEX");
     iupCanvasCalcScrollIntPos(xmin, xmax, linex, 0, 
                               IUP_SB_MIN, IUP_SB_MAX, &ilinex,  NULL);
   }
@@ -366,7 +366,7 @@ static void winCanvasProcessHorScroll(Ihandle* ih, WORD winop)
 
 static void winCanvasProcessVerScroll(Ihandle* ih, WORD winop)
 {
-  double ymin, ymax, posy, liney;
+  double ymin, ymax, posy;
   int ipagey, iposy, iliney, op;
 
   /* unused */
@@ -389,7 +389,7 @@ static void winCanvasProcessVerScroll(Ihandle* ih, WORD winop)
   else
   {
     /* line and page conversions are the same */
-    liney = iupAttribGetDouble(ih,"LINEY");
+    double liney = iupAttribGetDouble(ih,"LINEY");
     iupCanvasCalcScrollIntPos(ymin, ymax, liney, 0, 
                               IUP_SB_MIN, IUP_SB_MAX, &iliney,  NULL);
   }

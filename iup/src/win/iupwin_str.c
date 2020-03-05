@@ -67,10 +67,10 @@ static void* winStrGetMemory(int size)
   static int buffers_sizes[MAX_BUFFERS];
   static int buffers_index = -1;
 
-  int i;
-
   if (size == -1) /* Frees memory */
   {
+    int i;
+
     buffers_index = -1;
     for (i = 0; i < MAX_BUFFERS; i++)
     {

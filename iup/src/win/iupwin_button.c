@@ -260,13 +260,15 @@ static void winButtonDrawText(Ihandle* ih, HDC hDC, int rect_width, int rect_hei
 {
   int xpad = ih->data->horiz_padding + border, 
       ypad = ih->data->vert_padding + border;
-  int x, y, width, height, shift = 0;
-  COLORREF fgcolor;
-
   char* title = iupAttribGet(ih, "TITLE");
+
   if (title)
   {
+	int x, y;
+	int width, height;
+	int shift = 0;
     int style = 0;
+    COLORREF fgcolor;
     HFONT hFont = (HFONT)iupwinGetHFontAttrib(ih);
     char* str = iupStrProcessMnemonic(title, NULL, 0);   /* remove & */
     iupdrvFontGetMultiLineStringSize(ih, str, &width, &height);
