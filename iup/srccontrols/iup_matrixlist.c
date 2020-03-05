@@ -666,7 +666,7 @@ static int iMatrixListSetTitleAttrib(Ihandle* ih, const char* value)
 {
   ImatrixListData* mtxList = (ImatrixListData*)iupAttribGet(ih, "_IUPMTXLIST_DATA");
   if (!ih->handle)
-    iupAttribSetId2(ih, "", 0, mtxList->label_col, value);
+    iupAttribSetStrId2(ih, "", 0, mtxList->label_col, value);
   else
   {
     iupMatrixSetValue(ih, 0, mtxList->label_col, value, 0);
