@@ -328,6 +328,9 @@
     <ClCompile Include="..\src\iup_export.c">
       <Filter>src</Filter>
     </ClCompile>
+    <ClCompile Include="..\src\iup_flattree.c">
+      <Filter>src_controls</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="..\src\iup_array.h">
@@ -509,6 +512,9 @@
     </ClInclude>
     <ClInclude Include="..\include\iup_export.h">
       <Filter>include</Filter>
+    </ClInclude>
+    <ClInclude Include="..\src\iup_flattree.h">
+      <Filter>inc_controls</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>

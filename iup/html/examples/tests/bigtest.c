@@ -65,6 +65,7 @@ void CellsDegradeTest(void);
 void CellsCheckboardTest(void);
 void ValTest(void);
 void FlatValTest(void);
+void FlatTreeTest(void);
 void TreeTest(void);
 void TrayTest(void);
 void ToggleTest(void);
@@ -212,6 +213,7 @@ static TestItems test_list[] = {
   { "FlatToggle", FlatToggleTest },
   { "Tray", TrayTest },
   {"Tree", TreeTest},
+  {"FlatTree", FlatTreeTest},
   {"Val", ValTest},
   { "FlatVal", FlatValTest },
   { "Vbox", VboxTest },

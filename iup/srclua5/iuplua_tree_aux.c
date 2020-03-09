@@ -14,7 +14,7 @@
 
 /* 
    The REGISTRY is used to store references to the associated Lua objects.
-   Given an ID, to retreive a Lua object is quite simple.
+   Given an ID, to retrieve a Lua object is quite simple.
 
    But given a user_id to obtain the ID is more complicated.
    The iup.TREEREFTABLE is used to do this mapping.

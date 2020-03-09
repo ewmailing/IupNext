@@ -146,6 +146,7 @@ elems[] =
   { "Text",         code_string,       check_cb,          0  },
   { "Val",          code_string,       check_string,      0  },
   { "FlatVal",      code_string,       check_string,      0  },
+  { "FlatTree",     code_empty,        check_empty,       0  },
   { "Tree",         code_empty,        check_empty,       0  },
   { "Tabs",         code_elemlist,     check_elemlist,    0  },
   { "FlatTabs",     code_elemlist,     check_elemlist,    0  },

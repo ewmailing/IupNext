@@ -258,6 +258,7 @@ IUP_API Ihandle*  IupClipboard  (void);
 IUP_API Ihandle*  IupProgressBar(void);
 IUP_API Ihandle*  IupVal        (const char *type);
 IUP_API Ihandle*  IupFlatVal    (const char *type);
+IUP_API Ihandle*  IupFlatTree   (void);
 IUP_API Ihandle*  IupTabs       (Ihandle* child, ...);
 IUP_API Ihandle*  IupTabsv      (Ihandle* *children);
 IUP_API Ihandle*  IupFlatTabs   (Ihandle* first, ...);

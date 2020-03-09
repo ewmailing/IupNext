@@ -516,6 +516,13 @@ namespace Iup
     FlatVal(Ihandle* _ih) : Control(_ih) {}
     FlatVal(const Element& elem) : Control(elem.GetHandle()) {}
   };
+  class FlatTree : public Control
+  {
+  public:
+    FlatTree() : Control(IupFlatTree()) {}
+    FlatTree(Ihandle* _ih) : Control(_ih) {}
+    FlatTree(const Element& elem) : Control(elem.GetHandle()) {}
+  };
   class ProgressBar : public Control
   {
   public:

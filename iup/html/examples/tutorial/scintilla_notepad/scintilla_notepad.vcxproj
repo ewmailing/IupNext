@@ -123,7 +123,7 @@
       <DebugInformationFormat>OldStyle</DebugInformationFormat>
     </ClCompile>
     <Link>
-      <AdditionalDependencies>iupimglib.lib;imm32.lib;iup_scintilla.lib;%(AdditionalDependencies)</AdditionalDependencies>
+      <AdditionalDependencies>iupimglib.lib;imm32.lib;iup_scintilla.lib;msimg32.lib;%(AdditionalDependencies)</AdditionalDependencies>
       <AdditionalLibraryDirectories>$(IUP)\lib\Debug_64;$(CD)\lib\Debug_64;$(IM)\lib\Debug_64;%(AdditionalLibraryDirectories)</AdditionalLibraryDirectories>
       <IgnoreAllDefaultLibraries>false</IgnoreAllDefaultLibraries>
       <IgnoreSpecificDefaultLibraries>%(IgnoreSpecificDefaultLibraries)</IgnoreSpecificDefaultLibraries>

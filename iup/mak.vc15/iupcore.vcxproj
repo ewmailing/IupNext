@@ -124,6 +124,7 @@
     <ClCompile Include="..\src\iup_flatseparator.c" />
     <ClCompile Include="..\src\iup_flattabs.c" />
     <ClCompile Include="..\src\iup_flattoggle.c" />
+    <ClCompile Include="..\src\iup_flattree.c" />
     <ClCompile Include="..\src\iup_flatval.c" />
     <ClCompile Include="..\src\iup_focus.c" />
     <ClCompile Include="..\src\iup_font.c" />
@@ -215,6 +216,7 @@
     <ClInclude Include="..\src\iup_drvfont.h" />
     <ClInclude Include="..\src\iup_drvinfo.h" />
     <ClInclude Include="..\src\iup_flatscrollbar.h" />
+    <ClInclude Include="..\src\iup_flattree.h" />
     <ClInclude Include="..\src\iup_focus.h" />
     <ClInclude Include="..\src\iup_func.h" />
     <ClInclude Include="..\src\iup_globalattrib.h" />

@@ -1455,6 +1455,7 @@ IUPLUA_API int iuplua_open(lua_State * L)
   iupflatseparatorlua_open(L);
   iupflatlistlua_open(L);
   iupflatvallua_open(L);
+  iupflattreelua_open(L);
   iupspacelua_open(L);
   iupconfiglua_open(L);
   iupanimatedlabellua_open(L);
