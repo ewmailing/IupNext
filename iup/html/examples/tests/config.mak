@@ -75,6 +75,7 @@ SRC += getparam.c
 SRC += getcolor.c
 SRC += class_conf.c
 SRC += tree.c
+SRC += flattree.c
 SRC += zbox.c
 SRC += scanf.c
 SRC += sbox.c
