@@ -210,6 +210,7 @@ static void iMultiBoxComputeNaturalSizeMethod(Ihandle* ih, int *w, int *h, int *
   }
 
   /* Also set expand to its own expand so it will not depend on children */
+  /* So it will be able to dynamically expand and contract to rearrange its children */
   *children_expand = ih->expand;
 
   /* at least will have this size, use it as a minimum size */
