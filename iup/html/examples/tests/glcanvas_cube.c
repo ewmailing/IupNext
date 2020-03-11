@@ -385,6 +385,9 @@ void GLCanvasCubeTest(void)
 //  IupSetAttribute(glabel, "FGCOLOR", "255 255 255");
   IupSetAttribute(glabel, "FONT", "Helvetica, 24");
   IupSetAttributeHandle(glabel, "IMAGE", load_image_Tecgraf());
+//  IupSetAttribute(glabel, "FONT", "Segoe UI, 12");
+//  IupSetAttribute(glabel, "FONT", "Arial, 12");
+//  IupSetAttribute(glabel, "TITLE", "Text Labels (çãõáóé)\n ( x10⁻¹ )");
 
   gbutton1 = IupGLButton("Button");
   IupSetAttribute(gbutton1, "PADDING", "5x5");
