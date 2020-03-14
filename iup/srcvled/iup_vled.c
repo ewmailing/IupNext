@@ -1924,11 +1924,11 @@ static int item_show_all_img_cb(Ihandle *ih_item)
 
     if (iupStrEqualPartial(type, "image"))
     {
-      if (show_stock && !iupAttribGet(elem, "_IUPIMAGE_STOCK_LOAD"))
+      /* if not stock show only loaded images */
+      if (!show_stock && !iupAttribGet(elem, "_IUPLED_FILENAME"))
         continue;
 
-      /* show only loaded images */
-      if (!show_stock && !iupAttribGet(elem, "_IUPLED_FILENAME"))
+      if (iupStrEqualPartial(names[i], "_IUP_NAME"))  /* ignore internal names */
         continue;
 
       images[num_images] = elem;
@@ -1956,7 +1956,12 @@ static int item_show_all_img_cb(Ihandle *ih_item)
     name = vLedGetName(elem);
 
     if (show_stock)
-      filename = "IupImgLib";
+    {
+      if (iupAttribGet(elem, "_IUPIMAGE_STOCK_LOAD"))
+        filename = "IupImgLib";
+      else
+        filename = "Internal";
+    }
     else
       filename = iupAttribGet(elem, "_IUPLED_FILENAME");
     if (!filename)
@@ -1985,7 +1990,7 @@ static int item_show_all_img_cb(Ihandle *ih_item)
 
     button = IupButton("", NULL);
     IupSetStrAttribute(button, "IMAGE", name);
-    IupSetfAttribute(button, "_INFO", "%s [%d,%d]", name, IupGetInt(elem, "WIDTH"), IupGetInt(elem, "HEIGHT"));
+    IupSetfAttribute(button, "_INFO", "%s [%d,%d] - %s", name, IupGetInt(elem, "WIDTH"), IupGetInt(elem, "HEIGHT"), IupGetClassName(elem));
     IupSetCallback(button, "ACTION", (Icallback)imagebutton_cb);
     IupAppend(lbox, button);
     IupSetfAttribute(lbox, "LINE_COUNT", "%d", IupGetInt(lbox, "LINE_COUNT") + 1);
