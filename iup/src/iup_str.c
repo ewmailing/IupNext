@@ -1315,8 +1315,8 @@ static char* iStrLatin1toUTF8(char* s, char c)
     /* all 11 bit codepoints (0x0 -- 0x7ff) fit within a 2byte utf8 char
      * firstbyte  = 110 +xxxxx := 0xc0 + (char >> 6) MSB
      * secondbyte = 10 +xxxxxx := 0x80 + (char & 63) LSB */
-    *s = 0xc0 | (uc >> 6) & 0x1F; s++;  /* 2+1+5 bits */
-    *s = 0x80 | (uc & 0x3F);            /* 1+1+6 bits */
+    *s = 0xc0 | ((uc >> 6) & 0x1F); s++;  /* 2+1+5 bits */
+    *s = 0x80 | (uc & 0x3F);              /* 1+1+6 bits */
   }
   return s;
 }
