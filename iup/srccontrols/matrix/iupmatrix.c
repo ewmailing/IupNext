@@ -1884,6 +1884,8 @@ static void iMatrixUnMapMethod(Ihandle* ih)
 {
   if (ih->data->cd_canvas)
   {
+    iupAttribSetStr(ih, "_IUPCD_LASTFONT", NULL); /* Cache in IupCdSetFont */
+
     cdKillCanvas(ih->data->cd_canvas);
     ih->data->cd_canvas = NULL;
   }
