@@ -1,6 +1,5 @@
 /** \file
-/** \file
-* \brief Tree Control
+* \brief FlatTree Control
 *
 * See Copyright Notice in "iup.h"
 */
@@ -1463,8 +1462,6 @@ static void iFlatTreeUpdateScrollBar(Ihandle *ih)
 //  return IUP_DEFAULT;
 //}
 
-//static char* iFlatTreeGetIdValueAttrib(Ihandle* ih, int pos);
-
 //static void iFlatTreeCallSelectionCallback(Ihandle* ih, IFnii cb, int id, int state)
 //{
 //  char *text;
@@ -1472,7 +1469,9 @@ static void iFlatTreeUpdateScrollBar(Ihandle *ih)
 //  if (id < 1 || !cb)
 //    return;
 
-//  text = iFlatTreeGetIdValueAttrib(ih, id);
+//iFlatTreeNode *node = iFlatTreeGetNode(ih, id);
+//if (node)
+//  text = node->title;
 
 //  if (cb(ih, id, state) == IUP_CLOSE)
 //    IupExitLoop();
@@ -2356,47 +2355,6 @@ static char* iFlatTreeGetHasFocusAttrib(Ihandle* ih)
   return iupStrReturnBoolean(ih->data->has_focus);
 }
 
-static char* iFlatTreeGetIdValueAttrib(Ihandle* ih, int id)
-{
-  iFlatTreeNode *node = iFlatTreeGetNode(ih, id);
-  if (node)
-    return node->title;
-  else
-    return NULL;
-}
-
-//static int iFlatTreeSetIdValueAttrib(Ihandle* ih, int pos, const char* value)
-//{
-//  int count = iupArrayCount(ih->data->node_cache);
-
-//  if (pos < 1)
-//    return 0;
-
-//  if (!value)
-//    iFlatTreeRemoveItem(ih, 0, count - pos - 1);
-//  else if (pos <= count)
-//  {
-//    iFlatTreeNode **nodes = iupArrayGetData(ih->data->node_cache);
-
-//    if (nodes[pos - 1]->title)
-//      free(nodes[pos - 1]->title);
-//    nodes[pos - 1]->title = iupStrDup(value);
-//  }
-//  else
-//  {
-//    iFlatTreeNode **nodes = (iFlatTreeNode*)iupArrayInsert(ih->data->node_cache, count, pos - 1 - count + 1);
-//    nodes[pos - 1]->title = iupStrDup(value);
-//  }
-
-//  if (ih->handle)
-//  {
-//    iFlatTreeUpdateScrollBar(ih);
-//    IupUpdate(ih);
-//  }
-
-//  return 0;
-//}
-
 static char* iFlatTreeGetStateAttrib(Ihandle* ih, int id)
 {
   iFlatTreeNode *node = iFlatTreeGetNode(ih, id);
@@ -2557,31 +2515,6 @@ static int iFlatTreeSetTitleFontAttrib(Ihandle* ih, int id, const char* value)
     iFlatTreeRebuildCache(ih);
     iFlatTreeUpdateScrollBar(ih);
   }
-
-  return 0;
-}
-
-static int iTreeSetTitleFontStyleAttrib(Ihandle* ih, int id, const char* value)
-{
-  int size = 0;
-  int is_bold = 0,
-    is_italic = 0,
-    is_underline = 0,
-    is_strikeout = 0;
-  char typeface[1024];
-  char* font;
-
-  if (!value)
-    return 0;
-
-  font = IupGetAttributeId(ih, "TITLEFONT", id);
-  if (!font)
-    font = IupGetAttribute(ih, "FONT");
-
-  if (!iupGetFontInfo(font, typeface, &size, &is_bold, &is_italic, &is_underline, &is_strikeout))
-    return 0;
-
-  IupSetfAttributeId(ih, "TITLEFONT", id, "%s, %s %d", typeface, value, size);
 
   return 0;
 }
@@ -3645,7 +3578,7 @@ static int iFlatTreeCreateMethod(Ihandle* ih, void** params)
   //IupSetCallback(ih, "BUTTON_CB", (Icallback)iFlatTreeButton_CB);
   //IupSetCallback(ih, "MOTION_CB", (Icallback)iFlatTreeMotion_CB);
   //IupSetCallback(ih, "RESIZE_CB", (Icallback)iFlatTreeResize_CB);
-  //IupSetCallback(ih, "FOCUS_CB", (Icallback)iFlatTreeFocus_CB);
+  IupSetCallback(ih, "FOCUS_CB", (Icallback)iFlatTreeFocus_CB);
   //IupSetCallback(ih, "K_CR", (Icallback)iFlatTreeKCr_CB);
   //IupSetCallback(ih, "K_UP", (Icallback)iFlatTreeKUp_CB);
   //IupSetCallback(ih, "K_DOWN", (Icallback)iFlatTreeKDown_CB);
@@ -3711,7 +3644,7 @@ Iclass* iupFlatTreeNewClass(void)
 
   /* General Attributes */
 
-  iupClassRegisterAttribute(ic, "ADDEXPANDED", NULL, NULL, "YES", NULL, IUPAF_NOT_MAPPED | IUPAF_NO_INHERIT);
+  iupClassRegisterAttribute(ic, "ADDEXPANDED", iFlatTreeGetAddExpandedAttrib, iFlatTreeSetAddExpandedAttrib, "YES", NULL, IUPAF_NOT_MAPPED | IUPAF_NO_INHERIT);
   iupClassRegisterAttribute(ic, "ADDROOT", NULL, NULL, IUPAF_SAMEASSYSTEM, "YES", IUPAF_NO_INHERIT | IUPAF_NOT_MAPPED);
   iupClassRegisterAttribute(ic, "FGCOLOR", NULL, iFlatTreeSetAttribPostRedraw, IUP_FLAT_FORECOLOR, NULL, IUPAF_NOT_MAPPED);  /* force the new default value */
   iupClassRegisterAttribute(ic, "BGCOLOR", NULL, iFlatTreeSetAttribPostRedraw, IUP_FLAT_BACKCOLOR, NULL, IUPAF_NOT_MAPPED);  /* force the new default value */
