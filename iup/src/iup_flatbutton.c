@@ -601,7 +601,7 @@ static int iFlatButtonCreateMethod(Ihandle* ih, void** params)
   /* internal callbacks */
   IupSetCallback(ih, "ACTION", (Icallback)iFlatButtonRedraw_CB);
   IupSetCallback(ih, "BUTTON_CB", (Icallback)iFlatButtonButton_CB);
-//  IupSetCallback(ih, "MOTION_CB", (Icallback)iFlatButtonMotion_CB);
+  IupSetCallback(ih, "MOTION_CB", (Icallback)iFlatButtonMotion_CB);
   IupSetCallback(ih, "FOCUS_CB", (Icallback)iFlatButtonFocus_CB);
   IupSetCallback(ih, "LEAVEWINDOW_CB", iFlatButtonLeaveWindow_CB);
   IupSetCallback(ih, "ENTERWINDOW_CB", iFlatButtonEnterWindow_CB);
