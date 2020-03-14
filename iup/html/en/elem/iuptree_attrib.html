@@ -299,10 +299,11 @@ specified node, where id is the specified node identifier. If id is empty or
 invalid, then 
 the focus node is used as reference node. Can be: YES or NO. Default: NO</p>
 <p><strong>MARKEDNODES</strong> (non inheritable): The selection state of all 
-nodes when MARKMODE=MULTIPLE. It is/accepts a sequence of '+' and '-' symbols 
+nodes. It is/accepts a sequence of '+' and '-' symbols 
 indicating the state of each node ('+'=selected, '-'=unselected. When setting 
 this value, if the number of specified symbols is smaller than the total count 
-then the remaining nodes will not be changed. (since 3.1)</p>
+then the remaining nodes will not be changed. Can be set only when 
+MARKMODE=MULTIPLE, can also be get when MARKMODE=SINGLE. (since 3.1)</p>
 <p><strong>MARKMODE</strong>: defines how the nodes can be 
 selected. Can be: 
 SINGLE or MULTIPLE. Default: SINGLE.</p>
