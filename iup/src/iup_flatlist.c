@@ -51,8 +51,9 @@ struct _IcontrolData
   int has_focus, focus_pos;
 
   /* attributes */
-  int horiz_padding, vert_padding;  /* button margin */
-  int spacing, icon_spacing, img_position;        /* used when both text and image are displayed */
+  int horiz_padding, vert_padding;  /* item internal margin */
+  int spacing, 
+    icon_spacing, img_position;        /* used when both text and image are displayed */
   int horiz_alignment, vert_alignment;
   int border_width;
   int is_multiple;
