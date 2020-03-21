@@ -81,21 +81,21 @@ struct _IcontrolData
   int dragover_pos, dragged_pos;
   //int last_clock, min_clock;
   int toggle_size;
-  int expander_size;
+  int button_size;
 
   /* attributes */
   int add_expanded;
-  int indentation;   /* horizontal spacing between one depth and the next */
+  int indentation;   /* horizontal space between one depth and the next */
   int show_rename;
   int icon_spacing;  /* distance between image and text */
-  int spacing;
-  int horiz_alignment, vert_alignment;
+  int spacing;       /* vertical space between nodes */
   int border_width;
   int mark_mode, mark_start;
   int show_dragdrop;
   int last_add_node;
   int show_toggle;
   int auto_redraw;
+  int empty_toggle;
 };
 
 
@@ -1161,87 +1161,97 @@ static void iFlatTreeDrawToggle(Ihandle *ih, IdrawCanvas* dc, iFlatTreeNode *nod
   }
 }
 
-static int iFlatTreeDrawNodes(Ihandle *ih, IdrawCanvas* dc, iFlatTreeNode *node, int x, int y, const char *fg_color, const char *bg_color, int make_inactive, int active,
-                              int text_flags, const char *font, int focus_feedback, int width, int border_width, int *pos)
+static int iFlatTreeDrawNodes(Ihandle *ih, IdrawCanvas* dc, iFlatTreeNode *node, int x, int y, const char *fg_color, const char *bg_color, long line_color, int make_inactive, int active,
+                              int text_flags, const char *font, int focus_feedback, int hide_lines, int *pos)
 {
   int node_x = x + (node->depth * ih->data->indentation);
   int node_y = y;
 
-  /* TODO optimize not drawing non visible nodes */
-
   while (node)
   {
-    char *fore_color = (node->fg_color) ? node->fg_color : fg_color;
-    char *back_color = (node->bg_color) ? node->bg_color : bg_color;
-    int node_h = node->height,
-        title_x, image_gap = 0, toggle_gap = 0;
-    const char *image = iFlatTreeGetNodeImage(ih, node, 1);
-
-    iupImageGetInfo(image, &image_gap, NULL, NULL);
-    image_gap += ih->data->icon_spacing;
+    int node_h = node->height;
 
     /* guidelines */
-    if (node->depth != 0)
+    if (node->depth != 0 && !hide_lines)
     {
       int px1 = (node_x - (ih->data->indentation / 2)) + 1;
       int py1 = node_y + node_h / 2;
       int px2 = node_x;
       int py2 = py1;  /* horizontal line */
-      iupdrvDrawLine(dc, px1, py1, px2, py2, iupDrawColor(0, 0, 0, 255), IUP_DRAW_STROKE_DOT, 1);
+      if (py1 > 0 && py1 < ih->currentheight)
+        iupdrvDrawLine(dc, px1, py1, px2, py2, line_color, IUP_DRAW_STROKE_DOT, 1);
 
       if (!node->brother)
       {
         px1 = node_x - (ih->data->indentation / 2);
-        py1 = y;
+        py1 = y - ih->data->spacing;
         px2 = px1;   /* vertical line */
         py2 = node_y + node_h / 2;
-        iupdrvDrawLine(dc, px1, py1, px2, py2, iupDrawColor(0, 0, 0, 255), IUP_DRAW_STROKE_DOT, 1);
+        if ((py1 > 0 && py1 < ih->currentheight) || (py2 > 0 && py2 < ih->currentheight))
+          iupdrvDrawLine(dc, px1, py1, px2, py2, line_color, IUP_DRAW_STROKE_DOT, 1);
       }
     }
 
-    /* toggle */
-    if (ih->data->show_toggle && node->toggle_visible)
+    if (node_y + node_h > 0 && node_y < ih->currentheight)
     {
-      iFlatTreeDrawToggle(ih, dc, node, node_x, node_y, node_h, fg_color, bg_color, active);
-      toggle_gap = ih->data->toggle_size;
+      int toggle_gap = 0;
+      int title_x, image_gap = 0;
+      char *fore_color = (node->fg_color) ? node->fg_color : fg_color;
+      char *back_color = (node->bg_color) ? node->bg_color : bg_color;
+      const char *image = iFlatTreeGetNodeImage(ih, node, 1);
+
+      iupImageGetInfo(image, &image_gap, NULL, NULL);
+      image_gap += ih->data->icon_spacing;
+
+      /* toggle */
+      if (ih->data->show_toggle)
+      {
+        if (node->toggle_visible)
+        {
+          iFlatTreeDrawToggle(ih, dc, node, node_x, node_y, node_h, fg_color, bg_color, active);
+          toggle_gap = ih->data->toggle_size;
+        }
+        else if (ih->data->empty_toggle)
+          toggle_gap = ih->data->toggle_size;
+      }
+
+      /* image */
+      iupFlatDrawIcon(ih, dc, node_x + toggle_gap, node_y, image_gap - ih->data->icon_spacing, node_h,
+                      IUP_IMGPOS_LEFT, ih->data->icon_spacing, IUP_ALIGN_ALEFT, IUP_ALIGN_ACENTER, 0, 0,
+                      image, make_inactive, NULL, 0, 0, fore_color, back_color, active);
+
+      title_x = node_x + toggle_gap + image_gap;
+
+      /* title background */
+      iupFlatDrawBox(dc, title_x, title_x + node->title_width - 1, node_y, node_y + node_h - 1, back_color, back_color, 1);
+
+      /* title */
+      iFlatTreeSetNodeDrawFont(ih, node, font);
+      iupFlatDrawIcon(ih, dc, title_x, node_y, node->title_width, node_h,
+                      IUP_IMGPOS_LEFT, ih->data->icon_spacing, IUP_ALIGN_ALEFT, IUP_ALIGN_ACENTER, 0, 0,
+                      NULL, make_inactive, node->title, text_flags, 0, fore_color, back_color, active);
+
+      /* title selection */
+      if (node->selected || ih->data->dragover_pos == *pos)
+      {
+        unsigned char red, green, blue;
+        char* hlcolor = iupAttribGetStr(ih, "HLCOLOR");
+        unsigned char alpha = (unsigned char)iupAttribGetInt(ih, "HLCOLORALPHA");
+        long selcolor;
+
+        if (ih->data->dragover_pos == *pos)
+          alpha = (2 * alpha) / 3;
+
+        iupStrToRGB(hlcolor, &red, &green, &blue);
+        selcolor = iupDrawColor(red, green, blue, alpha);
+
+        iupdrvDrawRectangle(dc, title_x, node_y, title_x + node->title_width - 1, node_y + node_h - 1, selcolor, IUP_DRAW_FILL, 1);
+      }
+
+      /* title focus */
+      if (ih->data->has_focus && ih->data->focus_id == node->id && focus_feedback)
+        iupdrvDrawFocusRect(dc, title_x, node_y, title_x + node->title_width - 1, node_y + node_h - 1);
     }
-
-    /* image */
-    iupFlatDrawIcon(ih, dc, node_x + toggle_gap, node_y, image_gap - ih->data->icon_spacing, node_h,
-                    IUP_IMGPOS_LEFT, ih->data->icon_spacing, IUP_ALIGN_ALEFT, IUP_ALIGN_ACENTER, 0, 0,
-                    image, make_inactive, NULL, 0, 0, fore_color, back_color, active);
-
-    title_x = node_x + toggle_gap + image_gap;
-
-    /* title background */
-    iupFlatDrawBox(dc, title_x, title_x + node->title_width - 1, node_y, node_y + node_h - 1, back_color, back_color, 1);
-
-    /* title */
-    iFlatTreeSetNodeDrawFont(ih, node, font);
-    iupFlatDrawIcon(ih, dc, title_x, node_y, node->title_width, node_h,
-                    IUP_IMGPOS_LEFT, ih->data->icon_spacing, IUP_ALIGN_ALEFT, IUP_ALIGN_ACENTER, 0, 0,
-                    NULL, make_inactive, node->title, text_flags, 0, fore_color, back_color, active);
-
-    /* title selection */
-    if (node->selected || ih->data->dragover_pos == *pos)
-    {
-      unsigned char red, green, blue;
-      char* hlcolor = iupAttribGetStr(ih, "HLCOLOR");
-      unsigned char alpha = (unsigned char)iupAttribGetInt(ih, "HLCOLORALPHA");
-      long selcolor;
-
-      if (ih->data->dragover_pos == *pos)
-        alpha = (2 * alpha) / 3;
-
-      iupStrToRGB(hlcolor, &red, &green, &blue);
-      selcolor = iupDrawColor(red, green, blue, alpha);
-
-      iupdrvDrawRectangle(dc, title_x, node_y, title_x + node->title_width - 1, node_y + node_h - 1, selcolor, IUP_DRAW_FILL, 1);
-    }
-
-    /* title focus */
-    if (ih->data->has_focus && ih->data->focus_id == node->id && focus_feedback)
-      iupdrvDrawFocusRect(dc, title_x, node_y, title_x + node->title_width - 1, node_y + node_h - 1);
 
     /* next node */
 
@@ -1250,7 +1260,8 @@ static int iFlatTreeDrawNodes(Ihandle *ih, IdrawCanvas* dc, iFlatTreeNode *node,
     (*pos)++;
 
     if (node->kind == IFLATTREE_BRANCH && node->state == IFLATTREE_EXPANDED && node->first_child)
-      node_y = iFlatTreeDrawNodes(ih, dc, node->first_child, x, node_y, fg_color, bg_color, make_inactive, active, text_flags, font, focus_feedback, width, border_width, pos);
+      node_y = iFlatTreeDrawNodes(ih, dc, node->first_child, x, node_y, fg_color, bg_color, line_color, make_inactive, active, 
+                                  text_flags, font, focus_feedback, hide_lines, pos);
 
     node = node->brother;
   }
@@ -1268,8 +1279,8 @@ static int iFlatTreeDrawExpander(Ihandle *ih, IdrawCanvas* dc, iFlatTreeNode *no
       int px, py;
       char *exp = (node->state == IFLATTREE_EXPANDED) ? "IMGMINUS" : "IMGPLUS";
 
-      py = y + ((node->height - ih->data->expander_size) / 2);
-      px = x + ((node->depth - 1) * ih->data->indentation) + 1 + ((ih->data->indentation - ih->data->expander_size) / 2);
+      py = y + ((node->height - ih->data->button_size) / 2);
+      px = x + ((node->depth - 1) * ih->data->indentation) + 1 + ((ih->data->indentation - ih->data->button_size) / 2);
 
       if (node->depth > 0)
         iupdrvDrawImage(dc, exp, 0, bgcolor, px, py, 0, 0);
@@ -1291,6 +1302,7 @@ static int iFlatTreeRedraw_CB(Ihandle* ih)
   const int text_flags = IUP_ALIGN_ALEFT;
   char* fg_color = iupAttribGetStr(ih, "FGCOLOR");
   char* bg_color = iupAttribGetStr(ih, "BGCOLOR");
+  long line_color = iupDrawStrToColor(iupAttribGetStr(ih, "LINECOLOR"), 0);
   int posx = IupGetInt(ih, "POSX");
   int posy = IupGetInt(ih, "POSY");
   char* back_image = iupAttribGet(ih, "BACKIMAGE");
@@ -1301,6 +1313,8 @@ static int iFlatTreeRedraw_CB(Ihandle* ih)
   iFlatTreeNode *node;
   int width, height, pos;
   char* font = IupGetAttribute(ih, "FONT");
+  int hide_lines = iupAttribGetBoolean(ih, "HIDELINES");
+  int hide_buttons = iupAttribGetBoolean(ih, "HIDEBUTTONS");
 
   IdrawCanvas* dc = iupdrvDrawCreateCanvas(ih);
 
@@ -1326,9 +1340,11 @@ static int iFlatTreeRedraw_CB(Ihandle* ih)
   node = ih->data->root_node->first_child;
   pos = 0;
 
-  iFlatTreeDrawNodes(ih, dc, node, x, y, fg_color, bg_color, make_inactive, active, text_flags, font, focus_feedback, width, border_width, &pos);
+  iFlatTreeDrawNodes(ih, dc, node, x, y, fg_color, bg_color, line_color, make_inactive, active, 
+                     text_flags, font, focus_feedback, hide_lines, &pos);
 
-  iFlatTreeDrawExpander(ih, dc, node, bg_color, x, y);
+  if (!hide_buttons)
+    iFlatTreeDrawExpander(ih, dc, node, bg_color, x, y);
 
   if (border_width)
   {
@@ -1592,15 +1608,15 @@ static int iFlatTreeRedraw_CB(Ihandle* ih)
 //static int iFlatTreeHitExpander(Ihandle *ih, int x, int y, int id, int depth)
 //{
 //  int h;
-//  int py = iFlatTreeConvertIdToY(ih, id, &h) + ((h - ih->data->expander_size) / 2);
-//  int px = ((depth - 1) * ih->data->indentation) + 1 + ((ih->data->indentation - ih->data->expander_size) / 2);
+//  int py = iFlatTreeConvertIdToY(ih, id, &h) + ((h - ih->data->button_size) / 2);
+//  int px = ((depth - 1) * ih->data->indentation) + 1 + ((ih->data->indentation - ih->data->button_size) / 2);
 //  int posx = IupGetInt(ih, "POSX");
 //  int posy = IupGetInt(ih, "POSY");
 
 //  x += posx - ih->data->border_width;
 //  y += posy - ih->data->border_width;
 
-//  if (x > px && x < px + ih->data->expander_size && y > py && y < py + ih->data->expander_size)
+//  if (x > px && x < px + ih->data->button_size && y > py && y < py + ih->data->button_size)
 //    return 1;
 
 //  return 0;
@@ -2172,10 +2188,18 @@ static int iFlatTreeResize_CB(Ihandle* ih, int width, int height)
 
 /*********************************  Attributes  ********************************/
 
-static void iFlatTreeRedraw(Ihandle* ih)
+static void iFlatTreeRedraw(Ihandle* ih, int calc_size, int update_scrollbar)
 {
   if (ih->data->auto_redraw)
+  {
+    if (calc_size)
+      iFlatTreeUpdateNodeSizeAll(ih);
+
+    if (update_scrollbar)
+      iFlatTreeUpdateScrollBar(ih);
+
     IupRedraw(ih, 0);
+  }
 }
 
 static char* iFlatTreeGetAutoRedrawAttrib(Ihandle* ih)
@@ -2186,10 +2210,26 @@ static char* iFlatTreeGetAutoRedrawAttrib(Ihandle* ih)
 static int iFlatTreeSetAutoRedrawAttrib(Ihandle* ih, const char* value)
 {
   if (iupStrBoolean(value))
+  {
     ih->data->auto_redraw = 1;
+
+    iFlatTreeRedraw(ih, 1, 1);
+  }
   else
     ih->data->auto_redraw = 0;
 
+  return 0;
+}
+
+static char* iFlatTreeGetEmptyToggleAttrib(Ihandle* ih)
+{
+  return iupStrReturnBoolean(ih->data->empty_toggle);
+}
+
+static int iFlatTreeSetEmptyToggleAttrib(Ihandle* ih, const char* value)
+{
+  ih->data->empty_toggle = iupStrBoolean(value);
+  iFlatTreeRedraw(ih, 1, 1);
   return 0;
 }
 
@@ -2216,9 +2256,7 @@ static char* iFlatTreeGetIndentationAttrib(Ihandle* ih)
 static int iFlatTreeSetIndentationAttrib(Ihandle* ih, const char* value)
 {
   iupStrToInt(value, &ih->data->indentation);
-  iFlatTreeUpdateNodeSizeAll(ih);
-  iFlatTreeUpdateScrollBar(ih);
-  iFlatTreeRedraw(ih);
+  iFlatTreeRedraw(ih, 1, 1);
   return 0;
 }
 
@@ -2244,24 +2282,44 @@ static int iFlatTreeSetShowToggleAttrib(Ihandle* ih, const char* value)
   else
     ih->data->show_toggle = 0;
 
-  iFlatTreeUpdateNodeSizeAll(ih);
-  iFlatTreeUpdateScrollBar(ih);
-  iFlatTreeRedraw(ih);
+  iFlatTreeRedraw(ih, 1, 1);
   return 0;
 }
 
 static int iFlatTreeSetSpacingAttrib(Ihandle* ih, const char* value)
 {
   iupStrToInt(value, &ih->data->spacing);
-  iFlatTreeUpdateNodeSizeAll(ih);
-  iFlatTreeUpdateScrollBar(ih);
-  iFlatTreeRedraw(ih);
+  iFlatTreeRedraw(ih, 1, 1);
   return 0;
 }
 
 static char* iFlatTreeGetSpacingAttrib(Ihandle* ih)
 {
   return iupStrReturnInt(ih->data->spacing);
+}
+
+static int iFlatTreeSetToggleSizeAttrib(Ihandle* ih, const char* value)
+{
+  iupStrToInt(value, &ih->data->toggle_size);
+  iFlatTreeRedraw(ih, 1, 1);
+  return 0;
+}
+
+static char* iFlatTreeGetToggleSizeAttrib(Ihandle* ih)
+{
+  return iupStrReturnInt(ih->data->toggle_size);
+}
+
+static int iFlatTreeSetButtonSizeAttrib(Ihandle* ih, const char* value)
+{
+  iupStrToInt(value, &ih->data->button_size);
+  iFlatTreeRedraw(ih, 1, 1);
+  return 0;
+}
+
+static char* iFlatTreeGetButtonSizeAttrib(Ihandle* ih)
+{
+  return iupStrReturnInt(ih->data->button_size);
 }
 
 static char* iFlatTreeGetHasFocusAttrib(Ihandle* ih)
@@ -2298,8 +2356,7 @@ static int iFlatTreeSetStateAttrib(Ihandle* ih, int id, const char* value)
   else /* "HORIZONTAL" */
     node->state = IFLATTREE_COLLAPSED;
 
-  iFlatTreeUpdateScrollBar(ih);
-  iFlatTreeRedraw(ih);
+  iFlatTreeRedraw(ih, 0, 1);  /* scrollbar update only */
   return 0;
 }
 
@@ -2394,8 +2451,7 @@ static int iFlatTreeSetTitleAttrib(Ihandle* ih, int id, const char* value)
   node->title = iupStrDup(value);
 
   iFlatTreeUpdateNodeSize(ih, node);
-  iFlatTreeUpdateScrollBar(ih);
-  iFlatTreeRedraw(ih);
+  iFlatTreeRedraw(ih, 0, 1);
   return 0;
 }
 
@@ -2419,8 +2475,7 @@ static int iFlatTreeSetTitleFontAttrib(Ihandle* ih, int id, const char* value)
   node->font = iupStrDup(value);
 
   iFlatTreeUpdateNodeSize(ih, node);
-  iFlatTreeUpdateScrollBar(ih);
-  iFlatTreeRedraw(ih);
+  iFlatTreeRedraw(ih, 0, 1);
   return 0;
 }
 
@@ -2550,7 +2605,7 @@ static int iFlatTreeSetToggleValueAttrib(Ihandle* ih, int id, const char* value)
   else
     node->toggle_value = 0;
 
-  iFlatTreeRedraw(ih);
+  iFlatTreeRedraw(ih, 0, 0);
   return 0;
 }
 
@@ -2582,8 +2637,7 @@ static int iFlatTreeSetToggleVisibleAttrib(Ihandle* ih, int id, const char* valu
   node->toggle_visible = iupStrBoolean(value);
 
   iFlatTreeUpdateNodeSize(ih, node);
-  iFlatTreeUpdateScrollBar(ih);
-  iFlatTreeRedraw(ih);
+  iFlatTreeRedraw(ih, 0, 1);
   return 0;
 }
 
@@ -2622,8 +2676,7 @@ static int iFlatTreeSetAddLeafAttrib(Ihandle* ih, int id, const char* value)
 {
   iFlatTreeAddNode(ih, id, IFLATTREE_LEAF, value);
 
-  iFlatTreeUpdateScrollBar(ih);
-  iFlatTreeRedraw(ih);
+  iFlatTreeRedraw(ih, 0, 1);
   return 0;
 }
 
@@ -2631,8 +2684,7 @@ static int iFlatTreeSetAddBranchAttrib(Ihandle* ih, int id, const char* value)
 {
   iFlatTreeAddNode(ih, id, IFLATTREE_BRANCH, value);
 
-  iFlatTreeUpdateScrollBar(ih);
-  iFlatTreeRedraw(ih);
+  iFlatTreeRedraw(ih, 0, 1);
   return 0;
 }
 
@@ -2640,8 +2692,7 @@ static int iFlatTreeSetInsertLeafAttrib(Ihandle* ih, int id, const char* value)
 {
   iFlatTreeInsertNode(ih, id, IFLATTREE_LEAF, value);
 
-  iFlatTreeUpdateScrollBar(ih);
-  iFlatTreeRedraw(ih);
+  iFlatTreeRedraw(ih, 0, 1);
   return 0;
 }
 
@@ -2649,8 +2700,7 @@ static int iFlatTreeSetInsertBranchAttrib(Ihandle* ih, int id, const char* value
 {
   iFlatTreeInsertNode(ih, id, IFLATTREE_BRANCH, value);
 
-  iFlatTreeUpdateScrollBar(ih);
-  iFlatTreeRedraw(ih);
+  iFlatTreeRedraw(ih, 0, 1);
   return 0;
 }
 
@@ -2733,10 +2783,7 @@ static int iFlatTreeSetDelNodeAttrib(Ihandle* ih, int id, const char* value)
   }
 
   if (update)
-  {
-    iFlatTreeUpdateScrollBar(ih);
-    iFlatTreeRedraw(ih);
-  }
+    iFlatTreeRedraw(ih, 0, 1);
 
   return 0;
 }
@@ -2755,8 +2802,7 @@ static int iFlatTreeSetExpandAllAttrib(Ihandle* ih, const char* value)
     nodes[i]->state = state;
   }
 
-  iFlatTreeUpdateScrollBar(ih);
-  iFlatTreeRedraw(ih);
+  iFlatTreeRedraw(ih, 0, 1);
   return 0;
 }
 
@@ -2767,8 +2813,7 @@ static int iFlatTreeSetMoveNodeAttrib(Ihandle* ih, int id, const char* value)
   {
     iFlatTreeMoveNode(ih, id, dstId);
 
-    iFlatTreeUpdateScrollBar(ih);
-    iFlatTreeRedraw(ih);
+    iFlatTreeRedraw(ih, 0, 1);
   }
 
   return 0;
@@ -2781,8 +2826,7 @@ static int iFlatTreeSetCopyNodeAttrib(Ihandle* ih, int id, const char* value)
   {
     iFlatTreeCopyNode(ih, id, dstId);
 
-    iFlatTreeUpdateScrollBar(ih);
-    iFlatTreeRedraw(ih);
+    iFlatTreeRedraw(ih, 0, 1);
   }
 
   return 0;
@@ -2828,7 +2872,7 @@ static int iFlatTreeSetCopyNodeAttrib(Ihandle* ih, int id, const char* value)
 //    iFlatTreeScrollFocusVisible(ih, direction);
 //  }
 //
-//  iFlatTreeRedraw(ih);
+//  iFlatTreeRedraw(ih, 0, 0);
 //  return 0;
 //}
 
@@ -2877,7 +2921,7 @@ static int iFlatTreeSetMarkAttrib(Ihandle* ih, const char* value)
     iFlatTreeSelectRange(ih, id1, id2);
   }
 
-  iFlatTreeRedraw(ih);
+  iFlatTreeRedraw(ih, 0, 0);
   return 0;
 }
 
@@ -2927,7 +2971,7 @@ static int iFlatTreeSetMarkedAttrib(Ihandle* ih, int id, const char* value)
     }
   }
 
-  iFlatTreeRedraw(ih);
+  iFlatTreeRedraw(ih, 0, 0);
   return 0;
 }
 
@@ -2973,7 +3017,7 @@ static int iFlatTreeSetMarkedNodesAttrib(Ihandle* ih, const char* value)
       nodes[i]->selected = 1;
   }
 
-  iFlatTreeRedraw(ih);
+  iFlatTreeRedraw(ih, 0, 0);
   return 0;
 }
 
@@ -2992,7 +3036,7 @@ static int iFlatTreeSetMarkModeAttrib(Ihandle* ih, const char* value)
   else
     ih->data->mark_mode = IFLATTREE_MARK_SINGLE;
 
-  iFlatTreeRedraw(ih);
+  iFlatTreeRedraw(ih, 0, 0);
   return 0;
 }
 
@@ -3007,8 +3051,7 @@ static int iFlatTreeSetImageAttrib(Ihandle* ih, int id, const char* value)
   node->image = iupStrDup(value);
 
   iFlatTreeUpdateNodeSize(ih, node);
-  iFlatTreeUpdateScrollBar(ih);
-  iFlatTreeRedraw(ih);
+  iFlatTreeRedraw(ih, 0, 1);
   return 0;
 }
 
@@ -3031,8 +3074,7 @@ static int iFlatTreeSetImageExpandedAttrib(Ihandle* ih, int id, const char* valu
     free(node->image_expanded);
   node->image_expanded = iupStrDup(value);
 
-  iFlatTreeUpdateScrollBar(ih);
-  iFlatTreeRedraw(ih);
+  iFlatTreeRedraw(ih, 0, 1);
   return 0;
 }
 
@@ -3096,9 +3138,7 @@ static int iFlatTreeSetDragDropTreeAttrib(Ihandle* ih, const char* value)
 static int iFlatTreeSetIconSpacingAttrib(Ihandle* ih, const char* value)
 {
   iupStrToInt(value, &ih->data->icon_spacing);
-  iFlatTreeUpdateNodeSizeAll(ih);
-  iFlatTreeUpdateScrollBar(ih);
-  iFlatTreeRedraw(ih);
+  iFlatTreeRedraw(ih, 1, 1);
   return 0;
 }
 
@@ -3207,7 +3247,7 @@ static int iFlatTreeSetColorAttrib(Ihandle* ih, int id, const char* value)
     free(node->fg_color);
   node->fg_color = iupStrDup(value);
 
-  iFlatTreeRedraw(ih);
+  iFlatTreeRedraw(ih, 0, 0);
   return 0;
 }
 
@@ -3230,7 +3270,7 @@ static int iFlatTreeSetBackColorAttrib(Ihandle* ih, int id, const char* value)
     free(node->bg_color);
   node->bg_color = iupStrDup(value);
 
-  iFlatTreeRedraw(ih);
+  iFlatTreeRedraw(ih, 0, 0);
   return 0;
 }
 
@@ -3248,7 +3288,7 @@ static int iFlatTreeSetTopItemAttrib(Ihandle* ih, const char* value)
 //    posy = iFlatTreeConvertIdToY(ih, id, NULL);
     IupSetInt(ih, "POSY", posy);
 
-    iFlatTreeRedraw(ih);
+    iFlatTreeRedraw(ih, 0, 0);
   }
   return 0;
 }
@@ -3297,8 +3337,7 @@ static int iFlatTreeSetFlatScrollbarAttrib(Ihandle* ih, const char* value)
 static int iFlatTreeSetBorderWidthAttrib(Ihandle* ih, const char* value)
 {
   iupStrToInt(value, &ih->data->border_width);
-  iFlatTreeUpdateScrollBar(ih);
-  iFlatTreeRedraw(ih);
+  iFlatTreeRedraw(ih, 0, 1);
   return 0;
 }
 
@@ -3310,9 +3349,32 @@ static char* iFlatTreeGetBorderWidthAttrib(Ihandle *ih)
 static int iFlatTreeSetAttribPostRedraw(Ihandle* ih, const char* value)
 {
   (void)value;
-  IupUpdate(ih);
+  if (ih->data->auto_redraw)
+    IupUpdate(ih); /* redraw after the atribute is saved on the hash table */
   return 1;
 }
+
+static int iFlatTreeSetImageLeafAttrib(Ihandle* ih, const char* value)
+{
+  if (ih->data->auto_redraw)
+  {
+    iupAttribSetStr(ih, "IMAGELEAF", value);  /* pre-save to be able to calculate size before redraw */
+    iFlatTreeRedraw(ih, 1, 1);
+  }
+
+  return 1;
+}
+
+ static int iFlatTreeSetImageBranchCollapsedAttrib(Ihandle* ih, const char* value)
+ {
+   if (ih->data->auto_redraw)
+   {
+     iupAttribSetStr(ih, "IMAGEBRANCHCOLLAPSED", value);
+     iFlatTreeRedraw(ih, 1, 1);
+   }
+
+   return 1;
+ }
 
 
 /*********************************  Methods  ************************************/
@@ -3374,7 +3436,7 @@ static int iFlatTreeCreateMethod(Ihandle* ih, void** params)
   ih->data->indentation = (iupRound(iupdrvGetScreenDpi()) > 120) ? 24 : 16;
   ih->data->toggle_size = ih->data->indentation;
   ih->data->dragover_pos = -1;
-  ih->data->expander_size = 9;
+  ih->data->button_size = 9;
  // ih->data->min_clock = 500;
 
   ih->data->root_node = (iFlatTreeNode*)malloc(sizeof(iFlatTreeNode));
@@ -3455,20 +3517,26 @@ Iclass* iupFlatTreeNewClass(void)
   /* General Attributes */
 
   iupClassRegisterAttribute(ic, "ADDEXPANDED", iFlatTreeGetAddExpandedAttrib, iFlatTreeSetAddExpandedAttrib, "YES", NULL, IUPAF_NOT_MAPPED | IUPAF_NO_INHERIT);
-  iupClassRegisterAttribute(ic, "FGCOLOR", NULL, iFlatTreeSetAttribPostRedraw, IUP_FLAT_FORECOLOR, NULL, IUPAF_NOT_MAPPED);  /* force the new default value */
-  iupClassRegisterAttribute(ic, "BGCOLOR", NULL, iFlatTreeSetAttribPostRedraw, IUP_FLAT_BACKCOLOR, NULL, IUPAF_NOT_MAPPED);  /* force the new default value */
-  iupClassRegisterAttribute(ic, "HLCOLOR", NULL, NULL, IUPAF_SAMEASSYSTEM, "TXTHLCOLOR", IUPAF_NOT_MAPPED | IUPAF_NO_INHERIT);
-  iupClassRegisterAttribute(ic, "HLCOLORALPHA", NULL, NULL, IUPAF_SAMEASSYSTEM, "128", IUPAF_NOT_MAPPED | IUPAF_NO_INHERIT);
+  iupClassRegisterAttribute(ic, "FGCOLOR", NULL, iFlatTreeSetAttribPostRedraw, IUPAF_SAMEASSYSTEM, IUP_FLAT_FORECOLOR, IUPAF_NOT_MAPPED);
+  iupClassRegisterAttribute(ic, "BGCOLOR", NULL, iFlatTreeSetAttribPostRedraw, IUPAF_SAMEASSYSTEM, IUP_FLAT_BACKCOLOR, IUPAF_NOT_MAPPED);
+  iupClassRegisterAttribute(ic, "HLCOLOR", NULL, NULL, IUPAF_SAMEASSYSTEM, "TXTHLCOLOR", IUPAF_NO_INHERIT);
+  iupClassRegisterAttribute(ic, "HLCOLORALPHA", NULL, NULL, IUPAF_SAMEASSYSTEM, "128", IUPAF_NO_INHERIT);
+  iupClassRegisterAttribute(ic, "LINECOLOR", NULL, iFlatTreeSetAttribPostRedraw, IUPAF_SAMEASSYSTEM, IUP_FLAT_FORECOLOR, IUPAF_NOT_MAPPED);
   iupClassRegisterAttribute(ic, "INDENTATION", iFlatTreeGetIndentationAttrib, iFlatTreeSetIndentationAttrib, NULL, NULL, IUPAF_NOT_MAPPED | IUPAF_NO_INHERIT);
   iupClassRegisterAttribute(ic, "SHOWTOGGLE", iFlatTreeGetShowToggleAttrib, iFlatTreeSetShowToggleAttrib, NULL, NULL, IUPAF_NOT_MAPPED | IUPAF_NO_INHERIT);
   iupClassRegisterAttribute(ic, "SPACING", iFlatTreeGetSpacingAttrib, iFlatTreeSetSpacingAttrib, IUPAF_SAMEASSYSTEM, "0", IUPAF_NO_INHERIT | IUPAF_NOT_MAPPED);
+  iupClassRegisterAttribute(ic, "TOGGLESIZE", iFlatTreeGetToggleSizeAttrib, iFlatTreeSetToggleSizeAttrib, NULL, NULL, IUPAF_NO_INHERIT | IUPAF_NOT_MAPPED);
+  iupClassRegisterAttribute(ic, "BUTTONSIZE", iFlatTreeGetButtonSizeAttrib, iFlatTreeSetButtonSizeAttrib, NULL, NULL, IUPAF_NO_INHERIT | IUPAF_NOT_MAPPED);
+  iupClassRegisterAttribute(ic, "EMPTYTOGGLE", iFlatTreeGetEmptyToggleAttrib, iFlatTreeSetEmptyToggleAttrib, NULL, NULL, IUPAF_NO_INHERIT | IUPAF_NOT_MAPPED);
   iupClassRegisterAttribute(ic, "SHOWRENAME", iFlatTreeGetShowRenameAttrib, iFlatTreeSetShowRenameAttrib, NULL, NULL, IUPAF_NOT_MAPPED | IUPAF_NO_INHERIT);
   iupClassRegisterAttribute(ic, "AUTOREDRAW", iFlatTreeGetAutoRedrawAttrib, iFlatTreeSetAutoRedrawAttrib, IUPAF_SAMEASSYSTEM, "Yes", IUPAF_NOT_MAPPED | IUPAF_WRITEONLY | IUPAF_NO_INHERIT);
-  iupClassRegisterAttribute(ic, "BORDERCOLOR", NULL, NULL, IUPAF_SAMEASSYSTEM, IUP_FLAT_BORDERCOLOR, IUPAF_NOT_MAPPED | IUPAF_DEFAULT);  /* inheritable */
+  iupClassRegisterAttribute(ic, "BORDERCOLOR", NULL, iFlatTreeSetAttribPostRedraw, IUPAF_SAMEASSYSTEM, IUP_FLAT_BORDERCOLOR, IUPAF_NOT_MAPPED | IUPAF_DEFAULT);  /* inheritable */
   iupClassRegisterAttribute(ic, "BORDERWIDTH", iFlatTreeGetBorderWidthAttrib, iFlatTreeSetBorderWidthAttrib, IUPAF_SAMEASSYSTEM, "0", IUPAF_NOT_MAPPED);  /* inheritable */
   iupClassRegisterAttribute(ic, "ICONSPACING", iFlatTreeGetIconSpacingAttrib, iFlatTreeSetIconSpacingAttrib, IUPAF_SAMEASSYSTEM, "2", IUPAF_NOT_MAPPED | IUPAF_NO_INHERIT);
-  iupClassRegisterAttribute(ic, "VISIBLECOLUMNS", NULL, NULL, NULL, NULL, IUPAF_NOT_MAPPED | IUPAF_NO_INHERIT);
-  iupClassRegisterAttribute(ic, "VISIBLELINES", NULL, NULL, "5", NULL, IUPAF_NOT_MAPPED | IUPAF_NO_INHERIT);
+  iupClassRegisterAttribute(ic, "VISIBLECOLUMNS", NULL, NULL, NULL, NULL, IUPAF_NO_INHERIT);
+  iupClassRegisterAttribute(ic, "VISIBLELINES", NULL, NULL, "5", NULL, IUPAF_NO_INHERIT);
+  iupClassRegisterAttribute(ic, "HIDELINES", NULL, NULL, NULL, NULL, IUPAF_NO_INHERIT);
+  iupClassRegisterAttribute(ic, "HIDEBUTTONS", NULL, NULL, NULL, NULL, IUPAF_NO_INHERIT);
 
   /* IupTree Attributes - ACTION */
   iupClassRegisterAttribute(ic, "TOPITEM", NULL, iFlatTreeSetTopItemAttrib, NULL, NULL, IUPAF_NOT_MAPPED | IUPAF_WRITEONLY | IUPAF_NO_INHERIT);
@@ -3502,9 +3570,9 @@ Iclass* iupFlatTreeNewClass(void)
   iupClassRegisterAttributeId(ic, "IMAGEEXPANDED", iFlatTreeGetImageExpandedAttrib, iFlatTreeSetImageExpandedAttrib, IUPAF_IHANDLENAME | IUPAF_NOT_MAPPED | IUPAF_NO_INHERIT);
 
   /* IupFlatTree Attributes - IMAGES */
-
-  iupClassRegisterAttribute(ic, "IMAGELEAF", NULL, iFlatTreeSetAttribPostRedraw, IUPAF_SAMEASSYSTEM, "IMGLEAF", IUPAF_NOT_MAPPED | IUPAF_IHANDLENAME | IUPAF_NO_INHERIT);
-  iupClassRegisterAttribute(ic, "IMAGEBRANCHCOLLAPSED", NULL, iFlatTreeSetAttribPostRedraw, IUPAF_SAMEASSYSTEM, "IMGCOLLAPSED", IUPAF_NOT_MAPPED | IUPAF_IHANDLENAME | IUPAF_NO_INHERIT);
+  
+  iupClassRegisterAttribute(ic, "IMAGELEAF", NULL, iFlatTreeSetImageLeafAttrib, IUPAF_SAMEASSYSTEM, "IMGLEAF", IUPAF_NOT_MAPPED | IUPAF_IHANDLENAME | IUPAF_NO_INHERIT);
+  iupClassRegisterAttribute(ic, "IMAGEBRANCHCOLLAPSED", NULL, iFlatTreeSetImageBranchCollapsedAttrib, IUPAF_SAMEASSYSTEM, "IMGCOLLAPSED", IUPAF_NOT_MAPPED | IUPAF_IHANDLENAME | IUPAF_NO_INHERIT);
   iupClassRegisterAttribute(ic, "IMAGEBRANCHEXPANDED", NULL, iFlatTreeSetAttribPostRedraw, IUPAF_SAMEASSYSTEM, "IMGEXPANDED", IUPAF_NOT_MAPPED | IUPAF_IHANDLENAME | IUPAF_NO_INHERIT);
   iupClassRegisterAttribute(ic, "BACKIMAGE", NULL, iFlatTreeSetAttribPostRedraw, NULL, NULL, IUPAF_NOT_MAPPED | IUPAF_IHANDLENAME | IUPAF_NO_DEFAULTVALUE | IUPAF_NO_INHERIT);
   iupClassRegisterAttribute(ic, "BACKIMAGEZOOM", NULL, iFlatTreeSetAttribPostRedraw, NULL, NULL, IUPAF_NO_INHERIT);
@@ -3554,16 +3622,12 @@ Iclass* iupFlatTreeNewClass(void)
 
 /* TODO:
   doc - ADDROOT is always NO
+        SPACING not 2x
+        EMPTYTOGGLE==EMPTYAS3STATE
   ----------------------
   DROPEQUALDRAG ??
-  EMPTYTOGGLE - EMPTYAS3STATE equivalent
   _IUP_XY2POS_CB
   ----------------------
-  TOGGLESIZE
-  EXPANDERSIZE
-  SHOWLINES / HIDELINES
-  SHOWEXPANDER / HIDEBUTTONS
-  LINECOLOR
   NODETIP
   NODEACTIVE
   NODEVISIBLE
