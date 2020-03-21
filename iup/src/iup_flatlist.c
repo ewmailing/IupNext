@@ -351,8 +351,8 @@ static int iFlatListRedraw_CB(Ihandle* ih)
   {
     char* bordercolor = iupAttribGetStr(ih, "BORDERCOLOR");
     iupFlatDrawBorder(dc, 0, width - 1,
-                      0, height - 1,
-                      border_width, bordercolor, background_color, active);
+                          0, height - 1,
+                          border_width, bordercolor, background_color, active);
   }
 
   iupdrvDrawFlush(dc);

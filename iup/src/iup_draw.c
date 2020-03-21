@@ -775,7 +775,7 @@ IUP_SDK_API void iupFlatDrawGetIconSize(Ihandle* ih, int img_position, int spaci
   /* leave room for focus feedback */
   if (ih->iclass->is_interactive && iupAttribGetBoolean(ih, "CANFOCUS") && iupAttribGetBoolean(ih, "FOCUSFEEDBACK"))
   {
-    *w += 2 * 2;
+    *w += 2 * 2;  /* space between focus rect and contents */
     *h += 2 * 2;
   }
 }
