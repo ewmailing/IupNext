@@ -852,7 +852,7 @@ static Ihandle *init_tree(void)
   //  IupSetAttribute(tree, "MARKMODE",     "MULTIPLE");
   IupSetAttribute(tree, "SHOWRENAME", "YES");
   IupSetAttribute(tree, "SHOWDRAGDROP", "YES");
-  //IupSetAttribute(tree, "SHOWTOGGLE", "YES");
+  IupSetAttribute(tree, "SHOWTOGGLE", "YES");
 //  IupSetAttribute(tree, "MARKWHENTOGGLE", "YES");
 //  IupSetAttribute(tree, "SHOWTOGGLE", "3STATE");
   //  IupSetAttribute(tree, "DROPEQUALDRAG", "YES");
@@ -917,7 +917,7 @@ static void init_dlg_2(void)
   Ihandle* tree = init_tree_2();
   Ihandle* box = IupHbox(tree, NULL);
   Ihandle* dlg = IupDialog(box);
-  IupSetAttribute(dlg, "TITLE", "IupTree");
+  IupSetAttribute(dlg, "TITLE", "IupFlatTree");
   IupSetAttribute(dlg, "SIZE", "400x400");
   IupSetAttribute(box, "MARGIN", "10x10");
   IupSetAttribute(box, "GAP", "10");

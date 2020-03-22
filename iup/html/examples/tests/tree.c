@@ -620,7 +620,7 @@ static void init_tree(void)
 //  IupSetAttribute(tree, "MARKMODE",     "MULTIPLE");
   IupSetAttribute(tree, "SHOWRENAME",   "YES");
   IupSetAttribute(tree, "SHOWDRAGDROP", "YES");  /* internal D&D */
-//  IupSetAttribute(tree, "SHOWTOGGLE",   "YES");
+  IupSetAttribute(tree, "SHOWTOGGLE",   "YES");
 //  IupSetAttribute(tree, "MARKWHENTOGGLE", "YES");
   //  IupSetAttribute(tree, "SHOWTOGGLE",   "3STATE");
 //  IupSetAttribute(tree, "DROPEQUALDRAG", "YES");
