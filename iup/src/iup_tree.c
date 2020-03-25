@@ -639,7 +639,7 @@ static int iTreeSetUserDataAttrib(Ihandle* ih, int id, const char* value)
 
 static int iTreeDropData_CB(Ihandle *ih, char* type, void* data, int len, int x, int y)
 {
-  int pos = IupConvertXYToPos(ih, x, y);
+  int id = IupConvertXYToPos(ih, x, y);
   int is_ctrl = 0;
   char key[5];
 
@@ -659,14 +659,14 @@ static int iTreeDropData_CB(Ihandle *ih, char* type, void* data, int len, int x,
 
   if(ih_source->data->mark_mode == ITREE_MARK_SINGLE)
   {
-    int srcPos = iupAttribGetInt(ih_source, "_IUP_TREE_SOURCEPOS");
+    int src_id = iupAttribGetInt(ih_source, "_IUP_TREE_SOURCEID");
     InodeHandle *itemDst, *itemSrc;
 
-    itemSrc = iupTreeGetNode(ih_source, srcPos);
+    itemSrc = iupTreeGetNode(ih_source, src_id);
     if (!itemSrc)
       return IUP_DEFAULT;
 
-    itemDst = iupTreeGetNode(ih, pos);
+    itemDst = iupTreeGetNode(ih, id);
     if (!itemDst)
       return IUP_DEFAULT;
 
@@ -683,14 +683,14 @@ static int iTreeDropData_CB(Ihandle *ih, char* type, void* data, int len, int x,
 
 static int iTreeDragData_CB(Ihandle *ih, char* type, void *data, int len)
 {
-  int pos = iupAttribGetInt(ih, "_IUP_TREE_SOURCEPOS");
-  if (pos < 1)
+  int id = iupAttribGetInt(ih, "_IUP_TREE_SOURCEID");
+  if (id < 0)
     return IUP_DEFAULT;
 
   if(ih->data->mark_mode == ITREE_MARK_SINGLE)
   {
     /* Single selection */
-    IupSetAttributeId(ih, "MARKED", pos, "YES");
+    IupSetAttributeId(ih, "MARKED", id, "YES");
   }
 
   /* Copy source handle */
@@ -709,15 +709,15 @@ static int iTreeDragDataSize_CB(Ihandle* ih, char* type)
 
 static int iTreeDragEnd_CB(Ihandle *ih, int del)
 {
-  iupAttribSetInt(ih, "_IUP_TREE_SOURCEPOS", 0);
+  iupAttribSetInt(ih, "_IUP_TREE_SOURCEID", -1);
   (void)del;
   return IUP_DEFAULT;
 }
 
 static int iTreeDragBegin_CB(Ihandle* ih, int x, int y)
 {
-  int pos = IupConvertXYToPos(ih, x, y);
-  iupAttribSetInt(ih, "_IUP_TREE_SOURCEPOS", pos);
+  int id = IupConvertXYToPos(ih, x, y);
+  iupAttribSetInt(ih, "_IUP_TREE_SOURCEID", id);
   return IUP_DEFAULT;
 }
 
