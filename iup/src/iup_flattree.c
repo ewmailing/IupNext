@@ -58,7 +58,7 @@ typedef struct _iFlatTreeNode
   void* userdata;
 
   /* aux */
-  int id, depth, visible;
+  int id, depth, expanded;
   int height,  /* image+title height, does not includes spacing */
       width,   /* image+title width, includes also indentation and toggle_size*/
       title_width;
@@ -78,8 +78,8 @@ struct _IcontrolData
   /* aux */
   int has_focus, focus_id;
   //int last_selected_id;
-  int dragover_pos, dragged_pos;
-  //int last_clock, min_clock;
+  int dragover_id, dragged_id;  /* internal drag&drop */
+  int last_clock;
   int toggle_size;
   int button_size;
 
@@ -87,7 +87,7 @@ struct _IcontrolData
   int add_expanded;
   int indentation;   /* horizontal space between one depth and the next */
   int show_rename;
-  int icon_spacing;  /* distance between image and text */
+  int icon_spacing;  /* distance between image and title */
   int spacing;       /* vertical space between nodes */
   int border_width;
   int mark_mode, mark_start;
@@ -390,30 +390,30 @@ static char *iFlatTreeGetNodeImage(Ihandle* ih, iFlatTreeNode *node, int check_s
 /********************** Node Hierarchy **********************/
 
 
-static void iFlatTreeUpdateNodeChildVisibleRec(iFlatTreeNode *node)
+static void iFlatTreeUpdateNodeChildExpandedRec(iFlatTreeNode *node)
 {
-  int visible = node->parent->visible && node->parent->state == IFLATTREE_EXPANDED;
+  int expanded = node->parent->expanded && node->parent->state == IFLATTREE_EXPANDED;
 
   while (node)
   {
-    if (node->visible != visible)
+    if (node->expanded != expanded)
     {
-      node->visible = visible;
+      node->expanded = expanded;
 
       if (node->kind == IFLATTREE_BRANCH && node->first_child)
-        iFlatTreeUpdateNodeChildVisibleRec(node->first_child);
+        iFlatTreeUpdateNodeChildExpandedRec(node->first_child);
     }
 
     node = node->brother;
   }
 }
 
-static void iFlatTreeUpdateNodeVisible(iFlatTreeNode *node)
+static void iFlatTreeUpdateNodeExpanded(iFlatTreeNode *node)
 {
-  node->visible = node->parent->visible && node->parent->state == IFLATTREE_EXPANDED;
+  node->expanded = node->parent->expanded && node->parent->state == IFLATTREE_EXPANDED;
 
   if (node->kind == IFLATTREE_BRANCH && node->first_child)
-    iFlatTreeUpdateNodeChildVisibleRec(node->first_child);
+    iFlatTreeUpdateNodeChildExpandedRec(node->first_child);
 }
 
 static void iFlatTreeCalcNodeSize(Ihandle *ih, iFlatTreeNode *node, const char* font)
@@ -538,7 +538,7 @@ static iFlatTreeNode *iFlatTreeGetNodeFromString(Ihandle* ih, const char* name_i
   return iFlatTreeGetNode(ih, id);
 }
 
-static int iFlatTreeGetNextVisibleNodeId(Ihandle *ih, int id)
+static int iFlatTreeGetNextExpandedNodeId(Ihandle *ih, int id)
 {
   int count = iupArrayCount(ih->data->node_array);
   iFlatTreeNode **nodes = iupArrayGetData(ih->data->node_array);
@@ -546,47 +546,55 @@ static int iFlatTreeGetNextVisibleNodeId(Ihandle *ih, int id)
 
   for (i = id + 1; i < count; i++)
   {
-    if (nodes[i]->visible)
+    if (nodes[i]->expanded)
       return i;
   }
 
   return id;
 }
 
-static int iFlatTreeGetPreviousVisibleNodeId(Ihandle *ih, int id)
+static int iFlatTreeGetPreviousExpandedNodeId(Ihandle *ih, int id)
 {
   iFlatTreeNode **nodes = iupArrayGetData(ih->data->node_array);
   int i;
 
   for (i = id - 1; i >= 0; i--)
   {
-    if (nodes[i]->visible)
+    if (nodes[i]->expanded)
       return i;
   }
 
   return id;
 }
 
-static int iFlatTreeGetVisibleNodesRec(iFlatTreeNode *node)
+static int iFlatTreeGetLastExpandedNodeId(Ihandle *ih)
 {
-  int count = 0;
+  int count = iupArrayCount(ih->data->node_array);
+  iFlatTreeNode **nodes = iupArrayGetData(ih->data->node_array);
+  int i;
 
-  while (node)
+  for (i = count - 1; i >= 0; i--)
   {
-    count++;
-
-    if (node->kind == IFLATTREE_BRANCH && node->first_child && node->state == IFLATTREE_EXPANDED)
-      count += iFlatTreeGetVisibleNodesRec(node->first_child);
-
-    node = node->brother;
+    if (nodes[i]->expanded)
+      return i;
   }
 
-  return count;
+  return -1;
 }
 
-static int iFlatTreeGetVisibleNodesCount(Ihandle *ih)
+static int iFlatTreeGetFirstExpandedNodeId(Ihandle *ih)
 {
-  return iFlatTreeGetVisibleNodesRec(ih->data->root_node->first_child);
+  int count = iupArrayCount(ih->data->node_array);
+  iFlatTreeNode **nodes = iupArrayGetData(ih->data->node_array);
+  int i;
+
+  for (i = 0; i < count; i++)
+  {
+    if (nodes[i]->expanded)
+      return i;
+  }
+
+  return -1;
 }
 
 static iFlatTreeNode *iFlatTreeNewNode(const char* title, int kind)
@@ -662,14 +670,14 @@ static void iFlatTreeUnlinkNodeFromParent(iFlatTreeNode* node)
   }
 }
 
-static void iFlatTreeRemoveNodeRec(iFlatTreeNode *node)
+static void iFlatTreeRemoveNode(iFlatTreeNode *node)
 {
   /* remove node and its children */
   iFlatTreeNode *child = node->first_child;
   while (child)
   {
     iFlatTreeNode *brother = child->brother;
-    iFlatTreeRemoveNodeRec(child);
+    iFlatTreeRemoveNode(child);
     child = brother;
   }
 
@@ -694,12 +702,15 @@ static void iFlatTreeRemoveNodeRec(iFlatTreeNode *node)
   free(node);
 }
 
+static int iFlatTreeGetChildCount(iFlatTreeNode *node);
+
 static iFlatTreeNode *iFlatTreeCopyNode(Ihandle *ih, int srcId, int dstId)
 {
   iFlatTreeNode *srcNode = iFlatTreeGetNode(ih, srcId);
   iFlatTreeNode *dstNode = iFlatTreeGetNode(ih, dstId);
   iFlatTreeNode *parent;
   iFlatTreeNode *newNode;
+  int count;
 
   if (!dstNode || !srcNode)
     return NULL;
@@ -715,6 +726,7 @@ static iFlatTreeNode *iFlatTreeCopyNode(Ihandle *ih, int srcId, int dstId)
   }
 
   newNode = iFlatTreeCloneNode(srcNode);
+  count = iFlatTreeGetChildCount(srcNode) + 1;
 
   if (dstNode->kind == IFLATTREE_BRANCH && dstNode->state == IFLATTREE_EXPANDED)
   {
@@ -730,10 +742,9 @@ static iFlatTreeNode *iFlatTreeCopyNode(Ihandle *ih, int srcId, int dstId)
     dstNode->brother = newNode;
   }
 
-  iFlatTreeRebuildArray(ih, +1);
-
+  iFlatTreeRebuildArray(ih, +count);
   iFlatTreeUpdateNodeSize(ih, dstNode);
-  iFlatTreeUpdateNodeVisible(dstNode);
+  iFlatTreeUpdateNodeExpanded(dstNode);
 
   return newNode;
 }
@@ -774,7 +785,7 @@ static iFlatTreeNode *iFlatTreeMoveNode(Ihandle *ih, int srcId, int dstId)
   }
 
   iFlatTreeRebuildArray(ih, 0);
-  iFlatTreeUpdateNodeVisible(srcNode);
+  iFlatTreeUpdateNodeExpanded(srcNode);
 
   return srcNode;
 }
@@ -816,7 +827,7 @@ static void iFlatTreeAddNode(Ihandle* ih, int id, int kind, const char* title)
 
   iFlatTreeRebuildArray(ih, +1);
   iFlatTreeUpdateNodeSize(ih, newNode);
-  iFlatTreeUpdateNodeVisible(newNode);
+  iFlatTreeUpdateNodeExpanded(newNode);
 
   ih->data->last_add_node = newNode->id;
 }
@@ -847,127 +858,123 @@ static void iFlatTreeInsertNode(Ihandle* ih, int id, int kind, const char* title
 
   iFlatTreeRebuildArray(ih, +1);
   iFlatTreeUpdateNodeSize(ih, newNode);
-  iFlatTreeUpdateNodeVisible(newNode);
+  iFlatTreeUpdateNodeExpanded(newNode);
 
   ih->data->last_add_node = newNode->id;
 }
 
-//static int iFlatTreeConvertIdToPos(Ihandle *ih, int id)
-//{
-//  int count = iupArrayCount(ih->data->node_array);
-//  iFlatTreeNode **nodes = iupArrayGetData(ih->data->node_array);
-//  int i, pos = 0;
+static int iFlatTreeConvertIdToPos(Ihandle *ih, int id)
+{
+  /* pos is the index of the expanded node */
+  int count = iupArrayCount(ih->data->node_array);
+  iFlatTreeNode **nodes = iupArrayGetData(ih->data->node_array);
+  int i, pos = 0;
 
-//  if (id > count)
-//    return -1;
+  if (id < 0 || id >= count)
+    return -1;
 
-//  for (i = 0; i < count; i++)
-//  {
-//    if (!nodes[i]->visible)
-//      continue;
-//    if (nodes[i]->id == id)
-//      break;
-//    pos++;
-//  }
+  for (i = 0; i < id; i++)
+  {
+    if (!nodes[i]->expanded)
+      continue;
 
-//  return pos;
-//}
+    pos++;
+  }
 
-//static int iFlatTreeConvertPosToId(Ihandle *ih, int pos)
-//{
-//  int count = iupArrayCount(ih->data->node_array);
-//  iFlatTreeNode **nodes = iupArrayGetData(ih->data->node_array);
-//  int i, p = 0;
+  return pos;
+}
 
-//  if (pos > count)
-//    return -1;
+static int iFlatTreeConvertPosToId(Ihandle *ih, int pos)
+{
+  /* pos is the index of the expanded node */
+  int count = iupArrayCount(ih->data->node_array);
+  iFlatTreeNode **nodes = iupArrayGetData(ih->data->node_array);
+  int i, p = 0;
 
-//  for (i = 0; i < count; i++)
-//  {
-//    if (!nodes[i]->visible)
-//      continue;
-//    if (p == pos)
-//      break;
-//    p++;
-//  }
+  if (pos < 0 || pos >= count)
+    return -1;
 
-//  return i;
-//}
+  for (i = 0; i < count; i++)
+  {
+    if (!nodes[i]->expanded)
+      continue;
 
-//static int iFlatTreeConvertXYToPos(Ihandle* ih, int x, int y)
-//{
-//  int count = iupArrayCount(ih->data->node_array);
-//  iFlatTreeNode **nodes = iupArrayGetData(ih->data->node_array);
-//  int posy = IupGetInt(ih, "POSY");
-//  int pos = 0, py, dy = y + posy, i;
+    if (p == pos)
+      break;
 
-//  if (dy < 0)
-//    return -1;
+    p++;
+  }
 
-//  for (i = 0; i < count; i++)
-//  {
-//    if (!nodes[i]->visible)
-//      continue;
+  return i;
+}
 
-//    py = nodes[i]->y;
+static int iFlatTreeConvertXYToId(Ihandle* ih, int x, int y)
+{
+  int count = iupArrayCount(ih->data->node_array);
+  iFlatTreeNode **nodes = iupArrayGetData(ih->data->node_array);
+  int posy = IupGetInt(ih, "POSY");
+  int node_y = 0, i;
 
-//    if (dy >= py && dy < (py + nodes[i]->height))
-//      return pos;
+  y += posy;
 
-//    py += nodes[i]->height + ih->data->spacing;
-//    pos++;
-//  }
+  if (y < 0)
+    return -1;
 
-//  (void)x;
-//  return -1;
-//}
+  for (i = 0; i < count; i++)
+  {
+    if (!nodes[i]->expanded)
+      continue;
 
+    if (y >= node_y && y < (node_y + nodes[i]->height))
+      return i;
 
-static int iFlatTreeGetNodePosY(Ihandle *ih, iFlatTreeNode *node)
+    node_y += nodes[i]->height + ih->data->spacing;
+  }
+
+  (void)x;
+  return -1;
+}
+
+static int iFlatTreeGetNodeY(Ihandle *ih, iFlatTreeNode *node)
 {
   iFlatTreeNode **nodes = iupArrayGetData(ih->data->node_array);
   int i;
-  int y = 0;
+  int node_y = 0;
 
   for (i = 0; i < node->id; i++)
   {
-    if (!nodes[i]->visible)
+    if (!nodes[i]->expanded)
       continue;
 
-    y += nodes[i]->height + ih->data->spacing;
+    node_y += nodes[i]->height + ih->data->spacing;
   }
 
-  return y;
+  return node_y;
 }
 
-//static int iFlatTreeConvertIdToY(Ihandle *ih, int id, int *h)
-//{
-//  int count = iupArrayCount(ih->data->node_array);
-//  iFlatTreeNode **nodes = iupArrayGetData(ih->data->node_array);
-//  int i;
-//  int w, temp_h;
-//  int total_h = 0;
+static int iFlatTreeConvertIdToY(Ihandle *ih, int id, int *h)
+{
+  int count = iupArrayCount(ih->data->node_array);
+  iFlatTreeNode **nodes = iupArrayGetData(ih->data->node_array);
+  int i;
+  int node_y = 0;
 
-//  if (id > count)
-//    return -1;
+  if (id < 0 || id >= count)
+    return -1;
 
-//  for (i = 0; i < count; i++)
-//  {
-//    if (!nodes[i]->visible)
-//      continue;
+  for (i = 0; i < id; i++)
+  {
+    if (!nodes[i]->expanded)
+      continue;
 
-//    if (h)
-//      *h = nodes[i]->height;
+    node_y += nodes[i]->height + ih->data->spacing;
+  }
 
-//    if (i == id)
-//      break;
+  if (h)
+    *h = nodes[id]->height;
 
-//    total_h += nodes[i]->height + ih->data->spacing;
-
-//  }
-
-//  return total_h;
-//}
+  return node_y;
+}
 
 //static int iFlatTreePageLastItemId(Ihandle *ih, int py)
 //{
@@ -981,7 +988,7 @@ static int iFlatTreeGetNodePosY(Ihandle *ih, iFlatTreeNode *node)
 
 //  for (i = 0; i < count; i++)
 //  {
-//    if (!nodes[i]->visible)
+//    if (!nodes[i]->expanded)
 //      continue;
 
 //    total_h = iFlatTreeConvertIdToY(ih, nodes[i]->id, &h);
@@ -1037,7 +1044,7 @@ static void iFlatTreeGetViewSize(Ihandle *ih, int *view_width, int *view_height)
 
   for (i = 0; i < count; i++)
   {
-    if (!nodes[i]->visible)
+    if (!nodes[i]->expanded)
       continue;
 
     total_h += nodes[i]->height + ih->data->spacing;
@@ -1221,7 +1228,7 @@ static void iFlatTreeDrawToggle(Ihandle *ih, IdrawCanvas* dc, iFlatTreeNode *nod
 }
 
 static int iFlatTreeDrawNodes(Ihandle *ih, IdrawCanvas* dc, iFlatTreeNode *node, int x, int y, const char *fg_color, const char *bg_color, long line_rgba, const char *toggle_fgcolor, const char *toggle_bgcolor, int make_inactive, int active,
-                              int text_flags, const char *font, int focus_feedback, int hide_lines, int *pos)
+                              int text_flags, const char *font, int focus_feedback, int hide_lines)
 {
   int node_x = x + (node->depth * ih->data->indentation);
   int node_y = y;
@@ -1291,14 +1298,14 @@ static int iFlatTreeDrawNodes(Ihandle *ih, IdrawCanvas* dc, iFlatTreeNode *node,
                       NULL, make_inactive, node->title, text_flags, 0, fore_color, back_color, active);
 
       /* title selection */
-      if (node->selected || ih->data->dragover_pos == *pos)
+      if (node->selected || ih->data->dragover_id == node->id)
       {
         unsigned char red, green, blue;
         char* hlcolor = iupAttribGetStr(ih, "HLCOLOR");
         unsigned char alpha = (unsigned char)iupAttribGetInt(ih, "HLCOLORALPHA");
         long selcolor;
 
-        if (ih->data->dragover_pos == *pos)
+        if (ih->data->dragover_id == node->id)
           alpha = (2 * alpha) / 3;
 
         iupStrToRGB(hlcolor, &red, &green, &blue);
@@ -1316,11 +1323,9 @@ static int iFlatTreeDrawNodes(Ihandle *ih, IdrawCanvas* dc, iFlatTreeNode *node,
 
     node_y += node_h + ih->data->spacing;
 
-    (*pos)++;
-
     if (node->kind == IFLATTREE_BRANCH && node->state == IFLATTREE_EXPANDED && node->first_child)
       node_y = iFlatTreeDrawNodes(ih, dc, node->first_child, x, node_y, fg_color, bg_color, line_rgba, toggle_fgcolor, toggle_bgcolor, make_inactive, active,
-                                  text_flags, font, focus_feedback, hide_lines, pos);
+                                  text_flags, font, focus_feedback, hide_lines);
 
     node = node->brother;
   }
@@ -1376,7 +1381,7 @@ static int iFlatTreeRedraw_CB(Ihandle* ih)
   int active = IupGetInt(ih, "ACTIVE");  /* native implementation */
   int focus_feedback = iupAttribGetBoolean(ih, "FOCUSFEEDBACK");
   iFlatTreeNode *node;
-  int width, height, pos;
+  int width, height;
   char* font = IupGetAttribute(ih, "FONT");
   int hide_lines = iupAttribGetBoolean(ih, "HIDELINES");
   int hide_buttons = iupAttribGetBoolean(ih, "HIDEBUTTONS");
@@ -1405,10 +1410,9 @@ static int iFlatTreeRedraw_CB(Ihandle* ih)
   y = -posy + border_width;
 
   node = ih->data->root_node->first_child;
-  pos = 0;
 
   iFlatTreeDrawNodes(ih, dc, node, x, y, fg_color, bg_color, line_rgba, toggle_fgcolor, toggle_bgcolor, make_inactive, active,
-                     text_flags, font, focus_feedback, hide_lines, &pos);
+                     text_flags, font, focus_feedback, hide_lines);
 
   if (!hide_buttons)
     iFlatTreeDrawExpander(ih, dc, node, button_brdcolor, button_fgcolor, button_bgcolor, bg_color, x, y, button_plus_image, button_minus_image);
@@ -1444,11 +1448,11 @@ static int iFlatTreeResize_CB(Ihandle* ih, int width, int height)
 
 static void iFlatTreeGetTitlePos(Ihandle *ih, iFlatTreeNode *node, int *txt_x, int *txt_y)
 {
-  int node_y = iFlatTreeGetNodePosY(ih, node);
+  int node_y = iFlatTreeGetNodeY(ih, node);
   int posx = IupGetInt(ih, "POSX");
   int posy = IupGetInt(ih, "POSY");
   int border_width = ih->data->border_width;
-  char *image = iFlatTreeGetNodeImage(ih, node, 0);
+  char *image = iFlatTreeGetNodeImage(ih, node, 1);
   int img_h = 0;
   int img_w = 0;
 
@@ -1801,281 +1805,279 @@ static void iFlatTreeSelectRange(Ihandle* ih, int id1, int id2)
 /**************************************** Mouse *******************************************/
 
 
-//static int iFlatTreeCallDragDropCb(Ihandle* ih, int drag_id, int drop_id, int is_ctrl, int is_shift)
-//{
-//  IFniiii cbDragDrop = (IFniiii)IupGetCallback(ih, "DRAGDROP_CB");
+static int iFlatTreeCallDragDropCb(Ihandle* ih, int drag_id, int drop_id, int is_ctrl, int is_shift)
+{
+  IFniiii cbDragDrop = (IFniiii)IupGetCallback(ih, "DRAGDROP_CB");
 
-//  /* ignore a drop that will do nothing */
-//  if (is_ctrl == 0 && (drag_id - 1 == drop_id || drag_id == drop_id))
-//    return IUP_DEFAULT;
-//  if (is_ctrl != 0 && drag_id == drop_id)
-//    return IUP_DEFAULT;
+  /* ignore a drop that will do nothing */
+  if (is_ctrl == 0 && (drag_id - 1 == drop_id || drag_id == drop_id))
+    return IUP_DEFAULT;
+  if (is_ctrl != 0 && drag_id == drop_id)
+    return IUP_DEFAULT;
 
-//  drag_id++;
-//  if (drop_id < 0)
-//    drop_id = -1;
-//  else
-//    drop_id++;
+  if (drop_id < 0)
+    drop_id = -1;
 
-//  if (cbDragDrop)
-//    return cbDragDrop(ih, drag_id, drop_id, is_shift, is_ctrl);  /* starts at 1 */
+  if (cbDragDrop)
+    return cbDragDrop(ih, drag_id, drop_id, is_shift, is_ctrl);
 
-//  return IUP_CONTINUE; /* allow to move/copy by default if callback not defined */
-//}
+  return IUP_CONTINUE; /* allow to move/copy by default if callback not defined */
+}
 
-//static int iFlatTreeHitToggle(Ihandle *ih, int x, int y, int id, int depth)
-//{
-//  int h;
-//  int py = iFlatTreeConvertIdToY(ih, id, &h) + ((h - ih->data->toggle_size) / 2);
-//  int px = (depth * ih->data->indentation) + 1 + ((ih->data->indentation - ih->data->toggle_size) / 2);
-//  int posx = IupGetInt(ih, "POSX");
-//  int posy = IupGetInt(ih, "POSY");
+static int iFlatTreeButton_CB(Ihandle* ih, int button, int pressed, int x, int y, char* status)
+{
+  IFniiiis button_cb = (IFniiiis)IupGetCallback(ih, "FLAT_BUTTON_CB");
+  int id;
 
-//  x += posx - ih->data->border_width;
-//  y += posy - ih->data->border_width;
+  if (button_cb)
+  {
+    if (button_cb(ih, button, pressed, x, y, status) == IUP_IGNORE)
+      return IUP_DEFAULT;
+  }
 
-//  if (x > px && x < px + ih->data->toggle_size && y > py && y < py + ih->data->toggle_size)
-//    return 1;
+  id = iFlatTreeConvertXYToId(ih, x, y);
 
-//  return 0;
-//}
+  if (button == IUP_BUTTON1 && !pressed && ih->data->dragged_id > 0)
+  {
+    if (id == -1)
+    {
+      if (y < 0)
+        id = iFlatTreeGetFirstExpandedNodeId(ih);
+      else
+        id = iFlatTreeGetLastExpandedNodeId(ih);
+    }
 
-//static int iFlatTreeHitExpander(Ihandle *ih, int x, int y, int id, int depth)
-//{
-//  int h;
-//  int py = iFlatTreeConvertIdToY(ih, id, &h) + ((h - ih->data->button_size) / 2);
-//  int px = ((depth - 1) * ih->data->indentation) + 1 + ((ih->data->indentation - ih->data->button_size) / 2);
-//  int posx = IupGetInt(ih, "POSX");
-//  int posy = IupGetInt(ih, "POSY");
+    if (iFlatTreeCallDragDropCb(ih, ih->data->dragged_id, id, iup_iscontrol(status), iup_isshift(status)) == IUP_CONTINUE)
+    {
+      iFlatTreeNode *droppedNode = NULL;
 
-//  x += posx - ih->data->border_width;
-//  y += posy - ih->data->border_width;
+      if (!iup_iscontrol(status))
+        droppedNode = iFlatTreeMoveNode(ih, ih->data->dragged_id, id);
+      else
+        droppedNode = iFlatTreeCopyNode(ih, ih->data->dragged_id, id);
 
-//  if (x > px && x < px + ih->data->button_size && y > py && y < py + ih->data->button_size)
-//    return 1;
+      if (!droppedNode)
+        return IUP_DEFAULT;
 
-//  return 0;
-//}
+      /* select the dropped item */
+      //iFlatTreeSelectNode(ih, droppedNode->id, 0, 0); /* force no ctrl and no shift for selection */
 
-//static int iFlatTreeButton_CB(Ihandle* ih, int button, int pressed, int x, int y, char* status)
-//{
-//  iFlatTreeNode *node;
-//  IFniiiis button_cb = (IFniiiis)IupGetCallback(ih, "FLAT_BUTTON_CB");
-//  char *image;
-//  int pos = iFlatTreeConvertXYToPos(ih, x, y);
-//  int id, width, height, xmin, xmax;
-//  int toggle_gap = (ih->data->show_toggle) ? ih->data->toggle_size : 0;
+      iFlatTreeRedraw(ih, 0, 1);
+    }
 
-//  if (button_cb)
-//  {
-//    if (button_cb(ih, button, pressed, x, y, status) == IUP_IGNORE)
-//      return IUP_DEFAULT;
-//  }
+    ih->data->dragover_id = -1;
+    ih->data->dragged_id = -1;
+    return IUP_DEFAULT;
+  }
 
-//  if (button == IUP_BUTTON1 && !pressed && ih->data->dragged_pos > 0)
-//  {
-//    if (pos == -1)
-//    {
-//      if (y < 0)
-//        pos = 1;
-//      else
-//      {
-//        int count = iFlatTreeGetVisibleNodesCount(ih);
-//        pos = count;
-//      }
-//    }
+  if (id == -1)
+    return IUP_DEFAULT;
 
-//    if (iFlatTreeCallDragDropCb(ih, ih->data->dragged_pos, pos, iup_iscontrol(status), iup_isshift(status)) == IUP_CONTINUE)
-//    {
-//      iFlatTreeNode *droppedNode = NULL;
-//      int srcId = iFlatTreeConvertPosToId(ih, ih->data->dragged_pos);
-//      int destId = iFlatTreeConvertPosToId(ih, pos);
+  if (button == IUP_BUTTON3)
+  {
+    IFni cbRightClick = (IFni)IupGetCallback(ih, "RIGHTCLICK_CB");
+    if (cbRightClick)
+      cbRightClick(ih, id);
+    return IUP_DEFAULT;
+  }
 
-//      if (!iup_iscontrol(status))
-//        droppedNode = iFlatTreeMoveNode(ih, srcId, destId);
-//      else
-//        droppedNode = iFlatTreeCopyNode(ih, srcId, destId);
+  if (button == IUP_BUTTON1 && pressed)
+  {
+    iFlatTreeNode *node;
+    int posx, xmin, xmax, node_x;
+    int img_w = 0;
+    char *image;
+    int toggle_gap = 0;
 
-//      if (!droppedNode)
-//        return IUP_DEFAULT;
+    node = iFlatTreeGetNode(ih, id);
+    if (!node)
+      return IUP_DEFAULT;
 
-//      /* select the dropped item */
-//      iFlatTreeSelectNode(ih, droppedNode->id, 0, 0); /* force no ctrl and no shift for selection */
-//    }
+    posx = IupGetInt(ih, "POSX");
+    x += posx - ih->data->border_width;
 
-//    ih->data->dragover_pos = -1;
-//    ih->data->dragged_pos = -1;
+    node_x = node->depth * ih->data->indentation;
 
-//    iFlatTreeUpdateScrollBar(ih);
-//    IupUpdate(ih);
+    if (node->kind == IFLATTREE_BRANCH && node->first_child && node->depth > 0) /* has expander */
+    {
+      xmin = node_x - ih->data->indentation + (ih->data->indentation - ih->data->button_size) / 2;
+      xmax = xmin + ih->data->button_size;
 
-//    return IUP_DEFAULT;
-//  }
+      if (x > xmin && x < xmax)  /* inside expander */
+      {
+        if (node->state == IFLATTREE_EXPANDED)
+          node->state = IFLATTREE_COLLAPSED;
+        else
+          node->state = IFLATTREE_EXPANDED;
 
-//  if (pos == -1)
-//    return IUP_DEFAULT;
+        iFlatTreeUpdateNodeExpanded(node);
+        iFlatTreeRedraw(ih, 0, 1);  /* scrollbar update only */
+        return IUP_DEFAULT;
+      }
+    }
 
-//  id = iFlatTreeConvertPosToId(ih, pos);
-//  node = iFlatTreeGetNode(ih, id);
+    if (ih->data->show_toggle && node->toggle_visible) /* has toggle */
+    {
+      xmin = node_x + (ih->data->indentation - ih->data->toggle_size) / 2;
+      xmax = xmin + ih->data->toggle_size;
 
-//  xmin = (node->depth * ih->data->indentation) + toggle_gap;
-//  xmax = xmin + img_w + node->title_width;
+      if (x > xmin && x < xmax)  /* inside toggle */
+      {
+        IFnii tv_cb = (IFnii)IupGetCallback(ih, "TOGGLEVALUE_CB");
+        int markWhenToggle = IupGetInt(ih, "MARKWHENTOGGLE");
 
-//  if (button == IUP_BUTTON3)
-//  {
-//    IFni cbRightClick = (IFni)IupGetCallback(ih, "RIGHTCLICK_CB");
-//    if (cbRightClick)
-//      cbRightClick(ih, id);
-//    return IUP_DEFAULT;
-//  }
+        if (node->toggle_value > 0)  /* was ON */
+        {
+          if (ih->data->show_toggle == 2)
+            node->toggle_value = -1;
+          else
+            node->toggle_value = 0;
+        }
+        else if (node->toggle_value == -1)
+          node->toggle_value = 0;
+        else  /* was OFF */
+          node->toggle_value = 1;
 
-//  if (button == IUP_BUTTON1 && pressed)
-//  {
-//    if (iup_isdouble(status) && x > xmin && x < xmax)
-//    {
-//      if (node->kind == IFLATTREE_LEAF)
-//      {
-//        IFnis dc_cb = (IFnis)IupGetCallback(ih, "EXECUTELEAF_CB");
-//        if (dc_cb)
-//        {
-//          if (dc_cb(ih, id, node->title) == IUP_IGNORE)
-//            return IUP_DEFAULT;
-//        }
-//      }
-//      else
-//      {
-//        if (node->state == IFLATTREE_EXPANDED)
-//          node->state = IFLATTREE_COLLAPSED;
-//        else
-//          node->state = IFLATTREE_EXPANDED;
+        if (markWhenToggle)
+        {
+          if (ih->data->mark_mode == IFLATTREE_MARK_MULTIPLE)
+            node->selected = (node->toggle_value > 0) ? 1 : 0;
+          else
+          {
+            int i, count = iupArrayCount((ih->data->node_array));
 
-//        iFlatTreeUpdateNodeVisible(node);
+            //TODO use a function
+            for (i = 0; i < count; i++)
+            {
+              iFlatTreeNode *i_node = iFlatTreeGetNode(ih, i);
+              if (!i_node->selected)
+                continue;
+              i_node->selected = 0;
+              break;
+            }
+            node->selected = 1;
+          }
+        }
 
-//        iFlatTreeUpdateNodePos(ih, id);
-//      }
-//    }
-//    else if (ih->data->show_rename  && x > xmin && x < xmax)
-//    {
-//      int current_clock = clock();
+        if (tv_cb)
+        {
+          if (tv_cb(ih, id, node->toggle_value) == IUP_IGNORE)
+            return IUP_DEFAULT;
+        }
 
-//      if (id == ih->data->focus_id && (current_clock - ih->data->last_clock) > ih->data->min_clock)
-//      {
-//        IFni cb = (IFni)IupGetCallback(ih, "SHOWRENAME_CB");
-//        if (cb)
-//        {
-//          if (cb(ih, id) == IUP_IGNORE)
-//            return IUP_DEFAULT;
-//        }
-//        return iFlatTreeRenameNode(ih);
-//      }
+        iFlatTreeRedraw(ih, 0, 0);
+        return IUP_DEFAULT;
+      }
 
-//      iFlatTreeSelectNode(ih, id, iup_iscontrol(status), iup_isshift(status));
+      toggle_gap = ih->data->toggle_size;
+    }
 
-//      if (ih->data->show_dragdrop)
-//        ih->data->dragged_pos = pos;
+    if (ih->data->show_toggle && !node->toggle_visible && ih->data->empty_toggle)
+      toggle_gap = ih->data->toggle_size;
 
-//      ih->data->last_clock = clock();
-//    }
-//    else if (iFlatTreeHitExpander(ih, x, y, id))
-//    {
-//      if (node->state == IFLATTREE_EXPANDED)
-//        node->state = IFLATTREE_COLLAPSED;
-//      else
-//        node->state = IFLATTREE_EXPANDED;
+    image = iFlatTreeGetNodeImage(ih, node, 1);
+    iupImageGetInfo(image, &img_w, NULL, NULL);
 
-//      iFlatTreeUpdateNodeVisible(node);
+    xmin = node_x + toggle_gap;
+    xmax = xmin + img_w + ih->data->icon_spacing + node->title_width;
 
-//      iFlatTreeRebuildSize(ih);
-//    }
-//    else if (iFlatTreeHitToggle(ih, x, y, id))
-//    {
-//      IFnis tv_cb = (IFnis)IupGetCallback(ih, "TOGGLEVALUE_CB");
-//      int markWhenToggle = IupGetInt(ih, "MARKWHENTOGGLE");
+    if (x > xmin && x < xmax)  /* inside image+title */
+    {
+      if (iup_isdouble(status))
+      {
+        if (node->kind == IFLATTREE_LEAF)
+        {
+          IFni dc_cb = (IFni)IupGetCallback(ih, "EXECUTELEAF_CB");
+          if (dc_cb)
+          {
+            if (dc_cb(ih, id) == IUP_IGNORE)
+              return IUP_DEFAULT;
+          }
+        }
+        else  /* BRANCH */
+        {
+          if (node->state == IFLATTREE_EXPANDED)
+            node->state = IFLATTREE_COLLAPSED;
+          else
+            node->state = IFLATTREE_EXPANDED;
 
-//      if (node->toggle_value > 0)  /* was ON */
-//      {
-//        if (ih->data->show_toggle == 2)
-//          node->toggle_value = -1;
-//        else
-//          node->toggle_value = 0;
-//      }
-//      else if (node->toggle_value == -1)
-//        node->toggle_value = 0;
-//      else  /* was OFF */
-//        node->toggle_value = 1;
+          iFlatTreeUpdateNodeExpanded(node);
+          iFlatTreeRedraw(ih, 0, 1);  /* scrollbar update only */
+        }
 
-//      if (markWhenToggle)
-//      {
-//        if (ih->data->mark_mode == IFLATTREE_MARK_MULTIPLE)
-//          node->selected = (node->toggle_value > 0) ? 1 : 0;
-//        else
-//        {
-//          int i, count = iupArrayCount((ih->data->node_array));
+        return IUP_DEFAULT;
+      }
+      else
+      {
+        if (ih->data->show_rename && id == ih->data->focus_id)
+        {
+          int current_clock = clock();
 
-//          for (i = 0; i < count; i++)
-//          {
-//            iFlatTreeNode *i_node = iFlatTreeGetNode(ih, i);
-//            if (!i_node->selected)
-//              continue;
-//            i_node->selected = 0;
-//            break;
-//          }
-//          node->selected = 1;
-//        }
-//      }
+          if ((current_clock - ih->data->last_clock) > 500)
+          {
+            IFni cb = (IFni)IupGetCallback(ih, "SHOWRENAME_CB");
+            if (cb)
+            {
+              if (cb(ih, id) == IUP_IGNORE)
+                return IUP_DEFAULT;
+            }
 
-//      if (tv_cb)
-//      {
-//        if (tv_cb(ih, id, node->toggle_value) == IUP_IGNORE)
-//          return IUP_DEFAULT;
-//      }
-//    }
-//  }
+            return iFlatTreeRenameNode(ih);
+          }
 
-//  iFlatTreeUpdateScrollBar(ih);
-//  IupUpdate(ih);
+          ih->data->last_clock = current_clock;
+        }
 
-//  return IUP_DEFAULT;
-//}
+        /* single click in the image+title area */
 
-//static int iFlatTreeMotion_CB(Ihandle* ih, int x, int y, char* status)
-//{
-//  IFniis motion_cb = (IFniis)IupGetCallback(ih, "FLAT_MOTION_CB");
-//  int pos;
+        //iFlatTreeSelectNode(ih, id, iup_iscontrol(status), iup_isshift(status));
 
-//  iupFlatScrollBarMotionUpdate(ih, x, y);
+        if (ih->data->show_dragdrop)
+          ih->data->dragged_id = id;
+      }
+    }
+  }
 
-//  if (motion_cb)
-//  {
-//    if (motion_cb(ih, x, y, status) == IUP_IGNORE)
-//      return IUP_DEFAULT;
-//  }
+  return IUP_DEFAULT;
+}
 
-//  if (!iup_isbutton1(status) || ih->data->mark_mode == IFLATTREE_MARK_MULTIPLE || !ih->data->show_dragdrop)
-//    return IUP_IGNORE;
+static int iFlatTreeMotion_CB(Ihandle* ih, int x, int y, char* status)
+{
+  IFniis motion_cb = (IFniis)IupGetCallback(ih, "FLAT_MOTION_CB");
+  int id;
 
-//  pos = iFlatTreeConvertXYToPos(ih, x, y);
-//  if (pos == -1)
-//    return IUP_DEFAULT;
+  iupFlatScrollBarMotionUpdate(ih, x, y);
 
-//  if (y < 0 || y > ih->currentheight)
-//  {
-//    /* scroll if dragging out of canvas */
-//    int h;
-//    int dy = IupGetInt(ih, "DY");
-//    int id = iFlatTreeConvertPosToId(ih, pos);
-//    int py = iFlatTreeConvertIdToY(ih, id, &h);
-//    int posy = (y < 0) ? py : (py + h) - dy;
-//    IupSetInt(ih, "POSY", posy);
-//  }
+  if (motion_cb)
+  {
+    if (motion_cb(ih, x, y, status) == IUP_IGNORE)
+      return IUP_DEFAULT;
+  }
 
-//  if (ih->data->dragged_pos >= 0)
-//    ih->data->dragover_pos = pos;
+  if (!iup_isbutton1(status) || ih->data->mark_mode == IFLATTREE_MARK_MULTIPLE || !ih->data->show_dragdrop)
+    return IUP_IGNORE;
 
-//  IupUpdate(ih);
+  id = iFlatTreeConvertXYToId(ih, x, y);
+  if (id < 0)
+    return IUP_DEFAULT;
 
-//  return IUP_DEFAULT;
-//}
+  if (y < 0 || y > ih->currentheight)
+  {
+    /* scroll if dragging out of canvas */
+    int node_h;
+    int dy = IupGetInt(ih, "DY");
+    int node_y = iFlatTreeConvertIdToY(ih, id, &node_h);
+    int posy = (y < 0) ? node_y : (node_y + node_h) - dy;
+    IupSetInt(ih, "POSY", posy);
+  }
+
+  if (ih->data->dragged_id >= 0)
+    ih->data->dragover_id = id;
+
+  IupUpdate(ih);
+
+  return IUP_DEFAULT;
+}
 
 
 /*********************************  Focus ************************************/
@@ -2086,14 +2088,14 @@ static void iFlatTreeSelectRange(Ihandle* ih, int id1, int id2)
 //{
 //  int count = iupArrayCount(ih->data->node_array);
 //  iFlatTreeNode **nodes = iupArrayGetData(ih->data->node_array);
-//  int focus_y = iFlatTreeConvertIdToY(ih, ih->data->focus_id, NULL);
+//  int focus_y = iFlatTreeGetNodeY(ih, ih->data->focus_id, NULL);
 //  int dy = IupGetInt(ih, "DY");
 //  int i, last_id = -1;
 //  int total_h = 0;
 
 //  for (i = ih->data->focus_id; i < count; i++)
 //  {
-//    if (!nodes[i]->visible)
+//    if (!nodes[i]->expanded)
 //      continue;
 
 //    total_h += (nodes[i]->height + ih->data->spacing);
@@ -2110,14 +2112,14 @@ static void iFlatTreeSelectRange(Ihandle* ih, int id1, int id2)
 //static int iFlatTreePageUpFromFocus(Ihandle *ih)
 //{
 //  iFlatTreeNode **nodes = iupArrayGetData(ih->data->node_array);
-//  int focus_y = iFlatTreeConvertIdToY(ih, ih->data->focus_id, NULL);
+//  int focus_y = iFlatTreeGetNodeY(ih, ih->data->focus_id, NULL);
 //  int dy = IupGetInt(ih, "DY");
 //  int i, last_id = ih->data->focus_id;
 //  int total_h = focus_y;
 
 //  for (i = ih->data->focus_id - 1; i >= 0; i--)
 //  {
-//    if (!nodes[i]->visible)
+//    if (!nodes[i]->expanded)
 //      continue;
 
 //    total_h -= (nodes[i]->height + ih->data->spacing);
@@ -2187,7 +2189,7 @@ static int iFlatTreeFocus_CB(Ihandle* ih, int focus)
   return IUP_DEFAULT;
 }
 
-//static void iFlatTreeScrollFocusVisible(Ihandle* ih, int direction)
+//static void iFlatTreeScrollFocusExpanded(Ihandle* ih, int direction)
 //{
 //  int focus_y;
 //  iFlatTreeNode *node;
@@ -2200,7 +2202,7 @@ static int iFlatTreeFocus_CB(Ihandle* ih, int focus)
 //  if (dy >= (ymax - ymin))
 //    return;
 //
-//  focus_y = iFlatTreeConvertIdToY(ih, ih->data->focus_id, NULL);
+//  focus_y = iFlatTreeGetNodeY(ih, ih->data->focus_id, NULL);
 //  node = iFlatTreeGetNode(ih, ih->data->focus_id);
 //  posy = IupGetInt(ih, "POSY");
 //
@@ -2236,21 +2238,21 @@ static int iFlatTreeFocus_CB(Ihandle* ih, int focus)
 //        else
 //          node->state = IFLATTREE_EXPANDED;
 
-//        iFlatTreeUpdateNodeVisible(node);
+//        iFlatTreeUpdateNodeExpanded(node);
 
 //        iFlatTreeUpdateNodePos(ih, ih->data->focus_id);   // ????
 //      }
 //      else
 //      {
-//        IFnis cb = (IFnis)IupGetCallback(ih, "EXECUTELEAF_CB");
+//        IFni cb = (IFni)IupGetCallback(ih, "EXECUTELEAF_CB");
 //        if (cb)
 //        {
-//          if (cb(ih, ih->data->focus_id, node->title) == IUP_IGNORE)
+//          if (cb(ih, ih->data->focus_id) == IUP_IGNORE)
 //            return IUP_DEFAULT;
 //        }
 //      }
 //
-//      iFlatTreeScrollFocusVisible(ih, IFLATTREE_DOWN);  // ????
+//      iFlatTreeScrollFocusExpanded(ih, IFLATTREE_DOWN);  // ????
 //      IupUpdate(ih);
 //    }
 //  }
@@ -2265,14 +2267,14 @@ static int iFlatTreeFocus_CB(Ihandle* ih, int focus)
 //    {
 //      int ctrltPressed = IupGetInt(NULL, "CONTROLKEY");
 //      int shftPressed = IupGetInt(NULL, "SHIFTKEY");
-//      int previousId = iFlatTreeGetPreviousVisibleNodeId(ih, ih->data->focus_id);
+//      int previousId = iFlatTreeGetPreviousExpandedNodeId(ih, ih->data->focus_id);
 
 //      if (ctrltPressed)
 //        ih->data->focus_id = previousId;
 //      else
 //        iFlatTreeSelectNode(ih, previousId, 0, shftPressed);
 
-//      iFlatTreeScrollFocusVisible(ih, IFLATTREE_UP);
+//      iFlatTreeScrollFocusExpanded(ih, IFLATTREE_UP);
 //      IupUpdate(ih);
 //    }
 //  }
@@ -2288,14 +2290,14 @@ static int iFlatTreeFocus_CB(Ihandle* ih, int focus)
 //    {
 //      int ctrltPressed = IupGetInt(NULL, "CONTROLKEY");
 //      int shftPressed = IupGetInt(NULL, "SHIFTKEY");
-//      int nextId = iFlatTreeGetNextVisibleNodeId(ih, ih->data->focus_id);
+//      int nextId = iFlatTreeGetNextExpandedNodeId(ih, ih->data->focus_id);
 
 //      if (ctrltPressed)
 //        ih->data->focus_id = nextId;
 //      else
 //        iFlatTreeSelectNode(ih, nextId, 0, shftPressed);
 
-//      iFlatTreeScrollFocusVisible(ih, IFLATTREE_DOWN);
+//      iFlatTreeScrollFocusExpanded(ih, IFLATTREE_DOWN);
 //      IupUpdate(ih);
 //    }
 //  }
@@ -2326,7 +2328,7 @@ static int iFlatTreeFocus_CB(Ihandle* ih, int focus)
 
 //    iFlatTreeSelectNode(ih, id, 0, 0);
 
-//    iFlatTreeScrollFocusVisible(ih, IFLATTREE_UP);
+//    iFlatTreeScrollFocusExpanded(ih, IFLATTREE_UP);
 //    IupUpdate(ih);
 //  }
 //  return IUP_DEFAULT;
@@ -2336,12 +2338,11 @@ static int iFlatTreeFocus_CB(Ihandle* ih, int focus)
 //{
 //  if (ih->data->has_focus)
 //  {
-//    int count = iFlatTreeGetVisibleNodesCount(ih);
-//    int id = iFlatTreeConvertPosToId(ih, count - 1);
+//    int id = iFlatTreeGetLastExpandedNodeId(ih);
 
 //    iFlatTreeSelectNode(ih, id, 0, 0);
 
-//    iFlatTreeScrollFocusVisible(ih, IFLATTREE_DOWN);
+//    iFlatTreeScrollFocusExpanded(ih, IFLATTREE_DOWN);
 //    IupUpdate(ih);
 //  }
 //  return IUP_DEFAULT;
@@ -2355,7 +2356,7 @@ static int iFlatTreeFocus_CB(Ihandle* ih, int focus)
 
 //    iFlatTreeSelectNode(ih, id, 0, 0);
 
-//    iFlatTreeScrollFocusVisible(ih, IFLATTREE_UP);
+//    iFlatTreeScrollFocusExpanded(ih, IFLATTREE_UP);
 //    IupUpdate(ih);
 //  }
 //  return IUP_DEFAULT;
@@ -2369,128 +2370,137 @@ static int iFlatTreeFocus_CB(Ihandle* ih, int focus)
 
 //    iFlatTreeSelectNode(ih, id, 0, 0);
 
-//    iFlatTreeScrollFocusVisible(ih, IFLATTREE_DOWN);
+//    iFlatTreeScrollFocusExpanded(ih, IFLATTREE_DOWN);
 //    IupUpdate(ih);
 //  }
 //  return IUP_DEFAULT;
 //}
 
-//static void iFlatTreeDragDropCopyNode(Ihandle* ih_src, Ihandle *ih, iFlatTreeNode *srcNode, iFlatTreeNode *dstNode, int isControl)
-//{
-//  iFlatTreeNode *newNode;
-//  int id_dst;
 
-//  id_dst = dstNode->id;
+/*********************************  Drag & Drop  ********************************/
 
-//  if (isControl)
-//    newNode = iFlatTreeCloneNode(srcNode);    /* Copy */
-//  else
-//  {
-//    iFlatTreeUnlinkNodeFromParent(srcNode);  /* Move */
-//    newNode = srcNode;
-//  }
 
-//  if (dstNode->kind == IFLATTREE_BRANCH && dstNode->state == IFLATTREE_EXPANDED)
-//  {
-//    /* copy as first child of expanded branch */
-//    newNode->parent = dstNode;
-//    newNode->brother = dstNode->first_child;
-//    dstNode->first_child = newNode;
-//  }
-//  else
-//  {
-//    newNode->parent = dstNode->parent;
-//    newNode->brother = dstNode->brother;
-//    dstNode->brother = newNode;
-//  }
+static void iFlatTreeDragDropCopyNode(Ihandle *ih_source, Ihandle *ih, iFlatTreeNode *srcNode, iFlatTreeNode *dstNode, int isControl)
+{
+  iFlatTreeNode *newNode;
+  int count = iFlatTreeGetChildCount(srcNode) + 1;
 
-//  iFlatTreeRebuildArray(ih, +1);
-//  iFlatTreeUpdateNodeSize(ih, newNode);
-//}
+  if (isControl)
+    newNode = iFlatTreeCloneNode(srcNode);    /* Copy */
+  else
+  {
+    iFlatTreeUnlinkNodeFromParent(srcNode);  /* Move */
+    newNode = srcNode;
+  }
 
-//static int iFlatTreeDropData_CB(Ihandle *ih, char* type, void* data, int len, int x, int y)
-//{
-//  int pos = iFlatTreeConvertXYToPos(ih, x, y);
-//  int is_ctrl = 0;
-//  char key[5];
+  if (dstNode->kind == IFLATTREE_BRANCH && dstNode->state == IFLATTREE_EXPANDED)
+  {
+    /* copy as first child of expanded branch */
+    newNode->parent = dstNode;
+    newNode->brother = dstNode->first_child;
+    dstNode->first_child = newNode;
+  }
+  else
+  {
+    newNode->parent = dstNode->parent;
+    newNode->brother = dstNode->brother;
+    dstNode->brother = newNode;
+  }
 
-//  /* Data is not the pointer, it contains the pointer */
-//  Ihandle* ih_source;
-//  memcpy((void*)&ih_source, data, len);
+  iFlatTreeRebuildArray(ih, +count);
 
-//  /* A copy operation is enabled with the CTRL key pressed, or else a move operation will occur.
-//     A move operation will be possible only if the attribute DRAGSOURCEMOVE is Yes.
-//     When no key is pressed the default operation is copy when DRAGSOURCEMOVE=No and move when DRAGSOURCEMOVE=Yes. */
-//  iupdrvGetKeyState(key);
-//  if (key[1] == 'C')
-//    is_ctrl = 1;
+  if (isControl)
+    iFlatTreeUpdateNodeSize(ih, newNode);
 
-//  /* Here copy/move of multiple selection is not allowed,
-//     only a single node and its children. */
+  iFlatTreeUpdateNodeExpanded(newNode);
+  iFlatTreeRedraw(ih, 0, 1);
 
-//  int srcPos = iupAttribGetInt(ih_source, "_IUP_FLAT_TREE_SOURCEPOS");
-//  iFlatTreeNode *itemDst, *itemSrc;
+  if (!isControl)
+  {
+    iFlatTreeRebuildArray(ih_source, -count);
+    iFlatTreeRedraw(ih_source, 0, 1);
+  }
+}
 
-//  itemSrc = iFlatTreeGetNode(ih_source, srcPos);
-//  if (!itemSrc)
-//    return IUP_DEFAULT;
+static int iFlatTreeDropData_CB(Ihandle *ih, char* type, void* data, int len, int x, int y)
+{
+  iFlatTreeNode *itemDst, *itemSrc;
+  int dst_id, src_id;
+  int is_ctrl = 0;
+  char key[5];
 
-//  itemDst = iFlatTreeGetNode(ih, pos);
-//  if (!itemDst)
-//    return IUP_DEFAULT;
+  /* Data is not the pointer, it contains the pointer */
+  Ihandle* ih_source;
+  memcpy((void*)&ih_source, data, len);  /* but ih_source can be IupTree or IupFlatTree, can NOT use ih_source->data here */
 
-//  /* Copy the node and its children to the new position */
-//  iFlatTreeDragDropCopyNode(ih_source, ih, itemSrc, itemDst, is_ctrl);
+  /* A copy operation is enabled with the CTRL key pressed, or else a move operation will occur.
+     A move operation will be possible only if the attribute DRAGSOURCEMOVE is Yes.
+     When no key is pressed the default operation is copy when DRAGSOURCEMOVE=No and move when DRAGSOURCEMOVE=Yes. */
+  iupdrvGetKeyState(key);
+  if (key[1] == 'C')
+    is_ctrl = 1;
 
-//    iFlatTreeUpdateScrollBar(ih);
-//    IupUpdate(ih);
+  /* Here copy/move of multiple selection is not allowed,
+     only a single node and its children. */
 
-//    iFlatTreeUpdateScrollBar(ih_source);
-//    IupUpdate(ih_source);
+  src_id = iupAttribGetInt(ih_source, "_IUP_TREE_SOURCEID");
+  dst_id = iFlatTreeConvertXYToId(ih, x, y);
 
-//  (void)type;
-//  return IUP_DEFAULT;
-//}
+  itemSrc = iFlatTreeGetNode(ih_source, src_id);
+  if (!itemSrc)
+    return IUP_DEFAULT;
 
-//static int iFlatTreeDragData_CB(Ihandle *ih, char* type, void *data, int len)
-//{
-//  int pos = iupAttribGetInt(ih, "_IUP_FLAT_TREE_SOURCEPOS");
-//  if (pos < 1)
-//    return IUP_DEFAULT;
+  itemDst = iFlatTreeGetNode(ih, dst_id);
+  if (!itemDst)
+    return IUP_DEFAULT;
 
-//  IupSetAttributeId(ih, "MARKED", pos, "YES");
+  /* Copy the node and its children to the new position */
+  iFlatTreeDragDropCopyNode(ih_source, ih, itemSrc, itemDst, is_ctrl);
 
-//  /* Copy source handle */
-//  memcpy(data, (void*)&ih, len);
 
-//  (void)type;
-//  return IUP_DEFAULT;
-//}
+  (void)type;
+  return IUP_DEFAULT;
+}
 
-//static int iFlatTreeDragDataSize_CB(Ihandle* ih, char* type)
-//{
-//  (void)ih;
-//  (void)type;
-//  return sizeof(Ihandle*);
-//}
+static int iFlatTreeDragData_CB(Ihandle *ih, char* type, void *data, int len)
+{
+  int id = iupAttribGetInt(ih, "_IUP_TREE_SOURCEID");
+  if (id < 1)
+    return IUP_DEFAULT;
 
-//static int iFlatTreeDragBegin_CB(Ihandle* ih, int x, int y)
-//{
-//  int pos = iFlatTreeConvertXYToPos(ih, x, y);
+  if (ih->data->mark_mode == IFLATTREE_MARK_SINGLE)
+  {
+    /* Single selection */
+    IupSetAttributeId(ih, "MARKED", id, "YES");
+  }
 
-//  if (ih->data->mark_mode == IFLATTREE_MARK_MULTIPLE)
-//    return IUP_IGNORE;
+  /* Copy source handle */
+  memcpy(data, (void*)&ih, len);
 
-//  iupAttribSetInt(ih, "_IUP_FLAT_TREE_SOURCEPOS", pos);
-//  return IUP_DEFAULT;
-//}
+  (void)type;
+  return IUP_DEFAULT;
+}
 
-//static int iFlatTreeDragEnd_CB(Ihandle *ih, int del)
-//{
-//  iupAttribSetInt(ih, "_IUP_FLAT_TREE_SOURCEPOS", -1);
-//  (void)del;
-//  return IUP_DEFAULT;
-//}
+static int iFlatTreeDragDataSize_CB(Ihandle* ih, char* type)
+{
+  (void)ih;
+  (void)type;
+  return sizeof(Ihandle*);
+}
+
+static int iFlatTreeDragEnd_CB(Ihandle *ih, int del)
+{
+  iupAttribSetInt(ih, "_IUP_TREE_SOURCEID", -1);
+  (void)del;
+  return IUP_DEFAULT;
+}
+
+static int iFlatTreeDragBegin_CB(Ihandle* ih, int x, int y)
+{
+  int id = iFlatTreeConvertXYToId(ih, x, y);
+  iupAttribSetInt(ih, "_IUP_TREE_SOURCEID", id);  /* works for IupTree and IupFlatTree */
+  return IUP_DEFAULT;
+}
 
 
 /*********************************  Attributes  ********************************/
@@ -2663,7 +2673,7 @@ static int iFlatTreeSetStateAttrib(Ihandle* ih, int id, const char* value)
   else /* "HORIZONTAL" */
     node->state = IFLATTREE_COLLAPSED;
 
-  iFlatTreeUpdateNodeVisible(node);
+  iFlatTreeUpdateNodeExpanded(node);
 
   iFlatTreeRedraw(ih, 0, 1);  /* scrollbar update only */
   return 0;
@@ -3013,27 +3023,25 @@ static int iFlatTreeSetInsertBranchAttrib(Ihandle* ih, int id, const char* value
   return 0;
 }
 
-static void iFlatTreeRemoveMarkedNodesRec(Ihandle *ih, iFlatTreeNode *node)
+static void iFlatTreeRemoveMarkedNodes(Ihandle *ih, iFlatTreeNode *node)
 {
   while (node)
   {
     if (node->selected)
     {
       iFlatTreeNode *brother = node->brother;
-      iFlatTreeRemoveNodeRec(node);
+      iFlatTreeRemoveNode(node);
       node = brother;
     }
     else if (node->kind == IFLATTREE_BRANCH)
     {
-      iFlatTreeRemoveMarkedNodesRec(ih, node->first_child);
+      iFlatTreeRemoveMarkedNodes(ih, node->first_child);
       node = node->brother;
     }
     else
       node = node->brother;
   }
 }
-
-static int iFlatTreeGetChildCountRec(iFlatTreeNode *node);
 
 static int iFlatTreeSetDelNodeAttrib(Ihandle* ih, int id, const char* value)
 {
@@ -3045,7 +3053,7 @@ static int iFlatTreeSetDelNodeAttrib(Ihandle* ih, int id, const char* value)
     while (child)
     {
       iFlatTreeNode *brother = child->brother;
-      iFlatTreeRemoveNodeRec(child);
+      iFlatTreeRemoveNode(child);
       child = brother;
     }
     ih->data->root_node->first_child = NULL;
@@ -3058,9 +3066,9 @@ static int iFlatTreeSetDelNodeAttrib(Ihandle* ih, int id, const char* value)
     iFlatTreeNode *node = iFlatTreeGetNode(ih, id);
     if (node)
     {
-      int count = iFlatTreeGetChildCountRec(node) + 1;
+      int count = iFlatTreeGetChildCount(node) + 1;
       iFlatTreeUnlinkNodeFromParent(node);
-      iFlatTreeRemoveNodeRec(node);
+      iFlatTreeRemoveNode(node);
       iFlatTreeRebuildArray(ih, -count);
       update = 1;
     }
@@ -3075,8 +3083,8 @@ static int iFlatTreeSetDelNodeAttrib(Ihandle* ih, int id, const char* value)
       while (child)
       {
         iFlatTreeNode *brother = child->brother;
-        count += iFlatTreeGetChildCountRec(child) + 1;
-        iFlatTreeRemoveNodeRec(child);
+        count += iFlatTreeGetChildCount(child) + 1;
+        iFlatTreeRemoveNode(child);
         child = brother;
       }
       node->first_child = NULL;
@@ -3086,7 +3094,7 @@ static int iFlatTreeSetDelNodeAttrib(Ihandle* ih, int id, const char* value)
   }
   else if (iupStrEqualNoCase(value, "MARKED"))
   {
-    iFlatTreeRemoveMarkedNodesRec(ih, ih->data->root_node->first_child);
+    iFlatTreeRemoveMarkedNodes(ih, ih->data->root_node->first_child);
     iFlatTreeRebuildArray(ih, 0);
     update = 1;
   }
@@ -3109,7 +3117,7 @@ static int iFlatTreeSetExpandAllAttrib(Ihandle* ih, const char* value)
       continue;
 
     nodes[i]->state = state;
-    nodes[i]->visible = 1;
+    nodes[i]->expanded = 1;
   }
 
   iFlatTreeRedraw(ih, 0, 1);
@@ -3142,49 +3150,46 @@ static int iFlatTreeSetCopyNodeAttrib(Ihandle* ih, int id, const char* value)
   return 0;
 }
 
-//static int iFlatTreeSetValueAttrib(Ihandle* ih, const char* value)
-//{
-//  int old_focus_id = ih->data->focus_id;
-//
-//  if (iupStrEqualNoCase(value, "ROOT") || iupStrEqualNoCase(value, "FIRST"))
-//    ih->data->focus_id = 0;
-//  else if (iupStrEqualNoCase(value, "LAST"))
-//  {
-//    int last_pos = iFlatTreeGetVisibleNodesCount(ih) - 1;
-//    ih->data->focus_id = iFlatTreeConvertPosToId(ih, last_pos);
-//  }
+static int iFlatTreeSetValueAttrib(Ihandle* ih, const char* value)
+{
+  int old_focus_id = ih->data->focus_id;
+
+  if (iupStrEqualNoCase(value, "ROOT") || iupStrEqualNoCase(value, "FIRST"))
+    ih->data->focus_id = 0;
+  else if (iupStrEqualNoCase(value, "LAST"))
+    ih->data->focus_id = iFlatTreeGetLastExpandedNodeId(ih);
 //  else if (iupStrEqualNoCase(value, "PGUP"))
 //    ih->data->focus_id = iFlatTreeFocusPageUp(ih);
 //  else if (iupStrEqualNoCase(value, "PGDN"))
 //    ih->data->focus_id = iFlatTreeFocusPageDown(ih);
-//  else if (iupStrEqualNoCase(value, "NEXT"))
-//    ih->data->focus_id = iFlatTreeGetNextVisibleNodeId(ih, ih->data->focus_id);
-//  else if (iupStrEqualNoCase(value, "PREVIOUS"))
-//    ih->data->focus_id = iFlatTreeGetPreviousVisibleNodeId(ih, ih->data->focus_id);
-//  else if (iupStrEqualNoCase(value, "CLEAR"))
-//    ih->data->focus_id = -1;
-//  else
-//  {
-//    int id = IUP_INVALID_ID;
-//    if (iupStrToInt(value, &id))
-//    {
-//      int count = iupArrayCount(ih->data->node_array);
-//      if (id >= 0 && id < count)
-//        ih->data->focus_id = id;
-//    }
-//  }
-//
-//  if (ih->data->focus_id != old_focus_id)
-//  {
+  else if (iupStrEqualNoCase(value, "NEXT"))
+    ih->data->focus_id = iFlatTreeGetNextExpandedNodeId(ih, ih->data->focus_id);
+  else if (iupStrEqualNoCase(value, "PREVIOUS"))
+    ih->data->focus_id = iFlatTreeGetPreviousExpandedNodeId(ih, ih->data->focus_id);
+  else if (iupStrEqualNoCase(value, "CLEAR"))
+    ih->data->focus_id = -1;
+  else
+  {
+    int id = IUP_INVALID_ID;
+    if (iupStrToInt(value, &id))
+    {
+      int count = iupArrayCount(ih->data->node_array);
+      if (id >= 0 && id < count)
+        ih->data->focus_id = id;
+    }
+  }
+
+  if (ih->data->focus_id != old_focus_id)
+  {
 //    int direction = (old_focus_id < ih->data->focus_id) ? IFLATTREE_DOWN : IFLATTREE_UP;
 //    if (ih->data->mark_mode == IFLATTREE_MARK_SINGLE)
 //      iFlatTreeSelectNode(ih, ih->data->focus_id, 0, 0);
-//    iFlatTreeScrollFocusVisible(ih, direction);
-//  }
-//
-//  iFlatTreeRedraw(ih, 0, 0);
-//  return 0;
-//}
+//    iFlatTreeScrollFocusExpanded(ih, direction);
+  }
+
+  iFlatTreeRedraw(ih, 0, 0);
+  return 0;
+}
 
 static char* iFlatTreeGetValueAttrib(Ihandle* ih)
 {
@@ -3417,10 +3422,10 @@ static int iFlatTreeSetDragDropTreeAttrib(Ihandle* ih, const char* value)
   if (iupStrBoolean(value))
   {
     /* Register callbacks to enable drag and drop between lists */
-//    IupSetCallback(ih, "DRAGBEGIN_CB", (Icallback)iFlatTreeDragBegin_CB);
-//    IupSetCallback(ih, "DRAGDATASIZE_CB", (Icallback)iFlatTreeDragDataSize_CB);
-//    IupSetCallback(ih, "DRAGDATA_CB", (Icallback)iFlatTreeDragData_CB);
-//    IupSetCallback(ih, "DRAGEND_CB", (Icallback)iFlatTreeDragEnd_CB);
+    IupSetCallback(ih, "DRAGBEGIN_CB", (Icallback)iFlatTreeDragBegin_CB);
+    IupSetCallback(ih, "DRAGDATASIZE_CB", (Icallback)iFlatTreeDragDataSize_CB);
+    IupSetCallback(ih, "DRAGDATA_CB", (Icallback)iFlatTreeDragData_CB);
+    IupSetCallback(ih, "DRAGEND_CB", (Icallback)iFlatTreeDragEnd_CB);
 //    IupSetCallback(ih, "DROPDATA_CB", (Icallback)iFlatTreeDropData_CB);
   }
   else
@@ -3472,7 +3477,7 @@ static char* iFlatTreeGetChildCountAttrib(Ihandle* ih, int id)
   return iupStrReturnInt(count);
 }
 
-static int iFlatTreeGetChildCountRec(iFlatTreeNode *node)
+static int iFlatTreeGetChildCount(iFlatTreeNode *node)
 {
   int count = 0;
   iFlatTreeNode *child = node->first_child;
@@ -3480,7 +3485,7 @@ static int iFlatTreeGetChildCountRec(iFlatTreeNode *node)
   while (child)
   {
     if (child->first_child)
-      count += iFlatTreeGetChildCountRec(child->first_child);
+      count += iFlatTreeGetChildCount(child->first_child);
     count++;
     child = child->brother;
   }
@@ -3495,7 +3500,7 @@ static char* iFlatTreeGetTotalChildCountAttrib(Ihandle* ih, int id)
   if (!node)
     return NULL;
 
-  count = iFlatTreeGetChildCountRec(node);
+  count = iFlatTreeGetChildCount(node);
 
   return iupStrReturnInt(count);
 }
@@ -3580,14 +3585,14 @@ static int iFlatTreeSetTopItemAttrib(Ihandle* ih, const char* value)
   int id = 0;
   if (iupStrToInt(value, &id))
   {
-    int count = iupArrayCount(ih->data->node_array);
-    int posy = 0;
+    int node_y;
 
-    if (id < 0 || id > count-1)
+    iFlatTreeNode *node = iFlatTreeGetNode(ih, id);
+    if (!node)
       return 0;
 
-//    posy = iFlatTreeConvertIdToY(ih, id, NULL);
-    IupSetInt(ih, "POSY", posy);
+    node_y = iFlatTreeGetNodeY(ih, node);
+    IupSetInt(ih, "POSY", node_y);
 
     iFlatTreeRedraw(ih, 0, 0);
   }
@@ -3699,7 +3704,7 @@ static void iFlatTreeSetChildrenPositionMethod(Ihandle* ih, int x, int y)
 static void iFlatTreeDestroyMethod(Ihandle* ih)
 {
   if (ih->data->root_node->first_child)
-    iFlatTreeRemoveNodeRec(ih->data->root_node->first_child);
+    iFlatTreeRemoveNode(ih->data->root_node->first_child);
 
   iupArrayDestroy(ih->data->node_array);
 
@@ -3711,6 +3716,9 @@ static int iFlatTreeCreateMethod(Ihandle* ih, void** params)
   Ihandle* text;
   int high_dpi = iupRound(iupdrvGetScreenDpi()) > 120;
   (void)params;
+
+  if (IupGetInt(NULL, "TREEIMAGE24"))
+    high_dpi = 1;
 
   /* free the data allocated by IupCanvas, and reallocate */
   free(ih->data);
@@ -3738,8 +3746,7 @@ static int iFlatTreeCreateMethod(Ihandle* ih, void** params)
   ih->data->indentation = high_dpi? 24 : 16;
   ih->data->toggle_size = ih->data->indentation;
   ih->data->button_size = high_dpi ? 16 : 9;
-  ih->data->dragover_pos = -1;
- // ih->data->min_clock = 500;
+  ih->data->dragover_id = -1;
 
   ih->data->root_node = (iFlatTreeNode*)malloc(sizeof(iFlatTreeNode));
   memset(ih->data->root_node, 0, sizeof(iFlatTreeNode));
@@ -3747,14 +3754,16 @@ static int iFlatTreeCreateMethod(Ihandle* ih, void** params)
   ih->data->root_node->depth = -1;
   ih->data->root_node->kind = IFLATTREE_BRANCH;
   ih->data->root_node->state = IFLATTREE_EXPANDED;
-  ih->data->root_node->visible = 1;
+  ih->data->root_node->expanded = 1;
 
   ih->data->node_array = iupArrayCreate(10, sizeof(iFlatTreeNode*));
 
+  IupSetCallback(ih, "_IUP_XY2POS_CB", (Icallback)iFlatTreeConvertXYToId);
+
   /* internal callbacks */
   IupSetCallback(ih, "ACTION", (Icallback)iFlatTreeRedraw_CB);
-  //IupSetCallback(ih, "BUTTON_CB", (Icallback)iFlatTreeButton_CB);
-  //IupSetCallback(ih, "MOTION_CB", (Icallback)iFlatTreeMotion_CB);
+  IupSetCallback(ih, "BUTTON_CB", (Icallback)iFlatTreeButton_CB);
+  IupSetCallback(ih, "MOTION_CB", (Icallback)iFlatTreeMotion_CB);
   IupSetCallback(ih, "RESIZE_CB", (Icallback)iFlatTreeResize_CB);
   IupSetCallback(ih, "FOCUS_CB", (Icallback)iFlatTreeFocus_CB);
   //IupSetCallback(ih, "K_CR", (Icallback)iFlatTreeKCr_CB);
@@ -3787,6 +3796,9 @@ Iclass* iupFlatTreeNewClass(void)
 {
   Iclass* ic = iupClassNew(iupRegisterFindClass("canvas"));
   int high_dpi = iupRound(iupdrvGetScreenDpi()) > 120;
+
+  if (IupGetInt(NULL, "TREEIMAGE24"))
+    high_dpi = 1;
 
   ic->name = "flattree";
   ic->format = NULL;  /* no parameters */
@@ -3894,7 +3906,7 @@ Iclass* iupFlatTreeNewClass(void)
 
   /* IupFlatTree Attributes - FOCUS NODE */
 
-//  iupClassRegisterAttribute(ic, "VALUE", iFlatTreeGetValueAttrib, iFlatTreeSetValueAttrib, NULL, NULL, IUPAF_NOT_MAPPED | IUPAF_NO_SAVE | IUPAF_NO_DEFAULTVALUE | IUPAF_NO_INHERIT);
+  iupClassRegisterAttribute(ic, "VALUE", iFlatTreeGetValueAttrib, iFlatTreeSetValueAttrib, NULL, NULL, IUPAF_NOT_MAPPED | IUPAF_NO_SAVE | IUPAF_NO_DEFAULTVALUE | IUPAF_NO_INHERIT);
   iupClassRegisterAttribute(ic, "HASFOCUS", iFlatTreeGetHasFocusAttrib, NULL, NULL, NULL, IUPAF_NOT_MAPPED | IUPAF_READONLY | IUPAF_NO_INHERIT);
   iupClassRegisterAttribute(ic, "FOCUSFEEDBACK", NULL, NULL, IUPAF_SAMEASSYSTEM, "YES", IUPAF_NOT_MAPPED | IUPAF_NO_INHERIT);
 
@@ -3941,7 +3953,6 @@ Iclass* iupFlatTreeNewClass(void)
         EMPTYTOGGLE==EMPTYAS3STATE
   ----------------------
   DROPEQUALDRAG ??
-  _IUP_XY2POS_CB
   ----------------------
   NODETIP
   NODEACTIVE
