@@ -1178,7 +1178,7 @@ static int iFlatListDragDataSize_CB(Ihandle* ih, char* type)
 static int iFlatListDragBegin_CB(Ihandle* ih, int x, int y)
 {
   int pos = IupConvertXYToPos(ih, x, y);
-  iupAttribSetInt(ih, "_IUP_LIST_SOURCEPOS", pos);
+  iupAttribSetInt(ih, "_IUP_LIST_SOURCEPOS", pos);  /* works for IupList and IupFlatList */
   return IUP_DEFAULT;
 }
 
