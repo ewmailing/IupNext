@@ -2433,6 +2433,8 @@ static int iFlatTreeDropData_CB(Ihandle *ih, char* type, void* data, int len, in
   Ihandle* ih_source;
   memcpy((void*)&ih_source, data, len);  /* but ih_source can be IupTree or IupFlatTree, can NOT use ih_source->data here */
 
+  // TODO support IupTree???
+
   /* A copy operation is enabled with the CTRL key pressed, or else a move operation will occur.
      A move operation will be possible only if the attribute DRAGSOURCEMOVE is Yes.
      When no key is pressed the default operation is copy when DRAGSOURCEMOVE=No and move when DRAGSOURCEMOVE=Yes. */
@@ -2456,7 +2458,6 @@ static int iFlatTreeDropData_CB(Ihandle *ih, char* type, void* data, int len, in
 
   /* Copy the node and its children to the new position */
   iFlatTreeDragDropCopyNode(ih_source, ih, itemSrc, itemDst, is_ctrl);
-
 
   (void)type;
   return IUP_DEFAULT;
@@ -3426,7 +3427,7 @@ static int iFlatTreeSetDragDropTreeAttrib(Ihandle* ih, const char* value)
     IupSetCallback(ih, "DRAGDATASIZE_CB", (Icallback)iFlatTreeDragDataSize_CB);
     IupSetCallback(ih, "DRAGDATA_CB", (Icallback)iFlatTreeDragData_CB);
     IupSetCallback(ih, "DRAGEND_CB", (Icallback)iFlatTreeDragEnd_CB);
-//    IupSetCallback(ih, "DROPDATA_CB", (Icallback)iFlatTreeDropData_CB);
+    IupSetCallback(ih, "DROPDATA_CB", (Icallback)iFlatTreeDropData_CB);
   }
   else
   {
