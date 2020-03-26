@@ -2605,7 +2605,7 @@ static void gtkTreeToggleCB(Ihandle *ih, GtkTreeIter *iterItem, int check)
   if (iupAttribGetBoolean(ih, "MARKWHENTOGGLE"))
   {
     int id = gtkTreeFindNodeId(ih, iterItem);
-    IupSetAttributeId(ih, "MARKED", id, check? "Yes" : "No");
+    IupSetAttributeId(ih, "MARKED", id, check > 0? "Yes" : "No");
   }
 }
 
