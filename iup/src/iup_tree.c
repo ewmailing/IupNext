@@ -897,6 +897,7 @@ Iclass* iupTreeNewClass(void)
   iupClassRegisterCallback(ic, "RIGHTCLICK_CB",     "i");
   iupClassRegisterCallback(ic, "MOTION_CB", "iis");
   iupClassRegisterCallback(ic, "BUTTON_CB", "iiiis");
+  iupClassRegisterCallback(ic, "NODEREMOVED_CB", "s");
 
   /* Common Callbacks */
   iupBaseRegisterCommonCallbacks(ic);
