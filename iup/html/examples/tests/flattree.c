@@ -602,13 +602,13 @@ static void init_tree_nodes(void)
   IupSetAttributeHandle(tree, "IMAGE2", load_image_TestImage());
   //  IupSetAttribute(tree, "IMAGE6", IupGetAttribute(tree, "IMAGE8"));
 
-  IupSetAttribute(tree, "BACKCOLOR3", "0 255 0");
-  IupSetAttribute(tree, "BACKCOLOR4", "0 255 0");
+//  IupSetAttribute(tree, "BACKCOLOR3", "0 255 0");
+//  IupSetAttribute(tree, "BACKCOLOR4", "0 255 0");
   IupSetAttribute(tree, "BACKCOLOR5", "0 255 0");
 
   IupSetAttribute(tree, "COLOR4", "255 0 0");
   IupSetAttribute(tree, "COLOR5", "255 0 0");
-  IupSetAttribute(tree, "COLOR6", "255 0 0");
+//  IupSetAttribute(tree, "COLOR6", "255 0 0");
 
   IupSetAttribute(tree, "TITLEFONTSTYLE3", "Bold");
 
@@ -699,13 +699,13 @@ static void init_tree_2_nodes(void)
   IupSetAttributeHandle(tree2, "IMAGE7", load_image_TestImage());
   //  IupSetAttribute(tree2, "IMAGE6", IupGetAttribute(tree2, "IMAGE8"));
 
-  IupSetAttribute(tree2, "ITEMBGCOLOR3", "0 255 0");
-  IupSetAttribute(tree2, "ITEMBGCOLOR4", "0 255 0");
+//  IupSetAttribute(tree2, "ITEMBGCOLOR3", "0 255 0");
+//  IupSetAttribute(tree2, "ITEMBGCOLOR4", "0 255 0");
   IupSetAttribute(tree2, "ITEMBGCOLOR5", "0 255 0");
 
   IupSetAttribute(tree2, "ITEMFGCOLOR4", "255 0 0");
   IupSetAttribute(tree2, "ITEMFGCOLOR5", "255 0 0");
-  IupSetAttribute(tree2, "ITEMFGCOLOR6", "255 0 0");
+//  IupSetAttribute(tree2, "ITEMFGCOLOR6", "255 0 0");
 
   IupSetAttribute(tree2, "ITEMFONTSTYLE3", "Bold");
 

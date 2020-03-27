@@ -1579,6 +1579,22 @@ wb_usr.tree =
               }
             },
             {
+              name= {nl= "IupFlatTree"},
+              link= "elem/iupflattree.html",
+
+              folder=
+              {
+                {
+                  name= {nl= "Attributes"},
+                  link= "elem/iupflattree_attrib.html"
+                },
+                {
+                  name= {nl= "Callbacks"},
+                  link= "elem/iupflattree_cb.html"
+                }
+              }
+            },
+            {
               name= {nl= "IupVal"},
               link= "elem/iupval.html"
             },

@@ -2,7 +2,7 @@
 <html>
 <head>
 <meta http-equiv="Content-Language" content="en-us">
-<title>IupTree Attributes</title>
+<title>IupFlatTree Attributes</title>
 <link rel="stylesheet" type="text/css" href="../../style.css">
 <style type="text/css">
 .style3 {
@@ -18,11 +18,11 @@
 </head>
 <body>
 
-<h2>IupTree Attributes</h2>
+<h2>IupFlatTree Attributes</h2>
 <h3><a name="global">General</a></h3>
-<p><strong>AUTOREDRAW</strong> [Windows] (<font size="3">non inheritable</font>): 
+<p><strong>AUTOREDRAW</strong> (<font size="3">non inheritable</font>): 
 automatically redraws the tree when something has change. Set to NO to change 
-many nodes without updating the display. Default: &quot;YES&quot;. (since 3.3)</p>
+many nodes without updating the display. Default: &quot;YES&quot;.</p>
 
 <p><a href="../attrib/iup_bgcolor.html">BGCOLOR</a>: Background color of the 
 tree. Default: the global attribute TXTBGCOLOR.</p>
@@ -30,45 +30,45 @@ tree. Default: the global attribute TXTBGCOLOR.</p>
   
 <p><a href="../attrib/iup_expand.html">EXPAND</a> (<font size="3">non inheritable</font>): 
 The default value is &quot;YES&quot;.</p>
+<p><strong>BORDERCOLOR</strong>: color used for the internal border. Default: &quot;50 150 255&quot;. 
+This is for the internal border. </p>
+<p><strong>BORDERWIDTH</strong>: line width used for the internal border. Default: &quot;0&quot;. 
+The internal borders are 
+hidden by simply setting 
+this value to 0. It is drawn inside the canvas, so inside the scrollbars.</p>
 
 <p><strong>FGCOLOR</strong>: default text foreground color. Once each node is 
-created it will not change its color when FGCOLOR is changed. Default: the global 
-attribute TXTFGCOLOR. (since 3.0)</p>
+created it will not change its color when FGCOLOR is changed. Default: the 
+global attribute TXTFGCOLOR. </p>
 
   
-<p><strong>HIDEBUTTONS</strong> (creation only): hide the expand and collapse 
-buttons. In GTK, branches will be only expanded programmatically. In Motif it did 
-not work and crash the test. (since 3.0) (GTK 2.12)</p>
+<p><strong>HLCOLOR</strong> (<font size="3">non inheritable</font>): the 
+background color of the selected node. Default: TXTHLCOLOR global attribute.</p>
+<p><strong>HLCOLORALPHA</strong>: the transparency used to draw the selection. 
+Default: 128.</p>
 
   
-<p><strong>HIDELINES</strong> (creation only): hide the lines that connect the 
-nodes in the hierarchy. (since 3.0) (GTK 2.10)</p>
-<p><strong>HLCOLOR</strong> [Windows and Motif Only] (<font size="3">non inheritable</font>): 
-the background color of the selected node. Default: TXTHLCOLOR global attribute. 
-(since 3.16)</p>
+<p><strong>ICONSPACING </strong>(<font SIZE="3">non inheritable</font>): spacing between the 
+image and the text. Default: &quot;2&quot;.</p>
 
   
-<p><strong>INDENTATION</strong>: sets the indentation level in pixels. The visual 
-effect of changing the indentation is highly system dependent. In GTK it acts as 
-an additional indent value, and the lines do not follow the extra indent. In Windows 
-is limited to a minimum of 5 pixels. (since 3.0)&nbsp; (GTK 2.12)</p>
-<p><strong>INFOTIP</strong> [Windows Only]: the TIP is shown every time a node 
-is highlighted. This is the default behavior for TIPs in native tree controls in 
-Windows, if set to No then it will use the regular TIP behavior. Default: Yes. 
-(since 3.14)</p>
+<p><strong>INDENTATION</strong>: sets the indentation level in pixels. Default: 
+16 for standard resolution, 24 for high resolution display </p>
+<p><strong>INFOTIP</strong>: the TIP is shown every time a node is highlighted. 
+Default: Yes.</p>
 
   
 <p> 
 <a href="../attrib/iup_rastersize.html">RASTERSIZE</a> (<font size="3">non inheritable</font>): 
 the initial size is &quot;400x200&quot;. Set to NULL to allow the automatic 
 layout use smaller values.</p>
-<p><strong>SPACING</strong>: vertical internal padding for each node. Notice that the distance between each 
-node will be actually 2x the spacing. (since 3.0)</p>
+<p><strong>SPACING</strong>: vertical space between nodes. Notice 
+that this is not the same as the IupTree. </p>
 
   
-<p><strong>TOPITEM</strong> (write-only): position the given node identifier at the top of 
-the tree or near to make it visible. If any parent node is collapsed then they 
-are automatically expanded. (since 3.0)</p>
+<p><strong>TOPITEM</strong> (write-only): position the given node identifier at 
+the top of the tree or near to make it visible. If any parent node is collapsed 
+then they are automatically expanded. </p>
 
   
   
@@ -89,36 +89,45 @@ MAXSIZE</a>,
     <a href="../attrib/iup_zorder.html">ZORDER</a>, <a href="../attrib/iup_visible.html">VISIBLE</a>,
 <a href="../attrib/iup_theme.html">THEME</a>: 
 also accepted.&nbsp;</p>
-<h3><a name="Expanders">Expanders&nbsp;</a> (<font size="3">non inheritable</font>)</h3>
+<h3><a name="Expanders">Expanders</a>&nbsp;(<font size="3">non inheritable</font>)</h3>
 
   
-<p><strong>HIDEBUTTONS</strong> (creation only): hide the expand and collapse 
-buttons. In GTK, branches will be only expanded programmatically. In Motif it did 
-not work and crash the test. (since 3.0) (GTK 2.12)</p>
+<p><strong>HIDEBUTTONS</strong>: hide the expand and collapse 
+buttons. </p>
 
   
-<p><strong>HIDELINES</strong> (creation only): hide the lines that connect the 
-nodes in the hierarchy. (since 3.0) (GTK 2.10)</p>
-<h3><a name="nodes">Nodes</a>&nbsp; (<font size="3">non inheritable</font>)</h3>
+<p><strong>HIDELINES</strong>: hide the lines that connect the 
+nodes in the hierarchy.</p>
+<p>LINECOLOR:</p>
+<p>BUTTONBGCOLOR:</p>
+<p>BUTTONFGCOLOR:</p>
+<p>BUTTONBRDCOLOR:</p>
+<p><strong>BUTTONSIZE</strong>: size of the expander button square. Default: 9 
+for standard resolution, 16 for high resolution display</p>
+<p>BUTTONPLUSIMAGE:</p>
+<p>BUTTONMINUSIMAGE:</p>
+<h3><a name="nodes">Nodes</a>&nbsp;(<font size="3">non inheritable</font>)</h3>
     <p>For these attributes &quot;id&quot; is the specified node identifier. If 
 	&quot;id&quot; is 
 	empty or invalid, then the focus node is used as the specified node. </p>
 
   
-<p><strong>COUNT</strong> (read only) (<font size="3">non inheritable</font>): returns the total number of 
-nodes in the 
-tree. (since 3.0)</p>
+<p><strong>COUNT</strong> (read only) (<font size="3">non inheritable</font>): 
+returns the total number of nodes in the tree. </p>
 
   
-<p><strong>CHILDCOUNT<em>id</em></strong> (read only): returns the immediate children 
-	count of the specified branch. It 
-	does not count children of child that are branches. (since 3.0)</p>
-<p><strong>TOTALCHILDCOUNT<em>id</em></strong> (read only): returns the total children 
-	count of the specified branch. It 
-	counts all grandchildren. (since 3.0)</p>
-<p><strong>ROOTCOUNT</strong> (read only): returns the number of root nodes. (since 3.23)</p>
+<p><strong>CHILDCOUNT<em>id</em></strong> (read only): returns the immediate 
+children count of the specified branch. It does not count children of child that 
+are branches. </p>
+<p><strong>TOTALCHILDCOUNT<em>id</em></strong> (read only): returns the total 
+children count of the specified branch. It counts all grandchildren. </p>
+<p><strong>ROOTCOUNT</strong> (read only): returns the number of root nodes. </p>
 <p><strong>COLORid</strong>: text foreground color of the specified node. The value should be a string in the format &quot;R G B&quot; where R, G, B are numbers 
   from 0 to 255.</p>
+<p><strong>COLOR</strong><em><strong>id</strong></em>: foreground color of 
+the title at the given id. If not defined FGCOLOR is used.</p>
+<p><strong>BACKCOLOR</strong><em><strong>id</strong></em>: background color of 
+the title at the given id. If not defined BGCOLOR is used.</p>
 <p><strong>DEPTHid </strong>(read only): returns the depth of the specified 
 node. The first node has depth=0, its 
 immediate children has depth=1, their children has depth=2 and so on.</p>
@@ -136,24 +145,21 @@ immediate children has depth=1, their children has depth=2 and so on.</p>
 <p><strong>PARENT<em>id</em> </strong>(read only): returns the parent of the 
 specified node.</p>
 <p><strong>NEXT<em>id</em> </strong>(read only): returns the next brother (same 
-depth) of the 
-specified node. Returns NULLs if at last child node of the parent (at the same 
-depth). (since 3.23)</p>
+depth) of the specified node. Returns NULLs if at last child node of the parent 
+(at the same depth). </p>
 <p><strong>PREVIOUS<em>id</em> </strong>(read only): returns the previous 
 brother (same depth) of the 
 specified node. Returns NULLs if at first child node of the parent (at the same 
-depth). (since 3.23)&nbsp;</p>
+depth). &nbsp;</p>
 <p><strong>LAST<em>id</em> </strong>(read only): returns the last brother (same 
-depth) of the 
-specified node. (since 3.23)</p>
+depth) of the specified node. </p>
 <p><strong>FIRST<em>id</em> </strong>(read only): returns the first brother 
 (same depth) of the 
 specified node. This is the same as getting the first child of the parent of the 
-given node. If the specified node is the first child returns the specified node. (since 3.23)&nbsp;</p>
+given node. If the specified node is the first child returns the specified node. 
+&nbsp;</p>
 <p><strong>STATEid</strong>: the state of the specified branch. Returns NULL for 
-a LEAF. In Windows, it 
-will be effective only if the branch has children. In GTK, it will be effective 
-only if the parent is expanded. Possible values: </p>
+a LEAF. Possible values: </p>
     <blockquote>
     <ul>
       <li>&quot;EXPANDED&quot;:
@@ -165,43 +171,43 @@ only if the parent is expanded. Possible values: </p>
     </blockquote>
 <p><strong>TITLEid</strong>: the text label of the specified node.</p>
 <p><strong>TITLEFONTid</strong>: the text font of the specified node. The format 
-is the same as the <a href="../attrib/iup_font.html">FONT</a> attribute. (since 
-3.0)</p>
+is the same as the <a href="../attrib/iup_font.html">FONT</a> attribute. </p>
 <p><strong>TITLEFONTSTYLEid</strong>: changes the font style of the specified 
-node. Actually changes the <strong>TITLEFONTid</strong> attribute. (since 
-3.19.1)</p>
+node. Actually changes the <strong>TITLEFONTid</strong> attribute.</p>
 <p><strong>TITLEFONTSIZEid</strong>: changes the font size of the specified 
-node. Actually changes the <strong>TITLEFONTid</strong> attribute. (since 
-3.21)</p>
-<p><strong>USERDATAid</strong>: the user data associated with the specified node. (since 3.0)</p>
+node. Actually changes the <strong>TITLEFONTid</strong> attribute.</p>
+<p><strong>USERDATAid</strong>: the user data associated with the specified 
+node. </p>
 <h3><a name="Toggle">Toggle</a> (<font size="3">non inheritable</font>)</h3>
-<p><strong>SHOWTOGGLE </strong>(creation only) (<font size="3">non inheritable</font>): enables the use of toggles for all nodes of the 
-tree. Can 
-  be "YES", &quot;3STATE&quot; or NO". Default: "NO". In Motif Versions 2.1.x and 2.2.x, the images 
-are disabled (toggle and text only are drawn in nodes of the tree). (since 3.6)</p>
+<p><strong>SHOWTOGGLE</strong>: enables 
+the use of toggles for all nodes of the tree. Can be &quot;YES&quot;, &quot;3STATE&quot; or NO&quot;. 
+Default: &quot;NO&quot;.</p>
 
-<p><strong>EMPTYAS3STATE</strong> (<font size="3">non inheritable</font>) 
-[Windows Only]: when SHOWTOGGLE=Yes, the empty space left in nodes that 
-TOGGLEVISIBLEid=NO is filled with the image of the 3state toggle. Can be Yes or 
-NO. Default: No. (since 3.11.2)</p>
+<p><strong>EMPTYTOGGLE</strong>: when SHOWTOGGLE=Yes, the empty space left in nodes that TOGGLEVISIBLEid=NO is 
+filled with a blank space. Can be Yes or NO. Default: No.</p>
 
   
-<p><strong>TOGGLEVALUEid</strong> (<font size="3">non inheritable</font>): 
-defines the toggle state. Values can be &quot;ON&quot; or &quot;OFF&quot;. If 
-SHOW3STATE=YES then can 
-also be &quot;NOTDEF&quot;. Default: &quot;OFF&quot;. (Since 3.6)</p>
-<p><strong>TOGGLEVISIBLEid</strong> (<font size="3">non inheritable</font>): 
-defines the toggle visible state. Values can be &quot;Yes&quot; or &quot;No&quot;. Default: &quot;Yes&quot;. (Since 3.8)</p>
+<p><strong>TOGGLEVALUEid</strong>: 
+defines the toggle state. Values can be &quot;ON&quot; or &quot;OFF&quot;. If SHOW3STATE=YES then 
+can also be &quot;NOTDEF&quot;. Default: &quot;OFF&quot;.</p>
+<p><strong>TOGGLEVISIBLEid</strong>: 
+defines the toggle visible state. Values can be &quot;Yes&quot; or &quot;No&quot;. Default: &quot;Yes&quot;.</p>
+<p><strong>TOGGLEBGCOLOR</strong>: background color of the toggle. Default: 
+&quot;TXTBGCOLOR&quot;</p>
+<p><strong>TOGGLEFGCOLOR</strong>: foreground color of the toggle, use to draw 
+the frame and the check mark. Default: &quot;TXTFGCOLOR&quot;</p>
+<p><strong>TOGGLESIZE</strong>: size of the toggle square. Default: 16 for 
+standard resolution, 24 for high resolution display</p>
 <h3><a name="images">Images</a> (<font size="3">non inheritable</font>)</h3>
 <p><strong>IMAGEid</strong> (write only):
   image name to be used in the specified node, where id is the specified node 
 identifier. Use <a href="../func/iupsethandle.html">IupSetHandle</a> or
 	<a href="../func/iupsetattributehandle.html">IupSetAttributeHandle</a> to 
 	associate an image to a name. See also <a href="iupimage.html">IupImage</a>. 
-In Windows and Motif set the BGCOLOR attribute before setting the image. If node 
-is a branch it is used when collapsed. In Windows all images must have 
-the same size. In other systems only expanded and collpased images 
-must have the same size. </p>
+If node 
+is a branch it is used when collapsed. All images do NOT need to have the same 
+size, but it is recommended that a branch expanded and collapse images to have 
+the same size. </p>
 <p><strong>IMAGEEXPANDEDid</strong> (write only):
   same as the IMAGE attribute but used for expanded branches.</p>
 <p><strong>IMAGELEAF</strong>:
@@ -210,24 +216,30 @@ must have the same size. </p>
 (blank sheet of paper) and &quot;IMGPAPER&quot; (written sheet of paper) are 
     also available. If BGCOLOR is set the image is automatically updated. This 
 image defines the available space for the image in all nodes. &quot;IMGEMPTY&quot; can be 
-used as a totally transparent image (since 3.23).</p>
-<p><strong>IMAGEBRANCHCOLLAPSED</strong>:
-  the image name that will be shown for all collapsed branches.
-    Default:
-    &quot;IMGCOLLAPSED&quot; (a closed folder). If BGCOLOR is set the image is automatically 
-updated.</p>
-<p><strong>IMAGEBRANCHEXPANDED</strong>:
-  the image name that will be shown for all expanded branches.
-    Default:
-    &quot;IMGEXPANDED&quot; (an open folder). If BGCOLOR is set the image is automatically 
-updated.</p>
+used as a totally transparent image .</p>
+<p><strong>IMAGEBRANCHCOLLAPSED</strong>: the image name that will be shown for 
+all collapsed branches. Default: &quot;IMGCOLLAPSED&quot; (a closed folder).</p>
+<p><strong>IMAGEBRANCHEXPANDED</strong>: the image name that will be shown for 
+all expanded branches. Default: &quot;IMGEXPANDED&quot; (an open folder).</p>
+
+
+  <p><strong>BACKIMAGE</strong>:
+  image name to be used as background. Use
+	<a href="../func/iupsethandle.html">IupSetHandle</a> or
+	<a href="../func/iupsetattributehandle.html">IupSetAttributeHandle</a> to 
+	associate an image to a name. See also
+	<a href="../elem/iupimage.html">IupImage</a>. </p>
+<p><strong>BACKIMAGEZOOM</strong>: if 
+set the back image will be zoomed to occupy the full background. Aspect ratio is 
+NOT preserved. Can be Yes or No. Default: No.</p>
+
 <h3><a name="focus">Focus</a></h3>
 <p><strong>VALUE</strong> (<font size="3">non inheritable</font>):
   The focus node identifier. When retrieved but there isn't a node with focus it 
 returns 0 if there are any nodes, and returns -1 if there are no nodes. When 
 changed and MARKMODE=SINGLE the node is also selected. The tree is 
 always scrolled so 
-the node becomes visible. In Motif the tree will also receive the focus. Additionally accepts the values:</p>
+the node becomes visible. Additionally accepts the values:</p>
 <blockquote>
 <p class="info"><span class="style3">&quot;ROOT&quot; or &quot;FIRST&quot;:
       the first node (which is always expanded)</span><br>
@@ -240,14 +252,21 @@ first does nothing<br>
 &quot;PGDN&quot;: the next <span class="style3">expanded</span> node, ten nodes node after the focus node. If 
 at the last does nothing <br>
 &quot;PGUP&quot;: the previous <span class="style3">expanded</span> node, ten nodes before the focus node. If 
-at the first does nothing<br>&quot;CLEAR&quot;: clears the selection of the focus node. 
-(since 3.24)</p>
+at the first does nothing<br>&quot;CLEAR&quot;: clears the selection of the focus node.</p>
 </blockquote>
 
   
-<p><strong>CANFOCUS</strong> (creation only) (<font size="3">non inheritable</font>): enables the focus traversal of the control. In Windows the control will still get the focus when clicked. Default: YES. (since 3.0)</p>
+<p><strong>CANFOCUS</strong> (creation only) (<font size="3">non inheritable</font>): 
+enables the focus traversal of the control. Default: YES. </p>
 
-<p><strong>PROPAGATEFOCUS</strong>(<font size="3">non inheritable</font>): enables the focus callback forwarding to the next native parent with FOCUS_CB defined. Default: NO. (since 3.23)</p>
+<p><strong>PROPAGATEFOCUS</strong>(<font size="3">non inheritable</font>): 
+enables the focus callback forwarding to the next native parent with FOCUS_CB 
+defined. Default: NO. </p>
+<p><strong>FOCUSFEEDBACK</strong> (<font size="3">non inheritable</font>): draw 
+the focus feedback. Can be Yes or No. Default: Yes.</p>
+
+<p><strong>HASFOCUS </strong> (read-only): returns the button state if has 
+focus. Can be Yes or No.&nbsp;</p>
 
   
 <h3><a name="marks">Marks</a></h3>
@@ -273,11 +292,11 @@ specified node, where id is the specified node identifier. If id is empty or
 invalid, then 
 the focus node is used as reference node. Can be: YES or NO. Default: NO</p>
 <p><strong>MARKEDNODES</strong> (non inheritable): The selection state of all 
-nodes. It is/accepts a sequence of '+' and '-' symbols 
-indicating the state of each node ('+'=selected, '-'=unselected. When setting 
-this value, if the number of specified symbols is smaller than the total count 
-then the remaining nodes will not be changed. Can be set only when 
-MARKMODE=MULTIPLE, can also be get when MARKMODE=SINGLE. (since 3.1)</p>
+nodes. It is/accepts a sequence of '+' and '-' symbols indicating the state of 
+each node ('+'=selected, '-'=unselected. When setting this value, if the number 
+of specified symbols is smaller than the total count then the remaining nodes 
+will not be changed. Can be set only when MARKMODE=MULTIPLE, can also be get 
+when MARKMODE=SINGLE.</p>
 <p><strong>MARKMODE</strong>: defines how the nodes can be 
 selected. Can be: 
 SINGLE or MULTIPLE. Default: SINGLE.</p>
@@ -286,9 +305,9 @@ SINGLE or MULTIPLE. Default: SINGLE.</p>
   marking, used when MARK=BLOCK. The value must be the node identifier.
     Default:
     0 (first node).</p>
-<p><strong>MARKWHENTOGGLE</strong> (<font size="3">non inheritable</font>) [GTK 
-and Windows Only]: selects or clears the selection of a node when its toggle is 
-changed. Works only if the node has a toggle. Default: No. (Since 3.17)</p>
+<p><strong>MARKWHENTOGGLE</strong> (<font size="3">non inheritable</font>): 
+selects or clears the selection of a node when its toggle is changed. Works only 
+if the node has a toggle. Default: No.</p>
 <h3><a name="tree">Hierarchy</a>&nbsp; (<font size="3">non inheritable</font>)</h3>
     <p>For these attributes &quot;id&quot; is the specified node identifier. If 
 	&quot;id&quot; is 
@@ -300,9 +319,6 @@ child. Possible values: &quot;YES&quot; =
     The branches will be created expanded; &quot;NO&quot; =
     The branches will be created collapsed. Default:
     &quot;YES&quot;.</p>
-<p><strong>ADDROOT</strong> (<font size="3">non inheritable</font>): 
-automatically adds an empty branch as the first node when the tree is mapped. 
-But this does not prevents the tree to have more nodes at the first depth. Default: &quot;YES&quot;. (Since 3.1)</p>
 <p><strong>ADDLEAF</strong><b>id</b><strong> </strong>(write only):
   Adds a new leaf 
 after the reference node, where id is the reference node identifier. Use id=-1 to add 
@@ -316,27 +332,24 @@ happens. If the reference node is a branch then the depth of the new node is one
 depth increment from the depth of the reference node, if the reference node is a 
 leaf then the new node has the same depth. If you need to 
 add a node after a specified node but at a different depth use <strong>
-INSERTLEAF</strong>. Ignored if set before map. </p>
+INSERTLEAF</strong>.&nbsp; </p>
 <p><strong>ADDBRANCHid </strong>(write only):
   Same as <strong>ADDLEAF</strong> for branches. Branches can be created 
-expanded or collapsed depending on <strong>ADDEXPANDED</strong>. Ignored if set 
-before map. </p>
+expanded or collapsed depending on <strong>ADDEXPANDED</strong>.&nbsp; </p>
 
 <p><strong>COPYNODEid </strong>(write only): Copies a node and its children, 
-where id is the specified node identifier. The value is the destination node identifier. If 
-the destination node is a branch and it is expanded, then the specified node is 
-inserted as the first child of the destination node. If the branch is not 
-expanded or the destination node is a leaf, then it is inserted as the next 
-brother of the leaf. The specified node is not changed. All node attributes are 
-copied, except user data. Ignored if set before map. (since 3.0)</p>
+where id is the specified node identifier. The value is the destination node 
+identifier. If the destination node is a branch and it is expanded, then the 
+specified node is inserted as the first child of the destination node. If the 
+branch is not expanded or the destination node is a leaf, then it is inserted as 
+the next brother of the leaf. The specified node is not changed. All node 
+attributes are copied, except user data.&nbsp; </p>
 
 <p><strong>DELNODEid </strong>(write only):
-  Removes a node and/or its children, where id is the specified node identifier. 
-Ignored if set before map. Possible values:</p>
+  Removes a node and/or its children, where id is the specified node identifier.&nbsp; Possible values:</p>
 <blockquote>
 <ul>
-  <li>&quot;ALL&quot;: deletes all nodes, id is ignored (Since 3.1). Notice that 
-  this will also deletes the root node.</li>
+  <li>&quot;ALL&quot;: deletes all nodes, id is ignored. </li>
 	<li>&quot;SELECTED&quot;:
     deletes the specified node and its children</li>
   <li>&quot;CHILDREN&quot;:
@@ -348,23 +361,23 @@ Ignored if set before map. Possible values:</p>
 </ul>
 </blockquote>
 <p><strong>EXPANDALL </strong>(write only): expand or contracts all nodes. Can 
-be YES (expand all), or NO (contract all). (since 3.0)</p>
+be YES (expand all), or NO (contract all). </p>
 
 <p><strong>INSERTLEAFid</strong>, <strong>INSERTBRANCHid </strong>
-(write only): Same as <strong>ADDLEAF</strong> and <strong>ADDBRANCH</strong> but 
-the depth of the new node is always the same of the reference node. If the 
+(write only): Same as <strong>ADDLEAF</strong> and <strong>ADDBRANCH</strong> 
+but the depth of the new node is always the same of the reference node. If the 
 reference node is a leaf, then the id of the new node will be the id of the 
 reference node + 1. If the reference node is a branch the id of the new node 
 will be the id of the reference node + 1 + the total number of child nodes of 
-the reference node. (since 3.0)</p>
+the reference node. </p>
 
 <p><strong>MOVENODEid </strong>(write only): Moves a node and its children, 
-where id is the specified node identifier. The value is the destination node identifier. If 
-the destination node is a branch and it is expanded, then the specified node is 
-inserted as the first child of the destination node. If the branch is not 
-expanded or the destination node is a leaf, then it is inserted as the next 
-brother of the leaf. The specified node is removed. User data and all node 
-attributes are preserved. Ignored if set before map. (since 3.0)</p>
+where id is the specified node identifier. The value is the destination node 
+identifier. If the destination node is a branch and it is expanded, then the 
+specified node is inserted as the first child of the destination node. If the 
+branch is not expanded or the destination node is a leaf, then it is inserted as 
+the next brother of the leaf. The specified node is removed. User data and all 
+node attributes are preserved.&nbsp; </p>
 <h3><a name="edit">Editing</a></h3>
 <p><b>RENAME </b>(write only): Forces a rename action to take place. Valid only 
 when SHOWRENAME=YES.</p>
@@ -380,32 +393,32 @@ after SHOWRENAME_CB is called and before the text box is shown.</p>
   of the text box when in-place renaming. Same as the SELECTION attribute for
 <a href="iuptext.html#Attributes">IupText</a>, but here is used only once after SHOWRENAME_CB 
 is called and before the text box is shown.</p>
-<p><strong>SHOWRENAME</strong> (creation in Windows) (<font size="3">non inheritable</font>): Allows the in place rename of a 
-node. Default:
-  &quot;NO&quot;. Since IUP 3.0, F2 and clicking twice only starts to rename a 
-node if SHOWRENAME=Yes. In Windows must be set to YES before map, but can be 
-changed later (since 3.3).</p>
+<p><strong>SHOWRENAME</strong> (<font size="3">non inheritable</font>): Allows 
+the in place rename of a node. Default: &quot;NO&quot;. F2 and clicking twice only starts 
+to rename a node if SHOWRENAME=Yes.</p>
+
 <h3><a name="DragDrop">Drag&amp;Drop</a></h3>
-<p><strong>SHOWDRAGDROP</strong> (creation only) (<font size="3">non inheritable</font>): Enables the 
+<p><strong>SHOWDRAGDROP</strong> (<font size="3">non inheritable</font>): Enables the 
 internal drag and drop of 
 nodes, and enables the <strong>DRAGDROP_CB</strong> callback. Default:
   &quot;NO&quot;. Works only if MARKMODE=SINGLE. 
-<a href="../attrib/iup_dragdrop.html">Drag &amp; Drop</a> attributes<span id="result_box0" class="" lang="en"><span class="hps"> 
+<a href="../attrib/iup_dragdrop.html">Drag &amp; Drop</a> attributes<span id="result_box1" class="" lang="en"><span class="hps"> 
 are NOT used.</span></span></p>
 <p><strong>DRAGDROPTREE</strong> (<font SIZE="3">non inheritable</font>): 
 prepare the 
 <a href="../attrib/iup_dragdrop.html">Drag &amp; Drop</a> callbacks to support drag and drop of nodes between trees, in the same IUP application. 
-<a href="../attrib/iup_dragdrop.html">Drag &amp; Drop</a> attributes<span id="result_box" class="" lang="en"><span class="hps"> 
+<a href="../attrib/iup_dragdrop.html">Drag &amp; Drop</a> attributes<span id="result_box2" class="" lang="en"><span class="hps"> 
 still need to be set in order to activate the drag &amp; drop support, so the 
-application can control if this tree will be source and/or target. </span></span>Default: NO. (since 3.10)</p>
-<p><strong>DROPFILESTARGET</strong> [Windows and GTK Only] (<font SIZE="3">non inheritable</font>): Enable or disable the drop of 
+application can control if this tree will be source and/or target. </span></span>
+Default: NO.</p>
+<p><strong>DROPFILESTARGET</strong> (<font SIZE="3">non inheritable</font>): Enable or disable the drop of 
 <span class="style5">files</span>. Default: NO, but if DROPFILES_CB is defined when the element is mapped 
-then it will be automatically enabled. This is NOT related to the drag&amp;drop of 
-nodes inside the tree. (since 3.0)</p>
+then it will be automatically enabled. This is NOT related to the drag&amp;drop 
+of nodes inside the tree. </p>
 <p><strong>DROPEQUALDRAG</strong> (<font SIZE="3">non inheritable</font>): if 
-enabled will allow a drop node to be equal to the drag node. Used only if SHOWDRAGDROP 
-=Yes. In the case the nodes are equal the callback return value is ignored and 
-nothing is done after. (since 3.3)</p>
+enabled will allow a drop node to be equal to the drag node. Used only if 
+SHOWDRAGDROP =Yes. In the case the nodes are equal the callback return value is 
+ignored and nothing is done after.</p>
 <p>
 <a href="../attrib/iup_dragdrop.html">Drag &amp; Drop</a> attributes are 
 supported, but
