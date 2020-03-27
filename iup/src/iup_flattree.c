@@ -678,16 +678,19 @@ static void iFlatTreeUnlinkNodeFromParent(iFlatTreeNode* node)
   }
 }
 
-static void iFlatTreeRemoveNode(iFlatTreeNode *node)
+static void iFlatTreeRemoveNode(Ihandle *ih, iFlatTreeNode *node, IFns noderemoved_cb)
 {
   /* remove node and its children */
   iFlatTreeNode *child = node->first_child;
   while (child)
   {
     iFlatTreeNode *brother = child->brother;
-    iFlatTreeRemoveNode(child);
+    iFlatTreeRemoveNode(ih, child, noderemoved_cb);
     child = brother;
   }
+
+  if (noderemoved_cb)
+    noderemoved_cb(ih, node->userdata);
 
   if (node->title)
     free(node->title);
@@ -1899,6 +1902,18 @@ static int iFlatTreeButton_CB(Ihandle* ih, int button, int pressed, int x, int y
 
   if (button == IUP_BUTTON1 && !pressed && ih->data->dragged_id > 0)
   {
+    iFlatTreeNode *srcNode = iFlatTreeGetNode(ih, ih->data->dragged_id);
+    iFlatTreeNode *dstNode = iFlatTreeGetNode(ih, id);
+    iFlatTreeNode *parent;
+    int equal_nodes = 0;
+
+    if (!dstNode || !srcNode)
+    {
+      ih->data->dragover_id = -1;
+      ih->data->dragged_id = -1;
+      return IUP_DEFAULT;
+    }
+
     if (id == -1)
     {
       if (y < 0)
@@ -1907,7 +1922,24 @@ static int iFlatTreeButton_CB(Ihandle* ih, int button, int pressed, int x, int y
         id = iFlatTreeGetLastExpandedNodeId(ih);
     }
 
-    if (iFlatTreeCallDragDropCb(ih, ih->data->dragged_id, id, iup_iscontrol(status), iup_isshift(status)) == IUP_CONTINUE)
+    /* If srcNode is an ancestor of dstNode then return */
+    parent = dstNode;
+    while (parent)
+    {
+      if (parent == srcNode)
+      {
+        if (!iupAttribGetBoolean(ih, "DROPEQUALDRAG"))
+          return IUP_DEFAULT;
+
+        equal_nodes = 1;
+        break;
+      }
+
+      parent = parent->parent;
+    }
+
+    /* internal Drag&Drop */
+    if (iFlatTreeCallDragDropCb(ih, ih->data->dragged_id, id, iup_iscontrol(status), iup_isshift(status)) == IUP_CONTINUE && !equal_nodes)
     {
       iFlatTreeNode *droppedNode = NULL;
 
@@ -2657,7 +2689,13 @@ static char* iFlatTreeGetIndentationAttrib(Ihandle* ih)
 
 static int iFlatTreeSetIndentationAttrib(Ihandle* ih, const char* value)
 {
-  iupStrToInt(value, &ih->data->indentation);
+  if (!value)
+  {
+    int high_dpi = iupRound(iupdrvGetScreenDpi()) > 120;
+    ih->data->indentation = high_dpi ? 24 : 16;
+  }
+  else
+    iupStrToInt(value, &ih->data->indentation);
   iFlatTreeRedraw(ih, 1, 1);
   return 0;
 }
@@ -2702,7 +2740,13 @@ static char* iFlatTreeGetSpacingAttrib(Ihandle* ih)
 
 static int iFlatTreeSetToggleSizeAttrib(Ihandle* ih, const char* value)
 {
-  iupStrToInt(value, &ih->data->toggle_size);
+  if (!value)
+  {
+    int high_dpi = iupRound(iupdrvGetScreenDpi()) > 120;
+    ih->data->toggle_size = high_dpi ? 24 : 16;
+  }
+  else
+    iupStrToInt(value, &ih->data->toggle_size);
   iFlatTreeRedraw(ih, 1, 1);
   return 0;
 }
@@ -3107,19 +3151,19 @@ static int iFlatTreeSetInsertBranchAttrib(Ihandle* ih, int id, const char* value
   return 0;
 }
 
-static void iFlatTreeRemoveMarkedNodes(Ihandle *ih, iFlatTreeNode *node)
+static void iFlatTreeRemoveMarkedNodes(Ihandle *ih, iFlatTreeNode *node, IFns noderemoved_cb)
 {
   while (node)
   {
     if (node->selected)
     {
       iFlatTreeNode *brother = node->brother;
-      iFlatTreeRemoveNode(node);
+      iFlatTreeRemoveNode(ih, node, noderemoved_cb);
       node = brother;
     }
     else if (node->kind == IFLATTREE_BRANCH)
     {
-      iFlatTreeRemoveMarkedNodes(ih, node->first_child);
+      iFlatTreeRemoveMarkedNodes(ih, node->first_child, noderemoved_cb);
       node = node->brother;
     }
     else
@@ -3129,6 +3173,7 @@ static void iFlatTreeRemoveMarkedNodes(Ihandle *ih, iFlatTreeNode *node)
 
 static int iFlatTreeSetDelNodeAttrib(Ihandle* ih, int id, const char* value)
 {
+  IFns noderemoved_cb = (IFns)IupGetCallback(ih, "NODEREMOVED_CB");
   int update = 0;
 
   if (iupStrEqualNoCase(value, "ALL"))
@@ -3137,7 +3182,7 @@ static int iFlatTreeSetDelNodeAttrib(Ihandle* ih, int id, const char* value)
     while (child)
     {
       iFlatTreeNode *brother = child->brother;
-      iFlatTreeRemoveNode(child);
+      iFlatTreeRemoveNode(ih, child, noderemoved_cb);
       child = brother;
     }
     ih->data->root_node->first_child = NULL;
@@ -3152,7 +3197,7 @@ static int iFlatTreeSetDelNodeAttrib(Ihandle* ih, int id, const char* value)
     {
       int count = iFlatTreeGetChildCount(node) + 1;
       iFlatTreeUnlinkNodeFromParent(node);
-      iFlatTreeRemoveNode(node);
+      iFlatTreeRemoveNode(ih, node, noderemoved_cb);
       iFlatTreeRebuildArray(ih, -count);
       update = 1;
     }
@@ -3168,7 +3213,7 @@ static int iFlatTreeSetDelNodeAttrib(Ihandle* ih, int id, const char* value)
       {
         iFlatTreeNode *brother = child->brother;
         count += iFlatTreeGetChildCount(child) + 1;
-        iFlatTreeRemoveNode(child);
+        iFlatTreeRemoveNode(ih, child, noderemoved_cb);
         child = brother;
       }
       node->first_child = NULL;
@@ -3178,7 +3223,7 @@ static int iFlatTreeSetDelNodeAttrib(Ihandle* ih, int id, const char* value)
   }
   else if (iupStrEqualNoCase(value, "MARKED"))
   {
-    iFlatTreeRemoveMarkedNodes(ih, ih->data->root_node->first_child);
+    iFlatTreeRemoveMarkedNodes(ih, ih->data->root_node->first_child, noderemoved_cb);
     iFlatTreeRebuildArray(ih, 0);
     update = 1;
   }
@@ -3806,7 +3851,10 @@ static void iFlatTreeSetChildrenPositionMethod(Ihandle* ih, int x, int y)
 static void iFlatTreeDestroyMethod(Ihandle* ih)
 {
   if (ih->data->root_node->first_child)
-    iFlatTreeRemoveNode(ih->data->root_node->first_child);
+  {
+    IFns noderemoved_cb = (IFns)IupGetCallback(ih, "NODEREMOVED_CB");
+    iFlatTreeRemoveNode(ih, ih->data->root_node->first_child, noderemoved_cb);
+  }
 
   iupArrayDestroy(ih->data->node_array);
 
@@ -3820,7 +3868,12 @@ static int iFlatTreeCreateMethod(Ihandle* ih, void** params)
   (void)params;
 
   if (IupGetInt(NULL, "TREEIMAGE24"))
+  {
     high_dpi = 1;
+    iupAttribSet(ih, "IMAGELEAF", "IMGLEAF24");
+    iupAttribSet(ih, "IMAGEBRANCHCOLLAPSED", "IMGCOLLAPSED24");
+    iupAttribSet(ih, "IMAGEBRANCHEXPANDED", "IMGEXPANDED24");
+  }
 
   /* free the data allocated by IupCanvas, and reallocate */
   free(ih->data);
@@ -3900,10 +3953,6 @@ IUP_API Ihandle* IupFlatTree(void)
 Iclass* iupFlatTreeNewClass(void)
 {
   Iclass* ic = iupClassNew(iupRegisterFindClass("canvas"));
-  int high_dpi = iupRound(iupdrvGetScreenDpi()) > 120;
-
-  if (IupGetInt(NULL, "TREEIMAGE24"))
-    high_dpi = 1;
 
   ic->name = "flattree";
   ic->format = NULL;  /* no parameters */
@@ -3931,6 +3980,7 @@ Iclass* iupFlatTreeNewClass(void)
   iupClassRegisterCallback(ic, "RENAME_CB", "is");
   iupClassRegisterCallback(ic, "DRAGDROP_CB", "iiii");
   iupClassRegisterCallback(ic, "RIGHTCLICK_CB", "i");
+  iupClassRegisterCallback(ic, "NODEREMOVED_CB", "s");
   iupClassRegisterCallback(ic, "FLAT_BUTTON_CB", "iiiis");
   iupClassRegisterCallback(ic, "FLAT_MOTION_CB", "iis");
   iupClassRegisterCallback(ic, "FLAT_FOCUS_CB", "i");
@@ -3938,43 +3988,34 @@ Iclass* iupFlatTreeNewClass(void)
   iupClassRegisterAttribute(ic, "ACTIVE", iupBaseGetActiveAttrib, iupFlatSetActiveAttrib, IUPAF_SAMEASSYSTEM, "YES", IUPAF_DEFAULT);
 
   /* General Attributes */
-
-  iupClassRegisterAttribute(ic, "ADDEXPANDED", iFlatTreeGetAddExpandedAttrib, iFlatTreeSetAddExpandedAttrib, "YES", NULL, IUPAF_NOT_MAPPED | IUPAF_NO_INHERIT);
   iupClassRegisterAttribute(ic, "FGCOLOR", NULL, iFlatTreeSetAttribPostRedraw, IUPAF_SAMEASSYSTEM, IUP_FLAT_FORECOLOR, IUPAF_NOT_MAPPED);
   iupClassRegisterAttribute(ic, "BGCOLOR", NULL, iFlatTreeSetAttribPostRedraw, IUPAF_SAMEASSYSTEM, IUP_FLAT_BACKCOLOR, IUPAF_NOT_MAPPED);
   iupClassRegisterAttribute(ic, "HLCOLOR", NULL, NULL, IUPAF_SAMEASSYSTEM, "TXTHLCOLOR", IUPAF_NO_INHERIT);  /* selection, not highlight */
   iupClassRegisterAttribute(ic, "HLCOLORALPHA", NULL, NULL, IUPAF_SAMEASSYSTEM, "128", IUPAF_NO_INHERIT);
-  iupClassRegisterAttribute(ic, "LINECOLOR", NULL, iFlatTreeSetAttribPostRedraw, IUPAF_SAMEASSYSTEM, "110 110 110", IUPAF_NOT_MAPPED);
-  iupClassRegisterAttribute(ic, "TOGGLEBGCOLOR", NULL, iFlatTreeSetAttribPostRedraw, IUPAF_SAMEASSYSTEM, "TXTBGCOLOR", IUPAF_NOT_MAPPED);
-  iupClassRegisterAttribute(ic, "TOGGLEFGCOLOR", NULL, iFlatTreeSetAttribPostRedraw, IUPAF_SAMEASSYSTEM, "TXTFGCOLOR", IUPAF_NOT_MAPPED);
-  iupClassRegisterAttribute(ic, "BUTTONBGCOLOR", NULL, iFlatTreeSetAttribPostRedraw, IUPAF_SAMEASSYSTEM, "240 240 240", IUPAF_NOT_MAPPED);
-  iupClassRegisterAttribute(ic, "BUTTONFGCOLOR", NULL, iFlatTreeSetAttribPostRedraw, IUPAF_SAMEASSYSTEM, "50 100 150", IUPAF_NOT_MAPPED);
-  iupClassRegisterAttribute(ic, "BUTTONBRDCOLOR", NULL, iFlatTreeSetAttribPostRedraw, IUPAF_SAMEASSYSTEM, "150 150 150", IUPAF_NOT_MAPPED);
   iupClassRegisterAttribute(ic, "INDENTATION", iFlatTreeGetIndentationAttrib, iFlatTreeSetIndentationAttrib, NULL, NULL, IUPAF_NOT_MAPPED | IUPAF_NO_INHERIT);
-  iupClassRegisterAttribute(ic, "SHOWTOGGLE", iFlatTreeGetShowToggleAttrib, iFlatTreeSetShowToggleAttrib, NULL, NULL, IUPAF_NOT_MAPPED | IUPAF_NO_INHERIT);
   iupClassRegisterAttribute(ic, "SPACING", iFlatTreeGetSpacingAttrib, iFlatTreeSetSpacingAttrib, IUPAF_SAMEASSYSTEM, "0", IUPAF_NO_INHERIT | IUPAF_NOT_MAPPED);
-  iupClassRegisterAttribute(ic, "TOGGLESIZE", iFlatTreeGetToggleSizeAttrib, iFlatTreeSetToggleSizeAttrib, NULL, NULL, IUPAF_NO_INHERIT | IUPAF_NOT_MAPPED);
-  iupClassRegisterAttribute(ic, "BUTTONSIZE", iFlatTreeGetButtonSizeAttrib, iFlatTreeSetButtonSizeAttrib, NULL, NULL, IUPAF_NO_INHERIT | IUPAF_NOT_MAPPED);
-  iupClassRegisterAttribute(ic, "EMPTYTOGGLE", iFlatTreeGetEmptyToggleAttrib, iFlatTreeSetEmptyToggleAttrib, NULL, NULL, IUPAF_NO_INHERIT | IUPAF_NOT_MAPPED);
-  iupClassRegisterAttribute(ic, "SHOWRENAME", iFlatTreeGetShowRenameAttrib, iFlatTreeSetShowRenameAttrib, NULL, NULL, IUPAF_NOT_MAPPED | IUPAF_NO_INHERIT);
   iupClassRegisterAttribute(ic, "AUTOREDRAW", iFlatTreeGetAutoRedrawAttrib, iFlatTreeSetAutoRedrawAttrib, IUPAF_SAMEASSYSTEM, "Yes", IUPAF_NOT_MAPPED | IUPAF_WRITEONLY | IUPAF_NO_INHERIT);
   iupClassRegisterAttribute(ic, "BORDERCOLOR", NULL, iFlatTreeSetAttribPostRedraw, IUPAF_SAMEASSYSTEM, IUP_FLAT_BORDERCOLOR, IUPAF_NOT_MAPPED | IUPAF_DEFAULT);  /* inheritable */
   iupClassRegisterAttribute(ic, "BORDERWIDTH", iFlatTreeGetBorderWidthAttrib, iFlatTreeSetBorderWidthAttrib, IUPAF_SAMEASSYSTEM, "0", IUPAF_NOT_MAPPED);  /* inheritable */
   iupClassRegisterAttribute(ic, "ICONSPACING", iFlatTreeGetIconSpacingAttrib, iFlatTreeSetIconSpacingAttrib, IUPAF_SAMEASSYSTEM, "2", IUPAF_NOT_MAPPED | IUPAF_NO_INHERIT);
-  iupClassRegisterAttribute(ic, "VISIBLECOLUMNS", NULL, NULL, NULL, NULL, IUPAF_NO_INHERIT);
-  iupClassRegisterAttribute(ic, "VISIBLELINES", NULL, NULL, "5", NULL, IUPAF_NO_INHERIT);
+  iupClassRegisterAttribute(ic, "TOPITEM", NULL, iFlatTreeSetTopItemAttrib, NULL, NULL, IUPAF_NOT_MAPPED | IUPAF_WRITEONLY | IUPAF_NO_INHERIT);
+
+  /* Expanders */
+  iupClassRegisterAttribute(ic, "BUTTONSIZE", iFlatTreeGetButtonSizeAttrib, iFlatTreeSetButtonSizeAttrib, NULL, NULL, IUPAF_NO_INHERIT | IUPAF_NOT_MAPPED);
   iupClassRegisterAttribute(ic, "HIDELINES", NULL, NULL, NULL, NULL, IUPAF_NO_INHERIT);
   iupClassRegisterAttribute(ic, "HIDEBUTTONS", NULL, NULL, NULL, NULL, IUPAF_NO_INHERIT);
+  iupClassRegisterAttribute(ic, "BUTTONBGCOLOR", NULL, iFlatTreeSetAttribPostRedraw, IUPAF_SAMEASSYSTEM, "240 240 240", IUPAF_NOT_MAPPED);
+  iupClassRegisterAttribute(ic, "BUTTONFGCOLOR", NULL, iFlatTreeSetAttribPostRedraw, IUPAF_SAMEASSYSTEM, "50 100 150", IUPAF_NOT_MAPPED);
+  iupClassRegisterAttribute(ic, "BUTTONBRDCOLOR", NULL, iFlatTreeSetAttribPostRedraw, IUPAF_SAMEASSYSTEM, "150 150 150", IUPAF_NOT_MAPPED);
+  iupClassRegisterAttribute(ic, "LINECOLOR", NULL, iFlatTreeSetAttribPostRedraw, IUPAF_SAMEASSYSTEM, "110 110 110", IUPAF_NOT_MAPPED);
 
-  /* IupTree Attributes - ACTION */
-  iupClassRegisterAttribute(ic, "TOPITEM", NULL, iFlatTreeSetTopItemAttrib, NULL, NULL, IUPAF_NOT_MAPPED | IUPAF_WRITEONLY | IUPAF_NO_INHERIT);
-  iupClassRegisterAttribute(ic, "EXPANDALL", NULL, iFlatTreeSetExpandAllAttrib, NULL, NULL, IUPAF_NOT_MAPPED | IUPAF_WRITEONLY | IUPAF_NO_INHERIT);
+  /* Editing */
+  iupClassRegisterAttribute(ic, "SHOWRENAME", iFlatTreeGetShowRenameAttrib, iFlatTreeSetShowRenameAttrib, NULL, NULL, IUPAF_NOT_MAPPED | IUPAF_NO_INHERIT);
   iupClassRegisterAttribute(ic, "RENAME", NULL, iFlatTreeSetRenameAttrib, NULL, NULL, IUPAF_NOT_MAPPED | IUPAF_WRITEONLY | IUPAF_NO_INHERIT);
   iupClassRegisterAttribute(ic, "RENAMECARET", NULL, NULL, NULL, NULL, IUPAF_NO_INHERIT);
   iupClassRegisterAttribute(ic, "RENAMESELECTION", NULL, NULL, NULL, NULL, IUPAF_NO_INHERIT);
 
-  /* IupFlatTree Attributes - NODES */
-
+  /* Nodes */
   iupClassRegisterAttribute(ic, "COUNT", iFlatTreeGetCountAttrib, NULL, NULL, NULL, IUPAF_READONLY | IUPAF_NOT_MAPPED | IUPAF_NO_INHERIT);
   iupClassRegisterAttribute(ic, "ROOTCOUNT", iFlatTreeGetRootCountAttrib, NULL, NULL, NULL, IUPAF_NOT_MAPPED | IUPAF_READONLY | IUPAF_NO_INHERIT);
   iupClassRegisterAttributeId(ic, "CHILDCOUNT", iFlatTreeGetChildCountAttrib, NULL, IUPAF_NOT_MAPPED | IUPAF_READONLY | IUPAF_NO_INHERIT);
@@ -3993,30 +4034,34 @@ Iclass* iupFlatTreeNewClass(void)
   iupClassRegisterAttributeId(ic, "TITLEFONT", iFlatTreeGetTitleFontAttrib, iFlatTreeSetTitleFontAttrib, IUPAF_NO_INHERIT | IUPAF_NOT_MAPPED);
   iupClassRegisterAttributeId(ic, "TITLEFONTSTYLE", iFlatTreeGetTitleFontStyleAttrib, iFlatTreeSetTitleFontStyleAttrib, IUPAF_NOT_MAPPED | IUPAF_NO_INHERIT);
   iupClassRegisterAttributeId(ic, "TITLEFONTSIZE", iFlatTreeGetTitleFontSizeAttrib, iFlatTreeSetTitleFontSizeAttrib, IUPAF_NOT_MAPPED | IUPAF_NO_INHERIT);
+  iupClassRegisterAttributeId(ic, "USERDATA", iFlatTreeGetUserDataAttrib, iFlatTreeSetUserDataAttrib, IUPAF_NOT_MAPPED | IUPAF_NO_STRING | IUPAF_NO_INHERIT);
+
+  /* Toggle */
+  iupClassRegisterAttribute(ic, "SHOWTOGGLE", iFlatTreeGetShowToggleAttrib, iFlatTreeSetShowToggleAttrib, NULL, NULL, IUPAF_NOT_MAPPED | IUPAF_NO_INHERIT);
+  iupClassRegisterAttribute(ic, "TOGGLESIZE", iFlatTreeGetToggleSizeAttrib, iFlatTreeSetToggleSizeAttrib, NULL, NULL, IUPAF_NO_INHERIT | IUPAF_NOT_MAPPED);
+  iupClassRegisterAttribute(ic, "EMPTYTOGGLE", iFlatTreeGetEmptyToggleAttrib, iFlatTreeSetEmptyToggleAttrib, NULL, NULL, IUPAF_NO_INHERIT | IUPAF_NOT_MAPPED);
   iupClassRegisterAttributeId(ic, "TOGGLEVALUE", iFlatTreeGetToggleValueAttrib, iFlatTreeSetToggleValueAttrib, IUPAF_NOT_MAPPED | IUPAF_NO_INHERIT);
   iupClassRegisterAttributeId(ic, "TOGGLEVISIBLE", iFlatTreeGetToggleVisibleAttrib, iFlatTreeSetToggleVisibleAttrib, IUPAF_NOT_MAPPED | IUPAF_NO_INHERIT);
-  iupClassRegisterAttributeId(ic, "USERDATA", iFlatTreeGetUserDataAttrib, iFlatTreeSetUserDataAttrib, IUPAF_NOT_MAPPED | IUPAF_NO_STRING | IUPAF_NO_INHERIT);
+  iupClassRegisterAttribute(ic, "TOGGLEBGCOLOR", NULL, iFlatTreeSetAttribPostRedraw, IUPAF_SAMEASSYSTEM, "TXTBGCOLOR", IUPAF_NOT_MAPPED);
+  iupClassRegisterAttribute(ic, "TOGGLEFGCOLOR", NULL, iFlatTreeSetAttribPostRedraw, IUPAF_SAMEASSYSTEM, "TXTFGCOLOR", IUPAF_NOT_MAPPED);
+
+  /* Images */
   iupClassRegisterAttributeId(ic, "IMAGE", iFlatTreeGetImageAttrib, iFlatTreeSetImageAttrib, IUPAF_IHANDLENAME | IUPAF_NOT_MAPPED | IUPAF_NO_INHERIT);
   iupClassRegisterAttributeId(ic, "IMAGEEXPANDED", iFlatTreeGetImageExpandedAttrib, iFlatTreeSetImageExpandedAttrib, IUPAF_IHANDLENAME | IUPAF_NOT_MAPPED | IUPAF_NO_INHERIT);
-
-  /* IupFlatTree Attributes - IMAGES */
-  
-  iupClassRegisterAttribute(ic, "IMAGELEAF", NULL, iFlatTreeSetImageLeafAttrib, IUPAF_SAMEASSYSTEM, high_dpi? "IMGLEAF24": "IMGLEAF", IUPAF_NOT_MAPPED | IUPAF_IHANDLENAME | IUPAF_NO_INHERIT);
-  iupClassRegisterAttribute(ic, "IMAGEBRANCHCOLLAPSED", NULL, iFlatTreeSetImageBranchCollapsedAttrib, IUPAF_SAMEASSYSTEM, high_dpi ? "IMGCOLLAPSED24": "IMGCOLLAPSED", IUPAF_NOT_MAPPED | IUPAF_IHANDLENAME | IUPAF_NO_INHERIT);
-  iupClassRegisterAttribute(ic, "IMAGEBRANCHEXPANDED", NULL, iFlatTreeSetAttribPostRedraw, IUPAF_SAMEASSYSTEM, high_dpi ? "IMGEXPANDED24": "IMGEXPANDED", IUPAF_NOT_MAPPED | IUPAF_IHANDLENAME | IUPAF_NO_INHERIT);
+  iupClassRegisterAttribute(ic, "IMAGELEAF", NULL, iFlatTreeSetImageLeafAttrib, IUPAF_SAMEASSYSTEM, "IMGLEAF", IUPAF_NOT_MAPPED | IUPAF_IHANDLENAME | IUPAF_NO_INHERIT);
+  iupClassRegisterAttribute(ic, "IMAGEBRANCHCOLLAPSED", NULL, iFlatTreeSetImageBranchCollapsedAttrib, IUPAF_SAMEASSYSTEM, "IMGCOLLAPSED", IUPAF_NOT_MAPPED | IUPAF_IHANDLENAME | IUPAF_NO_INHERIT);
+  iupClassRegisterAttribute(ic, "IMAGEBRANCHEXPANDED", NULL, iFlatTreeSetAttribPostRedraw, IUPAF_SAMEASSYSTEM, "IMGEXPANDED", IUPAF_NOT_MAPPED | IUPAF_IHANDLENAME | IUPAF_NO_INHERIT);
   iupClassRegisterAttribute(ic, "BACKIMAGE", NULL, iFlatTreeSetAttribPostRedraw, NULL, NULL, IUPAF_NOT_MAPPED | IUPAF_IHANDLENAME | IUPAF_NO_DEFAULTVALUE | IUPAF_NO_INHERIT);
   iupClassRegisterAttribute(ic, "BACKIMAGEZOOM", NULL, iFlatTreeSetAttribPostRedraw, NULL, NULL, IUPAF_NO_INHERIT);
   iupClassRegisterAttribute(ic, "BUTTONPLUSIMAGE", NULL, iFlatTreeSetAttribPostRedraw, NULL, NULL, IUPAF_NO_INHERIT);
   iupClassRegisterAttribute(ic, "BUTTONMINUSIMAGE", NULL, iFlatTreeSetAttribPostRedraw, NULL, NULL, IUPAF_NO_INHERIT);
 
-  /* IupFlatTree Attributes - FOCUS NODE */
-
+  /* Focus */
   iupClassRegisterAttribute(ic, "VALUE", iFlatTreeGetValueAttrib, iFlatTreeSetValueAttrib, NULL, NULL, IUPAF_NOT_MAPPED | IUPAF_NO_SAVE | IUPAF_NO_DEFAULTVALUE | IUPAF_NO_INHERIT);
   iupClassRegisterAttribute(ic, "HASFOCUS", iFlatTreeGetHasFocusAttrib, NULL, NULL, NULL, IUPAF_NOT_MAPPED | IUPAF_READONLY | IUPAF_NO_INHERIT);
   iupClassRegisterAttribute(ic, "FOCUSFEEDBACK", NULL, NULL, IUPAF_SAMEASSYSTEM, "YES", IUPAF_NOT_MAPPED | IUPAF_NO_INHERIT);
 
-  /* IupFlatTree Attributes - MARKS */
-
+  /* Marks */
   iupClassRegisterAttribute(ic, "MARK", NULL, iFlatTreeSetMarkAttrib, NULL, NULL, IUPAF_NOT_MAPPED | IUPAF_WRITEONLY | IUPAF_NO_INHERIT);
   iupClassRegisterAttributeId(ic, "MARKED", iFlatTreeGetMarkedAttrib, iFlatTreeSetMarkedAttrib, IUPAF_NOT_MAPPED | IUPAF_NO_INHERIT);
   iupClassRegisterAttribute(ic, "MARKEDNODES", iFlatTreeGetMarkedNodesAttrib, iFlatTreeSetMarkedNodesAttrib, NULL, NULL, IUPAF_NOT_MAPPED | IUPAF_NO_SAVE | IUPAF_NO_DEFAULTVALUE | IUPAF_NO_INHERIT);
@@ -4024,8 +4069,8 @@ Iclass* iupFlatTreeNewClass(void)
   iupClassRegisterAttribute(ic, "MARKSTART", iFlatTreeGetMarkStartAttrib, iFlatTreeSetMarkStartAttrib, NULL, NULL, IUPAF_NOT_MAPPED | IUPAF_NO_DEFAULTVALUE | IUPAF_NO_INHERIT);
   iupClassRegisterAttribute(ic, "MARKWHENTOGGLE", NULL, NULL, NULL, NULL, IUPAF_NO_INHERIT);
 
-  /* IupFlatTree Attributes - HIERARCHY */
-
+  /* Hierarchy */
+  iupClassRegisterAttribute(ic, "ADDEXPANDED", iFlatTreeGetAddExpandedAttrib, iFlatTreeSetAddExpandedAttrib, "YES", NULL, IUPAF_NOT_MAPPED | IUPAF_NO_INHERIT);
   iupClassRegisterAttributeId(ic, "ADDLEAF", NULL, iFlatTreeSetAddLeafAttrib, IUPAF_WRITEONLY | IUPAF_NOT_MAPPED | IUPAF_NO_INHERIT);
   iupClassRegisterAttributeId(ic, "ADDBRANCH", NULL, iFlatTreeSetAddBranchAttrib, IUPAF_WRITEONLY | IUPAF_NOT_MAPPED | IUPAF_NO_INHERIT);
   iupClassRegisterAttributeId(ic, "INSERTLEAF", NULL, iFlatTreeSetInsertLeafAttrib, IUPAF_WRITEONLY | IUPAF_NOT_MAPPED | IUPAF_NO_INHERIT);
@@ -4034,32 +4079,26 @@ Iclass* iupFlatTreeNewClass(void)
   iupClassRegisterAttributeId(ic, "DELNODE", NULL, iFlatTreeSetDelNodeAttrib, IUPAF_WRITEONLY | IUPAF_NOT_MAPPED | IUPAF_NO_INHERIT);
   iupClassRegisterAttributeId(ic, "MOVENODE", NULL, iFlatTreeSetMoveNodeAttrib, IUPAF_NOT_MAPPED | IUPAF_WRITEONLY | IUPAF_NO_INHERIT);
   iupClassRegisterAttribute(ic, "LASTADDNODE", iFlatTreeGetLastAddNodeAttrib, NULL, IUPAF_SAMEASSYSTEM, NULL, IUPAF_NOT_MAPPED | IUPAF_READONLY | IUPAF_NO_INHERIT);
+  iupClassRegisterAttribute(ic, "EXPANDALL", NULL, iFlatTreeSetExpandAllAttrib, NULL, NULL, IUPAF_NOT_MAPPED | IUPAF_WRITEONLY | IUPAF_NO_INHERIT);
 
+  /* Drag&Drop */
   iupClassRegisterAttribute(ic, "SHOWDRAGDROP", iFlatTreeGetShowDragDropAttrib, iFlatTreeSetShowDragDropAttrib, NULL, NULL, IUPAF_NOT_MAPPED | IUPAF_NO_INHERIT);
   iupClassRegisterAttribute(ic, "DRAGDROPTREE", NULL, iFlatTreeSetDragDropTreeAttrib, NULL, NULL, IUPAF_NOT_MAPPED | IUPAF_NO_INHERIT);
+  iupClassRegisterAttribute(ic, "DROPEQUALDRAG", NULL, NULL, NULL, NULL, IUPAF_NO_INHERIT);
 
+  /* Scrollbars */
   iupClassRegisterReplaceAttribDef(ic, "SCROLLBAR", "YES", NULL);  /* change the default to Yes */
   iupClassRegisterAttribute(ic, "YAUTOHIDE", NULL, NULL, IUPAF_SAMEASSYSTEM, "YES", IUPAF_READONLY | IUPAF_NOT_MAPPED | IUPAF_NO_INHERIT);  /* will be always Yes */
   iupClassRegisterAttribute(ic, "XAUTOHIDE", NULL, NULL, IUPAF_SAMEASSYSTEM, "YES", IUPAF_READONLY | IUPAF_NOT_MAPPED | IUPAF_NO_INHERIT);  /* will be always Yes */
 
-  iFlatTreeInitializeImages();
-
-  /* Flat Scrollbar */
   iupFlatScrollBarRegister(ic);
-
   iupClassRegisterAttribute(ic, "FLATSCROLLBAR", NULL, iFlatTreeSetFlatScrollbarAttrib, NULL, NULL, IUPAF_NOT_MAPPED | IUPAF_NO_INHERIT);
+
+  iFlatTreeInitializeImages();
 
   return ic;
 }
 
 /*TODO:
-  doc - ADDROOT is always NO
-        SPACING not 2x
-        EMPTYTOGGLE==EMPTYAS3STATE
-  ----------------------
-  DROPEQUALDRAG ??
-  ----------------------
-  NODETIP
-  NODEACTIVE
-  NODEVISIBLE
+  NODETIP/INFOTIP
 */
