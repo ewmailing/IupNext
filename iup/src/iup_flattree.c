@@ -844,7 +844,7 @@ static void iFlatTreeAddNode(Ihandle* ih, int id, int kind, const char* title)
   if (count == 1)
   {
     /* MarkStart node */
-    ih->data->mark_start_id = newNode->id;
+    ih->data->mark_start_id = newNode->id;  /* same as 0 when count==1 */
 
     /* Set the default VALUE (focus) */
     ih->data->focus_id = newNode->id;
@@ -1673,10 +1673,10 @@ static void iFlatTreeSelectNodeInteract(Ihandle* ih, int id, int ctrlPressed, in
       Iarray* unsel_array = NULL;
       Iarray* sel_array = NULL;
 
-      if (multi_un_cb)
+      if (multi_un_cb || sel_cb)
         unsel_array = iupArrayCreate(10, sizeof(int));
 
-      if (multi_cb)
+      if (multi_cb || sel_cb)
         sel_array = iupArrayCreate(10, sizeof(int));
 
       if (id <= ih->data->last_selected_id)
@@ -2125,6 +2125,8 @@ static int iFlatTreeMotion_CB(Ihandle* ih, int x, int y, char* status)
       return IUP_DEFAULT;
   }
 
+  /* TODO multiple selection while dragging when SHOWDRAGDROP=NO */
+
   if (!iup_isbutton1(status) || ih->data->mark_mode == IFLATTREE_MARK_MULTIPLE || !ih->data->show_dragdrop)
     return IUP_IGNORE;
 
@@ -2162,6 +2164,9 @@ static int iFlatTreeFocusPageDown(Ihandle *ih)
   int i;
   int total_h = nodes[ih->data->focus_id]->height + ih->data->spacing;
 
+  if (ih->data->focus_id == count - 1)
+    return ih->data->focus_id;
+
   for (i = ih->data->focus_id + 1; i < count-1; i++)
   {
     if (!nodes[i]->expanded)
@@ -2182,7 +2187,10 @@ static int iFlatTreeFocusPageUp(Ihandle *ih)
   int i;
   int total_h = 0;
 
-  for (i = ih->data->focus_id - 1; i >= 0; i--)
+  if (ih->data->focus_id == 0)
+    return ih->data->focus_id;
+
+  for (i = ih->data->focus_id - 1; i > 0; i--)
   {
     if (!nodes[i]->expanded)
       continue;
@@ -2221,7 +2229,10 @@ static void iFlatTreeScrollFocusVisible(Ihandle* ih, int direction)
   int ymax = IupGetInt(ih, "YMAX");
 
   if (dy >= (ymax - ymin))
+  {
+    IupRedraw(ih, 0);
     return;
+  }
 
   node_y = iFlatTreeConvertIdToY(ih, ih->data->focus_id, &node_height);
   posy = IupGetInt(ih, "POSY");
@@ -2232,16 +2243,12 @@ static void iFlatTreeScrollFocusVisible(Ihandle* ih, int direction)
   }
   else
   {
-    //  if (direction == IFLATTREE_DOWN)
-    //  {
-    //    posy += (node_y - posy - dy + node_height);
-    //    IupSetInt(ih, "POSY", posy);
-    //  }
-    //  else  /* IFLATTREE_UP */
-    //  {
-    //    posy -= (posy - node_y);
-    //    IupSetInt(ih, "POSY", posy);
-    //  }
+    if (direction == IFLATTREE_DOWN)
+      posy = node_y + node_height - dy;
+    else  /* IFLATTREE_UP */
+      posy = node_y;
+
+    IupSetInt(ih, "POSY", posy);
   }
 
   IupRedraw(ih, 0);
@@ -2360,6 +2367,11 @@ static int iFlatTreeKcSpace_CB(Ihandle* ih)
     if (ih->data->mark_mode == IFLATTREE_MARK_SINGLE)
     {
       int old_id = iFlatTreeFindSelectedNode(ih);
+      iFlatTreeNode *old_node = iFlatTreeGetNode(ih, old_id);
+
+      if (old_node)
+        old_node->selected = 0;
+
       if (cbSelec && old_id >= 0)
         cbSelec(ih, old_id, 0);
     }
@@ -2370,6 +2382,8 @@ static int iFlatTreeKcSpace_CB(Ihandle* ih)
     if (cbSelec)
       cbSelec(ih, node->id, 1);
   }
+
+  IupRedraw(ih, 0);
 
   return IUP_DEFAULT;
 }
@@ -3261,19 +3275,19 @@ static int iFlatTreeSetValueAttrib(Ihandle* ih, const char* value)
   if (new_focus_id != -1 && new_focus_id != old_focus_id)
   {
     int direction = (old_focus_id < new_focus_id) ? IFLATTREE_DOWN : IFLATTREE_UP;
+    iFlatTreeNode *node = iFlatTreeGetNode(ih, new_focus_id);
+
+    if (!node || !node->expanded)
+      return 0;
 
     ih->data->focus_id = new_focus_id;
 
     if (ih->data->mark_mode == IFLATTREE_MARK_SINGLE)
     {
-      iFlatTreeNode *node = iFlatTreeGetNode(ih, ih->data->focus_id);
-      if (node)
-      {
-        node->selected = 1;
+      node->selected = 1;
 
-        if (ih->data->mark_mode == IFLATTREE_MARK_SINGLE)
-          iFlatTreeClearAllSelectionExcept(ih, node);
-      }
+      if (ih->data->mark_mode == IFLATTREE_MARK_SINGLE)
+        iFlatTreeClearAllSelectionExcept(ih, node);
     }
 
     iFlatTreeScrollFocusVisible(ih, direction);
@@ -3509,7 +3523,7 @@ static int iFlatTreeSetDragDropTreeAttrib(Ihandle* ih, const char* value)
 {
   if (iupStrBoolean(value))
   {
-    /* Register callbacks to enable drag and drop between lists */
+    /* Register callbacks to enable drag and drop between trees, DRAG&DROP attributes must still be set by the application */
     IupSetCallback(ih, "DRAGBEGIN_CB", (Icallback)iFlatTreeDragBegin_CB);
     IupSetCallback(ih, "DRAGDATASIZE_CB", (Icallback)iFlatTreeDragDataSize_CB);
     IupSetCallback(ih, "DRAGDATA_CB", (Icallback)iFlatTreeDragData_CB);

@@ -1,4 +1,4 @@
-/*IupTree Example in C
+/*IupFlatTree Example in C
 Creates a tree with some branches and leaves.
 Two callbacks are registered: one deletes marked nodes when the Del key is pressed,
 and the other, called when the right mouse button is pressed, opens a menu with options. */
@@ -627,185 +627,183 @@ static void init_tree_nodes(void)
 
 static void init_tree_2_nodes(void)
 {
-  Ihandle* tree = IupGetHandle("flattree_2");
+  Ihandle* tree2 = IupGetHandle("flattree_2");
 
 //  Ihandle *bimage = IupLoadImage("7d8c3e8ad46509c4c6.jpg");
-//  IupSetAttributeHandle(tree, "BACKIMAGE", bimage);
+//  IupSetAttributeHandle(tree2, "BACKIMAGE", bimage);
 
-    //IupSetAttribute(tree, "AUTOREDRAW", "No");
+    //IupSetAttribute(tree2, "AUTOREDRAW", "No");
 #if 0
   /* create from bottom to top */
   /* the current node is the ROOT */
-  //IupSetAttribute(tree, "VALUE", "0");
-  IupSetAttribute(tree, "TITLE", "Figures");  /* title of the root, id=0 */
-  IupSetAttribute(tree, "ADDBRANCH", "3D");    /* 3D=1 */
-  IupSetAttribute(tree, "ADDLEAF", "2D");    /* add to the root, so it will be before "3D", now 2D=1, 3D=2 */
-  IupSetAttribute(tree, "ADDBRANCH", "parallelogram"); /* id=1 */
-  IupSetAttribute(tree, "ADDLEAF1", "diamond");
-  IupSetAttribute(tree, "ADDLEAF1", "square");
-  IupSetAttribute(tree, "ADDBRANCH", "triangle");
-  IupSetAttribute(tree, "ADDLEAF1", "scalenus");
-  IupSetAttribute(tree, "ADDLEAF1", "isoceles");
-  IupSetAttribute(tree, "ADDLEAF1", "equilateral");
-  IupSetAttribute(tree, "ADDLEAF", "Other");
+  //IupSetAttribute(tree2, "VALUE", "0");
+  IupSetAttribute(tree2, "TITLE", "Figures");  /* title of the root, id=0 */
+  IupSetAttribute(tree2, "ADDBRANCH", "3D");    /* 3D=1 */
+  IupSetAttribute(tree2, "ADDLEAF", "2D");    /* add to the root, so it will be before "3D", now 2D=1, 3D=2 */
+  IupSetAttribute(tree2, "ADDBRANCH", "parallelogram"); /* id=1 */
+  IupSetAttribute(tree2, "ADDLEAF1", "diamond");
+  IupSetAttribute(tree2, "ADDLEAF1", "square");
+  IupSetAttribute(tree2, "ADDBRANCH", "triangle");
+  IupSetAttribute(tree2, "ADDLEAF1", "scalenus");
+  IupSetAttribute(tree2, "ADDLEAF1", "isoceles");
+  IupSetAttribute(tree2, "ADDLEAF1", "equilateral");
+  IupSetAttribute(tree2, "ADDLEAF", "Other");
 #else
   /* create from top to bottom */
 
-  IupSetAttribute(tree, "ADDBRANCH-1", "NFL");
-  IupSetAttribute(tree, "ADDBRANCH0", "AFC");  /* new id=2 */
-  IupSetAttribute(tree, "ADDBRANCH1", "EAST");  /* ... */
-  IupSetAttribute(tree, "ADDLEAF2", "Patriots");
-  IupSetAttribute(tree, "ADDLEAF3", "Bills");
-  IupSetAttribute(tree, "ADDLEAF4", "Jets");
-  IupSetAttribute(tree, "ADDLEAF5", "Dolphins");  /* same depth as id=2, new id=6 */
-  IupSetAttribute(tree, "INSERTBRANCH2", "North");  /* same depth as id=2, new id=6 */
-  IupSetAttribute(tree, "ADDLEAF7", "Ravens");
-  IupSetAttribute(tree, "ADDLEAF8", "Steelers");
-  IupSetAttribute(tree, "ADDLEAF9", "Browns");
-  IupSetAttribute(tree, "ADDLEAF10", "Bengals");  /* same depth as id=2, new id=6 */
-  IupSetAttribute(tree, "INSERTBRANCH7", "South");  /* same depth as id=2, new id=6 */
-  IupSetAttribute(tree, "ADDLEAF12", "Colts");
-  IupSetAttribute(tree, "ADDLEAF13", "Texans");
-  IupSetAttribute(tree, "ADDLEAF14", "Titans");
-  IupSetAttribute(tree, "ADDLEAF15", "Jaguars");  /* same depth as id=2, new id=6 */
-  IupSetAttribute(tree, "INSERTBRANCH12", "West");  /* same depth as id=2, new id=6 */
-  IupSetAttribute(tree, "ADDLEAF17", "Chiefs");
-  IupSetAttribute(tree, "ADDLEAF18", "Raiders");
-  IupSetAttribute(tree, "ADDLEAF19", "Chargers");
-  IupSetAttribute(tree, "ADDLEAF20", "Broncos");  /* same depth as id=2, new id=6 */
+  IupSetAttribute(tree2, "ADDBRANCH-1", "NFL");
+  IupSetAttribute(tree2, "ADDBRANCH0", "AFC");  /* new id=2 */
+  IupSetAttribute(tree2, "ADDBRANCH1", "EAST");  /* ... */
+  IupSetAttribute(tree2, "ADDLEAF2", "Patriots");
+  IupSetAttribute(tree2, "ADDLEAF3", "Bills");
+  IupSetAttribute(tree2, "ADDLEAF4", "Jets");
+  IupSetAttribute(tree2, "ADDLEAF5", "Dolphins");  /* same depth as id=2, new id=6 */
+  IupSetAttribute(tree2, "INSERTBRANCH2", "North");  /* same depth as id=2, new id=6 */
+  IupSetAttribute(tree2, "ADDLEAF7", "Ravens");
+  IupSetAttribute(tree2, "ADDLEAF8", "Steelers");
+  IupSetAttribute(tree2, "ADDLEAF9", "Browns");
+  IupSetAttribute(tree2, "ADDLEAF10", "Bengals");  /* same depth as id=2, new id=6 */
+  IupSetAttribute(tree2, "INSERTBRANCH7", "South");  /* same depth as id=2, new id=6 */
+  IupSetAttribute(tree2, "ADDLEAF12", "Colts");
+  IupSetAttribute(tree2, "ADDLEAF13", "Texans");
+  IupSetAttribute(tree2, "ADDLEAF14", "Titans");
+  IupSetAttribute(tree2, "ADDLEAF15", "Jaguars");  /* same depth as id=2, new id=6 */
+  IupSetAttribute(tree2, "INSERTBRANCH12", "West");  /* same depth as id=2, new id=6 */
+  IupSetAttribute(tree2, "ADDLEAF17", "Chiefs");
+  IupSetAttribute(tree2, "ADDLEAF18", "Raiders");
+  IupSetAttribute(tree2, "ADDLEAF19", "Chargers");
+  IupSetAttribute(tree2, "ADDLEAF20", "Broncos");  /* same depth as id=2, new id=6 */
 #endif
 
-  IupSetAttribute(tree, "DROPFILESTARGET", "YES");
-  IupSetAttribute(tree, "DRAGDROPTREE", "YES");
+  IupSetAttribute(tree2, "TOGGLEVALUE2", "ON");
+  IupSetAttribute(tree2, "TOGGLEVALUE6", "ON");
+  //IupSetAttribute(tree2, "TOGGLEVALUE9", "NOTDEF");
+  //IupSetAttribute(tree2, "TOGGLEVALUE2", "OFF");
+  //  IupSetAttribute(tree2, "AUTOREDRAW", "Yes");
+  //IupSetAttribute(tree2, "TOGGLEVISIBLE7", "No");
+  //IupSetAttribute(tree2, "EMPTYAS3STATE7", "Yes");
+//  IupSetAttribute(tree2, "NODEACTIVE5", "No");
 
-  IupSetAttribute(tree, "TOGGLEVALUE2", "ON");
-  IupSetAttribute(tree, "TOGGLEVALUE6", "ON");
-  //IupSetAttribute(tree, "TOGGLEVALUE9", "NOTDEF");
-  //IupSetAttribute(tree, "TOGGLEVALUE2", "OFF");
-  //  IupSetAttribute(tree, "AUTOREDRAW", "Yes");
-  //IupSetAttribute(tree, "TOGGLEVISIBLE7", "No");
-  //IupSetAttribute(tree, "EMPTYAS3STATE7", "Yes");
-//  IupSetAttribute(tree, "NODEACTIVE5", "No");
+  //IupSetAttribute(tree2, "MARKED1", "Yes");
+  //IupSetAttribute(tree2, "MARKED8", "Yes");
+  //IupSetAttribute(tree2, "VALUE",  "6");
 
-  //IupSetAttribute(tree, "MARKED1", "Yes");
-  //IupSetAttribute(tree, "MARKED8", "Yes");
-  //IupSetAttribute(tree, "VALUE",  "6");
+  IupSetAttribute(tree2, "RASTERSIZE", NULL);   /* remove the minimum size limitation */
+  IupSetAttribute(tree2, "COLOR8", "92 92 255");
+  //  IupSetAttribute(tree2, "TITLEFONT8", "Courier, 14");
+//  IupSetAttribute(tree2, "IMAGE3", "IUP_pat");
+//  IupSetAttribute(tree2, "IMAGE4", "IUP_bil");
+//  IupSetAttribute(tree2, "IMAGE5", "IUP_jet");
+//  IupSetAttribute(tree2, "IMAGE6", "IUP_dol");
+  IupSetAttributeHandle(tree2, "IMAGE8", load_image_LogoTecgraf());
+  IupSetAttributeHandle(tree2, "IMAGE7", load_image_TestImage());
+  //  IupSetAttribute(tree2, "IMAGE6", IupGetAttribute(tree2, "IMAGE8"));
 
-  IupSetAttribute(tree, "RASTERSIZE", NULL);   /* remove the minimum size limitation */
-  IupSetAttribute(tree, "COLOR8", "92 92 255");
-  //  IupSetAttribute(tree, "TITLEFONT8", "Courier, 14");
-//  IupSetAttribute(tree, "IMAGE3", "IUP_pat");
-//  IupSetAttribute(tree, "IMAGE4", "IUP_bil");
-//  IupSetAttribute(tree, "IMAGE5", "IUP_jet");
-//  IupSetAttribute(tree, "IMAGE6", "IUP_dol");
-  IupSetAttributeHandle(tree, "IMAGE8", load_image_LogoTecgraf());
-  IupSetAttributeHandle(tree, "IMAGE7", load_image_TestImage());
-  //  IupSetAttribute(tree, "IMAGE6", IupGetAttribute(tree, "IMAGE8"));
+  IupSetAttribute(tree2, "ITEMBGCOLOR3", "0 255 0");
+  IupSetAttribute(tree2, "ITEMBGCOLOR4", "0 255 0");
+  IupSetAttribute(tree2, "ITEMBGCOLOR5", "0 255 0");
 
-  IupSetAttribute(tree, "ITEMBGCOLOR3", "0 255 0");
-  IupSetAttribute(tree, "ITEMBGCOLOR4", "0 255 0");
-  IupSetAttribute(tree, "ITEMBGCOLOR5", "0 255 0");
+  IupSetAttribute(tree2, "ITEMFGCOLOR4", "255 0 0");
+  IupSetAttribute(tree2, "ITEMFGCOLOR5", "255 0 0");
+  IupSetAttribute(tree2, "ITEMFGCOLOR6", "255 0 0");
 
-  IupSetAttribute(tree, "ITEMFGCOLOR4", "255 0 0");
-  IupSetAttribute(tree, "ITEMFGCOLOR5", "255 0 0");
-  IupSetAttribute(tree, "ITEMFGCOLOR6", "255 0 0");
+  IupSetAttribute(tree2, "ITEMFONTSTYLE3", "Bold");
 
-  IupSetAttribute(tree, "ITEMFONTSTYLE3", "Bold");
-
-  IupSetAttribute(tree, "USERDATA0", "0");
-  IupSetAttribute(tree, "USERDATA1", "1");
-  IupSetAttribute(tree, "USERDATA2", "2");
-  IupSetAttribute(tree, "USERDATA3", "3");
-  IupSetAttribute(tree, "USERDATA4", "4");
-  IupSetAttribute(tree, "USERDATA5", "5");
-  IupSetAttribute(tree, "USERDATA6", "6");
-  IupSetAttribute(tree, "USERDATA7", "7");
-  IupSetAttribute(tree, "USERDATA8", "8");
-  IupSetAttribute(tree, "USERDATA9", "9");
-
+  IupSetAttribute(tree2, "USERDATA0", "0");
+  IupSetAttribute(tree2, "USERDATA1", "1");
+  IupSetAttribute(tree2, "USERDATA2", "2");
+  IupSetAttribute(tree2, "USERDATA3", "3");
+  IupSetAttribute(tree2, "USERDATA4", "4");
+  IupSetAttribute(tree2, "USERDATA5", "5");
+  IupSetAttribute(tree2, "USERDATA6", "6");
+  IupSetAttribute(tree2, "USERDATA7", "7");
+  IupSetAttribute(tree2, "USERDATA8", "8");
+  IupSetAttribute(tree2, "USERDATA9", "9");
 }
 
-/* Initializes IupTree and registers callbacks */
+/* Initializes IupFlatTree and registers callbacks */
 static Ihandle *init_tree_2(void)
 {
-  Ihandle* tree = IupFlatTree();
+  Ihandle* tree2 = IupFlatTree();
 
-  IupSetCallback(tree, "EXECUTELEAF_CB", (Icallback)executeleaf_cb);
-  IupSetCallback(tree, "RENAME_CB", (Icallback)rename_cb);
-  IupSetCallback(tree, "BRANCHCLOSE_CB", (Icallback)branchclose_cb);
-  IupSetCallback(tree, "BRANCHOPEN_CB", (Icallback)branchopen_cb);
-  IupSetCallback(tree, "DRAGDROP_CB", (Icallback)dragdrop_cb);
-  IupSetCallback(tree, "RIGHTCLICK_CB", (Icallback)rightclick_cb);
-  IupSetCallback(tree, "K_ANY", (Icallback)k_any_cb);
-  IupSetCallback(tree, "SHOWRENAME_CB", (Icallback)showrename_cb);
-  IupSetCallback(tree, "SELECTION_CB", (Icallback)selection_cb);
-  //  IupSetCallback(tree, "MULTISELECTION_CB", (Icallback) multiselection_cb);
-  //  IupSetCallback(tree, "MULTIUNSELECTION_CB", (Icallback) multiunselection_cb);
-  IupSetCallback(tree, "GETFOCUS_CB", (Icallback)getfocus_cb);
-  IupSetCallback(tree, "KILLFOCUS_CB", (Icallback)killfocus_cb);
-  //IupSetCallback(tree, "ENTERWINDOW_CB", (Icallback) enterwindow_cb);
-  //IupSetCallback(tree, "LEAVEWINDOW_CB", (Icallback)leavewindow_cb);
-  IupSetCallback(tree, "FLAT_BUTTON_CB", (Icallback)button_cb);
-  //IupSetCallback(tree, "MOTION_CB",    (Icallback)motion_cb);
-  IupSetCallback(tree, "NODEREMOVED_CB", (Icallback)noderemoved_cb);
-  IupSetCallback(tree, "TOGGLEVALUE_CB", (Icallback)togglevalue_cb);
-  //  IupSetCallback(tree, "TIPS_CB", (Icallback)tips_cb);
-  IupSetAttribute(tree, "FLATSCROLLBAR", "Yes");
+  IupSetCallback(tree2, "EXECUTELEAF_CB", (Icallback)executeleaf_cb);
+  IupSetCallback(tree2, "RENAME_CB", (Icallback)rename_cb);
+  IupSetCallback(tree2, "BRANCHCLOSE_CB", (Icallback)branchclose_cb);
+  IupSetCallback(tree2, "BRANCHOPEN_CB", (Icallback)branchopen_cb);
+  IupSetCallback(tree2, "DRAGDROP_CB", (Icallback)dragdrop_cb);
+  IupSetCallback(tree2, "RIGHTCLICK_CB", (Icallback)rightclick_cb);
+  //IupSetCallback(tree2, "K_ANY", (Icallback)k_any_cb);
+  IupSetCallback(tree2, "SHOWRENAME_CB", (Icallback)showrename_cb);
+  IupSetCallback(tree2, "SELECTION_CB", (Icallback)selection_cb);
+  //  IupSetCallback(tree2, "MULTISELECTION_CB", (Icallback) multiselection_cb);
+  //  IupSetCallback(tree2, "MULTIUNSELECTION_CB", (Icallback) multiunselection_cb);
+  //IupSetCallback(tree2, "GETFOCUS_CB", (Icallback)getfocus_cb);
+  //IupSetCallback(tree2, "KILLFOCUS_CB", (Icallback)killfocus_cb);
+  //IupSetCallback(tree2, "ENTERWINDOW_CB", (Icallback) enterwindow_cb);
+  //IupSetCallback(tree2, "LEAVEWINDOW_CB", (Icallback)leavewindow_cb);
+  //IupSetCallback(tree2, "FLAT_BUTTON_CB", (Icallback)button_cb);
+  //IupSetCallback(tree2, "FLAT_MOTION_CB",    (Icallback)motion_cb);
+  IupSetCallback(tree2, "NODEREMOVED_CB", (Icallback)noderemoved_cb);
+  IupSetCallback(tree2, "TOGGLEVALUE_CB", (Icallback)togglevalue_cb);
+  //  IupSetCallback(tree2, "TIPS_CB", (Icallback)tips_cb);
+  //IupSetAttribute(tree2, "FLATSCROLLBAR", "Yes");
 
-//  IupSetAttribute(tree, "FITTOBACKIMAGE", "YES");
+//  IupSetAttribute(tree2, "FITTOBACKIMAGE", "YES");
 
-  IupSetAttribute(tree, "EXPAND", "YES");
+  //IupSetAttribute(tree2, "EXPAND", "YES");
 
-  IupSetCallback(tree, "HELP_CB", (Icallback)help_cb);
+  IupSetCallback(tree2, "HELP_CB", (Icallback)help_cb);
 
-  IupSetAttribute(tree, "DRAGDROPTREE", "Yes");
-  IupSetAttribute(tree, "DRAGSOURCE", "YES");
-  IupSetAttribute(tree, "DRAGSOURCEMOVE", "YES");
-  IupSetAttribute(tree, "DRAGTYPES", "ITEMLIST");
+  IupSetAttribute(tree2, "DRAGDROPTREE", "Yes");
+  IupSetAttribute(tree2, "DRAGSOURCE", "YES");
+  IupSetAttribute(tree2, "DRAGSOURCEMOVE", "YES");
+  IupSetAttribute(tree2, "DRAGTYPES", "NODETREE");
 
-  //  IupSetAttribute(tree, "FONT", "COURIER_NORMAL_14");
-  //  IupSetAttribute(tree, "FONTSIZE", "36");
-    //  IupSetAttribute(tree, "FGCOLOR", "255 0 0");
-  //  IupSetAttribute(tree, "SPACING",   "10");
-  //  IupSetAttribute(tree, "BGCOLOR", "255 255 255");
-  //  IupSetAttribute(tree, "BGCOLOR", "128 0 255");
+//  IupSetAttribute(tree2, "DROPFILESTARGET", "YES");
 
-  //  IupSetAttribute(tree, "MARKMODE",     "MULTIPLE");
-  IupSetAttribute(tree, "SHOWRENAME", "YES");
-  IupSetAttribute(tree, "DRAGANDDROPTREE", "YES");
-  //IupSetAttribute(tree, "SHOWTOGGLE", "YES");
-  IupSetAttribute(tree, "MARKWHENTOGGLE", "YES");
-  IupSetAttribute(tree, "SHOWTOGGLE", "3STATE");
-  //  IupSetAttribute(tree, "DROPEQUALDRAG", "YES");
 
-  IupSetAttribute(tree, "ADDEXPANDED", "YES");
-  //  IupSetAttribute(tree, "HIDELINES",    "YES");
-  //  IupSetAttribute(tree, "HIDEBUTTONS",    "YES");
-  //  IupSetAttribute(tree, "INDENTATION",   "40");
-  //  IupSetAttribute(tree, "CANFOCUS", "NO");
-  IupSetAttribute(tree, "TIP", "Tree Tip");
-  //  IupSetAttribute(tree, "INFOTIP", "No");
-    //  IupSetAttribute(tree, "TIPBGCOLOR", "255 128 128");
-  //  IupSetAttribute(tree, "TIPFGCOLOR", "0 92 255");
-  //  IupSetAttribute(tree, "HLCOLOR", "240 116 64");
+  //  IupSetAttribute(tree2, "FONT", "COURIER_NORMAL_14");
+  //  IupSetAttribute(tree2, "FONTSIZE", "36");
+    //  IupSetAttribute(tree2, "FGCOLOR", "255 0 0");
+  //  IupSetAttribute(tree2, "SPACING",   "10");
+  //  IupSetAttribute(tree2, "BGCOLOR", "255 255 255");
+  //  IupSetAttribute(tree2, "BGCOLOR", "128 0 255");
 
-  //  IupSetAttribute(tree, "IMAGELEAF", "IMGEMPTY");
-  //  IupSetAttribute(tree, "IMAGEBRANCHCOLLAPSED", "IMGEMPTY");
-  //  IupSetAttribute(tree, "IMAGEBRANCHEXPANDED", "IMGEMPTY");
+  IupSetAttribute(tree2, "MARKMODE",     "MULTIPLE");
+  IupSetAttribute(tree2, "SHOWRENAME", "YES");
+  //IupSetAttribute(tree2, "SHOWTOGGLE", "YES");
+  IupSetAttribute(tree2, "MARKWHENTOGGLE", "YES");
+  IupSetAttribute(tree2, "SHOWTOGGLE", "3STATE");
+  //  IupSetAttribute(tree2, "DROPEQUALDRAG", "YES");
+
+  IupSetAttribute(tree2, "ADDEXPANDED", "YES");
+  //  IupSetAttribute(tree2, "HIDELINES",    "YES");
+  //  IupSetAttribute(tree2, "HIDEBUTTONS",    "YES");
+  //  IupSetAttribute(tree2, "INDENTATION",   "40");
+  //  IupSetAttribute(tree2, "CANFOCUS", "NO");
+  IupSetAttribute(tree2, "TIP", "Tree Tip");
+  //  IupSetAttribute(tree2, "INFOTIP", "No");
+    //  IupSetAttribute(tree2, "TIPBGCOLOR", "255 128 128");
+  //  IupSetAttribute(tree2, "TIPFGCOLOR", "0 92 255");
+  //  IupSetAttribute(tree2, "HLCOLOR", "240 116 64");
+
+  //  IupSetAttribute(tree2, "IMAGELEAF", "IMGEMPTY");
+  //  IupSetAttribute(tree2, "IMAGEBRANCHCOLLAPSED", "IMGEMPTY");
+  //  IupSetAttribute(tree2, "IMAGEBRANCHEXPANDED", "IMGEMPTY");
 
     // Windows Only  
-  //  IupSetAttribute(tree, "TIPBALLOON", "YES");
-  //  IupSetAttribute(tree, "TIPBALLOONTITLE", "Tip Title");
-  //  IupSetAttribute(tree, "TIPBALLOONTITLEICON", "2");
-  IupSetAttribute(tree, "VISIBLECOLUMNS", "10");
-  IupSetAttribute(tree, "VISIBLELINES", "10");
+  //  IupSetAttribute(tree2, "TIPBALLOON", "YES");
+  //  IupSetAttribute(tree2, "TIPBALLOONTITLE", "Tip Title");
+  //  IupSetAttribute(tree2, "TIPBALLOONTITLEICON", "2");
+  IupSetAttribute(tree2, "VISIBLECOLUMNS", "10");
+  IupSetAttribute(tree2, "VISIBLELINES", "10");
 
-  IupSetHandle("flattree_2", tree);
+  IupSetHandle("flattree_2", tree2);
 
-  return tree;
+  return tree2;
 }
 
-/* Initializes IupTree and registers callbacks */
+/* Initializes IupFlatTree and registers callbacks */
 static Ihandle *init_tree(void)
 {
   Ihandle* tree = IupFlatTree();
@@ -816,17 +814,17 @@ static Ihandle *init_tree(void)
   IupSetCallback(tree, "BRANCHOPEN_CB", (Icallback)branchopen_cb);
   IupSetCallback(tree, "DRAGDROP_CB", (Icallback)dragdrop_cb);
   IupSetCallback(tree, "RIGHTCLICK_CB", (Icallback)rightclick_cb);
-  IupSetCallback(tree, "K_ANY", (Icallback)k_any_cb);
+//  IupSetCallback(tree, "K_ANY", (Icallback)k_any_cb);
   IupSetCallback(tree, "SHOWRENAME_CB", (Icallback)showrename_cb);
   IupSetCallback(tree, "SELECTION_CB", (Icallback)selection_cb);
-  //  IupSetCallback(tree, "MULTISELECTION_CB", (Icallback) multiselection_cb);
+  //IupSetCallback(tree, "MULTISELECTION_CB", (Icallback) multiselection_cb);
   //  IupSetCallback(tree, "MULTIUNSELECTION_CB", (Icallback) multiunselection_cb);
-  IupSetCallback(tree, "GETFOCUS_CB", (Icallback)getfocus_cb);
-  IupSetCallback(tree, "KILLFOCUS_CB", (Icallback)killfocus_cb);
+  //IupSetCallback(tree, "GETFOCUS_CB", (Icallback)getfocus_cb);
+  //IupSetCallback(tree, "KILLFOCUS_CB", (Icallback)killfocus_cb);
   //IupSetCallback(tree, "ENTERWINDOW_CB", (Icallback) enterwindow_cb);
   //IupSetCallback(tree, "LEAVEWINDOW_CB", (Icallback)leavewindow_cb);
-  IupSetCallback(tree, "FLAT_BUTTON_CB", (Icallback)button_cb);
-  //IupSetCallback(tree, "MOTION_CB",    (Icallback)motion_cb);
+  //IupSetCallback(tree, "FLAT_BUTTON_CB", (Icallback)button_cb);
+  //IupSetCallback(tree, "FLAT_MOTION_CB",    (Icallback)motion_cb);
   IupSetCallback(tree, "NODEREMOVED_CB", (Icallback)noderemoved_cb);
   IupSetCallback(tree, "TOGGLEVALUE_CB", (Icallback)togglevalue_cb);
   //  IupSetCallback(tree, "TIPS_CB", (Icallback)tips_cb);
@@ -838,9 +836,10 @@ static Ihandle *init_tree(void)
 
   IupSetCallback(tree, "HELP_CB", (Icallback)help_cb);
 
-  IupSetAttribute(tree, "DRAGDROPTREE", "Yes");
-  IupSetAttribute(tree, "DROPTARGET", "YES");
-  IupSetAttribute(tree, "DROPTYPES", "ITEMLIST");
+//  IupSetAttribute(tree, "DRAGDROPTREE", "Yes");
+//  IupSetAttribute(tree, "DROPTARGET", "YES");
+//  IupSetAttribute(tree, "DROPTYPES", "NODETREE");
+//  IupSetAttribute(tree, "SHOWDRAGDROP", "YES");
 
   //  IupSetAttribute(tree, "FONT", "COURIER_NORMAL_14");
   //  IupSetAttribute(tree, "FONTSIZE", "36");
@@ -849,10 +848,9 @@ static Ihandle *init_tree(void)
   //  IupSetAttribute(tree, "BGCOLOR", "255 255 255");
   //  IupSetAttribute(tree, "BGCOLOR", "128 0 255");
 
-  //  IupSetAttribute(tree, "MARKMODE",     "MULTIPLE");
+  IupSetAttribute(tree, "MARKMODE",     "MULTIPLE");
   IupSetAttribute(tree, "SHOWRENAME", "YES");
-  IupSetAttribute(tree, "SHOWDRAGDROP", "YES");
-  IupSetAttribute(tree, "SHOWTOGGLE", "YES");
+//  IupSetAttribute(tree, "SHOWTOGGLE", "YES");
 //  IupSetAttribute(tree, "MARKWHENTOGGLE", "YES");
 //  IupSetAttribute(tree, "SHOWTOGGLE", "3STATE");
   //  IupSetAttribute(tree, "DROPEQUALDRAG", "YES");
@@ -891,11 +889,10 @@ static void init_dlg(void)
     buttree = IupButton("Tree", NULL),
     NULL), NULL);
   Ihandle* dlg = IupDialog(box);
-  IupSetAttribute(dlg, "TITLE", "IupTree");
+  IupSetAttribute(dlg, "TITLE", "IupFlatTree");
   IupSetAttribute(dlg, "SIZE", "400x400");
   IupSetAttribute(box, "MARGIN", "10x10");
   IupSetAttribute(box, "GAP", "10");
-  IupSetAttribute(box, "EXPAND", "YES");
   //IupSetAttribute(box, "BGCOLOR", "92 92 255");
   //IupSetAttribute(dlg, "BGCOLOR", "92 92 255");
   //IupSetAttribute(dlg, "BACKGROUND", "200 10 80");
@@ -921,7 +918,6 @@ static void init_dlg_2(void)
   IupSetAttribute(dlg, "SIZE", "400x400");
   IupSetAttribute(box, "MARGIN", "10x10");
   IupSetAttribute(box, "GAP", "10");
-  IupSetAttribute(box, "EXPAND", "YES");
   //IupSetAttribute(box, "BGCOLOR", "92 92 255");
   //IupSetAttribute(dlg, "BGCOLOR", "92 92 255");
   //IupSetAttribute(dlg, "BACKGROUND", "200 10 80");
