@@ -725,7 +725,7 @@ static int iTreeSetDragDropTreeAttrib(Ihandle* ih, const char* value)
 {
   if (iupStrBoolean(value))
   {
-    /* Register callbacks to enable drag and drop between trees */
+    /* Register callbacks to enable drag and drop between trees, DRAG&DROP attributes must still be set by the application */
     IupSetCallback(ih, "DRAGBEGIN_CB",    (Icallback)iTreeDragBegin_CB);
     IupSetCallback(ih, "DRAGDATASIZE_CB", (Icallback)iTreeDragDataSize_CB);
     IupSetCallback(ih, "DRAGDATA_CB",     (Icallback)iTreeDragData_CB);
