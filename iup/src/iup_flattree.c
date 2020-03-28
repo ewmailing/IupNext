@@ -4158,9 +4158,10 @@ Iclass* iupFlatTreeNewClass(void)
 }
 
 /*TODO:
-   - multiple selection while dragging when SHOWDRAGDROP=NO
-   - use node height for LINEY
+   - enteritem_cb/leaveitem_cb
+   - use average node height for LINEY
    - define CARETPOS based on click in Rename
+   - multiple selection while dragging when SHOWDRAGDROP=NO
 
   Reflection:
     "iFlatTreeNode* could be replaced by an Ihandle* and then exported to the application"
