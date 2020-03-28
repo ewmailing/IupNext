@@ -80,9 +80,7 @@ struct _IcontrolData
   int has_focus, focus_id;
   int last_selected_id;
   int dragover_id, dragged_id;  /* internal drag&drop */
-  int last_clock;
-  int toggle_size;
-  int button_size;
+  clock_t last_clock;
 
   /* attributes */
   int add_expanded;
@@ -97,6 +95,8 @@ struct _IcontrolData
   int show_toggle;
   int auto_redraw;
   int empty_toggle;
+  int toggle_size;
+  int button_size;
 };
 
 
@@ -1018,13 +1018,14 @@ static int iFlatTreeGetScrollbarSize(Ihandle* ih)
 }
 
 
-static void iFlatTreeGetViewSize(Ihandle *ih, int *view_width, int *view_height)
+static void iFlatTreeGetViewSize(Ihandle *ih, int *view_width, int *view_height, int *line_height)
 {
   int count = iupArrayCount(ih->data->node_array);
   iFlatTreeNode **nodes = iupArrayGetData(ih->data->node_array);
   int i;
   int total_h = 0;
   int max_w = 0;
+  int j = 0;
 
   for (i = 0; i < count; i++)
   {
@@ -1033,7 +1034,13 @@ static void iFlatTreeGetViewSize(Ihandle *ih, int *view_width, int *view_height)
 
     total_h += nodes[i]->height + ih->data->spacing;
     max_w = (nodes[i]->width > max_w) ? nodes[i]->width : max_w;
+    j++;
   }
+
+  if (j == 0)
+    *line_height = 0;
+  else
+    *line_height = total_h / j;
 
   *view_width = max_w;
   *view_height = total_h;
@@ -1044,6 +1051,7 @@ static void iFlatTreeUpdateScrollBar(Ihandle *ih)
   int canvas_width = ih->currentwidth;
   int canvas_height = ih->currentheight;
   int sb, view_width, view_height;
+  int line_height;  /* average line height (includes spacing) */
 
   if (iupAttribGetBoolean(ih, "BORDER")) /* native border around scrollbars */
   {
@@ -1054,10 +1062,10 @@ static void iFlatTreeUpdateScrollBar(Ihandle *ih)
   canvas_width -= 2 * ih->data->border_width;
   canvas_height -= 2 * ih->data->border_width;
 
-  iFlatTreeGetViewSize(ih, &view_width, &view_height);
+  iFlatTreeGetViewSize(ih, &view_width, &view_height, &line_height);
 
   if (ih->data->show_dragdrop || iupAttribGetBoolean(ih, "DRAGDROPTREE"))
-    view_height += ih->data->indentation / 2; /* additional space for drop area */
+    view_height += line_height/2; /* additional space for drop area */
 
   sb = iFlatTreeGetScrollbar(ih);
   if (sb)
@@ -1105,7 +1113,7 @@ static void iFlatTreeUpdateScrollBar(Ihandle *ih)
     else
       IupSetAttribute(ih, "DY", "0");
 
-    IupSetfAttribute(ih, "LINEY", "%d", ih->data->indentation);  /*TODO use line height? */
+    IupSetfAttribute(ih, "LINEY", "%d", line_height);
   }
   else
   {
@@ -1452,7 +1460,7 @@ static void iFlatTreeGetTitlePos(Ihandle *ih, iFlatTreeNode *node, int *txt_x, i
     *txt_x += ih->data->toggle_size;
 }
 
-static int iFlatTreeRenameNode(Ihandle* ih)
+static int iFlatTreeRenameNode(Ihandle* ih, int x)
 {
   if (ih->data->show_rename && ih->data->has_focus)
   {
@@ -1478,14 +1486,6 @@ static int iFlatTreeRenameNode(Ihandle* ih)
 
       iupClassObjectLayoutUpdate(text);
 
-      value = iupAttribGetStr(ih, "RENAMECARET");
-      if (value)
-        IupSetStrAttribute(text, "CARET", value);
-
-      value = iupAttribGetStr(ih, "RENAMESELECTION");
-      if (value)
-        IupSetStrAttribute(text, "SELECTION", value);
-
       IupSetAttribute(text, "ALIGMENT", "ALEFT");
       IupSetStrAttribute(text, "FONT", nodeFocus->font? nodeFocus->font: font);
       IupSetAttribute(text, "VISIBLE", "YES");
@@ -1496,7 +1496,15 @@ static int iFlatTreeRenameNode(Ihandle* ih)
         IupSetStrAttribute(text, "VALUE", nodeFocus->title);
       IupSetFocus(text);
 
-      /*TODO? IupSetInt(text, "CARETPOS", IupConvertXYToPos(text, x, y)); */
+      value = iupAttribGetStr(ih, "RENAMECARET");
+      if (value)
+        IupSetStrAttribute(text, "CARET", value);
+      else
+        IupSetInt(text, "CARETPOS", IupConvertXYToPos(text, x, 10));
+
+      value = iupAttribGetStr(ih, "RENAMESELECTION");
+      if (value)
+        IupSetStrAttribute(text, "SELECTION", value);
     }
   }
   return 0;
@@ -1583,7 +1591,7 @@ static int iFlatTreeKF2_CB(Ihandle* ih)
       return IUP_DEFAULT;
   }
 
-  iFlatTreeRenameNode(ih);
+  iFlatTreeRenameNode(ih, 0);
 
   return IUP_DEFAULT;
 }
@@ -2117,9 +2125,9 @@ static int iFlatTreeButton_CB(Ihandle* ih, int button, int pressed, int x, int y
       {
         if (ih->data->show_rename && id == ih->data->focus_id)
         {
-          int current_clock = clock();
-
-          if ((current_clock - ih->data->last_clock) > 500)
+          clock_t current_clock = clock();
+          clock_t diff_clock = current_clock - ih->data->last_clock;
+          if (diff_clock < 1000)
           {
             IFni cb = (IFni)IupGetCallback(ih, "SHOWRENAME_CB");
             if (cb)
@@ -2128,7 +2136,7 @@ static int iFlatTreeButton_CB(Ihandle* ih, int button, int pressed, int x, int y
                 return IUP_DEFAULT;
             }
 
-            return iFlatTreeRenameNode(ih);
+            return iFlatTreeRenameNode(ih, x - (xmin + img_w + ih->data->icon_spacing));
           }
 
           ih->data->last_clock = current_clock;
@@ -2578,9 +2586,11 @@ static int iFlatTreeDropData_CB(Ihandle *ih, char* type, void* data, int len, in
 
   /* Data is not the pointer, it contains the pointer */
   Ihandle* ih_source;
-  memcpy((void*)&ih_source, data, len);  /* but ih_source can be IupTree or IupFlatTree, can NOT use ih_source->data here */
+  memcpy((void*)&ih_source, data, len);
 
   /*TODO support IupTree??? */
+  if (!IupClassMatch(ih_source, "flattree"))
+    return IUP_DEFAULT;
 
   /* A copy operation is enabled with the CTRL key pressed, or else a move operation will occur.
      A move operation will be possible only if the attribute DRAGSOURCEMOVE is Yes.
@@ -3140,7 +3150,7 @@ static int iFlatTreeSetUserDataAttrib(Ihandle* ih, int id, const char* value)
 
 static int iFlatTreeSetRenameAttrib(Ihandle* ih, const char* value)
 {
-  iFlatTreeRenameNode(ih);
+  iFlatTreeRenameNode(ih, 0);
   (void)value;
   return 0;
 }
@@ -4158,9 +4168,6 @@ Iclass* iupFlatTreeNewClass(void)
 }
 
 /*TODO:
-   - enteritem_cb/leaveitem_cb
-   - use average node height for LINEY
-   - define CARETPOS based on click in Rename
    - multiple selection while dragging when SHOWDRAGDROP=NO
 
   Reflection:

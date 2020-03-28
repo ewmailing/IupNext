@@ -610,6 +610,8 @@ static void init_tree_nodes(void)
   IupSetAttribute(tree, "COLOR5", "255 0 0");
 //  IupSetAttribute(tree, "COLOR6", "255 0 0");
 
+  IupSetAttribute(tree, "ITEMTIP6", "Node Tip");
+
   IupSetAttribute(tree, "TITLEFONTSTYLE3", "Bold");
 
   IupSetAttribute(tree, "USERDATA0", "0");
