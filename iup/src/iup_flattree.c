@@ -1290,14 +1290,14 @@ static int iFlatTreeDrawNodes(Ihandle *ih, IdrawCanvas* dc, iFlatTreeNode *node,
                       NULL, make_inactive, node->title, text_flags, 0, fore_color, back_color, active);
 
       /* title selection */
-      if (node->selected || ih->data->dragover_id == node->id)
+      if (node->selected || (ih->data->show_dragdrop && ih->data->dragover_id == node->id))
       {
         unsigned char red, green, blue;
         char* hlcolor = iupAttribGetStr(ih, "HLCOLOR");
         unsigned char alpha = (unsigned char)iupAttribGetInt(ih, "HLCOLORALPHA");
         long selcolor;
 
-        if (ih->data->dragover_id == node->id)
+        if (ih->data->show_dragdrop && ih->data->dragover_id == node->id)
           alpha = (2 * alpha) / 3;
 
         iupStrToRGB(hlcolor, &red, &green, &blue);
@@ -1913,7 +1913,7 @@ static int iFlatTreeButton_CB(Ihandle* ih, int button, int pressed, int x, int y
 
   id = iFlatTreeConvertXYToId(ih, x, y);
 
-  if (button == IUP_BUTTON1 && !pressed && ih->data->dragged_id > 0)
+  if (button == IUP_BUTTON1 && !pressed && ih->data->show_dragdrop && ih->data->dragged_id > 0)
   {
     iFlatTreeNode *srcNode = iFlatTreeGetNode(ih, ih->data->dragged_id);
     iFlatTreeNode *dstNode = iFlatTreeGetNode(ih, id);
@@ -2123,7 +2123,7 @@ static int iFlatTreeButton_CB(Ihandle* ih, int button, int pressed, int x, int y
       }
       else
       {
-        if (ih->data->show_rename && id == ih->data->focus_id)
+        if (ih->data->show_rename && id == ih->data->focus_id && x > xmin + img_w + ih->data->icon_spacing)
         {
           clock_t current_clock = clock();
           clock_t diff_clock = current_clock - ih->data->last_clock;
@@ -2170,8 +2170,6 @@ static int iFlatTreeMotion_CB(Ihandle* ih, int x, int y, char* status)
       return IUP_DEFAULT;
   }
 
-  /* TODO multiple selection while dragging when SHOWDRAGDROP=NO */
-
   id = iFlatTreeConvertXYToId(ih, x, y);
   if (id < 0)
   {
@@ -2188,8 +2186,16 @@ static int iFlatTreeMotion_CB(Ihandle* ih, int x, int y, char* status)
       iupFlatItemResetTip(ih);
   }
 
-  if (!iup_isbutton1(status) || ih->data->mark_mode == IFLATTREE_MARK_MULTIPLE || !ih->data->show_dragdrop)
+  if (!iup_isbutton1(status))
     return IUP_IGNORE;
+
+  /* button1 is pressed => dragging */
+
+  if (ih->data->mark_mode == IFLATTREE_MARK_MULTIPLE && !ih->data->show_dragdrop)
+  {
+    /* multiple selection while dragging when SHOWDRAGDROP=NO */
+    iFlatTreeSelectNodeInteract(ih, id, 0, 1);
+  }
 
   if (y < 0 || y > ih->currentheight)
   {
@@ -2201,7 +2207,7 @@ static int iFlatTreeMotion_CB(Ihandle* ih, int x, int y, char* status)
     IupSetInt(ih, "POSY", posy);
   }
 
-  if (ih->data->dragged_id >= 0)
+  if (ih->data->show_dragdrop && ih->data->dragged_id >= 0)
     ih->data->dragover_id = id;
 
   IupRedraw(ih, 0);
@@ -3965,6 +3971,7 @@ static int iFlatTreeCreateMethod(Ihandle* ih, void** params)
   ih->data->toggle_size = ih->data->indentation;
   ih->data->button_size = high_dpi ? 16 : 9;
   ih->data->dragover_id = -1;
+  ih->data->dragged_id = -1;
 
   ih->data->root_node = (iFlatTreeNode*)malloc(sizeof(iFlatTreeNode));
   memset(ih->data->root_node, 0, sizeof(iFlatTreeNode));
@@ -4167,10 +4174,7 @@ Iclass* iupFlatTreeNewClass(void)
   return ic;
 }
 
-/*TODO:
-   - multiple selection while dragging when SHOWDRAGDROP=NO
-
-  Reflection:
+/*Reflection:
     "iFlatTreeNode* could be replaced by an Ihandle* and then exported to the application"
   PROS
     more flexibility for managing the nodes and its attributes

@@ -330,14 +330,14 @@ static int iFlatListRedraw_CB(Ihandle* ih)
                     ih->data->img_position, ih->data->icon_spacing, ih->data->horiz_alignment, ih->data->vert_alignment, ih->data->horiz_padding, ih->data->vert_padding,
                     items[i].image, make_inactive, items[i].title, text_flags, 0, fgcolor, bgcolor, active);
 
-    if (items[i].selected || ih->data->dragover_pos == i + 1)
+    if (items[i].selected || (ih->data->show_dragdrop && ih->data->dragover_pos == i + 1))
     {
       unsigned char red, green, blue;
       char* hlcolor = iupAttribGetStr(ih, "HLCOLOR");
       unsigned char a = (unsigned char)iupAttribGetInt(ih, "HLCOLORALPHA");
       long selcolor;
 
-      if (ih->data->dragover_pos == i + 1)
+      if (ih->data->show_dragdrop && ih->data->dragover_pos == i + 1)
         a = (2*a)/3;
 
       iupStrToRGB(hlcolor, &red, &green, &blue);
@@ -579,7 +579,7 @@ static int iFlatListButton_CB(Ihandle* ih, int button, int pressed, int x, int y
       return IUP_DEFAULT;
   }
 
-  if (button == IUP_BUTTON1 && !pressed && ih->data->dragged_pos > 0)
+  if (button == IUP_BUTTON1 && !pressed && ih->data->show_dragdrop && ih->data->dragged_pos > 0)
   {
     if (pos == -1)
     {
@@ -671,8 +671,13 @@ static int iFlatListMotion_CB(Ihandle* ih, int x, int y, char* status)
       iupFlatItemResetTip(ih);
   }
 
-  if (!iup_isbutton1(status) || ih->data->is_multiple || !ih->data->show_dragdrop)
+  if (!iup_isbutton1(status))
     return IUP_IGNORE;
+
+  /* button1 is pressed => dragging */
+
+  if (ih->data->is_multiple && !ih->data->show_dragdrop)
+    iFlatListSelectItem(ih, pos, 0, 1);
 
   if (y < 0 || y > ih->currentheight)
   {
@@ -681,7 +686,7 @@ static int iFlatListMotion_CB(Ihandle* ih, int x, int y, char* status)
     IupSetInt(ih, "POSY", posy);
   }
 
-  if (ih->data->dragged_pos > 0)
+  if (ih->data->show_dragdrop && ih->data->dragged_pos > 0)
     ih->data->dragover_pos = pos;
 
   IupUpdate(ih);
