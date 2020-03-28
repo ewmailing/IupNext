@@ -214,6 +214,8 @@ padding area. Default value: &quot;2x2&quot;.</p>
 the item at the given id. id starts at 1. If not defined FGCOLOR is used.</p>
 <p><strong>ITEMBGCOLOR</strong><em><strong>id</strong></em>: background color of 
 the item at the given id. id starts at 1. If not defined BGCOLOR is used.</p>
+<p><strong>ITEMTIP</strong><em><strong>id</strong></em>: tip of the item at the 
+given id. If defined will be shown instead of the TIP attribute. (since 3.29)</p>
 <p><strong>ITEMFONT</strong><em><strong>id</strong></em>: text font of the tab. 
 If not defined FONT is 
 used.</p>
@@ -342,7 +344,7 @@ will act also as minimum number of visible lines.</p>
 
 
 <p>Inherits all callbacks of the <a href="../elem/iupcanvas.html">IupCanvas</a>, 
-but redefines a few of them. Including ACTION, BUTTON_CB, FOCUS_CB, 
+but redefines a few of them. Including ACTION, BUTTON_CB, LEAVEWINDOW_CB, FOCUS_CB, 
 and MOTION_CB. To allow the application to use those 
 callbacks the same callbacks are exported with the &quot;FLAT_&quot; prefix using the same 
 parameters, except the FLAT_ACTION callback that now mimics the <strong>

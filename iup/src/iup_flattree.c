@@ -47,9 +47,10 @@ typedef struct _iFlatTreeNode
   char* title;
   char* image;
   char* image_expanded;
-  char *fg_color;
-  char *bg_color;
-  char *font;
+  char* fg_color;
+  char* bg_color;
+  char* tip;
+  char* font;
   int selected;        /* bool */
   int kind;
   int state;
@@ -627,6 +628,7 @@ static iFlatTreeNode *iFlatTreeCloneNode(iFlatTreeNode *node)
   newNode->image_expanded = iupStrDup(node->image_expanded);
   newNode->bg_color = iupStrDup(node->bg_color);
   newNode->fg_color = iupStrDup(node->fg_color);
+  newNode->tip = iupStrDup(node->tip);
   newNode->font = iupStrDup(node->font);
   newNode->kind = node->kind;
   newNode->state = node->state;
@@ -706,6 +708,9 @@ static void iFlatTreeRemoveNode(Ihandle *ih, iFlatTreeNode *node, IFns noderemov
 
   if (node->bg_color)
     free(node->bg_color);
+
+  if (node->tip)
+    free(node->tip);
 
   if (node->font)
     free(node->font);
@@ -2159,12 +2164,24 @@ static int iFlatTreeMotion_CB(Ihandle* ih, int x, int y, char* status)
 
   /* TODO multiple selection while dragging when SHOWDRAGDROP=NO */
 
-  if (!iup_isbutton1(status) || ih->data->mark_mode == IFLATTREE_MARK_MULTIPLE || !ih->data->show_dragdrop)
-    return IUP_IGNORE;
-
   id = iFlatTreeConvertXYToId(ih, x, y);
   if (id < 0)
+  {
+    iupFlatItemResetTip(ih);
     return IUP_DEFAULT;
+  }
+  else
+  {
+    iFlatTreeNode **nodes = iupArrayGetData(ih->data->node_array);
+    char* item_tip = nodes[id]->tip;
+    if (item_tip)
+      iupFlatItemSetTip(ih, item_tip);
+    else
+      iupFlatItemResetTip(ih);
+  }
+
+  if (!iup_isbutton1(status) || ih->data->mark_mode == IFLATTREE_MARK_MULTIPLE || !ih->data->show_dragdrop)
+    return IUP_IGNORE;
 
   if (y < 0 || y > ih->currentheight)
   {
@@ -2180,6 +2197,20 @@ static int iFlatTreeMotion_CB(Ihandle* ih, int x, int y, char* status)
     ih->data->dragover_id = id;
 
   IupRedraw(ih, 0);
+
+  return IUP_DEFAULT;
+}
+
+static int iFlatTreeLeaveWindow_CB(Ihandle* ih)
+{
+  IFn cb = (IFn)IupGetCallback(ih, "FLAT_LEAVEWINDOW_CB");
+  if (cb)
+  {
+    if (cb(ih) == IUP_IGNORE)
+      return IUP_DEFAULT;
+  }
+
+  iupFlatItemResetTip(ih);
 
   return IUP_DEFAULT;
 }
@@ -3727,6 +3758,29 @@ static int iFlatTreeSetBackColorAttrib(Ihandle* ih, int id, const char* value)
   return 0;
 }
 
+static char* iFlatTreeGetTipAttrib(Ihandle* ih, int id)
+{
+  iFlatTreeNode *node = iFlatTreeGetNode(ih, id);
+  if (!node)
+    return NULL;
+
+  return node->tip;
+}
+
+static int iFlatTreeSetTipAttrib(Ihandle* ih, int id, const char* value)
+{
+  iFlatTreeNode *node = iFlatTreeGetNode(ih, id);
+  if (!node)
+    return 0;
+
+  if (node->tip)
+    free(node->tip);
+  node->tip = iupStrDup(value);
+
+  iFlatTreeRedraw(ih, 0, 0);
+  return 0;
+}
+
 static int iFlatTreeSetTopItemAttrib(Ihandle* ih, const char* value)
 {
   int id = 0;
@@ -3918,6 +3972,7 @@ static int iFlatTreeCreateMethod(Ihandle* ih, void** params)
   IupSetCallback(ih, "ACTION", (Icallback)iFlatTreeRedraw_CB);
   IupSetCallback(ih, "BUTTON_CB", (Icallback)iFlatTreeButton_CB);
   IupSetCallback(ih, "MOTION_CB", (Icallback)iFlatTreeMotion_CB);
+  IupSetCallback(ih, "LEAVEWINDOW_CB", (Icallback)iFlatTreeLeaveWindow_CB);
   IupSetCallback(ih, "RESIZE_CB", (Icallback)iFlatTreeResize_CB);
   IupSetCallback(ih, "FOCUS_CB", (Icallback)iFlatTreeFocus_CB);
   IupSetCallback(ih, "K_CR", (Icallback)iFlatTreeKCr_CB);
@@ -3984,8 +4039,10 @@ Iclass* iupFlatTreeNewClass(void)
   iupClassRegisterCallback(ic, "FLAT_BUTTON_CB", "iiiis");
   iupClassRegisterCallback(ic, "FLAT_MOTION_CB", "iis");
   iupClassRegisterCallback(ic, "FLAT_FOCUS_CB", "i");
+  iupClassRegisterCallback(ic, "FLAT_LEAVEWINDOW_CB", "");
 
   iupClassRegisterAttribute(ic, "ACTIVE", iupBaseGetActiveAttrib, iupFlatSetActiveAttrib, IUPAF_SAMEASSYSTEM, "YES", IUPAF_DEFAULT);
+  iupClassRegisterAttribute(ic, "TIP", NULL, iupFlatItemSetTipAttrib, NULL, NULL, IUPAF_NO_DEFAULTVALUE | IUPAF_NO_INHERIT);
 
   /* General Attributes */
   iupClassRegisterAttribute(ic, "FGCOLOR", NULL, iFlatTreeSetAttribPostRedraw, IUPAF_SAMEASSYSTEM, IUP_FLAT_FORECOLOR, IUPAF_NOT_MAPPED);
@@ -4022,6 +4079,7 @@ Iclass* iupFlatTreeNewClass(void)
   iupClassRegisterAttributeId(ic, "TOTALCHILDCOUNT", iFlatTreeGetTotalChildCountAttrib, NULL, IUPAF_NOT_MAPPED | IUPAF_READONLY | IUPAF_NO_INHERIT);
   iupClassRegisterAttributeId(ic, "COLOR", iFlatTreeGetColorAttrib, iFlatTreeSetColorAttrib, IUPAF_NO_INHERIT | IUPAF_NOT_MAPPED);
   iupClassRegisterAttributeId(ic, "BACKCOLOR", iFlatTreeGetBackColorAttrib, iFlatTreeSetBackColorAttrib, IUPAF_NO_INHERIT | IUPAF_NOT_MAPPED);
+  iupClassRegisterAttributeId(ic, "ITEMTIP", iFlatTreeGetTipAttrib, iFlatTreeSetTipAttrib, IUPAF_NO_INHERIT | IUPAF_NOT_MAPPED);
   iupClassRegisterAttributeId(ic, "DEPTH", iFlatTreeGetDepthAttrib, NULL, IUPAF_NOT_MAPPED | IUPAF_READONLY | IUPAF_NO_INHERIT);
   iupClassRegisterAttributeId(ic, "KIND", iFlatTreeGetKindAttrib, NULL, IUPAF_NOT_MAPPED | IUPAF_READONLY | IUPAF_NO_INHERIT);
   iupClassRegisterAttributeId(ic, "PARENT", iFlatTreeGetParentAttrib, NULL, IUPAF_NOT_MAPPED | IUPAF_READONLY | IUPAF_NO_INHERIT);
@@ -4100,5 +4158,16 @@ Iclass* iupFlatTreeNewClass(void)
 }
 
 /*TODO:
-  NODETIP/INFOTIP
+   - multiple selection while dragging when SHOWDRAGDROP=NO
+   - use node height for LINEY
+   - define CARETPOS based on click in Rename
+
+  Reflection:
+    "iFlatTreeNode* could be replaced by an Ihandle* and then exported to the application"
+  PROS
+    more flexibility for managing the nodes and its attributes
+    the application can store a pointer to a node
+  CONS
+    Ihandle* has a memory overhead much larger than iFlatTreeNode
+    node attributes and almost all aux must be consulted using functions
 */

@@ -1506,45 +1506,6 @@ static int iFlatTabsButton_CB(Ihandle* ih, int button, int pressed, int x, int y
   return IUP_DEFAULT;
 }
 
-static void iFlatTabsSetTipVisible(Ihandle* ih, const char* tip)
-{
-  int visible = IupGetInt(ih, "TIPVISIBLE");
-
-  /* do not call IupSetAttribute */
-  iupAttribSetStr(ih, "TIP", tip);
-  iupdrvBaseSetTipAttrib(ih, tip);
-
-  if (visible)
-  {
-    IupSetAttribute(ih, "TIPVISIBLE", "No");
-    if (tip)
-      IupSetAttribute(ih, "TIPVISIBLE", "Yes");
-  }
-}
-
-static int iFlatTabsCheckTip(Ihandle* ih, const char* new_tip)
-{
-  char* tip = iupAttribGet(ih, "TIP");
-  if (!tip && !new_tip)
-    return 1;
-  if (iupStrEqual(tip, new_tip))
-    return 1;
-  return 0;
-}
-
-static void iFlatTabsResetTip(Ihandle* ih)
-{
-  char* tip = iupAttribGet(ih, "_IUPFTABS_TIP");
-  if (!iFlatTabsCheckTip(ih, tip))
-    iFlatTabsSetTipVisible(ih, tip);
-}
-
-static void iFlatTabsSetTip(Ihandle *ih, const char* tip)
-{
-  if (!iFlatTabsCheckTip(ih, tip))
-    iFlatTabsSetTipVisible(ih, tip);
-}
-
 static int iFlatTabsMotion_CB(Ihandle *ih, int x, int y, char *status)
 {
   int tab_found, tab_highlighted, redraw = 0;
@@ -1562,25 +1523,25 @@ static int iFlatTabsMotion_CB(Ihandle *ih, int x, int y, char *status)
   tab_found = iFlatTabsFindTab(ih, x, y, show_close, &inside_close);
 
   if (tab_found == ITABS_NONE)
-    iFlatTabsResetTip(ih);
+    iupFlatItemResetTip(ih);
   else
   {
     if (tab_found > ITABS_NONE)
     {
       char* tab_tip = iupAttribGetId(ih, "TABTIP", tab_found);
       if (tab_tip)
-        iFlatTabsSetTip(ih, tab_tip);
+        iupFlatItemSetTip(ih, tab_tip);
       else
-        iFlatTabsResetTip(ih);
+        iupFlatItemResetTip(ih);
     }
     else
     {
       int extra_active = iFlatTabsGetExtraActive(ih, ITABS_TABID2EXTRABUT(tab_found));
       char* extra_tip = iupAttribGetId(ih, "EXTRATIP", ITABS_TABID2EXTRABUT(tab_found));
       if (extra_tip && extra_active)
-        iFlatTabsSetTip(ih, extra_tip);
+        iupFlatItemSetTip(ih, extra_tip);
       else
-        iFlatTabsResetTip(ih);
+        iupFlatItemResetTip(ih);
     }
   }
 
@@ -1659,7 +1620,7 @@ static int iFlatTabsLeaveWindow_CB(Ihandle* ih)
     redraw = 1;
   }
 
-  iFlatTabsResetTip(ih);
+  iupFlatItemResetTip(ih);
 
   if (redraw)
     iupdrvPostRedraw(ih);
@@ -1883,12 +1844,6 @@ static int iFlatTabsSetBgColorAttrib(Ihandle* ih, const char* value)
   for (child = ih->firstchild; child; child = child->brother)
     IupSetAttribute(child, "BGCOLOR", value);
   return 1;
-}
-
-static int iFlatTabsSetTipAttrib(Ihandle* ih, const char* value)
-{
-  iupAttribSetStr(ih, "_IUPFTABS_TIP", value);
-  return iupdrvBaseSetTipAttrib(ih, value);
 }
 
 static int iFlatTabsSetAttribPostRedraw(Ihandle* ih, const char* value)
@@ -2459,7 +2414,7 @@ Iclass* iupFlatTabsNewClass(void)
   iupClassRegisterReplaceAttribFlags(ic, "SCROLLBAR", IUPAF_READONLY | IUPAF_NO_INHERIT);
 
   iupClassRegisterReplaceAttribFunc(ic, "ACTIVE", NULL, iupFlatSetActiveAttrib);
-  iupClassRegisterAttribute(ic, "TIP", NULL, iFlatTabsSetTipAttrib, NULL, NULL, IUPAF_NO_DEFAULTVALUE | IUPAF_NO_INHERIT);
+  iupClassRegisterAttribute(ic, "TIP", NULL, iupFlatItemSetTipAttrib, NULL, NULL, IUPAF_NO_DEFAULTVALUE | IUPAF_NO_INHERIT);
 
   /* IupFlatTabs only */
   iupClassRegisterAttribute(ic, "VALUE", iFlatTabsGetValueAttrib, iFlatTabsSetValueAttrib, NULL, NULL, IUPAF_NOT_MAPPED | IUPAF_NO_INHERIT);

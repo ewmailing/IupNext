@@ -98,14 +98,22 @@ buttons. </p>
   
 <p><strong>HIDELINES</strong>: hide the lines that connect the 
 nodes in the hierarchy.</p>
-<p>LINECOLOR:</p>
-<p>BUTTONBGCOLOR:</p>
-<p>BUTTONFGCOLOR:</p>
-<p>BUTTONBRDCOLOR:</p>
+<p><strong>LINECOLOR</strong>: the color of the dotted guidelines. Default: &quot;110 
+110 110&quot;</p>
+<p><strong>BUTTONBGCOLOR</strong>: background color of the expander buttons. 
+Default: &quot;240 240 240&quot;</p>
+<p><strong>BUTTONFGCOLOR</strong>: sign color of the expander buttons (&quot;+&quot; or 
+&quot;-&quot; signs). Default: &quot;50 100 150&quot;</p>
+<p><strong>BUTTONBRDCOLOR</strong>: border color of the expander buttons. 
+Default: &quot;150 150 150&quot;</p>
 <p><strong>BUTTONSIZE</strong>: size of the expander button square. Default: 9 
 for standard resolution, 16 for high resolution display</p>
-<p>BUTTONPLUSIMAGE:</p>
-<p>BUTTONMINUSIMAGE:</p>
+<p><strong>BUTTONPLUSIMAGE</strong>: the image name that will be shown for all 
+expander button when collapsed. By default the button is drawn. The &quot;IMGPLUS&quot; 
+pre-defined image is a 9x9 image that can be used.</p>
+<p><strong>BUTTONMINUSIMAGE</strong>: the image name that will be shown for all 
+expander button when collapsed. By default the button is drawn. The &quot;IMGMINUS&quot; 
+pre-defined image is a 9x9 image that can be used.</p>
 <h3><a name="nodes">Nodes</a>&nbsp;(<font size="3">non inheritable</font>)</h3>
     <p>For these attributes &quot;id&quot; is the specified node identifier. If 
 	&quot;id&quot; is 
@@ -122,12 +130,12 @@ are branches. </p>
 <p><strong>TOTALCHILDCOUNT<em>id</em></strong> (read only): returns the total 
 children count of the specified branch. It counts all grandchildren. </p>
 <p><strong>ROOTCOUNT</strong> (read only): returns the number of root nodes. </p>
-<p><strong>COLORid</strong>: text foreground color of the specified node. The value should be a string in the format &quot;R G B&quot; where R, G, B are numbers 
-  from 0 to 255.</p>
 <p><strong>COLOR</strong><em><strong>id</strong></em>: foreground color of 
 the title at the given id. If not defined FGCOLOR is used.</p>
 <p><strong>BACKCOLOR</strong><em><strong>id</strong></em>: background color of 
 the title at the given id. If not defined BGCOLOR is used.</p>
+<p><strong>ITEMTIP</strong><em><strong>id</strong></em>: tip of the node at the 
+given id. If defined will be shown instead of the TIP attribute.</p>
 <p><strong>DEPTHid </strong>(read only): returns the depth of the specified 
 node. The first node has depth=0, its 
 immediate children has depth=1, their children has depth=2 and so on.</p>

@@ -1112,3 +1112,49 @@ IUP_SDK_API int iupFlatSetActiveAttrib(Ihandle* ih, const char* value)
   iupdrvRedrawNow(ih);
   return 0;
 }
+
+static void iFlatItemSetTipVisible(Ihandle* ih, const char* tip)
+{
+  int visible = IupGetInt(ih, "TIPVISIBLE");
+
+  /* do not call IupSetAttribute */
+  iupAttribSetStr(ih, "TIP", tip);
+  iupdrvBaseSetTipAttrib(ih, tip);
+
+  if (visible)
+  {
+    IupSetAttribute(ih, "TIPVISIBLE", "No");
+    if (tip)
+      IupSetAttribute(ih, "TIPVISIBLE", "Yes");
+  }
+}
+
+static int iFlatItemCheckTip(Ihandle* ih, const char* new_tip)
+{
+  char* tip = iupAttribGet(ih, "TIP");
+  if (!tip && !new_tip)
+    return 1;
+  if (iupStrEqual(tip, new_tip))
+    return 1;
+  return 0;
+}
+
+IUP_SDK_API void iupFlatItemResetTip(Ihandle* ih)
+{
+  char* tip = iupAttribGet(ih, "_IUP_FLATITEM_TIP");
+  if (!iFlatItemCheckTip(ih, tip))
+    iFlatItemSetTipVisible(ih, tip);
+}
+
+IUP_SDK_API void iupFlatItemSetTip(Ihandle *ih, const char* tip)
+{
+  if (!iFlatItemCheckTip(ih, tip))
+    iFlatItemSetTipVisible(ih, tip);
+}
+
+IUP_SDK_API int iupFlatItemSetTipAttrib(Ihandle* ih, const char* value)
+{
+  iupAttribSetStr(ih, "_IUP_FLATITEM_TIP", value);
+  return iupdrvBaseSetTipAttrib(ih, value);
+}
+
