@@ -694,6 +694,9 @@ static int iListDropData_CB(Ihandle *ih, char* type, void* data, int len, int x,
   Ihandle* ih_source;
   memcpy((void*)&ih_source, data, len);  /* but ih_source can be IupList or IupFlatList, can NOT use ih_source->data here */
 
+  if (!IupClassMatch(ih_source, "list") && !IupClassMatch(ih_source, "flatlist"))
+    return IUP_DEFAULT;
+
   /* A copy operation is enabled with the CTRL key pressed, or else a move operation will occur.
      A move operation will be possible only if the attribute DRAGSOURCEMOVE is Yes.
      When no key is pressed the default operation is copy when DRAGSOURCEMOVE=No and move when DRAGSOURCEMOVE=Yes. */
