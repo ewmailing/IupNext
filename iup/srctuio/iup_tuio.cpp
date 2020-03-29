@@ -421,6 +421,9 @@ static Iclass* iTuioNewClass(void)
   ic->Create = iTuioCreateMethod;
   ic->Destroy = iTuioDestroyMethod;
 
+  /* Base Callbacks */
+  iupBaseRegisterBaseCallbacks(ic);
+
   iupClassRegisterCallback(ic, "TOUCH_CB", "iiis");
   iupClassRegisterCallback(ic, "MULTITOUCH_CB", "iIIII");
 

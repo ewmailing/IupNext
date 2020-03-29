@@ -833,6 +833,10 @@ Iclass* iupSplitNewClass(void)
   ic->SetChildrenCurrentSize = iSplitSetChildrenCurrentSizeMethod;
   ic->SetChildrenPosition    = iSplitSetChildrenPositionMethod;
 
+  /* Base Callbacks */
+  iupBaseRegisterBaseCallbacks(ic);
+
+  /* Callbacks */
   iupClassRegisterCallback(ic, "VALUECHANGED_CB", "");
 
   /* Common */

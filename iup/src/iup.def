@@ -386,6 +386,7 @@ iupBaseNativeParentGetBgColorAttrib
 iupBaseNoSaveCheck
 iupBaseRegisterCommonAttrib
 iupBaseRegisterCommonCallbacks
+iupBaseRegisterBaseCallbacks
 iupBaseRegisterVisualAttrib
 iupBaseSetActiveAttrib
 iupBaseSetCurrentSize
@@ -477,6 +478,9 @@ iupFlatScrollBarSetChildrenPosition
 iupFlatScrollBarSetPos
 iupFlatScrollBarWheelUpdate
 iupFlatSetActiveAttrib
+iupFlatItemSetTipAttrib
+iupFlatItemResetTip
+iupFlatItemSetTip
 iupFocusCanAccept
 iupFocusNextInteractive
 iupFontParsePango

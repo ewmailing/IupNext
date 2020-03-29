@@ -601,12 +601,18 @@ IUP_SDK_API void iupBaseRegisterVisualAttrib(Iclass* ic)
   iupdrvBaseRegisterVisualAttrib(ic);
 }
 
-IUP_SDK_API void iupBaseRegisterCommonCallbacks(Iclass* ic)
+IUP_SDK_API void iupBaseRegisterBaseCallbacks(Iclass* ic)
 {
   iupClassRegisterCallback(ic, "DESTROY_CB", "");
   iupClassRegisterCallback(ic, "LDESTROY_CB", "");
   iupClassRegisterCallback(ic, "MAP_CB", "");
   iupClassRegisterCallback(ic, "UNMAP_CB", "");
+}
+
+IUP_SDK_API void iupBaseRegisterCommonCallbacks(Iclass* ic)
+{
+  iupBaseRegisterBaseCallbacks(ic);
+
   iupClassRegisterCallback(ic, "GETFOCUS_CB", "");
   iupClassRegisterCallback(ic, "KILLFOCUS_CB", "");
   iupClassRegisterCallback(ic, "ENTERWINDOW_CB", "");

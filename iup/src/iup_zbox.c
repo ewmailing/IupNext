@@ -377,6 +377,9 @@ Iclass* iupZboxNewClass(void)
   ic->SetChildrenCurrentSize = iZboxSetChildrenCurrentSizeMethod;
   ic->SetChildrenPosition = iZboxSetChildrenPositionMethod;
 
+  /* Base Callbacks */
+  iupBaseRegisterBaseCallbacks(ic);
+
   /* Common */
   iupBaseRegisterCommonAttrib(ic);
 

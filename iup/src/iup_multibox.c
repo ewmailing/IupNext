@@ -522,7 +522,10 @@ Iclass* iupMultiBoxNewClass(void)
   ic->SetChildrenCurrentSize = iMultiBoxSetChildrenCurrentSizeMethod;
   ic->SetChildrenPosition = iMultiBoxSetChildrenPositionMethod;
 
-  /* Internal Callback */
+  /* Base Callbacks */
+  iupBaseRegisterBaseCallbacks(ic);
+
+  /* Callbacks */
   iupClassRegisterCallback(ic, "UPDATEATTRIBFROMFONT_CB", "");
 
   /* Common */

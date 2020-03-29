@@ -244,6 +244,9 @@ Iclass* iupFillNewClass(void)
   ic->UnMap = iFillUnMapMethod;
   ic->ComputeNaturalSize = iFillComputeNaturalSizeMethod;
 
+  /* Base Callbacks */
+  iupBaseRegisterBaseCallbacks(ic);
+
   /* Common */
   iupBaseRegisterCommonAttrib(ic);
 

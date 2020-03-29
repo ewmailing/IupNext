@@ -194,6 +194,9 @@ Iclass* iupNormalizerNewClass(void)
   ic->ComputeNaturalSize = iNormalizerComputeNaturalSizeMethod;
   ic->Destroy = iNormalizerDestroy;
 
+  /* Base Callbacks */
+  iupBaseRegisterBaseCallbacks(ic);
+
   iupClassRegisterAttribute(ic, "NORMALIZE", NULL, iNormalizerSetNormalizeAttrib, IUPAF_SAMEASSYSTEM, "HORIZONTAL", IUPAF_NOT_MAPPED|IUPAF_NO_INHERIT);
   iupClassRegisterAttribute(ic, "ADDCONTROL_HANDLE", NULL, iNormalizerSetAddControlHandleAttrib, NULL, NULL, IUPAF_WRITEONLY | IUPAF_IHANDLE | IUPAF_NOT_MAPPED | IUPAF_NO_INHERIT);
   iupClassRegisterAttribute(ic, "ADDCONTROL", NULL, iNormalizerSetAddControlAttrib, NULL, NULL, IUPAF_WRITEONLY | IUPAF_IHANDLENAME | IUPAF_NOT_MAPPED | IUPAF_NO_INHERIT);

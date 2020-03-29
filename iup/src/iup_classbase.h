@@ -35,8 +35,13 @@ extern "C" {
  * \ingroup iclassbase */
 IUP_SDK_API void iupBaseRegisterVisualAttrib(Iclass* ic);
 
-/** Register all common callbacks: \n
-* MAP_CB, UNMAP_CB, GETFOCUS_CB, KILLFOCUS_CB, ENTERWINDOW_CB, LEAVEWINDOW_CB, K_ANY, HELP_CB.
+/** Register all base callbacks: \n
+* MAP_CB, UNMAP_CB, DESTROY_CB, LDESTROY_CB.
+* \ingroup iclassbase */
+IUP_SDK_API void iupBaseRegisterBaseCallbacks(Iclass* ic);
+
+/** Register all base and common callbacks: \n
+* MAP_CB, UNMAP_CB, DESTROY_CB, LDESTROY_CB, GETFOCUS_CB, KILLFOCUS_CB, ENTERWINDOW_CB, LEAVEWINDOW_CB, K_ANY, HELP_CB.
 * \ingroup iclassbase */
 IUP_SDK_API void iupBaseRegisterCommonCallbacks(Iclass* ic);
 

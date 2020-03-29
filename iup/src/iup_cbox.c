@@ -132,6 +132,9 @@ Iclass* iupCboxNewClass(void)
   ic->SetChildrenCurrentSize = iCboxSetChildrenCurrentSizeMethod;
   ic->SetChildrenPosition = iCboxSetChildrenPositionMethod;
 
+  /* Base Callbacks */
+  iupBaseRegisterBaseCallbacks(ic);
+
   /* Common */
   iupBaseRegisterCommonAttrib(ic);
 

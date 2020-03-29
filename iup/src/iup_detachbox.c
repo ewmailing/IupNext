@@ -559,6 +559,10 @@ Iclass* iupDetachBoxNewClass(void)
   ic->SetChildrenCurrentSize = iDetachBoxSetChildrenCurrentSizeMethod;
   ic->SetChildrenPosition    = iDetachBoxSetChildrenPositionMethod;
 
+  /* Base Callbacks */
+  iupBaseRegisterBaseCallbacks(ic);
+
+  /* Callbacks */
   iupClassRegisterCallback(ic, "DETACHED_CB", "nii");
   iupClassRegisterCallback(ic, "RESTORED_CB", "nii");
 

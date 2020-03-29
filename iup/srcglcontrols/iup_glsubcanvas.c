@@ -499,11 +499,8 @@ Iclass* iupGLSubCanvasNewClass(void)
   iupClassRegisterCallback(ic, "GL_MOTION_CB", "iis");
   iupClassRegisterCallback(ic, "GL_WHEEL_CB", "fiis");
 
-  /* Common Callbacks */
-  iupClassRegisterCallback(ic, "DESTROY_CB", "");
-  iupClassRegisterCallback(ic, "LDESTROY_CB", "");
-  iupClassRegisterCallback(ic, "MAP_CB", "");
-  iupClassRegisterCallback(ic, "UNMAP_CB", "");
+  /* Base Callbacks */
+  iupBaseRegisterBaseCallbacks(ic);
 
   /* Common */
   iupBaseRegisterCommonAttrib(ic);

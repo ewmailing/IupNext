@@ -195,6 +195,9 @@ Iclass* iupRadioNewClass(void)
   ic->SetChildrenCurrentSize = iRadioSetChildrenCurrentSizeMethod;
   ic->SetChildrenPosition = iRadioSetChildrenPositionMethod;
 
+  /* Base Callbacks */
+  iupBaseRegisterBaseCallbacks(ic);
+
   /* Common */
   iupBaseRegisterCommonAttrib(ic);
 

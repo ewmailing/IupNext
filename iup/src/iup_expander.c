@@ -1591,6 +1591,9 @@ Iclass* iupExpanderNewClass(void)
   ic->SetChildrenCurrentSize = iExpanderSetChildrenCurrentSizeMethod;
   ic->SetChildrenPosition    = iExpanderSetChildrenPositionMethod;
 
+  /* Base Callbacks */
+  iupBaseRegisterBaseCallbacks(ic);
+
   /* Callbacks */
   iupClassRegisterCallback(ic, "ACTION", "");
   iupClassRegisterCallback(ic, "OPENCLOSE_CB", "i");
