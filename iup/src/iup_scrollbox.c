@@ -416,8 +416,14 @@ Iclass* iupScrollBoxNewClass(void)
   iupClassRegisterReplaceAttribFlags(ic, "BORDER", IUPAF_READONLY | IUPAF_NO_INHERIT);
 
   iupClassRegisterReplaceAttribDef(ic, "SCROLLBAR", "YES", NULL);  /* change the default to Yes */
-  iupClassRegisterAttribute(ic, "YAUTOHIDE", NULL, NULL, IUPAF_SAMEASSYSTEM, "YES", IUPAF_READONLY | IUPAF_NOT_MAPPED | IUPAF_NO_INHERIT);  /* will be always Yes */
-  iupClassRegisterAttribute(ic, "XAUTOHIDE", NULL, NULL, IUPAF_SAMEASSYSTEM, "YES", IUPAF_READONLY | IUPAF_NOT_MAPPED | IUPAF_NO_INHERIT);  /* will be always Yes */
+  iupClassRegisterAttribute(ic, "YAUTOHIDE", NULL, NULL, IUPAF_SAMEASSYSTEM, "YES", IUPAF_READONLY | IUPAF_NO_INHERIT);  /* will be always Yes */
+  iupClassRegisterAttribute(ic, "XAUTOHIDE", NULL, NULL, IUPAF_SAMEASSYSTEM, "YES", IUPAF_READONLY | IUPAF_NO_INHERIT);  /* will be always Yes */
+  iupClassRegisterReplaceAttribFlags(ic, "XMIN", IUPAF_NO_SAVE | IUPAF_NO_INHERIT);
+  iupClassRegisterReplaceAttribFlags(ic, "XMAX", IUPAF_NO_SAVE | IUPAF_NO_INHERIT);
+  iupClassRegisterReplaceAttribFlags(ic, "YMIN", IUPAF_NO_SAVE | IUPAF_NO_INHERIT);
+  iupClassRegisterReplaceAttribFlags(ic, "YMAX", IUPAF_NO_SAVE | IUPAF_NO_INHERIT);
+  iupClassRegisterReplaceAttribFlags(ic, "LINEX", IUPAF_NO_SAVE | IUPAF_NO_INHERIT);
+  iupClassRegisterReplaceAttribFlags(ic, "LINEY", IUPAF_NO_SAVE | IUPAF_NO_INHERIT);
 
   /* Scrollbox */
   iupClassRegisterAttribute(ic, "SCROLLTO", NULL, iScrollBoxSetScrollToAttrib, NULL, NULL, IUPAF_WRITEONLY | IUPAF_NO_INHERIT);
