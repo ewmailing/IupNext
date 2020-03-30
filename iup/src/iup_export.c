@@ -78,7 +78,7 @@ static void iLayoutExportWriteAttrib(FILE* file, const char* name, const char* v
     free((char*)value);
 }
 
-static int iLayoutCheckExportedInConstructor(Ihandle* ih, const char* check_name)
+static int iLayoutCheckAttribExportedInConstructor(Ihandle* ih, const char* check_name)
 {
   const char *format = ih->iclass->format;
   if (!format || format[0] == 0)
@@ -127,7 +127,7 @@ static void iLayoutExportSavedAttribs(FILE* file, Ihandle* ih, const char* inden
   attr_count = iupAttribGetAllSaved(ih, attr_names, attr_count);
   for (i = 0; i < attr_count; i++)
   {
-    if (export_format == IUP_LAYOUT_EXPORT_LED && iLayoutCheckExportedInConstructor(ih, attr_names[i]))
+    if (export_format == IUP_LAYOUT_EXPORT_LED && iLayoutCheckAttribExportedInConstructor(ih, attr_names[i]))
       continue;
 
     if (export_format != IUP_LAYOUT_EXPORT_LUA || 
@@ -307,18 +307,43 @@ static void iLayoutExportElementLED(FILE* file, Ihandle* ih, const char* indent,
 
       fprintf(file, "(\n");
 
-      for (child = ih->firstchild; child; child = child->brother)
+      if (ih->iclass->childtype == IUP_CHILDNONE) /* IupNormalizer exception */
       {
-        if (!(child->flags & IUP_INTERNAL))
+        child = (Ihandle*)IupGetAttribute(ih, "FIRST_CONTROL_HANDLE");
+        while (child)
         {
-          char* childname = iLayoutGetName(child);
-          if (!childname)
-            iLayoutExportElementLED(file, child, localIndent, saved_info);   /* here process the ones that does NOT have names */
-          else
-            fprintf(file, "%s%s", localIndent, childname);
+          if (!(child->flags & IUP_INTERNAL))
+          {
+            char* childname = iLayoutGetName(child);
+            if (!childname)
+              iLayoutExportElementLED(file, child, localIndent, saved_info);   /* here process the ones that does NOT have names */
+            else
+              fprintf(file, "%s%s", localIndent, childname);
 
-          if (child->brother)
-            fprintf(file, ",\n");
+            child = (Ihandle*)IupGetAttribute(ih, "NEXT_CONTROL_HANDLE");
+
+            if (child)
+              fprintf(file, ",\n");
+          }
+          else
+            child = (Ihandle*)IupGetAttribute(ih, "NEXT_CONTROL_HANDLE");
+        }
+      }
+      else
+      {
+        for (child = ih->firstchild; child; child = child->brother)
+        {
+          if (!(child->flags & IUP_INTERNAL))
+          {
+            char* childname = iLayoutGetName(child);
+            if (!childname)
+              iLayoutExportElementLED(file, child, localIndent, saved_info);   /* here process the ones that does NOT have names */
+            else
+              fprintf(file, "%s%s", localIndent, childname);
+
+            if (child->brother)
+              fprintf(file, ",\n");
+          }
         }
       }
 
@@ -363,25 +388,56 @@ static void iLayoutExportElementLED(FILE* file, Ihandle* ih, const char* indent,
         else if (format[i] == 'h')
         {
           Ihandle *child;
-          for (child = ih->firstchild; child; child = child->brother)
+
+          if (ih->iclass->childtype == IUP_CHILDNONE)  /* IupAnimatedLabel and IupDropButton exceptions */
           {
-            if (!(child->flags & IUP_INTERNAL))
+            child = (Ihandle*)IupGetAttribute(ih, "FIRST_CONTROL_HANDLE");
+            while (child)
             {
-              char* childname = iLayoutGetName(child);
-              if (!childname)
+              if (!(child->flags & IUP_INTERNAL))
               {
-                char localIndent[1024];
+                char* childname = iLayoutGetName(child);
+                if (!childname)
+                {
+                  char localIndent[1024];
 
-                strcpy(localIndent, indent);
-                strcat(localIndent, "  ");
+                  strcpy(localIndent, indent);
+                  strcat(localIndent, "  ");
 
-                fprintf(file, "\n");
-                iLayoutExportElementLED(file, child, localIndent, saved_info);   /* here process the ones that does NOT have names */
+                  fprintf(file, "\n");
+                  iLayoutExportElementLED(file, child, localIndent, saved_info);   /* here process the ones that does NOT have names */
+                }
+                else
+                  fprintf(file, "%s", childname);
+
+                break; /* only one child */
               }
-              else
-                fprintf(file, "%s", childname);
 
-              break; /* only one child */
+              child = (Ihandle*)IupGetAttribute(ih, "NEXT_CONTROL_HANDLE");
+            }
+          }
+          else
+          {
+            for (child = ih->firstchild; child; child = child->brother)
+            {
+              if (!(child->flags & IUP_INTERNAL))
+              {
+                char* childname = iLayoutGetName(child);
+                if (!childname)
+                {
+                  char localIndent[1024];
+
+                  strcpy(localIndent, indent);
+                  strcat(localIndent, "  ");
+
+                  fprintf(file, "\n");
+                  iLayoutExportElementLED(file, child, localIndent, saved_info);   /* here process the ones that does NOT have names */
+                }
+                else
+                  fprintf(file, "%s", childname);
+
+                break; /* only one child */
+              }
             }
           }
         }
@@ -434,6 +490,37 @@ static void iLayoutExportElementLua(FILE* file, Ihandle* ih, const char *indent,
       }
     }
   }
+  else  /* childtype == IUP_CHILDNONE */
+  {
+    if (ih->iclass->format[0] == 'h' ||  /* IupAnimatedLabel and IupDropButton exceptions */
+        ih->iclass->format[0] == 'g')    /* IupNormalizer exception */
+    {
+      char localIndent[1024];
+
+      strcpy(localIndent, indent);
+      strcat(localIndent, "  ");
+
+      child = (Ihandle*)IupGetAttribute(ih, "FIRST_CONTROL_HANDLE");
+      while (child)
+      {
+        char* childName = iLayoutGetName(child);
+        if (childName)
+        {
+          if (iupAttribGet(child, "_IUP_EXPORT_LUA_SAVED")) /* saved in the same scope */
+            fprintf(file, "%s%s,\n", localIndent, childName);
+          else
+            fprintf(file, "%siup.GetHandle(\"%s\"),\n", localIndent, childName);
+        }
+        else
+        {
+          iLayoutExportElementLua(file, child, localIndent, saved_info);
+          fprintf(file, ",\n");
+        }
+
+        child = (Ihandle*)IupGetAttribute(ih, "NEXT_CONTROL_HANDLE");
+      }
+    }
+  }
 
   if (saved_info)
     iLayoutExportSavedAttribs(file, ih, indent, IUP_LAYOUT_EXPORT_LUA);
@@ -468,8 +555,34 @@ static void iLayoutExportElementC(FILE* file, Ihandle* ih, const char *indent, c
 
     fprintf(file, "%sNULL),\n", localIndent);  /* IupCreatep */
   }
-  else
-    fprintf(file, "%sIupSetAtt(%s%s%s, IupCreate(\"%s\"), \n", indent, name ? "\"" : "", name ? name : "NULL", name ? "\"" : "", ih->iclass->name);
+  else /* childtype == IUP_CHILDNONE */
+  {
+    if (ih->iclass->format[0] == 'h' ||  /* IupAnimatedLabel and IupDropButton exceptions */
+        ih->iclass->format[0] == 'g')    /* IupNormalizer exception */
+    {
+      Ihandle *child;
+      char localIndent[1024];
+
+      fprintf(file, "%sIupSetAtt(%s%s%s, IupCreatep(\"%s\", \n", indent, name ? "\"" : "", name ? name : "NULL", name ? "\"" : "", ih->iclass->name);
+
+      strcpy(localIndent, indent);
+      strcat(localIndent, "  ");
+
+      child = (Ihandle*)IupGetAttribute(ih, "FIRST_CONTROL_HANDLE");
+      while (child)
+      {
+        char* childName = iLayoutGetName(child);
+        if (childName)
+          fprintf(file, "%sIupGetHandle(\"%s\"),\n", localIndent, childName);
+        else
+          iLayoutExportElementC(file, child, localIndent, ",", saved_info); /* no ; */
+
+        child = (Ihandle*)IupGetAttribute(ih, "NEXT_CONTROL_HANDLE");
+      }
+    }
+    else
+      fprintf(file, "%sIupSetAtt(%s%s%s, IupCreate(\"%s\"), \n", indent, name ? "\"" : "", name ? name : "NULL", name ? "\"" : "", ih->iclass->name);
+  }
 
   if (saved_info)
     iLayoutExportSavedAttribs(file, ih, indent, IUP_LAYOUT_EXPORT_C);
