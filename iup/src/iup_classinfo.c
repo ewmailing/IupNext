@@ -38,8 +38,8 @@ static char* getClassParameters(const char* format, const char* format_attr)
       case 'f': fstr = "float"; break;           /* unused */
       case 'i': fstr = (i == 0)? "int w": "int h"; break;     /* used in IupImage* only */
       case 'c': fstr = "const unsigned char* pixels"; break;  /* used in IupImage* only */
-      case 's': fstr = "const char* "; break;  /* to be complemented */
-      case 'a': fstr = "const char* action"; break;
+      case 's': fstr = "const char* "; break;  /* usually is for TITLE, but depends on format_attr */
+      case 'a': fstr = "const char* action"; break; /* name of the ACTION callback */
       case 'h': fstr = "Ihandle* ih"; break;
       case 'g': fstr = "Ihandle** ih_array"; break;  /* when used there are no other parameters */
       }
