@@ -505,7 +505,7 @@ static void iFlatTreeRebuildArray(Ihandle *ih, int num)
   else if (num < 0)
   {
     int count = iupArrayCount(ih->data->node_array);
-    iupArrayRemove(ih->data->node_array, count-num, num);  /* decrement the array, memory is preserved */
+    iupArrayRemove(ih->data->node_array, count+num, -num);  /* decrement the array, memory is preserved */
   }
   else
   {
