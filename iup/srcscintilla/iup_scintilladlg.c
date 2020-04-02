@@ -1358,7 +1358,6 @@ static void saveas_file(Ihandle* multitext, const char* filename)
   {
     Ihandle* config = iScintillaDlgGetConfig(multitext);
     char* old_filename = iupStrDup(IupGetAttribute(multitext, "FILENAME"));
-    IFnss new_cb;
     IFnn save_cb;
 
     IupSetAttribute(config, "RECENTNAME", "ScintillaRecent");
@@ -1369,15 +1368,19 @@ static void saveas_file(Ihandle* multitext, const char* filename)
     IupSetAttribute(multitext, "SAVEPOINT", NULL); /* this will update title */
     IupSetAttribute(multitext, "UNDO", NULL); /* clear undo */
 
-    new_cb = (IFnss)IupGetCallback(ih, "NEWFILENAME_CB");
-    if (new_cb)
-      new_cb(ih, old_filename, (char*)filename);
+    if (old_filename)
+    {
+      IFnss new_cb = (IFnss)IupGetCallback(ih, "NEWFILENAME_CB");
+      if (new_cb)
+        new_cb(ih, old_filename, (char*)filename);
+    }
 
     save_cb = (IFnn)IupGetCallback(ih, "SAVEFILE_CB");
     if (save_cb)
       save_cb(ih, multitext);
 
-    free(old_filename);
+    if (old_filename)
+      free(old_filename);
   }
   else
     IupMessageError(ih, "IUP_ERRORFILESAVE");
