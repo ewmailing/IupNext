@@ -807,23 +807,23 @@ static void removeFileFromProject(Ihandle *projectConfig, Ihandle *projectTree, 
   free(filename);
 }
 
-static void updateTitle(Ihandle* multitext, int is_dirty)
+static void updateTitle(Ihandle* multitext, int is_modified)
 {
   Ihandle* ih = IupGetDialog(multitext);
   Ihandle* tabs = IupGetParent(multitext);
   int pos = IupGetChildPos(tabs, multitext);
   char* subtitle = IupGetAttribute(ih, "SUBTITLE");
-  const char* dirty_sign = "", *title;
+  const char* modified_sign = "", *title;
   char* filename = IupGetAttribute(multitext, "FILENAME");
   if (!filename) filename = IupGetAttribute(multitext, "NEW_FILENAME");
 
-  if (is_dirty)
-    dirty_sign = "*";
+  if (is_modified)
+    modified_sign = "*";
 
   title = strFileTitle(filename);
 
-  IupSetfAttribute(ih, "TITLE", "%s%s - %s", title, dirty_sign, subtitle);
-  IupSetfAttributeId(tabs, "TABTITLE", pos, "%s%s", title, dirty_sign);
+  IupSetfAttribute(ih, "TITLE", "%s%s - %s", title, modified_sign, subtitle);
+  IupSetfAttributeId(tabs, "TABTITLE", pos, "%s%s", title, modified_sign);
   IupSetStrAttributeId(tabs, "TABTIP", pos, filename);
 }
 
@@ -969,14 +969,14 @@ static void update_dialog_title(Ihandle* multitext)
 {
   Ihandle* ih = IupGetDialog(multitext);
   char* subtitle = IupGetAttribute(ih, "SUBTITLE");
-  char* dirty_sign = "";
+  char* modified_sign = "";
   char* filename = IupGetAttribute(multitext, "FILENAME");
   if (!filename) filename = IupGetAttribute(multitext, "NEW_FILENAME");
 
   if (IupGetInt(multitext, "MODIFIED"))
-    dirty_sign = "*";
+    modified_sign = "*";
 
-  IupSetfAttribute(ih, "TITLE", "%s%s - %s", strFileTitle(filename), dirty_sign, subtitle);
+  IupSetfAttribute(ih, "TITLE", "%s%s - %s", strFileTitle(filename), modified_sign, subtitle);
 }
 
 static int multitext_caret_cb(Ihandle* multitext, int lin, int col)
@@ -1623,14 +1623,14 @@ static int file_menu_open_cb(Ihandle* ih_menu)
   Ihandle* item_save = IupGetDialogChild(ih_menu, "ITEM_SAVE");
   Ihandle* multitext = iScintillaDlgGetCurrentMultitext(ih_menu);
   char* filename = IupGetAttribute(multitext, "FILENAME");
-  int dirty = IupGetInt(multitext, "MODIFIED");
+  int modified = IupGetInt(multitext, "MODIFIED");
 
-  if (dirty)
+  if (modified)
     IupSetAttribute(item_save, "ACTIVE", "YES");
   else
     IupSetAttribute(item_save, "ACTIVE", "NO");
 
-  if (dirty && filename)
+  if (modified && filename)
     IupSetAttribute(item_revert, "ACTIVE", "YES");
   else
     IupSetAttribute(item_revert, "ACTIVE", "NO");
@@ -2131,9 +2131,9 @@ static int item_pagesetup_action_cb(Ihandle* ih_item)
   Ihandle* config = iScintillaDlgGetConfig(ih_item);
   double margin_left, margin_top, margin_right, margin_bottom;
   int margin_units_index, word_wrap_index, color_index;
-  char* margin_units_list[] = { "PIXELS", "INCH", "CM" };
-  char* word_wrap_list[] = { "NONE", "CHAR", "WORD" };
-  char* color_list[] = { "NORMAL", "INVERTLIGHT", "BLACKONWHITE", "COLORONWHITE" };
+  const char* margin_units_list[] = { "PIXELS", "INCH", "CM" };
+  const char* word_wrap_list[] = { "NONE", "CHAR", "WORD" };
+  const char* color_list[] = { "NORMAL", "INVERTLIGHT", "BLACKONWHITE", "COLORONWHITE" };
   const char *margin_units, *word_wrap, *color;
   int magnification;
 
@@ -2220,7 +2220,7 @@ static int tabs_rightclick_cb(Ihandle* tabs, int pos)
     *item_openfolder, *item_copyfilename, *item_addtoproject;
   Ihandle* multitext = IupGetChild(tabs, pos);
   char* filename = IupGetAttribute(multitext, "FILENAME");
-  int dirty = IupGetInt(multitext, "MODIFIED");
+  int modified = IupGetInt(multitext, "MODIFIED");
   Ihandle *projectConfig = iScintillaDlgGetProjectConfig(tabs);
 
   item_save = IupItem("Save\tCtrl+S", NULL);
@@ -2248,12 +2248,12 @@ static int tabs_rightclick_cb(Ihandle* tabs, int pos)
   item_addtoproject = IupItem("Add To Project", NULL);
   IupSetCallback(item_addtoproject, "ACTION", (Icallback)item_addtoproject_action_cb);
 
-  if (dirty)
+  if (modified)
     IupSetAttribute(item_save, "ACTIVE", "YES");
   else
     IupSetAttribute(item_save, "ACTIVE", "NO");
 
-  if (dirty && filename)
+  if (modified && filename)
     IupSetAttribute(item_revert, "ACTIVE", "YES");
   else
     IupSetAttribute(item_revert, "ACTIVE", "NO");
