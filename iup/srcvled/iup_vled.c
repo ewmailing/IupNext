@@ -1896,7 +1896,7 @@ static int item_import_img_action_cb(Ihandle *ih_item)
     int i, count = IupGetInt(filedlg, "MULTIVALUECOUNT");
     dir = IupGetAttributeId(filedlg, "MULTIVALUE", 0);
 
-    for (i = 1; i < count; i++)
+    for (i = 1; i < count; i++)  /* i==0 contains the path */
     {
       char* filetitle = IupGetAttributeId(filedlg, "MULTIVALUE", i);
       char filename[10240];
@@ -1934,7 +1934,7 @@ static int item_export_img_cb(Ihandle *ih_item)
   IupGetAllNames(names, num_names);
 
   num_images = 0;
-  for (i = 1; i < num_names; i++)
+  for (i = 0; i < num_names; i++)
   {
     Ihandle *elem = IupGetHandle(names[i]);
 
@@ -2430,14 +2430,14 @@ static int item_export_proj_action_cb(Ihandle *ih_item)
 {
   char *itemName = IupGetAttribute(ih_item, "NAME");
   Ihandle* projectTree = IupGetDialogChild(ih_item, "PROJECTTREE");
-  int count = IupGetInt(projectTree, "COUNT");
+  int count = IupGetInt(projectTree, "CHILDCOUNT0");
   int i;
 
   char *folder = getfolder(ih_item);
   if (!folder)
     return IUP_DEFAULT;
 
-  for (i = 1; i < count; i++)
+  for (i = 1; i <= count; i++)
   {
     char filename[10240];
     char* currFilename = IupTreeGetUserId(projectTree, i);
@@ -3289,7 +3289,7 @@ int main(int argc, char **argv)
   IupConfigDialogShow(config, main_dialog, "IupVisualLED");
 
   /* open a file from the command line (allow file association in Windows) */
-  for (i = 1; i < argc; i++)
+  for (i = 1; i < argc; i++)  /* arg0 is executable name */
   {
     const char* filename = argv[i];
     if (strstr(filename, ".vled"))
