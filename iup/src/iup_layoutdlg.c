@@ -1555,20 +1555,20 @@ static const char* iLayoutSelectClassDialog(Ihandle* parent)
 
     if (elemClass->childtype != IUP_CHILDNONE && elemClass->is_internal) /* internal containers */
     {
-      IupSetStrfId(tree, "ADDLEAF", last_containers_id, "Iup%s", constructor);
+      IupSetStrAttributeId(tree, "ADDLEAF", last_containers_id, constructor);
       last_containers_id++;
       last_standard_id++;
       last_additional_id++;
     }
     else if (elemClass->is_internal)
     {
-      IupSetStrfId(tree, "ADDLEAF", last_standard_id, "Iup%s", constructor);
+      IupSetStrAttributeId(tree, "ADDLEAF", last_standard_id, constructor);
       last_standard_id++;
       last_additional_id++;
     }
     else /* additional */
     {
-      IupSetStrfId(tree, "ADDLEAF", last_additional_id, "Iup%s", constructor);
+      IupSetStrAttributeId(tree, "ADDLEAF", last_additional_id, constructor);
       last_additional_id++;
     }
   }
@@ -1582,7 +1582,6 @@ static const char* iLayoutSelectClassDialog(Ihandle* parent)
     Iclass *elemClass;
     int id = IupGetInt(tree, "VALUE");
     char* name = IupGetAttributeId(tree, "TITLE", id);
-    name += 3;
     iupStrLower(name, name);
     elemClass = iupRegisterFindClass(name);
     value = elemClass->name;
