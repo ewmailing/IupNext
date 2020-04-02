@@ -2259,9 +2259,10 @@ static void vLedExport(Ihandle* multitext, const char* src_filename, const char*
     else
       comments = load_comments(src_filename);
 
-    fprintf(file, "%s", comments);
+    if (comments)
+      fprintf(file, "%s", comments);
 
-    if (!multitext)
+    if (comments && !multitext)
       free(comments);
   }
 
@@ -2278,7 +2279,18 @@ static void vLedExport(Ihandle* multitext, const char* src_filename, const char*
   fclose(file);
 }
 
-static int ivLedGetExportFile(Ihandle* ih, char* filename, const char *filter)
+static void strAddExtension(char* filename, const char* ext)
+{
+  char* new_ext = iupStrFileGetExt(filename);
+  if (!new_ext)
+  {
+    strcat(filename, ".");
+    strcat(filename, ext);
+  }
+  free(new_ext);
+}
+
+static int ivLedGetExportFile(Ihandle* ih, char* filename, const char *extfilter)
 {
   Ihandle *filedlg = 0;
   int ret;
@@ -2288,7 +2300,7 @@ static int ivLedGetExportFile(Ihandle* ih, char* filename, const char *filter)
 
   filedlg = IupFileDlg();
 
-  IupSetStrAttribute(filedlg, "EXTFILTER", filter);
+  IupSetStrAttribute(filedlg, "EXTFILTER", extfilter);
   IupSetStrAttribute(filedlg, "FILE", filename);
   IupSetStrAttribute(filedlg, "DIRECTORY", dir);
   IupSetAttribute(filedlg, "DIALOGTYPE", "SAVE");
@@ -2302,11 +2314,15 @@ static int ivLedGetExportFile(Ihandle* ih, char* filename, const char *filter)
   ret = IupGetInt(filedlg, "STATUS");
   if (ret != -1)
   {
+    char* ext = iupStrFileGetExt(filename);
     char* value = IupGetAttribute(filedlg, "VALUE");
     strcpy(filename, value);
+    strAddExtension(filename, ext);
 
     dir = IupGetAttribute(filedlg, "DIRECTORY");
     IupConfigSetVariableStr(config, "IupVisualLED", "LastExportDirectory", dir);
+
+    free(ext);
   }
 
   IupDestroy(filedlg);
@@ -3271,7 +3287,9 @@ int main(int argc, char **argv)
   IupSetAttribute(main_dialog, "SUBTITLE", "IupVisualLED");
   IupSetAttribute(main_dialog, "PROJECTEXT", "vled");
   IupSetAttribute(main_dialog, "EXTRAFILTERS", "Led Files|*.led|");
+  IupSetAttribute(main_dialog, "DEFAULT_EXT", "led");
   IupSetAttributeHandle(main_dialog, "CONFIG", config);
+
   IupSetHandle("VLED_MAIN", main_dialog);
 
   oldTabChange_cb = IupGetCallback(multitextTabs, "TABCHANGE_CB");

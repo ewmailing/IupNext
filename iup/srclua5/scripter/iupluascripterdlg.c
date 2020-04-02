@@ -1309,6 +1309,7 @@ static int iLuaScripterDlgCreateMethod(Ihandle* ih, void** params)
 
   /* File Open/Save filters */
   IupSetAttribute(ih, "EXTRAFILTERS", "Lua Files|*.lua|");
+  IupSetAttribute(ih, "DEFAULT_EXT", "lua");
 
   /* Additional hot keys */
   IupSetCallback(ih, "K_F8", (Icallback)item_toggle_folding_action_cb);

@@ -1844,6 +1844,22 @@ static int item_open_action_cb(Ihandle* ih_item)
   return IUP_DEFAULT;
 }
 
+static char* get_filename_value(Ihandle *filedlg, const char* ext)
+{
+  char* value = IupGetAttribute(filedlg, "VALUE");
+  if (ext)
+  {
+    char* new_ext = iupStrFileGetExt(value);
+    if (!new_ext)
+    {
+      IupSetStrf(filedlg, "FILENAME", "%s.%s", value, ext);
+      return IupGetAttribute(filedlg, "FILENAME");
+    }
+    free(new_ext);
+  }
+  return value;
+}
+
 static int item_saveas_action_cb(Ihandle* ih_item)
 {
   Ihandle* ih = IupGetDialog(ih_item);
@@ -1869,7 +1885,7 @@ static int item_saveas_action_cb(Ihandle* ih_item)
 
   if (IupGetInt(filedlg, "STATUS") != -1)
   {
-    char* filename = IupGetAttribute(filedlg, "VALUE");
+    char* filename = get_filename_value(filedlg, IupGetAttribute(ih, "DEFAULT_EXT"));
     if (iupStrEqual(old_filename, filename))
       save_file(multitext);
     else if (!check_open(ih, filename, 1))
@@ -1907,7 +1923,7 @@ static int item_savecopy_action_cb(Ihandle* ih_item)
 
   if (IupGetInt(filedlg, "STATUS") != -1)
   {
-    char* filename = IupGetAttribute(filedlg, "VALUE");
+    char* filename = get_filename_value(filedlg, IupGetAttribute(ih, "DEFAULT_EXT"));
     savecopy_file(multitext, filename);
 
     dir = IupGetAttribute(filedlg, "DIRECTORY");
@@ -2775,7 +2791,8 @@ static void saveProject(Ihandle *ih_item, Ihandle *projectConfig, int show_dialo
     {
       Ihandle* projectTree = IupGetDialogChild(ih, "PROJECTTREE");
 
-      filename = IupGetAttribute(filedlg, "VALUE");
+      filename = get_filename_value(filedlg, IupGetAttribute(ih, "DEFAULT_EXT"));
+
       IupSetStrAttribute(projectConfig, "APP_FILENAME", filename);
       IupSetStrAttribute(projectTree, "TITLE0", strFileTitle(filename));
 
@@ -2857,7 +2874,8 @@ static int item_add_new_file_action_cb(Ihandle* ih_item)
     Ihandle* projectTree = IupGetDialogChild(ih_item, "PROJECTTREE");
     Ihandle* projectConfig = iScintillaDlgGetProjectConfig(ih);
 
-    char *filename = IupGetAttribute(filedlg, "VALUE");
+    char* filename = get_filename_value(filedlg, IupGetAttribute(ih, "DEFAULT_EXT"));
+
     if (!check_inproject(projectTree, filename))
     {
       addFileToProjectTree(projectTree, filename);
@@ -5371,6 +5389,7 @@ Iclass* iupScintillaDlgNewClass(void)
   iupClassRegisterAttribute(ic, "OPENPROJECT", NULL, iScintillaDlgSetOpenProjectAttrib, NULL, NULL, IUPAF_WRITEONLY | IUPAF_NO_INHERIT);
   iupClassRegisterAttribute(ic, "FORCECLOSEFILE", NULL, iScintillaDlgSetForceCloseFileAttrib, NULL, NULL, IUPAF_WRITEONLY | IUPAF_NO_INHERIT);
   iupClassRegisterAttribute(ic, "EXTRAFILTERS", NULL, NULL, NULL, NULL, IUPAF_NOT_MAPPED | IUPAF_NO_INHERIT);
+  iupClassRegisterAttribute(ic, "DEFAULT_EXT", NULL, NULL, NULL, NULL, IUPAF_NOT_MAPPED | IUPAF_NO_INHERIT);
   iupClassRegisterAttribute(ic, "PROJECTEXT", NULL, NULL, NULL, NULL, IUPAF_NOT_MAPPED | IUPAF_NO_INHERIT);
   iupClassRegisterAttributeId(ic, "TOGGLEMARKER", NULL, iScintillaDlgSetToggleMarkerAttribId, IUPAF_WRITEONLY | IUPAF_NO_INHERIT);
 
