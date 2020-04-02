@@ -1826,7 +1826,7 @@ static int item_open_action_cb(Ihandle* ih_item)
     int i, count = IupGetInt(filedlg, "MULTIVALUECOUNT");
     dir = IupGetAttributeId(filedlg, "MULTIVALUE", 0);
 
-    for (i = 1; i < count; i++)
+    for (i = 1; i < count; i++)  /* i==0 contains the path */
     {
       char* filetitle = IupGetAttributeId(filedlg, "MULTIVALUE", i);
       char filename[10240];
@@ -2957,10 +2957,10 @@ static int item_open_proj_file_action_cb(Ihandle* ih_item)
 static int item_open_all_proj_file_action_cb(Ihandle* ih_item)
 {
   Ihandle* projectTree = IupGetDialogChild(ih_item, "PROJECTTREE");
-  int count = IupGetInt(projectTree, "COUNT");
+  int count = IupGetInt(projectTree, "CHILDCOUNT0");
   int i;
 
-  for (i = 1; i < count; i++)
+  for (i = 1; i <= count; i++)
   {
     char* filename = IupTreeGetUserId(projectTree, i);
     if (!check_open(projectTree, filename, 0))
