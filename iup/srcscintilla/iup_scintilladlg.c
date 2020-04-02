@@ -812,14 +812,13 @@ static void updateTitle(Ihandle* multitext, int is_dirty)
   Ihandle* ih = IupGetDialog(multitext);
   Ihandle* tabs = IupGetParent(multitext);
   int pos = IupGetChildPos(tabs, multitext);
-  char* filename = IupGetAttribute(multitext, "FILENAME");
   char* subtitle = IupGetAttribute(ih, "SUBTITLE");
   const char* dirty_sign = "", *title;
+  char* filename = IupGetAttribute(multitext, "FILENAME");
+  if (!filename) filename = IupGetAttribute(multitext, "NEW_FILENAME");
 
   if (is_dirty)
     dirty_sign = "*";
-
-  if (!filename) filename = IupGetAttribute(multitext, "NEW_FILENAME");
 
   title = strFileTitle(filename);
 
@@ -969,14 +968,13 @@ static Ihandle* get_project_tree(Ihandle* ih_item)
 static void update_dialog_title(Ihandle* multitext)
 {
   Ihandle* ih = IupGetDialog(multitext);
-  char* filename = IupGetAttribute(multitext, "FILENAME");
   char* subtitle = IupGetAttribute(ih, "SUBTITLE");
   char* dirty_sign = "";
+  char* filename = IupGetAttribute(multitext, "FILENAME");
+  if (!filename) filename = IupGetAttribute(multitext, "NEW_FILENAME");
 
   if (IupGetInt(multitext, "MODIFIED"))
     dirty_sign = "*";
-
-  if (!filename) filename = IupGetAttribute(multitext, "NEW_FILENAME");
 
   IupSetfAttribute(ih, "TITLE", "%s%s - %s", strFileTitle(filename), dirty_sign, subtitle);
 }
@@ -1201,6 +1199,7 @@ static void new_file(Ihandle* ih_item)
   Ihandle* multitext = iScintillaDlgNewMultitext(ih_item);
   static int new_count = 1;
   IupSetStrf(multitext, "NEW_FILENAME", "Untitled #%d", new_count);
+
   new_count++;
 
   IupSetAttribute(multitext, "FILENAME", NULL);
@@ -1359,7 +1358,7 @@ static void saveas_file(Ihandle* multitext, const char* filename)
   {
     Ihandle* config = iScintillaDlgGetConfig(multitext);
     char* old_filename = iupStrDup(IupGetAttribute(multitext, "FILENAME"));
-    IFnss cb;
+    IFnss new_cb;
     IFnn save_cb;
 
     IupSetAttribute(config, "RECENTNAME", "ScintillaRecent");
@@ -1370,13 +1369,13 @@ static void saveas_file(Ihandle* multitext, const char* filename)
     IupSetAttribute(multitext, "SAVEPOINT", NULL); /* this will update title */
     IupSetAttribute(multitext, "UNDO", NULL); /* clear undo */
 
+    new_cb = (IFnss)IupGetCallback(ih, "NEWFILENAME_CB");
+    if (new_cb)
+      new_cb(ih, old_filename, (char*)filename);
+
     save_cb = (IFnn)IupGetCallback(ih, "SAVEFILE_CB");
     if (save_cb)
       save_cb(ih, multitext);
-
-    cb = (IFnss)IupGetCallback(ih, "NEWFILENAME_CB");
-    if (cb)
-      cb(ih, old_filename, (char*)filename);
 
     free(old_filename);
   }
