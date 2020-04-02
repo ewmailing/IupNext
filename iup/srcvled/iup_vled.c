@@ -83,7 +83,7 @@ static int compare_named_handles(const void* i1, const void* i2)
   return line1-line2;
 }
 
-static char* getfileformat()
+static char* get_img_fileformat(void)
 {
 #define NUM_FORMATS 4
   int ret, count = NUM_FORMATS;
@@ -94,7 +94,7 @@ static char* getfileformat()
     "PNG"
   };
 
-  ret = IupListDialog(1, "File Format", count, options, 1, 9, count + 1, NULL);
+  ret = IupListDialog(1, "Image File Format", count, options, 1, 9, count + 1, NULL);
   if (ret == -1)
     return NULL;
   else
@@ -298,17 +298,17 @@ static Ihandle* vLedGetCurrentMultitext(Ihandle* ih)
   return (Ihandle*)IupGetAttribute(tabs, "VALUE_HANDLE");
 }
 
-static void LoadImageFile(Ihandle* ih_item, const char* filename)
+static void LoadImageFile(Ihandle* ih_item, const char* img_filename)
 {
   Ihandle* currMultitext = vLedGetCurrentMultitext(ih_item);
 
-  Ihandle* new_image = IupLoadImage(filename);
+  Ihandle* new_image = IupLoadImage(img_filename);
 
   if (new_image)
   {
     int lin, col, pos, i, n = 0;
     char *buffer;
-    char* file_title = strGetFileTitle(filename);
+    char* file_title = strGetFileTitle(img_filename);
     char name[80];
 
     for (i = 0; file_title[i] != 0; i++)
@@ -1057,6 +1057,29 @@ static void reload_led(Ihandle* multitext)
   }
 }
 
+static int newfilename_cb(Ihandle* main_dialog, char* old_filename, char* new_filename)
+{
+  int i, num_names = IupGetAllNames(NULL, -1);
+  char* *names = malloc(sizeof(char*)*num_names);
+
+  IupGetAllNames(names, num_names);
+
+  for (i = 0; i < num_names; i++)
+  {
+    Ihandle* elem = IupGetHandle(names[i]);
+    if (iupObjectCheck(elem))
+    {
+      if (!vLedIsAlien(elem, old_filename) && !iupStrEqualPartial(names[i], "_IUP_NAME"))
+        iupAttribSetStr(elem, "_IUPLED_FILENAME", new_filename);
+    }
+  }
+
+  free(names);
+
+  (void)main_dialog;
+  return IUP_DEFAULT;
+}
+
 static int loadfile_cb(Ihandle* main_dialog, Ihandle* multitext)
 {
   /* called after the file is loaded */
@@ -1236,8 +1259,8 @@ static int newtext_cb(Ihandle* main_dialog, Ihandle *multitext)
 
 static int closetext_cb(Ihandle* main_dialog, Ihandle *multitext)
 {
-  char *filename = IupGetAttribute(multitext, "FILENAME");
   Ihandle* elem_tree = vLedGetElemTree(multitext);
+  char *filename = IupGetAttribute(multitext, "FILENAME");
   if (!filename) filename = IupGetAttribute(multitext, "NEW_FILENAME");
 
   unload_led(multitext, filename);
@@ -1731,8 +1754,8 @@ static int item_load_action_cb(Ihandle *ih_item)
 {
   Ihandle* multitext = vLedGetCurrentMultitext(ih_item);
   Ihandle* elem_tree = vLedGetElemTree(multitext);
-  char *filename = IupGetAttribute(multitext, "FILENAME");
   int dirty = IupGetInt(multitext, "MODIFIED");
+  char *filename = IupGetAttribute(multitext, "FILENAME");
   if (!filename) filename = IupGetAttribute(multitext, "NEW_FILENAME");
 
   unload_led(multitext, filename);
@@ -1894,13 +1917,13 @@ static int item_export_img_cb(Ihandle *ih_item)
 {
   char* folder;
   int i, num_images, num_names = IupGetAllNames(NULL, -1);
-  char* *names, *imgtype;
+  char* *names, *img_type;
   Ihandle* multitext = vLedGetCurrentMultitext(ih_item);
-  char *currFilename = IupGetAttribute(multitext, "FILENAME");
-  if (!currFilename) currFilename = IupGetAttribute(multitext, "NEW_FILENAME");
+  char *filename = IupGetAttribute(multitext, "FILENAME");
+  if (!filename) filename = IupGetAttribute(multitext, "NEW_FILENAME");
 
-  imgtype = getfileformat(1);
-  if (!imgtype)
+  img_type = get_img_fileformat();
+  if (!img_type)
     return IUP_DEFAULT;
 
   folder = getfolder(ih_item);
@@ -1922,23 +1945,21 @@ static int item_export_img_cb(Ihandle *ih_item)
       continue;
 
     /* save only loaded images of the current file */
-    if (!iupStrEqual(iupAttribGet(elem, "_IUPLED_FILENAME"), currFilename))
-      continue;
-
+    if (!vLedIsAlien(elem, filename))
     {
-      char filename[10240] = "";
+      char img_filename[10240] = "";
       char buff[80];
 
-      strcpy(filename, folder);
-      strcat(filename, "/");
-      strcat(filename, strGetFileTitle(filename));
-      strcat(filename, "_");
-      strcat(filename, names[i]);
-      iupStrLower(buff, imgtype);
-      strcat(filename, ".");
-      strcat(filename, buff);
+      strcpy(img_filename, folder);
+      strcat(img_filename, "/");
+      strcat(img_filename, strGetFileTitle(filename));
+      strcat(img_filename, "_");
+      strcat(img_filename, names[i]);
+      iupStrLower(buff, img_type);
+      strcat(img_filename, ".");
+      strcat(img_filename, buff);
 
-      if (!IupSaveImage(elem, filename, imgtype))
+      if (!IupSaveImage(elem, img_filename, img_type))
       {
         char* err_msg = IupGetGlobal("IUPIM_LASTERROR");
         if (err_msg)
@@ -3220,6 +3241,7 @@ int main(int argc, char **argv)
   panelTabs = IupGetDialogChild(main_dialog, "PANEL_TABS");
   multitextTabs = IupGetDialogChild(main_dialog, "MULTITEXT_TABS");
 
+  IupSetCallback(main_dialog, "NEWFILENAME_CB", (Icallback)newfilename_cb);
   IupSetCallback(main_dialog, "LOADFILE_CB", (Icallback)loadfile_cb);
   IupSetCallback(main_dialog, "SAVEFILE_CB", (Icallback)savefile_cb);
   IupSetCallback(main_dialog, "NEWTEXT_CB", (Icallback)newtext_cb);
