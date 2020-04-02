@@ -99,8 +99,10 @@ display a button so the item can be interactively removed.</p>
 <p><strong>FOCUSCOLOR</strong>: the background color when 
 an item get the focus. Values in RGB format (<span style="color: rgb(0, 0, 0); font-family: tahoma, verdana, arial, helvetica, geneva, sans-serif; font-size: medium; font-style: normal; font-variant: normal; font-weight: normal; letter-spacing: normal; line-height: 20px; orphans: auto; text-align: start; text-indent: 0px; text-transform: none; white-space: normal; widows: auto; word-spacing: 0px; -webkit-text-size-adjust: auto; -webkit-text-stroke-width: 0px; background-color: rgb(255, 255, 255); display: inline !important; float: none;">&quot;r 
 g b&quot;)</span>. Default: &quot;255 235 155&quot;.</p>
+<p><strong>FOCUSFGCOLOR</strong>: the text color when an item get the focus. If 
+not defined uses the ITEMFGCOLORid. (since 3.29)</p>
 <p><strong>FOCUSITEM</strong>:
-  defines the current focus item.Default: &quot;1&quot;.</p>
+  defines the current focus item. Default: &quot;1&quot;.</p>
 
 <p><strong>IMAGE<i>id</i> </strong>(write-only): name of the image to be used in 
 the specified item (id). Use <a href="../func/iupsethandle.html">IupSetHandle</a> 
@@ -146,9 +148,9 @@ the last item. Ignored if out of bounds. Ignored if set before map.</p>
   controls the interaction with an item (id). It can be Yes or No. Default: &quot;YES&quot;.</p>
 <p>
 <strong>ITEMFGCOLOR<i>id</i></strong>:
-  text color of an item (id).<p>
+  text color of an item (id). If not defined FGCOLOR is used.<p>
 <strong>ITEMBGCOLOR<i>id</i></strong>: background color of an item 
-(id).<p><strong>LABELCOL </strong>(read-only): returns the number of label column. If 
+(id). If not defined BGCOLOR is used.<p><strong>LABELCOL </strong>(read-only): returns the number of label column. If 
 not exists, returns 0.</p>
 <p><strong>REMOVEITEM </strong>(write-only): removes the given item from the 
 list. </p>
