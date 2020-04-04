@@ -4302,6 +4302,8 @@ static int item_wordwrap_action_cb(Ihandle* ih_item)
   Ihandle* multitext;
   Ihandle* config = iScintillaDlgGetConfig(ih_item);
   char *value = IupGetAttribute(ih_item, "VALUE");
+  Ihandle* item_wordwrap = IupGetDialogChild(ih_item, "ITEM_WORDWRAP");
+  Ihandle* bt_wordwrap = IupGetDialogChild(ih_item, "BUTTON_WORDWRAP");
 
   for (multitext = tabs->firstchild; multitext; multitext = multitext->brother)
   {
@@ -4310,6 +4312,11 @@ static int item_wordwrap_action_cb(Ihandle* ih_item)
     else
       IupSetAttribute(multitext, "WORDWRAP", "NONE");
   }
+
+  if (ih_item == bt_wordwrap)
+    IupSetStrAttribute(item_wordwrap, "VALUE", value);
+  else
+    IupSetStrAttribute(bt_wordwrap, "VALUE", value);
 
   IupConfigSetVariableStr(config, "ScintillaView", "WordWrap", value);
 
@@ -4322,6 +4329,8 @@ static int item_showwhite_action_cb(Ihandle* ih_item)
   Ihandle* multitext;
   Ihandle* config = iScintillaDlgGetConfig(ih_item);
   char *value = IupGetAttribute(ih_item, "VALUE");
+  Ihandle* item_showwhite = IupGetDialogChild(ih_item, "ITEM_SHOWWHITE");
+  Ihandle* bt_showwhite = IupGetDialogChild(ih_item, "BUTTON_SHOWWHITE");
 
   for (multitext = tabs->firstchild; multitext; multitext = multitext->brother)
   {
@@ -4330,6 +4339,11 @@ static int item_showwhite_action_cb(Ihandle* ih_item)
     else
       IupSetAttribute(multitext, "WHITESPACEVIEW", "INVISIBLE");
   }
+
+  if (ih_item == bt_showwhite)
+    IupSetStrAttribute(item_showwhite, "VALUE", value);
+  else
+    IupSetStrAttribute(bt_showwhite, "VALUE", value);
 
   IupConfigSetVariableStr(config, "ScintillaView", "ShowWhite", value);
   return IUP_DEFAULT;
@@ -4353,6 +4367,8 @@ static int item_showeol_action_cb(Ihandle* ih_item)
   Ihandle* multitext;
   Ihandle* config = iScintillaDlgGetConfig(ih_item);
   char *value = IupGetAttribute(ih_item, "VALUE");
+  Ihandle* item_showeol = IupGetDialogChild(ih_item, "ITEM_SHOWEOL");
+  Ihandle* but_showeol = IupGetDialogChild(ih_item, "BUTTON_SHOWEOL");
 
   for (multitext = tabs->firstchild; multitext; multitext = multitext->brother)
   {
@@ -4361,6 +4377,11 @@ static int item_showeol_action_cb(Ihandle* ih_item)
     else
       IupSetAttribute(multitext, "EOLVISIBLE", "NO");
   }
+
+  if (ih_item == but_showeol)
+    IupSetStrAttribute(item_showeol, "VALUE", value);
+  else
+    IupSetStrAttribute(but_showeol, "VALUE", value);
 
   IupConfigSetVariableStr(config, "ScintillaView", "ShowEol", value);
   return IUP_DEFAULT;
@@ -4496,7 +4517,9 @@ static void iScintillaDlgSetConfigMultitext(Ihandle* ih, Ihandle* config, Ihandl
   if (value)
   {
     Ihandle* item_wordwrap = IupGetDialogChild(ih, "ITEM_WORDWRAP");
-    IupSetAttribute(item_wordwrap, "VALUE", value);
+    Ihandle* bt_wordwrap = IupGetDialogChild(ih, "BUTTON_WORDWRAP");
+    IupSetStrAttribute(item_wordwrap, "VALUE", value);
+    IupSetStrAttribute(bt_wordwrap, "VALUE", value);
     if (iupStrBoolean(value))
       IupSetAttribute(multitext, "WORDWRAP", "WORD");
     else
@@ -4507,7 +4530,9 @@ static void iScintillaDlgSetConfigMultitext(Ihandle* ih, Ihandle* config, Ihandl
   if (value)
   {
     Ihandle* item_showwhite = IupGetDialogChild(ih, "ITEM_SHOWWHITE");
-    IupSetAttribute(item_showwhite, "VALUE", value);
+    Ihandle* bt_showwhite = IupGetDialogChild(ih, "BUTTON_SHOWWHITE");
+    IupSetStrAttribute(item_showwhite, "VALUE", value);
+    IupSetStrAttribute(bt_showwhite, "VALUE", value);
     if (iupStrBoolean(value))
       IupSetAttribute(multitext, "WHITESPACEVIEW", "VISIBLEALWAYS");
     else
@@ -4518,7 +4543,9 @@ static void iScintillaDlgSetConfigMultitext(Ihandle* ih, Ihandle* config, Ihandl
   if (value)
   {
     Ihandle* item_showeol = IupGetDialogChild(ih, "ITEM_SHOWEOL");
-    IupSetAttribute(item_showeol, "VALUE", value);
+    Ihandle* but_showeol = IupGetDialogChild(ih, "BUTTON_SHOWEOL");
+    IupSetStrAttribute(item_showeol, "VALUE", value);
+    IupSetStrAttribute(but_showeol, "VALUE", value);
     if (iupStrBoolean(value))
       IupSetAttribute(multitext, "EOLVISIBLE", "YES");
     else
@@ -4529,7 +4556,7 @@ static void iScintillaDlgSetConfigMultitext(Ihandle* ih, Ihandle* config, Ihandl
   if (value)
   {
     Ihandle* item_linenumber = IupGetDialogChild(ih, "ITEM_LINENUMBER");
-    IupSetAttribute(item_linenumber, "VALUE", value);
+    IupSetStrAttribute(item_linenumber, "VALUE", value);
     if (iupStrBoolean(value))
       IupSetAttribute(multitext, "MARGINWIDTH0", LINENUMBER_MARGIN);
     else
@@ -4540,7 +4567,7 @@ static void iScintillaDlgSetConfigMultitext(Ihandle* ih, Ihandle* config, Ihandl
   if (value)
   {
     Ihandle* item_bookmark = IupGetDialogChild(ih, "ITEM_BOOKMARK");
-    IupSetAttribute(item_bookmark, "VALUE", value);
+    IupSetStrAttribute(item_bookmark, "VALUE", value);
     if (iupStrBoolean(value))
       IupSetAttribute(multitext, "MARGINWIDTH1", BOOKMARK_MARGIN);
     else
@@ -5096,10 +5123,10 @@ static int iScintillaDlgCreateMethod(Ihandle* ih, void** params)
   IupSetCallback(item_wordwrap, "ACTION", (Icallback)item_wordwrap_action_cb);
   IupSetAttribute(item_wordwrap, "AUTOTOGGLE", "YES");
   IupSetAttribute(item_wordwrap, "NAME", "ITEM_WORDWRAP");
-  bt_wordwrap = IupButton("W\xAC", NULL);
-  IupSetAttribute(bt_wordwrap, "FLAT", "Yes");
+  bt_wordwrap = IupFlatToggle("W\xAC");
+  IupSetAttribute(bt_wordwrap, "CHECKSIZE", "0");
   IupSetAttribute(bt_wordwrap, "PADDING", "2x0");
-  IupSetCallback(bt_wordwrap, "ACTION", (Icallback)item_wordwrap_action_cb);
+  IupSetCallback(bt_wordwrap, "FLAT_ACTION", (Icallback)item_wordwrap_action_cb);
   IupSetAttribute(bt_wordwrap, "TIP", "Word Wrap");
   IupSetAttribute(bt_wordwrap, "TIPFONT", "SYSTEM");
   IupSetAttribute(bt_wordwrap, "CANFOCUS", "No");
@@ -5109,11 +5136,11 @@ static int iScintillaDlgCreateMethod(Ihandle* ih, void** params)
   IupSetCallback(item_showwhite, "ACTION", (Icallback)item_showwhite_action_cb);
   IupSetAttribute(item_showwhite, "AUTOTOGGLE", "YES");
   IupSetAttribute(item_showwhite, "NAME", "ITEM_SHOWWHITE");
-  bt_showwhite = IupButton("a\xB7\x62", NULL);
+  bt_showwhite = IupFlatToggle("a\xB7\x62");
+  IupSetAttribute(bt_showwhite, "CHECKSIZE", "0");
   IupSetInt(bt_showwhite, "FONTSIZE", IupGetInt(bt_showwhite, "FONTSIZE") - 2);
-  IupSetAttribute(bt_showwhite, "FLAT", "Yes");
   IupSetAttribute(bt_showwhite, "PADDING", "2x3");
-  IupSetCallback(bt_showwhite, "ACTION", (Icallback)item_showwhite_action_cb);
+  IupSetCallback(bt_showwhite, "FLAT_ACTION", (Icallback)item_showwhite_action_cb);
   IupSetAttribute(bt_showwhite, "TIP", "Show White Spaces");
   IupSetAttribute(bt_showwhite, "TIPFONT", "SYSTEM");
   IupSetAttribute(bt_showwhite, "CANFOCUS", "No");
@@ -5123,11 +5150,11 @@ static int iScintillaDlgCreateMethod(Ihandle* ih, void** params)
   IupSetCallback(item_showeol, "ACTION", (Icallback)item_showeol_action_cb);
   IupSetAttribute(item_showeol, "AUTOTOGGLE", "YES");
   IupSetAttribute(item_showeol, "NAME", "ITEM_SHOWEOL");
-  bt_showeol = IupButton("\xB6", NULL);
-  IupSetAttribute(bt_showeol, "FLAT", "Yes");
+  bt_showeol = IupFlatToggle("\xB6");
+  IupSetAttribute(bt_showeol, "CHECKSIZE", "0");
   IupSetAttribute(bt_showeol, "FONTSTYLE", "Bold");
   IupSetAttribute(bt_showeol, "PADDING", "4x0");
-  IupSetCallback(bt_showeol, "ACTION", (Icallback)item_showeol_action_cb);
+  IupSetCallback(bt_showeol, "FLAT_ACTION", (Icallback)item_showeol_action_cb);
   IupSetAttribute(bt_showeol, "TIP", "Show End of Lines");
   IupSetAttribute(bt_showeol, "TIPFONT", "SYSTEM");
   IupSetAttribute(bt_showeol, "CANFOCUS", "No");
@@ -5336,6 +5363,7 @@ static int iScintillaDlgCreateMethod(Ihandle* ih, void** params)
   IupSetAttribute(toolbar, "MARGIN", "5x5");
   IupSetAttribute(toolbar, "GAP", "2");
   IupSetAttribute(toolbar, "NAME", "TOOLBAR");
+  IupSetAttribute(toolbar, "NORMALIZESIZE", "VERTICAL");
 
   vbox = IupVbox(
     toolbar,
