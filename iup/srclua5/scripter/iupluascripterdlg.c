@@ -1329,12 +1329,12 @@ static int iLuaScripterDlgCreateMethod(Ihandle* ih, void** params)
   newtext_cb(ih, get_current_multitext(ih));
 
   /* Additional toolbar buttons */
-  toolbar = IupGetChild(IupGetChild(ih, 0), 0);
+  toolbar = IupGetDialogChild(ih, "TOOLBAR");
   iupLuaScripterDebuggerAddToolbarButtons(toolbar);
 
   luaMenu = buildLuaMenu();
   menu = IupGetAttributeHandle(ih, "MENU");
-  IupInsert(menu, IupGetChild(menu, IupGetChildCount(menu) - 1), luaMenu);
+  IupInsert(menu, IupGetChild(menu, IupGetChildCount(menu) - 1), luaMenu);  /* penultimate submenu as reference */
 
   panelTabs = IupGetDialogChild(ih, "PANEL_TABS");
   multitextTabs = IupGetDialogChild(ih, "MULTITEXT_TABS");

@@ -981,8 +981,8 @@ static void update_dialog_title(Ihandle* multitext)
 
 static int multitext_caret_cb(Ihandle* multitext, int lin, int col)
 {
-  Ihandle *lbl_statusbar = IupGetDialogChild(multitext, "STATUSBAR");
-  IupSetfAttribute(lbl_statusbar, "TITLE", "Lin %d, Col %d", lin + 1, col + 1);  /* in Scintilla lin and col start at 0 */
+  Ihandle *statusbar = IupGetDialogChild(multitext, "STATUSBAR");
+  IupSetfAttribute(statusbar, "TITLE", "Lin %d, Col %d", lin + 1, col + 1);  /* in Scintilla lin and col start at 0 */
   return IUP_DEFAULT;
 }
 
@@ -2258,7 +2258,7 @@ static int tabs_rightclick_cb(Ihandle* tabs, int pos)
   else
     IupSetAttribute(item_revert, "ACTIVE", "NO");
 
-  if (IupGetChildCount(IupGetParent(multitext)) > 1)
+  if (IupGetChildCount(tabs) > 1)
     IupSetAttribute(item_closeall_butthis, "ACTIVE", "YES");
   else
     IupSetAttribute(item_closeall_butthis, "ACTIVE", "NO");
@@ -3581,11 +3581,9 @@ static int find_next_action_cb(Ihandle* ih_item)
 
       if (!found)
       {
-        Ihandle *lbl_statusbar;
-        multitext = iScintillaDlgGetCurrentMultitext(ih);
         /* update statusbar */
-        lbl_statusbar = IupGetDialogChild(multitext, "STATUSBAR");
-        IupSetfAttribute(lbl_statusbar, "TITLE", "Text \"%s\" not found.", str_to_find);
+        Ihandle *statusbar = IupGetDialogChild(ih, "STATUSBAR");
+        IupSetfAttribute(statusbar, "TITLE", "Text \"%s\" not found.", str_to_find);
       }
     }
   }
@@ -4371,7 +4369,7 @@ static int item_showeol_action_cb(Ihandle* ih_item)
 static int item_toolbar_action_cb(Ihandle* ih_item)
 {
   Ihandle* tabs = IupGetDialogChild(ih_item, "MULTITEXT_TABS");
-  Ihandle* toolbar = IupGetChild(IupGetParent(tabs), 0);
+  Ihandle* toolbar = IupGetDialogChild(ih_item, "TOOLBAR");
   Ihandle* config = iScintillaDlgGetConfig(tabs);
 
   toggle_bar_visibility(ih_item, toolbar);
@@ -4383,7 +4381,7 @@ static int item_toolbar_action_cb(Ihandle* ih_item)
 static int item_statusbar_action_cb(Ihandle* ih_item)
 {
   Ihandle* tabs = IupGetDialogChild(ih_item, "MULTITEXT_TABS");
-  Ihandle* statusbar = IupGetBrother(tabs);
+  Ihandle *statusbar = IupGetDialogChild(ih_item, "STATUSBAR");
   Ihandle* config = iScintillaDlgGetConfig(tabs);
 
   toggle_bar_visibility(ih_item, statusbar);
@@ -4563,7 +4561,7 @@ static void iScintillaDlgSetConfig(Ihandle* ih, Ihandle* config)
   if (value && !iupStrBoolean(value))
   {
     Ihandle* item_toolbar = IupGetDialogChild(ih, "ITEM_TOOLBAR");
-    Ihandle* toolbar = IupGetChild(IupGetParent(tabs), 0);
+    Ihandle* toolbar = IupGetDialogChild(ih, "TOOLBAR");
     /* default is visible */
     IupSetAttribute(toolbar, "FLOATING", "YES");
     IupSetAttribute(toolbar, "VISIBLE", "NO");
@@ -4574,7 +4572,7 @@ static void iScintillaDlgSetConfig(Ihandle* ih, Ihandle* config)
   if (value && !iupStrBoolean(value))
   {
     Ihandle* item_statusbar = IupGetDialogChild(ih, "ITEM_STATUSBAR");
-    Ihandle* statusbar = IupGetBrother(tabs);
+    Ihandle *statusbar = IupGetDialogChild(ih, "STATUSBAR");
     /* default is visible */
     IupSetAttribute(statusbar, "FLOATING", "YES");
     IupSetAttribute(statusbar, "VISIBLE", "NO");
@@ -4763,7 +4761,7 @@ static int iScintillaDlgCreateMethod(Ihandle* ih, void** params)
   Ihandle *sub_menu_view, *view_menu, *item_panel, *item_toolbar, *item_statusbar, *item_linenumber, *item_bookmark;
   Ihandle *zoom_menu, *item_zoomin, *item_zoomout, *item_restorezoom;
   Ihandle *item_savecopy, *item_saveall, *item_closeall, *item_close, *item_rename, *item_windows, *item_loadsession, *item_savesession;
-  Ihandle *lbl_statusbar, *toolbar_hb, *recent_menu, *recent_proj_menu, *window_menu, *sub_menu_window, *item_window1;
+  Ihandle *statusbar, *toolbar, *recent_menu, *recent_proj_menu, *window_menu, *sub_menu_window, *item_window1;
   Ihandle *item_wordwrap, *item_showwhite, *item_showeol;
   Ihandle *panelFrame, *panelTabs, *listSearch, *panelSplit;
 
@@ -4825,10 +4823,10 @@ static int iScintillaDlgCreateMethod(Ihandle* ih, void** params)
   IupSetAttribute(panelSplit, "MINMAX", "100:1000");
   IupSetAttribute(panelSplit, "COLOR", "50 150 255");
 
-  lbl_statusbar = IupLabel("Lin 1, Col 1");
-  IupSetAttribute(lbl_statusbar, "NAME", "STATUSBAR");
-  IupSetAttribute(lbl_statusbar, "EXPAND", "HORIZONTAL");
-  IupSetAttribute(lbl_statusbar, "PADDING", "10x5");
+  statusbar = IupLabel("Lin 1, Col 1");
+  IupSetAttribute(statusbar, "NAME", "STATUSBAR");
+  IupSetAttribute(statusbar, "EXPAND", "HORIZONTAL");
+  IupSetAttribute(statusbar, "PADDING", "10x5");
 
   item_new = IupItem("&New\tCtrl+N", NULL);
   IupSetAttribute(item_new, "IMAGE", "IUP_FileNew");
@@ -5259,12 +5257,12 @@ static int iScintillaDlgCreateMethod(Ihandle* ih, void** params)
     item_wordwrap,
     item_showwhite,
     item_showeol,
+    item_linenumber,
+    item_bookmark,
     IupSeparator(),
     item_panel,
     item_toolbar,
     item_statusbar,
-    item_linenumber,
-    item_bookmark,
     NULL);
   window_menu = IupMenu(
     item_window1,
@@ -5294,7 +5292,7 @@ static int iScintillaDlgCreateMethod(Ihandle* ih, void** params)
     sub_menu_window,
     NULL);
 
-  toolbar_hb = IupHbox(
+  toolbar = IupHbox(
     btn_new,
     btn_open,
     btn_save,
@@ -5305,13 +5303,14 @@ static int iScintillaDlgCreateMethod(Ihandle* ih, void** params)
     IupSetAttributes(IupLabel(NULL), "SEPARATOR=VERTICAL"),
     btn_find,
     NULL);
-  IupSetAttribute(toolbar_hb, "MARGIN", "5x5");
-  IupSetAttribute(toolbar_hb, "GAP", "2");
+  IupSetAttribute(toolbar, "MARGIN", "5x5");
+  IupSetAttribute(toolbar, "GAP", "2");
+  IupSetAttribute(toolbar, "NAME", "TOOLBAR");
 
   vbox = IupVbox(
-    toolbar_hb,
+    toolbar,
     panelSplit,
-    lbl_statusbar,
+    statusbar,
     NULL);
 
   /* Do not use IupAppend because we set childtype=IUP_CHILDNONE */
