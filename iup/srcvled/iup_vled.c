@@ -136,22 +136,22 @@ static char* getfolder(Ihandle* ih)
 static Ihandle* load_image_shortcut(void)
 {
   unsigned char imgdata[] = {
-    108, 110, 114, 180, 117, 117, 118, 255, 117, 117, 118, 255, 117, 117, 118, 255, 117, 117, 118, 255, 117, 117, 118, 255, 117, 117, 118, 255, 117, 117, 118, 255, 117, 117, 118, 255, 117, 117, 118, 255, 117, 117, 118, 255, 117, 117, 118, 255, 117, 117, 118, 255, 117, 117, 118, 255, 117, 117, 118, 255, 114, 117, 120, 194,
-    117, 117, 118, 255, 244, 255, 255, 236, 236, 253, 255, 226, 234, 251, 255, 226, 251, 255, 255, 225, 251, 255, 255, 225, 251, 255, 255, 225, 251, 255, 255, 225, 251, 255, 255, 225, 251, 255, 255, 225, 251, 255, 255, 225, 251, 255, 255, 225, 251, 255, 255, 225, 251, 255, 255, 225, 255, 255, 255, 235, 117, 117, 118, 255,
-    117, 117, 118, 255, 235, 253, 255, 226, 226, 242, 255, 216, 232, 246, 255, 216, 127, 160, 199, 237, 12, 69, 140, 255, 25, 79, 146, 255, 37, 88, 153, 255, 38, 89, 152, 255, 38, 89, 152, 255, 38, 89, 152, 255, 26, 81, 148, 255, 38, 88, 153, 255, 253, 255, 255, 217, 255, 255, 255, 224, 117, 117, 118, 255,
-    117, 117, 118, 255, 236, 254, 255, 226, 224, 240, 254, 217, 228, 242, 255, 216, 251, 255, 255, 212, 168, 193, 221, 229, 33, 86, 150, 254, 25, 80, 146, 255, 31, 84, 151, 255, 31, 85, 149, 255, 31, 85, 150, 255, 21, 76, 144, 255, 32, 81, 146, 255, 252, 254, 255, 217, 255, 255, 255, 224, 117, 117, 118, 255,
-    117, 117, 118, 255, 237, 254, 255, 226, 226, 240, 254, 217, 227, 242, 255, 217, 232, 247, 255, 216, 255, 255, 255, 208, 123, 158, 197, 239, 19, 74, 143, 255, 32, 86, 151, 255, 33, 86, 151, 255, 33, 86, 151, 255, 22, 76, 144, 255, 36, 83, 144, 254, 253, 255, 255, 217, 255, 255, 255, 224, 117, 117, 118, 255,
-    117, 117, 118, 255, 238, 254, 255, 226, 227, 243, 255, 217, 228, 243, 255, 217, 253, 255, 255, 213, 182, 205, 228, 228, 34, 86, 152, 255, 32, 85, 151, 255, 33, 86, 151, 255, 33, 86, 151, 255, 33, 87, 152, 255, 23, 76, 144, 255, 36, 83, 145, 254, 253, 255, 255, 217, 255, 255, 255, 224, 117, 117, 118, 255,
-    117, 117, 118, 255, 239, 255, 255, 226, 229, 243, 255, 217, 245, 255, 255, 213, 205, 221, 239, 223, 40, 91, 154, 255, 30, 84, 149, 255, 33, 86, 152, 255, 33, 86, 151, 255, 30, 82, 148, 255, 28, 81, 147, 255, 22, 76, 143, 255, 37, 83, 145, 254, 252, 254, 255, 217, 255, 255, 255, 224, 117, 117, 118, 255,
-    117, 117, 118, 255, 240, 255, 255, 226, 234, 248, 255, 216, 244, 254, 255, 214, 75, 117, 172, 251, 22, 78, 146, 255, 35, 87, 151, 255, 32, 86, 151, 255, 25, 78, 144, 255, 24, 74, 139, 255, 32, 81, 144, 255, 12, 66, 135, 255, 35, 81, 143, 255, 253, 255, 255, 217, 255, 255, 255, 224, 117, 117, 118, 255,
-    117, 117, 118, 255, 242, 255, 255, 226, 246, 255, 255, 213, 194, 213, 234, 225, 24, 78, 145, 255, 34, 87, 152, 255, 32, 86, 151, 255, 25, 78, 144, 255, 3, 57, 128, 255, 165, 187, 212, 231, 199, 214, 231, 225, 0, 56, 127, 255, 24, 72, 136, 255, 253, 255, 255, 217, 255, 255, 255, 224, 117, 117, 118, 255,
-    117, 117, 118, 255, 244, 255, 255, 226, 254, 255, 255, 213, 148, 176, 209, 234, 16, 73, 143, 255, 34, 87, 152, 255, 28, 81, 147, 255, 4, 58, 128, 255, 137, 163, 197, 236, 255, 255, 255, 212, 255, 255, 255, 212, 170, 191, 214, 231, 15, 64, 130, 255, 252, 254, 255, 217, 255, 255, 255, 224, 117, 117, 118, 255,
-    117, 117, 118, 255, 245, 255, 255, 226, 255, 255, 255, 213, 146, 175, 208, 234, 13, 70, 140, 255, 32, 85, 150, 255, 8, 64, 133, 255, 113, 143, 184, 241, 255, 255, 255, 212, 249, 255, 255, 216, 248, 254, 255, 216, 255, 255, 255, 213, 173, 191, 215, 230, 253, 255, 255, 217, 255, 255, 255, 225, 117, 117, 118, 255,
-    117, 117, 118, 255, 247, 255, 255, 226, 252, 255, 255, 213, 187, 207, 229, 226, 8, 67, 139, 255, 24, 78, 146, 255, 25, 74, 139, 255, 233, 242, 249, 219, 255, 255, 255, 215, 244, 252, 254, 217, 246, 251, 254, 217, 248, 253, 255, 217, 255, 255, 255, 215, 253, 255, 255, 217, 255, 255, 255, 225, 117, 117, 118, 255,
-    117, 117, 118, 255, 249, 255, 255, 226, 241, 251, 255, 216, 248, 255, 255, 216, 62, 107, 163, 250, 0, 46, 123, 255, 51, 96, 153, 252, 255, 255, 255, 213, 252, 255, 255, 216, 246, 252, 254, 217, 247, 252, 254, 217, 248, 252, 254, 217, 250, 253, 254, 217, 252, 254, 255, 217, 255, 255, 255, 225, 117, 117, 118, 255,
-    117, 117, 118, 255, 250, 255, 255, 226, 238, 248, 255, 216, 252, 255, 255, 215, 236, 243, 250, 219, 83, 120, 168, 245, 0, 55, 126, 255, 85, 123, 171, 242, 199, 214, 231, 225, 250, 255, 255, 216, 250, 253, 255, 217, 251, 254, 255, 217, 252, 254, 255, 217, 253, 255, 255, 217, 255, 255, 255, 225, 117, 117, 118, 255,
-    117, 117, 118, 255, 255, 255, 255, 235, 253, 255, 255, 225, 255, 255, 255, 225, 255, 255, 255, 223, 255, 255, 255, 222, 255, 255, 255, 227, 255, 255, 255, 225, 255, 255, 255, 225, 255, 255, 255, 227, 255, 255, 255, 225, 255, 255, 255, 225, 255, 255, 255, 225, 255, 255, 255, 225, 255, 255, 255, 234, 117, 117, 118, 255,
-    110, 112, 115, 194, 117, 117, 118, 255, 117, 117, 118, 255, 117, 117, 118, 255, 117, 117, 118, 255, 117, 117, 118, 255, 117, 117, 118, 255, 117, 117, 118, 255, 117, 117, 118, 255, 117, 117, 118, 255, 117, 117, 118, 255, 117, 117, 118, 255, 117, 117, 118, 255, 117, 117, 118, 255, 117, 117, 118, 255, 127, 128, 128, 203 };
+    0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0,
+    0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 62, 104, 162, 118, 57, 101, 162, 255, 57, 101, 162, 255, 57, 101, 162, 255, 57, 101, 162, 255, 57, 101, 162, 255, 57, 101, 162, 255, 57, 101, 162, 255, 57, 101, 162, 255, 54, 99, 160, 240, 0, 0, 0, 0, 0, 0, 0, 0,
+    0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 63, 105, 162, 117, 57, 101, 162, 255, 57, 101, 162, 255, 57, 101, 162, 255, 57, 101, 162, 255, 57, 101, 162, 255, 57, 101, 162, 255, 57, 101, 162, 255, 54, 99, 160, 240, 0, 0, 0, 0, 0, 0, 0, 0,
+    0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 66, 107, 163, 124, 57, 101, 162, 255, 57, 101, 162, 255, 57, 101, 162, 255, 57, 101, 162, 255, 57, 101, 162, 255, 57, 101, 162, 255, 54, 99, 160, 240, 0, 0, 0, 0, 0, 0, 0, 0,
+    0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 77, 116, 158, 11, 61, 104, 162, 190, 57, 101, 162, 255, 57, 101, 162, 255, 57, 101, 162, 255, 57, 101, 162, 255, 57, 101, 162, 255, 57, 101, 162, 255, 54, 99, 160, 240, 0, 0, 0, 0, 0, 0, 0, 0,
+    0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 93, 129, 169, 11, 63, 106, 163, 190, 57, 101, 162, 255, 57, 101, 162, 255, 57, 101, 162, 255, 57, 101, 162, 255, 57, 101, 162, 255, 57, 101, 162, 255, 57, 101, 162, 255, 54, 99, 160, 240, 0, 0, 0, 0, 0, 0, 0, 0,
+    0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 94, 129, 181, 9, 62, 105, 163, 190, 57, 101, 162, 255, 57, 101, 162, 255, 57, 101, 162, 255, 57, 101, 162, 255, 57, 101, 162, 255, 57, 101, 162, 255, 57, 101, 162, 255, 57, 101, 162, 255, 54, 99, 160, 240, 0, 0, 0, 0, 0, 0, 0, 0,
+    0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 67, 109, 167, 133, 57, 101, 162, 255, 57, 101, 162, 255, 57, 101, 162, 255, 57, 101, 162, 255, 57, 101, 162, 255, 57, 101, 162, 255, 58, 101, 162, 241, 57, 101, 162, 255, 57, 101, 162, 255, 54, 99, 160, 240, 0, 0, 0, 0, 0, 0, 0, 0,
+    0, 0, 0, 0, 0, 0, 0, 0, 122, 148, 184, 3, 59, 103, 162, 237, 57, 101, 162, 255, 57, 101, 162, 255, 57, 101, 162, 255, 57, 101, 162, 255, 57, 101, 162, 255, 58, 102, 161, 232, 70, 110, 161, 42, 59, 101, 157, 117, 57, 101, 162, 255, 54, 98, 160, 240, 0, 0, 0, 0, 0, 0, 0, 0,
+    0, 0, 0, 0, 0, 0, 0, 0, 80, 116, 167, 43, 57, 101, 162, 255, 57, 101, 162, 255, 57, 101, 162, 255, 57, 101, 162, 255, 57, 101, 162, 255, 58, 102, 161, 232, 68, 107, 161, 42, 0, 0, 0, 0, 0, 0, 0, 0, 59, 101, 156, 117, 54, 99, 159, 240, 0, 0, 0, 0, 0, 0, 0, 0,
+    0, 0, 0, 0, 0, 0, 0, 0, 71, 111, 166, 49, 57, 101, 162, 255, 57, 101, 162, 255, 57, 101, 162, 255, 57, 101, 162, 255, 58, 102, 161, 233, 66, 106, 156, 42, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 58, 99, 156, 105, 0, 0, 0, 0, 0, 0, 0, 0,
+    0, 0, 0, 0, 0, 0, 0, 0, 96, 130, 178, 14, 58, 102, 162, 250, 57, 101, 162, 255, 57, 101, 162, 255, 57, 101, 162, 255, 67, 109, 163, 81, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0,
+    0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 62, 104, 163, 169, 57, 101, 162, 255, 57, 101, 162, 255, 62, 105, 164, 242, 126, 163, 201, 3, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0,
+    0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 77, 114, 165, 33, 58, 101, 160, 239, 57, 101, 162, 255, 60, 103, 163, 227, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0,
+    0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 60, 99, 151, 60, 56, 100, 159, 234, 58, 102, 162, 254, 79, 116, 163, 36, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0,
+    0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 90, 119, 164, 22, 62, 103, 158, 116, 68, 106, 154, 93, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0 };
 
   Ihandle* image = IupImageRGBA(16, 16, imgdata);
   return image;
@@ -194,6 +194,8 @@ static Ihandle* load_image_go_to_cmd(void)
     0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0 };
 
   Ihandle* image = IupImageRGBA(32, 32, imgdata);
+  IupSetAttribute(image, "AUTOSCALE", "DPI");
+  IupSetAttribute(image, "DPI", "192");
   return image;
 }
 
@@ -234,6 +236,8 @@ static Ihandle* load_image_layout(void)
     0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0 };
 
   Ihandle* image = IupImageRGBA(32, 32, imgdata);
+  IupSetAttribute(image, "AUTOSCALE", "DPI");
+  IupSetAttribute(image, "DPI", "192");
   return image;
 }
 
@@ -274,6 +278,8 @@ static Ihandle* load_image_newlayout(void)
     0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0 };
 
   Ihandle* image = IupImageRGBA(32, 32, imgdata);
+  IupSetAttribute(image, "AUTOSCALE", "DPI");
+  IupSetAttribute(image, "DPI", "192");
   return image;
 }
 
@@ -338,7 +344,7 @@ static Ihandle* vLedGetCurrentMultitext(Ihandle* ih)
   return (Ihandle*)IupGetAttribute(tabs, "VALUE_HANDLE");
 }
 
-static void LoadImageFile(Ihandle* ih_item, const char* img_filename)
+static int LoadImageFile(Ihandle* ih_item, const char* img_filename)
 {
   Ihandle* currMultitext = vLedGetCurrentMultitext(ih_item);
 
@@ -370,7 +376,7 @@ static void LoadImageFile(Ihandle* ih_item, const char* img_filename)
     pos = IupGetInt(currMultitext, "CARETPOS");
     IupTextConvertPosToLinCol(currMultitext, pos, &lin, &col);
 
-    IupTextConvertLinColToPos(currMultitext, lin - 1, 0, &pos);
+    IupTextConvertLinColToPos(currMultitext, lin, 0, &pos);
 
     IupSetAttribute(currMultitext, "UNDOACTION", "BEGIN");
 
@@ -381,12 +387,14 @@ static void LoadImageFile(Ihandle* ih_item, const char* img_filename)
     free(img_file_title);
     free(buffer);
     IupDestroy(new_image);
+    return 1;
   }
   else
   {
     char* err_msg = IupGetGlobal("IUPIM_LASTERROR");
     if (err_msg)
       IupMessageError(IupGetDialog(ih_item), err_msg);
+    return 0;
   }
 }
 
@@ -453,8 +461,6 @@ static void vLedTreeSetNodeInfo(Ihandle* elem_tree, int id, Ihandle* ih, int lin
 
   if (link)
   {
-    if (ih->iclass->childtype != IUP_CHILDNONE)
-      IupSetAttributeId(elem_tree, "IMAGEEXPANDED", id, "_IUP_NAME_IMG_SHORTCUT");
     IupSetAttributeId(elem_tree, "IMAGE", id, "_IUP_NAME_IMG_SHORTCUT");
     IupSetAttributeId(elem_tree, "LINK", id, "1");
   }
@@ -464,7 +470,10 @@ static int vLedTreeAddNode(Ihandle* elem_tree, int id, Ihandle* ih, const char *
 {
   int link = 0;
 
-  if (ih->iclass->childtype != IUP_CHILDNONE && !iupAttribGet(ih, "_IUPLED_NOTDEF_NAME"))
+  if (vLedIsAlien(ih, filename) || iupAttribGet(ih, "_IUPLED_NOTDEF_NAME") || (vLedGetName(ih) && !root))
+    link = 1;
+
+  if (ih->iclass->childtype != IUP_CHILDNONE && !iupAttribGet(ih, "_IUPLED_NOTDEF_NAME") && !link)
   {
     if (add)
       IupSetAttributeId(elem_tree, "ADDBRANCH", id, "");
@@ -478,9 +487,6 @@ static int vLedTreeAddNode(Ihandle* elem_tree, int id, Ihandle* ih, const char *
     else
       IupSetAttributeId(elem_tree, "INSERTLEAF", id, "");
   }
-
-  if (vLedIsAlien(ih, filename) || iupAttribGet(ih, "_IUPLED_NOTDEF_NAME") || (vLedGetName(ih) && !root))
-    link = 1;
 
   id = IupGetInt(elem_tree, "LASTADDNODE");
 
@@ -645,7 +651,7 @@ static int load_led(Ihandle *elem_tree, const char *filename, int use_buffer)
     const char* error_mark = "bad input at line";
     const char* error_line = strstr(error, error_mark);
     error_line += strlen(error_mark) + 1;
-    sscanf(error_line, "%d", &line);
+    sscanf(error_line, "%d", &line);    /* line in LED error starts at 1 */
     IupSetIntId(multitext, "MARKERADD", line-1, 1);
     IupSetStrf(multitext, "CARET", "%d,0", line-1);
     IupMessageError(IupGetDialog(elem_tree), error);
@@ -1283,6 +1289,7 @@ static int scidlg_newtext_cb(Ihandle* main_dialog, Ihandle *multitext)
   IupSetAttribute(elem_tree, "ADDEXPANDED", "NO");  /* very important for large LEDs (loads much faster) */
   IupSetCallback(elem_tree, "SELECTION_CB", (Icallback)tree_selection_cb);
   IupSetCallback(elem_tree, "EXECUTELEAF_CB", (Icallback)tree_executeleaf_cb);
+  IupSetCallback(elem_tree, "EXECUTEBRANCH_CB", (Icallback)tree_executeleaf_cb);
   IupSetCallback(elem_tree, "RIGHTCLICK_CB", (Icallback)tree_rightclick_cb);
   IupSetAttribute(elem_tree, "VISIBLELINES", "3");
   IupSetAttribute(elem_tree, "IMAGELEAF", "IMGEMPTY");
@@ -1386,9 +1393,7 @@ static int led_menu_open_cb(Ihandle *ih_menu)
   Ihandle* item_toggle_folding = IupGetDialogChild(ih_menu, "ITM_TOGGLE_FOLDING");
   Ihandle* item_folding = IupGetDialogChild(ih_menu, "ITM_FOLDING");
   Ihandle* item_rewrite = IupGetDialogChild(ih_menu, "ITM_REWRITE");
-  Ihandle* item_comments = IupGetDialogChild(ih_menu, "ITM_COMMENTS");
   Ihandle* multitext = vLedGetCurrentMultitext(ih_menu);
-  char *selpos = IupGetAttribute(multitext, "SELECTIONPOS");
   int loaded = IupGetInt(multitext, "LOADED");
 
   if (IupGetInt(item_folding, "VALUE"))
@@ -1401,11 +1406,6 @@ static int led_menu_open_cb(Ihandle *ih_menu)
     IupSetAttribute(item_toggle_folding, "ACTIVE", "NO");
     IupSetAttribute(menu_foldall, "ACTIVE", "NO");
   }
-
-  if (selpos)
-    IupSetAttribute(item_comments, "ACTIVE", "Yes");
-  else
-    IupSetAttribute(item_comments, "ACTIVE", "NO");
 
   if (loaded)
     IupSetAttribute(item_rewrite, "ACTIVE", "Yes");
@@ -1713,17 +1713,23 @@ static int item_fold_level_action_cb(Ihandle* ih_item)
   return IUP_DEFAULT;
 }
 
-static int item_linescomment_action_cb(Ihandle* ih_item)
+static int item_comment_action_cb(Ihandle* ih_item)
 {
   Ihandle* multitext = vLedGetCurrentMultitext(ih_item);
   char *sel = IupGetAttribute(multitext, "SELECTION");
   char *text_line;
-  int lin, col, lin1, lin2, col1, col2;
+  int lin, col, lin1, lin2;
 
-  if (!sel)
-    return IUP_DEFAULT;
-
-  sscanf(sel, "%d,%d:%d,%d", &lin1, &col1, &lin2, &col2);
+  if (sel)
+  {
+    int col1, col2;
+    sscanf(sel, "%d,%d:%d,%d", &lin1, &col1, &lin2, &col2);
+  }
+  else
+  {
+    lin1 = IupGetInt(multitext, "CARET");
+    lin2 = lin1;
+  }
 
   IupSetAttribute(multitext, "UNDOACTION", "BEGIN");
 
@@ -1746,22 +1752,26 @@ static int item_linescomment_action_cb(Ihandle* ih_item)
 
   IupSetAttribute(multitext, "UNDOACTION", "END");
 
-  IupSetStrf(multitext, "SELECTION", "%d,0:%d,999", lin1, lin2);
-
   return IUP_DEFAULT;
 }
 
-static int item_linesuncomment_action_cb(Ihandle* ih_item)
+static int item_uncomment_action_cb(Ihandle* ih_item)
 {
   Ihandle* multitext = vLedGetCurrentMultitext(ih_item);
   char *sel = IupGetAttribute(multitext, "SELECTION");
   char *text_line;
-  int lin, col, lin1, lin2, col1, col2;
+  int lin, col, lin1, lin2;
 
-  if (!sel)
-    return IUP_DEFAULT;
-
-  sscanf(sel, "%d,%d:%d,%d", &lin1, &col1, &lin2, &col2);
+  if (sel)
+  {
+    int col1, col2;
+    sscanf(sel, "%d,%d:%d,%d", &lin1, &col1, &lin2, &col2);
+  }
+  else
+  {
+    lin1 = IupGetInt(multitext, "CARET");
+    lin2 = lin1;
+  }
 
   IupSetAttribute(multitext, "UNDOACTION", "BEGIN");
 
@@ -1791,8 +1801,6 @@ static int item_linesuncomment_action_cb(Ihandle* ih_item)
   }
 
   IupSetAttribute(multitext, "UNDOACTION", "END");
-
-  IupSetStrf(multitext, "SELECTION", "%d,0:%d,999", lin1, lin2);
 
   return IUP_DEFAULT;
 }
@@ -1936,20 +1944,28 @@ static int item_import_img_action_cb(Ihandle *ih_item)
 
   if (IupGetInt(filedlg, "STATUS") != -1)
   {
-    int i, count = IupGetInt(filedlg, "MULTIVALUECOUNT");
+    int i, ret =0 , count = IupGetInt(filedlg, "MULTIVALUECOUNT");
     dir = IupGetAttributeId(filedlg, "MULTIVALUE", 0);
 
     for (i = 1; i < count; i++)  /* i==0 contains the path */
     {
-      char* filetitle = IupGetAttributeId(filedlg, "MULTIVALUE", i);
-      char filename[10240];
-      strcpy(filename, dir);
-      strcat(filename, filetitle);
+      char* img_filetitle = IupGetAttributeId(filedlg, "MULTIVALUE", i);
+      char img_filename[10240];
+      strcpy(img_filename, dir);
+      strcat(img_filename, img_filetitle);
 
-      LoadImageFile(ih_item, filename);
+      ret |= LoadImageFile(ih_item, img_filename);
     }
 
     IupConfigSetVariableStr(config, "IupVisualLED", "LastImageDirectory", dir);
+
+    if (ret)
+    {
+      Ihandle* multitext = vLedGetCurrentMultitext(ih_item);
+      Ihandle* elem_tree = vLedGetElemTree(multitext);
+      char *filename = get_filename(multitext);
+      updateElemTree(elem_tree, filename);
+    }
   }
 
   IupDestroy(filedlg);
@@ -2638,14 +2654,14 @@ static int tree_executeleaf_cb(Ihandle* elem_tree, int id)
       if (elem == (Ihandle *)IupTreeGetUserId(elem_tree, id))
       {
         IupSetInt(elem_tree, "VALUE", id);
-        return IUP_DEFAULT;
+        break;
       }
 
       id = IupGetIntId(elem_tree, "NEXT", id);
     }
   }
-  else
-    search_in_text(multitext, name);
+
+  search_in_text(multitext, name);
 
   return IUP_DEFAULT;
 }
@@ -2829,11 +2845,12 @@ static int elem_layoutdlg_cb(Ihandle* ih_item)
   return IUP_DEFAULT;
 }
 
-static int elem_newlayout_cb(Ihandle* ih_bt)
+static int item_newlayout_cb(Ihandle* ih_bt)
 {
   Ihandle* layout_dlg, *new_dialog;
   Ihandle* multitext = vLedGetCurrentMultitext(ih_bt);
   char *filename = get_filename(multitext);
+  Ihandle* elem_tree = vLedGetElemTree(multitext);
   char new_name[50];
   int caret_line, caret_pos;
   static int new_count = 1;
@@ -2843,12 +2860,14 @@ static int elem_newlayout_cb(Ihandle* ih_bt)
 
   caret_line = IupGetInt(multitext, "CARET");
   IupTextConvertLinColToPos(multitext, caret_line, 0, &caret_pos);
-  IupSetStrfId(multitext, "INSERT", caret_pos, "%s = DIALOG()\n", new_name);
+  IupSetStrfId(multitext, "INSERT", caret_pos, "%s = DIALOG()\n\n", new_name);
 
   new_dialog = IupDialog(NULL);
   IupSetHandle(new_name, new_dialog);
   iupAttribSetStr(new_dialog, "_IUPLED_FILENAME", filename);
   iupAttribSetInt(new_dialog, "_IUPLED_LINE", caret_line);
+
+  updateElemTree(elem_tree, filename);
 
   layout_dlg = IupLayoutDialog(new_dialog);
   IupSetCallback(layout_dlg, "ATTRIBCHANGED_CB", (Icallback)attribchanged_cb);
@@ -3012,7 +3031,7 @@ static Ihandle* buildLedMenu(Ihandle* config)
 {
   Ihandle *item_load, *item_unload, *item_autoload, *item_autocomplete, *item_style_config, *item_expand, *item_toggle, *item_level,
     *item_folding, *item_toggle_folding, *ledMenu, *item_collapse, *item_rewrite,
-    *item_linescomment, *item_linesuncomment;
+    *item_comment, *item_uncomment, *item_newlayout;
 
   item_autoload = IupItem("Auto Load (Open or Save)", NULL);
   IupSetAttribute(item_autoload, "AUTOTOGGLE", "YES");
@@ -3023,8 +3042,9 @@ static Ihandle* buildLedMenu(Ihandle* config)
   else
     IupSetAttribute(item_autoload, "VALUE", "OFF");
 
-  item_load = IupItem("Load", NULL);
+  item_load = IupItem("Load\tF5", NULL);
   IupSetCallback(item_load, "ACTION", (Icallback)item_load_action_cb);
+  IupSetAttribute(item_load, "IMAGE", "IUP_NavigateRefresh");
 
   item_unload = IupItem("Unload", NULL);
   IupSetCallback(item_unload, "ACTION", (Icallback)item_unload_action_cb);
@@ -3032,6 +3052,9 @@ static Ihandle* buildLedMenu(Ihandle* config)
   item_rewrite = IupItem("Rewrite (from elements)", NULL);
   IupSetAttribute(item_rewrite, "NAME", "ITM_REWRITE");
   IupSetCallback(item_rewrite, "ACTION", (Icallback)item_rewrite_action_cb);
+
+  item_newlayout = IupItem("New Dialog Layout...", NULL);
+  IupSetCallback(item_newlayout, "ACTION", (Icallback)item_newlayout_cb);
 
   item_autocomplete = IupItem("Auto Completion", NULL);
   IupSetAttribute(item_autocomplete, "NAME", "ITM_AUTOCOMPLETE");
@@ -3065,16 +3088,22 @@ static Ihandle* buildLedMenu(Ihandle* config)
   IupSetAttribute(item_level, "NAME", "ITM_LEVEL");
   IupSetCallback(item_level, "ACTION", (Icallback)item_fold_level_action_cb);
 
-  item_linescomment = IupItem("Lines Comment", NULL);
-  IupSetCallback(item_linescomment, "ACTION", (Icallback)item_linescomment_action_cb);
+  item_comment = IupItem("Comment\tCtrl+K", NULL);
+  IupSetCallback(item_comment, "ACTION", (Icallback)item_comment_action_cb);
 
-  item_linesuncomment = IupItem("Lines Uncomment", NULL);
-  IupSetCallback(item_linesuncomment, "ACTION", (Icallback)item_linesuncomment_action_cb);
+  item_uncomment = IupItem("Uncomment\tCtrl+Q", NULL);
+  IupSetCallback(item_uncomment, "ACTION", (Icallback)item_uncomment_action_cb);
 
   ledMenu = IupMenu(
     item_autoload,
     item_load,
     item_unload,
+    IupSeparator(),
+    item_newlayout,
+    item_rewrite,
+    IupSeparator(),
+    item_comment,
+    item_uncomment,
     IupSeparator(),
     item_folding,
     item_toggle_folding,
@@ -3086,13 +3115,6 @@ static Ihandle* buildLedMenu(Ihandle* config)
       item_level,
       NULL), "NAME=ITM_FOLD_ALL")),
     IupSeparator(),
-    IupSubmenu("Comments",
-    IupSetAttributes(IupMenu(
-      item_linescomment,
-      item_linesuncomment,
-      NULL), "NAME=ITM_COMMENTS")),
-    IupSeparator(),
-    item_rewrite,
     item_autocomplete,
     item_style_config,
     NULL);
@@ -3262,6 +3284,49 @@ static Ihandle* buildElemToolbar(void)
 return elem_but_box;
 }
 
+static void addToolbarButtons(Ihandle* toolbar)
+{
+  Ihandle* bt;
+
+  IupAppend(toolbar, IupSetAttributes(IupLabel(NULL), "SEPARATOR=VERTICAL"));
+
+  bt = IupButton(NULL, NULL);
+  IupSetAttribute(bt, "IMAGE", "IUP_NavigateRefresh");
+  IupSetAttribute(bt, "FLAT", "Yes");
+  IupSetCallback(bt, "ACTION", (Icallback)item_load_action_cb);
+  IupSetAttribute(bt, "TIP", "Re-load the LED and build its elements (F5)");
+  IupSetAttribute(bt, "CANFOCUS", "No");
+  IupAppend(toolbar, bt);
+
+  bt = IupButton(NULL, NULL);
+  IupSetAttribute(bt, "IMAGE", "_IUP_NAME_IMG_NEWLAYOUT");
+  IupSetAttribute(bt, "FLAT", "Yes");
+  IupSetCallback(bt, "ACTION", (Icallback)item_newlayout_cb);
+  IupSetAttribute(bt, "TIP", "New Dialog Layout\n(insert a new dialog at caret and starts editing its layout)");
+  IupSetAttribute(bt, "CANFOCUS", "No");
+  IupAppend(toolbar, bt);
+
+  IupAppend(toolbar, IupSetAttributes(IupLabel(NULL), "SEPARATOR=VERTICAL"));
+
+  bt = IupButton("#", NULL);
+  IupSetAttribute(bt, "FLAT", "Yes");
+  IupSetAttribute(bt, "FONTSTYLE", "Bold");
+  IupSetAttribute(bt, "PADDING", "4x0");
+  IupSetCallback(bt, "ACTION", (Icallback)item_comment_action_cb);
+  IupSetAttribute(bt, "TIP", "Comment one or more lines (Ctrl+K)");
+  IupSetAttribute(bt, "CANFOCUS", "No");
+  IupAppend(toolbar, bt);
+
+  bt = IupButton("#", NULL);
+  IupSetAttribute(bt, "FLAT", "Yes");
+  IupSetAttribute(bt, "FGCOLOR", "128 80 80");
+  IupSetAttribute(bt, "PADDING", "4x0");
+  IupSetCallback(bt, "ACTION", (Icallback)item_uncomment_action_cb);
+  IupSetAttribute(bt, "TIP", "Uncomment one or more lines (Ctrl+Q)");
+  IupSetAttribute(bt, "CANFOCUS", "No");
+  IupAppend(toolbar, bt);
+}
+
 static int scidlg_exit_cb(Ihandle* main_dialog)
 {
   int i;
@@ -3283,13 +3348,16 @@ static int scidlg_exit_cb(Ihandle* main_dialog)
 }
 
 
+/**********************************************************************/
+
+
 int main(int argc, char **argv)
 {
   Ihandle *main_dialog, *menu, *config;
   Ihandle *ledMenu, *toolsMenu, *elem_but_box;
   Ihandle *panelTabs, *multitextTabs;
   Ihandle *elem_tree_box, *elementsFrame;
-  Ihandle* extra_dlg, *toolbar, *btn_newlayout;
+  Ihandle* extra_dlg, *toolbar;
   Icallback oldTabChange_cb;
   int i;
 
@@ -3344,17 +3412,13 @@ int main(int argc, char **argv)
   IupSetCallback(main_dialog, "MARKERCHANGED_CB", (Icallback)scidlg_markerchanged_cb);
   IupSetCallback(main_dialog, "EXIT_CB", (Icallback)scidlg_exit_cb);
   IupSetCallback(main_dialog, "K_cE", (Icallback)elem_find_cb);
+  IupSetCallback(main_dialog, "K_F5", (Icallback)item_load_action_cb);
+  IupSetCallback(main_dialog, "K_cK", (Icallback)item_comment_action_cb);
+  IupSetCallback(main_dialog, "K_cQ", (Icallback)item_uncomment_action_cb);
 
   /* Additional toolbar buttons */
   toolbar = IupGetDialogChild(main_dialog, "TOOLBAR");
-  IupAppend(toolbar, IupSetAttributes(IupLabel(NULL), "SEPARATOR=VERTICAL"));
-    btn_newlayout = IupButton(NULL, NULL);
-    IupSetAttribute(btn_newlayout, "IMAGE", "_IUP_NAME_IMG_NEWLAYOUT");
-    IupSetAttribute(btn_newlayout, "FLAT", "Yes");
-    IupSetCallback(btn_newlayout, "ACTION", (Icallback)elem_newlayout_cb);
-    IupSetAttribute(btn_newlayout, "TIP", "New Dialog Layout\n(insert a new dialog ar caret and edit its layout)");
-    IupSetAttribute(btn_newlayout, "CANFOCUS", "No");
-  IupAppend(toolbar, btn_newlayout);
+  addToolbarButtons(toolbar);
 
   /* Elements trees */
   elem_tree_box = IupZbox(NULL);
