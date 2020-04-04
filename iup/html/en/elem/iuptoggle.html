@@ -150,13 +150,12 @@ right of the text. Can be "YES" or "NO". Default: "NO".</p>
 
 
   
-<p><b>VALUE</b> (<font size="3">non inheritable</font>):
-  Toggle's state. Values can be "ON",
-  "OFF" or &quot;TOGGLE&quot;. 
-  If 3STATE=YES then can also be "NOTDEF". Default: "OFF". 
-	The TOGGLE option will invert the current state (since 3.7). In GTK if you change the state of a radio, the unchecked toggle will receive 
-	an ACTION callback notification. Can only be set to Yes for a toggle inside 
-a radio, it will automatically set to OFF the previous toggle that was ON.</p>
+<p><b>VALUE</b> (<font size="3">non inheritable</font>): Toggle's state. Values 
+can be &quot;ON&quot;, &quot;OFF&quot; or &quot;TOGGLE&quot;. If 3STATE=YES then can also be &quot;NOTDEF&quot;. 
+Default: &quot;OFF&quot;. The TOGGLE option will invert the current state (since 3.7). In 
+GTK if you change the state of a radio, the unchecked toggle will receive an 
+ACTION callback notification. Can only be set to ON if the toggle is inside a radio, it will automatically set to 
+OFF the previous toggle that was ON in the radio.</p>
 
   
 <p><a href="../attrib/iup_title.html">TITLE</a> (<font size="3">non inheritable</font>):

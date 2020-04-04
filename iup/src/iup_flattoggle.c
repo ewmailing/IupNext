@@ -672,11 +672,28 @@ static int iFlatToggleSetValueAttrib(Ihandle* ih, const char* value)
   }
   else
   {
-    int oldcheck = iupAttribGetBoolean(ih, "VALUE");
-    if (oldcheck)
-      iupAttribSet(ih, "VALUE", "OFF");
+    if (iupStrEqualNoCase(value, "TOGGLE"))
+    {
+      int oldcheck = iupAttribGetBoolean(ih, "VALUE");
+      if (oldcheck)
+        iupAttribSet(ih, "VALUE", "OFF");
+      else
+        iupAttribSet(ih, "VALUE", "ON");
+    }
     else
-      iupAttribSet(ih, "VALUE", "ON");
+    {
+      int tstate = iupAttribGetInt(ih, "3STATE");
+      int notdef = iupStrEqualNoCase(value, "NOTDEF");
+      if (tstate && notdef)
+          iupAttribSet(ih, "VALUE", "NOTDEF");
+      else
+      {
+        if (iupStrBoolean(value))
+          iupAttribSet(ih, "VALUE", "ON");
+        else
+          iupAttribSet(ih, "VALUE", "OFF");
+      }
+    }
 
     if (ih->handle)
       iupdrvRedrawNow(ih);

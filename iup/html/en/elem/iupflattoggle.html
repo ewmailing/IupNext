@@ -337,9 +337,10 @@ rotated space. (since 3.25)</span></span></p>
 <p><b>VALUE</b> (<font size="3">non inheritable</font>):
   Toggle's state. Values can be "ON",
   "OFF" or &quot;TOGGLE&quot;. 
-  Default: "OFF". 
-	The TOGGLE option will invert the current state. Can only be set to ON for a toggle inside a radio, it will automatically set to 
-OFF the previous toggle that was ON.</p>
+  If 3STATE=YES then can also be &quot;NOTDEF&quot;. Default: "OFF". 
+	The TOGGLE option will invert the current state. Can only be set to ON if 
+the toggle is inside a radio, it will automatically set to 
+OFF the previous toggle that was ON in the radio.</p>
 
   
 <p><b>3STATE </b>(creation only): Enable a three state toggle. Valid for toggles with text only 
