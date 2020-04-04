@@ -79,8 +79,7 @@ the event. <br>
     node identifier. </p>
 <p class="info"><span class="style1">Returns:</span> IUP_IGNORE for the branch not to be closed, or IUP_DEFAULT for the branch to be closed.</p>
 <p><strong>EXECUTELEAF_CB</strong>:
-  Action generated when a leaf is to be 
-  executed. This action occurs when the user double clicks a 
+  Action generated when a leaf is executed. This action occurs when the user double clicks a 
   leaf, or hits Enter on a leaf.
   </p>
 <pre>int function(Ihandle *<strong>ih</strong>, int <strong>id</strong>); [in C] 
@@ -91,6 +90,16 @@ the event. <br>
     node identifier.&nbsp;
     <br>
 </p>
+<p><strong>EXECUTEBRANCH_CB</strong>:
+  Action generated when a branch is executed. This action occurs when the user double clicks a 
+  branch, or hits Enter on a branch. (since 3.29)</p>
+<pre>int function(Ihandle *<strong>ih</strong>, int <strong>id</strong>); [in C] 
+<strong>ih</strong>:executebranch_cb(<strong>id:</strong> number) -&gt; (<strong>ret</strong>: number) [in Lua]</pre>
+<p class="info"><strong>ih</strong>: identifier of the element that activated 
+the event. <br>
+<strong>id</strong>:
+    node identifier.&nbsp;
+    </p>
 <hr>
 <p><strong>SHOWRENAME_CB</strong>:
   Action generated when a node is about to be renamed. 

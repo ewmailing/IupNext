@@ -2089,15 +2089,16 @@ static int iFlatTreeButton_CB(Ihandle* ih, int button, int pressed, int x, int y
       {
         if (node->kind == IFLATTREE_LEAF)
         {
-          IFni dc_cb = (IFni)IupGetCallback(ih, "EXECUTELEAF_CB");
-          if (dc_cb)
-          {
-            if (dc_cb(ih, id) == IUP_IGNORE)
-              return IUP_DEFAULT;
-          }
+          IFni cbExecuteLeaf = (IFni)IupGetCallback(ih, "EXECUTELEAF_CB");
+          if (cbExecuteLeaf)
+            cbExecuteLeaf(ih, id);
         }
         else  /* BRANCH */
         {
+          IFni cbExecuteBranch = (IFni)IupGetCallback(ih, "EXECUTEBRANCH_CB");
+          if (cbExecuteBranch)
+            cbExecuteBranch(ih, node->id);
+
           if (node->state == IFLATTREE_EXPANDED)
           {
             IFni cbBranchClose = (IFni)IupGetCallback(ih, "BRANCHCLOSE_CB");
@@ -2342,6 +2343,10 @@ static int iFlatTreeKCr_CB(Ihandle* ih)
 
       if (node->kind == IFLATTREE_BRANCH)
       {
+        IFni cbExecuteBranch = (IFni)IupGetCallback(ih, "EXECUTEBRANCH_CB");
+        if (cbExecuteBranch)
+          cbExecuteBranch(ih, node->id);
+
         if (node->state == IFLATTREE_EXPANDED)
         {
           IFni cbBranchClose = (IFni)IupGetCallback(ih, "BRANCHCLOSE_CB");
@@ -2364,12 +2369,9 @@ static int iFlatTreeKCr_CB(Ihandle* ih)
       }
       else
       {
-        IFni cb = (IFni)IupGetCallback(ih, "EXECUTELEAF_CB");
-        if (cb)
-        {
-          if (cb(ih, ih->data->focus_id) == IUP_IGNORE)
-            return IUP_DEFAULT;
-        }
+        IFni cbExecuteLeaf = (IFni)IupGetCallback(ih, "EXECUTELEAF_CB");
+        if (cbExecuteLeaf)
+          cbExecuteLeaf(ih, ih->data->focus_id);
       }
     }
   }
@@ -4048,6 +4050,7 @@ Iclass* iupFlatTreeNewClass(void)
   iupClassRegisterCallback(ic, "BRANCHOPEN_CB", "i");
   iupClassRegisterCallback(ic, "BRANCHCLOSE_CB", "i");
   iupClassRegisterCallback(ic, "EXECUTELEAF_CB", "i");
+  iupClassRegisterCallback(ic, "EXECUTEBRANCH_CB", "i");
   iupClassRegisterCallback(ic, "SHOWRENAME_CB", "i");
   iupClassRegisterCallback(ic, "RENAME_CB", "is");
   iupClassRegisterCallback(ic, "DRAGDROP_CB", "iiii");

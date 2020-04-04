@@ -2368,6 +2368,12 @@ static void gtkTreeRowActived(GtkTreeView* tree_view, GtkTreePath *path, GtkTree
   /* just to leaf nodes */
   if(gtk_tree_model_iter_has_child(model, &iterItem) == 0 && kind == ITREE_LEAF)
     cbExecuteLeaf(ih, gtkTreeFindNodeId(ih, &iterItem));
+  else
+  {
+    IFni cbExecuteBranch = (IFni)IupGetCallback(ih, "EXECUTEBRANCH_CB");
+    if (cbExecuteBranch)
+      cbExecuteBranch(ih, gtkTreeFindNodeId(ih, &iterItem));
+  }
 
   (void)column;
   (void)tree_view;

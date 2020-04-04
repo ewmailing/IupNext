@@ -2198,6 +2198,10 @@ static void motTreeDefaultActionCallback(Widget w, Ihandle* ih, XmContainerSelec
 
   if (itemData->kind == ITREE_BRANCH)
   {
+    IFni cbExecuteBranch = (IFni)IupGetCallback(ih, "EXECUTEBRANCH_CB");
+    if (cbExecuteBranch)
+      cbExecuteBranch(ih, iupTreeFindNodeId(ih, wItem));
+
     if (itemState == XmEXPANDED)
       XtVaSetValues(wItem, XmNoutlineState,  XmCOLLAPSED, NULL);
     else

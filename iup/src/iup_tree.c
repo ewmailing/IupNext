@@ -895,6 +895,7 @@ Iclass* iupTreeNewClass(void)
   iupClassRegisterCallback(ic, "BRANCHOPEN_CB",     "i");
   iupClassRegisterCallback(ic, "BRANCHCLOSE_CB",    "i");
   iupClassRegisterCallback(ic, "EXECUTELEAF_CB",    "i");
+  iupClassRegisterCallback(ic, "EXECUTEBRANCH_CB",  "i");
   iupClassRegisterCallback(ic, "SHOWRENAME_CB",     "i");
   iupClassRegisterCallback(ic, "RENAME_CB",         "is");
   iupClassRegisterCallback(ic, "DRAGDROP_CB",       "iiii");
