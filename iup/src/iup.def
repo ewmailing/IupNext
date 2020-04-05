@@ -388,6 +388,10 @@ iupBaseRegisterCommonAttrib
 iupBaseRegisterCommonCallbacks
 iupBaseRegisterBaseCallbacks
 iupBaseRegisterVisualAttrib
+iupBaseSetCPaddingAttrib
+iupBaseGetCPaddingAttrib
+iupBaseSetCSpacingAttrib
+iupBaseGetCSpacingAttrib
 iupBaseSetActiveAttrib
 iupBaseSetCurrentSize
 iupBaseSetExpandAttrib

@@ -538,6 +538,92 @@ IUP_SDK_API char* iupBaseContainerGetExpandAttrib(Ihandle* ih)
   return iupAttribGetInherit(ih, "EXPAND");
 }
 
+IUP_SDK_API int iupBaseSetCPaddingAttrib(Ihandle* ih, const char* value)
+{
+  if (!value)
+    IupSetAttribute(ih, "PADDING", NULL);
+  else
+  {
+    int cpad_horiz = -1, cpad_vert = -1;
+    int ret = iupStrToIntInt(value, &cpad_horiz, &cpad_vert, 'x');
+    if (ret == 2)
+    {
+      int pad_horiz, pad_vert;
+      int charwidth, charheight;
+      iupdrvFontGetCharSize(ih, &charwidth, &charheight);
+      pad_horiz = iupWIDTH2RASTER(cpad_horiz, charwidth);
+      pad_vert = iupHEIGHT2RASTER(cpad_vert, charheight);
+      IupSetStrf(ih, "PADDING", "%dx%d", pad_horiz, pad_vert);
+    }
+    else if (ret == 1)
+    {
+      int pad_horiz, pad_vert;
+      int charwidth, charheight;
+      IupGetIntInt(ih, "PADDING", &pad_horiz, &pad_vert);
+      iupdrvFontGetCharSize(ih, &charwidth, &charheight);
+
+      if (cpad_vert == -1)
+        pad_horiz = iupWIDTH2RASTER(cpad_horiz, charwidth);
+      else
+        pad_vert = iupHEIGHT2RASTER(cpad_vert, charheight);
+
+      IupSetStrf(ih, "PADDING", "%dx%d", pad_horiz, pad_vert);
+    }
+  }
+  return 0;  /* NOT stored */
+}
+
+IUP_SDK_API char* iupBaseGetCPaddingAttrib(Ihandle* ih)
+{
+  int pad_horiz, pad_vert;
+  int charheight, charwidth;
+  IupGetIntInt(ih, "PADDING", &pad_horiz, &pad_vert);
+  iupdrvFontGetCharSize(ih, &charwidth, &charheight);
+
+  pad_horiz = iupRASTER2WIDTH(pad_horiz, charwidth);
+  pad_vert = iupRASTER2HEIGHT(pad_vert, charheight);
+
+  return iupStrReturnIntInt(pad_horiz, pad_vert, 'x');
+}
+
+/*
+iupClassRegisterAttribute(ic, "CPADDING", iupBaseGetCPaddingAttrib, iupBaseSetCPaddingAttrib, NULL, NULL, IUPAF_NO_SAVE | IUPAF_NOT_MAPPED);
+*/
+
+IUP_SDK_API int iupBaseSetCSpacingAttrib(Ihandle* ih, const char* value)
+{
+  if (!value)
+    IupSetAttribute(ih, "SPACING", NULL);
+  else
+  {
+    int cspacing;
+    if (iupStrToInt(value, &cspacing))
+    {
+      int spacing;
+      int charheight;
+      iupdrvFontGetCharSize(ih, NULL, &charheight);
+      spacing = iupHEIGHT2RASTER(cspacing, charheight);
+      IupSetInt(ih, "SPACING", spacing);
+    }
+  }
+  return 0;  /* NOT stored */
+}
+
+IUP_SDK_API char* iupBaseGetCSpacingAttrib(Ihandle* ih)
+{
+  int spacing = IupGetInt(ih, "SPACING");
+  int charheight;
+  iupdrvFontGetCharSize(ih, NULL, &charheight);
+
+  spacing = iupRASTER2HEIGHT(spacing, charheight);
+
+  return iupStrReturnInt(spacing);
+}
+
+/*
+iupClassRegisterAttribute(ic, "CSPACING", iupBaseGetCSpacingAttrib, iupBaseSetCSpacingAttrib, NULL, NULL, IUPAF_NO_SAVE | IUPAF_NOT_MAPPED);
+*/
+
 IUP_SDK_API void iupBaseRegisterCommonAttrib(Iclass* ic)
 {
   iupClassRegisterAttribute(ic, "WID", iupBaseGetWidAttrib, NULL, NULL, NULL, IUPAF_READONLY|IUPAF_NO_INHERIT|IUPAF_NO_STRING);

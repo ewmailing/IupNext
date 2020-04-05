@@ -142,6 +142,10 @@ IUP_SDK_API char* iupdrvBaseGetTipVisibleAttrib(Ihandle* ih);
 IUP_SDK_API int iupdrvBaseSetBgColorAttrib(Ihandle* ih, const char* value);
 IUP_SDK_API int iupdrvBaseSetFgColorAttrib(Ihandle* ih, const char* value);
 IUP_SDK_API char* iupBaseNativeParentGetBgColorAttrib(Ihandle* ih);
+IUP_SDK_API int iupBaseSetCPaddingAttrib(Ihandle* ih, const char* value);
+IUP_SDK_API char* iupBaseGetCPaddingAttrib(Ihandle* ih);
+IUP_SDK_API int iupBaseSetCSpacingAttrib(Ihandle* ih, const char* value);
+IUP_SDK_API char* iupBaseGetCSpacingAttrib(Ihandle* ih);
 
 /* other */
 IUP_SDK_API char* iupBaseContainerGetExpandAttrib(Ihandle* ih);
