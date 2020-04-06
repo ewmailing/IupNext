@@ -2330,6 +2330,17 @@ static void iLayoutContextMenu(iLayoutDialog* layoutdlg, Ihandle* elem, Ihandle*
   IupDestroy(menu);
 }
 
+static int iLayoutItemShowContext_CB(Ihandle* ih_item)
+{
+  Ihandle* dlg = IupGetDialog(ih_item);
+  iLayoutDialog* layoutdlg = (iLayoutDialog*)iupAttribGet(dlg, "_IUP_LAYOUTDIALOG");
+  int focus_id = IupGetInt(layoutdlg->tree, "VALUE");
+  Ihandle* elem = (Ihandle*)IupTreeGetUserId(layoutdlg->tree, focus_id);
+  iLayoutContextMenu(layoutdlg, elem, dlg);
+  return IUP_DEFAULT;
+}
+
+
 
 /***************************************************************************
                        Layout Canvas Interaction
@@ -3151,18 +3162,19 @@ IUP_API Ihandle* IupLayoutDialog(Ihandle* dialog)
 
   menu = IupMenu(
     IupSubmenu("&Layout", IupMenu(
-    IupSetCallbacks(IupSetAttributes(IupItem("&Show Tree", NULL), "AUTOTOGGLE=YES, VALUE=ON"), "ACTION", iLayoutMenuShowTree_CB, NULL),
-    IupSetCallbacks(IupItem("Refresh\tCtrl+F5", NULL), "ACTION", iLayoutMenuRefresh_CB, NULL),
-    IupSeparator(),
-    IupSetCallbacks(IupItem("Update (Tree and Draw)\tF5", NULL), "ACTION", iLayoutMenuUpdate_CB, NULL),
-    IupSetCallbacks(IupSetAttributes(IupItem("Auto Update Draw", NULL), "AUTOTOGGLE=YES, VALUE=OFF"), "ACTION", iLayoutMenuAutoUpdate_CB, NULL),
-    IupSetCallbacks(IupSetAttributes(IupItem("Show Hidden", NULL), "AUTOTOGGLE=YES, VALUE=OFF"), "ACTION", iLayoutMenuShowHidden_CB, NULL),
-    IupSetCallbacks(IupSetAttributes(IupItem("Show Internal", NULL), "AUTOTOGGLE=YES, VALUE=OFF"), "ACTION", iLayoutMenuShowInternal_CB, NULL),
-    IupSeparator(),
-    IupSetCallbacks(IupItem("Opacity\tCtrl+/Ctrl-", NULL), "ACTION", iLayoutMenuOpacity_CB, NULL),
-    IupSeparator(),
-    IupSetCallbacks(IupItem("Find Element...\tCtrl+F", NULL), "ACTION", iLayoutMenuFindElement_CB, NULL),
-    NULL)),
+      IupSetCallbacks(IupSetAttributes(IupItem("&Show Tree", NULL), "AUTOTOGGLE=YES, VALUE=ON"), "ACTION", iLayoutMenuShowTree_CB, NULL),
+      IupSetCallbacks(IupItem("Refresh\tCtrl+F5", NULL), "ACTION", iLayoutMenuRefresh_CB, NULL),
+      IupSeparator(),
+      IupSetCallbacks(IupItem("Update (Tree and Draw)\tF5", NULL), "ACTION", iLayoutMenuUpdate_CB, NULL),
+      IupSetCallbacks(IupSetAttributes(IupItem("Auto Update Draw", NULL), "AUTOTOGGLE=YES, VALUE=OFF"), "ACTION", iLayoutMenuAutoUpdate_CB, NULL),
+      IupSetCallbacks(IupSetAttributes(IupItem("Show Hidden", NULL), "AUTOTOGGLE=YES, VALUE=OFF"), "ACTION", iLayoutMenuShowHidden_CB, NULL),
+      IupSetCallbacks(IupSetAttributes(IupItem("Show Internal", NULL), "AUTOTOGGLE=YES, VALUE=OFF"), "ACTION", iLayoutMenuShowInternal_CB, NULL),
+      IupSeparator(),
+      IupSetCallbacks(IupItem("Opacity\tCtrl+/Ctrl-", NULL), "ACTION", iLayoutMenuOpacity_CB, NULL),
+      IupSeparator(),
+      IupSetCallbacks(IupItem("Find Element...\tCtrl+F", NULL), "ACTION", iLayoutMenuFindElement_CB, NULL),
+      NULL)),
+    IupSetCallbacks(IupItem("Element", NULL), "ACTION", iLayoutItemShowContext_CB, NULL),
     NULL);
 
   if (layoutdlg->destroy || !iupAttribGet(dialog, "_IUPLED_FILENAME"))
