@@ -1920,7 +1920,7 @@ static int iFlatTreeButton_CB(Ihandle* ih, int button, int pressed, int x, int y
     iFlatTreeNode *parent;
     int equal_nodes = 0;
 
-    if (!dstNode || !srcNode)
+    if ((dstNode == srcNode) || !dstNode || !srcNode)
     {
       ih->data->dragover_id = -1;
       ih->data->dragged_id = -1;
@@ -3538,8 +3538,11 @@ static char* iFlatTreeGetMarkModeAttrib(Ihandle* ih)
 
 static int iFlatTreeSetMarkModeAttrib(Ihandle* ih, const char* value)
 {
-  if (iupStrEqualNoCase(value, "MULTIPLE"))
-    ih->data->mark_mode = IFLATTREE_MARK_MULTIPLE;
+	if (iupStrEqualNoCase(value, "MULTIPLE"))
+  {
+		ih->data->mark_mode = IFLATTREE_MARK_MULTIPLE;
+    ih->data->show_dragdrop = 0;
+  }
   else
   {
     ih->data->mark_mode = IFLATTREE_MARK_SINGLE;
@@ -3605,7 +3608,7 @@ static char* iFlatTreeGetShowDragDropAttrib(Ihandle* ih)
 
 static int iFlatTreeSetShowDragDropAttrib(Ihandle* ih, const char* value)
 {
-  if (iupStrBoolean(value))
+  if (iupStrBoolean(value) && ih->data->mark_mode == IFLATTREE_MARK_SINGLE)
     ih->data->show_dragdrop = 1;
   else
     ih->data->show_dragdrop = 0;
