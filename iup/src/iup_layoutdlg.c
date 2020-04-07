@@ -1843,6 +1843,31 @@ static int iLayoutContextMenuGoToParent_CB(Ihandle* menu)
   return IUP_DEFAULT;
 }
 
+static int iLayoutContextMenuGoToBrother_CB(Ihandle* menu)
+{
+  iLayoutDialog* layoutdlg = (iLayoutDialog*)iupAttribGetInherit(menu, "_IUP_LAYOUTDIALOG");
+  Ihandle* elem = (Ihandle*)iupAttribGetInherit(menu, "_IUP_LAYOUTCONTEXTELEMENT");
+
+  if (elem->brother)
+    iLayoutSelectTreeItem(layoutdlg, elem->brother);
+
+  return IUP_DEFAULT;
+}
+
+static int iLayoutContextMenuCollapseAll_CB(Ihandle* menu)
+{
+  iLayoutDialog* layoutdlg = (iLayoutDialog*)iupAttribGetInherit(menu, "_IUP_LAYOUTDIALOG");
+  IupSetAttribute(layoutdlg->tree, "EXPANDALL", "NO");
+  return IUP_DEFAULT;
+}
+
+static int iLayoutContextMenuExpandAll_CB(Ihandle* menu)
+{
+  iLayoutDialog* layoutdlg = (iLayoutDialog*)iupAttribGetInherit(menu, "_IUP_LAYOUTDIALOG");
+  IupSetAttribute(layoutdlg->tree, "EXPANDALL", "YES");
+  return IUP_DEFAULT;
+}
+
 static void iLayoutSaveAttributes(Ihandle* ih)
 {
   IupSaveClassAttributes(ih);
@@ -2294,7 +2319,10 @@ static void iLayoutContextMenu(iLayoutDialog* layoutdlg, Ihandle* elem, Ihandle*
     IupSetCallbacks(IupSetAttributes(IupItem("Unmap", NULL), can_unmap ? "ACTIVE=Yes" : "ACTIVE=No"), "ACTION", iLayoutContextMenuUnmap_CB, NULL),
     IupSetCallbacks(IupItem("Refresh Children", NULL), "ACTION", iLayoutContextMenuRefreshChildren_CB, NULL),
     IupSeparator(),
-    IupSetCallbacks(IupItem("Go to Parent", NULL), "ACTION", iLayoutContextMenuGoToParent_CB, NULL),
+    IupSetCallbacks(IupItem("Collapse All", NULL), "ACTION", iLayoutContextMenuCollapseAll_CB, NULL),
+    IupSetCallbacks(IupItem("Expand All", NULL), "ACTION", iLayoutContextMenuExpandAll_CB, NULL),
+    IupSetCallbacks(IupItem("Go to Parent\tLeft", NULL), "ACTION", iLayoutContextMenuGoToParent_CB, NULL),
+    IupSetCallbacks(IupItem("Go to Brother\tDown", NULL), "ACTION", iLayoutContextMenuGoToBrother_CB, NULL),
     IupSetCallbacks(IupSetAttributes(IupItem("Blink", NULL), can_blink ? "ACTIVE=Yes" : "ACTIVE=No"), "ACTION", iLayoutContextMenuBlink_CB, NULL),
     IupSetCallbacks(IupSetAttributes(IupItem("Set Focus", NULL), can_focus ? "ACTIVE=Yes" : "ACTIVE=No"), "ACTION", iLayoutContextMenuSetFocus_CB, NULL),
     IupSeparator(),

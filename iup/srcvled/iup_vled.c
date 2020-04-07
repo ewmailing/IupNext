@@ -516,6 +516,12 @@ static int vLedTreeAddChildren(Ihandle* elem_tree, int last_child_id, Ihandle* p
   return last_child_id;
 }
 
+static void enable_elem_tools_buttons(Ihandle *elem_tree, int active)
+{
+  /* elements tools buttons */
+  IupSetAttribute(IupGetBrother(IupGetParent(elem_tree)), "ACTIVE", active? "YES": "NO");
+}
+
 static void updateElemTree(Ihandle* elem_tree, const char* filename)
 {
   int last_child_id = -1;
@@ -527,6 +533,7 @@ static void updateElemTree(Ihandle* elem_tree, const char* filename)
   IupGetAllNames(names, num_names);
 
   IupSetAttribute(elem_tree, "DELNODE0", "ALL");
+  enable_elem_tools_buttons(elem_tree, 0);
 
   for (i = 0; i < num_names; i++)
   {
@@ -572,6 +579,8 @@ static void updateElemTree(Ihandle* elem_tree, const char* filename)
 
   IupSetAttribute(elem_tree, "VALUE", "1");
   IupSetAttribute(elem_tree, "VALUE", "0");
+
+  enable_elem_tools_buttons(elem_tree, 1);
 
   free(names);
 }
@@ -673,9 +682,6 @@ static int load_led(Ihandle *elem_tree, const char *filename, int use_buffer)
 
     IupSetAttribute(multitext, "LOADED", "1");
     updateElemTree(elem_tree, filename);
-
-    /* elements tools buttons */
-    IupSetAttribute(IupGetBrother(IupGetParent(elem_tree)), "ACTIVE", "YES");
   }
 
   return IUP_DEFAULT;
@@ -1075,12 +1081,15 @@ static int tabChange_cb(Ihandle* tabs, Ihandle* new_multitext, Ihandle* old_mult
 {
   Ihandle* elem_tree_box = IupGetDialogChild(tabs, "ELEM_TREE_BOX");
   Ihandle* elem_tree = vLedGetElemTree(new_multitext);
+  int tree_count = IupGetInt(elem_tree, "COUNT");
 
   IFnnn oldTabChange_cb = (IFnnn)IupGetCallback(tabs, "OLDTABCHANGE_CB");
   if (oldTabChange_cb)
     oldTabChange_cb(tabs, new_multitext, old_multitext);
 
   IupSetAttribute(elem_tree_box, "VALUE_HANDLE", (char*)elem_tree);
+
+  enable_elem_tools_buttons(elem_tree, tree_count > 0);
 
   return IUP_DEFAULT;
 }
@@ -1099,9 +1108,7 @@ static void reload_led_file(Ihandle* multitext)
   else
   {
     IupSetAttribute(elem_tree, "DELNODE0", "ALL");
-
-    /* elements tools buttons */
-    IupSetAttribute(IupGetBrother(IupGetParent(elem_tree)), "ACTIVE", "NO");
+    enable_elem_tools_buttons(elem_tree, 0);
   }
 }
 
@@ -1831,10 +1838,9 @@ static int item_unload_action_cb(Ihandle *ih_item)
 
   unload_led(multitext, filename);
   IupSetAttribute(multitext, "LOADED", NULL);
-  IupSetAttribute(elem_tree, "DELNODE0", "ALL");
 
-  /* elements tools buttons */
-  IupSetAttribute(IupGetBrother(IupGetParent(elem_tree)), "ACTIVE", "NO");
+  IupSetAttribute(elem_tree, "DELNODE0", "ALL");
+  enable_elem_tools_buttons(elem_tree, 0);
 
   return IUP_DEFAULT;
 }
@@ -2697,6 +2703,34 @@ static int elem_expand_all_cb(Ihandle* ih_item)
   return IUP_DEFAULT;
 }
 
+static int elem_goto_parent_cb(Ihandle* ih_item)
+{
+  Ihandle* elem_tree = (Ihandle*)IupGetAttribute(ih_item, "ELEMENTS_TREE");
+  int id = IupGetInt(elem_tree, "VALUE");
+
+  if (IupGetAttributeId(elem_tree, "PARENT", id) != NULL)
+  {
+    id = IupGetIntId(elem_tree, "PARENT", id);
+    IupSetInt(elem_tree, "VALUE", id);
+  }
+
+  return IUP_DEFAULT;
+}
+
+static int elem_goto_brother_cb(Ihandle* ih_item)
+{
+  Ihandle* elem_tree = (Ihandle*)IupGetAttribute(ih_item, "ELEMENTS_TREE");
+  int id = IupGetInt(elem_tree, "VALUE");
+
+  if (IupGetAttributeId(elem_tree, "NEXT", id) != NULL)
+  {
+    id = IupGetIntId(elem_tree, "NEXT", id);
+    IupSetInt(elem_tree, "VALUE", id);
+  }
+
+  return IUP_DEFAULT;
+}
+
 static int globalsdlg_cb(Ihandle* ih)
 {
   Ihandle* config = get_config(ih);
@@ -2984,6 +3018,8 @@ static void show_elements_menu(Ihandle* elem_tree, int id, int x, int y)
     IupSeparator(),
     IupSetCallbacks(IupItem("Collapse All", NULL), "ACTION", elem_collapse_all_cb, NULL),
     IupSetCallbacks(IupItem("Expand All", NULL), "ACTION", elem_expand_all_cb, NULL),
+    IupSetCallbacks(IupItem("Go to Parent\tLeft", NULL), "ACTION", elem_goto_parent_cb, NULL),
+    IupSetCallbacks(IupItem("Go to Brother\tDown", NULL), "ACTION", elem_goto_brother_cb, NULL),
     IupSeparator(),
     show_elem ?
     (show_elem == 1 ?
@@ -3281,7 +3317,7 @@ static Ihandle* buildElemToolbar(void)
     NULL
   );
 
-return elem_but_box;
+  return elem_but_box;
 }
 
 static void addToolbarButtons(Ihandle* toolbar)
