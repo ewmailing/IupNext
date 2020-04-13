@@ -92,7 +92,8 @@ the event. <br>
 </p>
 <p><strong>EXECUTEBRANCH_CB</strong>:
   Action generated when a branch is executed. This action occurs when the user double clicks a 
-  branch, or hits Enter on a branch. (since 3.29)</p>
+  branch, or hits Enter on a branch. Is is called before the BRANCH*_CB 
+callbacks. (since 3.29)</p>
 <pre>int function(Ihandle *<strong>ih</strong>, int <strong>id</strong>); [in C] 
 <strong>ih</strong>:executebranch_cb(<strong>id:</strong> number) -&gt; (<strong>ret</strong>: number) [in Lua]</pre>
 <p class="info"><strong>ih</strong>: identifier of the element that activated 
