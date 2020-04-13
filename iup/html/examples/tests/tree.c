@@ -265,6 +265,12 @@ static int executeleaf_cb(Ihandle* ih, int id)
   return IUP_DEFAULT;
 }
 
+static int executebranch_cb(Ihandle* ih, int id)
+{
+  printf("EXECUTEBRANCH_CB (%d)\n", id);
+  return IUP_DEFAULT;
+}
+
 static int rename_cb(Ihandle* ih, int id, char* title)
 {
   printf("RENAME_CB (%d=%s)\n", id, title);
@@ -588,6 +594,7 @@ static void init_tree(void)
   Ihandle* tree = IupTree(); 
 
   IupSetCallback(tree, "EXECUTELEAF_CB", (Icallback) executeleaf_cb);
+  IupSetCallback(tree, "EXECUTEBRANCH_CB", (Icallback)executebranch_cb);
   IupSetCallback(tree, "RENAME_CB",      (Icallback) rename_cb);
   IupSetCallback(tree, "BRANCHCLOSE_CB", (Icallback) branchclose_cb);
   IupSetCallback(tree, "BRANCHOPEN_CB",  (Icallback) branchopen_cb);
@@ -617,10 +624,10 @@ static void init_tree(void)
 //  IupSetAttribute(tree, "BGCOLOR", "255 255 255");
 //  IupSetAttribute(tree, "BGCOLOR", "128 0 255");
 
-  IupSetAttribute(tree, "MARKMODE",     "MULTIPLE");
-  IupSetAttribute(tree, "SHOWRENAME",   "YES");
+//  IupSetAttribute(tree, "MARKMODE",     "MULTIPLE");
+//  IupSetAttribute(tree, "SHOWRENAME",   "YES");
  // IupSetAttribute(tree, "SHOWDRAGDROP", "YES");  /* internal D&D */
-  IupSetAttribute(tree, "SHOWTOGGLE",   "YES");
+//  IupSetAttribute(tree, "SHOWTOGGLE",   "YES");
 //  IupSetAttribute(tree, "MARKWHENTOGGLE", "YES");
   //  IupSetAttribute(tree, "SHOWTOGGLE",   "3STATE");
 //  IupSetAttribute(tree, "DROPEQUALDRAG", "YES");
