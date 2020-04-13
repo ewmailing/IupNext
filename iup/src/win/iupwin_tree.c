@@ -826,6 +826,13 @@ static int winTreeCallBranchLeafCb(Ihandle* ih, HTREEITEM hItem, int execute)
     if (iupAttribGet(ih, "_IUPTREE_IGNORE_BRANCH_CB"))
       return IUP_DEFAULT;
 
+    if (execute)
+    {
+      IFni cbExecuteBranch = (IFni)IupGetCallback(ih, "EXECUTEBRANCH_CB");
+      if (cbExecuteBranch)
+        cbExecuteBranch(ih, iupTreeFindNodeId(ih, hItem));
+    }
+
     if (item.state & TVIS_EXPANDED)
     {
       IFni cbBranchClose = (IFni)IupGetCallback(ih, "BRANCHCLOSE_CB");
@@ -837,13 +844,6 @@ static int winTreeCallBranchLeafCb(Ihandle* ih, HTREEITEM hItem, int execute)
       IFni cbBranchOpen  = (IFni)IupGetCallback(ih, "BRANCHOPEN_CB");
       if (cbBranchOpen)
         return cbBranchOpen(ih, iupTreeFindNodeId(ih, hItem));
-    }
-
-    if (execute)
-    {
-      IFni cbExecuteBranch = (IFni)IupGetCallback(ih, "EXECUTEBRANCH_CB");
-      if (cbExecuteBranch)
-        cbExecuteBranch(ih, iupTreeFindNodeId(ih, hItem));
     }
   }
   else if (execute)
