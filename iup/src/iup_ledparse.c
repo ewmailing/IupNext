@@ -112,9 +112,11 @@ static void* iParseExp(void)
     IPARSE_RETURN_IF_ERROR_FREE(iparse_error, nm);
     if (ih)
     {
-      if (iparse_saveinfo && IupGetHandle(nm))
+      if (iparse_saveinfo)
       {
-        IPARSE_RETURN_IF_ERROR_FREE(iParseError(IPARSE_SYMBEXIST, nm), nm);
+        Ihandle* old_ih = IupGetHandle(nm);
+        if (iupObjectCheck(old_ih))  /* error only if old handle is still valid */
+          IPARSE_RETURN_IF_ERROR_FREE(iParseError(IPARSE_SYMBEXIST, nm), nm);
       }
 
       IupSetHandle(nm, ih);
