@@ -1238,7 +1238,7 @@ static char* gtkTreeGetKindAttrib(Ihandle* ih, int id)
 
   gtk_tree_model_get(model, &iterItem, IUPGTK_NODE_KIND, &kind, -1);
 
-  if(!kind)
+  if (kind == ITREE_BRANCH)
     return "BRANCH";
   else
     return "LEAF";
@@ -1248,15 +1248,18 @@ static char* gtkTreeGetStateAttrib(Ihandle* ih, int id)
 {
   GtkTreeModel* model = gtk_tree_view_get_model(GTK_TREE_VIEW(ih->handle));
   GtkTreeIter iterItem;
+  int kind;
 
   if (!gtkTreeFindNode(ih, id, &iterItem))
     return NULL;
 
-  if (gtk_tree_model_iter_has_child(model, &iterItem))
+  gtk_tree_model_get(model, &iterItem, IUPGTK_NODE_KIND, &kind, -1);
+
+  if (kind == ITREE_BRANCH)
   {
     GtkTreePath* path = gtk_tree_model_get_path(model, &iterItem);
     int expanded = gtk_tree_view_row_expanded(GTK_TREE_VIEW(ih->handle), path);
-   gtk_tree_path_free(path);
+    gtk_tree_path_free(path);
 
     if (expanded)
       return "EXPANDED";
@@ -2358,7 +2361,8 @@ static void gtkTreeRowActived(GtkTreeView* tree_view, GtkTreePath *path, GtkTree
   GtkTreeModel* model;
   int kind;  /* used for nodes defined as branches, but do not have children */
   IFni cbExecuteLeaf  = (IFni)IupGetCallback(ih, "EXECUTELEAF_CB");
-  if (!cbExecuteLeaf)
+  IFni cbExecuteBranch = (IFni)IupGetCallback(ih, "EXECUTEBRANCH_CB");
+  if (!cbExecuteLeaf && !cbExecuteBranch)
     return;
 
   model = gtk_tree_view_get_model(GTK_TREE_VIEW(ih->handle));
@@ -2366,11 +2370,13 @@ static void gtkTreeRowActived(GtkTreeView* tree_view, GtkTreePath *path, GtkTree
   gtk_tree_model_get(model, &iterItem, IUPGTK_NODE_KIND, &kind, -1);
 
   /* just to leaf nodes */
-  if(gtk_tree_model_iter_has_child(model, &iterItem) == 0 && kind == ITREE_LEAF)
-    cbExecuteLeaf(ih, gtkTreeFindNodeId(ih, &iterItem));
+  if (kind == ITREE_LEAF)
+  {
+    if (cbExecuteLeaf)
+      cbExecuteLeaf(ih, gtkTreeFindNodeId(ih, &iterItem));
+  }
   else
   {
-    IFni cbExecuteBranch = (IFni)IupGetCallback(ih, "EXECUTEBRANCH_CB");
     if (cbExecuteBranch)
       cbExecuteBranch(ih, gtkTreeFindNodeId(ih, &iterItem));
   }
@@ -2457,7 +2463,7 @@ static int gtkTreeIsBranchButton(GtkTreeModel* model, GtkTreeIter *iter, int cel
   int kind;
   gtk_tree_model_get(model, iter, IUPGTK_NODE_KIND, &kind, -1);
 
-  if (kind==0) /* if branch must check if just expanded/contracted */
+  if (kind == ITREE_BRANCH) /* if branch must check if just expanded/contracted */
   {
     int depth = gtk_tree_store_iter_depth(GTK_TREE_STORE(model), iter);
     if (cell_x < (depth+1)*16)
