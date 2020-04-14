@@ -97,6 +97,7 @@ IUP_SDK_API char* iupBaseGetSizeAttrib(Ihandle* ih)
 
   if (width == 0 && height == 0)
     return NULL;
+
   return iupStrReturnIntInt(iupRASTER2WIDTH(width, charwidth), iupRASTER2HEIGHT(height, charheight), 'x');
 }
 
@@ -148,6 +149,17 @@ IUP_SDK_API char* iupBaseCanvasGetClientSizeAttrib(Ihandle* ih)
     width -= 2;
     height -= 2;
   }
+
+  if (width < 0) width = 0;
+  if (height < 0) height = 0;
+
+  return iupStrReturnIntInt(width, height, 'x');
+}
+
+IUP_SDK_API char* iupBaseGetClientSizeAttrib(Ihandle* ih)
+{
+  int width = ih->currentwidth;
+  int height = ih->currentheight;
 
   if (width < 0) width = 0;
   if (height < 0) height = 0;
