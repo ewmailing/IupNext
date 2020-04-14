@@ -74,14 +74,14 @@ static int iFlatSeparatorRedraw_CB(Ihandle* ih)
 
       if (ih->data->orientation == ISEPARATOR_VERT)
       {
-        x = ih->data->barsize / 2 - 1;
+        x = w / 2 - 1;
         y = 2;
         count = (h - 2) / ih->data->barsize;
       }
       else
       {
         x = 2;
-        y = ih->data->barsize / 2 - 1;
+        y = h / 2 - 1;
         count = (w - 2) / ih->data->barsize;
       }
 
@@ -100,14 +100,14 @@ static int iFlatSeparatorRedraw_CB(Ihandle* ih)
     {
       if (ih->data->orientation == ISEPARATOR_VERT)
       {
-        x = ih->data->barsize / 2;
+        x = w / 2;
 
         iupdrvDrawLine(dc, x - 1, 0, x - 1, h - 1, color, IUP_DRAW_STROKE, 1);
         iupdrvDrawLine(dc, x + 1, 0, x + 1, h - 1, color, IUP_DRAW_STROKE, 1);
       }
       else
       {
-        y = ih->data->barsize / 2;
+        y = h / 2;
 
         iupdrvDrawLine(dc, 0, y - 1, w - 1, y - 1, color, IUP_DRAW_STROKE, 1);
         iupdrvDrawLine(dc, 0, y + 1, w - 1, y + 1, color, IUP_DRAW_STROKE, 1);
@@ -123,14 +123,14 @@ static int iFlatSeparatorRedraw_CB(Ihandle* ih)
 
       if (ih->data->orientation == ISEPARATOR_VERT)
       {
-        x = ih->data->barsize / 2;
+        x = w / 2;
 
         iupdrvDrawLine(dc, x, 0, x, h - 1, color, IUP_DRAW_STROKE, 1);
         iupdrvDrawLine(dc, x + 1, 0, x + 1, h - 1, sunken_color, IUP_DRAW_STROKE, 1);
       }
       else
       {
-        y = ih->data->barsize / 2;
+        y = h / 2;
 
         iupdrvDrawLine(dc, 0, y, w - 1, y, color, IUP_DRAW_STROKE, 1);
         iupdrvDrawLine(dc, 0, y + 1, w - 1, y + 1, sunken_color, IUP_DRAW_STROKE, 1);
@@ -140,13 +140,13 @@ static int iFlatSeparatorRedraw_CB(Ihandle* ih)
     {
       if (ih->data->orientation == ISEPARATOR_VERT)
       {
-        x = ih->data->barsize / 2;
+        x = w / 2;
 
         iupdrvDrawLine(dc, x, 0, x, h - 1, color, IUP_DRAW_STROKE, 1);
       }
       else
       {
-        y = ih->data->barsize / 2;
+        y = h / 2;
 
         iupdrvDrawLine(dc, 0, y, w - 1, y, color, IUP_DRAW_STROKE, 1);
       }
