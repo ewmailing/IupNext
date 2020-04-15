@@ -5131,6 +5131,7 @@ static int iScintillaDlgCreateMethod(Ihandle* ih, void** params)
   IupSetAttribute(bt_wordwrap, "TIPFONT", "SYSTEM");
   IupSetAttribute(bt_wordwrap, "CANFOCUS", "No");
   IupSetAttribute(bt_wordwrap, "NAME", "BUTTON_WORDWRAP");
+  IupSetInt(bt_wordwrap, "FONTSIZE", IupGetInt(bt_wordwrap, "FONTSIZE") + 2);
 
   item_showwhite = IupItem("Show White Spaces", NULL);
   IupSetCallback(item_showwhite, "ACTION", (Icallback)item_showwhite_action_cb);
@@ -5138,7 +5139,6 @@ static int iScintillaDlgCreateMethod(Ihandle* ih, void** params)
   IupSetAttribute(item_showwhite, "NAME", "ITEM_SHOWWHITE");
   bt_showwhite = IupFlatToggle("a\xB7\x62");
   IupSetAttribute(bt_showwhite, "CHECKSIZE", "0");
-  IupSetInt(bt_showwhite, "FONTSIZE", IupGetInt(bt_showwhite, "FONTSIZE") - 2);
   IupSetAttribute(bt_showwhite, "PADDING", "2x3");
   IupSetCallback(bt_showwhite, "FLAT_ACTION", (Icallback)item_showwhite_action_cb);
   IupSetAttribute(bt_showwhite, "TIP", "Show White Spaces");
@@ -5159,6 +5159,7 @@ static int iScintillaDlgCreateMethod(Ihandle* ih, void** params)
   IupSetAttribute(bt_showeol, "TIPFONT", "SYSTEM");
   IupSetAttribute(bt_showeol, "CANFOCUS", "No");
   IupSetAttribute(bt_showeol, "NAME", "BUTTON_SHOWEOL");
+  IupSetInt(bt_showeol, "FONTSIZE", IupGetInt(bt_showeol, "FONTSIZE") + 2);
 
   item_panel = IupItem("Panel", NULL);
   IupSetAttribute(item_panel, "NAME", "ITM_PANEL");
