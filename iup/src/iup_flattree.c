@@ -2740,7 +2740,7 @@ static int iFlatTreeSetIndentationAttrib(Ihandle* ih, const char* value)
 {
   if (!value)
   {
-    int high_dpi = iupRound(iupdrvGetScreenDpi()) > 120;
+    int high_dpi = iupIsHighDpi();
     ih->data->indentation = high_dpi ? 24 : 16;
   }
   else
@@ -2791,7 +2791,7 @@ static int iFlatTreeSetToggleSizeAttrib(Ihandle* ih, const char* value)
 {
   if (!value)
   {
-    int high_dpi = iupRound(iupdrvGetScreenDpi()) > 120;
+    int high_dpi = iupIsHighDpi();
     ih->data->toggle_size = high_dpi ? 24 : 16;
   }
   else
@@ -3939,7 +3939,7 @@ static void iFlatTreeDestroyMethod(Ihandle* ih)
 static int iFlatTreeCreateMethod(Ihandle* ih, void** params)
 {
   Ihandle* text;
-  int high_dpi = iupRound(iupdrvGetScreenDpi()) > 120;
+  int high_dpi = iupIsHighDpi();
   (void)params;
 
   if (IupGetInt(NULL, "TREEIMAGE24"))

@@ -632,8 +632,7 @@ static char* iDropButtonGetBorderWidthAttrib(Ihandle *ih)
 
 static int iDropButtonGetDefaultArrowSize(void)
 {
-  int dpi = iupRound(iupdrvGetScreenDpi());
-  if (dpi > 120)
+  if (iupIsHighDpi())
     return 24;
   else
     return 16;

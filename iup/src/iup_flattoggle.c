@@ -549,8 +549,7 @@ static int iFlatToggleSetPaddingAttrib(Ihandle* ih, const char* value)
 
 static int iFlatToggleGetDefaultCheckSize(void)
 {
-  int dpi = iupRound(iupdrvGetScreenDpi());
-  if (dpi > 120)
+  if (iupIsHighDpi())
     return 24;
   else
     return 16;
