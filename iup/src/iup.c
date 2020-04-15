@@ -146,6 +146,7 @@ IUP_API void IupVersionShow(void)
   if (value) IupSetStrf(info, "APPEND", "   GTK Version: %s", value);
 
   IupSetStrf(info, "APPEND", "   Screen Size: %s", IupGetGlobal("SCREENSIZE"));
+  IupSetStrf(info, "APPEND", "   Screen DPI: %d", IupGetInt(NULL, "SCREENDPI"));
   IupSetStrf(info, "APPEND", "   Default Font: %s", IupGetGlobal("DEFAULTFONT"));
 
   IupSetAttribute(info, "APPEND", "");
