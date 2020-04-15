@@ -64,6 +64,8 @@ IUP_SDK_API void iupImageStockLoadAll(void);  /* Used only in IupView and IupVis
 int iupImageStockGetSize(void);
 void iupImageStockGet(const char* name, Ihandle* *ih, const char* *native_name);
 
+int iupIsHighDpi(void);
+
 
 #ifdef __cplusplus
 }

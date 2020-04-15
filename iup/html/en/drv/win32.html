@@ -49,13 +49,13 @@ the application DPI aware.</p>
 these resolution changes the application should avoid using sizes in pixels 
 (like: RASTERSIZE, GAP, MARGIN) use character sizes instead (like: SIZE, CGAP, 
 CMARGIN). </p>
-<p>But there is a problem with the images. Usually applications use 16x16 images 
+<p>But there is still a problem with the images. Usually applications use 16x16 images 
 for toolbar buttons, in a 4k resolution this looks very small, so ideally the 
 application should have at least 3 sets of buttons: 16x16, 24x24 and 32x32. We recommend using 24x24 images for toolbar buttons when the SCREENDPI 
 (global attribute) is greater than 120 DPI (&gt; 125%), and 32x32 when greater than 
 144 DPI (&gt; 150%). If that is not possible the global attribute IMAGEAUTOSCALE<b>
 </b>and the <b>IupImage </b>attribute AUTOSCALE can be used to automatically 
-scale images with BPP &gt; 8. Stock image size is already automatically selected 
+scale images. Stock image size is already automatically selected 
 and resized if necessary.</p>
 <h4>UTF-8</h4>
 <p>When IUP is built with UNICODE enabled, it is possible to specify strings in 

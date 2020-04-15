@@ -53,10 +53,12 @@ when associated with a control.</p>
 	images and they will be not affected by the current GTK theme. </p>
 <p>In Windows and GTK, to force a specific height for the images use the 
 IMAGESTOCKSIZE global attribute (since 3.16), it can have the following values 
-16, 24, 32 and 48. In GTK if the system does not provides the image in that size 
+24, 32 and 48. In GTK if the system does not provides the image in that size 
 it will be automatically resized from an existing size. In Windows if the image 
 is not 32x32 then it will be automatically resized. The default size depends on 
-the screen resolution: 96 DPI = 16, 144 DPI = 24, 192 DPI = 32, 288 DPI = 48.</p>
+the screen resolution: 144 DPI or less = 24, 192 DPI = 32, 288 DPI = 48. The 
+minimum resulted size when automatically resized is 24 pixels height (since 
+3.29).</p>
   <table align="center">
     <tr>
       <th bgcolor="#C0C0C0">Name</th>

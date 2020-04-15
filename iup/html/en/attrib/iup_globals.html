@@ -110,7 +110,8 @@ increased and decreased. Images are not changed.</span></font></p>
 <h3><b><a name="IMAGEAUTOSCALE">IMAGEAUTOSCALE</a> <span class="style2">(since 3.16)</span></b></h3>
 <p>If defined automatically scale all images, except stock images, by a given real factor. 
 If &quot;DPI&quot; value is used then the factor will be automatically calculated from the 
-ratio between screen resolution and IMAGESDPI.&nbsp; </p>
+ratio between screen resolution and IMAGESDPI.&nbsp;The minimum resulted size 
+when automatically resized is 24 pixels height (since 3.29).</p>
 <h3><a name="IMAGESDPI">IMAGESDPI</a><span class="style2"> (since 3.16)</span></h3>
 <p>Defines the resolution of the images of the application. Common values are 
 96, 144, 192, and 288 DPI. Default: 96. Used when IMAGEAUTOSCALE=DPI.</p>
@@ -120,8 +121,9 @@ ratio between screen resolution and IMAGESDPI.&nbsp; </p>
 <p>Force a size for stock images by controlling the image height. If that image 
 size is not available the stock image is resized to match the given size. By 
 default the size will be automatically calculated from the screen resolution: if 
-res &lt;= 96 DPI then size = 16, if 144 DPI size = 24, if 192 DPI size = 32, else 
-size = 48.&nbsp; </p>
+res &lt;= 144 DPI size = 24, if 192 DPI size = 32, else 
+size = 48.&nbsp;The minimum resulted size when automatically resized is 24 
+pixels height (since 3.29).</p>
 <h3>PROCESSWINDOWSGHOSTING [Windows Only] <span class="style2">(since 3.28)</span></h3>
 <p>If set to NO will disable the <span>window ghosting feature for the duration 
 of the process, can not be enabled again. When disabled the application dialogs 
