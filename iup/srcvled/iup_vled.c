@@ -2182,7 +2182,7 @@ static void vLedExport(Ihandle* multitext, const char* src_filename, const char*
 
   qsort(named_elem, count, sizeof(Ihandle*), compare_named_handles);
 
-  iupLayoutExportNamedElemList(file, named_elem, count, export_format, 1);
+  iupLayoutExportNamedElemList(file, named_elem, count, export_format, 1);  /* export all the attributes that were loaded form the LED */
 
   if (export_format == IUP_LAYOUT_EXPORT_LUA)
     fprintf(file, "end\n");
