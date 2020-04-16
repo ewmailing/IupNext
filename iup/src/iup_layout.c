@@ -27,10 +27,6 @@ IUP_API void IupRefreshChildren(Ihandle* ih)
   if (!iupObjectCheck(ih))
     return;
 
-  /* must be mapped */
-  if (!ih->handle)
-    return;
-
   /* must have children */
   if (!ih->firstchild)
     return;
