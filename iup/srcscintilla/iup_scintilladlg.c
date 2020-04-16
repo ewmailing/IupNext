@@ -789,12 +789,11 @@ static void removeFileFromProject(Ihandle *projectConfig, Ihandle *projectTree, 
   {
     m_filename = IupGetAttribute(multitext, "FILENAME");
 
-    if (!iupStrEqual(m_filename, filename))
-      continue;
-
-    iScintillaDlgCloseMultitext(multitext, 1);
-
-    break;
+    if (iupStrEqual(m_filename, filename))
+    {
+      iScintillaDlgCloseMultitext(multitext, 1);
+      break;
+    }
   }
 
   if (IupGetChildCount(tabs) == 0)
@@ -1356,9 +1355,11 @@ static void saveas_file(Ihandle* multitext, const char* filename)
   Ihandle* ih = IupGetDialog(multitext);
   if (writeFile(filename, str, count))
   {
-    Ihandle* config = iScintillaDlgGetConfig(multitext);
-    char* old_filename = iupStrDup(IupGetAttribute(multitext, "FILENAME"));
     IFnn save_cb;
+    Ihandle* config = iScintillaDlgGetConfig(multitext);
+    char* old_filename = IupGetAttribute(multitext, "FILENAME");
+    if (!old_filename) old_filename = IupGetAttribute(multitext, "NEW_FILENAME");
+    old_filename = iupStrDup(old_filename);
 
     IupSetAttribute(config, "RECENTNAME", "ScintillaRecent");
     IupConfigRecentUpdate(config, filename);
@@ -1869,6 +1870,7 @@ static int item_saveas_action_cb(Ihandle* ih_item)
   Ihandle *filedlg = IupFileDlg();
   char* extra_filters = IupGetAttribute(ih, "EXTRAFILTERS");
   char* old_filename = IupGetAttribute(multitext, "FILENAME");
+  if (!old_filename) old_filename = IupGetAttribute(multitext, "NEW_FILENAME");
 
   dir = IupConfigGetVariableStr(config, IupGetAttribute(ih, "SUBTITLE"), "LastDirectory");
 
@@ -2036,10 +2038,11 @@ static int item_rename_action_cb(Ihandle* ih_item)
   Ihandle* multitext = iScintillaDlgGetCurrentMultitext(ih_item);
   Ihandle* ih = IupGetDialog(ih_item);
 
-  char* old_filename = iupStrDup(IupGetAttribute(multitext, "FILENAME"));
+  char* old_filename = IupGetAttribute(multitext, "FILENAME");
+  if (!old_filename) old_filename = IupGetAttribute(multitext, "NEW_FILENAME");
   char new_name[512], new_filename[10240];
 
-  if (!old_filename) old_filename = iupStrDup("");
+  old_filename = iupStrDup(old_filename);
   strcpy(new_name, strFileTitle(old_filename));
 
   if (!IupGetParam("Rename", setparent_param_cb, ih, "Name: %s\n", new_name, NULL))
@@ -5194,7 +5197,7 @@ static int iScintillaDlgCreateMethod(Ihandle* ih, void** params)
   item_tab = IupItem("Tab...", NULL);
   IupSetCallback(item_tab, "ACTION", (Icallback)item_tab_action_cb);
 
-  item_window1 = IupItem("1 Untitled", NULL);
+  item_window1 = IupItem("1 Untitled #1", NULL);
   IupSetAttribute(item_window1, "NAME", "ITEM_WINDOW1");
   IupSetCallback(item_window1, "ACTION", (Icallback)item_windowN_action_cb);
   IupSetAttribute(item_window1, "VALUE", "ON");
