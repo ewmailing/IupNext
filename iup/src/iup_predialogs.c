@@ -396,7 +396,8 @@ IUP_API int IupGetText(const char* title, char* text, int maxsize)
   IupSetAttribute(dlg,"MINBOX","NO");
   IupSetAttribute(dlg,"MAXBOX","NO");
   IupSetAttributeHandle(dlg,"DEFAULTENTER", ok);
-  IupSetAttributeHandle(dlg,"DEFAULTESC", cancel);
+  if (cancel) IupSetAttributeHandle(dlg,"DEFAULTESC", cancel);
+  else IupSetAttributeHandle(dlg, "DEFAULTESC", ok);
   IupSetAttribute(dlg,"PARENTDIALOG", IupGetGlobal("PARENTDIALOG"));
   IupSetAttribute(dlg,"ICON", IupGetGlobal("ICON"));
 
