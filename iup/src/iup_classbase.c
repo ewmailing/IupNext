@@ -362,7 +362,13 @@ static int iBaseSetNormalizerGroupAttrib(Ihandle* ih, const char* value)
   }
 
   IupSetAttribute(ih_normalizer, "ADDCONTROL_HANDLE", (char*)ih);
-  return 1;
+  iupAttribSetStr(ih, "_IUP_NORMALIZERGROUP", value);
+  return 0;
+}
+
+static  char* iBaseGetNormalizerGroupAttrib(Ihandle* ih)
+{
+  return iupAttribGet(ih, "_IUP_NORMALIZERGROUP");
 }
 
 static Ihandle* iBaseFindNamedChild(Ihandle* ih, const char* name)
@@ -642,7 +648,7 @@ IUP_SDK_API void iupBaseRegisterCommonAttrib(Iclass* ic)
   iupClassRegisterAttribute(ic, "NAME", NULL, iupBaseSetNameAttrib, NULL, NULL, IUPAF_NO_DEFAULTVALUE|IUPAF_NOT_MAPPED|IUPAF_NO_INHERIT);
   iupClassRegisterAttribute(ic, "FLOATING", iBaseGetFloatingAttrib, iBaseSetFloatingAttrib, NULL, NULL, IUPAF_NOT_MAPPED|IUPAF_NO_INHERIT);
   iupClassRegisterAttribute(ic, "EXPAND", iupBaseGetExpandAttrib, iupBaseSetExpandAttrib, NULL, NULL, IUPAF_NOT_MAPPED|IUPAF_NO_INHERIT);
-  iupClassRegisterAttribute(ic, "NORMALIZERGROUP", NULL, iBaseSetNormalizerGroupAttrib, NULL, NULL, IUPAF_IHANDLENAME|IUPAF_NOT_MAPPED|IUPAF_NO_INHERIT);
+  iupClassRegisterAttribute(ic, "NORMALIZERGROUP", iBaseGetNormalizerGroupAttrib, iBaseSetNormalizerGroupAttrib, NULL, NULL, IUPAF_IHANDLENAME|IUPAF_NOT_MAPPED|IUPAF_NO_INHERIT);
   iupClassRegisterAttribute(ic, "EXPANDWEIGHT", NULL, NULL, NULL, NULL, IUPAF_NOT_MAPPED|IUPAF_NO_INHERIT);
   iupClassRegisterAttribute(ic, "HANDLENAME", NULL, NULL, NULL, NULL, IUPAF_NO_SAVE | IUPAF_NOT_MAPPED | IUPAF_NO_INHERIT);
   iupClassRegisterAttribute(ic, "THEME", NULL, iBaseSetThemeAttrib, NULL, NULL, IUPAF_IHANDLENAME | IUPAF_NOT_MAPPED);
