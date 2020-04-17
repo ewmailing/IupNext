@@ -448,6 +448,9 @@ static int winToggleSetTitleAttrib(Ihandle* ih, const char* value)
 
 static int winToggleSetPaddingAttrib(Ihandle* ih, const char* value)
 {
+  if (iupStrEqual(value, "DEFAULTBUTTONPADDING"))
+    value = IupGetGlobal("DEFAULTBUTTONPADDING");
+
   iupStrToIntInt(value, &ih->data->horiz_padding, &ih->data->vert_padding, 'x');
 
   if (ih->handle && iupwin_comctl32ver6 && ih->data->type==IUP_TOGGLE_IMAGE)

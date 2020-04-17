@@ -560,6 +560,9 @@ static char* iDropButtonGetAlignmentAttrib(Ihandle *ih)
 
 static int iDropButtonSetPaddingAttrib(Ihandle* ih, const char* value)
 {
+  if (iupStrEqual(value, "DEFAULTBUTTONPADDING"))
+    value = IupGetGlobal("DEFAULTBUTTONPADDING");
+
   iupStrToIntInt(value, &ih->data->horiz_padding, &ih->data->vert_padding, 'x');
   if (ih->handle)
     iupdrvRedrawNow(ih);

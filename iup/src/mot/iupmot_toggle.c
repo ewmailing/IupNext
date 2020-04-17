@@ -290,6 +290,9 @@ static char* motToggleGetValueAttrib(Ihandle* ih)
 
 static int motToggleSetPaddingAttrib(Ihandle* ih, const char* value)
 {
+  if (iupStrEqual(value, "DEFAULTBUTTONPADDING"))
+    value = IupGetGlobal("DEFAULTBUTTONPADDING");
+
   iupStrToIntInt(value, &ih->data->horiz_padding, &ih->data->vert_padding, 'x');
   if (ih->handle && ih->data->type == IUP_TOGGLE_IMAGE)
   {
