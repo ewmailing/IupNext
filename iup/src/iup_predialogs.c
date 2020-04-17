@@ -349,8 +349,11 @@ IUP_API int IupGetFile(char* filename)
 
 IUP_API int IupGetText(const char* title, char* text, int maxsize)
 {
-  Ihandle *ok, *cancel, *multi_text, *button_box, *dlg_box, *dlg;
+  Ihandle *ok, *cancel = NULL, *multi_text, *button_box, *dlg_box, *dlg;
   int bt;
+
+  if (maxsize == 0)
+    maxsize = (int)strlen(text);
 
   multi_text = IupMultiLine(NULL);
   IupSetAttribute(multi_text,"EXPAND", "YES");
@@ -358,14 +361,18 @@ IUP_API int IupGetText(const char* title, char* text, int maxsize)
   IupSetAttribute(multi_text,"FONT", "Courier, 12");
   IupSetAttribute(multi_text, "VISIBLELINES", "10");
   IupSetAttribute(multi_text, "VISIBLECOLUMNS", "50");
+  if (maxsize <= 0) IupSetAttribute(multi_text, "READONLY", "YES");
 
   ok = IupButton("_@IUP_OK", NULL);
   IupSetStrAttribute(ok, "PADDING", IupGetGlobal("DEFAULTBUTTONPADDING"));
   IupSetCallback(ok, "ACTION", (Icallback)CB_button_OK);
 
-  cancel  = IupButton("_@IUP_CANCEL", NULL);
-  IupSetStrAttribute(cancel, "PADDING", IupGetGlobal("DEFAULTBUTTONPADDING"));
-  IupSetCallback(cancel, "ACTION", (Icallback)CB_button_CANCEL);
+  if (maxsize > 0)
+  {
+    cancel = IupButton("_@IUP_CANCEL", NULL);
+    IupSetStrAttribute(cancel, "PADDING", IupGetGlobal("DEFAULTBUTTONPADDING"));
+    IupSetCallback(cancel, "ACTION", (Icallback)CB_button_CANCEL);
+  }
 
   button_box = IupHbox(
     IupFill(),
@@ -401,7 +408,7 @@ IUP_API int IupGetText(const char* title, char* text, int maxsize)
   IupPopup(dlg, IUP_CENTERPARENT, IUP_CENTERPARENT);
 
   bt = IupGetInt(dlg, "STATUS");
-  if (bt==1)
+  if (bt==1 && maxsize > 0)
     iupStrCopyN(text, maxsize, IupGetAttribute(multi_text, "VALUE"));
   else
     bt = 0; /* return 0 instead of -1 */
