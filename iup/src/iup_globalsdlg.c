@@ -15,6 +15,7 @@
 #include "iup_func.h"
 #include "iup_str.h"
 #include "iup_attrib.h"
+#include "iup_names.h"
 
 
 typedef struct _iRegisteredGlobal {
@@ -476,6 +477,42 @@ static int iGlobalsNameProperties_CB(Ihandle* bt)
   return IUP_DEFAULT;
 }
 
+static int iGlobalsNameFind_CB(Ihandle* bt)
+{
+  Ihandle* list = (Ihandle*)iupAttribGetInherit(bt, "_IUP_NAMESLIST");
+  char* name = IupGetAttribute(list, "VALUESTRING");
+  if (name)
+  {
+    Ihandle* elem = IupGetHandle(name);
+    int count = iupNamesFindAll(elem, NULL, 0);
+    if (count > 1)
+    {
+      int i, total_len = 0, max_len = count * 50;
+      char* str = malloc(max_len);
+      char** names = malloc(count * sizeof(char*));
+      iupNamesFindAll(elem, names, count);
+      str[0] = 0;
+      for (i = 0; i < count; i++)
+      {
+        total_len += (int)strlen(names[i]);
+        if (total_len > max_len)
+        {
+          max_len += 10 * (total_len - max_len);
+          str = realloc(str, max_len);
+        }
+        strcat(str, names[i]);
+        strcat(str, "\n");
+      }
+      IupGetText("Other Names", str, -1);  /* read-only */
+      free(names);
+      free(str);
+    }
+    else
+      IupMessage("Other Names", "No other names.");
+  }
+  return IUP_DEFAULT;
+}
+
 static int iGlobalsNamesShowAuto_CB(Ihandle* tg, int state)
 {
   (void)state;
@@ -512,7 +549,7 @@ static int iGlobalsNameCheckHandles_CB(Ihandle* bt)
   if (log_size != 0)
   {
     log[log_size] = 0;
-    IupGetText("Invalid Handles", log, log_size);
+    IupGetText("Invalid Handles", log, -1);  /* read-only */
   }
   else
     IupMessage("Invalid Handles", "All handles are valid!");
@@ -698,11 +735,12 @@ static Ihandle* iGlobalsCreateDialog(void)
   box14 = IupVbox(
     IupLabel("Value:"),
     value4, 
-    IupSetCallbacks(IupSetAttributes(IupButton("Reset Value", NULL), "PADDING=DEFAULTBUTTONPADDING"), "ACTION", iGlobalsNameReset_CB, NULL),
-    IupSetCallbacks(IupSetAttributes(IupButton("Properties...", NULL), "PADDING=DEFAULTBUTTONPADDING"), "ACTION", iGlobalsNameProperties_CB, NULL),
-    IupSetAttributes(IupFlatSeparator(), "ORIENTATION=HORIZONTAL"), 
-    IupSetCallbacks(IupSetAttributes(IupToggle("Show Auto Names", NULL), "NAME=SHOWAUTO, TIP=\"Show Automatic Generated Names (_IUP_NAME*)\""), "ACTION", (Icallback)iGlobalsNamesShowAuto_CB, NULL),
-    IupSetCallbacks(IupSetAttributes(IupButton("Check Handles...", NULL), "PADDING=DEFAULTBUTTONPADDING"), "ACTION", iGlobalsNameCheckHandles_CB, NULL),
+    IupSetCallbacks(IupSetAttributes(IupButton("Reset Value", NULL), "PADDING=DEFAULTBUTTONPADDING, NORMALIZERGROUP=IupGlobalNamesNorm"), "ACTION", iGlobalsNameReset_CB, NULL),
+    IupSetCallbacks(IupSetAttributes(IupButton("Properties...", NULL), "PADDING=DEFAULTBUTTONPADDING, NORMALIZERGROUP=IupGlobalNamesNorm"), "ACTION", iGlobalsNameProperties_CB, NULL),
+    IupSetCallbacks(IupSetAttributes(IupButton("Other Names...", NULL), "PADDING=DEFAULTBUTTONPADDING, NORMALIZERGROUP=IupGlobalNamesNorm"), "ACTION", iGlobalsNameFind_CB, NULL),
+    IupSetAttributes(IupFlatSeparator(), "ORIENTATION=HORIZONTAL"),
+    IupSetCallbacks(IupSetAttributes(IupToggle("Show Auto Names", NULL), "NAME=SHOWAUTO, TIP=\"Show Automatic Generated Names (_IUP_NAME*)\", NORMALIZERGROUP=IupGlobalNamesNorm"), "ACTION", (Icallback)iGlobalsNamesShowAuto_CB, NULL),
+    IupSetCallbacks(IupSetAttributes(IupButton("Check Handles...", NULL), "PADDING=DEFAULTBUTTONPADDING, NORMALIZERGROUP=IupGlobalNamesNorm"), "ACTION", iGlobalsNameCheckHandles_CB, NULL),
     NULL);
   IupSetAttribute(box14, "MARGIN", "0x0");
   IupSetAttribute(box14, "GAP", "3");
@@ -752,6 +790,7 @@ static Ihandle* iGlobalsCreateDialog(void)
 
   IupSetAttribute(dlg_box, "MARGIN", "10x10");
   IupSetAttribute(dlg_box, "GAP", "10");
+  IupAppend(box1, IupGetHandle("IupGlobalNamesNorm"));  /* to automatically normalize when the dialog is resized. Must be placed before the normalized controls. */
 
   dlg = IupDialog(dlg_box);
   IupSetAttribute(dlg, "TITLE", "Globals");

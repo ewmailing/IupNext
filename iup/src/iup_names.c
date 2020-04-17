@@ -123,6 +123,28 @@ IUP_API Ihandle *IupGetHandle(const char *name)
   return (Ihandle*)iupTableGet (inames_strtable, name);
 }
 
+int iupNamesFindAll(Ihandle *ih, char** names, int n)
+{
+  int i = 0;
+  char* name = iupTableFirst(inames_strtable);
+  while (name)
+  {
+    if ((Ihandle*)iupTableGetCurr(inames_strtable) == ih)
+    {
+      if (names)
+        names[i] = name;
+
+      i++;
+      if (i == n && n != 0 && n != -1)
+        break;
+    }
+
+    name = iupTableNext(inames_strtable);
+  }
+
+  return i;
+}
+
 static char* iNameFindHandle(Ihandle *ih)
 {
   /* search for a name */
