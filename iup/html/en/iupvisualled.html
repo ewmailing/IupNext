@@ -2,7 +2,7 @@
 <html>
 <head>
 <meta http-equiv="Content-Language" content="en-us">
-<title>IupLuaScripter</title>
+<title>IupVisualLED</title>
 <meta http-equiv="Content-Type" content="text/html; charset=windows-1252">
 <link rel="stylesheet" type="text/css" href="../style.css">
 <style type="text/css">
@@ -40,13 +40,14 @@ displayed at the tree bellow. The elements in the tree are listed in the same
 order they are declared in the code. Some elements in the hierarchy tree are 
 links to the element itself, a double click will select the actual element. A 
 double click in the element will select it in the code. The automatic load can 
-be disabled and the load or unload can be done manually in the LED menu.</p>
-<p>Internally
-<span style="color: rgb(0, 0, 0); font-family: tahoma, verdana, arial, helvetica, geneva, sans-serif; font-size: medium; font-style: normal; font-variant-ligatures: normal; font-variant-caps: normal; font-weight: 400; letter-spacing: normal; orphans: 2; text-align: start; text-indent: 0px; text-transform: none; white-space: normal; widows: 2; word-spacing: 0px; -webkit-text-stroke-width: 0px; background-color: rgb(255, 255, 255); text-decoration-style: initial; text-decoration-color: initial; display: inline !important; float: none;">
-the main dialog inherits from the<span>&nbsp;</span></span><a href="dlg/iupscintilladlg.html" style="font-family: tahoma, verdana, arial, helvetica, geneva, sans-serif; font-size: medium; font-style: normal; font-variant-ligatures: normal; font-variant-caps: normal; font-weight: 400; letter-spacing: normal; orphans: 2; text-align: start; text-indent: 0px; text-transform: none; white-space: normal; widows: 2; word-spacing: 0px; -webkit-text-stroke-width: 0px; background-color: rgb(255, 255, 255);">IupScintillaDlg</a><span style="color: rgb(0, 0, 0); font-family: tahoma, verdana, arial, helvetica, geneva, sans-serif; font-size: medium; font-style: normal; font-variant-ligatures: normal; font-variant-caps: normal; font-weight: 400; letter-spacing: normal; orphans: 2; text-align: start; text-indent: 0px; text-transform: none; white-space: normal; widows: 2; word-spacing: 0px; -webkit-text-stroke-width: 0px; background-color: rgb(255, 255, 255); text-decoration-style: initial; text-decoration-color: initial; display: inline !important; float: none;"><span>&nbsp;</span>dialog 
-and provides a very powerful multiple file text editor.</span></p>
+be disabled and the load or unload can be done manually in the LED menu. After 
+editing the elements can be updated using the Load option.</p>
 <p align="center">
 <img border="0" src="images/vled1.png"></p>
+
+<p>Internally
+the main dialog inherits from the<span>&nbsp;</span><a href="dlg/iupscintilladlg.html" style="font-family: tahoma, verdana, arial, helvetica, geneva, sans-serif; font-size: medium; font-style: normal; font-variant-ligatures: normal; font-variant-caps: normal; font-weight: 400; letter-spacing: normal; orphans: 2; text-align: start; text-indent: 0px; text-transform: none; white-space: normal; widows: 2; word-spacing: 0px; -webkit-text-stroke-width: 0px; background-color: rgb(255, 255, 255);">IupScintillaDlg</a><span style="color: rgb(0, 0, 0); font-family: tahoma, verdana, arial, helvetica, geneva, sans-serif; font-size: medium; font-style: normal; font-variant-ligatures: normal; font-variant-caps: normal; font-weight: 400; letter-spacing: normal; orphans: 2; text-align: start; text-indent: 0px; text-transform: none; white-space: normal; widows: 2; word-spacing: 0px; -webkit-text-stroke-width: 0px; background-color: rgb(255, 255, 255); text-decoration-style: initial; text-decoration-color: initial; display: inline !important; float: none;"><span>&nbsp;</span>dialog 
+and provides a very powerful multiple file text editor.</span></p>
 
 <h3>Openning a File</h3>
 <p>A file can be opened from the File/Open menu item, the Recent submenu, from 
@@ -61,6 +62,18 @@ elements are created and the tree of elements is filled. But even in this
 configuration after editing the text the changes are not automatically 
 processed. To do so, the LED/Load menu item must be called after finished 
 editing. </p>
+<h3>Projects</h3>
+<p>
+When a&nbsp;<strong style="color: rgb(0, 0, 0); font-family: tahoma, verdana, arial, helvetica, geneva, sans-serif; font-size: medium; font-style: normal; font-variant-ligatures: normal; font-variant-caps: normal; letter-spacing: normal; orphans: 2; text-align: start; text-indent: 0px; text-transform: none; white-space: normal; widows: 2; word-spacing: 0px; -webkit-text-stroke-width: 0px; background-color: rgb(255, 255, 255); text-decoration-style: initial; text-decoration-color: initial;">Project</strong>&nbsp;is 
+used all parameters are saved in the project file instead of 
+the global configuration file.<span>&nbsp;In a project you can add several files 
+for easy access.</span></p>
+
+<p>
+By default we use the .vled file extension so it can be associated in the file 
+manager with the Vled application.</p>
+<p class="auto-style3">
+<img height="354" src="images/vled6.png" width="583"></p>
 <h3>New Controls</h3>
 <p>In the context menu of the tree of elements, the layout of a dialog can be 
 displayed and its hierarchy edited. But whenever an element is added or removed 
@@ -69,25 +82,31 @@ all comments (except those at the beginning of the original file) are lost and t
 modifications. For now this is what we need to do to keep the LED in sync with 
 the new dialog layout. Maybe in the future we will be able to update selected 
 regions of the LED.</p>
-<p>The layout of a dialog allow also to move controls around or the insert at a 
-visually specified location. First select the container where you want to move 
-or insert the element. The you will notice a green line indicating the insertion 
+<p>The layout of a dialog allow also to move controls around or to insert new 
+controls. The operation can be done at the tree or at the layout. The menu 
+Elements (shown also with a right click) has several interesting options too, 
+including several forms to insert new elements. To insert at a 
+visually specified location first select the container where you want to move 
+or insert the element, then you will notice a green line indicating the insertion 
 point. </p>
-<p class="auto-style3"><img height="419" src="images/vled2.png" width="964"></p>
+<p class="auto-style3"><img src="images/vled2.png"></p>
 <h3>Tools</h3>
 <p>Similar to the Element Properties dialog, the user can display the list of 
 global attributes, handle names and functions using the Tools / Globals menu. 
 The attributes can be changed in the dialog.</p>
-<p class="auto-style3"><img height="702" src="images/vled3.png" width="633"></p>
+<p class="auto-style3"><img src="images/vled3.png"></p>
 <p>Also in the Tools menu the Class Info item displays a dialog that show all 
 IUP control classes, with their respective information, attributes and 
 callbacks. When an attribute or callback is selected, information about that 
 attribute or callback is displayed. </p>
 <p class="auto-style3"><img src="images/vled4.png"></p>
+<p>Two other available tools are dialogs to show the loaded images and the stock 
+images, where the visual appearance of the images can be inspected. </p>
+<p class="auto-style3"><img src="images/vled5.png"></p>
 <h3>Export</h3>
 <p>If you don't want to rewrite your own LED files, or if you want to work with 
 Lua or C files, then the working files can be exported to LED, C or Lua, in the 
-menu Tools. </p>
+menu Tools. But only the loaded elements will be exported.</p>
 
 </body>
 

@@ -1,0 +1,61 @@
+
+[ClassInfoDialog]
+Maximized=0
+X=1377
+Y=667
+
+[ElementPropertiesDialog]
+Height=930
+Maximized=0
+Width=802
+X=1452
+Y=848
+
+[FindElementDialog]
+FindText=
+Maximized=0
+Target=FIND_TYPE
+X=1699
+Y=889
+
+[GlobalsDialog]
+Height=991
+Maximized=0
+Width=1750
+X=1447
+Y=601
+
+[IupVisualLED]
+AutoCompletion=OFF
+AutoLoad=1
+CharacterColor=0 0 0
+CommentColor=0 128 0
+Folding=ON
+Height=1093
+KeywordColor=164 0 164
+LastDirectory=D:\tecgraf\iup\html\examples\LED\
+LastExportDirectory=d:\Downloads\teste\
+LastImageDirectory=D:\tecgraf\iup\html\en\imglib\BaseLib\Windows_32x32\
+Maximized=0
+NumberColor=164 0 164
+OperatorColor=0 0 0
+Split=595
+StringColor=164 0 0
+Width=736
+X=774
+Y=303
+
+[ProjectFiles]
+Count=3
+File1=D:\tecgraf\iup\html\examples\LED\gauge.led
+File2=D:\tecgraf\iup\html\examples\LED\image.led
+File3=D:\tecgraf\iup\html\examples\LED\sample.led
+
+[ProjectOpenFiles]
+Count=3
+File1=sample.led
+File2=image.led
+File3=gauge.led
+
+[SciBookmarks]
+Count=0
