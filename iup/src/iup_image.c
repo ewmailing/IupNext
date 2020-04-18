@@ -1054,6 +1054,23 @@ static char* iImageGetRasterSizeAttrib(Ihandle* ih)
   return iupStrReturnIntInt(width, height, 'x');
 }
 
+static int iImageSetIdValueAttrib(Ihandle *ih, int id, const char* value)
+{
+  (void)ih;
+  (void)value;
+  (void)id;
+  /*  iupAttribSetStrId(ih, "", id, value); */
+  return 1;
+}
+
+static char* iImageGetIdValueAttrib(Ihandle *ih, int id)
+{
+  return iupAttribGetId(ih, "", id);
+}
+
+/***************************************************************************************************/
+
+
 static int iImageCreate(Ihandle* ih, void** params, int bpp)
 {
   int width, height, channels, count;
@@ -1197,6 +1214,7 @@ static Iclass* iImageNewClassBase(const char* name, const char* cons)
   iupClassRegisterAttribute(ic, "HEIGHT", iImageGetHeightAttrib, NULL, NULL, NULL, IUPAF_READONLY | IUPAF_NOT_MAPPED | IUPAF_NO_INHERIT);
   iupClassRegisterAttribute(ic, "RASTERSIZE", iImageGetRasterSizeAttrib, NULL, NULL, NULL, IUPAF_READONLY | IUPAF_NOT_MAPPED | IUPAF_NO_INHERIT);
   iupClassRegisterAttribute(ic, "BGCOLOR", NULL, NULL, IUPAF_SAMEASSYSTEM, "DLGBGCOLOR", IUPAF_NO_INHERIT);
+  iupClassRegisterAttribute(ic, "HANDLENAME", NULL, NULL, NULL, NULL, IUPAF_NO_SAVE | IUPAF_NO_INHERIT);
 
   iupClassRegisterAttribute(ic, "BPP", NULL, NULL, NULL, NULL, IUPAF_READONLY | IUPAF_NO_INHERIT);
   iupClassRegisterAttribute(ic, "CHANNELS", NULL, NULL, NULL, NULL, IUPAF_READONLY | IUPAF_NO_INHERIT);
@@ -1219,6 +1237,10 @@ Iclass* iupImageNewClass(void)
   Iclass* ic = iImageNewClassBase("image", NULL);
   ic->New = iupImageNewClass;
   ic->Create = iImageCreateMethod;
+  ic->has_attrib_id = 1;
+
+  iupClassRegisterAttributeId(ic, "IDVALUE", iImageGetIdValueAttrib, iImageSetIdValueAttrib, IUPAF_NOT_MAPPED | IUPAF_NO_INHERIT);
+
   return ic;
 }
 
