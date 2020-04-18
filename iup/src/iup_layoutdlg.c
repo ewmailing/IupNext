@@ -1687,13 +1687,7 @@ static int iLayoutElemOptionToggle_cb(Ihandle* ih_toggle, int state)
 
 static void iLayoutError(iLayoutDialog* layoutdlg, const char* msg)
 {
-  IupStoreGlobal("_IUP_OLD_PARENTDIALOG", IupGetGlobal("PARENTDIALOG"));
-  IupSetAttributeHandle(NULL, "PARENTDIALOG", IupGetDialog(layoutdlg->tree));
-
-  IupMessage("Error", msg);
-
-  IupStoreGlobal("PARENTDIALOG", IupGetGlobal("_IUP_OLD_PARENTDIALOG"));
-  IupSetGlobal("_IUP_OLD_PARENTDIALOG", NULL);
+  IupMessageError(IupGetDialog(layoutdlg->tree), msg);
 }
 
 static int iLayoutContextMenuNewInsertBrother_CB(Ihandle* menu)
