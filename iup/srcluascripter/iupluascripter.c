@@ -178,7 +178,7 @@ int main(int argc, char **argv)
   main_dialog = IupLuaScripterDlg();
 
   IupSetAttribute(main_dialog, "SUBTITLE", "IupLuaScripter");
-  IupSetAttribute(main_dialog, "PROJECTEXT", "luasc");
+  IupSetAttribute(main_dialog, "PROJECT_EXT", "vlua");
   /* EXTRAFILTERS already set by IupLuaScripterDlg */
   IupSetAttributeHandle(main_dialog, "CONFIG", config);
 

@@ -1572,7 +1572,7 @@ static int dropfiles_cb(Ihandle* ih, const char* filename, int num, int x, int y
   static int last = 1;
   static int remove_empty = 0;
   char ext[10] = ".";
-  char* project_ext = IupGetAttribute(ih, "PROJECTEXT");
+  char* project_ext = IupGetAttribute(ih, "PROJECT_EXT");
   if (!project_ext) project_ext = "prj";
   strcat(ext, project_ext);
 
@@ -2729,7 +2729,7 @@ static int item_open_proj_action_cb(Ihandle* ih_item)
   Ihandle *filedlg;
   Ihandle* config;
   const char* dir = NULL;
-  char* project_ext = IupGetAttribute(ih, "PROJECTEXT");
+  char* project_ext = IupGetAttribute(ih, "PROJECT_EXT");
   if (!project_ext) project_ext = "prj";
 
   config = iScintillaDlgGetConfig(ih_item);
@@ -2777,7 +2777,7 @@ static void saveProject(Ihandle *ih_item, Ihandle *projectConfig, int show_dialo
     Ihandle *config = iScintillaDlgGetConfig(ih);
     const char *dir = IupConfigGetVariableStr(config, IupGetAttribute(ih, "SUBTITLE"), "LastDirectory");
     Ihandle *filedlg = IupFileDlg();
-    char* project_ext = IupGetAttribute(ih, "PROJECTEXT");
+    char* project_ext = IupGetAttribute(ih, "PROJECT_EXT");
     if (!project_ext) project_ext = "prj";
 
     IupSetAttribute(filedlg, "DIALOGTYPE", "SAVE");
@@ -2794,7 +2794,7 @@ static void saveProject(Ihandle *ih_item, Ihandle *projectConfig, int show_dialo
     {
       Ihandle* projectTree = IupGetDialogChild(ih, "PROJECTTREE");
 
-      filename = get_filename_value(filedlg, IupGetAttribute(ih, "DEFAULT_EXT"));
+      filename = get_filename_value(filedlg, project_ext);
 
       IupSetStrAttribute(projectConfig, "APP_FILENAME", filename);
       IupSetStrAttribute(projectTree, "TITLE0", strFileTitle(filename));
@@ -5451,7 +5451,7 @@ Iclass* iupScintillaDlgNewClass(void)
   iupClassRegisterAttribute(ic, "FORCECLOSEFILE", NULL, iScintillaDlgSetForceCloseFileAttrib, NULL, NULL, IUPAF_WRITEONLY | IUPAF_NO_INHERIT);
   iupClassRegisterAttribute(ic, "EXTRAFILTERS", NULL, NULL, NULL, NULL, IUPAF_NOT_MAPPED | IUPAF_NO_INHERIT);
   iupClassRegisterAttribute(ic, "DEFAULT_EXT", NULL, NULL, NULL, NULL, IUPAF_NOT_MAPPED | IUPAF_NO_INHERIT);
-  iupClassRegisterAttribute(ic, "PROJECTEXT", NULL, NULL, NULL, NULL, IUPAF_NOT_MAPPED | IUPAF_NO_INHERIT);
+  iupClassRegisterAttribute(ic, "PROJECT_EXT", NULL, NULL, NULL, NULL, IUPAF_NOT_MAPPED | IUPAF_NO_INHERIT);
   iupClassRegisterAttributeId(ic, "TOGGLEMARKER", NULL, iScintillaDlgSetToggleMarkerAttribId, IUPAF_WRITEONLY | IUPAF_NO_INHERIT);
 
   return ic;

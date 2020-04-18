@@ -301,6 +301,10 @@ static char* vLedGetElementTreeTitle(Ihandle* ih)
     else
       sprintf(str, "[%s]", IupGetClassName(ih));
   }
+
+  if (iupStrEqualPartial(IupGetClassType(ih), "image"))
+    sprintf(str + strlen(str), " - %s", IupGetAttribute(ih, "RASTERSIZE"));
+
   return str;
 }
 
@@ -2034,7 +2038,7 @@ static int item_show_all_img_cb(Ihandle *ih_item)
   IupSetAttribute(label, "EXPAND", "HORIZONTAL");
 
   dialog = IupDialog(box);
-  IupSetAttribute(dialog, "TITLE", "All Images");
+  IupSetAttribute(dialog, "TITLE", show_stock? "Stock Images": "All Images");
   IupSetCallback(dialog, "CLOSE_CB", (Icallback)showimages_close_cb);
   IupSetAttribute(dialog, "_INFO_LABEL", (char*)label);
   IupSetAttributeHandle(dialog, "PARENTDIALOG", IupGetDialog(ih_item));
@@ -2864,7 +2868,7 @@ static void show_elements_menu(Ihandle* elem_tree, int id, int x, int y)
   IupSetInt(elem_tree, "VALUE", id);
 
   popup_menu = IupMenu(
-    IupSetCallbacks(IupItem("Locate in LED", NULL), "ACTION", elem_locate_cb, NULL),  /* same as executeleaf_cb */
+    IupSetCallbacks(IupItem("Locate in LED\tEnter", NULL), "ACTION", elem_locate_cb, NULL),  /* same as executeleaf_cb */
     IupSeparator(),
     IupSetCallbacks(IupItem("Collapse All", NULL), "ACTION", elem_collapse_all_cb, NULL),
     IupSetCallbacks(IupItem("Expand All", NULL), "ACTION", elem_expand_all_cb, NULL),
@@ -3325,7 +3329,7 @@ int main(int argc, char **argv)
 
   /* IupScintillaDlg configuration */
   IupSetAttribute(main_dialog, "SUBTITLE", "IupVisualLED");
-  IupSetAttribute(main_dialog, "PROJECTEXT", "vled");
+  IupSetAttribute(main_dialog, "PROJECT_EXT", "vled");
   IupSetAttribute(main_dialog, "EXTRAFILTERS", "Led Files|*.led|");
   IupSetAttribute(main_dialog, "DEFAULT_EXT", "led");
   IupSetAttributeHandle(main_dialog, "CONFIG", config);

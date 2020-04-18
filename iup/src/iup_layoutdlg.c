@@ -281,6 +281,10 @@ IUP_SDK_API char* iupLayoutGetElementTitle(Ihandle* ih)
     else
       sprintf(str, "[%s]", IupGetClassName(ih));
   }
+
+  if (iupStrEqualPartial(IupGetClassType(ih), "image"))
+    sprintf(str + strlen(str), " - %s", IupGetAttribute(ih, "RASTERSIZE"));
+
   return str;
 }
 
