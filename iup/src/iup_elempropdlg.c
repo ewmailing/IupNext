@@ -53,6 +53,7 @@ IUP_SDK_API void iupLayoutPropertiesUpdate(Ihandle* properties, Ihandle* ih)
   IupSetAttribute(IupGetDialogChild(properties, "SETBUT"), "ACTIVE", "No");
   IupSetAttribute(IupGetDialogChild(properties, "SETCOLORBUT"), "VISIBLE", "No");
   IupSetAttribute(IupGetDialogChild(properties, "SETFONTBUT"), "VISIBLE", "No");
+  IupSetAttribute(IupGetDialogChild(properties, "SHOWHANDLEBUT"), "VISIBLE", "No");
   IupSetAttribute(IupGetDialogChild(properties, "IDTEXT"), "ACTIVE", "No");
   IupSetAttribute(IupGetDialogChild(properties, "IDLABEL"), "ACTIVE", "No");
 
@@ -271,6 +272,32 @@ static int iLayoutPropertiesSetFont_CB(Ihandle *fontbut)
   return IUP_DEFAULT;
 }
 
+static int iLayoutPropertiesShowHandle_CB(Ihandle *handlebut)
+{
+  Ihandle* elem = (Ihandle*)iupAttribGet(handlebut, "_IUP_HANDLE");
+  if (!elem)  /* Handle Name */
+  {
+    Ihandle* txt1 = IupGetDialogChild(handlebut, "VALUE1A");
+    char* name = IupGetAttribute(txt1, "VALUE");
+    elem = IupGetHandle(name);
+  }
+
+  if (iupObjectCheck(elem))
+  {
+    Ihandle* dlg = IupElementPropertiesDialog(IupGetDialog(handlebut), elem);
+    IupPopup(dlg, IUP_CENTERPARENT, IUP_CENTERPARENT);
+    IupDestroy(dlg);
+  }
+  else
+  {
+    if (elem == NULL)
+      IupMessageError(IupGetDialog(handlebut), "Handle not set");
+    else
+      IupMessageError(IupGetDialog(handlebut), "Invalid Handle!");
+  }
+  return IUP_DEFAULT;
+}
+
 static int iLayoutPropertiesList1_CB(Ihandle *list1, char *name, int item, int state)
 {
   (void)item;
@@ -286,6 +313,7 @@ static int iLayoutPropertiesList1_CB(Ihandle *list1, char *name, int item, int s
     Ihandle* setbut = IupGetDialogChild(list1, "SETBUT");
     Ihandle* colorbut = IupGetDialogChild(list1, "SETCOLORBUT");
     Ihandle* fontbut = IupGetDialogChild(list1, "SETFONTBUT");
+    Ihandle* handlebut = IupGetDialogChild(list1, "SHOWHANDLEBUT");
     Ihandle* id_text = IupGetDialogChild(list1, "IDTEXT");
     Ihandle* id_label = IupGetDialogChild(list1, "IDLABEL");
 
@@ -355,6 +383,18 @@ static int iLayoutPropertiesList1_CB(Ihandle *list1, char *name, int item, int s
       IupSetAttribute(id_text, "ACTIVE", "No");
       IupSetAttribute(id_label, "ACTIVE", "No");
     }
+
+    if ((flags&IUPAF_IHANDLENAME || flags & IUPAF_IHANDLE) && value && value[0] != 0)
+    {
+      if (flags & IUPAF_IHANDLE)
+        iupAttribSet(handlebut, "_IUP_HANDLE", value);
+      else
+        iupAttribSet(handlebut, "_IUP_HANDLE", NULL);
+
+      IupSetAttribute(handlebut, "VISIBLE", "Yes");
+    }
+    else
+      IupSetAttribute(handlebut, "VISIBLE", "No");
   }
 
   return IUP_DEFAULT;
@@ -487,7 +527,7 @@ static int iLayoutPropertiesTabChangePos_CB(Ihandle* ih, int new_pos, int old_po
 
 static Ihandle* iLayoutPropertiesCreateDialog(Ihandle* parent)
 {
-  Ihandle *list1, *list2, *list3, *close, *dlg, *dlg_box, *button_box, *colorbut, *fontbut,
+  Ihandle *list1, *list2, *list3, *close, *dlg, *dlg_box, *button_box, *colorbut, *fontbut, *handlebut,
     *tabs, *box1, *box11, *box2, *box22, *box3, *box33, *set, *id_text, *id_label;
 
   close = IupButton("Close", NULL);
@@ -548,9 +588,14 @@ static Ihandle* iLayoutPropertiesCreateDialog(Ihandle* parent)
   IupSetAttribute(fontbut, "NAME", "SETFONTBUT");
   IupSetAttribute(fontbut, "VISIBLE", "NO");
 
+  handlebut = IupButton("Handle", NULL);
+  IupSetCallback(handlebut, "ACTION", (Icallback)iLayoutPropertiesShowHandle_CB);
+  IupSetAttribute(handlebut, "NAME", "SHOWHANDLEBUT");
+  IupSetAttribute(handlebut, "VISIBLE", "NO");
+
   box11 = IupVbox(
     IupLabel("Value:"),
-    IupSetAttributes(IupHbox(IupSetAttributes(IupText(NULL), "MULTILINE=Yes, ALIGNMENT=ALEFT:ATOP, EXPAND=YES, NAME=VALUE1A"), IupSetAttributes(IupVbox(set, id_label, id_text, colorbut, fontbut, NULL), "GAP=3"), NULL), "GAP=10"),
+    IupSetAttributes(IupHbox(IupSetAttributes(IupText(NULL), "MULTILINE=Yes, ALIGNMENT=ALEFT:ATOP, EXPAND=YES, NAME=VALUE1A"), IupSetAttributes(IupVbox(set, id_label, id_text, colorbut, fontbut, handlebut, NULL), "GAP=3"), NULL), "GAP=10"),
     IupSetAttributes(IupFill(), "RASTERSIZE=10"),
     IupLabel("Default Value:"),
     IupFrame(IupSetAttributes(IupLabel(NULL), "ALIGNMENT=ALEFT:ATOP, EXPAND=HORIZONTAL, NAME=VALUE1B")),
