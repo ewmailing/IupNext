@@ -2592,34 +2592,59 @@ static void tree_project_clear(Ihandle* projectTree)
   IupSetAttribute(projectTree, "DELNODE0", "CHILDREN");
 }
 
-static int list_search_dblclick_cb(Ihandle *ih, int index, char *t)
+static int list_search_dblclick_cb(Ihandle *listSearch, int index, char *t)
 {
-  Ihandle* projectTree = IupGetDialogChild(ih, "PROJECTTREE");
-  Ihandle* tabs = IupGetDialogChild(ih, "MULTITEXT_TABS");
-  char *filename = IupGetAttributeId(ih, "FILENAME", index);
-  int lin = IupGetIntId(ih, "LINE", index);
-  int col = IupGetIntId(ih, "COL", index);
-  int start_pos = IupGetIntId(ih, "POSSTART", index);
-  int end_pos = IupGetIntId(ih, "POSEND", index);
-  Ihandle *multitext = check_open(projectTree, filename, 0);
-
-  if (!multitext)
+  char *filename = IupGetAttributeId(listSearch, "FILENAME", index);
+  if (filename)
   {
-    open_file(projectTree, filename, 1);
-    multitext = iScintillaDlgGetCurrentMultitext(ih);
+    Ihandle* projectTree = IupGetDialogChild(listSearch, "PROJECTTREE");
+    int lin = IupGetIntId(listSearch, "LINE", index);
+    int col = IupGetIntId(listSearch, "COL", index);
+    int start_pos = IupGetIntId(listSearch, "POSSTART", index);
+    int end_pos = IupGetIntId(listSearch, "POSEND", index);
+    Ihandle *multitext = check_open(projectTree, filename, 0);
+
+    if (!multitext)
+    {
+      open_file(projectTree, filename, 1);
+      multitext = iScintillaDlgGetCurrentMultitext(listSearch);
+    }
+    else
+    {
+      Ihandle* tabs = IupGetDialogChild(listSearch, "MULTITEXT_TABS");
+      IupSetAttribute(tabs, "VALUE_HANDLE", (char*)multitext);
+    }
+
+    IupSetFocus(multitext);
+    IupSetfAttribute(multitext, "SELECTIONPOS", "%d:%d", start_pos, end_pos);
+
+    /* update statusbar */
+    IupTextConvertPosToLinCol(multitext, end_pos, &lin, &col);
+    multitext_caret_cb(multitext, lin, col);
   }
-  else
-    IupSetAttribute(tabs, "VALUE_HANDLE", (char*)multitext);
-
-  IupSetFocus(multitext);
-  IupSetfAttribute(multitext, "SELECTIONPOS", "%d:%d", start_pos, end_pos);
-
-  /* update statusbar */
-  IupTextConvertPosToLinCol(multitext, end_pos, &lin, &col);
-  multitext_caret_cb(multitext, lin, col);
 
   (void)t;
   return IUP_DEFAULT;
+}
+
+static void list_search_add(Ihandle* listSearch, Ihandle* multitext, int pos_start, int pos_end)
+{
+  int search_count;
+  int lin, col;
+  char *filename = IupGetAttribute(multitext, "FILENAME");
+  if (!filename) filename = IupGetAttribute(multitext, "NEW_FILENAME");
+
+  IupTextConvertPosToLinCol(multitext, pos_start, &lin, &col);
+
+  IupSetStrf(listSearch, "APPENDITEM", "%s(%d): %s", filename, lin + 1, IupGetAttributeId(multitext, "LINE", lin));
+
+  search_count = IupGetInt(listSearch, "COUNT");
+
+  IupSetStrAttributeId(listSearch, "FILENAME", search_count, filename);
+  IupSetIntId(listSearch, "LINE", search_count, lin);
+  IupSetIntId(listSearch, "COL", search_count, col);
+  IupSetIntId(listSearch, "POSSTART", search_count, pos_start);
+  IupSetIntId(listSearch, "POSEND", search_count, pos_end);
 }
 
 static int item_new_blank_proj_action_cb(Ihandle* ih_item)
@@ -3628,28 +3653,24 @@ static int find_all_action_cb(Ihandle* bt_replace)
   Ihandle* find_dlg = (Ihandle*)IupGetAttribute(bt_replace, "FIND_DIALOG");
   if (find_dlg)
   {
-    char* str_to_find;
-    Ihandle* ih = IupGetAttributeHandle(find_dlg, "PARENTDIALOG");
-    Ihandle* tabs = IupGetDialogChild(ih, "MULTITEXT_TABS");
-    Ihandle* projectTree = IupGetDialogChild(ih, "PROJECTTREE");
-    Ihandle* panelTabs = IupGetDialogChild(ih, "PANEL_TABS");
-    Ihandle* listSearch = IupGetDialogChild(ih, "LIST_SEARCH");
-    Ihandle* panelFrame = IupGetDialogChild(ih, "PANEL_FRAME");
-    Ihandle* currentMultitext = iScintillaDlgGetCurrentMultitext(ih);
-    Ihandle* multitext = NULL;
     Ihandle* find_txt = IupGetDialogChild(find_dlg, "FIND_TEXT");
-    int i, count;
-
-    IupSetAttribute(listSearch, "REMOVEITEM", "ALL");
-    IupSetAttribute(panelTabs, "VALUEPOS", "0");
 
     /* test again, because it can be called from the hot key */
-    str_to_find = IupGetAttribute(find_txt, "VALUE");
+    char* str_to_find = IupGetAttribute(find_txt, "VALUE");
     if (str_to_find && str_to_find[0] != 0)
     {
       char flags[80];
       int find_start, find_end;
       int pos_start, pos_end;
+      int i, count, find_count = 0, find_files_count = 0, file_first;
+      Ihandle* ih = IupGetAttributeHandle(find_dlg, "PARENTDIALOG");
+      Ihandle* tabs = IupGetDialogChild(ih, "MULTITEXT_TABS");
+      Ihandle* projectTree = IupGetDialogChild(ih, "PROJECTTREE");
+      Ihandle* panelTabs = IupGetDialogChild(ih, "PANEL_TABS");
+      Ihandle* listSearch = IupGetDialogChild(ih, "LIST_SEARCH");
+      Ihandle* currentMultitext = iScintillaDlgGetCurrentMultitext(ih);
+      Ihandle* multitext = NULL;
+      char options[80] = "";
 
       int searchIn = IupGetInt(IupGetDialogChild(find_dlg, "LST_SEARCH_IN"), "VALUE");
       int casesensitive = IupGetInt(IupGetDialogChild(find_dlg, "FIND_CASE"), "VALUE");
@@ -3657,15 +3678,37 @@ static int find_all_action_cb(Ihandle* bt_replace)
       int regexp = IupGetInt(IupGetDialogChild(find_dlg, "REG_EXP"), "VALUE");
       int posix = IupGetInt(IupGetDialogChild(find_dlg, "POSIX"), "VALUE");
 
+      IupSetAttribute(listSearch, "REMOVEITEM", "ALL");
+      IupSetAttribute(panelTabs, "VALUEPOS", "0");
+
       flags[0] = 0;
       if (casesensitive)
+      {
         strcpy(flags, "MATCHCASE");
+        strcat(options, "Match Case");
+      }
       if (whole_word)
+      {
         strcat((flags[0] != 0 ? strcat(flags, " | ") : flags), "WHOLEWORD");
+        if (options[0] != 0) strcat(options, ",");
+        strcat(options, "Whole Word");
+      }
       if (regexp)
+      {
         strcat((flags[0] != 0 ? strcat(flags, " | ") : flags), "REGEXP");
+        if (options[0] != 0) strcat(options, ",");
+        strcat(options, "Reg. Expression");
+      }
       if (posix)
+      {
         strcat((flags[0] != 0 ? strcat(flags, " | ") : flags), "POSIX");
+        if (options[0] != 0) strcat(options, ",");
+        strcat(options, "Posix Reg. Expression");
+      }
+      if (options[0]==0)
+        strcat(options, "no");
+
+      IupSetStrf(listSearch, "APPENDITEM", "Searching for: \"%s\", in (%s) with [%s] options", str_to_find, searchIn == 1 ? "Current Document" : (searchIn == 2 ? "All Open Documents" : "Project Documents"), options);
 
       if (searchIn == 1)
         count = 1;
@@ -3676,6 +3719,8 @@ static int find_all_action_cb(Ihandle* bt_replace)
 
       for (i = 0; i < count; i++)
       {
+        file_first = 1;
+
         if (searchIn == 1)
           multitext = currentMultitext;
         else if (searchIn == 2)
@@ -3711,20 +3756,7 @@ static int find_all_action_cb(Ihandle* bt_replace)
 
         while (find_start != pos_start || find_end != pos_end)
         {
-          int lin, col;
-          char *filename = IupGetAttribute(multitext, "FILENAME");
-
-          IupTextConvertPosToLinCol(multitext, pos_start, &lin, &col);
-
-          IupSetStrf(listSearch, "APPENDITEM", "%s(%d): %s", filename, lin+1, IupGetAttributeId(multitext, "LINE", lin));
-
-          count = IupGetInt(listSearch, "COUNT");
-
-          IupSetStrAttributeId(listSearch, "FILENAME", count, filename);
-          IupSetIntId(listSearch, "LINE", count, lin);
-          IupSetIntId(listSearch, "COL", count, col);
-          IupSetIntId(listSearch, "POSSTART", count, pos_start);
-          IupSetIntId(listSearch, "POSEND", count, pos_end);
+          list_search_add(listSearch, multitext, pos_start, pos_end);
 
           find_start = IupGetInt(multitext, "TARGETEND");
           find_end = IupGetInt(multitext, "COUNT");
@@ -3737,6 +3769,13 @@ static int find_all_action_cb(Ihandle* bt_replace)
 
           pos_start = IupGetInt(multitext, "TARGETSTART");
           pos_end = IupGetInt(multitext, "TARGETEND");
+
+          find_count++;
+          if (file_first)
+          {
+            find_files_count++;
+            file_first = 0;
+          }
         }
 
         if (multitext->brother)
@@ -3745,10 +3784,8 @@ static int find_all_action_cb(Ihandle* bt_replace)
           multitext = tabs->firstchild;
       }
 
-      IupSetStrf(panelFrame, "TITLE", "Find Results: (%s)", str_to_find);
+      IupSetStrf(listSearch, "APPENDITEM", "Found %d results, in %d documents.", find_count, find_files_count);
     }
-    else
-      IupSetAttribute(panelFrame, "TITLE", "Find Results:");
   }
 
   return IUP_DEFAULT;
@@ -3759,24 +3796,25 @@ static int find_replace_all_action_cb(Ihandle* bt_replace)
   Ihandle* find_dlg = (Ihandle*)IupGetAttribute(bt_replace, "FIND_DIALOG");
   if (find_dlg)
   {
-    char* str_to_find;
-    char* str_to_replace;
-    Ihandle* ih = IupGetAttributeHandle(find_dlg, "PARENTDIALOG");
-    Ihandle* tabs = IupGetDialogChild(ih, "MULTITEXT_TABS");
-    Ihandle* currentMultitext = iScintillaDlgGetCurrentMultitext(ih);
-    Ihandle* multitext = currentMultitext;
-    Ihandle* replace_txt = IupGetDialogChild(find_dlg, "REPLACE_TEXT");
     Ihandle* find_txt = IupGetDialogChild(find_dlg, "FIND_TEXT");
-    int count = IupGetInt(tabs, "COUNT");
-    int i;
 
     /* test again, because it can be called from the hot key */
-    str_to_find = IupGetAttribute(find_txt, "VALUE");
+    char* str_to_find = IupGetAttribute(find_txt, "VALUE");
     if (str_to_find && str_to_find[0] != 0)
     {
-      char flags[80];
       int find_start, find_end;
       int pos_start, pos_end;
+      char* str_to_replace;
+      int i, count, find_count = 0, find_files_count = 0, file_first;
+      char flags[80];
+      Ihandle* ih = IupGetAttributeHandle(find_dlg, "PARENTDIALOG");
+      Ihandle* tabs = IupGetDialogChild(ih, "MULTITEXT_TABS");
+      Ihandle* currentMultitext = iScintillaDlgGetCurrentMultitext(ih);
+      Ihandle* multitext = currentMultitext;
+      Ihandle* replace_txt = IupGetDialogChild(find_dlg, "REPLACE_TEXT");
+      Ihandle* panelTabs = IupGetDialogChild(ih, "PANEL_TABS");
+      Ihandle* listSearch = IupGetDialogChild(ih, "LIST_SEARCH");
+      char options[80] = "";
 
       int searchIn = IupGetInt(IupGetDialogChild(find_dlg, "LST_SEARCH_IN"), "VALUE");
       int casesensitive = IupGetInt(IupGetDialogChild(find_dlg, "FIND_CASE"), "VALUE");
@@ -3784,21 +3822,51 @@ static int find_replace_all_action_cb(Ihandle* bt_replace)
       int regexp = IupGetInt(IupGetDialogChild(find_dlg, "REG_EXP"), "VALUE");
       int posix = IupGetInt(IupGetDialogChild(find_dlg, "POSIX"), "VALUE");
 
+      IupSetAttribute(listSearch, "REMOVEITEM", "ALL");
+      IupSetAttribute(panelTabs, "VALUEPOS", "0");
+
       flags[0] = 0;
       if (casesensitive)
+      {
         strcpy(flags, "MATCHCASE");
+        strcat(options, "Match Case");
+      }
       if (whole_word)
+      {
         strcat((flags[0] != 0 ? strcat(flags, " | ") : flags), "WHOLEWORD");
+        if (options[0] != 0) strcat(options, ",");
+        strcat(options, "Whole Word");
+      }
       if (regexp)
+      {
         strcat((flags[0] != 0 ? strcat(flags, " | ") : flags), "REGEXP");
+        if (options[0] != 0) strcat(options, ",");
+        strcat(options, "Reg. Expression");
+      }
       if (posix)
+      {
         strcat((flags[0] != 0 ? strcat(flags, " | ") : flags), "POSIX");
+        if (options[0] != 0) strcat(options, ",");
+        strcat(options, "Posix Reg. Expression");
+      }
+      if (options[0] == 0)
+        strcat(options, "no");
+
+      str_to_replace = IupGetAttribute(replace_txt, "VALUE");
+
+      /* replace all does NOT replace on Project Documents */
+
+      IupSetStrf(listSearch, "APPENDITEM", "Searching for: \"%s\" and Replacing by: \"%s\", in (%s) with [%s] options", str_to_find, str_to_replace, searchIn == 1 ? "Current Document" : "All Open Documents", options);
 
       if (searchIn == 1)
         count = 1;
+      else
+        count = IupGetInt(tabs, "COUNT");
 
       for (i = 0; i < count; i++)
       {
+        file_first = 1;
+
         if (flags[0] != 0)
           IupSetAttribute(multitext, "SEARCHFLAGS", flags);
         else
@@ -3813,13 +3881,15 @@ static int find_replace_all_action_cb(Ihandle* bt_replace)
         str_to_find = IupGetAttribute(find_txt, "VALUE");
         IupSetAttribute(multitext, "SEARCHINTARGET", str_to_find);
 
+        IupSetAttribute(multitext, "UNDOACTION", "BEGIN");
+
         pos_start = IupGetInt(multitext, "TARGETSTART");
         pos_end = IupGetInt(multitext, "TARGETEND");
 
-        IupSetAttribute(multitext, "UNDOACTION", "BEGIN");
-
         while (find_start != pos_start || find_end != pos_end)
         {
+          list_search_add(listSearch, multitext, pos_start, pos_end);
+
           str_to_replace = IupGetAttribute(replace_txt, "VALUE");
           IupSetAttribute(multitext, "REPLACETARGET", str_to_replace);
 
@@ -3834,6 +3904,13 @@ static int find_replace_all_action_cb(Ihandle* bt_replace)
 
           pos_start = IupGetInt(multitext, "TARGETSTART");
           pos_end = IupGetInt(multitext, "TARGETEND");
+
+          find_count++;
+          if (file_first)
+          {
+            find_files_count++;
+            file_first = 0;
+          }
         }
 
         IupSetAttribute(multitext, "UNDOACTION", "END");
@@ -3843,6 +3920,8 @@ static int find_replace_all_action_cb(Ihandle* bt_replace)
         else
           multitext = tabs->firstchild;
       }
+
+      IupSetStrf(listSearch, "APPENDITEM", "Replaced %d results, in %d documents.", find_count, find_files_count);
     }
   }
 
@@ -4833,7 +4912,6 @@ static int iScintillaDlgCreateMethod(Ihandle* ih, void** params)
   IupSetAttribute(listSearch, "VISIBLELINES", "3");
 
   panelFrame = IupFrame(listSearch);
-  IupSetAttribute(panelFrame, "NAME", "PANEL_FRAME");
   IupSetAttribute(panelFrame, "MARGIN", "4x4");
   IupSetAttribute(panelFrame, "GAP", "4");
   IupSetAttribute(panelFrame, "TITLE", "Find Results:");
