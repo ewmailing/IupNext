@@ -460,7 +460,7 @@ static void iExportElementLua(FILE* file, Ihandle* ih, const char *indent, int s
   char* name = iExportGetName(ih);
 
   if (name)
-    fprintf(file, "%slocal %s = ", indent, name);
+    fprintf(file, "%s_lc.%s = ", indent, name);
   else
     fprintf(file, "%s", indent);
 
@@ -479,7 +479,7 @@ static void iExportElementLua(FILE* file, Ihandle* ih, const char *indent, int s
       if (childName)
       {
         if (iupAttribGet(child, "_IUP_EXPORT_LUA_SAVED")) /* saved in the same scope */
-          fprintf(file, "%s%s,\n", localIndent, childName);
+          fprintf(file, "%s_lc.%s,\n", localIndent, childName);
         else
           fprintf(file, "%siup.GetHandle(\"%s\"),\n", localIndent, childName);
       }
@@ -507,7 +507,7 @@ static void iExportElementLua(FILE* file, Ihandle* ih, const char *indent, int s
         if (childName)
         {
           if (iupAttribGet(child, "_IUP_EXPORT_LUA_SAVED")) /* saved in the same scope */
-            fprintf(file, "%s%s,\n", localIndent, childName);
+            fprintf(file, "%s_lc.%s,\n", localIndent, childName);
           else
             fprintf(file, "%siup.GetHandle(\"%s\"),\n", localIndent, childName);
         }
@@ -601,6 +601,9 @@ IUP_SDK_API void iupLayoutExportNamedElemList(FILE* file, Ihandle* *named_elem, 
   char* name;
   Ihandle *elem;
 
+  if (export_format == IUP_LAYOUT_EXPORT_LUA)
+    fprintf(file, "  local _lc = {}\n\n"); /* use a single local variable to avoid the 200 limit in Lua */
+
   for (i = 0; i < count; i++)
   {
     elem = named_elem[i];
@@ -626,7 +629,7 @@ IUP_SDK_API void iupLayoutExportNamedElemList(FILE* file, Ihandle* *named_elem, 
 
     if (export_format == IUP_LAYOUT_EXPORT_LUA && name)
     {
-      fprintf(file, "  iup.SetHandle(\"%s\", %s)\n\n", name, name);
+      fprintf(file, "  iup.SetHandle(\"%s\", _lc.%s)\n\n", name, name);
       iupAttribSet(elem, "_IUP_EXPORT_LUA_SAVED", "1");
     }
   }
