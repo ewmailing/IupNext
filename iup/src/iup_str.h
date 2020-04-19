@@ -335,6 +335,11 @@ IUP_SDK_API int iupStrTmpFileName(char* filename, const char* prefix);
  * \ingroup str */
 IUP_SDK_API int iupStrReplace(char* str, char src, char dst);
 
+/** Replace reserved characters in a string.
+ * \ingroup str */
+IUP_SDK_API void iupStrReplaceReserved(char* str, char c);
+
+
 /** Convert line ends to UNIX format in-place (one \n per line).
  * \ingroup str */
 IUP_SDK_API void iupStrToUnix(char* str);

@@ -32,6 +32,8 @@ enum { IUP_LAYOUT_EXPORT_LUA, IUP_LAYOUT_EXPORT_C, IUP_LAYOUT_EXPORT_LED };
 /* at iup_export */
 #if defined(FILE) || defined(_INC_STDIO) || defined(_STDIO_H_) || defined(_STDIO_H)
 IUP_SDK_API void iupLayoutExportNamedElemList(FILE* file, Ihandle* *named_elem, int count, int export_format, int saved_info);
+IUP_SDK_API void iupLayoutExportNamedImageListSetHandle(FILE* file, Ihandle* *named_elem, int count, int export_format);
+IUP_SDK_API void iupLayoutExportNamedImageList(FILE* file, Ihandle* *named_elem, int count, int export_format);
 #endif
 
 #ifdef __cplusplus

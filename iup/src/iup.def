@@ -580,6 +580,7 @@ iupStrPrintfDoubleLocale
 iupStrProcessMnemonic
 iupStrRemove
 iupStrReplace
+iupStrReplaceReserved
 iupStrReturnBoolean
 iupStrReturnChecked
 iupStrReturnDouble

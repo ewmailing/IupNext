@@ -987,6 +987,34 @@ IUP_SDK_API int iupStrReplace(char* str, char src, char dst)
   return i;
 }
 
+static int iStrIsReserved(char c)
+{
+  /* can only has letters or numbers as characters, or underscore */
+  if (c < '0' ||
+    (c > '9' && c < 'A') ||
+      (c > 'Z' && c < 'a' && c != '_') ||
+      c > 'z')
+    return 1;
+
+  return 0;
+}
+
+IUP_SDK_API void iupStrReplaceReserved(char* str, char c)
+{
+  if (!str)
+    return;
+
+  while (*str)
+  {
+    if (iStrIsReserved(*str))
+    {
+      *str = c;
+    }
+    str++;
+  }
+}
+
+
 IUP_SDK_API void iupStrToUnix(char* str)
 {
   char* p_str = str;

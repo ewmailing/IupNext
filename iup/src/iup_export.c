@@ -15,6 +15,14 @@
 
 
 
+static char* iStrGetNoReserved(const char* p_name)
+{
+  static char name[128];
+  strcpy(name, p_name);
+  iupStrReplaceReserved(name, '_');
+  return name;
+}
+
 static int iExportHasReserved(const char* name, int check_num)
 {
   char c;
@@ -39,6 +47,7 @@ static int iExportHasReserved(const char* name, int check_num)
 
     name++;
   }
+
   return 0;
 }
 
@@ -284,7 +293,7 @@ static void iExportElementLED(FILE* file, Ihandle* ih, const char* indent, int s
 
   iupStrUpper(classname, ih->iclass->name);
   if (name)
-    fprintf(file, "%s = %s[", name, classname);  /* start of attributes */
+    fprintf(file, "%s = %s[", iStrGetNoReserved(name), classname);  /* start of attributes */
   else
     fprintf(file, "%s%s[", indent, classname);
 
@@ -460,7 +469,7 @@ static void iExportElementLua(FILE* file, Ihandle* ih, const char *indent, int s
   char* name = iExportGetName(ih);
 
   if (name)
-    fprintf(file, "%s_lc.%s = ", indent, name);
+    fprintf(file, "%s_lc.%s = ", indent, iStrGetNoReserved(name));
   else
     fprintf(file, "%s", indent);
 
@@ -539,7 +548,10 @@ static void iExportElementC(FILE* file, Ihandle* ih, const char *indent, const c
     Ihandle *child;
     char localIndent[1024];
 
-    fprintf(file, "%sIupSetAtt(%s%s%s, IupCreatep(\"%s\", \n", indent, name ? "\"" : "", name ? name : "NULL", name ? "\"" : "", ih->iclass->name);
+    if (name)
+      fprintf(file, "%sIupSetAtt(\"%s\", IupCreatep(\"%s\", \n", indent, name, ih->iclass->name);
+    else
+      fprintf(file, "%sIupSetAtt(NULL, IupCreatep(\"%s\", \n", indent, ih->iclass->name);
 
     strcpy(localIndent, indent);
     strcat(localIndent, "    ");  /* indent twice for children */
@@ -563,7 +575,10 @@ static void iExportElementC(FILE* file, Ihandle* ih, const char *indent, const c
       Ihandle *child;
       char localIndent[1024];
 
-      fprintf(file, "%sIupSetAtt(%s%s%s, IupCreatep(\"%s\", \n", indent, name ? "\"" : "", name ? name : "NULL", name ? "\"" : "", ih->iclass->name);
+      if (name)
+        fprintf(file, "%sIupSetAtt(\"%s\", IupCreatep(\"%s\", \n", indent, name, ih->iclass->name);
+      else
+        fprintf(file, "%sIupSetAtt(NULL, IupCreatep(\"%s\", \n", indent, ih->iclass->name);
 
       strcpy(localIndent, indent);
       strcat(localIndent, "  ");
@@ -579,9 +594,16 @@ static void iExportElementC(FILE* file, Ihandle* ih, const char *indent, const c
 
         child = (Ihandle*)IupGetAttribute(ih, "NEXT_CONTROL_HANDLE");
       }
+
+      fprintf(file, "%sNULL),\n", localIndent);  /* IupCreatep */
     }
     else
-      fprintf(file, "%sIupSetAtt(%s%s%s, IupCreate(\"%s\"), \n", indent, name ? "\"" : "", name ? name : "NULL", name ? "\"" : "", ih->iclass->name);
+    {
+      if (name)
+        fprintf(file, "%sIupSetAtt(\"%s\", IupCreate(\"%s\"), \n", indent, name, ih->iclass->name);
+      else
+        fprintf(file, "%sIupSetAtt(NULL, IupCreate(\"%s\"), \n", indent, ih->iclass->name);
+    }
   }
 
   if (saved_info)
@@ -597,27 +619,25 @@ static void iExportElementC(FILE* file, Ihandle* ih, const char *indent, const c
 
 IUP_SDK_API void iupLayoutExportNamedElemList(FILE* file, Ihandle* *named_elem, int count, int export_format, int saved_info)
 {
-  int i;
-  char* name;
+  int i, first = 1;
   Ihandle *elem;
-
-  if (export_format == IUP_LAYOUT_EXPORT_LUA)
-    fprintf(file, "  local _lc = {}\n\n"); /* use a single local variable to avoid the 200 limit in Lua */
 
   for (i = 0; i < count; i++)
   {
     elem = named_elem[i];
-    name = IupGetName(elem);
 
-    if (iupStrEqualPartial(elem->iclass->name, "image"))
+    if (elem->iclass->nativetype != IUP_TYPEIMAGE)
     {
-      char* format[] = { "LUA", "C", "LED" };
-      iupImageExportToFile(elem, file, format[export_format], name, 0);  /* don't put it inside a function (Lua and C) */
-    }
-    else
-    {
+      char* name = IupGetName(elem);
+
       if (export_format == IUP_LAYOUT_EXPORT_LUA)
       {
+        if (first)
+        {
+          fprintf(file, "  local _lc = {}\n\n"); /* use a single local variable to avoid the 200 limit in Lua */
+          first = 0;
+        }
+
         iExportElementLua(file, elem, "  ", saved_info);
         fprintf(file, "\n");
       }
@@ -625,12 +645,12 @@ IUP_SDK_API void iupLayoutExportNamedElemList(FILE* file, Ihandle* *named_elem, 
         iExportElementC(file, elem, "  ", ";", saved_info);
       else
         iExportElementLED(file, elem, "  ", saved_info);
-    }
 
-    if (export_format == IUP_LAYOUT_EXPORT_LUA && name)
-    {
-      fprintf(file, "  iup.SetHandle(\"%s\", _lc.%s)\n\n", name, name);
-      iupAttribSet(elem, "_IUP_EXPORT_LUA_SAVED", "1");
+      if (export_format == IUP_LAYOUT_EXPORT_LUA && name)
+      {
+        fprintf(file, "  iup.SetHandle(\"%s\", _lc.%s)\n\n", name, iStrGetNoReserved(name));
+        iupAttribSet(elem, "_IUP_EXPORT_LUA_SAVED", "1");
+      }
     }
   }
 
@@ -639,12 +659,60 @@ IUP_SDK_API void iupLayoutExportNamedElemList(FILE* file, Ihandle* *named_elem, 
     for (i = 0; i < count; i++)
     {
       elem = named_elem[i];
-      name = IupGetName(elem);
-      if (name)
+      if (IupGetName(elem))
         iupAttribSet(elem, "_IUP_EXPORT_LUA_SAVED", NULL);
     }
   }
 }
+
+IUP_SDK_API void iupLayoutExportNamedImageList(FILE* file, Ihandle* *named_elem, int count, int export_format)
+{
+  int i;
+  Ihandle *elem;
+
+  for (i = 0; i < count; i++)
+  {
+    elem = named_elem[i];
+
+    if (elem->iclass->nativetype == IUP_TYPEIMAGE)
+    {
+      char* format[] = { "LUA", "C", "LED" };
+      char* name = IupGetName(elem);
+
+      iupImageExportToFile(elem, file, format[export_format], name);
+
+      if (export_format == IUP_LAYOUT_EXPORT_LUA && name)
+        iupAttribSet(elem, "_IUP_EXPORT_LUA_SAVED", "1");
+    }
+  }
+}
+
+IUP_SDK_API void iupLayoutExportNamedImageListSetHandle(FILE* file, Ihandle* *named_elem, int count, int export_format)
+{
+  int i;
+  Ihandle *elem;
+
+  if (export_format == IUP_LAYOUT_EXPORT_LUA || export_format == IUP_LAYOUT_EXPORT_C)
+  {
+    for (i = 0; i < count; i++)
+    {
+      elem = named_elem[i];
+
+      if (elem->iclass->nativetype == IUP_TYPEIMAGE)
+      {
+        char* name = IupGetName(elem);
+        if (name)
+        {
+          if (export_format == IUP_LAYOUT_EXPORT_LUA)
+            fprintf(file, "  iup.SetHandle(\"%s\", create_image_%s())\n", name, iStrGetNoReserved(name));
+          else
+            fprintf(file, "  IupSetHandle(\"%s\", create_image_%s());\n", name, iStrGetNoReserved(name));
+        }
+      }
+    }
+  }
+}
+
 
 /******************************************************************************/
 
@@ -687,7 +755,7 @@ static int iExportImagePrint(FILE *file, Iarray *buffer, char *format, ...)
   return len;
 }
 
-static int iExportSaveImageC(const char* filename, Ihandle* ih, const char* name, FILE* packfile, Iarray* buffer, int inFunction)
+static int iExportSaveImageC(const char* filename, Ihandle* ih, const char* name, FILE* packfile, Iarray* buffer)
 {
   int y, x, width, height, channels, linesize;
   unsigned char* data;
@@ -710,18 +778,13 @@ static int iExportSaveImageC(const char* filename, Ihandle* ih, const char* name
   channels = IupGetInt(ih, "CHANNELS");
   linesize = width * channels;
 
-  if (inFunction)
+  if (iExportImagePrint(file, buffer, "static Ihandle* create_image_%s(void)\n", name) < 0)
   {
-    if (iExportImagePrint(file, buffer, "static Ihandle* load_image_%s(void)\n", name) < 0)
-    {
-      if (filename)
-        fclose(file);
-      return 0;
-    }
-    iExportImagePrint(file, buffer, "{\n");
+    if (filename)
+      fclose(file);
+    return 0;
   }
-  else
-    iExportImagePrint(file, buffer, "  {\n"); /* to isolate the declarations */
+  iExportImagePrint(file, buffer, "{\n");
 
   if (IupGetInt(NULL, "IMAGEEXPORT_STATIC"))
     iExportImagePrint(file, buffer, "  static unsigned char imgdata[] = {\n");
@@ -762,23 +825,16 @@ static int iExportSaveImageC(const char* filename, Ihandle* ih, const char* name
       iExportImagePrint(file, buffer, "  IupSetAttribute(image, \"%d\", \"%s\");\n", c, color);
     }
 
-    if (inFunction)
-      iExportImagePrint(file, buffer, "\n");
+    iExportImagePrint(file, buffer, "\n");
   }
   else if (channels == 3)
     iExportImagePrint(file, buffer, "  Ihandle* image = IupImageRGB(%d, %d, imgdata);\n", width, height);
   else /* channels == 4 */
     iExportImagePrint(file, buffer, "  Ihandle* image = IupImageRGBA(%d, %d, imgdata);\n", width, height);
 
-  if (inFunction)
-    iExportImagePrint(file, buffer, "  return image;\n");
-  else
-    iExportImagePrint(file, buffer, "  IupSetHandle(\"%s\", image);\n", name, name);
+  iExportImagePrint(file, buffer, "  return image;\n");
 
-  if (inFunction)
-    iExportImagePrint(file, buffer, "}\n\n");
-  else
-    iExportImagePrint(file, buffer, "  }\n\n");
+  iExportImagePrint(file, buffer, "}\n\n");
 
   if (filename)
     fclose(file);
@@ -786,7 +842,7 @@ static int iExportSaveImageC(const char* filename, Ihandle* ih, const char* name
   return 1;
 }
 
-static int iExportSaveImageLua(const char* filename, Ihandle* ih, const char* name, FILE* packfile, Iarray* buffer, int inFunction)
+static int iExportSaveImageLua(const char* filename, Ihandle* ih, const char* name, FILE* packfile, Iarray* buffer)
 {
   int y, x, width, height, channels, linesize;
   unsigned char* data;
@@ -809,14 +865,11 @@ static int iExportSaveImageLua(const char* filename, Ihandle* ih, const char* na
   channels = IupGetInt(ih, "CHANNELS");
   linesize = width * channels;
 
-  if (inFunction)
+  if (iExportImagePrint(file, buffer, "function create_image_%s()\n", name) < 0)
   {
-    if (iExportImagePrint(file, buffer, "function load_image_%s()\n", name) < 0)
-    {
-      if (!packfile)
-        fclose(file);
-      return 0;
-    }
+    if (!packfile)
+      fclose(file);
+    return 0;
   }
 
   if (channels == 1)
@@ -871,11 +924,8 @@ static int iExportSaveImageLua(const char* filename, Ihandle* ih, const char* na
 
   iExportImagePrint(file, buffer, "  }\n");
 
-  if (inFunction)
-  {
-    iExportImagePrint(file, buffer, "  return %s\n", name);
-    iExportImagePrint(file, buffer, "end\n\n");
-  }
+  iExportImagePrint(file, buffer, "  return %s\n", name);
+  iExportImagePrint(file, buffer, "end\n\n");
 
   if (filename)
     fclose(file);
@@ -985,64 +1035,76 @@ static int iExportSaveImageLED(const char* filename, Ihandle* ih, const char* na
   return 1;
 }
 
-IUP_API int IupSaveImageAsText(Ihandle* ih, const char* filename, const char* format, const char* name)
+IUP_API int IupSaveImageAsText(Ihandle* ih, const char* filename, const char* format, const char* p_name)
 {
   int ret = 0;
+  char name[128];
 
-  if (!name)
+  if (!p_name)
   {
-    name = IupGetName(ih);
-    if (!name)
-      name = "image";
+    p_name = IupGetName(ih);
+    if (!p_name)
+      p_name = "image";
   }
+
+  strcpy(name, p_name);
+  iupStrReplaceReserved(name, '_');
 
   if (iupStrEqualNoCase(format, "LED"))
     ret = iExportSaveImageLED(filename, ih, name, NULL, NULL);
   else if (iupStrEqualNoCase(format, "LUA"))
-    ret = iExportSaveImageLua(filename, ih, name, NULL, NULL, 1);
+    ret = iExportSaveImageLua(filename, ih, name, NULL, NULL);
   else if (iupStrEqualNoCase(format, "C"))
-    ret = iExportSaveImageC(filename, ih, name, NULL, NULL, 1);
+    ret = iExportSaveImageC(filename, ih, name, NULL, NULL);
   return ret;
 }
 
-IUP_SDK_API int iupImageExportToFile(Ihandle* ih, FILE* packfile, const char* format, const char* name, int inFunction)
+IUP_SDK_API int iupImageExportToFile(Ihandle* ih, FILE* packfile, const char* format, const char* p_name)
 {
   int ret = 0;
+  char name[128];
 
-  if (!name)
+  if (!p_name)
   {
-    name = IupGetName(ih);
-    if (!name)
-      name = "image";
+    p_name = IupGetName(ih);
+    if (!p_name)
+      p_name = "image";
   }
+
+  strcpy(name, p_name);
+  iupStrReplaceReserved(name, '_');
 
   if (iupStrEqualNoCase(format, "LED"))
     ret = iExportSaveImageLED(NULL, ih, name, packfile, NULL);
   else if (iupStrEqualNoCase(format, "LUA"))
-    ret = iExportSaveImageLua(NULL, ih, name, packfile, NULL, inFunction);
+    ret = iExportSaveImageLua(NULL, ih, name, packfile, NULL);
   else if (iupStrEqualNoCase(format, "C"))
-    ret = iExportSaveImageC(NULL, ih, name, packfile, NULL, inFunction);
+    ret = iExportSaveImageC(NULL, ih, name, packfile, NULL);
   return ret;
 }
 
-IUP_SDK_API int iupImageExportToString(Ihandle* ih, char **str, const char* format, const char* name, int inFunction)
+IUP_SDK_API int iupImageExportToString(Ihandle* ih, char **str, const char* format, const char* p_name)
 {
   Iarray *buffer = iupArrayCreate(1024, sizeof(char *));
   int ret = 0;
+  char name[128];
 
-  if (!name)
+  if (!p_name)
   {
-    name = IupGetName(ih);
-    if (!name)
-      name = "image";
+    p_name = IupGetName(ih);
+    if (!p_name)
+      p_name = "image";
   }
+
+  strcpy(name, p_name);
+  iupStrReplaceReserved(name, '_');
 
   if (iupStrEqualNoCase(format, "LED"))
     ret = iExportSaveImageLED(NULL, ih, name, NULL, buffer);
   else if (iupStrEqualNoCase(format, "LUA"))
-    ret = iExportSaveImageLua(NULL, ih, name, NULL, buffer, inFunction);
+    ret = iExportSaveImageLua(NULL, ih, name, NULL, buffer);
   else if (iupStrEqualNoCase(format, "C"))
-    ret = iExportSaveImageC(NULL, ih, name, NULL, buffer, inFunction);
+    ret = iExportSaveImageC(NULL, ih, name, NULL, buffer);
 
   *str = iupArrayReleaseData(buffer);
 
@@ -1050,3 +1112,4 @@ IUP_SDK_API int iupImageExportToString(Ihandle* ih, char **str, const char* form
 
   return ret;
 }
+
