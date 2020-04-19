@@ -686,7 +686,7 @@ static char* setProjectRelativeFilename(const char* app_filename, const char* fi
   return iupStrDup(full_filename);
 }
 
-static void saveProjectOpenFiles(Ihandle *ih, Ihandle *projectConfig)
+static void saveProjectOpenFilesList(Ihandle *ih, Ihandle *projectConfig)
 {
   Ihandle* tabs = IupGetDialogChild(ih, "MULTITEXT_TABS");
   Ihandle* multitext;
@@ -704,7 +704,7 @@ static void saveProjectOpenFiles(Ihandle *ih, Ihandle *projectConfig)
   for (multitext = tabs->firstchild; multitext; multitext = multitext->brother)
   {
     filename = IupGetAttribute(multitext, "FILENAME");
-    if (!filename || iupStrEqualPartial(filename, "Untitled"))
+    if (!filename)
       continue;
 
     if (app_filename)
@@ -721,7 +721,7 @@ static void saveProjectOpenFiles(Ihandle *ih, Ihandle *projectConfig)
   IupConfigSetVariableInt(projectConfig, "ProjectOpenFiles", "Count", i - 1);
 }
 
-static void saveProjectFiles(Ihandle *projectTree, Ihandle *projectConfig)
+static void saveProjectFilesList(Ihandle *projectTree, Ihandle *projectConfig)
 {
   int count = IupConfigGetVariableInt(projectConfig, "PojectFiles", "Count");
   const char *app_filename = IupGetAttribute(projectConfig, "APP_FILENAME");
@@ -770,7 +770,7 @@ static void addFileToProjectTree(Ihandle *projectTree, const char *new_filename)
 
   IupTreeSetUserId(projectTree, IupGetInt(projectTree, "LASTADDNODE"), iupStrDup(new_filename));
 
-  saveProjectFiles(projectTree, projectConfig);
+  saveProjectFilesList(projectTree, projectConfig);
 }
 
 static void new_file(Ihandle* ih_item);
@@ -801,7 +801,7 @@ static void removeFileFromProject(Ihandle *projectConfig, Ihandle *projectTree, 
 
   IupSetAttribute(projectConfig, "MODIFIED", "YES");
 
-  saveProjectFiles(projectTree, projectConfig);
+  saveProjectFilesList(projectTree, projectConfig);
 
   free(filename);
 }
@@ -1448,7 +1448,7 @@ static int save_project_check(Ihandle* ih)
       if (cb)
         cb(ih, projectConfig);
       saveAllMarkers(ih, projectConfig);
-      saveProjectOpenFiles(ih, projectConfig);
+      saveProjectOpenFilesList(ih, projectConfig);
       IupConfigSave(projectConfig);
     }
   }
@@ -1533,7 +1533,7 @@ static int check_inproject(Ihandle* projectTree, const char* check_filename)
   return 0; /* does NOT exists, continue */
 }
 
-static Ihandle* check_open(Ihandle* ih, const char* check_filename, int save)
+static int check_open_revert(Ihandle* ih, const char* check_filename)
 {
   Ihandle* tabs = IupGetDialogChild(ih, "MULTITEXT_TABS");
   Ihandle* multitext;
@@ -1543,16 +1543,55 @@ static Ihandle* check_open(Ihandle* ih, const char* check_filename, int save)
     char* filename = IupGetAttribute(multitext, "FILENAME");
     if (filename && iupStrEqual(filename, check_filename))
     {
-      if (save)
-        IupMessageError(IupGetDialog(tabs), "File already opened. Can not save using this filename.");
-      else if (IupGetInt(multitext, "MODIFIED") && IupMessageAlarm(IupGetDialog(tabs), "Attention!", "File already opened, but modified. Do you want to revert it?", "YESNO") == 1)
+      /* found, check if modified and offer to revert it */
+
+      if (IupGetInt(multitext, "MODIFIED") && 
+          IupMessageAlarm(IupGetDialog(tabs), "Attention!", "File already opened, but modified. Do you want to revert it?", "YESNO") == 1)
         revert_file(multitext);
 
+      return 1; /* exists, abort */
+    }
+  }
+
+  return 0; /* does NOT exists, continue */
+}
+
+static Ihandle* find_open(Ihandle* ih, const char* check_filename)
+{
+  Ihandle* tabs = IupGetDialogChild(ih, "MULTITEXT_TABS");
+  Ihandle* multitext;
+
+  for (multitext = tabs->firstchild; multitext; multitext = multitext->brother)
+  {
+    char* filename = IupGetAttribute(multitext, "FILENAME");
+    if (!filename) filename = IupGetAttribute(multitext, "NEW_FILENAME");
+    if (iupStrEqual(filename, check_filename))
+    {
+      /* found */
       return multitext; /* exists, abort */
     }
   }
 
   return NULL; /* does NOT exists, continue */
+}
+
+static int check_open_to_save(Ihandle* ih, const char* check_filename)
+{
+  Ihandle* tabs = IupGetDialogChild(ih, "MULTITEXT_TABS");
+  Ihandle* multitext;
+
+  for (multitext = tabs->firstchild; multitext; multitext = multitext->brother)
+  {
+    char* filename = IupGetAttribute(multitext, "FILENAME");
+    if (filename && iupStrEqual(filename, check_filename))
+    {
+      /* found */
+      IupMessageError(IupGetDialog(tabs), "File already opened. Can not save using this filename.");
+      return 1; /* exists, abort */
+    }
+  }
+
+  return 0; /* does NOT exists, continue */
 }
 
 static int find_ext(const char* filename, const char* ext)
@@ -1597,7 +1636,7 @@ static int dropfiles_cb(Ihandle* ih, const char* filename, int num, int x, int y
     open_proj(IupGetDialog(ih), filename);
   else
   {
-    if (!check_open(ih, filename, 0))
+    if (!check_open_revert(ih, filename))
       open_file(ih, filename, 0);
   }
 
@@ -1780,7 +1819,7 @@ static int view_menu_open_cb(Ihandle *ih_menu)
 static int config_recent_cb(Ihandle* ih_item)
 {
   char* filename = IupGetAttribute(ih_item, "TITLE");
-  if (!check_open(ih_item, filename, 0))
+  if (!check_open_revert(ih_item, filename))
     open_file(ih_item, filename, 1);
   return IUP_DEFAULT;
 }
@@ -1834,7 +1873,7 @@ static int item_open_action_cb(Ihandle* ih_item)
       strcpy(filename, dir);
       strcat(filename, filetitle);
 
-      if (!check_open(ih, filename, 0))
+      if (!check_open_revert(ih, filename))
         open_file(ih_item, filename, 1);
     }
 
@@ -1890,7 +1929,7 @@ static int item_saveas_action_cb(Ihandle* ih_item)
     char* filename = get_filename_value(filedlg, IupGetAttribute(ih, "DEFAULT_EXT"));
     if (iupStrEqual(old_filename, filename))
       save_file(multitext);
-    else if (!check_open(ih, filename, 1))
+    else if (!check_open_to_save(ih, filename))
       saveas_file(multitext, filename);
 
     dir = IupGetAttribute(filedlg, "DIRECTORY");
@@ -2389,7 +2428,7 @@ static int tree_executeleaf_cb(Ihandle* projectTree, int id)
   if (id == 0)
     return IUP_DEFAULT;
 
-  if (!check_open(projectTree, filename, 0))
+  if (!check_open_revert(projectTree, filename))
     open_file(projectTree, filename, 1);
   return IUP_DEFAULT;
 }
@@ -2435,8 +2474,8 @@ static int tree_rename_cb(Ihandle* projectTree, int id, char* new_name)
     IupTreeSetUserId(projectTree, id, iupStrDup(new_filename));
 
     saveMarkers(projectConfig, multitext);
-    saveProjectFiles(projectTree, projectConfig);
-    saveProjectOpenFiles(projectTree, projectConfig);
+    saveProjectFilesList(projectTree, projectConfig);
+    saveProjectOpenFilesList(projectTree, projectConfig);
 
     free(filename);
   }
@@ -2455,7 +2494,7 @@ static int leaf_open_action_cb(Ihandle* ih_item)
     return IUP_DEFAULT;
 
   filename = IupTreeGetUserId(projectTree, id);
-  if (!check_open(projectTree, filename, 0))
+  if (!check_open_revert(projectTree, filename))
     open_file(projectTree, filename, 1);
   return IUP_DEFAULT;
 }
@@ -2597,16 +2636,15 @@ static int list_search_dblclick_cb(Ihandle *listSearch, int index, char *t)
   char *filename = IupGetAttributeId(listSearch, "FILENAME", index);
   if (filename)
   {
-    Ihandle* projectTree = IupGetDialogChild(listSearch, "PROJECTTREE");
     int lin = IupGetIntId(listSearch, "LINE", index);
     int col = IupGetIntId(listSearch, "COL", index);
     int start_pos = IupGetIntId(listSearch, "POSSTART", index);
     int end_pos = IupGetIntId(listSearch, "POSEND", index);
-    Ihandle *multitext = check_open(projectTree, filename, 0);
+    Ihandle* multitext = find_open(listSearch, filename);
 
     if (!multitext)
     {
-      open_file(projectTree, filename, 1);
+      open_file(listSearch, filename, 1);
       multitext = iScintillaDlgGetCurrentMultitext(listSearch);
     }
     else
@@ -2704,8 +2742,7 @@ static int item_new_proj_action_cb(Ihandle* ih_item)
   for (multitext = tabs->firstchild; multitext; multitext = multitext->brother)
   {
     filename = IupGetAttribute(multitext, "FILENAME");
-
-    if (!filename || iupStrEqualPartial(filename, "Untitled"))
+    if (!filename)
       continue;
 
     if (!check_inproject(projectTree, filename))
@@ -2742,7 +2779,7 @@ static void loadProjectFiles(Ihandle *projectConfig, Ihandle *projectTree)
   {
     filename = IupConfigGetVariableStrId(projectConfig, "ProjectOpenFiles", "File", i);
     filename = setProjectRelativeFilename(app_filename, filename);
-    if (!check_open(projectTree, filename, 0))
+    if (!check_open_revert(projectTree, filename))
       open_file(projectTree, filename, 1);
     free((void*)filename);
   }
@@ -2839,7 +2876,7 @@ static void saveProject(Ihandle *ih_item, Ihandle *projectConfig, int show_dialo
     cb(ih, projectConfig);
 
   saveAllMarkers(ih, projectConfig);
-  saveProjectOpenFiles(ih, projectConfig);
+  saveProjectOpenFilesList(ih, projectConfig);
   IupConfigSave(projectConfig);
 
   IupSetAttribute(projectConfig, "MODIFIED", "NO");
@@ -2994,7 +3031,7 @@ static int item_open_proj_file_action_cb(Ihandle* ih_item)
     return IUP_DEFAULT;
 
   filename = IupTreeGetUserId(projectTree, id);
-  if (!check_open(projectTree, filename, 0))
+  if (!check_open_revert(projectTree, filename))
     open_file(projectTree, filename, 1);
 
   return IUP_DEFAULT;
@@ -3009,7 +3046,7 @@ static int item_open_all_proj_file_action_cb(Ihandle* ih_item)
   for (i = 1; i <= count; i++)
   {
     char* filename = IupTreeGetUserId(projectTree, i);
-    if (!check_open(projectTree, filename, 0))
+    if (!check_open_revert(projectTree, filename))
       open_file(projectTree, filename, 1);
   }
 
@@ -3067,7 +3104,7 @@ static int item_loadsession_action_cb(Ihandle *ih_item)
 
       line_buffer = iupLineFileGetBuffer(line_file);
 
-      if (!check_open(ih, line_buffer, 0))
+      if (!check_open_revert(ih, line_buffer))
         open_file(ih_item, line_buffer, 1);
 
     } while (!iupLineFileEOF(line_file));
@@ -3573,7 +3610,7 @@ static int find_next_action_cb(Ihandle* ih_item)
         {
           char* str;
           char* filename = IupTreeGetUserId(projectTree, i);
-          if (check_open(projectTree, filename, 0))
+          if (check_open_revert(projectTree, filename))
             continue;
 
           str = readFile(filename);
@@ -3592,6 +3629,7 @@ static int find_next_action_cb(Ihandle* ih_item)
             if (st2 == st1 && ed2 == ed1)
               continue;
           }
+
           open_file(projectTree, filename, 1);
 
           multitext = iScintillaDlgGetCurrentMultitext(ih);
@@ -4777,7 +4815,7 @@ static int iScintillaDlgSetOpenFileAttrib(Ihandle* ih, const char* value)
 {
   if (value)
   {
-    if (!check_open(ih, value, 0))
+    if (!check_open_revert(ih, value))
       open_file(ih, value, 1);
   }
   else
@@ -4797,7 +4835,7 @@ static int iScintillaDlgSetSaveFileAttrib(Ihandle* ih, const char* value)
   Ihandle* multitext = iScintillaDlgGetCurrentMultitext(ih);
   if (value)
   {
-    if (!check_open(ih, value, 1))
+    if (!check_open_to_save(ih, value))
       saveas_file(multitext, value);
   }
   else
