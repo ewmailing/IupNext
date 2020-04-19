@@ -492,8 +492,8 @@ static void iExportElementLua(FILE* file, Ihandle* ih, const char *indent, int s
   }
   else  /* childtype == IUP_CHILDNONE */
   {
-    if (ih->iclass->format[0] == 'h' ||  /* IupAnimatedLabel and IupDropButton exceptions */
-        ih->iclass->format[0] == 'g')    /* IupNormalizer exception */
+    if (ih->iclass->format && (ih->iclass->format[0] == 'h' ||  /* IupAnimatedLabel and IupDropButton exceptions */
+                               ih->iclass->format[0] == 'g'))    /* IupNormalizer exception */
     {
       char localIndent[1024];
 
@@ -557,8 +557,8 @@ static void iExportElementC(FILE* file, Ihandle* ih, const char *indent, const c
   }
   else /* childtype == IUP_CHILDNONE */
   {
-    if (ih->iclass->format[0] == 'h' ||  /* IupAnimatedLabel and IupDropButton exceptions */
-        ih->iclass->format[0] == 'g')    /* IupNormalizer exception */
+    if (ih->iclass->format && (ih->iclass->format[0] == 'h' ||  /* IupAnimatedLabel and IupDropButton exceptions */
+                               ih->iclass->format[0] == 'g'))    /* IupNormalizer exception */
     {
       Ihandle *child;
       char localIndent[1024];
