@@ -1725,7 +1725,7 @@ int SimplePaint::ItemPasteActionCallback(Ihandle*)
 int SimplePaint::ItemBackgroundActionCallback(Ihandle*)
 {
   Ihandle* colordlg = IupColorDlg();
-  const char* background = IupConfigGetVariableStrDef(config, "Canvas", "Background", "255 255 255");
+  const char* background = IupConfigGetVariableStrDef(config, "Canvas", "Background", "208 208 208");
   IupSetStrAttribute(colordlg, "VALUE", background);
   IupSetAttributeHandle(colordlg, "PARENTDIALOG", dlg);
 
