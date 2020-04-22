@@ -526,7 +526,7 @@ static void scroll_move(Ihandle* ih, int canvas_width, int canvas_height, int mo
   {
     IupSetFloat(ih, "POSX", posx);
     IupSetFloat(ih, "POSY", posy);
-    IupUpdate(ih);
+    IupRedraw(ih, 0);
   }
 }
 
@@ -1187,18 +1187,26 @@ static int canvas_button_cb(Ihandle* canvas, int button, int pressed, int x, int
 
       if (button == IUP_BUTTON1)
       {
+        Ihandle* toolbox = (Ihandle*)IupGetAttribute(canvas, "TOOLBOX");
+        int tool_index = IupGetInt(toolbox, "TOOLINDEX");
+
         if (pressed)
         {
           IupSetInt(canvas, "START_X", x);
           IupSetInt(canvas, "START_Y", y);
           IupSetInt(canvas, "START_CURSOR_X", cursor_x);
           IupSetInt(canvas, "START_CURSOR_Y", cursor_y);
+
+          if (tool_index == 8)  /* Text */
+          {
+            IupSetInt(canvas, "END_X", x);
+            IupSetInt(canvas, "END_Y", y);
+            IupSetAttribute(canvas, "OVERLAY", "Yes");
+            IupRedraw(canvas, 0);
+          }
         }
         else
         {
-          Ihandle* toolbox = (Ihandle*)IupGetAttribute(canvas, "TOOLBOX");
-          int tool_index = IupGetInt(toolbox, "TOOLINDEX");
-
           if (tool_index == 1)  /* Color Picker */
           {
             Ihandle* color = IupGetDialogChild(toolbox, "COLOR");
@@ -1334,7 +1342,7 @@ static int canvas_motion_cb(Ihandle* canvas, int x, int y, char *status)
 
           IupSetAttribute(canvas, "DIRTY", "Yes");
 
-          IupUpdate(canvas);
+          IupRedraw(canvas, 0);
 
           IupSetInt(canvas, "START_X", x);
           IupSetInt(canvas, "START_Y", y);
@@ -1344,7 +1352,7 @@ static int canvas_motion_cb(Ihandle* canvas, int x, int y, char *status)
           IupSetInt(canvas, "END_X", x);
           IupSetInt(canvas, "END_Y", y);
           IupSetAttribute(canvas, "OVERLAY", "Yes");
-          IupUpdate(canvas);
+          IupRedraw(canvas, 0);
         }
       }
     }
@@ -1972,7 +1980,7 @@ static int brightcont_param_cb(Ihandle* dialog, int param_index, void* user_data
     imProcessToneGamut(image, new_image, IM_GAMUT_BRIGHTCONT, param);
 
     IupSetAttribute(canvas, "IMAGE", (char*)new_image);
-    IupUpdate(canvas);
+    IupRedraw(canvas, 0);
   }
   else if (param_index != IUP_GETPARAM_INIT && param_index != IUP_GETPARAM_MAP)
   {
