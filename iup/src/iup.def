@@ -145,6 +145,7 @@ IupGetParamV
 IupGetParamv
 IupGetParent
 IupGetRGB
+IupGetRGBA
 IupGetRGBId
 IupGetRGBId2
 IupGetText
@@ -249,6 +250,7 @@ IupSetLanguage
 IupSetLanguagePack
 IupSetLanguageString
 IupSetRGB
+IupSetRGBA
 IupSetRGBId
 IupSetRGBId2
 IupSetStrAttribute

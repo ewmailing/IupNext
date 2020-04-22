@@ -865,6 +865,11 @@ IUP_API void IupGetRGB(Ihandle *ih, const char* name, unsigned char *r, unsigned
   iupStrToRGB(IupGetAttribute(ih, name), r, g, b);
 }
 
+IUP_API void IupGetRGBA(Ihandle *ih, const char* name, unsigned char *r, unsigned char *g, unsigned char *b, unsigned char *a)
+{
+  iupStrToRGBA(IupGetAttribute(ih, name), r, g, b, a);
+}
+
 IUP_API void IupSetStrfV(Ihandle* ih, const char* name, const char* f, va_list arglist)
 {
   int size;
@@ -920,6 +925,13 @@ IUP_API void IupSetRGB(Ihandle *ih, const char* name, unsigned char r, unsigned 
 {
   char value[60];
   sprintf(value, "%d %d %d", (int)r, (int)g, (int)b);
+  IupStoreAttribute(ih, name, value);
+}
+
+IUP_API void IupSetRGBA(Ihandle *ih, const char* name, unsigned char r, unsigned char g, unsigned char b, unsigned char a)
+{
+  char value[60];
+  sprintf(value, "%d %d %d %d", (int)r, (int)g, (int)b, (int)a);
   IupStoreAttribute(ih, name, value);
 }
 

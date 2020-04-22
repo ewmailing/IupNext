@@ -112,6 +112,7 @@ IUP_API void      IupSetInt         (Ihandle* ih, const char* name, int value);
 IUP_API void      IupSetFloat       (Ihandle* ih, const char* name, float value);
 IUP_API void      IupSetDouble      (Ihandle* ih, const char* name, double value);
 IUP_API void      IupSetRGB         (Ihandle* ih, const char* name, unsigned char r, unsigned char g, unsigned char b);
+IUP_API void      IupSetRGBA        (Ihandle* ih, const char* name, unsigned char r, unsigned char g, unsigned char b, unsigned char a);
 
 IUP_API char*     IupGetAttribute(Ihandle* ih, const char* name);
 IUP_API int       IupGetInt      (Ihandle* ih, const char* name);
@@ -120,6 +121,7 @@ IUP_API int       IupGetIntInt   (Ihandle* ih, const char* name, int *i1, int *i
 IUP_API float     IupGetFloat    (Ihandle* ih, const char* name);
 IUP_API double    IupGetDouble(Ihandle* ih, const char* name);
 IUP_API void      IupGetRGB      (Ihandle* ih, const char* name, unsigned char *r, unsigned char *g, unsigned char *b);
+IUP_API void      IupGetRGBA     (Ihandle* ih, const char* name, unsigned char *r, unsigned char *g, unsigned char *b, unsigned char *a);
 
 IUP_API void  IupSetAttributeId(Ihandle* ih, const char* name, int id, const char *value);
 IUP_API void  IupSetStrAttributeId(Ihandle* ih, const char* name, int id, const char *value);
