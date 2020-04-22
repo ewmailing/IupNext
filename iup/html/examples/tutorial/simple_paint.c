@@ -554,12 +554,13 @@ static void zoom_update(Ihandle* ih, double zoom_index)
 
 static void image_flood_fill(imImage* image, int start_x, int start_y, long replace_color, double tol_percent)
 {
-  double color[3];
+  double color[4];
   double tol;
 
   color[0] = (double)cdRed(replace_color);
   color[1] = (double)cdGreen(replace_color);
   color[2] = (double)cdBlue(replace_color);
+  color[3] = (double)cdAlpha(replace_color);
 
   /* max value = 255*255*3 = 195075 */
   /* sqrt(195075) = 441 */
@@ -573,11 +574,12 @@ static void image_flood_fill(imImage* image, int start_x, int start_y, long repl
 
 static void image_fill_white(imImage* image)
 {
-  double color[3];
+  double color[4];
 
   color[0] = 255;
   color[1] = 255;
   color[2] = 255;
+  color[3] = 255;
 
   imProcessRenderConstant(image, color);
 }
@@ -622,11 +624,12 @@ static void set_new_image(Ihandle* canvas, imImage* image, const char* filename,
     IupSetAttribute(IupGetDialog(canvas), "TITLE", "Untitled - Simple Paint");
   }
 
-  /* we are going to support only RGB images with no alpha */
-  imImageRemoveAlpha(image);
+  /* we are going to support only RGB images */
   if (image->color_space != IM_RGB)
   {
     imImage* new_image = imImageCreateBased(image, -1, -1, IM_RGB, -1);
+    if (image->has_alpha)
+      imImageAddAlpha(new_image);
     imConvertColorSpace(image, new_image);
     imImageDestroy(image);
 
@@ -659,6 +662,7 @@ static void check_new_file(Ihandle* dlg)
     Ihandle* config = (Ihandle*)IupGetAttribute(canvas, "CONFIG");
     int width = IupConfigGetVariableIntDef(config, "NewImage", "Width", 640);
     int height = IupConfigGetVariableIntDef(config, "NewImage", "Height", 480);
+    int has_alpha = IupConfigGetVariableIntDef(config, "NewImage", "HasAlpha", 0);
 
     image = imImageCreate(width, height, IM_RGB, IM_BYTE);
     if (!image)
@@ -666,6 +670,9 @@ static void check_new_file(Ihandle* dlg)
       show_file_error(IM_ERR_MEM);
       return;
     }
+
+    if (has_alpha)
+      imImageAddAlpha(image);
 
     image_fill_white(image);
 
@@ -905,16 +912,16 @@ static void tool_get_text(Ihandle* toolbox)
 static void tool_draw_pencil(Ihandle* toolbox, imImage* image, int start_x, int start_y, int end_x, int end_y)
 {
   double res = IupGetDouble(NULL, "SCREENDPI") / 25.4;
-  unsigned char r, g, b;
+  unsigned char r, g, b, a;
   cdCanvas* rgb_canvas;
   
   int line_width = IupGetInt(toolbox, "TOOLWIDTH");
-  IupGetRGB(toolbox, "TOOLCOLOR", &r, &g, &b);
+  IupGetRGBA(toolbox, "TOOLCOLOR", &r, &g, &b, &a);
 
   /* do not use line style here */
   rgb_canvas = cdCreateCanvas(CD_IMIMAGE, image);
   cdCanvasSetfAttribute(rgb_canvas, "RESOLUTION", "%g", res);
-  cdCanvasForeground(rgb_canvas, cdEncodeColor(r, g, b));
+  cdCanvasForeground(rgb_canvas, cdEncodeColorAlpha(r, g, b, a));
   cdCanvasLineWidth(rgb_canvas, line_width);
   cdCanvasLine(rgb_canvas, start_x, start_y, end_x, end_y);
   cdKillCanvas(rgb_canvas);
@@ -925,10 +932,10 @@ static void tool_draw_overlay(Ihandle* toolbox, cdCanvas* cd_canvas, int start_x
   int tool_index = IupGetInt(toolbox, "TOOLINDEX");
   int line_width = IupGetInt(toolbox, "TOOLWIDTH");
   int line_style = IupGetInt(toolbox, "TOOLSTYLE") - 1;
-  unsigned char r, g, b;
-  IupGetRGB(toolbox, "TOOLCOLOR", &r, &g, &b);
-
-  cdCanvasForeground(cd_canvas, cdEncodeColor(r, g, b));
+  unsigned char r, g, b, a;
+  IupGetRGBA(toolbox, "TOOLCOLOR", &r, &g, &b, &a);
+  
+  cdCanvasForeground(cd_canvas, cdEncodeColorAlpha(r, g, b, a));
   cdCanvasLineWidth(cd_canvas, line_width);
   if (line_width == 1)
     cdCanvasLineStyle(cd_canvas, line_style);
@@ -980,11 +987,12 @@ static int canvas_action_cb(Ihandle* canvas)
     int x, y, view_width, view_height;
     view_zoom_rect(canvas, image->width, image->height, &x, &y, &view_width, &view_height);
 
-    /* black line around the image */
+    /* black line around the image
     cdCanvasForeground(cd_canvas, CD_BLACK);
     cdCanvasLineWidth(cd_canvas, 1);
     cdCanvasLineStyle(cd_canvas, CD_CONTINUOUS);
     cdCanvasRect(cd_canvas, x - 1, x + view_width, y - 1, y + view_height);
+     */
 
     /* Some CD drivers have interpolation options for image zoom */
     /* we force NEAREST so we can see the pixel boundary in zoom in */
@@ -1003,12 +1011,12 @@ static int canvas_action_cb(Ihandle* canvas)
 
         cdCanvasForeground(cd_canvas, CD_GRAY);
 
-        for (ix = 0; ix < image->width; ix++)
+        for (ix = 0; ix <= image->width; ix++)
         {
           int gx = (int)(ix * zoom_factor);
           cdCanvasLine(cd_canvas, gx + x, y, gx + x, y + view_height);
         }
-        for (iy = 0; iy < image->height; iy++)
+        for (iy = 0; iy <= image->height; iy++)
         {
           int gy = (int)(iy * zoom_factor);
           cdCanvasLine(cd_canvas, x, gy + y, x + view_width, gy + y);
@@ -1211,16 +1219,18 @@ static int canvas_button_cb(Ihandle* canvas, int button, int pressed, int x, int
           {
             Ihandle* color = IupGetDialogChild(toolbox, "COLOR");
             unsigned char** data = (unsigned char**)image->data;
-            unsigned char r, g, b;
+            unsigned char r, g, b, a = 255;
             int offset;
 
             offset = y * image->width + x;
             r = data[0][offset];
             g = data[1][offset];
             b = data[2][offset];
+            if (image->has_alpha)
+              a = data[3][offset];
 
             IupSetRGB(color, "BGCOLOR", r, g, b);
-            IupSetRGB(toolbox, "TOOLCOLOR", r, g, b);
+            IupSetRGBA(toolbox, "TOOLCOLOR", r, g, b, a);
           }
           else if (tool_index == 2)  /* Pencil */
           {
@@ -1260,10 +1270,10 @@ static int canvas_button_cb(Ihandle* canvas, int button, int pressed, int x, int
           else if (tool_index == 9)  /* Fill Color */
           {
             double tol_percent = IupGetDouble(toolbox, "TOOLFILLTOL");
-            unsigned char r, g, b;
-            IupGetRGB(toolbox, "TOOLCOLOR", &r, &g, &b);
+            unsigned char r, g, b, a;
+            IupGetRGBA(toolbox, "TOOLCOLOR", &r, &g, &b, &a);   
 
-            image_flood_fill(image, x, y, cdEncodeColor(r, g, b), tol_percent);
+            image_flood_fill(image, x, y, cdEncodeColorAlpha(r, g, b, a), tol_percent);
             IupSetAttribute(canvas, "DIRTY", "Yes");
 
             IupUpdate(canvas);
@@ -1313,8 +1323,13 @@ static int canvas_motion_cb(Ihandle* canvas, int x, int y, char *status)
       r = data[0][offset];
       g = data[1][offset];
       b = data[2][offset];
-
-      IupSetStrf(status_lbl, "TITLE", "(%4d, %4d) = %3d %3d %3d", x, y, (int)r, (int)g, (int)b);
+      if (image->has_alpha)
+      {
+        unsigned char a = data[3][offset];
+        IupSetStrf(status_lbl, "TITLE", "(%4d, %4d) = %3d %3d %3d %3d", x, y, (int)r, (int)g, (int)b, (int)a);
+      }
+      else
+        IupSetStrf(status_lbl, "TITLE", "(%4d, %4d) = %3d %3d %3d", x, y, (int)r, (int)g, (int)b);
 
       if (iup_isbutton1(status)) /* button1 is pressed */
       {
@@ -1429,8 +1444,13 @@ static int item_new_action_cb(Ihandle* item_new)
     Ihandle* config = (Ihandle*)IupGetAttribute(canvas, "CONFIG");
     int width = IupConfigGetVariableIntDef(config, "NewImage", "Width", 640);
     int height = IupConfigGetVariableIntDef(config, "NewImage", "Height", 480);
+    int has_alpha = IupConfigGetVariableIntDef(config, "NewImage", "HasAlpha", 0);
 
-    if (IupGetParam("New Image", NULL, NULL, "Width: %i[1,]\nHeight: %i[1,]\n", &width, &height, NULL))
+    if (IupGetParam("New Image", NULL, NULL, 
+                    "Width:  %i[1,]\n"
+                    "Height: %i[1,]\n" 
+                    "Has Alpha: %b\n",
+                    &width, &height, &has_alpha, NULL))
     {
       imImage* image = imImageCreate(width, height, IM_RGB, IM_BYTE);
       if (!image)
@@ -1439,10 +1459,14 @@ static int item_new_action_cb(Ihandle* item_new)
         return IUP_DEFAULT;
       }
 
+      if (has_alpha)
+        imImageAddAlpha(image);
+
       image_fill_white(image);
 
       IupConfigSetVariableInt(config, "NewImage", "Width", width);
       IupConfigSetVariableInt(config, "NewImage", "Height", height);
+      IupConfigSetVariableInt(config, "NewImage", "HasAlpha", has_alpha);
 
       set_new_image(canvas, image, NULL, 0);
     }
@@ -1732,10 +1756,16 @@ static int tool_action_cb(Ihandle* ih, int state)
 
 static int toolcolor_action_cb(Ihandle* ih)
 {
+  Ihandle* toolbox = IupGetDialog(ih);
   Ihandle* colordlg = IupColorDlg();
-  const char* color = IupGetAttribute(ih, "BGCOLOR");
+  Ihandle* canvas = (Ihandle*)IupGetAttribute(toolbox, "CANVAS");
+  imImage* image = (imImage*)IupGetAttribute(canvas, "IMAGE");
+  const char* color = IupGetAttribute(toolbox, "TOOLCOLOR");
   IupSetStrAttribute(colordlg, "VALUE", color);
-  IupSetAttributeHandle(colordlg, "PARENTDIALOG", IupGetDialog(ih));
+  IupSetAttributeHandle(colordlg, "PARENTDIALOG", toolbox);
+
+  if (image->has_alpha)
+    IupSetStrAttribute(colordlg, "SHOWALPHA", "Yes");
 
   IupPopup(colordlg, IUP_CENTER, IUP_CENTER);
 
@@ -1743,8 +1773,8 @@ static int toolcolor_action_cb(Ihandle* ih)
   {
     color = IupGetAttribute(colordlg, "VALUE");
 
-    IupSetStrAttribute(ih, "BGCOLOR", color);           
-    IupSetStrAttribute(IupGetDialog(ih), "TOOLCOLOR", color);
+    IupSetStrAttribute(toolbox, "TOOLCOLOR", color);
+    IupSetStrAttribute(ih, "BGCOLOR", color);
   }
 
   IupDestroy(colordlg);
@@ -2339,7 +2369,7 @@ static void create_toolbox(Ihandle* parent_dlg, Ihandle *config)
   IupSetCallback(toolbox, "CLOSE_CB", (Icallback)toolbox_close_cb);
   IupSetAttributeHandle(toolbox, "PARENTDIALOG", parent_dlg);
 
-  IupSetAttribute(toolbox, "TOOLCOLOR", "0 0 0");
+  IupSetAttribute(toolbox, "TOOLCOLOR", "0 0 0 255");
   IupSetAttribute(toolbox, "TOOLWIDTH", "1");
   IupSetAttribute(toolbox, "TOOLSTYLE", "1");
   IupSetAttribute(toolbox, "TOOLFILLTOL", "50");
