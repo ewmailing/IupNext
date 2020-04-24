@@ -13,6 +13,7 @@
 #include "iup.h"
 #include "iupcontrols.h"
 #include "iupgl.h"
+#include "iupim.h"
 
 #include "iup_str.h"
 #include "iup_object.h"
@@ -1154,11 +1155,12 @@ int main (int argc, char **argv)
     Ihandle* main_dialog;
 
     IupOpen(&argc, &argv);
+    IupImageLibOpen();
+    IupControlsOpen();
+    IupImOpen();
 #ifndef USE_NO_OPENGL  
     IupGLCanvasOpen();
 #endif  
-    IupControlsOpen();
-    IupImageLibOpen();
 
 #ifdef STOCK_TEST
     IupSetGlobal("IMAGESTOCKSIZE", STOCK_TEST);

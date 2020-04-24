@@ -3269,6 +3269,7 @@ int main(int argc, char **argv)
   IupImageLibOpen();
   IupScintillaOpen();
   IupControlsOpen();
+  IupImOpen();
 #ifndef USE_NO_OPENGL  
   IupGLCanvasOpen();
   IupGLControlsOpen();
