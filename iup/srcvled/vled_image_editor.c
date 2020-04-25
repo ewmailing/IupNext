@@ -1501,6 +1501,41 @@ static int file_menu_open_cb(Ihandle* ih)
   return IUP_DEFAULT;
 }
 
+static int image_menu_open_cb(Ihandle* ih)
+{
+  Ihandle* item_palette = IupGetDialogChild(ih, "ITEM_PALETTE");
+  Ihandle* item_map = IupGetDialogChild(ih, "ITEM_MAP");
+  Ihandle* item_rgb = IupGetBrother(item_map);
+  Ihandle* item_rgba = IupGetBrother(item_rgb);
+  Ihandle* canvas = IupGetDialogChild(ih, "CANVAS");
+  imImage* image = (imImage*)IupGetAttribute(canvas, "IMAGE");
+
+  if (image->color_space == IM_MAP)
+  {
+    IupSetAttribute(item_palette, "ACTIVE", "YES");
+    IupSetAttribute(item_map, "VALUE", "ON");
+    IupSetAttribute(item_rgb, "VALUE", "OFF");
+    IupSetAttribute(item_rgba, "VALUE", "OFF");
+  }
+  else
+  {
+    IupSetAttribute(item_palette, "ACTIVE", "NO");
+    IupSetAttribute(item_map, "VALUE", "OFF");
+    if (image->has_alpha)
+    {
+      IupSetAttribute(item_rgb, "VALUE", "OFF");
+      IupSetAttribute(item_rgba, "VALUE", "ON");
+    }
+    else
+    {
+      IupSetAttribute(item_rgb, "VALUE", "ON");
+      IupSetAttribute(item_rgba, "VALUE", "OFF");
+    }
+  }
+
+  return IUP_DEFAULT;
+}
+
 static int edit_menu_open_cb(Ihandle* ih)
 {
   Ihandle *clipboard = IupClipboard(); 
@@ -1745,7 +1780,7 @@ static int tool_action_cb(Ihandle* ih, int state)
   if (state == 1)
   {
     Ihandle* toolbox = IupGetDialogChild(ih, "TOOLBOX");
-    Ihandle* canvas = IupGetDialogChild(toolbox, "CANVAS");
+    Ihandle* canvas = IupGetDialogChild(ih, "CANVAS");
     imImage* image = (imImage*)IupGetAttribute(canvas, "IMAGE");
     int tool_index = IupGetInt(ih, "TOOLINDEX"); /* here is from the ih */
     if (image->color_space == IM_MAP)
@@ -1788,7 +1823,7 @@ static int colorbar_select_cb(Ihandle* ih, int index, int type)
 {
   if (type == IUP_PRIMARY)
   {
-    Ihandle *lbl = IupGetBrother(ih);
+    Ihandle *lbl = (Ihandle*)IupGetAttribute(ih, "STATUS_LABEL");
     int transp_index = IupGetInt(ih, "TRANSP_INDEX");
     unsigned char r, g, b;
     IupGetRGBId(ih, "CELL", index, &r, &g, &b);
@@ -1797,8 +1832,6 @@ static int colorbar_select_cb(Ihandle* ih, int index, int type)
       IupSetStrf(lbl, "TITLE", "%3d [BGCOLOR]", (int)index);
     else
       IupSetStrf(lbl, "TITLE", "%3d [%3d %3d %3d]", (int)index, (int)r, (int)g, (int)b);
-
-
   }
   return IUP_DEFAULT;
 }
@@ -1806,7 +1839,7 @@ static int colorbar_select_cb(Ihandle* ih, int index, int type)
 static int toolcolor_action_cb(Ihandle* ih)
 {
   Ihandle* toolbox = IupGetDialogChild(ih, "TOOLBOX");
-  Ihandle* canvas = IupGetDialogChild(toolbox, "CANVAS");
+  Ihandle* canvas = IupGetDialogChild(ih, "CANVAS");
   imImage* image = (imImage*)IupGetAttribute(canvas, "IMAGE");
 
   if (image->color_space == IM_MAP)
@@ -1834,6 +1867,7 @@ static int toolcolor_action_cb(Ihandle* ih)
     IupSetCallback(colorbar, "SELECT_CB", (Icallback)colorbar_select_cb);
     IupSetInt(colorbar, "TRANSP_INDEX", transp_index);
     IupSetAttribute(colorbar, "TIP", "Press Enter to select, Esc to cancel");
+    IupSetAttribute(colorbar, "STATUS_LABEL", (char*)lbl);
 
     for (i = 0; i < pal_count; i++)
       IupSetRGBId(colorbar, "CELL", i, cdRed(palette[i]), cdGreen(palette[i]), cdBlue(palette[i]));
@@ -1934,6 +1968,186 @@ static int toolfilltol_valuechanged_cb(Ihandle* ih)
   double value = IupGetDouble(ih, "VALUE");
   IupSetStrf(filltol_label, "TITLE", "Tol.: %.0f%%", value);
   IupSetDouble(toolbox, "TOOLFILLTOL", value);
+  return IUP_DEFAULT;
+}
+
+static int item_map_action_cb(Ihandle* item)
+{
+  Ihandle* canvas = IupGetDialogChild(item, "CANVAS");
+  imImage* image = (imImage*)IupGetAttribute(canvas, "IMAGE");
+  imImage* new_image = imImageCreateBased(image, -1, -1, IM_MAP, -1);
+  if (!new_image)
+  {
+    show_file_error(IM_ERR_MEM);
+    return IUP_DEFAULT;
+  }
+
+  imProcessConvertColorSpace(image, new_image);  /* RGB to MAP */
+
+  update_image(canvas, new_image, 0);
+
+  return IUP_DEFAULT;
+}
+
+static int item_rgb_action_cb(Ihandle* item)
+{
+  Ihandle* canvas = IupGetDialogChild(item, "CANVAS");
+  imImage* image = (imImage*)IupGetAttribute(canvas, "IMAGE");
+
+  if (image->color_space == IM_RGB)
+  {
+    /* just remove alpha */
+    imImageRemoveAlpha(image);
+
+    IupSetAttribute(canvas, "DIRTY", "Yes");
+    IupUpdate(canvas);
+  }
+  else
+  {
+    imImage* new_image = imImageCreateBased(image, -1, -1, IM_RGB, -1);
+    if (!new_image)
+    {
+      show_file_error(IM_ERR_MEM);
+      return IUP_DEFAULT;
+    }
+
+    imProcessConvertColorSpace(image, new_image);  /* MAP to RGB */
+
+    update_image(canvas, new_image, 0);
+  }
+
+  return IUP_DEFAULT;
+}
+
+static int item_rgba_action_cb(Ihandle* item)
+{
+  Ihandle* canvas = IupGetDialogChild(item, "CANVAS");
+  imImage* image = (imImage*)IupGetAttribute(canvas, "IMAGE");
+
+  if (image->color_space == IM_RGB)
+  {
+    /* just add alpha */
+    imImageAddAlpha(image);
+
+    IupSetAttribute(canvas, "DIRTY", "Yes");
+    IupUpdate(canvas);
+  }
+  else
+  {
+    imImage* new_image = imImageCreateBased(image, -1, -1, IM_RGB, -1);
+    if (!new_image)
+    {
+      show_file_error(IM_ERR_MEM);
+      return IUP_DEFAULT;
+    }
+
+    imImageAddAlpha(new_image);
+
+    imProcessConvertColorSpace(image, new_image);  /* MAP to RGB with alpha */
+
+    update_image(canvas, new_image, 0);
+  }
+
+  return IUP_DEFAULT;
+}
+
+static char* colorbar_cell_cb(Ihandle* colorbar, int cell)
+{
+  Ihandle* colordlg = IupColorDlg();
+  IupSetStrAttribute(colordlg, "VALUE", IupGetAttributeId(colorbar, "CELL", cell));
+  IupSetAttributeHandle(colordlg, "PARENTDIALOG", IupGetDialog(colorbar));
+
+  IupPopup(colordlg, IUP_CENTERPARENT, IUP_CENTERPARENT);
+
+  if (IupGetInt(colordlg, "STATUS") == 1)
+    IupSetStrAttributeId(colorbar, "CELL", cell, IupGetAttribute(colordlg, "VALUE"));
+
+  IupDestroy(colordlg);
+
+  return NULL;  /* we already changed */
+}
+
+static int palette_ok_cb(Ihandle* bt_ok)
+{
+  IupSetAttribute(IupGetDialog(bt_ok), "STATUS", "1");
+  return IUP_CLOSE;
+}
+
+static int palette_cancel_cb(Ihandle* bt_cancel)
+{
+  IupSetAttribute(IupGetDialog(bt_cancel), "STATUS", "0");
+  return IUP_CLOSE;
+}
+
+static int item_palette_action_cb(Ihandle* item)
+{
+  Ihandle *colorbar, *lbl, *dlg, *bt_ok, *bt_cancel;
+  int i, transp_index = -1;
+  Ihandle* canvas = IupGetDialogChild(item, "CANVAS");
+  imImage* image = (imImage*)IupGetAttribute(canvas, "IMAGE");
+  long* palette = image->palette;
+  int pal_count = image->palette_count;
+
+  const unsigned char* img_transp_index = imImageGetAttribute(image, "TransparencyIndex", NULL, NULL);
+  if (img_transp_index)
+    transp_index = (int)(*img_transp_index);
+
+  lbl = IupLabel("");
+  IupSetAttribute(lbl, "EXPAND", "HORIZONTAL");
+
+  colorbar = IupColorbar();
+  IupSetAttribute(colorbar, "RASTERSIZE", "900x235");
+  IupSetAttribute(colorbar, "FLAT", "YES");
+  IupSetAttribute(colorbar, "FOCUSSELECT", "YES");
+  IupSetAttribute(colorbar, "ORIENTATION", "HORIZONTAL");
+  IupSetAttribute(colorbar, "NUM_CELLS", "256");
+  IupSetAttribute(colorbar, "NUM_PARTS", "8");
+  IupSetAttribute(colorbar, "SHOW_PREVIEW", "NO");
+  IupSetCallback(colorbar, "SELECT_CB", (Icallback)colorbar_select_cb);
+  IupSetCallback(colorbar, "CELL_CB", (Icallback)colorbar_cell_cb);
+  IupSetInt(colorbar, "TRANSP_INDEX", transp_index);
+  IupSetAttribute(colorbar, "STATUS_LABEL", (char*)lbl);
+
+  bt_ok = IupButton("OK", NULL);
+  IupSetAttribute(bt_ok, "PADDING", "DEFAULTBUTTONPADDING");
+  IupSetCallback(bt_ok, "ACTION", (Icallback)palette_ok_cb);
+  bt_cancel = IupButton("Cancel", NULL);
+  IupSetCallback(bt_cancel, "ACTION", (Icallback)palette_cancel_cb);
+  IupSetAttribute(bt_cancel, "PADDING", "DEFAULTBUTTONPADDING");
+
+  for (i = 0; i < pal_count; i++)
+    IupSetRGBId(colorbar, "CELL", i, cdRed(palette[i]), cdGreen(palette[i]), cdBlue(palette[i]));
+
+  dlg = IupDialog(IupVbox(colorbar, IupSetAttributes(IupHbox(lbl, bt_ok, bt_cancel, NULL), "NORMALIZESIZE=HORIZONTAL"), NULL));
+
+  IupSetAttribute(dlg, "TITLE", "Palette");
+  IupSetAttribute(dlg, "MINBOX", "NO");
+  IupSetAttribute(dlg, "MAXBOX", "NO");
+  IupSetAttribute(dlg, "MARGIN", "5x5");
+  IupSetAttribute(dlg, "GAP", "5");
+  IupSetAttribute(dlg, "BGCOLOR", "255 255 255");
+  IupSetAttribute(dlg, "RESIZE", "NO");
+  IupSetCallback(dlg, "K_CR", (Icallback)tool_get_enter_cb);
+  IupSetCallback(dlg, "K_ESC", (Icallback)tool_get_esc_cb);
+  IupSetAttributeHandle(dlg, "PARENTDIALOG", IupGetDialog(canvas));
+
+  IupPopup(dlg, IUP_CENTERPARENT, IUP_CENTERPARENT);
+
+  if (IupGetInt(dlg, "STATUS"))
+  {
+    unsigned char r, g, b;
+
+    for (i = 0; i < pal_count; i++)
+    {
+      IupGetRGBId(colorbar, "CELL", i, &r, &g, &b);
+      palette[i] = cdEncodeColor(r, g, b);
+    }
+
+    IupSetAttribute(canvas, "DIRTY", "Yes");
+    IupUpdate(canvas);
+  }
+
+  IupDestroy(dlg);
   return IUP_DEFAULT;
 }
 
@@ -2152,13 +2366,13 @@ static int item_brightcont_action_cb(Ihandle* ih)
 
 static Ihandle* create_menu(Ihandle *config)
 {
-  Ihandle *menu, *sub_menu_file;
+  Ihandle *menu;
   Ihandle *file_menu, *item_exit, *item_new, *item_open, *item_save, *item_saveas, *item_revert;
-  Ihandle *sub_menu_edit, *edit_menu, *item_copy, *item_paste;
-  Ihandle *sub_menu_view, *view_menu, *item_toolbar, *item_statusbar;
+  Ihandle *edit_menu, *item_copy, *item_paste;
+  Ihandle *view_menu, *item_toolbar, *item_statusbar;
   Ihandle *item_zoomin, *item_zoomout, *item_actualsize;
   Ihandle *item_background, *item_toolbox, *item_zoomgrid;
-  Ihandle *sub_menu_image, *image_menu;
+  Ihandle *image_menu, *item_map, *item_rgb, *item_rgba, *item_palette;
 
   item_new = IupItem("&New\tCtrl+N", NULL);
   IupSetAttribute(item_new, "IMAGE", "IUP_FileNew");
@@ -2227,6 +2441,21 @@ static Ihandle* create_menu(Ihandle *config)
   IupSetCallback(item_statusbar, "ACTION", (Icallback)item_statusbar_action_cb);
   IupSetAttribute(item_statusbar, "VALUE", "ON");  /* default is ON */
 
+  item_map = IupItem("&Map", NULL);
+  IupSetCallback(item_map, "ACTION", (Icallback)item_map_action_cb);
+  IupSetAttribute(item_map, "NAME", "ITEM_MAP");
+
+  item_rgb = IupItem("&RGB", NULL);
+  IupSetCallback(item_rgb, "ACTION", (Icallback)item_rgb_action_cb);
+
+  item_rgba = IupItem("RGB&A", NULL);
+  IupSetCallback(item_rgba, "ACTION", (Icallback)item_rgba_action_cb);
+
+  item_palette = IupItem("&Palette...", NULL);
+  IupSetCallback(item_palette, "ACTION", (Icallback)item_palette_action_cb);
+  IupSetAttribute(item_palette, "NAME", "ITEM_PALETTE");
+  
+
   file_menu = IupMenu(
     item_new,
     item_open,
@@ -2253,12 +2482,19 @@ static Ihandle* create_menu(Ihandle *config)
     item_statusbar,
     NULL);
   image_menu = IupMenu(
+    IupSubmenu("&Type", IupMenu(
+      item_map,
+      item_rgb,
+      item_rgba,
+      NULL)),
+    item_palette,
+    IupSeparator(),
     IupSetCallbacks(IupItem("&Resize...", NULL), "ACTION", item_resize_action_cb, NULL),
     IupSetCallbacks(IupItem("&Mirror", NULL), "ACTION", item_mirror_action_cb, NULL),
     IupSetCallbacks(IupItem("&Flip", NULL), "ACTION", item_flip_action_cb, NULL),
-    IupSetCallbacks(IupItem("&Rotate 180º", NULL), "ACTION", item_rotate180_action_cb, NULL),
-    IupSetCallbacks(IupItem("&Rotate +90º (clock-wise)", NULL), "ACTION", item_rotate90cw_action_cb, NULL),
-    IupSetCallbacks(IupItem("&Rotate -90º (counter-clock)", NULL), "ACTION", item_rotate90ccw_action_cb, NULL),
+    IupSetCallbacks(IupItem("Rotate 180º", NULL), "ACTION", item_rotate180_action_cb, NULL),
+    IupSetCallbacks(IupItem("Rotate +90º (clock-wise)", NULL), "ACTION", item_rotate90cw_action_cb, NULL),
+    IupSetCallbacks(IupItem("Rotate -90º (counter-clock)", NULL), "ACTION", item_rotate90ccw_action_cb, NULL),
     IupSeparator(),
     IupSetCallbacks(IupItem("&Negative", NULL), "ACTION", item_negative_action_cb, NULL),
     IupSetCallbacks(IupItem("&Brightness and Contrast...", NULL), "ACTION", item_brightcont_action_cb, NULL),
@@ -2266,17 +2502,13 @@ static Ihandle* create_menu(Ihandle *config)
   
   IupSetCallback(file_menu, "OPEN_CB", (Icallback)file_menu_open_cb);
   IupSetCallback(edit_menu, "OPEN_CB", (Icallback)edit_menu_open_cb);
-
-  sub_menu_file = IupSubmenu("&File", file_menu);
-  sub_menu_edit = IupSubmenu("&Edit", edit_menu);
-  sub_menu_view = IupSubmenu("&View", view_menu);
-  sub_menu_image = IupSubmenu("&Image", image_menu);
+  IupSetCallback(image_menu, "OPEN_CB", (Icallback)image_menu_open_cb);
 
   menu = IupMenu(
-    sub_menu_file,
-    sub_menu_edit,
-    sub_menu_view,
-    sub_menu_image,
+    IupSubmenu("&File", file_menu),
+    IupSubmenu("&Edit", edit_menu),
+    IupSubmenu("&View", view_menu),
+    IupSubmenu("&Image", image_menu),
     NULL);
 
   /* Initialize variables from the configuration file */
