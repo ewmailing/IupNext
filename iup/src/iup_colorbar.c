@@ -27,7 +27,8 @@
 
 #define ICOLORBAR_DEFAULT_NUM_CELLS 16  /* default number of cells */
 #define ICOLORBAR_NO_COLOR 0xff000000   /* no color                */
-#define ICOLORBAR_DELTA 5               /* preview margin          */
+#define ICOLORBAR_PREVIEW_DELTA 5       /* preview margin          */
+#define ICOLORBAR_DELTA 2               /* cell margin             */
 #define ICOLORBAR_PRIMARY -1
 #define ICOLORBAR_SECONDARY -2
 
@@ -49,12 +50,13 @@ struct _IcontrolData
   long mid_shadow;        /* } 3D shadowed color                                    */
   long dark_shadow;       /* }                                                      */
   long transparency;      /* transparency color                                     */
-  int show_secondary;     /* secondary color selection flag                          */
+  int show_secondary;     /* secondary color selection flag                         */
   int preview_size;       /* preview size (pixels) 0=disabled, -1=automatic         */
   int fgcolor_idx;        /* current primary index selected                         */
   int bgcolor_idx;        /* current secondary index selected                       */
   int focus_cell;         /* cell with focus                                        */
   int has_focus;          /* 1 if the control has the focus, else 0                 */
+  int focus_select;       /* select when focus is changed                           */
   long flatcolor;
 };
 
@@ -226,7 +228,7 @@ static int iColorbarGetIndexColor(Ihandle* ih, int x, int y)
 /* This function is used to repaint the preview area. */
 static void iColorbarRenderPreview(Ihandle* ih)
 {
-  int delta = ICOLORBAR_DELTA;
+  int delta = ICOLORBAR_PREVIEW_DELTA;
   int xmin,  ymin;
   int xmax,  ymax;
   int xhalf, yhalf;
@@ -257,15 +259,10 @@ static void iColorbarRenderPreview(Ihandle* ih)
 
 static void iColorbarDrawFocusCell(Ihandle* ih)
 {
-  int delta = 4;
   int xmin, ymin;
   int xmax, ymax;
 
   iColorbarGetCellLimit(ih, ih->data->focus_cell, &xmin, &xmax, &ymin, &ymax);
-  xmin += delta;
-  xmax -= delta;
-  ymin += delta;
-  ymax -= delta;
 
   IupDrawFocusRect(ih, xmin, ymin, xmax, ymax);
 }
@@ -273,7 +270,7 @@ static void iColorbarDrawFocusCell(Ihandle* ih)
 /* This function is used to repaint a cell. */
 static void iColorbarRenderCell(Ihandle* ih, int idx)
 {
-  int delta = 2;
+  int delta = ICOLORBAR_DELTA;
   int xmin, ymin;
   int xmax, ymax;
 
@@ -302,7 +299,7 @@ static int iColorbarCheckPreview(Ihandle* ih, int x, int y)
   int xmin,  ymin;
   int xmax,  ymax;
   int xhalf, yhalf;
-  int delta = ICOLORBAR_DELTA;
+  int delta = ICOLORBAR_PREVIEW_DELTA;
 
   if (ih->data->preview_size == 0)
     return 0;
@@ -438,6 +435,18 @@ static int iColorbarSetSquaredAttrib(Ihandle* ih, const char* value)
 static char* iColorbarGetSquaredAttrib(Ihandle* ih)
 {
   return iupStrReturnBoolean(ih->data->squared);
+}
+
+static int iColorbarSetFocusSelectAttrib(Ihandle* ih, const char* value)
+{
+  ih->data->focus_select = iupStrBoolean(value);
+  IupUpdate(ih);
+  return 0;
+}
+
+static char* iColorbarGetFocusSelectAttrib(Ihandle* ih)
+{
+  return iupStrReturnBoolean(ih->data->focus_select);
 }
 
 static int iColorbarSetShadowedAttrib(Ihandle* ih, const char* value)
@@ -627,10 +636,7 @@ static void iColorbarCallSelectCb(Ihandle* ih, int idx, int type)
     return;
 
   select_cb = (IFnii)IupGetCallback(ih, "SELECT_CB");
-  if (!select_cb)
-    return;
-
-  if (select_cb(ih, idx, type) == IUP_IGNORE)
+  if (select_cb && select_cb(ih, idx, type) == IUP_IGNORE)
     return;
 
   if (type == ICOLORBAR_PRIMARY)
@@ -658,6 +664,8 @@ static void iColorbarCallCellCb(Ihandle* ih, int idx)
 
 static int iColorbarKeyPress_CB(Ihandle* ih, int c, int press)
 {
+  int old_focus_cell;
+
   if (c != K_LEFT && c != K_UP && c != K_RIGHT && c != K_DOWN &&
       c != K_HOME && c != K_END &&
       c != K_SP && c != K_sCR && c != K_sSP && c != K_cSP)
@@ -665,6 +673,8 @@ static int iColorbarKeyPress_CB(Ihandle* ih, int c, int press)
 
   if (!press || !ih->data->has_focus)
     return IUP_DEFAULT;
+
+  old_focus_cell = ih->data->focus_cell;
 
   switch(c)
   {
@@ -740,6 +750,9 @@ static int iColorbarKeyPress_CB(Ihandle* ih, int c, int press)
     return IUP_DEFAULT;
   }
 
+  if (old_focus_cell != ih->data->focus_cell && ih->data->focus_select)
+    iColorbarCallSelectCb(ih, ih->data->focus_cell, ICOLORBAR_PRIMARY);
+
   IupUpdate(ih);
   return IUP_IGNORE;  /* to avoid arrow keys being processed by the system */
 }
@@ -790,7 +803,13 @@ static int iColorbarButton_CB(Ihandle* ih, int b, int m, int x, int y, char* r)
       return IUP_DEFAULT;
     }
 
-    ih->data->focus_cell = idx;
+    if (ih->data->focus_cell != idx)
+    {
+      ih->data->focus_cell = idx;
+
+      if (ih->data->focus_select)
+        iColorbarCallSelectCb(ih, idx, ICOLORBAR_PRIMARY);
+    }
 
     iColorbarCallCellCb(ih, idx);
   }
@@ -800,17 +819,18 @@ static int iColorbarButton_CB(Ihandle* ih, int b, int m, int x, int y, char* r)
     if (idx < 0  || idx >= ih->data->num_cells)
       return IUP_DEFAULT;
 
-    ih->data->focus_cell = idx;
+    if (ih->data->focus_cell != idx)
+    {
+      ih->data->focus_cell = idx;
 
-    iColorbarCallSelectCb(ih, idx, ICOLORBAR_PRIMARY);
+      iColorbarCallSelectCb(ih, idx, ICOLORBAR_PRIMARY);
+    }
   }
   else if (b == IUP_BUTTON3 && iup_isshift(r)) 
   { 
     idx = iColorbarGetIndexColor(ih, x, y); 
     if (idx < 0  || idx >= ih->data->num_cells)
       return IUP_DEFAULT;
-
-    ih->data->focus_cell = idx;
 
     iColorbarCallExtentedCb(ih, idx);
   }
@@ -819,8 +839,6 @@ static int iColorbarButton_CB(Ihandle* ih, int b, int m, int x, int y, char* r)
     idx = iColorbarGetIndexColor(ih, x, y); 
     if (idx < 0  || idx >= ih->data->num_cells)
       return IUP_DEFAULT;
-
-    ih->data->focus_cell = idx;
 
     iColorbarCallSelectCb(ih, idx, ICOLORBAR_SECONDARY);
   }
@@ -911,6 +929,7 @@ Iclass* iupColorbarNewClass(void)
   iupClassRegisterAttribute(ic, "PREVIEW_SIZE", iColorbarGetPreviewSizeAttrib, iColorbarSetPreviewSizeAttrib, NULL, NULL, IUPAF_NOT_MAPPED|IUPAF_NO_INHERIT);
   iupClassRegisterAttribute(ic, "PRIMARY_CELL", iColorbarGetPrimaryCellAttrib, iColorbarSetPrimaryCellAttrib, IUPAF_SAMEASSYSTEM, "0", IUPAF_NOT_MAPPED|IUPAF_NO_INHERIT);
   iupClassRegisterAttribute(ic, "SECONDARY_CELL", iColorbarGetSecondaryCellAttrib, iColorbarSetSecondaryCellAttrib, IUPAF_SAMEASSYSTEM, "15", IUPAF_NOT_MAPPED|IUPAF_NO_INHERIT);
+  iupClassRegisterAttribute(ic, "FOCUSSELECT", iColorbarGetFocusSelectAttrib, iColorbarSetFocusSelectAttrib, NULL, NULL, IUPAF_NO_INHERIT);
 
   iupClassRegisterAttribute(ic, "ORIENTATION", iColorbarGetOrientationAttrib, iColorbarSetOrientationAttrib, IUPAF_SAMEASSYSTEM, "VERTICAL", IUPAF_NOT_MAPPED);
   iupClassRegisterAttribute(ic, "TRANSPARENCY", NULL, iColorbarSetTransparencyAttrib, NULL, NULL, IUPAF_NOT_MAPPED);
