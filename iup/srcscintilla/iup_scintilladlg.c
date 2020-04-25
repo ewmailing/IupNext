@@ -2076,10 +2076,10 @@ static int item_rename_action_cb(Ihandle* ih_item)
   Ihandle* config = iScintillaDlgGetConfig(ih_item);
   Ihandle* multitext = iScintillaDlgGetCurrentMultitext(ih_item);
   Ihandle* ih = IupGetDialog(ih_item);
+  char new_name[512], new_filename[10240];
 
   char* old_filename = IupGetAttribute(multitext, "FILENAME");
   if (!old_filename) old_filename = IupGetAttribute(multitext, "NEW_FILENAME");
-  char new_name[512], new_filename[10240];
 
   old_filename = iupStrDup(old_filename);
   strcpy(new_name, strFileTitle(old_filename));
