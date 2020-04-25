@@ -416,9 +416,9 @@ int goto_ok_action_cb(Ihandle* bt_ok)
   return IUP_CLOSE;
 }
 
-int goto_cancel_action_cb(Ihandle* bt_ok)
+int goto_cancel_action_cb(Ihandle* bt_cancel)
 {
-  IupSetAttribute(IupGetDialog(bt_ok), "STATUS", "0");
+  IupSetAttribute(IupGetDialog(bt_cancel), "STATUS", "0");
   return IUP_CLOSE;
 }
 
