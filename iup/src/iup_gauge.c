@@ -125,6 +125,7 @@ static int iGaugeRedraw_CB(Ihandle* ih)
 
   IupDrawParentBackground(ih);
 
+  /* draw border */
   if (ih->data->flat)
   {
     iupAttribSet(ih, "DRAWSTYLE", "STROKE");
