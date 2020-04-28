@@ -734,7 +734,7 @@ static int iExportImagePrintBuffer(Iarray *buffer, const char *format, va_list a
 
   data = (char*)iupArrayGetData(buffer);
 
-  strcat(data + count, str);
+  memcpy(data + count, str, len);
 
   return len;
 }
@@ -1085,8 +1085,8 @@ IUP_SDK_API int iupImageExportToFile(Ihandle* ih, FILE* packfile, const char* fo
 
 IUP_SDK_API int iupImageExportToString(Ihandle* ih, char **str, const char* format, const char* p_name)
 {
-  Iarray *buffer = iupArrayCreate(1024, sizeof(char *));
-  int ret = 0;
+  Iarray *buffer = iupArrayCreate(1024, sizeof(char));
+  int ret = 0, count;
   char name[128];
 
   if (!p_name)
@@ -1105,6 +1105,10 @@ IUP_SDK_API int iupImageExportToString(Ihandle* ih, char **str, const char* form
     ret = iExportSaveImageLua(NULL, ih, name, NULL, buffer);
   else if (iupStrEqualNoCase(format, "C"))
     ret = iExportSaveImageC(NULL, ih, name, NULL, buffer);
+
+  count = iupArrayCount(buffer);
+  *str = iupArrayInc(buffer);
+  (*str)[count] = 0;
 
   *str = iupArrayReleaseData(buffer);
 
