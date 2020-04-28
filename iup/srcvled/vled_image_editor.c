@@ -1072,7 +1072,7 @@ static int canvas_action_cb(Ihandle* canvas)
     cdCanvasSetAttribute(cd_canvas, "IMGINTERP", "NEAREST");  /* affects only drivers that have this attribute */
     cdCanvasPutImImage(cd_canvas, image, x, y, view_width, view_height);
 
-    if (IupConfigGetVariableInt(config, "ImageEditor", "ZoomGrid"))
+    if (IupConfigGetVariableIntDef(config, "ImageEditor", "ZoomGrid", 1))
     {
       Ihandle* zoom_val = IupGetDialogChild(canvas, "ZOOMVAL");
       double zoom_index = IupGetDouble(zoom_val, "VALUE");
@@ -1546,8 +1546,8 @@ void vLedImageEditorNewImage(Ihandle* dlg, const char* filename)
 {
   Ihandle* canvas = IupGetDialogChild(dlg, "CANVAS");
   Ihandle* config = (Ihandle*)IupGetAttribute(canvas, "CONFIG");
-  int width = IupConfigGetVariableIntDef(config, "NewImage", "Width", 640);
-  int height = IupConfigGetVariableIntDef(config, "NewImage", "Height", 480);
+  int width = IupConfigGetVariableIntDef(config, "NewImage", "Width", 32);
+  int height = IupConfigGetVariableIntDef(config, "NewImage", "Height", 32);
   int type = IupConfigGetVariableIntDef(config, "NewImage", "Type", 1);
   char name[512];
   static int new_img_count = 1;
@@ -1564,6 +1564,7 @@ void vLedImageEditorNewImage(Ihandle* dlg, const char* filename)
     Ihandle* iup_image;
     int color_space = type == 0 ? IM_MAP : IM_RGB;
     imImage* image;
+    Icallback imagechanged_cb;
 
     IupConfigSetVariableInt(config, "NewImage", "Width", width);
     IupConfigSetVariableInt(config, "NewImage", "Height", height);
@@ -1594,9 +1595,15 @@ void vLedImageEditorNewImage(Ihandle* dlg, const char* filename)
     IupSetAttribute(canvas, "IUP_IMAGE", (char*)iup_image);
     IupSetStrAttribute(canvas, "IUP_IMAGE_NAME", name);
     IupSetStrAttribute(canvas, "_IUPLED_FILENAME", filename);
+
+    IupSetHandle(name, iup_image);
     IupSetStrAttribute(iup_image, "_IUPLED_FILENAME", filename);
 
     set_new_image(canvas, image, 0);
+
+    imagechanged_cb = IupGetCallback(IupGetDialog(canvas), "IMAGECHANGED_CB");
+    if (imagechanged_cb)
+      imagechanged_cb(IupGetDialog(canvas));
   }
 }
 
@@ -1716,20 +1723,25 @@ static int item_revert_action_cb(Ihandle* item)
   return IUP_DEFAULT;
 }
 
-static int item_exit_action_cb(Ihandle* item_exit)
+static int item_close_action_cb(Ihandle* item_close)
 {
-  Ihandle* dlg = IupGetDialog(item_exit);
+  Ihandle* dlg = IupGetDialog(item_close);
   Ihandle* config = (Ihandle*)IupGetAttribute(dlg, "CONFIG");
   Ihandle* canvas = IupGetDialogChild(dlg, "CANVAS");
   imImage* image = (imImage*)IupGetAttribute(canvas, "IMAGE");
 
-  if (!save_check(item_exit))
+  if (!save_check(item_close))
     return IUP_IGNORE;  /* to abort the CLOSE_CB callback */
 
   if (image)
     imImageDestroy(image);
 
-  IupConfigDialogClosed(config, dlg, "ImageEditor");
+  IupSetAttribute(canvas, "IMAGE", NULL);
+  IupSetAttribute(canvas, "IUP_IMAGE", NULL);
+  IupSetAttribute(canvas, "IUP_IMAGE_NAME", NULL);
+  IupSetAttribute(canvas, "_IUPLED_FILENAME", NULL);
+
+  IupConfigDialogClosed(config, dlg, "ImageEditorDialog");
   return IUP_CLOSE;
 }
 
@@ -2458,7 +2470,7 @@ static int item_brightcont_action_cb(Ihandle* ih)
 static Ihandle* create_menu(Ihandle *config)
 {
   Ihandle *menu;
-  Ihandle *file_menu, *item_exit, *item_new, *item_open, *item_save, *item_revert;
+  Ihandle *file_menu, *item_close, *item_new, *item_open, *item_save, *item_revert;
   Ihandle *edit_menu, *item_copy, *item_paste, *item_import, *item_export;
   Ihandle *view_menu, *item_toolbar, *item_statusbar;
   Ihandle *item_zoomin, *item_zoomout, *item_actualsize;
@@ -2490,8 +2502,8 @@ static Ihandle* create_menu(Ihandle *config)
   IupSetAttribute(item_export, "IMAGE", "IUP_FileSave");
   IupSetCallback(item_export, "ACTION", (Icallback)item_export_action_cb);
 
-  item_exit = IupItem("E&xit", NULL);
-  IupSetCallback(item_exit, "ACTION", (Icallback)item_exit_action_cb);
+  item_close = IupItem("&Close", NULL);
+  IupSetCallback(item_close, "ACTION", (Icallback)item_close_action_cb);
 
   item_copy = IupItem("&Copy\tCtrl+C", NULL);
   IupSetAttribute(item_copy, "NAME", "ITEM_COPY");
@@ -2560,7 +2572,7 @@ static Ihandle* create_menu(Ihandle *config)
     item_import,
     item_export,
     IupSeparator(),
-    item_exit,
+    item_close,
     NULL);
   edit_menu = IupMenu(
     item_copy,
@@ -2803,7 +2815,7 @@ static Ihandle* create_statusbar(Ihandle *config)
   return statusbar;
 }
 
-Ihandle* vLedImageEditorCreate(Ihandle *config)
+Ihandle* vLedImageEditorCreate(Ihandle* parent, Ihandle *config)
 {
   Ihandle *dlg, *vbox, *canvas, *toolbox;
 
@@ -2836,7 +2848,8 @@ Ihandle* vLedImageEditorCreate(Ihandle *config)
   dlg = IupDialog(vbox);
   IupSetAttribute(dlg, "TITLE", "Image Editor");
   IupSetAttributeHandle(dlg, "MENU", create_menu(config));
-  IupSetCallback(dlg, "CLOSE_CB", (Icallback)item_exit_action_cb);
+  IupSetAttributeHandle(dlg, "PARENTDIALOG", parent);
+  IupSetCallback(dlg, "CLOSE_CB", (Icallback)item_close_action_cb);
   IupSetCallback(dlg, "DROPFILES_CB", (Icallback)dropfiles_cb);
 
   IupSetCallback(dlg, "K_cN", (Icallback)item_new_action_cb);
@@ -2866,7 +2879,7 @@ void vLedImageEditorSetImage(Ihandle* dlg, Ihandle* iup_image, const char* name)
     if (!old_image)
     {
       Ihandle* config = (Ihandle*)IupGetAttribute(canvas, "CONFIG");
-      IupConfigDialogClosed(config, dlg, "ImageEditor");
+      IupConfigDialogClosed(config, dlg, "ImageEditorDialog");
     }
     return;
   }

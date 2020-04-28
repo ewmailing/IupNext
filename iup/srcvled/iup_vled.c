@@ -46,7 +46,7 @@
 
 void vLedLoadImages(void);
 
-Ihandle* vLedImageEditorCreate(Ihandle *config);
+Ihandle* vLedImageEditorCreate(Ihandle* parent, Ihandle *config);
 void vLedImageEditorNewImage(Ihandle* dlg, const char* filename);
 void vLedImageEditorSetImage(Ihandle* dlg, Ihandle* iup_image, const char* name);
 
@@ -448,52 +448,55 @@ static void updateElemTree(Ihandle* elem_tree, const char* filename)
 
 static char* load_comments(const char* filename)
 {
-  IlineFile* line_file = iupLineFileOpen(filename);
-  if (line_file)
+  if (filename)
   {
-    Iarray* str_array = iupArrayCreate(1024, sizeof(char));  /* just set an initial size, but count is 0 */
-    char* comments;
-    int count, has_comment = 0;
-
-    do
+    IlineFile* line_file = iupLineFileOpen(filename);
+    if (line_file)
     {
-      const char* line_buffer;
-      int i = 0;
+      Iarray* str_array = iupArrayCreate(1024, sizeof(char));  /* just set an initial size, but count is 0 */
+      char* comments;
+      int count, has_comment = 0;
 
-      int line_len = iupLineFileReadLine(line_file);
-      if (line_len == -1)
-        break;
+      do
+      {
+        const char* line_buffer;
+        int i = 0;
 
-      line_buffer = iupLineFileGetBuffer(line_file);
+        int line_len = iupLineFileReadLine(line_file);
+        if (line_len == -1)
+          break;
 
-      while (line_buffer[i] == ' ' || line_buffer[i] == '\t') /* skip spaces and tabs */
-        i++;
+        line_buffer = iupLineFileGetBuffer(line_file);
 
-      if (line_buffer[i] == '#')
-        has_comment = 1;
-      else if(line_buffer[i] != 0)
-        break;
+        while (line_buffer[i] == ' ' || line_buffer[i] == '\t') /* skip spaces and tabs */
+          i++;
+
+        if (line_buffer[i] == '#')
+          has_comment = 1;
+        else if (line_buffer[i] != 0)
+          break;
+
+        count = iupArrayCount(str_array);
+        comments = iupArrayAdd(str_array, line_len + 1);
+        if (line_len)
+          memcpy(comments + count, line_buffer, line_len);
+        comments[count + line_len] = '\n';
+
+      } while (!iupLineFileEOF(line_file));
 
       count = iupArrayCount(str_array);
-      comments = iupArrayAdd(str_array, line_len + 1);
-      if (line_len)
-        memcpy(comments + count, line_buffer, line_len);
-      comments[count + line_len] = '\n';
+      if (has_comment && count != 0)
+      {
+        comments = iupArrayReleaseData(str_array);
+        comments[count] = 0; /* replace the least '\n' by terminator */
+      }
+      else
+        comments = NULL;
 
-    } while (!iupLineFileEOF(line_file));
-
-    count = iupArrayCount(str_array);
-    if (has_comment && count != 0)
-    {
-      comments = iupArrayReleaseData(str_array);
-      comments[count] = 0; /* replace the least '\n' by terminator */
+      iupArrayDestroy(str_array);
+      iupLineFileClose(line_file);
+      return comments;
     }
-    else
-      comments = NULL;
-
-    iupArrayDestroy(str_array);
-    iupLineFileClose(line_file);
-    return comments;
   }
   return NULL;
 }
@@ -1687,7 +1690,7 @@ static int item_load_action_cb(Ihandle *ih_item)
   unload_led(multitext, filename);
   IupSetAttribute(multitext, "LOADED", NULL);
 
-  if (modified)
+  if (modified || !IupGetAttribute(multitext, "FILENAME"))
     load_led(elem_tree, filename, 1);
   else
     load_led(elem_tree, filename, 0);
@@ -2803,9 +2806,10 @@ static int item_newlayout_cb(Ihandle* ih_bt)
   return IUP_DEFAULT;
 }
 
-static int imagechanged_cb(Ihandle* dlg)
+static int imagechanged_cb(Ihandle* image_editor_dlg)
 {
-  Ihandle* multitext = (Ihandle*)IupGetAttribute(dlg, "MULTITEXT");
+  Ihandle* dlg = IupGetAttributeHandle(image_editor_dlg, "PARENTDIALOG");
+  Ihandle* multitext = vLedGetCurrentMultitext(dlg);
   rewrite_led(multitext);
   return IUP_DEFAULT;
 }
@@ -2821,7 +2825,7 @@ static int elem_imagedlg_cb(Ihandle* ih_item)
   Ihandle* image_editor_dlg = (Ihandle*)IupGetAttribute(IupGetDialog(multitext), "IMAGE_EDITOR_DIALOG");
   if (!image_editor_dlg)
   {
-    image_editor_dlg = vLedImageEditorCreate(config);
+    image_editor_dlg = vLedImageEditorCreate(IupGetDialog(elem_tree), config);
     IupSetCallback(image_editor_dlg, "IMAGECHANGED_CB", (Icallback)imagechanged_cb);
     IupSetAttribute(IupGetDialog(multitext), "IMAGE_EDITOR_DIALOG", (char*)image_editor_dlg);
   }
@@ -2839,12 +2843,12 @@ static int elem_imagedlg_cb(Ihandle* ih_item)
 static int item_newimage_cb(Ihandle* ih_item)
 {
   Ihandle* multitext = vLedGetCurrentMultitext(ih_item);
-  char* filename = IupGetAttribute(multitext, "FILENAME");
+  char *filename = get_filename(multitext);
   Ihandle* config = get_config(ih_item);
   Ihandle* image_editor_dlg = (Ihandle*)IupGetAttribute(IupGetDialog(multitext), "IMAGE_EDITOR_DIALOG");
   if (!image_editor_dlg)
   {
-    image_editor_dlg = vLedImageEditorCreate(config);
+    image_editor_dlg = vLedImageEditorCreate(IupGetDialog(multitext), config);
     IupSetCallback(image_editor_dlg, "IMAGECHANGED_CB", (Icallback)imagechanged_cb);
     IupSetAttribute(IupGetDialog(multitext), "IMAGE_EDITOR_DIALOG", (char*)image_editor_dlg);
   }
