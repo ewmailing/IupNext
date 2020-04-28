@@ -377,10 +377,24 @@ static int vLedTreeAddChildren(Ihandle* elem_tree, int last_child_id, Ihandle* p
   return last_child_id;
 }
 
-static void enable_elem_tools_buttons(Ihandle *elem_tree, int active)
+static void enable_elem_tools_buttons(Ihandle *elem_tree, int active, Ihandle* elem)
 {
   /* elements tools buttons */
+  Ihandle *bt;
+
   IupSetAttribute(IupGetBrother(IupGetParent(elem_tree)), "ACTIVE", active? "YES": "NO");
+
+  bt = IupGetDialogChild(elem_tree, "ELEM_LAYOUT_BUTTON");
+  if (elem && IupGetDialog(elem))
+    IupSetAttribute(bt, "ACTIVE", "Yes");
+  else
+    IupSetAttribute(bt, "ACTIVE", "No");
+
+  bt = IupGetDialogChild(elem_tree, "ELEM_IMAGE_BUTTON");
+  if (elem && elem->iclass->nativetype == IUP_TYPEIMAGE)
+    IupSetAttribute(bt, "ACTIVE", "Yes");
+  else
+    IupSetAttribute(bt, "ACTIVE", "No");
 }
 
 static void updateElemTree(Ihandle* elem_tree, const char* filename)
@@ -394,7 +408,7 @@ static void updateElemTree(Ihandle* elem_tree, const char* filename)
   IupGetAllNames(names, num_names);
 
   IupSetAttribute(elem_tree, "DELNODE0", "ALL");
-  enable_elem_tools_buttons(elem_tree, 0);
+  enable_elem_tools_buttons(elem_tree, 0, NULL);
 
   for (i = 0; i < num_names; i++)
   {
@@ -438,10 +452,10 @@ static void updateElemTree(Ihandle* elem_tree, const char* filename)
       vLedTreeAddChildren(elem_tree, last_child_id, elem, filename);
   }
 
-  IupSetAttribute(elem_tree, "VALUE", "1");
+//  IupSetAttribute(elem_tree, "VALUE", "1");
   IupSetAttribute(elem_tree, "VALUE", "0");
 
-  enable_elem_tools_buttons(elem_tree, 1);
+  enable_elem_tools_buttons(elem_tree, 1, (Ihandle*)IupTreeGetUserId(elem_tree, 0));
 
   free(names);
 }
@@ -953,7 +967,7 @@ static int tabChange_cb(Ihandle* tabs, Ihandle* new_multitext, Ihandle* old_mult
 
   IupSetAttribute(elem_tree_box, "VALUE_HANDLE", (char*)elem_tree);
 
-  enable_elem_tools_buttons(elem_tree, tree_count > 0);
+  enable_elem_tools_buttons(elem_tree, tree_count > 0, tree_count > 0? (Ihandle*)IupTreeGetUserId(elem_tree, IupGetInt(elem_tree, "VALUE")) : NULL);
 
   return IUP_DEFAULT;
 }
@@ -972,7 +986,7 @@ static void reload_led_file(Ihandle* multitext)
   else
   {
     IupSetAttribute(elem_tree, "DELNODE0", "ALL");
-    enable_elem_tools_buttons(elem_tree, 0);
+    enable_elem_tools_buttons(elem_tree, 0, NULL);
   }
 }
 
@@ -1173,6 +1187,8 @@ static int scidlg_newtext_cb(Ihandle* main_dialog, Ihandle *multitext)
 
   IupSetAttribute(elem_tree_box, "VALUE_HANDLE", (char*)elem_tree);
   IupRefreshChildren(elem_tree_box);
+
+  enable_elem_tools_buttons(elem_tree, 0, NULL);
 
   return IUP_DEFAULT;
 }
@@ -1708,7 +1724,7 @@ static int item_unload_action_cb(Ihandle *ih_item)
   IupSetAttribute(multitext, "LOADED", NULL);
 
   IupSetAttribute(elem_tree, "DELNODE0", "ALL");
-  enable_elem_tools_buttons(elem_tree, 0);
+  enable_elem_tools_buttons(elem_tree, 0, NULL);
 
   return IUP_DEFAULT;
 }
@@ -2474,9 +2490,7 @@ static int tree_selection_cb(Ihandle* elem_tree, int id, int status)
 
     Ihandle* properties_dlg = (Ihandle*)IupGetAttribute(IupGetParent(elem_tree), "PROPERTIES_DIALOG");
     if (properties_dlg && IupGetInt(properties_dlg, "VISIBLE"))
-    {
       iupLayoutPropertiesUpdate(properties_dlg, elem);
-    }
 
     bt = IupGetDialogChild(elem_tree, "ELEM_LAYOUT_BUTTON");
     if (IupGetDialog(elem))
