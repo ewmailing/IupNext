@@ -1485,7 +1485,7 @@ static int iLayoutContextMenuHandleName_CB(Ihandle* menu)
 {
   iLayoutDialog* layoutdlg = (iLayoutDialog*)iupAttribGetInherit(menu, "_IUP_LAYOUTDIALOG");
   Ihandle* elem = (Ihandle*)iupAttribGetInherit(menu, "_IUP_LAYOUTCONTEXTELEMENT");
-  char name[256] = "";
+  char name[512] = "";
 
   char* elem_name = iLayoutGetName(elem);
   if (elem_name)
@@ -1495,7 +1495,7 @@ static int iLayoutContextMenuHandleName_CB(Ihandle* menu)
   IupSetAttributeHandle(NULL, "PARENTDIALOG", IupGetDialog(layoutdlg->tree));
 
   if (IupGetParam("Handle Name", NULL, NULL,
-                  "Name: %s[Leave it empty to remove the handle]\n",
+                  "Name: %s{Leave it empty to remove the handle}\n",
                   name, NULL))
   {
     if (name[0] == 0 || name[0] == ' ')
