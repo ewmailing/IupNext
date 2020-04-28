@@ -321,23 +321,6 @@ static Ihandle* load_image_PaintText(void)
 /********************************** Utilities *****************************************/
 
 
-static const char* str_filetitle(const char *filename)
-{
-  /* Start at the last character */
-  int len = (int)strlen(filename);
-  int offset = len - 1;
-  while (offset != 0)
-  {
-    if (filename[offset] == '\\' || filename[offset] == '/')
-    {
-      offset++;
-      break;
-    }
-    offset--;
-  }
-  return filename + offset;
-}
-
 static const char* str_fileext(const char *filename)
 {
   /* Start at the last character */
@@ -608,28 +591,6 @@ static void image_fill_white(imImage* image)
   imProcessRenderConstant(image, color);
 }
 
-static void update_image(Ihandle* canvas, imImage* image, int update_size)
-{
-  imImage* old_image = (imImage*)IupGetAttribute(canvas, "IMAGE");
-
-  IupSetAttribute(canvas, "DIRTY", "Yes");
-  IupSetAttribute(canvas, "IMAGE", (char*)image);
-
-  if (old_image)
-    imImageDestroy(old_image);
-
-  if (update_size)
-  {
-    Ihandle* size_lbl = IupGetDialogChild(canvas, "SIZELABEL");
-    Ihandle* zoom_val = IupGetDialogChild(canvas, "ZOOMVAL");
-    double zoom_index = IupGetDouble(zoom_val, "VALUE");
-    IupSetfAttribute(size_lbl, "TITLE", "%d x %d px", image->width, image->height);
-    zoom_update(canvas, zoom_index);
-  }
-  else
-    IupUpdate(canvas);
-}
-
 static void update_toolbox(Ihandle* toolbox, int map)
 {
   Ihandle* tool_pointer = IupGetDialogChild(toolbox, "TOOL_POINTER");
@@ -646,27 +607,61 @@ static void update_toolbox(Ihandle* toolbox, int map)
   IupSetAttribute(tool, "ACTIVE", value); tool = IupGetBrother(tool);  /* TOOLINDEX=8 */
 }
 
-static void set_new_image(Ihandle* canvas, imImage* image, const char* filename, int dirty)
+static void update_title(Ihandle* canvas)
+{
+  Ihandle* dlg = IupGetDialog(canvas);
+  char* name = IupGetAttribute(canvas, "IUP_IMAGE_NAME");
+  int dirty = IupGetInt(canvas, "DIRTY");
+  IupSetfAttribute(dlg, "TITLE", "ImageEditor - %s%s", name, dirty? " *": "");
+}
+
+static void update_image(Ihandle* canvas, imImage* image, int update_size)
 {
   Ihandle* toolbox = IupGetDialogChild(canvas, "TOOLBOX");
   imImage* old_image = (imImage*)IupGetAttribute(canvas, "IMAGE");
-  Ihandle* size_lbl = IupGetDialogChild(canvas, "SIZELABEL");
+
+  IupSetAttribute(canvas, "IMAGE", (char*)image);
+  IupSetAttribute(canvas, "DIRTY", "Yes");
+  update_title(canvas);
+
+  if (old_image)
+    imImageDestroy(old_image);
+
+  if (image->color_space == IM_MAP || image->color_space == IM_GRAY)
+  {
+    /* reset the color selection to match the new palette */
+    Ihandle* color = IupGetDialogChild(toolbox, "COLOR");
+    unsigned char r, g, b, a = 255;
+    long c = image->palette[0];
+    r = cdRed(c);
+    g = cdGreen(c);
+    b = cdBlue(c);
+    IupSetInt(toolbox, "TOOLCOLORINDEX", 0);
+    IupSetRGB(color, "BGCOLOR", r, g, b);
+    IupSetRGBA(toolbox, "TOOLCOLOR", r, g, b, a);
+  }
+
+  update_toolbox(toolbox, image->color_space == IM_MAP || image->color_space == IM_GRAY);
+
+  if (update_size)
+  {
+    Ihandle* size_lbl = IupGetDialogChild(canvas, "SIZELABEL");
+    Ihandle* zoom_val = IupGetDialogChild(canvas, "ZOOMVAL");
+    double zoom_index = IupGetDouble(zoom_val, "VALUE");
+    IupSetfAttribute(size_lbl, "TITLE", "%d x %d px", image->width, image->height);
+    zoom_update(canvas, zoom_index);
+  }
+  else
+    IupUpdate(canvas);
+}
+
+static void set_new_image(Ihandle* canvas, imImage* image, int dirty)
+{
   Ihandle* zoom_val = IupGetDialogChild(canvas, "ZOOMVAL");
   const char* format;
 
-  if (filename)
-  {
-    IupSetStrAttribute(canvas, "FILENAME", filename);
-    IupSetfAttribute(IupGetDialog(canvas), "TITLE", "%s - Simple Paint", str_filetitle(filename));
-  }
-  else
-  {
-    IupSetAttribute(canvas, "FILENAME", NULL);
-    IupSetAttribute(IupGetDialog(canvas), "TITLE", "Untitled - Simple Paint");
-  }
-
   /* we are going to support only RGB and MAP images */
-  if (image->color_space != IM_RGB && image->color_space != IM_MAP)
+  if (image->color_space != IM_RGB && image->color_space != IM_MAP && image->color_space != IM_GRAY)
   {
     imImage* new_image = imImageCreateBased(image, -1, -1, IM_RGB, -1);
     if (image->has_alpha)
@@ -677,7 +672,7 @@ static void set_new_image(Ihandle* canvas, imImage* image, const char* filename,
     image = new_image;
   }
 
-  if (image->color_space == IM_MAP)
+  if (image->color_space == IM_MAP || image->color_space == IM_GRAY)
   {
     const unsigned char* transp_index = imImageGetAttribute(image, "TransparencyIndex", NULL, NULL);
     if (transp_index)
@@ -690,62 +685,63 @@ static void set_new_image(Ihandle* canvas, imImage* image, const char* filename,
 
       image->palette[index] = cdEncodeColor((unsigned char)ri, (unsigned char)gi, (unsigned char)bi);
     }
-
-    /* reset the color selection to match the new palette */
-    {
-      Ihandle* color = IupGetDialogChild(toolbox, "COLOR");
-      unsigned char r, g, b, a = 255;
-      long c = image->palette[0];
-      r = cdRed(c);
-      g = cdGreen(c);
-      b = cdBlue(c);
-      IupSetInt(toolbox, "TOOLCOLORINDEX", 0);
-      IupSetRGB(color, "BGCOLOR", r, g, b);
-      IupSetRGBA(toolbox, "TOOLCOLOR", r, g, b, a);
-    }
   }
-
-  update_toolbox(toolbox, image->color_space == IM_MAP);
 
   /* default file format */
   format = imImageGetAttribString(image, "FileFormat");
   if (!format)
-    imImageSetAttribString(image, "FileFormat", "JPEG");
-
-  IupSetAttribute(canvas, "DIRTY", dirty ? "Yes" : "No");
-  IupSetAttribute(canvas, "IMAGE", (char*)image);
-
-  IupSetfAttribute(size_lbl, "TITLE", "%d x %d px", image->width, image->height);
-
-  if (old_image)
-    imImageDestroy(old_image);
+    imImageSetAttribString(image, "FileFormat", "PNG");
 
   IupSetDouble(zoom_val, "VALUE", 0);
-  zoom_update(canvas, 0);
+
+  update_image(canvas, image, 1);
+
+  IupSetAttribute(canvas, "DIRTY", dirty ? "Yes" : "No");
+  update_title(canvas);
 }
 
-static void open_file(Ihandle* ih, const char* filename)
+static void import_file(Ihandle* ih, const char* filename)
 {
   imImage* image = read_file(filename);
   if (image)
   {
     Ihandle* canvas = IupGetDialogChild(ih, "CANVAS");
-    set_new_image(canvas, image, filename, 0);
+    set_new_image(canvas, image, 1);  /* set dirty */
   }
 }
 
-static void save_file(Ihandle* canvas)
+static void save_iup_image(Ihandle* canvas)
 {
-  char* filename = IupGetAttribute(canvas, "FILENAME");
+  char* name = IupGetAttribute(canvas, "IUP_IMAGE_NAME");
+  char* filename = IupGetAttribute(canvas, "_IUPLED_FILENAME");
   imImage* image = (imImage*)IupGetAttribute(canvas, "IMAGE");
-  if (write_file(filename, image))
-    IupSetAttribute(canvas, "DIRTY", "NO");
+  Ihandle* iup_image = IupImageFromImImage(image);
+  Ihandle* old_iup_image = IupGetHandle(name);
+  Icallback imagechanged_cb = IupGetCallback(IupGetDialog(canvas), "IMAGECHANGED_CB");
+
+  if (!iup_image)
+  {
+    show_file_error(IM_ERR_MEM);
+    return;
+  }
+
+  if (old_iup_image)
+    IupDestroy(old_iup_image);
+
+  IupSetHandle(name, iup_image);
+  IupSetStrAttribute(iup_image, "_IUPLED_FILENAME", filename);
+
+  IupSetAttribute(canvas, "DIRTY", "NO");
+  update_title(canvas);
+
+  if (imagechanged_cb)
+    imagechanged_cb(IupGetDialog(canvas));
 }
 
 static void set_file_format(imImage* image, const char* filename)
 {
   const char* ext = str_fileext(filename);
-  const char* format = "JPEG";
+  const char* format = "PNG";
   if (str_compare(ext, "jpg", 0) || str_compare(ext, "jpeg", 0))
     format = "JPEG";
   else if (str_compare(ext, "bmp", 0))
@@ -759,18 +755,11 @@ static void set_file_format(imImage* image, const char* filename)
   imImageSetAttribString(image, "FileFormat", format);
 }
 
-static void saveas_file(Ihandle* canvas, const char* filename)
+static void export_file(Ihandle* canvas, const char* filename)
 {
   imImage* image = (imImage*)IupGetAttribute(canvas, "IMAGE");
-
   set_file_format(image, filename);
-
-  if (write_file(filename, image))
-  {
-    IupSetfAttribute(IupGetDialog(canvas), "TITLE", "%s - Simple Paint", str_filetitle(filename));
-    IupSetStrAttribute(canvas, "FILENAME", filename);
-    IupSetAttribute(canvas, "DIRTY", "NO");
-  }
+  write_file(filename, image);
 }
 
 static int save_check(Ihandle* ih)
@@ -778,10 +767,10 @@ static int save_check(Ihandle* ih)
   Ihandle* canvas = IupGetDialogChild(ih, "CANVAS");
   if (IupGetInt(canvas, "DIRTY"))
   {
-    switch (IupAlarm("Warning", "File not saved! Save it now?", "Yes", "No", "Cancel"))
+    switch (IupAlarm("Warning", "Image not saved! Save it now?", "Yes", "No", "Cancel"))
     {
     case 1:  /* save the changes and continue */
-      save_file(canvas);
+      save_iup_image(canvas);
       break;
     case 2:  /* ignore the changes and continue */
       break;
@@ -822,7 +811,7 @@ static int select_file(Ihandle* parent_dlg, int is_open)
   else
   {
     IupSetAttribute(filedlg, "DIALOGTYPE", "SAVE");
-    IupSetStrAttribute(filedlg, "FILE", IupGetAttribute(canvas, "FILENAME"));
+    IupSetStrAttribute(filedlg, "FILE", IupGetAttribute(canvas, "_IUP_IMAGE_HANDLE"));
   }
   IupSetAttribute(filedlg, "EXTFILTER", "Image Files|*.bmp;*.jpg;*.png;*.tif;*.tga|All Files|*.*|");
   IupSetStrAttribute(filedlg, "DIRECTORY", dir);
@@ -833,9 +822,9 @@ static int select_file(Ihandle* parent_dlg, int is_open)
   {
     char* filename = IupGetAttribute(filedlg, "VALUE");
     if (is_open)
-      open_file(parent_dlg, filename);
+      import_file(parent_dlg, filename);
     else
-      saveas_file(canvas, filename);
+      export_file(canvas, filename);
 
     dir = IupGetAttribute(filedlg, "DIRECTORY");
     IupConfigSetVariableStr(config, "ImageEditor", "LastDirectory", dir);
@@ -994,7 +983,7 @@ static void plot_line(unsigned char* data0, int width, int height, unsigned char
 
 static void tool_draw_pencil(Ihandle* toolbox, imImage* image, int start_x, int start_y, int end_x, int end_y)
 {
-  if (image->color_space == IM_MAP)
+  if (image->color_space == IM_MAP || image->color_space == IM_GRAY)
   {
     unsigned char** data = (unsigned char**)image->data;
     unsigned char index = (unsigned char)IupGetInt(toolbox, "TOOLCOLORINDEX");
@@ -1312,6 +1301,7 @@ static int canvas_button_cb(Ihandle* canvas, int button, int pressed, int x, int
             tool_draw_pencil(toolbox, image, start_x, start_y, x, y);
 
             IupSetAttribute(canvas, "DIRTY", "Yes");
+            update_title(canvas);
 
             IupUpdate(canvas);
 
@@ -1335,6 +1325,7 @@ static int canvas_button_cb(Ihandle* canvas, int button, int pressed, int x, int
 
               IupSetAttribute(canvas, "OVERLAY", NULL);
               IupSetAttribute(canvas, "DIRTY", "Yes");
+              update_title(canvas);
 
               IupUpdate(canvas);
             }
@@ -1348,6 +1339,7 @@ static int canvas_button_cb(Ihandle* canvas, int button, int pressed, int x, int
 
             image_flood_fill(image, x, y, cdEncodeColorAlpha(r, g, b, a), index, tol_percent);
             IupSetAttribute(canvas, "DIRTY", "Yes");
+            update_title(canvas);
 
             IupUpdate(canvas);
           }
@@ -1446,6 +1438,7 @@ static int canvas_motion_cb(Ihandle* canvas, int x, int y, char *status)
           tool_draw_pencil(toolbox, image, start_x, start_y, x, y);
 
           IupSetAttribute(canvas, "DIRTY", "Yes");
+          update_title(canvas);
 
           IupRedraw(canvas, 0);
 
@@ -1475,9 +1468,7 @@ static int zoom_valuechanged_cb(Ihandle* val)
 
 static int dropfiles_cb(Ihandle* ih, const char* filename)
 {
-  if (save_check(ih))
-    open_file(ih, filename);
-
+  import_file(ih, filename);
   return IUP_DEFAULT;
 }
 
@@ -1486,18 +1477,18 @@ static int file_menu_open_cb(Ihandle* ih)
   Ihandle* item_revert = IupGetDialogChild(ih, "ITEM_REVERT");
   Ihandle* item_save = IupGetDialogChild(ih, "ITEM_SAVE");
   Ihandle* canvas = IupGetDialogChild(ih, "CANVAS");
-  char* filename = IupGetAttribute(canvas, "FILENAME");
   int dirty = IupGetInt(canvas, "DIRTY");
-
   if (dirty)
+  {
     IupSetAttribute(item_save, "ACTIVE", "YES");
-  else
-    IupSetAttribute(item_save, "ACTIVE", "NO");
-
-  if (dirty && filename)
     IupSetAttribute(item_revert, "ACTIVE", "YES");
+  }
   else
+  {
+    IupSetAttribute(item_save, "ACTIVE", "NO");
     IupSetAttribute(item_revert, "ACTIVE", "NO");
+  }
+
   return IUP_DEFAULT;
 }
 
@@ -1510,7 +1501,7 @@ static int image_menu_open_cb(Ihandle* ih)
   Ihandle* canvas = IupGetDialogChild(ih, "CANVAS");
   imImage* image = (imImage*)IupGetAttribute(canvas, "IMAGE");
 
-  if (image->color_space == IM_MAP)
+  if (image->color_space == IM_MAP || image->color_space == IM_GRAY)
   {
     IupSetAttribute(item_palette, "ACTIVE", "YES");
     IupSetAttribute(item_map, "VALUE", "ON");
@@ -1551,80 +1542,177 @@ static int edit_menu_open_cb(Ihandle* ih)
   return IUP_DEFAULT;
 }
 
+void vLedImageEditorNewImage(Ihandle* dlg, const char* filename)
+{
+  Ihandle* canvas = IupGetDialogChild(dlg, "CANVAS");
+  Ihandle* config = (Ihandle*)IupGetAttribute(canvas, "CONFIG");
+  int width = IupConfigGetVariableIntDef(config, "NewImage", "Width", 640);
+  int height = IupConfigGetVariableIntDef(config, "NewImage", "Height", 480);
+  int type = IupConfigGetVariableIntDef(config, "NewImage", "Type", 1);
+  char name[512];
+  static int new_img_count = 1;
+
+  sprintf(name, "new_image%d", new_img_count);
+
+  if (IupGetParam("New Image", NULL, NULL,
+                  "Name: %s\n"
+                  "Width: %i[1,]\n"
+                  "Height: %i[1,]\n"
+                  "Type: %l|MAP|RGB|RGBA|\n",
+                  name, &width, &height, &type, NULL))
+  {
+    Ihandle* iup_image;
+    int color_space = type == 0 ? IM_MAP : IM_RGB;
+    imImage* image;
+
+    IupConfigSetVariableInt(config, "NewImage", "Width", width);
+    IupConfigSetVariableInt(config, "NewImage", "Height", height);
+    IupConfigSetVariableInt(config, "NewImage", "Type", type);
+
+    image = imImageCreate(width, height, color_space, IM_BYTE);
+    if (!image)
+    {
+      show_file_error(IM_ERR_MEM);
+      return;
+    }
+
+    if (type == 2)
+      imImageAddAlpha(image);
+
+    image_fill_white(image);
+
+    iup_image = IupImageFromImImage(image);
+    if (!iup_image)
+    {
+      imImageDestroy(image);
+      show_file_error(IM_ERR_MEM);
+      return;
+    }
+
+    new_img_count++;
+
+    IupSetAttribute(canvas, "IUP_IMAGE", (char*)iup_image);
+    IupSetStrAttribute(canvas, "IUP_IMAGE_NAME", name);
+    IupSetStrAttribute(canvas, "_IUPLED_FILENAME", filename);
+    IupSetStrAttribute(iup_image, "_IUPLED_FILENAME", filename);
+
+    set_new_image(canvas, image, 0);
+  }
+}
+
 static int item_new_action_cb(Ihandle* item_new)
 {
   if (save_check(item_new))
   {
     Ihandle* canvas = IupGetDialogChild(item_new, "CANVAS");
-    Ihandle* config = (Ihandle*)IupGetAttribute(canvas, "CONFIG");
-    int width = IupConfigGetVariableIntDef(config, "NewImage", "Width", 640);
-    int height = IupConfigGetVariableIntDef(config, "NewImage", "Height", 480);
-    int type = IupConfigGetVariableIntDef(config, "NewImage", "Type", 1);
-
-    if (IupGetParam("New Image", NULL, NULL, 
-                    "Width:  %i[1,]\n"
-                    "Height: %i[1,]\n" 
-                    "Type: %l|MAP|RGB|RGBA|\n",
-                    &width, &height, &type, NULL))
-    {
-      int color_space = type==0? IM_MAP: IM_RGB;
-      imImage* image = imImageCreate(width, height, color_space, IM_BYTE);
-      if (!image)
-      {
-        show_file_error(IM_ERR_MEM);
-        return IUP_DEFAULT;
-      }
-
-      if (type == 2)
-        imImageAddAlpha(image);
-
-      image_fill_white(image);
-
-      IupConfigSetVariableInt(config, "NewImage", "Width", width);
-      IupConfigSetVariableInt(config, "NewImage", "Height", height);
-      IupConfigSetVariableInt(config, "NewImage", "Type", type);
-
-      set_new_image(canvas, image, NULL, 0);
-    }
+    char* filename = IupGetAttribute(canvas, "_IUPLED_FILENAME");
+    vLedImageEditorNewImage(item_new, filename);
   }
 
   return IUP_DEFAULT;
 }
 
-static int item_open_action_cb(Ihandle* item_open)
+static int item_import_action_cb(Ihandle* item)
 {
-  if (!save_check(item_open))
-    return IUP_DEFAULT;
-
-  return select_file(IupGetDialog(item_open), 1);
+  return select_file(IupGetDialog(item), 1);
 }
 
-static int item_saveas_action_cb(Ihandle* item_saveas)
+static int item_export_action_cb(Ihandle* item)
 {
-  return select_file(IupGetDialog(item_saveas), 0);
+  return select_file(IupGetDialog(item), 0);
+}
+
+static int compare_names(const void *a, const void *b)
+{
+  return strcmp(*(char**)a, *(char**)b);
+}
+
+static int item_open_action_cb(Ihandle* item)
+{
+  if (save_check(item))
+  {
+    Ihandle* canvas = IupGetDialogChild(item, "CANVAS");
+    char* filename = IupGetAttribute(canvas, "_IUPLED_FILENAME");
+    int num_images, ret;
+    int i, num_names = IupGetAllNames(NULL, -1);
+    char* *names = malloc(sizeof(char*)*num_names);
+    char* *image_names = malloc(sizeof(char*)*num_names);
+
+    IupGetAllNames(names, num_names);
+
+    num_images = 0;
+    for (i = 0; i < num_names; i++)
+    {
+      Ihandle *elem = IupGetHandle(names[i]);
+      char* type = IupGetClassType(elem);
+
+      if (type && strcmp(type, "image") == 0)  /* only images */
+      {
+        char* elem_filename = IupGetAttribute(elem, "_IUPLED_FILENAME");
+        if (elem_filename && strcmp(elem_filename, filename) == 0)  /* only of the current LED file */
+        {
+          image_names[num_images] = names[i];
+          num_images++;
+        }
+      }
+    }
+
+    if (num_images == 0)
+    {
+      IupMessageError(IupGetDialog(item), "No images.");
+      free(names);
+      free(image_names);
+      return IUP_DEFAULT;
+    }
+
+    qsort(image_names, num_images, sizeof(Ihandle*), compare_names);
+
+    ret = IupListDialog(1, "Open Image", num_images, image_names, 1, 30, 10, NULL);
+    if (ret != -1)
+    {
+      char* name = image_names[ret];
+      Ihandle* iup_image = IupGetHandle(name);
+      imImage* image = IupImageToImImage(iup_image);
+      if (!image)
+        show_file_error(IM_ERR_MEM);
+      else
+      {
+        IupSetAttribute(canvas, "IUP_IMAGE", (char*)iup_image);
+        IupSetStrAttribute(canvas, "IUP_IMAGE_NAME", name);
+
+        set_new_image(canvas, image, 0);
+      }
+    }
+
+    free(names);
+    free(image_names);
+  }
+
+  return IUP_DEFAULT;
 }
 
 static int item_save_action_cb(Ihandle* item_save)
 {
   Ihandle* canvas = IupGetDialogChild(item_save, "CANVAS");
-  char* filename = IupGetAttribute(canvas, "FILENAME");
-  if (!filename)
-    item_saveas_action_cb(item_save);
-  else   
-  {
-    /* test again because in can be called using the hot key */
-    int dirty = IupGetInt(canvas, "DIRTY");
-    if (dirty)
-      save_file(canvas);
-  }
+  /* test again because in can be called using the hot key */
+  int dirty = IupGetInt(canvas, "DIRTY");
+  if (dirty)
+    save_iup_image(canvas);
   return IUP_DEFAULT;
 }
 
-static int item_revert_action_cb(Ihandle* item_revert)
+static int item_revert_action_cb(Ihandle* item)
 {
-  Ihandle* canvas = IupGetDialogChild(item_revert, "CANVAS");
-  char* filename = IupGetAttribute(canvas, "FILENAME");
-  open_file(item_revert, filename);
+  Ihandle* canvas = IupGetDialogChild(item, "CANVAS");
+  Ihandle* iup_image = (Ihandle*)IupGetAttribute(canvas, "IUP_IMAGE");
+  imImage* image = IupImageToImImage(iup_image);
+  if (!image)
+  {
+    show_file_error(IM_ERR_MEM);
+    return IUP_DEFAULT;
+  }
+
+  set_new_image(canvas, image, 0);
   return IUP_DEFAULT;
 }
 
@@ -1657,22 +1745,19 @@ static int item_copy_action_cb(Ihandle* item_copy)
 
 static int item_paste_action_cb(Ihandle* item_paste)
 {
-  if (save_check(item_paste))
+  Ihandle* canvas = IupGetDialogChild(item_paste, "CANVAS");
+
+  Ihandle *clipboard = IupClipboard();
+  imImage* image = IupGetNativeHandleImage(IupGetAttribute(clipboard, "NATIVEIMAGE"));
+  IupDestroy(clipboard);
+
+  if (!image)
   {
-    Ihandle* canvas = IupGetDialogChild(item_paste, "CANVAS");
-
-    Ihandle *clipboard = IupClipboard();
-    imImage* image = IupGetNativeHandleImage(IupGetAttribute(clipboard, "NATIVEIMAGE"));
-    IupDestroy(clipboard);
-
-    if (!image)
-    {
-      show_error("Invalid Clipboard Data", 1);
-      return IUP_DEFAULT;
-    }
-
-    set_new_image(canvas, image, NULL, 1);  /* set dirty */
+    show_error("Invalid Clipboard Data", 1);
+    return IUP_DEFAULT;
   }
+
+  set_new_image(canvas, image, 1);  /* set dirty */
   return IUP_DEFAULT;
 }
 
@@ -1694,7 +1779,7 @@ static int item_background_action_cb(Ihandle* item_background)
     background = IupGetAttribute(colordlg, "VALUE");
     IupConfigSetVariableStr(config, "ImageEditor", "Background", background);
 
-    if (image->color_space == IM_MAP)
+    if (image->color_space == IM_MAP || image->color_space == IM_GRAY)
     {
       const unsigned char* transp_index = imImageGetAttribute(image, "TransparencyIndex", NULL, NULL);
       if (transp_index)
@@ -1783,7 +1868,7 @@ static int tool_action_cb(Ihandle* ih, int state)
     Ihandle* canvas = IupGetDialogChild(ih, "CANVAS");
     imImage* image = (imImage*)IupGetAttribute(canvas, "IMAGE");
     int tool_index = IupGetInt(ih, "TOOLINDEX"); /* here is from the ih */
-    if (image->color_space == IM_MAP)
+    if (image->color_space == IM_MAP || image->color_space == IM_GRAY)
     {
       if (tool_index >= 3 && tool_index <= 8)
         return IUP_DEFAULT;
@@ -1842,7 +1927,7 @@ static int toolcolor_action_cb(Ihandle* ih)
   Ihandle* canvas = IupGetDialogChild(ih, "CANVAS");
   imImage* image = (imImage*)IupGetAttribute(canvas, "IMAGE");
 
-  if (image->color_space == IM_MAP)
+  if (image->color_space == IM_MAP || image->color_space == IM_GRAY)
   {
     Ihandle *colorbar, *lbl, *dlg;
     int index, i, transp_index = -1;
@@ -2000,6 +2085,8 @@ static int item_rgb_action_cb(Ihandle* item)
     imImageRemoveAlpha(image);
 
     IupSetAttribute(canvas, "DIRTY", "Yes");
+    update_title(canvas);
+
     IupUpdate(canvas);
   }
   else
@@ -2030,6 +2117,8 @@ static int item_rgba_action_cb(Ihandle* item)
     imImageAddAlpha(image);
 
     IupSetAttribute(canvas, "DIRTY", "Yes");
+    update_title(canvas);
+
     IupUpdate(canvas);
   }
   else
@@ -2144,6 +2233,8 @@ static int item_palette_action_cb(Ihandle* item)
     }
 
     IupSetAttribute(canvas, "DIRTY", "Yes");
+    update_title(canvas);
+
     IupUpdate(canvas);
   }
 
@@ -2367,8 +2458,8 @@ static int item_brightcont_action_cb(Ihandle* ih)
 static Ihandle* create_menu(Ihandle *config)
 {
   Ihandle *menu;
-  Ihandle *file_menu, *item_exit, *item_new, *item_open, *item_save, *item_saveas, *item_revert;
-  Ihandle *edit_menu, *item_copy, *item_paste;
+  Ihandle *file_menu, *item_exit, *item_new, *item_open, *item_save, *item_revert;
+  Ihandle *edit_menu, *item_copy, *item_paste, *item_import, *item_export;
   Ihandle *view_menu, *item_toolbar, *item_statusbar;
   Ihandle *item_zoomin, *item_zoomout, *item_actualsize;
   Ihandle *item_background, *item_toolbox, *item_zoomgrid;
@@ -2387,13 +2478,17 @@ static Ihandle* create_menu(Ihandle *config)
   IupSetAttribute(item_save, "IMAGE", "IUP_FileSave");
   IupSetCallback(item_save, "ACTION", (Icallback)item_save_action_cb);
 
-  item_saveas = IupItem("Save &As...", NULL);
-  IupSetAttribute(item_saveas, "NAME", "ITEM_SAVEAS");
-  IupSetCallback(item_saveas, "ACTION", (Icallback)item_saveas_action_cb);
-
   item_revert = IupItem("&Revert", NULL);
   IupSetAttribute(item_revert, "NAME", "ITEM_REVERT");
   IupSetCallback(item_revert, "ACTION", (Icallback)item_revert_action_cb);
+
+  item_import = IupItem("&Import...", NULL);
+  IupSetAttribute(item_import, "IMAGE", "IUP_FileOpen");
+  IupSetCallback(item_import, "ACTION", (Icallback)item_import_action_cb);
+
+  item_export = IupItem("&Export...", NULL);
+  IupSetAttribute(item_export, "IMAGE", "IUP_FileSave");
+  IupSetCallback(item_export, "ACTION", (Icallback)item_export_action_cb);
 
   item_exit = IupItem("E&xit", NULL);
   IupSetCallback(item_exit, "ACTION", (Icallback)item_exit_action_cb);
@@ -2460,8 +2555,10 @@ static Ihandle* create_menu(Ihandle *config)
     item_new,
     item_open,
     item_save,
-    item_saveas,
     item_revert,
+    IupSeparator(),
+    item_import,
+    item_export,
     IupSeparator(),
     item_exit,
     NULL);
@@ -2533,8 +2630,6 @@ static Ihandle* create_toolbar(Ihandle *config)
   Ihandle *toolbar;
   Ihandle *btn_copy, *btn_paste, *btn_new, *btn_open, *btn_save, *btn_zoomgrid;
 
-  IupSetHandle("PaintZoomGrid", load_image_PaintZoomGrid());
-
   btn_new = IupButton(NULL, NULL);
   IupSetAttribute(btn_new, "IMAGE", "IUP_FileNew");
   IupSetAttribute(btn_new, "FLAT", "Yes");
@@ -2571,7 +2666,7 @@ static Ihandle* create_toolbar(Ihandle *config)
   IupSetAttribute(btn_paste, "CANFOCUS", "No");
 
   btn_zoomgrid = IupToggle(NULL, NULL);
-  IupSetAttribute(btn_zoomgrid, "IMAGE", "PaintZoomGrid");
+  IupSetAttribute(btn_zoomgrid, "IMAGE", "IupVLedPaintZoomGrid");
   IupSetAttribute(btn_zoomgrid, "FLAT", "Yes");
   IupSetCallback(btn_zoomgrid, "ACTION", (Icallback)item_zoomgrid_action_cb);
   IupSetAttribute(btn_zoomgrid, "TIP", "Zoom Grid");
@@ -2607,32 +2702,39 @@ static Ihandle* create_toolbar(Ihandle *config)
   return toolbar;
 }
 
+static void init_images(void)
+{
+  if (!IupGetHandle("IupVLedPaintPointer"))
+  {
+    IupSetHandle("IupVLedPaintPointer", load_image_Pointer());
+    IupSetHandle("IupVLedPaintColorPicker", load_image_PaintColorPicker());
+    IupSetHandle("IupVLedPaintPencil", load_image_PaintPencil());
+    IupSetHandle("IupVLedPaintLine", load_image_PaintLine());
+    IupSetHandle("IupVLedPaintEllipse", load_image_PaintEllipse());
+    IupSetHandle("IupVLedPaintRect", load_image_PaintRect());
+    IupSetHandle("IupVLedPaintOval", load_image_PaintOval());
+    IupSetHandle("IupVLedPaintBox", load_image_PaintBox());
+    IupSetHandle("IupVLedPaintFill", load_image_PaintFill());
+    IupSetHandle("IupVLedPaintText", load_image_PaintText());
+    IupSetHandle("IupVLedPaintZoomGrid", load_image_PaintZoomGrid());
+  }
+}
+
 static Ihandle* create_toolbox(Ihandle* canvas)
 {
   Ihandle *toolbox, *gbox, *vbox;
 
-  IupSetHandle("PaintPointer", load_image_Pointer());
-  IupSetHandle("PaintColorPicker", load_image_PaintColorPicker());
-  IupSetHandle("PaintPencil", load_image_PaintPencil());
-  IupSetHandle("PaintLine", load_image_PaintLine());
-  IupSetHandle("PaintEllipse", load_image_PaintEllipse());
-  IupSetHandle("PaintRect", load_image_PaintRect());
-  IupSetHandle("PaintOval", load_image_PaintOval());
-  IupSetHandle("PaintBox", load_image_PaintBox());
-  IupSetHandle("PaintFill", load_image_PaintFill());
-  IupSetHandle("PaintText", load_image_PaintText());
-
   gbox = IupGridBox(
-    IupSetCallbacks(IupSetAttributes(IupFlatToggle(NULL), "TOOLINDEX=0, IMAGE=PaintPointer, VALUE=ON, CHECKSIZE=0, TIP=\"Pointer\", NAME=TOOL_POINTER"), "FLAT_ACTION", (Icallback)tool_action_cb, NULL),
-    IupSetCallbacks(IupSetAttributes(IupFlatToggle(NULL), "TOOLINDEX=1, IMAGE=PaintColorPicker, CHECKSIZE=0, TIP=\"Color Picker\""), "FLAT_ACTION", (Icallback)tool_action_cb, NULL),
-    IupSetCallbacks(IupSetAttributes(IupFlatToggle(NULL), "TOOLINDEX=2, IMAGE=PaintPencil, CHECKSIZE=0, TIP=\"Pencil\""), "FLAT_ACTION", (Icallback)tool_action_cb, NULL),
-    IupSetCallbacks(IupSetAttributes(IupFlatToggle(NULL), "TOOLINDEX=3, IMAGE=PaintLine, CHECKSIZE=0, TIP=\"Line\""), "FLAT_ACTION", (Icallback)tool_action_cb, NULL),
-    IupSetCallbacks(IupSetAttributes(IupFlatToggle(NULL), "TOOLINDEX=4, IMAGE=PaintRect, CHECKSIZE=0, TIP=\"Hollow Rectangle\""), "FLAT_ACTION", (Icallback)tool_action_cb, NULL),
-    IupSetCallbacks(IupSetAttributes(IupFlatToggle(NULL), "TOOLINDEX=5, IMAGE=PaintBox, CHECKSIZE=0, TIP=\"Box (Filled Rectangle)\""), "FLAT_ACTION", (Icallback)tool_action_cb, NULL),
-    IupSetCallbacks(IupSetAttributes(IupFlatToggle(NULL), "TOOLINDEX=6, IMAGE=PaintEllipse, CHECKSIZE=0, TIP=\"Hollow Ellipse\""), "FLAT_ACTION", (Icallback)tool_action_cb, NULL),
-    IupSetCallbacks(IupSetAttributes(IupFlatToggle(NULL), "TOOLINDEX=7, IMAGE=PaintOval, CHECKSIZE=0, TIP=\"Oval (Filled Ellipse)\""), "FLAT_ACTION", (Icallback)tool_action_cb, NULL),
-    IupSetCallbacks(IupSetAttributes(IupFlatToggle(NULL), "TOOLINDEX=8, IMAGE=PaintText, CHECKSIZE=0, TIP=\"Text\""), "FLAT_ACTION", (Icallback)tool_action_cb, "FLAT_BUTTON_CB", tool_text_button_cb, NULL),
-    IupSetCallbacks(IupSetAttributes(IupFlatToggle(NULL), "TOOLINDEX=9, IMAGE=PaintFill, CHECKSIZE=0, TIP=\"Fill Color\""), "FLAT_ACTION", (Icallback)tool_action_cb, NULL),
+    IupSetCallbacks(IupSetAttributes(IupFlatToggle(NULL), "TOOLINDEX=0, IMAGE=IupVLedPaintPointer, VALUE=ON, CHECKSIZE=0, TIP=\"Pointer\", NAME=TOOL_POINTER"), "FLAT_ACTION", (Icallback)tool_action_cb, NULL),
+    IupSetCallbacks(IupSetAttributes(IupFlatToggle(NULL), "TOOLINDEX=1, IMAGE=IupVLedPaintColorPicker, CHECKSIZE=0, TIP=\"Color Picker\""), "FLAT_ACTION", (Icallback)tool_action_cb, NULL),
+    IupSetCallbacks(IupSetAttributes(IupFlatToggle(NULL), "TOOLINDEX=2, IMAGE=IupVLedPaintPencil, CHECKSIZE=0, TIP=\"Pencil\""), "FLAT_ACTION", (Icallback)tool_action_cb, NULL),
+    IupSetCallbacks(IupSetAttributes(IupFlatToggle(NULL), "TOOLINDEX=3, IMAGE=IupVLedPaintLine, CHECKSIZE=0, TIP=\"Line\""), "FLAT_ACTION", (Icallback)tool_action_cb, NULL),
+    IupSetCallbacks(IupSetAttributes(IupFlatToggle(NULL), "TOOLINDEX=4, IMAGE=IupVLedPaintRect, CHECKSIZE=0, TIP=\"Hollow Rectangle\""), "FLAT_ACTION", (Icallback)tool_action_cb, NULL),
+    IupSetCallbacks(IupSetAttributes(IupFlatToggle(NULL), "TOOLINDEX=5, IMAGE=IupVLedPaintBox, CHECKSIZE=0, TIP=\"Box (Filled Rectangle)\""), "FLAT_ACTION", (Icallback)tool_action_cb, NULL),
+    IupSetCallbacks(IupSetAttributes(IupFlatToggle(NULL), "TOOLINDEX=6, IMAGE=IupVLedPaintEllipse, CHECKSIZE=0, TIP=\"Hollow Ellipse\""), "FLAT_ACTION", (Icallback)tool_action_cb, NULL),
+    IupSetCallbacks(IupSetAttributes(IupFlatToggle(NULL), "TOOLINDEX=7, IMAGE=IupVLedPaintOval, CHECKSIZE=0, TIP=\"Oval (Filled Ellipse)\""), "FLAT_ACTION", (Icallback)tool_action_cb, NULL),
+    IupSetCallbacks(IupSetAttributes(IupFlatToggle(NULL), "TOOLINDEX=8, IMAGE=IupVLedPaintText, CHECKSIZE=0, TIP=\"Text\""), "FLAT_ACTION", (Icallback)tool_action_cb, "FLAT_BUTTON_CB", tool_text_button_cb, NULL),
+    IupSetCallbacks(IupSetAttributes(IupFlatToggle(NULL), "TOOLINDEX=9, IMAGE=IupVLedPaintFill, CHECKSIZE=0, TIP=\"Fill Color\""), "FLAT_ACTION", (Icallback)tool_action_cb, NULL),
     NULL);
   IupSetAttribute(gbox, "GAPCOL", "2");
   IupSetAttribute(gbox, "GAPLIN", "2");
@@ -2701,9 +2803,11 @@ static Ihandle* create_statusbar(Ihandle *config)
   return statusbar;
 }
 
-static Ihandle* create_dialog(Ihandle *config)
+Ihandle* vLedImageEditorCreate(Ihandle *config)
 {
   Ihandle *dlg, *vbox, *canvas, *toolbox;
+
+  init_images();
 
   canvas = IupCanvas(NULL);
   IupSetAttribute(canvas, "NAME", "CANVAS");
@@ -2730,10 +2834,13 @@ static Ihandle* create_dialog(Ihandle *config)
     NULL);
 
   dlg = IupDialog(vbox);
+  IupSetAttribute(dlg, "TITLE", "Image Editor");
   IupSetAttributeHandle(dlg, "MENU", create_menu(config));
   IupSetCallback(dlg, "CLOSE_CB", (Icallback)item_exit_action_cb);
   IupSetCallback(dlg, "DROPFILES_CB", (Icallback)dropfiles_cb);
 
+  IupSetCallback(dlg, "K_cN", (Icallback)item_new_action_cb);
+  IupSetCallback(dlg, "K_cO", (Icallback)item_open_action_cb);
   IupSetCallback(dlg, "K_cS", (Icallback)item_save_action_cb);
   IupSetCallback(dlg, "K_cV", (Icallback)item_paste_action_cb);
   IupSetCallback(dlg, "K_cC", (Icallback)item_copy_action_cb);
@@ -2747,71 +2854,26 @@ static Ihandle* create_dialog(Ihandle *config)
   return dlg;
 }
 
-
-/***********************************************************************************/
-
-
-static void check_new_file(Ihandle* dlg)
+void vLedImageEditorSetImage(Ihandle* dlg, Ihandle* iup_image, const char* name)
 {
   Ihandle* canvas = IupGetDialogChild(dlg, "CANVAS");
-  imImage* image = (imImage*)IupGetAttribute(canvas, "IMAGE");
+  char* filename = IupGetAttribute(iup_image, "_IUPLED_FILENAME");
+  imImage* image = IupImageToImImage(iup_image);
   if (!image)
   {
-    Ihandle* config = (Ihandle*)IupGetAttribute(canvas, "CONFIG");
-    int width = IupConfigGetVariableIntDef(config, "NewImage", "Width", 640);
-    int height = IupConfigGetVariableIntDef(config, "NewImage", "Height", 480);
-    int type = IupConfigGetVariableIntDef(config, "NewImage", "Type", 1);
-
-    int color_space = type == 0 ? IM_MAP : IM_RGB;
-    image = imImageCreate(width, height, color_space, IM_BYTE);
-    if (!image)
+    imImage* old_image = (imImage*)IupGetAttribute(canvas, "IMAGE");
+    show_file_error(IM_ERR_MEM);
+    if (!old_image)
     {
-      show_file_error(IM_ERR_MEM);
-      return;
+      Ihandle* config = (Ihandle*)IupGetAttribute(canvas, "CONFIG");
+      IupConfigDialogClosed(config, dlg, "ImageEditor");
     }
-
-    if (type == 2)
-      imImageAddAlpha(image);
-
-    image_fill_white(image);
-
-    set_new_image(canvas, image, NULL, 0);
-  }
-}
-
-int main(int argc, char **argv)
-{
-  Ihandle *dlg, *config;
-
-  IupOpen(&argc, &argv);
-  IupImageLibOpen();
-
-  IupSetGlobal("GLOBALLAYOUTDLGKEY", "Yes");
-
-  config = IupConfig();
-  IupSetAttribute(config, "APP_NAME", "image_editor");
-  IupConfigLoad(config);
-
-  dlg = create_dialog(config);
-
-  /* show the dialog at the last position, with the last size */
-  IupConfigDialogShow(config, dlg, "ImageEditor");
-
-  /* open a file from the command line (allow file association in Windows) */
-  if (argc > 1 && argv[1])
-  {
-    const char* filename = argv[1];
-    open_file(dlg, filename);
+    return;
   }
 
-  /* initialize the current file, if not already loaded */
-  check_new_file(dlg);
+  IupSetAttribute(canvas, "IUP_IMAGE", (char*)iup_image);
+  IupSetStrAttribute(canvas, "IUP_IMAGE_NAME", name);
+  IupSetStrAttribute(canvas, "_IUPLED_FILENAME", filename);
 
-  IupMainLoop();
-
-  IupConfigSave(config);
-  IupDestroy(config);
-
-  IupClose();
-  return EXIT_SUCCESS;
+  set_new_image(canvas, image, 0);
 }

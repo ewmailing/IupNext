@@ -84,7 +84,7 @@
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">
     <ClCompile>
       <Optimization>Disabled</Optimization>
-      <AdditionalIncludeDirectories>..\include;..\src;\LNG\vld\include;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <AdditionalIncludeDirectories>..\include;..\src;..\..\cd\include;..\..\im\include;\LNG\vld\include;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
       <PreprocessorDefinitions>WIN32;_DEBUG;USE_IM;_CRT_SECURE_NO_DEPRECATE;%(PreprocessorDefinitions)</PreprocessorDefinitions>
       <BasicRuntimeChecks>EnableFastChecks</BasicRuntimeChecks>
       <RuntimeLibrary>MultiThreadedDebug</RuntimeLibrary>
@@ -103,7 +103,7 @@
     </ResourceCompile>
     <Link>
       <AdditionalOptions>/MACHINE:X64 %(AdditionalOptions)</AdditionalOptions>
-      <AdditionalDependencies>setargv.obj;comctl32.lib;ole32.lib;iup.lib;iupcontrols.lib;cd.lib;freetype6.lib;zlib1.lib;iupcd.lib;iupgl.lib;opengl32.lib;glu32.lib;iupimglib.lib;im.lib;iupim.lib;iup_scintilla.lib;imm32.lib;iup_plot.lib;iupglcontrols.lib;iupweb.lib;iupole.lib;ftgl.lib;cdgl.lib;cdcontextplus.lib;gdiplus.lib;msimg32.lib;%(AdditionalDependencies)</AdditionalDependencies>
+      <AdditionalDependencies>setargv.obj;comctl32.lib;ole32.lib;iup.lib;iupcontrols.lib;cd.lib;freetype6.lib;zlib1.lib;iupcd.lib;iupgl.lib;opengl32.lib;glu32.lib;iupimglib.lib;im.lib;iupim.lib;iup_scintilla.lib;imm32.lib;iup_plot.lib;iupglcontrols.lib;iupweb.lib;iupole.lib;ftgl.lib;cdgl.lib;cdcontextplus.lib;gdiplus.lib;msimg32.lib;im_process.lib;cdim.lib;%(AdditionalDependencies)</AdditionalDependencies>
       <SuppressStartupBanner>true</SuppressStartupBanner>
       <AdditionalLibraryDirectories>..\..\im\lib\Debug_64;..\..\cd\lib\Debug_64;..\lib\Debug_64;..\..\freetype\lib\Debug_64;..\..\ftgl\lib\Debug_64;..\..\zlib\lib\Debug_64;%(AdditionalLibraryDirectories)</AdditionalLibraryDirectories>
       <GenerateDebugInformation>true</GenerateDebugInformation>
@@ -116,6 +116,7 @@
   <ItemGroup>
     <ClCompile Include="..\srcvled\iup_vled.c" />
     <ClCompile Include="..\srcvled\iup_vled_imgs.c" />
+    <ClCompile Include="..\srcvled\vled_image_editor.c" />
   </ItemGroup>
   <ItemGroup>
     <ProjectReference Include="iupcontrols.vcxproj">

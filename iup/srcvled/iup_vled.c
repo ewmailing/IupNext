@@ -44,6 +44,13 @@
 #include "iup_linefile.h"
 
 
+void vLedLoadImages(void);
+
+Ihandle* vLedImageEditorCreate(Ihandle *config);
+void vLedImageEditorNewImage(Ihandle* dlg, const char* filename);
+void vLedImageEditorSetImage(Ihandle* dlg, Ihandle* iup_image, const char* name);
+
+
 #define VLED_FOLDING_MARGIN "20"
 
 #define vled_isprint(_c) ((_c) > 31 && (_c) < 127 && _c != 40 && _c != '(' && _c != ')' && _c != '[' && _c != ']' && _c != ',')
@@ -315,7 +322,7 @@ static void vLedTreeSetNodeInfo(Ihandle* elem_tree, int id, Ihandle* ih, int lin
 
   if (link)
   {
-    IupSetAttributeId(elem_tree, "IMAGE", id, "_IUP_NAME_IMG_SHORTCUT");
+    IupSetAttributeId(elem_tree, "IMAGE", id, "IupVLedShortcut");
     IupSetAttributeId(elem_tree, "LINK", id, "1");
   }
 }
@@ -1203,6 +1210,10 @@ static int scidlg_configsave_cb(Ihandle *main_dialog, Ihandle* config)
   extra_dlg = (Ihandle*)IupGetAttribute(elem_tree_box, "PROPERTIES_DIALOG");
   if (iupObjectCheck(extra_dlg))
     IupConfigDialogClosed(config, extra_dlg, "ElementPropertiesDialog");
+
+  extra_dlg = (Ihandle*)IupGetAttribute(main_dialog, "IMAGE_EDITOR_DIALOG");
+  if (iupObjectCheck(extra_dlg))
+    IupConfigDialogClosed(config, extra_dlg, "ImageEditorDialog");
 
   extra_dlg = (Ihandle*)IupGetAttribute(main_dialog, "GLOBALS_DIALOG");
   if (iupObjectCheck(extra_dlg))
@@ -2455,12 +2466,26 @@ static int tree_selection_cb(Ihandle* elem_tree, int id, int status)
 {
   if (status == 1)
   {
+    Ihandle* bt;
+    Ihandle* elem = (Ihandle*)IupTreeGetUserId(elem_tree, id);
+
     Ihandle* properties_dlg = (Ihandle*)IupGetAttribute(IupGetParent(elem_tree), "PROPERTIES_DIALOG");
     if (properties_dlg && IupGetInt(properties_dlg, "VISIBLE"))
     {
-      Ihandle* elem = (Ihandle*)IupTreeGetUserId(elem_tree, id);
       iupLayoutPropertiesUpdate(properties_dlg, elem);
     }
+
+    bt = IupGetDialogChild(elem_tree, "ELEM_LAYOUT_BUTTON");
+    if (IupGetDialog(elem))
+      IupSetAttribute(bt, "ACTIVE", "Yes");
+    else
+      IupSetAttribute(bt, "ACTIVE", "No");
+
+    bt = IupGetDialogChild(elem_tree, "ELEM_IMAGE_BUTTON");
+    if (elem->iclass->nativetype == IUP_TYPEIMAGE)
+      IupSetAttribute(bt, "ACTIVE", "Yes");
+    else
+      IupSetAttribute(bt, "ACTIVE", "No");
   }
   return IUP_DEFAULT;
 }
@@ -2700,7 +2725,7 @@ static int layoutchanged_cb(Ihandle* dlg, Ihandle* elem)
     if (!iupAttribGet(elem, "_IUPLED_FILENAME")) /* new element */
       iupAttribSetStr(elem, "_IUPLED_FILENAME", filename);
 
-    if (vLedGetName(elem))  /* if it has name then it must have line for controlling export order */
+    if (vLedGetName(elem))  /* if it has name then it must have a line for controlling export order */
       update_led_line(elem, filename);
   }
 
@@ -2752,10 +2777,10 @@ static int item_newlayout_cb(Ihandle* ih_bt)
   Ihandle* elem_tree = vLedGetElemTree(multitext);
   char new_name[50];
   int caret_line, caret_pos;
-  static int new_count = 1;
+  static int new_dlg_count = 1;
 
-  sprintf(new_name, "new_dlg%d", new_count);
-  new_count++;
+  sprintf(new_name, "new_dialog%d", new_dlg_count);
+  new_dlg_count++;
 
   caret_line = IupGetInt(multitext, "CARET");
   IupTextConvertLinColToPos(multitext, caret_line, 0, &caret_pos);
@@ -2774,6 +2799,62 @@ static int item_newlayout_cb(Ihandle* ih_bt)
   IupSetAttribute(layout_dlg, "MULTITEXT", (char*)multitext);
 
   IupShow(layout_dlg);  /* LayoutDialog is automatically destroyed on close */
+
+  return IUP_DEFAULT;
+}
+
+static int imagechanged_cb(Ihandle* dlg)
+{
+  Ihandle* multitext = (Ihandle*)IupGetAttribute(dlg, "MULTITEXT");
+  rewrite_led(multitext);
+  return IUP_DEFAULT;
+}
+
+static int elem_imagedlg_cb(Ihandle* ih_item)
+{
+  Ihandle* elem_tree = !IupClassMatch(ih_item, "item") ? get_elem_tree(ih_item) : (Ihandle*)IupGetAttribute(ih_item, "ELEMENTS_TREE");
+  Ihandle* multitext = vLedGetCurrentMultitext(elem_tree);
+  int id = IupGetInt(elem_tree, "VALUE");
+  Ihandle *elem = (Ihandle *)IupTreeGetUserId(elem_tree, id);
+  Ihandle* config = get_config(elem_tree);
+
+  Ihandle* image_editor_dlg = (Ihandle*)IupGetAttribute(IupGetDialog(multitext), "IMAGE_EDITOR_DIALOG");
+  if (!image_editor_dlg)
+  {
+    image_editor_dlg = vLedImageEditorCreate(config);
+    IupSetCallback(image_editor_dlg, "IMAGECHANGED_CB", (Icallback)imagechanged_cb);
+    IupSetAttribute(IupGetDialog(multitext), "IMAGE_EDITOR_DIALOG", (char*)image_editor_dlg);
+  }
+
+  vLedImageEditorSetImage(image_editor_dlg, elem, IupGetName(elem));
+
+  IupConfigSetVariableInt(config, "ImageEditorDialog", "Maximized", 0);
+  IupConfigDialogShow(config, image_editor_dlg, "ImageEditorDialog");
+
+  IupPopup(image_editor_dlg, IUP_CURRENT, IUP_CURRENT);
+
+  return IUP_DEFAULT;
+}
+
+static int item_newimage_cb(Ihandle* ih_item)
+{
+  Ihandle* multitext = vLedGetCurrentMultitext(ih_item);
+  char* filename = IupGetAttribute(multitext, "FILENAME");
+  Ihandle* config = get_config(ih_item);
+  Ihandle* image_editor_dlg = (Ihandle*)IupGetAttribute(IupGetDialog(multitext), "IMAGE_EDITOR_DIALOG");
+  if (!image_editor_dlg)
+  {
+    image_editor_dlg = vLedImageEditorCreate(config);
+    IupSetCallback(image_editor_dlg, "IMAGECHANGED_CB", (Icallback)imagechanged_cb);
+    IupSetAttribute(IupGetDialog(multitext), "IMAGE_EDITOR_DIALOG", (char*)image_editor_dlg);
+  }
+
+  vLedImageEditorNewImage(image_editor_dlg, filename);
+
+  IupConfigSetVariableInt(config, "ImageEditorDialog", "Maximized", 0);
+  IupConfigDialogShow(config, image_editor_dlg, "ImageEditorDialog");
+
+  IupPopup(image_editor_dlg, IUP_CURRENT, IUP_CURRENT);
 
   return IUP_DEFAULT;
 }
@@ -2868,13 +2949,16 @@ static void show_elements_menu(Ihandle* elem_tree, int id, int x, int y)
 {
   Ihandle *popup_menu;
   Ihandle *elem = (Ihandle *)IupTreeGetUserId(elem_tree, id);
-  int show_elem = 0;
+  int has_dialog = 0, is_popup_menu = 0, is_image = 0;
 
-  Ihandle* dialog = IupGetDialog(elem);
-  if (dialog)
-    show_elem = 1;
-  else if (IupClassMatch(elem, "menu"))  /* popup menu */
-    show_elem = 2;
+  if (IupGetDialog(elem))
+    has_dialog = 1;
+
+  if (!has_dialog && IupClassMatch(elem, "menu"))  /* not inside a dialog, it is a popup menu */
+    is_popup_menu = 1;
+
+  if (elem->iclass->nativetype == IUP_TYPEIMAGE)
+    is_image = 1;
 
   IupSetInt(elem_tree, "VALUE", id);
 
@@ -2886,16 +2970,11 @@ static void show_elements_menu(Ihandle* elem_tree, int id, int x, int y)
     IupSetCallbacks(IupItem("Go to Parent\tLeft", NULL), "ACTION", elem_goto_parent_cb, NULL),
     IupSetCallbacks(IupItem("Go to Brother\tDown", NULL), "ACTION", elem_goto_brother_cb, NULL),
     IupSeparator(),
-    show_elem ?
-    (show_elem == 1 ?
-     IupSetCallbacks(IupItem("Show Dialog", NULL), "ACTION", elem_show_cb, NULL) :
-     IupSetCallbacks(IupItem("Show Menu", NULL), "ACTION", elem_show_cb, NULL)) :
-    IupSetAttributes(IupItem("Show", NULL), "ACTIVE=NO"),
-    show_elem == 1 ?
-    IupSetCallbacks(IupItem("Hide Dialog", NULL), "ACTION", elem_hide_cb, NULL) :
-    IupSetAttributes(IupItem("Hide", NULL), "ACTIVE=NO"),
+    has_dialog ? IupSetCallbacks(IupItem("Show Dialog", NULL), "ACTION", elem_show_cb, NULL) : (is_popup_menu ? IupSetCallbacks(IupItem("Popup Menu", NULL), "ACTION", elem_show_cb, NULL) : IupSetAttributes(IupItem("Show", NULL), "ACTIVE=NO")),
+    has_dialog ? IupSetCallbacks(IupItem("Hide Dialog", NULL), "ACTION", elem_hide_cb, NULL) : IupSetAttributes(IupItem("Hide", NULL), "ACTIVE=NO"),
     IupSeparator(),
-    IupSetAttributes(IupSetCallbacks(IupItem("Edit Dialog Layout...", NULL), "ACTION", (Icallback)elem_layoutdlg_cb, NULL), show_elem == 1 ? "ACTIVE=YES" : "ACTIVE=NO"),
+    IupSetAttributes(IupSetCallbacks(IupItem("Edit Dialog Layout...", NULL), "ACTION", (Icallback)elem_layoutdlg_cb, NULL), has_dialog ? "ACTIVE=YES" : "ACTIVE=NO"),
+    IupSetAttributes(IupSetCallbacks(IupItem("Edit Image...", NULL), "ACTION", (Icallback)elem_imagedlg_cb, NULL), is_image ? "ACTIVE=YES" : "ACTIVE=NO"),
     IupSeparator(),
     IupSetCallbacks(IupItem("Element Properties...", NULL), "ACTION", elem_propertiesdlg_cb, NULL),
     IupSetCallbacks(IupItem("Find Element...\tCtrl+E", "findElement"), "ACTION", elem_find_cb, NULL),
@@ -2932,7 +3011,7 @@ static Ihandle* buildLedMenu(Ihandle* config)
 {
   Ihandle *item_load, *item_unload, *item_autoload, *item_autocomplete, *item_style_config, *item_expand, *item_toggle, *item_level,
     *item_folding, *item_toggle_folding, *ledMenu, *item_collapse, *item_rewrite,
-    *item_comment, *item_uncomment, *item_newlayout;
+    *item_comment, *item_uncomment, *item_newlayout, *item_newimage;
 
   item_autoload = IupItem("Auto Load (Open or Save)", NULL);
   IupSetAttribute(item_autoload, "AUTOTOGGLE", "YES");
@@ -2956,6 +3035,9 @@ static Ihandle* buildLedMenu(Ihandle* config)
 
   item_newlayout = IupItem("New Dialog Layout...", NULL);
   IupSetCallback(item_newlayout, "ACTION", (Icallback)item_newlayout_cb);
+
+  item_newimage = IupItem("New Image...", NULL);
+  IupSetCallback(item_newimage, "ACTION", (Icallback)item_newimage_cb);
 
   item_autocomplete = IupItem("Auto Completion", NULL);
   IupSetAttribute(item_autocomplete, "NAME", "ITM_AUTOCOMPLETE");
@@ -3001,6 +3083,7 @@ static Ihandle* buildLedMenu(Ihandle* config)
     item_unload,
     IupSeparator(),
     item_newlayout,
+    item_newimage,
     item_rewrite,
     IupSeparator(),
     item_comment,
@@ -3133,7 +3216,7 @@ static Ihandle* buildToolsMenu(void)
 static Ihandle* buildElemToolbar(void)
 {
   Ihandle* elem_but_box;
-  Ihandle* btn_tools, *bt_prop, *bt_find, *bt_locate, *bt_layout;
+  Ihandle* btn_tools, *bt_prop, *bt_find, *bt_locate, *bt_layout, *bt_image;
 
   btn_tools = IupButton(NULL, NULL);
   IupSetAttribute(btn_tools, "IMAGE", "IUP_ToolsSettings");
@@ -3143,18 +3226,27 @@ static Ihandle* buildElemToolbar(void)
   IupSetAttribute(btn_tools, "CANFOCUS", "No");
 
   bt_locate = IupButton(NULL, NULL);
-  IupSetAttribute(bt_locate, "IMAGE", "_IUP_NAME_IMG_GOTOCMD");
+  IupSetAttribute(bt_locate, "IMAGE", "IupVLedGotoCmd");
   IupSetAttribute(bt_locate, "FLAT", "Yes");
   IupSetCallback(bt_locate, "ACTION", (Icallback)elem_locate_cb);
   IupSetAttribute(bt_locate, "TIP", "Locate in LED");
   IupSetAttribute(bt_locate, "CANFOCUS", "No");
 
   bt_layout = IupButton(NULL, NULL);
-  IupSetAttribute(bt_layout, "IMAGE", "_IUP_NAME_IMG_LAYOUT");
+  IupSetAttribute(bt_layout, "IMAGE", "IupVLedLayout");
+  IupSetAttribute(bt_layout, "NAME", "ELEM_LAYOUT_BUTTON");
   IupSetAttribute(bt_layout, "FLAT", "Yes");
   IupSetCallback(bt_layout, "ACTION", (Icallback)elem_layoutdlg_cb);
   IupSetAttribute(bt_layout, "TIP", "Edit Dialog Layout...");
   IupSetAttribute(bt_layout, "CANFOCUS", "No");
+
+  bt_image = IupButton(NULL, NULL);
+  IupSetAttribute(bt_image, "IMAGE", "IupVLedImageEditor");
+  IupSetAttribute(bt_image, "FLAT", "Yes");
+  IupSetAttribute(bt_image, "NAME", "ELEM_IMAGE_BUTTON");
+  IupSetCallback(bt_image, "ACTION", (Icallback)elem_imagedlg_cb);
+  IupSetAttribute(bt_image, "TIP", "Edit Image...");
+  IupSetAttribute(bt_image, "CANFOCUS", "No");
 
   bt_prop = IupButton(NULL, NULL);
   IupSetAttribute(bt_prop, "IMAGE", "IUP_FileProperties");
@@ -3177,6 +3269,7 @@ static Ihandle* buildElemToolbar(void)
     IupSetAttributes(IupSpace(), "RASTERSIZE=0x8"),
     bt_locate,
     bt_layout,
+    bt_image,
     bt_prop,
     bt_find,
     NULL
@@ -3200,10 +3293,18 @@ static void addToolbarButtons(Ihandle* toolbar)
   IupAppend(toolbar, bt);
 
   bt = IupButton(NULL, NULL);
-  IupSetAttribute(bt, "IMAGE", "_IUP_NAME_IMG_NEWLAYOUT");
+  IupSetAttribute(bt, "IMAGE", "IupVLedNewLayout");
   IupSetAttribute(bt, "FLAT", "Yes");
   IupSetCallback(bt, "ACTION", (Icallback)item_newlayout_cb);
   IupSetAttribute(bt, "TIP", "New Dialog Layout\n(insert a new dialog at caret and starts editing its layout)");
+  IupSetAttribute(bt, "CANFOCUS", "No");
+  IupAppend(toolbar, bt);
+
+  bt = IupButton(NULL, NULL);
+  IupSetAttribute(bt, "IMAGE", "IupVLedNewImage");
+  IupSetAttribute(bt, "FLAT", "Yes");
+  IupSetCallback(bt, "ACTION", (Icallback)item_newimage_cb);
+  IupSetAttribute(bt, "TIP", "Creates a new image");
   IupSetAttribute(bt, "CANFOCUS", "No");
   IupAppend(toolbar, bt);
 
@@ -3253,7 +3354,6 @@ static int scidlg_exit_cb(Ihandle* main_dialog)
 
 /**********************************************************************/
 
-void vLedLoadImages(void);
 
 int main(int argc, char **argv)
 {
@@ -3385,7 +3485,11 @@ int main(int argc, char **argv)
   extra_dlg = (Ihandle*)IupGetAttribute(elem_tree_box, "PROPERTIES_DIALOG");
   if (iupObjectCheck(extra_dlg))
     IupDestroy(extra_dlg);
-  
+
+  extra_dlg = (Ihandle*)IupGetAttribute(main_dialog, "IMAGE_EDITOR_DIALOG");
+  if (iupObjectCheck(extra_dlg))
+    IupDestroy(extra_dlg);
+
   extra_dlg = (Ihandle*)IupGetAttribute(main_dialog, "GLOBALS_DIALOG");
   if (iupObjectCheck(extra_dlg))
     IupDestroy(extra_dlg);

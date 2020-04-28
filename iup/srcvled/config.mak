@@ -2,7 +2,7 @@ PROJNAME = iup
 APPNAME := iupvled
 OPT = YES
 
-SRC = iup_vled.c iup_vled_imgs.c
+SRC = iup_vled.c iup_vled_imgs.c vled_image_editor.c
 
 IUP := ..
 
@@ -32,7 +32,7 @@ USE_IM = Yes
 ifdef USE_IM
   DEFINES += USE_IM  
   ifneq ($(findstring Win, $(TEC_SYSNAME)), )
-    LIBS += iupim
+    LIBS += iupim im_process cdim
   else
     ifdef USE_STATIC
       ifdef DBG_DIR
@@ -40,9 +40,9 @@ ifdef USE_IM
       else
         IUPLIB = $(IUP)/lib/$(TEC_UNAME)
       endif  
-      SLIB += $(IUPLIB)/libiupim.a
+      SLIB += $(IUPLIB)/libiupim.a $(IMLIB)/libim_process.a $(IMLIB)/libcdim.a
     else
-      LIBS += iupim
+      LIBS += iupim im_process cdim
     endif             
   endif             
 endif 
