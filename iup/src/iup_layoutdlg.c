@@ -1495,7 +1495,7 @@ static int iLayoutContextMenuHandleName_CB(Ihandle* menu)
   IupSetAttributeHandle(NULL, "PARENTDIALOG", IupGetDialog(layoutdlg->tree));
 
   if (IupGetParam("Handle Name", NULL, NULL,
-                  "Name: %s\n",
+                  "Name: %s[Leave it empty to remove the handle]\n",
                   name, NULL))
   {
     if (name[0] == 0 || name[0] == ' ')
@@ -1509,9 +1509,17 @@ static int iLayoutContextMenuHandleName_CB(Ihandle* menu)
     }
     else
     {
-      IupSetHandle(name, elem);
-      iLayoutTreeUpdateTitle(layoutdlg, elem);
-      iLayoutCallLayoutChangedCb(layoutdlg, elem);
+      Ihandle* old_elem = IupGetHandle(name);
+      int ret = 1;
+      if (old_elem != elem)
+        ret = IupMessageAlarm(IupGetDialog(layoutdlg->tree), "Handle Name", "Name is already associated with another handle. Replace it?", "YESNO");
+
+      if (ret == 1)
+      {
+        IupSetHandle(name, elem);
+        iLayoutTreeUpdateTitle(layoutdlg, elem);
+        iLayoutCallLayoutChangedCb(layoutdlg, elem);
+      }
     }
   }
 
