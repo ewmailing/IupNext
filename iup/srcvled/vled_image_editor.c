@@ -583,10 +583,10 @@ static void image_fill_white(imImage* image)
 {
   double color[4];
 
-  color[0] = 255;
+  color[0] = 255;  /* white also for GRAY and new MAP */
   color[1] = 255;
   color[2] = 255;
-  color[3] = 255;
+  color[3] = 255;  /* opaque */
 
   imProcessRenderConstant(image, color);
 }
@@ -665,7 +665,10 @@ static void set_new_image(Ihandle* canvas, imImage* image, int dirty)
   {
     imImage* new_image = imImageCreateBased(image, -1, -1, IM_RGB, -1);
     if (image->has_alpha)
+    {
       imImageAddAlpha(new_image);
+      imImageSetAlpha(image, 255); /* opaque */
+    }
     imConvertColorSpace(image, new_image);
     imImageDestroy(image);
 
@@ -715,10 +718,10 @@ static void save_iup_image(Ihandle* canvas)
   char* name = IupGetAttribute(canvas, "IUP_IMAGE_NAME");
   char* filename = IupGetAttribute(canvas, "_IUPLED_FILENAME");
   imImage* image = (imImage*)IupGetAttribute(canvas, "IMAGE");
-  Ihandle* iup_image = IupImageFromImImage(image);
   Ihandle* old_iup_image = IupGetHandle(name);
   Icallback imagechanged_cb = IupGetCallback(IupGetDialog(canvas), "IMAGECHANGED_CB");
 
+  Ihandle* iup_image = IupImageFromImImage(image);
   if (!iup_image)
   {
     show_file_error(IM_ERR_MEM);
@@ -1565,10 +1568,17 @@ void vLedImageEditorNewImage(Ihandle* dlg, const char* filename)
     int color_space = type == 0 ? IM_MAP : IM_RGB;
     imImage* image;
     Icallback imagechanged_cb;
+    Ihandle* old_elem = IupGetHandle(name);
 
     IupConfigSetVariableInt(config, "NewImage", "Width", width);
     IupConfigSetVariableInt(config, "NewImage", "Height", height);
     IupConfigSetVariableInt(config, "NewImage", "Type", type);
+
+    if (old_elem)
+    {
+      if (IupMessageAlarm(dlg, "Handle Name", "Name is already associated with another handle. Replace it?", "YESNO") == 0)
+        return;
+    }
 
     image = imImageCreate(width, height, color_space, IM_BYTE);
     if (!image)
@@ -1613,7 +1623,7 @@ static int item_new_action_cb(Ihandle* item_new)
   {
     Ihandle* canvas = IupGetDialogChild(item_new, "CANVAS");
     char* filename = IupGetAttribute(canvas, "_IUPLED_FILENAME");
-    vLedImageEditorNewImage(item_new, filename);
+    vLedImageEditorNewImage(IupGetDialog(item_new), filename);
   }
 
   return IUP_DEFAULT;
@@ -2127,6 +2137,7 @@ static int item_rgba_action_cb(Ihandle* item)
   {
     /* just add alpha */
     imImageAddAlpha(image);
+    imImageSetAlpha(image, 255); /* opaque */
 
     IupSetAttribute(canvas, "DIRTY", "Yes");
     update_title(canvas);
@@ -2143,6 +2154,7 @@ static int item_rgba_action_cb(Ihandle* item)
     }
 
     imImageAddAlpha(new_image);
+    imImageSetAlpha(image, 255); /* opaque */
 
     imProcessConvertColorSpace(image, new_image);  /* MAP to RGB with alpha */
 
