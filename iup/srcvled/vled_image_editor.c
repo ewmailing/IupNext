@@ -655,6 +655,55 @@ static void update_image(Ihandle* canvas, imImage* image, int update_size)
     IupUpdate(canvas);
 }
 
+static void imImageViewFitRect(int Width, int Height, int wi, int hi, int *w, int *h)
+{
+  double rView, rImage;
+  int correct = 0;
+
+  *w = Width;
+  *h = Height;
+
+  rView = ((double)Height) / Width;
+  rImage = ((double)hi) / wi;
+
+  if ((rView <= 1 && rImage <= 1) || (rView >= 1 && rImage >= 1)) /* view and image are horizontal rectangles */
+  {
+    if (rView > rImage)
+      correct = 2;
+    else
+      correct = 1;
+  }
+  else if (rView < 1 && rImage > 1) /* view is a horizontal rectangle and image is a vertical rectangle */
+    correct = 1;
+  else if (rView > 1 && rImage < 1) /* view is a vertical rectangle and image is a horizontal rectangle */
+    correct = 2;
+
+  if (correct == 1)
+    *w = (int)(Height / rImage);
+  else if (correct == 2)
+    *h = (int)(Width * rImage);
+}
+
+static void fit_zoom(Ihandle* canvas, imImage* image, Ihandle* zoom_val)
+{
+  int canvas_width = 0, canvas_height = 0, view_width, view_height;
+  double zoom_index, zoom_factor;
+
+  IupGetIntInt(canvas, "DRAWSIZE", &canvas_width, &canvas_height);
+
+  imImageViewFitRect(canvas_width, canvas_height, image->width, image->height, &view_width, &view_height);
+
+  zoom_factor = (double)view_width / image->width;
+  zoom_index = log(zoom_factor) / log(2.0);
+
+  if (zoom_index < -6)
+    zoom_index = -6;
+  if (zoom_index > 6)
+    zoom_index = 6;
+
+  IupSetDouble(zoom_val, "VALUE", zoom_index);
+}
+
 static void set_new_image(Ihandle* canvas, imImage* image, int dirty)
 {
   Ihandle* zoom_val = IupGetDialogChild(canvas, "ZOOMVAL");
@@ -695,7 +744,7 @@ static void set_new_image(Ihandle* canvas, imImage* image, int dirty)
   if (!format)
     imImageSetAttribString(image, "FileFormat", "PNG");
 
-  IupSetDouble(zoom_val, "VALUE", 0);
+  fit_zoom(canvas, image, zoom_val);
 
   update_image(canvas, image, 1);
 
@@ -2836,7 +2885,7 @@ Ihandle* vLedImageEditorCreate(Ihandle* parent, Ihandle *config)
   canvas = IupCanvas(NULL);
   IupSetAttribute(canvas, "NAME", "CANVAS");
   IupSetAttribute(canvas, "SCROLLBAR", "Yes");
-  IupSetAttribute(canvas, "DIRTY", "NO");  /* custom attribute */
+  IupSetAttribute(canvas, "BORDER", "NO");
   IupSetCallback(canvas, "ACTION", (Icallback)canvas_action_cb);
   IupSetCallback(canvas, "DROPFILES_CB", (Icallback)dropfiles_cb);
   IupSetCallback(canvas, "MAP_CB", (Icallback)canvas_map_cb);
@@ -2845,6 +2894,8 @@ Ihandle* vLedImageEditorCreate(Ihandle* parent, Ihandle *config)
   IupSetCallback(canvas, "RESIZE_CB", (Icallback)canvas_resize_cb);
   IupSetCallback(canvas, "MOTION_CB", (Icallback)canvas_motion_cb);
   IupSetCallback(canvas, "BUTTON_CB", (Icallback)canvas_button_cb);
+
+  IupSetAttribute(canvas, "DIRTY", "NO");  /* custom attribute */
 
   toolbox = create_toolbox(canvas);
 

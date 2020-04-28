@@ -2844,10 +2844,10 @@ static int elem_imagedlg_cb(Ihandle* ih_item)
     IupSetAttribute(IupGetDialog(multitext), "IMAGE_EDITOR_DIALOG", (char*)image_editor_dlg);
   }
 
-  vLedImageEditorSetImage(image_editor_dlg, elem, IupGetName(elem));
-
   IupConfigSetVariableInt(config, "ImageEditorDialog", "Maximized", 0);
   IupConfigDialogShow(config, image_editor_dlg, "ImageEditorDialog");
+
+  vLedImageEditorSetImage(image_editor_dlg, elem, IupGetName(elem));
 
   IupPopup(image_editor_dlg, IUP_CURRENT, IUP_CURRENT);
 
@@ -2867,10 +2867,10 @@ static int item_newimage_cb(Ihandle* ih_item)
     IupSetAttribute(IupGetDialog(multitext), "IMAGE_EDITOR_DIALOG", (char*)image_editor_dlg);
   }
 
-  vLedImageEditorNewImage(image_editor_dlg, filename);
-
   IupConfigSetVariableInt(config, "ImageEditorDialog", "Maximized", 0);
   IupConfigDialogShow(config, image_editor_dlg, "ImageEditorDialog");
+
+  vLedImageEditorNewImage(image_editor_dlg, filename);
 
   IupPopup(image_editor_dlg, IUP_CURRENT, IUP_CURRENT);
 
