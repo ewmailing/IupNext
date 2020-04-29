@@ -858,7 +858,6 @@ static void iPlotPropertiesCheckUpdateXY(Ihandle* ih, Ihandle* parambox, Ihandle
       // To Param
       iPlotSetParamValue(param, value);
     }
-
   }
 }
 
@@ -930,12 +929,12 @@ static void iPlotPropertiesResetChanges(Ihandle* parambox)
     // To Param
     iPlotSetParamValue(param, value);
 
+    iPlotPropertiesCheckParam(parambox, param, i);
+
     // From Param
     value = iPlotGetParamValue(param);
     // To Plot
     IupSetStrAttribute(ih, name, value);
-
-    iPlotPropertiesCheckParam(parambox, param, i);
   }
 
   IupSetAttribute(parambox, "PLOT_CHANGED", NULL);
@@ -950,6 +949,7 @@ static void iPlotPropertiesApplyChanges(Ihandle* parambox)
 {
   Ihandle* ih = (Ihandle*)IupGetAttribute(parambox, "PLOT");
   Ihandle* zbox = IupGetParent(parambox);
+  IFnss validate_cb = (IFnss)IupGetCallback(ih, "PROPERTIESVALIDATE_CB");
 
   int plot_current = iupAttribGetInt(zbox, "_IUP_PLOT_CURRENT");
   // make sure we are changing the right plot
@@ -963,10 +963,13 @@ static void iPlotPropertiesApplyChanges(Ihandle* parambox)
 
     // From Param
     const char* value = iPlotGetParamValue(param);
-    // To Plot
-    IupSetAttribute(ih, name, value);
-
-    iPlotPropertiesCheckParam(parambox, param, i);
+    if (validate_cb && validate_cb(ih, name, (char*)value) == IUP_IGNORE)
+      continue;
+    else
+    {
+      // To Plot
+      IupSetAttribute(ih, name, value);
+    }
   }
 
   IupSetAttribute(parambox, "PLOT_CHANGED", NULL);
@@ -1186,14 +1189,14 @@ static int iPlotDataSetPropertiesParam_cb(Ihandle* param_dialog, int param_index
   if (param_index == IUP_GETPARAM_MAP)
   {
     Ihandle* ih = (Ihandle*)user_data;
-    IupSetAttributeHandle(param_dialog, "PARENTDIALOG", ih);
+    IupSetAttributeHandle(param_dialog, "PARENTDIALOG", IupGetDialog(ih));
   }
   else if (param_index == IUP_GETPARAM_BUTTON1)
   {
     Ihandle* ih = (Ihandle*)user_data;
-    IFni cb = (IFni)IupGetCallback(ih, "DSPROPERTIESVALIDATE_CB");
+    IFnni cb = (IFnni)IupGetCallback(ih, "DSPROPERTIESVALIDATE_CB");
     int ds = IupGetInt(ih, "_IUP_DS");
-    if (cb && cb(ih, ds) == IUP_IGNORE)
+    if (cb && cb(ih, param_dialog, ds) == IUP_IGNORE)
       return 0;
   }
 
@@ -1272,7 +1275,7 @@ static int iPlotDataSetProperties_CB(Ihandle* ih_item)
     "_@IUP_PIESLICELABEL%l|_@IUP_NONE|X|Y|_@IUP_PERCENT|\n"
     "_@IUP_PIESLICELABELPOS%R[0,1,]\n";
 
-  if (!IupGetParam("_@IUP_DATASETPROPERTIESDLG", iPlotDataSetPropertiesParam_cb, IupGetDialog(ih), format,
+  if (!IupGetParam("_@IUP_DATASETPROPERTIESDLG", iPlotDataSetPropertiesParam_cb, ih, format,
                    name, color, &mode, &linestyle, &linewidth, &markstyle, &marksize,
                    &barSpacing, &barOutline, barOutlineColor,
                    &areaTransparency,
@@ -3085,8 +3088,9 @@ static Iclass* iPlotNewClass(void)
   iupClassRegisterCallback(ic, "MENUCONTEXT_CB", "nii");
   iupClassRegisterCallback(ic, "MENUCONTEXTCLOSE_CB", "nii");
   iupClassRegisterCallback(ic, "PROPERTIESCHANGED_CB", "");
+  iupClassRegisterCallback(ic, "PROPERTIESVALIDATE_CB", "ss");
   iupClassRegisterCallback(ic, "DSPROPERTIESCHANGED_CB", "i");
-  iupClassRegisterCallback(ic, "DSPROPERTIESVALIDATE_CB", "i");
+  iupClassRegisterCallback(ic, "DSPROPERTIESVALIDATE_CB", "nni");
   iupClassRegisterCallback(ic, "XTICKFORMATNUMBER_CB", "ssds");
   iupClassRegisterCallback(ic, "YTICKFORMATNUMBER_CB", "ssds");
 

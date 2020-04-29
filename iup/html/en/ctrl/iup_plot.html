@@ -953,21 +953,23 @@ after the context menu is closed. Only shown if MENUCONTEXT=Yes.</p>
     <p class="info"><strong>ih</strong>:
   identifier of the element that activated the 
   event.<br> <b>ds_index</b>: index of the dataset</p>
-<p><strong>DSPROPERTIESVALIDADE_CB</strong>: Called when the user pressed OK to 
-change dataset attributes using the "Data Set Properties..." dialog. (since 3.29)</p>
+<p><strong>DSPROPERTIESVALIDATE_CB</strong>: Called when the user pressed OK to 
+change dataset attributes using the "Data Set Properties..." dialog. Called only 
+once. (since 3.29)</p>
   
-    <pre>int function(Ihandle *<strong>ih</strong>, int <b>ds_index</b>); [in C]
-<strong>ih</strong>:dspropertiesvalidate_cb(<b>ds_index</b>: number) -&gt; (<strong>ret</strong>: number) [in Lua]</pre>
+    <pre>int function(Ihandle *<strong>ih</strong>, Ihandle* <strong>param_dialog</strong>, int <b>ds_index</b>); [in C]
+<strong>ih</strong>:dspropertiesvalidate_cb(<b><strong>param_dialog</strong></b>: ihandle, <b>ds_index</b>: number) -&gt; (<strong>ret</strong>: number) [in Lua]</pre>
     <p class="info"><strong>ih</strong>:
   identifier of the element that activated the 
-  event.<br> <b>ds_index</b>: index of the dataset</p>
+  event.<br><strong>param_dialog</strong>: internal handle of the
+	<a href="../dlg/iupgetparam.html">IupGetParam</a> dialog so the application 
+	can consult the PARAMid attributes to check their values.<br> <b>ds_index</b>: index of the dataset</p>
     <p class="info">
     <span class="style2">Returns:</span>
     if IUP_IGNORE is 
 	returned the dialog is not closed.</p>
   
-    <p><strong>PROPERTIESCHANGED_CB</strong>: Called when the user changed some 
-	plot attributes using the "Properties..." dialog. (since 3.24)</p>
+    <p><strong>PROPERTIESCHANGED_CB</strong>: Called when the user changed plot attributes using the "Properties..." dialog. (since 3.24)</p>
 
   
     
@@ -976,6 +978,25 @@ change dataset attributes using the "Data Set Properties..." dialog. (since 3.29
     <p class="info"><strong>ih</strong>:
   identifier of the element that activated the 
   event.</p>
+
+  
+    
+    <p><strong>PROPERTIESVALIDATE_CB</strong>: Called for each attribute in the 
+	page, when the user pressed Apply to change 
+	plot attributes using the "Properties..." dialog. (since 3.29)</p>
+
+  
+    
+    <pre>int function(Ihandle *<strong>ih, </strong>char* <strong>name, </strong>char* <strong>value</strong>); [in C]
+<strong>ih</strong>:propertiesvalidate_cb(<strong>name, value</strong>: string) -&gt; (<strong>ret</strong>: number) [in Lua]</pre>
+    <p class="info"><strong>ih</strong>:
+  identifier of the element that activated the 
+  event.<br><strong>name</strong>: name of the attribute<br><strong>value</strong>: 
+	new value for the attribute</p>
+<p class="info">
+    <span class="style2">Returns:</span>
+    if IUP_IGNORE is 
+	returned that attribute is not changed.</p>
 
   
     
