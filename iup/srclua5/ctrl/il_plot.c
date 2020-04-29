@@ -102,6 +102,13 @@ static int plot_deleteend_cb(Ihandle *self)
   return iuplua_call(L, 0);
 }
 
+static int plot_dspropertiesvalidate_cb(Ihandle *self, int p0)
+{
+  lua_State *L = iuplua_call_start(self, "dspropertiesvalidate_cb");
+  lua_pushinteger(L, p0);
+  return iuplua_call(L, 1);
+}
+
 static int plot_drawsample_cb(Ihandle *self, int p0, int p1, double p2, double p3, int p4)
 {
   lua_State *L = iuplua_call_start(self, "drawsample_cb");
@@ -213,6 +220,7 @@ int iupplotlua_open(lua_State * L)
   iuplua_register_cb(L, "SELECTEND_CB", (lua_CFunction)plot_selectend_cb, NULL);
   iuplua_register_cb(L, "CLICKSEGMENT_CB", (lua_CFunction)plot_clicksegment_cb, NULL);
   iuplua_register_cb(L, "DELETEEND_CB", (lua_CFunction)plot_deleteend_cb, NULL);
+  iuplua_register_cb(L, "DSPROPERTIESVALIDATE_CB", (lua_CFunction)plot_dspropertiesvalidate_cb, NULL);
   iuplua_register_cb(L, "DRAWSAMPLE_CB", (lua_CFunction)plot_drawsample_cb, NULL);
   iuplua_register_cb(L, "SELECT_CB", (lua_CFunction)plot_select_cb, NULL);
   iuplua_register_cb(L, "DSPROPERTIESCHANGED_CB", (lua_CFunction)plot_dspropertieschanged_cb, NULL);

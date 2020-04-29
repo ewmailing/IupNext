@@ -21,6 +21,7 @@ local ctrl = {
     deleteend_cb = "",
     propertieschanged_cb = "",
     dspropertieschanged_cb = "n",
+    dspropertiesvalidate_cb = "n",
     plotmotion_cb = "dds",
     plotbutton_cb = "nndds",
     menucontext_cb = "inn",

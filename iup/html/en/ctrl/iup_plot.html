@@ -946,14 +946,26 @@ with no Ctrl nor Shift keys. Only shown if MENUCONTEXT=Yes.</p>
 
 <p><strong>MENUCONTEXTCLOSE_CB</strong>: Same as MENUCONTEXT_CB, but called 
 after the context menu is closed. Only shown if MENUCONTEXT=Yes.</p>
-<p><strong>DSPROPERTIESCHANGED_CB</strong>: Called when the user changed some 
-dataset attributes using the "Data Set Properties..." dialog. (since 3.24)</p>
+<p><strong>DSPROPERTIESCHANGED_CB</strong>: Called after the user changed dataset attributes using the "Data Set Properties..." dialog. (since 3.24)</p>
   
     <pre>int function(Ihandle *<strong>ih</strong>, int <b>ds_index</b>); [in C]
 <strong>ih</strong>:dspropertieschanged_cb(<b>ds_index</b>: number) -&gt; (<strong>ret</strong>: number) [in Lua]</pre>
     <p class="info"><strong>ih</strong>:
   identifier of the element that activated the 
   event.<br> <b>ds_index</b>: index of the dataset</p>
+<p><strong>DSPROPERTIESVALIDADE_CB</strong>: Called when the user pressed OK to 
+change dataset attributes using the "Data Set Properties..." dialog. (since 3.29)</p>
+  
+    <pre>int function(Ihandle *<strong>ih</strong>, int <b>ds_index</b>); [in C]
+<strong>ih</strong>:dspropertiesvalidate_cb(<b>ds_index</b>: number) -&gt; (<strong>ret</strong>: number) [in Lua]</pre>
+    <p class="info"><strong>ih</strong>:
+  identifier of the element that activated the 
+  event.<br> <b>ds_index</b>: index of the dataset</p>
+    <p class="info">
+    <span class="style2">Returns:</span>
+    if IUP_IGNORE is 
+	returned the dialog is not closed.</p>
+  
     <p><strong>PROPERTIESCHANGED_CB</strong>: Called when the user changed some 
 	plot attributes using the "Properties..." dialog. (since 3.24)</p>
 

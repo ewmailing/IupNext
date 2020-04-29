@@ -427,12 +427,15 @@ static int iPlotDataSetValues_CB(Ihandle* ih_item)
 
   Ihandle* dlg = IupDialog(vbox);
 
-  Ihandle *parent = IupGetDialog(ih_item);
+  Ihandle *parent = IupGetDialog(ih);
 
   IupSetStrAttribute(dlg, "TITLE", "_@IUP_DATASETVALUESDLG");
   IupSetAttribute(dlg, "MINBOX", "NO");
   IupSetAttribute(dlg, "MAXBOX", "NO");
   IupSetAttribute(dlg, "SHRINK", "YES");
+  IupSetAttributeHandle(dlg, "DEFAULTESC", button);
+  IupSetAttributeHandle(dlg, "DEFAULTENTER", button);
+  IupSetAttributeHandle(dlg, "PARENTDIALOG", parent);
 
   if (IupGetAttribute(parent, "ICON"))
     IupSetStrAttribute(dlg, "ICON", IupGetAttribute(parent, "ICON"));
@@ -481,7 +484,7 @@ static int iPlotDataSetValues_CB(Ihandle* ih_item)
   iupAttribSetInt(matrix, "_IUP_PLOT_CURRENT", plot_current);
   iupAttribSetInt(matrix, "_IUP_DS", ds);
 
-  IupPopup(dlg, IUP_CENTER, IUP_CENTER);
+  IupPopup(dlg, IUP_CENTERPARENT, IUP_CENTERPARENT);
 
   if (IupGetInt(ih, "EDITABLEVALUES"))
     IupSetAttribute(ih, "REDRAW", NULL);
@@ -1178,12 +1181,20 @@ static int iPlotProperties_CB(Ihandle* ih_item)
   return IUP_DEFAULT;
 }
 
-static int setparent_param_cb(Ihandle* param_dialog, int param_index, void* user_data)
+static int iPlotDataSetPropertiesParam_cb(Ihandle* param_dialog, int param_index, void* user_data)
 {
   if (param_index == IUP_GETPARAM_MAP)
   {
     Ihandle* ih = (Ihandle*)user_data;
     IupSetAttributeHandle(param_dialog, "PARENTDIALOG", ih);
+  }
+  else if (param_index == IUP_GETPARAM_BUTTON1)
+  {
+    Ihandle* ih = (Ihandle*)user_data;
+    IFni cb = (IFni)IupGetCallback(ih, "DSPROPERTIESVALIDATE_CB");
+    int ds = IupGetInt(ih, "_IUP_DS");
+    if (cb && cb(ih, ds) == IUP_IGNORE)
+      return 0;
   }
 
   return 1;
@@ -1199,6 +1210,7 @@ static int iPlotDataSetProperties_CB(Ihandle* ih_item)
 
   IupSetInt(ih, "PLOT_CURRENT", plot_current);
   IupSetInt(ih, "CURRENT", ds);
+  IupSetInt(ih, "_IUP_DS", ds);
 
   char* ds_name = IupGetAttribute(ih, "DS_NAME");
   strcpy(name, ds_name);
@@ -1260,17 +1272,18 @@ static int iPlotDataSetProperties_CB(Ihandle* ih_item)
     "_@IUP_PIESLICELABEL%l|_@IUP_NONE|X|Y|_@IUP_PERCENT|\n"
     "_@IUP_PIESLICELABELPOS%R[0,1,]\n";
 
-  if (!IupGetParam("_@IUP_DATASETPROPERTIESDLG", setparent_param_cb, IupGetDialog(ih), format,
-    name, color, &mode, &linestyle, &linewidth, &markstyle, &marksize,
-    &barSpacing, &barOutline, barOutlineColor,
-    &areaTransparency,
-    &pieRadius, &pieStartAngle, &pieContour, &pieHole, &pieSliceLabel_index, &pieSliceLabelPos,
-    NULL))
+  if (!IupGetParam("_@IUP_DATASETPROPERTIESDLG", iPlotDataSetPropertiesParam_cb, IupGetDialog(ih), format,
+                   name, color, &mode, &linestyle, &linewidth, &markstyle, &marksize,
+                   &barSpacing, &barOutline, barOutlineColor,
+                   &areaTransparency,
+                   &pieRadius, &pieStartAngle, &pieContour, &pieHole, &pieSliceLabel_index, &pieSliceLabelPos,
+                   NULL))
     return IUP_DEFAULT;
 
   // make sure we are changing the right plot
   IupSetInt(ih, "PLOT_CURRENT", plot_current);
   IupSetInt(ih, "CURRENT", ds);
+  IupSetAttribute(ih, "_IUP_DS", NULL);
 
   IupSetStrAttribute(ih, "DS_NAME", name);
   IupSetStrAttribute(ih, "DS_COLOR", color);
@@ -3073,6 +3086,7 @@ static Iclass* iPlotNewClass(void)
   iupClassRegisterCallback(ic, "MENUCONTEXTCLOSE_CB", "nii");
   iupClassRegisterCallback(ic, "PROPERTIESCHANGED_CB", "");
   iupClassRegisterCallback(ic, "DSPROPERTIESCHANGED_CB", "i");
+  iupClassRegisterCallback(ic, "DSPROPERTIESVALIDATE_CB", "i");
   iupClassRegisterCallback(ic, "XTICKFORMATNUMBER_CB", "ssds");
   iupClassRegisterCallback(ic, "YTICKFORMATNUMBER_CB", "ssds");
 
