@@ -798,6 +798,8 @@ static void set_file_format(imImage* image, const char* filename)
     format = "JPEG";
   else if (str_compare(ext, "bmp", 0))
     format = "BMP";
+  else if (str_compare(ext, "gif", 0))
+    format = "GIF";
   else if (str_compare(ext, "png", 0))
     format = "PNG";
   else if (str_compare(ext, "tga", 0))
@@ -865,7 +867,7 @@ static int select_file(Ihandle* parent_dlg, int is_open)
     IupSetAttribute(filedlg, "DIALOGTYPE", "SAVE");
     IupSetStrAttribute(filedlg, "FILE", IupGetAttribute(canvas, "_IUP_IMAGE_HANDLE"));
   }
-  IupSetAttribute(filedlg, "EXTFILTER", "Image Files|*.bmp;*.jpg;*.png;*.tif;*.tga|All Files|*.*|");
+  IupSetAttribute(filedlg, "EXTFILTER", "Image Files|*.bmp;*.gif;*.jpg;*.png;*.tif;*.tga|All Files|*.*|");
   IupSetStrAttribute(filedlg, "DIRECTORY", dir);
   IupSetAttributeHandle(filedlg, "PARENTDIALOG", parent_dlg);
 
@@ -2241,9 +2243,77 @@ static int palette_cancel_cb(Ihandle* bt_cancel)
   return IUP_CLOSE;
 }
 
+static int palette_compact_cb(Ihandle* bt)
+{
+  imImage* image = (imImage*)IupGetAttribute(bt, "IM_IMAGE");
+  Ihandle* colorbar = IupGetChild(IupGetParent(IupGetParent(bt)), 0);
+  int i, j, count = image->count, transp_index = -1;
+  unsigned char* data = (unsigned char*)image->data[0];
+  long* palette = image->palette;
+  unsigned char map[256];
+  long bgcolor = 0;
+
+  const unsigned char* img_transp_index = imImageGetAttribute(image, "TransparencyIndex", NULL, NULL);
+  if (img_transp_index)
+  {
+    transp_index = (int)(*img_transp_index);
+    bgcolor = palette[transp_index];
+  }
+
+  memset(map, 0, 256);
+
+  for (i = 0; i < count; i++)
+  {
+    if (map[data[i]] == 0)
+      map[data[i]] = 1;
+  }
+
+  j = 0;
+  for (i = 0; i < 256; i++)
+  {
+    if (map[i])
+    {
+      map[i] = (unsigned char)j;
+      j++;
+    }
+  }
+
+  for (i = 0; i < count; i++)
+  {
+    data[i] = map[data[i]];
+  }
+
+  for (i = 0; i < j; i++)
+    palette[i] = palette[map[i]];
+
+  for (i = j; i < 256; i++)
+    palette[i] = 0;
+
+  if (transp_index != -1)
+  {
+    transp_index = map[transp_index];
+    palette[transp_index] = bgcolor;
+  }
+
+  for (i = 0; i < 256; i++)
+    IupSetRGBId(colorbar, "CELL", i, cdRed(palette[i]), cdGreen(palette[i]), cdBlue(palette[i]));
+
+  IupSetAttribute(IupGetDialog(bt), "COMPACTED", "1");
+
+  if (transp_index != -1)
+  {
+    unsigned char new_img_transp_index = (unsigned char)transp_index;
+    imImageSetAttribute(image, "TransparencyIndex", IM_BYTE, 1, &new_img_transp_index);
+
+    IupSetInt(colorbar, "TRANSP_INDEX", transp_index);
+  }
+
+  return IUP_DEFAULT;
+}
+
 static int item_palette_action_cb(Ihandle* item)
 {
-  Ihandle *colorbar, *lbl, *dlg, *bt_ok, *bt_cancel;
+  Ihandle *colorbar, *lbl, *dlg, *bt_ok, *bt_cancel, *bt_compact;
   int i, transp_index = -1;
   Ihandle* canvas = IupGetDialogChild(item, "CANVAS");
   imImage* image = (imImage*)IupGetAttribute(canvas, "IMAGE");
@@ -2273,14 +2343,19 @@ static int item_palette_action_cb(Ihandle* item)
   bt_ok = IupButton("OK", NULL);
   IupSetAttribute(bt_ok, "PADDING", "DEFAULTBUTTONPADDING");
   IupSetCallback(bt_ok, "ACTION", (Icallback)palette_ok_cb);
+
   bt_cancel = IupButton("Cancel", NULL);
   IupSetCallback(bt_cancel, "ACTION", (Icallback)palette_cancel_cb);
   IupSetAttribute(bt_cancel, "PADDING", "DEFAULTBUTTONPADDING");
 
+  bt_compact = IupButton("Compact", NULL);
+  IupSetCallback(bt_compact, "ACTION", (Icallback)palette_compact_cb);
+  IupSetAttribute(bt_compact, "PADDING", "DEFAULTBUTTONPADDING");
+
   for (i = 0; i < pal_count; i++)
     IupSetRGBId(colorbar, "CELL", i, cdRed(palette[i]), cdGreen(palette[i]), cdBlue(palette[i]));
 
-  dlg = IupDialog(IupVbox(colorbar, IupSetAttributes(IupHbox(lbl, bt_ok, bt_cancel, NULL), "NORMALIZESIZE=HORIZONTAL"), NULL));
+  dlg = IupDialog(IupVbox(colorbar, IupSetAttributes(IupHbox(lbl, bt_compact, bt_ok, bt_cancel, NULL), "NORMALIZESIZE=HORIZONTAL"), NULL));
 
   IupSetAttribute(dlg, "TITLE", "Palette");
   IupSetAttribute(dlg, "MINBOX", "NO");
@@ -2292,6 +2367,7 @@ static int item_palette_action_cb(Ihandle* item)
   IupSetCallback(dlg, "K_CR", (Icallback)tool_get_enter_cb);
   IupSetCallback(dlg, "K_ESC", (Icallback)tool_get_esc_cb);
   IupSetAttributeHandle(dlg, "PARENTDIALOG", IupGetDialog(canvas));
+  IupSetAttribute(dlg, "IM_IMAGE", (char*)image);
 
   IupPopup(dlg, IUP_CENTERPARENT, IUP_CENTERPARENT);
 
@@ -2305,6 +2381,13 @@ static int item_palette_action_cb(Ihandle* item)
       palette[i] = cdEncodeColor(r, g, b);
     }
 
+    IupSetAttribute(canvas, "DIRTY", "Yes");
+    update_title(canvas);
+
+    IupUpdate(canvas);
+  }
+  else if (IupGetInt(dlg, "COMPACTED"))
+  {
     IupSetAttribute(canvas, "DIRTY", "Yes");
     update_title(canvas);
 

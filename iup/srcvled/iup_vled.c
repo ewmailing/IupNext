@@ -1828,7 +1828,7 @@ static int item_import_img_action_cb(Ihandle *ih_item)
   IupSetAttribute(filedlg, "MULTIPLEFILES", "YES");
   IupSetAttributeHandle(filedlg, "PARENTDIALOG", IupGetDialog(ih_item));
   IupSetAttribute(filedlg, "ICON", IupGetGlobal("ICON"));
-  IupSetAttribute(filedlg, "EXTFILTER", "Image Files|*.bmp;*.jpg;*.png;*.tif;*.tga|All Files|*.*|");
+  IupSetAttribute(filedlg, "EXTFILTER", "Image Files|*.bmp;*.gif;*.jpg;*.png;*.tif;*.tga|All Files|*.*|");
 
   IupPopup(filedlg, IUP_CENTERPARENT, IUP_CENTERPARENT);
 
