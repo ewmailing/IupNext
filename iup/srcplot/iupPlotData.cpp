@@ -77,7 +77,7 @@ iupPlotDataSet::iupPlotDataSet(bool strXdata)
 : mColor(CD_BLACK), mLineStyle(CD_CONTINUOUS), mLineWidth(1), mAreaTransparency(255), mMarkStyle(CD_X), mMarkSize(7),
   mMultibarIndex(-1), mMultibarCount(0), mBarOutlineColor(0), mBarShowOutline(false), mBarSpacingPercent(10),
   mPieStartAngle(0), mPieRadius(0.95), mPieContour(false), mPieHole(0), mPieSliceLabelPos(0.95),
-  mHighlightedSample(-1), mHighlightedCurve(false), mBarMulticolor(false), mOrderedX(false),
+  mHighlightedSample(-1), mHighlightedCurve(false), mBarMulticolor(false), mOrderedX(false), mSelectedCurve(false),
   mPieSliceLabel(IUP_PLOT_NONE), mMode(IUP_PLOT_LINE), mName(NULL), mHasSelected(false), mUserData(0)
 {
   if (strXdata)
@@ -849,18 +849,20 @@ void iupPlotDataSet::SetSampleExtra(int inSampleIndex, double inExtra)
 
 #define HIGHLIGHT_ALPHA 64
 #define HIGHLIGHT_OFFSET 12
+#define SELECT_ALPHA 128
+#define SELECT_OFFSET 8
 
 
 static void iPlotDrawHighlightedBar(cdCanvas *canvas, double x, double y, double barWidth, double barHeight)
 {
   int foreground = cdCanvasForeground(canvas, CD_QUERY);
-  int highlightColor = cdEncodeAlpha(foreground, HIGHLIGHT_ALPHA);
+  long color = cdEncodeAlpha(foreground, HIGHLIGHT_ALPHA);
   int width = cdCanvasLineWidth(canvas, CD_QUERY);
   int style = cdCanvasLineStyle(canvas, CD_QUERY);
 
   cdCanvasLineStyle(canvas, CD_CONTINUOUS);
   cdCanvasLineWidth(canvas, width + HIGHLIGHT_OFFSET);
-  cdCanvasSetForeground(canvas, highlightColor);
+  cdCanvasSetForeground(canvas, color);
 
   iupPlotDrawRect(canvas, x, y, barWidth, barHeight);
 
@@ -869,52 +871,41 @@ static void iPlotDrawHighlightedBar(cdCanvas *canvas, double x, double y, double
   cdCanvasSetForeground(canvas, foreground);
 }
 
-static void iPlotDrawHighlightedLine(cdCanvas *canvas, double x1, double y1, double x2, double y2)
+static void iPlotDrawHighlightedStem(cdCanvas *canvas, double x1, double y1, double x2, double y2)
 {
   int foreground = cdCanvasForeground(canvas, CD_QUERY);
-  int highlightColor = cdEncodeAlpha(foreground, HIGHLIGHT_ALPHA);
+  long color = cdEncodeAlpha(foreground, HIGHLIGHT_ALPHA);
   int width = cdCanvasLineWidth(canvas, CD_QUERY);
   int style = cdCanvasLineStyle(canvas, CD_QUERY);
+  int size = cdCanvasMarkSize(canvas, CD_QUERY);
+  int type = cdCanvasMarkType(canvas, CD_QUERY);
 
   cdCanvasLineStyle(canvas, CD_CONTINUOUS);
   cdCanvasLineWidth(canvas, width + HIGHLIGHT_OFFSET);
-  cdCanvasSetForeground(canvas, highlightColor);
+  cdCanvasMarkSize(canvas, size + HIGHLIGHT_OFFSET);
+  cdCanvasMarkType(canvas, CD_CIRCLE);
+  cdCanvasSetForeground(canvas, color);
 
   cdfCanvasLine(canvas, x1, y1, x2, y2);
+  cdfCanvasMark(canvas, x2, y2);
 
   cdCanvasSetForeground(canvas, foreground);
   cdCanvasLineStyle(canvas, style);
   cdCanvasLineWidth(canvas, width);
-}
-
-static void iPlotDrawHighlightedArc(cdCanvas *canvas, double xc, double yc, double w, double h, double startAngle, double endAngle)
-{
-  int foreground = cdCanvasForeground(canvas, CD_QUERY);
-  int highlightColor = cdEncodeAlpha(foreground, HIGHLIGHT_ALPHA);
-  int width = cdCanvasLineWidth(canvas, CD_QUERY);
-  int style = cdCanvasLineStyle(canvas, CD_QUERY);
-
-  cdCanvasLineStyle(canvas, CD_CONTINUOUS);
-  cdCanvasLineWidth(canvas, width + HIGHLIGHT_OFFSET);
-  cdCanvasSetForeground(canvas, highlightColor);
-
-  cdfCanvasArc(canvas, xc, yc, w, h, startAngle, endAngle);
-
-  cdCanvasLineStyle(canvas, style);
-  cdCanvasLineWidth(canvas, width);
-  cdCanvasSetForeground(canvas, foreground);
+  cdCanvasMarkSize(canvas, size);
+  cdCanvasMarkType(canvas, type);
 }
 
 static void iPlotDrawHighlightedMark(cdCanvas *canvas, double x, double y)
 {
   int foreground = cdCanvasForeground(canvas, CD_QUERY);
-  int highlightColor = cdEncodeAlpha(foreground, HIGHLIGHT_ALPHA);
+  long color = cdEncodeAlpha(foreground, HIGHLIGHT_ALPHA);
   int size = cdCanvasMarkSize(canvas, CD_QUERY);
   int type = cdCanvasMarkType(canvas, CD_QUERY);
 
   cdCanvasMarkSize(canvas, size + HIGHLIGHT_OFFSET);
   cdCanvasMarkType(canvas, CD_CIRCLE);
-  cdCanvasSetForeground(canvas, highlightColor);
+  cdCanvasSetForeground(canvas, color);
 
   cdfCanvasMark(canvas, x, y);
 
@@ -923,17 +914,36 @@ static void iPlotDrawHighlightedMark(cdCanvas *canvas, double x, double y)
   cdCanvasMarkType(canvas, type);
 }
 
-static void iPlotDrawHighlightedCurve(cdCanvas *canvas, int inCount, const iupPlotData* inDataX, const iupPlotData* inDataY, const iupPlotDataBool* inSegment, const iupPlotTrafo *inTrafoX, const iupPlotTrafo *inTrafoY, bool inConnectPreviousX)
+static void iPlotDrawHighlightedArc(cdCanvas *canvas, double xc, double yc, double w, double h, double startAngle, double endAngle)
 {
   int foreground = cdCanvasForeground(canvas, CD_QUERY);
-  int highlightColor = cdEncodeAlpha(foreground, HIGHLIGHT_ALPHA);
+  long color = cdEncodeAlpha(foreground, HIGHLIGHT_ALPHA);
+  int width = cdCanvasLineWidth(canvas, CD_QUERY);
+  int style = cdCanvasLineStyle(canvas, CD_QUERY);
+
+  cdCanvasLineStyle(canvas, CD_CONTINUOUS);
+  cdCanvasLineWidth(canvas, width + HIGHLIGHT_OFFSET);
+  cdCanvasSetForeground(canvas, color);
+
+  cdfCanvasArc(canvas, xc, yc, w, h, startAngle, endAngle);
+
+  cdCanvasLineStyle(canvas, style);
+  cdCanvasLineWidth(canvas, width);
+  cdCanvasSetForeground(canvas, foreground);
+}
+
+static void iPlotDrawHighlightedCurve(cdCanvas *canvas, int inCount, const iupPlotData* inDataX, const iupPlotData* inDataY, const iupPlotDataBool* inSegment, 
+                                      const iupPlotTrafo *inTrafoX, const iupPlotTrafo *inTrafoY, bool inConnectPreviousX, bool inSelected = false)
+{
+  int foreground = cdCanvasForeground(canvas, CD_QUERY);
+  long color = cdEncodeAlpha(foreground, inSelected? SELECT_ALPHA: HIGHLIGHT_ALPHA);
   int width = cdCanvasLineWidth(canvas, CD_QUERY);
   int style = cdCanvasLineStyle(canvas, CD_QUERY);
   double thePreviousScreenX = 0.;
 
   cdCanvasLineStyle(canvas, CD_CONTINUOUS);
-  cdCanvasLineWidth(canvas, width + HIGHLIGHT_OFFSET);
-  cdCanvasSetForeground(canvas, highlightColor);
+  cdCanvasLineWidth(canvas, width + (inSelected ? SELECT_OFFSET: HIGHLIGHT_OFFSET));
+  cdCanvasSetForeground(canvas, color);
 
   cdCanvasBegin(canvas, CD_OPEN_LINES);
 
@@ -1010,6 +1020,8 @@ void iupPlotDataSet::DrawDataLine(const iupPlotTrafo *inTrafoX, const iupPlotTra
 
   if (mHighlightedCurve)
     iPlotDrawHighlightedCurve(canvas, theCount, mDataX, mDataY, mSegment, inTrafoX, inTrafoY, false);
+  else if (mSelectedCurve)
+    iPlotDrawHighlightedCurve(canvas, theCount, mDataX, mDataY, mSegment, inTrafoX, inTrafoY, false, true);
 }
 
 void iupPlotDataSet::DrawErrorBar(const iupPlotTrafo *inTrafoY, cdCanvas* canvas, int index, double theY, double theScreenX) const
@@ -1085,10 +1097,7 @@ void iupPlotDataSet::DrawDataStem(const iupPlotTrafo *inTrafoX, const iupPlotTra
     cdfCanvasLine(canvas, theScreenX, theScreenY0, theScreenX, theScreenY);
 
     if (i == mHighlightedSample)
-    {
-      iPlotDrawHighlightedMark(canvas, theScreenX, theScreenY);
-      iPlotDrawHighlightedLine(canvas, theScreenX, theScreenY0, theScreenX, theScreenY);
-    }
+      iPlotDrawHighlightedStem(canvas, theScreenX, theScreenY0, theScreenX, theScreenY);
   }
 }
 
@@ -1162,6 +1171,8 @@ void iupPlotDataSet::DrawDataArea(const iupPlotTrafo *inTrafoX, const iupPlotTra
 
   if (mHighlightedCurve)
     iPlotDrawHighlightedCurve(canvas, theCount, mDataX, mDataY, mSegment, inTrafoX, inTrafoY, false);
+  else if (mSelectedCurve)
+    iPlotDrawHighlightedCurve(canvas, theCount, mDataX, mDataY, mSegment, inTrafoX, inTrafoY, false, true);
 }
 
 void iupPlotDataSet::DrawDataBar(const iupPlotTrafo *inTrafoX, const iupPlotTrafo *inTrafoY, cdCanvas* canvas, const iupPlotSampleNotify* inNotify) const
@@ -1345,6 +1356,8 @@ void iupPlotDataSet::DrawDataStep(const iupPlotTrafo *inTrafoX, const iupPlotTra
 
   if (mHighlightedCurve)
     iPlotDrawHighlightedCurve(canvas, theCount, mDataX, mDataY, mSegment, inTrafoX, inTrafoY, true);
+  else if (mSelectedCurve)
+    iPlotDrawHighlightedCurve(canvas, theCount, mDataX, mDataY, mSegment, inTrafoX, inTrafoY, true, true);
 }
 
 static int iPlotGetPieTextAligment(double bisectrix, double inPieSliceLabelPos)
