@@ -847,19 +847,19 @@ void iupPlotDataSet::SetSampleExtra(int inSampleIndex, double inExtra)
 /************************************************************************************/
 
 
-#define HIGHTLIGHT_ALPHA 64
-#define HIGHTLIGHT_OFFSET 12
+#define HIGHLIGHT_ALPHA 64
+#define HIGHLIGHT_OFFSET 12
 
 
 static void iPlotDrawHighlightedBar(cdCanvas *canvas, double x, double y, double barWidth, double barHeight)
 {
   int foreground = cdCanvasForeground(canvas, CD_QUERY);
-  int highlightColor = cdEncodeAlpha(foreground, HIGHTLIGHT_ALPHA);
+  int highlightColor = cdEncodeAlpha(foreground, HIGHLIGHT_ALPHA);
   int width = cdCanvasLineWidth(canvas, CD_QUERY);
   int style = cdCanvasLineStyle(canvas, CD_QUERY);
 
   cdCanvasLineStyle(canvas, CD_CONTINUOUS);
-  cdCanvasLineWidth(canvas, width + HIGHTLIGHT_OFFSET);
+  cdCanvasLineWidth(canvas, width + HIGHLIGHT_OFFSET);
   cdCanvasSetForeground(canvas, highlightColor);
 
   iupPlotDrawRect(canvas, x, y, barWidth, barHeight);
@@ -872,12 +872,12 @@ static void iPlotDrawHighlightedBar(cdCanvas *canvas, double x, double y, double
 static void iPlotDrawHighlightedLine(cdCanvas *canvas, double x1, double y1, double x2, double y2)
 {
   int foreground = cdCanvasForeground(canvas, CD_QUERY);
-  int highlightColor = cdEncodeAlpha(foreground, HIGHTLIGHT_ALPHA);
+  int highlightColor = cdEncodeAlpha(foreground, HIGHLIGHT_ALPHA);
   int width = cdCanvasLineWidth(canvas, CD_QUERY);
   int style = cdCanvasLineStyle(canvas, CD_QUERY);
 
   cdCanvasLineStyle(canvas, CD_CONTINUOUS);
-  cdCanvasLineWidth(canvas, width + HIGHTLIGHT_OFFSET);
+  cdCanvasLineWidth(canvas, width + HIGHLIGHT_OFFSET);
   cdCanvasSetForeground(canvas, highlightColor);
 
   cdfCanvasLine(canvas, x1, y1, x2, y2);
@@ -890,12 +890,12 @@ static void iPlotDrawHighlightedLine(cdCanvas *canvas, double x1, double y1, dou
 static void iPlotDrawHighlightedArc(cdCanvas *canvas, double xc, double yc, double w, double h, double startAngle, double endAngle)
 {
   int foreground = cdCanvasForeground(canvas, CD_QUERY);
-  int highlightColor = cdEncodeAlpha(foreground, HIGHTLIGHT_ALPHA);
+  int highlightColor = cdEncodeAlpha(foreground, HIGHLIGHT_ALPHA);
   int width = cdCanvasLineWidth(canvas, CD_QUERY);
   int style = cdCanvasLineStyle(canvas, CD_QUERY);
 
   cdCanvasLineStyle(canvas, CD_CONTINUOUS);
-  cdCanvasLineWidth(canvas, width + HIGHTLIGHT_OFFSET);
+  cdCanvasLineWidth(canvas, width + HIGHLIGHT_OFFSET);
   cdCanvasSetForeground(canvas, highlightColor);
 
   cdfCanvasArc(canvas, xc, yc, w, h, startAngle, endAngle);
@@ -908,11 +908,11 @@ static void iPlotDrawHighlightedArc(cdCanvas *canvas, double xc, double yc, doub
 static void iPlotDrawHighlightedMark(cdCanvas *canvas, double x, double y)
 {
   int foreground = cdCanvasForeground(canvas, CD_QUERY);
-  int highlightColor = cdEncodeAlpha(foreground, HIGHTLIGHT_ALPHA);
+  int highlightColor = cdEncodeAlpha(foreground, HIGHLIGHT_ALPHA);
   int size = cdCanvasMarkSize(canvas, CD_QUERY);
   int type = cdCanvasMarkType(canvas, CD_QUERY);
 
-  cdCanvasMarkSize(canvas, size + HIGHTLIGHT_OFFSET);
+  cdCanvasMarkSize(canvas, size + HIGHLIGHT_OFFSET);
   cdCanvasMarkType(canvas, CD_CIRCLE);
   cdCanvasSetForeground(canvas, highlightColor);
 
@@ -923,6 +923,47 @@ static void iPlotDrawHighlightedMark(cdCanvas *canvas, double x, double y)
   cdCanvasMarkType(canvas, type);
 }
 
+static void iPlotDrawHighlightedCurve(cdCanvas *canvas, int inCount, const iupPlotData* inDataX, const iupPlotData* inDataY, const iupPlotDataBool* inSegment, const iupPlotTrafo *inTrafoX, const iupPlotTrafo *inTrafoY, bool inConnectPreviousX)
+{
+  int foreground = cdCanvasForeground(canvas, CD_QUERY);
+  int highlightColor = cdEncodeAlpha(foreground, HIGHLIGHT_ALPHA);
+  int width = cdCanvasLineWidth(canvas, CD_QUERY);
+  int style = cdCanvasLineStyle(canvas, CD_QUERY);
+  double thePreviousScreenX = 0.;
+
+  cdCanvasLineStyle(canvas, CD_CONTINUOUS);
+  cdCanvasLineWidth(canvas, width + HIGHLIGHT_OFFSET);
+  cdCanvasSetForeground(canvas, highlightColor);
+
+  cdCanvasBegin(canvas, CD_OPEN_LINES);
+
+  for (int i = 0; i < inCount; i++)
+  {
+    double theX = inDataX->GetSample(i);
+    double theY = inDataY->GetSample(i);
+    double theScreenX = inTrafoX->Transform(theX);
+    double theScreenY = inTrafoY->Transform(theY);
+
+    if (i > 0 && inSegment && inSegment->GetSampleBool(i))
+    {
+      cdCanvasEnd(canvas);
+      cdCanvasBegin(canvas, CD_OPEN_LINES);
+    }
+
+    if (inConnectPreviousX && i > 0)
+      cdfCanvasVertex(canvas, thePreviousScreenX, theScreenY);
+
+    cdfCanvasVertex(canvas, theScreenX, theScreenY);
+
+    thePreviousScreenX = theScreenX;
+  }
+
+  cdCanvasEnd(canvas);
+
+  cdCanvasSetForeground(canvas, foreground);
+  cdCanvasLineStyle(canvas, style);
+  cdCanvasLineWidth(canvas, width);
+}
 
 void iupPlotDataSet::DrawDataLine(const iupPlotTrafo *inTrafoX, const iupPlotTrafo *inTrafoY, cdCanvas* canvas, const iupPlotSampleNotify* inNotify, bool inShowMark, bool inErrorBar) const
 {
@@ -968,40 +1009,7 @@ void iupPlotDataSet::DrawDataLine(const iupPlotTrafo *inTrafoX, const iupPlotTra
   cdCanvasEnd(canvas);
 
   if (mHighlightedCurve)
-  {
-    int foreground = cdCanvasForeground(canvas, CD_QUERY);
-    int highlightColor = cdEncodeAlpha(foreground, HIGHTLIGHT_ALPHA);
-    int width = cdCanvasLineWidth(canvas, CD_QUERY);
-    int style = cdCanvasLineStyle(canvas, CD_QUERY);
-
-    cdCanvasLineStyle(canvas, CD_CONTINUOUS);
-    cdCanvasLineWidth(canvas, width + HIGHTLIGHT_OFFSET);
-    cdCanvasSetForeground(canvas, highlightColor);
-
-    cdCanvasBegin(canvas, CD_OPEN_LINES);
-
-    for (int i = 0; i < theCount; i++)
-    {
-      double theX = mDataX->GetSample(i);
-      double theY = mDataY->GetSample(i);
-      double theScreenX = inTrafoX->Transform(theX);
-      double theScreenY = inTrafoY->Transform(theY);
-
-      if (i > 0 && mSegment && mSegment->GetSampleBool(i))
-      {
-        cdCanvasEnd(canvas);
-        cdCanvasBegin(canvas, CD_OPEN_LINES);
-      }
-
-      cdfCanvasVertex(canvas, theScreenX, theScreenY);
-    }
-
-    cdCanvasEnd(canvas);
-
-    cdCanvasSetForeground(canvas, foreground);
-    cdCanvasLineStyle(canvas, style);
-    cdCanvasLineWidth(canvas, width);
-  }
+    iPlotDrawHighlightedCurve(canvas, theCount, mDataX, mDataY, mSegment, inTrafoX, inTrafoY, false);
 }
 
 void iupPlotDataSet::DrawErrorBar(const iupPlotTrafo *inTrafoY, cdCanvas* canvas, int index, double theY, double theScreenX) const
@@ -1153,40 +1161,7 @@ void iupPlotDataSet::DrawDataArea(const iupPlotTrafo *inTrafoX, const iupPlotTra
   }
 
   if (mHighlightedCurve)
-  {
-    int foreground = cdCanvasForeground(canvas, CD_QUERY);
-    int highlightColor = cdEncodeAlpha(foreground, HIGHTLIGHT_ALPHA);
-    int width = cdCanvasLineWidth(canvas, CD_QUERY);
-    int style = cdCanvasLineStyle(canvas, CD_QUERY);
-
-    cdCanvasLineStyle(canvas, CD_CONTINUOUS);
-    cdCanvasLineWidth(canvas, width + HIGHTLIGHT_OFFSET);
-    cdCanvasSetForeground(canvas, highlightColor);
-
-    cdCanvasBegin(canvas, CD_OPEN_LINES);
-
-    for (int i = 0; i < theCount; i++)
-    {
-      double theX = mDataX->GetSample(i);
-      double theY = mDataY->GetSample(i);
-      double theScreenX = inTrafoX->Transform(theX);
-      double theScreenY = inTrafoY->Transform(theY);
-
-      if (i > 0 && mSegment && mSegment->GetSampleBool(i))
-      {
-        cdCanvasEnd(canvas);
-        cdCanvasBegin(canvas, CD_OPEN_LINES);
-      }
-
-      cdfCanvasVertex(canvas, theScreenX, theScreenY);
-    }
-
-    cdCanvasEnd(canvas);
-
-    cdCanvasSetForeground(canvas, foreground);
-    cdCanvasLineStyle(canvas, style);
-    cdCanvasLineWidth(canvas, width);
-  }
+    iPlotDrawHighlightedCurve(canvas, theCount, mDataX, mDataY, mSegment, inTrafoX, inTrafoY, false);
 }
 
 void iupPlotDataSet::DrawDataBar(const iupPlotTrafo *inTrafoX, const iupPlotTrafo *inTrafoY, cdCanvas* canvas, const iupPlotSampleNotify* inNotify) const
@@ -1369,45 +1344,7 @@ void iupPlotDataSet::DrawDataStep(const iupPlotTrafo *inTrafoX, const iupPlotTra
 
 
   if (mHighlightedCurve)
-  {
-    int foreground = cdCanvasForeground(canvas, CD_QUERY);
-    int highlightColor = cdEncodeAlpha(foreground, HIGHTLIGHT_ALPHA);
-    int width = cdCanvasLineWidth(canvas, CD_QUERY);
-    int style = cdCanvasLineStyle(canvas, CD_QUERY);
-
-    cdCanvasLineStyle(canvas, CD_CONTINUOUS);
-    cdCanvasLineWidth(canvas, width + HIGHTLIGHT_OFFSET);
-    cdCanvasSetForeground(canvas, highlightColor);
-
-    cdCanvasBegin(canvas, CD_OPEN_LINES);
-
-    for (int i = 0; i < theCount; i++)
-    {
-      double theX = mDataX->GetSample(i);
-      double theY = mDataY->GetSample(i);
-      double theScreenX = inTrafoX->Transform(theX);
-      double theScreenY = inTrafoY->Transform(theY);
-
-      if (i > 0 && mSegment && mSegment->GetSampleBool(i))
-      {
-        cdCanvasEnd(canvas);
-        cdCanvasBegin(canvas, CD_OPEN_LINES);
-      }
-
-      if (i > 0)
-        cdfCanvasVertex(canvas, theLastScreenX, theScreenY);
-
-      cdfCanvasVertex(canvas, theScreenX, theScreenY);
-
-      theLastScreenX = theScreenX;
-    }
-
-    cdCanvasEnd(canvas);
-
-    cdCanvasSetForeground(canvas, foreground);
-    cdCanvasLineStyle(canvas, style);
-    cdCanvasLineWidth(canvas, width);
-  }
+    iPlotDrawHighlightedCurve(canvas, theCount, mDataX, mDataY, mSegment, inTrafoX, inTrafoY, true);
 }
 
 static int iPlotGetPieTextAligment(double bisectrix, double inPieSliceLabelPos)
