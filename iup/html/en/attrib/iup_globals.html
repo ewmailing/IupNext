@@ -68,8 +68,39 @@ Default: &quot;YES&quot;. </p>
 this attribute to Yes. Default: NO.</p>
 <h3><strong>UTF8MODE_FILE</strong> [Windows Only]</h3>
 <p>By default IUP uses file names in the current locale, even when UTF8MODE=Yes. To use UTF-8 
-file names set 
+file names in Windows set 
 this attribute to Yes. Default: NO.</p>
+<p>The main places affected by this attribute is <strong>IupFileDlg</strong> 
+attributes, such as VALUE, FILE and DIRECTORY, and the DROPFILES_CB callback.</p>
+<p>Notice that IUP, CD and IM libraries use the <strong>fopen</strong> based 
+functions to read and write files. In Windows <strong>fopen</strong> expects the 
+filename<span>&nbsp;string in the <strong>ANSI</strong> encoding by default. </span>If your 
+filename, including the path, has characters that can not be converted to ANSI,
+<strong>fopen</strong> will fail to open the file. In Windows we could use
+<strong>_wfopen</strong> combined with UTF-8, but this is a Microsoft only 
+function and most of <strong>fopen</strong> usage in these libraries are in 
+portable modules. <em>This is an IUP limitation in Windows.</em> </p>
+<p>The 
+simple workaround is to not use special characters in folders or files name in 
+Windows... Legacy applications will also have the same problem.</p>
+<p>Another option is to call:</p>
+<pre> setlocale(LC_ALL, &quot;.UTF8&quot;); </pre>
+<p>But it will work for <strong>fopen</strong> only in Visual Studio 2017 or 
+newer Microsoft compilers (<strong>setlocale</strong> will return NULL on other 
+compilers). <strong>fopen</strong> will successfully open the file if the 
+filename is an UTF-8 string with special characters. So you will be able to set 
+both UTF8MODE and UTF8MODE_FILE to YES.</p>
+<p>If you decide to use this feature, another interesting option is to set the 
+console code page to UTF-8 executing &quot;chcp 65001&quot; on the command line. This will 
+allow your <strong>printf</strong> output to be properly displayed when using 
+UTF-8 strings. This feature actually works for all Microsoft compilers in 
+Windows, and for MingW, even when <strong>setlocale</strong> returns NULL. 
+Notice that some font packages must be installed for this to fully work for all 
+characters (for instance Chinese, Japanese and Korean, along with some symbols 
+too).</p>
+<p>As a complement, from <strong>fopen</strong> documentation in MSDN: <span>
+&quot;You can use either forward slashes (/) or backslashes (\) as the directory 
+separators in a path.&quot;.</span></p>
 <h3><a name="DEFAULTPRECISION">DEFAULTPRECISION</a><span class="style2"> (since 3.11.2)</span></h3>
 <p>The default number of decimal places used in floating point output by some 
 controls (<strong>IupMatrixEx</strong> and <strong>

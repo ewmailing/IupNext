@@ -105,7 +105,7 @@ static int winClipboardSetSaveEMFAttrib(Ihandle *ih, const char *value)
   
   GetEnhMetaFileBits(Handle, dwSize, buffer);
   
-  hFile = CreateFile(iupwinStrToSystem(value), GENERIC_WRITE, 0, NULL, CREATE_ALWAYS, 0, NULL);
+  hFile = CreateFile(iupwinStrToSystemFilename(value), GENERIC_WRITE, 0, NULL, CREATE_ALWAYS, 0, NULL);
   if (hFile)
   {
     WriteFile(hFile, buffer, dwSize, &nBytesWrite, NULL);
@@ -143,7 +143,7 @@ static int winClipboardSetSaveWMFAttrib(Ihandle *ih, const char *value)
   
   GetMetaFileBitsEx(lpMFP->hMF, dwSize, buffer);
   
-  hFile = CreateFile(iupwinStrToSystem(value), GENERIC_WRITE, 0, NULL, CREATE_ALWAYS, 0, NULL);
+  hFile = CreateFile(iupwinStrToSystemFilename(value), GENERIC_WRITE, 0, NULL, CREATE_ALWAYS, 0, NULL);
   if (hFile)
   {
     winWritePlacebleFile(hFile, buffer, dwSize, lpMFP->mm, lpMFP->xExt, lpMFP->yExt);

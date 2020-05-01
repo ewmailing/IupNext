@@ -114,7 +114,7 @@ static IwinFont* winFindFont(const char *font)
   return &fonts[i];
 }
 
-static void winFontFromLogFontA(LOGFONTA* logfont, char* font)
+static void winFontFromLogFont(LOGFONT* logfont, char* font)
 {
   int is_bold = (logfont->lfWeight == FW_NORMAL)? 0: 1;
   int is_italic = logfont->lfItalic;
@@ -124,7 +124,7 @@ static void winFontFromLogFontA(LOGFONTA* logfont, char* font)
   int res = iupwinGetScreenRes();
   int size = iupWIN_PIXEL2PT(-height_pixels, res);  /* return in points */
 
-  sprintf(font, "%s, %s%s%s%s %d", logfont->lfFaceName, 
+  sprintf(font, "%s, %s%s%s%s %d", iupwinStrFromSystem(logfont->lfFaceName),
                                    is_bold?"Bold ":"", 
                                    is_italic?"Italic ":"", 
                                    is_underline?"Underline ":"", 
@@ -135,11 +135,11 @@ static void winFontFromLogFontA(LOGFONTA* logfont, char* font)
 IUP_SDK_API char* iupdrvGetSystemFont(void)
 {
   static char str[200]; /* must return a static string, because it will be used as the default value for the FONT attribute */
-  NONCLIENTMETRICSA ncm;
-  ncm.cbSize = sizeof(NONCLIENTMETRICSA);
+  NONCLIENTMETRICS ncm;
+  ncm.cbSize = sizeof(NONCLIENTMETRICS);
   /* this is before setting utf8mode, so use the ANSI version */
-  if (SystemParametersInfoA(SPI_GETNONCLIENTMETRICS, ncm.cbSize, &ncm, FALSE))
-    winFontFromLogFontA(&ncm.lfMessageFont, str);
+  if (SystemParametersInfo(SPI_GETNONCLIENTMETRICS, ncm.cbSize, &ncm, FALSE))
+    winFontFromLogFont(&ncm.lfMessageFont, str);
   else
   {
     if (iupwinIsVistaOrNew())
