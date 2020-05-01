@@ -1608,7 +1608,6 @@ static int find_ext(const char* filename, const char* ext)
 
 static int dropfiles_cb(Ihandle* ih, const char* filename, int num, int x, int y)
 {
-  static int last = 1;
   static int remove_empty = 0;
   char ext[10] = ".";
   char* project_ext = IupGetAttribute(ih, "PROJECT_EXT");
@@ -1618,7 +1617,7 @@ static int dropfiles_cb(Ihandle* ih, const char* filename, int num, int x, int y
   (void)x;
   (void)y;
 
-  if (last)
+  if (num >= 0 && !remove_empty)
   {
     Ihandle* tabs = IupGetDialogChild(ih, "MULTITEXT_TABS");
     if (IupGetChildCount(tabs) == 1)
@@ -1628,8 +1627,6 @@ static int dropfiles_cb(Ihandle* ih, const char* filename, int num, int x, int y
       if (!m_filename && IupGetInt(multitext, "COUNT") == 0) /* an empty non saved single file is replaced by the open file */
         remove_empty = 1;
     }
-
-    last = 0;
   }
 
   if (find_ext(filename, ext))
@@ -1637,21 +1634,20 @@ static int dropfiles_cb(Ihandle* ih, const char* filename, int num, int x, int y
   else
   {
     if (!check_open_revert(ih, filename))
-      open_file(ih, filename, 0);
+      open_file(ih, filename, 0);  /* no check empty */
   }
 
-  if (num == 0)
+  if (num == 0 && remove_empty)  /* last dropped file */
   {
-    if (remove_empty)
+    /* do it only after all files are dropped, to avoid destruction of the dropped target during callback calls */
+    Ihandle* tabs = IupGetDialogChild(ih, "MULTITEXT_TABS");
+    if (IupGetChildCount(tabs) > 1)
     {
-      /* do it only after all files are dropped, to avoid destruction of the dropped target during callback calls */
-      Ihandle* tabs = IupGetDialogChild(ih, "MULTITEXT_TABS");
       Ihandle* multitext = IupGetChild(tabs, 0);
       iScintillaDlgCloseMultitext(multitext, 0);
-      remove_empty = 0;
     }
 
-    last = 1;
+    remove_empty = 0;
   }
 
   return IUP_DEFAULT;
