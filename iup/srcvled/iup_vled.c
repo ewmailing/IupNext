@@ -1249,9 +1249,6 @@ static int scidlg_configload_cb(Ihandle *main_dialog, Ihandle* config)
 {
   const char* value;
 
-  IupSetGlobal("UTF8MODE", IupConfigGetVariableStr(config, "IupVisualLED", "UTF-8"));
-  IupSetGlobal("IMAGEEXPORT_STATIC", IupConfigGetVariableStr(config, "IupVisualLED", "ImageExportStatic"));
-
   value = IupConfigGetVariableStr(config, "IupVisualLED", "AutoCompletion");
   if (value)
   {
@@ -2451,17 +2448,31 @@ static int item_export_proj_action_cb(Ihandle *ih_item)
 
 static int item_use_utf_8_action_cb(Ihandle *ih_item)
 {
+  Ihandle* bt;
+  int utf8;
   Ihandle* config = get_config(ih_item);
   if (IupGetInt(ih_item, "VALUE"))
   {
     IupSetGlobal("UTF8MODE", "Yes");
     IupConfigSetVariableStr(config, "IupVisualLED", "UTF-8", "Yes");
+    utf8 = 1;
   }
   else
   {
     IupSetGlobal("UTF8MODE", NULL);
     IupConfigSetVariableStr(config, "IupVisualLED", "UTF-8", NULL);
+    utf8 = 0;
   }
+
+  bt = IupGetDialogChild(ih_item, "BUTTON_WORDWRAP");
+  IupSetAttribute(bt, "TITLE", utf8 ? "W\xC2\xAC" : "W\xAC");
+
+  bt = IupGetDialogChild(ih_item, "BUTTON_SHOWWHITE");
+  IupSetAttribute(bt, "TITLE", utf8 ? "a\xC2\xB7\x62" : "a\xB7\x62");
+
+  bt = IupGetDialogChild(ih_item, "BUTTON_SHOWEOL");
+  IupSetAttribute(bt, "TITLE", utf8 ? "\xC2\xB6" : "\xB6");
+
   return IUP_DEFAULT;
 }
 
@@ -3408,6 +3419,9 @@ int main(int argc, char **argv)
   config = IupConfig();
   IupSetAttribute(config, "APP_NAME", "iupvled");
   IupConfigLoad(config);
+
+  IupSetGlobal("UTF8MODE", IupConfigGetVariableStr(config, "IupVisualLED", "UTF-8"));
+  IupSetGlobal("IMAGEEXPORT_STATIC", IupConfigGetVariableStr(config, "IupVisualLED", "ImageExportStatic"));
 
   main_dialog = IupScintillaDlg();
   IupSetAttributeHandle(NULL, "PARENTDIALOG", main_dialog);

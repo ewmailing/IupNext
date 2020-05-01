@@ -4908,6 +4908,8 @@ static int iScintillaDlgCreateMethod(Ihandle* ih, void** params)
   Ihandle *item_wordwrap, *item_showwhite, *item_showeol, *bt_showeol, *bt_wordwrap, *bt_showwhite;
   Ihandle *panelFrame, *panelTabs, *listSearch, *panelSplit;
 
+  int utf8 = IupGetInt(NULL, "UTF8MODE");
+
   tabs = IupFlatTabs(NULL);
   IupSetAttribute(tabs, "NAME", "MULTITEXT_TABS");
   IupSetAttribute(tabs, "SHOWCLOSE", "YES");
@@ -5238,7 +5240,7 @@ static int iScintillaDlgCreateMethod(Ihandle* ih, void** params)
   IupSetCallback(item_wordwrap, "ACTION", (Icallback)item_wordwrap_action_cb);
   IupSetAttribute(item_wordwrap, "AUTOTOGGLE", "YES");
   IupSetAttribute(item_wordwrap, "NAME", "ITEM_WORDWRAP");
-  bt_wordwrap = IupFlatToggle("W\xAC");
+  bt_wordwrap = IupFlatToggle(utf8 ? "W\xC2\xAC" : "W\xAC");
   IupSetAttribute(bt_wordwrap, "CHECKSIZE", "0");
   IupSetAttribute(bt_wordwrap, "PADDING", "2x0");
   IupSetCallback(bt_wordwrap, "FLAT_ACTION", (Icallback)item_wordwrap_action_cb);
@@ -5252,7 +5254,7 @@ static int iScintillaDlgCreateMethod(Ihandle* ih, void** params)
   IupSetCallback(item_showwhite, "ACTION", (Icallback)item_showwhite_action_cb);
   IupSetAttribute(item_showwhite, "AUTOTOGGLE", "YES");
   IupSetAttribute(item_showwhite, "NAME", "ITEM_SHOWWHITE");
-  bt_showwhite = IupFlatToggle("a\xB7\x62");
+  bt_showwhite = IupFlatToggle(utf8? "a\xC2\xB7\x62": "a\xB7\x62");
   IupSetAttribute(bt_showwhite, "CHECKSIZE", "0");
   IupSetAttribute(bt_showwhite, "PADDING", "2x3");
   IupSetCallback(bt_showwhite, "FLAT_ACTION", (Icallback)item_showwhite_action_cb);
@@ -5265,7 +5267,7 @@ static int iScintillaDlgCreateMethod(Ihandle* ih, void** params)
   IupSetCallback(item_showeol, "ACTION", (Icallback)item_showeol_action_cb);
   IupSetAttribute(item_showeol, "AUTOTOGGLE", "YES");
   IupSetAttribute(item_showeol, "NAME", "ITEM_SHOWEOL");
-  bt_showeol = IupFlatToggle("\xB6");
+  bt_showeol = IupFlatToggle(utf8 ? "\xC2\xB6" : "\xB6");
   IupSetAttribute(bt_showeol, "CHECKSIZE", "0");
   IupSetAttribute(bt_showeol, "FONTSTYLE", "Bold");
   IupSetAttribute(bt_showeol, "PADDING", "4x0");
