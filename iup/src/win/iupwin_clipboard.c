@@ -427,7 +427,11 @@ static int winClipboardIsAvailable(UINT format_id)
 static char* winClipboardGetTextAvailableAttrib(Ihandle *ih)
 {
   (void)ih;
+#ifdef UNICODE
+  return iupStrReturnBoolean(winClipboardIsAvailable(CF_TEXT) || winClipboardIsAvailable(CF_UNICODETEXT));
+#else
   return iupStrReturnBoolean (winClipboardIsAvailable(CF_TEXT)); 
+#endif
 }
 
 static char* winClipboardGetImageAvailableAttrib(Ihandle *ih)
