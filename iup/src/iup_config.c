@@ -614,6 +614,17 @@ IUP_API void IupConfigRecentUpdate(Ihandle* ih, const char* filename)
   else
     iConfigBuildRecentList(ih, list, max_recent, group_name, recent_cb);
 }
+#else
+
+/* NOT supported in MacOS for now */
+
+IUP_API void IupConfigRecentInit(Ihandle* ih, Ihandle* menu_list, Icallback recent_cb, int max_recent)
+{
+}
+
+IUP_API void IupConfigRecentUpdate(Ihandle* ih, const char* filename)
+{
+}
 
 #endif /* macOS/Cocoa */
 
