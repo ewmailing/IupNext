@@ -200,7 +200,8 @@ IUP_DRV_API TCHAR* iupwinStrToSystemFilename(const char* str)
 {
   TCHAR* wstr;
   int old_utf8mode = iupwin_utf8mode;
-  iupwin_utf8mode = iupwin_utf8mode_file;
+  if (iupwin_utf8mode)
+    iupwin_utf8mode = iupwin_utf8mode_file;
   wstr = iupwinStrToSystem(str);
   iupwin_utf8mode = old_utf8mode;
   return wstr;
@@ -210,7 +211,8 @@ IUP_DRV_API char* iupwinStrFromSystemFilename(const TCHAR* wstr)
 {
   char* str;
   int old_utf8mode = iupwin_utf8mode;
-  iupwin_utf8mode = iupwin_utf8mode_file;
+  if (iupwin_utf8mode)
+    iupwin_utf8mode = iupwin_utf8mode_file;
   str = iupwinStrFromSystem(wstr);
   iupwin_utf8mode = old_utf8mode;
   return str;

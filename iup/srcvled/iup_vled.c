@@ -32,6 +32,11 @@
 #endif  
 
 
+#if _MSC_VER > 1900 /* Visual Studio 2017 and newer */
+#define USE_UTF8_VC
+#include <locale.h>
+#endif  
+
 #include "iup_str.h"
 #include "iup_object.h"
 #include "iup_ledlex.h"
@@ -2456,12 +2461,22 @@ static int item_use_utf_8_action_cb(Ihandle *ih_item)
     IupSetGlobal("UTF8MODE", "Yes");
     IupConfigSetVariableStr(config, "IupVisualLED", "UTF-8", "Yes");
     utf8 = 1;
+
+#ifdef USE_UTF8_VC
+    IupSetGlobal("UTF8MODE_FILE", "Yes");
+    setlocale(LC_ALL, ".UTF8");
+#endif
   }
   else
   {
     IupSetGlobal("UTF8MODE", NULL);
     IupConfigSetVariableStr(config, "IupVisualLED", "UTF-8", NULL);
     utf8 = 0;
+
+#ifdef USE_UTF8_VC
+    IupSetGlobal("UTF8MODE_FILE", "No");
+    setlocale(LC_ALL, "");
+#endif
   }
 
   bt = IupGetDialogChild(ih_item, "BUTTON_WORDWRAP");
@@ -3422,6 +3437,14 @@ int main(int argc, char **argv)
 
   IupSetGlobal("UTF8MODE", IupConfigGetVariableStr(config, "IupVisualLED", "UTF-8"));
   IupSetGlobal("IMAGEEXPORT_STATIC", IupConfigGetVariableStr(config, "IupVisualLED", "ImageExportStatic"));
+
+#ifdef USE_UTF8_VC
+  if (IupGetInt(NULL, "UTF8MODE"))
+  {
+    IupSetGlobal("UTF8MODE_FILE", "Yes");
+    setlocale(LC_ALL, ".UTF8");
+  }
+#endif
 
   main_dialog = IupScintillaDlg();
   IupSetAttributeHandle(NULL, "PARENTDIALOG", main_dialog);
