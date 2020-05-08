@@ -63,6 +63,9 @@ the format defined by the FORMAT attribute. If FORMAT is not set returns NULL.
 If set to NULL clears the clipboard data. When set the FORMATDATASIZE attribute must be set before with the data size. 
 When retrieved FORMATDATASIZE will be set and available after data is retrieved. 
 (since 3.7)</p>
+<p><strong>FORMATDATASTRING</strong> [Windows and GTK Only]: sets/gets 
+FORMATDATA and FORMATDATASIZE considering data being a string in the system 
+format. (since 3.29)</p>
 <p><strong>FORMATDATASIZE</strong>: size of the data on the clipboard. Used by 
 the FORMATDATA attribute processing. (since 3.7)</p>
 
