@@ -1,4 +1,4 @@
--- IpuOle and LuaCom example contributed by Kommit <kommit@gmail.com>
+-- IupOle and LuaCom example contributed by Kommit <kommit@gmail.com>
 
 require "iuplua"
 require "iupluaole"
