@@ -1359,14 +1359,17 @@ static Ihandle* iPlotCreateMenuContext(Ihandle* ih, int x, int y)
     IupSetCallbacks(IupItem("_@IUP_PRINTDLG", NULL), "ACTION", iPlotPrint_CB, NULL),
     NULL);
 
-  if (IupGetInt(ih, "MENUITEMPROPERTIES"))
+  if (IupGetInt(ih, "MENUITEMPROPERTIES") || IupGetInt(ih, "MENUITEMVALUES"))
   {
-    Ihandle* itemProp, *itemVal = NULL;
+    Ihandle* itemProp = NULL, *itemVal = NULL;
     IupAppend(menu, IupSeparator());
-    if (iupRegisterFindClass("matrixex"))
+    if (iupRegisterFindClass("matrixex") && !iupStrEqualNoCase(iupAttribGet(ih, "MENUITEMVALUES"), "HIDE"))
       IupAppend(menu, IupSetCallbacks(itemVal = IupItem("_@IUP_DATASETVALUESDLG", NULL), "ACTION", iPlotDataSetValues_CB, NULL));
-    IupAppend(menu, IupSetCallbacks(itemProp = IupItem("_@IUP_DATASETPROPERTIESDLG", NULL), "ACTION", iPlotDataSetProperties_CB, NULL));
-    IupAppend(menu, IupSetCallbacks(IupItem("_@IUP_PROPERTIESDLG", NULL), "ACTION", iPlotProperties_CB, NULL));
+    if (IupGetInt(ih, "MENUITEMPROPERTIES"))
+    {
+      IupAppend(menu, IupSetCallbacks(itemProp = IupItem("_@IUP_DATASETPROPERTIESDLG", NULL), "ACTION", iPlotDataSetProperties_CB, NULL));
+      IupAppend(menu, IupSetCallbacks(IupItem("_@IUP_PROPERTIESDLG", NULL), "ACTION", iPlotProperties_CB, NULL));
+    }
 
     int ds = IupGetInt(ih, "CURRENT");
     int sample1, sample2;
@@ -1379,12 +1382,12 @@ static Ihandle* iPlotCreateMenuContext(Ihandle* ih, int x, int y)
       // save plot info because it may have changed by the time the callback is called
       iupAttribSetInt(menu, "_IUP_DS", ds);
 
-      IupSetAttribute(itemProp, "ACTIVE", "YES");
+      if (itemProp) IupSetAttribute(itemProp, "ACTIVE", "YES");
       if (itemVal) IupSetAttribute(itemVal, "ACTIVE", "YES");
     }
     else
     {
-      IupSetAttribute(itemProp, "ACTIVE", "NO");
+      if (itemProp) IupSetAttribute(itemProp, "ACTIVE", "NO");
       if (itemVal) IupSetAttribute(itemVal, "ACTIVE", "NO");
     }
 
