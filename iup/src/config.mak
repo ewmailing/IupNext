@@ -38,6 +38,10 @@ INCLUDES = ../include .
 WIN32VER = 0x0501
 #For the future use 0x0601  (Windows 7 minimum)
 
+ifeq ($(findstring Win, $(TEC_SYSNAME)), )
+  DEPENDDIR = dep
+endif
+
 # Draw driver with alpha and anti-aliasing in Windows and Linux enabled
 USE_NEW_DRAW := Yes
 
