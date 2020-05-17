@@ -1721,6 +1721,13 @@ else
   $(LHDIR): ;
 endif
 
+ifdef DEPENDDIR
+  $(DEPENDDIR):
+	  if [ ! -d $@ ] ; then mkdir -p $@ ; fi
+else
+  $(DEPENDDIR): ;
+endif
+
 
 #---------------------------------#
 # Compilation Rules
@@ -1779,7 +1786,7 @@ endif
 .PHONY: depend
 depend: $(DEPEND)
 
-$(DEPEND): $(MAKENAME)
+$(DEPEND): $(MAKENAME) $(DEPENDDIR)
   ifdef SRC
 	  @echo "" > $(DEPEND)
 	  @which $(CPPC) 2> /dev/null 1>&2 ;\
