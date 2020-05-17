@@ -39,6 +39,7 @@ Modules</h3></td></tr>
 Functions</h3></td></tr>
 <tr><td class="memItemLeft" align="right" valign="top">IUP_SDK_API void&nbsp;</td><td class="memItemRight" valign="bottom"><a class="el" href="group__iclassbase.html#ga69d5953d29a41a5801c371306deb4eec">iupBaseRegisterCommonAttrib</a> (<a class="el" href="structIclass__.html">Iclass</a> *ic)</td></tr>
 <tr><td class="memItemLeft" align="right" valign="top">IUP_SDK_API void&nbsp;</td><td class="memItemRight" valign="bottom"><a class="el" href="group__iclassbase.html#gaeb8bfef8e7dcf9d783739fafedb633e3">iupBaseRegisterVisualAttrib</a> (<a class="el" href="structIclass__.html">Iclass</a> *ic)</td></tr>
+<tr><td class="memItemLeft" align="right" valign="top">IUP_SDK_API void&nbsp;</td><td class="memItemRight" valign="bottom"><a class="el" href="group__iclassbase.html#ga6e3261fb16335fa53bcedb65d873b073">iupBaseRegisterBaseCallbacks</a> (<a class="el" href="structIclass__.html">Iclass</a> *ic)</td></tr>
 <tr><td class="memItemLeft" align="right" valign="top">IUP_SDK_API void&nbsp;</td><td class="memItemRight" valign="bottom"><a class="el" href="group__iclassbase.html#gae5afa7af0bf7c2426e7d6c73d89d00c7">iupBaseRegisterCommonCallbacks</a> (<a class="el" href="structIclass__.html">Iclass</a> *ic)</td></tr>
 <tr><td class="memItemLeft" align="right" valign="top">IUP_SDK_API void&nbsp;</td><td class="memItemRight" valign="bottom"><a class="el" href="group__iclassbase.html#gae3fa546a65db370c04235e9a5909c3d1">iupBaseContainerUpdateExpand</a> (Ihandle *ih)</td></tr>
 <tr><td class="memItemLeft" align="right" valign="top">IUP_SDK_API void&nbsp;</td><td class="memItemRight" valign="bottom"><a class="el" href="group__iclassbase.html#ga12562165a8a933daa348593dda4d9f51">iupBaseComputeNaturalSize</a> (Ihandle *ih)</td></tr>
@@ -96,6 +97,26 @@ Functions</h3></td></tr>
 
 </div>
 </div>
+<a class="anchor" id="ga6e3261fb16335fa53bcedb65d873b073"></a><!-- doxytag: member="iup_classbase.h::iupBaseRegisterBaseCallbacks" ref="ga6e3261fb16335fa53bcedb65d873b073" args="(Iclass *ic)" -->
+<div class="memitem">
+<div class="memproto">
+      <table class="memname">
+        <tr>
+          <td class="memname">IUP_SDK_API void iupBaseRegisterBaseCallbacks </td>
+          <td>(</td>
+          <td class="paramtype"><a class="el" href="structIclass__.html">Iclass</a> *&nbsp;</td>
+          <td class="paramname"> <em>ic</em></td>
+          <td>&nbsp;)&nbsp;</td>
+          <td></td>
+        </tr>
+      </table>
+</div>
+<div class="memdoc">
+<p>Register all base callbacks: <br/>
+ MAP_CB, UNMAP_CB, DESTROY_CB, LDESTROY_CB. </p>
+
+</div>
+</div>
 <a class="anchor" id="gae5afa7af0bf7c2426e7d6c73d89d00c7"></a><!-- doxytag: member="iup_classbase.h::iupBaseRegisterCommonCallbacks" ref="gae5afa7af0bf7c2426e7d6c73d89d00c7" args="(Iclass *ic)" -->
 <div class="memitem">
 <div class="memproto">
@@ -111,8 +132,8 @@ Functions</h3></td></tr>
       </table>
 </div>
 <div class="memdoc">
-<p>Register all common callbacks: <br/>
- MAP_CB, UNMAP_CB, GETFOCUS_CB, KILLFOCUS_CB, ENTERWINDOW_CB, LEAVEWINDOW_CB, K_ANY, HELP_CB. </p>
+<p>Register all base and common callbacks: <br/>
+ MAP_CB, UNMAP_CB, DESTROY_CB, LDESTROY_CB, GETFOCUS_CB, KILLFOCUS_CB, ENTERWINDOW_CB, LEAVEWINDOW_CB, K_ANY, HELP_CB. </p>
 
 </div>
 </div>
@@ -232,7 +253,7 @@ Functions</h3></td></tr>
 </div>
 </div>
 </div>
-<hr class="footer"/><address class="footer"><small>Generated on Fri Dec 13 2019 14:22:07 for SDK by&nbsp;
+<hr class="footer"/><address class="footer"><small>Generated on Sun May 17 2020 15:30:57 for SDK by&nbsp;
 <a href="http://www.doxygen.org/index.html">
 <img class="footer" src="doxygen.png" alt="doxygen"/></a> 1.7.1 </small></address>
 </body>

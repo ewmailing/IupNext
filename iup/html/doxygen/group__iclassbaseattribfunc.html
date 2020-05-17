@@ -47,6 +47,8 @@ IUP_SDK_API char *&nbsp;</td><td class="memItemRight" valign="bottom"><b>iupBase
 IUP_SDK_API char *&nbsp;</td><td class="memItemRight" valign="bottom"><b>iupBaseGetRasterSizeAttrib</b> (Ihandle *ih)</td></tr>
 <tr><td class="memItemLeft" align="right" valign="top"><a class="anchor" id="ga960c475157beb4ba8d202473e65832af"></a><!-- doxytag: member="iclassbaseattribfunc::iupBaseGetClientOffsetAttrib" ref="ga960c475157beb4ba8d202473e65832af" args="(Ihandle *ih)" -->
 IUP_SDK_API char *&nbsp;</td><td class="memItemRight" valign="bottom"><b>iupBaseGetClientOffsetAttrib</b> (Ihandle *ih)</td></tr>
+<tr><td class="memItemLeft" align="right" valign="top"><a class="anchor" id="gaa6fb4c5be4f3ab4c3e73375f624a9481"></a><!-- doxytag: member="iclassbaseattribfunc::iupBaseGetClientSizeAttrib" ref="gaa6fb4c5be4f3ab4c3e73375f624a9481" args="(Ihandle *ih)" -->
+IUP_SDK_API char *&nbsp;</td><td class="memItemRight" valign="bottom"><b>iupBaseGetClientSizeAttrib</b> (Ihandle *ih)</td></tr>
 <tr><td class="memItemLeft" align="right" valign="top"><a class="anchor" id="ga00a6a755698fddefe8728ca650390c37"></a><!-- doxytag: member="iclassbaseattribfunc::iupBaseCanvasGetClientOffsetAttrib" ref="ga00a6a755698fddefe8728ca650390c37" args="(Ihandle *ih)" -->
 IUP_SDK_API char *&nbsp;</td><td class="memItemRight" valign="bottom"><b>iupBaseCanvasGetClientOffsetAttrib</b> (Ihandle *ih)</td></tr>
 <tr><td class="memItemLeft" align="right" valign="top"><a class="anchor" id="gac7c7fc922bfa9bfda5943399a3b5c453"></a><!-- doxytag: member="iclassbaseattribfunc::iupBaseCanvasGetClientSizeAttrib" ref="gac7c7fc922bfa9bfda5943399a3b5c453" args="(Ihandle *ih)" -->
@@ -81,6 +83,14 @@ IUP_SDK_API int&nbsp;</td><td class="memItemRight" valign="bottom"><b>iupdrvBase
 IUP_SDK_API int&nbsp;</td><td class="memItemRight" valign="bottom"><b>iupdrvBaseSetFgColorAttrib</b> (Ihandle *ih, const char *value)</td></tr>
 <tr><td class="memItemLeft" align="right" valign="top"><a class="anchor" id="ga7843729fb6aaf96eec2e8faa05109038"></a><!-- doxytag: member="iclassbaseattribfunc::iupBaseNativeParentGetBgColorAttrib" ref="ga7843729fb6aaf96eec2e8faa05109038" args="(Ihandle *ih)" -->
 IUP_SDK_API char *&nbsp;</td><td class="memItemRight" valign="bottom"><b>iupBaseNativeParentGetBgColorAttrib</b> (Ihandle *ih)</td></tr>
+<tr><td class="memItemLeft" align="right" valign="top"><a class="anchor" id="gaf3bead349fea18ec869849642469171b"></a><!-- doxytag: member="iclassbaseattribfunc::iupBaseSetCPaddingAttrib" ref="gaf3bead349fea18ec869849642469171b" args="(Ihandle *ih, const char *value)" -->
+IUP_SDK_API int&nbsp;</td><td class="memItemRight" valign="bottom"><b>iupBaseSetCPaddingAttrib</b> (Ihandle *ih, const char *value)</td></tr>
+<tr><td class="memItemLeft" align="right" valign="top"><a class="anchor" id="ga428c832a7a0b88fd06eac0c3d051404a"></a><!-- doxytag: member="iclassbaseattribfunc::iupBaseGetCPaddingAttrib" ref="ga428c832a7a0b88fd06eac0c3d051404a" args="(Ihandle *ih)" -->
+IUP_SDK_API char *&nbsp;</td><td class="memItemRight" valign="bottom"><b>iupBaseGetCPaddingAttrib</b> (Ihandle *ih)</td></tr>
+<tr><td class="memItemLeft" align="right" valign="top"><a class="anchor" id="ga1210974ef980ab980f27946f600be2c9"></a><!-- doxytag: member="iclassbaseattribfunc::iupBaseSetCSpacingAttrib" ref="ga1210974ef980ab980f27946f600be2c9" args="(Ihandle *ih, const char *value)" -->
+IUP_SDK_API int&nbsp;</td><td class="memItemRight" valign="bottom"><b>iupBaseSetCSpacingAttrib</b> (Ihandle *ih, const char *value)</td></tr>
+<tr><td class="memItemLeft" align="right" valign="top"><a class="anchor" id="ga2ed237a1cd57ba3619f2a7659699c29f"></a><!-- doxytag: member="iclassbaseattribfunc::iupBaseGetCSpacingAttrib" ref="ga2ed237a1cd57ba3619f2a7659699c29f" args="(Ihandle *ih)" -->
+IUP_SDK_API char *&nbsp;</td><td class="memItemRight" valign="bottom"><b>iupBaseGetCSpacingAttrib</b> (Ihandle *ih)</td></tr>
 <tr><td class="memItemLeft" align="right" valign="top"><a class="anchor" id="gadab7cbb395e8567b18ecc5e00b125240"></a><!-- doxytag: member="iclassbaseattribfunc::iupBaseContainerGetExpandAttrib" ref="gadab7cbb395e8567b18ecc5e00b125240" args="(Ihandle *ih)" -->
 IUP_SDK_API char *&nbsp;</td><td class="memItemRight" valign="bottom"><b>iupBaseContainerGetExpandAttrib</b> (Ihandle *ih)</td></tr>
 <tr><td class="memItemLeft" align="right" valign="top"><a class="anchor" id="ga5db841611f1386b86990474b301f2870"></a><!-- doxytag: member="iclassbaseattribfunc::iupdrvBaseSetCursorAttrib" ref="ga5db841611f1386b86990474b301f2870" args="(Ihandle *ih, const char *value)" -->
@@ -94,7 +104,7 @@ IUP_SDK_API int&nbsp;</td><td class="memItemRight" valign="bottom"><b>iupBaseNoS
 <dl class="user"><dt><b></b></dt><dd>Used by the controls for iupClassRegisterAttribute. </dd></dl>
 <dl class="user"><dt><b></b></dt><dd>See <a class="el" href="iup__classbase_8h.html">iup_classbase.h</a> </dd></dl>
 </div>
-<hr class="footer"/><address class="footer"><small>Generated on Fri Dec 13 2019 14:22:07 for SDK by&nbsp;
+<hr class="footer"/><address class="footer"><small>Generated on Sun May 17 2020 15:30:57 for SDK by&nbsp;
 <a href="http://www.doxygen.org/index.html">
 <img class="footer" src="doxygen.png" alt="doxygen"/></a> 1.7.1 </small></address>
 </body>

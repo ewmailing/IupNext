@@ -60,6 +60,7 @@ Enumerations</h3></td></tr>
 Functions</h3></td></tr>
 <tr><td class="memItemLeft" align="right" valign="top">IUP_SDK_API void&nbsp;</td><td class="memItemRight" valign="bottom"><a class="el" href="group__iclassbase.html#ga69d5953d29a41a5801c371306deb4eec">iupBaseRegisterCommonAttrib</a> (<a class="el" href="structIclass__.html">Iclass</a> *ic)</td></tr>
 <tr><td class="memItemLeft" align="right" valign="top">IUP_SDK_API void&nbsp;</td><td class="memItemRight" valign="bottom"><a class="el" href="group__iclassbase.html#gaeb8bfef8e7dcf9d783739fafedb633e3">iupBaseRegisterVisualAttrib</a> (<a class="el" href="structIclass__.html">Iclass</a> *ic)</td></tr>
+<tr><td class="memItemLeft" align="right" valign="top">IUP_SDK_API void&nbsp;</td><td class="memItemRight" valign="bottom"><a class="el" href="group__iclassbase.html#ga6e3261fb16335fa53bcedb65d873b073">iupBaseRegisterBaseCallbacks</a> (<a class="el" href="structIclass__.html">Iclass</a> *ic)</td></tr>
 <tr><td class="memItemLeft" align="right" valign="top">IUP_SDK_API void&nbsp;</td><td class="memItemRight" valign="bottom"><a class="el" href="group__iclassbase.html#gae5afa7af0bf7c2426e7d6c73d89d00c7">iupBaseRegisterCommonCallbacks</a> (<a class="el" href="structIclass__.html">Iclass</a> *ic)</td></tr>
 <tr><td class="memItemLeft" align="right" valign="top"><a class="anchor" id="adeef6676dfce7f146d445f12cb49b9cb"></a><!-- doxytag: member="iup_classbase.h::iupdrvBaseRegisterCommonAttrib" ref="adeef6676dfce7f146d445f12cb49b9cb" args="(Iclass *ic)" -->
 IUP_SDK_API void&nbsp;</td><td class="memItemRight" valign="bottom"><b>iupdrvBaseRegisterCommonAttrib</b> (<a class="el" href="structIclass__.html">Iclass</a> *ic)</td></tr>
@@ -90,6 +91,8 @@ IUP_SDK_API char *&nbsp;</td><td class="memItemRight" valign="bottom"><b>iupBase
 IUP_SDK_API char *&nbsp;</td><td class="memItemRight" valign="bottom"><b>iupBaseGetRasterSizeAttrib</b> (Ihandle *ih)</td></tr>
 <tr><td class="memItemLeft" align="right" valign="top"><a class="anchor" id="ga960c475157beb4ba8d202473e65832af"></a><!-- doxytag: member="iup_classbase.h::iupBaseGetClientOffsetAttrib" ref="ga960c475157beb4ba8d202473e65832af" args="(Ihandle *ih)" -->
 IUP_SDK_API char *&nbsp;</td><td class="memItemRight" valign="bottom"><b>iupBaseGetClientOffsetAttrib</b> (Ihandle *ih)</td></tr>
+<tr><td class="memItemLeft" align="right" valign="top"><a class="anchor" id="gaa6fb4c5be4f3ab4c3e73375f624a9481"></a><!-- doxytag: member="iup_classbase.h::iupBaseGetClientSizeAttrib" ref="gaa6fb4c5be4f3ab4c3e73375f624a9481" args="(Ihandle *ih)" -->
+IUP_SDK_API char *&nbsp;</td><td class="memItemRight" valign="bottom"><b>iupBaseGetClientSizeAttrib</b> (Ihandle *ih)</td></tr>
 <tr><td class="memItemLeft" align="right" valign="top"><a class="anchor" id="ga00a6a755698fddefe8728ca650390c37"></a><!-- doxytag: member="iup_classbase.h::iupBaseCanvasGetClientOffsetAttrib" ref="ga00a6a755698fddefe8728ca650390c37" args="(Ihandle *ih)" -->
 IUP_SDK_API char *&nbsp;</td><td class="memItemRight" valign="bottom"><b>iupBaseCanvasGetClientOffsetAttrib</b> (Ihandle *ih)</td></tr>
 <tr><td class="memItemLeft" align="right" valign="top"><a class="anchor" id="gac7c7fc922bfa9bfda5943399a3b5c453"></a><!-- doxytag: member="iup_classbase.h::iupBaseCanvasGetClientSizeAttrib" ref="gac7c7fc922bfa9bfda5943399a3b5c453" args="(Ihandle *ih)" -->
@@ -124,6 +127,14 @@ IUP_SDK_API int&nbsp;</td><td class="memItemRight" valign="bottom"><b>iupdrvBase
 IUP_SDK_API int&nbsp;</td><td class="memItemRight" valign="bottom"><b>iupdrvBaseSetFgColorAttrib</b> (Ihandle *ih, const char *value)</td></tr>
 <tr><td class="memItemLeft" align="right" valign="top"><a class="anchor" id="ga7843729fb6aaf96eec2e8faa05109038"></a><!-- doxytag: member="iup_classbase.h::iupBaseNativeParentGetBgColorAttrib" ref="ga7843729fb6aaf96eec2e8faa05109038" args="(Ihandle *ih)" -->
 IUP_SDK_API char *&nbsp;</td><td class="memItemRight" valign="bottom"><b>iupBaseNativeParentGetBgColorAttrib</b> (Ihandle *ih)</td></tr>
+<tr><td class="memItemLeft" align="right" valign="top"><a class="anchor" id="gaf3bead349fea18ec869849642469171b"></a><!-- doxytag: member="iup_classbase.h::iupBaseSetCPaddingAttrib" ref="gaf3bead349fea18ec869849642469171b" args="(Ihandle *ih, const char *value)" -->
+IUP_SDK_API int&nbsp;</td><td class="memItemRight" valign="bottom"><b>iupBaseSetCPaddingAttrib</b> (Ihandle *ih, const char *value)</td></tr>
+<tr><td class="memItemLeft" align="right" valign="top"><a class="anchor" id="ga428c832a7a0b88fd06eac0c3d051404a"></a><!-- doxytag: member="iup_classbase.h::iupBaseGetCPaddingAttrib" ref="ga428c832a7a0b88fd06eac0c3d051404a" args="(Ihandle *ih)" -->
+IUP_SDK_API char *&nbsp;</td><td class="memItemRight" valign="bottom"><b>iupBaseGetCPaddingAttrib</b> (Ihandle *ih)</td></tr>
+<tr><td class="memItemLeft" align="right" valign="top"><a class="anchor" id="ga1210974ef980ab980f27946f600be2c9"></a><!-- doxytag: member="iup_classbase.h::iupBaseSetCSpacingAttrib" ref="ga1210974ef980ab980f27946f600be2c9" args="(Ihandle *ih, const char *value)" -->
+IUP_SDK_API int&nbsp;</td><td class="memItemRight" valign="bottom"><b>iupBaseSetCSpacingAttrib</b> (Ihandle *ih, const char *value)</td></tr>
+<tr><td class="memItemLeft" align="right" valign="top"><a class="anchor" id="ga2ed237a1cd57ba3619f2a7659699c29f"></a><!-- doxytag: member="iup_classbase.h::iupBaseGetCSpacingAttrib" ref="ga2ed237a1cd57ba3619f2a7659699c29f" args="(Ihandle *ih)" -->
+IUP_SDK_API char *&nbsp;</td><td class="memItemRight" valign="bottom"><b>iupBaseGetCSpacingAttrib</b> (Ihandle *ih)</td></tr>
 <tr><td class="memItemLeft" align="right" valign="top"><a class="anchor" id="gadab7cbb395e8567b18ecc5e00b125240"></a><!-- doxytag: member="iup_classbase.h::iupBaseContainerGetExpandAttrib" ref="gadab7cbb395e8567b18ecc5e00b125240" args="(Ihandle *ih)" -->
 IUP_SDK_API char *&nbsp;</td><td class="memItemRight" valign="bottom"><b>iupBaseContainerGetExpandAttrib</b> (Ihandle *ih)</td></tr>
 <tr><td class="memItemLeft" align="right" valign="top"><a class="anchor" id="ga5db841611f1386b86990474b301f2870"></a><!-- doxytag: member="iup_classbase.h::iupdrvBaseSetCursorAttrib" ref="ga5db841611f1386b86990474b301f2870" args="(Ihandle *ih, const char *value)" -->
@@ -144,7 +155,7 @@ IUP_SDK_API void&nbsp;</td><td class="memItemRight" valign="bottom"><b>iupBaseCa
 <hr/><a name="_details"></a><h3>Detailed Description</h3>
 <p>See Copyright Notice in "iup.h" </p>
 </div>
-<hr class="footer"/><address class="footer"><small>Generated on Fri Dec 13 2019 14:22:06 for SDK by&nbsp;
+<hr class="footer"/><address class="footer"><small>Generated on Sun May 17 2020 15:30:57 for SDK by&nbsp;
 <a href="http://www.doxygen.org/index.html">
 <img class="footer" src="doxygen.png" alt="doxygen"/></a> 1.7.1 </small></address>
 </body>
