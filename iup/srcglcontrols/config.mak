@@ -16,6 +16,10 @@ LDIR = ../lib/$(TEC_UNAME) $(CD)/lib/$(TEC_UNAME)
 USE_FTGL = Yes
 USE_OPENGL = Yes
 
+ifeq ($(findstring Win, $(TEC_SYSNAME)), )
+  DEPENDDIR = dep
+endif
+
 DEFINES = FTGL_LIBRARY_STATIC
 ifneq ($(findstring dll, $(TEC_UNAME)), )
   DEFINES = FTGL_LIBRARY

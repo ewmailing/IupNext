@@ -7,6 +7,10 @@ LDIR = ../lib/$(TEC_UNAME)
 LIBS = iup
 SRC = iup_webbrowser.c
 
+ifeq ($(findstring Win, $(TEC_SYSNAME)), )
+  DEPENDDIR = dep
+endif
+
 ifneq ($(findstring Win, $(TEC_SYSNAME)), )
   SRC += iupwin_webbrowser.cpp
   LIBS += iupole comsuppw

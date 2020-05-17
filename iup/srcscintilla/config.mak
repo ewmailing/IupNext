@@ -30,6 +30,10 @@ ifeq ($(findstring Win, $(TEC_SYSNAME)), )
   USE_GTK = Yes
 endif
 
+ifeq ($(findstring Win, $(TEC_SYSNAME)), )
+  DEPENDDIR = dep
+endif
+
 ifndef GTK_DEFAULT
   ifdef USE_GTK
     # Build GTK version in IRIX,SunOS,AIX,Win32

@@ -40,7 +40,7 @@ ifdef USE_IM
       else
         IUP_LIB = $(IUP)/lib/$(TEC_UNAME)
       endif  
-      SLIB += $(IUP_LIB)/libiupim.a $(IM_LIB)/libim_process.a $(IM_LIB)/libcdim.a
+      SLIB += $(IUP_LIB)/libiupim.a $(IM_LIB)/libim_process.a $(CD_LIB)/libcdim.a
     else
       LIBS += iupim im_process cdim
     endif             

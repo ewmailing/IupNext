@@ -8,11 +8,11 @@ if "%1"=="all"  goto iupexeall
 goto end
 
 :iupexe32
-call tecmake vc10 relink %2 %3 %4 %5 %6 %7
+call tecmake vc10 %2 %3 %4 %5 %6 %7
 goto end
 
 :iupexe64
-call tecmake vc10_64 relink %2 %3 %4 %5 %6 %7
+call tecmake vc10_64 %2 %3 %4 %5 %6 %7
 goto end
 
 :iupexecygw

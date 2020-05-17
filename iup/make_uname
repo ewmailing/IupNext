@@ -85,7 +85,7 @@ cd html/examples/tests
 ./make_uname $1 $2 $3 $4 $5 $6 $7 $8
 cd ../../..
 
-cd html/examples/tutorial/simple_paint2
+cd html/examples/tutorial/simple_paint3
 ./make_uname $1 $2 $3 $4 $5 $6 $7 $8
 cd ../../../..
 
