@@ -73,7 +73,12 @@
   http://www.scintilla.org/</a>.</p>
 <p>
   IupScintilla library includes the Scintilla 
-  3.6.6 source code, so no external references are needed.</p>
+  code, so no external references are needed.</p>
+<p>
+  For compilers that don't have C++ 11 support (g++ &lt; 4.8 and Visual C++ &lt; 14) 
+  we use Scintilla version 3.6.6, for compilers that have we use Scintilla 
+  version 3.11.2. We are still not using Scintilla 4.x because it uses C++14 
+  features, and requires Microsoft Visual C++ 2017 and g++ 7.</p>
 <p>
   Supported in Windows and 
   in the systems the GTK driver is supported.</p>
