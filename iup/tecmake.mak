@@ -798,6 +798,7 @@ ifneq ($(findstring FreeBSD, $(TEC_UNAME)), )
   endif
 endif
 
+
 #---------------------------------#
 # Allows an extra configuration file.
 ifdef EXTRA_CONFIG
@@ -1444,6 +1445,9 @@ ifdef USE_GTK
     
     ifneq ($(findstring FreeBSD, $(TEC_UNAME)), )
       STDINCS += /lib/X11R6/include/gtk-2.0
+    endif
+    ifneq ($(findstring Linux5, $(TEC_UNAME)), )
+      STDINCS += /usr/include/harfbuzz
     endif
   endif
 endif
