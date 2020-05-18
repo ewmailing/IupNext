@@ -50,6 +50,7 @@ endif
 ifneq ($(findstring Win, $(TEC_SYSNAME)), )
   LIBS += iupimglib iup_scintilla imm32
 else
+  LIBS += atk-1.0
   ifdef USE_STATIC
     ifdef DBG_DIR
       IUP_LIB = $(IUP)/lib/$(TEC_UNAME)d
@@ -59,7 +60,6 @@ else
     SLIB += $(IUP_LIB)/libiupimglib.a $(IUP_LIB)/libiup_scintilla.a
   else
     LIBS += iupimglib iup_scintilla
-    LIBS += atk-1.0
   endif             
 endif
 

@@ -67,7 +67,7 @@ endif
 
 ifdef SCINTILLA_OLD
   # CentOS 5
-  SCINTILLA := scintilla353
+  SCINTILLA_NUMBER := 353
   SCINTILLA_VERSION := 3.5.3
 else
   ifdef HAVE_CPP11
@@ -87,7 +87,7 @@ else
     SCINTILLA3112 = Yes
     
     ifdef SCINTILLA3112
-      SCINTILLA := scintilla3112
+      SCINTILLA_NUMBER := 3112
       SCINTILLA_VERSION := 3.11.2
       
       ifdef LPEG_LEXER
@@ -120,16 +120,16 @@ else
         endif
       endif
     else
-      SCINTILLA := scintilla375
+      SCINTILLA_NUMBER := 375
       SCINTILLA_VERSION := 3.7.5
     endif
   else
-    SCINTILLA := scintilla366
+    SCINTILLA_NUMBER := 366
     SCINTILLA_VERSION := 3.6.6
   endif
 endif
 
-INCLUDES += $(SCINTILLA)/lexlib $(SCINTILLA)/src $(SCINTILLA)/include
+INCLUDES += scintilla$(SCINTILLA_NUMBER)/lexlib scintilla$(SCINTILLA_NUMBER)/src scintilla$(SCINTILLA_NUMBER)/include
 DEFINES += SCINTILLA_VERSION='"$(SCINTILLA_VERSION)"'
 
 ifdef USE_GTK
@@ -141,7 +141,7 @@ ifdef USE_GTK
   ifdef USE_GTK3
     DEFINES += GDK_DISABLE_DEPRECATED GSEAL_ENABLE G_HAVE_ISO_VARARGS
   endif
-  INCLUDES += ../src/gtk $(SCINTILLA)/gtk
+  INCLUDES += ../src/gtk scintilla$(SCINTILLA_NUMBER)/gtk
   ifneq ($(findstring cygw, $(TEC_UNAME)), )
     INCLUDES += $(GTK)/include/cairo
     LIBS += pangocairo-1.0 cairo
@@ -150,7 +150,7 @@ ifdef USE_GTK
     LIBS += atk-1.0
   endif
 else
-  INCLUDES += ../src/win $(SCINTILLA)/win32
+  INCLUDES += ../src/win scintilla$(SCINTILLA_NUMBER)/win32
   LIBS += imm32
   DEFINES += UNICODE
   
@@ -173,7 +173,7 @@ else
   endif
 endif
 
-SRCSCINTILLA = src/AutoComplete.cxx src/CallTip.cxx src/Catalogue.cxx src/CellBuffer.cxx src/CharClassify.cxx \
+SCINTILLA_SRC = src/AutoComplete.cxx src/CallTip.cxx src/Catalogue.cxx src/CellBuffer.cxx src/CharClassify.cxx \
                src/ContractionState.cxx src/Decoration.cxx src/Document.cxx src/Editor.cxx src/ExternalLexer.cxx \
                src/Indicator.cxx src/KeyMap.cxx src/LineMarker.cxx src/PerLine.cxx src/PositionCache.cxx \
                src/RESearch.cxx src/RunStyles.cxx src/ScintillaBase.cxx src/Selection.cxx src/Style.cxx \
@@ -181,10 +181,10 @@ SRCSCINTILLA = src/AutoComplete.cxx src/CallTip.cxx src/Catalogue.cxx src/CellBu
                src/EditModel.cxx src/EditView.cxx src/MarginView.cxx
                
 ifdef SCINTILLA3112
-  SRCSCINTILLA += src/DBCS.cxx src/UniqueString.cxx
+  SCINTILLA_SRC += src/DBCS.cxx src/UniqueString.cxx
 endif
 
-SRCSCINTILLA += lexers/LexA68k.cxx lexers/LexAbaqus.cxx lexers/LexAda.cxx lexers/LexAPDL.cxx \
+SCINTILLA_SRC += lexers/LexA68k.cxx lexers/LexAbaqus.cxx lexers/LexAda.cxx lexers/LexAPDL.cxx \
 				lexers/LexAsn1.cxx lexers/LexASY.cxx lexers/LexAU3.cxx lexers/LexAVE.cxx lexers/LexAVS.cxx \
 				lexers/LexBaan.cxx lexers/LexBash.cxx lexers/LexBasic.cxx lexers/LexBullant.cxx lexers/LexCaml.cxx \
 				lexers/LexCLW.cxx lexers/LexCmake.cxx lexers/LexCOBOL.cxx lexers/LexCoffeeScript.cxx \
@@ -209,44 +209,51 @@ SRCSCINTILLA += lexers/LexA68k.cxx lexers/LexAbaqus.cxx lexers/LexAda.cxx lexers
 				lexers/LexRegistry.cxx lexers/LexLed.cxx
         
 ifdef SCINTILLA_OLD
-  SRCSCINTILLA += lexers/LexOthers.cxx
+  SCINTILLA_SRC += lexers/LexOthers.cxx
 else
-  SRCSCINTILLA += lexers/LexBatch.cxx lexers/LexDiff.cxx lexers/LexErrorList.cxx \
+  SCINTILLA_SRC += lexers/LexBatch.cxx lexers/LexDiff.cxx lexers/LexErrorList.cxx \
                   lexers/LexMake.cxx lexers/LexNull.cxx lexers/LexProps.cxx lexers/LexJSON.cxx
 endif
 
 ifdef SCINTILLA_NEW
-  SRCSCINTILLA += lexers/LexEDIFACT.cxx lexers/LexIndent.cxx
+  SCINTILLA_SRC += lexers/LexEDIFACT.cxx lexers/LexIndent.cxx
   ifdef SCINTILLA3112
-    SRCSCINTILLA += lexers/LexCIL.cxx lexers/LexDataflex.cxx lexers/LexHollywood.cxx \
+    SCINTILLA_SRC += lexers/LexCIL.cxx lexers/LexDataflex.cxx lexers/LexHollywood.cxx \
                     lexers/LexMaxima.cxx lexers/LexNim.cxx \
                     lexers/LexSAS.cxx lexers/LexStata.cxx lexers/LexX12.cxx \
                     lexers/LexLPeg.cxx 
   endif
 endif
 
-SRCSCINTILLA += lexlib/Accessor.cxx lexlib/CharacterSet.cxx lexlib/LexerBase.cxx lexlib/LexerModule.cxx \
+SCINTILLA_SRC += lexlib/Accessor.cxx lexlib/CharacterSet.cxx lexlib/LexerBase.cxx lexlib/LexerModule.cxx \
                 lexlib/LexerNoExceptions.cxx lexlib/LexerSimple.cxx lexlib/PropSetSimple.cxx \
                 lexlib/StyleContext.cxx lexlib/WordList.cxx lexlib/CharacterCategory.cxx
 ifdef SCINTILLA3112
-  SRCSCINTILLA += lexlib/DefaultLexer.cxx
+  SCINTILLA_SRC += lexlib/DefaultLexer.cxx
 endif
 
 ifdef USE_GTK
-  SRCSCINTILLA += gtk/PlatGTK.cxx gtk/ScintillaGTK.cxx gtk/scintilla-marshal.c
+  SCINTILLA_SRC += gtk/PlatGTK.cxx gtk/ScintillaGTK.cxx gtk/scintilla-marshal.c
   ifdef SCINTILLA_NEW
-    SRCSCINTILLA += gtk/ScintillaGTKAccessible.cxx
+    SCINTILLA_SRC += gtk/ScintillaGTKAccessible.cxx
   endif
 else
-  SRCSCINTILLA += win32/PlatWin.cxx win32/ScintillaWin.cxx
+  SCINTILLA_SRC += win32/PlatWin.cxx win32/ScintillaWin.cxx
   ifndef SCINTILLA_OLD
-    SRCSCINTILLA += win32/HanjaDic.cxx
+    SCINTILLA_SRC += win32/HanjaDic.cxx
   endif
+  
+  ifdef SCINTILLA3112
+    ifneq ($(findstring dll, $(TEC_UNAME)), )
+      SCINTILLA_SRC += win32/ScintillaDLL.cxx
+    endif
+  endif
+  
 endif
 
-SRCSCINTILLA := $(addprefix $(SCINTILLA)/, $(SRCSCINTILLA))
+SCINTILLA_SRC := $(addprefix scintilla$(SCINTILLA_NUMBER)/, $(SCINTILLA_SRC))
 
-SRC = $(SRCSCINTILLA) iupsci_clipboard.c iupsci_folding.c iupsci_lexer.c iupsci_margin.c \
+SRC = $(SCINTILLA_SRC) iupsci_clipboard.c iupsci_folding.c iupsci_lexer.c iupsci_margin.c \
       iupsci_overtype.c iupsci_scrolling.c iupsci_selection.c iupsci_style.c iupsci_tab.c \
       iupsci_text.c iupsci_wordwrap.c iupsci_markers.c iupsci_bracelight.c iupsci_cursor.c \
       iupsci_whitespace.c iupsci_annotation.c iupsci_autocompletion.c iupsci_searching.c  \
