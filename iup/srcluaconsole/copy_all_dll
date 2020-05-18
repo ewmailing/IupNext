@@ -29,8 +29,8 @@ Copy_DLLs()
   cp -f $BASE_TEC/im/lib/$PLAT/Lua$LUA_SFX/*.dll ../bin/$SYS/Lua$LUA_SFX
   cp -f $BASE_TEC/lua$LUA_SFX/lib/$PLAT/*.dll ../bin/$SYS/Lua$LUA_SFX
   cp -f $BASE_TEC/lua$LUA_SFX/bin/$SYS.$PLAT/*ua5*.exe ../bin/$SYS/Lua$LUA_SFX
-  cp -f $BASE_EXTRA/luagl/lib/$PLAT/Lua$LUA_SFX/*.dll ../bin/$SYS/Lua$LUA_SFX
-  cp -f $BASE_EXTRA/lfs/lib/$PLAT/Lua$LUA_SFX/*.dll ../bin/$SYS/Lua$LUA_SFX
+  cp -f $BASE_TEC/luagl/lib/$PLAT/Lua$LUA_SFX/*.dll ../bin/$SYS/Lua$LUA_SFX
+  cp -f $BASE_TEC/lfs/lib/$PLAT/Lua$LUA_SFX/*.dll ../bin/$SYS/Lua$LUA_SFX
   cp -f $BASE_EXTRA/luacom/lib/$PLAT/Lua$LUA_SFX/*.dll ../bin/$SYS/Lua$LUA_SFX
   
   #Copy Run Time Libraries

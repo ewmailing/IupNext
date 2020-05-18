@@ -7,9 +7,7 @@ Copy_SOs()
   EXT=$3
   
   BASE_TEC=../..
-  BASE_EXTRA=../..
 #  BASE_TEC=~tecgraf/lib
-#  BASE_EXTRA=~scuri/tecgraf
   
   echo $PLAT/Lua$LUA_SFX
   mkdir -p ../bin/$PLAT/Lua$LUA_SFX
@@ -21,8 +19,8 @@ Copy_SOs()
   cp -f $BASE_TEC/cd/lib/$PLAT/Lua$LUA_SFX/*.$EXT ../bin/$PLAT/Lua$LUA_SFX
   cp -f $BASE_TEC/im/lib/$PLAT/Lua$LUA_SFX/*.$EXT ../bin/$PLAT/Lua$LUA_SFX
   cp -f $BASE_TEC/lua$LUA_SFX/bin/$PLAT/lua5* ../bin/$PLAT/Lua$LUA_SFX
-  cp -f $BASE_EXTRA/luagl/lib/$PLAT/Lua$LUA_SFX/*.$EXT ../bin/$PLAT/Lua$LUA_SFX
-  cp -f $BASE_EXTRA/lfs/lib/$PLAT/Lua$LUA_SFX/*.$EXT ../bin/$PLAT/Lua$LUA_SFX
+  cp -f $BASE_TEC/luagl/lib/$PLAT/Lua$LUA_SFX/*.$EXT ../bin/$PLAT/Lua$LUA_SFX
+  cp -f $BASE_TEC/lfs/lib/$PLAT/Lua$LUA_SFX/*.$EXT ../bin/$PLAT/Lua$LUA_SFX
 }
 
 # MacOS1010 Linux32 Linux32_64 SunOS511x86
