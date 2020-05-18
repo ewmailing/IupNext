@@ -16,441 +16,441 @@
     <ClCompile Include="..\srcscintilla\iupsci_text.c" />
     <ClCompile Include="..\srcscintilla\iupsci_whitespace.c" />
     <ClCompile Include="..\srcscintilla\iupsci_wordwrap.c" />
-    <ClCompile Include="..\srcscintilla\scintilla$(SCINTILLA_VERSION)\src\AutoComplete.cxx">
+    <ClCompile Include="..\srcscintilla\scintilla$(SCINTILLA_NUMBER)\src\AutoComplete.cxx">
       <Filter>Scintilla</Filter>
     </ClCompile>
-    <ClCompile Include="..\srcscintilla\scintilla$(SCINTILLA_VERSION)\src\CallTip.cxx">
+    <ClCompile Include="..\srcscintilla\scintilla$(SCINTILLA_NUMBER)\src\CallTip.cxx">
       <Filter>Scintilla</Filter>
     </ClCompile>
-    <ClCompile Include="..\srcscintilla\scintilla$(SCINTILLA_VERSION)\src\Catalogue.cxx">
+    <ClCompile Include="..\srcscintilla\scintilla$(SCINTILLA_NUMBER)\src\Catalogue.cxx">
       <Filter>Scintilla</Filter>
     </ClCompile>
-    <ClCompile Include="..\srcscintilla\scintilla$(SCINTILLA_VERSION)\src\CellBuffer.cxx">
+    <ClCompile Include="..\srcscintilla\scintilla$(SCINTILLA_NUMBER)\src\CellBuffer.cxx">
       <Filter>Scintilla</Filter>
     </ClCompile>
-    <ClCompile Include="..\srcscintilla\scintilla$(SCINTILLA_VERSION)\src\CharClassify.cxx">
+    <ClCompile Include="..\srcscintilla\scintilla$(SCINTILLA_NUMBER)\src\CharClassify.cxx">
       <Filter>Scintilla</Filter>
     </ClCompile>
-    <ClCompile Include="..\srcscintilla\scintilla$(SCINTILLA_VERSION)\src\ContractionState.cxx">
+    <ClCompile Include="..\srcscintilla\scintilla$(SCINTILLA_NUMBER)\src\ContractionState.cxx">
       <Filter>Scintilla</Filter>
     </ClCompile>
-    <ClCompile Include="..\srcscintilla\scintilla$(SCINTILLA_VERSION)\src\Decoration.cxx">
+    <ClCompile Include="..\srcscintilla\scintilla$(SCINTILLA_NUMBER)\src\Decoration.cxx">
       <Filter>Scintilla</Filter>
     </ClCompile>
-    <ClCompile Include="..\srcscintilla\scintilla$(SCINTILLA_VERSION)\src\Document.cxx">
+    <ClCompile Include="..\srcscintilla\scintilla$(SCINTILLA_NUMBER)\src\Document.cxx">
       <Filter>Scintilla</Filter>
     </ClCompile>
-    <ClCompile Include="..\srcscintilla\scintilla$(SCINTILLA_VERSION)\src\Editor.cxx">
+    <ClCompile Include="..\srcscintilla\scintilla$(SCINTILLA_NUMBER)\src\Editor.cxx">
       <Filter>Scintilla</Filter>
     </ClCompile>
-    <ClCompile Include="..\srcscintilla\scintilla$(SCINTILLA_VERSION)\src\ExternalLexer.cxx">
+    <ClCompile Include="..\srcscintilla\scintilla$(SCINTILLA_NUMBER)\src\ExternalLexer.cxx">
       <Filter>Scintilla</Filter>
     </ClCompile>
-    <ClCompile Include="..\srcscintilla\scintilla$(SCINTILLA_VERSION)\src\Indicator.cxx">
+    <ClCompile Include="..\srcscintilla\scintilla$(SCINTILLA_NUMBER)\src\Indicator.cxx">
       <Filter>Scintilla</Filter>
     </ClCompile>
-    <ClCompile Include="..\srcscintilla\scintilla$(SCINTILLA_VERSION)\src\KeyMap.cxx">
+    <ClCompile Include="..\srcscintilla\scintilla$(SCINTILLA_NUMBER)\src\KeyMap.cxx">
       <Filter>Scintilla</Filter>
     </ClCompile>
-    <ClCompile Include="..\srcscintilla\scintilla$(SCINTILLA_VERSION)\src\LineMarker.cxx">
+    <ClCompile Include="..\srcscintilla\scintilla$(SCINTILLA_NUMBER)\src\LineMarker.cxx">
       <Filter>Scintilla</Filter>
     </ClCompile>
-    <ClCompile Include="..\srcscintilla\scintilla$(SCINTILLA_VERSION)\src\PerLine.cxx">
+    <ClCompile Include="..\srcscintilla\scintilla$(SCINTILLA_NUMBER)\src\PerLine.cxx">
       <Filter>Scintilla</Filter>
     </ClCompile>
-    <ClCompile Include="..\srcscintilla\scintilla$(SCINTILLA_VERSION)\src\PositionCache.cxx">
+    <ClCompile Include="..\srcscintilla\scintilla$(SCINTILLA_NUMBER)\src\PositionCache.cxx">
       <Filter>Scintilla</Filter>
     </ClCompile>
-    <ClCompile Include="..\srcscintilla\scintilla$(SCINTILLA_VERSION)\src\RESearch.cxx">
+    <ClCompile Include="..\srcscintilla\scintilla$(SCINTILLA_NUMBER)\src\RESearch.cxx">
       <Filter>Scintilla</Filter>
     </ClCompile>
-    <ClCompile Include="..\srcscintilla\scintilla$(SCINTILLA_VERSION)\src\RunStyles.cxx">
+    <ClCompile Include="..\srcscintilla\scintilla$(SCINTILLA_NUMBER)\src\RunStyles.cxx">
       <Filter>Scintilla</Filter>
     </ClCompile>
-    <ClCompile Include="..\srcscintilla\scintilla$(SCINTILLA_VERSION)\src\ScintillaBase.cxx">
+    <ClCompile Include="..\srcscintilla\scintilla$(SCINTILLA_NUMBER)\src\ScintillaBase.cxx">
       <Filter>Scintilla</Filter>
     </ClCompile>
-    <ClCompile Include="..\srcscintilla\scintilla$(SCINTILLA_VERSION)\src\Selection.cxx">
+    <ClCompile Include="..\srcscintilla\scintilla$(SCINTILLA_NUMBER)\src\Selection.cxx">
       <Filter>Scintilla</Filter>
     </ClCompile>
-    <ClCompile Include="..\srcscintilla\scintilla$(SCINTILLA_VERSION)\src\Style.cxx">
+    <ClCompile Include="..\srcscintilla\scintilla$(SCINTILLA_NUMBER)\src\Style.cxx">
       <Filter>Scintilla</Filter>
     </ClCompile>
-    <ClCompile Include="..\srcscintilla\scintilla$(SCINTILLA_VERSION)\src\UniConversion.cxx">
+    <ClCompile Include="..\srcscintilla\scintilla$(SCINTILLA_NUMBER)\src\UniConversion.cxx">
       <Filter>Scintilla</Filter>
     </ClCompile>
-    <ClCompile Include="..\srcscintilla\scintilla$(SCINTILLA_VERSION)\src\ViewStyle.cxx">
+    <ClCompile Include="..\srcscintilla\scintilla$(SCINTILLA_NUMBER)\src\ViewStyle.cxx">
       <Filter>Scintilla</Filter>
     </ClCompile>
-    <ClCompile Include="..\srcscintilla\scintilla$(SCINTILLA_VERSION)\src\XPM.cxx">
+    <ClCompile Include="..\srcscintilla\scintilla$(SCINTILLA_NUMBER)\src\XPM.cxx">
       <Filter>Scintilla</Filter>
     </ClCompile>
     <ClCompile Include="..\srcscintilla\iupsci_annotation.c" />
-    <ClCompile Include="..\srcscintilla\scintilla$(SCINTILLA_VERSION)\src\CaseConvert.cxx">
+    <ClCompile Include="..\srcscintilla\scintilla$(SCINTILLA_NUMBER)\src\CaseConvert.cxx">
       <Filter>Scintilla</Filter>
     </ClCompile>
-    <ClCompile Include="..\srcscintilla\scintilla$(SCINTILLA_VERSION)\src\CaseFolder.cxx">
+    <ClCompile Include="..\srcscintilla\scintilla$(SCINTILLA_NUMBER)\src\CaseFolder.cxx">
       <Filter>Scintilla</Filter>
     </ClCompile>
     <ClCompile Include="..\srcscintilla\iupsci_autocompletion.c" />
     <ClCompile Include="..\srcscintilla\iupsci_searching.c" />
-    <ClCompile Include="..\srcscintilla\scintilla$(SCINTILLA_VERSION)\lexers\LexA68k.cxx">
+    <ClCompile Include="..\srcscintilla\scintilla$(SCINTILLA_NUMBER)\lexers\LexA68k.cxx">
       <Filter>Scintilla\Lexers</Filter>
     </ClCompile>
-    <ClCompile Include="..\srcscintilla\scintilla$(SCINTILLA_VERSION)\lexers\LexAbaqus.cxx">
+    <ClCompile Include="..\srcscintilla\scintilla$(SCINTILLA_NUMBER)\lexers\LexAbaqus.cxx">
       <Filter>Scintilla\Lexers</Filter>
     </ClCompile>
-    <ClCompile Include="..\srcscintilla\scintilla$(SCINTILLA_VERSION)\lexers\LexAda.cxx">
+    <ClCompile Include="..\srcscintilla\scintilla$(SCINTILLA_NUMBER)\lexers\LexAda.cxx">
       <Filter>Scintilla\Lexers</Filter>
     </ClCompile>
-    <ClCompile Include="..\srcscintilla\scintilla$(SCINTILLA_VERSION)\lexers\LexAPDL.cxx">
+    <ClCompile Include="..\srcscintilla\scintilla$(SCINTILLA_NUMBER)\lexers\LexAPDL.cxx">
       <Filter>Scintilla\Lexers</Filter>
     </ClCompile>
-    <ClCompile Include="..\srcscintilla\scintilla$(SCINTILLA_VERSION)\lexers\LexAsm.cxx">
+    <ClCompile Include="..\srcscintilla\scintilla$(SCINTILLA_NUMBER)\lexers\LexAsm.cxx">
       <Filter>Scintilla\Lexers</Filter>
     </ClCompile>
-    <ClCompile Include="..\srcscintilla\scintilla$(SCINTILLA_VERSION)\lexers\LexAsn1.cxx">
+    <ClCompile Include="..\srcscintilla\scintilla$(SCINTILLA_NUMBER)\lexers\LexAsn1.cxx">
       <Filter>Scintilla\Lexers</Filter>
     </ClCompile>
-    <ClCompile Include="..\srcscintilla\scintilla$(SCINTILLA_VERSION)\lexers\LexASY.cxx">
+    <ClCompile Include="..\srcscintilla\scintilla$(SCINTILLA_NUMBER)\lexers\LexASY.cxx">
       <Filter>Scintilla\Lexers</Filter>
     </ClCompile>
-    <ClCompile Include="..\srcscintilla\scintilla$(SCINTILLA_VERSION)\lexers\LexAU3.cxx">
+    <ClCompile Include="..\srcscintilla\scintilla$(SCINTILLA_NUMBER)\lexers\LexAU3.cxx">
       <Filter>Scintilla\Lexers</Filter>
     </ClCompile>
-    <ClCompile Include="..\srcscintilla\scintilla$(SCINTILLA_VERSION)\lexers\LexAVE.cxx">
+    <ClCompile Include="..\srcscintilla\scintilla$(SCINTILLA_NUMBER)\lexers\LexAVE.cxx">
       <Filter>Scintilla\Lexers</Filter>
     </ClCompile>
-    <ClCompile Include="..\srcscintilla\scintilla$(SCINTILLA_VERSION)\lexers\LexAVS.cxx">
+    <ClCompile Include="..\srcscintilla\scintilla$(SCINTILLA_NUMBER)\lexers\LexAVS.cxx">
       <Filter>Scintilla\Lexers</Filter>
     </ClCompile>
-    <ClCompile Include="..\srcscintilla\scintilla$(SCINTILLA_VERSION)\lexers\LexBaan.cxx">
+    <ClCompile Include="..\srcscintilla\scintilla$(SCINTILLA_NUMBER)\lexers\LexBaan.cxx">
       <Filter>Scintilla\Lexers</Filter>
     </ClCompile>
-    <ClCompile Include="..\srcscintilla\scintilla$(SCINTILLA_VERSION)\lexers\LexBash.cxx">
+    <ClCompile Include="..\srcscintilla\scintilla$(SCINTILLA_NUMBER)\lexers\LexBash.cxx">
       <Filter>Scintilla\Lexers</Filter>
     </ClCompile>
-    <ClCompile Include="..\srcscintilla\scintilla$(SCINTILLA_VERSION)\lexers\LexBasic.cxx">
+    <ClCompile Include="..\srcscintilla\scintilla$(SCINTILLA_NUMBER)\lexers\LexBasic.cxx">
       <Filter>Scintilla\Lexers</Filter>
     </ClCompile>
-    <ClCompile Include="..\srcscintilla\scintilla$(SCINTILLA_VERSION)\lexers\LexBullant.cxx">
+    <ClCompile Include="..\srcscintilla\scintilla$(SCINTILLA_NUMBER)\lexers\LexBullant.cxx">
       <Filter>Scintilla\Lexers</Filter>
     </ClCompile>
-    <ClCompile Include="..\srcscintilla\scintilla$(SCINTILLA_VERSION)\lexers\LexCaml.cxx">
+    <ClCompile Include="..\srcscintilla\scintilla$(SCINTILLA_NUMBER)\lexers\LexCaml.cxx">
       <Filter>Scintilla\Lexers</Filter>
     </ClCompile>
-    <ClCompile Include="..\srcscintilla\scintilla$(SCINTILLA_VERSION)\lexers\LexCLW.cxx">
+    <ClCompile Include="..\srcscintilla\scintilla$(SCINTILLA_NUMBER)\lexers\LexCLW.cxx">
       <Filter>Scintilla\Lexers</Filter>
     </ClCompile>
-    <ClCompile Include="..\srcscintilla\scintilla$(SCINTILLA_VERSION)\lexers\LexCmake.cxx">
+    <ClCompile Include="..\srcscintilla\scintilla$(SCINTILLA_NUMBER)\lexers\LexCmake.cxx">
       <Filter>Scintilla\Lexers</Filter>
     </ClCompile>
-    <ClCompile Include="..\srcscintilla\scintilla$(SCINTILLA_VERSION)\lexers\LexCOBOL.cxx">
+    <ClCompile Include="..\srcscintilla\scintilla$(SCINTILLA_NUMBER)\lexers\LexCOBOL.cxx">
       <Filter>Scintilla\Lexers</Filter>
     </ClCompile>
-    <ClCompile Include="..\srcscintilla\scintilla$(SCINTILLA_VERSION)\lexers\LexCoffeeScript.cxx">
+    <ClCompile Include="..\srcscintilla\scintilla$(SCINTILLA_NUMBER)\lexers\LexCoffeeScript.cxx">
       <Filter>Scintilla\Lexers</Filter>
     </ClCompile>
-    <ClCompile Include="..\srcscintilla\scintilla$(SCINTILLA_VERSION)\lexers\LexConf.cxx">
+    <ClCompile Include="..\srcscintilla\scintilla$(SCINTILLA_NUMBER)\lexers\LexConf.cxx">
       <Filter>Scintilla\Lexers</Filter>
     </ClCompile>
-    <ClCompile Include="..\srcscintilla\scintilla$(SCINTILLA_VERSION)\lexers\LexCPP.cxx">
+    <ClCompile Include="..\srcscintilla\scintilla$(SCINTILLA_NUMBER)\lexers\LexCPP.cxx">
       <Filter>Scintilla\Lexers</Filter>
     </ClCompile>
-    <ClCompile Include="..\srcscintilla\scintilla$(SCINTILLA_VERSION)\lexers\LexCrontab.cxx">
+    <ClCompile Include="..\srcscintilla\scintilla$(SCINTILLA_NUMBER)\lexers\LexCrontab.cxx">
       <Filter>Scintilla\Lexers</Filter>
     </ClCompile>
-    <ClCompile Include="..\srcscintilla\scintilla$(SCINTILLA_VERSION)\lexers\LexCsound.cxx">
+    <ClCompile Include="..\srcscintilla\scintilla$(SCINTILLA_NUMBER)\lexers\LexCsound.cxx">
       <Filter>Scintilla\Lexers</Filter>
     </ClCompile>
-    <ClCompile Include="..\srcscintilla\scintilla$(SCINTILLA_VERSION)\lexers\LexCSS.cxx">
+    <ClCompile Include="..\srcscintilla\scintilla$(SCINTILLA_NUMBER)\lexers\LexCSS.cxx">
       <Filter>Scintilla\Lexers</Filter>
     </ClCompile>
-    <ClCompile Include="..\srcscintilla\scintilla$(SCINTILLA_VERSION)\lexers\LexD.cxx">
+    <ClCompile Include="..\srcscintilla\scintilla$(SCINTILLA_NUMBER)\lexers\LexD.cxx">
       <Filter>Scintilla\Lexers</Filter>
     </ClCompile>
-    <ClCompile Include="..\srcscintilla\scintilla$(SCINTILLA_VERSION)\lexers\LexDMAP.cxx">
+    <ClCompile Include="..\srcscintilla\scintilla$(SCINTILLA_NUMBER)\lexers\LexDMAP.cxx">
       <Filter>Scintilla\Lexers</Filter>
     </ClCompile>
-    <ClCompile Include="..\srcscintilla\scintilla$(SCINTILLA_VERSION)\lexers\LexECL.cxx">
+    <ClCompile Include="..\srcscintilla\scintilla$(SCINTILLA_NUMBER)\lexers\LexECL.cxx">
       <Filter>Scintilla\Lexers</Filter>
     </ClCompile>
-    <ClCompile Include="..\srcscintilla\scintilla$(SCINTILLA_VERSION)\lexers\LexEiffel.cxx">
+    <ClCompile Include="..\srcscintilla\scintilla$(SCINTILLA_NUMBER)\lexers\LexEiffel.cxx">
       <Filter>Scintilla\Lexers</Filter>
     </ClCompile>
-    <ClCompile Include="..\srcscintilla\scintilla$(SCINTILLA_VERSION)\lexers\LexEScript.cxx">
+    <ClCompile Include="..\srcscintilla\scintilla$(SCINTILLA_NUMBER)\lexers\LexEScript.cxx">
       <Filter>Scintilla\Lexers</Filter>
     </ClCompile>
-    <ClCompile Include="..\srcscintilla\scintilla$(SCINTILLA_VERSION)\lexers\LexFlagship.cxx">
+    <ClCompile Include="..\srcscintilla\scintilla$(SCINTILLA_NUMBER)\lexers\LexFlagship.cxx">
       <Filter>Scintilla\Lexers</Filter>
     </ClCompile>
-    <ClCompile Include="..\srcscintilla\scintilla$(SCINTILLA_VERSION)\lexers\LexForth.cxx">
+    <ClCompile Include="..\srcscintilla\scintilla$(SCINTILLA_NUMBER)\lexers\LexForth.cxx">
       <Filter>Scintilla\Lexers</Filter>
     </ClCompile>
-    <ClCompile Include="..\srcscintilla\scintilla$(SCINTILLA_VERSION)\lexers\LexFortran.cxx">
+    <ClCompile Include="..\srcscintilla\scintilla$(SCINTILLA_NUMBER)\lexers\LexFortran.cxx">
       <Filter>Scintilla\Lexers</Filter>
     </ClCompile>
-    <ClCompile Include="..\srcscintilla\scintilla$(SCINTILLA_VERSION)\lexers\LexGAP.cxx">
+    <ClCompile Include="..\srcscintilla\scintilla$(SCINTILLA_NUMBER)\lexers\LexGAP.cxx">
       <Filter>Scintilla\Lexers</Filter>
     </ClCompile>
-    <ClCompile Include="..\srcscintilla\scintilla$(SCINTILLA_VERSION)\lexers\LexGui4Cli.cxx">
+    <ClCompile Include="..\srcscintilla\scintilla$(SCINTILLA_NUMBER)\lexers\LexGui4Cli.cxx">
       <Filter>Scintilla\Lexers</Filter>
     </ClCompile>
-    <ClCompile Include="..\srcscintilla\scintilla$(SCINTILLA_VERSION)\lexers\LexHaskell.cxx">
+    <ClCompile Include="..\srcscintilla\scintilla$(SCINTILLA_NUMBER)\lexers\LexHaskell.cxx">
       <Filter>Scintilla\Lexers</Filter>
     </ClCompile>
-    <ClCompile Include="..\srcscintilla\scintilla$(SCINTILLA_VERSION)\lexers\LexHTML.cxx">
+    <ClCompile Include="..\srcscintilla\scintilla$(SCINTILLA_NUMBER)\lexers\LexHTML.cxx">
       <Filter>Scintilla\Lexers</Filter>
     </ClCompile>
-    <ClCompile Include="..\srcscintilla\scintilla$(SCINTILLA_VERSION)\lexers\LexInno.cxx">
+    <ClCompile Include="..\srcscintilla\scintilla$(SCINTILLA_NUMBER)\lexers\LexInno.cxx">
       <Filter>Scintilla\Lexers</Filter>
     </ClCompile>
-    <ClCompile Include="..\srcscintilla\scintilla$(SCINTILLA_VERSION)\lexers\LexKix.cxx">
+    <ClCompile Include="..\srcscintilla\scintilla$(SCINTILLA_NUMBER)\lexers\LexKix.cxx">
       <Filter>Scintilla\Lexers</Filter>
     </ClCompile>
-    <ClCompile Include="..\srcscintilla\scintilla$(SCINTILLA_VERSION)\lexers\LexKVIrc.cxx">
+    <ClCompile Include="..\srcscintilla\scintilla$(SCINTILLA_NUMBER)\lexers\LexKVIrc.cxx">
       <Filter>Scintilla\Lexers</Filter>
     </ClCompile>
-    <ClCompile Include="..\srcscintilla\scintilla$(SCINTILLA_VERSION)\lexers\LexLaTeX.cxx">
+    <ClCompile Include="..\srcscintilla\scintilla$(SCINTILLA_NUMBER)\lexers\LexLaTeX.cxx">
       <Filter>Scintilla\Lexers</Filter>
     </ClCompile>
-    <ClCompile Include="..\srcscintilla\scintilla$(SCINTILLA_VERSION)\lexers\LexLisp.cxx">
+    <ClCompile Include="..\srcscintilla\scintilla$(SCINTILLA_NUMBER)\lexers\LexLisp.cxx">
       <Filter>Scintilla\Lexers</Filter>
     </ClCompile>
-    <ClCompile Include="..\srcscintilla\scintilla$(SCINTILLA_VERSION)\lexers\LexLout.cxx">
+    <ClCompile Include="..\srcscintilla\scintilla$(SCINTILLA_NUMBER)\lexers\LexLout.cxx">
       <Filter>Scintilla\Lexers</Filter>
     </ClCompile>
-    <ClCompile Include="..\srcscintilla\scintilla$(SCINTILLA_VERSION)\lexers\LexLua.cxx">
+    <ClCompile Include="..\srcscintilla\scintilla$(SCINTILLA_NUMBER)\lexers\LexLua.cxx">
       <Filter>Scintilla\Lexers</Filter>
     </ClCompile>
-    <ClCompile Include="..\srcscintilla\scintilla$(SCINTILLA_VERSION)\lexers\LexMagik.cxx">
+    <ClCompile Include="..\srcscintilla\scintilla$(SCINTILLA_NUMBER)\lexers\LexMagik.cxx">
       <Filter>Scintilla\Lexers</Filter>
     </ClCompile>
-    <ClCompile Include="..\srcscintilla\scintilla$(SCINTILLA_VERSION)\lexers\LexMarkdown.cxx">
+    <ClCompile Include="..\srcscintilla\scintilla$(SCINTILLA_NUMBER)\lexers\LexMarkdown.cxx">
       <Filter>Scintilla\Lexers</Filter>
     </ClCompile>
-    <ClCompile Include="..\srcscintilla\scintilla$(SCINTILLA_VERSION)\lexers\LexMatlab.cxx">
+    <ClCompile Include="..\srcscintilla\scintilla$(SCINTILLA_NUMBER)\lexers\LexMatlab.cxx">
       <Filter>Scintilla\Lexers</Filter>
     </ClCompile>
-    <ClCompile Include="..\srcscintilla\scintilla$(SCINTILLA_VERSION)\lexers\LexMetapost.cxx">
+    <ClCompile Include="..\srcscintilla\scintilla$(SCINTILLA_NUMBER)\lexers\LexMetapost.cxx">
       <Filter>Scintilla\Lexers</Filter>
     </ClCompile>
-    <ClCompile Include="..\srcscintilla\scintilla$(SCINTILLA_VERSION)\lexers\LexMMIXAL.cxx">
+    <ClCompile Include="..\srcscintilla\scintilla$(SCINTILLA_NUMBER)\lexers\LexMMIXAL.cxx">
       <Filter>Scintilla\Lexers</Filter>
     </ClCompile>
-    <ClCompile Include="..\srcscintilla\scintilla$(SCINTILLA_VERSION)\lexers\LexModula.cxx">
+    <ClCompile Include="..\srcscintilla\scintilla$(SCINTILLA_NUMBER)\lexers\LexModula.cxx">
       <Filter>Scintilla\Lexers</Filter>
     </ClCompile>
-    <ClCompile Include="..\srcscintilla\scintilla$(SCINTILLA_VERSION)\lexers\LexMPT.cxx">
+    <ClCompile Include="..\srcscintilla\scintilla$(SCINTILLA_NUMBER)\lexers\LexMPT.cxx">
       <Filter>Scintilla\Lexers</Filter>
     </ClCompile>
-    <ClCompile Include="..\srcscintilla\scintilla$(SCINTILLA_VERSION)\lexers\LexMSSQL.cxx">
+    <ClCompile Include="..\srcscintilla\scintilla$(SCINTILLA_NUMBER)\lexers\LexMSSQL.cxx">
       <Filter>Scintilla\Lexers</Filter>
     </ClCompile>
-    <ClCompile Include="..\srcscintilla\scintilla$(SCINTILLA_VERSION)\lexers\LexMySQL.cxx">
+    <ClCompile Include="..\srcscintilla\scintilla$(SCINTILLA_NUMBER)\lexers\LexMySQL.cxx">
       <Filter>Scintilla\Lexers</Filter>
     </ClCompile>
-    <ClCompile Include="..\srcscintilla\scintilla$(SCINTILLA_VERSION)\lexers\LexNimrod.cxx">
+    <ClCompile Include="..\srcscintilla\scintilla$(SCINTILLA_NUMBER)\lexers\LexNimrod.cxx">
       <Filter>Scintilla\Lexers</Filter>
     </ClCompile>
-    <ClCompile Include="..\srcscintilla\scintilla$(SCINTILLA_VERSION)\lexers\LexNsis.cxx">
+    <ClCompile Include="..\srcscintilla\scintilla$(SCINTILLA_NUMBER)\lexers\LexNsis.cxx">
       <Filter>Scintilla\Lexers</Filter>
     </ClCompile>
-    <ClCompile Include="..\srcscintilla\scintilla$(SCINTILLA_VERSION)\lexers\LexOpal.cxx">
+    <ClCompile Include="..\srcscintilla\scintilla$(SCINTILLA_NUMBER)\lexers\LexOpal.cxx">
       <Filter>Scintilla\Lexers</Filter>
     </ClCompile>
-    <ClCompile Include="..\srcscintilla\scintilla$(SCINTILLA_VERSION)\lexers\LexOScript.cxx">
+    <ClCompile Include="..\srcscintilla\scintilla$(SCINTILLA_NUMBER)\lexers\LexOScript.cxx">
       <Filter>Scintilla\Lexers</Filter>
     </ClCompile>
-    <ClCompile Include="..\srcscintilla\scintilla$(SCINTILLA_VERSION)\lexers\LexPascal.cxx">
+    <ClCompile Include="..\srcscintilla\scintilla$(SCINTILLA_NUMBER)\lexers\LexPascal.cxx">
       <Filter>Scintilla\Lexers</Filter>
     </ClCompile>
-    <ClCompile Include="..\srcscintilla\scintilla$(SCINTILLA_VERSION)\lexers\LexPB.cxx">
+    <ClCompile Include="..\srcscintilla\scintilla$(SCINTILLA_NUMBER)\lexers\LexPB.cxx">
       <Filter>Scintilla\Lexers</Filter>
     </ClCompile>
-    <ClCompile Include="..\srcscintilla\scintilla$(SCINTILLA_VERSION)\lexers\LexPerl.cxx">
+    <ClCompile Include="..\srcscintilla\scintilla$(SCINTILLA_NUMBER)\lexers\LexPerl.cxx">
       <Filter>Scintilla\Lexers</Filter>
     </ClCompile>
-    <ClCompile Include="..\srcscintilla\scintilla$(SCINTILLA_VERSION)\lexers\LexPLM.cxx">
+    <ClCompile Include="..\srcscintilla\scintilla$(SCINTILLA_NUMBER)\lexers\LexPLM.cxx">
       <Filter>Scintilla\Lexers</Filter>
     </ClCompile>
-    <ClCompile Include="..\srcscintilla\scintilla$(SCINTILLA_VERSION)\lexers\LexPO.cxx">
+    <ClCompile Include="..\srcscintilla\scintilla$(SCINTILLA_NUMBER)\lexers\LexPO.cxx">
       <Filter>Scintilla\Lexers</Filter>
     </ClCompile>
-    <ClCompile Include="..\srcscintilla\scintilla$(SCINTILLA_VERSION)\lexers\LexPOV.cxx">
+    <ClCompile Include="..\srcscintilla\scintilla$(SCINTILLA_NUMBER)\lexers\LexPOV.cxx">
       <Filter>Scintilla\Lexers</Filter>
     </ClCompile>
-    <ClCompile Include="..\srcscintilla\scintilla$(SCINTILLA_VERSION)\lexers\LexPowerPro.cxx">
+    <ClCompile Include="..\srcscintilla\scintilla$(SCINTILLA_NUMBER)\lexers\LexPowerPro.cxx">
       <Filter>Scintilla\Lexers</Filter>
     </ClCompile>
-    <ClCompile Include="..\srcscintilla\scintilla$(SCINTILLA_VERSION)\lexers\LexPowerShell.cxx">
+    <ClCompile Include="..\srcscintilla\scintilla$(SCINTILLA_NUMBER)\lexers\LexPowerShell.cxx">
       <Filter>Scintilla\Lexers</Filter>
     </ClCompile>
-    <ClCompile Include="..\srcscintilla\scintilla$(SCINTILLA_VERSION)\lexers\LexProgress.cxx">
+    <ClCompile Include="..\srcscintilla\scintilla$(SCINTILLA_NUMBER)\lexers\LexProgress.cxx">
       <Filter>Scintilla\Lexers</Filter>
     </ClCompile>
-    <ClCompile Include="..\srcscintilla\scintilla$(SCINTILLA_VERSION)\lexers\LexPS.cxx">
+    <ClCompile Include="..\srcscintilla\scintilla$(SCINTILLA_NUMBER)\lexers\LexPS.cxx">
       <Filter>Scintilla\Lexers</Filter>
     </ClCompile>
-    <ClCompile Include="..\srcscintilla\scintilla$(SCINTILLA_VERSION)\lexers\LexPython.cxx">
+    <ClCompile Include="..\srcscintilla\scintilla$(SCINTILLA_NUMBER)\lexers\LexPython.cxx">
       <Filter>Scintilla\Lexers</Filter>
     </ClCompile>
-    <ClCompile Include="..\srcscintilla\scintilla$(SCINTILLA_VERSION)\lexers\LexR.cxx">
+    <ClCompile Include="..\srcscintilla\scintilla$(SCINTILLA_NUMBER)\lexers\LexR.cxx">
       <Filter>Scintilla\Lexers</Filter>
     </ClCompile>
-    <ClCompile Include="..\srcscintilla\scintilla$(SCINTILLA_VERSION)\lexers\LexRebol.cxx">
+    <ClCompile Include="..\srcscintilla\scintilla$(SCINTILLA_NUMBER)\lexers\LexRebol.cxx">
       <Filter>Scintilla\Lexers</Filter>
     </ClCompile>
-    <ClCompile Include="..\srcscintilla\scintilla$(SCINTILLA_VERSION)\lexers\LexRuby.cxx">
+    <ClCompile Include="..\srcscintilla\scintilla$(SCINTILLA_NUMBER)\lexers\LexRuby.cxx">
       <Filter>Scintilla\Lexers</Filter>
     </ClCompile>
-    <ClCompile Include="..\srcscintilla\scintilla$(SCINTILLA_VERSION)\lexers\LexRust.cxx">
+    <ClCompile Include="..\srcscintilla\scintilla$(SCINTILLA_NUMBER)\lexers\LexRust.cxx">
       <Filter>Scintilla\Lexers</Filter>
     </ClCompile>
-    <ClCompile Include="..\srcscintilla\scintilla$(SCINTILLA_VERSION)\lexers\LexScriptol.cxx">
+    <ClCompile Include="..\srcscintilla\scintilla$(SCINTILLA_NUMBER)\lexers\LexScriptol.cxx">
       <Filter>Scintilla\Lexers</Filter>
     </ClCompile>
-    <ClCompile Include="..\srcscintilla\scintilla$(SCINTILLA_VERSION)\lexers\LexSmalltalk.cxx">
+    <ClCompile Include="..\srcscintilla\scintilla$(SCINTILLA_NUMBER)\lexers\LexSmalltalk.cxx">
       <Filter>Scintilla\Lexers</Filter>
     </ClCompile>
-    <ClCompile Include="..\srcscintilla\scintilla$(SCINTILLA_VERSION)\lexers\LexSML.cxx">
+    <ClCompile Include="..\srcscintilla\scintilla$(SCINTILLA_NUMBER)\lexers\LexSML.cxx">
       <Filter>Scintilla\Lexers</Filter>
     </ClCompile>
-    <ClCompile Include="..\srcscintilla\scintilla$(SCINTILLA_VERSION)\lexers\LexSorcus.cxx">
+    <ClCompile Include="..\srcscintilla\scintilla$(SCINTILLA_NUMBER)\lexers\LexSorcus.cxx">
       <Filter>Scintilla\Lexers</Filter>
     </ClCompile>
-    <ClCompile Include="..\srcscintilla\scintilla$(SCINTILLA_VERSION)\lexers\LexSpecman.cxx">
+    <ClCompile Include="..\srcscintilla\scintilla$(SCINTILLA_NUMBER)\lexers\LexSpecman.cxx">
       <Filter>Scintilla\Lexers</Filter>
     </ClCompile>
-    <ClCompile Include="..\srcscintilla\scintilla$(SCINTILLA_VERSION)\lexers\LexSpice.cxx">
+    <ClCompile Include="..\srcscintilla\scintilla$(SCINTILLA_NUMBER)\lexers\LexSpice.cxx">
       <Filter>Scintilla\Lexers</Filter>
     </ClCompile>
-    <ClCompile Include="..\srcscintilla\scintilla$(SCINTILLA_VERSION)\lexers\LexSQL.cxx">
+    <ClCompile Include="..\srcscintilla\scintilla$(SCINTILLA_NUMBER)\lexers\LexSQL.cxx">
       <Filter>Scintilla\Lexers</Filter>
     </ClCompile>
-    <ClCompile Include="..\srcscintilla\scintilla$(SCINTILLA_VERSION)\lexers\LexSTTXT.cxx">
+    <ClCompile Include="..\srcscintilla\scintilla$(SCINTILLA_NUMBER)\lexers\LexSTTXT.cxx">
       <Filter>Scintilla\Lexers</Filter>
     </ClCompile>
-    <ClCompile Include="..\srcscintilla\scintilla$(SCINTILLA_VERSION)\lexers\LexTACL.cxx">
+    <ClCompile Include="..\srcscintilla\scintilla$(SCINTILLA_NUMBER)\lexers\LexTACL.cxx">
       <Filter>Scintilla\Lexers</Filter>
     </ClCompile>
-    <ClCompile Include="..\srcscintilla\scintilla$(SCINTILLA_VERSION)\lexers\LexTADS3.cxx">
+    <ClCompile Include="..\srcscintilla\scintilla$(SCINTILLA_NUMBER)\lexers\LexTADS3.cxx">
       <Filter>Scintilla\Lexers</Filter>
     </ClCompile>
-    <ClCompile Include="..\srcscintilla\scintilla$(SCINTILLA_VERSION)\lexers\LexTAL.cxx">
+    <ClCompile Include="..\srcscintilla\scintilla$(SCINTILLA_NUMBER)\lexers\LexTAL.cxx">
       <Filter>Scintilla\Lexers</Filter>
     </ClCompile>
-    <ClCompile Include="..\srcscintilla\scintilla$(SCINTILLA_VERSION)\lexers\LexTCL.cxx">
+    <ClCompile Include="..\srcscintilla\scintilla$(SCINTILLA_NUMBER)\lexers\LexTCL.cxx">
       <Filter>Scintilla\Lexers</Filter>
     </ClCompile>
-    <ClCompile Include="..\srcscintilla\scintilla$(SCINTILLA_VERSION)\lexers\LexTCMD.cxx">
+    <ClCompile Include="..\srcscintilla\scintilla$(SCINTILLA_NUMBER)\lexers\LexTCMD.cxx">
       <Filter>Scintilla\Lexers</Filter>
     </ClCompile>
-    <ClCompile Include="..\srcscintilla\scintilla$(SCINTILLA_VERSION)\lexers\LexTeX.cxx">
+    <ClCompile Include="..\srcscintilla\scintilla$(SCINTILLA_NUMBER)\lexers\LexTeX.cxx">
       <Filter>Scintilla\Lexers</Filter>
     </ClCompile>
-    <ClCompile Include="..\srcscintilla\scintilla$(SCINTILLA_VERSION)\lexers\LexTxt2tags.cxx">
+    <ClCompile Include="..\srcscintilla\scintilla$(SCINTILLA_NUMBER)\lexers\LexTxt2tags.cxx">
       <Filter>Scintilla\Lexers</Filter>
     </ClCompile>
-    <ClCompile Include="..\srcscintilla\scintilla$(SCINTILLA_VERSION)\lexers\LexVB.cxx">
+    <ClCompile Include="..\srcscintilla\scintilla$(SCINTILLA_NUMBER)\lexers\LexVB.cxx">
       <Filter>Scintilla\Lexers</Filter>
     </ClCompile>
-    <ClCompile Include="..\srcscintilla\scintilla$(SCINTILLA_VERSION)\lexers\LexVerilog.cxx">
+    <ClCompile Include="..\srcscintilla\scintilla$(SCINTILLA_NUMBER)\lexers\LexVerilog.cxx">
       <Filter>Scintilla\Lexers</Filter>
     </ClCompile>
-    <ClCompile Include="..\srcscintilla\scintilla$(SCINTILLA_VERSION)\lexers\LexVHDL.cxx">
+    <ClCompile Include="..\srcscintilla\scintilla$(SCINTILLA_NUMBER)\lexers\LexVHDL.cxx">
       <Filter>Scintilla\Lexers</Filter>
     </ClCompile>
-    <ClCompile Include="..\srcscintilla\scintilla$(SCINTILLA_VERSION)\lexers\LexVisualProlog.cxx">
+    <ClCompile Include="..\srcscintilla\scintilla$(SCINTILLA_NUMBER)\lexers\LexVisualProlog.cxx">
       <Filter>Scintilla\Lexers</Filter>
     </ClCompile>
-    <ClCompile Include="..\srcscintilla\scintilla$(SCINTILLA_VERSION)\lexers\LexYAML.cxx">
+    <ClCompile Include="..\srcscintilla\scintilla$(SCINTILLA_NUMBER)\lexers\LexYAML.cxx">
       <Filter>Scintilla\Lexers</Filter>
     </ClCompile>
-    <ClCompile Include="..\srcscintilla\scintilla$(SCINTILLA_VERSION)\lexers\LexDMIS.cxx">
+    <ClCompile Include="..\srcscintilla\scintilla$(SCINTILLA_NUMBER)\lexers\LexDMIS.cxx">
       <Filter>Scintilla\Lexers</Filter>
     </ClCompile>
-    <ClCompile Include="..\srcscintilla\scintilla$(SCINTILLA_VERSION)\lexers\LexHex.cxx">
+    <ClCompile Include="..\srcscintilla\scintilla$(SCINTILLA_NUMBER)\lexers\LexHex.cxx">
       <Filter>Scintilla\Lexers</Filter>
     </ClCompile>
-    <ClCompile Include="..\srcscintilla\scintilla$(SCINTILLA_VERSION)\lexers\LexRegistry.cxx">
+    <ClCompile Include="..\srcscintilla\scintilla$(SCINTILLA_NUMBER)\lexers\LexRegistry.cxx">
       <Filter>Scintilla\Lexers</Filter>
     </ClCompile>
-    <ClCompile Include="..\srcscintilla\scintilla$(SCINTILLA_VERSION)\lexers\LexBibTeX.cxx">
+    <ClCompile Include="..\srcscintilla\scintilla$(SCINTILLA_NUMBER)\lexers\LexBibTeX.cxx">
       <Filter>Scintilla\Lexers</Filter>
     </ClCompile>
-    <ClCompile Include="..\srcscintilla\scintilla$(SCINTILLA_VERSION)\src\EditView.cxx">
+    <ClCompile Include="..\srcscintilla\scintilla$(SCINTILLA_NUMBER)\src\EditView.cxx">
       <Filter>Scintilla</Filter>
     </ClCompile>
-    <ClCompile Include="..\srcscintilla\scintilla$(SCINTILLA_VERSION)\src\MarginView.cxx">
+    <ClCompile Include="..\srcscintilla\scintilla$(SCINTILLA_NUMBER)\src\MarginView.cxx">
       <Filter>Scintilla</Filter>
     </ClCompile>
-    <ClCompile Include="..\srcscintilla\scintilla$(SCINTILLA_VERSION)\src\EditModel.cxx">
+    <ClCompile Include="..\srcscintilla\scintilla$(SCINTILLA_NUMBER)\src\EditModel.cxx">
       <Filter>Scintilla</Filter>
     </ClCompile>
-    <ClCompile Include="..\srcscintilla\scintilla$(SCINTILLA_VERSION)\lexers\LexProps.cxx">
+    <ClCompile Include="..\srcscintilla\scintilla$(SCINTILLA_NUMBER)\lexers\LexProps.cxx">
       <Filter>Scintilla\Lexers</Filter>
     </ClCompile>
-    <ClCompile Include="..\srcscintilla\scintilla$(SCINTILLA_VERSION)\lexers\LexBatch.cxx">
+    <ClCompile Include="..\srcscintilla\scintilla$(SCINTILLA_NUMBER)\lexers\LexBatch.cxx">
       <Filter>Scintilla\Lexers</Filter>
     </ClCompile>
-    <ClCompile Include="..\srcscintilla\scintilla$(SCINTILLA_VERSION)\lexers\LexDiff.cxx">
+    <ClCompile Include="..\srcscintilla\scintilla$(SCINTILLA_NUMBER)\lexers\LexDiff.cxx">
       <Filter>Scintilla\Lexers</Filter>
     </ClCompile>
-    <ClCompile Include="..\srcscintilla\scintilla$(SCINTILLA_VERSION)\lexers\LexErrorList.cxx">
+    <ClCompile Include="..\srcscintilla\scintilla$(SCINTILLA_NUMBER)\lexers\LexErrorList.cxx">
       <Filter>Scintilla\Lexers</Filter>
     </ClCompile>
-    <ClCompile Include="..\srcscintilla\scintilla$(SCINTILLA_VERSION)\lexers\LexMake.cxx">
+    <ClCompile Include="..\srcscintilla\scintilla$(SCINTILLA_NUMBER)\lexers\LexMake.cxx">
       <Filter>Scintilla\Lexers</Filter>
     </ClCompile>
-    <ClCompile Include="..\srcscintilla\scintilla$(SCINTILLA_VERSION)\lexers\LexNull.cxx">
+    <ClCompile Include="..\srcscintilla\scintilla$(SCINTILLA_NUMBER)\lexers\LexNull.cxx">
       <Filter>Scintilla\Lexers</Filter>
     </ClCompile>
-    <ClCompile Include="..\srcscintilla\scintilla$(SCINTILLA_VERSION)\lexlib\Accessor.cxx">
+    <ClCompile Include="..\srcscintilla\scintilla$(SCINTILLA_NUMBER)\lexlib\Accessor.cxx">
       <Filter>Scintilla\lexlib</Filter>
     </ClCompile>
-    <ClCompile Include="..\srcscintilla\scintilla$(SCINTILLA_VERSION)\lexlib\CharacterCategory.cxx">
+    <ClCompile Include="..\srcscintilla\scintilla$(SCINTILLA_NUMBER)\lexlib\CharacterCategory.cxx">
       <Filter>Scintilla\lexlib</Filter>
     </ClCompile>
-    <ClCompile Include="..\srcscintilla\scintilla$(SCINTILLA_VERSION)\lexlib\CharacterSet.cxx">
+    <ClCompile Include="..\srcscintilla\scintilla$(SCINTILLA_NUMBER)\lexlib\CharacterSet.cxx">
       <Filter>Scintilla\lexlib</Filter>
     </ClCompile>
-    <ClCompile Include="..\srcscintilla\scintilla$(SCINTILLA_VERSION)\lexlib\WordList.cxx">
+    <ClCompile Include="..\srcscintilla\scintilla$(SCINTILLA_NUMBER)\lexlib\WordList.cxx">
       <Filter>Scintilla\lexlib</Filter>
     </ClCompile>
-    <ClCompile Include="..\srcscintilla\scintilla$(SCINTILLA_VERSION)\lexlib\StyleContext.cxx">
+    <ClCompile Include="..\srcscintilla\scintilla$(SCINTILLA_NUMBER)\lexlib\StyleContext.cxx">
       <Filter>Scintilla\lexlib</Filter>
     </ClCompile>
-    <ClCompile Include="..\srcscintilla\scintilla$(SCINTILLA_VERSION)\lexlib\LexerBase.cxx">
+    <ClCompile Include="..\srcscintilla\scintilla$(SCINTILLA_NUMBER)\lexlib\LexerBase.cxx">
       <Filter>Scintilla\lexlib</Filter>
     </ClCompile>
-    <ClCompile Include="..\srcscintilla\scintilla$(SCINTILLA_VERSION)\lexlib\LexerModule.cxx">
+    <ClCompile Include="..\srcscintilla\scintilla$(SCINTILLA_NUMBER)\lexlib\LexerModule.cxx">
       <Filter>Scintilla\lexlib</Filter>
     </ClCompile>
-    <ClCompile Include="..\srcscintilla\scintilla$(SCINTILLA_VERSION)\lexlib\LexerNoExceptions.cxx">
+    <ClCompile Include="..\srcscintilla\scintilla$(SCINTILLA_NUMBER)\lexlib\LexerNoExceptions.cxx">
       <Filter>Scintilla\lexlib</Filter>
     </ClCompile>
-    <ClCompile Include="..\srcscintilla\scintilla$(SCINTILLA_VERSION)\lexlib\LexerSimple.cxx">
+    <ClCompile Include="..\srcscintilla\scintilla$(SCINTILLA_NUMBER)\lexlib\LexerSimple.cxx">
       <Filter>Scintilla\lexlib</Filter>
     </ClCompile>
-    <ClCompile Include="..\srcscintilla\scintilla$(SCINTILLA_VERSION)\lexlib\PropSetSimple.cxx">
+    <ClCompile Include="..\srcscintilla\scintilla$(SCINTILLA_NUMBER)\lexlib\PropSetSimple.cxx">
       <Filter>Scintilla\lexlib</Filter>
     </ClCompile>
-    <ClCompile Include="..\srcscintilla\scintilla$(SCINTILLA_VERSION)\lexers\LexErlang.cxx">
+    <ClCompile Include="..\srcscintilla\scintilla$(SCINTILLA_NUMBER)\lexers\LexErlang.cxx">
       <Filter>Scintilla\Lexers</Filter>
     </ClCompile>
-    <ClCompile Include="..\srcscintilla\scintilla$(SCINTILLA_VERSION)\lexers\LexJSON.cxx">
+    <ClCompile Include="..\srcscintilla\scintilla$(SCINTILLA_NUMBER)\lexers\LexJSON.cxx">
       <Filter>Scintilla\Lexers</Filter>
     </ClCompile>
     <ClCompile Include="..\srcscintilla\iup_scintilladlg.c" />
     <ClCompile Include="..\srcscintilla\iup_scintilla.c" />
     <ClCompile Include="..\srcscintilla\iupsci_print.c" />
     <ClCompile Include="..\srcscintilla\iupsci_indicator.c" />
-    <ClCompile Include="..\srcscintilla\scintilla$(SCINTILLA_VERSION)\lexers\LexLed.cxx">
+    <ClCompile Include="..\srcscintilla\scintilla$(SCINTILLA_NUMBER)\lexers\LexLed.cxx">
       <Filter>Scintilla\Lexers</Filter>
     </ClCompile>
-    <ClCompile Include="..\srcscintilla\scintilla$(SCINTILLA_VERSION)\lexers\LexEDIFACT.cxx" />
-    <ClCompile Include="..\srcscintilla\scintilla$(SCINTILLA_VERSION)\lexers\LexIndent.cxx" />
+    <ClCompile Include="..\srcscintilla\scintilla$(SCINTILLA_NUMBER)\lexers\LexEDIFACT.cxx" />
+    <ClCompile Include="..\srcscintilla\scintilla$(SCINTILLA_NUMBER)\lexers\LexIndent.cxx" />
     <ClCompile Include="..\srcscintilla\scintilla3112\src\DBCS.cxx">
       <Filter>Scintilla-3.11</Filter>
     </ClCompile>
@@ -489,175 +489,175 @@
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
-    <ClInclude Include="..\srcscintilla\scintilla$(SCINTILLA_VERSION)\src\Indicator.h">
+    <ClInclude Include="..\srcscintilla\scintilla$(SCINTILLA_NUMBER)\src\Indicator.h">
       <Filter>Scintilla</Filter>
     </ClInclude>
-    <ClInclude Include="..\srcscintilla\scintilla$(SCINTILLA_VERSION)\src\AutoComplete.h">
+    <ClInclude Include="..\srcscintilla\scintilla$(SCINTILLA_NUMBER)\src\AutoComplete.h">
       <Filter>Scintilla</Filter>
     </ClInclude>
-    <ClInclude Include="..\srcscintilla\scintilla$(SCINTILLA_VERSION)\src\CallTip.h">
+    <ClInclude Include="..\srcscintilla\scintilla$(SCINTILLA_NUMBER)\src\CallTip.h">
       <Filter>Scintilla</Filter>
     </ClInclude>
-    <ClInclude Include="..\srcscintilla\scintilla$(SCINTILLA_VERSION)\src\Catalogue.h">
+    <ClInclude Include="..\srcscintilla\scintilla$(SCINTILLA_NUMBER)\src\Catalogue.h">
       <Filter>Scintilla</Filter>
     </ClInclude>
-    <ClInclude Include="..\srcscintilla\scintilla$(SCINTILLA_VERSION)\src\CellBuffer.h">
+    <ClInclude Include="..\srcscintilla\scintilla$(SCINTILLA_NUMBER)\src\CellBuffer.h">
       <Filter>Scintilla</Filter>
     </ClInclude>
-    <ClInclude Include="..\srcscintilla\scintilla$(SCINTILLA_VERSION)\src\CharClassify.h">
+    <ClInclude Include="..\srcscintilla\scintilla$(SCINTILLA_NUMBER)\src\CharClassify.h">
       <Filter>Scintilla</Filter>
     </ClInclude>
-    <ClInclude Include="..\srcscintilla\scintilla$(SCINTILLA_VERSION)\src\ContractionState.h">
+    <ClInclude Include="..\srcscintilla\scintilla$(SCINTILLA_NUMBER)\src\ContractionState.h">
       <Filter>Scintilla</Filter>
     </ClInclude>
-    <ClInclude Include="..\srcscintilla\scintilla$(SCINTILLA_VERSION)\src\Decoration.h">
+    <ClInclude Include="..\srcscintilla\scintilla$(SCINTILLA_NUMBER)\src\Decoration.h">
       <Filter>Scintilla</Filter>
     </ClInclude>
-    <ClInclude Include="..\srcscintilla\scintilla$(SCINTILLA_VERSION)\src\Document.h">
+    <ClInclude Include="..\srcscintilla\scintilla$(SCINTILLA_NUMBER)\src\Document.h">
       <Filter>Scintilla</Filter>
     </ClInclude>
-    <ClInclude Include="..\srcscintilla\scintilla$(SCINTILLA_VERSION)\src\Editor.h">
+    <ClInclude Include="..\srcscintilla\scintilla$(SCINTILLA_NUMBER)\src\Editor.h">
       <Filter>Scintilla</Filter>
     </ClInclude>
-    <ClInclude Include="..\srcscintilla\scintilla$(SCINTILLA_VERSION)\src\ExternalLexer.h">
+    <ClInclude Include="..\srcscintilla\scintilla$(SCINTILLA_NUMBER)\src\ExternalLexer.h">
       <Filter>Scintilla</Filter>
     </ClInclude>
-    <ClInclude Include="..\srcscintilla\scintilla$(SCINTILLA_VERSION)\src\FontQuality.h">
+    <ClInclude Include="..\srcscintilla\scintilla$(SCINTILLA_NUMBER)\src\FontQuality.h">
       <Filter>Scintilla</Filter>
     </ClInclude>
-    <ClInclude Include="..\srcscintilla\scintilla$(SCINTILLA_VERSION)\src\XPM.h">
+    <ClInclude Include="..\srcscintilla\scintilla$(SCINTILLA_NUMBER)\src\XPM.h">
       <Filter>Scintilla</Filter>
     </ClInclude>
-    <ClInclude Include="..\srcscintilla\scintilla$(SCINTILLA_VERSION)\src\KeyMap.h">
+    <ClInclude Include="..\srcscintilla\scintilla$(SCINTILLA_NUMBER)\src\KeyMap.h">
       <Filter>Scintilla</Filter>
     </ClInclude>
-    <ClInclude Include="..\srcscintilla\scintilla$(SCINTILLA_VERSION)\src\LineMarker.h">
+    <ClInclude Include="..\srcscintilla\scintilla$(SCINTILLA_NUMBER)\src\LineMarker.h">
       <Filter>Scintilla</Filter>
     </ClInclude>
-    <ClInclude Include="..\srcscintilla\scintilla$(SCINTILLA_VERSION)\src\Partitioning.h">
+    <ClInclude Include="..\srcscintilla\scintilla$(SCINTILLA_NUMBER)\src\Partitioning.h">
       <Filter>Scintilla</Filter>
     </ClInclude>
-    <ClInclude Include="..\srcscintilla\scintilla$(SCINTILLA_VERSION)\src\PerLine.h">
+    <ClInclude Include="..\srcscintilla\scintilla$(SCINTILLA_NUMBER)\src\PerLine.h">
       <Filter>Scintilla</Filter>
     </ClInclude>
-    <ClInclude Include="..\srcscintilla\scintilla$(SCINTILLA_VERSION)\src\PositionCache.h">
+    <ClInclude Include="..\srcscintilla\scintilla$(SCINTILLA_NUMBER)\src\PositionCache.h">
       <Filter>Scintilla</Filter>
     </ClInclude>
-    <ClInclude Include="..\srcscintilla\scintilla$(SCINTILLA_VERSION)\src\RESearch.h">
+    <ClInclude Include="..\srcscintilla\scintilla$(SCINTILLA_NUMBER)\src\RESearch.h">
       <Filter>Scintilla</Filter>
     </ClInclude>
-    <ClInclude Include="..\srcscintilla\scintilla$(SCINTILLA_VERSION)\src\RunStyles.h">
+    <ClInclude Include="..\srcscintilla\scintilla$(SCINTILLA_NUMBER)\src\RunStyles.h">
       <Filter>Scintilla</Filter>
     </ClInclude>
-    <ClInclude Include="..\srcscintilla\scintilla$(SCINTILLA_VERSION)\src\ScintillaBase.h">
+    <ClInclude Include="..\srcscintilla\scintilla$(SCINTILLA_NUMBER)\src\ScintillaBase.h">
       <Filter>Scintilla</Filter>
     </ClInclude>
-    <ClInclude Include="..\srcscintilla\scintilla$(SCINTILLA_VERSION)\src\Selection.h">
+    <ClInclude Include="..\srcscintilla\scintilla$(SCINTILLA_NUMBER)\src\Selection.h">
       <Filter>Scintilla</Filter>
     </ClInclude>
-    <ClInclude Include="..\srcscintilla\scintilla$(SCINTILLA_VERSION)\src\SplitVector.h">
+    <ClInclude Include="..\srcscintilla\scintilla$(SCINTILLA_NUMBER)\src\SplitVector.h">
       <Filter>Scintilla</Filter>
     </ClInclude>
-    <ClInclude Include="..\srcscintilla\scintilla$(SCINTILLA_VERSION)\src\Style.h">
+    <ClInclude Include="..\srcscintilla\scintilla$(SCINTILLA_NUMBER)\src\Style.h">
       <Filter>Scintilla</Filter>
     </ClInclude>
-    <ClInclude Include="..\srcscintilla\scintilla$(SCINTILLA_VERSION)\src\SVector.h">
+    <ClInclude Include="..\srcscintilla\scintilla$(SCINTILLA_NUMBER)\src\SVector.h">
       <Filter>Scintilla</Filter>
     </ClInclude>
-    <ClInclude Include="..\srcscintilla\scintilla$(SCINTILLA_VERSION)\src\UniConversion.h">
+    <ClInclude Include="..\srcscintilla\scintilla$(SCINTILLA_NUMBER)\src\UniConversion.h">
       <Filter>Scintilla</Filter>
     </ClInclude>
-    <ClInclude Include="..\srcscintilla\scintilla$(SCINTILLA_VERSION)\src\ViewStyle.h">
+    <ClInclude Include="..\srcscintilla\scintilla$(SCINTILLA_NUMBER)\src\ViewStyle.h">
       <Filter>Scintilla</Filter>
     </ClInclude>
-    <ClInclude Include="..\srcscintilla\scintilla$(SCINTILLA_VERSION)\iupsci.h">
+    <ClInclude Include="..\srcscintilla\scintilla$(SCINTILLA_NUMBER)\iupsci.h">
       <Filter>inc</Filter>
     </ClInclude>
     <ClInclude Include="..\include\iup_scintilla.h">
       <Filter>include</Filter>
     </ClInclude>
-    <ClInclude Include="..\srcscintilla\scintilla$(SCINTILLA_VERSION)\src\UnicodeFromUTF8.h">
+    <ClInclude Include="..\srcscintilla\scintilla$(SCINTILLA_NUMBER)\src\UnicodeFromUTF8.h">
       <Filter>Scintilla</Filter>
     </ClInclude>
-    <ClInclude Include="..\srcscintilla\scintilla$(SCINTILLA_VERSION)\src\CaseConvert.h">
+    <ClInclude Include="..\srcscintilla\scintilla$(SCINTILLA_NUMBER)\src\CaseConvert.h">
       <Filter>Scintilla</Filter>
     </ClInclude>
-    <ClInclude Include="..\srcscintilla\scintilla$(SCINTILLA_VERSION)\src\CaseFolder.h">
+    <ClInclude Include="..\srcscintilla\scintilla$(SCINTILLA_NUMBER)\src\CaseFolder.h">
       <Filter>Scintilla</Filter>
     </ClInclude>
-    <ClInclude Include="..\srcscintilla\scintilla$(SCINTILLA_VERSION)\src\EditModel.h">
+    <ClInclude Include="..\srcscintilla\scintilla$(SCINTILLA_NUMBER)\src\EditModel.h">
       <Filter>Scintilla</Filter>
     </ClInclude>
-    <ClInclude Include="..\srcscintilla\scintilla$(SCINTILLA_VERSION)\src\EditView.h">
+    <ClInclude Include="..\srcscintilla\scintilla$(SCINTILLA_NUMBER)\src\EditView.h">
       <Filter>Scintilla</Filter>
     </ClInclude>
-    <ClInclude Include="..\srcscintilla\scintilla$(SCINTILLA_VERSION)\src\MarginView.h">
+    <ClInclude Include="..\srcscintilla\scintilla$(SCINTILLA_NUMBER)\src\MarginView.h">
       <Filter>Scintilla</Filter>
     </ClInclude>
-    <ClInclude Include="..\srcscintilla\scintilla$(SCINTILLA_VERSION)\include\Scintilla.h">
+    <ClInclude Include="..\srcscintilla\scintilla$(SCINTILLA_NUMBER)\include\Scintilla.h">
       <Filter>Scintilla\include</Filter>
     </ClInclude>
-    <ClInclude Include="..\srcscintilla\scintilla$(SCINTILLA_VERSION)\include\ScintillaWidget.h">
+    <ClInclude Include="..\srcscintilla\scintilla$(SCINTILLA_NUMBER)\include\ScintillaWidget.h">
       <Filter>Scintilla\include</Filter>
     </ClInclude>
-    <ClInclude Include="..\srcscintilla\scintilla$(SCINTILLA_VERSION)\include\ILexer.h">
+    <ClInclude Include="..\srcscintilla\scintilla$(SCINTILLA_NUMBER)\include\ILexer.h">
       <Filter>Scintilla\include</Filter>
     </ClInclude>
-    <ClInclude Include="..\srcscintilla\scintilla$(SCINTILLA_VERSION)\include\Platform.h">
+    <ClInclude Include="..\srcscintilla\scintilla$(SCINTILLA_NUMBER)\include\Platform.h">
       <Filter>Scintilla\include</Filter>
     </ClInclude>
-    <ClInclude Include="..\srcscintilla\scintilla$(SCINTILLA_VERSION)\include\Sci_Position.h">
+    <ClInclude Include="..\srcscintilla\scintilla$(SCINTILLA_NUMBER)\include\Sci_Position.h">
       <Filter>Scintilla\include</Filter>
     </ClInclude>
-    <ClInclude Include="..\srcscintilla\scintilla$(SCINTILLA_VERSION)\include\SciLexer.h">
+    <ClInclude Include="..\srcscintilla\scintilla$(SCINTILLA_NUMBER)\include\SciLexer.h">
       <Filter>Scintilla\include</Filter>
     </ClInclude>
-    <ClInclude Include="..\srcscintilla\scintilla$(SCINTILLA_VERSION)\lexlib\Accessor.h">
+    <ClInclude Include="..\srcscintilla\scintilla$(SCINTILLA_NUMBER)\lexlib\Accessor.h">
       <Filter>Scintilla\lexlib</Filter>
     </ClInclude>
-    <ClInclude Include="..\srcscintilla\scintilla$(SCINTILLA_VERSION)\lexlib\CharacterCategory.h">
+    <ClInclude Include="..\srcscintilla\scintilla$(SCINTILLA_NUMBER)\lexlib\CharacterCategory.h">
       <Filter>Scintilla\lexlib</Filter>
     </ClInclude>
-    <ClInclude Include="..\srcscintilla\scintilla$(SCINTILLA_VERSION)\lexlib\CharacterSet.h">
+    <ClInclude Include="..\srcscintilla\scintilla$(SCINTILLA_NUMBER)\lexlib\CharacterSet.h">
       <Filter>Scintilla\lexlib</Filter>
     </ClInclude>
-    <ClInclude Include="..\srcscintilla\scintilla$(SCINTILLA_VERSION)\lexlib\WordList.h">
+    <ClInclude Include="..\srcscintilla\scintilla$(SCINTILLA_NUMBER)\lexlib\WordList.h">
       <Filter>Scintilla\lexlib</Filter>
     </ClInclude>
-    <ClInclude Include="..\srcscintilla\scintilla$(SCINTILLA_VERSION)\lexlib\SubStyles.h">
+    <ClInclude Include="..\srcscintilla\scintilla$(SCINTILLA_NUMBER)\lexlib\SubStyles.h">
       <Filter>Scintilla\lexlib</Filter>
     </ClInclude>
-    <ClInclude Include="..\srcscintilla\scintilla$(SCINTILLA_VERSION)\lexlib\StyleContext.h">
+    <ClInclude Include="..\srcscintilla\scintilla$(SCINTILLA_NUMBER)\lexlib\StyleContext.h">
       <Filter>Scintilla\lexlib</Filter>
     </ClInclude>
-    <ClInclude Include="..\srcscintilla\scintilla$(SCINTILLA_VERSION)\lexlib\LexAccessor.h">
+    <ClInclude Include="..\srcscintilla\scintilla$(SCINTILLA_NUMBER)\lexlib\LexAccessor.h">
       <Filter>Scintilla\lexlib</Filter>
     </ClInclude>
-    <ClInclude Include="..\srcscintilla\scintilla$(SCINTILLA_VERSION)\lexlib\LexerBase.h">
+    <ClInclude Include="..\srcscintilla\scintilla$(SCINTILLA_NUMBER)\lexlib\LexerBase.h">
       <Filter>Scintilla\lexlib</Filter>
     </ClInclude>
-    <ClInclude Include="..\srcscintilla\scintilla$(SCINTILLA_VERSION)\lexlib\LexerModule.h">
+    <ClInclude Include="..\srcscintilla\scintilla$(SCINTILLA_NUMBER)\lexlib\LexerModule.h">
       <Filter>Scintilla\lexlib</Filter>
     </ClInclude>
-    <ClInclude Include="..\srcscintilla\scintilla$(SCINTILLA_VERSION)\lexlib\LexerNoExceptions.h">
+    <ClInclude Include="..\srcscintilla\scintilla$(SCINTILLA_NUMBER)\lexlib\LexerNoExceptions.h">
       <Filter>Scintilla\lexlib</Filter>
     </ClInclude>
-    <ClInclude Include="..\srcscintilla\scintilla$(SCINTILLA_VERSION)\lexlib\LexerSimple.h">
+    <ClInclude Include="..\srcscintilla\scintilla$(SCINTILLA_NUMBER)\lexlib\LexerSimple.h">
       <Filter>Scintilla\lexlib</Filter>
     </ClInclude>
-    <ClInclude Include="..\srcscintilla\scintilla$(SCINTILLA_VERSION)\lexlib\OptionSet.h">
+    <ClInclude Include="..\srcscintilla\scintilla$(SCINTILLA_NUMBER)\lexlib\OptionSet.h">
       <Filter>Scintilla\lexlib</Filter>
     </ClInclude>
-    <ClInclude Include="..\srcscintilla\scintilla$(SCINTILLA_VERSION)\lexlib\PropSetSimple.h">
+    <ClInclude Include="..\srcscintilla\scintilla$(SCINTILLA_NUMBER)\lexlib\PropSetSimple.h">
       <Filter>Scintilla\lexlib</Filter>
     </ClInclude>
-    <ClInclude Include="..\srcscintilla\scintilla$(SCINTILLA_VERSION)\lexlib\SparseState.h">
+    <ClInclude Include="..\srcscintilla\scintilla$(SCINTILLA_NUMBER)\lexlib\SparseState.h">
       <Filter>Scintilla\lexlib</Filter>
     </ClInclude>
-    <ClInclude Include="..\srcscintilla\scintilla$(SCINTILLA_VERSION)\lexlib\StringCopy.h">
+    <ClInclude Include="..\srcscintilla\scintilla$(SCINTILLA_NUMBER)\lexlib\StringCopy.h">
       <Filter>Scintilla\lexlib</Filter>
     </ClInclude>
-    <ClInclude Include="..\srcscintilla\scintilla$(SCINTILLA_VERSION)\src\Position.h">
+    <ClInclude Include="..\srcscintilla\scintilla$(SCINTILLA_NUMBER)\src\Position.h">
       <Filter>Scintilla</Filter>
     </ClInclude>
   </ItemGroup>

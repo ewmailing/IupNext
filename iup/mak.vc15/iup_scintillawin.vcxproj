@@ -60,7 +60,7 @@
     <ClCompile>
       <Optimization>Disabled</Optimization>
       <InlineFunctionExpansion>Default</InlineFunctionExpansion>
-      <AdditionalIncludeDirectories>..\src;..\src\win;..\include;..\srcscintilla\scintilla$(SCINTILLA_VERSION)\include;..\srcscintilla\scintilla$(SCINTILLA_VERSION)\lexlib;..\srcscintilla\scintilla$(SCINTILLA_VERSION)\src;..\srcscintilla\scintilla$(SCINTILLA_VERSION)\win32;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <AdditionalIncludeDirectories>..\src;..\src\win;..\include;..\srcscintilla\scintilla$(SCINTILLA_NUMBER)\include;..\srcscintilla\scintilla$(SCINTILLA_NUMBER)\lexlib;..\srcscintilla\scintilla$(SCINTILLA_NUMBER)\src;..\srcscintilla\scintilla$(SCINTILLA_NUMBER)\win32;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
       <PreprocessorDefinitions>WIN32;_DEBUG;_LIB;IUP_ASSERT;_CRT_SECURE_NO_DEPRECATE;_SCL_SECURE_NO_WARNINGS;STATIC_BUILD;SCI_LEXER;UNICODE;SCI_NAMESPACE;%(PreprocessorDefinitions)</PreprocessorDefinitions>
       <MinimalRebuild>false</MinimalRebuild>
       <BasicRuntimeChecks>EnableFastChecks</BasicRuntimeChecks>
@@ -80,7 +80,7 @@
     <ClCompile>
       <Optimization>Disabled</Optimization>
       <InlineFunctionExpansion>Default</InlineFunctionExpansion>
-      <AdditionalIncludeDirectories>..\src;..\src\win;..\include;..\srcscintilla\scintilla$(SCINTILLA_VERSION)\include;..\srcscintilla\scintilla$(SCINTILLA_VERSION)\lexlib;..\srcscintilla\scintilla$(SCINTILLA_VERSION)\src;..\srcscintilla\scintilla$(SCINTILLA_VERSION)\win32;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <AdditionalIncludeDirectories>..\src;..\src\win;..\include;..\srcscintilla\scintilla$(SCINTILLA_NUMBER)\include;..\srcscintilla\scintilla$(SCINTILLA_NUMBER)\lexlib;..\srcscintilla\scintilla$(SCINTILLA_NUMBER)\src;..\srcscintilla\scintilla$(SCINTILLA_NUMBER)\win32;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
       <PreprocessorDefinitions>WIN32;_DEBUG;_LIB;IUP_ASSERT;_CRT_SECURE_NO_DEPRECATE;_SCL_SECURE_NO_WARNINGS;STATIC_BUILD;SCI_LEXER;UNICODE;SCI_NAMESPACE;%(PreprocessorDefinitions)</PreprocessorDefinitions>
       <MinimalRebuild>false</MinimalRebuild>
       <BasicRuntimeChecks>EnableFastChecks</BasicRuntimeChecks>
@@ -101,13 +101,13 @@
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="..\srcscintilla\iup_scintilla_win.c" />
-    <ClCompile Include="..\srcscintilla\scintilla$(SCINTILLA_VERSION)\win32\HanjaDic.cxx" />
-    <ClCompile Include="..\srcscintilla\scintilla$(SCINTILLA_VERSION)\win32\PlatWin.cxx" />
-    <ClCompile Include="..\srcscintilla\scintilla$(SCINTILLA_VERSION)\win32\ScintillaWin.cxx" />
+    <ClCompile Include="..\srcscintilla\scintilla$(SCINTILLA_NUMBER)\win32\HanjaDic.cxx" />
+    <ClCompile Include="..\srcscintilla\scintilla$(SCINTILLA_NUMBER)\win32\PlatWin.cxx" />
+    <ClCompile Include="..\srcscintilla\scintilla$(SCINTILLA_NUMBER)\win32\ScintillaWin.cxx" />
   </ItemGroup>
   <ItemGroup>
-    <ClInclude Include="..\srcscintilla\scintilla$(SCINTILLA_VERSION)\win32\HanjaDic.h" />
-    <ClInclude Include="..\srcscintilla\scintilla$(SCINTILLA_VERSION)\win32\PlatWin.h" />
+    <ClInclude Include="..\srcscintilla\scintilla$(SCINTILLA_NUMBER)\win32\HanjaDic.h" />
+    <ClInclude Include="..\srcscintilla\scintilla$(SCINTILLA_NUMBER)\win32\PlatWin.h" />
   </ItemGroup>
   <ItemGroup>
     <None Include="..\srcscintilla\iup_scintilla.def" />

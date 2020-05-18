@@ -2,6 +2,8 @@ PROJNAME = iup
 LIBNAME = iup_scintilla
 OPT = YES
 
+# Supported only in Windows and GTK
+
 ifdef DBG
   DEFINES += IUP_ASSERT
   ifndef DBG_DIR
@@ -23,8 +25,6 @@ DEFINES += STATIC_BUILD SCI_LEXER SCI_NAMESPACE
 LINKER = $(CPPC)
 LD = $(CPPC)
 
-# Supported only in Windows and GTK
-
 ifeq ($(findstring Win, $(TEC_SYSNAME)), )
   # Force definition if not in Windows
   USE_GTK = Yes
@@ -32,6 +32,30 @@ endif
 
 ifeq ($(findstring Win, $(TEC_SYSNAME)), )
   DEPENDDIR = dep
+  
+  GCC_VERSION := $(shell $(CPPC) -dumpversion)  
+  ifeq ($(shell expr $(GCC_VERSION) '>=' 4.8), 1)
+    HAVE_CPP11 := Yes
+  endif
+else
+  ifneq ($(findstring dll14, $(TEC_UNAME)), )
+    HAVE_CPP11 := Yes
+  endif
+  ifneq ($(findstring dll15, $(TEC_UNAME)), )
+    HAVE_CPP11 := Yes
+  endif
+  ifneq ($(findstring dllw6, $(TEC_UNAME)), )
+    HAVE_CPP11 := Yes
+  endif
+  ifneq ($(findstring vc14, $(TEC_UNAME)), )
+    HAVE_CPP11 := Yes
+  endif
+  ifneq ($(findstring vc15, $(TEC_UNAME)), )
+    HAVE_CPP11 := Yes
+  endif
+  ifneq ($(findstring mingw6, $(TEC_UNAME)), )
+    HAVE_CPP11 := Yes
+  endif
 endif
 
 ifndef GTK_DEFAULT
@@ -44,20 +68,27 @@ endif
 ifdef SCINTILLA_OLD
   # CentOS 5
   SCINTILLA := scintilla353
+  SCINTILLA_VERSION := 3.5.3
 else
-  #
-  # TODO: define SCINTILLA_NEW according to the TEC_UNAME
-  #
+  ifdef HAVE_CPP11
+    SCINTILLA_NEW = Yes
+  endif
+  
   ifdef SCINTILLA_NEW
     # minimum GCC 4.8 (Linux313_64) and MSVC 2015 (vc14)
     # Needs C++ 11 support
     USE_CPP11 = Yes
     
+    # Notice: We are not using Scintilla 4.x because
+    # it uses C++14 features, and requires Microsoft Visual C++ 2017 and GCC 7.
+    
     # TODO: compile scintilla3112 in all CPP11 systems,
     #       if OK then remove scintilla375
+    SCINTILLA3112 = Yes
     
     ifdef SCINTILLA3112
       SCINTILLA := scintilla3112
+      SCINTILLA_VERSION := 3.11.2
       
       ifdef LPEG_LEXER
         DEFINES += LPEG_LEXER
@@ -90,13 +121,16 @@ else
       endif
     else
       SCINTILLA := scintilla375
+      SCINTILLA_VERSION := 3.7.5
     endif
   else
     SCINTILLA := scintilla366
+    SCINTILLA_VERSION := 3.6.6
   endif
 endif
 
 INCLUDES += $(SCINTILLA)/lexlib $(SCINTILLA)/src $(SCINTILLA)/include
+DEFINES += SCINTILLA_VERSION='"$(SCINTILLA_VERSION)"'
 
 ifdef USE_GTK
   CHECK_GTK = Yes
