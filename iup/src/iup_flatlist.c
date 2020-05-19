@@ -174,6 +174,8 @@ static void iFlatListCalcItemMaxSize(Ihandle *ih, iFlatListItem* items, int coun
   *max_w = 0;
   *max_h = 0;
 
+  iupdrvFontGetCharSize(ih, NULL, max_h);
+
   for (i = 0; i < count; i++)
   {
     int item_width, item_height;
