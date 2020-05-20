@@ -101,6 +101,7 @@ static int iFlatScrollBoxFlatScroll_CB(Ihandle *ih)
   Ihandle* child = iFlatScrollBoxGetChild(ih);
 
   /* non interactive updates */
+
   if (child)
   {
     iFlatScrollBoxUpdateChildPos(ih, child);

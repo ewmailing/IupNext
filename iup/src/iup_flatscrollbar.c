@@ -98,7 +98,7 @@ static void iFlatScrollBarNotify(Ihandle *ih, int handler)
 {
   if (handler == SB_NONE)
   {
-    IFn cb = IupGetCallback(ih, "FLATSCROLL_CB");
+    IFn cb = IupGetCallback(ih, "FLATSCROLL_CB");  /* Used only in IupFlatScrollBox */
     if (cb) cb(ih);
   }
   else
@@ -1232,8 +1232,6 @@ IUP_SDK_API void iupFlatScrollBarRelease(Ihandle* ih)
 
 IUP_SDK_API void iupFlatScrollBarRegister(Iclass* ic)
 {
-  iupClassRegisterCallback(ic, "FLATSCROLL_CB", "");
-
   iupClassRegisterGetAttribute(ic, "DX", NULL, &iupCanvasSetDXAttrib, NULL, NULL, NULL);
   iupClassRegisterGetAttribute(ic, "DY", NULL, &iupCanvasSetDYAttrib, NULL, NULL, NULL);
   iupClassRegisterGetAttribute(ic, "POSX", &iupCanvasGetPosXAttrib, &iupCanvasSetPosXAttrib, NULL, NULL, NULL);

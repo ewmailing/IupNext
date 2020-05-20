@@ -830,7 +830,7 @@ static Ihandle *init_tree(void)
   IupSetCallback(tree, "NODEREMOVED_CB", (Icallback)noderemoved_cb);
   IupSetCallback(tree, "TOGGLEVALUE_CB", (Icallback)togglevalue_cb);
   //  IupSetCallback(tree, "TIPS_CB", (Icallback)tips_cb);
-  //IupSetAttribute(tree, "FLATSCROLLBAR", "Yes");
+  IupSetAttribute(tree, "FLATSCROLLBAR", "Yes");
 
   //IupSetAttribute(tree, "FITTOBACKIMAGE", "YES");
 //  IupSetAttribute(tree, "ADDEXPANDED", "NO");

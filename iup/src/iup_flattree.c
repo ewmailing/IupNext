@@ -2298,6 +2298,15 @@ static int iFlatTreeFocus_CB(Ihandle* ih, int focus)
   return IUP_DEFAULT;
 }
 
+static int iFlatTreeScroll_CB(Ihandle* ih, int action, float posx, float posy)
+{
+  (void)action;
+  (void)posx;
+  (void)posy;
+  iupdrvRedrawNow(ih);  /* so FLATSCROLLBAR can also work */
+  return IUP_DEFAULT;
+}
+
 static void iFlatTreeScrollFocusVisible(Ihandle* ih, int direction)
 {
   /* make sure focus node is visible */
@@ -3931,6 +3940,8 @@ static void iFlatTreeDestroyMethod(Ihandle* ih)
     iFlatTreeRemoveNode(ih, ih->data->root_node->first_child, noderemoved_cb);
   }
 
+  iupFlatScrollBarRelease(ih);
+
   iupArrayDestroy(ih->data->node_array);
 
   free(ih->data->root_node);
@@ -3997,6 +4008,7 @@ static int iFlatTreeCreateMethod(Ihandle* ih, void** params)
   IupSetCallback(ih, "LEAVEWINDOW_CB", (Icallback)iFlatTreeLeaveWindow_CB);
   IupSetCallback(ih, "RESIZE_CB", (Icallback)iFlatTreeResize_CB);
   IupSetCallback(ih, "FOCUS_CB", (Icallback)iFlatTreeFocus_CB);
+  IupSetCallback(ih, "SCROLL_CB", (Icallback)iFlatTreeScroll_CB);
   IupSetCallback(ih, "K_CR", (Icallback)iFlatTreeKCr_CB);
   IupSetCallback(ih, "K_UP", (Icallback)iFlatTreeKUp_CB);
   IupSetCallback(ih, "K_sUP", (Icallback)iFlatTreeKUp_CB);

@@ -1703,7 +1703,6 @@ static int iMatrixSetFlatScrollbarAttrib(Ihandle* ih, const char* value)
     {
       IupSetAttribute(ih, "SCROLLBAR", "NO");
       IupSetCallback(ih, "WHEEL_CB", (Icallback)iMatrixWheel_CB);
-      /*    IupSetCallback(ih, "FLATSCROLL_CB", (Icallback)iMatrixFlatScroll_CB);  -- unused */
     }
     return 1;
   }
