@@ -179,7 +179,7 @@ endif
 ifndef NO_SCINTILLA_TEST
   SRC += scintilla.c
   ifneq ($(findstring Win, $(TEC_SYSNAME)), )
-    LIBS += iup_scintilla imm32
+    LIBS += iup_scintilla imm32 msimg32
   else
     SLIB += $(IUP_LIB)/libiup_scintilla.a
     LIBS += atk-1.0

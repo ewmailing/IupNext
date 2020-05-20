@@ -48,7 +48,7 @@ ifdef USE_IM
 endif 
 
 ifneq ($(findstring Win, $(TEC_SYSNAME)), )
-  LIBS += iupimglib iup_scintilla imm32
+  LIBS += iupimglib iup_scintilla imm32 msimg32
 else
   LIBS += atk-1.0
   ifdef USE_STATIC
