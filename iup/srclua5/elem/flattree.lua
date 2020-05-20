@@ -25,7 +25,13 @@ local ctrl = {
 --  extrafuncs = 1,
 }
 
---iup.FLATTREEREFTABLE={}
+ctrl.SetNodeAttributes = iup.TreeSetNodeAttributes
+ctrl.SetAncestorsAttributes = iup.TreeSetAncestorsAttributes
+ctrl.SetDescendantsAttributes = iup.TreeSetDescendantsAttributes
+ctrl.AddNodes = iup.TreeAddNodes
+ctrl.GetId = iup.TreeGetId
+ctrl.GetUserId = iup.TreeGetUserId
+ctrl.SetUserId = iup.TreeSetUserId
 
 function ctrl.createElement(class, param)
   return iup.FlatTree()

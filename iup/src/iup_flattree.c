@@ -347,6 +347,20 @@ static void iFlatTreeInitializeImages(void)
 /********************** Utilities **********************/
 
 
+static int iFlatTreeFindUserDataId(Ihandle* ih, void* userdata)
+{
+  iFlatTreeNode **nodes = iupArrayGetData(ih->data->node_array);
+  int i, count = iupArrayCount(ih->data->node_array);
+
+  for (i = 0; i < count; i++)
+  {
+    if (nodes[i]->userdata == userdata)
+      return i;
+  }
+
+  return -1;
+}
+
 static void iFlatTreeSetNodeDrawFont(Ihandle* ih, iFlatTreeNode *node, const char* font)
 {
   if (node->font)
@@ -4000,6 +4014,7 @@ static int iFlatTreeCreateMethod(Ihandle* ih, void** params)
   ih->data->node_array = iupArrayCreate(10, sizeof(iFlatTreeNode*));
 
   IupSetCallback(ih, "_IUP_XY2POS_CB", (Icallback)iFlatTreeConvertXYToId);
+  IupSetCallback(ih, "_IUPTREE_FIND_USERDATA_CB", (Icallback)iFlatTreeFindUserDataId);
 
   /* internal callbacks */
   IupSetCallback(ih, "ACTION", (Icallback)iFlatTreeRedraw_CB);

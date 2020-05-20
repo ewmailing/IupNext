@@ -24,6 +24,68 @@
 #include "iup_assert.h"
 
 
+
+/************************************************************************************/
+
+/* These utilities must work for IupTree and IupFlatTree */
+
+typedef int (*IFnv)(Ihandle*, void*);
+
+IUP_API int IupTreeGetId(Ihandle* ih, void *userdata)
+{
+  IFnv find_userdata_cb;
+
+  iupASSERT(iupObjectCheck(ih));
+  if (!iupObjectCheck(ih))
+    return -1;
+
+  find_userdata_cb = (IFnv)IupGetCallback(ih, "_IUPTREE_FIND_USERDATA_CB");
+
+  return find_userdata_cb(ih, userdata);
+}
+
+IUP_API int IupTreeSetUserId(Ihandle* ih, int id, void* userdata)
+{
+  int count;
+
+  iupASSERT(iupObjectCheck(ih));
+  if (!iupObjectCheck(ih))
+    return 0;
+
+  count = IupGetInt(ih, "COUNT");
+  if (id >= 0 && id < count)
+  {
+    IupSetAttributeId(ih, "USERDATA", id, (char*)userdata);
+    return 1;
+  }
+
+  return 0;
+}
+
+IUP_API void* IupTreeGetUserId(Ihandle* ih, int id)
+{
+  int count;
+
+  iupASSERT(iupObjectCheck(ih));
+  if (!iupObjectCheck(ih))
+    return NULL;
+
+  count = IupGetInt(ih, "COUNT");
+  if (id >= 0 && id < count)
+    return IupGetAttributeId(ih, "USERDATA", id);
+
+  return NULL;
+}
+
+IUP_API void IupTreeSetAttributeHandle(Ihandle* ih, const char* a, int id, Ihandle* ih_named)
+{
+  IupSetAttributeHandleId(ih, a, id, ih_named);
+}
+
+
+/************************************************************************************/
+
+
 static void iTreeInitializeImages(void)
 {
   Ihandle *image_leaf, *image_blank, *image_paper;  
@@ -263,7 +325,7 @@ static int iTreeFindUserDataId(Ihandle* ih, void* userdata)
   int i;
   for (i = 0; i < ih->data->node_count; i++)
   {
-    if (ih->data->node_cache[i].node_handle == node_handle)
+    if (ih->data->node_cache[i].userdata == userdata)
       return i;
   }
   */
@@ -850,6 +912,8 @@ static int iTreeCreateMethod(Ihandle* ih, void **params)
   IupSetAttribute(ih, "RASTERSIZE", "400x200");
   IupSetAttribute(ih, "EXPAND", "YES");
 
+  IupSetCallback(ih, "_IUPTREE_FIND_USERDATA_CB", (Icallback)iTreeFindUserDataId);
+
   ih->data->add_expanded = 1;
   ih->data->node_cache_max = 20;
   ih->data->node_cache = calloc(ih->data->node_cache_max, sizeof(InodeData));
@@ -959,47 +1023,3 @@ Iclass* iupTreeNewClass(void)
   return ic;
 }
 
-
-/************************************************************************************/
-
-
-IUP_API int IupTreeSetUserId(Ihandle* ih, int id, void* userdata)
-{
-  iupASSERT(iupObjectCheck(ih));
-  if (!iupObjectCheck(ih))
-    return 0;
-
-  if (id >= 0 && id < ih->data->node_count)
-  {
-    ih->data->node_cache[id].userdata = userdata;
-    return 1;
-  }
-
-  return 0;
-}
-
-IUP_API int IupTreeGetId(Ihandle* ih, void *userdata)
-{
-  iupASSERT(iupObjectCheck(ih));
-  if (!iupObjectCheck(ih))
-    return -1;
-
-  return iTreeFindUserDataId(ih, userdata);
-}
-
-IUP_API void* IupTreeGetUserId(Ihandle* ih, int id)
-{
-  iupASSERT(iupObjectCheck(ih));
-  if (!iupObjectCheck(ih))
-    return NULL;
-
-  if (id >= 0 && id < ih->data->node_count)
-    return ih->data->node_cache[id].userdata;
-
-  return NULL;
-}
-
-IUP_API void IupTreeSetAttributeHandle(Ihandle* ih, const char* a, int id, Ihandle* ih_named)
-{
-  IupSetAttributeHandleId(ih, a, id, ih_named);
-}

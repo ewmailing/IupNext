@@ -317,6 +317,7 @@ simple K_ANY callback:</p>
   if the node's id changes later on, the userid will still be associated with the given node. In IupLua, instead of a 
   pointer the same functions are defined for table and userdata. These functions 
 use the <strong>USERDATAid</strong> attribute.</p>
+<p><strong>IupTree</strong> shares the same functions with <strong>IupFlatTree</strong>.</p>
 <hr>
 <pre>int IupTreeSetUserId(Ihandle *<strong>ih</strong>, int <strong>id</strong>, void *<strong>userid</strong>); [in C]
 iup.TreeSetUserId(<strong>ih: </strong>ihandle, <strong>id: </strong>number, <strong>userid: </strong>userdata/table) [in Lua]
