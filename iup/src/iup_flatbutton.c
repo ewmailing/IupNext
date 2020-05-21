@@ -81,8 +81,7 @@ static int iFlatButtonRedraw_CB(Ihandle* ih)
       bgcolor = iupBaseNativeParentGetBgColorAttrib(ih);
   }
 
-    if (ih->data->pressed || (selected && !ih->data->highlighted))
-//  if ((ih->data->pressed && ih->data->highlighted) || (selected && !ih->data->highlighted))
+  if ((ih->data->pressed && ih->data->highlighted) || (selected && !ih->data->highlighted))
   {
     char* presscolor = iupAttribGetStr(ih, "PSCOLOR");
     if (presscolor)
@@ -112,8 +111,7 @@ static int iFlatButtonRedraw_CB(Ihandle* ih)
   {
     char* bordercolor = iupAttribGetStr(ih, "BORDERCOLOR");
 
-    if (ih->data->pressed || (selected && !ih->data->highlighted))
-//    if ((ih->data->pressed && ih->data->highlighted) || (selected && !ih->data->highlighted))
+    if ((ih->data->pressed && ih->data->highlighted) || (selected && !ih->data->highlighted))
     {
       char* presscolor = iupAttribGetStr(ih, "BORDERPSCOLOR");
       if (presscolor)
@@ -132,8 +130,7 @@ static int iFlatButtonRedraw_CB(Ihandle* ih)
   }
 
   /* simulate pressed when selected and has images (but colors and borders are not included) */
-//  image_pressed = ih->data->pressed && ih->data->highlighted;
-  image_pressed = ih->data->pressed;
+  image_pressed = ih->data->pressed && ih->data->highlighted;
   if (selected && !ih->data->pressed && (bgimage || image))
     image_pressed = 1;
 
@@ -239,8 +236,7 @@ static int iFlatButtonButton_CB(Ihandle* ih, int button, int pressed, int x, int
       int selected = iupAttribGetInt(ih, "VALUE");
       Ihandle* last_tg = NULL;
 
-//      if (!pressed && ih->data->highlighted)  /* released inside the button area */
-      if (!pressed)
+      if (!pressed && ih->data->highlighted)  /* released inside the button area */
       {
         if (selected)  /* was ON */
         {
@@ -276,8 +272,7 @@ static int iFlatButtonButton_CB(Ihandle* ih, int button, int pressed, int x, int
       ih->data->pressed = pressed;
       iupdrvRedrawNow(ih);
 
-//      if (!pressed && ih->data->highlighted)  /* released inside the button area */
-      if (!pressed)
+      if (!pressed && ih->data->highlighted)  /* released inside the button area */
       {
         if (last_tg && ih != last_tg)
           iFlatButtonNotify(last_tg, 1);
@@ -291,8 +286,7 @@ static int iFlatButtonButton_CB(Ihandle* ih, int button, int pressed, int x, int
       ih->data->pressed = pressed;
       iupdrvRedrawNow(ih);
 
-//      if (!pressed && ih->data->highlighted)  /* released inside the button area */
-      if (!pressed)
+      if (!pressed && ih->data->highlighted)  /* released inside the button area */
         iFlatButtonNotify(ih, 0);
     }
   }
