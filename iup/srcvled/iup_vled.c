@@ -1977,6 +1977,10 @@ static int item_show_all_img_cb(Ihandle *ih_item)
 
     if (elem->iclass->nativetype == IUP_TYPEIMAGE)
     {
+      /* if stock show only NOT loaded images */
+      if (show_stock && iupAttribGet(elem, "_IUPLED_FILENAME"))
+        continue;
+
       /* if not stock show only loaded images */
       if (!show_stock && !iupAttribGet(elem, "_IUPLED_FILENAME"))
         continue;
