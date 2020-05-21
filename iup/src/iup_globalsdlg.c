@@ -26,102 +26,107 @@ typedef struct _iRegisteredGlobal {
   int readonly;
 } iRegisteredGlobal;
 
-static iRegisteredGlobal attribs[] = { 
-  { "LANGUAGE", 1, 1, 1, 0 }, 
-  { "VERSION", 1, 1, 1, 1 }, 
-  { "COPYRIGHT", 1, 1, 1, 1 }, 
-  { "DRIVER", 1, 1, 1, 1 }, 
-  { "LOCKLOOP", 1, 1, 1, 0 },
-  { "EXITLOOP", 1, 1, 1, 0 }, 
-  { "LASTERROR", 1, 0, 0, 0 }, 
-  { "UTF8MODE", 1, 0, 1, 0 }, 
-  { "UTF8MODE_FILE", 1, 0, 0, 0 }, 
-  { "DEFAULTPRECISION", 1, 1, 1, 0 },
-  { "DEFAULTDECIMALSYMBOL", 1, 1, 1, 0 }, 
-  { "SB_BGCOLOR", 0, 1, 1, 0 }, 
-  { "SHOWMENUIMAGES", 0, 0, 1, 0 }, 
-  { "OVERLAYSCROLLBAR", 0, 0, 1, 0 }, 
-  { "GLOBALMENU", 0, 0, 1, 0 },
-  { "GLOBALLAYOUTDLGKEY", 1, 1, 1, 0 }, 
-  { "GLOBALLAYOUTRESIZEKEY", 1, 1, 1, 0 }, 
-  { "IMAGEAUTOSCALE", 1, 1, 1, 0 }, 
-  { "IMAGESDPI", 1, 1, 1, 0 }, 
-  { "IMAGESTOCKAUTOSCALE", 1, 1, 1, 0 },
-  { "IMAGESTOCKSIZE", 1, 1, 1, 0 }, 
-  { "IUPLUA_THREADED", 1, 1, 1, 0 }, 
-  { "SINGLEINSTANCE", 1, 0, 0, 0 }, 
-  { "CURSORPOS", 1, 1, 1, 0 }, 
-  { "MOUSEBUTTON", 1, 1, 1, 1 },
-  { "SHIFTKEY", 1, 1, 1, 1 }, 
-  { "CONTROLKEY", 1, 1, 1, 1 }, 
-  { "MODKEYSTATE", 1, 1, 1, 1 }, 
-  { "KEYPRESS", 1, 1, 1, 1 }, 
-  { "KEYRELEASE", 1, 1, 1, 1 }, 
-  { "KEY", 1, 1, 1, 1 }, 
-  { "AUTOREPEAT", 0, 1, 0, 0 }, 
-  { "INPUTCALLBACKS", 1, 1, 1, 0 }, 
-  { "SYSTEM", 1, 1, 1, 1 }, 
-  { "SYSTEMVERSION", 1, 1, 1, 1 }, 
-  { "SYSTEMLANGUAGE", 1, 1, 1, 1 },
-  { "SYSTEMLOCALE", 1, 1, 1, 1 }, 
-  { "SCROLLBARSIZE", 1, 1, 1, 1 }, 
-  { "COMCTL32VER6", 1, 0, 0, 1 }, 
-  { "GTKVERSION", 0, 0, 1, 1 }, 
-  { "GTKDEVVERSION", 0, 0, 1, 1 },
-  { "MOTIFVERSION", 0, 1, 0, 1 }, 
-  { "MOTIFNUMBER", 0, 1, 0, 1 }, 
-  { "COMPUTERNAME", 1, 1, 1, 1 }, 
-  { "USERNAME", 1, 1, 1, 1 }, 
-  { "EXEFILENAME", 1, 1, 1, 1 },
-  { "GL_VERSION", 1, 1, 1, 1 }, 
-  { "GL_VENDOR", 1, 1, 1, 1 }, 
-  { "GL_RENDERER", 1, 1, 1, 1 }, 
-  { "XSERVERVENDOR", 0, 1, 1, 1 }, 
-  { "XVENDORRELEASE", 0, 1, 1, 1 },
-  { "FULLSIZE", 1, 1, 1, 1 }, 
-  { "SCREENSIZE", 1, 1, 1, 1 }, 
-  { "SCREENDEPTH", 1, 1, 1, 1 }, 
-  { "SCREENDPI", 1, 1, 1, 1 }, 
-  { "TRUECOLORCANVAS", 1, 1, 1, 1 },
-  { "DWM_COMPOSITION", 1, 0, 0, 1 }, 
-  { "VIRTUALSCREEN", 1, 0, 1, 1 }, 
-  { "MONITORSCOUNT", 1, 0, 1, 1 }, 
-  { "MONITORSINFO", 1, 0, 1, 1 }, 
-  { "HINSTANCE", 1, 0, 0, 1 },
-  { "DLL_HINSTANCE", 1, 0, 0, 1 }, 
+/* sorted alphabetically */
+static iRegisteredGlobal global_attribs[] = { 
   { "APPSHELL", 0, 0, 1, 1 }, 
-  { "XDISPLAY", 0, 1, 1, 1 }, 
-  { "XSCREEN", 0, 1, 1, 1 }, 
-  { "DLGBGCOLOR", 1, 1, 1, 0 }, 
-  { "DLGFGCOLOR", 1, 1, 1, 0 },
-  { "MENUBGCOLOR", 1, 0, 0, 0 }, 
-  { "MENUFGCOLOR", 1, 0, 0, 1 }, 
-  { "TXTBGCOLOR", 1, 1, 1, 0 }, 
-  { "TXTFGCOLOR", 1, 1, 1, 0 }, 
-  { "TXTHLCOLOR", 1, 1, 1, 0 }, 
-  { "LINKFGCOLOR", 1, 1, 1, 0 },
+  { "ARGV0", 0, 0, 1, 0 },
+  { "AUTOREPEAT", 0, 1, 0, 0 }, 
+  { "COMCTL32VER6", 1, 0, 0, 1 }, 
+  { "COMPUTERNAME", 1, 1, 1, 1 }, 
+  { "CONTROLKEY", 1, 1, 1, 1 }, 
+  { "COPYRIGHT", 1, 1, 1, 1 }, 
+  { "CURSORPOS", 1, 1, 1, 0 }, 
+  { "DEFAULTBUTTONPADDING", 1, 1, 1, 0 },
+  { "DEFAULTDECIMALSYMBOL", 1, 1, 1, 0 }, 
   { "DEFAULTFONT", 1, 1, 1, 0 }, 
   { "DEFAULTFONTFACE", 1, 1, 1, 0 }, 
   { "DEFAULTFONTSIZE", 1, 1, 1, 0 }, 
   { "DEFAULTFONTSTYLE", 1, 1, 1, 0 }, 
-  { "DEFAULTBUTTONPADDING", 1, 1, 1, 0 },
+  { "DEFAULTPRECISION", 1, 1, 1, 0 },
   { "DEFAULTTHEME", 1, 1, 1, 0 }, 
+  { "DLGBGCOLOR", 1, 1, 1, 0 }, 
+  { "DLGFGCOLOR", 1, 1, 1, 0 },
+  { "DLL_HINSTANCE", 1, 0, 0, 1 }, 
+  { "DRAWUSEDIRECT2D", 1, 0, 0, 0 },
+  { "DRIVER", 1, 1, 1, 1 }, 
+  { "DWM_COMPOSITION", 1, 0, 0, 1 }, 
+  { "EXEFILENAME", 1, 1, 1, 1 },
+  { "EXITLOOP", 1, 1, 1, 0 }, 
+  { "FREETYPEFONTS_DIR", 1, 1, 1, 0 },
+  { "FULLSIZE", 1, 1, 1, 1 }, 
+  { "GLOBALLAYOUTDLGKEY", 1, 1, 1, 0 }, 
+  { "GLOBALLAYOUTRESIZEKEY", 1, 1, 1, 0 }, 
+  { "GLOBALMENU", 0, 0, 1, 0 },
+  { "GL_RENDERER", 1, 1, 1, 1 }, 
+  { "GL_VENDOR", 1, 1, 1, 1 }, 
+  { "GL_VERSION", 1, 1, 1, 1 }, 
+  { "GTKDEVVERSION", 0, 0, 1, 1 },
+  { "GTKVERSION", 0, 0, 1, 1 }, 
+  { "HELPAPP", 0, 1, 1, 0 },
+  { "HINSTANCE", 1, 0, 0, 1 },
+  { "ICON", 1, 1, 1, 0 },
+  { "IMAGEAUTOSCALE", 1, 1, 1, 0 }, 
+  { "IMAGEEXPORT_STATIC", 1, 1, 1, 0 },
+  { "IMAGESDPI", 1, 1, 1, 0 }, 
+  { "IMAGESTOCKAUTOSCALE", 1, 1, 1, 0 },
+  { "IMAGESTOCKSIZE", 1, 1, 1, 0 }, 
+  { "INPUTCALLBACKS", 1, 1, 1, 0 }, 
+  { "IUPIM_LASTERROR", 1, 1, 1, 1 },
+  { "IUPLUA_THREADED", 1, 1, 1, 0 }, 
+  { "KEY", 1, 1, 1, 1 }, 
+  { "KEYPRESS", 1, 1, 1, 1 }, 
+  { "KEYRELEASE", 1, 1, 1, 1 }, 
+  { "LANGUAGE", 1, 1, 1, 0 },
+  { "LASTERROR", 1, 0, 0, 0 }, 
+  { "LEXERLUA", 1, 1, 1, 0 },
+  { "LINKFGCOLOR", 1, 1, 1, 0 },
+  { "LOCKLOOP", 1, 1, 1, 0 },
+  { "LUA_ERROR_LABEL", 1, 1, 1, 0 },
+  { "MENUBGCOLOR", 1, 0, 0, 0 }, 
+  { "MENUFGCOLOR", 1, 0, 0, 1 }, 
+  { "MGLFONTS", 1, 1, 1, 0 },
+  { "MODKEYSTATE", 1, 1, 1, 1 }, 
+  { "MONITORSCOUNT", 1, 0, 1, 1 }, 
+  { "MONITORSINFO", 1, 0, 1, 1 }, 
+  { "MOTIFNUMBER", 0, 1, 0, 1 }, 
+  { "MOTIFVERSION", 0, 1, 0, 1 }, 
+  { "MOUSEBUTTON", 1, 1, 1, 1 },
+  { "OVERLAYSCROLLBAR", 0, 0, 1, 0 }, 
+  { "PARENTDIALOG", 1, 1, 1, 0 },
+  { "SB_BGCOLOR", 0, 1, 1, 0 }, 
+  { "SCINTILLA_VERSION", 1, 1, 1, 1 },
+  { "SCREENDEPTH", 1, 1, 1, 1 }, 
+  { "SCREENDPI", 1, 1, 1, 1 }, 
+  { "SCREENSIZE", 1, 1, 1, 1 }, 
+  { "SCROLLBARSIZE", 1, 1, 1, 1 }, 
+  { "SHIFTKEY", 1, 1, 1, 1 }, 
+  { "SHOWMENUIMAGES", 0, 0, 1, 0 }, 
+  { "SINGLEINSTANCE", 1, 0, 0, 0 }, 
+  { "SYSTEM", 1, 1, 1, 1 }, 
+  { "SYSTEMLANGUAGE", 1, 1, 1, 1 },
+  { "SYSTEMLOCALE", 1, 1, 1, 1 }, 
+  { "SYSTEMVERSION", 1, 1, 1, 1 }, 
+  { "TREEIMAGE24", 1, 1, 1, 0 },
+  { "TRUECOLORCANVAS", 1, 1, 1, 1 },
+  { "TXTBGCOLOR", 1, 1, 1, 0 }, 
+  { "TXTFGCOLOR", 1, 1, 1, 0 }, 
+  { "TXTHLCOLOR", 1, 1, 1, 0 }, 
+  { "USERNAME", 1, 1, 1, 1 }, 
+  { "UTF8MODE", 1, 0, 1, 0 }, 
+  { "UTF8MODE_FILE", 1, 0, 0, 0 }, 
+  { "VERSION", 1, 1, 1, 1 }, 
+  { "VIRTUALSCREEN", 1, 0, 1, 1 }, 
+  { "XDISPLAY", 0, 1, 1, 1 }, 
+  { "XSCREEN", 0, 1, 1, 1 }, 
+  { "XSERVERVENDOR", 0, 1, 1, 1 }, 
+  { "XVENDORRELEASE", 0, 1, 1, 1 },
   { NULL, 0, 0, 0, 0 }
 };
-
-static int iGlobalsCompareRegisteredNames(const void* i1, const void* i2)
-{
-  iRegisteredGlobal ih1 = *((iRegisteredGlobal*)i1);
-  iRegisteredGlobal ih2 = *((iRegisteredGlobal*)i2);
-  char* name1 = ih1.name;
-  char* name2 = ih2.name;
-  return strcmp(name1, name2);
-}
 
 static int iGlobalGetRegisteredAttributesCount(void)
 {
   int count = 0;
-  while (attribs[count].name != NULL)
+  while (global_attribs[count].name != NULL)
     count++;
   return count;
 }
@@ -130,9 +135,9 @@ static int iGlobalIsRegistered(char *name)
 {
   int i;
 
-  for (i = 0; attribs[i].name != NULL; i++)
+  for (i = 0; global_attribs[i].name != NULL; i++)
   {
-    if (iupStrEqual(attribs[i].name, name))
+    if (iupStrEqual(global_attribs[i].name, name))
       return 1;
   }
 
@@ -224,17 +229,17 @@ static void iGlobalsUpdate(Ihandle* dlg)
   }
 
   total_count = iGlobalGetRegisteredAttributesCount();
-  qsort(attribs, total_count, sizeof(iRegisteredGlobal), iGlobalsCompareRegisteredNames);
+  
   j = 0;
   for (i = 0; i < total_count; i++)
   {
-    if (!(iupStrEqualNoCase(IupGetGlobal("DRIVER"), "GTK") && attribs[i].gtk) &&
-        !(iupStrEqualNoCase(IupGetGlobal("DRIVER"), "Motif") && attribs[i].motif) &&
-        !(iupStrEqualNoCase(IupGetGlobal("DRIVER"), "Win32") && attribs[i].windows))
+    if (!(iupStrEqualNoCase(IupGetGlobal("DRIVER"), "GTK") && global_attribs[i].gtk) &&
+        !(iupStrEqualNoCase(IupGetGlobal("DRIVER"), "Motif") && global_attribs[i].motif) &&
+        !(iupStrEqualNoCase(IupGetGlobal("DRIVER"), "Win32") && global_attribs[i].windows))
         continue;
 
-    IupSetAttributeId(list1, "", j + 1, attribs[i].name);
-    IupSetIntId(list1, "_IUP_READONLY", j + 1, attribs[i].readonly);
+    IupSetAttributeId(list1, "", j + 1, global_attribs[i].name);
+    IupSetIntId(list1, "_IUP_READONLY", j + 1, global_attribs[i].readonly);
     j++;
   }
 
