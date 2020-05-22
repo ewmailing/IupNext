@@ -507,12 +507,18 @@ static int iLayoutPropertiesList3_CB(Ihandle *list3, char *text, int item, int s
     {
       char* cb_name = iupGetCallbackName(elem, text);
       if (cb_name)
-        IupSetfAttribute(txt, "VALUE", "%p\n\"%s\"", cb, cb_name);
+        IupSetfAttribute(txt, "VALUE", "%p [\"%s\"]", cb, cb_name);
       else
         IupSetfAttribute(txt, "VALUE", "%p", cb);
     }
     else
-      IupSetAttribute(txt, "VALUE", "NULL");
+    {
+      char* cb_name = iupGetCallbackName(elem, text);
+      if (cb_name)
+        IupSetfAttribute(txt, "VALUE", "NULL [\"%s\"]", cb_name);
+      else
+        IupSetAttribute(txt, "VALUE", "NULL");
+    }
   }
   return IUP_DEFAULT;
 }
