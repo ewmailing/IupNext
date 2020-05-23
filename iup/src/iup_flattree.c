@@ -1705,6 +1705,9 @@ static void iFlatTreeSelectNodeInteract(Ihandle* ih, int id, int ctrlPressed, in
       Iarray* unsel_array = NULL;
       Iarray* sel_array = NULL;
 
+      if (ih->data->last_selected_id == -1)
+        return;
+
       if (multi_un_cb || sel_cb)
         unsel_array = iupArrayCreate(10, sizeof(int));
 
@@ -2161,8 +2164,7 @@ static int iFlatTreeButton_CB(Ihandle* ih, int button, int pressed, int x, int y
 
         /* single click in the image+title area */
 
-        if (ih->data->show_dragdrop)
-          ih->data->dragged_id = id;
+        ih->data->dragged_id = id;
 
         iFlatTreeSelectNodeInteract(ih, id, iup_iscontrol(status), iup_isshift(status));
 
@@ -2210,8 +2212,11 @@ static int iFlatTreeMotion_CB(Ihandle* ih, int x, int y, char* status)
 
   if (ih->data->mark_mode == IFLATTREE_MARK_MULTIPLE && !ih->data->show_dragdrop)
   {
-    /* multiple selection while dragging when SHOWDRAGDROP=NO */
-    iFlatTreeSelectNodeInteract(ih, id, 0, 1);
+    if (ih->data->last_selected_id == ih->data->dragged_id)
+    {
+      /* multiple selection while dragging when SHOWDRAGDROP=NO */
+      iFlatTreeSelectNodeInteract(ih, id, 0, 1);
+    }
   }
 
   if (y < 0 || y > ih->currentheight)
@@ -4003,6 +4008,7 @@ static int iFlatTreeCreateMethod(Ihandle* ih, void** params)
   ih->data->button_size = high_dpi ? 16 : 9;
   ih->data->dragover_id = -1;
   ih->data->dragged_id = -1;
+  ih->data->last_selected_id = -1;
 
   ih->data->root_node = (iFlatTreeNode*)malloc(sizeof(iFlatTreeNode));
   memset(ih->data->root_node, 0, sizeof(iFlatTreeNode));

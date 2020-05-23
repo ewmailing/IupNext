@@ -624,7 +624,7 @@ static void init_tree(void)
 //  IupSetAttribute(tree, "BGCOLOR", "255 255 255");
 //  IupSetAttribute(tree, "BGCOLOR", "128 0 255");
 
-//  IupSetAttribute(tree, "MARKMODE",     "MULTIPLE");
+  IupSetAttribute(tree, "MARKMODE",     "MULTIPLE");
 //  IupSetAttribute(tree, "SHOWRENAME",   "YES");
  // IupSetAttribute(tree, "SHOWDRAGDROP", "YES");  /* internal D&D */
 //  IupSetAttribute(tree, "SHOWTOGGLE",   "YES");
