@@ -1253,13 +1253,15 @@ static int iFlatTreeDrawNodes(Ihandle *ih, IdrawCanvas* dc, iFlatTreeNode *node,
       if (py1 > 0 && py1 < ih->currentheight)
         iupdrvDrawLine(dc, px1, py1, px2, py2, line_rgba, IUP_DRAW_STROKE_DOT, 1);
 
-      if (!node->brother)
+      if (!node->brother)  /* on the last child draw the vertical line */
       {
         px1 = node_x - (ih->data->indentation / 2);
         py1 = y - ih->data->spacing;
         px2 = px1;   /* vertical line */
         py2 = node_y + node_h / 2;
-        if ((py1 > 0 && py1 < ih->currentheight) || (py2 > 0 && py2 < ih->currentheight))
+        if ((py1 >= 0 && py1 < ih->currentheight) || 
+            (py2 >= 0 && py2 < ih->currentheight) ||
+            (py1 < 0 && py2 >= ih->currentheight))
           iupdrvDrawLine(dc, px1, py1, px2, py2, line_rgba, IUP_DRAW_STROKE_DOT, 1);
       }
     }
@@ -2326,10 +2328,9 @@ static void iFlatTreeScrollFocusVisible(Ihandle* ih, int direction)
   /* make sure focus node is visible */
   int posy, node_y, node_height;
   int dy = IupGetInt(ih, "DY");
-  int ymin = IupGetInt(ih, "YMIN");
   int ymax = IupGetInt(ih, "YMAX");
 
-  if (dy >= (ymax - ymin))
+  if (dy >= ymax)
   {
     IupRedraw(ih, 0);
     return;
@@ -3707,7 +3708,7 @@ static int iFlatTreeGetChildCount(iFlatTreeNode *node)
   while (child)
   {
     if (child->first_child)
-      count += iFlatTreeGetChildCount(child->first_child);
+      count += iFlatTreeGetChildCount(child);
     count++;
     child = child->brother;
   }

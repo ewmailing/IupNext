@@ -253,6 +253,7 @@ static int selection_cb(Ihandle *ih, int id, int status)
   (void)ih;
   printf("SELECTION_CB(id=%d, status=%d)\n", id, status);
   printf("    USERDATA=%s\n", IupGetAttributeId(ih, "USERDATA", id));
+  printf("    TOTALCHILDCOUNT=%s\n", IupGetAttributeId(ih, "TOTALCHILDCOUNT", id));
   return IUP_DEFAULT;
 }
 
@@ -830,7 +831,7 @@ static Ihandle *init_tree(void)
   IupSetCallback(tree, "NODEREMOVED_CB", (Icallback)noderemoved_cb);
   IupSetCallback(tree, "TOGGLEVALUE_CB", (Icallback)togglevalue_cb);
   //  IupSetCallback(tree, "TIPS_CB", (Icallback)tips_cb);
-  IupSetAttribute(tree, "FLATSCROLLBAR", "Yes");
+//  IupSetAttribute(tree, "FLATSCROLLBAR", "Yes");
 
   //IupSetAttribute(tree, "FITTOBACKIMAGE", "YES");
 //  IupSetAttribute(tree, "ADDEXPANDED", "NO");

@@ -366,7 +366,7 @@ static void winCanvasProcessHorScroll(Ihandle* ih, WORD winop)
 
 static void winCanvasProcessVerScroll(Ihandle* ih, WORD winop)
 {
-  double ymin, ymax, posy;
+  double ymin, ymax, posy, dy;
   int ipagey, iposy, iliney, op;
 
   /* unused */
@@ -377,6 +377,10 @@ static void winCanvasProcessVerScroll(Ihandle* ih, WORD winop)
 
   ymax = iupAttribGetDouble(ih,"YMAX");
   ymin = iupAttribGetDouble(ih,"YMIN");
+  dy = iupAttribGetDouble(ih, "DY");
+
+  if (dy >= ymax - ymin) /* wheel can call this function when scroll bar is empty */
+    return;
 
   winCanvasGetScrollInfo(ih->handle, &iposy, &ipagey, SB_VERT, winop==SB_THUMBTRACK||winop==SB_THUMBPOSITION? 1: 0);
 

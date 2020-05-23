@@ -74,8 +74,8 @@ static void iFlatScrollBarRedrawHorizontal(Ihandle* ih)
 
 static void iFlatScrollBarNormalizePos(int *pos, int max, int d)
 {
-  if (*pos < 0) *pos = 0;
   if (*pos > max - d) *pos = max - d;
+  if (*pos < 0) *pos = 0;
 }
 
 static int iFlatScrollBarGetLineY(Ihandle* ih, int dy)
@@ -734,6 +734,10 @@ IUP_SDK_API void iupFlatScrollBarWheelUpdate(Ihandle* ih, float delta)
   int posy = iupAttribGetInt(ih, "POSY");
   int dy = iupAttribGetInt(ih, "DY");
   int liney = iFlatScrollBarGetLineY(ih, dy);
+  int ymax = iupAttribGetInt(ih, "YMAX");
+
+  if (dy >= ymax)
+    return;
 
   if (iupAttribGetBoolean(ih, "WHEELDROPFOCUS"))
   {
@@ -743,7 +747,7 @@ IUP_SDK_API void iupFlatScrollBarWheelUpdate(Ihandle* ih, float delta)
   }
 
   posy -= (int)(delta * liney);
-  iFlatScrollBarNormalizePos(&posy, iupAttribGetInt(ih, "YMAX"), dy);
+  iFlatScrollBarNormalizePos(&posy, ymax, dy);
   iupAttribSetInt(ih, "POSY", posy);
   iFlatScrollBarRedrawVertical(ih);
   iFlatScrollBarNotify(ih, delta>0 ? IUP_SBUP: IUP_SBDN);
