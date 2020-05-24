@@ -1489,6 +1489,13 @@ static int iFlatTreeRenameNode(Ihandle* ih, int x)
       int extra_w;
       char* font = IupGetAttribute(ih, "FONT");
 
+      if (iupAttribGet(ih->firstchild, "SB_VERT"))
+      {
+        /* ih->firstchild is vertical scrollbar */
+        /* ih->firstchild->brother is horizontal scrollbar */
+        text = ih->firstchild->brother->brother;
+      }
+
       iFlatTreeSetNodeDrawFont(ih, nodeFocus, font);
       iupDrawGetTextSize(ih, "WW", 0, &extra_w, NULL, 0);
 
@@ -2321,10 +2328,23 @@ static int iFlatTreeFocus_CB(Ihandle* ih, int focus)
 
 static int iFlatTreeScroll_CB(Ihandle* ih, int action, float posx, float posy)
 {
+  Ihandle* text = ih->firstchild;
+
+  if (iupAttribGet(ih->firstchild, "SB_VERT"))
+  {
+    /* ih->firstchild is vertical scrollbar */
+    /* ih->firstchild->brother is horizontal scrollbar */
+    text = ih->firstchild->brother->brother;
+  }
+
+  if (IupGetInt(text, "VISIBLE"))
+    iFlatTreeTextEditKCR_CB(text);
+
+  iupdrvRedrawNow(ih);  /* so FLATSCROLLBAR can also work */
+
   (void)action;
   (void)posx;
   (void)posy;
-  iupdrvRedrawNow(ih);  /* so FLATSCROLLBAR can also work */
   return IUP_DEFAULT;
 }
 

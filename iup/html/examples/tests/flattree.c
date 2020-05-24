@@ -842,7 +842,7 @@ static Ihandle *init_tree(void)
 //  IupSetAttribute(tree, "DRAGDROPTREE", "Yes");
 //  IupSetAttribute(tree, "DROPTARGET", "YES");
 //  IupSetAttribute(tree, "DROPTYPES", "NODETREE");
-//  IupSetAttribute(tree, "SHOWDRAGDROP", "YES");
+  IupSetAttribute(tree, "SHOWDRAGDROP", "YES");
 
   //  IupSetAttribute(tree, "FONT", "COURIER_NORMAL_14");
   //  IupSetAttribute(tree, "FONTSIZE", "36");
@@ -851,7 +851,7 @@ static Ihandle *init_tree(void)
   //  IupSetAttribute(tree, "BGCOLOR", "255 255 255");
   //  IupSetAttribute(tree, "BGCOLOR", "128 0 255");
 
-  IupSetAttribute(tree, "MARKMODE",     "MULTIPLE");
+//  IupSetAttribute(tree, "MARKMODE",     "MULTIPLE");
   IupSetAttribute(tree, "SHOWRENAME", "YES");
 //  IupSetAttribute(tree, "SHOWTOGGLE", "YES");
 //  IupSetAttribute(tree, "MARKWHENTOGGLE", "YES");
