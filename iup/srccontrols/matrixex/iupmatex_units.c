@@ -28,7 +28,8 @@
 /* Source for conversion names, symbols and factors:
    http://en.wikipedia.org/wiki/Conversion_of_units
 
-   This file is in UTF-8 encoding with BOM, so he comments look right.
+   This file is in UTF-8 encoding with BOM, so the comments are correctly displayed. 
+   Units are written in hex to avoid conversion problems.
 */
 
 
