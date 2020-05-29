@@ -928,9 +928,12 @@ static int iFlatListSetIdValueAttrib(Ihandle* ih, int pos, const char* value)
   if (pos < 1)
     return 0;
 
-  if (!value)
-    iFlatListRemoveItem(ih, 0, count - pos - 1);
-  else if (pos <= count)
+  if (!value) /* remove remaining items */
+  {
+    if (pos <= count)
+      iFlatListRemoveItem(ih, pos-1, count - (pos-1));
+  }
+  else if (pos <= count) /* change an existing item */
   {
     iFlatListItem* items = (iFlatListItem*)iupArrayGetData(ih->data->items_array);
 
@@ -938,9 +941,9 @@ static int iFlatListSetIdValueAttrib(Ihandle* ih, int pos, const char* value)
       free(items[pos - 1].title);
     items[pos - 1].title = iupStrDup(value);
   }
-  else
+  else /* add a new item */
   {
-    iFlatListItem* items = (iFlatListItem*)iupArrayInsert(ih->data->items_array, count, pos - 1 - count + 1);
+    iFlatListItem* items = (iFlatListItem*)iupArrayInsert(ih->data->items_array, count, (pos-1) - (count-1));
     items[pos - 1].title = iupStrDup(value);
   }
 
@@ -1000,7 +1003,7 @@ static int iFlatListSetRemoveItemAttrib(Ihandle* ih, const char* value)
   {
     int pos;
     if (iupStrToInt(value, &pos))
-      iFlatListRemoveItem(ih, pos - 1, 1);
+      iFlatListRemoveItem(ih, pos-1, 1);
   }
 
   if (ih->handle)
