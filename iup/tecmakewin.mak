@@ -1700,7 +1700,7 @@ $(SRELEASE): $(TARGETEXE)
 # Directories Creation
 
 .PHONY: directories
-directories: $(OBJDIR) $(TARGETDIR) $(EXTRADIR) $(LOHDIR) $(LHDIR)
+directories: $(OBJDIR) $(TARGETDIR) $(EXTRADIR) $(LOHDIR) $(LHDIR) $(DEPENDDIR)
 
 $(OBJDIR) $(TARGETDIR):
 	if [ ! -d $@ ] ; then mkdir -p $@ ; fi
@@ -1724,6 +1724,13 @@ ifdef LHDIR
 	  if [ ! -d $@ ] ; then mkdir -p $@ ; fi
 else
   $(LHDIR): ;
+endif
+
+ifdef DEPENDDIR
+  $(DEPENDDIR):
+	  if [ ! -d $@ ] ; then mkdir -p $@ ; fi
+else
+  $(DEPENDDIR): ;
 endif
 
 
