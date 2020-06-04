@@ -169,9 +169,8 @@ ifneq ($(findstring dll, $(TEC_UNAME)), )
 endif
 
 DEPEND := $(TARGETNAME).wdep
-
 ifdef DEPENDDIR
-  DEPEND := $(DEPENDDIR)/$(TARGETNAME).dep.$(TEC_UNAME)
+  DEPEND := $(DEPENDDIR)/$(TARGETNAME).wdep
 endif
 
 
