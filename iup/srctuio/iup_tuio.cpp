@@ -68,6 +68,10 @@ class IupTuioListener : public TuioListener
     void updateTuioCursor(TuioCursor *tcur);
     void removeTuioCursor(TuioCursor *tcur);
 
+    void addTuioBlob(TuioBlob *tblb);
+    void updateTuioBlob(TuioBlob *tblb);
+    void removeTuioBlob(TuioBlob *tblb);
+
     void refresh(TuioTime frameTime);
 };
 
@@ -80,22 +84,34 @@ IupTuioListener::IupTuioListener(Ihandle* _ih, TuioClient* _client)
   IupSetCallback(timer, "ACTION_CB", timer_action_cb);
 }
 
-void IupTuioListener::addTuioObject(TuioObject *tobj) 
+void IupTuioListener::addTuioObject(TuioObject*) 
 {
   /* unused */
-  (void)tobj;
 }
 
-void IupTuioListener::updateTuioObject(TuioObject *tobj) 
+void IupTuioListener::updateTuioObject(TuioObject*) 
 {
   /* unused */
-  (void)tobj;
 }
 
-void IupTuioListener::removeTuioObject(TuioObject *tobj) 
+void IupTuioListener::removeTuioObject(TuioObject*) 
 {
   /* unused */
-  (void)tobj;
+}
+
+void IupTuioListener::addTuioBlob(TuioBlob*)
+{
+  /* unused */
+}
+
+void IupTuioListener::updateTuioBlob(TuioBlob*)
+{
+  /* unused */
+}
+
+void IupTuioListener::removeTuioBlob(TuioBlob*)
+{
+  /* unused */
 }
 
 void IupTuioListener::addTuioCursor(TuioCursor *tcur) 
@@ -151,7 +167,7 @@ void  IupTuioListener::refresh(TuioTime frameTime)
 
 void IupTuioListener::initCursorInfo(int cursor_count, int* pid, int* pstate)
 {
-  std::list<TuioCursor*>& cursorList = this->client->getCursorList();
+  std::list<TuioCursor*> cursorList = this->client->getTuioCursors();
   std::list <TuioCursor*>::iterator iter;
   int i;
 
@@ -165,7 +181,7 @@ void IupTuioListener::initCursorInfo(int cursor_count, int* pid, int* pstate)
 
 int IupTuioListener::GetMainCursor()
 {
-  std::list<TuioCursor*>& cursorList = this->client->getCursorList();
+  std::list<TuioCursor*> cursorList = this->client->getTuioCursors();
   std::list <TuioCursor*>::iterator iter;
   std::list <TuioCursor*>::iterator end = cursorList.end();
   int min_id = -1;
@@ -183,7 +199,7 @@ int IupTuioListener::GetMainCursor()
 
 void IupTuioListener::finishCursorInfo(int cursor_count, int* px, int* py, int* pstate, int w, int h, int use_client_coord, Ihandle* ih_canvas)
 {
-  std::list<TuioCursor*>& cursorList = this->client->getCursorList();
+  std::list<TuioCursor*> cursorList = this->client->getTuioCursors();
   std::list <TuioCursor*>::iterator iter;
   std::list <TuioCursor*>::iterator end = cursorList.end();
   int i;

@@ -10,10 +10,16 @@ INCLUDES = ../include ../src tuio oscpack
 LDIR = ../lib/$(TEC_UNAME)  
 LIBS = iup
 
-TUIO := tuio/TuioClient.cpp tuio/TuioServer.cpp tuio/TuioTime.cpp
+TUIO := \
+  FlashSender.cpp TcpReceiver.cpp TuioClient.cpp TuioDispatcher.cpp TuioPoint.cpp UdpReceiver.cpp \
+  OneEuroFilter.cpp TcpSender.cpp TuioContainer.cpp TuioManager.cpp TuioServer.cpp UdpSender.cpp \
+  OscReceiver.cpp TuioBlob.cpp TuioCursor.cpp TuioObject.cpp TuioTime.cpp WebSockSender.cpp
+TUIO := $(addprefix tuio/, $(TUIO))
+
 OSC_WIN32 = oscpack/ip/win32/NetworkingUtils.cpp oscpack/ip/win32/UdpSocket.cpp
 OSC_POSIX = oscpack/ip/posix/NetworkingUtils.cpp oscpack/ip/posix/UdpSocket.cpp
-OSC = oscpack/osc/OscTypes.cpp oscpack/osc/OscOutboundPacketStream.cpp oscpack/osc/OscReceivedElements.cpp oscpack/osc/OscPrintReceivedElements.cpp 
+OSC = oscpack/osc/OscTypes.cpp oscpack/osc/OscOutboundPacketStream.cpp \
+      oscpack/osc/OscReceivedElements.cpp oscpack/osc/OscPrintReceivedElements.cpp 
 
 SRC := $(TUIO) $(OSC) iup_tuio.cpp
 

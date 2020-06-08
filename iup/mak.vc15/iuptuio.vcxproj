@@ -33,11 +33,9 @@
   </ImportGroup>
   <ImportGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'" Label="PropertySheets">
     <Import Project="$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props" Condition="exists('$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props')" Label="LocalAppDataPlatform" />
-    
   </ImportGroup>
   <ImportGroup Condition="'$(Configuration)|$(Platform)'=='Debug|x64'" Label="PropertySheets">
     <Import Project="$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props" Condition="exists('$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props')" Label="LocalAppDataPlatform" />
-    
   </ImportGroup>
   <PropertyGroup Label="UserMacros" />
   <PropertyGroup>
@@ -98,7 +96,19 @@
     </Lib>
   </ItemDefinitionGroup>
   <ItemGroup>
+    <ClCompile Include="..\srctuio\tuio\FlashSender.cpp" />
+    <ClCompile Include="..\srctuio\tuio\OneEuroFilter.cpp" />
+    <ClCompile Include="..\srctuio\tuio\OscReceiver.cpp" />
+    <ClCompile Include="..\srctuio\tuio\TcpReceiver.cpp" />
+    <ClCompile Include="..\srctuio\tuio\TcpSender.cpp" />
+    <ClCompile Include="..\srctuio\tuio\TuioBlob.cpp" />
     <ClCompile Include="..\srctuio\tuio\TuioClient.cpp" />
+    <ClCompile Include="..\srctuio\tuio\TuioContainer.cpp" />
+    <ClCompile Include="..\srctuio\tuio\TuioCursor.cpp" />
+    <ClCompile Include="..\srctuio\tuio\TuioDispatcher.cpp" />
+    <ClCompile Include="..\srctuio\tuio\TuioManager.cpp" />
+    <ClCompile Include="..\srctuio\tuio\TuioObject.cpp" />
+    <ClCompile Include="..\srctuio\tuio\TuioPoint.cpp" />
     <ClCompile Include="..\srctuio\tuio\TuioServer.cpp" />
     <ClCompile Include="..\srctuio\tuio\TuioTime.cpp" />
     <ClCompile Include="..\srctuio\oscpack\ip\IpEndpointName.cpp" />
@@ -109,11 +119,23 @@
     <ClCompile Include="..\srctuio\oscpack\osc\OscReceivedElements.cpp" />
     <ClCompile Include="..\srctuio\oscpack\osc\OscTypes.cpp" />
     <ClCompile Include="..\srctuio\iup_tuio.cpp" />
+    <ClCompile Include="..\srctuio\tuio\UdpReceiver.cpp" />
+    <ClCompile Include="..\srctuio\tuio\UdpSender.cpp" />
+    <ClCompile Include="..\srctuio\tuio\WebSockSender.cpp" />
   </ItemGroup>
   <ItemGroup>
+    <ClInclude Include="..\srctuio\tuio\FlashSender.h" />
+    <ClInclude Include="..\srctuio\tuio\LibExport.h" />
+    <ClInclude Include="..\srctuio\tuio\OneEuroFilter.h" />
+    <ClInclude Include="..\srctuio\tuio\OscReceiver.h" />
+    <ClInclude Include="..\srctuio\tuio\OscSender.h" />
+    <ClInclude Include="..\srctuio\tuio\TcpReceiver.h" />
+    <ClInclude Include="..\srctuio\tuio\TcpSender.h" />
+    <ClInclude Include="..\srctuio\tuio\TuioBlob.h" />
     <ClInclude Include="..\srctuio\tuio\TuioClient.h" />
     <ClInclude Include="..\srctuio\tuio\TuioContainer.h" />
     <ClInclude Include="..\srctuio\tuio\TuioCursor.h" />
+    <ClInclude Include="..\srctuio\tuio\TuioDispatcher.h" />
     <ClInclude Include="..\srctuio\tuio\TuioListener.h" />
     <ClInclude Include="..\srctuio\tuio\TuioObject.h" />
     <ClInclude Include="..\srctuio\tuio\TuioPoint.h" />
@@ -133,6 +155,9 @@
     <ClInclude Include="..\srctuio\oscpack\osc\OscReceivedElements.h" />
     <ClInclude Include="..\srctuio\oscpack\osc\OscTypes.h" />
     <ClInclude Include="..\include\iuptuio.h" />
+    <ClInclude Include="..\srctuio\tuio\UdpReceiver.h" />
+    <ClInclude Include="..\srctuio\tuio\UdpSender.h" />
+    <ClInclude Include="..\srctuio\tuio\WebSockSender.h" />
   </ItemGroup>
   <ItemGroup>
     <None Include="..\srctuio\iuptuio.def" />
