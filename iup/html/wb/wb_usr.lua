@@ -2049,10 +2049,6 @@ wb_usr.tree =
           link= "elem/iuptimer.html"
         },
         {
-          name= {nl= "IupTuio"},
-          link= "ctrl/iuptuio.html"
-        },
-        {
           name= {nl= "IupThread"},
           link= "elem/iupthread.html"
         },

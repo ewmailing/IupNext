@@ -2,7 +2,7 @@ ifeq ($(OS), Windows_NT)
   WINLIBS = iupole iupfiledlg
 endif
 
-TARGETS := iup iupcd iupcontrols iupgl iupglcontrols iup_plot iup_mglplot iup_scintilla iupim iupimglib $(WINLIBS) iupweb iuptuio ledc iupview iupvled iuplua5 iupluaconsole iupluascripter
+TARGETS := iup iupcd iupcontrols iupgl iupglcontrols iup_plot iup_mglplot iup_scintilla iupim iupimglib $(WINLIBS) iupweb ledc iupview iupvled iuplua5 iupluaconsole iupluascripter
 TARGETS := $(filter-out $(EXCLUDE_TARGETS), $(TARGETS))
 OTHERDEPENDENCIES := iupgtk iupmot
 
@@ -33,8 +33,6 @@ iupfiledlg:
 	@$(MAKE) --no-print-directory -C ./srcfiledlg/
 iupweb:
 	@$(MAKE) --no-print-directory -C ./srcweb/
-iuptuio:
-	@$(MAKE) --no-print-directory -C ./srctuio/
 iupimglib:
 	@$(MAKE) --no-print-directory -C ./srcimglib/
 iuplua5:

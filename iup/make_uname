@@ -40,10 +40,6 @@ cd srcimglib
 ./make_uname $1 $2 $3 $4 $5 $6 $7 $8
 cd ..
 
-cd srctuio 
-./make_uname $1 $2 $3 $4 $5 $6 $7 $8
-cd ..
-
 cd srcweb
 ./make_uname $1 $2 $3 $4 $5 $6 $7 $8
 cd ..

@@ -43,9 +43,6 @@
 #endif
 #endif
 
-#ifdef IUPLUA_TUIO
-#include "iupluatuio.h"
-#endif
 #ifdef IUPLUA_WEB
 #include "iupluaweb.h"
 #endif
@@ -76,9 +73,6 @@ static void iuplua_openlibs(lua_State *L)
 
 #ifdef IUPLUA_IMGLIB
   luaopen_iupluaimglib(L);
-#endif
-#ifdef IUPLUA_TUIO
-  iuptuiolua_open(L);
 #endif
 #ifdef IUPLUA_WEB
   iupweblua_open(L);

@@ -41,7 +41,6 @@ Make_Lua_Link iuplua_plot
 Make_Lua_Link iuplua_mglplot
 Make_Lua_Link iupluaim
 Make_Lua_Link iupluaimglib
-Make_Lua_Link iupluatuio
 Make_Lua_Link iupluascintilla
 Make_Lua_Link iupluaglcontrols
 Make_Lua_Link iupluaweb

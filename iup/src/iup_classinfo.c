@@ -338,7 +338,6 @@ void iupClassInfoShowHelp(const char* className)
             iupStrEqual(className, "glbackgroundbox") ||
             iupStrEqual(className, "glcanvas") ||
             iupStrEqual(className, "olecontrol") ||
-            iupStrEqual(className, "tuioclient") ||
             iupStrEqual(className, "webbrowser"))
             folder = "ctrl";
   else if (className[0] == 'G' && className[1] == 'L')

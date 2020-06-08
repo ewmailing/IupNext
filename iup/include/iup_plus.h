@@ -22,7 +22,6 @@
 #include "iupole.h"
 #include "iupweb.h"
 #include "iup_scintilla.h"
-#include "iuptuio.h"
 
 
 
@@ -1123,15 +1122,6 @@ namespace Iup
     Scintilla(const Element& elem) : Control(elem.GetHandle()) {}
 
     static void Open() { IupScintillaOpen(); }
-  };
-  class TuioClient : public Element
-  {
-  public:
-    TuioClient(int port) : Element(IupTuioClient(port)) {}
-    TuioClient(Ihandle* _ih) : Element(_ih) {}
-    TuioClient(const Element& elem) : Element(elem.GetHandle()) {}
-
-    static void Open() { IupTuioOpen(); }
   };
 
   class Config: public Element
