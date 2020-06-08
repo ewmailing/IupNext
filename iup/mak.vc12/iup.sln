@@ -92,6 +92,10 @@ Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "iupviewgtk", "iupviewgtk.vc
 EndProject
 Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "iupluagtk_exe", "iuplua\iupluaconsolegtk.vcxproj", "{389DF3C9-A628-4F6D-8C52-8924FA01DE66}"
 EndProject
+Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "iuptuio", "iuptuio.vcxproj", "{E251B414-01CA-482B-12F6-DD34ADAAB6AA}"
+EndProject
+Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "iupluatuio", "iuplua\iupluatuio.vcxproj", "{1EBC7A53-4A77-5435-AB15-A12F01157985}"
+EndProject
 Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "iupweb", "iupweb.vcxproj", "{0A12BCDE-4F00-5637-8901-067292C84EDB}"
 EndProject
 Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "iup_mglplot", "iup_mglplot.vcxproj", "{5A42028B-912C-AAB9-D3E1-12DF9264A5FD}"

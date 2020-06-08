@@ -14,6 +14,11 @@
 #include <cd.h>
 #include <cdiup.h>
 
+//#define USE_TUIO
+#ifdef USE_TUIO
+#include <iuptuio.h>
+#endif
+
 static cdCanvas *cdcanvas = NULL;
 int draw = 0;
 
@@ -60,6 +65,48 @@ int redraw_cb( Ihandle *self, float x, float y )
   return IUP_DEFAULT;
 }
 
+#ifdef USE_TUIO
+int touch_cb(Ihandle *self, int id, int x, int y, char* state)
+{
+  printf("touch_cb(id=%d x=%d y=%d state=%s)\n", id, x, y, state);
+
+  if (strstr(state, "PRIMARY")!=0)
+  {
+    static int tap_x = 0;
+    static int tap_y = 0;
+
+    /* if self is the canvas, then must convert to screen coordinates */
+    x += IupGetInt(self, "X");
+    y += IupGetInt(self, "Y");
+
+    /* TODO: Instead of using absolute coordinates, 
+             use relative coordinates to simulate a touchpad like in a laptop. */
+
+    /* simulate a cursor */
+    IupSetfAttribute(NULL, "CURSORPOS", "%dx%d", x, y);
+
+    if (state[0] == 'D') /* DOWN */
+    {
+      if (IupGetInt(NULL, "CONTROLKEY")) /* Ctrl pressed */
+        IupSetfAttribute(NULL, "MOUSEBUTTON", "%dx%d %c %d", x, y, IUP_BUTTON1, 1);  /* mouse down */
+
+      tap_x = x;
+      tap_y = y;
+    }
+    else if (state[0] == 'U') /* UP */
+    {
+      if (IupGetInt(NULL, "CONTROLKEY")) /* Ctrl pressed */
+        IupSetfAttribute(NULL, "MOUSEBUTTON", "%dx%d %c %d", x, y, IUP_BUTTON1, -1);  /* mouse up */
+      else if (abs(tap_x-x)<10 && abs(tap_y-y)<10)
+      {
+        IupSetfAttribute(NULL, "MOUSEBUTTON", "%dx%d %c %d", x, y, IUP_BUTTON1, 1);  /* mouse down */
+        IupSetfAttribute(NULL, "MOUSEBUTTON", "%dx%d %c %d", x, y, IUP_BUTTON1, -1);  /* mouse up */
+      }
+    }
+  }
+  return IUP_DEFAULT;
+}
+#else
 #ifdef WIN32
 int touch_cb(Ihandle *self, int id, int x, int y, char* state)
 {
@@ -67,6 +114,7 @@ int touch_cb(Ihandle *self, int id, int x, int y, char* state)
   cdCanvasPixel(cdcanvas, x, cdCanvasInvertYAxis(cdcanvas, y), CD_RED);
   return IUP_DEFAULT;
 }
+#endif
 #endif
 
 int multitouch_cb(Ihandle *self, int count, int* id, int* px, int* py, int *pstate)
@@ -93,11 +141,27 @@ int main(int argc, char **argv)
 //  IupSetCallback(cnvs, "BUTTON_CB",(Icallback)button_cb);
 //  IupSetCallback(cnvs, "MOTION_CB",(Icallback)motion_cb);
 
+#ifdef USE_TUIO
+  {
+    Ihandle *tuio;
+    IupTuioOpen();
+    tuio = IupTuioClient(0);
+    IupSetAttribute(tuio, "CONNECT", "YES");
+//    IupSetAttribute(tuio, "DEBUG", "YES");
+//    IupSetCallback(tuio, "TOUCH_CB",(Icallback)touch_cb);
+//    IupSetCallback(tuio, "MULTITOUCH_CB",(Icallback)multitouch_cb);
+    IupSetAttributeHandle(tuio, "TARGETCANVAS", cnvs);
+    IupSetCallback(cnvs, "TOUCH_CB",(Icallback)touch_cb);
+    IupSetCallback(cnvs, "MULTITOUCH_CB",(Icallback)multitouch_cb);
+  }
+#else
 #ifdef WIN32
   IupSetAttribute(cnvs, "TOUCH", "YES");
   //IupSetCallback(cnvs, "TOUCH_CB",(Icallback)touch_cb);
   IupSetCallback(cnvs, "MULTITOUCH_CB",(Icallback)multitouch_cb);
 #endif
+#endif
+
 
   dlg = IupDialog( IupVbox( cnvs, NULL ) );
   IupSetAttribute(dlg, "TITLE", "IupCanvas + Canvas Draw" );

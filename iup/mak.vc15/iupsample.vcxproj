@@ -75,7 +75,7 @@
       <AdditionalIncludeDirectories>../etc</AdditionalIncludeDirectories>
     </ResourceCompile>
     <Link>
-      <AdditionalDependencies>comctl32.lib;ws2_32.lib;winmm.lib;ole32.lib;glu32.lib;iup.lib;iupgl.lib;iupcontrols.lib;iupimglib.lib;cdim.lib;cd.lib;freetype6.lib;iupcd.lib;iupim.lib;im.lib;zlib1.lib;im_process.lib;cdcontextplus.lib;gdiplus.lib;iupole.lib;iup_scintilla.lib;imm32.lib;vld.lib;cdgl.lib;iup_plot.lib;%(AdditionalDependencies)</AdditionalDependencies>
+      <AdditionalDependencies>comctl32.lib;ws2_32.lib;winmm.lib;ole32.lib;glu32.lib;iup.lib;iupgl.lib;iupcontrols.lib;iupimglib.lib;cdim.lib;cd.lib;freetype6.lib;iupcd.lib;iuptuio.lib;iupim.lib;im.lib;zlib1.lib;im_process.lib;cdcontextplus.lib;gdiplus.lib;iupole.lib;iup_scintilla.lib;imm32.lib;vld.lib;cdgl.lib;iup_plot.lib;%(AdditionalDependencies)</AdditionalDependencies>
       <SuppressStartupBanner>true</SuppressStartupBanner>
       <AdditionalLibraryDirectories>..\lib\Debug;..\..\cd\lib\Debug;..\..\im\lib\Debug;..\..\freetype\lib\Debug;..\..\zlib\lib\Debug;..\..\ftgl\lib\Debug;\LNG\vld\lib\win32;%(AdditionalLibraryDirectories)</AdditionalLibraryDirectories>
       <GenerateDebugInformation>true</GenerateDebugInformation>
@@ -124,7 +124,7 @@ iupglcontrols.lib;
 cdim.lib;cd.lib
 ;freetype6.lib
 ;iupcd.lib
-;zlib1.lib;iupimglib.lib;iupim.lib;im.lib;im_process.lib;cdcontextplus.lib;cdgl.lib;gdiplus.lib;iupole.lib;iupweb.lib;iup_scintilla.lib;imm32.lib;ftgl.lib;iup_plot.lib;msimg32.lib;%(AdditionalDependencies)</AdditionalDependencies>
+;zlib1.lib;iupimglib.lib;iuptuio.lib;iupim.lib;im.lib;im_process.lib;cdcontextplus.lib;cdgl.lib;gdiplus.lib;iupole.lib;iupweb.lib;iup_scintilla.lib;imm32.lib;ftgl.lib;iup_plot.lib;msimg32.lib;%(AdditionalDependencies)</AdditionalDependencies>
       <SuppressStartupBanner>true</SuppressStartupBanner>
       <AdditionalLibraryDirectories>..\lib\Debug_64;..\..\cd\lib\Debug_64;..\..\im\lib\Debug_64;..\..\freetype\lib\Debug_64;..\..\zlib\lib\Debug_64;..\..\ftgl\lib\Debug_64;%(AdditionalLibraryDirectories)</AdditionalLibraryDirectories>
       <GenerateDebugInformation>true</GenerateDebugInformation>

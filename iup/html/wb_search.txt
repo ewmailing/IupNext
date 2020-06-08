@@ -46,6 +46,7 @@ en/func/iupgetalldialogs.html
 en/elem/iupseparator.html
 en/func/iupsetcallbacks.html
 en/func/iupclassmatch.html
+en/ctrl/iuptuio.html
 en/gl/iupgllink.html
 en/call/iup_getfocus_cb.html
 en/attrib/iup_fgcolor.html

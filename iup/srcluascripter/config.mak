@@ -146,6 +146,17 @@ ifdef ALL_STATIC
     DEFINES += IUPLUA_WEB
     USE_IUPWEB = Yes
   endif
+  
+  #IUPLUA_TUIO = Yes
+  ifdef IUPLUA_TUIO
+    DEFINES += IUPLUA_TUIO
+    ifneq ($(findstring Win, $(TEC_SYSNAME)), )
+      LIBS += iupluatuio$(LUASFX) iuptuio
+      LIBS += ws2_32 winmm
+    else
+      SLIB += $(IUP_LIB)/Lua$(LUASFX)/libiupluatuio$(LUASFX).a $(IUP_LIB)/libiuptuio.a
+    endif
+  endif
 else
   ifneq ($(findstring Win, $(TEC_SYSNAME)), )
     # Dinamically link in Windows, when not debugging
