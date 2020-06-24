@@ -925,7 +925,7 @@ IUP_SDK_API char* iupStrFileMakeFileName(const char* path, const char* title)
     char *filename = malloc(size_path + size_title + 2);
     memcpy(filename, path, size_path);
 
-    if (path[size_path - 1] != '/')
+    if (path[size_path - 1] != '/' && path[size_path - 1] != '\\')
     {
       filename[size_path] = '/';
       size_path++;
@@ -1013,7 +1013,6 @@ IUP_SDK_API void iupStrReplaceReserved(char* str, char c)
     str++;
   }
 }
-
 
 IUP_SDK_API void iupStrToUnix(char* str)
 {
@@ -1852,6 +1851,8 @@ IUP_SDK_API void iupStrPrintfDoubleLocale(char *str, const char *format, double 
 
 #ifdef WIN32
 #include <windows.h>
+#else
+#include <unistd.h> /* for close */
 #endif
 
 IUP_SDK_API int iupStrTmpFileName(char* filename, const char* prefix)
@@ -1883,4 +1884,19 @@ IUP_SDK_API int iupStrTmpFileName(char* filename, const char* prefix)
   close(fd);
 #endif
   return 1;
+}
+
+IUP_SDK_API char* iupStrFileMakeURL(const char* filename)
+{
+  int start = filename[0] == '/' ? 7 : 8;
+  int i, size = (int)strlen(filename) + 1;
+  char* url = malloc(start + size);
+  memcpy(url, "file:///", start);
+  memcpy(url + start, filename, size);
+  for (i = start; i < size + start; i++)
+  {
+    if (url[i] == '\\')
+      url[i] = '/';
+  }
+  return url;
 }

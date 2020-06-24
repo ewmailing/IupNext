@@ -31,13 +31,13 @@ else
     SRC  += iupgtk_webbrowser.c
     USE_GTK = Yes
     INCLUDES += ../src/gtk
-    STDINCS += $(GTK)/include/webkit-1.0 $(GTK)/include/libsoup-2.4
+    STDINCS += $(GTK)/include/libsoup-2.4
     LINK_WEBKIT = Yes
     
     ifdef USE_GTK3
+      DEFINES += USE_WEBKIT2
       ifneq ($(findstring Linux5, $(TEC_UNAME)), )
         STDINCS += $(GTK)/include/webkitgtk-4.0
-        DEFINES += USE_WEBKIT2
       else
         STDINCS += $(GTK)/include/webkitgtk-3.0
       endif

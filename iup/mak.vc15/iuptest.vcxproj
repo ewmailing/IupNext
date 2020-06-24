@@ -193,6 +193,7 @@
     <ClCompile Include="..\html\examples\tests\predialogs.c" />
     <ClCompile Include="..\html\examples\tests\progressbar.c" />
     <ClCompile Include="..\html\examples\tests\progressdlg.c" />
+    <ClCompile Include="..\html\examples\tests\rt_editor_images.c" />
     <ClCompile Include="..\html\examples\tests\sample.c" />
     <ClCompile Include="..\html\examples\tests\sbox.c" />
     <ClCompile Include="..\html\examples\tests\scanf.c" />
@@ -211,6 +212,7 @@
     <ClCompile Include="..\html\examples\tests\val.c" />
     <ClCompile Include="..\html\examples\tests\vbox.c" />
     <ClCompile Include="..\html\examples\tests\webbrowser.c" />
+    <ClCompile Include="..\html\examples\tests\webbrowser_editor.c" />
     <ClCompile Include="..\html\examples\tests\zbox.c" />
   </ItemGroup>
   <ItemGroup>

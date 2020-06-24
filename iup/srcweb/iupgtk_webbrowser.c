@@ -176,6 +176,89 @@ static int gtkWebBrowserSetHTMLAttrib(Ihandle* ih, const char* value)
   return 0; /* do not store value in hash table */
 }
 
+static char* gtkWebBrowserGetHTMLAttrib(Ihandle* ih)
+{
+#ifdef USE_WEBKIT2
+//  WebKitWebResource* resource = webkit_web_view_get_main_resource((WebKitWebView*)ih->handle);
+//  webkit_web_resource_get_data(resource, NULL, callback, user_data); // async, how to wait for the data - timer ???
+  return NULL;
+#else
+  WebKitWebFrame* frame = webkit_web_view_get_main_frame((WebKitWebView*)ih->handle);
+  WebKitWebDataSource* data_source = webkit_web_frame_get_data_source(frame);
+  GString* string = webkit_web_data_source_get_data(data_source);
+  return iupStrReturnStr(string->str);
+
+//  WebKitWebResource* webkit_web_data_source_get_main_resource(WebKitWebDataSource *data_source);
+//  GString* webkit_web_resource_get_data(WebKitWebResource *web_resource);
+#endif
+}
+
+#ifndef USE_WEBKIT2
+static int write_file(const char* filename, const char* str, int count)
+{
+  FILE* file = fopen(filename, "wb");
+  if (!file)
+    return 0;
+
+  fwrite(str, 1, count, file);
+
+  fclose(file);
+  return 1;
+}
+#endif
+
+static int gtkWebBrowserSetSaveAttrib(Ihandle* ih, const char* value)
+{
+  if (value)
+  {
+#ifdef USE_WEBKIT2
+    GFile* file = g_file_new_for_path(iupgtkStrConvertToFilename(value));
+    if (file)
+      webkit_web_view_save_to_file((WebKitWebView*)ih->handle, file, WEBKIT_SAVE_MODE_MHTML, NULL, NULL, NULL);
+#else
+    WebKitWebFrame* frame = webkit_web_view_get_main_frame((WebKitWebView*)ih->handle);
+    WebKitWebDataSource* data_source = webkit_web_frame_get_data_source(frame);
+    GString* string = webkit_web_data_source_get_data(data_source);
+    write_file(iupgtkStrConvertToFilename(value), string->str, string->len);
+#endif
+  }
+  return 0;
+}
+
+static int gtkWebBrowserSetValueAttrib(Ihandle* ih, const char* value);
+static int gtkWebBrowserSetEditableAttrib(Ihandle* ih, const char* value);
+
+static int gtkWebBrowserSetOpenAttrib(Ihandle* ih, const char* value)
+{
+  if (value)
+  {
+    char* url = iupStrFileMakeURL(value);
+    gtkWebBrowserSetValueAttrib(ih, url);
+    gtkWebBrowserSetEditableAttrib(ih, "Yes");
+    free(url);
+  }
+  return 0;
+}
+
+static int gtkWebBrowserSetNewAttrib(Ihandle* ih, const char* value)
+{
+  gtkWebBrowserSetHTMLAttrib(ih, "<HTML><BODY><P></P></BODY></HTML>");
+  gtkWebBrowserSetEditableAttrib(ih, "Yes");
+  (void)value;
+  return 0;
+}
+
+static int gtkWebBrowserSetCutAttrib(Ihandle* ih, const char* value)
+{
+#ifdef USE_WEBKIT2
+  webkit_web_view_execute_editing_command((WebKitWebView*)ih->handle, WEBKIT_EDITING_COMMAND_CUT);
+#else
+  webkit_web_view_cut_clipboard((WebKitWebView*)ih->handle);
+#endif
+  (void)value;
+  return 0;
+}
+
 static int gtkWebBrowserSetCopyAttrib(Ihandle* ih, const char* value)
 {
 #ifdef USE_WEBKIT2
@@ -187,12 +270,54 @@ static int gtkWebBrowserSetCopyAttrib(Ihandle* ih, const char* value)
   return 0;
 }
 
+static int gtkWebBrowserSetPasteAttrib(Ihandle* ih, const char* value)
+{
+#ifdef USE_WEBKIT2
+  webkit_web_view_execute_editing_command((WebKitWebView*)ih->handle, WEBKIT_EDITING_COMMAND_PASTE);
+#else
+  webkit_web_view_paste_clipboard((WebKitWebView*)ih->handle);
+#endif
+  (void)value;
+  return 0;
+}
+
+static int gtkWebBrowserSetUndoAttrib(Ihandle* ih, const char* value)
+{
+#ifdef USE_WEBKIT2
+  webkit_web_view_execute_editing_command((WebKitWebView*)ih->handle, WEBKIT_EDITING_COMMAND_UNDO);
+#else
+  webkit_web_view_undo((WebKitWebView*)ih->handle);
+#endif
+  (void)value;
+  return 0;
+}
+
+static int gtkWebBrowserSetRedoAttrib(Ihandle* ih, const char* value)
+{
+#ifdef USE_WEBKIT2
+  webkit_web_view_execute_editing_command((WebKitWebView*)ih->handle, WEBKIT_EDITING_COMMAND_REDO);
+#else
+  webkit_web_view_redo((WebKitWebView*)ih->handle);
+#endif
+  (void)value;
+  return 0;
+}
+
+static char* gtkWebBrowserGetEditableAttrib(Ihandle* ih)
+{
+#ifdef USE_WEBKIT2
+  return iupStrReturnBoolean(webkit_web_view_is_editable((WebKitWebView*)ih->handle));
+#else
+  return iupStrReturnBoolean(webkit_web_view_can_paste_clipboard((WebKitWebView*)ih->handle));
+#endif
+}
+
 static int gtkWebBrowserSetSelectAllAttrib(Ihandle* ih, const char* value)
 {
 #ifdef USE_WEBKIT2
   webkit_web_view_execute_editing_command((WebKitWebView*)ih->handle, WEBKIT_EDITING_COMMAND_SELECT_ALL);
 #else
-  webkit_web_view_select_all((WebKitWebView*)ih->handle);
+ webkit_web_view_select_all((WebKitWebView*)ih->handle);
 #endif
   (void)value;
   return 0;
@@ -223,6 +348,138 @@ static char* gtkWebBrowserGetZoomAttrib(Ihandle* ih)
 {
   int zoom = (int)(webkit_web_view_get_zoom_level((WebKitWebView*)ih->handle) * 100);
   return iupStrReturnInt(zoom);
+}
+
+static int gtkWebBrowserSetEditableAttrib(Ihandle* ih, const char* value)
+{
+  webkit_web_view_set_editable((WebKitWebView*)ih->handle, iupStrBoolean(value));
+  return 0;
+}
+
+static void gtkWebBrowserRunJavascript(Ihandle* ih, const char* format, ...)
+{
+  char js[1024];
+  va_list arglist;
+  va_start(arglist, format);
+  vsnprintf(js, 1024, format, arglist);
+  va_end(arglist);
+
+#ifdef USE_WEBKIT2
+  webkit_web_view_run_javascript((WebKitWebView*)ih->handle, js, NULL, NULL, NULL);
+#else
+  webkit_web_view_execute_script((WebKitWebView*)ih->handle, js);
+#endif
+}
+
+static int gtkWebBrowserExecCommandAttrib(Ihandle* ih, const char* value)
+{
+  if (value)
+  {
+#ifdef USE_WEBKIT2
+    webkit_web_view_execute_editing_command((WebKitWebView*)ih->handle, value);
+#else
+    gtkWebBrowserRunJavascript(ih, "document.execCommand('%s', false, null)", value);
+#endif
+  }
+  return 0;
+}
+
+static int gtkWebBrowserSetInsertImageAttrib(Ihandle* ih, const char* value)
+{
+  if (value)
+  {
+#ifdef USE_WEBKIT2
+    webkit_web_view_execute_editing_command_with_argument((WebKitWebView*)ih->handle, WEBKIT_EDITING_COMMAND_INSERT_IMAGE, value);
+#else
+    gtkWebBrowserRunJavascript(ih, "document.execCommand('insertimage', false, '%s')", value);
+#endif
+  }
+  return 0;
+}
+
+static int gtkWebBrowserSetCreateLinkAttrib(Ihandle* ih, const char* value)
+{
+  if (value)
+  {
+#ifdef USE_WEBKIT2
+    webkit_web_view_execute_editing_command_with_argument((WebKitWebView*)ih->handle, WEBKIT_EDITING_COMMAND_CREATE_LINK, value);
+#else
+    gtkWebBrowserRunJavascript(ih, "document.execCommand('createLink', false, '%s')", value);
+#endif
+  }
+  return 0;
+}
+
+static void gtkWebBrowserExecCommandParam(Ihandle* ih, const char* cmd, const char* param)
+{
+#ifdef USE_WEBKIT2
+  webkit_web_view_execute_editing_command_with_argument((WebKitWebView*)ih->handle, cmd, param);
+#else
+  gtkWebBrowserRunJavascript(ih, "document.execCommand('%s', false, '%s')", cmd, param);
+#endif
+}
+
+static int gtkWebBrowserSetInsertTextAttrib(Ihandle* ih, const char* value)
+{
+  if (value)
+    gtkWebBrowserExecCommandParam(ih, "insertText", value);
+  return 0;
+}
+
+static int gtkWebBrowserSetInsertHtmlAttrib(Ihandle* ih, const char* value)
+{
+  if (value)
+    gtkWebBrowserExecCommandParam(ih, "insertHTML", value);
+  return 0;
+}
+
+static int gtkWebBrowserSetFontNameAttrib(Ihandle* ih, const char* value)
+{
+  if (value)
+    gtkWebBrowserExecCommandParam(ih, "fontName", value);
+  return 0;
+}
+
+static int gtkWebBrowserSetFontSizeAttrib(Ihandle* ih, const char* value)
+{
+  int param = 0;
+  if (iupStrToInt(value, &param) && param > 0 && param < 8)
+    gtkWebBrowserExecCommandParam(ih, "fontSize", value);
+  return 0;
+}
+
+static int gtkWebBrowserSetFormatBlockAttrib(Ihandle* ih, const char* value)
+{
+  if (value)
+    gtkWebBrowserExecCommandParam(ih, "formatBlock", value);
+  return 0;
+}
+
+static int gtkWebBrowserSetForeColorAttrib(Ihandle* ih, const char* value)
+{
+  unsigned char r, g, b;
+  if (iupStrToRGB(value, &r, &g, &b))
+    gtkWebBrowserExecCommandParam(ih, "forecolor", value);
+  return 0;
+}
+
+static int gtkWebBrowserSetBackColorAttrib(Ihandle* ih, const char* value)
+{
+  unsigned char r, g, b;
+  if (iupStrToRGB(value, &r, &g, &b))
+    gtkWebBrowserExecCommandParam(ih, "backcolor", value);
+  return 0;
+}
+
+static int gtkWebBrowserSetInsertImageFileAttrib(Ihandle* ih, const char* value)
+{
+  if (value)
+  {
+    char* url = iupStrFileMakeURL(value);
+    gtkWebBrowserSetInsertImageAttrib(ih, url);
+    free(url);
+  }
+  return 0;
 }
 
 static char* gtkWebBrowserGetStatusAttrib(Ihandle* ih)
@@ -444,6 +701,7 @@ static WebKitWebView* gtkWebBrowserNewWindow(WebKitWebView *web_view, WebKitWebF
 
 /*********************************************************************************************/
 
+#ifndef USE_WEBKIT2
 static void gtkWebBrowserDummyLogFunc(const gchar *log_domain, GLogLevelFlags log_level, const gchar *message, gpointer user_data)
 {
   /* does nothing */
@@ -452,15 +710,19 @@ static void gtkWebBrowserDummyLogFunc(const gchar *log_domain, GLogLevelFlags lo
   (void)message;
   (void)user_data;
 }
+#endif
 
 static int gtkWebBrowserMapMethod(Ihandle* ih)
 {
+#ifndef USE_WEBKIT2
   GtkScrolledWindow* scrolled_window;
+#endif
 
   ih->handle = (GtkWidget*)webkit_web_view_new();
   if (!ih->handle)
     return IUP_ERROR;
 
+#ifndef USE_WEBKIT2
   scrolled_window = (GtkScrolledWindow*)gtk_scrolled_window_new(NULL, NULL);
   if (!scrolled_window)
     return IUP_ERROR;
@@ -492,6 +754,7 @@ static int gtkWebBrowserMapMethod(Ihandle* ih)
   gtk_widget_show((GtkWidget*)scrolled_window);
 
   iupAttribSet(ih, "_IUP_EXTRAPARENT", (char*)scrolled_window);
+#endif
 
   /* add to the parent, all GTK controls must call this. */
   iupgtkAddToParent(ih);
@@ -519,7 +782,9 @@ static int gtkWebBrowserMapMethod(Ihandle* ih)
   g_signal_connect(G_OBJECT(ih->handle), "document-load-finished", G_CALLBACK(gtkWebBrowserDocumentLoadFinished), ih);
 #endif
 
+#ifndef USE_WEBKIT2
   gtk_widget_realize((GtkWidget*)scrolled_window);
+#endif
   gtk_widget_realize(ih->handle);
 
   return IUP_NOERROR;
@@ -591,14 +856,34 @@ Iclass* iupWebBrowserNewClass(void)
   iupClassRegisterAttribute(ic, "GOFORWARD", NULL, gtkWebBrowserSetGoForwardAttrib, NULL, NULL, IUPAF_WRITEONLY | IUPAF_NO_DEFAULTVALUE | IUPAF_NO_INHERIT);
   iupClassRegisterAttribute(ic, "STOP", NULL, gtkWebBrowserSetStopAttrib, NULL, NULL, IUPAF_WRITEONLY | IUPAF_NO_INHERIT);
   iupClassRegisterAttribute(ic, "RELOAD", NULL, gtkWebBrowserSetReloadAttrib, NULL, NULL, IUPAF_WRITEONLY|IUPAF_NO_INHERIT);
-  iupClassRegisterAttribute(ic, "HTML", NULL, gtkWebBrowserSetHTMLAttrib, NULL, NULL, IUPAF_WRITEONLY|IUPAF_NO_INHERIT);
+  iupClassRegisterAttribute(ic, "HTML", gtkWebBrowserGetHTMLAttrib, gtkWebBrowserSetHTMLAttrib, NULL, NULL, IUPAF_NO_INHERIT);
   iupClassRegisterAttribute(ic, "STATUS", gtkWebBrowserGetStatusAttrib, NULL, NULL, NULL, IUPAF_NO_DEFAULTVALUE|IUPAF_READONLY|IUPAF_NO_INHERIT);
-  iupClassRegisterAttribute(ic, "COPY", NULL, gtkWebBrowserSetCopyAttrib, NULL, NULL, IUPAF_WRITEONLY | IUPAF_NO_INHERIT);
-  iupClassRegisterAttribute(ic, "SELECTALL", NULL, gtkWebBrowserSetSelectAllAttrib, NULL, NULL, IUPAF_WRITEONLY | IUPAF_NO_INHERIT);
   iupClassRegisterAttribute(ic, "ZOOM", gtkWebBrowserGetZoomAttrib, gtkWebBrowserSetZoomAttrib, NULL, NULL, IUPAF_NO_INHERIT);
   iupClassRegisterAttribute(ic, "PRINT", NULL, gtkWebBrowserSetPrintAttrib, NULL, NULL, IUPAF_WRITEONLY | IUPAF_NO_INHERIT);
   iupClassRegisterAttribute(ic, "CANGOBACK", gtkWebBrowserGetCanGoBackAttrib, NULL, NULL, NULL, IUPAF_READONLY | IUPAF_NO_DEFAULTVALUE | IUPAF_NO_INHERIT);
   iupClassRegisterAttribute(ic, "CANGOFORWARD", gtkWebBrowserGetCanGoForwardAttrib, NULL, NULL, NULL, IUPAF_READONLY | IUPAF_NO_DEFAULTVALUE | IUPAF_NO_INHERIT);
+
+  iupClassRegisterAttribute(ic, "EDITABLE", gtkWebBrowserGetEditableAttrib, gtkWebBrowserSetEditableAttrib, NULL, NULL, IUPAF_NO_INHERIT);
+  iupClassRegisterAttribute(ic, "NEW", NULL, gtkWebBrowserSetNewAttrib, NULL, NULL, IUPAF_WRITEONLY | IUPAF_NO_INHERIT);
+  iupClassRegisterAttribute(ic, "OPENFILE", NULL, gtkWebBrowserSetOpenAttrib, NULL, NULL, IUPAF_WRITEONLY | IUPAF_NO_INHERIT);
+  iupClassRegisterAttribute(ic, "SAVEFILE", NULL, gtkWebBrowserSetSaveAttrib, NULL, NULL, IUPAF_WRITEONLY | IUPAF_NO_INHERIT);
+  iupClassRegisterAttribute(ic, "UNDO", NULL, gtkWebBrowserSetUndoAttrib, NULL, NULL, IUPAF_WRITEONLY | IUPAF_NO_INHERIT);
+  iupClassRegisterAttribute(ic, "REDO", NULL, gtkWebBrowserSetRedoAttrib, NULL, NULL, IUPAF_WRITEONLY | IUPAF_NO_INHERIT);
+  iupClassRegisterAttribute(ic, "CUT", NULL, gtkWebBrowserSetCutAttrib, NULL, NULL, IUPAF_WRITEONLY | IUPAF_NO_INHERIT);
+  iupClassRegisterAttribute(ic, "COPY", NULL, gtkWebBrowserSetCopyAttrib, NULL, NULL, IUPAF_WRITEONLY | IUPAF_NO_INHERIT);
+  iupClassRegisterAttribute(ic, "PASTE", NULL, gtkWebBrowserSetPasteAttrib, NULL, NULL, IUPAF_WRITEONLY | IUPAF_NO_INHERIT);
+  iupClassRegisterAttribute(ic, "SELECTALL", NULL, gtkWebBrowserSetSelectAllAttrib, NULL, NULL, IUPAF_WRITEONLY | IUPAF_NO_INHERIT);
+  iupClassRegisterAttribute(ic, "EXECCOMMAND", NULL, gtkWebBrowserExecCommandAttrib, NULL, NULL, IUPAF_WRITEONLY | IUPAF_NO_INHERIT);
+  iupClassRegisterAttribute(ic, "INSERTIMAGE", NULL, gtkWebBrowserSetInsertImageAttrib, NULL, NULL, IUPAF_WRITEONLY | IUPAF_NO_INHERIT);
+  iupClassRegisterAttribute(ic, "INSERTIMAGEFILE", NULL, gtkWebBrowserSetInsertImageFileAttrib, NULL, NULL, IUPAF_WRITEONLY | IUPAF_NO_INHERIT);
+  iupClassRegisterAttribute(ic, "CREATELINK", NULL, gtkWebBrowserSetCreateLinkAttrib, NULL, NULL, IUPAF_WRITEONLY | IUPAF_NO_INHERIT);
+  iupClassRegisterAttribute(ic, "INSERTTEXT", NULL, gtkWebBrowserSetInsertTextAttrib, NULL, NULL, IUPAF_WRITEONLY | IUPAF_NO_INHERIT);
+  iupClassRegisterAttribute(ic, "INSERTHTML", NULL, gtkWebBrowserSetInsertHtmlAttrib, NULL, NULL, IUPAF_WRITEONLY | IUPAF_NO_INHERIT);
+  iupClassRegisterAttribute(ic, "FONTNAME", NULL, gtkWebBrowserSetFontNameAttrib, NULL, NULL, IUPAF_WRITEONLY | IUPAF_NO_INHERIT);
+  iupClassRegisterAttribute(ic, "FONTSIZE", NULL, gtkWebBrowserSetFontSizeAttrib, NULL, NULL, IUPAF_WRITEONLY | IUPAF_NO_INHERIT);
+  iupClassRegisterAttribute(ic, "FORMATBLOCK", NULL, gtkWebBrowserSetFormatBlockAttrib, NULL, NULL, IUPAF_WRITEONLY | IUPAF_NO_INHERIT);
+  iupClassRegisterAttribute(ic, "FORECOLOR", NULL, gtkWebBrowserSetForeColorAttrib, NULL, NULL, IUPAF_WRITEONLY | IUPAF_NO_INHERIT);
+  iupClassRegisterAttribute(ic, "BACKCOLOR", NULL, gtkWebBrowserSetBackColorAttrib, NULL, NULL, IUPAF_WRITEONLY | IUPAF_NO_INHERIT);
 
   /* GTK only */
   iupClassRegisterAttribute(ic, "BACKCOUNT", gtkWebBrowserGetBackCountAttrib, NULL, NULL, NULL, IUPAF_NO_DEFAULTVALUE | IUPAF_READONLY | IUPAF_NO_INHERIT);
@@ -607,3 +892,27 @@ Iclass* iupWebBrowserNewClass(void)
 
   return ic;
 }
+
+/*
+TODO:
+get HTML   "document.title=document.documentElement.innerHTML;"
+Insert Imagex  file:///
+
+Dirty
+The “user-changed-contents” signal
+void user_function (WebKitWebView *web_view, gpointer user_data) wk1
+
+The “selection-changed” signal
+void user_function (WebKitWebEditor *editor, gpointer user_data) wk2
+void user_function (WebKitWebView *web_view, gpointer user_data) wk1
+
+guint	webkit_editor_state_get_typing_attributes ()
+gboolean	webkit_editor_state_is_cut_available ()
+gboolean	webkit_editor_state_is_copy_available ()
+gboolean	webkit_editor_state_is_paste_available ()
+gboolean	webkit_editor_state_is_undo_available ()
+gboolean	webkit_editor_state_is_redo_available ()
+
+Others Get
+Find
+*/

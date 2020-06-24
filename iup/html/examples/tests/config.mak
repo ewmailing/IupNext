@@ -169,7 +169,7 @@ endif
 
 #NO_WEBBROWSER_TEST=Yes
 ifndef NO_WEBBROWSER_TEST
-  SRC += webbrowser.c
+  SRC += webbrowser.c webbrowser_editor.c rt_editor_images.c
   USE_IUPWEB = Yes
 else
   DEFINES += NO_WEBBROWSER_TEST

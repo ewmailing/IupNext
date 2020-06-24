@@ -102,6 +102,7 @@ void DetachBoxTest(void);
 void CboxTest(void);
 #ifndef NO_WEBBROWSER_TEST
 void WebBrowserTest(void);
+void WebBrowserEditorTest(void);
 #endif
 void MglLabelTest(void);
 void MatrixListTest(void);
@@ -220,6 +221,7 @@ static TestItems test_list[] = {
   {"Zbox", ZboxTest},
 #ifndef NO_WEBBROWSER_TEST
   { "WebBrowser", WebBrowserTest },
+  { "WebBrowser-Editor", WebBrowserEditorTest },
 #endif
 };
 

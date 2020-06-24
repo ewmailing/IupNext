@@ -564,6 +564,7 @@ iupStrFileGetExt
 iupStrFileGetPath
 iupStrFileGetTitle
 iupStrFileMakeFileName
+iupStrFileMakeURL
 iupStrFileNameSplit
 iupStrTmpFileName
 iupStrFindMnemonic
