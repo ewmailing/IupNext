@@ -8,6 +8,7 @@ NO_LUALINK = Yes
 # To use a subfolder with the Lua version for binaries
 LUAMOD_DIR = Yes
 USE_BIN2C_LUA = Yes
+DEPENDDIR = dep
 
 DEF_FILE = iuplua.def
 INCLUDES = ../include ../src  ../srclua5

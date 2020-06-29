@@ -10,6 +10,7 @@ NO_LUALINK = Yes
 # To use a subfolder with the Lua version for binaries
 LUAMOD_DIR = Yes
 USE_BIN2C_LUA = Yes
+DEPENDDIR = dep
 
 USE_IUP3 = Yes
 USE_IUPLUA = Yes
@@ -64,7 +65,7 @@ GC := $(addprefix scripter/il_, $(GC))
 $(GC) : scripter/il_%.c : scripter/%.lua generator.lua
 	$(LUABIN) generator.lua $<
 
-SRC := iupluascripterdlg.c iupluascripter_debugger.c iupluascripterdlg_images.c $(GC)
+SRC := scripter/iupluascripterdlg.c scripter/iupluascripter_debugger.c scripter/iupluascripterdlg_images.c $(GC)
 
 ifneq ($(findstring MacOS, $(TEC_UNAME)), )
   USE_IUPLUA:=

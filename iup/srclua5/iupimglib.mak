@@ -8,6 +8,7 @@ OPT = YES
 NO_LUALINK = Yes
 # To use a subfolder with the Lua version for binaries
 LUAMOD_DIR = Yes
+DEPENDDIR = dep
 
 USE_IUP3 = Yes
 USE_IUPLUA = Yes

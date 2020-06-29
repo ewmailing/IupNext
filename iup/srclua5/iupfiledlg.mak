@@ -9,6 +9,7 @@ NO_LUALINK = Yes
 # To use a subfolder with the Lua version for binaries
 LUAMOD_DIR = Yes
 NO_LUAOBJECT = Yes
+DEPENDDIR = dep
 
 USE_IUPLUA = Yes
 

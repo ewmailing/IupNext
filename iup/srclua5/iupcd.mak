@@ -13,6 +13,7 @@ USE_CD = YES
 USE_IUPLUA = Yes
 USE_CDLUA = YES
 USE_IUP3 = YES
+DEPENDDIR = dep
 
 INCLUDES = ../include
 LDIR = ../lib/$(TEC_UNAME)
