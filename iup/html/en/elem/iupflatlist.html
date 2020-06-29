@@ -230,10 +230,16 @@ set ITEMFONTid. </p>
 ITEMFONTid. </p>
 <p><strong>ICONSPACING </strong>(<font SIZE="3">non inheritable</font>): spacing between the 
 image and the text. Default: &quot;2&quot;.</p>
-<p><strong>HLCOLOR</strong>: color used to indicate a selected state. 
+<p><strong>HLCOLOR</strong>: color of a filled box drawn over the selected item. 
 Default: &quot;TXTHLCOLOR&quot;. </p>
 <p><strong>HLCOLORALPHA</strong>: the transparency used to draw the selection. 
-Default: 128.</p>
+Default: 128. If set to 0 the selection box is not drawn.</p>
+
+  
+<p><strong>PSCOLOR</strong>: background color of a selected item. If not defined 
+BACKCOLORid will be used. (since 3.30)</p>
+<p><strong>TEXTPSCOLOR</strong>: foreground color of a selected item. If not 
+defined FORECOLORid will be used. (since 3.30)</p>
 
   
 <p><strong>INSERTITEMid</strong> (write-only): inserts an item before the given 

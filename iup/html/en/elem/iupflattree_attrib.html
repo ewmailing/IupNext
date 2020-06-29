@@ -43,9 +43,13 @@ global attribute TXTFGCOLOR. </p>
 
   
 <p><strong>HLCOLOR</strong> (<font size="3">non inheritable</font>): the 
-background color of the selected node. Default: TXTHLCOLOR global attribute.</p>
+color of a filled box drawn over the selected node. Default: TXTHLCOLOR global attribute.</p>
 <p><strong>HLCOLORALPHA</strong>: the transparency used to draw the selection. 
-Default: 128.</p>
+Default: 128. If set to 0 the selection box is not drawn.</p>
+<p><strong>PSCOLOR</strong>: background color of a selected node. If not defined 
+BACKCOLORid will be used. (since 3.30)</p>
+<p><strong>TEXTPSCOLOR</strong>: foreground color of a selected node. If not 
+defined FORECOLORid will be used. (since 3.30)</p>
 
   
 <p><strong>ICONSPACING </strong>(<font SIZE="3">non inheritable</font>): spacing between the 

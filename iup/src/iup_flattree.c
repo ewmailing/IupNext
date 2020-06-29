@@ -1289,17 +1289,27 @@ static int iFlatTreeDrawNodes(Ihandle *ih, IdrawCanvas* dc, iFlatTreeNode *node,
           toggle_gap = ih->data->toggle_size;
       }
 
-      /* image */
+      /* only the image */
       iupFlatDrawIcon(ih, dc, node_x + toggle_gap, node_y, image_gap - ih->data->icon_spacing, node_h,
                       IUP_IMGPOS_LEFT, ih->data->icon_spacing, IUP_ALIGN_ALEFT, IUP_ALIGN_ACENTER, 0, 0,
                       image, make_inactive, NULL, 0, 0, fore_color, back_color, active);
 
       title_x = node_x + toggle_gap + image_gap;
 
+      if (node->selected)
+      {
+        char* ps_color = iupAttribGetStr(ih, "PSCOLOR");
+        char* text_ps_color = iupAttribGetStr(ih, "TEXTPSCOLOR");
+        if (text_ps_color)
+          fore_color = text_ps_color;
+        if (ps_color)
+          back_color = ps_color;
+      }
+
       /* title background */
       iupFlatDrawBox(dc, title_x, title_x + node->title_width - 1, node_y, node_y + node_h - 1, back_color, back_color, 1);
 
-      /* title */
+      /* only the title */
       iFlatTreeSetNodeDrawFont(ih, node, font);
       iupFlatDrawIcon(ih, dc, title_x, node_y, node->title_width, node_h,
                       IUP_IMGPOS_LEFT, ih->data->icon_spacing, IUP_ALIGN_ALEFT, IUP_ALIGN_ACENTER, 0, 0,
@@ -1308,18 +1318,21 @@ static int iFlatTreeDrawNodes(Ihandle *ih, IdrawCanvas* dc, iFlatTreeNode *node,
       /* title selection */
       if (node->selected || (ih->data->show_dragdrop && ih->data->dragover_id == node->id))
       {
-        unsigned char red, green, blue;
-        char* hlcolor = iupAttribGetStr(ih, "HLCOLOR");
         unsigned char alpha = (unsigned char)iupAttribGetInt(ih, "HLCOLORALPHA");
-        long selcolor;
+        if (alpha != 0)
+        {
+          long selcolor;
+          unsigned char red, green, blue;
+          char* hlcolor = iupAttribGetStr(ih, "HLCOLOR");
 
-        if (ih->data->show_dragdrop && ih->data->dragover_id == node->id)
-          alpha = (2 * alpha) / 3;
+          if (ih->data->show_dragdrop && ih->data->dragover_id == node->id)
+            alpha = (2 * alpha) / 3;
 
-        iupStrToRGB(hlcolor, &red, &green, &blue);
-        selcolor = iupDrawColor(red, green, blue, alpha);
+          iupStrToRGB(hlcolor, &red, &green, &blue);
+          selcolor = iupDrawColor(red, green, blue, alpha);
 
-        iupdrvDrawRectangle(dc, title_x, node_y, title_x + node->title_width - 1, node_y + node_h - 1, selcolor, IUP_DRAW_FILL, 1);
+          iupdrvDrawRectangle(dc, title_x, node_y, title_x + node->title_width - 1, node_y + node_h - 1, selcolor, IUP_DRAW_FILL, 1);
+        }
       }
 
       /* title focus */
@@ -4124,8 +4137,10 @@ Iclass* iupFlatTreeNewClass(void)
   /* General Attributes */
   iupClassRegisterAttribute(ic, "FGCOLOR", NULL, iFlatTreeSetAttribPostRedraw, IUPAF_SAMEASSYSTEM, IUP_FLAT_FORECOLOR, IUPAF_NOT_MAPPED);
   iupClassRegisterAttribute(ic, "BGCOLOR", NULL, iFlatTreeSetAttribPostRedraw, IUPAF_SAMEASSYSTEM, IUP_FLAT_BACKCOLOR, IUPAF_NOT_MAPPED);
-  iupClassRegisterAttribute(ic, "HLCOLOR", NULL, NULL, IUPAF_SAMEASSYSTEM, "TXTHLCOLOR", IUPAF_NO_INHERIT);  /* selection, not highlight */
+  iupClassRegisterAttribute(ic, "HLCOLOR", NULL, NULL, IUPAF_SAMEASSYSTEM, "TXTHLCOLOR", IUPAF_NO_INHERIT);  /* selection box, not highlight */
   iupClassRegisterAttribute(ic, "HLCOLORALPHA", NULL, NULL, IUPAF_SAMEASSYSTEM, "128", IUPAF_NO_INHERIT);
+  iupClassRegisterAttribute(ic, "PSCOLOR", NULL, NULL, NULL, NULL, IUPAF_NO_INHERIT);  /* selection, not pressed */
+  iupClassRegisterAttribute(ic, "TEXTPSCOLOR", NULL, NULL, NULL, NULL, IUPAF_NO_INHERIT);  /* selection, not pressed */
   iupClassRegisterAttribute(ic, "INDENTATION", iFlatTreeGetIndentationAttrib, iFlatTreeSetIndentationAttrib, NULL, NULL, IUPAF_NOT_MAPPED | IUPAF_NO_INHERIT);
   iupClassRegisterAttribute(ic, "SPACING", iFlatTreeGetSpacingAttrib, iFlatTreeSetSpacingAttrib, IUPAF_SAMEASSYSTEM, "0", IUPAF_NO_INHERIT | IUPAF_NOT_MAPPED);
   iupClassRegisterAttribute(ic, "CSPACING", iupBaseGetCSpacingAttrib, iupBaseSetCSpacingAttrib, NULL, NULL, IUPAF_NO_SAVE | IUPAF_NOT_MAPPED);
