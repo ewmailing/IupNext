@@ -1230,14 +1230,14 @@ endif
 
 ifdef LINK_WEBKIT
   ifneq ($(findstring Linux5, $(TEC_UNAME)), )
-    LIBS += webkit2gtk-4.0
+    LIBS += webkit2gtk-4.0 gio-2.0
   else 
     ifneq ($(findstring Linux4, $(TEC_UNAME)), )
-      LIBS += webkitgtk-3.0
+      LIBS += webkit2gtk-3.0
     else 
       ifneq ($(findstring Linux3, $(TEC_UNAME)), )
         ifdef USE_GTK3
-          LIBS += webkitgtk-3.0
+          LIBS += webkit2gtk-3.0
         else
           LIBS += webkitgtk-1.0
         endif
