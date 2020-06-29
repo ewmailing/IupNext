@@ -13,18 +13,9 @@
 #include "il.h"
 
 
-static int scintilladlg_markerchanged_cb(Ihandle *self, Ihandle * p0, int p1, int p2)
+static int scintilladlg_closetext_cb(Ihandle *self, Ihandle * p0)
 {
-  lua_State *L = iuplua_call_start(self, "markerchanged_cb");
-  iuplua_pushihandle(L, p0);
-  lua_pushinteger(L, p1);
-  lua_pushinteger(L, p2);
-  return iuplua_call(L, 3);
-}
-
-static int scintilladlg_savemarkers_cb(Ihandle *self, Ihandle * p0)
-{
-  lua_State *L = iuplua_call_start(self, "savemarkers_cb");
+  lua_State *L = iuplua_call_start(self, "closetext_cb");
   iuplua_pushihandle(L, p0);
   return iuplua_call(L, 1);
 }
@@ -36,16 +27,46 @@ static int scintilladlg_configload_cb(Ihandle *self, Ihandle * p0)
   return iuplua_call(L, 1);
 }
 
-static int scintilladlg_newtext_cb(Ihandle *self, Ihandle * p0)
+static int scintilladlg_configsave_cb(Ihandle *self, Ihandle * p0)
 {
-  lua_State *L = iuplua_call_start(self, "newtext_cb");
+  lua_State *L = iuplua_call_start(self, "configsave_cb");
   iuplua_pushihandle(L, p0);
   return iuplua_call(L, 1);
 }
 
-static int scintilladlg_closetext_cb(Ihandle *self, Ihandle * p0)
+static int scintilladlg_exit_cb(Ihandle *self)
 {
-  lua_State *L = iuplua_call_start(self, "closetext_cb");
+  lua_State *L = iuplua_call_start(self, "exit_cb");
+  return iuplua_call(L, 0);
+}
+
+static int scintilladlg_loadfile_cb(Ihandle *self, Ihandle * p0)
+{
+  lua_State *L = iuplua_call_start(self, "loadfile_cb");
+  iuplua_pushihandle(L, p0);
+  return iuplua_call(L, 1);
+}
+
+static int scintilladlg_markerchanged_cb(Ihandle *self, Ihandle * p0, int p1, int p2)
+{
+  lua_State *L = iuplua_call_start(self, "markerchanged_cb");
+  iuplua_pushihandle(L, p0);
+  lua_pushinteger(L, p1);
+  lua_pushinteger(L, p2);
+  return iuplua_call(L, 3);
+}
+
+static int scintilladlg_newfilename_cb(Ihandle *self, char * p0, char * p1)
+{
+  lua_State *L = iuplua_call_start(self, "newfilename_cb");
+  lua_pushstring(L, p0);
+  lua_pushstring(L, p1);
+  return iuplua_call(L, 2);
+}
+
+static int scintilladlg_newtext_cb(Ihandle *self, Ihandle * p0)
+{
+  lua_State *L = iuplua_call_start(self, "newtext_cb");
   iuplua_pushihandle(L, p0);
   return iuplua_call(L, 1);
 }
@@ -57,20 +78,6 @@ static int scintilladlg_restoremarkers_cb(Ihandle *self, Ihandle * p0)
   return iuplua_call(L, 1);
 }
 
-static int scintilladlg_configsave_cb(Ihandle *self, Ihandle * p0)
-{
-  lua_State *L = iuplua_call_start(self, "configsave_cb");
-  iuplua_pushihandle(L, p0);
-  return iuplua_call(L, 1);
-}
-
-static int scintilladlg_loadfile_cb(Ihandle *self, Ihandle * p0)
-{
-  lua_State *L = iuplua_call_start(self, "loadfile_cb");
-  iuplua_pushihandle(L, p0);
-  return iuplua_call(L, 1);
-}
-
 static int scintilladlg_savefile_cb(Ihandle *self, Ihandle * p0)
 {
   lua_State *L = iuplua_call_start(self, "savefile_cb");
@@ -78,18 +85,11 @@ static int scintilladlg_savefile_cb(Ihandle *self, Ihandle * p0)
   return iuplua_call(L, 1);
 }
 
-static int scintilladlg_newfilename_cb(Ihandle *self, char * p0, char * p1)
+static int scintilladlg_savemarkers_cb(Ihandle *self, Ihandle * p0)
 {
-  lua_State *L = iuplua_call_start(self, "newfilename_cb");
-  lua_pushstring(L, p0);
-  lua_pushstring(L, p1);
-  return iuplua_call(L, 2);
-}
-
-static int scintilladlg_exit_cb(Ihandle *self)
-{
-  lua_State *L = iuplua_call_start(self, "exit_cb");
-  return iuplua_call(L, 0);
+  lua_State *L = iuplua_call_start(self, "savemarkers_cb");
+  iuplua_pushihandle(L, p0);
+  return iuplua_call(L, 1);
 }
 
 static int ScintillaDlg(lua_State *L)
@@ -104,17 +104,17 @@ int iupscintilladlglua_open(lua_State * L)
 {
   iuplua_register(L, ScintillaDlg, "ScintillaDlg");
 
-  iuplua_register_cb(L, "MARKERCHANGED_CB", (lua_CFunction)scintilladlg_markerchanged_cb, NULL);
-  iuplua_register_cb(L, "SAVEMARKERS_CB", (lua_CFunction)scintilladlg_savemarkers_cb, NULL);
-  iuplua_register_cb(L, "CONFIGLOAD_CB", (lua_CFunction)scintilladlg_configload_cb, NULL);
-  iuplua_register_cb(L, "NEWTEXT_CB", (lua_CFunction)scintilladlg_newtext_cb, NULL);
   iuplua_register_cb(L, "CLOSETEXT_CB", (lua_CFunction)scintilladlg_closetext_cb, NULL);
-  iuplua_register_cb(L, "RESTOREMARKERS_CB", (lua_CFunction)scintilladlg_restoremarkers_cb, NULL);
+  iuplua_register_cb(L, "CONFIGLOAD_CB", (lua_CFunction)scintilladlg_configload_cb, NULL);
   iuplua_register_cb(L, "CONFIGSAVE_CB", (lua_CFunction)scintilladlg_configsave_cb, NULL);
-  iuplua_register_cb(L, "LOADFILE_CB", (lua_CFunction)scintilladlg_loadfile_cb, NULL);
-  iuplua_register_cb(L, "SAVEFILE_CB", (lua_CFunction)scintilladlg_savefile_cb, NULL);
-  iuplua_register_cb(L, "NEWFILENAME_CB", (lua_CFunction)scintilladlg_newfilename_cb, NULL);
   iuplua_register_cb(L, "EXIT_CB", (lua_CFunction)scintilladlg_exit_cb, NULL);
+  iuplua_register_cb(L, "LOADFILE_CB", (lua_CFunction)scintilladlg_loadfile_cb, NULL);
+  iuplua_register_cb(L, "MARKERCHANGED_CB", (lua_CFunction)scintilladlg_markerchanged_cb, NULL);
+  iuplua_register_cb(L, "NEWFILENAME_CB", (lua_CFunction)scintilladlg_newfilename_cb, NULL);
+  iuplua_register_cb(L, "NEWTEXT_CB", (lua_CFunction)scintilladlg_newtext_cb, NULL);
+  iuplua_register_cb(L, "RESTOREMARKERS_CB", (lua_CFunction)scintilladlg_restoremarkers_cb, NULL);
+  iuplua_register_cb(L, "SAVEFILE_CB", (lua_CFunction)scintilladlg_savefile_cb, NULL);
+  iuplua_register_cb(L, "SAVEMARKERS_CB", (lua_CFunction)scintilladlg_savemarkers_cb, NULL);
 
 #ifdef IUPLUA_USELOH
 #include "scintilladlg.loh"

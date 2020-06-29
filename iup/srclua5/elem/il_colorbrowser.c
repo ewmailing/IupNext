@@ -12,18 +12,18 @@
 #include "il.h"
 
 
-static int colorbrowser_drag_cb(Ihandle *self, unsigned char  p0, unsigned char  p1, unsigned char  p2)
+static int colorbrowser_change_cb(Ihandle *self, unsigned char  p0, unsigned char  p1, unsigned char  p2)
 {
-  lua_State *L = iuplua_call_start(self, "drag_cb");
+  lua_State *L = iuplua_call_start(self, "change_cb");
   lua_pushinteger(L, p0);
   lua_pushinteger(L, p1);
   lua_pushinteger(L, p2);
   return iuplua_call(L, 3);
 }
 
-static int colorbrowser_change_cb(Ihandle *self, unsigned char  p0, unsigned char  p1, unsigned char  p2)
+static int colorbrowser_drag_cb(Ihandle *self, unsigned char  p0, unsigned char  p1, unsigned char  p2)
 {
-  lua_State *L = iuplua_call_start(self, "change_cb");
+  lua_State *L = iuplua_call_start(self, "drag_cb");
   lua_pushinteger(L, p0);
   lua_pushinteger(L, p1);
   lua_pushinteger(L, p2);
@@ -42,8 +42,8 @@ int iupcolorbrowserlua_open(lua_State * L)
 {
   iuplua_register(L, ColorBrowser, "ColorBrowser");
 
-  iuplua_register_cb(L, "DRAG_CB", (lua_CFunction)colorbrowser_drag_cb, NULL);
   iuplua_register_cb(L, "CHANGE_CB", (lua_CFunction)colorbrowser_change_cb, NULL);
+  iuplua_register_cb(L, "DRAG_CB", (lua_CFunction)colorbrowser_drag_cb, NULL);
 
 #ifdef IUPLUA_USELOH
 #include "colorbrowser.loh"
