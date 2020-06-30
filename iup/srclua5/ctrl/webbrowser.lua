@@ -12,6 +12,7 @@ local ctrl = {
     newwindow_cb = "s",
     error_cb = "s",
     completed_cb = "s",
+    update_cb = "",
   },
   include = "iupweb.h",
   extracode = [[ 

@@ -41,6 +41,12 @@ static int webbrowser_newwindow_cb(Ihandle *self, char * p0)
   return iuplua_call(L, 1);
 }
 
+static int webbrowser_update_cb(Ihandle *self)
+{
+  lua_State *L = iuplua_call_start(self, "update_cb");
+  return iuplua_call(L, 0);
+}
+
 static int WebBrowser(lua_State *L)
 {
   Ihandle *ih = IupWebBrowser();
@@ -57,6 +63,7 @@ int iupwebbrowserlua_open(lua_State * L)
   iuplua_register_cb(L, "ERROR_CB", (lua_CFunction)webbrowser_error_cb, NULL);
   iuplua_register_cb(L, "NAVIGATE_CB", (lua_CFunction)webbrowser_navigate_cb, NULL);
   iuplua_register_cb(L, "NEWWINDOW_CB", (lua_CFunction)webbrowser_newwindow_cb, NULL);
+  iuplua_register_cb(L, "UPDATE_CB", (lua_CFunction)webbrowser_update_cb, NULL);
 
 #ifdef IUPLUA_USELOH
 #include "webbrowser.loh"

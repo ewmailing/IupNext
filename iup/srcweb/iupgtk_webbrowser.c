@@ -176,20 +176,60 @@ static int gtkWebBrowserSetHTMLAttrib(Ihandle* ih, const char* value)
   return 0; /* do not store value in hash table */
 }
 
+#ifdef USE_WEBKIT2
+static void gtkWebBrowserGetResourceData(GObject *source_object, GAsyncResult *res, gpointer user_data)
+{
+  Ihandle* ih = (Ihandle*)user_data;
+  WebKitWebResource *resource = (WebKitWebResource*)source_object;
+  GError *error = NULL;
+  gsize len = 0;
+
+  char* data = (char*)webkit_web_resource_get_data_finish(resource, res, &len, &error);
+  if (!data)
+  {
+    if (error)
+    {
+      iupAttribSetStrf(ih, "HTML", "ERROR: %s", error->message);
+      g_error_free(error);
+    }
+    else
+      iupAttribSet(ih, "HTML", "ERROR: UNKNOWN");
+  }
+  else
+  {
+    if (data[len] != 0)
+      data[len] = 0;
+    iupAttribSetStr(ih, "HTML", data);
+  }
+}
+#endif
+
 static char* gtkWebBrowserGetHTMLAttrib(Ihandle* ih)
 {
 #ifdef USE_WEBKIT2
-//  WebKitWebResource* resource = webkit_web_view_get_main_resource((WebKitWebView*)ih->handle);
-//  webkit_web_resource_get_data(resource, NULL, callback, user_data); // async, how to wait for the data - timer ???
+  char* value = NULL;
+  WebKitWebResource* resource = webkit_web_view_get_main_resource((WebKitWebView*)ih->handle);
+  webkit_web_resource_get_data(resource, NULL, gtkWebBrowserGetResourceData, ih);
+
+  int i = 0;
+  while (!value && i < 1000)
+  {
+    IupLoopStep();
+    value = iupAttribGet(ih, "HTML");
+    i++;
+  }
+
   return NULL;
 #else
   WebKitWebFrame* frame = webkit_web_view_get_main_frame((WebKitWebView*)ih->handle);
+#if 1
   WebKitWebDataSource* data_source = webkit_web_frame_get_data_source(frame);
   GString* string = webkit_web_data_source_get_data(data_source);
+#else  /*  ???????  */
+  WebKitWebResource* resource = webkit_web_data_source_get_main_resource(data_source);
+  GString* string = webkit_web_resource_get_data(resource);
+#endif
   return iupStrReturnStr(string->str);
-
-//  WebKitWebResource* webkit_web_data_source_get_main_resource(WebKitWebDataSource *data_source);
-//  GString* webkit_web_resource_get_data(WebKitWebResource *web_resource);
 #endif
 }
 
@@ -327,7 +367,18 @@ static int gtkWebBrowserSetPrintAttrib(Ihandle* ih, const char* value)
 {
 #ifdef USE_WEBKIT2
   WebKitPrintOperation *print_operation = webkit_print_operation_new((WebKitWebView*)ih->handle);
-  webkit_print_operation_print(print_operation);
+  if (iupStrBoolean(value))
+  {
+    Ihandle* dlg = IupGetDialog(ih);
+    GtkWindow* parent = NULL;
+
+    if (dlg && dlg->handle)
+      parent = (GtkWindow*)dlg->handle;
+
+    webkit_print_operation_run_dialog(print_operation, parent);
+  }
+  else
+    webkit_print_operation_print(print_operation);
 #else
   WebKitWebFrame* frame = webkit_web_view_get_main_frame((WebKitWebView*)ih->handle);
   webkit_web_frame_print(frame);
@@ -839,6 +890,7 @@ Iclass* iupWebBrowserNewClass(void)
   iupClassRegisterCallback(ic, "NEWWINDOW_CB", "s");
   iupClassRegisterCallback(ic, "NAVIGATE_CB", "s");
   iupClassRegisterCallback(ic, "ERROR_CB", "s");
+  iupClassRegisterCallback(ic, "COMPLETED_CB", "s");
 
   /* Common */
   iupBaseRegisterCommonAttrib(ic);
@@ -894,18 +946,27 @@ Iclass* iupWebBrowserNewClass(void)
 }
 
 /*
-TODO:
-get HTML   "document.title=document.documentElement.innerHTML;"
-Insert Imagex  file:///
+Possibilities:
+
+wk2
+webkit_web_view_can_execute_editing_command
 
 Dirty
 The “user-changed-contents” signal
 void user_function (WebKitWebView *web_view, gpointer user_data) wk1
 
-The “selection-changed” signal
+The “selection-changed” signal -- UPDATECOMMANDS_CB ???
 void user_function (WebKitWebEditor *editor, gpointer user_data) wk2
 void user_function (WebKitWebView *web_view, gpointer user_data) wk1
 
+wk1
+webkit_web_view_can_copy_clipboard
+webkit_web_view_can_cut_clipboard
+webkit_web_view_can_paste_clipboard
+webkit_web_view_can_redo
+webkit_web_view_can_undo
+
+wk2
 guint	webkit_editor_state_get_typing_attributes ()
 gboolean	webkit_editor_state_is_cut_available ()
 gboolean	webkit_editor_state_is_copy_available ()
@@ -913,6 +974,7 @@ gboolean	webkit_editor_state_is_paste_available ()
 gboolean	webkit_editor_state_is_undo_available ()
 gboolean	webkit_editor_state_is_redo_available ()
 
-Others Get
-Find
+Find - no dialog (must build one)
+webkit_web_view_search_text wk1
+WebKitFindController wk2
 */

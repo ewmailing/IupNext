@@ -161,7 +161,7 @@ public:
     }
     else if (Command == CSC_UPDATECOMMANDS)
     {
-      IFn cb = IupGetCallback(ih, "UPDATECOMMANDS_CB");
+      IFn cb = IupGetCallback(ih, "UPDATE_CB");
       if (cb)
         cb(ih);
     }
@@ -513,11 +513,16 @@ static int winWebBrowserSetFindAttrib(Ihandle* ih, const char* value)
   return 0;
 }
 
+static void winWebBrowserExecCommandIdBool(Ihandle* ih, UINT nID, int value);
+
 static int winWebBrowserSetPrintAttrib(Ihandle* ih, const char* value)
 {
+#if 0
   IWebBrowser2 *pWeb = (IWebBrowser2*)iupAttribGet(ih, "_IUPWEB_BROWSER");
-  pWeb->ExecWB(OLECMDID_PRINT2, OLECMDEXECOPT_PROMPTUSER, NULL, NULL);
-  (void)value;
+  pWeb->ExecWB(OLECMDID_PRINT2, iupStrBoolean(value)? OLECMDEXECOPT_PROMPTUSER: OLECMDEXECOPT_DONTPROMPTUSER, NULL, NULL);
+#else
+  winWebBrowserExecCommandIdBool(ih, IDM_PRINT, iupStrBoolean(value));
+#endif
   return 0;
 }
 
@@ -895,6 +900,25 @@ static HRESULT winWebBrowserExecHelperNN(IOleCommandTarget* pCmdTarg, UINT nID)
   return hr;
 }
 
+static HRESULT winWebBrowserExecHelperNNBool(IOleCommandTarget* pCmdTarg, UINT nID, int value)
+{
+  HRESULT hr = E_FAIL;
+  long nMinSupportLevel = OLECMDF_SUPPORTED | OLECMDF_ENABLED;
+  long nExecOpt = OLECMDEXECOPT_DODEFAULT;
+  long lStatus = winWebBrowserQueryStatus(pCmdTarg, nID);
+  if ((lStatus & nMinSupportLevel) == nMinSupportLevel)
+  {
+    VARIANT var;
+    VariantInit(&var);
+
+    var.vt = VT_BOOL;
+    var.boolVal == value? VARIANT_TRUE: VARIANT_FALSE;
+
+    hr = pCmdTarg->Exec(&CGID_MSHTML, nID, nExecOpt, &var, NULL);
+  }
+  return hr;
+}
+
 static void winWebBrowserExecCommandId(Ihandle* ih, UINT nID)
 {
   IWebBrowser2 *pWeb = (IWebBrowser2*)iupAttribGet(ih, "_IUPWEB_BROWSER");
@@ -912,6 +936,32 @@ static void winWebBrowserExecCommandId(Ihandle* ih, UINT nID)
 
   pHtmlDoc->Release();
   pDispatch->Release();
+}
+
+static void winWebBrowserExecCommandIdBool(Ihandle* ih, UINT nID, int value)
+{
+  IWebBrowser2 *pWeb = (IWebBrowser2*)iupAttribGet(ih, "_IUPWEB_BROWSER");
+
+  /* Retrieve the document object. */
+  IDispatch* pDispatch = winWebBrowserGetDispatch(ih, pWeb);
+
+  IHTMLDocument2 *pHtmlDoc;
+  pDispatch->QueryInterface(IID_IHTMLDocument2, (void**)&pHtmlDoc);
+
+  IOleCommandTarget* pCmdTarg;
+  pDispatch->QueryInterface(IID_IOleCommandTarget, (void**)&pCmdTarg);
+
+  winWebBrowserExecHelperNNBool(pCmdTarg, nID, value);
+
+  pHtmlDoc->Release();
+  pDispatch->Release();
+}
+
+static int winWebBrowserSetPrintPreviewAttrib(Ihandle* ih, const char* value)
+{
+  winWebBrowserExecCommandId(ih, IDM_PRINTPREVIEW);
+  (void)value;
+  return 0;
 }
 
 static char* winWebBrowserQueryCommandValue(Ihandle* ih, const char* cmd, int is_color)
@@ -986,7 +1036,7 @@ static char* winWebBrowserQueryCommandText(Ihandle* ih, const char* cmd)
   return value;
 }
 
-static void winWebBrowserExecCommand(Ihandle* ih, const char* cmd)
+static void winWebBrowserExecCommand(Ihandle* ih, const char* cmd, int show_ui)
 {
   IWebBrowser2 *pWeb = (IWebBrowser2*)iupAttribGet(ih, "_IUPWEB_BROWSER");
 
@@ -1000,7 +1050,7 @@ static void winWebBrowserExecCommand(Ihandle* ih, const char* cmd)
   VARIANT var;
   VariantInit(&var);
 
-  pHtmlDoc->execCommand(bCmd, VARIANT_FALSE, var, NULL);
+  pHtmlDoc->execCommand(bCmd, show_ui? VARIANT_TRUE: VARIANT_FALSE, var, NULL);
 
   SysFreeString(bCmd);
 
@@ -1008,7 +1058,7 @@ static void winWebBrowserExecCommand(Ihandle* ih, const char* cmd)
   pDispatch->Release();
 }
 
-static void winWebBrowserExecCommandParam(Ihandle* ih, const char* cmd, const char* param)
+static void winWebBrowserExecCommandParam(Ihandle* ih, const char* cmd, int show_ui, const char* param)
 {
   IWebBrowser2 *pWeb = (IWebBrowser2*)iupAttribGet(ih, "_IUPWEB_BROWSER");
 
@@ -1022,7 +1072,7 @@ static void winWebBrowserExecCommandParam(Ihandle* ih, const char* cmd, const ch
   VARIANT var;
   winVariantBStr(&var, bParam);
 
-  pHtmlDoc->execCommand(bCmd, VARIANT_FALSE, var, NULL);
+  pHtmlDoc->execCommand(bCmd, show_ui? VARIANT_TRUE: VARIANT_FALSE, var, NULL);
 
   SysFreeString(bCmd);
   SysFreeString(bParam);
@@ -1031,7 +1081,7 @@ static void winWebBrowserExecCommandParam(Ihandle* ih, const char* cmd, const ch
   pDispatch->Release();
 }
 
-static void winWebBrowserExecCommandParamInt(Ihandle* ih, const char* cmd, int param)
+static void winWebBrowserExecCommandParamInt(Ihandle* ih, const char* cmd, int show_ui, int param)
 {
   IWebBrowser2 *pWeb = (IWebBrowser2*)iupAttribGet(ih, "_IUPWEB_BROWSER");
 
@@ -1044,7 +1094,7 @@ static void winWebBrowserExecCommandParamInt(Ihandle* ih, const char* cmd, int p
   VARIANT var;
   winVariantLong(&var, (LONG)param);
 
-  pHtmlDoc->execCommand(bCmd, VARIANT_FALSE, var, NULL);
+  pHtmlDoc->execCommand(bCmd, show_ui ? VARIANT_TRUE : VARIANT_FALSE, var, NULL);
 
   SysFreeString(bCmd);
 
@@ -1103,7 +1153,10 @@ static int winWebBrowserQueryCommandState(Ihandle* ih, const char* cmd)
 static int winWebBrowserSetExecCommandAttrib(Ihandle* ih, const char* value)
 {
   if (value)
-    winWebBrowserExecCommand(ih, value);
+  {
+    int show_ui = iupAttribGetBoolean(ih, "COMMANDSHOWUI");
+    winWebBrowserExecCommand(ih, value, show_ui);
+  }
   return 0;
 }
 
@@ -1142,7 +1195,12 @@ static char* winWebBrowserGetCommandValueAttrib(Ihandle* ih)
 static int winWebBrowserSetInsertImageAttrib(Ihandle* ih, const char* value)
 {
   if (value)
-    winWebBrowserExecCommandParam(ih, "insertImage", value);
+  {
+    int show_ui = iupAttribGetBoolean(ih, "COMMANDSHOWUI");
+    winWebBrowserExecCommandParam(ih, "insertImage", show_ui, value);
+  }
+  else
+    winWebBrowserExecCommandParam(ih, "insertImage", 1, value);
   return 0;
 }
 
@@ -1151,7 +1209,8 @@ static int winWebBrowserSetInsertImageFileAttrib(Ihandle* ih, const char* value)
   if (value)
   {
     char* url = iupStrFileMakeURL(value);
-    winWebBrowserExecCommandParam(ih, "insertImage", url);
+    int show_ui = iupAttribGetBoolean(ih, "COMMANDSHOWUI");
+    winWebBrowserExecCommandParam(ih, "insertImage", show_ui, url);
     free(url);
   }
   return 0;
@@ -1160,14 +1219,22 @@ static int winWebBrowserSetInsertImageFileAttrib(Ihandle* ih, const char* value)
 static int winWebBrowserSetCreateLinkAttrib(Ihandle* ih, const char* value)
 {
   if (value)
-    winWebBrowserExecCommandParam(ih, "createLink", value);
+  {
+    int show_ui = iupAttribGetBoolean(ih, "COMMANDSHOWUI");
+    winWebBrowserExecCommandParam(ih, "createLink", show_ui, value);
+  }
+  else
+    winWebBrowserExecCommandParam(ih, "createLink", 1, value);
   return 0;
 }
 
 static int winWebBrowserSetFontNameAttrib(Ihandle* ih, const char* value)
 {
   if (value)
-    winWebBrowserExecCommandParam(ih, "fontName", value);
+  {
+    int show_ui = iupAttribGetBoolean(ih, "COMMANDSHOWUI");
+    winWebBrowserExecCommandParam(ih, "fontName", show_ui, value);
+  }
   return 0;
 }
 
@@ -1180,7 +1247,10 @@ static int winWebBrowserSetFontSizeAttrib(Ihandle* ih, const char* value)
 {
   int param = 0;
   if (iupStrToInt(value, &param) && param > 0 && param < 8)
-    winWebBrowserExecCommandParamInt(ih, "fontSize", param);
+  {
+    int show_ui = iupAttribGetBoolean(ih, "COMMANDSHOWUI");
+    winWebBrowserExecCommandParamInt(ih, "fontSize", show_ui, param);
+  }
   return 0;
 }
 
@@ -1192,7 +1262,10 @@ static char* winWebBrowserGetFontSizeAttrib(Ihandle* ih)
 static int winWebBrowserSetFormatBlockAttrib(Ihandle* ih, const char* value)
 {
   if (value)
-    winWebBrowserExecCommandParam(ih, "formatBlock", value);
+  {
+    int show_ui = iupAttribGetBoolean(ih, "COMMANDSHOWUI");
+    winWebBrowserExecCommandParam(ih, "formatBlock", show_ui, value);
+  }
   return 0;
 }
 
@@ -1205,7 +1278,10 @@ static int winWebBrowserSetForeColorAttrib(Ihandle* ih, const char* value)
 {
   unsigned char r, g, b;
   if (iupStrToRGB(value, &r, &g, &b))
-    winWebBrowserExecCommandParam(ih, "foreColor", value);
+  {
+    int show_ui = iupAttribGetBoolean(ih, "COMMANDSHOWUI");
+    winWebBrowserExecCommandParam(ih, "foreColor", show_ui, value);
+  }
   return 0;
 }
 
@@ -1218,7 +1294,10 @@ static int winWebBrowserSetBackColorAttrib(Ihandle* ih, const char* value)
 {
   unsigned char r, g, b;
   if (iupStrToRGB(value, &r, &g, &b))
-    winWebBrowserExecCommandParam(ih, "backColor", value);
+  {
+    int show_ui = iupAttribGetBoolean(ih, "COMMANDSHOWUI");
+    winWebBrowserExecCommandParam(ih, "backColor", show_ui, value);
+  }
   return 0;
 }
 
@@ -1360,7 +1439,8 @@ Iclass* iupWebBrowserNewClass(void)
   iupClassRegisterCallback(ic, "NEWWINDOW_CB", "s");
   iupClassRegisterCallback(ic, "NAVIGATE_CB", "s");
   iupClassRegisterCallback(ic, "ERROR_CB", "s");
-  iupClassRegisterCallback(ic, "UPDATECOMMANDS_CB", "");
+  iupClassRegisterCallback(ic, "COMPLETED_CB", "s");
+  iupClassRegisterCallback(ic, "UPDATE_CB", "");
 
   /* Attributes */
   iupClassRegisterAttribute(ic, "VALUE", winWebBrowserGetValueAttrib, winWebBrowserSetValueAttrib, NULL, NULL, IUPAF_NO_DEFAULTVALUE|IUPAF_NO_INHERIT);
@@ -1389,6 +1469,7 @@ Iclass* iupWebBrowserNewClass(void)
   iupClassRegisterAttribute(ic, "FIND", NULL, winWebBrowserSetFindAttrib, NULL, NULL, IUPAF_WRITEONLY | IUPAF_NO_INHERIT);
   iupClassRegisterAttribute(ic, "EXECCOMMAND", NULL, winWebBrowserSetExecCommandAttrib, NULL, NULL, IUPAF_WRITEONLY | IUPAF_NO_INHERIT);
   iupClassRegisterAttribute(ic, "COMMAND", NULL, NULL, NULL, NULL, IUPAF_NO_INHERIT);
+  iupClassRegisterAttribute(ic, "COMMANDSHOWUI", NULL, NULL, NULL, NULL, IUPAF_NO_INHERIT);
   iupClassRegisterAttribute(ic, "COMMANDSTATE", winWebBrowserGetCommandStateAttrib, NULL, NULL, NULL, IUPAF_READONLY | IUPAF_NO_INHERIT);
   iupClassRegisterAttribute(ic, "COMMANDENABLED", winWebBrowserGetCommandEnabledAttrib, NULL, NULL, NULL, IUPAF_READONLY | IUPAF_NO_INHERIT);
   iupClassRegisterAttribute(ic, "COMMANDTEXT", winWebBrowserGetCommandTextAttrib, NULL, NULL, NULL, IUPAF_READONLY | IUPAF_NO_INHERIT);
@@ -1405,6 +1486,7 @@ Iclass* iupWebBrowserNewClass(void)
   iupClassRegisterAttribute(ic, "BACKCOLOR", winWebBrowserGetBackColorAttrib, winWebBrowserSetBackColorAttrib, NULL, NULL, IUPAF_NO_INHERIT);
 
   iupClassRegisterAttribute(ic, "DIRTY", winWebBrowserGetDirtyAttrib, NULL, NULL, NULL, IUPAF_READONLY | IUPAF_NO_INHERIT);
+  iupClassRegisterAttribute(ic, "PRINTPREVIEW", NULL, winWebBrowserSetPrintPreviewAttrib, NULL, NULL, IUPAF_WRITEONLY | IUPAF_NO_INHERIT);
 
   /* Windows Only */
   iupClassRegisterAttribute(ic, "ELEMENT_ID", NULL, NULL, NULL, NULL, IUPAF_NO_DEFAULTVALUE | IUPAF_NO_INHERIT);
@@ -1424,26 +1506,6 @@ Iclass* iupWebBrowserNewClass(void)
 
   return ic;
 }
-
-/* 
-EXECCOMMAND options:
-   CUT, COPY, PASTE, UNDO, REDO, SELECTALL
-   BOLD, ITALIC, UNDERLINE, STRIKETHROUGH, JUSTIFYLEFT, JUSTIFYCENTER, JUSTIFYRIGHT, JUSTIFYFULL, INDENT, OUTDENT
-   REMOVEFORMAT, DELETE, SUBSCRIPT, SUPERSCRIPT, INSERTORDEREDLIST, INSERTUNORDEREDLIST, UNLINK
-
-1: x-small
-2: small
-3: medium
-4: large
-5: x-large
-6: xx-large
-7: xxx-large
-
-1=\"Heading 1", 2=\"Heading 2",3=\"Heading 3",4=\"Heading 4",5=\"Heading 5",6=\"Heading 6",7=\"Paragraph", 8=\"Preformatted", 9=\"Block Quote",
-Normal, Formatted, Not Supported in Windows
-
-OPENFILE - Dirty confirmation in Windows
-*/
 
 #if 0
 // HRESULT error code processing, useful for debugging

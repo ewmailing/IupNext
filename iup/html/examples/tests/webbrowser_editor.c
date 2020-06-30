@@ -35,9 +35,10 @@ static int wb_completed_cb(Ihandle* self, char* url)
   return IUP_DEFAULT;
 }
 
-static int wb_updatecommands_cb(Ihandle* self)
+static int wb_update_cb(Ihandle* self)
 {
-  printf("UPDATECOMMANDS_CB\n");
+  /* Windows Only */
+  printf("UPDATE_CB\n");
   (void)self;
   return IUP_DEFAULT;
 }
@@ -98,7 +99,15 @@ static int new_cb(Ihandle* self)
 static int print_cb(Ihandle* self)
 {
   Ihandle* web = (Ihandle*)IupGetAttribute(self, "MY_WEB");
-  IupSetAttribute(web, "PRINT", NULL);
+  IupSetAttribute(web, "PRINT", "Yes");
+  return IUP_DEFAULT;
+}
+
+static int printpreview_cb(Ihandle* self)
+{
+  /* Windows Only*/
+  Ihandle* web = (Ihandle*)IupGetAttribute(self, "MY_WEB");
+  IupSetAttribute(web, "PRINTPREVIEW", NULL);
   return IUP_DEFAULT;
 }
 
@@ -111,6 +120,7 @@ static int cmd_cb(Ihandle* self)
 
 static int enterwindow_cb(Ihandle* self)
 {
+  /* Windows Only*/
   Ihandle* web = (Ihandle*)IupGetAttribute(self, "MY_WEB");
   IupSetAttribute(web, "COMMAND", IupGetAttribute(self, "CMD"));
   printf("COMMAND=%s\n", IupGetAttribute(web, "COMMAND"));
@@ -121,6 +131,7 @@ static int enterwindow_cb(Ihandle* self)
 
 static int enterwindow2_cb(Ihandle* self)
 {
+  /* Windows Only*/
   Ihandle* web = (Ihandle*)IupGetAttribute(self, "MY_WEB");
   IupSetAttribute(web, "COMMAND", IupGetAttribute(self, "CMD2"));
   printf("COMMAND=%s\n", IupGetAttribute(web, "COMMAND"));
@@ -266,6 +277,7 @@ static int editable_cb(Ihandle* self)
 
 static int find_cb(Ihandle* self)
 {
+  /* Windows Only */
   Ihandle* web = (Ihandle*)IupGetAttribute(self, "MY_WEB");
   IupSetAttribute(web, "FIND", NULL);
   return IUP_DEFAULT;
@@ -312,13 +324,14 @@ void WebBrowserEditorTest(void)
                             IupSetAttributes(btOpen = IupButton("Open...", NULL), "IMAGE=IUP_FileOpen"),
                             IupSetAttributes(btSave = IupButton("Save As...", NULL), "IMAGE=IUP_FileSave"),
                             IupSetAttributes(IupSetCallbacks(IupButton("Print", NULL), "ACTION", print_cb, NULL), "IMAGE=IUP_Print"),
+                            IupSetAttributes(IupSetCallbacks(IupButton("Print Preview", NULL), "ACTION", printpreview_cb, NULL), "IMAGE=IUP_Print"),  /* Windows Only */
                             IupSetAttributes(IupSetCallbacks(IupButton("Undo", NULL), "ACTION", cmd_cb, "ENTERWINDOW_CB", enterwindow_cb, NULL), "CMD=UNDO, IMAGE=IUP_EditUndo"),
                             IupSetAttributes(IupSetCallbacks(IupButton("Redo", NULL), "ACTION", cmd_cb, "ENTERWINDOW_CB", enterwindow_cb, NULL), "CMD=REDO, IMAGE=IUP_EditRedo"),
                             IupSetAttributes(IupSetCallbacks(IupButton("Cut", NULL), "ACTION", cmd_cb, "ENTERWINDOW_CB", enterwindow_cb, NULL), "CMD=CUT, IMAGE=IUP_EditCut"),
                             IupSetAttributes(IupSetCallbacks(IupButton("Copy", NULL), "ACTION", cmd_cb, "ENTERWINDOW_CB", enterwindow_cb, NULL), "CMD=COPY, IMAGE=IUP_EditCopy"),
                             IupSetAttributes(IupSetCallbacks(IupButton("Paste", NULL), "ACTION", cmd_cb, "ENTERWINDOW_CB", enterwindow_cb, NULL), "CMD=PASTE, IMAGE=IUP_EditPaste"),
                             IupSetAttributes(IupSetCallbacks(IupButton("Select All", NULL), "ACTION", cmd_cb, "ENTERWINDOW_CB", enterwindow_cb, NULL), "CMD=SELECTALL"),
-                            IupSetAttributes(IupSetCallbacks(IupButton("Find", NULL), "ACTION", find_cb, NULL), "IMAGE=IUP_EditFind"),
+                            IupSetAttributes(IupSetCallbacks(IupButton("Find", NULL), "ACTION", find_cb, NULL), "IMAGE=IUP_EditFind"),  /* Windows Only */
                             IupSetAttributes(btEditable = IupButton("Editable", NULL), "IMAGE=rt_editor_pencil"),
                             NULL), 
                           IupHbox(
@@ -365,10 +378,9 @@ void WebBrowserEditorTest(void)
   IupSetAttribute(dlg, "MARGIN", "5x5");
   IupSetAttribute(dlg, "GAP", "5");
 
-
   IupSetAttribute(web, "HTML", "<html><body><p><b>Hello</b> World! (חדפ)</p></body></html>");
-
   IupSetAttribute(web, "EDITABLE", "Yes");
+  IupSetAttribute(web, "COMMANDSHOWUI", "Yes");  /* Windows Only */
 
   IupSetCallback(btOpen, "ACTION", (Icallback)open_cb);
   IupSetCallback(btSave, "ACTION", (Icallback)save_cb);
@@ -378,7 +390,7 @@ void WebBrowserEditorTest(void)
   IupSetCallback(web, "NAVIGATE_CB", (Icallback)wb_navigate_cb);
   IupSetCallback(web, "ERROR_CB", (Icallback)wb_error_cb);
   IupSetCallback(web, "COMPLETED_CB", (Icallback)wb_completed_cb);
-  IupSetCallback(web, "UPDATECOMMANDS_CB", (Icallback)wb_updatecommands_cb);
+  IupSetCallback(web, "UPDATE_CB", (Icallback)wb_update_cb);  /* Windows Only */
 
   // Shows dialog
   IupShow(dlg);

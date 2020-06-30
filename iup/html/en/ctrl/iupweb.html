@@ -82,7 +82,8 @@ next page. (since 3.23)</p>
 (since 3.10)</p>
 <p><strong>FORWARDCOUNT</strong> [GTK Only] (read only): gets the number of items that 
 succeed the current page.</p>
-<p><strong>HTML</strong> (write only): loads a given HTML content.</p>
+<p><strong>HTML</strong>: loads a given HTML content. (not write only since 
+3.30)</p>
 <p><strong>ITEMHISTORYid</strong> [GTK Only] (read only): Returns the URL 
 associated with a specific history item. Negative &quot;id&quot; value represents a backward item while positive &quot;id&quot; 
 value represents a forward item (&quot;0&quot; represents the current item).</p>
@@ -91,7 +92,10 @@ element marked with the ID given by the attribute ELEMENT_ID. (since 3.24)</p>
 <p><strong>ATTRIBUTE</strong> [Windows Only]: the content attribute of the HTML 
 element marked with the ID given by the attribute ELEMENT_ID. The name of the 
 content attribute is given by the attribute ATTRIBUTE_NAME. (since 3.24)</p>
-<p><strong>PRINT </strong>(write only): shows the print dialog. (since 3.10)</p>
+<p><strong>PRINT </strong>(write only): shows the print dialog. In Windows if 
+set to Yes will display the system print dialog (since 3.30). (since 3.10)</p>
+<p><strong>PRINTPREVIEW</strong> [Windows Only]: shows a print preview dialog. 
+(since 3.30)</p>
 <p><strong>RELOAD</strong> (write only): reloads the page in the webbrowser.</p>
 <p><strong>SELECTALL</strong> (write only): selects all contents. (since 3.10)</p>
 <p><strong>STATUS</strong> (read only): returns the load status. Can be 
@@ -103,6 +107,67 @@ content attribute is given by the attribute ATTRIBUTE_NAME. (since 3.24)</p>
 retrieve the current URL.</p>
 <p><strong>ZOOM</strong>: the zoom factor of the browser in percent. No zoom is 
 100%. (since 3.10)</p>
+<hr>
+<p><strong>EDITABLE</strong>: enable the design mode, or the
+<span style="color: rgba(0, 0, 0, 0.87); font-family: arial, sans-serif-light, sans-serif; font-size: 30px; font-style: normal; font-variant-ligatures: normal; font-variant-caps: normal; font-weight: 400; letter-spacing: normal; orphans: 2; text-align: left; text-indent: 0px; text-transform: none; white-space: normal; widows: 2; word-spacing: 0px; -webkit-text-stroke-width: 0px; background-color: rgb(255, 255, 255); text-decoration-style: initial; text-decoration-color: initial; display: inline !important; float: none;">
+WYSIWYG HTML editor. Can be Yes or NO. </span>(since 3.30)</p>
+<p class="style1">(All the following attributes depends on the EDITABLE 
+attribute)</p>
+<p><strong>NEW</strong> (write-only): initializes blank document. Value is 
+ignored.</p>
+<p><strong>OPENFILE</strong> (write-only): open an HTML file given its filename. 
+In Windows if the file is modified it will ask for a confirmation.</p>
+<p><strong>SAVEFILE</strong> (write-only): save the contents in a HTML file 
+given its filename. In Linux will save in a .mhtml file with all the images 
+packed in a single file. </p>
+<p><strong>DIRTY</strong> [Windows Only]: Returns Yes or No if the contents has 
+been edited by the user.</p>
+<p><strong>UNDO</strong> (write-only): undo the last editing.</p>
+<p><strong>REDO</strong> (write-only): redo the last editing.</p>
+<p><strong>CUT</strong> (write-only): cuts the selection to the clipboard.</p>
+<p><strong>PASTE</strong> (write-only): pastes the clipboard to the selection or 
+caret.</p>
+<p><strong>SELECTALL</strong> (write-only): selects all the contents.</p>
+<p><strong>FIND</strong> [Windows Only] (write-only): shows a dialog for finding 
+a text.</p>
+<p><strong>EXECCOMMAND</strong> (write-only): executes an editing command. 
+Possible commands:&nbsp; CUT, COPY, PASTE, UNDO, REDO, SELECTALL, BOLD, ITALIC, 
+UNDERLINE, STRIKETHROUGH, JUSTIFYLEFT, JUSTIFYCENTER, JUSTIFYRIGHT, JUSTIFYFULL, 
+INDENT, OUTDENT, REMOVEFORMAT, DELETE, SUBSCRIPT, SUPERSCRIPT, 
+INSERTORDEREDLIST, INSERTUNORDEREDLIST, UNLINK.</p>
+<p><strong>COMMANDSTATE</strong> [Windows Only] (read-only): returns the command 
+state. Can be Yes or No. The command name must be stored on the attribute 
+COMMAND.&nbsp; </p>
+<p><strong>COMMANDENABLED</strong> [Windows Only] (read-only): returns if the 
+command is enabled. Can be Yes or No. The command name must be stored on the 
+attribute COMMAND.</p>
+<p><strong>COMMANDTEXT</strong> [Windows Only] (read-only): returns the command 
+text if any. The command name must be stored on the attribute COMMAND.</p>
+<p><strong>COMMANDVALUE</strong> [Windows Only] (read-only): returns the command 
+value if any. The command name must be stored on the attribute COMMAND.</p>
+<p><strong>INSERTIMAGE</strong> (write-only): inserts an image given its url. In 
+Windows if value is NULL displays a system dialog for inserting an image.</p>
+<p><strong>INSERTIMAGEFILE</strong> (write-only): inserts an image given its 
+filename.</p>
+<p><strong>CREATELINK</strong> (write-only): inserts a link given its url. In 
+Windows if value is NULL displays a system dialog for editing a link.</p>
+<p><strong>INSERTTEXT</strong> (write-only): inserts a text at the current 
+selection or caret.</p>
+<p><strong>INSERTHTML</strong> (write-only): inserts a formatted text at the 
+current selection or caret.</p>
+<p><strong>FONTNAME</strong>: font face name. In Linux is write-only.</p>
+<p><strong>FONTSIZE</strong>: font relative size. In Linux is write-only. Can be 
+a number form &quot;1&quot; to &quot;7&quot;, meaning 1: x-small, 2: small, 3: medium, 4: large, 5: 
+x-large, 6: xx-large, 7: xxx-large.</p>
+<p><strong>FORMATBLOCK</strong>: The block format. In Linux is write-only. It 
+can be: &quot;Heading 1&quot;, &quot;Heading 2&quot;, &quot;Heading 3&quot;, &quot;Heading 4&quot;, &quot;Heading 5&quot;, 
+&quot;Heading 6&quot;, &quot;Paragraph&quot;, &quot;Preformatted&quot; and &quot;Block Quote&quot;. In Windows returns 
+&quot;Normal&quot; for &quot;Paragraph&quot;,&nbsp; &quot;Formatted&quot; for &quot;Preformatted&quot; and &quot;Block Quote&quot; 
+is not supported. </p>
+<p><strong>FORECOLOR</strong>: the foreground color of the selected text. In 
+Linux is write-only.</p>
+<p><strong>BACKCOLOR</strong>: the background color of the selected text. In 
+Linux is write-only.</p>
   <blockquote>
   <hr>
 </blockquote>
@@ -160,6 +225,15 @@ ih</strong>:newwindow_cb(<b>url</b>) -&gt; (<strong>ret</strong>: number) [in Lu
   event.<br>
     <strong>url</strong>: the URL address that is opened in the new window.</p>
 <blockquote>
+
+<p><strong>UPDATE_CB</strong><tt>:</tt> action generated when the selection was 
+changed and the editor interface needs an update. Used only when EDITABLE=Yes. 
+[Windows Only] (since 3.30)</p>
+<pre>int function(Ihandle* <b>ih</b>);  [in C]<strong>
+ih</strong>:update_cb() -&gt; (<strong>ret</strong>: number) [in Lua]</pre>
+<p class="info"><strong>ih</strong>:
+  identifier of the element that activated the 
+  event.</p>
   <hr>
 </blockquote>
 
