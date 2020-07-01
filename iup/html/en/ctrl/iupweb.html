@@ -226,9 +226,9 @@ ih</strong>:newwindow_cb(<b>url</b>) -&gt; (<strong>ret</strong>: number) [in Lu
     <strong>url</strong>: the URL address that is opened in the new window.</p>
 <blockquote>
 
-<p><strong>UPDATE_CB</strong><tt>:</tt> action generated when the selection was 
+<p><strong>UPDATE_CB</strong> [Windows Only]: action generated when the selection was 
 changed and the editor interface needs an update. Used only when EDITABLE=Yes. 
-[Windows Only] (since 3.30)</p>
+(since 3.30)</p>
 <pre>int function(Ihandle* <b>ih</b>);  [in C]<strong>
 ih</strong>:update_cb() -&gt; (<strong>ret</strong>: number) [in Lua]</pre>
 <p class="info"><strong>ih</strong>:
