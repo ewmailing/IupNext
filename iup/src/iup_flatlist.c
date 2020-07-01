@@ -424,7 +424,6 @@ static void iFlatListSingleCallActionCb(Ihandle* ih, IFnsii cb, IFn valuechanged
 
 static void iFlatListMultipleCallActionCb(Ihandle* ih, IFnsii cb, IFns multi_cb, IFn valuechanged_cb, char* str, int count)
 {
-  int i;
   int unchanged = 1;
 
   if (multi_cb)
@@ -434,6 +433,8 @@ static void iFlatListMultipleCallActionCb(Ihandle* ih, IFnsii cb, IFns multi_cb,
   }
   else
   {
+    int i;
+
     /* must simulate the click on each item */
     for (i = 0; i < count; i++)
     {

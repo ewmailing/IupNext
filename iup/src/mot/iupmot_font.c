@@ -251,7 +251,7 @@ IUP_SDK_API char* iupdrvGetSystemFont(void)
   if (!motfont)
   {
     font = "Fixed, 11";
-    motfont = motFindFont("misc", font);
+    motFindFont("misc", font);
   }
 
   strcpy(str, font);

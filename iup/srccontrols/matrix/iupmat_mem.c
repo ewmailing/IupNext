@@ -238,7 +238,7 @@ void iupMatrixMemReAllocLines(Ihandle* ih, int old_num, int num, int base)
 
 void iupMatrixMemReAllocColumns(Ihandle* ih, int old_num, int num, int base)
 {
-  int lin, col, end, diff_num, shift_num;
+  int lin, end, diff_num, shift_num;
 
   if (ih->data->undo_redo) iupAttribSetClassObject(ih, "UNDOCLEAR", NULL);
 
@@ -302,6 +302,8 @@ void iupMatrixMemReAllocColumns(Ihandle* ih, int old_num, int num, int base)
     /* release memory from the opened space */
     if (!ih->data->callback_mode)
     {
+      int col;
+
       for (lin = 0; lin < ih->data->lines.num_alloc; lin++)  /* all lines, base-end columns */
       {
         for(col = base; col < end; col++)

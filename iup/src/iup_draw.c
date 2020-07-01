@@ -283,7 +283,6 @@ IUP_API void IupDrawText(Ihandle* ih, const char* text, int len, int x, int y, i
 {
   IdrawCanvas* dc;
   long color = 0;
-  char* font;
   int text_flags;
   double text_orientation;
 
@@ -313,7 +312,7 @@ IUP_API void IupDrawText(Ihandle* ih, const char* text, int len, int x, int y, i
   if (len != 0)
   {
     int txt_w, txt_h;
-    font = iupDrawGetTextSize(ih, text, len, &txt_w, &txt_h, text_orientation);
+    char* font = iupDrawGetTextSize(ih, text, len, &txt_w, &txt_h, text_orientation);
     if (w == -1 || w == 0) w = txt_w;
     if (h == -1 || h == 0) h = txt_h;
     iupdrvDrawText(dc, text, len, x, y, w, h, color, font, text_flags, text_orientation);

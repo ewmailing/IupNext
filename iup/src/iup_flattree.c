@@ -3441,9 +3441,7 @@ static int iFlatTreeSetValueAttrib(Ihandle* ih, const char* value)
     if (ih->data->mark_mode == IFLATTREE_MARK_SINGLE)
     {
       node->selected = 1;
-
-      if (ih->data->mark_mode == IFLATTREE_MARK_SINGLE)
-        iFlatTreeClearAllSelectionExcept(ih, node);
+      iFlatTreeClearAllSelectionExcept(ih, node);
     }
 
     iFlatTreeScrollFocusVisible(ih, direction);
@@ -3583,7 +3581,7 @@ static int iFlatTreeSetMarkedNodesAttrib(Ihandle* ih, const char* value)
     if (value[i] == '+')
       nodes[i]->selected = 1;
     else
-      nodes[i]->selected = 1;
+      nodes[i]->selected = 0;
   }
 
   iFlatTreeRedraw(ih, 0, 0);

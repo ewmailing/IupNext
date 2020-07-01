@@ -217,19 +217,16 @@ KeySym iupmotKeycodeToKeysym(XKeyEvent *evt)
 
 int iupmotKeyDecode(XKeyEvent *evt)
 {
-  int i;
   KeySym motcode = iupmotKeycodeToKeysym(evt);
 
+  /* Other maps */
+  int i, count = sizeof(other_remap)/sizeof(other_remap[0]);
+  for (i = 0; i < count; i++)
   {
-    /* Other maps */
-    int count = sizeof(other_remap)/sizeof(other_remap[0]);
-    for (i = 0; i < count; i++)
+    if (other_remap[i].motcode == motcode)
     {
-      if (other_remap[i].motcode == motcode)
-      {
-        motcode = (KeySym)other_remap[i].iupcode;
-        break;
-      }
+      motcode = (KeySym)other_remap[i].iupcode;
+      break;
     }
   }
 

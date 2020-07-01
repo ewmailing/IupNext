@@ -72,7 +72,6 @@ static Boolean motButtonEventDispatchProc(XEvent* evt)
   if (cb)
   {
     XButtonEvent *evt_button = (XButtonEvent*)evt;
-    unsigned long elapsed;
     static Time last = 0;
     char status[IUPKEY_STATUS_SIZE] = IUPKEY_STATUS_INIT;
     int x = (int)evt_button->x;
@@ -100,7 +99,7 @@ static Boolean motButtonEventDispatchProc(XEvent* evt)
     /* Double/Single Click */
     if (evt_button->type==ButtonPress)
     {
-      elapsed = evt_button->time - last;
+      unsigned long elapsed = evt_button->time - last;
       last = evt_button->time;
       if ((int)elapsed <= XtGetMultiClickTime(iupmot_display))
         doubleclick = 1;

@@ -615,21 +615,19 @@ static int iFlatTabsRedraw_CB(Ihandle* ih)
 
   if (show_lines)
   {
-    int height, width;
-
     char* title_line_color = iupAttribGetStr(ih, "TABSLINECOLOR");
     line_color = iupDrawStrToColor(title_line_color, line_color);
 
     if (tabType == ITABS_TOP || tabType == ITABS_BOTTOM)
     {
       /* tab bottom horizontal and top children horizontal */
-      height = (tabType == ITABS_TOP) ? title_height - 1 : child_height;
+      int height = (tabType == ITABS_TOP) ? title_height - 1 : child_height;
       iupdrvDrawLine(dc, 0, height, ih->currentwidth - 1, height, line_color, IUP_DRAW_STROKE, 1);
     }
     else
     {
       /* tab bottom horizontal and top children horizontal */
-      width = (tabType == ITABS_LEFT) ? title_xmax - 1 : child_width;
+      int width = (tabType == ITABS_LEFT) ? title_xmax - 1 : child_width;
       iupdrvDrawLine(dc, width, 0, width, ih->currentheight - 1, line_color, IUP_DRAW_STROKE, 1);
     }
   }

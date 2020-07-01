@@ -233,18 +233,15 @@ static int iFlatButtonButton_CB(Ihandle* ih, int button, int pressed, int x, int
     if (iupAttribGetBoolean(ih, "TOGGLE"))
     {
       Ihandle* radio = iupRadioFindToggleParent(ih);
-      int selected = iupAttribGetInt(ih, "VALUE");
       Ihandle* last_tg = NULL;
 
       if (!pressed && ih->data->highlighted)  /* released inside the button area */
       {
+        int selected = iupAttribGetInt(ih, "VALUE");
         if (selected)  /* was ON */
         {
           if (!radio)
-          {
             iupAttribSet(ih, "VALUE", "OFF");
-            selected = 0;
-          }
           else
             last_tg = ih;  /* to avoid the callback call */
         }
@@ -265,7 +262,6 @@ static int iFlatButtonButton_CB(Ihandle* ih, int button, int pressed, int x, int
           }
 
           iupAttribSet(ih, "VALUE", "ON");
-          selected = 1;
         }
       }
 

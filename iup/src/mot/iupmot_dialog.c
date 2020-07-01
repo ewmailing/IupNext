@@ -346,7 +346,7 @@ static void motDialogChangeWMState(Ihandle* ih, Atom state1, Atom state2, int op
       {
         Atom atoms[2];
         atoms[0] = state1;
-        atoms[0] = state2;
+        atoms[1] = state2;
 
         XChangeProperty(iupmot_display, XtWindow(ih->handle),
             wmstate, XA_ATOM,

@@ -456,9 +456,6 @@ void iupmotSetPixmap(Ihandle* ih, const char* name, const char* prop, int make_i
 
 void iupmotButtonPressReleaseEvent(Widget w, Ihandle* ih, XEvent* evt, Boolean* cont)
 {
-  unsigned long elapsed;
-  static Time last = 0;
-  char status[IUPKEY_STATUS_SIZE] = IUPKEY_STATUS_INIT;
   IFniiiis cb;
 
   XButtonEvent *but_evt = (XButtonEvent*)evt;
@@ -474,11 +471,13 @@ void iupmotButtonPressReleaseEvent(Widget w, Ihandle* ih, XEvent* evt, Boolean* 
   {
     int ret, doubleclick = 0;
     int b = IUP_BUTTON1+(but_evt->button-1);
+    char status[IUPKEY_STATUS_SIZE] = IUPKEY_STATUS_INIT;
 
     /* Double/Single Click */
     if (but_evt->type==ButtonPress)
     {
-      elapsed = but_evt->time - last;
+      static Time last = 0;
+      unsigned long elapsed = but_evt->time - last;
       last = but_evt->time;
       if ((int)elapsed <= XtGetMultiClickTime(iupmot_display))
         doubleclick = 1;

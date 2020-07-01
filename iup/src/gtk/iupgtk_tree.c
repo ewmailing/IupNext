@@ -456,10 +456,12 @@ static void gtkTreeCallNodeRemoved(Ihandle* ih, GtkTreeModel* model, GtkTreeIter
 static void gtkTreeCallNodeRemovedAll(Ihandle* ih)
 {
   IFns cb = (IFns)IupGetCallback(ih, "NODEREMOVED_CB");
-  int i, old_count = ih->data->node_count;
+  int old_count = ih->data->node_count;
 
   if (cb)
   {
+    int i;
+
     for (i = 0; i < ih->data->node_count; i++)
     {
       cb(ih, (char*)ih->data->node_cache[i].userdata);
@@ -1274,7 +1276,6 @@ static int gtkTreeSetStateAttrib(Ihandle* ih, int id, const char* value)
 {
   GtkTreeModel* model = gtk_tree_view_get_model(GTK_TREE_VIEW(ih->handle));
   GtkTreeIter iterItem;
-  GtkTreePath* path;
   int kind;
 
   if (!gtkTreeFindNode(ih, id, &iterItem))
@@ -1283,7 +1284,7 @@ static int gtkTreeSetStateAttrib(Ihandle* ih, int id, const char* value)
   gtk_tree_model_get(model, &iterItem, IUPGTK_NODE_KIND, &kind, -1);
   if (kind == ITREE_BRANCH)
   {
-    path = gtk_tree_model_get_path(model, &iterItem);
+    GtkTreePath* path = gtk_tree_model_get_path(model, &iterItem);
     iupAttribSet(ih, "_IUPTREE_IGNORE_BRANCH_CB", "1");
     gtkTreeExpandItem(ih, path, iupStrEqualNoCase(value, "EXPANDED"));
     iupAttribSet(ih, "_IUPTREE_IGNORE_BRANCH_CB", NULL);
@@ -2408,10 +2409,11 @@ static void gtkTreeCallMultiUnSelectionCb(Ihandle* ih, int new_select_id)
   {
     Iarray* markedArray = gtkTreeGetSelectedArrayId(ih);
     int* id_hitem = (int*)iupArrayGetData(markedArray);
-    int i, count = iupArrayCount(markedArray);
-
+    int count = iupArrayCount(markedArray);
     if (count > 0)
     {
+      int i;
+
       if (cbMulti)
       {
         for (i=0; i<count; i++)
