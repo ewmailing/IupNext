@@ -199,7 +199,7 @@ int btn_delete_cb(Ihandle *ih)
   int id = IupGetIntId(listNames, "ID", index);
   char *name = trim(IupGetAttribute(txtName, "VALUE"));
   char *surname = trim(IupGetAttribute(txtSurname, "VALUE"));
-  crud_delete(id, surname, name);
+  crud_delete(id);
   IupSetAttribute(txtName, "VALUE", NULL);
   IupSetAttribute(txtSurname, "VALUE", NULL);
   loadList(ih);
