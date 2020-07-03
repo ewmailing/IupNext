@@ -729,7 +729,7 @@ IUP_SDK_API void iupFlatDrawGetIconSize(Ihandle* ih, int img_position, int spaci
 {
   if (imagename)
   {
-    int img_width, img_height;
+    int img_width = 0, img_height = 0;
     iupImageGetInfo(imagename, &img_width, &img_height, NULL);
 
     if (title)
@@ -802,7 +802,7 @@ IUP_SDK_API void iupFlatDrawIcon(Ihandle* ih, IdrawCanvas* dc, int icon_x, int i
 
   if (imagename)
   {
-    int img_width, img_height;
+    int img_width = 0, img_height = 0;
     iupImageGetInfo(imagename, &img_width, &img_height, NULL);
 
     if (title)

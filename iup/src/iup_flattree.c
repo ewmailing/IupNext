@@ -434,7 +434,7 @@ static void iFlatTreeUpdateNodeExpanded(iFlatTreeNode *node)
 static void iFlatTreeCalcNodeSize(Ihandle *ih, iFlatTreeNode *node, const char* font)
 {
   int w, h;
-  int img_w, img_h;
+  int img_w = 0, img_h = 0;
   int txt_w = 0, txt_h = 0;
   char *image = iFlatTreeGetNodeImage(ih, node, 0);
 

@@ -1174,7 +1174,7 @@ static void iLayoutDrawElement(IdrawCanvas* dc, Ihandle* ih, int marked, int nat
     if (image)
     {
       char* position;
-      int img_w, img_h;
+      int img_w = 0, img_h = 0;
 
       iupImageGetInfo(image, &img_w, &img_h, NULL);
 
