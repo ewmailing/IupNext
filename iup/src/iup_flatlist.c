@@ -857,7 +857,7 @@ static int iFlatListKAny_CB(Ihandle* ih, int c)
       IupUpdate(ih);
     }
   }
-  return IUP_DEFAULT;
+  return IUP_CONTINUE;
 }
 
 static int iFlatListKPgUp_CB(Ihandle* ih)

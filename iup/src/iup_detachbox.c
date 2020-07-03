@@ -246,7 +246,7 @@ static int iDetachBoxK_Any_CB(Ihandle* ih, int key)
     IupSetAttribute(ih->firstchild, "CURSOR", "MOVE");
   }
 
-  return IUP_DEFAULT;
+  return IUP_CONTINUE;
 }
 
 static int iDetachBoxAction_CB(Ihandle* bar)
