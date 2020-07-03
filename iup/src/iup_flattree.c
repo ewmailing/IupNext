@@ -1431,12 +1431,14 @@ static int iFlatTreeRedraw_CB(Ihandle* ih)
   y = -posy + border_width;
 
   node = ih->data->root_node->first_child;
+  if (node)
+  {
+    iFlatTreeDrawNodes(ih, dc, node, x, y, fg_color, bg_color, line_rgba, toggle_fgcolor, toggle_bgcolor, make_inactive, active,
+                       text_flags, font, focus_feedback, hide_lines);
 
-  iFlatTreeDrawNodes(ih, dc, node, x, y, fg_color, bg_color, line_rgba, toggle_fgcolor, toggle_bgcolor, make_inactive, active,
-                     text_flags, font, focus_feedback, hide_lines);
-
-  if (!hide_buttons)
-    iFlatTreeDrawExpander(ih, dc, node, button_brdcolor, button_fgcolor, button_bgcolor, bg_color, x, y, button_plus_image, button_minus_image);
+    if (!hide_buttons)
+      iFlatTreeDrawExpander(ih, dc, node, button_brdcolor, button_fgcolor, button_bgcolor, bg_color, x, y, button_plus_image, button_minus_image);
+  }
 
   if (border_width)
   {
