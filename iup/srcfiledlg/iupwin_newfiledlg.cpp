@@ -432,7 +432,27 @@ static void winNewFileDlgGetFolder(Ihandle *ih)
   {
     DWORD dwOptions;
     if (SUCCEEDED(pfd->GetOptions(&dwOptions)))
+    {
+      if (iupAttribGetBoolean(ih, "NOCHANGEDIR"))
+        dwOptions |= FOS_NOCHANGEDIR;
+
+      if (iupAttribGetBoolean(ih, "SHOWHIDDEN"))
+        dwOptions |= FOS_FORCESHOWHIDDEN;
+
+      char* directory = iupStrDup(iupAttribGet(ih, "DIRECTORY"));
+      if (directory)
+      {
+        IShellItem *si;
+        TCHAR *wdir = iupwinStrToSystemFilename(directory);
+        winNewFileDlgStrReplacePathSlash(wdir);
+        si = winNewFileDlgParseName(wdir);
+        if (si)
+          pfd->SetFolder(si);
+        free(directory);
+      }
+
       pfd->SetOptions(dwOptions | FOS_PICKFOLDERS);
+    }
 
     char* value = iupAttribGet(ih, "TITLE");
     if (value)
