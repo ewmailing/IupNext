@@ -30,9 +30,11 @@ do
   Copy_SOs $plat 51 so
   Copy_SOs $plat 52 so
   Copy_SOs $plat 53 so
+  Copy_SOs $plat 54 so
   if [ $plat == MacOS1010 ]; then
     Copy_SOs $plat 51 dylib
     Copy_SOs $plat 52 dylib
     Copy_SOs $plat 53 dylib
+    Copy_SOs $plat 54 dylib
   fi
 done

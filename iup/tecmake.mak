@@ -6,7 +6,7 @@
 
 #---------------------------------#
 # Tecmake Version
-VERSION = 4.20
+VERSION = 4.21
 
 
 #---------------------------------#
@@ -471,6 +471,9 @@ endif
 ifdef USE_LUA53
   LIBLUA_SFX := 53
 endif
+ifdef USE_LUA54
+  LIBLUA_SFX := 54
+endif
 
 ifdef USE_OLDLIBLUA
   TEC_UNAME_LIBLUA_DIR ?= $(TEC_UNAME_LIB_DIR)
@@ -817,6 +820,7 @@ LUA   ?= $(TECTOOLS_HOME)/lua
 LUA51 ?= $(TECTOOLS_HOME)/lua5.1
 LUA52 ?= $(TECTOOLS_HOME)/lua52
 LUA53 ?= $(TECTOOLS_HOME)/lua53
+LUA54 ?= $(TECTOOLS_HOME)/lua54
 FTGL  ?= $(TECTOOLS_HOME)/ftgl
 # Freetype and zlib in Linux we use from the system
 
@@ -876,6 +880,17 @@ ifdef USE_LUA53
   LIBLUA_SFX := 53
   override USE_LUA = Yes
   LUA := $(LUA53)
+  NO_LUALIB := Yes
+  ifneq ($(findstring CentOS5, $(TEC_DIST)), )
+    DEFINES += LUA_C89_NUMBERS
+  endif
+endif
+
+ifdef USE_LUA54
+  LUA_SFX := 54
+  LIBLUA_SFX := 54
+  override USE_LUA = Yes
+  LUA := $(LUA54)
   NO_LUALIB := Yes
   ifneq ($(findstring CentOS5, $(TEC_DIST)), )
     DEFINES += LUA_C89_NUMBERS

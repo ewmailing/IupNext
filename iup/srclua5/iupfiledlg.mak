@@ -21,6 +21,10 @@ ifdef USE_LUA_VERSION
   USE_LUA51:=
   USE_LUA52:=
   USE_LUA53:=
+  USE_LUA54:=
+  ifeq ($(USE_LUA_VERSION), 54)
+    USE_LUA54:=Yes
+  endif
   ifeq ($(USE_LUA_VERSION), 53)
     USE_LUA53:=Yes
   endif
@@ -32,6 +36,9 @@ ifdef USE_LUA_VERSION
   endif
 endif
 
+ifdef USE_LUA54
+  LUASFX = 54
+else
 ifdef USE_LUA53
   LUASFX = 53
 else
@@ -40,6 +47,7 @@ ifdef USE_LUA52
 else
   USE_LUA51 = Yes
   LUASFX = 51
+endif
 endif
 endif
 
