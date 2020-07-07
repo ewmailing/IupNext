@@ -77,6 +77,14 @@ static void winKeyInitXKey(Iwin2iupkey* map)
   map[VK_F10].iupcode = K_F10;
   map[VK_F11].iupcode = K_F11;
   map[VK_F12].iupcode = K_F12;
+  map[VK_F13].iupcode = K_F13;
+  map[VK_F14].iupcode = K_F14;
+  map[VK_F15].iupcode = K_F15;
+  map[VK_F16].iupcode = K_F16;
+  map[VK_F17].iupcode = K_F17;
+  map[VK_F18].iupcode = K_F18;
+  map[VK_F19].iupcode = K_F19;
+  map[VK_F20].iupcode = K_F20;
 
   map[VK_OEM_PLUS].iupcode =   K_plus;
   map[VK_OEM_COMMA].iupcode =  K_comma;
@@ -102,12 +110,13 @@ static void winKeyInitXKey(Iwin2iupkey* map)
   map[VK_SEPARATOR].iupcode = LOWORD(MapVirtualKeyA(VK_SEPARATOR, MAPVK_VK_TO_CHAR));
 
   /* TODO: how to get the shift code? */
+
+  /* 
   map[VK_OEM_PLUS].iupcode = LOWORD(MapVirtualKeyA(VK_OEM_PLUS, MAPVK_VK_TO_CHAR));
   map[VK_OEM_COMMA].iupcode = LOWORD(MapVirtualKeyA(VK_OEM_COMMA, MAPVK_VK_TO_CHAR));
   map[VK_OEM_MINUS].iupcode = LOWORD(MapVirtualKeyA(VK_OEM_MINUS, MAPVK_VK_TO_CHAR));
   map[VK_OEM_PERIOD].iupcode = LOWORD(MapVirtualKeyA(VK_OEM_PERIOD, MAPVK_VK_TO_CHAR));
 
-  /*
   if (!map[VK_OEM_1].iupcode) map[VK_OEM_1].iupcode = LOWORD(MapVirtualKeyA(VK_OEM_1, MAPVK_VK_TO_CHAR));
   if (!map[VK_OEM_2].iupcode) map[VK_OEM_2].iupcode = LOWORD(MapVirtualKeyA(VK_OEM_2, MAPVK_VK_TO_CHAR));
   if (!map[VK_OEM_3].iupcode) map[VK_OEM_3].iupcode = LOWORD(MapVirtualKeyA(VK_OEM_3, MAPVK_VK_TO_CHAR));

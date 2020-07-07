@@ -431,13 +431,7 @@ void iupImageInitNonBgColors(Ihandle* ih, unsigned char *colors)
 
 IUP_SDK_API void iupImageColorMakeInactive(unsigned char *r, unsigned char *g, unsigned char *b, unsigned char bg_r, unsigned char bg_g, unsigned char bg_b)
 {
-  if (*r == bg_r && *g == bg_g && *b == bg_b)  /* preserve colors identical to the background color */
-  {
-    *r = bg_r;
-    *g = bg_g;
-    *b = bg_b;
-  }
-  else
+  if (*r != bg_r || *g != bg_g || *b != bg_b)  /* preserve colors identical to the background color */
   {
     int ir = 0, ig = 0, ib = 0,
       i = (*r + *g + *b) / 3,

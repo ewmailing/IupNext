@@ -133,7 +133,7 @@ void iupMatrixAuxAdjustFirstFromScrollPos(ImatLinColData* p, int scroll_pos)
     {
       /* did NOT go trough the "for" above */
       offset = scroll_pos;
-      index = p->num_noscroll;
+      index = p->num_noscroll; /* redundant, just for the record */
     }
     else
     {

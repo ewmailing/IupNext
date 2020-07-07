@@ -84,7 +84,7 @@ static INT CALLBACK winFileDlgBrowseCallback(HWND hWnd, UINT uMsg, LPARAM lParam
   {
     TCHAR buffer[IUP_MAX_FILENAME_SIZE];
     ITEMIDLIST* selecteditem = (ITEMIDLIST*)lParam;
-    if (SHGetPathFromIDList(selecteditem, buffer) && lstrlen(buffer) != 0)
+    if (SHGetPathFromIDList(selecteditem, buffer) && buffer[0] != 0)
       SendMessage(hWnd, BFFM_ENABLEOK, 0, (LPARAM)TRUE);
     else
       SendMessage(hWnd, BFFM_ENABLEOK, 0, (LPARAM)FALSE);

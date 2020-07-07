@@ -231,7 +231,7 @@ static void iFlatScrollBarDrawVertical(Ihandle* sb_vert, IdrawCanvas* dc, int ac
     height -= sb_size;
 
   /* draw arrows */
-  if (show_arrows && !show_transparent)
+  if (show_arrows)
   {
     int arrow_images = iupAttribGetInt(sb_vert->parent, "ARROWIMAGES");
     if (arrow_images)
@@ -311,7 +311,7 @@ static void iFlatScrollBarDrawHorizontal(Ihandle* sb_horiz, IdrawCanvas* dc, int
     width -= sb_size;
 
   /* draw arrows */
-  if (show_arrows && !show_transparent)
+  if (show_arrows)
   {
     int arrow_images = iupAttribGetInt(sb_horiz->parent, "ARROWIMAGES");
     if (arrow_images)

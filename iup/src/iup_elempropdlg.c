@@ -127,7 +127,7 @@ static void iLayoutPropertiesAttribValueChanged(Ihandle* ih, const char* name)
       IupStoreAttribute(colorbut, "BGCOLOR", value);  /* set it even if it is NULL */
   }
 
-  if ((flags&IUPAF_IHANDLENAME || flags & IUPAF_IHANDLE))
+  if ((flags&IUPAF_IHANDLENAME || (flags & IUPAF_IHANDLE)))
   {
     Ihandle* handle;
     if (flags & IUPAF_IHANDLE)

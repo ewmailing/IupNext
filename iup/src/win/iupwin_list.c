@@ -1420,14 +1420,6 @@ static int winListEditProc(Ihandle* ih, HWND cbedit, UINT msg, WPARAM wp, LPARAM
       break;
     }
   case WM_CLEAR:
-    {
-      if (!winListCallEditCb(ih, cbedit, NULL, 1))
-        ret = 1;
-
-      PostMessage(cbedit, WM_IUPCARET, 0, 0L);
-
-      break;
-    }
   case WM_CUT:
     {
       if (!winListCallEditCb(ih, cbedit, NULL, 1))
