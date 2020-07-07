@@ -170,7 +170,10 @@ void iupdrvDialogGetPosition(Ihandle *ih, InativeHandle* handle, int *x, int *y)
 void iupdrvDialogSetPosition(Ihandle *ih, int x, int y)
 {
   /* Only moves the window and places it at the top of the Z order. */
-  SetWindowPos(ih->handle, HWND_TOP, x, y, 0, 0, SWP_NOSIZE);
+  int flags = SWP_NOSIZE;
+  if (iupAttribGetBoolean(ih, "SHOWNOACTIVATE"))
+    flags |= SWP_NOACTIVATE;
+  SetWindowPos(ih->handle, HWND_TOP, x, y, 0, 0, flags);
 }
 
 static void winDialogGetWindowDecor(Ihandle* ih, int *border, int *caption, int menu)
@@ -279,9 +282,12 @@ void iupdrvDialogGetDecoration(Ihandle* ih, int *border, int *caption, int *menu
 int iupdrvDialogSetPlacement(Ihandle* ih)
 {
   char* placement;
-  int no_activate;
+  int no_activate = iupAttribGetBoolean(ih, "SHOWNOACTIVATE");
 
-  ih->data->cmd_show = SW_SHOWNORMAL;
+  if (no_activate)
+    ih->data->cmd_show = SW_SHOWNOACTIVATE;
+  else
+    ih->data->cmd_show = SW_SHOWNORMAL;
   ih->data->show_state = IUP_SHOW;
 
   if (iupAttribGetBoolean(ih, "FULLSCREEN"))
@@ -309,10 +315,6 @@ int iupdrvDialogSetPlacement(Ihandle* ih)
     ih->data->show_state = IUP_MAXIMIZE;
     return 1;
   }
-
-  no_activate = iupAttribGetBoolean(ih, "SHOWNOACTIVATE");
-  if (no_activate)
-    ih->data->cmd_show = SW_SHOWNOACTIVATE;
 
   if (iupStrEqualNoCase(placement, "MAXIMIZED"))
   {
