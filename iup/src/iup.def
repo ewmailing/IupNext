@@ -415,6 +415,8 @@ iupChildTreeGetNativeParentHandle
 iupChildTreeGetPrevBrother
 iupChildTreeIsParent
 iupClassCallbackGetFormat
+iupClassInfoGetDesc
+iupClassInfoShowHelp
 iupClassMatch
 iupClassNew
 iupClassObjectChildAdded
@@ -518,11 +520,14 @@ iupLayoutUpdate
 iupLayoutFindElementDialog
 iupLayoutPropertiesUpdate
 iupLayoutExportNamedElemList
+iupLayoutExportNamedImageList
+iupLayoutExportNamedImageListSetHandle
 iupLineFileClose
 iupLineFileEOF
 iupLineFileGetBuffer
 iupLineFileOpen
 iupLineFileReadLine
+iupLoadLed
 iupMaskCheck
 iupMaskCreate
 iupMaskCreateFloat

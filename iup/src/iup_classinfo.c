@@ -227,7 +227,7 @@ static const char* getChildType(int childtype)
   }
 }
 
-void iupClassInfoGetDesc(Iclass* ic, Ihandle* ih, const char* attrib_name)
+IUP_SDK_API void iupClassInfoGetDesc(Iclass* ic, Ihandle* ih, const char* attrib_name)
 {
   char constructor[50];
 
@@ -322,7 +322,7 @@ static void PopulateListOfClasses(Ihandle* ih)
   free(list);
 }
 
-void iupClassInfoShowHelp(const char* className)
+IUP_SDK_API void iupClassInfoShowHelp(const char* className)
 {
   char url[1024];
   char* folder = "elem";
