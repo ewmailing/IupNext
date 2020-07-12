@@ -1561,25 +1561,28 @@ static int iFlatTreeTextEditKCR_CB(Ihandle* text)
 {
   Ihandle* ih = text->parent;
   iFlatTreeNode *nodeFocus = iFlatTreeGetNode(ih, ih->data->focus_id);
-  char* new_title = IupGetAttribute(text, "VALUE");
-
-  IFnis cbRename = (IFnis)IupGetCallback(ih, "RENAME_CB");
-  if (cbRename)
+  if (nodeFocus)
   {
-    if (cbRename(ih, nodeFocus->id, new_title) == IUP_IGNORE)
-      return IUP_IGNORE;
+    char* new_title = IupGetAttribute(text, "VALUE");
+
+    IFnis cbRename = (IFnis)IupGetCallback(ih, "RENAME_CB");
+    if (cbRename)
+    {
+      if (cbRename(ih, nodeFocus->id, new_title) == IUP_IGNORE)
+        return IUP_IGNORE;
+    }
+
+    if (nodeFocus->title)
+      free(nodeFocus->title);
+
+    nodeFocus->title = iupStrDup(new_title);
+
+    IupSetAttribute(text, "VISIBLE", "NO");
+    IupSetAttribute(text, "ACTIVE", "NO");
+
+    iFlatTreeUpdateNodeSize(ih, nodeFocus);
+    iFlatTreeRedraw(ih, 0, 1);
   }
-
-  if (nodeFocus->title)
-    free(nodeFocus->title);
-
-  nodeFocus->title = iupStrDup(new_title);
-
-  IupSetAttribute(text, "VISIBLE", "NO");
-  IupSetAttribute(text, "ACTIVE", "NO");
-
-  iFlatTreeUpdateNodeSize(ih, nodeFocus);
-  iFlatTreeRedraw(ih, 0, 1);
 
   return IUP_IGNORE;  /* always ignore to avoid the defaultenter/defaultesc behavior from here */
 }
@@ -1595,21 +1598,24 @@ static int iFlatTreeTextEditVALUECHANGED_CB(Ihandle* text)
 {
   Ihandle* ih = text->parent;
   iFlatTreeNode *nodeFocus = iFlatTreeGetNode(ih, ih->data->focus_id);
-  char *new_title = IupGetAttribute(text, "VALUE");
-  char* font = IupGetAttribute(ih, "FONT");
-  int new_w, extra_w;
-
-  iFlatTreeSetNodeDrawFont(ih, nodeFocus, font);
-  iupDrawGetTextSize(ih, new_title, 0, &new_w, NULL, 0);
-  new_w += 2*5; /* add borders */
-
-  iupDrawGetTextSize(ih, "WW", 0, &extra_w, NULL, 0);
-  new_w += extra_w;
-
-  if (new_w > text->currentwidth)
+  if (nodeFocus)
   {
-    text->currentwidth = new_w;
-    iupClassObjectLayoutUpdate(text);
+    char *new_title = IupGetAttribute(text, "VALUE");
+    char* font = IupGetAttribute(ih, "FONT");
+    int new_w, extra_w;
+
+    iFlatTreeSetNodeDrawFont(ih, nodeFocus, font);
+    iupDrawGetTextSize(ih, new_title, 0, &new_w, NULL, 0);
+    new_w += 2 * 5; /* add borders */
+
+    iupDrawGetTextSize(ih, "WW", 0, &extra_w, NULL, 0);
+    new_w += extra_w;
+
+    if (new_w > text->currentwidth)
+    {
+      text->currentwidth = new_w;
+      iupClassObjectLayoutUpdate(text);
+    }
   }
 
   return IUP_DEFAULT;

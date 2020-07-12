@@ -286,10 +286,13 @@ static int classesList_ActionCB (Ihandle *ih, char *className, int pos, int stat
     IupSetAttribute(listCallbacks, "REMOVEITEM", NULL);
 
     cb_n = IupGetClassCallbacks(className, attr_names, total_n);
-    qsort(attr_names, cb_n, sizeof(char*), compare_names);
+    if (cb_n > 0)
+    {
+      qsort(attr_names, cb_n, sizeof(char*), compare_names);
 
-    for (i = 0; i < cb_n; i++)
-      IupSetAttribute(listCallbacks, "APPENDITEM", attr_names[i]);
+      for (i = 0; i < cb_n; i++)
+        IupSetAttribute(listCallbacks, "APPENDITEM", attr_names[i]);
+    }
 
     /***********************************/
 
