@@ -534,7 +534,7 @@ int main(int argc, char **argv)
   IupSetAttributeHandle(dlg, "MENU", menu);
   IupSetAttribute(dlg, "TITLE", "Simple Notepad");
   IupSetAttribute(dlg, "SIZE", "HALFxHALF");
-  IupSetCallback(dlg, "CLOSECB", (Icallback)item_exit_action_cb);
+  IupSetCallback(dlg, "CLOSE_CB", (Icallback)item_exit_action_cb);
 
   IupSetAttribute(dlg, "CONFIG", (char*)config);
 
