@@ -341,13 +341,25 @@ IUP_SDK_API void iupClassInfoShowHelp(const char* className)
             iupStrEqual(className, "tuioclient") ||
             iupStrEqual(className, "webbrowser"))
             folder = "ctrl";
-  else if (className[0] == 'G' && className[1] == 'L')
+  else if (className[0] == 'g' && className[1] == 'l')
     folder = "gl";
 
   if (iupStrEqualPartial(className, "mgl") ||
       iupStrEqual(className, "plot") ||
       iupStrEqual(className, "scintilla"))
       sep = "_";
+
+  /* filename fixes */
+  if (iupStrEqualPartial(className, "imagergb"))
+    className = "image";
+  else if (iupStrEqual(className, "spinbox"))
+    className = "spin";
+  else if (iupStrEqual(className, "olecontrol"))
+    className = "ole";
+  else if (iupStrEqual(className, "tuioclient"))
+    className = "tuio";
+  else if (iupStrEqual(className, "webbrowser"))
+    className = "web";
 
   /* sprintf(url, "http://www.tecgraf.puc-rio.br/iup/en/%s/iup%s%s.html", folder, sep, className); -- direct page version */
   sprintf(url, "http://www.tecgraf.puc-rio.br/iup/index.html?url=%s/iup%s%s.html", folder, sep, className);
