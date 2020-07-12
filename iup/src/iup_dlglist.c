@@ -112,19 +112,18 @@ IUP_SDK_API int iupDlgListVisibleCount(void)
 
 void iupDlgListDestroyAll(void)
 {
-  int i = 0, count;
+  int i, count = 0;
   Ihandle** ih_array = (Ihandle**)malloc(idlg_count * sizeof(Ihandle*));
   Idiallst *list;
   for (list = idlglist; list; list = list->next)
   {
     if (iupObjectCheck(list->ih))
     {
-      ih_array[i] = list->ih;
-      i++;
+      ih_array[count] = list->ih;
+      count++;
     }
   }
 
-  count = i;
   for (i = 0; i < count; i++)
   {
     if (iupObjectCheck(ih_array[i]))
