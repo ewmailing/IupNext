@@ -8,6 +8,7 @@
 #include <stdio.h>
 #include <stdlib.h>
 #include <memory.h>
+#include <string.h>
 
 #include <gtk/gtk.h>
 
@@ -143,10 +144,15 @@ static char* gtkClipboardGetFormatDataStringAttrib(Ihandle *ih)
 
 static int gtkClipboardSetFormatDataStringAttrib(Ihandle *ih, const char *value)
 {
-  int len;
-  char* wstr = iupgtkStrConvertToSystemLen(value, &len);
-  iupAttribSetInt(ih, "FORMATDATASIZE", len+1);  /* include terminator */
-  return gtkClipboardSetFormatDataAttrib(ih, wstr);
+  if (value)
+  {
+    int len = (int)strlen(value);
+    char* wstr = iupgtkStrConvertToSystemLen(value, &len);
+    iupAttribSetInt(ih, "FORMATDATASIZE", len + 1);  /* include terminator */
+    return gtkClipboardSetFormatDataAttrib(ih, wstr);
+  }
+  else
+    return gtkClipboardSetFormatDataAttrib(ih, NULL);
 }
 
 static int gtkClipboardSetTextAttrib(Ihandle *ih, const char *value)
