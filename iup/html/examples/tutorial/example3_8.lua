@@ -201,7 +201,7 @@ function item_goto:action()
 end
 
 function item_find:action()
-  local find_dlg = self.find_dialog
+  local find_dlg = iup.GetDialog(self).find_dialog
   if (not find_dlg) then
     local find_txt = iup.text{visiblecolumns = "20"}
     local find_case = iup.toggle{title = "Case Sensitive"}
@@ -274,7 +274,7 @@ function item_find:action()
       }
 
     -- Save the dialog to reuse it 
-    self.find_dialog = find_dlg -- from the main dialog */
+    iup.GetDialog(self).find_dialog = find_dlg -- from the main dialog */
   end
 
   -- centerparent first time, next time reuse the last position
