@@ -682,7 +682,7 @@ static int iFlatListMotion_CB(Ihandle* ih, int x, int y, char* status)
   else
   {
     iFlatListItem* items = (iFlatListItem*)iupArrayGetData(ih->data->items_array);
-    char* item_tip = items[pos].tip;
+    char* item_tip = items[pos-1].tip;
     if (item_tip)
       iupFlatItemSetTip(ih, item_tip);
     else
