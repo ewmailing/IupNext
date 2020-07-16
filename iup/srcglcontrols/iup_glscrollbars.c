@@ -377,7 +377,7 @@ static int iGLScrollbarsMove(Ihandle* ih, int diff_x, int diff_y, int start_pos,
   if (sb_ymax - sb_ymin > sb_dy)  /* has vertical scrollbar */
     has_vert_scroll = 1;
 
-  if (handler == SB_DRAG_Y)
+  if (handler == SB_DRAG_Y && has_vert_scroll)
   {
     int ymin, ymax, posy, sb_posy;
     int height = ih->currentheight;
@@ -411,7 +411,7 @@ static int iGLScrollbarsMove(Ihandle* ih, int diff_x, int diff_y, int start_pos,
       return 1;
     }
   }
-  else if (handler == SB_DRAG_X)
+  else if (handler == SB_DRAG_X && has_horiz_scroll)
   {
     int xmin, xmax, posx, sb_posx;
     int width = ih->currentwidth;
