@@ -217,6 +217,24 @@ static int iPlotGetCDMarkStyle(const char* value)
 /**************************************************************************************/
 
 
+static int iPlotSetShowCrossHairAttrib(Ihandle* ih, const char* value)
+{
+  if (iupStrEqualNoCase(value, "HORIZONTAL"))
+    ih->data->show_cross_hair = IUP_PLOT_CROSSHAIR_HORIZ;
+  else if (iupStrEqualNoCase(value, "VERTICAL"))
+    ih->data->show_cross_hair = IUP_PLOT_CROSSHAIR_VERT;
+  else
+    ih->data->show_cross_hair = IUP_PLOT_CROSSHAIR_NONE;
+  return 0;
+}
+
+static char* iPlotGetShowCrossHairAttrib(Ihandle* ih)
+{
+  const char* cross_hair_str[3] = { "NONE", "VERTICAL", "HORIZONTAL" };
+  return (char*)cross_hair_str[ih->data->show_cross_hair];
+}
+
+
 static int iPlotSetAntialiasAttrib(Ihandle* ih, const char* value)
 {
   if (iupStrBoolean(value))
@@ -3596,6 +3614,7 @@ void iupPlotRegisterAttributes(Iclass* ic)
   iupClassRegisterAttribute(ic, "ZOOM", NULL, iPlotSetZoomAttrib, NULL, NULL, IUPAF_WRITEONLY | IUPAF_NOT_MAPPED | IUPAF_NO_INHERIT);
   iupClassRegisterAttribute(ic, "EDITABLEVALUES", NULL, NULL, NULL, NULL, IUPAF_NOT_MAPPED | IUPAF_NO_INHERIT);
   iupClassRegisterAttribute(ic, "DATASETCLIPPING", iPlotGetDataSetClippingAttrib, iPlotSetDataSetClippingAttrib, IUPAF_SAMEASSYSTEM, "AREA", IUPAF_NOT_MAPPED | IUPAF_NO_INHERIT);
+  iupClassRegisterAttribute(ic, "SHOWCROSSHAIR", iPlotGetShowCrossHairAttrib, iPlotSetShowCrossHairAttrib, NULL, NULL, IUPAF_NO_INHERIT);
 
   iupClassRegisterAttribute(ic, "MARGINLEFTAUTO", iPlotGetMarginLeftAutoAttrib, iPlotSetMarginLeftAutoAttrib, IUPAF_SAMEASSYSTEM, "Yes", IUPAF_NOT_MAPPED | IUPAF_NO_INHERIT);
   iupClassRegisterAttribute(ic, "MARGINRIGHTAUTO", iPlotGetMarginRightAutoAttrib, iPlotSetMarginRightAutoAttrib, IUPAF_SAMEASSYSTEM, "Yes", IUPAF_NOT_MAPPED | IUPAF_NO_INHERIT);
