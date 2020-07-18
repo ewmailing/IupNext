@@ -16,7 +16,7 @@
 <h2>IupPostMessage<span class="style1"> (since 3.28)</span></h2>
 <p>Sends data to an element, that will be received by a callback when the main 
 loop regain control. </p>
-<p>It is expected to be thread safe, but it needs more testing.</p>
+<p>It is expected to be thread safe.</p>
 <h3>
 Parameters/Return</h3>
 <div>
@@ -39,7 +39,7 @@ number.<br><strong>p</strong>: generic pointer.</p>
 <h3>Notes</h3>
 <p>The variables are stored when the function is called, to be later passed to 
 the callback. It will work even for non native elements.</p>
-<p>The callback must be defined or there will be a memory leak.</p>
+<p>If IupPostMessage is called, the callback must be defined or there will be a memory leak.</p>
 <h3>Affects</h3>
 <p>All controls.</p>
 
