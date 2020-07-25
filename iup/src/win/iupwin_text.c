@@ -1855,7 +1855,7 @@ static int winTextMsgProc(Ihandle* ih, UINT msg, WPARAM wp, LPARAM lp, LRESULT *
             ret = 1;
         }
       }
-      else 
+      else if (wp != VK_ESCAPE)
       {
         int has_ctrl = GetKeyState(VK_CONTROL) & 0x8000;
         int has_alt = GetKeyState(VK_MENU) & 0x8000;
