@@ -34,9 +34,10 @@ endif
 
 INCLUDES = ../include .
 
-# Windows XP minimum
-WIN32VER = 0x0501
-#For the future use 0x0601  (Windows 7 minimum)
+# Windows 7 minimum
+WIN32VER = 0x0601
+# OLD Windows XP Minimum
+# WIN32VER = 0x0501
 
 ifeq ($(findstring Win, $(TEC_SYSNAME)), )
   DEPENDDIR = dep
@@ -189,7 +190,7 @@ else
   SRC += win/iupwindows_main.c win/iupwindows_help.c win/iupwindows_info.c
 
   INCLUDES += win
-  DEFINES += _WIN32_WINNT=$(WIN32VER) _WIN32_IE=0x600 WINVER=$(WIN32VER) NOTREEVIEW
+  DEFINES += _WIN32_WINNT=$(WIN32VER) _WIN32_IE=0x0900 WINVER=$(WIN32VER) NOTREEVIEW
   DEFINES += UNICODE
 endif
 endif
