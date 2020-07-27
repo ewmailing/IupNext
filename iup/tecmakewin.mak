@@ -1413,7 +1413,7 @@ ifdef USE_FREETYPE
 endif
 
 ifdef LINK_FREETYPE
-  LIBS += freetype
+  LIBS += freetype6
   
   ifndef NO_ZLIB
     LINK_ZLIB = Yes
