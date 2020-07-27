@@ -1413,8 +1413,7 @@ ifdef USE_FREETYPE
 endif
 
 ifdef LINK_FREETYPE
-  # To be compatible with the existing DLLs of gnuwin32
-  LIBS += freetype6
+  LIBS += freetype
   
   ifndef NO_ZLIB
     LINK_ZLIB = Yes
