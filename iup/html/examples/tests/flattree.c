@@ -626,6 +626,11 @@ static void init_tree_nodes(void)
   IupSetAttribute(tree, "USERDATA8", "8");
   IupSetAttribute(tree, "USERDATA9", "9");
 
+  IupSetAttribute(tree, "EXTRATEXT2", "Extra Text 2");
+  IupSetAttribute(tree, "EXTRATEXT3", "Very Long Extra Text 3");
+  IupSetAttribute(tree, "EXTRATEXT4", "4");
+  IupSetAttribute(tree, "USERDATA6", "Extra Text 6");
+  IupSetAttribute(tree, "USERDATA7", "Áa‚„Û");
 }
 
 static void init_tree_2_nodes(void)
@@ -832,6 +837,7 @@ static Ihandle *init_tree(void)
   IupSetCallback(tree, "TOGGLEVALUE_CB", (Icallback)togglevalue_cb);
   //  IupSetCallback(tree, "TIPS_CB", (Icallback)tips_cb);
 //  IupSetAttribute(tree, "FLATSCROLLBAR", "Yes");
+  IupSetAttribute(tree, "EXTRATEXTWIDTH", "300");
 
   //IupSetAttribute(tree, "FITTOBACKIMAGE", "YES");
 //  IupSetAttribute(tree, "ADDEXPANDED", "NO");

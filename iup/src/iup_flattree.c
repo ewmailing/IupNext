@@ -37,6 +37,8 @@
 #define IFLATTREE_TOGGLE_BORDER 1
 #define IFLATTREE_TOGGLE_SPACE  2
 
+#define EXTRAWIDTH_SPACE 5
+
 enum { IFLATTREE_EXPANDED, IFLATTREE_COLLAPSED };  /* state */
 enum { IFLATTREE_BRANCH, IFLATTREE_LEAF };  /* kind */
 enum { IFLATTREE_MARK_SINGLE, IFLATTREE_MARK_MULTIPLE };  /* mark_mode */
@@ -57,6 +59,7 @@ typedef struct _iFlatTreeNode
   int toggle_visible;  /* bool */
   int toggle_value;    /* bool */
   void* userdata;
+  char* extratext;
 
   /* aux */
   int id, depth, expanded;
@@ -97,6 +100,8 @@ struct _IcontrolData
   int empty_toggle;
   int toggle_size;
   int button_size;
+  int extratext_width;
+  int extratext_move;
 };
 
 
@@ -1338,6 +1343,20 @@ static int iFlatTreeDrawNodes(Ihandle *ih, IdrawCanvas* dc, iFlatTreeNode *node,
       /* title focus */
       if (ih->data->has_focus && ih->data->focus_id == node->id && focus_feedback)
         iupdrvDrawFocusRect(dc, title_x, node_y, title_x + node->title_width - 1, node_y + node_h - 1);
+
+  	  if (ih->data->extratext_width)
+      {
+  	    int extra_x = ih->currentwidth - ih->data->extratext_width;
+  	  
+	      iupdrvDrawRectangle(dc, extra_x , node_y, ih->currentwidth, node_y + node_h , iupDrawStrToColor(bg_color, 0), IUP_DRAW_FILL, 1);
+
+        if (node->extratext)
+        {
+          iupFlatDrawIcon(ih, dc, extra_x + 10, node_y, ih->data->extratext_width, node_h,
+                          IUP_IMGPOS_LEFT, 10, IUP_ALIGN_ALEFT, IUP_ALIGN_ACENTER, 0, 0,
+                          NULL, 0, node->extratext, text_flags, 0, fore_color, bg_color, active);
+        }
+  	  }
     }
 
     /* next node */
@@ -1434,10 +1453,18 @@ static int iFlatTreeRedraw_CB(Ihandle* ih)
   if (node)
   {
     iFlatTreeDrawNodes(ih, dc, node, x, y, fg_color, bg_color, line_rgba, toggle_fgcolor, toggle_bgcolor, make_inactive, active,
-                       text_flags, font, focus_feedback, hide_lines);
+                     text_flags, font, focus_feedback, hide_lines);
 
     if (!hide_buttons)
       iFlatTreeDrawExpander(ih, dc, node, button_brdcolor, button_fgcolor, button_bgcolor, bg_color, x, y, button_plus_image, button_minus_image);
+
+    if (ih->data->extratext_width)
+    {
+      int extra_x = ih->currentwidth - ih->data->extratext_width;
+      int px1 = extra_x + EXTRAWIDTH_SPACE;
+
+      iupdrvDrawLine(dc, px1, 0, px1, height - 1, line_rgba, IUP_DRAW_STROKE_DOT, 1);
+    }
   }
 
   if (border_width)
@@ -1952,6 +1979,8 @@ static int iFlatTreeButton_CB(Ihandle* ih, int button, int pressed, int x, int y
   IFniiiis button_cb = (IFniiiis)IupGetCallback(ih, "FLAT_BUTTON_CB");
   int id;
 
+  ih->data->extratext_move = 0;
+
   if (button_cb)
   {
     if (button_cb(ih, button, pressed, x, y, status) == IUP_IGNORE)
@@ -2040,6 +2069,16 @@ static int iFlatTreeButton_CB(Ihandle* ih, int button, int pressed, int x, int y
     int img_w = 0;
     char *image;
     int toggle_gap = 0;
+
+    if (ih->data->extratext_width)
+    {
+      int extra_x = ih->currentwidth - ih->data->extratext_width;
+      if (x >= extra_x - EXTRAWIDTH_SPACE && x <= extra_x + EXTRAWIDTH_SPACE)
+      { 
+        ih->data->extratext_move = x;
+        return IUP_DEFAULT;
+      }
+    }
 
     node = iFlatTreeGetNode(ih, id);
     if (!node)
@@ -2217,6 +2256,15 @@ static int iFlatTreeMotion_CB(Ihandle* ih, int x, int y, char* status)
       return IUP_DEFAULT;
   }
 
+  if (ih->data->extratext_width)
+  {
+    int extra_x = ih->currentwidth - ih->data->extratext_width;
+    if (x >= extra_x - EXTRAWIDTH_SPACE && x <= extra_x + EXTRAWIDTH_SPACE)
+      IupSetAttribute(ih, "CURSOR", "SPLITTER_VERT");
+    else
+      IupSetAttribute(ih, "CURSOR", "ARROW");
+  }
+
   id = iFlatTreeConvertXYToId(ih, x, y);
   if (id < 0)
   {
@@ -2237,6 +2285,13 @@ static int iFlatTreeMotion_CB(Ihandle* ih, int x, int y, char* status)
     return IUP_IGNORE;
 
   /* button1 is pressed => dragging */
+
+  if (ih->data->extratext_width && ih->data->extratext_move)
+  {
+    ih->data->extratext_width = ih->currentwidth - x;
+    IupRedraw(ih, 0);
+    return IUP_DEFAULT;
+  }
 
   if (ih->data->mark_mode == IFLATTREE_MARK_MULTIPLE && !ih->data->show_dragdrop)
   {
@@ -3961,17 +4016,50 @@ static int iFlatTreeSetImageLeafAttrib(Ihandle* ih, const char* value)
   return 1;
 }
 
- static int iFlatTreeSetImageBranchCollapsedAttrib(Ihandle* ih, const char* value)
- {
-   if (ih->data->auto_redraw)
-   {
-     iupAttribSetStr(ih, "IMAGEBRANCHCOLLAPSED", value);
-     iFlatTreeRedraw(ih, 1, 1);
-   }
+static int iFlatTreeSetImageBranchCollapsedAttrib(Ihandle* ih, const char* value)
+{
+  if (ih->data->auto_redraw)
+  {
+    iupAttribSetStr(ih, "IMAGEBRANCHCOLLAPSED", value);
+    iFlatTreeRedraw(ih, 1, 1);
+  }
 
-   return 1;
- }
+  return 1;
+}
 
+static char* iFlatTreeGetExtraTextWidthAttrib(Ihandle* ih)
+{
+  return iupStrReturnInt(ih->data->extratext_width);
+}
+
+static int iFlatTreeSetExtraTextWidthAttrib(Ihandle* ih, const char* value)
+{
+  iupStrToInt(value, &ih->data->extratext_width);
+  iFlatTreeRedraw(ih, 1, 1);
+  return 0;
+}
+static char* iFlatTreeGetExtraTextAttrib(Ihandle* ih, int id)
+{
+	iFlatTreeNode *node = (iFlatTreeNode *)iFlatTreeGetNode(ih, id);
+	if (!node)
+		return NULL;
+
+	return node->extratext;
+}
+
+static int iFlatTreeSetExtraTextAttrib(Ihandle* ih, int id, const char* value) 
+{
+	iFlatTreeNode *node = (iFlatTreeNode *)iFlatTreeGetNode(ih, id);
+	if (!node)
+		return 0;
+
+  if (node->extratext)
+    free(node->extratext);
+	node->extratext = iupStrDup(value);
+
+	iFlatTreeRedraw(ih, 0, 1);
+	return 0;
+}
 
 /*********************************  Methods  ************************************/
 
@@ -4243,6 +4331,9 @@ Iclass* iupFlatTreeNewClass(void)
   iupClassRegisterAttribute(ic, "DRAGDROPTREE", NULL, iFlatTreeSetDragDropTreeAttrib, NULL, NULL, IUPAF_NOT_MAPPED | IUPAF_NO_INHERIT);
   iupClassRegisterAttribute(ic, "DROPEQUALDRAG", NULL, NULL, NULL, NULL, IUPAF_NO_INHERIT);
 
+  /* External Text */
+  iupClassRegisterAttribute(ic, "EXTRATEXTWIDTH", iFlatTreeGetExtraTextWidthAttrib, iFlatTreeSetExtraTextWidthAttrib, NULL, NULL, IUPAF_NOT_MAPPED|IUPAF_NO_INHERIT);
+  iupClassRegisterAttributeId(ic, "EXTRATEXT", iFlatTreeGetExtraTextAttrib, iFlatTreeSetExtraTextAttrib, IUPAF_NOT_MAPPED | IUPAF_NO_INHERIT);
   /* Scrollbars */
   iupClassRegisterReplaceAttribDef(ic, "SCROLLBAR", "YES", NULL);  /* change the default to Yes */
   iupClassRegisterAttribute(ic, "YAUTOHIDE", NULL, NULL, IUPAF_SAMEASSYSTEM, "YES", IUPAF_READONLY | IUPAF_NOT_MAPPED | IUPAF_NO_INHERIT);  /* will be always Yes */

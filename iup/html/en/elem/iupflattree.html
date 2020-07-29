@@ -73,9 +73,9 @@ NOT support in the regular IupTree.</p>
 <p class="info"><strong>AUTOREDRAW<br>
 BGCOLOR<br>
 BORDERCOLOR<sup>(*)</sup><br>BORDERWIDTH<sup>(*)</sup><br>COUNT<br>
-EXPAND<br>
+EXPAND<br>EXTRATEXTWIDTH<sup>(*)</sup><br>
 FGCOLOR<br>HLCOLOR</strong><sup><strong>(*)</strong></sup><strong><br class="auto-style1">
-HLCOLORALPHA</strong><sup><strong>(*)</strong></sup><strong><br class="auto-style1">ICONSPACING</strong><sup><strong>(*)</strong></sup><strong><br>
+HLCOLORALPHA</strong><sup><strong>(*)</strong></sup><strong><br class="auto-style1">PSCOLOR<sup>(*)</sup><br>TEXTPSCOLOR<sup>(*)</sup><br>ICONSPACING</strong><sup><strong>(*)</strong></sup><strong><br>
 INDENTATION<br>
 RASTERSIZE<br>
 SPACING<br>
@@ -97,7 +97,7 @@ TOTALCHILDCOUNT</strong><br>
     PARENT<br>
     STATE<br>
     TITLE<br>
-TITLEFONT<br>USERDATA</strong></p>
+TITLEFONT<br>USERDATA<br>EXTRATEXT<sup>(*)</sup></strong></p>
 <h4><strong><a href="iupflattree_attrib.html#Toggle">Toggle</a></strong></h4>
 <p class="info"><strong>SHOWTOGGLE<br>EMPTYTOGGLE<sup>(*)</sup><br>
 TOGGLEVALUE<br>TOGGLEVISIBLE<br>TOGGLEBGCOLOR</strong><sup><strong>(*)</strong></sup><strong><br class="auto-style1">TOGGLEFGCOLOR</strong><sup><strong>(*)</strong></sup><strong><br class="auto-style1">
@@ -296,6 +296,11 @@ also be selected using mouse dragging if SHOWDRAGDROP=NO.</p>
   others are unmarked. The initial node is changed every time a node is marked without the Shift key being pressed. This 
   happens when any movement is done without Shift or Control keys being pressed, or when the space bar is pressed together 
   with Control.</p>
+<h4>Extra Text Area (since 3.30)</h4>
+<p>The extra text area is displayed when EXTRATEXTWIDTH is greater than 0. It is 
+located at right, and displays additional text associated with each node. The 
+split handler can be controlled by the user and directly sets the EXTRATEXTWIDTH 
+attribute.</p>
 <h4><a name="navigation">Navigation</a></h4>
 <p>Using the keyboard: </p>
 <ul>
@@ -508,6 +513,12 @@ concatenate the attribute name with the id.</p>
 </tr>
 <tr>
 <td class="bg_winxp"><img src="images/iupflattree3.png" border="0"></td>
+</tr>
+<tr>
+<th>Tree with extra text area</th>
+</tr>
+<tr>
+<td class="bg_winxp"><img src="images/iupflattree4.png" border="0"></td>
 </tr>
 </tbody>
 </table>
