@@ -96,6 +96,7 @@ Functions</h3></td></tr>
 <tr><td class="memItemLeft" align="right" valign="top">IUP_SDK_API char *&nbsp;</td><td class="memItemRight" valign="bottom"><a class="el" href="group__str.html#gacc5eec3f11f97f5398c9c17b08b5d6f7">iupStrFileGetTitle</a> (const char *filename)</td></tr>
 <tr><td class="memItemLeft" align="right" valign="top">IUP_SDK_API char *&nbsp;</td><td class="memItemRight" valign="bottom"><a class="el" href="group__str.html#ga41052b5c9318c3698d7c3ff0f5b7026d">iupStrFileGetPath</a> (const char *filename)</td></tr>
 <tr><td class="memItemLeft" align="right" valign="top">IUP_SDK_API char *&nbsp;</td><td class="memItemRight" valign="bottom"><a class="el" href="group__str.html#ga77bf431a7ee1facb660a23e14672c21a">iupStrFileMakeFileName</a> (const char *path, const char *title)</td></tr>
+<tr><td class="memItemLeft" align="right" valign="top">IUP_SDK_API char *&nbsp;</td><td class="memItemRight" valign="bottom"><a class="el" href="group__str.html#gac558387e07f38535cd41962e27b77905">iupStrFileMakeURL</a> (const char *filename)</td></tr>
 <tr><td class="memItemLeft" align="right" valign="top">IUP_SDK_API void&nbsp;</td><td class="memItemRight" valign="bottom"><a class="el" href="group__str.html#ga996a988b195bca328b58bd80e30c32b0">iupStrFileNameSplit</a> (const char *filename, char *path, char *title)</td></tr>
 <tr><td class="memItemLeft" align="right" valign="top">IUP_SDK_API int&nbsp;</td><td class="memItemRight" valign="bottom"><a class="el" href="group__str.html#gae0cb917a12298e9e3c0baea3e96e5d0b">iupStrTmpFileName</a> (char *filename, const char *prefix)</td></tr>
 <tr><td class="memItemLeft" align="right" valign="top">IUP_SDK_API int&nbsp;</td><td class="memItemRight" valign="bottom"><a class="el" href="group__str.html#gabd071cffc0f636ccc5061608155f3739">iupStrReplace</a> (char *str, char src, char dst)</td></tr>
@@ -1584,6 +1585,25 @@ Functions</h3></td></tr>
 
 </div>
 </div>
+<a class="anchor" id="gac558387e07f38535cd41962e27b77905"></a><!-- doxytag: member="iup_str.h::iupStrFileMakeURL" ref="gac558387e07f38535cd41962e27b77905" args="(const char *filename)" -->
+<div class="memitem">
+<div class="memproto">
+      <table class="memname">
+        <tr>
+          <td class="memname">IUP_SDK_API char* iupStrFileMakeURL </td>
+          <td>(</td>
+          <td class="paramtype">const char *&nbsp;</td>
+          <td class="paramname"> <em>filename</em></td>
+          <td>&nbsp;)&nbsp;</td>
+          <td></td>
+        </tr>
+      </table>
+</div>
+<div class="memdoc">
+<p>Creates an URL for the filename by adding "file://" at start and replacing any '\' by '/'. Must free the returned string. </p>
+
+</div>
+</div>
 <a class="anchor" id="ga996a988b195bca328b58bd80e30c32b0"></a><!-- doxytag: member="iup_str.h::iupStrFileNameSplit" ref="ga996a988b195bca328b58bd80e30c32b0" args="(const char *filename, char *path, char *title)" -->
 <div class="memitem">
 <div class="memproto">
@@ -2111,7 +2131,7 @@ Functions</h3></td></tr>
 </div>
 </div>
 </div>
-<hr class="footer"/><address class="footer"><small>Generated on Sun May 17 2020 15:30:57 for SDK by&nbsp;
+<hr class="footer"/><address class="footer"><small>Generated on Thu Jul 30 2020 20:49:02 for SDK by&nbsp;
 <a href="http://www.doxygen.org/index.html">
 <img class="footer" src="doxygen.png" alt="doxygen"/></a> 1.7.1 </small></address>
 </body>
