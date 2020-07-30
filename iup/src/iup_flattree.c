@@ -2051,6 +2051,16 @@ static int iFlatTreeButton_CB(Ihandle* ih, int button, int pressed, int x, int y
     return IUP_DEFAULT;
   }
 
+  if (button == IUP_BUTTON1 && pressed && ih->data->extratext_width) 
+  {
+	  int extra_x = ih->currentwidth - ih->data->extratext_width;
+	  if (x >= extra_x - EXTRAWIDTH_SPACE && x <= extra_x + EXTRAWIDTH_SPACE) 
+    {
+		  ih->data->extratext_move = x;
+		  return IUP_DEFAULT;
+	  }
+  }
+
   if (id == -1)
     return IUP_DEFAULT;
 
@@ -2069,16 +2079,6 @@ static int iFlatTreeButton_CB(Ihandle* ih, int button, int pressed, int x, int y
     int img_w = 0;
     char *image;
     int toggle_gap = 0;
-
-    if (ih->data->extratext_width)
-    {
-      int extra_x = ih->currentwidth - ih->data->extratext_width;
-      if (x >= extra_x - EXTRAWIDTH_SPACE && x <= extra_x + EXTRAWIDTH_SPACE)
-      { 
-        ih->data->extratext_move = x;
-        return IUP_DEFAULT;
-      }
-    }
 
     node = iFlatTreeGetNode(ih, id);
     if (!node)
@@ -2265,6 +2265,13 @@ static int iFlatTreeMotion_CB(Ihandle* ih, int x, int y, char* status)
       IupSetAttribute(ih, "CURSOR", "ARROW");
   }
 
+  if (iup_isbutton1(status) && ih->data->extratext_width && ih->data->extratext_move)
+  {
+    ih->data->extratext_width = ih->currentwidth - x;
+    IupRedraw(ih, 0);
+    return IUP_DEFAULT;
+  }
+
   id = iFlatTreeConvertXYToId(ih, x, y);
   if (id < 0)
   {
@@ -2285,13 +2292,6 @@ static int iFlatTreeMotion_CB(Ihandle* ih, int x, int y, char* status)
     return IUP_IGNORE;
 
   /* button1 is pressed => dragging */
-
-  if (ih->data->extratext_width && ih->data->extratext_move)
-  {
-    ih->data->extratext_width = ih->currentwidth - x;
-    IupRedraw(ih, 0);
-    return IUP_DEFAULT;
-  }
 
   if (ih->data->mark_mode == IFLATTREE_MARK_MULTIPLE && !ih->data->show_dragdrop)
   {
