@@ -68,7 +68,7 @@
     <ClCompile>
       <Optimization>Disabled</Optimization>
       <AdditionalIncludeDirectories>..\src;..\include;..\lng\gtk3_x64\include\atk-1.0;..\lng\gtk3_x64\include\cairo;..\lng\gtk3_x64\include\glib-2.0;..\lng\gtk3_x64\include\gtk-3.0;..\lng\gtk3_x64\include\pango-1.0;..\lng\gtk3_x64\include\gdk-pixbuf-2.0;..\lng\gtk3_x64\lib\glib-2.0\include;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
-      <PreprocessorDefinitions>WIN32;_DEBUG;_LIB;_CRT_SECURE_NO_DEPRECATE;USE_WEBKIT2;DEBUG;_WIN32_WINNT=0x0501;_WIN32_IE=0x0600;COBJMACROS;WINVER=0x0501;IUP_ASSERT;NOTREEVIEW;UNICODE;_UNICODE;%(PreprocessorDefinitions)</PreprocessorDefinitions>
+      <PreprocessorDefinitions>WIN32;_DEBUG;_LIB;_CRT_SECURE_NO_DEPRECATE;USE_WEBKIT2;DEBUG;_WIN32_WINNT=0x0601;_WIN32_IE=0x0900;COBJMACROS;WINVER=0x0601;IUP_ASSERT;NOTREEVIEW;UNICODE;_UNICODE;%(PreprocessorDefinitions)</PreprocessorDefinitions>
       <MinimalRebuild>false</MinimalRebuild>
       <BasicRuntimeChecks>EnableFastChecks</BasicRuntimeChecks>
       <RuntimeLibrary>MultiThreadedDebug</RuntimeLibrary>
