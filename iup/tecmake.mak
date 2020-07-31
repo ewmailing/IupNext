@@ -822,6 +822,7 @@ LUA52 ?= $(TECTOOLS_HOME)/lua52
 LUA53 ?= $(TECTOOLS_HOME)/lua53
 LUA54 ?= $(TECTOOLS_HOME)/lua54
 FTGL  ?= $(TECTOOLS_HOME)/ftgl
+PDFLIB ?= $(TECTOOLS_HOME)/pdflib7
 # Freetype and zlib in Linux we use from the system
 
 
@@ -1297,6 +1298,20 @@ ifdef LINK_FREETYPE
   endif
   
   LIBS += freetype
+endif
+
+ifdef LINK_PDFLIB
+  PDFLIB_LIB ?= $(PDFLIB)/lib/$(TEC_UNAME)
+  ifdef USE_STATIC
+    SLIB += $(PDFLIB_LIB)/libpdflib.a
+    
+    ifndef NO_ZLIB
+      LINK_ZLIB = Yes
+    endif
+  else
+    LIBS += pdflib
+    LDIR += $(PDFLIB_LIB)
+  endif
 endif
 
 ifdef USE_ZLIB

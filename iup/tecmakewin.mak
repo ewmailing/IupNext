@@ -1415,12 +1415,27 @@ endif
 ifdef LINK_FREETYPE
   LIBS += freetype6
   
-  ifndef NO_ZLIB
-    LINK_ZLIB = Yes
+  ifeq ($(findstring dll, $(TEC_UNAME)), )
+    ifndef NO_ZLIB
+      LINK_ZLIB = Yes
+    endif
   endif
   
   FREETYPE_LIB ?= $(FREETYPE)/lib/$(TEC_UNAME)
   LDIR += $(FREETYPE_LIB)
+endif
+
+ifdef LINK_PDFLIB
+  LIBS += pdflib
+  
+  ifeq ($(findstring dll, $(TEC_UNAME)), )
+    ifndef NO_ZLIB
+      LINK_ZLIB = Yes
+    endif
+  endif
+  
+  PDFLIB_LIB ?= $(PDFLIB)/lib/$(TEC_UNAME)
+  LDIR += $(PDFLIB_LIB)
 endif
 
 ifdef USE_ZLIB
