@@ -14,6 +14,7 @@ Copy_SOs()
   cp -f ../lib/$PLAT/*.$EXT ../bin/$PLAT/Lua$LUA_SFX
   cp -f $BASE_TEC/cd/lib/$PLAT/*.$EXT ../bin/$PLAT/Lua$LUA_SFX
   cp -f $BASE_TEC/im/lib/$PLAT/*.$EXT ../bin/$PLAT/Lua$LUA_SFX
+  cp -f $BASE_TEC/pdflib7/lib/$PLAT/*.$EXT ../bin/$PLAT/Lua$LUA_SFX
   cp -f $BASE_TEC/ftgl/lib/$PLAT/*.$EXT ../bin/$PLAT/Lua$LUA_SFX
   cp -f ../lib/$PLAT/Lua$LUA_SFX/*.$EXT ../bin/$PLAT/Lua$LUA_SFX
   cp -f $BASE_TEC/cd/lib/$PLAT/Lua$LUA_SFX/*.$EXT ../bin/$PLAT/Lua$LUA_SFX

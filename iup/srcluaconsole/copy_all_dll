@@ -21,6 +21,7 @@ Copy_DLLs()
   cp -f ../lib/$PLAT/*.dll ../bin/$SYS/Lua$LUA_SFX
   cp -f $BASE_TEC/cd/lib/$PLAT/*.dll ../bin/$SYS/Lua$LUA_SFX
   cp -f $BASE_TEC/im/lib/$PLAT/*.dll ../bin/$SYS/Lua$LUA_SFX
+  cp -f $BASE_TEC/pdflib7/lib/$PLAT/*.dll ../bin/$SYS/Lua$LUA_SFX
   cp -f $BASE_TEC/ftgl/lib/$PLAT/*.dll ../bin/$SYS/Lua$LUA_SFX
   cp -f $BASE_TEC/freetype/lib/$PLAT/*.dll ../bin/$SYS/Lua$LUA_SFX
   cp -f $BASE_TEC/zlib/lib/$PLAT/*.dll ../bin/$SYS/Lua$LUA_SFX
