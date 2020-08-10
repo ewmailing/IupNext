@@ -888,18 +888,6 @@ static int select_file(Ihandle* parent_dlg, int is_open)
   return IUP_DEFAULT;
 }
 
-static void view_fit_rect(int canvas_width, int canvas_height, int image_width, int image_height, int *view_width, int *view_height)
-{
-  *view_width = canvas_width;
-  *view_height = (canvas_width * image_height) / image_width;
-
-  if (*view_height > canvas_height)
-  {
-    *view_height = canvas_height;
-    *view_width = (canvas_height * image_width) / image_height;
-  }
-}
-
 static double view_zoom_rect(Ihandle* ih, int image_width, int image_height, int *_x, int *_y, int *_view_width, int *_view_height)
 {
   int x, y, canvas_width, canvas_height;
