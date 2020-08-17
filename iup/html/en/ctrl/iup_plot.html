@@ -53,11 +53,14 @@ Marian Trifon for the first IupPPlot implementation which part was also reused h
 <h3>Initialization and Usage</h3>
 <p>The <b>IupPlotOpen</b> function must be called after a <b>IupOpen</b>, so that the control can be used. 
   The &quot;iup_plot.h&quot; file must also be included in the source code. The program must be linked to the controls 
-  library (iup_plot), with the main CD library, with the 
+  library (iup_plot). When statically linking must be linked with the main CD library 
+cd, with the 
 <a href="http://www.tecgraf.puc-rio.br/cd/en/drv/gl.html" target="_blank">cdgl</a> 
 library, with the 
 <a href="http://www.tecgraf.puc-rio.br/cd/en/drv/gdiplus.html" target="_blank">cdcontextplus</a> 
-library, and with the <a href="iupglcanvas.html">iupgl</a> library.</p>
+library, and with the <a href="iupglcanvas.html">iupgl</a> library, notice that 
+cdpdl depends on <span class="style2">ftgl</span> and cdcontextplus depends on
+<span class="style2">gdiplus</span> on Windows.</p>
 <p>To make the control available in Lua use require&quot;iuplua_plot&quot; or manually 
 call the initialization function in C, 
 <b>iupplotlua_open</b>, after calling <b>iuplua_open</b>.

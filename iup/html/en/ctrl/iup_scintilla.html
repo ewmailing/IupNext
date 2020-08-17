@@ -91,7 +91,8 @@ The<span class="Apple-converted-space">&nbsp;</span><b>IupScintillaOpen</b><span
 must be called after a<span class="Apple-converted-space">&nbsp;</span><b>IupOpen</b>, 
 so that the control can be used. The &quot;iup_scintilla.h&quot; file must also be 
 included in the source code. The program must be linked to the controls library 
-(iup_scintilla), and with the &quot;imm32.lib&quot; library in Windows.</p>
+(iup_scintilla). When statically linking there are additional libraries: &quot;imm32.lib&quot; 
+and &quot;msimg32&quot; in Windows; and &quot;atk-1.0&quot; in Linux.</p>
 <p>To make the control available in Lua use require&quot;iuplua_scintilla&quot; or manually 
 call the initialization function in C, 
 <b>iupscintillalua_open</b>, after calling <b>iuplua_open</b>.
