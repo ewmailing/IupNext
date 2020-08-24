@@ -502,6 +502,7 @@ SET(IUP_COMMON_SOURCE_FILES
 	${CMAKE_SOURCE_DIR}/src/iup_flatseparator.c
 	${CMAKE_SOURCE_DIR}/src/iup_flattabs.c
 	${CMAKE_SOURCE_DIR}/src/iup_flattoggle.c
+	${CMAKE_SOURCE_DIR}/src/iup_flattree.c
 	${CMAKE_SOURCE_DIR}/src/iup_focus.c
 	${CMAKE_SOURCE_DIR}/src/iup_focus.h
 	${CMAKE_SOURCE_DIR}/src/iup_font.c
