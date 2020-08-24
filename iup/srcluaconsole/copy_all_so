@@ -10,18 +10,19 @@ Copy_SOs()
 #  BASE_TEC=~tecgraf/lib
   
   echo $PLAT/Lua$LUA_SFX
-  mkdir -p ../bin/$PLAT/Lua$LUA_SFX
-  cp -f ../lib/$PLAT/*.$EXT ../bin/$PLAT/Lua$LUA_SFX
-  cp -f $BASE_TEC/cd/lib/$PLAT/*.$EXT ../bin/$PLAT/Lua$LUA_SFX
-  cp -f $BASE_TEC/im/lib/$PLAT/*.$EXT ../bin/$PLAT/Lua$LUA_SFX
-  cp -f $BASE_TEC/pdflib7/lib/$PLAT/*.$EXT ../bin/$PLAT/Lua$LUA_SFX
-  cp -f $BASE_TEC/ftgl/lib/$PLAT/*.$EXT ../bin/$PLAT/Lua$LUA_SFX
-  cp -f ../lib/$PLAT/Lua$LUA_SFX/*.$EXT ../bin/$PLAT/Lua$LUA_SFX
-  cp -f $BASE_TEC/cd/lib/$PLAT/Lua$LUA_SFX/*.$EXT ../bin/$PLAT/Lua$LUA_SFX
-  cp -f $BASE_TEC/im/lib/$PLAT/Lua$LUA_SFX/*.$EXT ../bin/$PLAT/Lua$LUA_SFX
-  cp -f $BASE_TEC/lua$LUA_SFX/bin/$PLAT/lua5* ../bin/$PLAT/Lua$LUA_SFX
-  cp -f $BASE_TEC/luagl/lib/$PLAT/Lua$LUA_SFX/*.$EXT ../bin/$PLAT/Lua$LUA_SFX
-  cp -f $BASE_TEC/lfs/lib/$PLAT/Lua$LUA_SFX/*.$EXT ../bin/$PLAT/Lua$LUA_SFX
+  DST_PLAT_LUA=../bin/$PLAT/Lua$LUA_SFX
+  mkdir -p $DST_PLAT_LUA
+  cp -f ../lib/$PLAT/*.$EXT $DST_PLAT_LUA
+  cp -f $BASE_TEC/cd/lib/$PLAT/*.$EXT $DST_PLAT_LUA
+  cp -f $BASE_TEC/im/lib/$PLAT/*.$EXT $DST_PLAT_LUA
+  cp -f $BASE_TEC/pdflib7/lib/$PLAT/*.$EXT $DST_PLAT_LUA
+  cp -f $BASE_TEC/ftgl/lib/$PLAT/*.$EXT $DST_PLAT_LUA
+  cp -f ../lib/$PLAT/Lua$LUA_SFX/*.$EXT $DST_PLAT_LUA
+  cp -f $BASE_TEC/cd/lib/$PLAT/Lua$LUA_SFX/*.$EXT $DST_PLAT_LUA
+  cp -f $BASE_TEC/im/lib/$PLAT/Lua$LUA_SFX/*.$EXT $DST_PLAT_LUA
+  cp -f $BASE_TEC/lua$LUA_SFX/bin/$PLAT/lua5* $DST_PLAT_LUA
+  cp -f $BASE_TEC/luagl/lib/$PLAT/Lua$LUA_SFX/*.$EXT $DST_PLAT_LUA
+  cp -f $BASE_TEC/lfs/lib/$PLAT/Lua$LUA_SFX/*.$EXT $DST_PLAT_LUA
 }
 
 # MacOS1010 Linux32 Linux32_64 SunOS511x86
