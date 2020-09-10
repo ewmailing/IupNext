@@ -116,6 +116,14 @@ static int enteritem_cb(Ihandle *ih, int lin, int col)
   return IUP_DEFAULT;
 }
 
+char *iupKeyCodeToName(int code);
+
+static int action_cb(Ihandle *h, int key, int lin, int col, int active, char* after)
+{
+  printf("ACTION_CB(key=%d [%s], lin=%d, col=%d, active=%d, after=%s)\n", key, iupKeyCodeToName(key), lin, col, active, after);
+  return IUP_DEFAULT;
+}
+
 static Ihandle* create_matrix(void)
 {
   Ihandle* mat = IupMatrix(NULL); 
@@ -280,11 +288,12 @@ static Ihandle* create_matrix(void)
   IupSetCallback(mat, "DROPCHECK_CB", (Icallback)dropcheck_cb);
   IupSetCallback(mat, "DROP_CB", (Icallback)drop_cb);
 //  IupSetCallback(mat,"MENUDROP_CB",(Icallback)drop_cb);
-  IupSetCallback(mat, "MOUSEMOVE_CB", (Icallback)mousemove_cb);
+//  IupSetCallback(mat, "MOUSEMOVE_CB", (Icallback)mousemove_cb);
 //  IupSetCallback(mat,"CLICK_CB",(Icallback)click_cb);
 //  IupSetCallback(mat,"ENTERITEM_CB",(Icallback)enteritem_cb);
   IupSetCallback(mat,"TOGGLEVALUE_CB",(Icallback)togglevalue_cb);
 //  IupSetCallback(mat,"RELEASE_CB",(Icallback)release_cb);
+  IupSetCallback(mat, "ACTION_CB", (Icallback)action_cb);
 
   return mat;
 }

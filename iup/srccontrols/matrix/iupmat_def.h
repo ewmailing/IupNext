@@ -196,6 +196,9 @@ struct _IcontrolData
 int iupMatrixIsValid(Ihandle* ih, int check_cells);
 void iupMatrixRegisterEx(Iclass* ic);
 
+int iupMatrixIsCharacter(int c);
+
+
 #define iupMATRIX_INVERTYAXIS(_ih, _y) cdCanvasInvertYAxis((_ih)->data->cd_canvas, (_y))
 
 #define iupMATRIX_CHECK_COL(_ih, _col) ((_col >= 0) && (_col < (_ih)->data->columns.num))

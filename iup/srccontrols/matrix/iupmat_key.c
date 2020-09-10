@@ -31,6 +31,18 @@
 #include "iupmat_draw.h"
 
 
+int iupMatrixIsCharacter(int c)
+{
+  c = iup_XkeyBase(c);
+
+  if (c == K_circum ||
+      c == K_grave ||
+      c == K_tilde)
+    return 0;
+
+  return iup_isprint(c);
+}
+
 static void iMatrixKeyCheckMarkStart(Ihandle* ih, int c, int mark_key)
 {
   if (c==mark_key && ih->data->mark_multiple && ih->data->mark_mode != IMAT_MARK_NO)
@@ -198,7 +210,7 @@ int iupMatrixProcessKeyPress(Ihandle* ih, int c)
     default:
     {
       /* if a valid character is pressed enter edition mode */
-      if (iup_isprint(c))
+      if (iupMatrixIsCharacter(c))
       {
         if (iupMatrixEditShow(ih))
         {
@@ -246,7 +258,8 @@ int iupMatrixKeyPress_CB(Ihandle* ih, int c, int press)
   cb = (IFniiiis)IupGetCallback(ih, "ACTION_CB");
   if (cb)
   {
-    if (iup_isprint(c))
+    /* if a valid character is pressed will clear the existing cell value and enter edition mode */
+    if (iupMatrixIsCharacter(c))
     {
       char value[2]={0,0};
       value[0] = (char)c;

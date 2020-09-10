@@ -1334,7 +1334,7 @@ static int iMatrixListKeyAny_CB(Ihandle *ih, int key)
   else
   {
     /* if a valid character is pressed enter edition mode */
-    if (iup_isprint(key))
+    if (iupMatrixIsCharacter(key))
     {
       int lin = ih->data->lines.focus_cell;
       iMatrixListSetFocusItem(ih, mtxList, lin);  /* this will position focus at the right cell */

@@ -513,7 +513,7 @@ static int iMatrixEditTextAction_CB(Ihandle* ih_text, int c, char* after)
       iupClassObjectLayoutUpdate(ih_text);
   }
 
-  if (cb && iup_isprint(c)) /* only for keys that ARE ASCii characters */
+  if (cb && iupMatrixIsCharacter(c)) /* only for keys that ARE ASCii characters */
   {
     int oldc = c;
     c = cb(ih, c, ih->data->edit_lin, ih->data->edit_col, 1, after);
@@ -524,6 +524,9 @@ static int iMatrixEditTextAction_CB(Ihandle* ih_text, int c, char* after)
     return c;
   }
 
+  /* TODO: Latin characters, like ó or ã, are not processed by the ACTION_CB, 
+           only the respective keys, like ´ and o, or ~ and a. */
+
   return IUP_DEFAULT;
 }
 
@@ -531,7 +534,8 @@ static int iMatrixEditTextKeyAny_CB(Ihandle* ih_text, int c)
 {
   Ihandle* ih = ih_text->parent;
   IFniiiis cb = (IFniiiis) IupGetCallback(ih, "ACTION_CB");
-  if (cb && !iup_isprint(c)) /* only for keys that are NOT ASCii characters */
+
+  if (cb && !iupMatrixIsCharacter(c)) /* only for keys that are NOT ASCii characters */
   {
     int oldc = c;
     c = cb(ih, c, ih->data->edit_lin, ih->data->edit_col, 1, IupGetAttribute(ih_text, "VALUE"));
