@@ -21,16 +21,16 @@
   <pre>int IupGetText(const char* <b>title</b>, char *<strong>text</strong>, int <strong>maxsize</strong>); [in C]
 iup.GetText(<b>title, text</b>: string[, <strong>maxsize</strong>: number]) -&gt; (<strong>text</strong>: string) [in Lua]</pre>
 </dl>
-<p><strong>text</strong>: the initial value of the text and the returned 
+<p><strong>title</strong>: the dialog title.<strong><br>text</strong>: the initial value of the text and the returned 
   text. <br> <strong>maxsize: </strong>maximum size for the edited string. In Lua the default <strong>maxsize</strong> is 10240. 
 If set to 0 will be the current length of text, if set to -1 the dialog will be 
 read-only and only the OK button is displayed (since 3.29). (since 3.17)</p>
 <p><u>Returns:</u> a non zero value if 
-  successful. In Lua returns the text or nil if an error occurred.</p>
+  successful. In Lua returns the text or nil if the user canceled.</p>
 <h3>Notes</h3>
 <p>The function does not allocate memory space to store the text entered by the 
 user. Therefore, the text parameter must be large enough to contain the user 
-input. The returned string is limited to maxsize characters. In Lua the </p>
+input. </p>
 <p>The dialog uses a global attribute called &quot;PARENTDIALOG&quot; as the parent dialog if it is defined. It also uses a 
   global attribute called &quot;ICON&quot; as the dialog icon if it is defined.</p>
 <h3>Examples</h3>
