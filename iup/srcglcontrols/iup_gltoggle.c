@@ -157,13 +157,13 @@ static int iGLToggleBUTTON_CB(Ihandle* ih, int button, int pressed, int x, int y
       {
         if (radio)
         {
-          last_tg = (Ihandle*)iupAttribGet(radio, "_IUP_GLTOGGLE_LASTRADIO");
+          last_tg = (Ihandle*)iupAttribGet(radio, "_IUP_GL_LASTTOGGLE");
           if (iupObjectCheck(last_tg) && last_tg != ih)
             iupAttribSet(last_tg, "VALUE", "OFF");
           else
             last_tg = NULL;
 
-          iupAttribSet(radio, "_IUP_GLTOGGLE_LASTRADIO", (char*)ih);
+          iupAttribSet(radio, "_IUP_GL_LASTTOGGLE", (char*)ih);
         }
 
         iupAttribSet(ih, "VALUE", "ON");
@@ -198,11 +198,11 @@ static int iGLToggleSetValueAttrib(Ihandle* ih, const char* value)
     /* can only set Radio to ON */
     if (iupStrEqualNoCase(value, "TOGGLE") || iupStrBoolean(value))
     {
-      Ihandle* last_tg = (Ihandle*)iupAttribGet(radio, "_IUP_GLTOGGLE_LASTRADIO");
+      Ihandle* last_tg = (Ihandle*)iupAttribGet(radio, "_IUP_GL_LASTTOGGLE");
       if (iupObjectCheck(last_tg) && last_tg != ih)
         iupAttribSet(last_tg, "VALUE", "OFF");
 
-      iupAttribSet(radio, "_IUP_GLTOGGLE_LASTRADIO", (char*)ih);
+      iupAttribSet(radio, "_IUP_GL_LASTTOGGLE", (char*)ih);
     }
     else
       return 0;
@@ -259,7 +259,7 @@ static int iGLToggleMapMethod(Ihandle* ih)
   Ihandle* radio = iupRadioFindToggleParent(ih);
   if (radio)
   {
-    if (!iupAttribGet(radio, "_IUP_GLTOGGLE_LASTRADIO"))
+    if (!iupAttribGet(radio, "_IUP_GL_LASTTOGGLE"))
     {
       /* this is the first toggle in the radio, and then set it with VALUE=ON */
       iupAttribSet(ih, "VALUE", "ON");
