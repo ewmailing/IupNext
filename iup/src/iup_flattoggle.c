@@ -654,6 +654,7 @@ static int iFlatToggleSetValueAttrib(Ihandle* ih, const char* value)
       }
 
       iupAttribSet(radio, "_IUP_FLAT_LASTTOGGLE", (char*)ih);
+      ih->data->value = 1;
     }
     else
       return 0;
@@ -690,12 +691,12 @@ static int iFlatToggleSetValueAttrib(Ihandle* ih, const char* value)
   if (ih->handle)
     iupdrvPostRedraw(ih);
 
-  return 1;
+  return 0;
 }
 
 static char* iFlatToggleGetValueAttrib(Ihandle* ih)
 {
-  return iupStrReturnInt(ih->data->value);
+  return iupStrReturnChecked(ih->data->value);
 }
 
 static char* iFlatToggleGetRadioAttrib(Ihandle* ih)

@@ -497,7 +497,7 @@ static int iFlatButtonSetValueAttrib(Ihandle* ih, const char* value)
     if (radio)
     {
       /* can only set Radio to ON */
-      if (iupStrEqualNoCase(value, "TOGGLE") || iupStrBoolean(value))
+      if (iupStrBoolean(value))
       {
         Ihandle* last_tg = (Ihandle*)iupAttribGet(radio, "_IUP_FLATBUTTON_LASTTOGGLE");
         if (iupObjectCheck(last_tg) && last_tg != ih)
@@ -508,6 +508,7 @@ static int iFlatButtonSetValueAttrib(Ihandle* ih, const char* value)
         }
 
         iupAttribSet(radio, "_IUP_FLATBUTTON_LASTTOGGLE", (char*)ih);
+        ih->data->value = 1;
       }
       else
         return 0;
@@ -521,6 +522,13 @@ static int iFlatButtonSetValueAttrib(Ihandle* ih, const char* value)
         else
           ih->data->value = 1;
       }
+      else
+      {
+        if (iupStrBoolean(value))
+          ih->data->value = 1;
+        else
+          ih->data->value = 0;
+      }
     }
 
     if (ih->handle)
@@ -533,7 +541,7 @@ static int iFlatButtonSetValueAttrib(Ihandle* ih, const char* value)
 static char* iFlatButtonGetValueAttrib(Ihandle* ih)
 {
   if (iupAttribGetBoolean(ih, "TOGGLE"))
-    return iupStrReturnInt(ih->data->value);
+    return iupStrReturnChecked(ih->data->value);
   else
     return NULL;
 }
