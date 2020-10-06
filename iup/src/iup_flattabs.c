@@ -395,15 +395,15 @@ static void iFlatTabsSetExtraFont(Ihandle* ih, int id)
   }
 }
 
-static int iFlatTabsGetExtraWidthId(Ihandle* ih, int i, int img_position, int horiz_padding, int vert_padding, int *extra_height)
+static int iFlatTabsGetExtraWidthId(Ihandle* ih, int id, int img_position, int horiz_padding, int vert_padding, int *extra_height)
 {
-  char* imagename = iupAttribGetId(ih, "EXTRAIMAGE", i);
-  char* title = iupAttribGetId(ih, "EXTRATITLE", i);
+  char* imagename = iupAttribGetId(ih, "EXTRAIMAGE", id);
+  char* title = iupAttribGetId(ih, "EXTRATITLE", id);
   int spacing = iupAttribGetInt(ih, "TABSIMAGESPACING");
   double text_orientation = iupAttribGetDouble(ih, "TABSTEXTORIENTATION");
   int w, h;
 
-  iFlatTabsSetExtraFont(ih, i);
+  iFlatTabsSetExtraFont(ih, id);
 
   iupFlatDrawGetIconSize(ih, img_position, spacing, horiz_padding, vert_padding, imagename, title, &w, &h, text_orientation);
 
@@ -435,15 +435,15 @@ static int iFlatTabsGetExtraWidth(Ihandle* ih, int extra_buttons, int img_positi
   return extra_width;
 }
 
-static int iFlatTabsGetExtraHeightId(Ihandle* ih, int i, int img_position, int horiz_padding, int vert_padding, int *extra_width)
+static int iFlatTabsGetExtraHeightId(Ihandle* ih, int id, int img_position, int horiz_padding, int vert_padding, int *extra_width)
 {
-  char* imagename = iupAttribGetId(ih, "EXTRAIMAGE", i);
-  char* title = iupAttribGetId(ih, "EXTRATITLE", i);
+  char* imagename = iupAttribGetId(ih, "EXTRAIMAGE", id);
+  char* title = iupAttribGetId(ih, "EXTRATITLE", id);
   int spacing = iupAttribGetInt(ih, "TABSIMAGESPACING");
   double text_orientation = iupAttribGetDouble(ih, "TABSTEXTORIENTATION");
   int w, h;
 
-  iFlatTabsSetExtraFont(ih, i);
+  iFlatTabsSetExtraFont(ih, id);
 
   iupFlatDrawGetIconSize(ih, img_position, spacing, horiz_padding, vert_padding, imagename, title, &w, &h, text_orientation);
 
@@ -1289,21 +1289,19 @@ static int iFlatTabsFindTab(Ihandle* ih, int cur_x, int cur_y, int show_close, i
 
 static void iFlatTabsGetExtraButtonBox(Ihandle* ih, int tabType, int extra_buttons, int img_position, int horiz_padding, int vert_padding,
                                        int title_x_pos, int title_y_pos, int title_height, int title_width,
-                                       int extra_button_id, int *xmin, int *ymin, int *xmax, int *ymax)
+                                       int id, int *xmin, int *ymin, int *xmax, int *ymax)
 {
-  int i, total_extra_size = 0, extra_id;
+  int i, total_extra_size = 0;
   int extra_x, extra_y, extra_w, extra_h;
 
   for (i = 1; i <= extra_buttons; i++)
   {
-    extra_id = ITABS_EXTRABUT2TABID(i);
-
     if (tabType == ITABS_TOP || tabType == ITABS_BOTTOM)
     {
       extra_w = iFlatTabsGetExtraWidthId(ih, i, img_position, horiz_padding, vert_padding, NULL);  /* this will also set any id based font */
       extra_h = title_height;
 
-      if (extra_id == extra_button_id)
+      if (i == id)
       {
         extra_x = ih->currentwidth - total_extra_size - extra_w;
         extra_y = title_y_pos;
@@ -1319,7 +1317,7 @@ static void iFlatTabsGetExtraButtonBox(Ihandle* ih, int tabType, int extra_butto
       extra_h = iFlatTabsGetExtraHeightId(ih, i, img_position, horiz_padding, vert_padding, NULL);  /* this will also set any id based font */
       extra_w = title_width;
 
-      if (extra_id == extra_button_id)
+      if (i == id)
       {
         extra_y = ih->currentheight - total_extra_size - extra_h;
         extra_x = title_x_pos;
@@ -2150,7 +2148,7 @@ static int iFlatTabsSetTabTypeAttrib(Ihandle* ih, const char* value)
 static char* iFlatTabsGetExtraBoxAttrib(Ihandle* ih, int id)
 {
   int extra_buttons = iupAttribGetInt(ih, "EXTRABUTTONS");
-  if (extra_buttons)
+  if (extra_buttons && id >= 1 && id <= extra_buttons)
   {
     int xmin, ymin, xmax, ymax;
     int tabType = iupAttribGetInt(ih, "_IUPTAB_TYPE");
