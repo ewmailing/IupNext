@@ -546,6 +546,34 @@ static char* iFlatButtonGetValueAttrib(Ihandle* ih)
     return NULL;
 }
 
+static int iFlatButtonSetSelectedAttrib(Ihandle* ih, const char* value)
+{
+  if (iupStrEqualNoCase(value, "TOGGLE"))
+  {
+    if (ih->data->value)
+      ih->data->value = 0;
+    else
+      ih->data->value = 1;
+  }
+  else
+  {
+    if (iupStrBoolean(value))
+      ih->data->value = 1;
+    else
+      ih->data->value = 0;
+  }
+
+  if (ih->handle)
+    iupdrvPostRedraw(ih);
+
+  return 0;
+}
+
+static char* iFlatButtonGetSelectedAttrib(Ihandle* ih)
+{
+  return iupStrReturnChecked(ih->data->value);
+}
+
 static char* iFlatButtonGetRadioAttrib(Ihandle* ih)
 {
   if (iupAttribGetBoolean(ih, "TOGGLE"))
@@ -695,6 +723,7 @@ Iclass* iupFlatButtonNewClass(void)
 
   /* IupFlatButton */
   iupClassRegisterAttribute(ic, "VALUE", iFlatButtonGetValueAttrib, iFlatButtonSetValueAttrib, NULL, NULL, IUPAF_NOT_MAPPED | IUPAF_NO_INHERIT);
+  iupClassRegisterAttribute(ic, "SELECTED", iFlatButtonGetSelectedAttrib, iFlatButtonSetSelectedAttrib, NULL, NULL, IUPAF_NOT_MAPPED | IUPAF_NO_INHERIT);
   iupClassRegisterAttribute(ic, "RADIO", iFlatButtonGetRadioAttrib, NULL, NULL, NULL, IUPAF_NOT_MAPPED | IUPAF_READONLY | IUPAF_NO_INHERIT);
   iupClassRegisterAttribute(ic, "TOGGLE", NULL, NULL, NULL, NULL, IUPAF_NO_INHERIT);
   iupClassRegisterAttribute(ic, "ALIGNMENT", iFlatButtonGetAlignmentAttrib, iFlatButtonSetAlignmentAttrib, "ACENTER:ACENTER", NULL, IUPAF_NOT_MAPPED | IUPAF_NO_INHERIT);
