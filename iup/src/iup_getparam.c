@@ -825,7 +825,7 @@ static Ihandle* iParamCreateCtrlBox(Ihandle* param, const char *type)
     IupSetCallback(ctrl, "ACTION", (Icallback)iParamTextAction_CB);
 
     type = iupAttribGet(param, "TYPE");
-    if (iupStrEqual(type, "REAL"))
+    if (iupStrEqual(type, "REAL"))  /* REAL */
     {
       double val = iupAttribGetDouble(param, "VALUE");
       int prec = IupGetInt(param, "PRECISION");
@@ -839,7 +839,7 @@ static Ihandle* iParamCreateCtrlBox(Ihandle* param, const char *type)
         double max = iupAttribGetDouble(param, "MAX");
         double step = iupAttribGetDouble(param, "STEP");
         val = iupAttribGetDouble(param, "VALUE");
-        if (step == 0) step = (max-min)/20.0;
+        if (step == 0) step = (max-min)/100.0;
         IupSetfAttribute(ctrl, "MASKFLOAT", IUP_DOUBLE2STR":"IUP_DOUBLE2STR, min, max);
                              
         /* here spin is always [0-spinmax] converted to [min-max] */
@@ -940,7 +940,7 @@ static Ihandle* iParamCreateCtrlBox(Ihandle* param, const char *type)
         IupStoreAttribute(aux, "VALUE", iupAttribGet(param, "VALUE"));
         IupSetAttribute(aux, "EXPAND", "HORIZONTAL");
         iupAttribSet(param, "AUXCONTROL", (char*)aux);
-        step = iupAttribGet(param, "STEP");
+        step = iupAttribGet(param, "STEP");  /* STEP here is increment, in IupVal step=increment/(max-min) */
         if (step)
           IupSetDouble(aux, "STEP", iupAttribGetDouble(param, "STEP")/(iupAttribGetDouble(param, "MAX")-iupAttribGetDouble(param, "MIN")));
         else if (iupStrEqual(type, "INTEGER"))
