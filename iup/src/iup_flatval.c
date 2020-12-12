@@ -203,7 +203,7 @@ static int iFlatValRedraw_CB(Ihandle* ih)
   char* bordercolor = iupAttribGetStr(ih, "BORDERCOLOR");
   char* sliderbordercolor = iupAttribGetStr(ih, "SLIDERBORDERCOLOR");
   char* slidercolor = iupAttribGetStr(ih, "SLIDERCOLOR");
-  int active = iupAttribGetInt(ih, "ACTIVE");
+  int active = IupGetInt(ih, "ACTIVE");
   char* bgcolor = iupBaseNativeParentGetBgColorAttrib(ih);
   int slider_size = iupAttribGetInt(ih, "SLIDERSIZE");
   int border_width = iupAttribGetInt(ih, "BORDERWIDTH");
@@ -336,6 +336,14 @@ static int iFlatValRedraw_CB(Ihandle* ih)
   return IUP_DEFAULT;
 }
 
+static void iFlatCallValueChangedCb(Ihandle* ih)
+{
+  IFni cb = (IFni)IupGetCallback(ih, "VALUECHANGING_CB");
+  if (cb) cb(ih, 0);
+
+  iupBaseCallValueChangedCb(ih);
+}
+
 static int iFlatValButton_CB(Ihandle* ih, int button, int pressed, int x, int y, char* status)
 {
   IFniiiis button_cb = (IFniiiis)IupGetCallback(ih, "FLAT_BUTTON_CB");
@@ -381,7 +389,7 @@ static int iFlatValButton_CB(Ihandle* ih, int button, int pressed, int x, int y,
         dy = (is_horizontal) ? 0 : (y > handPos) ? pginc : -pginc;
 
         if (iFlatValMoveHandler(ih, dx, dy))
-          iupBaseCallValueChangedCb(ih);
+          iFlatCallValueChangedCb(ih);
       }
       ih->data->pressed = 0;
     }
@@ -522,7 +530,7 @@ static int iFlatValKUp_CB(Ihandle* ih)
   dy = (is_horizontal) ? 0 : -inc;
 
   if (iFlatValMoveHandler(ih, dx, dy))
-    iupBaseCallValueChangedCb(ih);
+    iFlatCallValueChangedCb(ih);
 
   IupUpdate(ih);
 
@@ -541,7 +549,7 @@ static int iFlatValKDown_CB(Ihandle* ih)
   dy = (is_horizontal) ? 0 : inc;
 
   if (iFlatValMoveHandler(ih, dx, dy))
-    iupBaseCallValueChangedCb(ih);
+    iFlatCallValueChangedCb(ih);
 
   IupUpdate(ih);
 
@@ -578,7 +586,7 @@ static int iFlatValKHome_CB(Ihandle* ih)
   dy = (is_horizontal) ? 0 : handPos - p1;
 
   if (iFlatValMoveHandler(ih, dx, dy))
-    iupBaseCallValueChangedCb(ih);
+    iFlatCallValueChangedCb(ih);
 
   IupUpdate(ih);
 
@@ -598,7 +606,7 @@ static int iFlatValKEnd_CB(Ihandle* ih)
   dy = (is_horizontal) ? 0 : handPos - p2;
 
   if (iFlatValMoveHandler(ih, dx, dy))
-    iupBaseCallValueChangedCb(ih);
+    iFlatCallValueChangedCb(ih);
 
   IupUpdate(ih);
 
@@ -617,7 +625,7 @@ static int iFlatValKPgUp_CB(Ihandle* ih)
   dy = (is_horizontal) ? 0 : -pginc;
 
   if (iFlatValMoveHandler(ih, dx, dy))
-    iupBaseCallValueChangedCb(ih);
+    iFlatCallValueChangedCb(ih);
 
   IupUpdate(ih);
 
@@ -636,7 +644,7 @@ static int iFlatValKPgDn_CB(Ihandle* ih)
   dy = (is_horizontal) ? 0 : pginc;
 
   if (iFlatValMoveHandler(ih, dx, dy))
-    iupBaseCallValueChangedCb(ih);
+    iFlatCallValueChangedCb(ih);
 
   IupUpdate(ih);
 
