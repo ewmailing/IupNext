@@ -315,7 +315,7 @@ Iclass* iupGLFrameNewClass(void)
   iupClassRegisterAttribute(ic, "BACKCOLOR", NULL, NULL, NULL, NULL, IUPAF_NO_INHERIT);
 
   iupClassRegisterAttribute(ic, "MOVEABLE", NULL, iGLFrameSetMoveableAttrib, NULL, NULL, IUPAF_NOT_MAPPED | IUPAF_NO_INHERIT);
-  iupClassRegisterAttribute(ic, "MOVETOTOP", NULL, NULL, NULL, NULL, IUPAF_NOT_MAPPED | IUPAF_NO_INHERIT);
+  iupClassRegisterAttribute(ic, "MOVETOTOP", NULL, NULL, NULL, NULL, IUPAF_NO_INHERIT);
 
   /* replace default value */
   iupClassRegisterAttribute(ic, "PADDING", NULL, NULL, IUPAF_SAMEASSYSTEM, "2x0", IUPAF_NO_INHERIT);
