@@ -449,6 +449,7 @@ iupDlgListFirst
 iupDlgListNext
 iupDlgListRemove
 iupDlgListVisibleCount
+iupDlgListDestroySelected
 iupDlgListVisibleDec
 iupDlgListVisibleInc
 iupDrawCalcShadows
@@ -537,6 +538,7 @@ iupMaskDestroy
 iupMaskGetStr
 iupMaskSetCaseI
 iupMaskSetNoEmpty
+iupNamesDestroyHandlesSelected
 iupObjectCheck
 iupObjectCreate
 iupObjectGetParamList

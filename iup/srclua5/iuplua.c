@@ -494,6 +494,7 @@ static int il_destroy_cb(Ihandle* ih)
       IupSetAttribute(ih, "_IUPLUA_STATE_THREAD", NULL);
     }
 
+    IupSetAttribute(ih, "_IUPLUA_STATE_CONTEXT", NULL);
     IupSetCallback(ih, "LDESTROY_CB", NULL);
   }
 
@@ -677,12 +678,14 @@ IUPLUA_SDK_API lua_State* iuplua_call_start(Ihandle *ih, const char* name)
 
 static lua_State* iuplua_call_global_start(const char* name)
 {
-  lua_State *L = (lua_State *) IupGetGlobal("_IUP_LUA_DEFAULT_STATE");
-
   /* prepare to call iup.CallGlobalMethod(name, ...) */
 
-  iuplua_push_name(L, "CallGlobalMethod");
-  lua_pushstring(L, name);
+  lua_State *L = (lua_State *) IupGetGlobal("_IUP_LUA_DEFAULT_STATE");
+  if (L)
+  {
+    iuplua_push_name(L, "CallGlobalMethod");
+    lua_pushstring(L, name);
+  }
 
   return L;
 }
@@ -702,7 +705,7 @@ IUPLUA_SDK_API int iuplua_call(lua_State* L, int nargs)
   }
 }
 
-int iuplua_call_global(lua_State* L, int nargs)
+static int iuplua_call_global(lua_State* L, int nargs)
 {
   return iuplua_call(L, nargs-1); /* remove the ih from the parameter count */
 }
@@ -1091,74 +1094,97 @@ static int layoutchanged_cb(Ihandle *self, Ihandle* elem)
 static void entry_point(void)
 {
   lua_State *L = iuplua_call_global_start("entry_point");
-  iuplua_call_global(L, 0);
+  if (L)
+    iuplua_call_global(L, 0);
 }
 
 static void exit_cb(void)
 {
   lua_State *L = iuplua_call_global_start("exit_cb");
-  iuplua_call_global(L, 0);
+  if (L)
+    iuplua_call_global(L, 0);
 }
 
 static void globalwheel_cb(float delta, int x, int y, char* status)
 {
   lua_State *L = iuplua_call_global_start("globalwheel_cb");
-  lua_pushnumber(L, delta);
-  lua_pushinteger(L, x);
-  lua_pushinteger(L, y);
-  lua_pushstring(L, status);
-  iuplua_call_global(L, 4);
+  if (L)
+  {
+    lua_pushnumber(L, delta);
+    lua_pushinteger(L, x);
+    lua_pushinteger(L, y);
+    lua_pushstring(L, status);
+    iuplua_call_global(L, 4);
+  }
 }
 
 static void globalbutton_cb(int button, int pressed, int x, int y, char* status)
 {
   lua_State *L = iuplua_call_global_start("globalbutton_cb");
-  lua_pushinteger(L, button);
-  lua_pushinteger(L, pressed);
-  lua_pushinteger(L, x);
-  lua_pushinteger(L, y);
-  lua_pushstring(L, status);
-  iuplua_call_global(L, 5);
+  if (L)
+  {
+    lua_pushinteger(L, button);
+    lua_pushinteger(L, pressed);
+    lua_pushinteger(L, x);
+    lua_pushinteger(L, y);
+    lua_pushstring(L, status);
+    iuplua_call_global(L, 5);
+  }
 }
 
 static void globalmotion_cb(int x, int y, char* status)
 {
   lua_State *L = iuplua_call_global_start("globalmotion_cb");
-  lua_pushinteger(L, x);
-  lua_pushinteger(L, y);
-  lua_pushstring(L, status);
-  iuplua_call_global(L, 3);
+  if (L)
+  {
+    lua_pushinteger(L, x);
+    lua_pushinteger(L, y);
+    lua_pushstring(L, status);
+    iuplua_call_global(L, 3);
+  }
 }
 
 static void globalkeypress_cb(int key, int pressed)
 {
   lua_State *L = iuplua_call_global_start("globalkeypress_cb");
-  lua_pushinteger(L, key);
-  lua_pushinteger(L, pressed);
-  iuplua_call_global(L, 2);
+  if (L)
+  {
+    lua_pushinteger(L, key);
+    lua_pushinteger(L, pressed);
+    iuplua_call_global(L, 2);
+  }
 }
 
 static void globalctrlfunc_cb(int key)
 {
   lua_State *L = iuplua_call_global_start("globalctrlfunc_cb");
-  lua_pushinteger(L, key);
-  iuplua_call_global(L, 1);
+  if (L)
+  {
+    lua_pushinteger(L, key);
+    iuplua_call_global(L, 1);
+  }
 }
 
 static int globalidle_cb(void)
 {
   lua_State *L = iuplua_call_global_start("idle_action");
-  return iuplua_call_global(L, 0);
+  if (L)
+    return iuplua_call_global(L, 0);
+  else
+    return IUP_DEFAULT;
 }
 
 static int idle_cb(void)
 {
   int ret = 0;
   lua_State *L = (lua_State *) IupGetGlobal("_IUP_LUA_DEFAULT_STATE");
-  lua_getglobal(L, "_IUP_LUA_IDLE_FUNC_"); 
-  lua_call(L, 0, 1);  /* _IUP_LUA_IDLE_FUNC_() */
-  ret = (int)lua_tointeger(L, -1);
-  lua_pop(L, 1);
+  if (L)
+  {
+    lua_getglobal(L, "_IUP_LUA_IDLE_FUNC_");
+    lua_call(L, 0, 1);  /* _IUP_LUA_IDLE_FUNC_() */
+    ret = (int)lua_tointeger(L, -1);
+    lua_pop(L, 1);
+  }
   return ret;
 }
 
@@ -1273,10 +1299,30 @@ static int il_open(lua_State * L)
   return 1;
 }
 
+IUP_SDK_API void iupDlgListDestroySelected(const char* name, void* value);
+IUP_SDK_API void iupNamesDestroyHandlesSelected(const char* name, void* value);
+
 IUPLUA_API int iuplua_close(lua_State * L)
 {
+  /* destroy all dialogs and its children that has that attribute set */
+  iupDlgListDestroySelected("_IUPLUA_WIDGET_TABLE_REF", L);
+  /* destroy all handles that has that attribute set */
+  iupNamesDestroyHandlesSelected("_IUPLUA_WIDGET_TABLE_REF", L);
+
+  lua_pushnil(L);
+  lua_setglobal(L, "_IUP_LUA_IDLE_FUNC_");
+  IupSetGlobal("_IUP_LUA_DEFAULT_STATE", NULL);
+
   if (iuplua_opencall_internal(L))
     IupClose();
+
+#if LUA_VERSION_NUM < 502
+  /* TODO (??):
+     package.loaded["iup"] = nil */
+#endif
+  lua_pushnil(L);
+  lua_setglobal(L, iup_globaltable);
+
   return 0; /* nothing in stack */
 }
 
@@ -1356,7 +1402,7 @@ IUPLUA_API int iuplua_open(lua_State * L)
     lua_pushliteral (L, "INTERNAL");
   lua_setfield(L, -2, "_IUPOPEN_CALL");
 
-  /* used by Idle in Lua */
+  /* used by global callbacks in Lua */
   IupSetGlobal("_IUP_LUA_DEFAULT_STATE", (char *) L);  
 
 #ifdef IUPLUA_USELOH        

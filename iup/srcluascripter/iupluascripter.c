@@ -208,7 +208,7 @@ int main(int argc, char **argv)
   IupDestroy(config);
   IupDestroy(main_dialog);
 
-  IupClose();
+  iuplua_close(L);
 
   lua_close(L);
   return EXIT_SUCCESS;

@@ -14,13 +14,13 @@
 <body>
 
 <h2>iuplua_open</h2>
-<p>Initializes the Lua Binding. This function 
+<p>Initializes the Lua Binding from C. This function 
   should be called by the host program before running any Lua functions, but it is important to call it after 
 <b>IupOpen</b>.</p>
 <p>It is also allowed to call <b>iuplua_open</b> without calling <b>IupOpen</b>. Then 
 <b>IupOpen</b> 
   will be internally called. This is also valid for all 
-  the additional controls when IUP is&nbsp; dynamically loaded. To call <b>IupClose</b> in this way you must call 
+  the additional controls when IUP is&nbsp;dynamically loaded. To call <b>IupClose</b> in this way you must call 
 <b>iuplua_close</b>.</p>
 <p>This enable you to dynamically load IUP using Lua 5 &quot;require&quot;. </p>
 <h3>

@@ -20,10 +20,16 @@ iup.Close() [in Lua]</pre>
 <p>In Windows, the CoUninitialize function is called.</p>
 <p>In Motif, the XtDestroyApplicationContext function is called.</p>
 <p>This function is usually called by the 
-  application. But if IUP is dynamically loaded in Lua 5 then you should call 
-<b>iup.Close</b> from Lua.</p>
+  application to match the call to <strong>IupOpen</strong>. </p>
+<p>When the Lua binding is used, and IUP is dynamically loaded then you should call 
+<b>iup.Close</b> from Lua. If IUP is statically loaded and <strong>iuplua_open</strong> 
+was called, then you should call <strong>iuplua_close</strong>. </p>
+<p><strong>
+iuplua_close</strong> will destroy all dialogs and all elements that have names that where 
+created with the same Lua context before <strong>IupClose</strong> is actually 
+called (since 3.31).</p>
 <h3>See Also</h3>
-<p><a href="iupopen.html">IupOpen</a></p>
+<p><a href="iupopen.html">IupOpen</a>, <a href="iuplua_open.html">iuplua_open</a></p>
 
 </body>
 

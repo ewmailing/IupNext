@@ -165,6 +165,8 @@ int main (int argc, char **argv)
 
   iuplua_input(L);
 
+  /* iuplua_close(L);  don't call it, because iup.Close() is called in Lua */
+
   lua_close(L);
   return EXIT_SUCCESS;
 }

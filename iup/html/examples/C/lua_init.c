@@ -35,6 +35,8 @@ int main(int argc, char **argv)
 
 //  IupMainLoop(); /* could be here or inside "myfile.lua" */
 
+  iuplua_close(L);
+
   lua_close(L);
 
   IupClose();
