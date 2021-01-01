@@ -1193,13 +1193,14 @@ IUP_SDK_API void iupdrvSendMouse(int x, int y, int bt, int status)
     Inside the FileOpen dialog, clicks in the folder navigation list are not correctly interpreted.
   */
 
-  if (status==-1)
+  if (bt != 'W' && status==-1)
   {
     input.mi.dwFlags |= MOUSEEVENTF_MOVE;
   }
   else
   {
-    input.mi.dwFlags |= winGetButtonStatus(bt, status);
+    if (bt != 'W')
+      input.mi.dwFlags |= winGetButtonStatus(bt, status);
 
     switch(bt)
     {
