@@ -554,13 +554,18 @@ static void zoom_update(Ihandle* ih, double zoom_index)
 
 static void image_flood_fill(imImage* image, int start_x, int start_y, long replace_color, double tol_percent)
 {
+#if IM_VERSION_NUMBER > 312000
   double color[4];
   double tol;
+#else
+  float color[4];
+  float tol;
+#endif
 
-  color[0] = (double)cdRed(replace_color);
-  color[1] = (double)cdGreen(replace_color);
-  color[2] = (double)cdBlue(replace_color);
-  color[3] = (double)cdAlpha(replace_color);
+  color[0] = cdRed(replace_color);
+  color[1] = cdGreen(replace_color);
+  color[2] = cdBlue(replace_color);
+  color[3] = cdAlpha(replace_color);
 
   /* max value = 255*255*3 = 195075 */
   /* sqrt(195075) = 441 */
