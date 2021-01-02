@@ -1304,17 +1304,20 @@ IUP_SDK_API void iupNamesDestroyHandlesSelected(const char* name, void* value);
 
 IUPLUA_API int iuplua_close(lua_State * L)
 {
-  /* destroy all dialogs and its children that has that attribute set */
-  iupDlgListDestroySelected("_IUPLUA_WIDGET_TABLE_REF", L);
-  /* destroy all handles that has that attribute set */
-  iupNamesDestroyHandlesSelected("_IUPLUA_WIDGET_TABLE_REF", L);
-
   lua_pushnil(L);
   lua_setglobal(L, "_IUP_LUA_IDLE_FUNC_");
   IupSetGlobal("_IUP_LUA_DEFAULT_STATE", NULL);
 
   if (iuplua_opencall_internal(L))
     IupClose();
+  else
+  {
+    /* destroy all dialogs and its children that has that attribute set */
+    iupDlgListDestroySelected("_IUPLUA_STATE_CONTEXT", L);
+
+    /* destroy all handles that has that attribute set */
+    iupNamesDestroyHandlesSelected("_IUPLUA_STATE_CONTEXT", L);
+  }
 
 #if LUA_VERSION_NUM < 502
   /* TODO (??):
