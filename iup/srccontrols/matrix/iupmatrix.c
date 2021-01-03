@@ -91,30 +91,48 @@ static int iMatrixSetOriginAttrib(Ihandle* ih, const char* value)
   /* Can not be non scrollable cell */
   if ((lin < ih->data->lines.num_noscroll) || (col < ih->data->columns.num_noscroll))
     return 0;
-
-  ih->data->columns.first = col;
-  ih->data->columns.first_offset = 0;
-  ih->data->lines.first = lin;
-  ih->data->lines.first_offset = 0;
-
-  value = iupAttribGet(ih, "ORIGINOFFSET");
-  if (value)
+  else
   {
-    int lin_offset, col_offset;
-    if (iupStrToIntInt(value, &lin_offset, &col_offset, ':') == 2)
+    int redraw = 0;
+    int old_lines_first = ih->data->lines.first;
+    int old_columns_first = ih->data->columns.first;
+    int old_lines_first_offset = ih->data->lines.first_offset;
+    int old_columns_first_offset = ih->data->columns.first_offset;
+
+    ih->data->columns.first = col;
+    ih->data->columns.first_offset = 0;
+    ih->data->lines.first = lin;
+    ih->data->lines.first_offset = 0;
+
+    value = iupAttribGet(ih, "ORIGINOFFSET");
+    if (value)
     {
-      if (col_offset < ih->data->columns.dt[col].size)
-        ih->data->columns.first_offset = col_offset;
-      if (lin_offset < ih->data->lines.dt[lin].size)
-        ih->data->lines.first_offset = lin_offset;
+      int lin_offset, col_offset;
+      if (iupStrToIntInt(value, &lin_offset, &col_offset, ':') == 2)
+      {
+        if (col_offset < ih->data->columns.dt[col].size)
+          ih->data->columns.first_offset = col_offset;
+        if (lin_offset < ih->data->lines.dt[lin].size)
+          ih->data->lines.first_offset = lin_offset;
+      }
     }
+
+    /* when "first" is changed must update scroll pos */
+    if (ih->data->columns.first != old_columns_first || ih->data->columns.first_offset != old_columns_first_offset)
+    {
+      iupMatrixAuxUpdateScrollPos(ih, IMAT_PROCESS_COL);
+      redraw = 1;
+    }
+
+    if (ih->data->lines.first != old_lines_first || ih->data->lines.first_offset != old_lines_first_offset)
+    {
+      iupMatrixAuxUpdateScrollPos(ih, IMAT_PROCESS_LIN);
+      redraw = 1;
+    }
+
+    if (redraw)
+      iupMatrixDraw(ih, 1);
   }
-
-  /* when "first" is changed must update scroll pos */
-  iupMatrixAuxUpdateScrollPos(ih, IMAT_PROCESS_COL);
-  iupMatrixAuxUpdateScrollPos(ih, IMAT_PROCESS_LIN);
-
-  iupMatrixDraw(ih, 1);
   return 0;
 }
 
