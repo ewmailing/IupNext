@@ -141,7 +141,7 @@ IUP_SDK_API void iupDlgListDestroySelected(const char* name, void* value)
   Idiallst *list;
   for (list = idlglist; list; list = list->next)
   {
-    if (iupObjectCheck(list->ih) && iupAttribGet(list->ih, name) == value)
+    if (iupObjectCheck(list->ih) && ((value && iupAttribGet(list->ih, name) == value) || (!value && iupAttribGet(list->ih, name))))
     {
       ih_array[count] = list->ih;
       count++;

@@ -115,7 +115,7 @@ IUP_SDK_API void iupNamesDestroyHandlesSelected(const char* attrib_name, void* a
   while (name)
   {
     ih = (Ihandle*)iupTableGetCurr(inames_strtable);
-    if (iupObjectCheck(ih) && iupAttribGet(ih, attrib_name) == attrib_value)   /* here must be a handle */
+    if (iupObjectCheck(ih) && ((attrib_value && iupAttribGet(ih, attrib_name) == attrib_value) || (!attrib_value && iupAttribGet(ih, attrib_name))))
     {
       /* only need to destroy the top parent handle */
       ih = iNameGetTopParent(ih);

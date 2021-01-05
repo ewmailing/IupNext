@@ -1312,11 +1312,14 @@ IUPLUA_API int iuplua_close(lua_State * L)
     IupClose();
   else
   {
+    /* TODO: use L instead of NULL, 
+       but must compensate for lua states created with lua_newthread */
+
     /* destroy all dialogs and its children that has that attribute set */
-    iupDlgListDestroySelected("_IUPLUA_STATE_CONTEXT", L);
+    iupDlgListDestroySelected("_IUPLUA_STATE_CONTEXT", NULL);
 
     /* destroy all handles that has that attribute set */
-    iupNamesDestroyHandlesSelected("_IUPLUA_STATE_CONTEXT", L);
+    iupNamesDestroyHandlesSelected("_IUPLUA_STATE_CONTEXT", NULL);
   }
 
 #if LUA_VERSION_NUM < 502
