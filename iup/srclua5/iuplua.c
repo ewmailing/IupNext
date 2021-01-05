@@ -468,10 +468,11 @@ IUPLUA_API void iuplua_pushihandle(lua_State *L, Ihandle *ih)
 static int il_destroy_cb(Ihandle* ih)
 {
   /* called from IupDestroy. */
+  lua_State *L = iuplua_getstate(ih);
+
   char* sref = IupGetAttribute(ih, "_IUPLUA_WIDGET_TABLE_REF");
   if (sref)
   {
-    lua_State *L = iuplua_getstate(ih);
     int ref = atoi(sref);
 
     /* removes the Ihandle* reference from the lua object */
@@ -485,18 +486,18 @@ static int il_destroy_cb(Ihandle* ih)
     /* removes the association of the Ihandle* with the lua object */
     luaL_unref(L, LUA_REGISTRYINDEX, ref);  /* this is the complement of SetWidget */
     IupSetAttribute(ih, "_IUPLUA_WIDGET_TABLE_REF", NULL);
-
-    sref = IupGetAttribute(ih, "_IUPLUA_STATE_THREAD");
-    if (sref)
-    {
-      ref = atoi(sref);
-      luaL_unref(L, LUA_REGISTRYINDEX, ref);
-      IupSetAttribute(ih, "_IUPLUA_STATE_THREAD", NULL);
-    }
-
-    IupSetAttribute(ih, "_IUPLUA_STATE_CONTEXT", NULL);
-    IupSetCallback(ih, "LDESTROY_CB", NULL);
   }
+
+  sref = IupGetAttribute(ih, "_IUPLUA_STATE_THREAD");
+  if (sref)
+  {
+    int ref = atoi(sref);
+    luaL_unref(L, LUA_REGISTRYINDEX, ref);
+    IupSetAttribute(ih, "_IUPLUA_STATE_THREAD", NULL);
+  }
+
+  IupSetAttribute(ih, "_IUPLUA_STATE_CONTEXT", NULL);
+  IupSetCallback(ih, "LDESTROY_CB", NULL);
 
   return IUP_DEFAULT;
 }
