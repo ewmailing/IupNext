@@ -644,9 +644,32 @@ IUPLUA_SDK_API Ihandle ** iuplua_checkihandle_array(lua_State *L, int pos, int n
              /*************************************/
              /*         used by callbacks         */
 
+#if LUA_VERSION_NUM == 501
+static void luaL_checkversion(lua_State *L) 
+{
+  if (lua_pushthread(L) == 0)
+    luaL_error(L, "Must call iup.Open in main thread");
+
+  lua_setfield(L, LUA_REGISTRYINDEX, "MAINTHREAD");
+}
+#endif
+
+static lua_State* get_main_thread(lua_State* L)
+{
+  lua_State* main_L;
+#if LUA_VERSION_NUM == 501
+  lua_getfield(L, LUA_REGISTRYINDEX, "MAINTHREAD");
+#else
+  lua_rawgeti(L, LUA_REGISTRYINDEX, LUA_RIDX_MAINTHREAD);
+#endif
+  main_L = lua_tothread(L, -1);
+  lua_pop(L, 1);
+  return main_L;
+}
+
 IUPLUA_SDK_API void iuplua_plugstate(lua_State *L, Ihandle *ih)
 {
-  IupSetAttribute(ih, "_IUPLUA_STATE_CONTEXT",(char *) L);
+  IupSetAttribute(ih, "_IUPLUA_STATE_CONTEXT",(char *)get_main_thread(L));
 
   if (IupGetGlobal("IUPLUA_THREADED"))
   {
@@ -1388,6 +1411,8 @@ IUPLUA_API int iuplua_open(lua_State * L)
     { NULL, NULL },
   };
 
+  luaL_checkversion(L);
+  
   if (!il_open(L))
     return 0;
 
