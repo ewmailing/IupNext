@@ -908,6 +908,10 @@ wb_usr.tree =
               link= "call/iup_destroy_cb.html"
             },
             {
+              name= {nl= "LDESTROY_CB"},
+              link= "call/iup_ldestroy_cb.html"
+            },
+            {
               name= {nl= "GETFOCUS_CB"},
               link= "call/iup_getfocus_cb.html"
             },

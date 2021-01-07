@@ -21,10 +21,10 @@ callback will be called right <strong>after</strong> it is hidden.</p>
 <p>The callback will be called <strong>before</strong> all other destroy 
 procedures.</p>
 <p>For instance, if the element has children then it is called <strong>before</strong> 
-the children are destroyed. </p>
-<p>For language binding implementations use the callback name "LDESTROY_CB" to 
-release memory allocated by the binding for the element. Also the callback will 
-be called <strong>before</strong> the language callback.</p>
+the children are destroyed. If the element is mapped, it is called before the 
+element is unmapped, so before UNMAP_CB.</p>
+<p>For language binding implementations use the callback
+<a href="iup_ldestroy_cb.html">LDESTROY_CB</a>. </p>
 <h3>Affects</h3>
 <p>All.</p>
 
