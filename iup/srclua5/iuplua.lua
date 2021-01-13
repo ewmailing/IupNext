@@ -183,6 +183,7 @@ function iup.RegisterWidget(ctrl) -- called by all the controls initialization f
   end
 end
 
+-- Called from C when an Ihandle created in C is pushed to Lua
 function iup.RegisterHandle(ih, typename)
 
   iup.SetClass(ih, "iupHandle")
@@ -202,6 +203,7 @@ function iup.RegisterHandle(ih, typename)
       parent = class, 
       ihandle = ih 
       }
+
     iup.SetClass(widget, "iupWidget")
     iup.SetWidget(ih, widget)
   end

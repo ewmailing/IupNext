@@ -465,7 +465,7 @@ IUPLUA_API void iuplua_pushihandle(lua_State *L, Ihandle *ih)
     lua_pushnil(L);
 }
 
-static int il_destroy_cb(Ihandle* ih)
+static int ldestroy_cb(Ihandle* ih)
 {
   /* called from IupDestroy. */
   lua_State *L = iuplua_getstate(ih);
@@ -669,6 +669,7 @@ static lua_State* get_main_thread(lua_State* L)
 
 IUPLUA_SDK_API void iuplua_plugstate(lua_State *L, Ihandle *ih)
 {
+  /* always store the main thread */
   IupSetAttribute(ih, "_IUPLUA_STATE_CONTEXT",(char *)get_main_thread(L));
 
   if (IupGetGlobal("IUPLUA_THREADED"))
@@ -955,7 +956,7 @@ static int SetWidget(lua_State *L)
   {
     int ref = luaL_ref(L, LUA_REGISTRYINDEX);
     IupSetInt(ih, "_IUPLUA_WIDGET_TABLE_REF", ref);
-    IupSetCallback(ih, "LDESTROY_CB", il_destroy_cb);
+    IupSetCallback(ih, "LDESTROY_CB", ldestroy_cb);
   }
   return 0;
 }
