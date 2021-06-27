@@ -781,7 +781,7 @@ IUP_API void IupSetClassDefaultAttribute(const char* classname, const char *name
   if (!name)
     return;
 
-  ic = iupRegisterFindClass(name);
+  ic = iupRegisterFindClass(classname);
   if (!ic)
     return;
 
