@@ -227,6 +227,8 @@ NOTE: If the application is not already open, opening the URL will launch your p
 // recent_cb won't work for us using the legacy signature because ours must be shared with OPENFILES_CB due to how the native API works.
 // max_recent is useless to us because we can't programatically set the value. (Users set it in their System Preferences.)
 // ih is useless to use because we don't write any of these values to IupConfig and all our interaction is done through NSDocuementController.
+#if 0
+// NOTE: This got moved to iup_config.c
 void IupConfigRecentInit(Ihandle* ih, Ihandle* menu, Icallback recent_cb, int max_recent)
 {
 /*
@@ -254,3 +256,4 @@ void IupConfigRecentUpdate(Ihandle* ih, const char* filename)
 	NSDocumentController* document_controller = [NSDocumentController sharedDocumentController];
 	[document_controller noteNewRecentDocumentURL:file_url];
 }
+#endif

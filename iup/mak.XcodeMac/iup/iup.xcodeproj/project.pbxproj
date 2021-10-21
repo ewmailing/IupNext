@@ -337,6 +337,9 @@
 		00EAD0212166116700D601F8 /* IupCocoaOutlineViewToggle.xib in Resources */ = {isa = PBXBuildFile; fileRef = 00EAD01F2166116500D601F8 /* IupCocoaOutlineViewToggle.xib */; };
 		00EAD0242166240700D601F8 /* IupCocoaTreeToggleTableCellView.h in Headers */ = {isa = PBXBuildFile; fileRef = 00EAD0222166240200D601F8 /* IupCocoaTreeToggleTableCellView.h */; };
 		00EAD0252166240700D601F8 /* IupCocoaTreeToggleTableCellView.m in Sources */ = {isa = PBXBuildFile; fileRef = 00EAD0232166240500D601F8 /* IupCocoaTreeToggleTableCellView.m */; };
+		00FA13C427221C3C00957F61 /* iup_flattree.h in Headers */ = {isa = PBXBuildFile; fileRef = 00FA13C227221C3C00957F61 /* iup_flattree.h */; };
+		00FA13C527221C3C00957F61 /* iup_flattree.c in Sources */ = {isa = PBXBuildFile; fileRef = 00FA13C327221C3C00957F61 /* iup_flattree.c */; };
+		00FA13C727221CC700957F61 /* iup_export.c in Sources */ = {isa = PBXBuildFile; fileRef = 00FA13C627221CC600957F61 /* iup_export.c */; };
 		6310AB271ED21CE70075B168 /* iup.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 00E3A5ED1B60578300BEC175 /* iup.framework */; };
 		6310AB291ED21CE70075B168 /* Images.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = 00E3A8FB1B609B8700BEC175 /* Images.xcassets */; };
 		6310AB311ED21DFF0075B168 /* TestImage.c in Sources */ = {isa = PBXBuildFile; fileRef = 6310AB301ED21DFF0075B168 /* TestImage.c */; };
@@ -768,6 +771,9 @@
 		00EAD0202166116500D601F8 /* Base */ = {isa = PBXFileReference; lastKnownFileType = file.xib; name = Base; path = Base.lproj/IupCocoaOutlineViewToggle.xib; sourceTree = "<group>"; };
 		00EAD0222166240200D601F8 /* IupCocoaTreeToggleTableCellView.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = IupCocoaTreeToggleTableCellView.h; sourceTree = "<group>"; };
 		00EAD0232166240500D601F8 /* IupCocoaTreeToggleTableCellView.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = IupCocoaTreeToggleTableCellView.m; sourceTree = "<group>"; };
+		00FA13C227221C3C00957F61 /* iup_flattree.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = iup_flattree.h; sourceTree = "<group>"; };
+		00FA13C327221C3C00957F61 /* iup_flattree.c */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.c; path = iup_flattree.c; sourceTree = "<group>"; };
+		00FA13C627221CC600957F61 /* iup_export.c */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.c; path = iup_export.c; sourceTree = "<group>"; };
 		6310AB2D1ED21CE70075B168 /* ImageApp.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = ImageApp.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		6310AB301ED21DFF0075B168 /* TestImage.c */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.c; path = TestImage.c; sourceTree = "<group>"; };
 /* End PBXFileReference section */
@@ -982,6 +988,9 @@
 		00E3A60B1B60583500BEC175 /* src */ = {
 			isa = PBXGroup;
 			children = (
+				00FA13C627221CC600957F61 /* iup_export.c */,
+				00FA13C327221C3C00957F61 /* iup_flattree.c */,
+				00FA13C227221C3C00957F61 /* iup_flattree.h */,
 				006E70B5236D2C1B00CA0753 /* iup_classinfo.c */,
 				006E70B0236D2C1900CA0753 /* iup_elempropdlg.c */,
 				006E70AD236D2C1800CA0753 /* iup_lng_czech_utf8.h */,
@@ -1420,6 +1429,7 @@
 				00E3A8811B60595300BEC175 /* iuplua_plot.h in Headers */,
 				00E3A8941B60595300BEC175 /* iuptuio.h in Headers */,
 				00E3A7A01B60583600BEC175 /* iup_image.h in Headers */,
+				00FA13C427221C3C00957F61 /* iup_flattree.h in Headers */,
 				00E3A76E1B60583600BEC175 /* iup_array.h in Headers */,
 				00E3A87E1B60595300BEC175 /* iupkey.h in Headers */,
 				006E70B7236D2C1B00CA0753 /* iup_lng_czech_utf8.h in Headers */,
@@ -1921,6 +1931,7 @@
 				00AB789C22D41202008D43D4 /* iup_multibox.c in Sources */,
 				00E3A79E1B60583600BEC175 /* iup_hbox.c in Sources */,
 				00E3A7B91B60583600BEC175 /* iup_names.c in Sources */,
+				00FA13C727221CC700957F61 /* iup_export.c in Sources */,
 				00E3A8CC1B60851400BEC175 /* iupcocoa_tree.m in Sources */,
 				00E3A8C01B605FB300BEC175 /* iupcocoa_open.m in Sources */,
 				00E3A7E11B60583600BEC175 /* iup_val.c in Sources */,
@@ -1967,6 +1978,7 @@
 				00E3A8DC1B60952400BEC175 /* iupcocoa_menu.m in Sources */,
 				004DBF4E2070E6DF00962511 /* iup_flattoggle.c in Sources */,
 				00E3A7D41B60583600BEC175 /* iup_table.c in Sources */,
+				00FA13C527221C3C00957F61 /* iup_flattree.c in Sources */,
 				00E3A8E21B6096EC00BEC175 /* iupcocoa_progressbar.m in Sources */,
 				00E3A7A71B60583600BEC175 /* iup_layoutdlg.c in Sources */,
 				0070FB9B1E0E0B79009A8631 /* IupAppDelegate.m in Sources */,
