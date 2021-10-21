@@ -193,7 +193,16 @@ void iupdrvClose(void)
 	// Hmmm...there could a problem. Objects might get called to be Destroyed after the close.
 	// They shouldn't do this.
 	// But if it happens, maybe we either never drain and do a dispatch_once.
-	[s_autoreleasePool drain];
+	// UPDATE: draining is causing crashes under some circumstances.
+	// When the app is closed via auto-close when last window is closed, the code path through the EXIT_CB which calls IupClose which then calls this,
+	// seems to result in the autoreleasepool being drained too early for Cocoa, possibly because the system hasn't fully exited from [NSapp run] yet.
+	// This results in a crash.
+	// Ultimately, the problem is that draining the autoreleasepool must be the very last thing done, but there is no good place to put this in the API,
+	// because even IupClose() may still be too early.
+	// So I think we are just going to have to accept a LEAK here.
+	// Technically, in a good modern Cocoa program, this will be the end of the program, so we don't need to clean up and we don't have to worry about leaking.
+	// So it shouldn't really be an issue in practice, unless users are trying to force the old Iup paradigms on IupNext, which I've documented will never really work in the end.
+//	[s_autoreleasePool drain];
 	s_autoreleasePool = nil;
 	
 	
