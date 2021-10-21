@@ -8,6 +8,7 @@
 #include <stdio.h>
 #include <stdlib.h>
 #include <memory.h>
+#include <string.h>
 
 #include <gtk/gtk.h>
 
@@ -126,11 +127,32 @@ static char* gtkClipboardGetFormatDataAttrib(Ihandle *ih)
   if (size <= 0 || format != 8 || !clip_data)
     return NULL;
 
-  data = iupStrGetMemory(size);
+  data = iupStrGetMemory(size+1); /* reserve room for terminator */
   memcpy(data, clip_data, size);
 
   iupAttribSetInt(ih, "FORMATDATASIZE", size);
   return data;
+}
+
+static char* gtkClipboardGetFormatDataStringAttrib(Ihandle *ih)
+{
+  char* data = gtkClipboardGetFormatDataAttrib(ih);
+  int size = iupAttribGetInt(ih, "FORMATDATASIZE");
+  data[size] = 0;  /* add terminator */
+  return iupStrReturnStr(iupgtkStrConvertFromSystem(data));
+}
+
+static int gtkClipboardSetFormatDataStringAttrib(Ihandle *ih, const char *value)
+{
+  if (value)
+  {
+    int len = (int)strlen(value);
+    char* wstr = iupgtkStrConvertToSystemLen(value, &len);
+    iupAttribSetInt(ih, "FORMATDATASIZE", len + 1);  /* include terminator */
+    return gtkClipboardSetFormatDataAttrib(ih, wstr);
+  }
+  else
+    return gtkClipboardSetFormatDataAttrib(ih, NULL);
 }
 
 static int gtkClipboardSetTextAttrib(Ihandle *ih, const char *value)
@@ -141,7 +163,7 @@ static int gtkClipboardSetTextAttrib(Ihandle *ih, const char *value)
     gtk_clipboard_clear(clipboard);
     return 0;
   }
-  gtk_clipboard_set_text(clipboard, value, -1);
+  gtk_clipboard_set_text(clipboard, iupgtkStrConvertToSystem(value), -1);
   (void)ih;
   return 0;
 }
@@ -268,10 +290,11 @@ Iclass* iupClipboardNewClass(void)
   iupClassRegisterAttribute(ic, "IMAGEAVAILABLE", gtkClipboardGetImageAvailableAttrib, NULL, NULL, NULL, IUPAF_READONLY|IUPAF_NOT_MAPPED|IUPAF_NO_INHERIT);
 
   iupClassRegisterAttribute(ic, "ADDFORMAT", NULL, gtkClipboardSetAddFormatAttrib, NULL, NULL, IUPAF_WRITEONLY|IUPAF_NOT_MAPPED|IUPAF_NO_INHERIT);
-  iupClassRegisterAttribute(ic, "FORMAT", NULL, NULL, NULL, NULL, IUPAF_NOT_MAPPED|IUPAF_NO_INHERIT);
+  iupClassRegisterAttribute(ic, "FORMAT", NULL, NULL, NULL, NULL, IUPAF_NO_INHERIT);
   iupClassRegisterAttribute(ic, "FORMATAVAILABLE", gtkClipboardGetFormatAvailableAttrib, NULL, NULL, NULL, IUPAF_READONLY|IUPAF_NOT_MAPPED|IUPAF_NO_INHERIT);
   iupClassRegisterAttribute(ic, "FORMATDATA", gtkClipboardGetFormatDataAttrib, gtkClipboardSetFormatDataAttrib, NULL, NULL, IUPAF_NO_STRING | IUPAF_NOT_MAPPED | IUPAF_NO_INHERIT);
-  iupClassRegisterAttribute(ic, "FORMATDATASIZE", NULL, NULL, NULL, NULL, IUPAF_NOT_MAPPED|IUPAF_NO_INHERIT);
+  iupClassRegisterAttribute(ic, "FORMATDATASTRING", gtkClipboardGetFormatDataStringAttrib, gtkClipboardSetFormatDataStringAttrib, NULL, NULL, IUPAF_NOT_MAPPED | IUPAF_NO_INHERIT);
+  iupClassRegisterAttribute(ic, "FORMATDATASIZE", NULL, NULL, NULL, NULL, IUPAF_NO_INHERIT);
 
   return ic;
 }

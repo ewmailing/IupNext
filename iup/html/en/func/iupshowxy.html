@@ -26,13 +26,13 @@ or <strong>ih</strong>:showxy(<strong>[x</strong>, <strong>y</strong>: number]) 
 definitions can also be used:</p>
 <ul>
   <li>IUP_LEFT:
-    Positions the dialog on the left corner of 
+    Positions the dialog on the left border of 
     the main screen</li>
   <li>IUP_CENTER:
     Horizontally centralizes the dialog on the 
     main screen</li>
   <li>IUP_RIGHT:
-    Positions the dialog on the right corner of 
+    Positions the dialog on the right border of 
     the main screen</li>
   <li>IUP_MOUSEPOS:
     Positions the dialog on the mouse position</li>
@@ -41,18 +41,22 @@ definitions can also be used:</p>
   <li>IUP_CURRENT: use the current position 
     of the dialog. This is the default value 
   in Lua if the parameter is not defined. (Since 3.0)</li>
+	<li>IUP_LEFTPARENT: Positions the element on the left border of its 
+  parent. Not valid for menus. (Since 3.29)</li>
+	<li>IUP_RIGHTPARENT: Positions the element on the right border of its 
+  parent. Not valid for menus. (Since 3.29)</li>
 </ul>
 <p><b>y</b>: vertical position of the top-left corner of the window, relative to the origin of the main screen.
     The following definitions can also be used:</p>
 <ul>
   <li>IUP_TOP:
-    Positions the dialog on the top of the 
+    Positions the dialog on the top border of the 
     main screen</li>
   <li>IUP_CENTER:
     Vertically centralizes the dialog on the 
     main screen</li>
   <li>IUP_BOTTOM:
-    Positions the dialog on the base of the 
+    Positions the dialog on the bottom border of the 
     main screen</li>
   <li>IUP_MOUSEPOS:
     Positions the dialog on the mouse position</li>
@@ -61,6 +65,10 @@ definitions can also be used:</p>
   <li>IUP_CURRENT: use the current position 
     of the dialog. This is 
   the default value in Lua if the parameter is not defined.(Since 3.0)</li>
+	<li>IUP_TOPPARENT: Positions the element on the top border of its 
+  parent. Not valid for menus. (Since 3.29)</li>
+	<li>IUP_BOTTOMPARENT: Positions the element on the bottom border of its 
+  parent. Not valid for menus. (Since 3.29)</li>
 </ul>
 <p><span class="style1">Returns:</span> IUP_NOERROR if 
   successful. Returns IUP_INVALID if not a dialog.&nbsp; If there was an error returns IUP_ERROR.</p>

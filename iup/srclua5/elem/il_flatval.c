@@ -12,6 +12,16 @@
 #include "il.h"
 
 
+static int flatval_flat_wheel_cb(Ihandle *self, float p0, int p1, int p2, char * p3)
+{
+  lua_State *L = iuplua_call_start(self, "flat_wheel_cb");
+  lua_pushnumber(L, p0);
+  lua_pushinteger(L, p1);
+  lua_pushinteger(L, p2);
+  lua_pushstring(L, p3);
+  return iuplua_call(L, 4);
+}
+
 static int flatval_valuechanging_cb(Ihandle *self, int p0)
 {
   lua_State *L = iuplua_call_start(self, "valuechanging_cb");
@@ -31,6 +41,7 @@ int iupflatvallua_open(lua_State * L)
 {
   iuplua_register(L, FlatVal, "FlatVal");
 
+  iuplua_register_cb(L, "FLAT_WHEEL_CB", (lua_CFunction)flatval_flat_wheel_cb, NULL);
   iuplua_register_cb(L, "VALUECHANGING_CB", (lua_CFunction)flatval_valuechanging_cb, NULL);
 
 #ifdef IUPLUA_USELOH

@@ -65,6 +65,7 @@ void CellsDegradeTest(void);
 void CellsCheckboardTest(void);
 void ValTest(void);
 void FlatValTest(void);
+void FlatTreeTest(void);
 void TreeTest(void);
 void TrayTest(void);
 void ToggleTest(void);
@@ -101,6 +102,7 @@ void DetachBoxTest(void);
 void CboxTest(void);
 #ifndef NO_WEBBROWSER_TEST
 void WebBrowserTest(void);
+void WebBrowserEditorTest(void);
 #endif
 void MglLabelTest(void);
 void MatrixListTest(void);
@@ -146,7 +148,7 @@ static TestItems test_list[] = {
   { "CellsCheckboard", CellsCheckboardTest },
   {"CellsDegrade", CellsDegradeTest},
   {"CellsNumbering", CellsNumberingTest},
-  {"CharacTest", CharacTest},
+  {"Characters", CharacTest},
   {"Classes Info", ClassInfo},
   {"Clipboard", ClipboardTest},
   {"ColorBrowser", ColorBrowserTest},
@@ -212,12 +214,14 @@ static TestItems test_list[] = {
   { "FlatToggle", FlatToggleTest },
   { "Tray", TrayTest },
   {"Tree", TreeTest},
+  {"FlatTree", FlatTreeTest},
   {"Val", ValTest},
   { "FlatVal", FlatValTest },
   { "Vbox", VboxTest },
   {"Zbox", ZboxTest},
 #ifndef NO_WEBBROWSER_TEST
   { "WebBrowser", WebBrowserTest },
+  { "WebBrowser-Editor", WebBrowserEditorTest },
 #endif
 };
 

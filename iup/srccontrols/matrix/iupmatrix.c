@@ -91,30 +91,48 @@ static int iMatrixSetOriginAttrib(Ihandle* ih, const char* value)
   /* Can not be non scrollable cell */
   if ((lin < ih->data->lines.num_noscroll) || (col < ih->data->columns.num_noscroll))
     return 0;
-
-  ih->data->columns.first = col;
-  ih->data->columns.first_offset = 0;
-  ih->data->lines.first = lin;
-  ih->data->lines.first_offset = 0;
-
-  value = iupAttribGet(ih, "ORIGINOFFSET");
-  if (value)
+  else
   {
-    int lin_offset, col_offset;
-    if (iupStrToIntInt(value, &lin_offset, &col_offset, ':') == 2)
+    int redraw = 0;
+    int old_lines_first = ih->data->lines.first;
+    int old_columns_first = ih->data->columns.first;
+    int old_lines_first_offset = ih->data->lines.first_offset;
+    int old_columns_first_offset = ih->data->columns.first_offset;
+
+    ih->data->columns.first = col;
+    ih->data->columns.first_offset = 0;
+    ih->data->lines.first = lin;
+    ih->data->lines.first_offset = 0;
+
+    value = iupAttribGet(ih, "ORIGINOFFSET");
+    if (value)
     {
-      if (col_offset < ih->data->columns.dt[col].size)
-        ih->data->columns.first_offset = col_offset;
-      if (lin_offset < ih->data->lines.dt[lin].size)
-        ih->data->lines.first_offset = lin_offset;
+      int lin_offset, col_offset;
+      if (iupStrToIntInt(value, &lin_offset, &col_offset, ':') == 2)
+      {
+        if (col_offset < ih->data->columns.dt[col].size)
+          ih->data->columns.first_offset = col_offset;
+        if (lin_offset < ih->data->lines.dt[lin].size)
+          ih->data->lines.first_offset = lin_offset;
+      }
     }
+
+    /* when "first" is changed must update scroll pos */
+    if (ih->data->columns.first != old_columns_first || ih->data->columns.first_offset != old_columns_first_offset)
+    {
+      iupMatrixAuxUpdateScrollPos(ih, IMAT_PROCESS_COL);
+      redraw = 1;
+    }
+
+    if (ih->data->lines.first != old_lines_first || ih->data->lines.first_offset != old_lines_first_offset)
+    {
+      iupMatrixAuxUpdateScrollPos(ih, IMAT_PROCESS_LIN);
+      redraw = 1;
+    }
+
+    if (redraw)
+      iupMatrixDraw(ih, 1);
   }
-
-  /* when "first" is changed must update scroll pos */
-  iupMatrixAuxUpdateScrollPos(ih, IMAT_PROCESS_COL);
-  iupMatrixAuxUpdateScrollPos(ih, IMAT_PROCESS_LIN);
-
-  iupMatrixDraw(ih, 1);
   return 0;
 }
 
@@ -631,8 +649,8 @@ static int iMatrixSetFitToSizeAttrib(Ihandle* ih, const char* value)
   }
 
   ih->data->need_calcsize = 1;
-  if (ih->handle)
-    iupMatrixDraw(ih, 1);
+
+  IupUpdate(ih); /* post a redraw, because FITTOSIZE can be set inside a resize_cb */
   return 0;
 }
 
@@ -703,8 +721,8 @@ static int iMatrixSetFitToTextAttrib(Ihandle* ih, const char* value)
   }
 
   ih->data->need_calcsize = 1;
-  if (ih->handle)
-    iupMatrixDraw(ih, 1);
+
+  IupUpdate(ih); /* post a redraw, because FITTOSIZE can be set inside a resize_cb */
   return 0;
 }
 
@@ -969,7 +987,7 @@ static int iMatrixSetFlatAttrib(Ihandle* ih, const char* value)
   else
     ih->data->flat = 0;
 
-  IupUpdate(ih);
+  IupUpdate(ih);  /* post a redraw */
   return 0; /* do not store value in hash table */
 }
 
@@ -1703,7 +1721,6 @@ static int iMatrixSetFlatScrollbarAttrib(Ihandle* ih, const char* value)
     {
       IupSetAttribute(ih, "SCROLLBAR", "NO");
       IupSetCallback(ih, "WHEEL_CB", (Icallback)iMatrixWheel_CB);
-      /*    IupSetCallback(ih, "FLATSCROLL_CB", (Icallback)iMatrixFlatScroll_CB);  -- unused */
     }
     return 1;
   }
@@ -1848,6 +1865,11 @@ static int iMatrixCreateMethod(Ihandle* ih, void **params)
   return IUP_NOERROR;
 }
 
+static void iMatrixDestroyMethod(Ihandle* ih)
+{
+  iupFlatScrollBarRelease(ih);
+}
+
 static int iMatrixMapMethod(Ihandle* ih)
 {
 #ifdef USE_OLD_CDIUP
@@ -1879,6 +1901,8 @@ static void iMatrixUnMapMethod(Ihandle* ih)
 {
   if (ih->data->cd_canvas)
   {
+    iupAttribSetStr(ih, "_IUPCD_LASTFONT", NULL); /* Cache in IupCdSetFont */
+
     cdKillCanvas(ih->data->cd_canvas);
     ih->data->cd_canvas = NULL;
   }
@@ -2121,6 +2145,7 @@ Iclass* iupMatrixNewClass(void)
 
   ic->name = "matrix";
   ic->format = "a"; /* one ACTION_CB callback name */
+  ic->format_attr = "ACTION_CB";
   ic->nativetype = IUP_TYPECANVAS;
   ic->childtype = IUP_CHILDNONE;
   ic->is_interactive = 1;
@@ -2129,6 +2154,7 @@ Iclass* iupMatrixNewClass(void)
   /* Class functions */
   ic->New = iupMatrixNewClass;
   ic->Create = iMatrixCreateMethod;
+  ic->Destroy = iMatrixDestroyMethod;
   ic->Map = iMatrixMapMethod;
   ic->UnMap = iMatrixUnMapMethod;
   ic->ComputeNaturalSize = iMatrixComputeNaturalSizeMethod;
@@ -2174,7 +2200,7 @@ Iclass* iupMatrixNewClass(void)
 
   /* Overwrite IupCanvas Attributes */
   iupClassRegisterAttribute(ic, "ACTIVE", iupBaseGetActiveAttrib, iMatrixSetActiveAttrib, IUPAF_SAMEASSYSTEM, "YES", IUPAF_DEFAULT);
-  iupClassRegisterAttribute(ic, "VISIBLE", iupBaseGetVisibleAttrib, iMatrixSetVisibleAttrib, "YES", "NO", IUPAF_NO_SAVE | IUPAF_DEFAULT);
+  iupClassRegisterAttribute(ic, "VISIBLE", iupBaseGetVisibleAttrib, iMatrixSetVisibleAttrib, "YES", "NO", IUPAF_NO_SAVE);
 
   /* Change the Canvas default */
   iupClassRegisterReplaceAttribDef(ic, "CURSOR", "IupMatrixCrossCursor", "ARROW");
@@ -2218,7 +2244,7 @@ Iclass* iupMatrixNewClass(void)
 
   iupClassRegisterAttributeId2(ic, "MERGE", iMatrixGetMergeAttrib, iMatrixSetMergeAttrib, IUPAF_NOT_MAPPED | IUPAF_NO_INHERIT);
   iupClassRegisterAttribute(ic, "MERGESPLIT", NULL, iMatrixSetMergeSplitAttrib, NULL, NULL, IUPAF_WRITEONLY | IUPAF_NOT_MAPPED | IUPAF_NO_INHERIT);
-  iupClassRegisterAttributeId2(ic, "MERGED", NULL, NULL, IUPAF_NOT_MAPPED | IUPAF_NO_INHERIT); /* internal, returns the merged range number */
+  iupClassRegisterAttributeId2(ic, "MERGED", NULL, NULL, IUPAF_NO_INHERIT); /* internal, returns the merged range number */
   iupClassRegisterAttributeId2(ic, "MERGEDSTART", iMatrixGetMergedStartAttrib, NULL, IUPAF_READONLY | IUPAF_NOT_MAPPED | IUPAF_NO_INHERIT);
   iupClassRegisterAttributeId2(ic, "MERGEDEND", iMatrixGetMergedEndAttrib, NULL, IUPAF_READONLY | IUPAF_NOT_MAPPED | IUPAF_NO_INHERIT);
 
@@ -2239,24 +2265,24 @@ Iclass* iupMatrixNewClass(void)
   iupClassRegisterAttribute(ic, "NOSCROLLASTITLE", iMatrixGetNoScrollAsTitleAttrib, iMatrixSetNoScrollAsTitleAttrib, IUPAF_SAMEASSYSTEM, "NO", IUPAF_NOT_MAPPED | IUPAF_NO_INHERIT);
   iupClassRegisterAttribute(ic, "NUMLIN_VISIBLE", iMatrixGetNumLinVisibleAttrib, NULL, IUPAF_SAMEASSYSTEM, "3", IUPAF_NOT_MAPPED | IUPAF_NO_INHERIT);
   iupClassRegisterAttribute(ic, "NUMCOL_VISIBLE", iMatrixGetNumColVisibleAttrib, NULL, IUPAF_SAMEASSYSTEM, "4", IUPAF_NOT_MAPPED | IUPAF_NO_INHERIT);
-  iupClassRegisterAttribute(ic, "NUMLIN_VISIBLE_LAST", NULL, NULL, NULL, NULL, IUPAF_NOT_MAPPED | IUPAF_NO_INHERIT);
-  iupClassRegisterAttribute(ic, "NUMCOL_VISIBLE_LAST", NULL, NULL, NULL, NULL, IUPAF_NOT_MAPPED | IUPAF_NO_INHERIT);
-  iupClassRegisterAttribute(ic, "WIDTHDEF", NULL, NULL, IUPAF_SAMEASSYSTEM, "80", IUPAF_NOT_MAPPED | IUPAF_NO_INHERIT);
-  iupClassRegisterAttribute(ic, "HEIGHTDEF", NULL, NULL, IUPAF_SAMEASSYSTEM, "8", IUPAF_NOT_MAPPED | IUPAF_NO_INHERIT);
+  iupClassRegisterAttribute(ic, "NUMLIN_VISIBLE_LAST", NULL, NULL, NULL, NULL, IUPAF_NO_INHERIT);
+  iupClassRegisterAttribute(ic, "NUMCOL_VISIBLE_LAST", NULL, NULL, NULL, NULL, IUPAF_NO_INHERIT);
+  iupClassRegisterAttribute(ic, "WIDTHDEF", NULL, NULL, IUPAF_SAMEASSYSTEM, "80", IUPAF_NO_INHERIT);
+  iupClassRegisterAttribute(ic, "HEIGHTDEF", NULL, NULL, IUPAF_SAMEASSYSTEM, "8", IUPAF_NO_INHERIT);
   iupClassRegisterAttributeId(ic, "WIDTH", iMatrixGetWidthAttrib, iMatrixSetSizeAttrib, IUPAF_NOT_MAPPED | IUPAF_NO_INHERIT);
   iupClassRegisterAttributeId(ic, "HEIGHT", iMatrixGetHeightAttrib, iMatrixSetSizeAttrib, IUPAF_NOT_MAPPED | IUPAF_NO_INHERIT);
   iupClassRegisterAttributeId(ic, "RASTERWIDTH", iMatrixGetRasterWidthAttrib, iMatrixSetSizeAttrib, IUPAF_NOT_MAPPED | IUPAF_NO_INHERIT);
   iupClassRegisterAttributeId(ic, "RASTERHEIGHT", iMatrixGetRasterHeightAttrib, iMatrixSetSizeAttrib, IUPAF_NOT_MAPPED | IUPAF_NO_INHERIT);
   iupClassRegisterAttribute(ic, "FITTOSIZE", NULL, iMatrixSetFitToSizeAttrib, NULL, NULL, IUPAF_NOT_MAPPED | IUPAF_WRITEONLY | IUPAF_NO_INHERIT);
   iupClassRegisterAttribute(ic, "FITTOTEXT", NULL, iMatrixSetFitToTextAttrib, NULL, NULL, IUPAF_NOT_MAPPED | IUPAF_WRITEONLY | IUPAF_NO_INHERIT);
-  iupClassRegisterAttributeId(ic, "FITMAXHEIGHT", NULL, NULL, IUPAF_NOT_MAPPED | IUPAF_NO_INHERIT);
-  iupClassRegisterAttributeId(ic, "FITMAXWIDTH", NULL, NULL, IUPAF_NOT_MAPPED | IUPAF_NO_INHERIT);
+  iupClassRegisterAttributeId(ic, "FITMAXHEIGHT", NULL, NULL, IUPAF_NO_INHERIT);
+  iupClassRegisterAttributeId(ic, "FITMAXWIDTH", NULL, NULL, IUPAF_NO_INHERIT);
   iupClassRegisterAttributeId(ic, "COPYLIN", NULL, iMatrixSetCopyLinAttrib, IUPAF_WRITEONLY | IUPAF_NO_INHERIT);
   iupClassRegisterAttributeId(ic, "COPYCOL", NULL, iMatrixSetCopyColAttrib, IUPAF_WRITEONLY | IUPAF_NO_INHERIT);
   iupClassRegisterAttributeId(ic, "MOVELIN", NULL, iMatrixSetMoveLinAttrib, IUPAF_WRITEONLY | IUPAF_NO_INHERIT);
   iupClassRegisterAttributeId(ic, "MOVECOL", NULL, iMatrixSetMoveColAttrib, IUPAF_WRITEONLY | IUPAF_NO_INHERIT);
-  iupClassRegisterAttributeId(ic, "MINCOLWIDTH", NULL, NULL, IUPAF_NOT_MAPPED | IUPAF_NO_INHERIT);
-  iupClassRegisterAttribute(ic, "MINCOLWIDTHDEF", NULL, NULL, NULL, NULL, IUPAF_NOT_MAPPED | IUPAF_NO_INHERIT);
+  iupClassRegisterAttributeId(ic, "MINCOLWIDTH", NULL, NULL, IUPAF_NO_INHERIT);
+  iupClassRegisterAttribute(ic, "MINCOLWIDTHDEF", NULL, NULL, NULL, NULL, IUPAF_NO_INHERIT);
 
   /* IupMatrix Attributes - MARK */
   iupClassRegisterAttribute(ic, "MARKED", iupMatrixGetMarkedAttrib, iupMatrixSetMarkedAttrib, NULL, NULL, IUPAF_NO_INHERIT);  /* noticed that for MARKED the matrix must be mapped */
@@ -2267,7 +2293,7 @@ Iclass* iupMatrixNewClass(void)
   iupClassRegisterAttribute(ic, "MARKAREA", iMatrixGetMarkAreaAttrib, iMatrixSetMarkAreaAttrib, IUPAF_SAMEASSYSTEM, "CONTINUOUS", IUPAF_NOT_MAPPED | IUPAF_NO_INHERIT);
   iupClassRegisterAttribute(ic, "MULTIPLE", iMatrixGetMarkMultipleAttrib, iMatrixSetMarkMultipleAttrib, NULL, NULL, IUPAF_NOT_MAPPED | IUPAF_NO_INHERIT);
   iupClassRegisterAttribute(ic, "MARKMULTIPLE", iMatrixGetMarkMultipleAttrib, iMatrixSetMarkMultipleAttrib, NULL, NULL, IUPAF_NOT_MAPPED | IUPAF_NO_INHERIT);
-  iupClassRegisterAttribute(ic, "MARKATTITLE", NULL, NULL, IUPAF_SAMEASSYSTEM, "Yes", IUPAF_NOT_MAPPED | IUPAF_NO_INHERIT);
+  iupClassRegisterAttribute(ic, "MARKATTITLE", NULL, NULL, IUPAF_SAMEASSYSTEM, "Yes", IUPAF_NO_INHERIT);
   iupClassRegisterAttribute(ic, "HLCOLOR", NULL, NULL, IUPAF_SAMEASSYSTEM, "TXTHLCOLOR", IUPAF_NO_INHERIT);
   iupClassRegisterAttribute(ic, "HLCOLORALPHA", NULL, NULL, IUPAF_SAMEASSYSTEM, "128", IUPAF_NO_INHERIT);
 
@@ -2292,28 +2318,28 @@ Iclass* iupMatrixNewClass(void)
   iupClassRegisterAttribute(ic, "INSERT", NULL, iMatrixSetInsertAttrib, NULL, NULL, IUPAF_WRITEONLY | IUPAF_NO_SAVE | IUPAF_NOT_MAPPED | IUPAF_NO_INHERIT);
   iupClassRegisterAttribute(ic, "SELECTION", iMatrixGetSelectionAttrib, iMatrixSetSelectionAttrib, NULL, NULL, IUPAF_NO_SAVE | IUPAF_NOT_MAPPED | IUPAF_NO_INHERIT);
   iupClassRegisterAttribute(ic, "MULTILINE", iMatrixGetMultilineAttrib, iMatrixSetMultilineAttrib, NULL, NULL, IUPAF_NO_INHERIT);
-  iupClassRegisterAttributeId(ic, "MASK", NULL, NULL, IUPAF_NOT_MAPPED | IUPAF_NO_INHERIT);
-  iupClassRegisterAttributeId(ic, "MASKINT", NULL, NULL, IUPAF_NOT_MAPPED | IUPAF_NO_INHERIT);
-  iupClassRegisterAttributeId(ic, "MASKFLOAT", NULL, NULL, IUPAF_NOT_MAPPED | IUPAF_NO_INHERIT);
-  iupClassRegisterAttributeId(ic, "MASKNOEMPTY", NULL, NULL, IUPAF_NOT_MAPPED | IUPAF_NO_INHERIT);
-  iupClassRegisterAttributeId(ic, "MASKCASEI", NULL, NULL, IUPAF_NOT_MAPPED | IUPAF_NO_INHERIT);
+  iupClassRegisterAttributeId(ic, "MASK", NULL, NULL, IUPAF_NO_INHERIT);
+  iupClassRegisterAttributeId(ic, "MASKINT", NULL, NULL, IUPAF_NO_INHERIT);
+  iupClassRegisterAttributeId(ic, "MASKFLOAT", NULL, NULL, IUPAF_NO_INHERIT);
+  iupClassRegisterAttributeId(ic, "MASKNOEMPTY", NULL, NULL, IUPAF_NO_INHERIT);
+  iupClassRegisterAttributeId(ic, "MASKCASEI", NULL, NULL, IUPAF_NO_INHERIT);
   iupClassRegisterAttribute(ic, "EDITHIDEONFOCUS", iMatrixGetEditHideOnFocusAttrib, iMatrixSetEditHideOnFocusAttrib, IUPAF_SAMEASSYSTEM, "Yes", IUPAF_NOT_MAPPED | IUPAF_NO_INHERIT);
   iupClassRegisterAttribute(ic, "EDITCELL", iMatrixGetEditCellAttrib, NULL, NULL, NULL, IUPAF_READONLY | IUPAF_NOT_MAPPED | IUPAF_NO_INHERIT);
   iupClassRegisterAttribute(ic, "EDITTEXT", iMatrixGetEditTextAttrib, NULL, NULL, NULL, IUPAF_READONLY | IUPAF_NOT_MAPPED | IUPAF_NO_INHERIT);
-  iupClassRegisterAttribute(ic, "EDITVALUE", NULL, NULL, NULL, NULL, IUPAF_READONLY | IUPAF_NOT_MAPPED | IUPAF_NO_INHERIT);
+  iupClassRegisterAttribute(ic, "EDITVALUE", NULL, NULL, NULL, NULL, IUPAF_READONLY | IUPAF_NO_INHERIT);
 
   /* IupMatrix Attributes - GENERAL */
   iupClassRegisterAttribute(ic, "USETITLESIZE", iMatrixGetUseTitleSizeAttrib, iMatrixSetUseTitleSizeAttrib, IUPAF_SAMEASSYSTEM, "NO", IUPAF_NOT_MAPPED | IUPAF_NO_INHERIT);
   iupClassRegisterAttribute(ic, "LIMITEXPAND", iMatrixGetLimitExpandAttrib, iMatrixSetLimitExpandAttrib, IUPAF_SAMEASSYSTEM, "NO", IUPAF_NOT_MAPPED | IUPAF_NO_INHERIT);
   iupClassRegisterAttribute(ic, "HIDDENTEXTMARKS", iMatrixGetHiddenTextMarksAttrib, iMatrixSetHiddenTextMarksAttrib, IUPAF_SAMEASSYSTEM, "NO", IUPAF_NOT_MAPPED | IUPAF_NO_INHERIT);
 
-  iupClassRegisterAttribute(ic, "READONLY", NULL, NULL, NULL, NULL, IUPAF_NOT_MAPPED | IUPAF_NO_INHERIT);
-  iupClassRegisterAttribute(ic, "RESIZEMATRIX", NULL, NULL, NULL, NULL, IUPAF_NOT_MAPPED | IUPAF_NO_INHERIT);
-  iupClassRegisterAttribute(ic, "RESIZEMATRIXCOLOR", NULL, NULL, IUPAF_SAMEASSYSTEM, "102 102 102", IUPAF_NOT_MAPPED | IUPAF_NO_INHERIT);
+  iupClassRegisterAttribute(ic, "READONLY", NULL, NULL, NULL, NULL, IUPAF_NO_INHERIT);
+  iupClassRegisterAttribute(ic, "RESIZEMATRIX", NULL, NULL, NULL, NULL, IUPAF_NO_INHERIT);
+  iupClassRegisterAttribute(ic, "RESIZEMATRIXCOLOR", NULL, NULL, IUPAF_SAMEASSYSTEM, "102 102 102", IUPAF_NO_INHERIT);
   iupClassRegisterAttribute(ic, "RESIZEDRAG", iMatrixGetResizeDragAttrib, iMatrixSetResizeDragAttrib, IUPAF_SAMEASSYSTEM, "YES", IUPAF_NOT_MAPPED | IUPAF_NO_INHERIT);
-  iupClassRegisterAttribute(ic, "HIDEFOCUS", NULL, NULL, NULL, NULL, IUPAF_NOT_MAPPED | IUPAF_NO_INHERIT);
+  iupClassRegisterAttribute(ic, "HIDEFOCUS", NULL, NULL, NULL, NULL, IUPAF_NO_INHERIT);
   iupClassRegisterAttribute(ic, "SHOWFILLVALUE", iMatrixGetShowFillValueAttrib, iMatrixSetShowFillValueAttrib, NULL, NULL, IUPAF_NOT_MAPPED | IUPAF_NO_INHERIT);
-  iupClassRegisterAttribute(ic, "TYPECOLORINACTIVE", NULL, NULL, IUPAF_SAMEASSYSTEM, "Yes", IUPAF_NOT_MAPPED | IUPAF_NO_INHERIT);
+  iupClassRegisterAttribute(ic, "TYPECOLORINACTIVE", NULL, NULL, IUPAF_SAMEASSYSTEM, "Yes", IUPAF_NO_INHERIT);
 
   /* Flat Scrollbar */
   iupFlatScrollBarRegister(ic);

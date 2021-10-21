@@ -56,6 +56,7 @@ static int iRadioChildIsToggle(Ihandle* child)
 {
   if (IupClassMatch(child, "toggle") || 
       IupClassMatch(child, "gltoggle") ||
+      IupClassMatch(child, "flattoggle") ||
       (IupClassMatch(child, "flatbutton") && iupAttribGetBoolean(child, "TOGGLE")))
     return 1;
   else
@@ -194,12 +195,15 @@ Iclass* iupRadioNewClass(void)
   ic->SetChildrenCurrentSize = iRadioSetChildrenCurrentSizeMethod;
   ic->SetChildrenPosition = iRadioSetChildrenPositionMethod;
 
+  /* Base Callbacks */
+  iupBaseRegisterBaseCallbacks(ic);
+
   /* Common */
   iupBaseRegisterCommonAttrib(ic);
 
   /* Base Container */
   iupClassRegisterAttribute(ic, "EXPAND", iupBaseContainerGetExpandAttrib, NULL, IUPAF_SAMEASSYSTEM, "YES", IUPAF_NOT_MAPPED|IUPAF_NO_INHERIT);
-  iupClassRegisterAttribute(ic, "CLIENTSIZE", iupBaseGetCurrentSizeAttrib, NULL, NULL, NULL, IUPAF_READONLY|IUPAF_NOT_MAPPED|IUPAF_NO_INHERIT);
+  iupClassRegisterAttribute(ic, "CLIENTSIZE", iupBaseGetClientSizeAttrib, NULL, NULL, NULL, IUPAF_READONLY|IUPAF_NOT_MAPPED|IUPAF_NO_INHERIT);
   iupClassRegisterAttribute(ic, "CLIENTOFFSET", iupBaseGetClientOffsetAttrib, NULL, NULL, NULL, IUPAF_READONLY|IUPAF_NOT_MAPPED|IUPAF_NO_INHERIT);
 
   /* Radio only */

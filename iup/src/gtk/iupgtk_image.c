@@ -165,7 +165,7 @@ void* iupdrvImageCreateImage(Ihandle *ih, const char* bgcolor, int make_inactive
   guchar *pixdata, *pixline_data;
   int rowstride, channels;
   unsigned char *imgdata, *line_data, bg_r=0, bg_g=0, bg_b=0;
-  int x, y, i, bpp, colors_count = 0, has_alpha = 0;
+  int x, y, bpp, colors_count = 0, has_alpha = 0;
   iupColor colors[256];
 
   bpp = iupAttribGetInt(ih, "BPP");
@@ -191,6 +191,8 @@ void* iupdrvImageCreateImage(Ihandle *ih, const char* bgcolor, int make_inactive
   {
     if (make_inactive)
     {
+      int i;
+
       for (i=0;i<colors_count;i++)
       {
         if (colors[i].a == 0)

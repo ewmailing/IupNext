@@ -148,6 +148,7 @@ static void winTreeChildRebuildCacheRec(Ihandle* ih, HTREEITEM hItem, int *id)
 
 static void winTreeRebuildNodeCache(Ihandle* ih, int id, HTREEITEM hItem)
 {
+  /* preserve cache user_data */
   ih->data->node_cache[id].node_handle = hItem;
   winTreeChildRebuildCacheRec(ih, hItem, &id);
 }
@@ -805,7 +806,7 @@ static void winTreeCallToggleValueCb(Ihandle* ih, HTREEITEM hItem)
   }
 }
 
-static int winTreeCallBranchLeafCb(Ihandle* ih, HTREEITEM hItem)
+static int winTreeCallBranchLeafCb(Ihandle* ih, HTREEITEM hItem, int execute)
 {
   TVITEM item;
   winTreeItemData* itemData;
@@ -825,6 +826,13 @@ static int winTreeCallBranchLeafCb(Ihandle* ih, HTREEITEM hItem)
     if (iupAttribGet(ih, "_IUPTREE_IGNORE_BRANCH_CB"))
       return IUP_DEFAULT;
 
+    if (execute)
+    {
+      IFni cbExecuteBranch = (IFni)IupGetCallback(ih, "EXECUTEBRANCH_CB");
+      if (cbExecuteBranch)
+        cbExecuteBranch(ih, iupTreeFindNodeId(ih, hItem));
+    }
+
     if (item.state & TVIS_EXPANDED)
     {
       IFni cbBranchClose = (IFni)IupGetCallback(ih, "BRANCHCLOSE_CB");
@@ -838,7 +846,7 @@ static int winTreeCallBranchLeafCb(Ihandle* ih, HTREEITEM hItem)
         return cbBranchOpen(ih, iupTreeFindNodeId(ih, hItem));
     }
   }
-  else
+  else if (execute)
   {
     IFni cbExecuteLeaf = (IFni)IupGetCallback(ih, "EXECUTELEAF_CB");
     if (cbExecuteLeaf)
@@ -1071,11 +1079,7 @@ static int winTreeSetTopItemAttrib(Ihandle* ih, const char* value)
 
 static int winTreeSetSpacingAttrib(Ihandle* ih, const char* value)
 {
-  if (!iupStrToInt(value, &ih->data->spacing))
-    ih->data->spacing = 1;
-
-  if(ih->data->spacing < 1)
-    ih->data->spacing = 1;
+  iupStrToInt(value, &ih->data->spacing);
 
   if (ih->handle)
   {
@@ -1231,7 +1235,6 @@ static int winTreeSetTitleFontAttrib(Ihandle* ih, int id, const char* value)
     itemData->hFont = iupwinGetHFont(value);
     if (itemData->hFont)
     {
-      TVITEM item;
       TCHAR* title = malloc(iupAttribGetInt(ih, "_IUP_MAXTITLE_SIZE")*sizeof(TCHAR));
 
       winTreeGetTitle(ih, hItem, title);
@@ -2049,7 +2052,8 @@ static int winTreeSetValueAttrib(Ihandle* ih, const char* value)
   {
     int i;
     HTREEITEM hItemPrev = hItemFocus;
-    HTREEITEM hItemNext = hItemFocus;
+    HTREEITEM hItemNext;
+
     for(i = 0; i < 10; i++)
     {
       hItemNext = hItemPrev;
@@ -2066,7 +2070,7 @@ static int winTreeSetValueAttrib(Ihandle* ih, const char* value)
   else if(iupStrEqualNoCase(value, "PGDN"))
   {
     int i;
-    HTREEITEM hItemPrev = hItemFocus;
+    HTREEITEM hItemPrev;
     HTREEITEM hItemNext = hItemFocus;
     
     for(i = 0; i < 10; i++)
@@ -2471,7 +2475,7 @@ static int winTreeMsgProc(Ihandle* ih, UINT msg, WPARAM wp, LPARAM lp, LRESULT *
       if (wp == VK_RETURN)
       {
         HTREEITEM hItemFocus = iupdrvTreeGetFocusNode(ih);
-        if (winTreeCallBranchLeafCb(ih, hItemFocus) != IUP_IGNORE)
+        if (winTreeCallBranchLeafCb(ih, hItemFocus, 1) != IUP_IGNORE)
         {
           if (winTreeIsBranch(ih, hItemFocus))
           {
@@ -2556,6 +2560,8 @@ static int winTreeMsgProc(Ihandle* ih, UINT msg, WPARAM wp, LPARAM lp, LRESULT *
       return 0;
     }
   case WM_LBUTTONDOWN:
+    iupwinFlagButtonDown(ih, msg);
+
     if (iupwinButtonDown(ih, msg, wp, lp)==-1)
     {
       *result = 0;
@@ -2599,6 +2605,8 @@ static int winTreeMsgProc(Ihandle* ih, UINT msg, WPARAM wp, LPARAM lp, LRESULT *
   case WM_LBUTTONDBLCLK:
   case WM_MBUTTONDBLCLK:
   case WM_RBUTTONDBLCLK:
+    iupwinFlagButtonDown(ih, msg);
+
     if (iupwinButtonDown(ih, msg, wp, lp)==-1)
     {
       *result = 0;
@@ -2643,6 +2651,12 @@ static int winTreeMsgProc(Ihandle* ih, UINT msg, WPARAM wp, LPARAM lp, LRESULT *
   case WM_LBUTTONUP:
   case WM_MBUTTONUP:
   case WM_RBUTTONUP:
+    if (!iupwinFlagButtonUp(ih, msg))
+    {
+      *result = 0;
+      return 1;
+    }
+
     if (iupwinButtonUp(ih, msg, wp, lp)==-1)
     {
       *result = 0;
@@ -2834,6 +2848,12 @@ static int winTreeWmNotify(Ihandle* ih, NMHDR* msg_info, int *result)
       if(cbExecuteLeaf)
         cbExecuteLeaf(ih, iupTreeFindNodeId(ih, hItemFocus));
     }
+    else
+    {
+      IFni cbExecuteBranch = (IFni)IupGetCallback(ih, "EXECUTEBRANCH_CB");
+      if (cbExecuteBranch)
+        cbExecuteBranch(ih, iupTreeFindNodeId(ih, hItemFocus));
+    }
   }
   else if(msg_info->code == TVN_ITEMEXPANDING)
   {
@@ -2841,7 +2861,7 @@ static int winTreeWmNotify(Ihandle* ih, NMHDR* msg_info, int *result)
     NMTREEVIEW* tree_info = (NMTREEVIEW*)msg_info;
     HTREEITEM hItem = tree_info->itemNew.hItem;
 
-    if (winTreeCallBranchLeafCb(ih, hItem) != IUP_IGNORE)
+    if (winTreeCallBranchLeafCb(ih, hItem, 0) != IUP_IGNORE)
     {
       TVITEM item;
       winTreeItemData* itemData = (winTreeItemData*)tree_info->itemNew.lParam;
@@ -3051,7 +3071,7 @@ void iupdrvTreeDragDropCopyNode(Ihandle* src, Ihandle* dst, InodeHandle *itemSrc
   winTreeDragDropCopyChildren(src, dst, hItemSrc, hItemNew);
 
   count = dst->data->node_count - old_count;
-  iupTreeDragDropCopyCache(dst, id_dst, id_new, count);
+  iupTreeCopyMoveCache(dst, id_dst, id_new, count, 1);  /* update only the dst control cache */
   winTreeRebuildNodeCache(dst, id_new, hItemNew);
 }
 
@@ -3212,7 +3232,7 @@ void iupdrvTreeInitClass(Iclass* ic)
   ic->UnMap = winTreeUnMapMethod;
 
   /* Visual */
-  iupClassRegisterAttribute(ic, "BGCOLOR", winTreeGetBgColorAttrib, winTreeSetBgColorAttrib, IUPAF_SAMEASSYSTEM, "TXTBGCOLOR", IUPAF_NO_SAVE|IUPAF_DEFAULT);
+  iupClassRegisterAttribute(ic, "BGCOLOR", winTreeGetBgColorAttrib, winTreeSetBgColorAttrib, IUPAF_SAMEASSYSTEM, "TXTBGCOLOR", IUPAF_NO_SAVE);
   iupClassRegisterAttribute(ic, "FGCOLOR", NULL, winTreeSetFgColorAttrib, IUPAF_SAMEASSYSTEM, "TXTFGCOLOR", IUPAF_DEFAULT);
   iupClassRegisterAttribute(ic, "HLCOLOR", NULL, winTreeSetHlColorAttrib, IUPAF_SAMEASSYSTEM, "TXTHLCOLOR", IUPAF_NOT_MAPPED | IUPAF_NO_INHERIT);
   iupClassRegisterAttribute(ic, "AUTOREDRAW", NULL, iupwinSetAutoRedrawAttrib, IUPAF_SAMEASSYSTEM, "Yes", IUPAF_WRITEONLY | IUPAF_NO_INHERIT);
@@ -3220,7 +3240,7 @@ void iupdrvTreeInitClass(Iclass* ic)
   /* Redefined */
   iupClassRegisterAttribute(ic, "TIP", NULL, winTreeSetTipAttrib, NULL, NULL, IUPAF_NO_DEFAULTVALUE|IUPAF_NO_INHERIT);
   iupClassRegisterAttribute(ic, "TIPVISIBLE", winTreeGetTipVisibleAttrib, winTreeSetTipVisibleAttrib, NULL, NULL, IUPAF_NO_INHERIT);
-  iupClassRegisterAttribute(ic, "INFOTIP", NULL, NULL, IUPAF_SAMEASSYSTEM, "YES", IUPAF_NOT_MAPPED | IUPAF_NO_INHERIT);
+  iupClassRegisterAttribute(ic, "INFOTIP", NULL, NULL, IUPAF_SAMEASSYSTEM, "YES", IUPAF_NO_INHERIT);
   
   /* IupTree Attributes - GENERAL */
   iupClassRegisterAttribute(ic, "EXPANDALL",  NULL, winTreeSetExpandAllAttrib, NULL, NULL, IUPAF_WRITEONLY|IUPAF_NO_INHERIT);
@@ -3274,7 +3294,7 @@ void iupdrvTreeInitClass(Iclass* ic)
 
   /* necessary because transparent background does not work when not using visual styles */
   if (!iupwin_comctl32ver6)  /* Used by iupdrvImageCreateImage */
-    iupClassRegisterAttribute(ic, "FLAT_ALPHA", NULL, NULL, IUPAF_SAMEASSYSTEM, "YES", IUPAF_NOT_MAPPED|IUPAF_NO_INHERIT);
+    iupClassRegisterAttribute(ic, "FLAT_ALPHA", NULL, NULL, IUPAF_SAMEASSYSTEM, "YES", IUPAF_NO_INHERIT);
 
   iupClassRegisterAttribute(ic, "CONTROLID", NULL, NULL, NULL, NULL, IUPAF_NO_INHERIT);
 }

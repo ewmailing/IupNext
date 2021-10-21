@@ -363,6 +363,10 @@ Iclass* iupSpinboxNewClass(void)
   ic->SetChildrenPosition = iSpinboxSetChildrenPositionMethod;
   ic->Map = iupBaseTypeVoidMapMethod;
 
+  /* Base Callbacks */
+  iupBaseRegisterBaseCallbacks(ic);
+
+  /* Callbacks */
   iupClassRegisterCallback(ic, "SPIN_CB", "i");
 
   /* Common */

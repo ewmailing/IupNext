@@ -79,8 +79,7 @@ static void iMenuAdjustPos(int *x, int *y)
   int screen_width = 0, screen_height = 0;
 
   if (*x == IUP_CENTER || *y == IUP_CENTER ||
-      *x == IUP_RIGHT  || *y == IUP_RIGHT ||
-      *x == IUP_CENTERPARENT || *y == IUP_CENTERPARENT)
+      *x == IUP_RIGHT  || *y == IUP_RIGHT)
     iupdrvGetScreenSize(&screen_width, &screen_height);
 
   if (*x == IUP_MOUSEPOS || *y == IUP_MOUSEPOS)
@@ -228,6 +227,7 @@ Iclass* iupItemNewClass(void)
 
   ic->name = "item";
   ic->format = "sa";  /* one string and one ACTION callback name */
+  ic->format_attr = "TITLE";
   ic->nativetype = IUP_TYPEMENU;
   ic->childtype = IUP_CHILDNONE;
   ic->is_interactive = 1;
@@ -240,17 +240,19 @@ Iclass* iupItemNewClass(void)
   iupClassRegisterCallback(ic, "HIGHLIGHT_CB", "");
   iupClassRegisterCallback(ic, "ACTION", "");
 
+  /* Base Callbacks */
+  iupBaseRegisterBaseCallbacks(ic);
+
   /* Common Callbacks */
-  iupClassRegisterCallback(ic, "MAP_CB", "");
-  iupClassRegisterCallback(ic, "UNMAP_CB", "");
   iupClassRegisterCallback(ic, "HELP_CB", "");
 
   /* Common */
   iupClassRegisterAttribute(ic, "WID", iupBaseGetWidAttrib, NULL, NULL, NULL, IUPAF_READONLY|IUPAF_NO_INHERIT|IUPAF_NO_STRING);
   iupClassRegisterAttribute(ic, "NAME", NULL, iupBaseSetNameAttrib, NULL, NULL, IUPAF_NOT_MAPPED|IUPAF_NO_INHERIT);
+  iupClassRegisterAttribute(ic, "HANDLENAME", NULL, NULL, NULL, NULL, IUPAF_NO_SAVE | IUPAF_NO_INHERIT);
 
-  iupClassRegisterAttribute(ic, "AUTOTOGGLE", NULL, NULL, NULL, NULL, IUPAF_NOT_MAPPED|IUPAF_NO_INHERIT);
-  iupClassRegisterAttribute(ic, "KEY", NULL, NULL, NULL, NULL, IUPAF_NOT_MAPPED|IUPAF_NO_INHERIT);
+  iupClassRegisterAttribute(ic, "AUTOTOGGLE", NULL, NULL, NULL, NULL, IUPAF_NO_INHERIT);
+  iupClassRegisterAttribute(ic, "KEY", NULL, NULL, NULL, NULL, IUPAF_NO_INHERIT);
 
   iupdrvItemInitClass(ic);
 
@@ -263,6 +265,7 @@ Iclass* iupSubmenuNewClass(void)
 
   ic->name = "submenu";
   ic->format = "sh"; /* one string and one Ihandle */
+  ic->format_attr = "TITLE";
   ic->nativetype = IUP_TYPEMENU;
   ic->childtype = IUP_CHILDMANY+1;  /* 1 child */
   ic->is_interactive = 1;
@@ -271,18 +274,18 @@ Iclass* iupSubmenuNewClass(void)
   ic->New = iupSubmenuNewClass;
   ic->Create = iSubmenuCreateMethod;
 
+  /* Base Callbacks */
+  iupBaseRegisterBaseCallbacks(ic);
+
   /* Callbacks */
   iupClassRegisterCallback(ic, "HIGHLIGHT_CB", "");
-
-  /* Common Callbacks */
-  iupClassRegisterCallback(ic, "MAP_CB", "");
-  iupClassRegisterCallback(ic, "UNMAP_CB", "");
 
   /* Common */
   iupClassRegisterAttribute(ic, "WID", iupBaseGetWidAttrib, NULL, NULL, NULL, IUPAF_READONLY|IUPAF_NO_INHERIT|IUPAF_NO_STRING);
   iupClassRegisterAttribute(ic, "NAME", NULL, iupBaseSetNameAttrib, NULL, NULL, IUPAF_NOT_MAPPED|IUPAF_NO_INHERIT);
+  iupClassRegisterAttribute(ic, "HANDLENAME", NULL, NULL, NULL, NULL, IUPAF_NO_SAVE | IUPAF_NO_INHERIT);
 
-  iupClassRegisterAttribute(ic, "KEY", NULL, NULL, NULL, NULL, IUPAF_NOT_MAPPED|IUPAF_NO_INHERIT);
+  iupClassRegisterAttribute(ic, "KEY", NULL, NULL, NULL, NULL, IUPAF_NO_INHERIT);
 
   iupdrvSubmenuInitClass(ic);
 
@@ -303,19 +306,18 @@ Iclass* iupMenuNewClass(void)
   ic->New = iupMenuNewClass;
   ic->Create = iMenuCreateMethod;
 
+  /* Base Callbacks */
+  iupBaseRegisterBaseCallbacks(ic);
+
   /* Callbacks */
   iupClassRegisterCallback(ic, "OPEN_CB", "");
   iupClassRegisterCallback(ic, "MENUCLOSE_CB", "");
-
-  /* Common Callbacks */
-  iupClassRegisterCallback(ic, "MAP_CB", "");
-  iupClassRegisterCallback(ic, "UNMAP_CB", "");
 
   /* Common */
   iupClassRegisterAttribute(ic, "WID", iupBaseGetWidAttrib, NULL, NULL, NULL, IUPAF_READONLY|IUPAF_NO_INHERIT|IUPAF_NO_STRING);
   iupClassRegisterAttribute(ic, "NAME", NULL, iupBaseSetNameAttrib, NULL, NULL, IUPAF_NOT_MAPPED|IUPAF_NO_INHERIT);
 
-  iupClassRegisterAttribute(ic, "RADIO", NULL, NULL, NULL, NULL, IUPAF_NOT_MAPPED|IUPAF_NO_INHERIT);
+  iupClassRegisterAttribute(ic, "RADIO", NULL, NULL, NULL, NULL, IUPAF_NO_INHERIT);
 
   iupdrvMenuInitClass(ic);
 

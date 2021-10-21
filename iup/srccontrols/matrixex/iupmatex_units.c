@@ -28,7 +28,8 @@
 /* Source for conversion names, symbols and factors:
    http://en.wikipedia.org/wiki/Conversion_of_units
 
-   This file is in UTF-8 encoding with BOM, so he comments look right.
+   This file is in UTF-8 encoding with BOM, so the comments are correctly displayed. 
+   Units are written in hex to avoid conversion problems.
 */
 
 
@@ -861,7 +862,7 @@ void iupMatrixExRegisterUnits(Iclass* ic)
 
   iupClassRegisterAttribute(ic, "NUMERICUNITSEARCH", NULL, iMatrixExSetNumericUnitSearchAttrib, NULL, NULL, IUPAF_NOT_MAPPED|IUPAF_WRITEONLY|IUPAF_NO_INHERIT);
   iupClassRegisterAttribute(ic, "NUMERICUNITSYMBOLSEARCH", NULL, iMatrixExSetNumericUnitSymbolSearchAttrib, NULL, NULL, IUPAF_NOT_MAPPED|IUPAF_WRITEONLY|IUPAF_NO_INHERIT);
-  iupClassRegisterAttribute(ic, "NUMERICFOUNDQUANTITY", NULL, NULL, NULL, NULL, IUPAF_NOT_MAPPED|IUPAF_READONLY|IUPAF_NO_INHERIT);
-  iupClassRegisterAttribute(ic, "NUMERICFOUNDUNIT", NULL, NULL, NULL, NULL, IUPAF_NOT_MAPPED|IUPAF_READONLY|IUPAF_NO_INHERIT);
-  iupClassRegisterAttribute(ic, "NUMERICFOUNDUNITSYMBOL", NULL, NULL, NULL, NULL, IUPAF_NOT_MAPPED|IUPAF_READONLY|IUPAF_NO_INHERIT);
+  iupClassRegisterAttribute(ic, "NUMERICFOUNDQUANTITY", NULL, NULL, NULL, NULL, IUPAF_READONLY|IUPAF_NO_INHERIT);
+  iupClassRegisterAttribute(ic, "NUMERICFOUNDUNIT", NULL, NULL, NULL, NULL, IUPAF_READONLY|IUPAF_NO_INHERIT);
+  iupClassRegisterAttribute(ic, "NUMERICFOUNDUNITSYMBOL", NULL, NULL, NULL, NULL, IUPAF_READONLY|IUPAF_NO_INHERIT);
 }

@@ -146,6 +146,7 @@ IUP_API void IupVersionShow(void)
   if (value) IupSetStrf(info, "APPEND", "   GTK Version: %s", value);
 
   IupSetStrf(info, "APPEND", "   Screen Size: %s", IupGetGlobal("SCREENSIZE"));
+  IupSetStrf(info, "APPEND", "   Screen DPI: %d", IupGetInt(NULL, "SCREENDPI"));
   IupSetStrf(info, "APPEND", "   Default Font: %s", IupGetGlobal("DEFAULTFONT"));
 
   IupSetAttribute(info, "APPEND", "");
@@ -184,7 +185,10 @@ IUP_API void IupVersionShow(void)
     IupSetAttribute(info, "APPEND", "   IupGLControlsOpen");
 
   if (IupGetGlobal("_IUP_SCINTILLA_OPEN"))
+  {
     IupSetAttribute(info, "APPEND", "   IupScintillaOpen");
+    IupSetStrf(info, "APPEND", "      Scintilla %s", IupGetGlobal("SCINTILLA_VERSION"));
+  }
 
   if (IupGetGlobal("_IUP_WEBBROWSER_OPEN"))
     IupSetAttribute(info, "APPEND", "   IupWebBrowserOpen");

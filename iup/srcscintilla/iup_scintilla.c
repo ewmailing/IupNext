@@ -478,6 +478,8 @@ static Iclass* iupScintillaNewClass(void)
 
   iupClassRegisterAttribute(ic, "USEPOPUP", NULL, iScintillaSetUsePopupAttrib, IUPAF_SAMEASSYSTEM, "YES", IUPAF_WRITEONLY|IUPAF_NO_INHERIT);
 
+  IupSetGlobal("SCINTILLA_VERSION", SCINTILLA_VERSION);
+
   return ic;
 }
 

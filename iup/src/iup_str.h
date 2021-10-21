@@ -319,16 +319,31 @@ IUP_SDK_API char* iupStrFileGetPath(const char *filename);
  * \ingroup str */
 IUP_SDK_API char* iupStrFileMakeFileName(const char* path, const char* title);
 
+/** Creates an URL for the filename by adding "file://" at start
+ * and replacing any '\' by '/'.
+ * Must free the returned string.
+ * \ingroup str */
+IUP_SDK_API char* iupStrFileMakeURL(const char* filename);
+
 /** Split the filename in path and title using pre-allocated strings.
  * \ingroup str */
 IUP_SDK_API void iupStrFileNameSplit(const char* filename, char* path, char* title);
 
+/** Returns a filename for a temporary file.
+ * A file with the result name is created and must be removed after use.
+ * \ingroup str */
+IUP_SDK_API int iupStrTmpFileName(char* filename, const char* prefix);
 
 
 /** Replace a character in a string.
  * Returns the number of occurrences.
  * \ingroup str */
 IUP_SDK_API int iupStrReplace(char* str, char src, char dst);
+
+/** Replace reserved characters in a string.
+ * \ingroup str */
+IUP_SDK_API void iupStrReplaceReserved(char* str, char c);
+
 
 /** Convert line ends to UNIX format in-place (one \n per line).
  * \ingroup str */

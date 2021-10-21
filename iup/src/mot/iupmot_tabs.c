@@ -297,7 +297,6 @@ static int motTabsSetTabTitleAttrib(Ihandle* ih, int pos, const char* value)
 
   if (value)
   {
-    Ihandle* child = IupGetChild(ih, pos);
     Widget tab_button = (Widget)iupAttribGet(child, "_IUPMOT_TABBUTTON");
     if (tab_button)
       iupmotSetMnemonicTitle(ih, tab_button, pos, value);
@@ -701,5 +700,5 @@ void iupdrvTabsInitClass(Iclass* ic)
   iupClassRegisterAttribute(ic, "TABPADDING", iupTabsGetTabPaddingAttrib, motTabsSetTabPaddingAttrib, IUPAF_SAMEASSYSTEM, "0x0", IUPAF_NOT_MAPPED|IUPAF_NO_INHERIT);
 
   /* NOT supported */
-  iupClassRegisterAttribute(ic, "MULTILINE", NULL, NULL, NULL, NULL, IUPAF_NOT_SUPPORTED|IUPAF_DEFAULT);
+  iupClassRegisterAttribute(ic, "MULTILINE", NULL, NULL, NULL, NULL, IUPAF_NOT_SUPPORTED);
 }

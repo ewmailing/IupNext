@@ -233,7 +233,7 @@ static int iPlayAction(FILE* file, int mode)
   char action[4];
   char eol;
   int time;
-  static int pressed = 0;
+  static int last_pressed = 0;
 
   iPlayReadStr(file, action, 3, mode);
   iPlayReadInt(file, &time, mode);
@@ -263,9 +263,9 @@ static int iPlayAction(FILE* file, int mode)
       /* Process all messages between button press and release without interruption.
          This will not work if two butons are pressed together. */
 /*      if (status == 1 || status == 2)
-        pressed = 1;
+        last_pressed = 1;
       else if (status == 0)
-        pressed = 0; */
+        last_pressed = 0; */
       break;
     }
   case 'M':
@@ -318,7 +318,7 @@ static int iPlayAction(FILE* file, int mode)
   }
 
   irec_lastclock = iRecClock();
-  return pressed;
+  return last_pressed;
 }
 
 static int iPlayTimer_CB(Ihandle* timer)

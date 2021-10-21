@@ -290,6 +290,9 @@ static char* motToggleGetValueAttrib(Ihandle* ih)
 
 static int motToggleSetPaddingAttrib(Ihandle* ih, const char* value)
 {
+  if (iupStrEqual(value, "DEFAULTBUTTONPADDING"))
+    value = IupGetGlobal("DEFAULTBUTTONPADDING");
+
   iupStrToIntInt(value, &ih->data->horiz_padding, &ih->data->vert_padding, 'x');
   if (ih->handle && ih->data->type == IUP_TOGGLE_IMAGE)
   {
@@ -548,7 +551,7 @@ void iupdrvToggleInitClass(Iclass* ic)
   /* Driver Dependent Attribute functions */
 
   /* Overwrite Visual */
-  iupClassRegisterAttribute(ic, "BGCOLOR", iupmotGetBgColorAttrib, motToggleSetBgColorAttrib, IUPAF_SAMEASSYSTEM, "DLGBGCOLOR", IUPAF_NO_SAVE|IUPAF_DEFAULT);
+  iupClassRegisterAttribute(ic, "BGCOLOR", iupmotGetBgColorAttrib, motToggleSetBgColorAttrib, IUPAF_SAMEASSYSTEM, "DLGBGCOLOR", IUPAF_NO_SAVE);
   iupClassRegisterAttribute(ic, "BACKGROUND", NULL, motToggleSetBackgroundAttrib, IUPAF_SAMEASSYSTEM, "DLGBGCOLOR", IUPAF_DEFAULT);
 
   /* Special */
@@ -566,6 +569,6 @@ void iupdrvToggleInitClass(Iclass* ic)
   iupClassRegisterAttribute(ic, "PADDING", iupToggleGetPaddingAttrib, motToggleSetPaddingAttrib, IUPAF_SAMEASSYSTEM, "0x0", IUPAF_NOT_MAPPED);
 
   /* NOT supported */
-  iupClassRegisterAttribute(ic, "RIGHTBUTTON", NULL, NULL, NULL, NULL, IUPAF_NOT_SUPPORTED|IUPAF_DEFAULT);
-  iupClassRegisterAttribute(ic, "MARKUP", NULL, NULL, NULL, NULL, IUPAF_NOT_SUPPORTED|IUPAF_DEFAULT);
+  iupClassRegisterAttribute(ic, "RIGHTBUTTON", NULL, NULL, NULL, NULL, IUPAF_NOT_SUPPORTED);
+  iupClassRegisterAttribute(ic, "MARKUP", NULL, NULL, NULL, NULL, IUPAF_NOT_SUPPORTED);
 }

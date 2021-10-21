@@ -34,9 +34,14 @@ endif
 
 INCLUDES = ../include .
 
-# Windows XP minimum
-WIN32VER = 0x0501
-#For the future use 0x0601  (Windows 7 minimum)
+# Windows 7 minimum
+WIN32VER = 0x0601
+# OLD Windows XP Minimum
+# WIN32VER = 0x0501
+
+ifeq ($(findstring Win, $(TEC_SYSNAME)), )
+  DEPENDDIR = dep
+endif
 
 # Draw driver with alpha and anti-aliasing in Windows and Linux enabled
 USE_NEW_DRAW := Yes
@@ -57,7 +62,8 @@ SRC = iup_array.c iup_callback.c iup_dlglist.c iup_attrib.c iup_focus.c iup_font
       iup_flatscrollbar.c iup_flatscrollbox.c iup_gauge.c iup_dial.c iup_colorbar.c \
       iup_colorbrowser.c iup_colorhsi.c iup_flatlabel.c iup_dropbutton.c iup_flattoggle.c \
       iup_flatseparator.c iup_space.c iup_multibox.c iup_flatlist.c iup_globalsdlg.c \
-      iup_flatval.c iup_loop.c iup_thread.c iup_classinfo.c iup_elempropdlg.c
+      iup_flatval.c iup_loop.c iup_thread.c iup_classinfo.c iup_elempropdlg.c \
+      iup_export.c iup_flattree.c
 
 ifdef USE_HAIKU
   # Since Haiku has no GTK and no Motif, we can only use the native implementation
@@ -184,7 +190,7 @@ else
   SRC += win/iupwindows_main.c win/iupwindows_help.c win/iupwindows_info.c
 
   INCLUDES += win
-  DEFINES += _WIN32_WINNT=$(WIN32VER) _WIN32_IE=0x600 WINVER=$(WIN32VER) NOTREEVIEW
+  DEFINES += _WIN32_WINNT=$(WIN32VER) _WIN32_IE=0x0900 WINVER=$(WIN32VER) NOTREEVIEW
   DEFINES += UNICODE
 endif
 endif

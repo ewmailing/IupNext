@@ -130,9 +130,8 @@ inicio = button[IMAGE=img_inicio, PADDING=5x3]("Reset", acao_inicio )
 pausa = button[IMAGE=img_play, PADDING=5x3]("Play/Pause",acao_pausa )
 acelera = button[TIP="Increment Speed", IMAGE=img_forward, PADDING=5x3]( "Inc Speed", acao_acelera )
 freia = button[TIP="Decrement Speed", IMAGE=img_rewind, PADDING=5x3]( "Dec Speed", acao_freia )
-exibe = 
-
 gauge_name=GAUGE[VALUE="0.34", EXPAND=horizontal]()
+
 comando=HBOX
 (
   pausa,

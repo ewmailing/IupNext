@@ -108,6 +108,7 @@
     <ClCompile Include="..\src\iup_dropbutton.c" />
     <ClCompile Include="..\src\iup_elempropdlg.c" />
     <ClCompile Include="..\src\iup_expander.c" />
+    <ClCompile Include="..\src\iup_export.c" />
     <ClCompile Include="..\src\iup_flatbutton.c" />
     <ClCompile Include="..\src\iup_flatframe.c">
       <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">false</ExcludedFromBuild>
@@ -123,6 +124,7 @@
     <ClCompile Include="..\src\iup_flatseparator.c" />
     <ClCompile Include="..\src\iup_flattabs.c" />
     <ClCompile Include="..\src\iup_flattoggle.c" />
+    <ClCompile Include="..\src\iup_flattree.c" />
     <ClCompile Include="..\src\iup_flatval.c" />
     <ClCompile Include="..\src\iup_focus.c" />
     <ClCompile Include="..\src\iup_font.c" />
@@ -214,6 +216,7 @@
     <ClInclude Include="..\src\iup_drvfont.h" />
     <ClInclude Include="..\src\iup_drvinfo.h" />
     <ClInclude Include="..\src\iup_flatscrollbar.h" />
+    <ClInclude Include="..\src\iup_flattree.h" />
     <ClInclude Include="..\src\iup_focus.h" />
     <ClInclude Include="..\src\iup_func.h" />
     <ClInclude Include="..\src\iup_globalattrib.h" />
@@ -254,6 +257,9 @@
     <ClInclude Include="..\src\iup_toggle.h" />
     <ClInclude Include="..\src\iup_tree.h" />
     <ClInclude Include="..\src\iup_val.h" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="cpp.hint" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">

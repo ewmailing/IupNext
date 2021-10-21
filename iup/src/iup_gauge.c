@@ -125,6 +125,7 @@ static int iGaugeRedraw_CB(Ihandle* ih)
 
   IupDrawParentBackground(ih);
 
+  /* draw border */
   if (ih->data->flat)
   {
     iupAttribSet(ih, "DRAWSTYLE", "STROKE");
@@ -161,27 +162,27 @@ static int iGaugeRedraw_CB(Ihandle* ih)
 
   if (ih->data->dashed)
   {
-    int start = (ih->data->orientation == IGAUGE_HORIZONTAL) ? xstart : ystart;
-    int end = (ih->data->orientation == IGAUGE_HORIZONTAL) ? xend : yend;
-    double step = (double)(end - start + 1) / (double)IGAUGE_DASHED_BLOCKS;
-    double step_fill = step - IGAUGE_DASHED_GAP;
-    double range = (double)((end - start + 1) * (ih->data->value - ih->data->vmin) / (ih->data->vmax - ih->data->vmin));
-    int range_percent = (int)(100 * range);
-    double i = 0;
-
-    if (ih->data->value == ih->data->vmin)
-      return IUP_DEFAULT;
-
-    while (iupRound(100 * (i + step_fill)) <= range_percent)
+    if (ih->data->value != ih->data->vmin)
     {
-      iupAttribSet(ih, "DRAWSTYLE", "FILL");
-      if (ih->data->orientation == IGAUGE_HORIZONTAL)
-        IupDrawRectangle(ih, start + iupRound(i), ih->currentheight - ystart,
-                             start + iupRound(i + step_fill) - 1, ih->currentheight - yend);
-      else
-        IupDrawRectangle(ih, xstart, ih->currentheight - (start + iupRound(i)),
-                             xend, ih->currentheight - (start + iupRound(i + step_fill) - 1));
-      i += step;
+      int start = (ih->data->orientation == IGAUGE_HORIZONTAL) ? xstart : ystart;
+      int end = (ih->data->orientation == IGAUGE_HORIZONTAL) ? xend : yend;
+      double step = (double)(end - start + 1) / (double)IGAUGE_DASHED_BLOCKS;
+      double step_fill = step - IGAUGE_DASHED_GAP;
+      double range = (double)((end - start + 1) * (ih->data->value - ih->data->vmin) / (ih->data->vmax - ih->data->vmin));
+      int range_percent = (int)(100 * range);
+      double i = 0;
+
+      while (iupRound(100 * (i + step_fill)) <= range_percent)
+      {
+        iupAttribSet(ih, "DRAWSTYLE", "FILL");
+        if (ih->data->orientation == IGAUGE_HORIZONTAL)
+          IupDrawRectangle(ih, start + iupRound(i), ih->currentheight - ystart,
+                               start + iupRound(i + step_fill) - 1, ih->currentheight - yend);
+        else
+          IupDrawRectangle(ih, xstart, ih->currentheight - (start + iupRound(i)),
+                               xend, ih->currentheight - (start + iupRound(i + step_fill) - 1));
+        i += step;
+      }
     }
   }
   else
@@ -465,6 +466,7 @@ Iclass* iupGaugeNewClass(void)
   iupClassRegisterAttribute(ic, "VALUE", iGaugeGetValueAttrib, iGaugeSetValueAttrib, NULL, NULL, IUPAF_NOT_MAPPED | IUPAF_NO_INHERIT);
   iupClassRegisterAttribute(ic, "DASHED", iGaugeGetDashedAttrib, iGaugeSetDashedAttrib, NULL, NULL, IUPAF_NOT_MAPPED);
   iupClassRegisterAttribute(ic, "PADDING", iGaugeGetPaddingAttrib, iGaugeSetPaddingAttrib, IUPAF_SAMEASSYSTEM, "0x0", IUPAF_NOT_MAPPED);
+  iupClassRegisterAttribute(ic, "CPADDING", iupBaseGetCPaddingAttrib, iupBaseSetCPaddingAttrib, NULL, NULL, IUPAF_NO_SAVE | IUPAF_NOT_MAPPED);
   iupClassRegisterAttribute(ic, "TEXT", NULL, iGaugeSetTextAttrib, NULL, NULL, IUPAF_NOT_MAPPED | IUPAF_NO_INHERIT);
   /*OLD*/iupClassRegisterAttribute(ic, "SHOW_TEXT", iGaugeGetShowTextAttrib, iGaugeSetShowTextAttrib, IUPAF_SAMEASSYSTEM, "YES", IUPAF_NOT_MAPPED);
   iupClassRegisterAttribute(ic, "SHOWTEXT", iGaugeGetShowTextAttrib, iGaugeSetShowTextAttrib, IUPAF_SAMEASSYSTEM, "YES", IUPAF_NOT_MAPPED);

@@ -99,7 +99,20 @@ IUP_API void IupCopyAttributes(Ihandle* src_ih, Ihandle* dst_ih)
   }
 }
 
-#define iupATTRIB_ISSAVED(_name) (_name[0] == '_' && _name[1] == 'I' &&  _name[2] == 'U' && _name[3] == 'P' && _name[4] == 'S' && _name[5] == 'A' && _name[6] == 'V' && _name[7] == 'E' && _name[8] == 'D' && _name[9] == '_')  /* "_IUPSAVED_" */
+#define iupATTRIB_ISSAVED(_name) (_name[0]  == '_' && \
+                                  _name[1]  == 'I' && \
+                                  _name[2]  == 'U' && \
+                                  _name[3]  == 'P' && \
+                                  _name[4]  == 'L' && \
+                                  _name[5]  == 'E' && \
+                                  _name[6]  == 'D' && \
+                                  _name[7]  == '_' && \
+                                  _name[8]  == 'S' && \
+                                  _name[9]  == 'A' && \
+                                  _name[10] == 'V' && \
+                                  _name[11] == 'E' && \
+                                  _name[12] == 'D' && \
+                                  _name[13] == '_')  /* "_IUPLED_SAVED_" */
 
 IUP_SDK_API int iupAttribGetAllSaved(Ihandle* ih, char** names, int n)
 {
@@ -114,7 +127,7 @@ IUP_SDK_API int iupAttribGetAllSaved(Ihandle* ih, char** names, int n)
   {
     if (iupATTRIB_ISSAVED(name))
     {
-      names[i] = name + sizeof("_IUPSAVED_") - 1;
+      names[i] = name + sizeof("_IUPLED_SAVED_") - 1;
       i++;
 
       if (i == n)
@@ -852,6 +865,11 @@ IUP_API void IupGetRGB(Ihandle *ih, const char* name, unsigned char *r, unsigned
   iupStrToRGB(IupGetAttribute(ih, name), r, g, b);
 }
 
+IUP_API void IupGetRGBA(Ihandle *ih, const char* name, unsigned char *r, unsigned char *g, unsigned char *b, unsigned char *a)
+{
+  iupStrToRGBA(IupGetAttribute(ih, name), r, g, b, a);
+}
+
 IUP_API void IupSetStrfV(Ihandle* ih, const char* name, const char* f, va_list arglist)
 {
   int size;
@@ -907,6 +925,13 @@ IUP_API void IupSetRGB(Ihandle *ih, const char* name, unsigned char r, unsigned 
 {
   char value[60];
   sprintf(value, "%d %d %d", (int)r, (int)g, (int)b);
+  IupStoreAttribute(ih, name, value);
+}
+
+IUP_API void IupSetRGBA(Ihandle *ih, const char* name, unsigned char r, unsigned char g, unsigned char b, unsigned char a)
+{
+  char value[60];
+  sprintf(value, "%d %d %d %d", (int)r, (int)g, (int)b, (int)a);
   IupStoreAttribute(ih, name, value);
 }
 
@@ -1094,10 +1119,10 @@ IUP_SDK_API void iupAttribSetStr(Ihandle* ih, const char* name, const char* valu
 
 IUP_SDK_API void iupAttribSetStrf(Ihandle *ih, const char* name, const char* f, ...)
 {
-  char* value = iupStrGetMemory(1024);
+  char* value = iupStrGetMemory(10240);
   va_list arglist;
   va_start(arglist, f);
-  vsnprintf(value, 1024, f, arglist);
+  vsnprintf(value, 10240, f, arglist);
   va_end(arglist);
   iupAttribSetStr(ih, name, value);
 }
@@ -1511,9 +1536,9 @@ IUP_SDK_API void iupAttribParse(Ihandle *ih, const char* str, int save_led_info)
 
         if (save_led_info)
         {
-          char led_name[100] = "_IUPSAVED_";
+          char led_name[200] = "_IUPLED_SAVED_";
           strcat(led_name, name);
-          iupAttribSetStr(ih, led_name, value);
+          iupAttribSet(ih, led_name, "1");
         }
 
         free(name);

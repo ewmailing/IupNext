@@ -16,11 +16,11 @@
 #include "iup_drv.h"
 
 #include "iupwin_info.h"
+#include "iupwin_str.h"
 
 #include <windows.h>
-#include <stdio.h>
+#include <ShlObj.h> /* for SHGetFolderPath */
 
-/* No need to test for UTF8MODE here */
 
 #ifdef _MSC_VER
 /* warning C4996: 'GetVersionExW': was declared deprecated */
@@ -391,16 +391,120 @@ IUP_SDK_API void iupdrvGetKeyState(char* key)
 IUP_SDK_API char *iupdrvGetComputerName(void)
 {
   DWORD size = MAX_COMPUTERNAME_LENGTH + 1;
-  char* str = iupStrGetMemory(size);
-  GetComputerNameA((LPSTR)str, &size);
-  return str;
+  TCHAR wstr[MAX_COMPUTERNAME_LENGTH + 1];
+  GetComputerName(wstr, &size);
+  return iupwinStrFromSystem(wstr);
 }
+
+#define UNLEN 256 /* from <Lmcons.h> */
 
 IUP_SDK_API char *iupdrvGetUserName(void)
 {
-  DWORD size = 256;
-  char* str = iupStrGetMemory(size);
-  GetUserNameA((LPSTR)str, &size);
-  return (char*)str;
+  DWORD size = UNLEN+1;
+  TCHAR wstr[UNLEN+1];
+  GetUserName(wstr, &size);
+  return iupwinStrFromSystem(wstr);
 }
 
+IUP_SDK_API int iupdrvSetCurrentDirectory(const char* path)
+{
+  return SetCurrentDirectory(iupwinStrToSystemFilename(path));
+}
+
+IUP_SDK_API char* iupdrvGetCurrentDirectory(void)
+{
+  TCHAR* wcur_dir = NULL;
+  char* cur_dir;
+
+  int len = GetCurrentDirectory(0, NULL);
+  if (len == 0) return NULL;
+
+  wcur_dir = (TCHAR*)malloc((len + 2)*sizeof(TCHAR));
+  GetCurrentDirectory(len + 1, wcur_dir);
+  wcur_dir[len] = '\\';
+  wcur_dir[len + 1] = 0;
+
+  cur_dir = iupwinStrFromSystemFilename(wcur_dir);
+  free(wcur_dir);
+  return cur_dir;
+}
+
+/*
+Windows 7 and 10
+PreferencePath(0)=C:\Users\Tecgraf\
+PreferencePath(1)=C:\Users\Tecgraf\AppData\Roaming\
+
+Windows XP
+PreferencePath(0)=C:\Documents and Settings\Tecgraf\
+PreferencePath(1)=C:\Documents and Settings\Tecgraf\Application Data\
+*/
+
+IUP_SDK_API int iupdrvGetPreferencePath(char *filename, int use_system)
+{
+  char* homedrive;
+  char* homepath;
+
+  if (use_system)
+  {
+    TCHAR wpath[MAX_PATH];
+    if (SHGetFolderPath(NULL, CSIDL_APPDATA | CSIDL_FLAG_CREATE, NULL, SHGFP_TYPE_CURRENT, wpath) == S_OK)
+    {
+      strcpy(filename, iupwinStrFromSystemFilename(wpath));
+      strcat(filename, "\\");
+      return 1;
+    }
+  }
+
+  homedrive = getenv("HOMEDRIVE");
+  homepath = getenv("HOMEPATH");
+  if (homedrive && homepath)
+  {
+    strcpy(filename, homedrive);
+    strcat(filename, homepath);
+    strcat(filename, "\\");
+    return 1;
+  }
+
+  filename[0] = '\0';
+  return 0;
+
+}
+
+IUP_API void IupLogV(const char* type, const char* format, va_list arglist)
+{
+  HANDLE EventSource;
+  WORD wtype = 0;
+
+  int size;
+  char* value = iupStrGetLargeMem(&size);
+  vsnprintf(value, size, format, arglist);
+
+  if (iupStrEqualNoCase(type, "DEBUG"))
+  {
+    OutputDebugString(iupwinStrToSystem(value));
+    return;
+  }
+  else if (iupStrEqualNoCase(type, "ERROR"))
+    wtype = EVENTLOG_ERROR_TYPE;
+  else if (iupStrEqualNoCase(type, "WARNING"))
+    wtype = EVENTLOG_WARNING_TYPE;
+  else if (iupStrEqualNoCase(type, "INFO"))
+    wtype = EVENTLOG_INFORMATION_TYPE;
+
+  EventSource = RegisterEventSource(NULL, TEXT("Application"));
+  if (EventSource)
+  {
+    TCHAR* wstr[1];
+    wstr[0] = iupwinStrToSystem(value);
+    ReportEvent(EventSource, wtype, 0, 0, NULL, 1, 0, wstr, NULL);
+    DeregisterEventSource(EventSource);
+  }
+}
+
+IUP_API void IupLog(const char* type, const char* format, ...)
+{
+  va_list arglist;
+  va_start(arglist, format);
+  IupLogV(type, format, arglist);
+  va_end(arglist);
+}

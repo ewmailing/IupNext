@@ -170,13 +170,14 @@ iup.DrawFocusRect<span class="auto-style2">(</span><strong>ih</strong>: ihandle<
 iup.DrawGetSize<span class="auto-style2">(</span><strong>ih</strong>: ihandle<span class="auto-style2">) -&gt; <strong>w</strong>, <strong>h</strong>: number</span> [in Lua]
 <strong>ih</strong>:DrawGetSize()<span class="auto-style2"> -&gt; <strong>w</strong>, <strong>h</strong>: number</span> [in Lua]</pre>
 <p>Returns the drawing area size. In C unwanted values can be NULL.</p>
-<pre>void IupDrawGetTextSize(Ihandle* <strong>ih</strong>, const char* <strong>str</strong>, int *<strong>w</strong>, int *<strong>h</strong>); [in C]
+<pre>void IupDrawGetTextSize(Ihandle* <strong>ih</strong>, const char* <strong>str</strong>, int <strong>len</strong>, int *<strong>w</strong>, int *<strong>h</strong>); [in C]
 iup.DrawGetTextSize<span class="auto-style2">(</span><strong>ih</strong>: ihandle<span class="auto-style2">, <strong>str</strong>: string) -&gt; <strong>w</strong>, <strong>h</strong>: number</span> [in Lua]
 <strong>ih</strong>:DrawGetTextSize(<span class="auto-style2"><strong>str</strong>: string</span>)<span class="auto-style2"> -&gt; <strong>w</strong>, <strong>h</strong>: number</span> [in Lua]</pre>
 <p>Returns the given text size using the font defined by DRAWFONT, if not 
 defined then use
 <a href="../attrib/iup_font.html">FONT</a>.&nbsp; In C unwanted values can be 
-NULL.</p>
+NULL, and if len is -1 the string must be 0 terminated and len will be 
+calculated using strlen.</p>
 <pre>void IupDrawGetImageInfo(const char* <strong>name</strong>, int *<strong>w</strong>, int *<strong>h</strong>, int *<strong>bpp</strong>); [in C]
 iup.DrawGetImageInfo<span class="auto-style2">(<strong>name</strong>: string) -&gt; <strong>w</strong>, <strong>h, bpp</strong>: number</span> [in Lua]
 <strong>ih</strong>:DrawGetImageInfo(<strong>name</strong><span class="auto-style2">: string</span>)<span class="auto-style2"> -&gt; <strong>w</strong>, <strong>h, bpp</strong>: number</span> [in Lua]</pre>

@@ -33,6 +33,11 @@ typedef struct _Iwin2iupkey
   int altgr_iupcode;
 } Iwin2iupkey;
 
+static int winMapVirtualKeyToChar(int wincode)
+{
+  return LOWORD(MapVirtualKeyA(wincode, MAPVK_VK_TO_CHAR));
+}
+
 static void winKeyInitXKey(Iwin2iupkey* map)
 {
   map[VK_CANCEL].iupcode =    K_cPAUSE;
@@ -77,11 +82,19 @@ static void winKeyInitXKey(Iwin2iupkey* map)
   map[VK_F10].iupcode = K_F10;
   map[VK_F11].iupcode = K_F11;
   map[VK_F12].iupcode = K_F12;
+  map[VK_F13].iupcode = K_F13;
+  map[VK_F14].iupcode = K_F14;
+  map[VK_F15].iupcode = K_F15;
+  map[VK_F16].iupcode = K_F16;
+  map[VK_F17].iupcode = K_F17;
+  map[VK_F18].iupcode = K_F18;
+  map[VK_F19].iupcode = K_F19;
+  map[VK_F20].iupcode = K_F20;
 
-  map[VK_OEM_PLUS].iupcode =   K_plus;
-  map[VK_OEM_COMMA].iupcode =  K_comma;
-  map[VK_OEM_MINUS].iupcode =  K_minus;
-  map[VK_OEM_PERIOD].iupcode = K_period;
+  map[VK_OEM_PLUS].iupcode = winMapVirtualKeyToChar(VK_OEM_PLUS);  /* Usually is K_plus, but it can be K_Equal when + needs a Shift */
+  map[VK_OEM_COMMA].iupcode = winMapVirtualKeyToChar(VK_OEM_COMMA);  /* Usually is K_comma */
+  map[VK_OEM_MINUS].iupcode = winMapVirtualKeyToChar(VK_OEM_MINUS);  /* Usually is K_minus */
+  map[VK_OEM_PERIOD].iupcode = winMapVirtualKeyToChar(VK_OEM_PERIOD); /* Usually is K_period */
 
   map[VK_NUMPAD0].iupcode =   K_0;
   map[VK_NUMPAD1].iupcode =   K_1;
@@ -98,35 +111,29 @@ static void winKeyInitXKey(Iwin2iupkey* map)
   map[VK_SUBTRACT].iupcode =  K_minus;
   map[VK_DIVIDE].iupcode =    K_slash;
 
-  map[VK_DECIMAL].iupcode =   LOWORD(MapVirtualKeyA(VK_DECIMAL, MAPVK_VK_TO_CHAR));
-  map[VK_SEPARATOR].iupcode = LOWORD(MapVirtualKeyA(VK_SEPARATOR, MAPVK_VK_TO_CHAR));
+  map[VK_DECIMAL].iupcode =   winMapVirtualKeyToChar(VK_DECIMAL);
+  map[VK_SEPARATOR].iupcode = winMapVirtualKeyToChar(VK_SEPARATOR);
 
-  /* TODO: how to get the shift code? */
-  map[VK_OEM_PLUS].iupcode = LOWORD(MapVirtualKeyA(VK_OEM_PLUS, MAPVK_VK_TO_CHAR));
-  map[VK_OEM_COMMA].iupcode = LOWORD(MapVirtualKeyA(VK_OEM_COMMA, MAPVK_VK_TO_CHAR));
-  map[VK_OEM_MINUS].iupcode = LOWORD(MapVirtualKeyA(VK_OEM_MINUS, MAPVK_VK_TO_CHAR));
-  map[VK_OEM_PERIOD].iupcode = LOWORD(MapVirtualKeyA(VK_OEM_PERIOD, MAPVK_VK_TO_CHAR));
-
-  /*
-  if (!map[VK_OEM_1].iupcode) map[VK_OEM_1].iupcode = LOWORD(MapVirtualKeyA(VK_OEM_1, MAPVK_VK_TO_CHAR));
-  if (!map[VK_OEM_2].iupcode) map[VK_OEM_2].iupcode = LOWORD(MapVirtualKeyA(VK_OEM_2, MAPVK_VK_TO_CHAR));
-  if (!map[VK_OEM_3].iupcode) map[VK_OEM_3].iupcode = LOWORD(MapVirtualKeyA(VK_OEM_3, MAPVK_VK_TO_CHAR));
-  if (!map[VK_OEM_4].iupcode) map[VK_OEM_4].iupcode = LOWORD(MapVirtualKeyA(VK_OEM_4, MAPVK_VK_TO_CHAR));
-  if (!map[VK_OEM_5].iupcode) map[VK_OEM_5].iupcode = LOWORD(MapVirtualKeyA(VK_OEM_5, MAPVK_VK_TO_CHAR));
-  if (!map[VK_OEM_6].iupcode) map[VK_OEM_6].iupcode = LOWORD(MapVirtualKeyA(VK_OEM_6, MAPVK_VK_TO_CHAR));
-  if (!map[VK_OEM_7].iupcode) map[VK_OEM_7].iupcode = LOWORD(MapVirtualKeyA(VK_OEM_7, MAPVK_VK_TO_CHAR));
-  if (!map[VK_OEM_8].iupcode) map[VK_OEM_8].iupcode = LOWORD(MapVirtualKeyA(VK_OEM_8, MAPVK_VK_TO_CHAR));
+  /* 
+  if (!map[VK_OEM_1].iupcode) map[VK_OEM_1].iupcode = winMapVirtualKeyToChar(VK_OEM_1);
+  if (!map[VK_OEM_2].iupcode) map[VK_OEM_2].iupcode = winMapVirtualKeyToChar(VK_OEM_2);
+  if (!map[VK_OEM_3].iupcode) map[VK_OEM_3].iupcode = winMapVirtualKeyToChar(VK_OEM_3);
+  if (!map[VK_OEM_4].iupcode) map[VK_OEM_4].iupcode = winMapVirtualKeyToChar(VK_OEM_4);
+  if (!map[VK_OEM_5].iupcode) map[VK_OEM_5].iupcode = winMapVirtualKeyToChar(VK_OEM_5);
+  if (!map[VK_OEM_6].iupcode) map[VK_OEM_6].iupcode = winMapVirtualKeyToChar(VK_OEM_6);
+  if (!map[VK_OEM_7].iupcode) map[VK_OEM_7].iupcode = winMapVirtualKeyToChar(VK_OEM_7);
+  if (!map[VK_OEM_8].iupcode) map[VK_OEM_8].iupcode = winMapVirtualKeyToChar(VK_OEM_8);
   */
 
-  map[VK_OEM_102].iupcode = LOWORD(MapVirtualKeyA(VK_OEM_102, MAPVK_VK_TO_CHAR));
+  map[VK_OEM_102].iupcode = winMapVirtualKeyToChar(VK_OEM_102);  /*  "<>" or "\|" on RT 102-key kbd. */
 
   {
     HKL k = GetKeyboardLayout(0);    
     if ((int)HIWORD(k) == 0x0416)
     {
       /* ABNT extra definitions */
-      map[0xC2].iupcode = LOWORD(MapVirtualKeyA(0xC2, MAPVK_VK_TO_CHAR));
-      map[0xC1].iupcode = LOWORD(MapVirtualKeyA(0xC1, MAPVK_VK_TO_CHAR));
+      map[0xC2].iupcode = winMapVirtualKeyToChar(0xC2);
+      map[0xC1].iupcode = winMapVirtualKeyToChar(0xC1);
       map[0xC1].shift_iupcode = '?';
     }
   }
@@ -170,7 +177,7 @@ void iupwinKeyInit(void)
   {
     if (!(winkey_map[i].iupcode))    
     {  
-      winkey_map[i].iupcode = LOWORD(MapVirtualKeyA(i, MAPVK_VK_TO_CHAR));
+      winkey_map[i].iupcode = winMapVirtualKeyToChar(i);
 
       /* TODO: how to get the shift code? 
       if (winkey_map[i].iupcode && !(winkey_map[i].shift_iupcode))
@@ -245,17 +252,17 @@ static int winKeyMap2Iup(int wincode)
        and except when other modifiers are used */
     if ((wincode < K_exclam || wincode > K_tilde) ||
         (has_ctrl || has_alt || has_sys))
-      code |= iup_XkeyShift(code);  
+      code = iup_XkeyShift(code);  
   }
 
   if (has_ctrl)   /* Ctrl */
-    code |= iup_XkeyCtrl(code);
+    code = iup_XkeyCtrl(code);
 
   if (has_alt)    /* Alt */
-    code |= iup_XkeyAlt(code);
+    code = iup_XkeyAlt(code);
 
   if (has_sys)    /* Apple/Win */
-    code |= iup_XkeySys(code);
+    code = iup_XkeySys(code);
 
   return code;
 }

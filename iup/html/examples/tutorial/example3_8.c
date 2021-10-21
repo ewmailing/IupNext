@@ -359,7 +359,7 @@ int find_close_action_cb(Ihandle* bt_close)
 
 int item_find_action_cb(Ihandle* item_find)
 {
-  Ihandle* dlg = (Ihandle*)IupGetAttribute(item_find, "FIND_DIALOG");
+  Ihandle* dlg = (Ihandle*)IupGetAttribute(IupGetDialog(item_find), "FIND_DIALOG");
   if (!dlg)
   {
     Ihandle* multitext = IupGetDialogChild(item_find, "MULTITEXT");
@@ -401,7 +401,7 @@ int item_find_action_cb(Ihandle* item_find)
     IupSetAttribute(dlg, "MULTITEXT", (char*)multitext);
 
     /* Save the dialog to reuse it */
-    IupSetAttribute(item_find, "FIND_DIALOG", (char*)dlg);
+    IupSetAttribute(IupGetDialog(item_find), "FIND_DIALOG", (char*)dlg);
   }
 
   /* centerparent first time, next time reuse the last position */
@@ -630,7 +630,7 @@ int main(int argc, char **argv)
   IupSetAttributeHandle(dlg, "MENU", menu);
   IupSetAttribute(dlg, "TITLE", "Simple Notepad");
   IupSetAttribute(dlg, "SIZE", "HALFxHALF");
-  IupSetCallback(dlg, "CLOSECB", (Icallback)item_exit_action_cb);
+  IupSetCallback(dlg, "CLOSE_CB", (Icallback)item_exit_action_cb);
   IupSetCallback(edit_menu, "OPEN_CB", (Icallback)edit_menu_open_cb);
 
   IupSetAttribute(dlg, "CONFIG", (char*)config);

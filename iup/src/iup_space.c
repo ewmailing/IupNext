@@ -39,6 +39,9 @@ Iclass* iupSpaceNewClass(void)
   ic->New = iupSpaceNewClass;
   ic->Map = iupBaseTypeVoidMapMethod;
 
+  /* Base Callbacks */
+  iupBaseRegisterBaseCallbacks(ic);
+
   /* Common */
   iupBaseRegisterCommonAttrib(ic);
 

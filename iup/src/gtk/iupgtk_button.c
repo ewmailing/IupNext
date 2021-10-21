@@ -157,6 +157,9 @@ static int gtkButtonSetAlignmentAttrib(Ihandle* ih, const char* value)
 
 static int gtkButtonSetPaddingAttrib(Ihandle* ih, const char* value)
 {
+  if (iupStrEqual(value, "DEFAULTBUTTONPADDING"))
+    value = IupGetGlobal("DEFAULTBUTTONPADDING");
+
   iupStrToIntInt(value, &ih->data->horiz_padding, &ih->data->vert_padding, 'x');
   if (ih->handle)
   {
@@ -523,6 +526,12 @@ static int gtkButtonMapMethod(Ihandle* ih)
 
   g_signal_connect(G_OBJECT(ih->handle), "button-press-event", G_CALLBACK(gtkButtonEvent), ih);
   g_signal_connect(G_OBJECT(ih->handle), "button-release-event",G_CALLBACK(gtkButtonEvent), ih);
+
+  if (!has_border)
+  {
+    GtkWidget* img = gtk_bin_get_child((GtkBin*)ih->handle);
+    gtk_widget_realize(img);
+  }
 
   gtk_widget_realize(ih->handle);
 

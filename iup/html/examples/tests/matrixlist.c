@@ -17,7 +17,7 @@ static int listclick_cb(Ihandle *self, int lin, int col, char *status)
 {
   char* value = IupGetAttributeId(self, "", lin);
   if (!value) value = "NULL";
-  printf("listclick_cb(%d, %d)\n", lin, col);
+  printf("listclick_cb(%d, %d, %s)\n", lin, col, status);
   printf("  VALUE%d:%d = %s\n", lin, col, value);
   return IUP_DEFAULT;
 }
@@ -25,6 +25,14 @@ static int listclick_cb(Ihandle *self, int lin, int col, char *status)
 static int listaction_cb(Ihandle *self, int item, int state)
 {
   printf("listaction_cb(item=%d, state=%d)\n", item, state);
+  return IUP_DEFAULT;
+}
+
+static int listedition_cb(Ihandle *ih, int lin, int col, int mode, int update)
+{
+  if (col == 1)
+    return IUP_IGNORE;
+
   return IUP_DEFAULT;
 }
 
@@ -40,13 +48,15 @@ void MatrixListTest(void)
 //  IupSetAttribute(mlist, "COLUMNORDER", "LABEL");
 //  IupSetAttribute(mlist, "ACTIVE", "NO");
 //  IupSetAttribute(mlist, "FOCUSCOLOR", "BGCOLOR");
-  IupSetAttribute(mlist, "SHOWDELETE", "Yes");
+//  IupSetAttribute(mlist, "SHOWDELETE", "Yes");
 //  IupSetAttribute(mlist, "EXPAND", "Yes");
+//  IupSetAttribute(mlist, "READONLY", "Yes");
 
-  IupSetAttribute(mlist, "EDITABLE", "Yes");
+//  IupSetAttribute(mlist, "EDITABLE", "Yes");
   IupSetCallback(mlist,"LISTCLICK_CB",(Icallback)listclick_cb);
   IupSetCallback(mlist,"LISTACTION_CB",(Icallback)listaction_cb);
   IupSetCallback(mlist, "IMAGEVALUECHANGED_CB", (Icallback)imagevaluechanged_cb);
+//  IupSetCallback(mlist, "LISTEDITION_CB", (Icallback)listedition_cb);
   
   /* Bluish style */
   if (1)

@@ -587,8 +587,6 @@ static int gtkListSetSelectionAttrib(Ihandle* ih, const char* value)
   GtkEntry* entry;
   if (!ih->data->has_editbox)
     return 0;
-  if (!value)
-    return 0;
 
   entry = (GtkEntry*)iupAttribGet(ih, "_IUPGTK_ENTRY");
   if (!value || iupStrEqualNoCase(value, "NONE"))
@@ -640,8 +638,6 @@ static int gtkListSetSelectionPosAttrib(Ihandle* ih, const char* value)
   int start=0, end=0;
   GtkEntry* entry;
   if (!ih->data->has_editbox)
-    return 0;
-  if (!value)
     return 0;
 
   entry = (GtkEntry*)iupAttribGet(ih, "_IUPGTK_ENTRY");
@@ -1356,7 +1352,6 @@ static void gtkListSelectionChanged(GtkTreeSelection* selection, Ihandle* ih)
     IFnsii cb = (IFnsii)IupGetCallback(ih, "ACTION");
     if (cb)
     {
-      GtkTreeSelection* selection = gtk_tree_view_get_selection(GTK_TREE_VIEW(ih->handle));
       GtkTreeIter iter;
       GtkTreeModel* tree_model;
       if (gtk_tree_selection_get_selected(selection, &tree_model, &iter))

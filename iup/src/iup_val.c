@@ -152,6 +152,7 @@ Iclass* iupValNewClass(void)
 
   ic->name = "val";
   ic->format = "s"; /* one string */
+  ic->format_attr = "ORIENTATION";
   ic->nativetype = IUP_TYPECONTROL;
   ic->childtype = IUP_CHILDNONE;
   ic->is_interactive = 1;

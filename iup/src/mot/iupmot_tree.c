@@ -141,6 +141,7 @@ static void motTreeChildRebuildCacheRec(Ihandle* ih, Widget wItem, int *id)
 
 static void motTreeRebuildNodeCache(Ihandle* ih, int id, Widget wItem)
 {
+  /* preserve cache user_data */
   ih->data->node_cache[id].node_handle = wItem;
   motTreeChildRebuildCacheRec(ih, wItem, &id);
 }
@@ -1630,11 +1631,7 @@ static int motTreeSpacingFunc(Ihandle* ih, Widget wItem, int id, void *data)
 
 static int motTreeSetSpacingAttrib(Ihandle* ih, const char* value)
 {
-  if (!iupStrToInt(value, &ih->data->spacing))
-    ih->data->spacing = 1;
-
-  if (ih->data->spacing < 1)
-    ih->data->spacing = 1;
+  iupStrToInt(value, &ih->data->spacing);
 
   if (ih->handle)
   {
@@ -2201,6 +2198,10 @@ static void motTreeDefaultActionCallback(Widget w, Ihandle* ih, XmContainerSelec
 
   if (itemData->kind == ITREE_BRANCH)
   {
+    IFni cbExecuteBranch = (IFni)IupGetCallback(ih, "EXECUTEBRANCH_CB");
+    if (cbExecuteBranch)
+      cbExecuteBranch(ih, iupTreeFindNodeId(ih, wItem));
+
     if (itemState == XmEXPANDED)
       XtVaSetValues(wItem, XmNoutlineState,  XmCOLLAPSED, NULL);
     else
@@ -2759,7 +2760,7 @@ void iupdrvTreeDragDropCopyNode(Ihandle* src, Ihandle* dst, InodeHandle *itemSrc
   motTreeDragDropCopyChildren(src, dst, wItemSrc, wItemNew);
 
   count = dst->data->node_count - old_count;
-  iupTreeDragDropCopyCache(dst, id_dst, id_new, count);
+  iupTreeCopyMoveCache(dst, id_dst, id_new, count, 1);  /* update only the dst control cache */
   motTreeRebuildNodeCache(dst, id_new, wItemNew);
 }
 

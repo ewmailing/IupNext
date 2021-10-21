@@ -75,6 +75,7 @@ SRC += getparam.c
 SRC += getcolor.c
 SRC += class_conf.c
 SRC += tree.c
+SRC += flattree.c
 SRC += zbox.c
 SRC += scanf.c
 SRC += sbox.c
@@ -168,18 +169,23 @@ endif
 
 #NO_WEBBROWSER_TEST=Yes
 ifndef NO_WEBBROWSER_TEST
-  SRC += webbrowser.c
+  SRC += webbrowser.c webbrowser_editor.c rt_editor_images.c
   USE_IUPWEB = Yes
 else
   DEFINES += NO_WEBBROWSER_TEST
 endif
 
-SRC += scintilla.c
-ifneq ($(findstring Win, $(TEC_SYSNAME)), )
-  LIBS += iup_scintilla imm32
+#NO_SCINTILLA_TEST=Yes
+ifndef NO_SCINTILLA_TEST
+  SRC += scintilla.c
+  ifneq ($(findstring Win, $(TEC_SYSNAME)), )
+    LIBS += iup_scintilla imm32 msimg32
+  else
+    SLIB += $(IUP_LIB)/libiup_scintilla.a
+    LIBS += atk-1.0
+  endif
 else
-  SLIB += $(IUP_LIB)/libiup_scintilla.a
-  LIBS += atk-1.0
+  DEFINES += NO_SCINTILLA_TEST
 endif
 
 USE_IM = Yes

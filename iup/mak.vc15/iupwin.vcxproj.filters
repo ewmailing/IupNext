@@ -252,7 +252,7 @@
       <Filter>src</Filter>
     </ClCompile>
     <ClCompile Include="..\src\win\iupwin_filedlg.c">
-      <Filter>src</Filter>
+      <Filter>src_controls</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>

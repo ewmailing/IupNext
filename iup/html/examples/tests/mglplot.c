@@ -729,7 +729,7 @@ void MglPlotTest(void)
     IupSetfAttribute(vboxr[ii], "TABTITLE", "Plot %d", ii); /* name each tab */
     IupSetHandle(IupGetAttribute(vboxr[ii], "TABTITLE"), vboxr[ii]);
   }
-  vboxr[MAXPLOT] = NULL; /* mark end of vector */
+  vboxr[MAXPLOT] = NULL; /* mark end of array */
 
   tabs = IupTabsv(vboxr);
   IupSetCallback(tabs, "TABCHANGE_CB", (Icallback)tabs_tabchange_cb);

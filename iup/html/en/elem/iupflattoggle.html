@@ -284,7 +284,12 @@ LEFT, RIGHT, TOP, BOTTOM. Default: LEFT.</p>
 <p><b>PADDING</b>: internal margin. Works just like the MARGIN attribute of 
   the <strong>IupHbox</strong> and <strong>IupVbox</strong> containers, but uses 
 a different name to avoid inheritance problems. Alignment does not includes the 
-padding area. Default value: &quot;0x0&quot;.</p>
+padding area. Default value: &quot;0x0&quot;. Value can be DEFAULTBUTTONPADDING, 
+so the global attribute of this name will be used instead (since 3.29).</p>
+<p><strong>CPADDING</strong>: same as PADDING but using the units of the <strong>
+	SIZE</strong> attribute. It will actually set the PADDING attribute. (since 
+3.29)</p>
+
 <p><strong>PRESSED </strong> (read-only): returns the button state if pressed. 
 Can be Yes or No.</p>
 
@@ -303,6 +308,12 @@ a toggle inside a radio notify the selected toggle when pressed again. (since
 
 <p><strong>SPACING </strong>(<font SIZE="3">non inheritable</font>): spacing between the 
 image and the text. Default: &quot;2&quot;.</p>
+
+  
+  <p><strong>CSPACING</strong>: same as SPACING but using the units of the 
+  vertical part of the <strong>
+	SIZE</strong> attribute. It will actually set the SPACING attribute. (since 
+  3.29)</p>
 
   
   <p><a href="../attrib/iup_title.html">TITLE</a> (<font SIZE="3">non inheritable</font>): 
@@ -337,9 +348,10 @@ rotated space. (since 3.25)</span></span></p>
 <p><b>VALUE</b> (<font size="3">non inheritable</font>):
   Toggle's state. Values can be "ON",
   "OFF" or &quot;TOGGLE&quot;. 
-  Default: "OFF". 
-	The TOGGLE option will invert the current state. Can only be set to ON for a toggle inside a radio, it will automatically set to 
-OFF the previous toggle that was ON.</p>
+  If 3STATE=YES then can also be &quot;NOTDEF&quot;. Default: "OFF". 
+	The TOGGLE option will invert the current state. Can only be set to ON if 
+the toggle is inside a radio, it will automatically set to 
+OFF the previous toggle that was ON in the radio.</p>
 
   
 <p><b>3STATE </b>(creation only): Enable a three state toggle. Valid for toggles with text only 
@@ -373,7 +385,7 @@ also accepted.</p>
 
 
 <p>Inherits all callbacks of the <a href="../elem/iupcanvas.html">IupCanvas</a>, 
-but redefines a few of them. Including ACTION, BUTTON_CB, FOCUS_CB, 
+but redefines a few of them. Including ACTION, BUTTON_CB, MOTION_CB, FOCUS_CB, 
 LEAVEWINDOW_CB, and ENTERWINDOW_CB. To allow the application to use those 
 callbacks the same callbacks are exported with the &quot;FLAT_&quot; prefix using the same 
 parameters, except the FLAT_ACTION callback that now mimics the <strong>
@@ -392,7 +404,10 @@ IUP_IGNORE the internal callbacks are not processed.</p>
     
 <p class="info"><strong>ih</strong>:
   identifier of the element that activated the 
-  event.</p>
+  event.<br>
+
+    <strong>state</strong>:
+    1 if the toggle's state was shifted to on; 0 if it was shifted to off.</p>
 
 <p class="info"><u>Returns</u>: IUP_CLOSE will be processed.</p>
 
@@ -442,8 +457,8 @@ highlighted.</font></p>
 
   
 <p>To build a set of mutual exclusive toggles, insert them in a <strong>IupRadio</strong>
-container. They must be inserted before creation, and their behavior can not be 
-changed. </p>
+container. Only the <strong>IupFlatToggle</strong> controls inside the radio 
+will be part of the exclusive group. </p>
 
 <p>The toggle that is a child of an <strong>IupRadio</strong> automatically 
 receives a name when its is mapped into the native system.</p>

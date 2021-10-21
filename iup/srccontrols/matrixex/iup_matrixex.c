@@ -289,11 +289,13 @@ static int iMatrixExItemSettings_CB(Ihandle* ih_item)
                   "_@IUP_DECIMALSYMBOL%l|.|,|\n",
                   &sep_index, sep_other, &decimals, &decimal_sep_index, NULL))
   {
-    const char* sep_str[] = { "\t", ";", " " };
     if (sep_other[0] != 0)
       IupSetStrAttribute(matex_data->ih, "TEXTSEPARATOR", sep_other);
     else
+    {
+      const char* sep_str[] = { "\t", ";", " " };
       IupSetStrAttribute(matex_data->ih, "TEXTSEPARATOR", sep_str[sep_index]);
+    }
 
     /* avoid changing the application defined locale if not changed */
     if (decimal_sep_old != decimal_sep_index)
@@ -1125,7 +1127,7 @@ Iclass* iupMatrixExNewClass(void)
   ic->Destroy  = iMatrixExDestroyMethod;
   
   iupClassRegisterAttribute(ic, "FREEZE", NULL, iMatrixExSetFreezeAttrib, NULL, NULL, IUPAF_NO_INHERIT);
-  iupClassRegisterAttribute(ic, "FREEZECOLOR", NULL, NULL, IUPAF_SAMEASSYSTEM, "0 0 255", IUPAF_NOT_MAPPED | IUPAF_NO_INHERIT);
+  iupClassRegisterAttribute(ic, "FREEZECOLOR", NULL, NULL, IUPAF_SAMEASSYSTEM, "0 0 255", IUPAF_NO_INHERIT);
 
   iupClassRegisterCallback(ic, "MENUCONTEXT_CB", "nii");
   iupClassRegisterCallback(ic, "MENUCONTEXTCLOSE_CB", "nii");

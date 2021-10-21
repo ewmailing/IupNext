@@ -698,39 +698,7 @@ static int bt_ok_action_cb(Ihandle*)
 
 static int bt_sysinfo_action_cb(Ihandle*)
 {
-  char sysinfo[10240];
-  int o = 0;
-
-  o += sprintf(sysinfo+o, "-------  System Information  -------\n\n");
-
-  o += sprintf(sysinfo+o, "IUP %s %s\n\n", IupVersion(), IUP_COPYRIGHT);
-
-  o += sprintf(sysinfo+o, "  System: %s\n", IupGetGlobal("SYSTEM"));
-  o += sprintf(sysinfo+o, "  System Version: %s\n", IupGetGlobal("SYSTEMVERSION"));
-
-  char* motif = IupGetGlobal("MOTIFVERSION");
-  if (motif)
-    o += sprintf(sysinfo+o, "  Motif Version: %s\n", motif);
-
-  char* gtk = IupGetGlobal("GTKVERSION");
-  if (gtk)
-    o += sprintf(sysinfo+o, "  GTK Version: %s\n", gtk);
-
-  o += sprintf(sysinfo+o, "\n  Screen Size: %s\n", IupGetGlobal("SCREENSIZE"));
-  o += sprintf(sysinfo+o, "  Screen Depth: %s\n", IupGetGlobal("SCREENDEPTH"));
-
-  char* opengl = IupGetGlobal("GL_VERSION");
-  if (opengl)
-  {
-    o += sprintf(sysinfo+o, "\n  OpenGL Version: %s\n", opengl);
-    o += sprintf(sysinfo+o, "  OpenGL Vendor: %s\n", IupGetGlobal("GL_VENDOR"));
-    o += sprintf(sysinfo+o, "  OpenGL Renderer: %s\n", IupGetGlobal("GL_RENDERER"));
-  }
-
-  o += sprintf(sysinfo+o, "\nIM %s %s\n", imVersion(), IM_COPYRIGHT);
-  o += sprintf(sysinfo+o, "\nCD %s %s\n", cdVersion(), CD_COPYRIGHT);
-
-  IupGetText("System Information", sysinfo, 10240);
+  IupVersionShow();
   return IUP_DEFAULT;
 }
 

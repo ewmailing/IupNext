@@ -76,6 +76,7 @@ Iclass* iupParamNewClass(void);
 Iclass* iupMultiBoxNewClass(void);
 Iclass* iupFlatListNewClass(void);
 Iclass* iupFlatValNewClass(void);
+Iclass* iupFlatTreeNewClass(void);
 
 Iclass* iupTimerNewClass(void);
 Iclass* iupImageNewClass(void);

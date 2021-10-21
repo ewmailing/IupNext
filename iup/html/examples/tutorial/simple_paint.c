@@ -39,7 +39,7 @@ double round(double x)
 /********************************** Images *****************************************/
 
 
-Ihandle* load_image_PaintLine(void)
+static Ihandle* load_image_PaintLine(void)
 {
   unsigned char imgdata[] = {
     0, 0, 0, 0, 0, 0, 0, 2, 0, 0, 0, 0, 0, 0, 0, 0, 255, 255, 255, 0, 255, 255, 255, 0, 255, 255, 255, 0, 255, 255, 255, 0, 255, 255, 255, 0, 255, 255, 255, 0, 255, 255, 255, 0, 255, 255, 255, 0, 255, 255, 255, 0, 255, 255, 255, 0, 255, 255, 255, 0, 255, 255, 255, 0,
@@ -63,7 +63,7 @@ Ihandle* load_image_PaintLine(void)
   return image;
 }
 
-Ihandle* load_image_Pointer(void)
+static Ihandle* load_image_Pointer(void)
 {
   unsigned char imgdata[] = {
     255, 255, 255, 0, 255, 255, 255, 0, 255, 255, 255, 0, 162, 180, 203, 255, 162, 180, 203, 84, 255, 255, 255, 0, 255, 255, 255, 0, 255, 255, 255, 0, 255, 255, 255, 0, 255, 255, 255, 0, 255, 255, 255, 0, 255, 255, 255, 0, 255, 255, 255, 0, 255, 255, 255, 0, 255, 255, 255, 0, 255, 255, 255, 0,
@@ -87,7 +87,7 @@ Ihandle* load_image_Pointer(void)
   return image;
 }
 
-Ihandle* load_image_PaintPencil(void)
+static Ihandle* load_image_PaintPencil(void)
 {
   unsigned char imgdata[] = {
     255, 255, 255, 0, 255, 255, 255, 0, 255, 255, 255, 0, 255, 255, 255, 0, 255, 255, 255, 0, 255, 255, 255, 0, 255, 255, 255, 0, 255, 255, 255, 0, 255, 255, 255, 0, 255, 255, 255, 0, 255, 255, 255, 0, 255, 255, 255, 0, 255, 255, 255, 0, 255, 255, 255, 0, 255, 255, 255, 0, 255, 255, 255, 0,
@@ -111,7 +111,7 @@ Ihandle* load_image_PaintPencil(void)
   return image;
 }
 
-Ihandle* load_image_PaintColorPicker(void)
+static Ihandle* load_image_PaintColorPicker(void)
 {
   unsigned char imgdata[] = {
     255, 255, 255, 0, 255, 255, 255, 0, 255, 255, 255, 0, 255, 255, 255, 0, 255, 255, 255, 0, 255, 255, 255, 0, 255, 255, 255, 0, 255, 255, 255, 0, 255, 255, 255, 0, 255, 255, 255, 0, 255, 255, 255, 0, 255, 255, 255, 0, 255, 255, 255, 0, 255, 255, 255, 0, 255, 255, 255, 0, 255, 255, 255, 0,
@@ -135,7 +135,7 @@ Ihandle* load_image_PaintColorPicker(void)
   return image;
 }
 
-Ihandle* load_image_PaintEllipse(void)
+static Ihandle* load_image_PaintEllipse(void)
 {
   unsigned char imgdata[] = {
     255, 255, 255, 0, 255, 255, 255, 0, 255, 255, 255, 0, 255, 255, 255, 0, 255, 255, 255, 0, 255, 255, 255, 0, 255, 255, 255, 0, 255, 255, 255, 0, 255, 255, 255, 0, 255, 255, 255, 0, 255, 255, 255, 0, 255, 255, 255, 0, 255, 255, 255, 0, 255, 255, 255, 0, 255, 255, 255, 0, 255, 255, 255, 0,
@@ -159,7 +159,7 @@ Ihandle* load_image_PaintEllipse(void)
   return image;
 }
 
-Ihandle* load_image_PaintRect(void)
+static Ihandle* load_image_PaintRect(void)
 {
   unsigned char imgdata[] = {
     255, 255, 255, 0, 255, 255, 255, 0, 255, 255, 255, 0, 255, 255, 255, 0, 255, 255, 255, 0, 255, 255, 255, 0, 255, 255, 255, 0, 255, 255, 255, 0, 255, 255, 255, 0, 255, 255, 255, 0, 255, 255, 255, 0, 255, 255, 255, 0, 255, 255, 255, 0, 255, 255, 255, 0, 255, 255, 255, 0, 255, 255, 255, 0,
@@ -183,7 +183,7 @@ Ihandle* load_image_PaintRect(void)
   return image;
 }
 
-Ihandle* load_image_PaintOval(void)
+static Ihandle* load_image_PaintOval(void)
 {
   unsigned char imgdata[] = {
     255, 255, 255, 0, 255, 255, 255, 0, 255, 255, 255, 0, 255, 255, 255, 0, 255, 255, 255, 0, 255, 255, 255, 0, 255, 255, 255, 0, 255, 255, 255, 0, 255, 255, 255, 0, 255, 255, 255, 0, 255, 255, 255, 0, 255, 255, 255, 0, 255, 255, 255, 0, 255, 255, 255, 0, 255, 255, 255, 0, 255, 255, 255, 0,
@@ -207,7 +207,7 @@ Ihandle* load_image_PaintOval(void)
   return image;
 }
 
-Ihandle* load_image_PaintBox(void)
+static Ihandle* load_image_PaintBox(void)
 {
   unsigned char imgdata[] = {
     255, 255, 255, 0, 255, 255, 255, 0, 255, 255, 255, 0, 255, 255, 255, 0, 255, 255, 255, 0, 255, 255, 255, 0, 255, 255, 255, 0, 255, 255, 255, 0, 255, 255, 255, 0, 255, 255, 255, 0, 255, 255, 255, 0, 255, 255, 255, 0, 255, 255, 255, 0, 255, 255, 255, 0, 255, 255, 255, 0, 255, 255, 255, 0,
@@ -231,7 +231,7 @@ Ihandle* load_image_PaintBox(void)
   return image;
 }
 
-Ihandle* load_image_PaintZoomGrid(void)
+static Ihandle* load_image_PaintZoomGrid(void)
 {
   unsigned char imgdata[] = {
     255, 255, 255, 0, 255, 255, 255, 0, 255, 255, 255, 0, 255, 255, 255, 0, 255, 255, 255, 0, 255, 255, 255, 0, 255, 255, 255, 0, 255, 255, 255, 0, 255, 255, 255, 0, 255, 255, 255, 0, 255, 255, 255, 0, 255, 255, 255, 0, 255, 255, 255, 0, 255, 255, 255, 0, 255, 255, 255, 0, 255, 255, 255, 0,
@@ -255,7 +255,7 @@ Ihandle* load_image_PaintZoomGrid(void)
   return image;
 }
 
-Ihandle* load_image_PaintFill(void)
+static Ihandle* load_image_PaintFill(void)
 {
   unsigned char imgdata[] = {
     0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 50, 53, 53, 86, 59, 59, 59, 111, 108, 108, 108, 82, 127, 127, 127, 4, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0,
@@ -279,7 +279,7 @@ Ihandle* load_image_PaintFill(void)
   return image;
 }
 
-Ihandle* load_image_PaintText(void)
+static Ihandle* load_image_PaintText(void)
 {
   unsigned char imgdata[] = {
     255, 255, 255, 0, 255, 255, 255, 0, 255, 255, 255, 0, 255, 255, 255, 0, 255, 255, 255, 0, 255, 255, 255, 0, 255, 255, 255, 0, 255, 255, 255, 0, 255, 255, 255, 0, 255, 255, 255, 0, 255, 255, 255, 0, 255, 255, 255, 0, 255, 255, 255, 0, 255, 255, 255, 0, 255, 255, 255, 0, 255, 255, 255, 0,
@@ -307,7 +307,7 @@ Ihandle* load_image_PaintText(void)
 /********************************** Utilities *****************************************/
 
 
-const char* str_filetitle(const char *filename)
+static const char* str_filetitle(const char *filename)
 {
   /* Start at the last character */
   int len = (int)strlen(filename);
@@ -324,7 +324,7 @@ const char* str_filetitle(const char *filename)
   return filename + offset;
 }
 
-const char* str_fileext(const char *filename)
+static const char* str_fileext(const char *filename)
 {
   /* Start at the last character */
   int len = (int)strlen(filename);
@@ -344,7 +344,7 @@ const char* str_fileext(const char *filename)
   return NULL;
 }
 
-int str_compare(const char *l, const char *r, int casesensitive)
+static int str_compare(const char *l, const char *r, int casesensitive)
 {
   if (!l || !r)
     return 0;
@@ -380,7 +380,7 @@ int str_compare(const char *l, const char *r, int casesensitive)
   return 0;
 }
 
-void show_error(const char* message, int is_error)
+static void show_error(const char* message, int is_error)
 {
   Ihandle* dlg = IupMessageDlg();
   IupSetStrAttribute(dlg, "PARENTDIALOG", IupGetGlobal("PARENTDIALOG"));
@@ -392,7 +392,7 @@ void show_error(const char* message, int is_error)
   IupDestroy(dlg);
 }
 
-void show_file_error(int error)
+static void show_file_error(int error)
 {
   switch (error)
   {
@@ -419,7 +419,7 @@ void show_file_error(int error)
   }
 }
 
-imImage* read_file(const char* filename)
+static imImage* read_file(const char* filename)
 {
   int error;
   imImage* image = imFileImageLoadBitmap(filename, 0, &error);
@@ -428,7 +428,7 @@ imImage* read_file(const char* filename)
   return image;
 }
 
-int write_file(const char* filename, const imImage* image)
+static int write_file(const char* filename, const imImage* image)
 {
   const char* format = imImageGetAttribString(image, "FileFormat");
   int error = imFileImageSave(filename, format, image);
@@ -441,7 +441,7 @@ int write_file(const char* filename, const imImage* image)
 }
 
 /* extracted from the SCROLLBAR attribute documentation */
-void scroll_update(Ihandle* ih, int view_width, int view_height)
+static void scroll_update(Ihandle* ih, int view_width, int view_height)
 {
   /* view_width and view_height is the virtual space size */
   /* here we assume XMIN=0, XMAX=1, YMIN=0, YMAX=1 */
@@ -474,13 +474,13 @@ void scroll_update(Ihandle* ih, int view_width, int view_height)
   IupSetFloat(ih, "DY", (float)canvas_height / (float)view_height);
 }
 
-void scroll_calc_center(Ihandle* ih, float *x, float *y)
+static void scroll_calc_center(Ihandle* ih, float *x, float *y)
 {
   *x = IupGetFloat(ih, "POSX") + IupGetFloat(ih, "DX") / 2.0f;
   *y = IupGetFloat(ih, "POSY") + IupGetFloat(ih, "DY") / 2.0f;
 }
 
-void scroll_center(Ihandle* ih, float old_center_x, float old_center_y)
+static void scroll_center(Ihandle* ih, float old_center_x, float old_center_y)
 {
   /* always update the scroll position
      keeping it proportional to the old position
@@ -502,7 +502,7 @@ void scroll_center(Ihandle* ih, float old_center_x, float old_center_y)
   IupSetFloat(ih, "POSY", posy);
 }
 
-void scroll_move(Ihandle* ih, int canvas_width, int canvas_height, int move_x, int move_y, int view_width, int view_height)
+static void scroll_move(Ihandle* ih, int canvas_width, int canvas_height, int move_x, int move_y, int view_width, int view_height)
 {
   float posy = 0;
   float posx = 0;
@@ -526,11 +526,11 @@ void scroll_move(Ihandle* ih, int canvas_width, int canvas_height, int move_x, i
   {
     IupSetFloat(ih, "POSX", posx);
     IupSetFloat(ih, "POSY", posy);
-    IupUpdate(ih);
+    IupRedraw(ih, 0);
   }
 }
 
-void zoom_update(Ihandle* ih, double zoom_index)
+static void zoom_update(Ihandle* ih, double zoom_index)
 {
   Ihandle* zoom_lbl = IupGetDialogChild(ih, "ZOOMLABEL");
   Ihandle* canvas = IupGetDialogChild(ih, "CANVAS");
@@ -552,14 +552,20 @@ void zoom_update(Ihandle* ih, double zoom_index)
   IupUpdate(canvas);
 }
 
-void image_flood_fill(imImage* image, int start_x, int start_y, long replace_color, double tol_percent)
+static void image_flood_fill(imImage* image, int start_x, int start_y, long replace_color, double tol_percent)
 {
-  float color[3];
+#if IM_VERSION_NUMBER > 312000
+  double color[4];
   double tol;
+#else
+  float color[4];
+  float tol;
+#endif
 
-  color[0] = (float)cdRed(replace_color);
-  color[1] = (float)cdGreen(replace_color);
-  color[2] = (float)cdBlue(replace_color);
+  color[0] = cdRed(replace_color);
+  color[1] = cdGreen(replace_color);
+  color[2] = cdBlue(replace_color);
+  color[3] = cdAlpha(replace_color);
 
   /* max value = 255*255*3 = 195075 */
   /* sqrt(195075) = 441 */
@@ -568,21 +574,22 @@ void image_flood_fill(imImage* image, int start_x, int start_y, long replace_col
   /* still too high */
   tol = tol / 5;  /* empirical reduce. TODO: What is the best formula? */
 
-  imProcessRenderFloodFill(image, start_x, start_y, color, (float)tol);
+  imProcessRenderFloodFill(image, start_x, start_y, color, tol);
 }
 
-void image_fill_white(imImage* image)
+static void image_fill_white(imImage* image)
 {
-  float color[3];
+  double color[4];
 
   color[0] = 255;
   color[1] = 255;
   color[2] = 255;
+  color[3] = 255;
 
   imProcessRenderConstant(image, color);
 }
 
-void update_image(Ihandle* canvas, imImage* image, int update_size)
+static void update_image(Ihandle* canvas, imImage* image, int update_size)
 {
   imImage* old_image = (imImage*)IupGetAttribute(canvas, "IMAGE");
 
@@ -604,7 +611,7 @@ void update_image(Ihandle* canvas, imImage* image, int update_size)
     IupUpdate(canvas);
 }
 
-void set_new_image(Ihandle* canvas, imImage* image, const char* filename, int dirty)
+static void set_new_image(Ihandle* canvas, imImage* image, const char* filename, int dirty)
 {
   imImage* old_image = (imImage*)IupGetAttribute(canvas, "IMAGE");
   Ihandle* size_lbl = IupGetDialogChild(canvas, "SIZELABEL");
@@ -622,11 +629,12 @@ void set_new_image(Ihandle* canvas, imImage* image, const char* filename, int di
     IupSetAttribute(IupGetDialog(canvas), "TITLE", "Untitled - Simple Paint");
   }
 
-  /* we are going to support only RGB images with no alpha */
-  imImageRemoveAlpha(image);
+  /* we are going to support only RGB images */
   if (image->color_space != IM_RGB)
   {
     imImage* new_image = imImageCreateBased(image, -1, -1, IM_RGB, -1);
+    if (image->has_alpha)
+      imImageAddAlpha(new_image);
     imConvertColorSpace(image, new_image);
     imImageDestroy(image);
 
@@ -650,7 +658,7 @@ void set_new_image(Ihandle* canvas, imImage* image, const char* filename, int di
   zoom_update(canvas, 0);
 }
 
-void check_new_file(Ihandle* dlg)
+static void check_new_file(Ihandle* dlg)
 {
   Ihandle* canvas = IupGetDialogChild(dlg, "CANVAS");
   imImage* image = (imImage*)IupGetAttribute(canvas, "IMAGE");
@@ -659,6 +667,7 @@ void check_new_file(Ihandle* dlg)
     Ihandle* config = (Ihandle*)IupGetAttribute(canvas, "CONFIG");
     int width = IupConfigGetVariableIntDef(config, "NewImage", "Width", 640);
     int height = IupConfigGetVariableIntDef(config, "NewImage", "Height", 480);
+    int has_alpha = IupConfigGetVariableIntDef(config, "NewImage", "HasAlpha", 0);
 
     image = imImageCreate(width, height, IM_RGB, IM_BYTE);
     if (!image)
@@ -667,13 +676,16 @@ void check_new_file(Ihandle* dlg)
       return;
     }
 
+    if (has_alpha)
+      imImageAddAlpha(image);
+
     image_fill_white(image);
 
     set_new_image(canvas, image, NULL, 0);
   }
 }
 
-void open_file(Ihandle* ih, const char* filename)
+static void open_file(Ihandle* ih, const char* filename)
 {
   imImage* image = read_file(filename);
   if (image)
@@ -687,7 +699,7 @@ void open_file(Ihandle* ih, const char* filename)
   }
 }
 
-void save_file(Ihandle* canvas)
+static void save_file(Ihandle* canvas)
 {
   char* filename = IupGetAttribute(canvas, "FILENAME");
   imImage* image = (imImage*)IupGetAttribute(canvas, "IMAGE");
@@ -695,7 +707,7 @@ void save_file(Ihandle* canvas)
     IupSetAttribute(canvas, "DIRTY", "NO");
 }
 
-void set_file_format(imImage* image, const char* filename)
+static void set_file_format(imImage* image, const char* filename)
 {
   const char* ext = str_fileext(filename);
   const char* format = "JPEG";
@@ -712,7 +724,7 @@ void set_file_format(imImage* image, const char* filename)
   imImageSetAttribString(image, "FileFormat", format);
 }
 
-void saveas_file(Ihandle* canvas, const char* filename)
+static void saveas_file(Ihandle* canvas, const char* filename)
 {
   imImage* image = (imImage*)IupGetAttribute(canvas, "IMAGE");
 
@@ -730,7 +742,7 @@ void saveas_file(Ihandle* canvas, const char* filename)
   }
 }
 
-int save_check(Ihandle* ih)
+static int save_check(Ihandle* ih)
 {
   Ihandle* canvas = IupGetDialogChild(ih, "CANVAS");
   if (IupGetInt(canvas, "DIRTY"))
@@ -749,7 +761,7 @@ int save_check(Ihandle* ih)
   return 1;
 }
 
-void toggle_bar_visibility(Ihandle* item, Ihandle* ih)
+static void toggle_bar_visibility(Ihandle* item, Ihandle* ih)
 {
   if (IupGetInt(item, "VALUE"))
   {
@@ -767,7 +779,7 @@ void toggle_bar_visibility(Ihandle* item, Ihandle* ih)
   IupRefresh(ih);  /* refresh the dialog layout */
 }
 
-int select_file(Ihandle* parent_dlg, int is_open)
+static int select_file(Ihandle* parent_dlg, int is_open)
 {
   Ihandle* config = (Ihandle*)IupGetAttribute(parent_dlg, "CONFIG");
   Ihandle* canvas = IupGetDialogChild(parent_dlg, "CANVAS");
@@ -802,7 +814,7 @@ int select_file(Ihandle* parent_dlg, int is_open)
   return IUP_DEFAULT;
 }
 
-void view_fit_rect(int canvas_width, int canvas_height, int image_width, int image_height, int *view_width, int *view_height)
+static void view_fit_rect(int canvas_width, int canvas_height, int image_width, int image_height, int *view_width, int *view_height)
 {
   *view_width = canvas_width;
   *view_height = (canvas_width * image_height) / image_width;
@@ -814,7 +826,7 @@ void view_fit_rect(int canvas_width, int canvas_height, int image_width, int ima
   }
 }
 
-double view_zoom_rect(Ihandle* ih, int image_width, int image_height, int *_x, int *_y, int *_view_width, int *_view_height)
+static double view_zoom_rect(Ihandle* ih, int image_width, int image_height, int *_x, int *_y, int *_view_width, int *_view_height)
 {
   int x, y, canvas_width, canvas_height;
   int view_width, view_height;
@@ -854,7 +866,7 @@ double view_zoom_rect(Ihandle* ih, int image_width, int image_height, int *_x, i
   return zoom_factor;
 }
 
-void view_zoom_offset(int view_x, int view_y, int image_width, int image_height, double zoom_factor, int *x, int *y)
+static void view_zoom_offset(int view_x, int view_y, int image_width, int image_height, double zoom_factor, int *x, int *y)
 {
   *x -= view_x;
   *y -= view_y;
@@ -868,12 +880,12 @@ void view_zoom_offset(int view_x, int view_y, int image_width, int image_height,
   if (*y > image_height - 1) *y = image_height - 1;
 }
 
-int tool_get_text_enter_cb(void)
+static int tool_get_text_enter_cb(void)
 {
   return IUP_CLOSE;
 }
 
-void tool_get_text(Ihandle* toolbox)
+static void tool_get_text(Ihandle* toolbox)
 {
   Ihandle *text, *dlg;
 
@@ -902,33 +914,33 @@ void tool_get_text(Ihandle* toolbox)
   IupDestroy(dlg);
 }
 
-void tool_draw_pencil(Ihandle* toolbox, imImage* image, int start_x, int start_y, int end_x, int end_y)
+static void tool_draw_pencil(Ihandle* toolbox, imImage* image, int start_x, int start_y, int end_x, int end_y)
 {
   double res = IupGetDouble(NULL, "SCREENDPI") / 25.4;
-  unsigned char r, g, b;
+  unsigned char r, g, b, a;
   cdCanvas* rgb_canvas;
   
   int line_width = IupGetInt(toolbox, "TOOLWIDTH");
-  IupGetRGB(toolbox, "TOOLCOLOR", &r, &g, &b);
+  IupGetRGBA(toolbox, "TOOLCOLOR", &r, &g, &b, &a);
 
   /* do not use line style here */
   rgb_canvas = cdCreateCanvas(CD_IMIMAGE, image);
   cdCanvasSetfAttribute(rgb_canvas, "RESOLUTION", "%g", res);
-  cdCanvasForeground(rgb_canvas, cdEncodeColor(r, g, b));
+  cdCanvasForeground(rgb_canvas, cdEncodeColorAlpha(r, g, b, a));
   cdCanvasLineWidth(rgb_canvas, line_width);
   cdCanvasLine(rgb_canvas, start_x, start_y, end_x, end_y);
   cdKillCanvas(rgb_canvas);
 }
 
-void tool_draw_overlay(Ihandle* toolbox, cdCanvas* cd_canvas, int start_x, int start_y, int end_x, int end_y)
+static void tool_draw_overlay(Ihandle* toolbox, cdCanvas* cd_canvas, int start_x, int start_y, int end_x, int end_y)
 {
   int tool_index = IupGetInt(toolbox, "TOOLINDEX");
   int line_width = IupGetInt(toolbox, "TOOLWIDTH");
   int line_style = IupGetInt(toolbox, "TOOLSTYLE") - 1;
-  unsigned char r, g, b;
-  IupGetRGB(toolbox, "TOOLCOLOR", &r, &g, &b);
-
-  cdCanvasForeground(cd_canvas, cdEncodeColor(r, g, b));
+  unsigned char r, g, b, a;
+  IupGetRGBA(toolbox, "TOOLCOLOR", &r, &g, &b, &a);
+  
+  cdCanvasForeground(cd_canvas, cdEncodeColorAlpha(r, g, b, a));
   cdCanvasLineWidth(cd_canvas, line_width);
   if (line_width == 1)
     cdCanvasLineStyle(cd_canvas, line_style);
@@ -955,7 +967,7 @@ void tool_draw_overlay(Ihandle* toolbox, cdCanvas* cd_canvas, int start_x, int s
 /********************************** Callbacks *****************************************/
 
 
-int canvas_action_cb(Ihandle* canvas)
+static int canvas_action_cb(Ihandle* canvas)
 {
   unsigned int ri, gi, bi;
   imImage* image;
@@ -980,11 +992,12 @@ int canvas_action_cb(Ihandle* canvas)
     int x, y, view_width, view_height;
     view_zoom_rect(canvas, image->width, image->height, &x, &y, &view_width, &view_height);
 
-    /* black line around the image */
+    /* black line around the image
     cdCanvasForeground(cd_canvas, CD_BLACK);
     cdCanvasLineWidth(cd_canvas, 1);
     cdCanvasLineStyle(cd_canvas, CD_CONTINUOUS);
     cdCanvasRect(cd_canvas, x - 1, x + view_width, y - 1, y + view_height);
+     */
 
     /* Some CD drivers have interpolation options for image zoom */
     /* we force NEAREST so we can see the pixel boundary in zoom in */
@@ -1003,12 +1016,12 @@ int canvas_action_cb(Ihandle* canvas)
 
         cdCanvasForeground(cd_canvas, CD_GRAY);
 
-        for (ix = 0; ix < image->width; ix++)
+        for (ix = 0; ix <= image->width; ix++)
         {
           int gx = (int)(ix * zoom_factor);
           cdCanvasLine(cd_canvas, gx + x, y, gx + x, y + view_height);
         }
-        for (iy = 0; iy < image->height; iy++)
+        for (iy = 0; iy <= image->height; iy++)
         {
           int gy = (int)(iy * zoom_factor);
           cdCanvasLine(cd_canvas, x, gy + y, x + view_width, gy + y);
@@ -1051,7 +1064,7 @@ int canvas_action_cb(Ihandle* canvas)
   return IUP_DEFAULT;
 }
 
-int canvas_map_cb(Ihandle* canvas)
+static int canvas_map_cb(Ihandle* canvas)
 {
   cdCanvas* cd_canvas;
 
@@ -1073,14 +1086,14 @@ int canvas_map_cb(Ihandle* canvas)
   return IUP_DEFAULT;
 }
 
-int canvas_unmap_cb(Ihandle* canvas)
+static int canvas_unmap_cb(Ihandle* canvas)
 {
   cdCanvas* cd_canvas = (cdCanvas*)IupGetAttribute(canvas, "cdCanvas");
   cdKillCanvas(cd_canvas);
   return IUP_DEFAULT;
 }
 
-int zoomout_action_cb(Ihandle* ih)
+static int zoomout_action_cb(Ihandle* ih)
 {
   Ihandle* zoom_val = IupGetDialogChild(ih, "ZOOMVAL");
   double zoom_index = IupGetDouble(zoom_val, "VALUE");
@@ -1093,7 +1106,7 @@ int zoomout_action_cb(Ihandle* ih)
   return IUP_DEFAULT;
 }
 
-int zoomin_action_cb(Ihandle* ih)
+static int zoomin_action_cb(Ihandle* ih)
 {
   Ihandle* zoom_val = IupGetDialogChild(ih, "ZOOMVAL");
   double zoom_index = IupGetDouble(zoom_val, "VALUE");
@@ -1106,7 +1119,7 @@ int zoomin_action_cb(Ihandle* ih)
   return IUP_DEFAULT;
 }
 
-int actualsize_action_cb(Ihandle* ih)
+static int actualsize_action_cb(Ihandle* ih)
 {
   Ihandle* zoom_val = IupGetDialogChild(ih, "ZOOMVAL");
   IupSetDouble(zoom_val, "VALUE", 0);
@@ -1114,7 +1127,7 @@ int actualsize_action_cb(Ihandle* ih)
   return IUP_DEFAULT;
 }
 
-int canvas_resize_cb(Ihandle* canvas)
+static int canvas_resize_cb(Ihandle* canvas)
 {
   imImage* image = (imImage*)IupGetAttribute(canvas, "IMAGE");
   if (image)
@@ -1148,7 +1161,7 @@ int canvas_resize_cb(Ihandle* canvas)
   return IUP_DEFAULT;
 }
 
-int canvas_wheel_cb(Ihandle* canvas, float delta)
+static int canvas_wheel_cb(Ihandle* canvas, float delta)
 {
   if (IupGetInt(NULL, "CONTROLKEY"))
   {
@@ -1167,7 +1180,7 @@ int canvas_wheel_cb(Ihandle* canvas, float delta)
   return IUP_DEFAULT;
 }
 
-int canvas_button_cb(Ihandle* canvas, int button, int pressed, int x, int y)
+static int canvas_button_cb(Ihandle* canvas, int button, int pressed, int x, int y)
 {
   imImage* image = (imImage*)IupGetAttribute(canvas, "IMAGE");
   if (image)
@@ -1187,32 +1200,42 @@ int canvas_button_cb(Ihandle* canvas, int button, int pressed, int x, int y)
 
       if (button == IUP_BUTTON1)
       {
+        Ihandle* toolbox = (Ihandle*)IupGetAttribute(canvas, "TOOLBOX");
+        int tool_index = IupGetInt(toolbox, "TOOLINDEX");
+
         if (pressed)
         {
           IupSetInt(canvas, "START_X", x);
           IupSetInt(canvas, "START_Y", y);
           IupSetInt(canvas, "START_CURSOR_X", cursor_x);
           IupSetInt(canvas, "START_CURSOR_Y", cursor_y);
+
+          if (tool_index == 8)  /* Text */
+          {
+            IupSetInt(canvas, "END_X", x);
+            IupSetInt(canvas, "END_Y", y);
+            IupSetAttribute(canvas, "OVERLAY", "Yes");
+            IupRedraw(canvas, 0);
+          }
         }
         else
         {
-          Ihandle* toolbox = (Ihandle*)IupGetAttribute(canvas, "TOOLBOX");
-          int tool_index = IupGetInt(toolbox, "TOOLINDEX");
-
           if (tool_index == 1)  /* Color Picker */
           {
             Ihandle* color = IupGetDialogChild(toolbox, "COLOR");
             unsigned char** data = (unsigned char**)image->data;
-            unsigned char r, g, b;
+            unsigned char r, g, b, a = 255;
             int offset;
 
             offset = y * image->width + x;
             r = data[0][offset];
             g = data[1][offset];
             b = data[2][offset];
+            if (image->has_alpha)
+              a = data[3][offset];
 
             IupSetRGB(color, "BGCOLOR", r, g, b);
-            IupSetRGB(toolbox, "TOOLCOLOR", r, g, b);
+            IupSetRGBA(toolbox, "TOOLCOLOR", r, g, b, a);
           }
           else if (tool_index == 2)  /* Pencil */
           {
@@ -1252,10 +1275,10 @@ int canvas_button_cb(Ihandle* canvas, int button, int pressed, int x, int y)
           else if (tool_index == 9)  /* Fill Color */
           {
             double tol_percent = IupGetDouble(toolbox, "TOOLFILLTOL");
-            unsigned char r, g, b;
-            IupGetRGB(toolbox, "TOOLCOLOR", &r, &g, &b);
+            unsigned char r, g, b, a;
+            IupGetRGBA(toolbox, "TOOLCOLOR", &r, &g, &b, &a);   
 
-            image_flood_fill(image, x, y, cdEncodeColor(r, g, b), tol_percent);
+            image_flood_fill(image, x, y, cdEncodeColorAlpha(r, g, b, a), tol_percent);
             IupSetAttribute(canvas, "DIRTY", "Yes");
 
             IupUpdate(canvas);
@@ -1278,7 +1301,7 @@ int canvas_button_cb(Ihandle* canvas, int button, int pressed, int x, int y)
   return IUP_DEFAULT;
 }
 
-int canvas_motion_cb(Ihandle* canvas, int x, int y, char *status)
+static int canvas_motion_cb(Ihandle* canvas, int x, int y, char *status)
 {
   imImage* image = (imImage*)IupGetAttribute(canvas, "IMAGE");
   if (image)
@@ -1305,8 +1328,13 @@ int canvas_motion_cb(Ihandle* canvas, int x, int y, char *status)
       r = data[0][offset];
       g = data[1][offset];
       b = data[2][offset];
-
-      IupSetStrf(status_lbl, "TITLE", "(%4d, %4d) = %3d %3d %3d", x, y, (int)r, (int)g, (int)b);
+      if (image->has_alpha)
+      {
+        unsigned char a = data[3][offset];
+        IupSetStrf(status_lbl, "TITLE", "(%4d, %4d) = %3d %3d %3d %3d", x, y, (int)r, (int)g, (int)b, (int)a);
+      }
+      else
+        IupSetStrf(status_lbl, "TITLE", "(%4d, %4d) = %3d %3d %3d", x, y, (int)r, (int)g, (int)b);
 
       if (iup_isbutton1(status)) /* button1 is pressed */
       {
@@ -1334,7 +1362,7 @@ int canvas_motion_cb(Ihandle* canvas, int x, int y, char *status)
 
           IupSetAttribute(canvas, "DIRTY", "Yes");
 
-          IupUpdate(canvas);
+          IupRedraw(canvas, 0);
 
           IupSetInt(canvas, "START_X", x);
           IupSetInt(canvas, "START_Y", y);
@@ -1344,7 +1372,7 @@ int canvas_motion_cb(Ihandle* canvas, int x, int y, char *status)
           IupSetInt(canvas, "END_X", x);
           IupSetInt(canvas, "END_Y", y);
           IupSetAttribute(canvas, "OVERLAY", "Yes");
-          IupUpdate(canvas);
+          IupRedraw(canvas, 0);
         }
       }
     }
@@ -1353,14 +1381,14 @@ int canvas_motion_cb(Ihandle* canvas, int x, int y, char *status)
   return IUP_DEFAULT;
 }
 
-int zoom_valuechanged_cb(Ihandle* val)
+static int zoom_valuechanged_cb(Ihandle* val)
 {
   double zoom_index = IupGetDouble(val, "VALUE");
   zoom_update(val, zoom_index);
   return IUP_DEFAULT;
 }
 
-int dropfiles_cb(Ihandle* ih, const char* filename)
+static int dropfiles_cb(Ihandle* ih, const char* filename)
 {
   if (save_check(ih))
     open_file(ih, filename);
@@ -1368,7 +1396,7 @@ int dropfiles_cb(Ihandle* ih, const char* filename)
   return IUP_DEFAULT;
 }
 
-int file_menu_open_cb(Ihandle* ih)
+static int file_menu_open_cb(Ihandle* ih)
 {
   Ihandle* item_revert = IupGetDialogChild(ih, "ITEM_REVERT");
   Ihandle* item_save = IupGetDialogChild(ih, "ITEM_SAVE");
@@ -1388,7 +1416,7 @@ int file_menu_open_cb(Ihandle* ih)
   return IUP_DEFAULT;
 }
 
-int edit_menu_open_cb(Ihandle* ih)
+static int edit_menu_open_cb(Ihandle* ih)
 {
   Ihandle *clipboard = IupClipboard(); 
 
@@ -1403,7 +1431,7 @@ int edit_menu_open_cb(Ihandle* ih)
   return IUP_DEFAULT;
 }
 
-int config_recent_cb(Ihandle* ih)
+static int config_recent_cb(Ihandle* ih)
 {
   if (save_check(ih))
   {
@@ -1413,7 +1441,7 @@ int config_recent_cb(Ihandle* ih)
   return IUP_DEFAULT;
 }
 
-int item_new_action_cb(Ihandle* item_new)
+static int item_new_action_cb(Ihandle* item_new)
 {
   if (save_check(item_new))
   {
@@ -1421,8 +1449,13 @@ int item_new_action_cb(Ihandle* item_new)
     Ihandle* config = (Ihandle*)IupGetAttribute(canvas, "CONFIG");
     int width = IupConfigGetVariableIntDef(config, "NewImage", "Width", 640);
     int height = IupConfigGetVariableIntDef(config, "NewImage", "Height", 480);
+    int has_alpha = IupConfigGetVariableIntDef(config, "NewImage", "HasAlpha", 0);
 
-    if (IupGetParam("New Image", NULL, NULL, "Width: %i[1,]\nHeight: %i[1,]\n", &width, &height, NULL))
+    if (IupGetParam("New Image", NULL, NULL, 
+                    "Width:  %i[1,]\n"
+                    "Height: %i[1,]\n" 
+                    "Has Alpha: %b\n",
+                    &width, &height, &has_alpha, NULL))
     {
       imImage* image = imImageCreate(width, height, IM_RGB, IM_BYTE);
       if (!image)
@@ -1431,10 +1464,14 @@ int item_new_action_cb(Ihandle* item_new)
         return IUP_DEFAULT;
       }
 
+      if (has_alpha)
+        imImageAddAlpha(image);
+
       image_fill_white(image);
 
       IupConfigSetVariableInt(config, "NewImage", "Width", width);
       IupConfigSetVariableInt(config, "NewImage", "Height", height);
+      IupConfigSetVariableInt(config, "NewImage", "HasAlpha", has_alpha);
 
       set_new_image(canvas, image, NULL, 0);
     }
@@ -1443,7 +1480,7 @@ int item_new_action_cb(Ihandle* item_new)
   return IUP_DEFAULT;
 }
 
-int item_open_action_cb(Ihandle* item_open)
+static int item_open_action_cb(Ihandle* item_open)
 {
   if (!save_check(item_open))
     return IUP_DEFAULT;
@@ -1451,12 +1488,12 @@ int item_open_action_cb(Ihandle* item_open)
   return select_file(IupGetDialog(item_open), 1);
 }
 
-int item_saveas_action_cb(Ihandle* item_saveas)
+static int item_saveas_action_cb(Ihandle* item_saveas)
 {
   return select_file(IupGetDialog(item_saveas), 0);
 }
 
-int item_save_action_cb(Ihandle* item_save)
+static int item_save_action_cb(Ihandle* item_save)
 {
   Ihandle* canvas = IupGetDialogChild(item_save, "CANVAS");
   char* filename = IupGetAttribute(canvas, "FILENAME");
@@ -1472,7 +1509,7 @@ int item_save_action_cb(Ihandle* item_save)
   return IUP_DEFAULT;
 }
 
-int item_revert_action_cb(Ihandle* item_revert)
+static int item_revert_action_cb(Ihandle* item_revert)
 {
   Ihandle* canvas = IupGetDialogChild(item_revert, "CANVAS");
   char* filename = IupGetAttribute(canvas, "FILENAME");
@@ -1480,7 +1517,7 @@ int item_revert_action_cb(Ihandle* item_revert)
   return IUP_DEFAULT;
 }
 
-int item_pagesetup_action_cb(Ihandle* item_pagesetup)
+static int item_pagesetup_action_cb(Ihandle* item_pagesetup)
 {
   Ihandle* canvas = IupGetDialogChild(item_pagesetup, "CANVAS");
   Ihandle* config = (Ihandle*)IupGetAttribute(canvas, "CONFIG");
@@ -1496,7 +1533,7 @@ int item_pagesetup_action_cb(Ihandle* item_pagesetup)
   return IUP_DEFAULT;
 }
 
-int item_print_action_cb(Ihandle* item_print)
+static int item_print_action_cb(Ihandle* item_print)
 {
   Ihandle* canvas = IupGetDialogChild(item_print, "CANVAS");
   imImage* image;
@@ -1538,7 +1575,7 @@ int item_print_action_cb(Ihandle* item_print)
   return IUP_DEFAULT;
 }
 
-int item_exit_action_cb(Ihandle* item_exit)
+static int item_exit_action_cb(Ihandle* item_exit)
 {
   Ihandle* dlg = IupGetDialog(item_exit);
   Ihandle* config = (Ihandle*)IupGetAttribute(dlg, "CONFIG");
@@ -1564,7 +1601,7 @@ int item_exit_action_cb(Ihandle* item_exit)
   return IUP_CLOSE;
 }
 
-int item_copy_action_cb(Ihandle* item_copy) 
+static int item_copy_action_cb(Ihandle* item_copy)
 {
   Ihandle* canvas = IupGetDialogChild(item_copy, "CANVAS");
   imImage* image = (imImage*)IupGetAttribute(canvas, "IMAGE");
@@ -1574,7 +1611,7 @@ int item_copy_action_cb(Ihandle* item_copy)
   return IUP_DEFAULT;
 }
 
-int item_paste_action_cb(Ihandle* item_paste) 
+static int item_paste_action_cb(Ihandle* item_paste)
 {
   if (save_check(item_paste))
   {
@@ -1595,12 +1632,12 @@ int item_paste_action_cb(Ihandle* item_paste)
   return IUP_DEFAULT;
 }
 
-int item_background_action_cb(Ihandle* item_background)
+static int item_background_action_cb(Ihandle* item_background)
 {
   Ihandle* canvas = IupGetDialogChild(item_background, "CANVAS");
   Ihandle* config = (Ihandle*)IupGetAttribute(canvas, "CONFIG");
   Ihandle* colordlg = IupColorDlg();
-  const char* background = IupConfigGetVariableStrDef(config, "Canvas", "Background", "255 255 255");
+  const char* background = IupConfigGetVariableStrDef(config, "Canvas", "Background", "208 208 208");
   IupSetStrAttribute(colordlg, "VALUE", background);
   IupSetAttributeHandle(colordlg, "PARENTDIALOG", IupGetDialog(item_background));
 
@@ -1618,7 +1655,7 @@ int item_background_action_cb(Ihandle* item_background)
   return IUP_DEFAULT;
 }
 
-int item_zoomgrid_action_cb(Ihandle* ih)
+static int item_zoomgrid_action_cb(Ihandle* ih)
 {
   Ihandle* item_zoomgrid = IupGetDialogChild(ih, "ZOOMGRID");
   Ihandle* canvas = IupGetDialogChild(ih, "CANVAS");
@@ -1635,7 +1672,7 @@ int item_zoomgrid_action_cb(Ihandle* ih)
   return IUP_DEFAULT;
 }
 
-int item_toolbar_action_cb(Ihandle* item_toolbar)
+static int item_toolbar_action_cb(Ihandle* item_toolbar)
 {
   Ihandle* toolbar = IupGetDialogChild(item_toolbar, "TOOLBAR");
   Ihandle* config = (Ihandle*)IupGetAttribute(item_toolbar, "CONFIG");
@@ -1646,7 +1683,7 @@ int item_toolbar_action_cb(Ihandle* item_toolbar)
   return IUP_DEFAULT;
 }
 
-int item_toolbox_action_cb(Ihandle* item_toolbox)
+static int item_toolbox_action_cb(Ihandle* item_toolbox)
 {
   Ihandle* toolbox = (Ihandle*)IupGetAttribute(item_toolbox, "TOOLBOX");
   Ihandle* config = (Ihandle*)IupGetAttribute(item_toolbox, "CONFIG");
@@ -1667,7 +1704,7 @@ int item_toolbox_action_cb(Ihandle* item_toolbox)
   return IUP_DEFAULT;
 }
 
-int item_statusbar_action_cb(Ihandle* item_statusbar)
+static int item_statusbar_action_cb(Ihandle* item_statusbar)
 {
   Ihandle* statusbar = IupGetDialogChild(item_statusbar, "STATUSBAR");
   Ihandle* config = (Ihandle*)IupGetAttribute(item_statusbar, "CONFIG");
@@ -1678,19 +1715,19 @@ int item_statusbar_action_cb(Ihandle* item_statusbar)
   return IUP_DEFAULT;
 }
 
-int item_help_action_cb(void)
+static int item_help_action_cb(void)
 {
   IupHelp("http://www.tecgraf.puc-rio.br/iup");
   return IUP_DEFAULT;
 }
 
-int item_about_action_cb(void)
+static int item_about_action_cb(void)
 {
   IupMessage("About", "   Simple Paint\n\nAuthors:\n   Gustavo Lyrio\n   Antonio Scuri");
   return IUP_DEFAULT;
 }
 
-int toolbox_close_cb(Ihandle* toolbox)
+static int toolbox_close_cb(Ihandle* toolbox)
 {
   Ihandle* config = (Ihandle*)IupGetAttribute(toolbox, "CONFIG");
   Ihandle* canvas = (Ihandle*)IupGetAttribute(toolbox, "CANVAS");
@@ -1703,7 +1740,7 @@ int toolbox_close_cb(Ihandle* toolbox)
   return IUP_DEFAULT;
 }
 
-int tool_action_cb(Ihandle* ih, int state)
+static int tool_action_cb(Ihandle* ih, int state)
 {
   if (state == 1)
   {
@@ -1722,12 +1759,18 @@ int tool_action_cb(Ihandle* ih, int state)
   return IUP_DEFAULT;
 }
 
-int toolcolor_action_cb(Ihandle* ih)
+static int toolcolor_action_cb(Ihandle* ih)
 {
+  Ihandle* toolbox = IupGetDialog(ih);
   Ihandle* colordlg = IupColorDlg();
-  const char* color = IupGetAttribute(ih, "BGCOLOR");
+  Ihandle* canvas = (Ihandle*)IupGetAttribute(toolbox, "CANVAS");
+  imImage* image = (imImage*)IupGetAttribute(canvas, "IMAGE");
+  const char* color = IupGetAttribute(toolbox, "TOOLCOLOR");
   IupSetStrAttribute(colordlg, "VALUE", color);
-  IupSetAttributeHandle(colordlg, "PARENTDIALOG", IupGetDialog(ih));
+  IupSetAttributeHandle(colordlg, "PARENTDIALOG", toolbox);
+
+  if (image->has_alpha)
+    IupSetStrAttribute(colordlg, "SHOWALPHA", "Yes");
 
   IupPopup(colordlg, IUP_CENTER, IUP_CENTER);
 
@@ -1735,29 +1778,29 @@ int toolcolor_action_cb(Ihandle* ih)
   {
     color = IupGetAttribute(colordlg, "VALUE");
 
-    IupSetStrAttribute(ih, "BGCOLOR", color);           
-    IupSetStrAttribute(IupGetDialog(ih), "TOOLCOLOR", color);
+    IupSetStrAttribute(toolbox, "TOOLCOLOR", color);
+    IupSetStrAttribute(ih, "BGCOLOR", color);
   }
 
   IupDestroy(colordlg);
   return IUP_DEFAULT;
 }
 
-int toolwidth_valuechanged_cb(Ihandle* ih)
+static int toolwidth_valuechanged_cb(Ihandle* ih)
 {
   char* value = IupGetAttribute(ih, "VALUE");
   IupSetStrAttribute(IupGetDialog(ih), "TOOLWIDTH", value);
   return IUP_DEFAULT;
 }
 
-int toolstyle_valuechanged_cb(Ihandle* ih)
+static int toolstyle_valuechanged_cb(Ihandle* ih)
 {
   char* value = IupGetAttribute(ih, "VALUE");
   IupSetStrAttribute(IupGetDialog(ih), "TOOLSTYLE", value);
   return IUP_DEFAULT;
 }
 
-int toolfont_action_cb(Ihandle* ih)
+static int toolfont_action_cb(Ihandle* ih)
 {
   Ihandle* font_dlg = IupFontDlg();
   char* font = IupGetAttribute(ih, "TOOLFONT");
@@ -1775,7 +1818,7 @@ int toolfont_action_cb(Ihandle* ih)
   return IUP_DEFAULT;
 }
 
-int toolfilltol_valuechanged_cb(Ihandle* ih)
+static int toolfilltol_valuechanged_cb(Ihandle* ih)
 {
   Ihandle* filltol_label = IupGetDialogChild(ih, "FILLTOLLABEL");
   double value = IupGetDouble(ih, "VALUE");
@@ -1784,7 +1827,7 @@ int toolfilltol_valuechanged_cb(Ihandle* ih)
   return IUP_DEFAULT;
 }
 
-int main_dlg_move_cb(Ihandle* dlg, int x, int y)
+static int main_dlg_move_cb(Ihandle* dlg, int x, int y)
 {
   Ihandle* toolbox = (Ihandle*)IupGetAttribute(dlg, "TOOLBOX");
 
@@ -1811,7 +1854,7 @@ int main_dlg_move_cb(Ihandle* dlg, int x, int y)
   return IUP_DEFAULT;
 }
 
-int item_resize_action_cb(Ihandle* ih)
+static int item_resize_action_cb(Ihandle* ih)
 {
   Ihandle* config = (Ihandle*)IupGetAttribute(ih, "CONFIG");
   Ihandle* canvas = IupGetDialogChild(ih, "CANVAS");
@@ -1847,7 +1890,7 @@ int item_resize_action_cb(Ihandle* ih)
   return IUP_DEFAULT;
 }
 
-int item_mirror_action_cb(Ihandle* ih)
+static int item_mirror_action_cb(Ihandle* ih)
 {
   Ihandle* canvas = IupGetDialogChild(ih, "CANVAS");
   imImage* image = (imImage*)IupGetAttribute(canvas, "IMAGE");
@@ -1865,7 +1908,7 @@ int item_mirror_action_cb(Ihandle* ih)
   return IUP_DEFAULT;
 }
 
-int item_flip_action_cb(Ihandle* ih)
+static int item_flip_action_cb(Ihandle* ih)
 {
   Ihandle* canvas = IupGetDialogChild(ih, "CANVAS");
   imImage* image = (imImage*)IupGetAttribute(canvas, "IMAGE");
@@ -1883,7 +1926,7 @@ int item_flip_action_cb(Ihandle* ih)
   return IUP_DEFAULT;
 }
 
-int item_rotate180_action_cb(Ihandle* ih)
+static int item_rotate180_action_cb(Ihandle* ih)
 {
   Ihandle* canvas = IupGetDialogChild(ih, "CANVAS");
   imImage* image = (imImage*)IupGetAttribute(canvas, "IMAGE");
@@ -1901,7 +1944,7 @@ int item_rotate180_action_cb(Ihandle* ih)
   return IUP_DEFAULT;
 }
 
-int item_rotate90cw_action_cb(Ihandle* ih)
+static int item_rotate90cw_action_cb(Ihandle* ih)
 {
   Ihandle* canvas = IupGetDialogChild(ih, "CANVAS");
   imImage* image = (imImage*)IupGetAttribute(canvas, "IMAGE");
@@ -1919,7 +1962,7 @@ int item_rotate90cw_action_cb(Ihandle* ih)
   return IUP_DEFAULT;
 }
 
-int item_rotate90ccw_action_cb(Ihandle* ih)
+static int item_rotate90ccw_action_cb(Ihandle* ih)
 {
   Ihandle* canvas = IupGetDialogChild(ih, "CANVAS");
   imImage* image = (imImage*)IupGetAttribute(canvas, "IMAGE");
@@ -1937,7 +1980,7 @@ int item_rotate90ccw_action_cb(Ihandle* ih)
   return IUP_DEFAULT;
 }
 
-int item_negative_action_cb(Ihandle* ih)
+static int item_negative_action_cb(Ihandle* ih)
 {
   Ihandle* canvas = IupGetDialogChild(ih, "CANVAS");
   imImage* image = (imImage*)IupGetAttribute(canvas, "IMAGE");
@@ -1961,18 +2004,18 @@ static int brightcont_param_cb(Ihandle* dialog, int param_index, void* user_data
 
   if (param_index == 0 || param_index == 1)
   {
-    float param[2] = { 0, 0 };
+    double param[2] = { 0, 0 };
     imImage* image = (imImage*)IupGetAttribute(canvas, "ORIGINAL_IMAGE");
     imImage* new_image = (imImage*)IupGetAttribute(canvas, "NEW_IMAGE");
     Ihandle* brightness_shift_param = (Ihandle*)IupGetAttribute(dialog, "PARAM0");
     Ihandle* contrast_factor_param = (Ihandle*)IupGetAttribute(dialog, "PARAM1");
-    param[0] = IupGetFloat(brightness_shift_param, "VALUE");
-    param[1] = IupGetFloat(contrast_factor_param, "VALUE");
+    param[0] = IupGetDouble(brightness_shift_param, "VALUE");
+    param[1] = IupGetDouble(contrast_factor_param, "VALUE");
 
     imProcessToneGamut(image, new_image, IM_GAMUT_BRIGHTCONT, param);
 
     IupSetAttribute(canvas, "IMAGE", (char*)new_image);
-    IupUpdate(canvas);
+    IupRedraw(canvas, 0);
   }
   else if (param_index != IUP_GETPARAM_INIT && param_index != IUP_GETPARAM_MAP)
   {
@@ -1989,9 +2032,9 @@ static int brightcont_param_cb(Ihandle* dialog, int param_index, void* user_data
   return 1;
 }
 
-int item_brightcont_action_cb(Ihandle* ih)
+static int item_brightcont_action_cb(Ihandle* ih)
 {
-  float param[2] = { 0, 0 };
+  double param[2] = { 0, 0 };
   Ihandle* canvas = IupGetDialogChild(ih, "CANVAS");
   imImage* image = (imImage*)IupGetAttribute(canvas, "IMAGE");
   imImage* new_image = imImageClone(image);
@@ -2005,8 +2048,8 @@ int item_brightcont_action_cb(Ihandle* ih)
   IupSetAttribute(canvas, "NEW_IMAGE", (char*)new_image);
 
   if (!IupGetParam("Brightness and Contrast", brightcont_param_cb, canvas,
-                   "Brightness Shift: %r[-100,100]\n"
-                   "Contrast Factor: %r[-100,100]\n",
+                   "Brightness Shift: %R[-100,100]\n"
+                   "Contrast Factor: %R[-100,100]\n",
                    &param[0], &param[1], NULL))
   {
     imImageDestroy(new_image);
@@ -2024,7 +2067,7 @@ int item_brightcont_action_cb(Ihandle* ih)
 /********************************** Main *****************************************/
 
 
-Ihandle* create_main_menu(Ihandle *config)
+static Ihandle* create_main_menu(Ihandle *config)
 {
   Ihandle *menu, *sub_menu_file;
   Ihandle *file_menu, *item_exit, *item_new, *item_open, *item_save, *item_saveas, *item_revert;
@@ -2198,7 +2241,7 @@ Ihandle* create_main_menu(Ihandle *config)
   return menu;
 }
 
-Ihandle* create_toolbar(Ihandle *config)
+static Ihandle* create_toolbar(Ihandle *config)
 {
   Ihandle *toolbar;
   Ihandle *btn_copy, *btn_paste, *btn_new, *btn_open, *btn_save, *btn_zoomgrid;
@@ -2272,7 +2315,7 @@ Ihandle* create_toolbar(Ihandle *config)
   return toolbar;
 }
 
-void create_toolbox(Ihandle* parent_dlg, Ihandle *config)
+static void create_toolbox(Ihandle* parent_dlg, Ihandle *config)
 {
   Ihandle *toolbox, *gbox, *vbox;
   Ihandle* canvas = IupGetDialogChild(parent_dlg, "CANVAS");
@@ -2331,7 +2374,7 @@ void create_toolbox(Ihandle* parent_dlg, Ihandle *config)
   IupSetCallback(toolbox, "CLOSE_CB", (Icallback)toolbox_close_cb);
   IupSetAttributeHandle(toolbox, "PARENTDIALOG", parent_dlg);
 
-  IupSetAttribute(toolbox, "TOOLCOLOR", "0 0 0");
+  IupSetAttribute(toolbox, "TOOLCOLOR", "0 0 0 255");
   IupSetAttribute(toolbox, "TOOLWIDTH", "1");
   IupSetAttribute(toolbox, "TOOLSTYLE", "1");
   IupSetAttribute(toolbox, "TOOLFILLTOL", "50");
@@ -2349,7 +2392,6 @@ void create_toolbox(Ihandle* parent_dlg, Ihandle *config)
     /* configure the very first time to be aligned with the main window */
     if (!IupConfigGetVariableStr(config, "Toolbox", "X"))
     {
-      Ihandle* canvas = IupGetDialogChild(parent_dlg, "CANVAS");
       int x = IupGetInt(canvas, "X");
       int y = IupGetInt(canvas, "Y");
       IupConfigSetVariableInt(config, "Toolbox", "X", x);
@@ -2360,7 +2402,7 @@ void create_toolbox(Ihandle* parent_dlg, Ihandle *config)
   }
 }
 
-Ihandle* create_statusbar(Ihandle *config)
+static Ihandle* create_statusbar(Ihandle *config)
 {
   Ihandle *statusbar;
 
@@ -2389,7 +2431,7 @@ Ihandle* create_statusbar(Ihandle *config)
   return statusbar;
 }
 
-Ihandle* create_main_dialog(Ihandle *config)
+static Ihandle* create_main_dialog(Ihandle *config)
 {
   Ihandle *dlg, *vbox, *canvas;
 

@@ -25,8 +25,8 @@ Parameters/Return</h3>
 iup.RefreshChildren(<strong>ih</strong>: ihandle) [in Lua]</pre>
 <p><b>ih</b>: identifier of the interface element.</p>
 <h3>Notes</h3>
-<p>The given element must be a container. It must be inside a dialog hierarchy 
-and must be mapped. It can not be a dialog. For dialogs use <strong>IupRefresh</strong>.</p>
+<p>The given element must be a container. It must be inside a dialog hierarchy. It can 
+NOT be a dialog, for dialogs use <strong>IupRefresh</strong>.</p>
 <p>The children are immediately repositioned, if the dialog is visible then the 
 change will be immediately reflected on the display.</p>
 <p>This function will NOT change the size of the given element, even if the 

@@ -97,6 +97,7 @@ IUP_SDK_API char* iupBaseGetSizeAttrib(Ihandle* ih)
 
   if (width == 0 && height == 0)
     return NULL;
+
   return iupStrReturnIntInt(iupRASTER2WIDTH(width, charwidth), iupRASTER2HEIGHT(height, charheight), 'x');
 }
 
@@ -148,6 +149,17 @@ IUP_SDK_API char* iupBaseCanvasGetClientSizeAttrib(Ihandle* ih)
     width -= 2;
     height -= 2;
   }
+
+  if (width < 0) width = 0;
+  if (height < 0) height = 0;
+
+  return iupStrReturnIntInt(width, height, 'x');
+}
+
+IUP_SDK_API char* iupBaseGetClientSizeAttrib(Ihandle* ih)
+{
+  int width = ih->currentwidth;
+  int height = ih->currentheight;
 
   if (width < 0) width = 0;
   if (height < 0) height = 0;
@@ -350,7 +362,13 @@ static int iBaseSetNormalizerGroupAttrib(Ihandle* ih, const char* value)
   }
 
   IupSetAttribute(ih_normalizer, "ADDCONTROL_HANDLE", (char*)ih);
-  return 1;
+  iupAttribSetStr(ih, "_IUP_NORMALIZERGROUP", value);
+  return 0;
+}
+
+static  char* iBaseGetNormalizerGroupAttrib(Ihandle* ih)
+{
+  return iupAttribGet(ih, "_IUP_NORMALIZERGROUP");
 }
 
 static Ihandle* iBaseFindNamedChild(Ihandle* ih, const char* name)
@@ -538,15 +556,101 @@ IUP_SDK_API char* iupBaseContainerGetExpandAttrib(Ihandle* ih)
   return iupAttribGetInherit(ih, "EXPAND");
 }
 
+IUP_SDK_API int iupBaseSetCPaddingAttrib(Ihandle* ih, const char* value)
+{
+  if (!value)
+    IupSetAttribute(ih, "PADDING", NULL);
+  else
+  {
+    int cpad_horiz = -1, cpad_vert = -1;
+    int ret = iupStrToIntInt(value, &cpad_horiz, &cpad_vert, 'x');
+    if (ret == 2)
+    {
+      int pad_horiz, pad_vert;
+      int charwidth, charheight;
+      iupdrvFontGetCharSize(ih, &charwidth, &charheight);
+      pad_horiz = iupWIDTH2RASTER(cpad_horiz, charwidth);
+      pad_vert = iupHEIGHT2RASTER(cpad_vert, charheight);
+      IupSetStrf(ih, "PADDING", "%dx%d", pad_horiz, pad_vert);
+    }
+    else if (ret == 1)
+    {
+      int pad_horiz, pad_vert;
+      int charwidth, charheight;
+      IupGetIntInt(ih, "PADDING", &pad_horiz, &pad_vert);
+      iupdrvFontGetCharSize(ih, &charwidth, &charheight);
+
+      if (cpad_vert == -1)
+        pad_horiz = iupWIDTH2RASTER(cpad_horiz, charwidth);
+      else
+        pad_vert = iupHEIGHT2RASTER(cpad_vert, charheight);
+
+      IupSetStrf(ih, "PADDING", "%dx%d", pad_horiz, pad_vert);
+    }
+  }
+  return 0;  /* NOT stored */
+}
+
+IUP_SDK_API char* iupBaseGetCPaddingAttrib(Ihandle* ih)
+{
+  int pad_horiz, pad_vert;
+  int charheight, charwidth;
+  IupGetIntInt(ih, "PADDING", &pad_horiz, &pad_vert);
+  iupdrvFontGetCharSize(ih, &charwidth, &charheight);
+
+  pad_horiz = iupRASTER2WIDTH(pad_horiz, charwidth);
+  pad_vert = iupRASTER2HEIGHT(pad_vert, charheight);
+
+  return iupStrReturnIntInt(pad_horiz, pad_vert, 'x');
+}
+
+/*
+iupClassRegisterAttribute(ic, "CPADDING", iupBaseGetCPaddingAttrib, iupBaseSetCPaddingAttrib, NULL, NULL, IUPAF_NO_SAVE | IUPAF_NOT_MAPPED);
+*/
+
+IUP_SDK_API int iupBaseSetCSpacingAttrib(Ihandle* ih, const char* value)
+{
+  if (!value)
+    IupSetAttribute(ih, "SPACING", NULL);
+  else
+  {
+    int cspacing;
+    if (iupStrToInt(value, &cspacing))
+    {
+      int spacing;
+      int charheight;
+      iupdrvFontGetCharSize(ih, NULL, &charheight);
+      spacing = iupHEIGHT2RASTER(cspacing, charheight);
+      IupSetInt(ih, "SPACING", spacing);
+    }
+  }
+  return 0;  /* NOT stored */
+}
+
+IUP_SDK_API char* iupBaseGetCSpacingAttrib(Ihandle* ih)
+{
+  int spacing = IupGetInt(ih, "SPACING");
+  int charheight;
+  iupdrvFontGetCharSize(ih, NULL, &charheight);
+
+  spacing = iupRASTER2HEIGHT(spacing, charheight);
+
+  return iupStrReturnInt(spacing);
+}
+
+/*
+iupClassRegisterAttribute(ic, "CSPACING", iupBaseGetCSpacingAttrib, iupBaseSetCSpacingAttrib, NULL, NULL, IUPAF_NO_SAVE | IUPAF_NOT_MAPPED);
+*/
+
 IUP_SDK_API void iupBaseRegisterCommonAttrib(Iclass* ic)
 {
   iupClassRegisterAttribute(ic, "WID", iupBaseGetWidAttrib, NULL, NULL, NULL, IUPAF_READONLY|IUPAF_NO_INHERIT|IUPAF_NO_STRING);
   iupClassRegisterAttribute(ic, "NAME", NULL, iupBaseSetNameAttrib, NULL, NULL, IUPAF_NO_DEFAULTVALUE|IUPAF_NOT_MAPPED|IUPAF_NO_INHERIT);
   iupClassRegisterAttribute(ic, "FLOATING", iBaseGetFloatingAttrib, iBaseSetFloatingAttrib, NULL, NULL, IUPAF_NOT_MAPPED|IUPAF_NO_INHERIT);
   iupClassRegisterAttribute(ic, "EXPAND", iupBaseGetExpandAttrib, iupBaseSetExpandAttrib, NULL, NULL, IUPAF_NOT_MAPPED|IUPAF_NO_INHERIT);
-  iupClassRegisterAttribute(ic, "NORMALIZERGROUP", NULL, iBaseSetNormalizerGroupAttrib, NULL, NULL, IUPAF_IHANDLENAME|IUPAF_NOT_MAPPED|IUPAF_NO_INHERIT);
-  iupClassRegisterAttribute(ic, "EXPANDWEIGHT", NULL, NULL, NULL, NULL, IUPAF_NOT_MAPPED|IUPAF_NO_INHERIT);
-  iupClassRegisterAttribute(ic, "HANDLENAME", NULL, NULL, NULL, NULL, IUPAF_NO_SAVE | IUPAF_NOT_MAPPED | IUPAF_NO_INHERIT);
+  iupClassRegisterAttribute(ic, "NORMALIZERGROUP", iBaseGetNormalizerGroupAttrib, iBaseSetNormalizerGroupAttrib, NULL, NULL, IUPAF_IHANDLENAME|IUPAF_NOT_MAPPED|IUPAF_NO_INHERIT);
+  iupClassRegisterAttribute(ic, "EXPANDWEIGHT", NULL, NULL, NULL, NULL, IUPAF_NO_INHERIT);
+  iupClassRegisterAttribute(ic, "HANDLENAME", NULL, NULL, NULL, NULL, IUPAF_NO_SAVE | IUPAF_NO_INHERIT);
   iupClassRegisterAttribute(ic, "THEME", NULL, iBaseSetThemeAttrib, NULL, NULL, IUPAF_IHANDLENAME | IUPAF_NOT_MAPPED);
   iupClassRegisterAttribute(ic, "NTHEME", NULL, iBaseSetThemeAttrib, NULL, NULL, IUPAF_IHANDLENAME | IUPAF_NOT_MAPPED | IUPAF_NO_INHERIT);
 
@@ -560,7 +664,7 @@ IUP_SDK_API void iupBaseRegisterCommonAttrib(Iclass* ic)
 
   /* if not native container, must set at children,
      native container will automatically hide its children. */
-  iupClassRegisterAttribute(ic, "VISIBLE", NULL, NULL, IUPAF_SAMEASSYSTEM, "YES", IUPAF_NO_SAVE|IUPAF_DEFAULT);  /* inherited */
+  iupClassRegisterAttribute(ic, "VISIBLE", NULL, NULL, IUPAF_SAMEASSYSTEM, "YES", IUPAF_NO_SAVE);  /* inherited */
 
   iupClassRegisterAttribute(ic, "SIZE", iupBaseGetSizeAttrib, iupBaseSetSizeAttrib, NULL, NULL, IUPAF_NO_SAVE|IUPAF_NO_DEFAULTVALUE|IUPAF_NOT_MAPPED|IUPAF_NO_INHERIT);
   iupClassRegisterAttribute(ic, "RASTERSIZE", iupBaseGetRasterSizeAttrib, iupBaseSetRasterSizeAttrib, NULL, NULL, IUPAF_NO_SAVE|IUPAF_NO_DEFAULTVALUE|IUPAF_NOT_MAPPED|IUPAF_NO_INHERIT);
@@ -583,7 +687,7 @@ IUP_SDK_API void iupBaseRegisterCommonAttrib(Iclass* ic)
 
 IUP_SDK_API void iupBaseRegisterVisualAttrib(Iclass* ic)
 {
-  iupClassRegisterAttribute(ic, "VISIBLE", iupBaseGetVisibleAttrib, iupBaseSetVisibleAttrib, "YES", "NO", IUPAF_NO_SAVE | IUPAF_DEFAULT);   /* must be inheritable to propagate visual state to children and from parent */
+  iupClassRegisterAttribute(ic, "VISIBLE", iupBaseGetVisibleAttrib, iupBaseSetVisibleAttrib, "YES", "NO", IUPAF_NO_SAVE);   /* must be inheritable to propagate visual state to children and from parent */
   iupClassRegisterAttribute(ic, "ACTIVE", iupBaseGetActiveAttrib, iupBaseSetActiveAttrib, IUPAF_SAMEASSYSTEM, "YES", IUPAF_DEFAULT);  /* must be inheritable to propagate visual state to children and from parent */
 
   iupClassRegisterAttribute(ic, "ZORDER", NULL, iupdrvBaseSetZorderAttrib, NULL, NULL, IUPAF_WRITEONLY|IUPAF_NO_INHERIT);
@@ -593,25 +697,31 @@ IUP_SDK_API void iupBaseRegisterVisualAttrib(Iclass* ic)
 
   iupClassRegisterAttribute(ic, "TIP", NULL, iupdrvBaseSetTipAttrib, NULL, NULL, IUPAF_NO_DEFAULTVALUE|IUPAF_NO_INHERIT);
   iupClassRegisterAttribute(ic, "TIPVISIBLE", iupdrvBaseGetTipVisibleAttrib, iupdrvBaseSetTipVisibleAttrib, NULL, NULL, IUPAF_NO_INHERIT);
-  iupClassRegisterAttribute(ic, "TIPDELAY", NULL, NULL, IUPAF_SAMEASSYSTEM, "5000", IUPAF_NOT_MAPPED);          /* 5 seconds */
-  iupClassRegisterAttribute(ic, "TIPBGCOLOR", NULL, NULL, IUPAF_SAMEASSYSTEM, "255 255 225", IUPAF_NOT_MAPPED); /* Light Yellow */
-  iupClassRegisterAttribute(ic, "TIPFGCOLOR", NULL, NULL, IUPAF_SAMEASSYSTEM, "0 0 0", IUPAF_NOT_MAPPED);       /* black */
-  iupClassRegisterAttribute(ic, "TIPRECT", NULL, NULL, IUPAF_SAMEASSYSTEM, NULL, IUPAF_NOT_MAPPED);
+  iupClassRegisterAttribute(ic, "TIPDELAY", NULL, NULL, IUPAF_SAMEASSYSTEM, "5000", IUPAF_DEFAULT);          /* 5 seconds */
+  iupClassRegisterAttribute(ic, "TIPBGCOLOR", NULL, NULL, IUPAF_SAMEASSYSTEM, "255 255 225", IUPAF_DEFAULT); /* Light Yellow */
+  iupClassRegisterAttribute(ic, "TIPFGCOLOR", NULL, NULL, IUPAF_SAMEASSYSTEM, "0 0 0", IUPAF_DEFAULT);       /* black */
+  iupClassRegisterAttribute(ic, "TIPRECT", NULL, NULL, IUPAF_SAMEASSYSTEM, NULL, IUPAF_DEFAULT);
 
   iupdrvBaseRegisterVisualAttrib(ic);
 }
 
-IUP_SDK_API void iupBaseRegisterCommonCallbacks(Iclass* ic)
+IUP_SDK_API void iupBaseRegisterBaseCallbacks(Iclass* ic)
 {
   iupClassRegisterCallback(ic, "DESTROY_CB", "");
   iupClassRegisterCallback(ic, "LDESTROY_CB", "");
   iupClassRegisterCallback(ic, "MAP_CB", "");
   iupClassRegisterCallback(ic, "UNMAP_CB", "");
+  iupClassRegisterCallback(ic, "POSTMESSAGE_CB", "sidV");
+}
+
+IUP_SDK_API void iupBaseRegisterCommonCallbacks(Iclass* ic)
+{
+  iupBaseRegisterBaseCallbacks(ic);
+
   iupClassRegisterCallback(ic, "GETFOCUS_CB", "");
   iupClassRegisterCallback(ic, "KILLFOCUS_CB", "");
   iupClassRegisterCallback(ic, "ENTERWINDOW_CB", "");
   iupClassRegisterCallback(ic, "LEAVEWINDOW_CB", "");
-  iupClassRegisterCallback(ic, "POSTMESSAGE_CB", "");
   iupClassRegisterCallback(ic, "HELP_CB", "");
   iupClassRegisterCallback(ic, "K_ANY", "i");
 }

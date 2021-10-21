@@ -35,8 +35,13 @@ extern "C" {
  * \ingroup iclassbase */
 IUP_SDK_API void iupBaseRegisterVisualAttrib(Iclass* ic);
 
-/** Register all common callbacks: \n
-* MAP_CB, UNMAP_CB, GETFOCUS_CB, KILLFOCUS_CB, ENTERWINDOW_CB, LEAVEWINDOW_CB, K_ANY, HELP_CB.
+/** Register all base callbacks: \n
+* MAP_CB, UNMAP_CB, DESTROY_CB, LDESTROY_CB.
+* \ingroup iclassbase */
+IUP_SDK_API void iupBaseRegisterBaseCallbacks(Iclass* ic);
+
+/** Register all base and common callbacks: \n
+* MAP_CB, UNMAP_CB, DESTROY_CB, LDESTROY_CB, GETFOCUS_CB, KILLFOCUS_CB, ENTERWINDOW_CB, LEAVEWINDOW_CB, K_ANY, HELP_CB.
 * \ingroup iclassbase */
 IUP_SDK_API void iupBaseRegisterCommonCallbacks(Iclass* ic);
 
@@ -118,6 +123,7 @@ IUP_SDK_API char* iupBaseGetSizeAttrib(Ihandle* ih);
 IUP_SDK_API char* iupBaseGetCurrentSizeAttrib(Ihandle* ih);
 IUP_SDK_API char* iupBaseGetRasterSizeAttrib(Ihandle* ih);
 IUP_SDK_API char* iupBaseGetClientOffsetAttrib(Ihandle* ih);
+IUP_SDK_API char* iupBaseGetClientSizeAttrib(Ihandle* ih);
 IUP_SDK_API char* iupBaseCanvasGetClientOffsetAttrib(Ihandle* ih);
 IUP_SDK_API char* iupBaseCanvasGetClientSizeAttrib(Ihandle* ih);
 IUP_SDK_API int iupBaseSetMaxSizeAttrib(Ihandle* ih, const char* value);
@@ -137,6 +143,10 @@ IUP_SDK_API char* iupdrvBaseGetTipVisibleAttrib(Ihandle* ih);
 IUP_SDK_API int iupdrvBaseSetBgColorAttrib(Ihandle* ih, const char* value);
 IUP_SDK_API int iupdrvBaseSetFgColorAttrib(Ihandle* ih, const char* value);
 IUP_SDK_API char* iupBaseNativeParentGetBgColorAttrib(Ihandle* ih);
+IUP_SDK_API int iupBaseSetCPaddingAttrib(Ihandle* ih, const char* value);
+IUP_SDK_API char* iupBaseGetCPaddingAttrib(Ihandle* ih);
+IUP_SDK_API int iupBaseSetCSpacingAttrib(Ihandle* ih, const char* value);
+IUP_SDK_API char* iupBaseGetCSpacingAttrib(Ihandle* ih);
 
 /* other */
 IUP_SDK_API char* iupBaseContainerGetExpandAttrib(Ihandle* ih);

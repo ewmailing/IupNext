@@ -40,7 +40,7 @@ static unsigned char iColorQuantize(double value)
 
 static double iColorReconstruct(unsigned char value)
 {
-  if (value <= 0) return 0.0;
+  if (value == 0) return 0.0;
   if (value >= 255) return 1.0;
   return (((double)value + 0.5)/256.0);
 }

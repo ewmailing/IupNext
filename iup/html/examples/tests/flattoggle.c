@@ -247,6 +247,8 @@ void FlatToggleTest(void)
 //  IupSetAttribute(toggle1, "RASTERSIZE",   "160x160");
   //  IupSetAttribute(toggle1, "CANFOCUS", "NO");
   //  IupSetAttribute(toggle1, "ALIGNMENT",   "ARIGHT");
+  IupSetAttribute(toggle2, "VALUE", "ON");
+  IupSetAttribute(toggle3, "VALUE", "ON");
 
   //  IupSetAttribute(toggle2, "RASTERSIZE",   "60x60");            
 //  IupSetAttribute(toggle2, "ALIGNMENT",  "ARIGHT");            

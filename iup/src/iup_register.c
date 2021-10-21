@@ -173,4 +173,5 @@ void iupRegisterInternalClasses(void)
   iupRegisterClassInternal(iupMultiBoxNewClass());
   iupRegisterClassInternal(iupFlatListNewClass());
   iupRegisterClassInternal(iupFlatValNewClass());
+  iupRegisterClassInternal(iupFlatTreeNewClass());
 }

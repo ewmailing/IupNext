@@ -501,8 +501,6 @@ static long iMaskMatchLocal (const char *text, ImaskParsed * fsm, long start, ch
       }
       else if(addchar)
       {
-        int pos;
-
         for (pos = 0; pos < now.size; pos++)
         {
           state = now.stack[pos];

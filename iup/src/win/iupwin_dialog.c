@@ -170,7 +170,10 @@ void iupdrvDialogGetPosition(Ihandle *ih, InativeHandle* handle, int *x, int *y)
 void iupdrvDialogSetPosition(Ihandle *ih, int x, int y)
 {
   /* Only moves the window and places it at the top of the Z order. */
-  SetWindowPos(ih->handle, HWND_TOP, x, y, 0, 0, SWP_NOSIZE);
+  int flags = SWP_NOSIZE;
+  if (iupAttribGetBoolean(ih, "SHOWNOACTIVATE"))
+    flags |= SWP_NOACTIVATE;
+  SetWindowPos(ih->handle, HWND_TOP, x, y, 0, 0, flags);
 }
 
 static void winDialogGetWindowDecor(Ihandle* ih, int *border, int *caption, int menu)
@@ -279,9 +282,12 @@ void iupdrvDialogGetDecoration(Ihandle* ih, int *border, int *caption, int *menu
 int iupdrvDialogSetPlacement(Ihandle* ih)
 {
   char* placement;
-  int no_activate;
+  int no_activate = iupAttribGetBoolean(ih, "SHOWNOACTIVATE");
 
-  ih->data->cmd_show = SW_SHOWNORMAL;
+  if (no_activate)
+    ih->data->cmd_show = SW_SHOWNOACTIVATE;
+  else
+    ih->data->cmd_show = SW_SHOWNORMAL;
   ih->data->show_state = IUP_SHOW;
 
   if (iupAttribGetBoolean(ih, "FULLSCREEN"))
@@ -309,10 +315,6 @@ int iupdrvDialogSetPlacement(Ihandle* ih)
     ih->data->show_state = IUP_MAXIMIZE;
     return 1;
   }
-
-  no_activate = iupAttribGetBoolean(ih, "SHOWNOACTIVATE");
-  if (no_activate)
-    ih->data->cmd_show = SW_SHOWNOACTIVATE;
 
   if (iupStrEqualNoCase(placement, "MAXIMIZED"))
   {
@@ -652,6 +654,8 @@ static int winDialogCustomFrameProc(Ihandle* ih, UINT msg, WPARAM wp, LPARAM lp,
     {
       SetCapture(ih->handle);
 
+      iupwinFlagButtonDown(ih, msg);
+
       if (iupwinButtonDown(ih, msg, wp, lp))
       {
         /* refresh the cursor, it could have been changed in BUTTON_CB */
@@ -679,6 +683,12 @@ static int winDialogCustomFrameProc(Ihandle* ih, UINT msg, WPARAM wp, LPARAM lp,
   case WM_MBUTTONUP:
   case WM_RBUTTONUP:
     {
+      if (!iupwinFlagButtonUp(ih, msg))
+      {
+        *result = 0;
+        return 1;
+      }
+
       ReleaseCapture();
 
       if (iupwinButtonUp(ih, msg, wp, lp))
@@ -1515,7 +1525,11 @@ static int winDialogSetTitleAttrib(Ihandle* ih, const char* value)
   }
   else
     iupwinSetTitleAttrib(ih, value);
-  return 1; 
+
+  if (iupAttribGetBoolean(ih, "CUSTOMFRAME") || iupAttribGetBoolean(ih, "CUSTOMFRAMESIMULATE"))
+    return 0;
+
+  return 1;
 }
 
 static int winDialogSetBgColorAttrib(Ihandle* ih, const char* value)
@@ -2125,7 +2139,7 @@ void iupdrvDialogInitClass(Iclass* ic)
   iupClassRegisterAttribute(ic, "MAXIMIZEATDIALOG", NULL, NULL, NULL, NULL, IUPAF_NO_INHERIT);
   iupClassRegisterAttribute(ic, "MAXIMIZEDIALOG", NULL, NULL, NULL, NULL, IUPAF_NO_DEFAULTVALUE | IUPAF_IHANDLENAME | IUPAF_NO_INHERIT);
 
-  iupClassRegisterAttribute(ic, "COMPOSITED", NULL, NULL, NULL, NULL, IUPAF_NOT_MAPPED);
+  iupClassRegisterAttribute(ic, "COMPOSITED", NULL, NULL, NULL, NULL, IUPAF_DEFAULT);
 
   iupClassRegisterAttribute(ic, "CONTROL", NULL, NULL, NULL, NULL, IUPAF_NO_INHERIT);
   iupClassRegisterAttribute(ic, "HELPBUTTON", NULL, NULL, NULL, NULL, IUPAF_NO_INHERIT);

@@ -501,6 +501,19 @@ static void iFlipDataPacked(unsigned char* data, int width, int height, int dept
   free(temp_line);
 }
 
+static int iCalcPalCount(unsigned char* data, int count)
+{
+  int i;
+  int pal_count = 0;
+  for (i = 0; i < count; i++)
+  {
+    if (data[i] > pal_count)
+      pal_count = data[i];
+  }
+  pal_count++;
+  return pal_count;
+}
+
 Ihandle* IupImageFromImImage(const imImage* image)
 {
   Ihandle* iup_image = NULL;
@@ -541,6 +554,7 @@ Ihandle* IupImageFromImImage(const imImage* image)
   {
     int i;
     const unsigned char* transp_index;
+    int pal_count;
 
     image_data = image->data[0];
 
@@ -551,7 +565,8 @@ Ihandle* IupImageFromImImage(const imImage* image)
     /* imImage is always bottom top, IUP is always top bottom */
     iFlipDataPacked(image_data, image->width, image->height, 1);
 
-    for (i = 0; i < image->palette_count; i++)
+    pal_count = iCalcPalCount(image_data, image->count);
+    for (i = 0; i < pal_count; i++)
     {
       unsigned char r, g, b;
       imColorDecode(&r, &g, &b, image->palette[i]);

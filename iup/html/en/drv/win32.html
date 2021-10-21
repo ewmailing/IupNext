@@ -20,11 +20,10 @@
 <h3>DLL</h3>
 <p>To use the IUP DLL, it is necessary to link the 
   application with the IUP.lib and IUPSTUB.lib libraries (for technical reasons, these libraries cannot be unified). Note that 
-  IUP.lib is a library specially generated to work with 
+  iup.lib is a library specially generated to work with 
   iup.dll, and is usually distributed in the same directory as 
   iup.dll. The IUP DLL depends on the Visual Studio C++ Run Time Library, MSVCR[XX].DLL, 
-according to the Visuall C++ that built the iup.dll. The tools precompiled 
-binaries use the VC10 DLLs (msvcr100.dll).</p>
+according to the Visuall C++ that built the iup.dll. </p>
 <p>For the program to work, IUP.dll must be inside a PATH directory. Usually the program does not need to be re-linked when 
   the DLL is updated.</p>
 <h3>Tips</h3>
@@ -32,7 +31,7 @@ binaries use the VC10 DLLs (msvcr100.dll).</p>
 <p>The <strong>Spy++</strong> tool distributed with Microsoft Visual Studio is 
 very useful to inspect windows controls position, size and visibility. It can be 
 found in the Visual Studio &quot;Tools&quot; menu. In a similar way you can also use the
-<a href="../dlg/iuplayoutdialog.html">IupLayoutDlg</a> to show IUP controls 
+<a href="../dlg/iuplayoutdialog.html">IupLayoutDialog</a> to show IUP controls 
 attributes and callbacks, in a interactive display of the dialog layout.</p>
 <h4>Dialog Contents Zoomed by the System</h4>
 <p>In Windows 8.1, Microsoft introduces a feature to support High DPI screens. 
@@ -49,13 +48,13 @@ the application DPI aware.</p>
 these resolution changes the application should avoid using sizes in pixels 
 (like: RASTERSIZE, GAP, MARGIN) use character sizes instead (like: SIZE, CGAP, 
 CMARGIN). </p>
-<p>But there is a problem with the images. Usually applications use 16x16 images 
+<p>But there is still a problem with the images. Usually applications use 16x16 images 
 for toolbar buttons, in a 4k resolution this looks very small, so ideally the 
 application should have at least 3 sets of buttons: 16x16, 24x24 and 32x32. We recommend using 24x24 images for toolbar buttons when the SCREENDPI 
 (global attribute) is greater than 120 DPI (&gt; 125%), and 32x32 when greater than 
 144 DPI (&gt; 150%). If that is not possible the global attribute IMAGEAUTOSCALE<b>
 </b>and the <b>IupImage </b>attribute AUTOSCALE can be used to automatically 
-scale images with BPP &gt; 8. Stock image size is already automatically selected 
+scale images. Stock image size is already automatically selected 
 and resized if necessary.</p>
 <h4>UTF-8</h4>
 <p>When IUP is built with UNICODE enabled, it is possible to specify strings in 
@@ -108,8 +107,10 @@ because using it you can create other linking problems.</span></p>
 <p>To use some cursors and the preview area of <b>IupFileDlg</b> you must include the 
   &quot;iup.rc&quot; file into your makefile. Or include the contents of it into your resource file, you will need also to copy 
   the cursor files.</p>
-<h4>Windows XP/Vista/7/... Visual Styles</h4>
-<p>Windows Visual Styles can be enabled using a manifest file. Uncomment the manifest file section in &quot;iup.rc&quot; file or copy 
+<h4>Windows Native Controls Appearance</h4>
+<p>By default the Win32 application will look like Windows XP Classic theme, 
+even in Windows 10. To use the new themes in Windows XP and and newer Windows, 
+the build must enable the Windows Visual Styles. It can be enabled using a manifest file. Uncomment the manifest file section in &quot;iup.rc&quot; file or copy 
   it to your own resource file (you will need also to copy the manifest file &quot;iup.manifest&quot; 
 or &quot;iup64.manifest&quot;).</p>
 <p>When using Visual C++ 8/9/10/... with a manifest file, configure the linker properties 

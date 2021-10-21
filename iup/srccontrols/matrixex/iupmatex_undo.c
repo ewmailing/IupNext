@@ -160,7 +160,7 @@ static int iMatrixSetUndoClearAttrib(Ihandle* ih, const char* value)
   int undo_stack_count = matex_data->undo_stack? iupArrayCount(matex_data->undo_stack): 0;
   if (undo_stack_count)
   {
-    int i, undo_stack_count = iupArrayCount(matex_data->undo_stack);
+    int i;
     IundoData* undo_stack_data = (IundoData*)iupArrayGetData(matex_data->undo_stack);
     for (i=0; i<undo_stack_count; i++)
       iMatrixExUndoDataClear(&(undo_stack_data[i]));
@@ -258,7 +258,7 @@ static int iMatrixSetRedoAttrib(Ihandle* ih, const char* value)
   int undo_stack_count = matex_data->undo_stack? iupArrayCount(matex_data->undo_stack): 0;
   if (undo_stack_count && matex_data->undo_stack_pos<undo_stack_count)
   {
-    int i, count = 1, total_cell_count = 0, undo_stack_count = iupArrayCount(matex_data->undo_stack);
+    int i, count = 1, total_cell_count = 0;
     IundoData* undo_stack_data = (IundoData*)iupArrayGetData(matex_data->undo_stack);
 
     iupStrToInt(value, &count);

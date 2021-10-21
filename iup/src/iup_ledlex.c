@@ -34,7 +34,7 @@ static struct          /* lexical variables */
 
 static int iLexGetChar (void);
 static int iLexToken(int *erro);
-static int iLexCapture (char* dlm);
+static int iLexCapture (const char* dlm);
 static void iLexSkipComment (void);
 static int iLexCaptureAttr (void);
 
@@ -52,7 +52,7 @@ int iupLexStart(const char* filename, const char *buffer)      /* initialize lex
   {
     ilex.file = fopen(filename, "r");
     if (!ilex.file)
-      return iupLexError(IUPLEX_FILENOTOPENED, filename);
+      return iupLexError(IUPLEX_ERR_FILENOTOPENED, filename);
     ilex.filename = filename;
   }
   ilex.line = 1;
@@ -120,9 +120,8 @@ int iupLexMatch(int t)
   if (ilex.token==t)
     return iupLexAdvance();
   else
-    return iupLexError (IUPLEX_NOTMATCH, ilex.token, t);
+    return iupLexError (IUPLEX_ERR_NOTMATCH, ilex.token, t);
 }
-
 
 int iupLexSeenMatch(int t, int *erro)
 {
@@ -172,6 +171,11 @@ Iclass *iupLexGetClass(void)
   return ilex.ic;
 }
 
+int iupLexGetLine(void)
+{
+  return ilex.line;
+}
+
 static int iLexToken(int *erro)
 {
   for (;;)
@@ -191,7 +195,7 @@ static int iLexToken(int *erro)
       iLexSkipComment();
       continue;
 
-    case ' ':          /* ignore whitespace */
+    case ' ':          /* ignore whitespace and control characters */
     case '\t':
     case '\n':
     case '\r':
@@ -199,7 +203,7 @@ static int iLexToken(int *erro)
     case '\v':
       continue;
 
-    case '=':          /* attribuicao */
+    case '=':          /* assignment */
       return IUPLEX_TK_SET;
 
     case ',':
@@ -214,7 +218,7 @@ static int iLexToken(int *erro)
     case '[':          /* attributes */
       if (iLexCaptureAttr() == IUPLEX_TK_END)
       {
-        *erro=iupLexError (IUPLEX_NOTENDATTR);
+        *erro=iupLexError (IUPLEX_ERR_NOTENDATTR);
         return 0;
       }
       return IUPLEX_TK_ATTR;
@@ -245,7 +249,7 @@ static int iLexToken(int *erro)
   }
 }
 
-static int iLexCapture (char* dlm)
+static int iLexCapture (const char* dlm)
 {
   int i=0;
   int c;
@@ -287,7 +291,11 @@ static void iLexSkipComment (void)
 
 static int iLexGetChar (void)
 {
-  int c = iLexGetc(); if (c == '\n') ++ilex.line;
+  int c = iLexGetc(); 
+  
+  if (c == '\n') 
+    ilex.line++;
+
   if (c == '\\')
   {
     c = iLexGetc();
@@ -296,6 +304,7 @@ static int iLexGetChar (void)
     else if (c == '\\')
       return '\\';
   }
+
   return c;
 }
 
@@ -332,13 +341,13 @@ int iupLexError (int n, ...)
   va_start(va,n);
   switch (n)
   {
-  case IUPLEX_FILENOTOPENED:
+  case IUPLEX_ERR_FILENOTOPENED:
     {
       char *fn=va_arg(va,char *);
       sprintf (msg, "cannot open file %s", fn);
     }
     break;
-  case IUPLEX_NOTMATCH:
+  case IUPLEX_ERR_NOTMATCH:
     {
       int tr=va_arg(va,int);        /* iLexToken read */
       int te=va_arg(va,int);        /* iLexToken expected */
@@ -347,12 +356,12 @@ int iupLexError (int n, ...)
       sprintf (msg, "expected %s but found %s", ste, str);
     }
     break;
-  case IUPLEX_NOTENDATTR:
+  case IUPLEX_ERR_NOTENDATTR:
     {
       sprintf (msg, "missing ']'");
     }
     break;
-  case IUPLEX_PARSEERROR:
+  case IUPLEX_ERR_PARSE:
     {
       char* s=va_arg(va,char*);        /* iLexToken expected */
       sprintf(msg,"%.*s",(int)(sizeof(msg)-1),s);
@@ -360,6 +369,7 @@ int iupLexError (int n, ...)
     break;
   }
   va_end(va);
+
   if (ilex.file || ilex.filename)
     sprintf(ilex_erromsg, "led(%s):\n  -bad input at line %d\n  -%s\n", ilex.filename, ilex.line, msg);
   else

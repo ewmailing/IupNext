@@ -101,6 +101,7 @@ static int iFlatScrollBoxFlatScroll_CB(Ihandle *ih)
   Ihandle* child = iFlatScrollBoxGetChild(ih);
 
   /* non interactive updates */
+
   if (child)
   {
     iFlatScrollBoxUpdateChildPos(ih, child);
@@ -283,14 +284,14 @@ static void iFlatScrollBoxUpdateVisibleScrollArea(Ihandle* ih, int view_width, i
     then it has scrollbars
     but this affects the opposite direction */
 
-    if (view_width > ih->currentwidth)  /* check for horizontal scrollbar */
+    if (view_width > ih->currentwidth && sb_horiz)  /* check for horizontal scrollbar */
       canvas_height -= sb_size;                /* affect vertical size */
-    if (view_height > ih->currentheight)
+    if (view_height > ih->currentheight && sb_vert)
       canvas_width -= sb_size;
 
-    if (view_width <= ih->currentwidth && view_width > canvas_width)
+    if (view_width <= ih->currentwidth && view_width > canvas_width && sb_horiz)
       canvas_height -= sb_size;
-    if (view_height <= ih->currentheight && view_height > canvas_height)
+    if (view_height <= ih->currentheight && view_height > canvas_height && sb_vert)
       canvas_width -= sb_size;
   }
 
@@ -314,8 +315,9 @@ static void iFlatScrollBoxSetChildrenCurrentSizeMethod(Ihandle* ih, int shrink)
   if (child)
   {
     int w, h, has_sb_horiz=0, has_sb_vert=0;
-    int sb_vert = iupFlatScrollBarGet(ih) & IUP_SB_VERT;
-    int sb_horiz = iupFlatScrollBarGet(ih) & IUP_SB_HORIZ;
+    int sb = iupFlatScrollBarGet(ih);
+    int sb_vert = sb & IUP_SB_VERT;
+    int sb_horiz = sb & IUP_SB_HORIZ;
 
     /* If child is greater than scrollbox area, use child natural size,
        else use current scrollbox size;
@@ -422,6 +424,11 @@ static int iFlatScrollBoxCreateMethod(Ihandle* ih, void** params)
   return IUP_NOERROR;
 }
 
+static void iFlatScrollBoxDestroyMethod(Ihandle* ih)
+{
+  iupFlatScrollBarRelease(ih);
+}
+
 Iclass* iupFlatScrollBoxNewClass(void)
 {
   Iclass* ic = iupClassNew(iupRegisterFindClass("canvas"));
@@ -436,6 +443,7 @@ Iclass* iupFlatScrollBoxNewClass(void)
   /* Class functions */
   ic->New = iupFlatScrollBoxNewClass;
   ic->Create  = iFlatScrollBoxCreateMethod;
+  ic->Destroy = iFlatScrollBoxDestroyMethod;
 
   ic->ComputeNaturalSize = iFlatScrollBoxComputeNaturalSizeMethod;
   ic->SetChildrenCurrentSize = iFlatScrollBoxSetChildrenCurrentSizeMethod;
@@ -449,7 +457,7 @@ Iclass* iupFlatScrollBoxNewClass(void)
   iupClassRegisterAttribute(ic, "CLIENTSIZE", iupBaseCanvasGetClientSizeAttrib, NULL, NULL, NULL, IUPAF_NOT_MAPPED | IUPAF_READONLY | IUPAF_NO_INHERIT);
 
   /* Native Container */
-  iupClassRegisterAttribute(ic, "CHILDOFFSET", NULL, NULL, NULL, NULL, IUPAF_NOT_MAPPED | IUPAF_NO_INHERIT);
+  iupClassRegisterAttribute(ic, "CHILDOFFSET", NULL, NULL, NULL, NULL, IUPAF_NO_INHERIT);
 
   /* replace IupCanvas behavior */
   iupClassRegisterReplaceAttribFunc(ic, "BGCOLOR", iupBaseNativeParentGetBgColorAttrib, NULL);
@@ -458,20 +466,26 @@ Iclass* iupFlatScrollBoxNewClass(void)
   iupClassRegisterReplaceAttribFlags(ic, "BORDER", IUPAF_READONLY | IUPAF_NO_INHERIT);
 
   iupClassRegisterReplaceAttribFlags(ic, "SCROLLBAR", IUPAF_READONLY | IUPAF_NO_INHERIT);  /* will be always NO, but it will behave as always Yes */
-  iupClassRegisterAttribute(ic, "YAUTOHIDE", NULL, NULL, IUPAF_SAMEASSYSTEM, "YES", IUPAF_READONLY | IUPAF_NOT_MAPPED | IUPAF_NO_INHERIT);  /* will be always Yes */
-  iupClassRegisterAttribute(ic, "XAUTOHIDE", NULL, NULL, IUPAF_SAMEASSYSTEM, "YES", IUPAF_READONLY | IUPAF_NOT_MAPPED | IUPAF_NO_INHERIT);  /* will be always Yes */
+  iupClassRegisterAttribute(ic, "YAUTOHIDE", NULL, NULL, IUPAF_SAMEASSYSTEM, "YES", IUPAF_READONLY | IUPAF_NO_INHERIT);  /* will be always Yes */
+  iupClassRegisterAttribute(ic, "XAUTOHIDE", NULL, NULL, IUPAF_SAMEASSYSTEM, "YES", IUPAF_READONLY | IUPAF_NO_INHERIT);  /* will be always Yes */
+  iupClassRegisterReplaceAttribFlags(ic, "XMIN", IUPAF_NO_SAVE | IUPAF_NO_INHERIT);
+  iupClassRegisterReplaceAttribFlags(ic, "XMAX", IUPAF_NO_SAVE | IUPAF_NO_INHERIT);
+  iupClassRegisterReplaceAttribFlags(ic, "YMIN", IUPAF_NO_SAVE | IUPAF_NO_INHERIT);
+  iupClassRegisterReplaceAttribFlags(ic, "YMAX", IUPAF_NO_SAVE | IUPAF_NO_INHERIT);
+  iupClassRegisterReplaceAttribFlags(ic, "LINEX", IUPAF_NO_SAVE | IUPAF_NO_INHERIT);
+  iupClassRegisterReplaceAttribFlags(ic, "LINEY", IUPAF_NO_SAVE | IUPAF_NO_INHERIT);
 
   /* Scrollbox */
   iupClassRegisterAttribute(ic, "SCROLLTO", NULL, iFlatScrollBoxSetScrollToAttrib, NULL, NULL, IUPAF_WRITEONLY | IUPAF_NO_INHERIT);
   iupClassRegisterAttribute(ic, "SCROLLTOCHILD", NULL, iFlatScrollBoxSetScrollToChildAttrib, NULL, NULL, IUPAF_IHANDLENAME | IUPAF_WRITEONLY | IUPAF_NO_INHERIT);
   iupClassRegisterAttribute(ic, "SCROLLTOCHILD_HANDLE", NULL, iFlatScrollBoxSetScrollToChildHandleAttrib, NULL, NULL, IUPAF_IHANDLE | IUPAF_WRITEONLY | IUPAF_NO_INHERIT);
-  iupClassRegisterAttribute(ic, "CANVASBOX", NULL, NULL, NULL, NULL, IUPAF_NOT_MAPPED | IUPAF_NO_INHERIT);
-  iupClassRegisterAttribute(ic, "LAYOUTDRAG", NULL, NULL, IUPAF_SAMEASSYSTEM, "YES", IUPAF_NOT_MAPPED | IUPAF_NO_INHERIT);
+  iupClassRegisterAttribute(ic, "CANVASBOX", NULL, NULL, NULL, NULL, IUPAF_NO_INHERIT);
+  iupClassRegisterAttribute(ic, "LAYOUTDRAG", NULL, NULL, IUPAF_SAMEASSYSTEM, "YES", IUPAF_NO_INHERIT);
 
   /* Flat Scrollbar */
   iupFlatScrollBarRegister(ic);
 
-  iupClassRegisterAttribute(ic, "FLATSCROLLBAR", NULL, NULL, IUPAF_SAMEASSYSTEM, "YES", IUPAF_NOT_MAPPED | IUPAF_NO_INHERIT);
+  iupClassRegisterAttribute(ic, "FLATSCROLLBAR", NULL, NULL, IUPAF_SAMEASSYSTEM, "YES", IUPAF_NO_INHERIT);
 
   return ic;
 }

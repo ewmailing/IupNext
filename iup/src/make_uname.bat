@@ -20,6 +20,8 @@ if "%1"=="dll14" goto stub_dll14
 if "%1"=="dll14_64" goto stub_dll14_64
 if "%1"=="dll15" goto stub_dll15
 if "%1"=="dll15_64" goto stub_dll15_64
+if "%1"=="dll16" goto stub_dll16
+if "%1"=="dll16_64" goto stub_dll16_64
 if "%1"=="dllg4" goto stub_dllg4
 if "%1"=="dllw4" goto stub_dllw4
 if "%1"=="dllw4_64" goto stub_dllw4_64
@@ -112,6 +114,16 @@ call tecmake vc15_64 "MF=iupstub" %2 %3 %4 %5 %6 %7
 move /y ..\lib\vc15_64\iupstub.lib ..\lib\dll15_64
 goto fim
 
+:stub_dll16
+call tecmake vc16 "MF=iupstub" %2 %3 %4 %5 %6 %7
+move /y ..\lib\vc16\iupstub.lib ..\lib\dll16
+goto fim
+
+:stub_dll16_64
+call tecmake vc16_64 "MF=iupstub" %2 %3 %4 %5 %6 %7
+move /y ..\lib\vc16_64\iupstub.lib ..\lib\dll16_64
+goto fim
+
 :stub_dllw4
 call tecmake mingw4 "MF=iupstub" %2 %3 %4 %5 %6 %7
 move /y ..\lib\mingw4\libiupstub.a ..\lib\dllw4
@@ -138,16 +150,18 @@ move /y ..\lib\gcc4\libiupstub.a ..\lib\dllg4
 goto fim
 
 :all_dll
-call make_uname dll10 %2 %3 %4 %5 %6
-call make_uname dll10_64 %2 %3 %4 %5 %6
-call make_uname dll11 %2 %3 %4 %5 %6
-call make_uname dll11_64 %2 %3 %4 %5 %6
-call make_uname dll12 %2 %3 %4 %5 %6
-call make_uname dll12_64 %2 %3 %4 %5 %6
+REM call make_uname dll10 %2 %3 %4 %5 %6
+REM call make_uname dll10_64 %2 %3 %4 %5 %6
+REM call make_uname dll11 %2 %3 %4 %5 %6
+REM call make_uname dll11_64 %2 %3 %4 %5 %6
+REM call make_uname dll12 %2 %3 %4 %5 %6
+REM call make_uname dll12_64 %2 %3 %4 %5 %6
 call make_uname dll14 %2 %3 %4 %5 %6
 call make_uname dll14_64 %2 %3 %4 %5 %6
 call make_uname dll15 %2 %3 %4 %5 %6
 call make_uname dll15_64 %2 %3 %4 %5 %6
+call make_uname dll16 %2 %3 %4 %5 %6
+call make_uname dll16_64 %2 %3 %4 %5 %6
 call make_uname dllw6 %2 %3 %4 %5 %6
 call make_uname dllw6_64 %2 %3 %4 %5 %6
 goto fim
@@ -158,16 +172,18 @@ call make_uname dll10_64 %2 %3 %4 %5 %6
 goto fim
 
 :all_vc_dll
-call make_uname dll10 %2 %3 %4 %5 %6
-call make_uname dll10_64 %2 %3 %4 %5 %6
-call make_uname dll11 %2 %3 %4 %5 %6
-call make_uname dll11_64 %2 %3 %4 %5 %6
-call make_uname dll12 %2 %3 %4 %5 %6
-call make_uname dll12_64 %2 %3 %4 %5 %6
+REM call make_uname dll10 %2 %3 %4 %5 %6
+REM call make_uname dll10_64 %2 %3 %4 %5 %6
+REM call make_uname dll11 %2 %3 %4 %5 %6
+REM call make_uname dll11_64 %2 %3 %4 %5 %6
+REM call make_uname dll12 %2 %3 %4 %5 %6
+REM call make_uname dll12_64 %2 %3 %4 %5 %6
 call make_uname dll14 %2 %3 %4 %5 %6
 call make_uname dll14_64 %2 %3 %4 %5 %6
 call make_uname dll15 %2 %3 %4 %5 %6
 call make_uname dll15_64 %2 %3 %4 %5 %6
+call make_uname dll16 %2 %3 %4 %5 %6
+call make_uname dll16_64 %2 %3 %4 %5 %6
 goto fim
 
 :all_gcc_dll

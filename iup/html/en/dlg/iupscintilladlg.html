@@ -60,12 +60,14 @@ saved. (since 3.23)</p>
 save check. (since 3.23)</p>
 <p><strong>OPENPROJECT</strong> (write-only): opens a project file using the 
 value as filename. (since 3.28)</p>
-<p><strong>PROJECTEXT</strong>: project extension to be used in project open and 
-save dialogs. If not defined "prj" will be used. (since 3.28)</p>
 <p><strong>EXTRAFILTERS</strong>: additional filters for File Open and File Save 
 As dialogs in the same format as the IupFileDlg EXTFILTER attribute. The filters 
 will be concatenated at start with the existing filters: "Text Files|*.txt|All 
 Files|*.*|".</p>
+<p><strong>DEFAULT_EXT</strong>: default file extension when the user types a 
+new file without extension. (since 3.29)</p>
+<p><strong>PROJECT_EXT</strong>: project extension to be used in project open and 
+save dialogs. If not defined "prj" will be used. (since 3.28)</p>
 <p><strong>TOGGLEMARKER<em>id</em></strong> (write-only): toggles the state of a 
 marker given its line number as id, and margin as value.</p>
 <h3><a name="Callbacks">Callbacks</a></h3>
@@ -131,7 +133,7 @@ is affected.<br><strong>lin</strong>: line number where the marker was changed
 
   
 <p><strong>NEWFILENAME_CB</strong>: Called after the filename of document was 
-changed by "Save As" or "Rename". (since 3.23)</p>
+changed by "Save As" or "Rename". Called before SAVEFILE_CB. (since 3.23)</p>
 
   
     
@@ -148,24 +150,26 @@ new_filename</strong>: current filename.</p>
 
   
     
-<pre>int function(Ihandle*<strong> ih</strong>, char* <strong>filename</strong>); [in C]<br><strong>elem</strong>:loadfile_cb(<strong>filename</strong>: string) -&gt; (<strong>ret</strong>: number) [in Lua]</pre>
+<pre>int function(Ihandle*<strong> ih</strong>, Ihandle* <strong>multitext</strong>); [in C]<br><strong>elem</strong>:loadfile_cb(<strong>multitext</strong>: ihandle) -&gt; (<strong>ret</strong>: number) [in Lua]</pre>
 
     
 <p class="info"><strong>ih</strong>:
   identifier of the element that activated the 
-  event.<br><strong>filename</strong>: file name.</p>
+  event.<br><strong>multitext</strong>: identifier of the scintilla element that 
+is affected.</p>
 
   
 <p><strong>SAVEFILE_CB</strong>: Called after the file is saved. (since 3.28)</p>
 
   
     
-<pre>int function(Ihandle*<strong> ih</strong>, char* <strong>filename</strong>); [in C]<br><strong>elem</strong>:savefile_cb(<strong>filename</strong>: string) -&gt; (<strong>ret</strong>: number) [in Lua]</pre>
+<pre>int function(Ihandle*<strong> ih</strong>, Ihandle* <strong>multitext</strong>); [in C]<br><strong>elem</strong>:savefile_cb(<strong>multitext</strong>: ihandle) -&gt; (<strong>ret</strong>: number) [in Lua]</pre>
 
     
 <p class="info"><strong>ih</strong>:
   identifier of the element that activated the 
-  event.<br><strong>filename</strong>: file name.</p>
+  event.<br><strong>multitext</strong>: identifier of the scintilla element that 
+is affected.</p>
 
   
 <p><strong>RESTOREMARKERS_CB</strong>: Called when the markers in the Scitilla 

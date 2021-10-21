@@ -318,8 +318,8 @@ static void iDialDrawCircular(Ihandle* ih)
 
   for (i = 0; i < ih->data->num_div; ++i)
   {
-    int x2 = (int)(xc + ih->data->radius * cos(a));
-    int y2 = (int)(yc - ih->data->radius * sin(a));
+    x2 = (int)(xc + ih->data->radius * cos(a));
+    y2 = (int)(yc - ih->data->radius * sin(a));
 
     if (i == 0)
     {
@@ -852,6 +852,7 @@ Iclass* iupDialNewClass(void)
 
   ic->name = "dial";
   ic->format = "s"; /* one string */
+  ic->format_attr = "ORIENTATION";
   ic->nativetype = IUP_TYPECANVAS;
   ic->childtype = IUP_CHILDNONE;
   ic->is_interactive = 1;

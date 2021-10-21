@@ -201,7 +201,8 @@ will be internally converted to '\n' before actually setting the TIP. (since
 3.17)</p>
 <p>A integer parameter always has a spin attached to the text to increment and 
 decrement the value. A real parameter only has a spin if a full interval is 
-defined (min and max), in this case the default step is (max-min)/20. When the 
+defined (min and max), in this case the default step is (max-min)/100 (since 
+3.31). When the 
 callback is called because a spin was activated then the attribute "<strong>SPINNING</strong>" of 
 the element will be defined to a non NULL and non zero value.</p>
 <p>The default precision for real value display is given by the global attribute

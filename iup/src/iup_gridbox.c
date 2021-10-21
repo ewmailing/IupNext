@@ -1177,7 +1177,10 @@ Iclass* iupGridBoxNewClass(void)
   ic->SetChildrenCurrentSize = iGridBoxSetChildrenCurrentSizeMethod;
   ic->SetChildrenPosition = iGridBoxSetChildrenPositionMethod;
 
-  /* Internal Callback */
+  /* Base Callbacks */
+  iupBaseRegisterBaseCallbacks(ic);
+
+  /* Callbacks */
   iupClassRegisterCallback(ic, "UPDATEATTRIBFROMFONT_CB", "");
 
   /* Common */

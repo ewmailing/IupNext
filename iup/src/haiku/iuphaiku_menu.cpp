@@ -105,7 +105,7 @@ void iupdrvMenuInitClass(Iclass* ic)
   ic->UnMap = gtkMenuUnMapMethod;
 
   /* Used by iupdrvMenuGetMenuBarSize */
-  iupClassRegisterAttribute(ic, "STANDARDFONT", NULL, NULL, IUPAF_SAMEASSYSTEM, "DEFAULTFONT", IUPAF_NO_SAVE|IUPAF_DEFAULT);  /* use inheritance to retrieve standard fonts */
+  iupClassRegisterAttribute(ic, "STANDARDFONT", NULL, NULL, IUPAF_SAMEASSYSTEM, "DEFAULTFONT", IUPAF_NO_SAVE);  /* use inheritance to retrieve standard fonts */
 
   iupClassRegisterAttribute(ic, "BGCOLOR", NULL, iupdrvBaseSetBgColorAttrib, NULL, NULL, IUPAF_DEFAULT);
 }

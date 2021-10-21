@@ -71,23 +71,28 @@ directly. (since 3.17)</p>
 control from the normalizer. The value passed must be a 
 handle of an element. (since 3.17)</p>
 
-<h3>Attributes (at Controls)</h3>
+<h3>Attributes (at any Control)</h3>
 
   <p><a href="../attrib/iup_floating.html">FLOATING</a> (<font SIZE="3">non inheritable</font>)
-	<strong>(at children only)</strong>: If a child has FLOATING=YES then its 
+	<strong>(at children only)</strong>: If a child of a container has FLOATING=YES then its 
   size and position will be ignored by the layout processing. Default: &quot;NO&quot;.</p>
 
 <p><strong>NORMALIZERGROUP</strong> (<font SIZE="3">non inheritable</font>)
 	<strong>(at controls only)</strong>: name of a normalizer 
 element to which to
 automatically add the control. If an element with that name does not exists 
-then one is created. In Lua you can also use the element reference directly.</p>
+then one is created. In Lua you can also use the element reference directly. The 
+normalizer can later be retrieved using IupGetHandle.</p>
 <h3>Notes</h3>
+<p>A normalizer the same effect as the NORMALIZESIZE attribute of the <strong>IupVbox</strong> 
+and <strong>IupHbox</strong> controls, but it can be used for elements with 
+different parents, it changes the <strong>User</strong> size of the elements.</p>
+
 <p>It is NOT necessary to add the normalizer to a dialog hierarchy. Every time 
-the NORMALIZE attribute is set, a normalization occurs. If the normalizer is added to a dialog hierarchy, then 
+the NORMALIZE attribute is set, a normalization occurs. But if the normalizer is added to a dialog hierarchy, then 
 whenever the <strong>Natural</strong> size is calculated a normalization occurs, 
-so you should add it to the hierarchy before the elements you want to normalize or its normalization will be 
-not used.</p>
+so add it to the hierarchy before the elements you want to normalize or its normalization will be 
+late during the layout computation.</p>
 <p>The elements do NOT need to be children of the same parent, do NOT need to be 
 mapped, and do NOT need to be in a complete hierarchy of a dialog.</p>
 <p>The elements are NOT children of the normalizer, so <strong>IupAppend</strong>,
@@ -97,9 +102,6 @@ attributes.</p>
 <p>Notice that the NORMALIZERGROUP attribute can simplify a lot of the process of 
 creating a normalizer, so you do not need to list several elements from 
 different parts of the dialog. </p>
-<p>Has the same effect as the NORMALIZESIZE attribute of the <strong>IupVbox</strong> 
-and <strong>IupHbox</strong> controls, but it can be used for elements with 
-different parents, it changes the <strong>User</strong> size of the elements.</p>
 
 <h3><a name="Examples">Examples</a></h3>
 <p>Here <strong>IupNormalizer</strong> is used to normalize the horizontal size 

@@ -316,10 +316,13 @@ public:
   double mPieHole;
   iupPlotSliceLabel mPieSliceLabel;
   double mPieSliceLabelPos;
-  int mHighlightedSample;
-  bool mHighlightedCurve;
   void* mUserData;
   bool mOrderedX;
+  bool mSelectedCurve;
+
+  // Aux
+  int mHighlightedSample;
+  bool mHighlightedCurve;
 
 protected:
   char* mName;

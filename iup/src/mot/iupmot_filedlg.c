@@ -186,7 +186,7 @@ static int motFileDlgGetMultipleFiles(Ihandle* ih, const char* dir, Widget wList
   }
   else
   {
-    Iarray* names_array = iupArrayCreate(1024, 1);  /* just set an initial size, but count is 0 */
+    Iarray* names_array = iupArrayCreate(1024, sizeof(char));  /* just set an initial size, but count is 0 */
     char *all_names;
     int i, cur_len, count = 0;
 

@@ -215,8 +215,8 @@ IUP_SDK_API void iupdrvBaseRegisterCommonAttrib(Iclass* ic)
 {
   // Other drivers seems to register some info about fonts and tooltips here.
   // I'm not sure what is needed and there is no documentation...
-  iupClassRegisterAttribute(ic, "TIPMARKUP", NULL, NULL, IUPAF_SAMEASSYSTEM, NULL, IUPAF_NOT_MAPPED);
-  iupClassRegisterAttribute(ic, "TIPICON", NULL, NULL, IUPAF_SAMEASSYSTEM, NULL, IUPAF_NOT_MAPPED);
+  iupClassRegisterAttribute(ic, "TIPMARKUP", NULL, NULL, IUPAF_SAMEASSYSTEM, NULL, IUPAF_DEFAULT);
+  iupClassRegisterAttribute(ic, "TIPICON", NULL, NULL, IUPAF_SAMEASSYSTEM, NULL, IUPAF_DEFAULT);
 }
 
 void iupgtkReleaseConvertUTF8(void)

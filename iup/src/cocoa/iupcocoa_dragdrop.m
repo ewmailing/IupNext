@@ -1912,7 +1912,7 @@ void iupdrvRegisterDragDropAttrib(Iclass* ic)
   iupClassRegisterAttribute(ic, "DRAGAUTOIMAGE", cocoaSourceDragGetDragAutoImageAttrib, cocoaSourceDragSetDragAutoImageAttrib, NULL, NULL, IUPAF_NO_INHERIT);
 
 	// EXPERIMENTAL: This may need to exist on a per-widget basis.
-  iupClassRegisterAttribute(ic, "DRAGAUTOINITIATE", cocoaSourceDragGetAutoBeginDragAttrib, cocoaSourceDragSetAutoBeginDragAttrib, "YES", NULL, IUPAF_NO_INHERIT|IUPAF_DEFAULT);
+  iupClassRegisterAttribute(ic, "DRAGAUTOINITIATE", cocoaSourceDragGetAutoBeginDragAttrib, cocoaSourceDragSetAutoBeginDragAttrib, "YES", NULL, IUPAF_NO_INHERIT);
 
 	// EXPERIMENTAL: May not work because it uses currentEvent
   iupClassRegisterAttribute(ic, "DRAGINITIATE", NULL, cocoaSourceDragSetBeginDragAttrib, NULL, NULL, IUPAF_NO_DEFAULTVALUE);

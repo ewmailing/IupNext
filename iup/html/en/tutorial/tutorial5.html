@@ -254,6 +254,11 @@ scaled accordingly. The result is the following:</p>
 <p class="example_image"><img alt="" src="example5_3c.png" class="auto-style2"></p>
 
 <p>Now we have the best of both worlds, high resolution with normal readability. </p>
+<p>But the problem with the IMAGEAUTOSCALE global attribute is that it will 
+affect all IUP images (except stock images), including the images used 
+internally by some controls. To avoid that instead of using the global attribute 
+the application can set the AUTOSCALE attribute on its own images. Obs: stock 
+images are always automatically resized.</p>
 <h3>5.4 <a name="Splash_Screen">Splash Screen</a>, About and System Information</h3>
 <p>Sometimes the application take a long time to start up, maybe it has many 
 things to initialize for instance. One common approach to distract the user 

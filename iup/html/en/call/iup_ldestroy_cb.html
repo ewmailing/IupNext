@@ -1,0 +1,27 @@
+﻿<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.0 Strict//EN">
+<html>
+<head>
+<meta http-equiv="Content-Language" content="en-us">
+<title>LDESTROY_CB</title>
+
+<link rel="stylesheet" type="text/css" href="../../style.css">
+</head>
+<body>
+
+<h2>LDESTROY_CB</h2>
+<p>Called at the end of the destroy process, after all children were destroyed 
+and the element was detached and unmapped. (since 3.31)</p>
+<h3>Callback</h3>
+<pre>int function(Ihandle *<b>ih</b>); [in C]
+[Not available in Lua]</pre>
+<p><strong>ih</strong>:
+  identifier of the element that activated the event.</p>
+<h3>Notes</h3>
+<p>Used for language binding implementations to 
+release memory allocated by the binding for the element. </p>
+<h3>Affects</h3>
+<p>All.</p>
+
+</body>
+
+</html>

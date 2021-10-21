@@ -283,9 +283,9 @@ static void winCanvasGetScrollInfo(HWND hWnd, int *ipos, int *ipage, int flag, i
 
 static void winCanvasCallScrollCallback(Ihandle* ih, int op)
 {
-  IFniff cb = (IFniff)IupGetCallback(ih, "SCROLL_CB");
-  if (cb)
-    cb(ih, op, (float)ih->data->posx, (float)ih->data->posy);
+  IFniff scroll_cb = (IFniff)IupGetCallback(ih, "SCROLL_CB");
+  if (scroll_cb)
+    scroll_cb(ih, op, (float)ih->data->posx, (float)ih->data->posy);
   else
   {
     IFnff cb = (IFnff)IupGetCallback(ih, "ACTION");
@@ -300,7 +300,7 @@ static void winCanvasCallScrollCallback(Ihandle* ih, int op)
 
 static void winCanvasProcessHorScroll(Ihandle* ih, WORD winop)
 {
-  double xmin, xmax, posx, linex;
+  double xmin, xmax, posx;
   int ipagex, iposx, ilinex, op;
 
   /* unused */
@@ -323,7 +323,7 @@ static void winCanvasProcessHorScroll(Ihandle* ih, WORD winop)
   else
   {
     /* line and page conversions are the same */
-    linex = iupAttribGetDouble(ih,"LINEX");
+    double linex = iupAttribGetDouble(ih,"LINEX");
     iupCanvasCalcScrollIntPos(xmin, xmax, linex, 0, 
                               IUP_SB_MIN, IUP_SB_MAX, &ilinex,  NULL);
   }
@@ -366,7 +366,7 @@ static void winCanvasProcessHorScroll(Ihandle* ih, WORD winop)
 
 static void winCanvasProcessVerScroll(Ihandle* ih, WORD winop)
 {
-  double ymin, ymax, posy, liney;
+  double ymin, ymax, posy, dy;
   int ipagey, iposy, iliney, op;
 
   /* unused */
@@ -377,6 +377,10 @@ static void winCanvasProcessVerScroll(Ihandle* ih, WORD winop)
 
   ymax = iupAttribGetDouble(ih,"YMAX");
   ymin = iupAttribGetDouble(ih,"YMIN");
+  dy = iupAttribGetDouble(ih, "DY");
+
+  if (dy >= ymax - ymin) /* wheel can call this function when scroll bar is empty */
+    return;
 
   winCanvasGetScrollInfo(ih->handle, &iposy, &ipagey, SB_VERT, winop==SB_THUMBTRACK||winop==SB_THUMBPOSITION? 1: 0);
 
@@ -389,7 +393,7 @@ static void winCanvasProcessVerScroll(Ihandle* ih, WORD winop)
   else
   {
     /* line and page conversions are the same */
-    liney = iupAttribGetDouble(ih,"LINEY");
+    double liney = iupAttribGetDouble(ih,"LINEY");
     iupCanvasCalcScrollIntPos(ymin, ymax, liney, 0, 
                               IUP_SB_MIN, IUP_SB_MAX, &iliney,  NULL);
   }
@@ -522,7 +526,8 @@ static int winCanvasMsgProc(Ihandle* ih, UINT msg, WPARAM wp, LPARAM lp, LRESULT
       if (iupAttribGetBoolean(ih, "WHEELDROPFOCUS"))
       {
         Ihandle* ih_focus = IupGetFocus();
-        iupAttribSetClassObject(ih_focus, "SHOWDROPDOWN", "NO");
+        if (iupObjectCheck(ih_focus))
+          iupAttribSetClassObject(ih_focus, "SHOWDROPDOWN", "NO");
       }
 
       if (cb)
@@ -555,7 +560,7 @@ static int winCanvasMsgProc(Ihandle* ih, UINT msg, WPARAM wp, LPARAM lp, LRESULT
         }
       }
 
-      iupAttribSet(IupGetDialog(ih), "_IUP_WHEEL_PROPAGATING", "1"); /* to avoid the dialog to propagate again to the child */
+      iupAttribSet(ih, "_IUP_WHEEL_PROPAGATING", "1"); /* to avoid a parent to propagate again to the child */
       break; /* let DefWindowProc forward the message to the parent */
     }
   case WM_XBUTTONDBLCLK:
@@ -572,6 +577,8 @@ static int winCanvasMsgProc(Ihandle* ih, UINT msg, WPARAM wp, LPARAM lp, LRESULT
         SetFocus(ih->handle);
 
       SetCapture(ih->handle);
+
+      iupwinFlagButtonDown(ih, msg);
 
       if (iupwinButtonDown(ih, msg, wp, lp))
       {
@@ -614,6 +621,12 @@ static int winCanvasMsgProc(Ihandle* ih, UINT msg, WPARAM wp, LPARAM lp, LRESULT
   case WM_MBUTTONUP:
   case WM_RBUTTONUP:
     {
+      if (!iupwinFlagButtonUp(ih, msg))
+      {
+        *result = 0;
+        return 1;
+      }
+
       ReleaseCapture();
 
       if (iupwinButtonUp(ih, msg, wp, lp))
@@ -839,8 +852,8 @@ void iupdrvCanvasInitClass(Iclass* ic)
   iupClassRegisterAttribute(ic, "DY", NULL, winCanvasSetDYAttrib, NULL, NULL, IUPAF_NO_INHERIT);  /* force new default value */
   iupClassRegisterAttribute(ic, "POSX", iupCanvasGetPosXAttrib, winCanvasSetPosXAttrib, "0", NULL, IUPAF_NO_INHERIT);  /* force new default value */
   iupClassRegisterAttribute(ic, "POSY", iupCanvasGetPosYAttrib, winCanvasSetPosYAttrib, "0", NULL, IUPAF_NO_INHERIT);  /* force new default value */
-  iupClassRegisterAttribute(ic, "XAUTOHIDE", NULL, NULL, "YES", NULL, IUPAF_NOT_MAPPED | IUPAF_NO_INHERIT);  /* force new default value */
-  iupClassRegisterAttribute(ic, "YAUTOHIDE", NULL, NULL, "YES", NULL, IUPAF_NOT_MAPPED | IUPAF_NO_INHERIT);  /* force new default value */
+  iupClassRegisterAttribute(ic, "XAUTOHIDE", NULL, NULL, "YES", NULL, IUPAF_NO_INHERIT);  /* force new default value */
+  iupClassRegisterAttribute(ic, "YAUTOHIDE", NULL, NULL, "YES", NULL, IUPAF_NO_INHERIT);  /* force new default value */
 
   /* IupCanvas Windows only */
   iupClassRegisterAttribute(ic, "HWND", iupBaseGetWidAttrib, NULL, NULL, NULL, IUPAF_NO_STRING|IUPAF_NO_INHERIT);

@@ -44,7 +44,8 @@ struct _IcontrolData
       highlighted,
       pressed, 
       over_arrow,
-      dropped;
+      dropped,
+      close_on_focus;
 
   Ihandle* dropchild;
   Ihandle* dropdialog;
@@ -59,7 +60,7 @@ enum { IUP_POS_BOTTOMLEFT, IUP_POS_TOPLEFT, IUP_POS_BOTTOMRIGHT, IUP_POS_TOPRIGH
 
 static int iDropButtonRedraw_CB(Ihandle* ih)
 {
-  char *image = iupAttribGet(ih, "IMAGE");
+  const char *image = iupAttribGet(ih, "IMAGE");
   char* title = iupAttribGet(ih, "TITLE");
   int active = IupGetInt(ih, "ACTIVE");  /* native implementation */
   char* fgcolor = iupAttribGetStr(ih, "FGCOLOR");
@@ -98,7 +99,7 @@ static int iDropButtonRedraw_CB(Ihandle* ih)
   bgcolor_button = bgcolor;
   bgcolor_arrow = bgcolor;
 
-  if (ih->data->pressed || (ih->data->dropped && !ih->data->highlighted))
+  if ((ih->data->pressed && ih->data->highlighted) || (ih->data->dropped && !ih->data->highlighted))
   {
     char* presscolor = iupAttribGetStr(ih, "PSCOLOR");
     if (presscolor)
@@ -141,7 +142,7 @@ static int iDropButtonRedraw_CB(Ihandle* ih)
   {
     char* bordercolor = iupAttribGetStr(ih, "BORDERCOLOR");
 
-    if (ih->data->pressed || (ih->data->dropped && !ih->data->highlighted))
+    if ((ih->data->pressed && ih->data->highlighted) || (ih->data->dropped && !ih->data->highlighted))
     {
       char* presscolor = iupAttribGetStr(ih, "BORDERPSCOLOR");
       if (presscolor)
@@ -172,7 +173,7 @@ static int iDropButtonRedraw_CB(Ihandle* ih)
   }
 
   /* simulate pressed when dropped and has images (but colors and borders are not included) */
-  image_pressed = ih->data->pressed;
+  image_pressed = ih->data->pressed && ih->data->highlighted;
   if (ih->data->dropped && !ih->data->pressed && (bgimage || image))
     image_pressed = 1;
 
@@ -244,9 +245,6 @@ static int iDropButtonRedraw_CB(Ihandle* ih)
 
   if (arrow_images)
   {
-    int make_inactive;
-    const char* image;
-
     image = iupFlatGetImageName(ih, "ARROWIMAGE", NULL, arrow_active ? ih->data->pressed : 0, arrow_active ? ih->data->highlighted : 0, arrow_active, &make_inactive);
     iupdrvDrawImage(dc, image, make_inactive, bgcolor, arrow_x, arrow_y, -1, -1);
   }
@@ -355,7 +353,7 @@ static void iDropButtonNotify(Ihandle* ih, int pressed)
     int arrow_active = iupAttribGetBoolean(ih, "ARROWACTIVE");
     if (arrow_active && ih->data->dropchild)
     {
-      if (iupAttribGet(ih, "_IUPDROP_CLOSE_ON_FOCUS"))
+      if (ih->data->close_on_focus)
         return;
 
       ih->data->dropped = !ih->data->dropped;
@@ -365,7 +363,7 @@ static void iDropButtonNotify(Ihandle* ih, int pressed)
     return;
   }
 
-  if (!pressed && !ih->data->over_arrow)
+  if (!pressed && !ih->data->over_arrow && ih->data->highlighted)  /* released inside the button area */
   {
     Icallback cb;
 
@@ -385,15 +383,15 @@ static void iDropButtonNotify(Ihandle* ih, int pressed)
   }
 
   if (!pressed)
-    iupAttribSet(ih, "_IUPDROP_CLOSE_ON_FOCUS", NULL);
+    ih->data->close_on_focus = 0;
 
   iupdrvRedrawNow(ih);
 }
 
 static int iDropButtonMotion_CB(Ihandle* ih, int x, int y, char* status)
 {
-  int drop_onarrow = iupAttribGetBoolean(ih, "DROPONARROW");
-  int over_arrow = 1;
+  int drop_onarrow, over_arrow, redraw = 0;
+
   IFniis cb = (IFniis)IupGetCallback(ih, "FLAT_MOTION_CB");
   if (cb)
   {
@@ -401,14 +399,41 @@ static int iDropButtonMotion_CB(Ihandle* ih, int x, int y, char* status)
       return IUP_DEFAULT;
   }
 
+  drop_onarrow = iupAttribGetBoolean(ih, "DROPONARROW");
+  over_arrow = 1;
   if (drop_onarrow && (x < ih->currentwidth - ih->data->arrow_size))
       over_arrow = 0;
 
   if (over_arrow != ih->data->over_arrow)
   {
     ih->data->over_arrow = over_arrow;
-    iupdrvRedrawNow(ih);
+    redraw = 1;
   }
+
+  if (iup_isbutton1(status) && !over_arrow)
+  {
+    /* handle when mouse is pressed and moved to/from inside the canvas */
+    if (x < 0 || x > ih->currentwidth - 1 ||
+        y < 0 || y > ih->currentheight - 1)
+    {
+      if (ih->data->highlighted)
+      {
+        redraw = 1;
+        ih->data->highlighted = 0;
+      }
+    }
+    else
+    {
+      if (!ih->data->highlighted)
+      {
+        redraw = 1;
+        ih->data->highlighted = 1;
+      }
+    }
+  }
+
+  if (redraw)
+    iupdrvRedrawNow(ih);
 
   return IUP_DEFAULT;
 }
@@ -504,7 +529,7 @@ static int iDropButtonSetShowDropdownAttrib(Ihandle* ih, const char* value)
 {
   if (ih->data->dropchild)
   {
-    iupAttribSet(ih, "_IUPDROP_CLOSE_ON_FOCUS", NULL);
+    ih->data->close_on_focus = 0;
     ih->data->dropped = iupStrBoolean(value);
     iDropButtonShowDrop(ih);
   }
@@ -535,6 +560,9 @@ static char* iDropButtonGetAlignmentAttrib(Ihandle *ih)
 
 static int iDropButtonSetPaddingAttrib(Ihandle* ih, const char* value)
 {
+  if (iupStrEqual(value, "DEFAULTBUTTONPADDING"))
+    value = IupGetGlobal("DEFAULTBUTTONPADDING");
+
   iupStrToIntInt(value, &ih->data->horiz_padding, &ih->data->vert_padding, 'x');
   if (ih->handle)
     iupdrvRedrawNow(ih);
@@ -607,8 +635,7 @@ static char* iDropButtonGetBorderWidthAttrib(Ihandle *ih)
 
 static int iDropButtonGetDefaultArrowSize(void)
 {
-  int dpi = iupRound(iupdrvGetScreenDpi());
-  if (dpi > 120)
+  if (iupIsHighDpi())
     return 24;
   else
     return 16;
@@ -728,9 +755,9 @@ static int iDropButtonDialogFocusCB(Ihandle* dlg, int focus)
   {
     /* count not use highlighted because in GTK we get a leavewindow when clicking the button and the dialog is dropped */
     if (iDropButtonMouseOnTop(ih))
-      iupAttribSet(ih, "_IUPDROP_CLOSE_ON_FOCUS", "1");
+      ih->data->close_on_focus = 1;
     else
-      iupAttribSet(ih, "_IUPDROP_CLOSE_ON_FOCUS", NULL);
+      ih->data->close_on_focus = 0;
 
     ih->data->dropped = 0;
     iDropButtonShowDrop(ih);
@@ -755,6 +782,7 @@ static Ihandle* iDropButtonCreateDropDialog(Ihandle* ih)
   IupSetAttribute(dlg, "MAXBOX", "NO");
   IupSetAttribute(dlg, "MINBOX", "NO");
   IupSetAttribute(dlg, "NOFLUSH", "Yes");
+  IupSetAttribute(dlg, "BORDER", "NO");
 
   IupSetAttributeHandle(dlg, "DROPBUTTON", ih);
 
@@ -813,7 +841,8 @@ static int iDropButtonCreateMethod(Ihandle* ih, void** params)
 
 static void iDropButtonDestroyMethod(Ihandle* ih)
 {
-  IupDestroy(ih->data->dropdialog);
+  if (iupObjectCheck(ih->data->dropdialog))  /* the dialog can be destroyed during the destroy of the list of dialogs */
+    IupDestroy(ih->data->dropdialog);
 }
 
 static void iDropButtonComputeNaturalSizeMethod(Ihandle* ih, int *w, int *h, int *children_expand)
@@ -889,19 +918,21 @@ Iclass* iupDropButtonNewClass(void)
   /* IupDropButton */
   iupClassRegisterAttribute(ic, "ALIGNMENT", iDropButtonGetAlignmentAttrib, iDropButtonSetAlignmentAttrib, "ALEFT:ACENTER", NULL, IUPAF_NOT_MAPPED | IUPAF_NO_INHERIT);
   iupClassRegisterAttribute(ic, "PADDING", iDropButtonGetPaddingAttrib, iDropButtonSetPaddingAttrib, IUPAF_SAMEASSYSTEM, "3x3", IUPAF_NOT_MAPPED);
+  iupClassRegisterAttribute(ic, "CPADDING", iupBaseGetCPaddingAttrib, iupBaseSetCPaddingAttrib, NULL, NULL, IUPAF_NO_SAVE | IUPAF_NOT_MAPPED);
   iupClassRegisterAttribute(ic, "SPACING", iDropButtonGetSpacingAttrib, iDropButtonSetSpacingAttrib, IUPAF_SAMEASSYSTEM, "2", IUPAF_NOT_MAPPED | IUPAF_NO_INHERIT);
-  iupClassRegisterAttribute(ic, "HIGHLIGHTED", iDropButtonGetHighlightedAttrib, NULL, NULL, NULL, IUPAF_READONLY | IUPAF_NO_INHERIT);
-  iupClassRegisterAttribute(ic, "PRESSED", iDropButtonGetPressedAttrib, NULL, NULL, NULL, IUPAF_READONLY | IUPAF_NO_INHERIT);
-  iupClassRegisterAttribute(ic, "HASFOCUS", iDropButtonGetHasFocusAttrib, NULL, NULL, NULL, IUPAF_READONLY | IUPAF_NO_INHERIT);
+  iupClassRegisterAttribute(ic, "CSPACING", iupBaseGetCSpacingAttrib, iupBaseSetCSpacingAttrib, NULL, NULL, IUPAF_NO_SAVE | IUPAF_NOT_MAPPED);
+  iupClassRegisterAttribute(ic, "HIGHLIGHTED", iDropButtonGetHighlightedAttrib, NULL, NULL, NULL, IUPAF_NOT_MAPPED | IUPAF_READONLY | IUPAF_NO_INHERIT);
+  iupClassRegisterAttribute(ic, "PRESSED", iDropButtonGetPressedAttrib, NULL, NULL, NULL, IUPAF_NOT_MAPPED | IUPAF_READONLY | IUPAF_NO_INHERIT);
+  iupClassRegisterAttribute(ic, "HASFOCUS", iDropButtonGetHasFocusAttrib, NULL, NULL, NULL, IUPAF_NOT_MAPPED | IUPAF_READONLY | IUPAF_NO_INHERIT);
   iupClassRegisterAttribute(ic, "SHOWBORDER", NULL, NULL, NULL, NULL, IUPAF_NO_INHERIT);
-  iupClassRegisterAttribute(ic, "FOCUSFEEDBACK", NULL, NULL, IUPAF_SAMEASSYSTEM, "YES", IUPAF_NOT_MAPPED | IUPAF_NO_INHERIT);
+  iupClassRegisterAttribute(ic, "FOCUSFEEDBACK", NULL, NULL, IUPAF_SAMEASSYSTEM, "YES", IUPAF_NO_INHERIT);
 
   iupClassRegisterAttribute(ic, "BORDERCOLOR", NULL, NULL, IUPAF_SAMEASSYSTEM, IUP_FLAT_BORDERCOLOR, IUPAF_DEFAULT);  /* inheritable */
   iupClassRegisterAttribute(ic, "BORDERPSCOLOR", NULL, NULL, NULL, NULL, IUPAF_DEFAULT);  /* inheritable */
   iupClassRegisterAttribute(ic, "BORDERHLCOLOR", NULL, NULL, NULL, NULL, IUPAF_DEFAULT);  /* inheritable */
-  iupClassRegisterAttribute(ic, "BORDERWIDTH", iDropButtonGetBorderWidthAttrib, iDropButtonSetBorderWidthAttrib, IUPAF_SAMEASSYSTEM, "1", IUPAF_DEFAULT);  /* inheritable */
-  iupClassRegisterAttribute(ic, "FGCOLOR", NULL, NULL, "DLGFGCOLOR", NULL, IUPAF_NOT_MAPPED);  /* force the new default value */
-  iupClassRegisterAttribute(ic, "BGCOLOR", iDropButtonGetBgColorAttrib, iDropButtonSetAttribPostRedraw, IUPAF_SAMEASSYSTEM, "DLGBGCOLOR", IUPAF_NO_SAVE | IUPAF_DEFAULT);
+  iupClassRegisterAttribute(ic, "BORDERWIDTH", iDropButtonGetBorderWidthAttrib, iDropButtonSetBorderWidthAttrib, IUPAF_SAMEASSYSTEM, "1", IUPAF_NOT_MAPPED);  /* inheritable */
+  iupClassRegisterAttribute(ic, "FGCOLOR", NULL, NULL, "DLGFGCOLOR", NULL, IUPAF_DEFAULT);  /* force the new default value */
+  iupClassRegisterAttribute(ic, "BGCOLOR", iDropButtonGetBgColorAttrib, iDropButtonSetAttribPostRedraw, IUPAF_SAMEASSYSTEM, "DLGBGCOLOR", IUPAF_NOT_MAPPED | IUPAF_NO_SAVE);
   iupClassRegisterAttribute(ic, "HLCOLOR", NULL, NULL, NULL, NULL, IUPAF_DEFAULT);  /* inheritable */
   iupClassRegisterAttribute(ic, "PSCOLOR", NULL, NULL, NULL, NULL, IUPAF_DEFAULT);  /* inheritable */
   iupClassRegisterAttribute(ic, "TEXTHLCOLOR", NULL, NULL, NULL, NULL, IUPAF_DEFAULT);  /* inheritable */
@@ -913,7 +944,7 @@ Iclass* iupDropButtonNewClass(void)
   iupClassRegisterAttribute(ic, "IMAGEINACTIVE", NULL, NULL, NULL, NULL, IUPAF_IHANDLENAME | IUPAF_NO_DEFAULTVALUE | IUPAF_NO_INHERIT);
   
   iupClassRegisterAttribute(ic, "IMAGEPOSITION", iDropButtonGetImagePositionAttrib, iDropButtonSetImagePositionAttrib, IUPAF_SAMEASSYSTEM, "LEFT", IUPAF_NOT_MAPPED | IUPAF_NO_INHERIT);
-  iupClassRegisterAttribute(ic, "TEXTALIGNMENT", NULL, NULL, IUPAF_SAMEASSYSTEM, "ALEFT", IUPAF_NOT_MAPPED | IUPAF_NO_INHERIT);
+  iupClassRegisterAttribute(ic, "TEXTALIGNMENT", NULL, NULL, IUPAF_SAMEASSYSTEM, "ALEFT", IUPAF_NO_INHERIT);
   iupClassRegisterAttribute(ic, "TEXTWRAP", NULL, NULL, NULL, NULL, IUPAF_NO_INHERIT);
   iupClassRegisterAttribute(ic, "TEXTELLIPSIS", NULL, NULL, NULL, NULL, IUPAF_NO_INHERIT);
   iupClassRegisterAttribute(ic, "TEXTCLIP", NULL, NULL, NULL, NULL, IUPAF_NO_INHERIT);
@@ -934,10 +965,12 @@ Iclass* iupDropButtonNewClass(void)
 
   iupClassRegisterAttribute(ic, "DROPCHILD", iDropButtonGetDropChildAttrib, iDropButtonSetDropChildAttrib, NULL, NULL, IUPAF_IHANDLENAME | IUPAF_NOT_MAPPED | IUPAF_NO_INHERIT);
   iupClassRegisterAttribute(ic, "DROPCHILD_HANDLE", iDropButtonGetDropChildHandleAttrib, iDropButtonSetDropChildHandleAttrib, NULL, NULL, IUPAF_NOT_MAPPED | IUPAF_NO_INHERIT | IUPAF_IHANDLE | IUPAF_NO_STRING);
+  iupClassRegisterAttribute(ic, "FIRST_CONTROL_HANDLE", iDropButtonGetDropChildHandleAttrib, NULL, NULL, NULL, IUPAF_READONLY | IUPAF_NOT_MAPPED | IUPAF_NO_INHERIT | IUPAF_IHANDLE | IUPAF_NO_STRING);
+  iupClassRegisterAttribute(ic, "NEXT_CONTROL_HANDLE", NULL, NULL, NULL, NULL, IUPAF_READONLY | IUPAF_NO_INHERIT | IUPAF_IHANDLE | IUPAF_NO_STRING);
 
   iupClassRegisterAttribute(ic, "ARROWIMAGES", NULL, NULL, NULL, NULL, IUPAF_NO_INHERIT);
-  iupClassRegisterAttribute(ic, "ARROWSIZE", iDropButtonGetArrowSizeAttrib, iDropButtonSetArrowSizeAttrib, IUPAF_SAMEASSYSTEM, "24", IUPAF_NO_INHERIT);
-  iupClassRegisterAttribute(ic, "ARROWPADDING", iDropButtonGetArrowPaddingAttrib, iDropButtonSetArrowPaddingAttrib, IUPAF_SAMEASSYSTEM, "4", IUPAF_NO_INHERIT);
+  iupClassRegisterAttribute(ic, "ARROWSIZE", iDropButtonGetArrowSizeAttrib, iDropButtonSetArrowSizeAttrib, IUPAF_SAMEASSYSTEM, "24", IUPAF_NOT_MAPPED | IUPAF_NO_INHERIT);
+  iupClassRegisterAttribute(ic, "ARROWPADDING", iDropButtonGetArrowPaddingAttrib, iDropButtonSetArrowPaddingAttrib, IUPAF_SAMEASSYSTEM, "4", IUPAF_NOT_MAPPED | IUPAF_NO_INHERIT);
   iupClassRegisterAttribute(ic, "ARROWACTIVE", NULL, NULL, IUPAF_SAMEASSYSTEM, "Yes", IUPAF_NO_INHERIT);
   iupClassRegisterAttribute(ic, "ARROWCOLOR", NULL, NULL, NULL, NULL, IUPAF_NO_INHERIT);
   iupClassRegisterAttribute(ic, "ARROWALIGN", NULL, NULL, IUPAF_SAMEASSYSTEM, "CENTER", IUPAF_IHANDLENAME | IUPAF_NO_DEFAULTVALUE | IUPAF_NO_INHERIT);
@@ -950,7 +983,7 @@ Iclass* iupDropButtonNewClass(void)
   iupClassRegisterAttribute(ic, "DROPONARROW", NULL, NULL, IUPAF_SAMEASSYSTEM, "Yes", IUPAF_NO_INHERIT);
   iupClassRegisterAttribute(ic, "SHOWDROPDOWN", NULL, iDropButtonSetShowDropdownAttrib, NULL, NULL, IUPAF_WRITEONLY | IUPAF_NO_INHERIT);
   iupClassRegisterAttribute(ic, "DROPPOSITION", NULL, NULL, IUPAF_SAMEASSYSTEM, "BOTTOMLEFT", IUPAF_NO_INHERIT);
-  iupClassRegisterAttribute(ic, "VISIBLECOLUMNS", NULL, NULL, NULL, NULL, IUPAF_NOT_MAPPED | IUPAF_NO_INHERIT);
+  iupClassRegisterAttribute(ic, "VISIBLECOLUMNS", NULL, NULL, NULL, NULL, IUPAF_NO_INHERIT);
 
   return ic;
 }

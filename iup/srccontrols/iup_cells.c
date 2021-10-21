@@ -523,7 +523,6 @@ static int iCellsRedraw_CB(Ihandle* ih)
 static int iCellsGetRangedCoord(Ihandle* ih, int x, int y, int* lin, int* col, int linfrom, int linto, int colfrom, int colto)
 {
   int i, j, k;
-  int hspan, vspan;
   int rxmax, rymin;
   int xmin, xmax, ymin, ymax;
   int refxmin, refxmax;
@@ -545,12 +544,10 @@ static int iCellsGetRangedCoord(Ihandle* ih, int x, int y, int* lin, int* col, i
     { 
       for (j = colfrom; j <= colto; j++)
       { 
-        hspan = 1;
-        vspan = 1;
         if (!(xmin > w))
         { 
-          hspan = iCellsGetHspan(ih, i, j);
-          vspan = iCellsGetVspan(ih, i, j);
+          int hspan = iCellsGetHspan(ih, i, j);
+          int vspan = iCellsGetVspan(ih, i, j);
           if (hspan != 0 && vspan != 0)
           { 
             rxmax = xmax; 

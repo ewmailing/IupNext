@@ -92,6 +92,7 @@ IupFlatTabsV
 IupFlatTabsv
 IupFlatToggle
 IupFlatVal
+IupFlatTree
 IupFlush
 IupFontDlg    
 IupFrame
@@ -144,6 +145,7 @@ IupGetParamV
 IupGetParamv
 IupGetParent
 IupGetRGB
+IupGetRGBA
 IupGetRGBId
 IupGetRGBId2
 IupGetText
@@ -248,6 +250,7 @@ IupSetLanguage
 IupSetLanguagePack
 IupSetLanguageString
 IupSetRGB
+IupSetRGBA
 IupSetRGBId
 IupSetRGBId2
 IupSetStrAttribute
@@ -365,12 +368,15 @@ iupAttribSetStrId
 iupAttribSetStrId2
 iupAttribSetStrf
 iupBackgroundBoxNewBaseClass
+iupBaseCanvasGetClientOffsetAttrib
+iupBaseCanvasGetClientSizeAttrib
 iupBaseCallValueChangedCb
 iupBaseComputeNaturalSize
 iupBaseContainerGetExpandAttrib
 iupBaseContainerUpdateExpand
 iupBaseGetActiveAttrib
 iupBaseGetClientOffsetAttrib
+iupBaseGetClientSizeAttrib
 iupBaseGetCurrentSizeAttrib
 iupBaseGetExpandAttrib
 iupBaseGetRasterSizeAttrib
@@ -383,7 +389,12 @@ iupBaseNativeParentGetBgColorAttrib
 iupBaseNoSaveCheck
 iupBaseRegisterCommonAttrib
 iupBaseRegisterCommonCallbacks
+iupBaseRegisterBaseCallbacks
 iupBaseRegisterVisualAttrib
+iupBaseSetCPaddingAttrib
+iupBaseGetCPaddingAttrib
+iupBaseSetCSpacingAttrib
+iupBaseGetCSpacingAttrib
 iupBaseSetActiveAttrib
 iupBaseSetCurrentSize
 iupBaseSetExpandAttrib
@@ -404,6 +415,8 @@ iupChildTreeGetNativeParentHandle
 iupChildTreeGetPrevBrother
 iupChildTreeIsParent
 iupClassCallbackGetFormat
+iupClassInfoGetDesc
+iupClassInfoShowHelp
 iupClassMatch
 iupClassNew
 iupClassObjectChildAdded
@@ -436,6 +449,7 @@ iupDlgListFirst
 iupDlgListNext
 iupDlgListRemove
 iupDlgListVisibleCount
+iupDlgListDestroySelected
 iupDlgListVisibleDec
 iupDlgListVisibleInc
 iupDrawCalcShadows
@@ -465,6 +479,7 @@ iupFlatGetImageNameId
 iupFlatGetImagePosition
 iupFlatGetVerticalAlignment
 iupFlatScrollBarCreate
+iupFlatScrollBarRelease
 iupFlatScrollBarGet
 iupFlatScrollBarMotionUpdate
 iupFlatScrollBarRegister
@@ -473,6 +488,9 @@ iupFlatScrollBarSetChildrenPosition
 iupFlatScrollBarSetPos
 iupFlatScrollBarWheelUpdate
 iupFlatSetActiveAttrib
+iupFlatItemSetTipAttrib
+iupFlatItemResetTip
+iupFlatItemSetTip
 iupFocusCanAccept
 iupFocusNextInteractive
 iupFontParsePango
@@ -502,11 +520,15 @@ iupLayoutApplyMinMaxSize
 iupLayoutUpdate
 iupLayoutFindElementDialog
 iupLayoutPropertiesUpdate
+iupLayoutExportNamedElemList
+iupLayoutExportNamedImageList
+iupLayoutExportNamedImageListSetHandle
 iupLineFileClose
 iupLineFileEOF
 iupLineFileGetBuffer
 iupLineFileOpen
 iupLineFileReadLine
+iupLoadLed
 iupMaskCheck
 iupMaskCreate
 iupMaskCreateFloat
@@ -516,6 +538,7 @@ iupMaskDestroy
 iupMaskGetStr
 iupMaskSetCaseI
 iupMaskSetNoEmpty
+iupNamesDestroyHandlesSelected
 iupObjectCheck
 iupObjectCreate
 iupObjectGetParamList
@@ -548,7 +571,9 @@ iupStrFileGetExt
 iupStrFileGetPath
 iupStrFileGetTitle
 iupStrFileMakeFileName
+iupStrFileMakeURL
 iupStrFileNameSplit
+iupStrTmpFileName
 iupStrFindMnemonic
 iupStrGetFormatPrecision
 iupStrGetLargeMem
@@ -565,6 +590,7 @@ iupStrPrintfDoubleLocale
 iupStrProcessMnemonic
 iupStrRemove
 iupStrReplace
+iupStrReplaceReserved
 iupStrReturnBoolean
 iupStrReturnChecked
 iupStrReturnDouble
@@ -693,6 +719,8 @@ iupwinBaseMsgProc
 iupwinButtonDown
 iupwinButtonUp
 iupwinCreateWindow
+iupwinFlagButtonUp
+iupwinFlagButtonDown
 iupwinMouseMove
 iupwinSetInstance
 iupwinShowLastError

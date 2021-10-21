@@ -487,6 +487,7 @@ SET(IUP_COMMON_SOURCE_FILES
 	${CMAKE_SOURCE_DIR}/src/iup_drvfont.h
 	${CMAKE_SOURCE_DIR}/src/iup_drvinfo.h
 	${CMAKE_SOURCE_DIR}/src/iup_expander.c
+	${CMAKE_SOURCE_DIR}/src/iup_export.c
 	${CMAKE_SOURCE_DIR}/src/iup_elempropdlg.c
 	${CMAKE_SOURCE_DIR}/src/iup_filedlg.c
 	${CMAKE_SOURCE_DIR}/src/iup_fill.c
@@ -501,6 +502,7 @@ SET(IUP_COMMON_SOURCE_FILES
 	${CMAKE_SOURCE_DIR}/src/iup_flatseparator.c
 	${CMAKE_SOURCE_DIR}/src/iup_flattabs.c
 	${CMAKE_SOURCE_DIR}/src/iup_flattoggle.c
+	${CMAKE_SOURCE_DIR}/src/iup_flattree.c
 	${CMAKE_SOURCE_DIR}/src/iup_focus.c
 	${CMAKE_SOURCE_DIR}/src/iup_focus.h
 	${CMAKE_SOURCE_DIR}/src/iup_font.c

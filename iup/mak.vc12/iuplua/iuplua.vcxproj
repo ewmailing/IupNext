@@ -119,6 +119,7 @@
     <ClCompile Include="..\..\srclua5\elem\il_flatseparator.c" />
     <ClCompile Include="..\..\srclua5\elem\il_flattabs.c" />
     <ClCompile Include="..\..\srclua5\elem\il_flattoggle.c" />
+    <ClCompile Include="..\..\srclua5\elem\il_flattree.c" />
     <ClCompile Include="..\..\srclua5\elem\il_flatval.c" />
     <ClCompile Include="..\..\srclua5\elem\il_fontdlg.c" />
     <ClCompile Include="..\..\srclua5\elem\il_frame.c" />
@@ -199,6 +200,7 @@
     <None Include="..\..\srclua5\elem\flatseparator.lua" />
     <None Include="..\..\srclua5\elem\flattabs.lua" />
     <None Include="..\..\srclua5\elem\flattoggle.lua" />
+    <None Include="..\..\srclua5\elem\flattree.lua" />
     <None Include="..\..\srclua5\elem\flatval.lua" />
     <None Include="..\..\srclua5\elem\fontdlg.lua" />
     <None Include="..\..\srclua5\elem\frame.lua" />

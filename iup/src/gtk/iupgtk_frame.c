@@ -164,7 +164,7 @@ static int gtkFrameMapMethod(Ihandle* ih)
   }
 
   /* the container that will receive the child element. */
-  /* use a window to be a full native containter */
+  /* use a window to be a full native container */
   inner_parent = iupgtkNativeContainerNew(1);
 
   gtk_container_add((GtkContainer*)ih->handle, inner_parent);

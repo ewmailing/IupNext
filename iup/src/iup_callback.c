@@ -22,10 +22,9 @@ char* iupGetCallbackName(Ihandle *ih, const char *name)
   if (!func && value)
   {
     /* if not a IUPTABLE_FUNCPOINTER then it is an old fashion name */
-    func = IupGetFunction((const char*)value);
-    if (func)
-      return value;
+    return value;
   }
+
   return NULL;
 }
 

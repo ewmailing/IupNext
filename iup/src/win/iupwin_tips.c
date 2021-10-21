@@ -171,7 +171,7 @@ void iupwinTipsUpdateInfo(Ihandle* ih, HWND tips_hwnd)
   {
     int balloon = IupGetInt(ih, "TIPBALLOON");  /* must use IupGetInt to use inheritance */
     DWORD style = GetWindowLong(tips_hwnd, GWL_STYLE);
-    int tip_balloon = style & TTS_BALLOON? 1: 0; 
+    int tip_balloon = (style & TTS_BALLOON)? 1: 0; 
     if (tip_balloon != balloon)
     {
       if (balloon)

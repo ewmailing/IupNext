@@ -675,8 +675,6 @@ static void iMatrixDrawFill(Ihandle* ih, int x1, int x2, int y1, int y2, int mar
 
 static void iMatrixDrawImage(Ihandle* ih, int x1, int x2, int y1, int y2, int col_alignment, int lin_alignment, int marked, int active, int lin, int col, const char* name)
 {
-  long bgcolor;
-  int x, y;
   Ihandle* image;
 
   iMatrixDrawSetCellClipping(ih, x1, x2, y1, y2);
@@ -688,6 +686,8 @@ static void iMatrixDrawImage(Ihandle* ih, int x1, int x2, int y1, int y2, int co
   image = IupImageGetHandle(name);
   if (image)
   {
+    long bgcolor;
+    int x, y;
     int image_width = IupGetInt(image, "WIDTH");
     int image_height = IupGetInt(image, "HEIGHT");
     unsigned char r = 255, g = 255, b = 255;
@@ -986,7 +986,7 @@ static void iMatrixDrawTitleLines(Ihandle* ih, int lin1, int lin2)
   /* Draw the titles */
   for (lin = lin1; lin <= lin2; lin++)
   {
-    int merged, i;
+    int merged;
 
     /* If it is a hidden line (size = 0), don't draw the title */
     if (ih->data->lines.dt[lin].size == 0)
@@ -1005,6 +1005,7 @@ static void iMatrixDrawTitleLines(Ihandle* ih, int lin1, int lin2)
 
       if (lin == startLin && 0 == startCol)  /* merged start */
       {
+        int i;
         for (i = startLin + 1; i <= endLin; i++)
           y2 += ih->data->lines.dt[i].size;
       }
@@ -1100,7 +1101,7 @@ static void iMatrixDrawTitleColumns(Ihandle* ih, int col1, int col2)
   /* Draw the titles */
   for (col = col1; col <= col2; col++)
   {
-    int merged, i;
+    int merged;
 
     /* If it is hidden column (size = 0), do not draw the title */
     if (ih->data->columns.dt[col].size == 0)
@@ -1119,6 +1120,7 @@ static void iMatrixDrawTitleColumns(Ihandle* ih, int col1, int col2)
 
       if (0 == startLin && col == startCol) /* merged start */
       {
+        int i;
         for (i = startCol + 1; i <= endCol; i++)
           x2 += ih->data->columns.dt[i].size;
       }

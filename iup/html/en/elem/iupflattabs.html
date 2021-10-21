@@ -118,7 +118,7 @@ tab is removed or hidden, so a new tab is made current internally. (since 3.22)<
   <p><b>TABSPADDING</b>: internal margin of the tab title. Works just like the 
 	MARGIN attribute of the IupHbox and IupVbox containers, but uses a different 
   name to avoid inheritance problems. Alignment does not includes the padding 
-  area. Default value: &quot;10x10&quot;.</p>
+  area. Default value: &quot;6x4&quot; (default changed in 3.29).</p>
 <p><strong>TABSFORECOLOR</strong>: text color of the tabs that are not the 
 current tab. Default: the global attribute DLGFGCOLOR.</p>
 <p><strong>TABSBACKCOLOR</strong>: background color of the tabs that are not the 
@@ -251,6 +251,9 @@ respective button.</p>
 button. Can be Yes or No. When not defined works as &quot;Yes&quot;.</p>
 <p><strong>EXTRABORDERWIDTH<em>id</em></strong>: width of the button border. Set this 
 attribute to at least 1 to enable the border. Default: 0 (since 3.27)</p>
+<p><strong>EXTRABOX<em>id</em></strong> [read-only]: the box limits of the 
+button in the format &quot;xmin ymin xmax ymax&quot; or &quot;%d %d %d %d&quot; in C. 
+Coordinates are relative to the IupFlatTabs top left corner. (since 3.31)</p>
 <p><strong>EXTRASHOWBORDER<em>id</em></strong>: always show the button border. If not 
 defined the border is shown when highlighted or pressed. Default: NO (since 
 3.27)</p>
@@ -440,14 +443,13 @@ to control the focus behavior call
   in the TABCHANGE_CB callback. </p>
 <p>When flattabs has the focus, the current tab can be changed using the left 
 and right arrow keys. (since 3.25)</p>
-<p>Differences from <a href="iuptabs.html">IupTabs</a>:</p>
+<p>Main differences from <a href="iuptabs.html">IupTabs</a>:</p>
 <ul>
 	<li>Appearance can be controlled for global features and for individual 
 	tabs. </li>
 	<li>Child focus can be controlled without native problems.</li>
 	<li>Tabs can be individually disabled using TABACTIVEid attribute.</li>
 	<li>Tab change can be controlled by the callbacks and ignored.</li>
-	<li>TABTYPE is NOT supported. Only TOP tabs are implemented.</li>
 	<li>MULTILINE is NOT supported. </li>
 	<li>Mnemonics are NOT supported.</li>
 </ul>

@@ -262,7 +262,6 @@ IUP_SDK_API void iupTableSet(Itable *it, const char *key, void *value, Itable_Ty
   else
   {
     /* change an existing item */
-    void *v;
     item = &(entry->items[itemIndex]);
 
     if (itemType == IUPTABLE_STRING && item->itemType == IUPTABLE_STRING)
@@ -473,8 +472,6 @@ IUP_SDK_API char *iupTableFirst(Itable *it)
 
 IUP_SDK_API char *iupTableNext(Itable *it)
 {
-  unsigned int entryIndex;
-
   iupASSERT(it!=NULL);
   if (!it || it->context.entryIndex == (unsigned int)-1
          || it->context.itemIndex == (unsigned int)-1)
@@ -488,6 +485,7 @@ IUP_SDK_API char *iupTableNext(Itable *it)
   }
   else
   {
+    unsigned int entryIndex;
     /* find the next used entry */
     for (entryIndex = it->context.entryIndex+1; entryIndex < it->entriesSize; entryIndex++)
     {
@@ -506,7 +504,6 @@ IUP_SDK_API char *iupTableNext(Itable *it)
 IUP_SDK_API char *iupTableRemoveCurr(Itable *it)
 {
   char* key;
-  unsigned int entryIndex;
   ItableEntry  *entry;
   unsigned int itemIndex;
 
@@ -529,6 +526,7 @@ IUP_SDK_API char *iupTableRemoveCurr(Itable *it)
   }
   else
   {
+    unsigned int entryIndex;
     /* find the next used entry */
     for (entryIndex = it->context.entryIndex+1; entryIndex < it->entriesSize; entryIndex++)
     {
@@ -720,7 +718,6 @@ static unsigned int iTableResize(Itable *it)
                  entryIndex,
                  i;
   Itable        *newTable;
-  ItableEntry   *entry;
   ItableItem    *item;
 
   /* check if we do not need to resize the hash table */
@@ -737,7 +734,7 @@ static unsigned int iTableResize(Itable *it)
 
   for (entryIndex = 0; entryIndex < it->entriesSize; entryIndex++)
   {
-    entry = &(it->entries[entryIndex]);
+    ItableEntry *entry = &(it->entries[entryIndex]);
 
     if (entry->items)
     {

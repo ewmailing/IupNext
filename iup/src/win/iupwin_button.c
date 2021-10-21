@@ -260,13 +260,15 @@ static void winButtonDrawText(Ihandle* ih, HDC hDC, int rect_width, int rect_hei
 {
   int xpad = ih->data->horiz_padding + border, 
       ypad = ih->data->vert_padding + border;
-  int x, y, width, height, shift = 0;
-  COLORREF fgcolor;
-
   char* title = iupAttribGet(ih, "TITLE");
+
   if (title)
   {
+	int x, y;
+	int width, height;
+	int shift = 0;
     int style = 0;
+    COLORREF fgcolor;
     HFONT hFont = (HFONT)iupwinGetHFontAttrib(ih);
     char* str = iupStrProcessMnemonic(title, NULL, 0);   /* remove & */
     iupdrvFontGetMultiLineStringSize(ih, str, &width, &height);
@@ -462,6 +464,9 @@ static char* winButtonGetAlignmentAttrib(Ihandle *ih)
 
 static int winButtonSetPaddingAttrib(Ihandle* ih, const char* value)
 {
+  if (iupStrEqual(value, "DEFAULTBUTTONPADDING"))
+    value = IupGetGlobal("DEFAULTBUTTONPADDING");
+
   iupStrToIntInt(value, &ih->data->horiz_padding, &ih->data->vert_padding, 'x');
   if (ih->handle)
     iupdrvRedrawNow(ih);
@@ -535,6 +540,8 @@ static int winButtonMsgProc(Ihandle* ih, UINT msg, WPARAM wp, LPARAM lp, LRESULT
   case WM_MBUTTONDOWN:
   case WM_RBUTTONDOWN:
     {
+      iupwinFlagButtonDown(ih, msg);
+
       /* Process BUTTON_CB */
       (void)iupwinButtonDown(ih, msg, wp, lp); /* ignore return value */
 
@@ -552,6 +559,12 @@ static int winButtonMsgProc(Ihandle* ih, UINT msg, WPARAM wp, LPARAM lp, LRESULT
   case WM_MBUTTONUP:
   case WM_RBUTTONUP:
     {
+      if (!iupwinFlagButtonUp(ih, msg))
+      {
+        *result = 0;
+        return 1;
+      }
+
       /* Process BUTTON_CB */
       (void)iupwinButtonUp(ih, msg, wp, lp); /* ignore return value */
       
@@ -753,7 +766,7 @@ void iupdrvButtonInitClass(Iclass* ic)
   iupClassRegisterAttribute(ic, "ACTIVE", iupBaseGetActiveAttrib, winButtonSetActiveAttrib, IUPAF_SAMEASSYSTEM, "YES", IUPAF_DEFAULT);
 
   /* Visual */
-  iupClassRegisterAttribute(ic, "BGCOLOR", winButtonGetBgColorAttrib, winButtonSetBgColorAttrib, IUPAF_SAMEASSYSTEM, "DLGBGCOLOR", IUPAF_NO_SAVE|IUPAF_DEFAULT);
+  iupClassRegisterAttribute(ic, "BGCOLOR", winButtonGetBgColorAttrib, winButtonSetBgColorAttrib, IUPAF_SAMEASSYSTEM, "DLGBGCOLOR", IUPAF_NO_SAVE);
 
   /* Special */
   iupClassRegisterAttribute(ic, "FGCOLOR", NULL, winButtonSetFgColorAttrib, "DLGFGCOLOR", NULL, IUPAF_NOT_MAPPED);  /* force the new default value */  
@@ -768,7 +781,7 @@ void iupdrvButtonInitClass(Iclass* ic)
   iupClassRegisterAttribute(ic, "PADDING", iupButtonGetPaddingAttrib, winButtonSetPaddingAttrib, IUPAF_SAMEASSYSTEM, "0x0", IUPAF_NOT_MAPPED);
 
   /* NOT supported */
-  iupClassRegisterAttribute(ic, "MARKUP", NULL, NULL, NULL, NULL, IUPAF_NOT_SUPPORTED|IUPAF_NOT_MAPPED);
+  iupClassRegisterAttribute(ic, "MARKUP", NULL, NULL, NULL, NULL, IUPAF_NOT_SUPPORTED);
 
   iupClassRegisterAttribute(ic, "CONTROLID", NULL, NULL, NULL, NULL, IUPAF_NO_INHERIT);
 }

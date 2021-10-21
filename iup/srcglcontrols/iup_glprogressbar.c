@@ -286,6 +286,7 @@ Iclass* iupGLProgressBarNewClass(void)
   iupClassRegisterAttribute(ic, "ORIENTATION", NULL, NULL, IUPAF_SAMEASSYSTEM, "HORIZONTAL", IUPAF_NO_INHERIT);
 
   iupClassRegisterAttribute(ic, "PADDING", iGLProgressBarGetPaddingAttrib, iGLProgressBarSetPaddingAttrib, IUPAF_SAMEASSYSTEM, "1x1", IUPAF_NOT_MAPPED | IUPAF_NO_INHERIT);
+  iupClassRegisterAttribute(ic, "CPADDING", iupBaseGetCPaddingAttrib, iupBaseSetCPaddingAttrib, NULL, NULL, IUPAF_NO_SAVE | IUPAF_NOT_MAPPED);
   iupClassRegisterAttribute(ic, "TEXT", NULL, NULL, NULL, NULL, IUPAF_NO_INHERIT);
   /*OLD*/iupClassRegisterAttribute(ic, "SHOW_TEXT", iGLProgressBarGetShowTextAttrib, iGLProgressBarSetShowTextAttrib, IUPAF_SAMEASSYSTEM, "YES", IUPAF_NOT_MAPPED | IUPAF_NO_INHERIT);
   iupClassRegisterAttribute(ic, "SHOWTEXT", iGLProgressBarGetShowTextAttrib, iGLProgressBarSetShowTextAttrib, IUPAF_SAMEASSYSTEM, "YES", IUPAF_NOT_MAPPED | IUPAF_NO_INHERIT);

@@ -109,7 +109,7 @@ static gboolean gtkCanvasScrollHorizChangeValue(GtkRange *range, GtkScrollType s
 static void gtkCanvasAdjustHorizValueChanged(GtkAdjustment *adjustment, Ihandle *ih)
 {
   double posx, posy, xmin, xmax, dx;
-  IFniff cb;
+  IFniff scroll_cb;
 
   posx = gtk_adjustment_get_value(adjustment);
   if (ih->data->posx==posx)
@@ -127,8 +127,8 @@ static void gtkCanvasAdjustHorizValueChanged(GtkAdjustment *adjustment, Ihandle 
   if (iupAttribGet(ih, "_IUPGTK_SETSBPOS"))
     return;
 
-  cb = (IFniff)IupGetCallback(ih,"SCROLL_CB");
-  if (cb)
+  scroll_cb = (IFniff)IupGetCallback(ih,"SCROLL_CB");
+  if (scroll_cb)
   {
     int op = IUP_SBPOSH;
     char* sbop = iupAttribGet(ih, "_IUPGTK_SBOP");
@@ -136,7 +136,7 @@ static void gtkCanvasAdjustHorizValueChanged(GtkAdjustment *adjustment, Ihandle 
     if (op == -1)
       return;
 
-    cb(ih, op, (float)posx, (float)posy);
+    scroll_cb(ih, op, (float)posx, (float)posy);
 
     iupAttribSet(ih, "_IUPGTK_SBOP", NULL);
   }
@@ -164,7 +164,7 @@ static gboolean gtkCanvasScrollVertChangeValue(GtkRange *range, GtkScrollType sc
 static void gtkCanvasAdjustVertValueChanged(GtkAdjustment *adjustment, Ihandle *ih)
 {
   double posx, posy, ymin, ymax, dy;
-  IFniff cb;
+  IFniff scroll_cb;
 
   posy = gtk_adjustment_get_value(adjustment);
   if (ih->data->posy==posy)
@@ -183,8 +183,8 @@ static void gtkCanvasAdjustVertValueChanged(GtkAdjustment *adjustment, Ihandle *
   if (iupAttribGet(ih, "_IUPGTK_SETSBPOS"))
     return;
 
-  cb = (IFniff)IupGetCallback(ih,"SCROLL_CB");
-  if (cb)
+  scroll_cb = (IFniff)IupGetCallback(ih,"SCROLL_CB");
+  if (scroll_cb)
   {
     int op = IUP_SBPOSV;
     char* sbop = iupAttribGet(ih, "_IUPGTK_SBOP");
@@ -192,7 +192,7 @@ static void gtkCanvasAdjustVertValueChanged(GtkAdjustment *adjustment, Ihandle *
     if (op == -1)
       return;
 
-    cb(ih, op, (float)posx, (float)posy);
+    scroll_cb(ih, op, (float)posx, (float)posy);
 
     iupAttribSet(ih, "_IUPGTK_SBOP", NULL);
   }
@@ -219,7 +219,8 @@ static gboolean gtkCanvasScrollEvent(GtkWidget *widget, GdkEventScroll *evt, Iha
   if (iupAttribGetBoolean(ih, "WHEELDROPFOCUS"))
   {
     Ihandle* ih_focus = IupGetFocus();
-    iupAttribSetClassObject(ih_focus, "SHOWDROPDOWN", "NO");
+    if (iupObjectCheck(ih_focus))
+      iupAttribSetClassObject(ih_focus, "SHOWDROPDOWN", "NO");
   }
 
   if (wcb)
@@ -675,6 +676,7 @@ static int gtkCanvasSetBgColorAttrib(Ihandle* ih, const char* value)
     /* enable automatic double buffering */
     gtk_widget_set_double_buffered(ih->handle, TRUE);
     gtk_widget_set_double_buffered(sb_win, TRUE);
+
     return iupdrvBaseSetBgColorAttrib(ih, value);
   }
   else
@@ -689,10 +691,12 @@ static int gtkCanvasSetBgColorAttrib(Ihandle* ih, const char* value)
     {
       gtk_widget_set_double_buffered(ih->handle, FALSE);
       gtk_widget_set_double_buffered(sb_win, FALSE);
+
 #if !GTK_CHECK_VERSION(3, 0, 0)
       gdk_window_set_back_pixmap(iupgtkGetWindow(ih->handle), NULL, FALSE);
 #endif
     }
+
     iupAttribSet(ih, "_IUPGTK_NO_BGCOLOR", "1");
     return 1;
   }

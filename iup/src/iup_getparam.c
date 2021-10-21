@@ -289,13 +289,13 @@ static int iParamValAction_CB(Ihandle *self)
     {
       double min = iupAttribGetDouble(param, "MIN");
       double step = iupAttribGetDouble(ctrl, "_IUPGP_INCSTEP");
-      double val = iupAttribGetDouble(param, "VALUE");
+      val = iupAttribGetDouble(param, "VALUE");
       IupSetInt(ctrl, "SPINVALUE", iupRound((val - min) / step));
     }
     else
     {
-      int val = IupGetInt(ctrl, "VALUE");
-      IupSetInt(ctrl, "SPINVALUE", val);
+      int ival = IupGetInt(ctrl, "VALUE");
+      IupSetInt(ctrl, "SPINVALUE", ival);
     }
   }
 
@@ -825,7 +825,7 @@ static Ihandle* iParamCreateCtrlBox(Ihandle* param, const char *type)
     IupSetCallback(ctrl, "ACTION", (Icallback)iParamTextAction_CB);
 
     type = iupAttribGet(param, "TYPE");
-    if (iupStrEqual(type, "REAL"))
+    if (iupStrEqual(type, "REAL"))  /* REAL */
     {
       double val = iupAttribGetDouble(param, "VALUE");
       int prec = IupGetInt(param, "PRECISION");
@@ -838,8 +838,8 @@ static Ihandle* iParamCreateCtrlBox(Ihandle* param, const char *type)
         double min = iupAttribGetDouble(param, "MIN");
         double max = iupAttribGetDouble(param, "MAX");
         double step = iupAttribGetDouble(param, "STEP");
-        double val = iupAttribGetDouble(param, "VALUE");
-        if (step == 0) step = (max-min)/20.0;
+        val = iupAttribGetDouble(param, "VALUE");
+        if (step == 0) step = (max-min)/100.0;
         IupSetfAttribute(ctrl, "MASKFLOAT", IUP_DOUBLE2STR":"IUP_DOUBLE2STR, min, max);
                              
         /* here spin is always [0-spinmax] converted to [min-max] */
@@ -940,7 +940,7 @@ static Ihandle* iParamCreateCtrlBox(Ihandle* param, const char *type)
         IupStoreAttribute(aux, "VALUE", iupAttribGet(param, "VALUE"));
         IupSetAttribute(aux, "EXPAND", "HORIZONTAL");
         iupAttribSet(param, "AUXCONTROL", (char*)aux);
-        step = iupAttribGet(param, "STEP");
+        step = iupAttribGet(param, "STEP");  /* STEP here is increment, in IupVal step=increment/(max-min) */
         if (step)
           IupSetDouble(aux, "STEP", iupAttribGetDouble(param, "STEP")/(iupAttribGetDouble(param, "MAX")-iupAttribGetDouble(param, "MIN")));
         else if (iupStrEqual(type, "INTEGER"))
@@ -1859,37 +1859,40 @@ Iclass* iupParamNewClass(void)
   ic->Create = iParamCreateMethod;
   ic->Map = iupBaseTypeVoidMapMethod;
 
-  iupClassRegisterAttribute(ic, "LABEL", NULL, NULL, NULL, NULL, IUPAF_IHANDLE|IUPAF_NOT_MAPPED | IUPAF_NO_INHERIT);
-  iupClassRegisterAttribute(ic, "CONTROL", NULL, NULL, NULL, NULL, IUPAF_IHANDLE | IUPAF_NOT_MAPPED | IUPAF_NO_INHERIT);
-  iupClassRegisterAttribute(ic, "AUXCONTROL", NULL, NULL, NULL, NULL, IUPAF_IHANDLE | IUPAF_NOT_MAPPED | IUPAF_NO_INHERIT);
-  iupClassRegisterAttribute(ic, "INDEX", NULL, NULL, NULL, NULL, IUPAF_NOT_MAPPED | IUPAF_NO_INHERIT);
+  /* Base Callbacks */
+  iupBaseRegisterBaseCallbacks(ic);
 
-  iupClassRegisterAttribute(ic, "TITLE", NULL, NULL, NULL, NULL, IUPAF_NOT_MAPPED | IUPAF_NO_INHERIT);
-  iupClassRegisterAttribute(ic, "INDENT", NULL, NULL, NULL, NULL, IUPAF_NOT_MAPPED | IUPAF_NO_INHERIT);
-  iupClassRegisterAttribute(ic, "TYPE", NULL, NULL, NULL, NULL, IUPAF_NOT_MAPPED | IUPAF_NO_INHERIT);
-  iupClassRegisterAttribute(ic, "DATATYPE", NULL, NULL, NULL, NULL, IUPAF_NOT_MAPPED | IUPAF_NO_INHERIT);
-  iupClassRegisterAttribute(ic, "MULTILINE", NULL, NULL, NULL, NULL, IUPAF_NOT_MAPPED | IUPAF_NO_INHERIT);
-  iupClassRegisterAttribute(ic, "ANGLE", NULL, NULL, NULL, NULL, IUPAF_NOT_MAPPED | IUPAF_NO_INHERIT);
-  iupClassRegisterAttribute(ic, "TRUE", NULL, NULL, NULL, NULL, IUPAF_NOT_MAPPED | IUPAF_NO_INHERIT);
-  iupClassRegisterAttribute(ic, "FALSE", NULL, NULL, NULL, NULL, IUPAF_NOT_MAPPED | IUPAF_NO_INHERIT);
-  iupClassRegisterAttribute(ic, "INTERVAL", NULL, NULL, NULL, NULL, IUPAF_NOT_MAPPED | IUPAF_NO_INHERIT);
-  iupClassRegisterAttribute(ic, "MIN", NULL, NULL, NULL, NULL, IUPAF_NOT_MAPPED | IUPAF_NO_INHERIT);
-  iupClassRegisterAttribute(ic, "MAX", NULL, NULL, NULL, NULL, IUPAF_NOT_MAPPED | IUPAF_NO_INHERIT);
-  iupClassRegisterAttribute(ic, "STEP", NULL, NULL, NULL, NULL, IUPAF_NOT_MAPPED | IUPAF_NO_INHERIT);
-  iupClassRegisterAttribute(ic, "PARTIAL", NULL, NULL, NULL, NULL, IUPAF_NOT_MAPPED | IUPAF_NO_INHERIT);
-  iupClassRegisterAttribute(ic, "DIALOGTYPE", NULL, NULL, NULL, NULL, IUPAF_NOT_MAPPED | IUPAF_NO_INHERIT);
-  iupClassRegisterAttribute(ic, "FILTER", NULL, NULL, NULL, NULL, IUPAF_NOT_MAPPED | IUPAF_NO_INHERIT);
-  iupClassRegisterAttribute(ic, "DIRECTORY", NULL, NULL, NULL, NULL, IUPAF_NOT_MAPPED | IUPAF_NO_INHERIT);
-  iupClassRegisterAttribute(ic, "NOCHANGEDIR", NULL, NULL, NULL, NULL, IUPAF_NOT_MAPPED | IUPAF_NO_INHERIT);
-  iupClassRegisterAttribute(ic, "NOOVERWRITEPROMPT", NULL, NULL, NULL, NULL, IUPAF_NOT_MAPPED | IUPAF_NO_INHERIT);
-  iupClassRegisterAttribute(ic, "BUTTON1", NULL, NULL, NULL, NULL, IUPAF_NOT_MAPPED | IUPAF_NO_INHERIT);
-  iupClassRegisterAttribute(ic, "BUTTON2", NULL, NULL, NULL, NULL, IUPAF_NOT_MAPPED | IUPAF_NO_INHERIT);
-  iupClassRegisterAttribute(ic, "BUTTON3", NULL, NULL, NULL, NULL, IUPAF_NOT_MAPPED | IUPAF_NO_INHERIT);
-  iupClassRegisterAttribute(ic, "MASK", NULL, NULL, NULL, NULL, IUPAF_NOT_MAPPED | IUPAF_NO_INHERIT);
-  iupClassRegisterAttribute(ic, "TIP", NULL, NULL, NULL, NULL, IUPAF_NOT_MAPPED | IUPAF_NO_INHERIT);
-  iupClassRegisterAttribute(ic, "VALUE", NULL, NULL, NULL, NULL, IUPAF_NOT_MAPPED | IUPAF_NO_INHERIT);
-  iupClassRegisterAttribute(ic, "NOFRAME", NULL, NULL, NULL, NULL, IUPAF_NOT_MAPPED | IUPAF_NO_INHERIT);
-  iupClassRegisterAttribute(ic, "PRECISION", NULL, NULL, NULL, NULL, IUPAF_NOT_MAPPED | IUPAF_NO_INHERIT);
+  iupClassRegisterAttribute(ic, "LABEL", NULL, NULL, NULL, NULL, IUPAF_IHANDLE|IUPAF_NO_INHERIT);
+  iupClassRegisterAttribute(ic, "CONTROL", NULL, NULL, NULL, NULL, IUPAF_IHANDLE | IUPAF_NO_INHERIT);
+  iupClassRegisterAttribute(ic, "AUXCONTROL", NULL, NULL, NULL, NULL, IUPAF_IHANDLE | IUPAF_NO_INHERIT);
+  iupClassRegisterAttribute(ic, "INDEX", NULL, NULL, NULL, NULL, IUPAF_NO_INHERIT);
+
+  iupClassRegisterAttribute(ic, "TITLE", NULL, NULL, NULL, NULL, IUPAF_NO_INHERIT);
+  iupClassRegisterAttribute(ic, "INDENT", NULL, NULL, NULL, NULL, IUPAF_NO_INHERIT);
+  iupClassRegisterAttribute(ic, "TYPE", NULL, NULL, NULL, NULL, IUPAF_NO_INHERIT);
+  iupClassRegisterAttribute(ic, "DATATYPE", NULL, NULL, NULL, NULL, IUPAF_NO_INHERIT);
+  iupClassRegisterAttribute(ic, "MULTILINE", NULL, NULL, NULL, NULL, IUPAF_NO_INHERIT);
+  iupClassRegisterAttribute(ic, "ANGLE", NULL, NULL, NULL, NULL, IUPAF_NO_INHERIT);
+  iupClassRegisterAttribute(ic, "TRUE", NULL, NULL, NULL, NULL, IUPAF_NO_INHERIT);
+  iupClassRegisterAttribute(ic, "FALSE", NULL, NULL, NULL, NULL, IUPAF_NO_INHERIT);
+  iupClassRegisterAttribute(ic, "INTERVAL", NULL, NULL, NULL, NULL, IUPAF_NO_INHERIT);
+  iupClassRegisterAttribute(ic, "MIN", NULL, NULL, NULL, NULL, IUPAF_NO_INHERIT);
+  iupClassRegisterAttribute(ic, "MAX", NULL, NULL, NULL, NULL, IUPAF_NO_INHERIT);
+  iupClassRegisterAttribute(ic, "STEP", NULL, NULL, NULL, NULL, IUPAF_NO_INHERIT);
+  iupClassRegisterAttribute(ic, "PARTIAL", NULL, NULL, NULL, NULL, IUPAF_NO_INHERIT);
+  iupClassRegisterAttribute(ic, "DIALOGTYPE", NULL, NULL, NULL, NULL, IUPAF_NO_INHERIT);
+  iupClassRegisterAttribute(ic, "FILTER", NULL, NULL, NULL, NULL, IUPAF_NO_INHERIT);
+  iupClassRegisterAttribute(ic, "DIRECTORY", NULL, NULL, NULL, NULL, IUPAF_NO_INHERIT);
+  iupClassRegisterAttribute(ic, "NOCHANGEDIR", NULL, NULL, NULL, NULL, IUPAF_NO_INHERIT);
+  iupClassRegisterAttribute(ic, "NOOVERWRITEPROMPT", NULL, NULL, NULL, NULL, IUPAF_NO_INHERIT);
+  iupClassRegisterAttribute(ic, "BUTTON1", NULL, NULL, NULL, NULL, IUPAF_NO_INHERIT);
+  iupClassRegisterAttribute(ic, "BUTTON2", NULL, NULL, NULL, NULL, IUPAF_NO_INHERIT);
+  iupClassRegisterAttribute(ic, "BUTTON3", NULL, NULL, NULL, NULL, IUPAF_NO_INHERIT);
+  iupClassRegisterAttribute(ic, "MASK", NULL, NULL, NULL, NULL, IUPAF_NO_INHERIT);
+  iupClassRegisterAttribute(ic, "TIP", NULL, NULL, NULL, NULL, IUPAF_NO_INHERIT);
+  iupClassRegisterAttribute(ic, "VALUE", NULL, NULL, NULL, NULL, IUPAF_NO_INHERIT);
+  iupClassRegisterAttribute(ic, "NOFRAME", NULL, NULL, NULL, NULL, IUPAF_NO_INHERIT);
+  iupClassRegisterAttribute(ic, "PRECISION", NULL, NULL, NULL, NULL, IUPAF_NO_INHERIT);
 
   return ic;
 }
@@ -1963,9 +1966,10 @@ Iclass* iupParamBoxNewClass(void)
   ic->SetChildrenCurrentSize = iParamBoxSetChildrenCurrentSizeMethod;
   ic->SetChildrenPosition = iParamBoxSetChildrenPositionMethod;
 
-  /* Common Callbacks */
-  iupClassRegisterCallback(ic, "MAP_CB", "");
-  iupClassRegisterCallback(ic, "UNMAP_CB", "");
+  /* Base Callbacks */
+  iupBaseRegisterBaseCallbacks(ic);
+
+  /* Callbacks */
   iupClassRegisterCallback(ic, "PARAM_CB", "iV");
 
   /* Common */
@@ -1973,12 +1977,12 @@ Iclass* iupParamBoxNewClass(void)
 
   /* Base Container */
   iupClassRegisterAttribute(ic, "EXPAND", iupBaseContainerGetExpandAttrib, NULL, IUPAF_SAMEASSYSTEM, "YES", IUPAF_NOT_MAPPED | IUPAF_NO_INHERIT);
-  iupClassRegisterAttribute(ic, "CLIENTSIZE", iupBaseGetCurrentSizeAttrib, NULL, NULL, NULL, IUPAF_READONLY | IUPAF_NOT_MAPPED | IUPAF_NO_INHERIT);
+  iupClassRegisterAttribute(ic, "CLIENTSIZE", iupBaseGetClientSizeAttrib, NULL, NULL, NULL, IUPAF_READONLY | IUPAF_NOT_MAPPED | IUPAF_NO_INHERIT);
   iupClassRegisterAttribute(ic, "CLIENTOFFSET", iupBaseGetClientOffsetAttrib, NULL, NULL, NULL, IUPAF_READONLY | IUPAF_NOT_MAPPED | IUPAF_NO_INHERIT);
 
-  iupClassRegisterAttribute(ic, "STATUS", NULL, NULL, NULL, NULL, IUPAF_READONLY | IUPAF_NOT_MAPPED | IUPAF_NO_INHERIT);
+  iupClassRegisterAttribute(ic, "STATUS", NULL, NULL, NULL, NULL, IUPAF_READONLY | IUPAF_NO_INHERIT);
 
-  iupClassRegisterAttribute(ic, "USERDATA", NULL, NULL, NULL, NULL, IUPAF_NO_STRING | IUPAF_NOT_MAPPED | IUPAF_NO_INHERIT);
+  iupClassRegisterAttribute(ic, "USERDATA", NULL, NULL, NULL, NULL, IUPAF_NO_STRING | IUPAF_NO_INHERIT);
   iupClassRegisterAttribute(ic, "LABELALIGN", NULL, iParamBoxSetLabelAlignAttrib, IUPAF_SAMEASSYSTEM, "ALEFT", IUPAF_NOT_MAPPED | IUPAF_NO_INHERIT);
   iupClassRegisterAttribute(ic, "MODIFIABLE", NULL, iParamBoxSetModifiableAttrib, IUPAF_SAMEASSYSTEM, "ALEFT", IUPAF_NOT_MAPPED | IUPAF_NO_INHERIT);
 
@@ -1987,10 +1991,10 @@ Iclass* iupParamBoxNewClass(void)
 
      The following are documented as read-only:
   */
-  iupClassRegisterAttribute(ic, "PARAMCOUNT", NULL, NULL, NULL, NULL, IUPAF_NOT_MAPPED | IUPAF_NO_INHERIT);
-  iupClassRegisterAttribute(ic, "BUTTON1", NULL, NULL, NULL, NULL, IUPAF_IHANDLE | IUPAF_NOT_MAPPED | IUPAF_NO_INHERIT);
-  iupClassRegisterAttribute(ic, "BUTTON2", NULL, NULL, NULL, NULL, IUPAF_IHANDLE | IUPAF_NOT_MAPPED | IUPAF_NO_INHERIT);
-  iupClassRegisterAttribute(ic, "BUTTON3", NULL, NULL, NULL, NULL, IUPAF_IHANDLE | IUPAF_NOT_MAPPED | IUPAF_NO_INHERIT);
+  iupClassRegisterAttribute(ic, "PARAMCOUNT", NULL, NULL, NULL, NULL, IUPAF_NO_INHERIT);
+  iupClassRegisterAttribute(ic, "BUTTON1", NULL, NULL, NULL, NULL, IUPAF_IHANDLE | IUPAF_NO_INHERIT);
+  iupClassRegisterAttribute(ic, "BUTTON2", NULL, NULL, NULL, NULL, IUPAF_IHANDLE | IUPAF_NO_INHERIT);
+  iupClassRegisterAttribute(ic, "BUTTON3", NULL, NULL, NULL, NULL, IUPAF_IHANDLE | IUPAF_NO_INHERIT);
 
   return ic;
 }

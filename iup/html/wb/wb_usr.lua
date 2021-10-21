@@ -14,7 +14,7 @@ wb_usr = {
 wb_usr.messages = {
   en = {
     title = "IUP - Portable User Interface",
-    bar_title = "IUP - Version 3.27"
+    bar_title = "IUP - Version 3.30"
   }
 }
 
@@ -210,13 +210,21 @@ wb_usr.tree =
           }
         },
         {
-          name= {en= "Executables"},
-          link= "executables.html",
+          name= {en= "Tools"},
+          link= "tools.html",
           folder=
           {
             {
-              name= {en= "LED Compiler for C"},
+              name= {en= "LED Compiler"},
               link= "ledc.html"
+            },
+            {
+              name= {en= "IupVisualLED"},
+              link= "iupvisualled.html"
+            },
+            {
+              name= {en= "IupLuaScripter"},
+              link= "iupluascripter.html"
             },
           }
         },
@@ -900,6 +908,10 @@ wb_usr.tree =
               link= "call/iup_destroy_cb.html"
             },
             {
+              name= {nl= "LDESTROY_CB"},
+              link= "call/iup_ldestroy_cb.html"
+            },
+            {
               name= {nl= "GETFOCUS_CB"},
               link= "call/iup_getfocus_cb.html"
             },
@@ -1567,6 +1579,22 @@ wb_usr.tree =
                 {
                   name= {nl= "Callbacks"},
                   link= "elem/iuptree_cb.html"
+                }
+              }
+            },
+            {
+              name= {nl= "IupFlatTree"},
+              link= "elem/iupflattree.html",
+
+              folder=
+              {
+                {
+                  name= {nl= "Attributes"},
+                  link= "elem/iupflattree_attrib.html"
+                },
+                {
+                  name= {nl= "Callbacks"},
+                  link= "elem/iupflattree_cb.html"
                 }
               }
             },

@@ -479,7 +479,7 @@ void FlatSampleTest(void)
 {
   Ihandle *mnu, *_hbox_1, *_cnv_1, *_vbox_1, *dlg, *img, *img2, *dial, *_frm_22,
     *_frm_1, *_frm_2, *_frm_3, *_frm_5, *pbar, *val, *tabs,
-    *_list_1, *_list_2; //, *tree
+    *_list_1, *_list_2, *tree;
 
   //img = IupImage(32,32, img_bits1);
   //IupSetHandle ("img1", img); 
@@ -624,13 +624,11 @@ void FlatSampleTest(void)
 //  IupSetAttribute(tabs,"TABPADDING","5x5");
   set_callbacks(tabs);
 
-#if 0
-  tree = IupTree();
+  tree = IupFlatTree();
   IupSetAttribute(tree, "SHOWRENAME",   "YES");
   IupSetAttribute(tree,"RASTERSIZE","100x150");
   IupSetAttribute(tree,"TIP","Tree TIP");
   set_callbacks(tree);
-#endif
 
   _cnv_1 = IupCanvas(NULL);
   IupSetAttribute(_cnv_1,"BGCOLOR","128 255 0");
@@ -654,7 +652,7 @@ void FlatSampleTest(void)
             NULL),
 #endif
     IupHbox(IupSetAttributes(IupFlatFrame(IupHbox(_cnv_1, NULL)), "TITLE=IupCanvas"),
-//            IupSetAttributes(IupFlatFrame(IupHbox(tree, NULL)), "TITLE=IupTree"),
+            IupSetAttributes(IupFlatFrame(IupHbox(tree, NULL)), "TITLE=IupTree"),
             NULL),
     NULL);
   IupSetAttribute(_vbox_1,"MARGIN","5x5");

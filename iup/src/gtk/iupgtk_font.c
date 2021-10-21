@@ -49,6 +49,7 @@ static void gtkFontUpdateLayout(IgtkFont* gtkfont, PangoLayout* layout)
     pango_attr_list_insert(attrs, pango_attribute_copy(gtkfont->strikethrough));
     pango_attr_list_insert(attrs, pango_attribute_copy(gtkfont->underline));
     pango_layout_set_attributes(layout, attrs);
+    pango_attr_list_unref(attrs);
   }
   else
   {
@@ -158,6 +159,8 @@ static IgtkFont* gtkFindFont(const char *font)
   fonts = (IgtkFont*)iupArrayInc(gtk_fonts);
 
   strcpy(fonts[i].font, font);
+
+  /* these are all released in iupdrvFontFinish */
   fonts[i].fontdesc = fontdesc;
   fonts[i].strikethrough = pango_attr_strikethrough_new(is_strikeout? TRUE: FALSE);
   fonts[i].underline = pango_attr_underline_new(is_underline? PANGO_UNDERLINE_SINGLE: PANGO_UNDERLINE_NONE);
@@ -253,7 +256,8 @@ void iupgtkUpdateObjectFont(Ihandle* ih, gpointer object)
     attrs = pango_attr_list_new();
     pango_attr_list_insert(attrs, pango_attribute_copy(gtkfont->strikethrough));
     pango_attr_list_insert(attrs, pango_attribute_copy(gtkfont->underline));
-    g_object_set(object, "attributes", attrs, NULL);
+    g_object_set(object, "attributes", attrs, NULL);  /* TODO: does this reference attrs? */
+    /* pango_attr_list_unref(attrs); */
   }
   else
   {
@@ -518,6 +522,7 @@ void iupdrvFontFinish(void)
   for (i = 0; i < count; i++)
   {
     pango_font_description_free(fonts[i].fontdesc);
+    g_object_unref(fonts[i].layout);
     pango_attribute_destroy(fonts[i].strikethrough);
     pango_attribute_destroy(fonts[i].underline);
   }

@@ -284,6 +284,7 @@ void FlatListTest(void)
 
   IupSetAttribute(list1, "SHOWDRAGDROP", "Yes");
   IupSetCallback(list1, "DRAGDROP_CB", (Icallback)dragdrop_cb);
+  IupSetAttribute(list1, "FLATSCROLLBAR", "Yes");
 
 //  IupSetAttribute(list1, "DRAGDROPLIST", "Yes");
 //  IupSetAttribute(list2, "DRAGDROPLIST", "Yes");

@@ -49,6 +49,51 @@
       <Filter>oscpack\osc</Filter>
     </ClCompile>
     <ClCompile Include="..\srctuio\iup_tuio.cpp" />
+    <ClCompile Include="..\srctuio\tuio\TuioCursor.cpp">
+      <Filter>TUIO</Filter>
+    </ClCompile>
+    <ClCompile Include="..\srctuio\tuio\TuioDispatcher.cpp">
+      <Filter>TUIO</Filter>
+    </ClCompile>
+    <ClCompile Include="..\srctuio\tuio\TuioManager.cpp">
+      <Filter>TUIO</Filter>
+    </ClCompile>
+    <ClCompile Include="..\srctuio\tuio\TuioObject.cpp">
+      <Filter>TUIO</Filter>
+    </ClCompile>
+    <ClCompile Include="..\srctuio\tuio\TuioPoint.cpp">
+      <Filter>TUIO</Filter>
+    </ClCompile>
+    <ClCompile Include="..\srctuio\tuio\FlashSender.cpp">
+      <Filter>TUIO</Filter>
+    </ClCompile>
+    <ClCompile Include="..\srctuio\tuio\OneEuroFilter.cpp">
+      <Filter>TUIO</Filter>
+    </ClCompile>
+    <ClCompile Include="..\srctuio\tuio\OscReceiver.cpp">
+      <Filter>TUIO</Filter>
+    </ClCompile>
+    <ClCompile Include="..\srctuio\tuio\TcpReceiver.cpp">
+      <Filter>TUIO</Filter>
+    </ClCompile>
+    <ClCompile Include="..\srctuio\tuio\TcpSender.cpp">
+      <Filter>TUIO</Filter>
+    </ClCompile>
+    <ClCompile Include="..\srctuio\tuio\TuioBlob.cpp">
+      <Filter>TUIO</Filter>
+    </ClCompile>
+    <ClCompile Include="..\srctuio\tuio\TuioContainer.cpp">
+      <Filter>TUIO</Filter>
+    </ClCompile>
+    <ClCompile Include="..\srctuio\tuio\UdpReceiver.cpp">
+      <Filter>TUIO\inc</Filter>
+    </ClCompile>
+    <ClCompile Include="..\srctuio\tuio\UdpSender.cpp">
+      <Filter>TUIO\inc</Filter>
+    </ClCompile>
+    <ClCompile Include="..\srctuio\tuio\WebSockSender.cpp">
+      <Filter>TUIO\inc</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="..\srctuio\tuio\TuioClient.h">
@@ -115,6 +160,42 @@
       <Filter>oscpack\osc</Filter>
     </ClInclude>
     <ClInclude Include="..\include\iuptuio.h" />
+    <ClInclude Include="..\srctuio\tuio\OscSender.h">
+      <Filter>TUIO\inc</Filter>
+    </ClInclude>
+    <ClInclude Include="..\srctuio\tuio\TcpReceiver.h">
+      <Filter>TUIO\inc</Filter>
+    </ClInclude>
+    <ClInclude Include="..\srctuio\tuio\TcpSender.h">
+      <Filter>TUIO\inc</Filter>
+    </ClInclude>
+    <ClInclude Include="..\srctuio\tuio\TuioBlob.h">
+      <Filter>TUIO\inc</Filter>
+    </ClInclude>
+    <ClInclude Include="..\srctuio\tuio\TuioDispatcher.h">
+      <Filter>TUIO\inc</Filter>
+    </ClInclude>
+    <ClInclude Include="..\srctuio\tuio\UdpReceiver.h">
+      <Filter>TUIO\inc</Filter>
+    </ClInclude>
+    <ClInclude Include="..\srctuio\tuio\UdpSender.h">
+      <Filter>TUIO\inc</Filter>
+    </ClInclude>
+    <ClInclude Include="..\srctuio\tuio\WebSockSender.h">
+      <Filter>TUIO\inc</Filter>
+    </ClInclude>
+    <ClInclude Include="..\srctuio\tuio\FlashSender.h">
+      <Filter>TUIO\inc</Filter>
+    </ClInclude>
+    <ClInclude Include="..\srctuio\tuio\LibExport.h">
+      <Filter>TUIO\inc</Filter>
+    </ClInclude>
+    <ClInclude Include="..\srctuio\tuio\OneEuroFilter.h">
+      <Filter>TUIO\inc</Filter>
+    </ClInclude>
+    <ClInclude Include="..\srctuio\tuio\OscReceiver.h">
+      <Filter>TUIO\inc</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <None Include="..\srctuio\iuptuio.def" />

@@ -70,12 +70,12 @@ static void motCanvasScrollbarCallback(Widget w, XtPointer client_data, XtPointe
     cb(ih, op, (float)posx, (float)posy);
   else
   {
-    IFnff cb = (IFnff)IupGetCallback(ih,"ACTION");
-    if (cb)
+    IFnff action_cb = (IFnff)IupGetCallback(ih,"ACTION");
+    if (action_cb)
     {
       /* REDRAW Now (since 3.24) - to allow a full native redraw process */
       iupdrvRedrawNow(ih);
-      /* cb(ih, (float)posx, (float)posy); - OLD method */
+      /* action_cb(ih, (float)posx, (float)posy); - OLD method */
     }
   }
 }
@@ -213,7 +213,8 @@ static void motCanvasInputCallback(Widget w, Ihandle *ih, XtPointer call_data)
         if (iupAttribGetBoolean(ih, "WHEELDROPFOCUS"))
         {
           Ihandle* ih_focus = IupGetFocus();
-          iupAttribSetClassObject(ih_focus, "SHOWDROPDOWN", "NO");
+          if (iupObjectCheck(ih_focus))
+            iupAttribSetClassObject(ih_focus, "SHOWDROPDOWN", "NO");
         }
 
         if (wcb)
@@ -257,7 +258,7 @@ static int motCanvasSetDXAttrib(Ihandle* ih, const char *value)
 {
   if (ih->data->sb & IUP_SB_HORIZ)
   {
-    double posx, xmin, xmax, linex;
+    double posx, xmin, xmax;
     double dx;
     int iposx, ipagex, ilinex;
     Widget sb_horiz = (Widget)iupAttribGet(ih, "_IUPMOT_SBHORIZ");
@@ -284,7 +285,7 @@ static int motCanvasSetDXAttrib(Ihandle* ih, const char *value)
     else
     {
       /* line and page conversions are the same */
-      linex = iupAttribGetDouble(ih,"LINEX");
+      double linex = iupAttribGetDouble(ih,"LINEX");
       iupCanvasCalcScrollIntPos(xmin, xmax, linex, 0, 
                                 IUP_SB_MIN, IUP_SB_MAX, &ilinex,  NULL);
     }
@@ -370,7 +371,7 @@ static int motCanvasSetDYAttrib(Ihandle* ih, const char *value)
 {
   if (ih->data->sb & IUP_SB_VERT)
   {
-    double posy, ymin, ymax, liney;
+    double posy, ymin, ymax;
     double dy;
     int iposy, ipagey, iliney;
     Widget sb_vert = (Widget)iupAttribGet(ih, "_IUPMOT_SBVERT");
@@ -397,7 +398,7 @@ static int motCanvasSetDYAttrib(Ihandle* ih, const char *value)
     else
     {
       /* line and page conversions are the same */
-      liney = iupAttribGetDouble(ih,"LINEY");
+      double liney = iupAttribGetDouble(ih,"LINEY");
       iupCanvasCalcScrollIntPos(ymin, ymax, liney, 0, 
                                 IUP_SB_MIN, IUP_SB_MAX, &iliney,  NULL);
     }
@@ -743,7 +744,7 @@ void iupdrvCanvasInitClass(Iclass* ic)
   iupClassRegisterAttribute(ic, "XWINDOW", motCanvasGetXWindowAttrib, NULL, NULL, NULL, IUPAF_NO_INHERIT|IUPAF_NO_STRING);
   iupClassRegisterAttribute(ic, "XDISPLAY", motCanvasGetXDisplayAttrib, NULL, NULL, NULL, IUPAF_READONLY|IUPAF_NOT_MAPPED|IUPAF_NO_INHERIT|IUPAF_NO_STRING);
   iupClassRegisterAttribute(ic, "XSCREEN", motCanvasGetXScreenAttrib, NULL, NULL, NULL, IUPAF_READONLY|IUPAF_NOT_MAPPED|IUPAF_NO_INHERIT|IUPAF_NO_STRING);
-  iupClassRegisterAttribute(ic, "BACKINGSTORE", NULL, NULL, "YES", NULL, IUPAF_NOT_MAPPED);
+  iupClassRegisterAttribute(ic, "BACKINGSTORE", NULL, NULL, "YES", NULL, IUPAF_DEFAULT);
 
   /* Not Supported */
   iupClassRegisterAttribute(ic, "TOUCH", NULL, NULL, NULL, NULL, IUPAF_NOT_SUPPORTED|IUPAF_NO_INHERIT);

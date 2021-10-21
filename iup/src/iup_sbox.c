@@ -464,6 +464,9 @@ Iclass* iupSboxNewClass(void)
   ic->SetChildrenCurrentSize     = iSboxSetChildrenCurrentSizeMethod;
   ic->SetChildrenPosition        = iSboxSetChildrenPositionMethod;
 
+  /* Base Callbacks */
+  iupBaseRegisterBaseCallbacks(ic);
+
   /* Common */
   iupBaseRegisterCommonAttrib(ic);
 

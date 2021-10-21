@@ -140,6 +140,7 @@ static void InitPlots(void)
   IupSetAttribute(plot[0], "DS_LINEWIDTH", "3");
   IupSetAttribute(plot[0], "DS_LEGEND", "Line");
   IupSetAttribute(plot[0], "DS_MODE", "LINE");
+  IupSetAttribute(plot[0], "DS_SELECTED", "Yes");
 
   theFac = 2.0 / 100;
   IupPlotBegin(plot[0], 0);
@@ -1008,7 +1009,7 @@ void PlotTest(void)
     IupSetfAttribute(vboxr[ii], "TABTITLE", "Plot %d", ii); /* name each tab */
     IupSetHandle(IupGetAttribute(vboxr[ii], "TABTITLE"), vboxr[ii]);
   }
-  vboxr[MAXPLOT] = NULL; /* mark end of vector */
+  vboxr[MAXPLOT] = NULL; /* mark end of array */
 
   //  tabs = IupZboxv(vboxr);
   //  IupSetAttribute(tabs, "VALUE", "Plot 3");

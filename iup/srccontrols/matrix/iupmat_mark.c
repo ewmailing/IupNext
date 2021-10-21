@@ -133,12 +133,11 @@ int iupMatrixGetMark(Ihandle* ih, int lin, int col, IFnii mark_cb)
 
 static void iMatrixMarkItem(Ihandle* ih, int lin1, int col1, int mark, IFniii markedit_cb, IFnii mark_cb)
 {
-  int lin, col;
-
   if (ih->data->mark_full1 == IMAT_PROCESS_LIN)
   {
     if (ih->data->mark_mode == IMAT_MARK_CELL)
     {
+      int col;
       for (col = 1; col < ih->data->columns.num; col++)
         iMatrixMarkCell(ih, lin1, col, mark, markedit_cb, mark_cb);
     }
@@ -156,6 +155,7 @@ static void iMatrixMarkItem(Ihandle* ih, int lin1, int col1, int mark, IFniii ma
   {
     if (ih->data->mark_mode == IMAT_MARK_CELL)
     {
+      int lin;
       for(lin = 1; lin < ih->data->lines.num; lin++)
         iMatrixMarkCell(ih, lin, col1, mark, markedit_cb, mark_cb);
     }
@@ -271,7 +271,7 @@ void iupMatrixMarkBlockReset(Ihandle* ih)
 
 void iupMatrixMarkBlockSet(Ihandle* ih, int ctrl, int lin1, int col1)
 {
-  int mark = 1, mark_full_all, lin, col;
+  int mark = 1, mark_full_all;
   IFniii markedit_cb = NULL;
   IFnii mark_cb = NULL;
 
@@ -319,6 +319,8 @@ void iupMatrixMarkBlockSet(Ihandle* ih, int ctrl, int lin1, int col1)
 
   if (mark_full_all)
   {
+    int lin, col;
+
     if (ih->data->mark_mode == IMAT_MARK_CELL)
     {
       for (col = 1; col < ih->data->columns.num; col++)

@@ -257,7 +257,7 @@ static int iPlotPrint_CB(Ihandle* self)
   return IUP_DEFAULT;
 }
 
-static double iPlotDataSetValuesNumericGetValue_CB(Ihandle *ih_matrix, int lin, int col)
+static double iPlotDataSetValuesMatrixNumericGetValue_CB(Ihandle *ih_matrix, int lin, int col)
 {
   Ihandle* ih = (Ihandle*)IupGetAttribute(ih_matrix, "PLOT");
   int plot_current = iupAttribGetInt(ih_matrix, "_IUP_PLOT_CURRENT");
@@ -289,7 +289,7 @@ static double iPlotDataSetValuesNumericGetValue_CB(Ihandle *ih_matrix, int lin, 
     return y;
 }
 
-static char* iPlotDataSetValuesValue_CB(Ihandle *ih_matrix, int lin, int col)
+static char* iPlotDataSetValuesMatrixValue_CB(Ihandle *ih_matrix, int lin, int col)
 {
   Ihandle* ih = (Ihandle*)IupGetAttribute(ih_matrix, "PLOT");
   int plot_current = iupAttribGetInt(ih_matrix, "_IUP_PLOT_CURRENT");
@@ -322,7 +322,7 @@ static char* iPlotDataSetValuesValue_CB(Ihandle *ih_matrix, int lin, int col)
   return NULL;
 }
 
-static int iPlotDataSetValuesNumericSetValue_CB(Ihandle* ih_matrix, int lin, int col, double new_value)
+static int iPlotDataSetValuesMatrixNumericSetValue_CB(Ihandle* ih_matrix, int lin, int col, double new_value)
 {
   Ihandle* ih = (Ihandle*)IupGetAttribute(ih_matrix, "PLOT");
   int plot_current = iupAttribGetInt(ih_matrix, "_IUP_PLOT_CURRENT");
@@ -358,7 +358,7 @@ static int iPlotDataSetValuesNumericSetValue_CB(Ihandle* ih_matrix, int lin, int
   return IUP_DEFAULT;
 }
 
-static int iPlotDataSetValuesValueEdit_CB(Ihandle* ih_matrix, int lin, int col, char* new_value)
+static int iPlotDataSetValuesMatrixValueEdit_CB(Ihandle* ih_matrix, int lin, int col, char* new_value)
 {
   Ihandle* ih = (Ihandle*)IupGetAttribute(ih_matrix, "PLOT");
   int plot_current = iupAttribGetInt(ih_matrix, "_IUP_PLOT_CURRENT");
@@ -386,7 +386,7 @@ static int iPlotDataSetValuesValueEdit_CB(Ihandle* ih_matrix, int lin, int col, 
   return IUP_DEFAULT;
 }
 
-static int iPlotDataSetValuesResize_CB(Ihandle *ih, int, int)
+static int iPlotDataSetValuesMatrixResize_CB(Ihandle *ih, int, int)
 {
   IupSetAttribute(ih, "RASTERWIDTH1", NULL);
   IupSetAttribute(ih, "RASTERWIDTH2", NULL);
@@ -408,15 +408,15 @@ static int iPlotDataSetValues_CB(Ihandle* ih_item)
   int plot_current = iupAttribGetInt(ih_menu, "_IUP_PLOT_CURRENT");
   int ds = iupAttribGetInt(ih_menu, "_IUP_DS");
 
+  Ihandle *matrix = IupCreate("matrixex");  /* IupControlsOpen must have been called somewhere */
+  if (!matrix)
+    return IUP_DEFAULT;
+
   IupSetInt(ih, "PLOT_CURRENT", plot_current);
   IupSetInt(ih, "CURRENT", ds);
 
   char* ds_name = IupGetAttribute(ih, "DS_NAME");
   Ihandle* label = IupLabel(ds_name);
-
-  Ihandle *matrix = IupCreate("matrixex");
-  if (!matrix)
-    return IUP_DEFAULT;
 
   Ihandle *button = IupButton("Close", NULL);
 
@@ -427,12 +427,15 @@ static int iPlotDataSetValues_CB(Ihandle* ih_item)
 
   Ihandle* dlg = IupDialog(vbox);
 
-  Ihandle *parent = IupGetDialog(ih_item);
+  Ihandle *parent = IupGetDialog(ih);
 
   IupSetStrAttribute(dlg, "TITLE", "_@IUP_DATASETVALUESDLG");
   IupSetAttribute(dlg, "MINBOX", "NO");
   IupSetAttribute(dlg, "MAXBOX", "NO");
   IupSetAttribute(dlg, "SHRINK", "YES");
+  IupSetAttributeHandle(dlg, "DEFAULTESC", button);
+  IupSetAttributeHandle(dlg, "DEFAULTENTER", button);
+  IupSetAttributeHandle(dlg, "PARENTDIALOG", parent);
 
   if (IupGetAttribute(parent, "ICON"))
     IupSetStrAttribute(dlg, "ICON", IupGetAttribute(parent, "ICON"));
@@ -465,14 +468,14 @@ static int iPlotDataSetValues_CB(Ihandle* ih_item)
   IupSetStrAttribute(matrix, "NUMERICFORMAT2", IupGetAttribute(ih, "AXS_YTICKFORMAT"));
   IupSetAttribute(matrix, "MASK*:2", IUP_MASK_FLOAT);
 
-  IupSetCallback(matrix, "NUMERICGETVALUE_CB", (Icallback)iPlotDataSetValuesNumericGetValue_CB);
-  IupSetCallback(matrix, "RESIZEMATRIX_CB", (Icallback)iPlotDataSetValuesResize_CB);
-  IupSetCallback(matrix, "VALUE_CB", (Icallback)iPlotDataSetValuesValue_CB);
+  IupSetCallback(matrix, "NUMERICGETVALUE_CB", (Icallback)iPlotDataSetValuesMatrixNumericGetValue_CB);
+  IupSetCallback(matrix, "RESIZEMATRIX_CB", (Icallback)iPlotDataSetValuesMatrixResize_CB);
+  IupSetCallback(matrix, "VALUE_CB", (Icallback)iPlotDataSetValuesMatrixValue_CB);
 
   if (IupGetInt(ih, "EDITABLEVALUES"))
   {
-    IupSetCallback(matrix, "NUMERICSETVALUE_CB", (Icallback)iPlotDataSetValuesNumericSetValue_CB);
-    IupSetCallback(matrix, "VALUE_EDIT_CB", (Icallback)iPlotDataSetValuesValueEdit_CB);
+    IupSetCallback(matrix, "NUMERICSETVALUE_CB", (Icallback)iPlotDataSetValuesMatrixNumericSetValue_CB);
+    IupSetCallback(matrix, "VALUE_EDIT_CB", (Icallback)iPlotDataSetValuesMatrixValueEdit_CB);
   }
 
   IupSetCallback(button, "ACTION", (Icallback)iPlotDataSetValuesButton_CB);
@@ -481,9 +484,10 @@ static int iPlotDataSetValues_CB(Ihandle* ih_item)
   iupAttribSetInt(matrix, "_IUP_PLOT_CURRENT", plot_current);
   iupAttribSetInt(matrix, "_IUP_DS", ds);
 
-  IupPopup(dlg, IUP_CENTER, IUP_CENTER);
+  IupPopup(dlg, IUP_CENTERPARENT, IUP_CENTERPARENT);
 
-  IupSetAttribute(ih, "REDRAW", NULL);
+  if (IupGetInt(ih, "EDITABLEVALUES"))
+    IupSetAttribute(ih, "REDRAW", NULL);
 
   IupDestroy(dlg);
 
@@ -837,7 +841,7 @@ static const char* iPlotGetParamValue(Ihandle* param)
 
 static void iPlotPropertiesCheckUpdateXY(Ihandle* ih, Ihandle* parambox, Ihandle* param, int param_index)
 {
-  Icallback check = IupGetCallback(param, "PLOT_ATTRIBCHECK");
+  Icallback check = IupGetCallback(param, "PLOT_ATTRIBCHECK_CB");
   if (check == iPlotCheckAutoXY ||
       check == iPlotCheckLegendXY)
   {
@@ -854,13 +858,12 @@ static void iPlotPropertiesCheckUpdateXY(Ihandle* ih, Ihandle* parambox, Ihandle
       // To Param
       iPlotSetParamValue(param, value);
     }
-
   }
 }
 
 static void iPlotPropertiesCheckParam(Ihandle* parambox, Ihandle* param, int param_index)
 {
-  Icallback check = IupGetCallback(param, "PLOT_ATTRIBCHECK");
+  Icallback check = IupGetCallback(param, "PLOT_ATTRIBCHECK_CB");
   if (check)
   {
     /* disable or enable the next childcount params */
@@ -926,12 +929,12 @@ static void iPlotPropertiesResetChanges(Ihandle* parambox)
     // To Param
     iPlotSetParamValue(param, value);
 
+    iPlotPropertiesCheckParam(parambox, param, i);
+
     // From Param
     value = iPlotGetParamValue(param);
     // To Plot
     IupSetStrAttribute(ih, name, value);
-
-    iPlotPropertiesCheckParam(parambox, param, i);
   }
 
   IupSetAttribute(parambox, "PLOT_CHANGED", NULL);
@@ -946,6 +949,7 @@ static void iPlotPropertiesApplyChanges(Ihandle* parambox)
 {
   Ihandle* ih = (Ihandle*)IupGetAttribute(parambox, "PLOT");
   Ihandle* zbox = IupGetParent(parambox);
+  IFnss validate_cb = (IFnss)IupGetCallback(ih, "PROPERTIESVALIDATE_CB");
 
   int plot_current = iupAttribGetInt(zbox, "_IUP_PLOT_CURRENT");
   // make sure we are changing the right plot
@@ -959,10 +963,13 @@ static void iPlotPropertiesApplyChanges(Ihandle* parambox)
 
     // From Param
     const char* value = iPlotGetParamValue(param);
-    // To Plot
-    IupSetAttribute(ih, name, value);
-
-    iPlotPropertiesCheckParam(parambox, param, i);
+    if (validate_cb && validate_cb(ih, name, (char*)value) == IUP_IGNORE)
+      continue;
+    else
+    {
+      // To Plot
+      IupSetAttribute(ih, name, value);
+    }
   }
 
   IupSetAttribute(parambox, "PLOT_CHANGED", NULL);
@@ -1073,7 +1080,7 @@ static void iPlotPropertiesAddParamBox(Ihandle* ih, Ihandle* zbox, iPlotAttribPa
     {
       IupSetStrAttribute(params[count], "PLOT_ATTRIB", attribs[count].name);
       IupSetAttribute(params[count], "PLOT_ATTRIBLIST", (char*)(attribs[count].list));
-      IupSetCallback(params[count], "PLOT_ATTRIBCHECK", attribs[count].check);
+      IupSetCallback(params[count], "PLOT_ATTRIBCHECK_CB", attribs[count].check);
 
       // From Plot
       char* value = IupGetAttribute(ih, attribs[count].name);
@@ -1177,12 +1184,20 @@ static int iPlotProperties_CB(Ihandle* ih_item)
   return IUP_DEFAULT;
 }
 
-static int setparent_param_cb(Ihandle* param_dialog, int param_index, void* user_data)
+static int iPlotDataSetPropertiesParam_cb(Ihandle* param_dialog, int param_index, void* user_data)
 {
   if (param_index == IUP_GETPARAM_MAP)
   {
     Ihandle* ih = (Ihandle*)user_data;
-    IupSetAttributeHandle(param_dialog, "PARENTDIALOG", ih);
+    IupSetAttributeHandle(param_dialog, "PARENTDIALOG", IupGetDialog(ih));
+  }
+  else if (param_index == IUP_GETPARAM_BUTTON1)
+  {
+    Ihandle* ih = (Ihandle*)user_data;
+    IFnni cb = (IFnni)IupGetCallback(ih, "DSPROPERTIESVALIDATE_CB");
+    int ds = IupGetInt(ih, "_IUP_DS");
+    if (cb && cb(ih, param_dialog, ds) == IUP_IGNORE)
+      return 0;
   }
 
   return 1;
@@ -1198,6 +1213,7 @@ static int iPlotDataSetProperties_CB(Ihandle* ih_item)
 
   IupSetInt(ih, "PLOT_CURRENT", plot_current);
   IupSetInt(ih, "CURRENT", ds);
+  IupSetInt(ih, "_IUP_DS", ds);
 
   char* ds_name = IupGetAttribute(ih, "DS_NAME");
   strcpy(name, ds_name);
@@ -1259,17 +1275,18 @@ static int iPlotDataSetProperties_CB(Ihandle* ih_item)
     "_@IUP_PIESLICELABEL%l|_@IUP_NONE|X|Y|_@IUP_PERCENT|\n"
     "_@IUP_PIESLICELABELPOS%R[0,1,]\n";
 
-  if (!IupGetParam("_@IUP_DATASETPROPERTIESDLG", setparent_param_cb, IupGetDialog(ih), format,
-    name, color, &mode, &linestyle, &linewidth, &markstyle, &marksize,
-    &barSpacing, &barOutline, barOutlineColor,
-    &areaTransparency,
-    &pieRadius, &pieStartAngle, &pieContour, &pieHole, &pieSliceLabel_index, &pieSliceLabelPos,
-    NULL))
+  if (!IupGetParam("_@IUP_DATASETPROPERTIESDLG", iPlotDataSetPropertiesParam_cb, ih, format,
+                   name, color, &mode, &linestyle, &linewidth, &markstyle, &marksize,
+                   &barSpacing, &barOutline, barOutlineColor,
+                   &areaTransparency,
+                   &pieRadius, &pieStartAngle, &pieContour, &pieHole, &pieSliceLabel_index, &pieSliceLabelPos,
+                   NULL))
     return IUP_DEFAULT;
 
   // make sure we are changing the right plot
   IupSetInt(ih, "PLOT_CURRENT", plot_current);
   IupSetInt(ih, "CURRENT", ds);
+  IupSetAttribute(ih, "_IUP_DS", NULL);
 
   IupSetStrAttribute(ih, "DS_NAME", name);
   IupSetStrAttribute(ih, "DS_COLOR", color);
@@ -1342,14 +1359,17 @@ static Ihandle* iPlotCreateMenuContext(Ihandle* ih, int x, int y)
     IupSetCallbacks(IupItem("_@IUP_PRINTDLG", NULL), "ACTION", iPlotPrint_CB, NULL),
     NULL);
 
-  if (IupGetInt(ih, "MENUITEMPROPERTIES"))
+  if (IupGetInt(ih, "MENUITEMPROPERTIES") || IupGetInt(ih, "MENUITEMVALUES"))
   {
-    Ihandle* itemProp, *itemVal = NULL;
+    Ihandle* itemProp = NULL, *itemVal = NULL;
     IupAppend(menu, IupSeparator());
-    if (iupRegisterFindClass("matrixex"))
+    if (iupRegisterFindClass("matrixex") && !iupStrEqualNoCase(iupAttribGet(ih, "MENUITEMVALUES"), "HIDE"))
       IupAppend(menu, IupSetCallbacks(itemVal = IupItem("_@IUP_DATASETVALUESDLG", NULL), "ACTION", iPlotDataSetValues_CB, NULL));
-    IupAppend(menu, IupSetCallbacks(itemProp = IupItem("_@IUP_DATASETPROPERTIESDLG", NULL), "ACTION", iPlotDataSetProperties_CB, NULL));
-    IupAppend(menu, IupSetCallbacks(IupItem("_@IUP_PROPERTIESDLG", NULL), "ACTION", iPlotProperties_CB, NULL));
+    if (IupGetInt(ih, "MENUITEMPROPERTIES"))
+    {
+      IupAppend(menu, IupSetCallbacks(itemProp = IupItem("_@IUP_DATASETPROPERTIESDLG", NULL), "ACTION", iPlotDataSetProperties_CB, NULL));
+      IupAppend(menu, IupSetCallbacks(IupItem("_@IUP_PROPERTIESDLG", NULL), "ACTION", iPlotProperties_CB, NULL));
+    }
 
     int ds = IupGetInt(ih, "CURRENT");
     int sample1, sample2;
@@ -1362,12 +1382,12 @@ static Ihandle* iPlotCreateMenuContext(Ihandle* ih, int x, int y)
       // save plot info because it may have changed by the time the callback is called
       iupAttribSetInt(menu, "_IUP_DS", ds);
 
-      IupSetAttribute(itemProp, "ACTIVE", "YES");
+      if (itemProp) IupSetAttribute(itemProp, "ACTIVE", "YES");
       if (itemVal) IupSetAttribute(itemVal, "ACTIVE", "YES");
     }
     else
     {
-      IupSetAttribute(itemProp, "ACTIVE", "NO");
+      if (itemProp) IupSetAttribute(itemProp, "ACTIVE", "NO");
       if (itemVal) IupSetAttribute(itemVal, "ACTIVE", "NO");
     }
 
@@ -3071,7 +3091,9 @@ static Iclass* iPlotNewClass(void)
   iupClassRegisterCallback(ic, "MENUCONTEXT_CB", "nii");
   iupClassRegisterCallback(ic, "MENUCONTEXTCLOSE_CB", "nii");
   iupClassRegisterCallback(ic, "PROPERTIESCHANGED_CB", "");
+  iupClassRegisterCallback(ic, "PROPERTIESVALIDATE_CB", "ss");
   iupClassRegisterCallback(ic, "DSPROPERTIESCHANGED_CB", "i");
+  iupClassRegisterCallback(ic, "DSPROPERTIESVALIDATE_CB", "nni");
   iupClassRegisterCallback(ic, "XTICKFORMATNUMBER_CB", "ssds");
   iupClassRegisterCallback(ic, "YTICKFORMATNUMBER_CB", "ssds");
 

@@ -232,8 +232,8 @@ NORMAL. After <strong>IupShow</strong>/<strong>IupPopup</strong> the attribute
 is set back to &quot;NORMAL&quot;. FULL is similar to FULLSCREEN but only the dialog 
 client area covers the screen area, menu and decorations will be there but out 
 of the screen. In UNIX there is a chance that the placement won't work 
-correctly, that depends on the Window Manager. In Windows, the SHOWNOACTIVE 
-attribute can be set to Yes to avoid to make the window active (since 3.15). In 
+correctly, that depends on the Window Manager. In Windows, the SHOWNOACTIVATE 
+attribute can be set to Yes to prevent the window from being activated (since 3.15). In 
 Windows, the SHOWMINIMIZENEXT attribute can be set to Yes to activate the next 
 top-level window in the Z order when minimizing (since 3.15).</p>
 <p><strong>RESIZE</strong> (creation only): Allows interactively changing the 
@@ -248,6 +248,7 @@ focus is selected (same effect of calling
 <a href="../func/iupnextfield.html">IupNextField</a> for the dialog). Updated 
 after SHOW_CB is called and only if the focus was not changed during the 
 callback.</p>
+<p><strong>SHOWNOFOCUS</strong>: do not set focus after show. (since 3.30)</p>
 <h4>Exclusive [System Dependent]</h4>
 
 <p><strong>HWND</strong> [Windows Only] (<font size="3">non inheritable, 

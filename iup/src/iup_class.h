@@ -51,15 +51,16 @@ struct Iclass_
   const char* format;   /**< Creation parameters format of the class. \n
                    * Used only for LED parsing. \n
                    * It can have none (NULL), one or more of the following.
-                   * - "b" = (unsigned char) - byte
-                   * - "c" = (unsigned char*) - array of byte
-                   * - "i" = (int) - integer
-                   * - "j" = (int*) - array of integer
-                   * - "f" = (float) - real
-                   * - "s" = (char*) - string 
+                   * - "b" = (unsigned char) - byte            >> unused <<
+                   * - "j" = (int*) - array of integer         >> unused <<
+                   * - "f" = (float) - real                    >> unused <<
+                   * - "i" = (int) - integer                   >> used in IupImage* only <<
+                   * - "c" = (unsigned char*) - array of byte  >> used in IupImage* only <<
+                   * - "s" = (char*) - string                  >> usually is for TITLE <<
                    * - "a" = (char*) - name of the ACTION callback
                    * - "h" = (Ihandle*) - element handle
-                   * - "g" = (Ihandle**) - array of element handle */
+                   * - "g" = (Ihandle**) - array of element handle (when used there are no other parameters) */
+  const char* format_attr; /**< attribute name of the first creation parameter when format[0] is 's' or 'a' */
   InativeType nativetype; /**< native type. Default is IUP_TYPEVOID. */
   int childtype;   /**< children count enum: none, many, or n, as described in \ref IchildType. Default is IUP_CHILDNONE. \n
                     * This identifies a container that can be manipulated with IupReparent, IupAppend and IupInsert. \n
@@ -263,14 +264,14 @@ typedef int (*IattribSetId2Func)(Ihandle* ih, int id1, int id2, const char* valu
  * Used by \ref iupClassRegisterAttribute.
  * \ingroup iclass */
 typedef enum _IattribFlags{
-  IUPAF_DEFAULT=0,     /**< inheritable, can has a default value, is a string, can call the set/get functions only if mapped, no ID */
+  IUPAF_DEFAULT=0,     /**< inheritable, can has a default value, is a string, can call the set/get functions only if mapped, no ID (to be used alone when there are no other flags) */
   IUPAF_NO_INHERIT=1,  /**< is not inheritable */
   IUPAF_NO_DEFAULTVALUE=2,  /**< can not has a default value */
   IUPAF_NO_STRING=4,   /**< is not a string */
   IUPAF_NOT_MAPPED=8,  /**< will call the set/get functions also when not mapped */
   IUPAF_HAS_ID=16,     /**< can has an ID at the end of the name, automatically set by \ref iupClassRegisterAttributeId */
-  IUPAF_READONLY=32,   /**< is read-only, can not be changed */
-  IUPAF_WRITEONLY=64,  /**< is write-only, usually an action */
+  IUPAF_READONLY=32,   /**< is read-only, can not be changed (except when using internal functions), get is optional, set will never be used */
+  IUPAF_WRITEONLY=64,  /**< is write-only, usually an action, set must exist, get will never be used */
   IUPAF_HAS_ID2=128,   /**< can has two IDs at the end of the name, automatically set by \ref iupClassRegisterAttributeId2 */
   IUPAF_CALLBACK=256,  /**< is a callback, not an attribute */
   IUPAF_NO_SAVE=512,   /**< can NOT be directly saved, should have at least manual processing */
@@ -478,8 +479,8 @@ void iupClassGetAttribNameInfo(Iclass* ic, const char* name, char* *def_value, i
 /* Used in iupClassRegisterAttribute and iGlobalChangingDefaultColor */
 int iupClassIsGlobalDefault(const char* name, int colors);
 
-void iupClassInfoGetDesc(Iclass* ic, Ihandle* ih, const char* attrib_name);
-void iupClassInfoShowHelp(const char* className);
+IUP_SDK_API void iupClassInfoGetDesc(Iclass* ic, Ihandle* ih, const char* attrib_name);
+IUP_SDK_API void iupClassInfoShowHelp(const char* className);
 
 /* Other functions declared in <iup.h> and implemented here. 
 IupGetClassType

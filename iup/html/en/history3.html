@@ -53,6 +53,9 @@
   .auto-style2 {
 	font-weight: bold;
 }
+  .auto-style3 {
+	background-color: #FFFFFF;
+}
   </style>
 </head>
 
@@ -64,10 +67,462 @@
 <p>Check the <a href="migration_guide.html">Migration Guide</a> for a summary of 
 the important changes and how to proceed when migrating from version 2.x to 
 version 3.x.</p>
-<h3>SVN (05/Nov/2019)</h3>
+<h3>SVN (27/Jun/2021)</h3>
 
 <ul>
 
+	<li>
+	<strong>
+	<span class="hist_new">New:</span> </strong>EXTRABOX<em>id</em> attribute 
+	for the <strong>IupFlatTabs</strong>.</li>
+	<li>
+	<strong>
+	<span class="hist_new">New:</span> </strong>SELECTED attribute for
+	<strong>
+	IupFlatButton</strong>.</li>
+	<li>
+	<font SIZE="3">
+	<span class="hist_changed" style="color: rgb(0, 128, 0); font-weight: bold;">
+	<strong>Changed:</strong></span><span class="auto-style1"> <strong>
+	iuplua_close</strong> will now destroy all dialogs and all elements that 
+	have names that where 
+created with the same Lua context.</span></font></li>
+	<li>
+	<font SIZE="3">
+	<span class="hist_changed" style="color: rgb(0, 128, 0); font-weight: bold;">
+	<strong>Changed:</strong></span><span class="auto-style1"> behavior of 
+	LDESTROY_CB callback to be called after the element was detached and 
+	unmapped. </span></font></li>
+	<li>
+	<font SIZE="3"><span style="color: #008000">
+	<span
+            style="color: #000000"><span class="hist_fixed">Fixed: </span> 
+	</span></span>key mapping for = virtual key in Windows when + is in the same 
+	key.</font></li>
+	<li>
+	<font SIZE="3"><span style="color: #008000">
+	<span
+            style="color: #000000"><span class="hist_fixed">Fixed:</span> VALUE 
+	attribute for <strong>IupFlatButton</strong> when TOGGLE=Yes and <strong>
+	IupFlatToggle</strong>.</span></span></font></li>
+	<li>
+	<font SIZE="3"><span style="color: #008000">
+	<span
+            style="color: #000000"><span class="hist_fixed">Fixed:</span> 
+	VALUECHANGING_CB callback not called when value was changed using the 
+	keyboard in <strong>IupFlatVal</strong>.</span></span></font></li>
+	<li>
+	<font SIZE="3"><span style="color: #008000">
+	<span
+            style="color: #000000"><span class="hist_fixed">Fixed:</span> ACTIVE 
+	attribute in <strong>IupFlatVal</strong>.</span></span></font></li>
+	<li>
+	<font SIZE="3"><span style="color: #008000">
+	<span
+            style="color: #000000"><span class="hist_fixed">Fixed:</span> 
+	MOUSEBUTTON global attribute when 'W' is used in button with a state=-1 in
+	<strong>Windows</strong>.</span></span></font></li>
+	<li>
+	<font SIZE="3"><span style="color: #008000">
+	<span
+            style="color: #000000"><span class="hist_fixed">Fixed:</span> 
+	support for <strong>IupDatePick</strong>, <strong>IupCalendar</strong> and
+	<strong>IupThread</strong> in LEDC application.</span></span></font></li>
+	<li>
+	<font SIZE="3"><span style="color: #008000">
+	<span
+            style="color: #000000"><span class="hist_fixed">Fixed:</span> 
+	IupSetClassDefaultAttribute function. Thanks to D. Cravey.</span></span></font></li>
+
+</ul>
+<h3><a href="http://sourceforge.net/projects/iup/files/3.30/">Version 3.30</a> (30/Jul/2020)</h3>
+
+<ul>
+
+	<li>
+	<span class="hist_new">New:</span> PSCOLOR and TEXTPSCOLOR attributes for
+	<strong>IupFlatTree</strong> and <strong>IupFlatList</strong>.</li>
+	<li>
+	<span class="hist_new">New:</span> 
+	WYSIWYG HTML
+	editor support for <strong>IupWebBrowser</strong>. See EDITABLE attribute 
+	documentation.</li>
+	<li>
+	<span class="hist_new">New:</span> 
+	SHOWNOFOCUS attribute for <strong>IupDialog</strong>.</li>
+	<li>
+	<span class="hist_new">New:</span> 
+	SHOWCROSSHAIR<strong> </strong>attribute for <strong>IupPlot</strong><span class="auto-style3">.</span></li>
+	<li>
+	<span class="hist_new">New:</span> 
+	SCROLLWIDTHTRACKING attribute for <strong>IupScintilla</strong><span class="auto-style3">.</span></li>
+	<li>
+	<span class="hist_new">New:</span> 
+	EXTRATEXTid and EXTRATEXTWIDTH attributes for <strong>IupFlatTree</strong><span class="auto-style3">. 
+	Thanks to <span>M. Voznesenskiy.</span></span></li>
+	<li>
+	<font SIZE="3">
+	<span class="hist_changed" style="color: rgb(0, 128, 0); font-weight: bold;">
+	<strong>Changed:</strong></span><span class="auto-style1"> updated </span></font>
+	TUIO reference implementation from GitHub.</li>
+	<li>
+	<font SIZE="3">
+	<span class="hist_changed" style="color: rgb(0, 128, 0); font-weight: bold;">
+	<strong>Changed:</strong></span><span class="auto-style1"> pre-compiled 
+	binaries of the tools executables are now built with Visual C++ 15 (Visual 
+	Studio 2019) and they are NOT compatible with Windows XP nor Windows Vista, 
+	only with Windows 7, 8 and 10. Although they can still be built from source 
+	to run on Windows XP/Vista.</span></font></li>
+	<li>
+	<font SIZE="3"><span style="color: #008000">
+	<span
+            style="color: #000000"><span class="hist_fixed">Fixed: </span> 
+	</span></span></font>crash when list is empty in <strong>IupFlatList</strong>.</li>
+	<li>
+	<font SIZE="3"><span style="color: #008000">
+	<span
+            style="color: #000000"><span class="hist_fixed">Fixed: </span> 
+	</span></span></font>FLATSCROLLBAR in <strong>IupFlatList</strong> and
+	<strong>IupFlatTree</strong>.</li>
+	<li>
+	<font SIZE="3"><span style="color: #008000">
+	<span
+            style="color: #000000"><span class="hist_fixed">Fixed: </span> 
+	</span></span>extra functions for</font> <strong>IupFlatTree</strong>.</li>
+	<li>
+	<font SIZE="3"><span style="color: #008000">
+	<span
+            style="color: #000000"><span class="hist_fixed">Fixed: </span> 
+	</span></span></font> Fixed show stock images in <strong>IupVisualLED</strong>.</li>
+	<li>
+	<font SIZE="3"><span style="color: #008000">
+	<span
+            style="color: #000000"><span class="hist_fixed">Fixed: </span> 
+	highlight feedback in <strong>IupFlatButton</strong>.</span></span></font></li>
+	<li>
+	<strong>
+	<font SIZE="3"><span style="color: #008000">
+	<span
+            style="color: #000000"><span class="hist_fixed">Fixed: </span> 
+	</span></span></font></strong> TOTALCHILDCOUNT in <strong>IupFlatTree</strong>. 
+	Thanks to<span data-hovercard-id="mwoz@mail.ru" data-hovercard-owner-id="145" email="mwoz@mail.ru" name="&#1052;&#1080;&#1093;&#1072;&#1080;&#1083; &#1042;&#1086;&#1079;&#1085;&#1077;&#1089;&#1077;&#1085;&#1089;&#1082;&#1080;&#1081;" role="gridcell" tabindex="-1"> 
+	&#1052;&#1080;&#1093;&#1072;&#1080;&#1083; &#1042;.</span> </li>
+	<li>
+	<strong>
+	<font SIZE="3"><span style="color: #008000">
+	<span
+            style="color: #000000"><span class="hist_fixed">Fixed: </span> 
+	</span></span></font></strong>drawing of vertical guide lines in <strong>IupFlatTree</strong>. </li>
+	<li>
+	<font SIZE="3"><strong><span style="color: #008000">
+	<span
+            style="color: #000000"><span class="hist_fixed">Fixed: </span></span></span></strong>
+	scrollbar behavior when wheel is moved in an empty scrollbar. Affects all 
+	scrollbar and flat scrollbar clients.</font></li>
+	<li>
+	<font SIZE="3">
+	<strong>
+	<span style="color: #008000">
+	<span
+            style="color: #000000"><span class="hist_fixed">Fixed: </span> 
+	</span></span></strong>node title editing must terminate when scrollbars are moved</font> in <strong>IupFlatTree</strong>. 
+	Fixed node title editing when FLATSCROLLBAR=Yes.</li>
+	<li>
+	<font SIZE="3">
+	<strong>
+	<span style="color: #008000">
+	<span
+            style="color: #000000"><span class="hist_fixed">Fixed: </span> 
+	</span></span></strong></font> MARKEDNODES attributes when removing the 
+	selection of nodes in <strong>IupFlatTree</strong>.</li>
+	<li>
+	<font SIZE="3">
+	<strong>
+	<span style="color: #008000">
+	<span
+            style="color: #000000"><span class="hist_fixed">Fixed: </span> 
+	</span></span></strong></font>node size when IMAGE is set to an invalid 
+	handle in <strong>IupFlatTree</strong>.</li>
+	<li>
+	<font SIZE="3">
+	<strong>
+	<span style="color: #008000">
+	<span
+            style="color: #000000"><span class="hist_fixed">Fixed: </span> 
+	</span></span></strong></font>K_ANY processing in <strong>IupFlatList</strong> 
+	and <strong>IupDetachBox</strong>.</li>
+	<li>
+	<font SIZE="3"><span style="color: #008000">
+	<span
+            style="color: #000000"><span class="hist_fixed">Fixed: </span> 
+	</span></span></font>crash when tree is empty in <strong>IupFlatTree</strong>.</li>
+	<li>
+	<font SIZE="3"><span style="color: #008000">
+	<span
+            style="color: #000000"><span class="hist_fixed">Fixed: </span> 
+	</span></span></font><strong>IupMessage</strong> and <strong>IupMessageDlg</strong> 
+	when PARENTDIALOG is NULL in Windows.</li>
+	<li>
+	<font SIZE="3"><span style="color: #008000">
+	<span
+            style="color: #000000"><span class="hist_fixed">Fixed: </span> 
+	</span></span></font>missing NOCHANGEDIR, SHOWHIDDEN and DIRECTORY 
+	attributes for <strong>IupFileDlg</strong> when DIALOGTYPE = &quot;DIR&quot; and using 
+	the <strong>IupNewFileDlgOpen</strong> library.</li>
+	<li>
+	<font SIZE="3"><span style="color: #008000">
+	<span
+            style="color: #000000"><span class="hist_fixed">Fixed: </span> 
+	</span></span></font>TOUCH_CB callback id parameter in Windows. Thanks to R.
+	<span>Vilela.</span></li>
+	<li>
+	<font SIZE="3"><span style="color: #008000">
+	<span
+            style="color: #000000"><span class="hist_fixed">Fixed: </span> 
+	</span></span></font><strong>IupClassInfoDialog</strong> help url for a few 
+	controls. Thanks to C. Blüggel.</li>
+	<li>
+	<font SIZE="3"><span style="color: #008000">
+	<span
+            style="color: #000000"><span class="hist_fixed">Fixed: </span> 
+	</span></span></font>FORMATDATASTRING attribute in <strong>IupClipboard</strong>.</li>
+	<li>
+	<font SIZE="3"><span style="color: #008000">
+	<span
+            style="color: #000000"><span class="hist_fixed">Fixed: </span> 
+	</span></span>ITEMTIP<em>id</em> attribute in <strong>IupFlatList</strong>.</font> </li>
+	<li>
+	<font SIZE="3"><span style="color: #008000">
+	<span
+            style="color: #000000"><span class="hist_fixed">Fixed: </span> 
+	</span></span>POSTMESSAGE_CB callback registration.</font></li>
+	<li>
+	<font SIZE="3"><span style="color: #008000">
+	<span
+            style="color: #000000"><span class="hist_fixed">Fixed: </span> 
+	</span></span>Esc key processing when ACTION callback is defined in <strong>
+	IupText</strong> on Windows.</font></li>
+
+</ul>
+<h3><a href="http://sourceforge.net/projects/iup/files/3.29/">Version 3.29</a> 
+(18/May/2020)</h3>
+
+<ul>
+
+	<li>
+	<span class="hist_new">New:</span> IUP_LEFTPARENT, IUP_RIGHTPARENT, IUP_TOPPARENT 
+	and IUP_BOTTOMPARENT position options for <strong>IupPopup</strong> and
+	<strong>IupShowXY</strong>.</li>
+	<li>
+	<span class="hist_new">New:</span> <strong>IupFlatTree</strong> control that 
+	behaves as a IupTree, but with more control 
+	over its parameters.</li>
+	<li>
+	<span class="hist_new">New:</span> FOCUSFGCOLOR attribute for <strong>
+	IupMatrixList</strong>.</li>
+	<li>
+	<span class="hist_new">New:</span> EXECUTEBRANCH_CB callback for <strong>
+	IupTree</strong>.</li>
+	<li>
+	<span class="hist_new">New:</span> CSPACING attribute where SPACING is 
+	available (<strong>IupFlatButton, IupDropButton, IupFlatLabel, IupFlatList, 
+	IupFlatToggle, IupFlatTree, IupButton, IupList, IupTree, IupGLLabel</strong>).</li>
+	<li>
+	<span class="hist_new">New:</span> CPADDING attribute where PADDING is 
+	available (<strong>IupFlatButton, IupDropButton, IupFlatLabel, IupFlatList, 
+	IupFlatToggle, IupButton, IupGLLabel, IupGLText, IupGauge, IupText, 
+	IupGLFrame, IupGLProgressBar</strong>).</li>
+	<li>
+	<span class="hist_new">New:</span> improved support for adding new controls 
+	in <strong>IupLayoutDialog</strong>. New toolbar for new controls, visible 
+	only from <strong>IupVisualLED</strong>.</li>
+	<li>
+	<span class="hist_new">New:</span> Reset Value, Properties, Show Auto Names 
+	and Check Handles for global names in <strong>IupGlobalsDialog</strong>.</li>
+	<li>
+	<span class="hist_new">New:</span> FOCUSSELECT attribute in <strong>
+	IupColorbar</strong>.</li>
+	<li>
+	<span class="hist_new">New:</span> image editor for <strong>IupVisualLED</strong>.</li>
+	<li>
+	<span class="hist_new">New:</span> DSPROPERTIESVALIDATE_CB and 
+	PROPERTIESVALIDATE_CB callbacks for <strong>IupPlot</strong>.</li>
+	<li>
+	<span class="hist_new">New:</span> DS_SELECTED attribute for <strong>IupPlot</strong>.</li>
+	<li>
+	<span class="hist_new">New:</span> FORMATDATASTRING attribute for <strong>IupClipboard</strong>.</li>
+	<li>
+	<span class="hist_new">New:</span> MENUITEMVALUES attribute for <strong>IupPlot</strong>.</li>
+	<li>
+	<font SIZE="3">
+	<span class="hist_changed" style="color: rgb(0, 128, 0); font-weight: bold;">
+	<strong>Changed:</strong></span><span class="auto-style1"> </span></font>
+	TABSPADDING attribute default value changed to &quot;6x4&quot;.</li>
+	<li>
+	<font SIZE="3">
+	<span class="hist_changed" style="color: rgb(0, 128, 0); font-weight: bold;">
+	<strong>Changed:</strong></span><span class="auto-style1"> toolbar in
+	<strong>IupScintillaDlg</strong> to include word wrap, show white spaces and 
+	show end of lines buttons.</span></font></li>
+	<li>
+	<font SIZE="3">
+	<span class="hist_changed" style="color: rgb(0, 128, 0); font-weight: bold;">
+	<strong>Changed:</strong></span><span class="auto-style1"> </span>t</font>he 
+	minimum resulted size when images are automatically resized is now 24 pixels 
+	height.</li>
+	<li>
+	<font SIZE="3">
+	<span class="hist_changed" style="color: rgb(0, 128, 0); font-weight: bold;">
+	<strong>Changed:</strong></span><span class="auto-style1"> removed </span></font>
+	<strong>IupRefreshChildren</strong> limitation for a mapped element.</li>
+	<li>
+	<font SIZE="3">
+	<span class="hist_changed" style="color: rgb(0, 128, 0); font-weight: bold;">
+	<strong>Changed:</strong></span><span class="auto-style1"> </span></font>PADDING 
+	attribute to accept &quot;DEFAULTBUTTONPADDING&quot; as value, the global attribute 
+	with this name will be used instead. Affects <strong>IupButton</strong>,
+	<strong>IupToggle</strong>, <strong>IupFlatButton</strong>, <strong>
+	IupFlatToggle</strong>, and <strong>IupDropButton</strong>.</li>
+	<li>
+	<font SIZE="3">
+	<span class="hist_changed" style="color: rgb(0, 128, 0); font-weight: bold;">
+	<strong>Changed:</strong></span><span class="auto-style1"> </span></font>
+	maxsize parameter in <strong>IupGetText</strong> to accept 0 (maxisize will 
+	be the current lenght) or -1 (the dialog will be read-only).</li>
+	<li>
+	<font SIZE="3">
+	<span class="hist_changed" style="color: rgb(0, 128, 0); font-weight: bold;">
+	<strong>Changed:</strong></span><span class="auto-style1"> all code exports 
+	were uniformed among <strong>IupView</strong>, <strong>IupLayoutDialog</strong> 
+	and <strong>IupVisualLED</strong>. Images are now exported in separate 
+	functions in C and Lua. Names with reserved characters were replaced with 
+	'_'.</span></font></li>
+	<li>
+	<font SIZE="3"><span style="color: #008000">
+	<span
+            style="color: #000000"><span class="hist_fixed">Fixed: </span> 
+	</span></span></font><strong>IupSaveImageAsText</strong> to save C and Lua 
+	images inside a function.</li>
+	<li>
+	<font SIZE="3"><span style="color: #008000">
+	<span
+            style="color: #000000"><span class="hist_fixed">Fixed: </span> 
+	</span></span>support for mouse wheel in <strong>IupFlatVal</strong>.</font></li>
+	<li>
+	<font SIZE="3"><span style="color: #008000">
+	<span
+            style="color: #000000"><span class="hist_fixed">Fixed: </span> 
+	</span></span>highlight feedback when mouse is pressed and moved outside the 
+	control for <strong>IupFlatButton</strong>, <strong>IupFlatToggle</strong> 
+	and <strong>IupDropButton</strong>.</font></li>
+	<li>
+	<font SIZE="3"><span style="color: #008000">
+	<span
+            style="color: #000000"><span class="hist_fixed">Fixed: </span> 
+	</span></span>EXTFILTER, FILTERUSED, VALUE and MULTIVALUE in <strong>IupFileDlg</strong> in Windows when using 
+	IupNewFileDlgOpen.</font></li>
+	<li>
+	<font SIZE="3"><span style="color: #008000">
+	<span
+            style="color: #000000"><span class="hist_fixed">Fixed: </span> 
+	</span></span><strong>IupGLText</strong> editing in GTK.</font></li>
+	<li>
+	<font SIZE="3"><span style="color: #008000">
+	<span
+            style="color: #000000"><span class="hist_fixed">Fixed: </span> 
+	</span></span></font>FITTOSIZE and FITTOTEXT affecting redraw when set 
+	inside RESIZEMATRIX_CB in <strong>IupMatrix</strong>.</li>
+	<li>
+	<font SIZE="3"><span style="color: #008000">
+	<span
+            style="color: #000000"><span class="hist_fixed">Fixed: </span> 
+	</span></span></font>TITLE attribute in <strong>IupMatrixList</strong>.</li>
+	<li>
+	<font SIZE="3"><span style="color: #008000">
+	<span
+            style="color: #000000"><span class="hist_fixed">Fixed: </span> 
+	</span></span></font>font getting lost in <strong>IupMatrix</strong>. when 
+	the element is unmapped and mapped again.</li>
+	<li>
+	<font SIZE="3"><span style="color: #008000">
+	<span
+            style="color: #000000"><span class="hist_fixed">Fixed: </span> 
+	</span></span></font>export for C, Lua or LED for the <strong>IupNormalizer</strong>,
+	<strong>IupAnimatedLabel</strong> and <strong>IupDropButton</strong> 
+	controls. Used in <strong>IupLayoutDialog</strong> and <strong>IupVisualLED</strong>.</li>
+	<li>
+	<font SIZE="3"><span style="color: #008000">
+	<span
+            style="color: #000000"><span class="hist_fixed">Fixed: </span> 
+	</span></span></font>VALUE attribute in <strong>IupFlatToggle</strong>.</li>
+	<li>
+	<font SIZE="3"><span style="color: #008000">
+	<span
+            style="color: #000000"><span class="hist_fixed">Fixed: </span> 
+	</span></span></font>View/Toolbar and View/Statusbar menu items in <strong>
+	IupScitillaDlg</strong>. </li>
+	<li>
+	<font SIZE="3"><span style="color: #008000">
+	<span
+            style="color: #000000"><span class="hist_fixed">Fixed: </span> 
+	</span></span></font>STATE attribute return value for empty branches in
+	<strong>IupTree</strong> on GTK.</li>
+	<li>
+	<font SIZE="3"><span style="color: #008000">
+	<span
+            style="color: #000000"><span class="hist_fixed">Fixed: </span> 
+	</span></span></font>CLIENTSIZE attribute return value for <strong>IupCbox</strong>,
+	<strong>IupParamBox</strong> and <strong>IupZbox</strong> when width and 
+	height are 0.</li>
+	<li>
+	<font SIZE="3"><span style="color: #008000">
+	<span
+            style="color: #000000"><span class="hist_fixed">Fixed: </span> 
+	</span></span></font>bar position when element is bigger than the bar size 
+	in <strong>IupFlatSeparator</strong>.</li>
+	<li>
+	<font SIZE="3"><span style="color: #008000">
+	<span
+            style="color: #000000"><span class="hist_fixed">Fixed: </span> 
+	</span></span></font>memory leak in FONT attribute in GTK. Thanks to T. 
+	Moore.</li>
+	<li>
+	<font SIZE="3"><span style="color: #008000">
+	<span
+            style="color: #000000"><span class="hist_fixed">Fixed: </span> 
+	</span></span></font>NORMALIZERGROUP attribute that was adding elements 
+	twice to the normalizer.</li>
+	<li>
+	<font SIZE="3"><span style="color: #008000">
+	<span
+            style="color: #000000"><span class="hist_fixed">Fixed: </span> 
+	</span></span></font>RASTERSIZE attribute for <strong>IupImage</strong>*.</li>
+	<li>
+	<font SIZE="3"><span style="color: #008000">
+	<span
+            style="color: #000000"><span class="hist_fixed">Fixed: </span> 
+	</span></span>IDVALUE attribute registration for <strong>IupImage</strong>.</font></li>
+	<li>
+	<font SIZE="3"><span style="color: #008000">
+	<span
+            style="color: #000000"><span class="hist_fixed">Fixed: </span> 
+	</span></span>selection when SELECT_CB is not defined in <strong>IupColorbar</strong>.</font></li>
+	<li>
+	<font SIZE="3"><span style="color: #008000">
+	<span
+            style="color: #000000"><span class="hist_fixed">Fixed: </span> 
+	</span></span></font>TEXTAVAILABLE attribute for <strong>IupClipboard</strong> 
+	in Windows when text is Unicode.</li>
+
+</ul>
+<h3><a href="http://sourceforge.net/projects/iup/files/3.28/">Version 3.28</a> (13/Dec/2019)</h3>
+
+<ul>
+
+	<li>
+	<span class="hist_new">New:</span> <strong><a href="iupvisualled.html">IupVisualLED</a></strong> 
+	application is a IDE for editing and testing LED files, with capacity of 
+	visual editing a dialog layout.</li>
 	<li>
 	<span class="hist_new">New:</span> <strong>IupFlatVal</strong> control that 
 	behaves as a IupVal, but with more control 
@@ -122,7 +577,7 @@ version 3.x.</p>
 	<span class="hist_new">New:</span> </strong></span>support for IUP*_API 
 	macro for all exported functions in a library. IUP*_SDK_API is used to mark 
 	the Internal SDK exported functions. This is experimental and only 
-	4 libraries where changed: iup, iuplua, iupweb and iupluaweb.</li>
+	4 libraries were changed: iup, iuplua, iupweb and iupluaweb.</li>
 	<li>
 	<span>
 	<strong>
@@ -225,14 +680,23 @@ version 3.x.</p>
 	<strong>
 	<b>
 	<span class="hist_new">New:</span> </b></strong>support for drag &amp; drop 
-	controls in <strong>IupLayoutDlg</strong>. Improved Paste and New options. 
+	controls in <strong>IupLayoutDialog</strong>. Improved Paste and New options. 
 	New Cut item in context menu.</span></li>
 	<li>
 	<span>
 	<strong>
 	<b>
 	<span class="hist_new">New:</span> </b></strong>ATTRIBCHANGED_CB and 
-	LAYOUTCHANGED_CB callbacks for <strong>IupLayoutDlg</strong>.</span></li>
+	LAYOUTCHANGED_CB callbacks for <strong>IupLayoutDialog</strong>.</span></li>
+	<li>
+	<span>
+	<strong>
+	<b>
+	<span class="hist_new">New:</span> <span class="style3">POPUPALIGN attribute 
+	for </span>IupMenu</b></strong> when used in
+	<b>
+	<strong>
+	IupPopup.</strong></b></span></li>
 	<li>
 	<font SIZE="3">
 	<span class="hist_changed" style="color: rgb(0, 128, 0); font-weight: bold;">
@@ -443,6 +907,32 @@ IupScrollBox</strong> and <strong>IupGLCanvasBox</strong>.</span></font></li>
             style="color: #000000"><span class="hist_fixed">Fixed: </span> 
 	</span></span>file paths of in a project are now saved relative to the 
 	project file path in <strong>IupScintillaDlg</strong>.</font></li>
+	<li>
+	<font SIZE="3"><span style="color: #008000">
+	<span
+            style="color: #000000"><span class="hist_fixed">Fixed: </span> 
+	</span></span>a double click in a dialog that is closed at that moment may 
+	generate a spurious button release in the dialog underneath in Windows. We 
+	added a workaround were we have control of the button down/up message 
+	processing. But not all controls will handle that case. </font></li>
+	<li>
+	<font SIZE="3"><span style="color: #008000">
+	<span
+            style="color: #000000"><span class="hist_fixed">Fixed: </span> 
+	</span></span>SPACING attribute in <strong>IupTree</strong> could not be set 
+	to 0.</font></li>
+	<li>
+	<font SIZE="3"><span style="color: #008000">
+	<span
+            style="color: #000000"><span class="hist_fixed">Fixed: </span> 
+	</span></span></font>visible space when one scrollbar is disabled in <strong>
+	IupScrollBox</strong> and <strong>IupFlatScrollBox</strong>.</li>
+	<li>
+	<font SIZE="3"><span style="color: #008000">
+	<span
+            style="color: #000000"><span class="hist_fixed">Fixed: </span> 
+	</span></span></font>compatibility between TITLE and CUSTOMFRAME in <strong>
+	IupDialog</strong>.</li>
 
 </ul>
 <h3><a href="http://sourceforge.net/projects/iup/files/3.27/">Version 3.27</a> (30/Apr/2019)</h3>
@@ -660,7 +1150,7 @@ IupScrollBox</strong> and <strong>IupGLCanvasBox</strong>.</span></font></li>
 	<font SIZE="3">
 	<span class="hist_changed" style="color: rgb(0, 128, 0); font-weight: bold;">
 	<strong>Changed:</strong></span><span class="auto-style1"> improved id based 
-	attributes in Properties dialog in <strong>IupLayoutDlg</strong>.</span></font></li>
+	attributes in Properties dialog in <strong>IupLayoutDialog</strong>.</span></font></li>
 	<li>
 	<font SIZE="3">
 	<span class="hist_changed" style="color: rgb(0, 128, 0); font-weight: bold;">
@@ -1112,7 +1602,7 @@ Mitáš.</li>
 	<span
             style="color: #000000"><span class="hist_fixed">Fixed: </span> 
 	</span></span></font>Layout update when children are dynamically added to 
-	the dialog in <strong>IupLayoutDlg</strong>.</li>
+	the dialog in <strong>IupLayoutDialog</strong>.</li>
 	<li>
 	<font SIZE="3"><span style="color: #008000">
 	<span
@@ -1555,14 +2045,14 @@ Mitáš.</li>
 	<strong>
 	<b>
 	<span class="hist_new">New:</span> </b></strong>support for Find in <strong>
-	IupLayoutDlg</strong>. </font></li>
+	IupLayoutDialog</strong>. </font></li>
 	<li>
 	<font SIZE="3">
 	<strong>
 	<b>
 	<span class="hist_new">New:</span> </b></strong>&quot;Handle Name&quot; context menu 
 	item for editing the name of an element in <strong>
-	IupLayoutDlg</strong>.</font></li>
+	IupLayoutDialog</strong>.</font></li>
 	<li>
 	<font SIZE="3">
 	<b>
@@ -1729,7 +2219,7 @@ Mitáš.</li>
 	<font SIZE="3"><span style="color: #008000">
 	<span
             style="color: #000000"><span class="hist_fixed">Fixed:</span> 
-	internal elements display in <strong>IupLayoutDlg</strong>. New option to 
+	internal elements display in <strong>IupLayoutDialog</strong>. New option to 
 	force internal elements to be drawn.</span></span></font></li>
 	<li>
 	<font SIZE="3"><span style="color: #008000">
@@ -2130,7 +2620,7 @@ and <strong>IupGLToggle</strong>.</li>
 	<li>
 <font SIZE="3">
 	<span class="hist_new">New:</span> scrollbars for layout area in <strong>
-	IupLayoutDlg</strong>.</font></li>
+	IupLayoutDialog</strong>.</font></li>
 	<li>
 <font SIZE="3">
 	<span class="hist_new">New:</span> </font>TYPECOLORINACTIVE attribute for
@@ -2968,7 +3458,7 @@ and <strong>IupGLToggle</strong>.</li>
 
 	<li><span class="hist_new">New:</span> &quot;iup_class_cbs.hpp&quot; header with 
 	macros to help creation of callbacks as methods in C++.</li>
-	<li><span class="hist_new">New:</span> SHOWNOACTIVE and SHOWMINIMIZENEXT 
+	<li><span class="hist_new">New:</span> SHOWNOACTIVATE and SHOWMINIMIZENEXT 
 	attributes to control the PLACEMENT behavior of the <strong>IupDialog
 	</strong>in Windows.</li>
 	<li><span class="hist_new">New:</span> global hot key (Alt+Ctrl+Shft+L) to 

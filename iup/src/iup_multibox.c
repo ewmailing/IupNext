@@ -210,6 +210,7 @@ static void iMultiBoxComputeNaturalSizeMethod(Ihandle* ih, int *w, int *h, int *
   }
 
   /* Also set expand to its own expand so it will not depend on children */
+  /* So it will be able to dynamically expand and contract to rearrange its children */
   *children_expand = ih->expand;
 
   /* at least will have this size, use it as a minimum size */
@@ -521,7 +522,10 @@ Iclass* iupMultiBoxNewClass(void)
   ic->SetChildrenCurrentSize = iMultiBoxSetChildrenCurrentSizeMethod;
   ic->SetChildrenPosition = iMultiBoxSetChildrenPositionMethod;
 
-  /* Internal Callback */
+  /* Base Callbacks */
+  iupBaseRegisterBaseCallbacks(ic);
+
+  /* Callbacks */
   iupClassRegisterCallback(ic, "UPDATEATTRIBFROMFONT_CB", "");
 
   /* Common */
@@ -554,8 +558,8 @@ Iclass* iupMultiBoxNewClass(void)
   iupClassRegisterAttribute(ic, "NUMCOL", iMultiBoxGetNumColAttrib, NULL, NULL, NULL, IUPAF_READONLY|IUPAF_NOT_MAPPED|IUPAF_NO_INHERIT);
   iupClassRegisterAttribute(ic, "NUMLIN", iMultiBoxGetNumLinAttrib, NULL, NULL, NULL, IUPAF_READONLY|IUPAF_NOT_MAPPED|IUPAF_NO_INHERIT);
 
-  iupClassRegisterAttribute(ic, "CHILDMAXSIZE", NULL, NULL, NULL, NULL, IUPAF_NOT_MAPPED | IUPAF_NO_INHERIT);
-  iupClassRegisterAttribute(ic, "CHILDMINSPACE", NULL, NULL, NULL, NULL, IUPAF_NOT_MAPPED | IUPAF_NO_INHERIT);
+  iupClassRegisterAttribute(ic, "CHILDMAXSIZE", NULL, NULL, NULL, NULL, IUPAF_NO_INHERIT);
+  iupClassRegisterAttribute(ic, "CHILDMINSPACE", NULL, NULL, NULL, NULL, IUPAF_NO_INHERIT);
 
   /* on children
     LINEBREAK

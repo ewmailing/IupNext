@@ -5,6 +5,11 @@
 <title>Guide</title>
 <meta http-equiv="Content-Type" content="text/html; charset=windows-1252">
 <link rel="stylesheet" type="text/css" href="../style.css">
+<style type="text/css">
+.auto-style1 {
+	margin-left: 40px;
+}
+</style>
 </head>
 <body>
 
@@ -14,7 +19,8 @@ Linux</h2>
 Notice that you may not use all the libraries, although this guide will show you 
 how to build all of 
 them. You may then choose to build specific libraries.</p>
-<p>The Linux used as reference is the Ubuntu distribution.</p>
+<p>The Linux used as reference is the Ubuntu distribution (considering Ubuntu &gt;= 
+14 and GTK 3).</p>
 <h3>System Configuration</h3>
 <p>To build the libraries you will have to download the development version of some packages installed 
 on your system. Although the run time version of some of these packages are 
@@ -22,33 +28,23 @@ already installed, the development versions are usually not. The packages
 described here are for Ubuntu, but you will be able to identify them for other 
 systems as well.</p>
 <p>To build Lua you will need:</p>
-			<pre>libreadline-dev</pre>
+			<pre><strong>libreadline-dev</strong></pre>
 		<p>To build IM you will need:</p>
-			<pre>g++</pre>
+			<pre><strong>g++
+libfftw3-dev</strong></pre>
 		<p>To build CD you will need:</p>
-<pre>libfreetype6-dev
-libgl1-mesa-dev and libglu1-mesa-dev (for the ftgl library used by CD_GL)
-libgtk2.0-dev (for the GDK driver)
-or
-libgtk-3-dev (for the GTK driver)
-  libx11-dev (for the X11 driver, OPTIONAL)
-  libxpm-dev (&quot;)
-  libxmu-dev (&quot;) 
-  libxft-dev (for the XRender driver, OPTIONAL)
+<pre><strong>libfreetype6-dev</strong> (already installed if libgtk-3-dev is installed)
+<strong>libgl1-mesa-dev</strong> and <strong>libglu1-mesa-dev</strong> (for the ftgl library used by CD_GL)
+<strong>libgtk-3-dev</strong> (for the GTK driver)
 </pre>
 
 <p>To build IUP you will need:</p>
-<pre>libgtk2.0-dev (for the GTK driver) 
-or
-libgtk-3-dev (for the GTK driver) 
-  libmotif-dev and x11proto-print-dev (for the Motif driver, OPTIONAL)
-libgl1-mesa-dev and libglu1-mesa-dev (for the IupGLCanvas)
-libwebkit-dev or libwebkitgtk-dev (for the IupWebBrowser using GTK 2)
-or
-libwebkitgtk-3.0-dev (for the IupWebBrowser using GTK 3)</pre>
+<pre><strong>libgtk-3-dev</strong> (for the GTK driver) 
+<strong>libgl1-mesa-dev</strong> and <strong>libglu1-mesa-dev</strong> (for the IupGLCanvas)
+<strong>libwebkit2gtk-3.0-dev</strong> or <strong>libwebkit2gtk-4.0-dev</strong> depending what's available on the system (for the IupWebBrowser)</pre>
 <p>To install them you can use the Synaptic Package Manager and select the 
 packages, or can use the command line and type:</p>
-<pre>sudo apt-get install package_name</pre>
+<pre>sudo apt-get install <strong>package_name</strong></pre>
 <h3>Source Download</h3>
 <p>Download the &quot;xxx-X.X_Sources.tar.gz&quot; package from the &quot;<strong>Docs and Sources</strong>&quot; 
 directory for the version you want to build. Here are links for the <strong>Files</strong> section 
@@ -78,17 +74,16 @@ tar -xpvzf iup-3.19_Sources.tar.gz
 expect the following directory tree:</p>
 <pre>/xxxx/
       cd/
-      freetype/  (included in CD, but not used in Linux, install the freetype-dev package)
       ftgl/      (included in CD)
       im/
       iup/
       lua53/     [optional, see note below]
-      zlib/      (included in IM, but not used in Linux, install the zlib-dev package)
 </pre>
 
 <p>If you unpack all the source packages in the same directory, that structure will 
 be automatically created.</p>
-<p>If you want to use some of these libraries that are installed on the system 
+<hr class="auto-style1">
+<p><strong>After</strong> the build, if you want to use some of these libraries that are installed on the system 
 (see Installation section below) you will have to define some environment 
 variables before building them. For example:</p>
 <pre class="example">export IM_INC=/usr/include/im
@@ -99,7 +94,7 @@ export CD_LIB=/usr/lib           [not necessary, already included by gcc]
 
 export IUP_INC=/usr/include/iup
 export IUP_LIB=/usr/lib          [not necessary, already included by gcc]</pre>
-<h3>Lua</h3>
+<h3>Lua (from the system)</h3>
 <p>Although we use Lua from LuaBinaries, any Lua installation can also be used. 
 In Ubuntu, the Lua run time package is:</p>
 <pre>lua5.1</pre>
@@ -119,24 +114,26 @@ also the path to Lua executable. This can be configured using:</p>
 
 <p>As a general rule (excluding system dependencies): IUP depends on CD and IM, 
 and CD depends on IM. So start by build IM, then CD, then IUP.</p>
-<p>To start building go the the &quot;<strong>src</strong>&quot; directory and type &quot;<strong>make</strong>&quot;. In IUP there are 
+<p>To start building go the the &quot;<strong>src</strong>&quot; directory and type &quot;<strong>make</strong>&quot; 
+(except for Lua). In IUP there are 
 many &quot;srcxxx&quot; folders, so go to the up directory &quot;iup&quot; and type 
 &quot;<strong>make</strong>&quot; that all the 
 sub folders will be built. For example:</p>
 <pre>cd lua53/src
-make
+make -f Makefile.tecmake
 cd ../..
 
-// repeat for FTGL, IM and CD
+// repeat the following for IM, FTGL, CD and IUP (in this order)
 
-cd iup
+cd im
 make
 cd ..</pre>
 <p><strong>TIP</strong>: Instead of building all the libraries, try building only the libraries you 
 are going to use. The provided makefiles will build all the libraries, but take 
-a look inside them and you will figure out how to build just one library.</p>
+a look inside them and you will figure out how to build just the libraries you 
+need.</p>
 <p><strong>TIP</strong>: If GTK headers or libraries are not being found, even 
-when the libgtk2.0-dev package is installed, then their installation folder is 
+when the libgtk*.0-dev package is installed, then their installation folder is 
 not where our Makefiles expect. Build the GTK/GDK dependent libraries using 
 &quot;make
 <span style="font-size:12.0pt;font-family:&quot;Helvetica&quot;,&quot;sans-serif&quot;;
@@ -227,9 +224,7 @@ sudo ln -fs /usr/lib/libiupluacontrols51.so iupluacontrols.so
 <h4>Installation (Lua Modules) [Alternative]</h4>
 <p>If you use the <strong>alternative</strong> installation directory, and you also 
 do NOT use the LuaBinaries installation, then you must set the LUA_CPATH environment variable:</p>
-<pre>export LUA_CPATH=./\?.so\;./lib\?.so\;./lib\?51.so\;</pre>
-<p><br>
-</p>
+<pre>export LUA_CPATH=./\?.so\;./lib\?.so\;./lib\?51.so\;<br></pre>
 
 </body>
 

@@ -255,8 +255,9 @@ int iupGLSubCanvasRedraw(Ihandle* ih)
 
 void iupGLSubCanvasStartMoving(Ihandle* ih, int x, int y)
 {
-  iupAttribSetInt(ih, "_IUP_START_X", ih->x + x);
-  iupAttribSetInt(ih, "_IUP_START_Y", ih->y + y);
+  /* Used for MOVABLE controls */
+  iupAttribSetInt(ih, "_IUP_GLSUBCANVAS_START_X", ih->x + x);
+  iupAttribSetInt(ih, "_IUP_GLSUBCANVAS_START_Y", ih->y + y);
 
   if (iupAttribGetInt(ih, "MOVETOTOP"))
     IupSetAttribute(ih, "ZORDER", "TOP");
@@ -264,9 +265,10 @@ void iupGLSubCanvasStartMoving(Ihandle* ih, int x, int y)
 
 int iupGLSubCanvasMove(Ihandle* ih, int x, int y)
 {
+  /* Used for MOVABLE controls */
   int moved = 0;
-  int start_x = iupAttribGetInt(ih, "_IUP_START_X");
-  int start_y = iupAttribGetInt(ih, "_IUP_START_Y");
+  int start_x = iupAttribGetInt(ih, "_IUP_GLSUBCANVAS_START_X");
+  int start_y = iupAttribGetInt(ih, "_IUP_GLSUBCANVAS_START_Y");
 
   x += ih->x;
   y += ih->y;
@@ -290,8 +292,8 @@ int iupGLSubCanvasMove(Ihandle* ih, int x, int y)
       cb(ih, ih->x, ih->y);
   }
 
-  iupAttribSetInt(ih, "_IUP_START_X", x);
-  iupAttribSetInt(ih, "_IUP_START_Y", y);
+  iupAttribSetInt(ih, "_IUP_GLSUBCANVAS_START_X", x);
+  iupAttribSetInt(ih, "_IUP_GLSUBCANVAS_START_Y", y);
   return moved;
 }
 
@@ -420,7 +422,7 @@ static int iGLSubCanvasSetZorderAttrib(Ihandle* ih, const char* value)
   if (iupStrEqualNoCase(value, "BOTTOM"))
     top = 0;
 
-  /* move everyone in the same hierachy */
+  /* move everyone in the same hierarchy */
   while (ih != gl_parent)
   {
     if (iGLSubCanvasSetZorder(ih->parent, ih, top))
@@ -497,11 +499,8 @@ Iclass* iupGLSubCanvasNewClass(void)
   iupClassRegisterCallback(ic, "GL_MOTION_CB", "iis");
   iupClassRegisterCallback(ic, "GL_WHEEL_CB", "fiis");
 
-  /* Common Callbacks */
-  iupClassRegisterCallback(ic, "DESTROY_CB", "");
-  iupClassRegisterCallback(ic, "LDESTROY_CB", "");
-  iupClassRegisterCallback(ic, "MAP_CB", "");
-  iupClassRegisterCallback(ic, "UNMAP_CB", "");
+  /* Base Callbacks */
+  iupBaseRegisterBaseCallbacks(ic);
 
   /* Common */
   iupBaseRegisterCommonAttrib(ic);
@@ -515,7 +514,7 @@ Iclass* iupGLSubCanvasNewClass(void)
   iupBaseRegisterVisualAttrib(ic);
 
   /* redefine native visual attributes */
-  iupClassRegisterAttribute(ic, "VISIBLE", NULL, NULL, IUPAF_SAMEASSYSTEM, "YES", IUPAF_NO_SAVE | IUPAF_DEFAULT);  /* inheritable */
+  iupClassRegisterAttribute(ic, "VISIBLE", NULL, NULL, IUPAF_SAMEASSYSTEM, "YES", IUPAF_NO_SAVE);  /* inheritable */
   iupClassRegisterAttribute(ic, "ACTIVE", NULL, NULL, IUPAF_SAMEASSYSTEM, "YES", IUPAF_DEFAULT);  /* inheritable */
   iupClassRegisterAttribute(ic, "ZORDER", NULL, iGLSubCanvasSetZorderAttrib, NULL, NULL, IUPAF_WRITEONLY | IUPAF_NO_INHERIT);
   iupClassRegisterAttribute(ic, "TIP", NULL, NULL, NULL, NULL, IUPAF_NO_DEFAULTVALUE | IUPAF_NO_INHERIT);

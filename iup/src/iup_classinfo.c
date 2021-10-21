@@ -15,7 +15,7 @@ static int compare_names(const void *a, const void *b)
   return strcmp( * ( char** ) a, * ( char** ) b );
 }
 
-static char* getClassParameters(const char* format)
+static char* getClassParameters(const char* format, const char* format_attr)
 {
   static char str[200], *pstr;
   pstr = &str[0];
@@ -31,17 +31,17 @@ static char* getClassParameters(const char* format)
     {
       char* fstr = NULL;
 
-      switch(tolower(format[i]))
+      switch(format[i])
       {
-      case 'b': fstr = "unsigned char"; break;
-      case 'c': fstr = "unsigned char*"; break;
-      case 'i': fstr = "int"; break;
-      case 'j': fstr = "int*"; break;
-      case 'f': fstr = "float"; break;
-      case 's': fstr = "char*"; break;
-      case 'a': fstr = "char*"; break;
-      case 'h': fstr = "Ihandle*"; break;
-      case 'g': fstr = "Ihandle**"; break;
+      case 'b': fstr = "unsigned char"; break;   /* unused */
+      case 'j': fstr = "int*"; break;            /* unused */
+      case 'f': fstr = "float"; break;           /* unused */
+      case 'i': fstr = (i == 0)? "int w": "int h"; break;     /* used in IupImage* only */
+      case 'c': fstr = "const unsigned char* pixels"; break;  /* used in IupImage* only */
+      case 's': fstr = "const char* "; break;  /* usually is for TITLE, but depends on format_attr */
+      case 'a': fstr = "const char* action"; break; /* name of the ACTION callback */
+      case 'h': fstr = "Ihandle* ih"; break;
+      case 'g': fstr = "Ihandle** ih_array"; break;  /* when used there are no other parameters */
       }
 
       if (fstr)
@@ -50,6 +50,18 @@ static char* getClassParameters(const char* format)
           pstr += sprintf(pstr, "%s", ", ");
 
         pstr += sprintf(pstr, "%s", fstr);
+
+        if (format[i] == 's')
+        {
+          if (i == 0 && format_attr)
+          {
+            char attr[100];
+            iupStrLower(attr, format_attr);
+            pstr += sprintf(pstr, "%s", attr);
+          }
+          else
+            pstr += sprintf(pstr, "%s", "title");
+        }
       }
       else
       {
@@ -200,9 +212,8 @@ static char* getNativeType(InativeType nativetype)
   return str[nativetype];
 }
 
-static char* getChildType(int childtype)
+static const char* getChildType(int childtype)
 {
-  char* str[] = {"NO CHILD", "MANY CHILDREN"}; 
   if (childtype > IUP_CHILDMANY)
   {
     static char buf[100];
@@ -210,10 +221,13 @@ static char* getChildType(int childtype)
     return buf;
   }
   else
+  {
+    static const char * str[] = {"NO CHILD", "MANY CHILDREN"};
     return str[childtype];
+  }
 }
 
-void iupClassInfoGetDesc(Iclass* ic, Ihandle* ih, const char* attrib_name)
+IUP_SDK_API void iupClassInfoGetDesc(Iclass* ic, Ihandle* ih, const char* attrib_name)
 {
   char constructor[50];
 
@@ -233,7 +247,7 @@ void iupClassInfoGetDesc(Iclass* ic, Ihandle* ih, const char* attrib_name)
                    "%s"
                    "%s",
                    constructor,
-                   getClassParameters(ic->format),
+                   getClassParameters(ic->format, ic->format_attr),
                    ic->name,
                    getNativeType(ic->nativetype),
                    getChildType(ic->childtype),
@@ -272,10 +286,13 @@ static int classesList_ActionCB (Ihandle *ih, char *className, int pos, int stat
     IupSetAttribute(listCallbacks, "REMOVEITEM", NULL);
 
     cb_n = IupGetClassCallbacks(className, attr_names, total_n);
-    qsort(attr_names, cb_n, sizeof(char*), compare_names);
+    if (cb_n > 0)
+    {
+      qsort(attr_names, cb_n, sizeof(char*), compare_names);
 
-    for (i = 0; i < cb_n; i++)
-      IupSetAttribute(listCallbacks, "APPENDITEM", attr_names[i]);
+      for (i = 0; i < cb_n; i++)
+        IupSetAttribute(listCallbacks, "APPENDITEM", attr_names[i]);
+    }
 
     /***********************************/
 
@@ -308,7 +325,7 @@ static void PopulateListOfClasses(Ihandle* ih)
   free(list);
 }
 
-void iupClassInfoShowHelp(const char* className)
+IUP_SDK_API void iupClassInfoShowHelp(const char* className)
 {
   char url[1024];
   char* folder = "elem";
@@ -327,13 +344,25 @@ void iupClassInfoShowHelp(const char* className)
             iupStrEqual(className, "tuioclient") ||
             iupStrEqual(className, "webbrowser"))
             folder = "ctrl";
-  else if (className[0] == 'G' && className[0] == 'L')
+  else if (className[0] == 'g' && className[1] == 'l')
     folder = "gl";
 
   if (iupStrEqualPartial(className, "mgl") ||
       iupStrEqual(className, "plot") ||
       iupStrEqual(className, "scintilla"))
       sep = "_";
+
+  /* filename fixes */
+  if (iupStrEqualPartial(className, "imagergb"))
+    className = "image";
+  else if (iupStrEqual(className, "spinbox"))
+    className = "spin";
+  else if (iupStrEqual(className, "olecontrol"))
+    className = "ole";
+  else if (iupStrEqual(className, "tuioclient"))
+    className = "tuio";
+  else if (iupStrEqual(className, "webbrowser"))
+    className = "web";
 
   /* sprintf(url, "http://www.tecgraf.puc-rio.br/iup/en/%s/iup%s%s.html", folder, sep, className); -- direct page version */
   sprintf(url, "http://www.tecgraf.puc-rio.br/iup/index.html?url=%s/iup%s%s.html", folder, sep, className);

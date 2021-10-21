@@ -50,10 +50,10 @@ static char* iScintillaGetPrintWrapAttrib(Ihandle *ih)
 {
   int type = (int)IupScintillaSendMessage(ih, SCI_GETPRINTWRAPMODE, 0, 0);
 
+  /* CHAR is NOT supported when printing */
+
   if(type == SC_WRAP_WORD)
     return "WORD";
-  else if(type == SC_WRAP_CHAR)
-    return "CHAR";
   else
     return "NONE";
 }
@@ -62,10 +62,10 @@ static int iScintillaSetPrintWrapAttrib(Ihandle *ih, const char *value)
 {
   if (iupStrEqualNoCase(value, "WORD"))
     IupScintillaSendMessage(ih, SCI_SETPRINTWRAPMODE, SC_WRAP_WORD, 0);
-  else if (iupStrEqualNoCase(value, "CHAR"))
-    IupScintillaSendMessage(ih, SCI_SETPRINTWRAPMODE, SC_WRAP_CHAR, 0);
   else
     IupScintillaSendMessage(ih, SCI_SETPRINTWRAPMODE, SC_WRAP_NONE, 0);
+
+  /* CHAR is NOT supported when printing */
 
   return 0;
 }

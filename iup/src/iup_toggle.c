@@ -116,6 +116,7 @@ Iclass* iupToggleNewClass(void)
 
   ic->name = "toggle";
   ic->format = "sa"; /* one string and one ACTION callback name */
+  ic->format_attr = "TITLE";
   ic->nativetype = IUP_TYPECONTROL;
   ic->childtype = IUP_CHILDNONE;
   ic->is_interactive = 1;
@@ -142,7 +143,7 @@ Iclass* iupToggleNewClass(void)
 
   iupClassRegisterAttribute(ic, "RADIO", iToggleGetRadioAttrib, NULL, NULL, NULL, IUPAF_READONLY|IUPAF_NO_INHERIT);
   iupClassRegisterAttribute(ic, "3STATE", NULL, NULL, NULL, NULL, IUPAF_NO_INHERIT);
-  iupClassRegisterAttribute(ic, "FLAT", iToggleGetFlatAttrib, iToggleSetFlatAttrib, IUPAF_SAMEASSYSTEM, "No", IUPAF_NOT_MAPPED|IUPAF_DEFAULT);
+  iupClassRegisterAttribute(ic, "FLAT", iToggleGetFlatAttrib, iToggleSetFlatAttrib, IUPAF_SAMEASSYSTEM, "No", IUPAF_NOT_MAPPED);
   iupClassRegisterAttribute(ic, "IGNORERADIO", NULL, NULL, NULL, NULL, IUPAF_NO_INHERIT);
 
   iupdrvToggleInitClass(ic);

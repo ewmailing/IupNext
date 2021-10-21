@@ -2,6 +2,7 @@
 #include <stdio.h>
 #include "iup.h"
 #include "iupkey.h"
+#include "iupim.h"
 
 #define TEST_IMAGE_SIZE 20
 
@@ -374,6 +375,9 @@ void ButtonTest(void)
   //IupSetAttribute(button, "IMAGE", "TECGRAF_BITMAP");
   IupAppend(box2, button);
 
+//  image1 = IupLoadImage("D:\\Downloads\\unnamed.png");
+//  image1 = IupLoadImage("../../../unnamed.png");
+
   button = IupButton(NULL, NULL);
 //  IupSetAttribute(button, "ALIGNMENT", "ALEFT:ATOP");
 //  IupSetAttribute(button, "RASTERSIZE", "200x100");
@@ -383,11 +387,15 @@ void ButtonTest(void)
 //  IupSetAttribute(button, "FONT", "Helvetica, 14");
 //  IupSetAttribute(button, "IMAGE", "IUP_Tecgraf");
   IupSetAttributeHandle(button, "IMAGE", image1);
-  IupSetAttributeHandle(button, "IMINACTIVE", image1i);
+  //IupSetAttributeHandle(button, "IMINACTIVE", image1i);
   IupSetAttributeHandle(button, "IMPRESS", image1p);
+//  IupSetAttribute(button, "TITLE", "");
+//  IupSetAttributeHandle(button, "IMPRESS", image1);
+  IupSetAttribute(button, "BORDER", "NO");
+  IupSetAttribute(button, "CANFOCUS", "NO");
   IupSetAttribute(button, "TIP", "Image Button");
   IupSetAttribute(button, "NAME", "button4");
-  IupSetAttribute(button, "PADDING", "5x5");
+//  IupSetAttribute(button, "PADDING", "5x5");
 //  IupSetAttribute(button, "FLAT", "Yes");
   set_callbacks(button);
   IupAppend(box2, button);

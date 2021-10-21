@@ -66,6 +66,7 @@ IUP_SDK_API void* iupArrayAdd(Iarray* iarray, int add_count);
 IUP_SDK_API void* iupArrayInsert(Iarray* iarray, int index, int insert_count);
 
 /** Remove the number of elements from the array.
+ * Memory allocation remains the same. 
  * \ingroup iarray */
 IUP_SDK_API void iupArrayRemove(Iarray* iarray, int index, int remove_count);
 

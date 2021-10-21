@@ -19,6 +19,12 @@ void iupNamesDestroyHandles(void);
 /* called from IupDestroy */
 void iupRemoveNames(Ihandle* ih);
 
+int iupNamesFindAll(Ihandle *ih, char** names, int n);
+
+
+IUP_SDK_API void iupNamesDestroyHandlesSelected(const char* name, void* value);
+
+
 /* Other functions declared in <iup.h> and implemented here.
 IupGetName
 IupGetAllDialogs

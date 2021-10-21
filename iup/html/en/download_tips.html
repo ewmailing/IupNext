@@ -219,6 +219,11 @@ http://www.tecgraf.puc-rio.br/iup/en/ide_guide/eclipse.html</a>
     <td bgcolor="#DDDDDD">&nbsp;Ubuntu 19.04 (x64) / Kernel 5.0 / gcc 8.3 (GTK 
 	3.24)</td>
     </tr>
+    <tr>
+    <td bgcolor="#DDDDDD" align="right"><strong>Linux54_64</strong></td>
+    <td bgcolor="#DDDDDD">&nbsp;Ubuntu 20.04 (x64) / Kernel 5.4 / gcc 9.3 (GTK 
+	3.24)</td>
+    </tr>
   <tr>
     <td bgcolor="#C0C0C0" align="right"><b>SunOS510</b></td>
     <td bgcolor="#C0C0C0">&nbsp;Sun Solaris 10 (sparc) / gcc 3.4 (Motif 2.1)</td>
@@ -318,6 +323,14 @@ http://www.tecgraf.puc-rio.br/iup/en/ide_guide/eclipse.html</a>
       <a href="https://www.visualstudio.com/downloads/">
 	https://www.visualstudio.com/downloads/</a>
     ¹</td>
+    </tr>
+    <tr>
+    <td bgcolor="#DDDDDD" align="right"><b>Win32_vc16</b></td>
+    <td bgcolor="#DDDDDD" class="style3">&nbsp;Static library built with Microsoft Visual C++ 16.0 (2019) (static RTL/multithread)<br>
+      &nbsp;Also compatible with Microsoft Visual Studio Community&nbsp;2019 -<br>
+      <a href="https://www.visualstudio.com/downloads/">
+	https://www.visualstudio.com/downloads/</a>
+    ¹</td>
   </tr>
   <tr>
     <td bgcolor="#C0C0C0" align="right"><b>Win32_dll8</b></td>
@@ -351,8 +364,15 @@ http://www.tecgraf.puc-rio.br/iup/en/ide_guide/eclipse.html</a>
     </tr>
     <tr>
     <td bgcolor="#C0C0C0" align="right"><b>Win32_dll15</b></td>
+    <td bgcolor="#C0C0C0">&nbsp;DLL and import library built with vc15, creates 
+	dependency with VCRUNTIME140.DLL<br>&nbsp;(what changes is the version of 
+	the ucrtbase.dll installed on the system)</td>
+    </tr>
+    <tr>
+    <td bgcolor="#C0C0C0" align="right"><b>Win32_dll16</b></td>
     <td bgcolor="#C0C0C0">&nbsp;DLL and import library built 
-	with vc15, creates dependency with VCRUNTIME140.DLL&nbsp; (not 150!!)</td>
+	with vc16, creates dependency with VCRUNTIME140.DLL<br>&nbsp;(what changes 
+	is the version of the ucrtbase.dll installed on the system)</td>
   </tr>
   <tr>
     <td bgcolor="#DDDDDD" align="right"><b>Win64_vc8</b></td>
@@ -410,15 +430,20 @@ http://www.tecgraf.puc-rio.br/iup/en/ide_guide/eclipse.html</a>
     systems using the x64 standard.</td>
     </tr>
     <tr>
+    <td bgcolor="#DDDDDD" align="right"><b>Win64_dll14</b></td>
+    <td bgcolor="#DDDDDD">&nbsp;Same as <b>Win32_dll14</b> but for 64-bits 
+    systems using the x64 standard.</td>
+    </tr>
+	<tr>
     <td bgcolor="#DDDDDD" align="right"><b>Win64_dll15</b></td>
     <td bgcolor="#DDDDDD">&nbsp;Same as <b>Win32_dll15</b> but for 64-bits 
     systems using the x64 standard.</td>
     </tr>
-  <tr>
-    <td bgcolor="#DDDDDD" align="right"><b>Win64_dll14</b></td>
-    <td bgcolor="#DDDDDD">&nbsp;Same as <b>Win32_dll14</b> but for 64-bits 
+    <tr>
+    <td bgcolor="#DDDDDD" align="right"><b>Win64_dll16</b></td>
+    <td bgcolor="#DDDDDD">&nbsp;Same as <b>Win32_dll16</b> but for 64-bits 
     systems using the x64 standard.</td>
-  </tr>
+    </tr>
   <tr>
     <td bgcolor="#C0C0C0" align="right"><b>Win32_gcc4</b></td>
     <td bgcolor="#C0C0C0">&nbsp;Static library built with Cygwin gcc 4.3&nbsp; (Depends on Cygwin DLL 1.7) -

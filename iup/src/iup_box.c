@@ -1,5 +1,5 @@
 /** \file
- * \brief Base for box Controls.
+ * \brief Base for Vbox and Hbox Controls.
  *
  * See Copyright Notice in "iup.h"
  */
@@ -206,6 +206,9 @@ Iclass* iupBoxNewClassBase(void)
   ic->New = iupBoxNewClassBase;
   ic->Create = iBoxCreateMethod;
   ic->Map = iupBaseTypeVoidMapMethod;
+
+  /* Base Callbacks */
+  iupBaseRegisterBaseCallbacks(ic);
 
   /* Internal Callback */
   iupClassRegisterCallback(ic, "UPDATEATTRIBFROMFONT_CB", "");

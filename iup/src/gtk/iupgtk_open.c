@@ -270,7 +270,7 @@ static void gtkSetGlobalColorAttrib(const char* name, GdkColor *color)
 static void gtkUpdateGlobalColors(GtkWidget* dialog, GtkWidget* text)
 {
 #if GTK_CHECK_VERSION(3, 0, 0)
-#ifdef WIN32  /* TODO: Workaround for GTK3 on Win32, should remove this code in the future */
+#ifdef XWIN32  /* TODO: Workaround for GTK3 on Win32, should remove this code in the future */
 #define gtkColorToRGBA(color, color3) {color3.red = color.red/65535.0; color3.green = color.green/65535.0; color3.blue = color.blue/65535.0; color3.alpha = 1.0;}
 
   GdkRGBA color3;

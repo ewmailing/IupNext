@@ -88,7 +88,7 @@ static void gtkFileDlgGetMultipleFiles(Ihandle* ih, GSList* list)
   }
   else
   {
-    Iarray* names_array = iupArrayCreate(1024, 1);  /* just set an initial size, but count is 0 */
+    Iarray* names_array = iupArrayCreate(1024, sizeof(char));  /* just set an initial size, but count is 0 */
     char *all_names;
     int cur_len, count = 0;
 
@@ -545,8 +545,10 @@ static int gtkFileDlgPopup(Ihandle* ih, int x, int y)
 
         if (file_cb)
         {
-          char *filename = gtk_file_chooser_get_filename(GTK_FILE_CHOOSER(dialog));
-          int ret = file_cb(ih, iupgtkStrConvertFromFilename(filename), "OK");
+          int ret;
+
+          filename = gtk_file_chooser_get_filename(GTK_FILE_CHOOSER(dialog));
+          ret = file_cb(ih, iupgtkStrConvertFromFilename(filename), "OK");
           g_free(filename);
           
           if (ret == IUP_IGNORE || ret == IUP_CONTINUE)

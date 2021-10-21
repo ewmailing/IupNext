@@ -114,7 +114,7 @@
       <AdditionalIncludeDirectories>..\etc</AdditionalIncludeDirectories>
     </ResourceCompile>
     <Link>
-      <AdditionalDependencies>gdiplus.lib;cdcontextplus.lib;comctl32.lib;ole32.lib;opengl32.lib;glu32.lib;iup.lib;iupgl.lib;iupcontrols.lib;iupglcontrols.lib;iupimglib.lib;iup_scintilla.lib;Imm32.lib;cd.lib;freetype6.lib;zlib1.lib;iupcd.lib;iup_plot.lib;iup_mglplot.lib;cdgl.lib;ftgl.lib;iupim.lib;im.lib;im_process.lib;iupole.lib;iupweb.lib;iupfiledlg.lib;%(AdditionalDependencies)</AdditionalDependencies>
+      <AdditionalDependencies>gdiplus.lib;cdcontextplus.lib;comctl32.lib;ole32.lib;opengl32.lib;glu32.lib;iup.lib;iupgl.lib;iupcontrols.lib;iupglcontrols.lib;iupimglib.lib;iup_scintilla.lib;Imm32.lib;cd.lib;freetype6.lib;zlib1.lib;iupcd.lib;iup_plot.lib;iup_mglplot.lib;cdgl.lib;ftgl.lib;iupim.lib;im.lib;im_process.lib;iupole.lib;iupweb.lib;iupfiledlg.lib;msimg32.lib;%(AdditionalDependencies)</AdditionalDependencies>
       <SuppressStartupBanner>true</SuppressStartupBanner>
       <AdditionalLibraryDirectories>..\lib\Debug_64;..\..\cd\lib\Debug_64;..\..\im\lib\Debug_64;..\..\freetype\lib\Debug_64;..\..\ftgl\lib\Debug_64;..\..\zlib\lib\Debug_64;\lng\vld\lib\Win64;%(AdditionalLibraryDirectories)</AdditionalLibraryDirectories>
       <GenerateDebugInformation>true</GenerateDebugInformation>
@@ -164,6 +164,7 @@
     <ClCompile Include="..\html\examples\tests\flatscrollbox.c" />
     <ClCompile Include="..\html\examples\tests\flattabs.c" />
     <ClCompile Include="..\html\examples\tests\flattoggle.c" />
+    <ClCompile Include="..\html\examples\tests\flattree.c" />
     <ClCompile Include="..\html\examples\tests\flatval.c" />
     <ClCompile Include="..\html\examples\tests\frame.c" />
     <ClCompile Include="..\html\examples\tests\gauge.c" />
@@ -192,6 +193,7 @@
     <ClCompile Include="..\html\examples\tests\predialogs.c" />
     <ClCompile Include="..\html\examples\tests\progressbar.c" />
     <ClCompile Include="..\html\examples\tests\progressdlg.c" />
+    <ClCompile Include="..\html\examples\tests\rt_editor_images.c" />
     <ClCompile Include="..\html\examples\tests\sample.c" />
     <ClCompile Include="..\html\examples\tests\sbox.c" />
     <ClCompile Include="..\html\examples\tests\scanf.c" />
@@ -210,6 +212,7 @@
     <ClCompile Include="..\html\examples\tests\val.c" />
     <ClCompile Include="..\html\examples\tests\vbox.c" />
     <ClCompile Include="..\html\examples\tests\webbrowser.c" />
+    <ClCompile Include="..\html\examples\tests\webbrowser_editor.c" />
     <ClCompile Include="..\html\examples\tests\zbox.c" />
   </ItemGroup>
   <ItemGroup>

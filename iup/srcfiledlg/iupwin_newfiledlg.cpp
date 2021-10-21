@@ -101,7 +101,7 @@ IFACEMETHODIMP winNewFileDlgEventHandler::OnFileOk(IFileDialog *pfd)
         if (SUCCEEDED(hr))
         {
           PWSTR pszFilePath = NULL;
-          HRESULT hr = psi->GetDisplayName(SIGDN_FILESYSPATH, &pszFilePath);
+          hr = psi->GetDisplayName(SIGDN_FILESYSPATH, &pszFilePath);
           if (SUCCEEDED(hr))
           {
             filename = iupwinStrFromSystemFilename(pszFilePath);
@@ -121,7 +121,7 @@ IFACEMETHODIMP winNewFileDlgEventHandler::OnFileOk(IFileDialog *pfd)
           hr = psiaResult->GetItemAt(0, &psi); // get a selected item from the IShellItemArray
           if (SUCCEEDED(hr))
           {
-            HRESULT hr = psi->GetDisplayName(SIGDN_FILESYSPATH, &pszFilePath);
+            hr = psi->GetDisplayName(SIGDN_FILESYSPATH, &pszFilePath);
             if (SUCCEEDED(hr))
             {
               filename = iupwinStrFromSystemFilename(pszFilePath);
@@ -135,7 +135,7 @@ IFACEMETHODIMP winNewFileDlgEventHandler::OnFileOk(IFileDialog *pfd)
     else
     {
       IFileSaveDialog *pfsd;
-      HRESULT hr = pfd->QueryInterface(IID_PPV_ARGS(&pfsd));
+      hr = pfd->QueryInterface(IID_PPV_ARGS(&pfsd));
       if (SUCCEEDED(hr))
       {
         IShellItem *psi;
@@ -143,7 +143,7 @@ IFACEMETHODIMP winNewFileDlgEventHandler::OnFileOk(IFileDialog *pfd)
         if (SUCCEEDED(hr))
         {
           PWSTR pszFilePath = NULL;
-          HRESULT hr = psi->GetDisplayName(SIGDN_FILESYSPATH, &pszFilePath);
+          hr = psi->GetDisplayName(SIGDN_FILESYSPATH, &pszFilePath);
           if (SUCCEEDED(hr))
           {
             filename = iupwinStrFromSystemFilename(pszFilePath);
@@ -188,7 +188,7 @@ IFACEMETHODIMP winNewFileDlgEventHandler::OnSelectionChange(IFileDialog *pfd)
     if (SUCCEEDED(hr))
     {
       SFGAOF attr;
-      HRESULT hr = psi->GetAttributes(SFGAO_FILESYSTEM | SFGAO_FOLDER, &attr);
+      hr = psi->GetAttributes(SFGAO_FILESYSTEM | SFGAO_FOLDER, &attr);
       if (SUCCEEDED(hr) && (attr & SFGAO_FILESYSTEM))
       {
         PWSTR pszFilePath = NULL;
@@ -285,7 +285,7 @@ IFACEMETHODIMP winNewFileDlgEventHandler::OnTypeChange(IFileDialog *pfd)
     strcat(buffer, "\\");
     strcat(buffer, filename);
     pfd->GetFileTypeIndex(&index);
-    iupAttribSetInt(ih, "FILTERUSED", index - 1);
+    iupAttribSetInt(ih, "FILTERUSED", index);
     ret = cb(ih, buffer, "FILTER");
     free(buffer);
     if (ret == IUP_CONTINUE)
@@ -327,50 +327,58 @@ static HRESULT winNewFileDlgEventHandler_CreateInstance(REFIID riid, void **ppv,
   return hr;
 }
 
-static COMDLG_FILTERSPEC *winNewFileDlgCreateFilterSpecs(char *name, int *size)
+static COMDLG_FILTERSPEC *winNewFileDlgCreateFilterSpecs(char *extfilter, int *size)
 {
   int i = 0;
+  int pair;
+  char *p_extfilter;
   int buffSize = 50;
   COMDLG_FILTERSPEC* filters = (COMDLG_FILTERSPEC*)malloc((buffSize)*sizeof(COMDLG_FILTERSPEC));
 
   /* replace symbols "|" by terminator "\0" */
 
-  while (*name)
+  while (*extfilter)
   {
-    char *filter;
-    filter = name;
-    while (*filter)
+    pair = 0;
+
+    p_extfilter = extfilter;
+    while (*p_extfilter)
     {
-      if (*filter == '|')
+      if (*p_extfilter == '|')
       {
-        *filter = 0;
-        filters[i].pszName = iupwinStrToSystem(name);
+        *p_extfilter = 0;
+        filters[i].pszName = iupwinStrToSystem(extfilter);
+        p_extfilter++;
         break;
       }
-      filter++;
+      p_extfilter++;
     }
 
-    if (*filter == 0)
+    if (*p_extfilter == 0)
       break;
 
-    name = ++filter;
+    extfilter = p_extfilter;
 
-    while (*filter)
+    while (*p_extfilter)
     {
-      if (*filter == '|')
+      if (*p_extfilter == '|')
       {
-        *filter = 0;
-        filters[i].pszSpec = iupwinStrToSystem(name);
+        *p_extfilter = 0;
+        filters[i].pszSpec = iupwinStrToSystem(extfilter);
+        p_extfilter++;
+        pair = 1;
         break;
       }
-      filter++;
+      p_extfilter++;
     }
 
-    if (*filter == 0)
+    if (pair)
+      i++;
+
+    if (*p_extfilter == 0)
       break;
 
-    i++;
-    name = ++filter;
+    extfilter = p_extfilter;
 
     if (i == 50)
       break;
@@ -424,7 +432,27 @@ static void winNewFileDlgGetFolder(Ihandle *ih)
   {
     DWORD dwOptions;
     if (SUCCEEDED(pfd->GetOptions(&dwOptions)))
+    {
+      if (iupAttribGetBoolean(ih, "NOCHANGEDIR"))
+        dwOptions |= FOS_NOCHANGEDIR;
+
+      if (iupAttribGetBoolean(ih, "SHOWHIDDEN"))
+        dwOptions |= FOS_FORCESHOWHIDDEN;
+
+      char* directory = iupStrDup(iupAttribGet(ih, "DIRECTORY"));
+      if (directory)
+      {
+        IShellItem *si;
+        TCHAR *wdir = iupwinStrToSystemFilename(directory);
+        winNewFileDlgStrReplacePathSlash(wdir);
+        si = winNewFileDlgParseName(wdir);
+        if (si)
+          pfd->SetFolder(si);
+        free(directory);
+      }
+
       pfd->SetOptions(dwOptions | FOS_PICKFOLDERS);
+    }
 
     char* value = iupAttribGet(ih, "TITLE");
     if (value)
@@ -768,6 +796,7 @@ static int winNewFileDlgPopup(Ihandle *ih, int x, int y)
         else
         {
           char* dir = NULL;
+          int dir_len = 0, count = 0;
           DWORD i;
           for (i = 0; i < dwNumItems; i++)
           {
@@ -781,56 +810,66 @@ static int winNewFileDlgPopup(Ihandle *ih, int x, int y)
               {
                 char* filename = iupwinStrFromSystemFilename(pszFilePath);
 
-                if (i == 0)
+                if (count == 0)
                 {
-                  dir = iupStrFileGetPath(filename);
+                  dir = iupStrFileGetPath(filename);  /* includes last separator */
+                  dir_len = (int)strlen(dir);
 
                   if (iupAttribGetBoolean(ih, "MULTIVALUEPATH"))
+                  {
+                    dir[dir_len-1] = 0; /* removes the last separator */
                     iupAttribSetStrf(ih, "VALUE", "%s|", dir);
+                    dir[dir_len-1] = '\\';
+                  }
 
-                  iupAttribSetStrf(ih, "DIRECTORY", "%s", dir);  /* add the last separator */
+                  iupAttribSetStrf(ih, "DIRECTORY", "%s", dir);
 
                   iupAttribSetStrId(ih, "MULTIVALUE", 0, dir);  /* same as directory, includes last separator */
+                  count++;
                 }
 
                 if (iupAttribGetBoolean(ih, "MULTIVALUEPATH"))
                 {
-                  char* value = iupAttribGet(ih, "VALUE");
-                  char nameid[100];
-                  char *fname = iupStrFileGetTitle(filename);
-                  sprintf(nameid, "MULTIVALUE%d", i + 1);
-                  iupAttribSetStrf(ih, nameid, "%s%s", dir, fname);
-
-                  iupAttribSetStrf(ih, "VALUE", "%s%s|", value, iupAttribGetId(ih, "MULTIVALUE", i + 1));
-                  free(fname);
+                  value = iupAttribGet(ih, "VALUE");
+                  iupAttribSetStrId(ih, "MULTIVALUE", count, filename);
+                  iupAttribSetStrf(ih, "VALUE", "%s%s|", value, filename);
                 }
                 else
                 {
-                  iupAttribSetStrId(ih, "MULTIVALUE", i + 1, filename);
+                  iupAttribSetStrId(ih, "MULTIVALUE", count, filename + dir_len);
 
-                  if (i == 0)
-                    iupAttribSetStrf(ih, "VALUE", "%s|", filename);
+                  if (count == 1)
+                  {
+                    dir[dir_len - 1] = 0; /* removes the last separator */
+                    iupAttribSetStrf(ih, "VALUE", "%s|", dir);
+                    dir[dir_len - 1] = '\\';
+                  }
                   else
                   {
-                    char* value = iupAttribGet(ih, "VALUE");
-                    iupAttribSetStrf(ih, "VALUE", "%s%s|", value, filename);
+                    value = iupAttribGet(ih, "VALUE");
+                    iupAttribSetStrf(ih, "VALUE", "%s%s|", value, filename + dir_len);
                   }
                 }
 
                 CoTaskMemFree(pszFilePath);
+                count++;
               }
 
               psi->Release();
             }
-            iupAttribSetInt(ih, "MULTIVALUECOUNT", i + 2);
           }
 
+          iupAttribSetInt(ih, "MULTIVALUECOUNT", count);
           iupAttribSet(ih, "STATUS", "0");
           iupAttribSet(ih, "FILEEXIST", "YES");
         }
         psiaResult->Release();
       }
     }
+
+    UINT index;
+    pfd->GetFileTypeIndex(&index);
+    iupAttribSetInt(ih, "FILTERUSED", index);
   }
   else
   {

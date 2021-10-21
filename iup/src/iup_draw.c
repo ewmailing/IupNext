@@ -283,7 +283,6 @@ IUP_API void IupDrawText(Ihandle* ih, const char* text, int len, int x, int y, i
 {
   IdrawCanvas* dc;
   long color = 0;
-  char* font;
   int text_flags;
   double text_orientation;
 
@@ -313,7 +312,7 @@ IUP_API void IupDrawText(Ihandle* ih, const char* text, int len, int x, int y, i
   if (len != 0)
   {
     int txt_w, txt_h;
-    font = iupDrawGetTextSize(ih, text, len, &txt_w, &txt_h, text_orientation);
+    char* font = iupDrawGetTextSize(ih, text, len, &txt_w, &txt_h, text_orientation);
     if (w == -1 || w == 0) w = txt_w;
     if (h == -1 || h == 0) h = txt_h;
     iupdrvDrawText(dc, text, len, x, y, w, h, color, font, text_flags, text_orientation);
@@ -730,7 +729,7 @@ IUP_SDK_API void iupFlatDrawGetIconSize(Ihandle* ih, int img_position, int spaci
 {
   if (imagename)
   {
-    int img_width, img_height;
+    int img_width = 0, img_height = 0;
     iupImageGetInfo(imagename, &img_width, &img_height, NULL);
 
     if (title)
@@ -775,7 +774,7 @@ IUP_SDK_API void iupFlatDrawGetIconSize(Ihandle* ih, int img_position, int spaci
   /* leave room for focus feedback */
   if (ih->iclass->is_interactive && iupAttribGetBoolean(ih, "CANFOCUS") && iupAttribGetBoolean(ih, "FOCUSFEEDBACK"))
   {
-    *w += 2 * 2;
+    *w += 2 * 2;  /* space between focus rect and contents */
     *h += 2 * 2;
   }
 }
@@ -803,7 +802,7 @@ IUP_SDK_API void iupFlatDrawIcon(Ihandle* ih, IdrawCanvas* dc, int icon_x, int i
 
   if (imagename)
   {
-    int img_width, img_height;
+    int img_width = 0, img_height = 0;
     iupImageGetInfo(imagename, &img_width, &img_height, NULL);
 
     if (title)
@@ -1112,3 +1111,49 @@ IUP_SDK_API int iupFlatSetActiveAttrib(Ihandle* ih, const char* value)
   iupdrvRedrawNow(ih);
   return 0;
 }
+
+static void iFlatItemSetTipVisible(Ihandle* ih, const char* tip)
+{
+  int visible = IupGetInt(ih, "TIPVISIBLE");
+
+  /* do not call IupSetAttribute */
+  iupAttribSetStr(ih, "TIP", tip);
+  iupdrvBaseSetTipAttrib(ih, tip);
+
+  if (visible)
+  {
+    IupSetAttribute(ih, "TIPVISIBLE", "No");
+    if (tip)
+      IupSetAttribute(ih, "TIPVISIBLE", "Yes");
+  }
+}
+
+static int iFlatItemCheckTip(Ihandle* ih, const char* new_tip)
+{
+  char* tip = iupAttribGet(ih, "TIP");
+  if (!tip && !new_tip)
+    return 1;
+  if (iupStrEqual(tip, new_tip))
+    return 1;
+  return 0;
+}
+
+IUP_SDK_API void iupFlatItemResetTip(Ihandle* ih)
+{
+  char* tip = iupAttribGet(ih, "_IUP_FLATITEM_TIP");
+  if (!iFlatItemCheckTip(ih, tip))
+    iFlatItemSetTipVisible(ih, tip);
+}
+
+IUP_SDK_API void iupFlatItemSetTip(Ihandle *ih, const char* tip)
+{
+  if (!iFlatItemCheckTip(ih, tip))
+    iFlatItemSetTipVisible(ih, tip);
+}
+
+IUP_SDK_API int iupFlatItemSetTipAttrib(Ihandle* ih, const char* value)
+{
+  iupAttribSetStr(ih, "_IUP_FLATITEM_TIP", value);
+  return iupdrvBaseSetTipAttrib(ih, value);
+}
+

@@ -614,6 +614,17 @@ IUP_API void IupConfigRecentUpdate(Ihandle* ih, const char* filename)
   else
     iConfigBuildRecentList(ih, list, max_recent, group_name, recent_cb);
 }
+#else
+
+/* NOT supported in MacOS for now */
+
+IUP_API void IupConfigRecentInit(Ihandle* ih, Ihandle* menu_list, Icallback recent_cb, int max_recent)
+{
+}
+
+IUP_API void IupConfigRecentUpdate(Ihandle* ih, const char* filename)
+{
+}
 
 #endif /* macOS/Cocoa */
 
@@ -702,18 +713,22 @@ IUP_API void IupConfigDialogShow(Ihandle* ih, Ihandle* dialog, const char* name)
 
 IUP_API void IupConfigDialogClosed(Ihandle* ih, Ihandle* dialog, const char* name)
 {
-  int x, y;
-  int width, height;
-  int maximized;
-  int screen_width = 0, screen_height = 0;
-  
-  IupGetIntInt(dialog, "SCREENPOSITION", &x, &y);
-  IupConfigSetVariableInt(ih, name, "X", x);
-  IupConfigSetVariableInt(ih, name, "Y", y);
+  int x = 0, y = 0;
+
+  if (dialog->handle)
+  {
+    IupGetIntInt(dialog, "SCREENPOSITION", &x, &y);
+    IupConfigSetVariableInt(ih, name, "X", x);
+    IupConfigSetVariableInt(ih, name, "Y", y);
+  }
 
   /* save size only if dialog is resizable */
   if (IupGetInt(dialog, "RESIZE"))
   {
+    int width, height;
+    int maximized;
+    int screen_width = 0, screen_height = 0;
+
 #ifdef WIN32
     IupGetIntInt(dialog, "RASTERSIZE", &width, &height);
 #else

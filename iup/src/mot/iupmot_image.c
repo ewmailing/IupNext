@@ -26,7 +26,7 @@
 void iupdrvImageGetData(void* handle, unsigned char* imgdata)
 {
   Pixmap pixmap = (Pixmap)handle;
-  int w, h, y, x, bpp;
+  int w, h, bpp;
   XImage *xi;
 
   if (!iupdrvImageGetInfo(handle, &w, &h, &bpp))
@@ -41,6 +41,7 @@ void iupdrvImageGetData(void* handle, unsigned char* imgdata)
     /* planes are packed and top-bottom in this imgdata */
     int planesize = w*h;
     unsigned char *line_data;
+    int y, x;
 
     for (y = 0; y<h; y++)
     {
@@ -58,7 +59,7 @@ void iupdrvImageGetData(void* handle, unsigned char* imgdata)
 IUP_SDK_API void iupdrvImageGetRawData(void* handle, unsigned char* imgdata)
 {
   Pixmap pixmap = (Pixmap)handle;
-  int w, h, y, x, bpp;
+  int w, h, bpp;
   XImage *xi;
 
   if (!iupdrvImageGetInfo(handle, &w, &h, &bpp))
@@ -71,6 +72,7 @@ IUP_SDK_API void iupdrvImageGetRawData(void* handle, unsigned char* imgdata)
   if (xi)
   {
     /* planes are separated in imgdata */
+    int y, x;
     int planesize = w*h;
     unsigned char *r = imgdata,
                   *g = imgdata+planesize,

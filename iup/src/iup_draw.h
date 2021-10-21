@@ -61,6 +61,9 @@ IUP_SDK_API int iupFlatGetVerticalAlignment(const char* value);
 IUP_SDK_API int iupFlatGetImagePosition(const char* value);
 IUP_SDK_API char* iupFlatGetDarkerBgColor(Ihandle* ih);
 IUP_SDK_API int iupFlatSetActiveAttrib(Ihandle* ih, const char* value);
+IUP_SDK_API int iupFlatItemSetTipAttrib(Ihandle* ih, const char* value);
+IUP_SDK_API void iupFlatItemResetTip(Ihandle* ih);
+IUP_SDK_API void iupFlatItemSetTip(Ihandle *ih, const char* tip);
 
 IUP_SDK_API const char* iupFlatGetImageName(Ihandle* ih, const char* baseattrib, const char* basevalue, int press, int highlight, int active, int *make_inactive);
 IUP_SDK_API const char* iupFlatGetImageNameId(Ihandle* ih, const char* baseattrib, int id, const char* basevalue, int press, int highlight, int active, int *make_inactive);

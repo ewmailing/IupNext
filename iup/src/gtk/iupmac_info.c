@@ -179,7 +179,7 @@ char *iupdrvGetSystemName(void)
       return "Jaguar";
     else if (systemVersion >= 0x1010)
       return "Puma";
-    else if (systemVersion >= 0x1010)
+    else if (systemVersion >= 0x1000)
       return "Cheetah";
   }
 

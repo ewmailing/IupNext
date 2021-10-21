@@ -135,7 +135,7 @@ void FlatValTest(void)
 
   val_h = IupFlatVal("HORIZONTAL");
   IupSetAttribute(val_h, "MAX", "100.0");
-  IupSetAttribute(val_h, "RASTERSIZE", "x60");
+//  IupSetAttribute(val_h, "RASTERSIZE", "x60");
   IupSetAttribute(val_h, "EXPAND", "HORIZONTAL");
 //  IupSetAttribute(val_h, "CANFOCUS", "NO");
   

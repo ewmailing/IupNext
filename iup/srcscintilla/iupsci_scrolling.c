@@ -33,8 +33,8 @@ SCI_SETVSCROLLBAR(bool visible)
 SCI_GETVSCROLLBAR
 --SCI_GETXOFFSET
 --SCI_SETXOFFSET(int xOffset)
---SCI_SETSCROLLWIDTH(int pixelWidth)
---SCI_GETSCROLLWIDTH
+SCI_SETSCROLLWIDTH(int pixelWidth)
+SCI_GETSCROLLWIDTH
 --SCI_SETSCROLLWIDTHTRACKING(bool tracking)
 --SCI_GETSCROLLWIDTHTRACKING
 --SCI_SETENDATLASTLINE(bool endAtLastLine)
@@ -99,6 +99,17 @@ static int iScintillaSetScrollCaretAttrib(Ihandle *ih, const char *value)
   return 0;
 }
 
+static char* iScintillaGetScrollWidthTrackingAttrib(Ihandle* ih)
+{
+  return iupStrReturnBoolean((int)IupScintillaSendMessage(ih, SCI_GETSCROLLWIDTHTRACKING, 0, 0));
+}
+
+static int iScintillaSetScrollWidthTrackingAttrib(Ihandle* ih, const char* value)
+{
+  IupScintillaSendMessage(ih, SCI_SETSCROLLWIDTHTRACKING, iupStrBoolean(value), 0);
+  return 0;
+}
+
 static char* iScintillaGetScrollWidthAttrib(Ihandle* ih)
 {
   int pixelWidth = (int)IupScintillaSendMessage(ih, SCI_GETSCROLLWIDTH, 0, 0);
@@ -110,8 +121,8 @@ static int iScintillaSetScrollWidthAttrib(Ihandle* ih, const char* value)
   int pixelWidth;
 
   iupStrToInt(value, &pixelWidth);
-  
-  if(pixelWidth < 1)
+
+  if (pixelWidth < 1)
     pixelWidth = 2000;
 
   IupScintillaSendMessage(ih, SCI_SETSCROLLWIDTH, pixelWidth, 0);
@@ -155,6 +166,7 @@ void iupScintillaRegisterScrolling(Iclass* ic)
   iupClassRegisterAttribute(ic, "SCROLLBY", NULL, iScintillaSetScrollByAttrib, NULL, NULL, IUPAF_WRITEONLY|IUPAF_NO_INHERIT);
   iupClassRegisterAttribute(ic, "SCROLLTOCARET", NULL, iScintillaSetScrollCaretAttrib, NULL, NULL, IUPAF_WRITEONLY|IUPAF_NO_INHERIT);
   iupClassRegisterAttribute(ic, "SCROLLWIDTH", iScintillaGetScrollWidthAttrib, iScintillaSetScrollWidthAttrib, IUPAF_SAMEASSYSTEM, "2000", IUPAF_NO_INHERIT);
+  iupClassRegisterAttribute(ic, "SCROLLWIDTHTRACKING", iScintillaGetScrollWidthTrackingAttrib, iScintillaSetScrollWidthTrackingAttrib, NULL, NULL, IUPAF_NO_INHERIT);
 
   iupClassRegisterAttribute(ic, "CARETXPOLICY", NULL, iScintillaSetXCaretPolicyAttrib, NULL, NULL, IUPAF_WRITEONLY | IUPAF_NO_INHERIT);
   iupClassRegisterAttribute(ic, "CARETYPOLICY", NULL, iScintillaSetYCaretPolicyAttrib, NULL, NULL, IUPAF_WRITEONLY | IUPAF_NO_INHERIT);

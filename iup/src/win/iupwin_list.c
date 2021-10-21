@@ -1420,14 +1420,6 @@ static int winListEditProc(Ihandle* ih, HWND cbedit, UINT msg, WPARAM wp, LPARAM
       break;
     }
   case WM_CLEAR:
-    {
-      if (!winListCallEditCb(ih, cbedit, NULL, 1))
-        ret = 1;
-
-      PostMessage(cbedit, WM_IUPCARET, 0, 0L);
-
-      break;
-    }
   case WM_CUT:
     {
       if (!winListCallEditCb(ih, cbedit, NULL, 1))
@@ -1539,6 +1531,8 @@ static int winListComboListProc(Ihandle* ih, HWND cblist, UINT msg, WPARAM wp, L
   case WM_LBUTTONDOWN:
   case WM_MBUTTONDOWN:
   case WM_RBUTTONDOWN:
+    iupwinFlagButtonDown(ih, msg);
+
     if (iupwinButtonDown(ih, msg, wp, lp)==-1)
     {
       *result = 0;
@@ -1548,6 +1542,12 @@ static int winListComboListProc(Ihandle* ih, HWND cblist, UINT msg, WPARAM wp, L
   case WM_MBUTTONUP:
   case WM_RBUTTONUP:
   case WM_LBUTTONUP:
+    if (!iupwinFlagButtonUp(ih, msg))
+    {
+      *result = 0;
+      return 1;
+    }
+
     if (iupwinButtonUp(ih, msg, wp, lp)==-1)
     {
       *result = 0;

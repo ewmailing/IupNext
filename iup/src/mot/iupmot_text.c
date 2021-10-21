@@ -681,7 +681,7 @@ static int motTextSetSpinValueAttrib(Ihandle* ih, const char* value)
     int pos;
     if (iupStrToInt(value, &pos))
     {
-      char* value = NULL;
+      char* text = NULL;
       int min, max;
       ih->data->disable_callbacks = 1;
       XtVaGetValues(ih->handle, XmNminimumValue, &min, 
@@ -689,14 +689,14 @@ static int motTextSetSpinValueAttrib(Ihandle* ih, const char* value)
       if (pos < min) pos = min;
       if (pos > max) pos = max;
       if (iupAttribGet(ih, "_IUPMOT_SPIN_NOAUTO"))
-        value = XmTextGetString(ih->handle);
+        text = XmTextGetString(ih->handle);
 
       XtVaSetValues(ih->handle, XmNposition, pos, NULL);
 
-      if (value)
+      if (text)
       {
-        iupmotTextSetString(ih->handle, value);
-        XtFree(value);
+        iupmotTextSetString(ih->handle, text);
+        XtFree(text);
       }
       ih->data->disable_callbacks = 0;
       return 1;

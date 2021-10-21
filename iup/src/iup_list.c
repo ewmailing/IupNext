@@ -694,6 +694,9 @@ static int iListDropData_CB(Ihandle *ih, char* type, void* data, int len, int x,
   Ihandle* ih_source;
   memcpy((void*)&ih_source, data, len);  /* but ih_source can be IupList or IupFlatList, can NOT use ih_source->data here */
 
+  if (!IupClassMatch(ih_source, "list") && !IupClassMatch(ih_source, "flatlist"))
+    return IUP_DEFAULT;
+
   /* A copy operation is enabled with the CTRL key pressed, or else a move operation will occur.
      A move operation will be possible only if the attribute DRAGSOURCEMOVE is Yes.
      When no key is pressed the default operation is copy when DRAGSOURCEMOVE=No and move when DRAGSOURCEMOVE=Yes. */
@@ -741,7 +744,7 @@ static int iListDropData_CB(Ihandle *ih, char* type, void* data, int len, int x,
 
     if (IupGetInt(ih_source, "DRAGSOURCEMOVE") && !is_ctrl)
     {
-      int src_pos = iupAttribGetInt(ih_source, "_IUP_LIST_SOURCEPOS");
+      src_pos = iupAttribGetInt(ih_source, "_IUP_LIST_SOURCEPOS");
       IupSetInt(ih_source, "REMOVEITEM", src_pos);
     }
   }
@@ -765,9 +768,9 @@ static int iListDragData_CB(Ihandle *ih, char* type, void *data, int len)
        In this case, unmark all and mark only this item.  */
     if(buffer[pos-1] == '-')
     {
-      int len = (int)strlen(buffer);
+      int buf_len = (int)strlen(buffer);
       IupSetAttribute(ih, "SELECTION", "NONE");
-      memset(buffer, '-', len);
+      memset(buffer, '-', buf_len);
       buffer[pos-1] = '+';
       IupSetAttribute(ih, "VALUE", buffer);
     }
@@ -899,9 +902,8 @@ static void iListGetItemImageInfo(Ihandle *ih, int id, int *img_w, int *img_h)
 
 static void iListGetNaturalItemsSize(Ihandle *ih, int *w, int *h)
 {
-  char *value;
-  int max_w = 0, max_h = 0;
   int visiblecolumns, i, 
+      max_h = 0,
       count = iListGetCount(ih);
 
   *w = 0;
@@ -917,6 +919,7 @@ static void iListGetNaturalItemsSize(Ihandle *ih, int *w, int *h)
   }
   else
   {
+    char *value;
     int item_w;
 
     for (i=1; i<=count; i++)
@@ -937,6 +940,7 @@ static void iListGetNaturalItemsSize(Ihandle *ih, int *w, int *h)
 
   if (ih->data->show_image)
   {
+    int max_w = 0;
     for (i=1; i<=count; i++)
     {
       int img_w, img_h;
@@ -1101,6 +1105,8 @@ Iclass* iupListNewClass(void)
   iupClassRegisterAttribute(ic, "EDITBOX", iListGetEditboxAttrib, iListSetEditboxAttrib, NULL, NULL, IUPAF_NOT_MAPPED|IUPAF_NO_INHERIT);
   iupClassRegisterAttribute(ic, "COUNT", iListGetCountAttrib, NULL, NULL, NULL, IUPAF_READONLY|IUPAF_NOT_MAPPED|IUPAF_NO_INHERIT);
   iupClassRegisterAttribute(ic, "VALUESTRING", iListGetValueStringAttrib, iListSetValueStringAttrib, NULL, NULL, IUPAF_NO_DEFAULTVALUE | IUPAF_NO_INHERIT);
+  iupClassRegisterAttribute(ic, "CPADDING", iupBaseGetCPaddingAttrib, iupBaseSetCPaddingAttrib, NULL, NULL, IUPAF_NO_SAVE | IUPAF_NOT_MAPPED);
+  iupClassRegisterAttribute(ic, "CSPACING", iupBaseGetCSpacingAttrib, iupBaseSetCSpacingAttrib, NULL, NULL, IUPAF_NO_SAVE | IUPAF_NOT_MAPPED);
 
   iupClassRegisterAttributeId(ic, "INSERTITEM", NULL, iListSetInsertItemAttrib, IUPAF_WRITEONLY | IUPAF_NOT_MAPPED | IUPAF_NO_INHERIT);
   iupClassRegisterAttribute(ic, "APPENDITEM", NULL, iListSetAppendItemAttrib, NULL, NULL, IUPAF_WRITEONLY | IUPAF_NOT_MAPPED | IUPAF_NO_INHERIT);
@@ -1108,15 +1114,15 @@ Iclass* iupListNewClass(void)
 
   iupClassRegisterAttribute(ic, "VALUEMASKED", NULL, iListSetValueMaskedAttrib, NULL, NULL, IUPAF_WRITEONLY | IUPAF_NO_INHERIT);
   iupClassRegisterAttribute(ic, "MASKCASEI", NULL, iListSetMaskCaseIAttrib, NULL, NULL, IUPAF_NOT_MAPPED | IUPAF_NO_INHERIT);
-  iupClassRegisterAttribute(ic, "MASKDECIMALSYMBOL", NULL, NULL, NULL, NULL, IUPAF_NOT_MAPPED | IUPAF_NO_INHERIT);
+  iupClassRegisterAttribute(ic, "MASKDECIMALSYMBOL", NULL, NULL, NULL, NULL, IUPAF_NO_INHERIT);
   iupClassRegisterAttribute(ic, "MASK", iListGetMaskAttrib, iListSetMaskAttrib, NULL, NULL, IUPAF_NOT_MAPPED | IUPAF_NO_INHERIT);
   iupClassRegisterAttribute(ic, "MASKINT", NULL, iListSetMaskIntAttrib, NULL, NULL, IUPAF_NOT_MAPPED|IUPAF_NO_INHERIT);
   iupClassRegisterAttribute(ic, "MASKFLOAT", NULL, iListSetMaskFloatAttrib, NULL, NULL, IUPAF_NOT_MAPPED|IUPAF_NO_INHERIT);
   iupClassRegisterAttribute(ic, "MASKREAL", NULL, iListSetMaskRealAttrib, NULL, NULL, IUPAF_NOT_MAPPED | IUPAF_NO_INHERIT);
   iupClassRegisterAttribute(ic, "MASKNOEMPTY", NULL, iListSetMaskNoEmptyAttrib, NULL, NULL, IUPAF_NOT_MAPPED | IUPAF_NO_INHERIT);
 
-  iupClassRegisterAttribute(ic, "VISIBLECOLUMNS", NULL, NULL, NULL, NULL, IUPAF_NOT_MAPPED|IUPAF_NO_INHERIT);
-  iupClassRegisterAttribute(ic, "VISIBLELINES", NULL, NULL, NULL, NULL, IUPAF_NOT_MAPPED|IUPAF_NO_INHERIT);
+  iupClassRegisterAttribute(ic, "VISIBLECOLUMNS", NULL, NULL, NULL, NULL, IUPAF_NO_INHERIT);
+  iupClassRegisterAttribute(ic, "VISIBLELINES", NULL, NULL, NULL, NULL, IUPAF_NO_INHERIT);
 
   iupClassRegisterAttribute(ic, "SHOWIMAGE", iListGetShowImageAttrib, iListSetShowImageAttrib, NULL, NULL, IUPAF_NOT_MAPPED|IUPAF_NO_INHERIT);
   iupClassRegisterAttribute(ic, "SHOWDRAGDROP", iListGetShowDragDropAttrib, iListSetShowDragDropAttrib, NULL, NULL, IUPAF_NOT_MAPPED|IUPAF_NO_INHERIT);

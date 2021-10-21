@@ -82,5 +82,8 @@
     <ClCompile Include="..\html\examples\tests\mgllabel.c" />
     <ClCompile Include="..\html\examples\tests\matrixlist.c" />
     <ClCompile Include="..\html\examples\tests\mathglsamples.c" />
+    <ClCompile Include="..\html\examples\tests\flatlist.c" />
+    <ClCompile Include="..\html\examples\tests\flatval.c" />
+    <ClCompile Include="..\html\examples\tests\multibox.c" />
   </ItemGroup>
 </Project>

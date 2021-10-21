@@ -246,7 +246,7 @@ static int iDetachBoxK_Any_CB(Ihandle* ih, int key)
     IupSetAttribute(ih->firstchild, "CURSOR", "MOVE");
   }
 
-  return IUP_DEFAULT;
+  return IUP_CONTINUE;
 }
 
 static int iDetachBoxAction_CB(Ihandle* bar)
@@ -559,6 +559,10 @@ Iclass* iupDetachBoxNewClass(void)
   ic->SetChildrenCurrentSize = iDetachBoxSetChildrenCurrentSizeMethod;
   ic->SetChildrenPosition    = iDetachBoxSetChildrenPositionMethod;
 
+  /* Base Callbacks */
+  iupBaseRegisterBaseCallbacks(ic);
+
+  /* Callbacks */
   iupClassRegisterCallback(ic, "DETACHED_CB", "nii");
   iupClassRegisterCallback(ic, "RESTORED_CB", "nii");
 

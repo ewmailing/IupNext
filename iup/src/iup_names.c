@@ -97,6 +97,49 @@ void iupNamesDestroyHandles(void)
   free(ih_array);
 }
 
+IUP_SDK_API void iupNamesDestroyHandlesSelected(const char* attrib_name, void* attrib_value)
+{
+  char *name;
+  Ihandle** ih_array, *ih;
+  int count, i = 0;
+
+  count = iupTableCount(inames_strtable);
+  if (!count)
+    return;
+
+  ih_array = (Ihandle**)malloc(count * sizeof(Ihandle*));
+  memset(ih_array, 0, count * sizeof(Ihandle*));
+
+  /* store the handles before updating so we can remove elements in the loop */
+  name = iupTableFirst(inames_strtable);
+  while (name)
+  {
+    ih = (Ihandle*)iupTableGetCurr(inames_strtable);
+    if (iupObjectCheck(ih) && ((attrib_value && iupAttribGet(ih, attrib_name) == attrib_value) || (!attrib_value && iupAttribGet(ih, attrib_name))))
+    {
+      /* only need to destroy the top parent handle */
+      ih = iNameGetTopParent(ih);
+
+      /* check if already in the array */
+      if (iNameCheckArray(ih_array, i, ih))
+      {
+        ih_array[i] = ih;
+        i++;
+      }
+    }
+    name = iupTableNext(inames_strtable);
+  }
+
+  count = i;
+  for (i = 0; i < count; i++)
+  {
+    if (iupObjectCheck(ih_array[i]))  /* here must be a handle */
+      IupDestroy(ih_array[i]);
+  }
+
+  free(ih_array);
+}
+
 void iupRemoveNames(Ihandle* ih)
 {
   /* called from IupDestroy */
@@ -121,6 +164,28 @@ IUP_API Ihandle *IupGetHandle(const char *name)
   if (!name) /* no iupASSERT needed here */
     return NULL;
   return (Ihandle*)iupTableGet (inames_strtable, name);
+}
+
+int iupNamesFindAll(Ihandle *ih, char** names, int n)
+{
+  int i = 0;
+  char* name = iupTableFirst(inames_strtable);
+  while (name)
+  {
+    if ((Ihandle*)iupTableGetCurr(inames_strtable) == ih)
+    {
+      if (names)
+        names[i] = name;
+
+      i++;
+      if (i == n && n != 0 && n != -1)
+        break;
+    }
+
+    name = iupTableNext(inames_strtable);
+  }
+
+  return i;
 }
 
 static char* iNameFindHandle(Ihandle *ih)
@@ -184,7 +249,6 @@ IUP_API Ihandle* IupSetHandle(const char *name, Ihandle *ih)
 
 IUP_API char* IupGetName(Ihandle* ih)
 {
-  char *name;
   if (!ih) /* no iupASSERT needed here */
     return NULL;
 
@@ -193,11 +257,7 @@ IUP_API char* IupGetName(Ihandle* ih)
   if (iupObjectCheck(ih)) /* if ih is an Ihandle* */
   {
     /* check for a name */
-    name = iupAttribGetHandleName(ih);
-    if (name)
-      return name;
-    else
-      return NULL;
+    return iupAttribGetHandleName(ih);
   }
 
   /* search for a name */

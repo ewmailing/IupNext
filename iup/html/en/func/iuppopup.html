@@ -41,12 +41,12 @@ main screen.
     The following definitions can also be used:</p>
 <ul>
   <li>IUP_LEFT:
-    Positions the element on the left corner of 
+    Positions the element on the left border of 
     the main screen</li>
   <li>IUP_CENTER:
     Centers the element on the main screen</li>
   <li>IUP_RIGHT:
-    Positions the element on the right corner of 
+    Positions the element on the right border of 
     the main screen</li>
   <li>IUP_MOUSEPOS:
     Positions the element on the mouse cursor</li>
@@ -55,17 +55,22 @@ main screen.
   <li>IUP_CURRENT: use the current position 
     of the dialog. This is the default value 
   in Lua if the parameter is not defined. Not valid for menus. (Since 3.0)</li>
+	<li>IUP_LEFTPARENT: Positions the element on the left border of its 
+  parent. Not valid for menus. (Since 3.29)</li>
+	<li>IUP_RIGHTPARENT: Positions the element on the right border of its 
+  parent. Not valid for menus. (Since 3.29)</li>
 </ul>
 <p><b>y</b>: vertical position of the top-left corner of the window or menu, relative to the origin of the
     main screen. The following definitions can also be used:</p>
 <ul>
   <li>IUP_TOP:
-    Positions the element on the top of the 
+    Positions the element on the top borderoffthe 
+    main screenthe 
     main screen</li>
   <li>IUP_CENTER:
     Vertically centers the element on the main screen</li>
   <li>IUP_BOTTOM:
-    Positions the element on the base of the 
+    Positions the element on the bottom border of the 
     main screen</li>
   <li>IUP_MOUSEPOS:
     Positions the element on the mouse cursor</li>
@@ -76,6 +81,10 @@ main screen.
     of the dialog. This is 
   the default value in Lua if the parameter is not defined. Not valid for 
 	menus. (Since 3.0)</li>
+	<li>IUP_TOPPARENT: Positions the element on the top border of its 
+  parent. Not valid for menus. (Since 3.29)</li>
+	<li>IUP_BOTTOMPARENT: Positions the element on the bottom border of its 
+  parent. Not valid for menus. (Since 3.29)</li>
 </ul>
 <p><span class="style1">Returns:</span> IUP_NOERROR if 
   successful. Returns

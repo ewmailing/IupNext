@@ -368,6 +368,7 @@ static void cdputimagerectrgba(cdCtxCanvas* ctxcanvas, int width, int height, co
     iupdrvDrawImage(ctxcanvas->dc, "_IUPDRAW_CD_IMAGE", 0, NULL, x, dy, w, h);
 
   IupDestroy(image);
+  IupSetHandle("_IUPDRAW_CD_IMAGE", NULL);
 }
 
 static void cdputimagerectrgb(cdCtxCanvas* ctxcanvas, int width, int height, const unsigned char *red,
@@ -406,6 +407,7 @@ static void cdputimagerectrgb(cdCtxCanvas* ctxcanvas, int width, int height, con
     iupdrvDrawImage(ctxcanvas->dc, "_IUPDRAW_CD_IMAGE", 0, NULL, x, dy, w, h);
 
   IupDestroy(image);
+  IupSetHandle("_IUPDRAW_CD_IMAGE", NULL);
 }
 
 static void cdputimagerectmap(cdCtxCanvas *ctxcanvas, int iw, int ih, const unsigned char *index, const long *colors,
@@ -449,6 +451,7 @@ static void cdputimagerectmap(cdCtxCanvas *ctxcanvas, int iw, int ih, const unsi
     iupdrvDrawImage(ctxcanvas->dc, "_IUPDRAW_CD_IMAGE", 0, NULL, x, dy, w, h);
 
   IupDestroy(image);
+  IupSetHandle("_IUPDRAW_CD_IMAGE", NULL);
 }
 
 /******************************************************/

@@ -9,6 +9,7 @@ local ctrl = {
   creation = "S",
   callback = {
     valuechanging_cb = "n",
+    flat_wheel_cb = "fnns",
   },
 }
 
