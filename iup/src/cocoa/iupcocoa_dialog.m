@@ -1001,7 +1001,33 @@ static int cocoaDialogSetMaxSizeAttrib(Ihandle* ih, const char* value)
 	return iupBaseSetMaxSizeAttrib(ih, value);
 }
 
+static int cocoaDialogSetResizeAttrib(Ihandle* ih, const char* value)
+{
+	NSWindow* the_window = cocoaDialogGetWindow(ih);
+	BOOL is_resizable = (BOOL)iupStrBoolean(value);
 
+	if(is_resizable)
+	{
+		NSWindowStyleMask style_mask = [the_window styleMask];
+		style_mask = style_mask | NSWindowStyleMaskResizable;
+		[the_window setStyleMask:style_mask];
+	}
+	else
+	{
+		NSWindowStyleMask style_mask = [the_window styleMask];
+		style_mask = style_mask & ~NSWindowStyleMaskResizable;
+		[the_window setStyleMask:style_mask];
+	}
+	return 1;
+}
+
+static char* cocoaDialogGetResizeAttrib(Ihandle* ih)
+{
+	NSWindow* the_window = cocoaDialogGetWindow(ih);
+	NSWindowStyleMask style_mask = [the_window styleMask];
+	BOOL is_resizable = style_mask & NSWindowStyleMaskResizable;
+	return iupStrReturnBoolean(is_resizable);
+}
 
 static int cocoaDialogSetTitleAttrib(Ihandle* ih, const char* value)
 {
@@ -1583,6 +1609,8 @@ void iupdrvDialogInitClass(Iclass* ic)
 	iupClassRegisterAttribute(ic, "FULLSCREEN", NULL, cocoaDialogSetFullScreenAttrib, NULL, NULL, IUPAF_WRITEONLY|IUPAF_NO_INHERIT);
 	iupClassRegisterAttribute(ic, "MINSIZE", NULL, cocoaDialogSetMinSizeAttrib, IUPAF_SAMEASSYSTEM, "1x1", IUPAF_NO_INHERIT);
 	iupClassRegisterAttribute(ic, "MAXSIZE", NULL, cocoaDialogSetMaxSizeAttrib, IUPAF_SAMEASSYSTEM, "65535x65535", IUPAF_NO_INHERIT);
+	iupClassRegisterAttribute(ic, "RESIZE", cocoaDialogGetResizeAttrib, cocoaDialogSetResizeAttrib, IUPAF_SAMEASSYSTEM, "ON", IUPAF_NO_INHERIT);
+
 #if 0
 	iupClassRegisterAttribute(ic, "SAVEUNDER", NULL, NULL, NULL, NULL, IUPAF_NOT_SUPPORTED|IUPAF_NO_INHERIT);  /* saveunder not supported in GTK */
 	
