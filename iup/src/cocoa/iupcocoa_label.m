@@ -609,6 +609,60 @@ static int cocoaLabelSetImageAttrib(Ihandle* ih, const char* value)
 }
 
 
+static int cocoaLabelSetSelectable(Ihandle* ih, const char* value)
+{
+	NSView* the_view = cocoaLabelGetRootView(ih);
+	BOOL is_active = (BOOL)iupStrBoolean(value);
+
+	if([the_view isKindOfClass:[NSTextField class]])
+	{
+		NSTextField* the_label = (NSTextField*)the_view;
+
+		// FIXME: APPLE BUG: setSelectable:YES completely breaks using our vertical alignment cell subclass.
+		// When clicking the text, the text will snap to a wrong position and stay there.
+		// UPDATE: Apple seems to have fixed the bug in later macOS releases.
+		// However, the default should probably be off since older macOS will have bugs.
+		[the_label setSelectable:is_active];
+
+	}
+	else if([the_view isKindOfClass:[NSImageView class]])
+	{
+		// not supported
+	}
+	else
+	{
+		NSLog(@"Unexpected type in cocoaLabelSetSelectable");
+	}
+
+	return 1;
+
+}
+
+static char* cocoaLabelGetSelectable(Ihandle* ih)
+{
+	NSView* the_view = cocoaLabelGetRootView(ih);
+	BOOL is_active = NO;
+	if([the_view isKindOfClass:[NSTextField class]])
+	{
+		NSTextField* the_label = (NSTextField*)the_view;
+
+		// FIXME: APPLE BUG: setSelectable:YES completely breaks using our vertical alignment cell subclass.
+		// When clicking the text, the text will snap to a wrong position and stay there.
+		// UPDATE: Apple seems to have fixed the bug in later macOS releases.
+		// However, the default should probably be off since older macOS will have bugs.
+		is_active =[the_label isSelectable];
+	}
+	else if([the_view isKindOfClass:[NSImageView class]])
+	{
+		// not supported
+	}
+	else
+	{
+		NSLog(@"Unexpected type in cocoaLabelSetSelectable");
+	}
+	
+	return iupStrReturnBoolean(is_active);
+}
 
 static int cocoaLabelMapMethod(Ihandle* ih)
 {
@@ -733,6 +787,8 @@ static int cocoaLabelMapMethod(Ihandle* ih)
 			// TODO: FEATURE: I think this is really convenient for users so it should be the default
 			// FIXME: APPLE BUG: setSelectable:YES completely breaks using our vertical alignment cell subclass.
 			// When clicking the text, the text will snap to a wrong position and stay there.
+			// UPDATE: Apple seems to have fixed the bug in later macOS releases.
+			// However, the default should probably be off since older macOS will have bugs.
 //			[the_label setSelectable:YES];
 			
 //			NSFont* the_font = [the_label font];
@@ -870,6 +926,8 @@ void iupdrvLabelInitClass(Iclass* ic)
   /* IupLabel Windows and GTK only */
   iupClassRegisterAttribute(ic, "WORDWRAP", NULL, cocoaLabelSetWordWrapAttrib, NULL, NULL, IUPAF_DEFAULT);
   iupClassRegisterAttribute(ic, "ELLIPSIS", NULL, cocoaLabelSetEllipsisAttrib, NULL, NULL, IUPAF_DEFAULT);
+  /* Mac only */
+  iupClassRegisterAttribute(ic, "SELECTABLE", cocoaLabelGetSelectable, cocoaLabelSetSelectable, IUPAF_SAMEASSYSTEM, "NO", IUPAF_DEFAULT|IUPAF_NO_INHERIT);
 
 #if 0
   /* IupLabel GTK only */
