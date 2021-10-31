@@ -203,7 +203,9 @@ void iupdrvClose(void)
 	// Technically, in a good modern Cocoa program, this will be the end of the program, so we don't need to clean up and we don't have to worry about leaking.
 	// So it shouldn't really be an issue in practice, unless users are trying to force the old Iup paradigms on IupNext, which I've documented will never really work in the end.
 //	[s_autoreleasePool drain];
-	s_autoreleasePool = nil;
+	// Since we have a check in iupdrvOpen for if the pool is already allocated, don't set to nil since we can't drain.
+	// This will allow for the oddball case of IupOpen being called multitple times, without causing major leaks.
+//	s_autoreleasePool = nil;
 	
 	
 }
