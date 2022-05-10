@@ -139,9 +139,18 @@ void iupdrvGetFullSize(int *width, int *height)
 
 int iupdrvGetScreenDepth(void)
 {
-	NSLog(@"iupdrvGetScreenDepth is not correctly implemented. Hardcoded to 32 as workaround");
-//	return CGDisplayBitsPerPixel(kCGDirectMainDisplay);  /* Deprecated in Mac OS X v10.6 and removed in 11-ish. */
-	return 32;
+    CGDisplayModeRef mode = CGDisplayCopyDisplayMode(kCGDirectMainDisplay);
+    size_t depth = 0;
+
+    CFStringRef pixEnc = CGDisplayModeCopyPixelEncoding(mode);
+    if(CFStringCompare(pixEnc, CFSTR(IO32BitDirectPixels), kCFCompareCaseInsensitive) == kCFCompareEqualTo)
+        depth = 32;
+    else if(CFStringCompare(pixEnc, CFSTR(IO16BitDirectPixels), kCFCompareCaseInsensitive) == kCFCompareEqualTo)
+        depth = 16;
+    else if(CFStringCompare(pixEnc, CFSTR(IO8BitIndexedPixels), kCFCompareCaseInsensitive) == kCFCompareEqualTo)
+        depth = 8;
+
+    return depth;
 }
 
 // I think this is not going to work on Cocoa. Apple does everything in their power to hide this for retina.
